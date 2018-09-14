@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyledApp } from './App.style';
-import Button from './components/Button/Button' 
-import Input from './components/Input/Input' 
+import Button from '../Button/Button' 
+import Input from '../Input/Input' 
 class App extends React.Component {
   render() {
     return (

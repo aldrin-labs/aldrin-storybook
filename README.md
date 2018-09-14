@@ -1,11 +1,1 @@
-# StoryBook
-
-## Install dependencies
-```
-yarn install
-```
-
-## Start development server
-```
-yarn storybook
-```
+# react-typescript-storybook-boilerplate
