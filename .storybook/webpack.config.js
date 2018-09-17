@@ -1,11 +1,29 @@
-const path = require("path");
-const TSDocgenPlugin = require("react-docgen-typescript-webpack-plugin");
-module.exports = (baseConfig, env, config) => {
-  config.module.rules.push({
-    test: /\.(ts|tsx)$/,
-    loader: require.resolve("awesome-typescript-loader")
-  });
-  config.plugins.push(new TSDocgenPlugin()); // optional
-  config.resolve.extensions.push(".ts", ".tsx");
-  return config;
-};
+const webpackMerge = require('webpack-merge');
+const path = require('path')
+// load the default config generator.
+const genDefaultConfig = require('@storybook/react/dist/server/config/defaults/webpack.config.js')
+
+const config = {
+  resolve: {
+    extensions: ['.ts', '.tsx'],
+    alias: {
+      '@components': path.join(__dirname, '..', 'src', 'components'),
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        loader: require.resolve('awesome-typescript-loader')
+      }
+    ],
+  },
+}
+
+module.exports = (baseConfig, env) => {
+  const  mergedConfig = webpackMerge(
+    genDefaultConfig(baseConfig, env),
+    config,
+  );
+  return mergedConfig;
+}
