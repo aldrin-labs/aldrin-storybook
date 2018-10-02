@@ -9,6 +9,7 @@ module.exports = (baseConfig, env) => {
         '@components': path.join(__dirname, '..', 'src', 'components'),
         '@styles': path.join(__dirname, '..', 'src', 'styles'),
         '@icons': path.join(__dirname, '..', 'src', 'icons'),
+        '@utils': path.join(__dirname, '..', 'src', 'utils')
       },
     },
     module: {

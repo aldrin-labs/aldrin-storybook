@@ -22,7 +22,8 @@
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
       "@styles/*": ["src/styles/*"],
-      "@icons/*": ["src/icons/*"]
+      "@icons/*": ["src/icons/*"],
+      "@utils/*": ["src/utils/*"]
     },
   "include": ["src", "typings", "custom.d.ts"]
 }

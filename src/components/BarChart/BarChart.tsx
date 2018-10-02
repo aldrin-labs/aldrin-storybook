@@ -30,7 +30,7 @@ const axisStyle = {
 }
 class BarChart extends Component<IProps, IState> {
   state = {
-    value: { x: null, y: null },
+    value: { x: null, y: null }
   }
 
   onValueMouseOver = (value: IValue) => this.setState({ value })
