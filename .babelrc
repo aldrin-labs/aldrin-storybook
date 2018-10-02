@@ -1,0 +1,45 @@
+{
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "browsers": [
+                "last 2 versions"
+              ]
+            }
+          }
+        ],
+        "@babel/react",
+        "@babel/preset-typescript"
+      ],
+      "plugins": [
+        "react-hot-loader/babel",
+        "styled-components",
+        "graphql-tag"
+      ]
+    },
+    "development": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "browsers": [
+                "last 2 versions"
+              ]
+            },
+            "modules": false
+          }
+        ],
+        "@babel/react",
+        "@babel/preset-typescript"
+      ],
+      "plugins": [
+        "styled-components",
+      ]
+    }
+  }
+}

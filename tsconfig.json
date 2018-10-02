@@ -5,24 +5,24 @@
     "target": "es2018",
     "lib": ["esnext", "dom"],
     "sourceMap": true,
+    "declaration": true,
     "allowJs": false,
     "jsx": "react",
     "moduleResolution": "node",
     "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
-    "alwaysStrict": false
+    "alwaysStrict": false,
+    "typeRoots": ["./node_modules/@types", "./typings"]
   },
   "paths": {
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@containers/*": ["src/containers/*"],
+      "@styles/*": ["src/styles/*"],
+      "@icons/*": ["src/icons/*"]
     },
-    "exclude": [
-      "node_modules",
-      "dist",
-      "webpack",
-      "stories",
-      ".storybook"
-  ]
+  "include": ["src", "typings", "custom.d.ts"]
 }
