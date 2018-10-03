@@ -5,8 +5,8 @@ import './AreaChart'
 import './Chart'
 //import './CoinMarketTable' -cant use - using apollo
 //import './CoinsList' - can't use - uses <Link>
-//import './ComingSoon'
-//import './DominanceChart'
+import './ComingSoon'
+import './DominanceChart'
 import './Button'
-//import './ErrorFallback'
+import './ErrorFallback'
 //import './Footer'
