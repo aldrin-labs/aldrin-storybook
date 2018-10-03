@@ -2,12 +2,12 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 
-import BircoinBarChart from '@components/BircoinBarChart/BircoinBarChart'
+import BitcoinPriceChart from '@components/BitcoinPriceChart/BitcoinPriceChart'
 
-storiesOf('BircoinBarChart', module)
+storiesOf('BitcoinPriceChart', module)
   .add(
-    'BircoinBarChart',
+    'BitcoinPriceChart',
     () => (
-      <BircoinBarChart />
+      <BitcoinPriceChart />
     )
   )

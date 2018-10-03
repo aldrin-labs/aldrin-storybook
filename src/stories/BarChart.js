@@ -8,6 +8,6 @@ storiesOf('BarChart', module)
   .add(
     'BarChart',
     () => (
-      <AreaChart />
+      <BarChart />
     )
   )
