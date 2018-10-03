@@ -1,17 +1,17 @@
-import React from 'react'
+import React from 'react';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 
-import { storiesOf } from '@storybook/react'
-
-import Button from '@components/Elements/Button/Button'
+import Button from '@components/Elements/Button/Button';
 
 storiesOf('Button', module)
   .add(
     'Button',
     () => (
-      <Button   
+      <Button
         title="Button"
         active={true}
-        onClick={() => {}}  
+        onClick={action('clicked')}
       />
     )
   )
