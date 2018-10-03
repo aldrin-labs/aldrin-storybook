@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Switch render() 1`] = `
+<[object Object]>
+  <FlexibleXYPlot>
+    <XAxis
+      attr="x"
+      attrAxis="y"
+      hideLine={true}
+      hideTicks={true}
+      orientation="bottom"
+    />
+    <YAxis
+      attr="y"
+      attrAxis="x"
+      hideLine={true}
+      hideTicks={true}
+      orientation="left"
+    />
+    <AreaSeries
+      className=""
+      data={
+        Array [
+          Object {
+            "x": 1,
+            "y": 2,
+          },
+          Object {
+            "x": 2,
+            "y": 3,
+          },
+        ]
+      }
+      getNull={[Function]}
+      stack={false}
+      style={
+        Object {
+          "fill": "rgba(133, 237, 238, 0.35)",
+          "stroke": "rgb(78, 216, 218)",
+          "strokeWidth": "3px",
+        }
+      }
+    />
+  </FlexibleXYPlot>
+</[object Object]>
+`;

@@ -1,0 +1,14 @@
+{
+  "reporter": "stylint-stylish",
+  "noImportant": true,
+  "semicolons": {
+    "expect": "always",
+    "error": true
+  },
+  "processors": ["stylelint-processor-styled-components"],
+  "extends": [
+    "stylelint-config-recommended",
+    "stylelint-config-styled-components"
+  ],
+  "syntax": "scss"
+}
