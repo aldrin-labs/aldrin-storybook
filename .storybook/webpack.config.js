@@ -16,7 +16,7 @@ module.exports = (baseConfig, env) => {
       rules: [
         {
           test: /\.(ts|tsx)$/,
-          loader: 'babel-loader?cacheDirectory=true',
+          loader: 'babel-loader',
         },
         {
           test: /\.svg$/,
