@@ -1,9 +1,9 @@
-import * as React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 
-import { Props, State } from '@components/Legends/Legends.types'
+import { Props, State } from './Legends.types'
 
-export default class Legends extends React.Component<Props, State> {
+export class Legends extends Component<Props, State> {
   state: State = {
     activeLegend: null,
   }
@@ -49,6 +49,8 @@ export default class Legends extends React.Component<Props, State> {
     )
   }
 }
+
+export default Legends
 
 const ResetButton = styled.button`
   margin-top: 10px;

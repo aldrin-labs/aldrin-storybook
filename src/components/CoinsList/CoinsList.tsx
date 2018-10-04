@@ -11,7 +11,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
 // TODO: add types
-import * as T from '@components/CoinsList/types'
+import * as T from './types'
 
 import { CoinLink, ShowMoreLink } from '@components/CoinsList/CoinLink'
 
