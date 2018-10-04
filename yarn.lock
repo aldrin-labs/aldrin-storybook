@@ -1223,17 +1223,19 @@
     react-inspector "^2.2.2"
     uuid "^3.2.1"
 
-"@storybook/addon-info@3.3.4":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-info/-/addon-info-3.3.4.tgz#577b766769138a704591f87db93b196f287a46ac"
+"@storybook/addon-info@^3.4.11":
+  version "3.4.11"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-info/-/addon-info-3.4.11.tgz#eb4eafb2ec5a580acdaeacab0065ee8463eddefd"
   dependencies:
-    "@storybook/client-logger" "^3.3.4"
-    "@storybook/components" "^3.3.4"
+    "@storybook/client-logger" "3.4.11"
+    "@storybook/components" "3.4.11"
     babel-runtime "^6.26.0"
+    glamor "^2.20.40"
+    glamorous "^4.12.1"
     global "^4.3.2"
-    marksy "^6.0.2"
+    marksy "^6.0.3"
     nested-object-assign "^1.0.1"
-    prop-types "^15.6.0"
+    prop-types "^15.6.1"
     react-addons-create-fragment "^15.5.3"
     util-deprecate "^1.0.2"
 
@@ -1284,7 +1286,7 @@
   version "3.4.11"
   resolved "https://registry.yarnpkg.com/@storybook/channels/-/channels-3.4.11.tgz#853ec40fdfa6c3ae8cff23f0cd86b77a719823f5"
 
-"@storybook/client-logger@^3.3.4":
+"@storybook/client-logger@3.4.11", "@storybook/client-logger@^3.3.4":
   version "3.4.11"
   resolved "https://registry.yarnpkg.com/@storybook/client-logger/-/client-logger-3.4.11.tgz#b592ea227f9f330f50925f7c1c266cc658cbc704"
 
@@ -1763,6 +1765,17 @@
     "@webassemblyjs/ast" "1.7.8"
     "@webassemblyjs/wast-parser" "1.7.8"
     "@xtuc/long" "4.2.1"
+
+"@webpack-contrib/schema-utils@^1.0.0-beta.0":
+  version "1.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@webpack-contrib/schema-utils/-/schema-utils-1.0.0-beta.0.tgz#bf9638c9464d177b48209e84209e23bee2eb4f65"
+  dependencies:
+    ajv "^6.1.0"
+    ajv-keywords "^3.1.0"
+    chalk "^2.3.2"
+    strip-ansi "^4.0.0"
+    text-table "^0.2.0"
+    webpack-log "^1.1.2"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -9243,6 +9256,13 @@ loglevel@^1.4.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
 
+loglevelnext@^1.0.1:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/loglevelnext/-/loglevelnext-1.0.5.tgz#36fc4f5996d6640f539ff203ba819641680d75a2"
+  dependencies:
+    es6-symbol "^3.1.1"
+    object.assign "^4.1.0"
+
 longest-streak@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/longest-streak/-/longest-streak-2.0.2.tgz#2421b6ba939a443bb9ffebf596585a50b4c38e2e"
@@ -9348,7 +9368,7 @@ marked@^0.3.12, marked@^0.3.9:
   version "0.3.19"
   resolved "http://registry.npmjs.org/marked/-/marked-0.3.19.tgz#5d47f709c4c9fc3c216b6d46127280f40b39d790"
 
-marksy@^6.0.2:
+marksy@^6.0.3:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/marksy/-/marksy-6.1.0.tgz#36482148a1115cc78570855f7ebd744bb453d5cc"
   dependencies:
@@ -11496,6 +11516,18 @@ react-dev-utils@^5.0.1:
     sockjs-client "1.1.5"
     strip-ansi "3.0.1"
     text-table "0.2.0"
+
+react-docgen-typescript-loader@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-docgen-typescript-loader/-/react-docgen-typescript-loader-3.0.0.tgz#4042e2854d29380e4d01e479d438c03ec00de8e8"
+  dependencies:
+    "@webpack-contrib/schema-utils" "^1.0.0-beta.0"
+    loader-utils "^1.1.0"
+    react-docgen-typescript "^1.9.0"
+
+react-docgen-typescript@^1.9.0:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/react-docgen-typescript/-/react-docgen-typescript-1.9.1.tgz#d1739a68ab192e9c6f7028fc969ad1891c302079"
 
 react-docgen@^3.0.0-beta11:
   version "3.0.0-rc.1"
@@ -14584,6 +14616,15 @@ webpack-jarvis@^0.3.0:
     serve-static "^1.13.1"
     socket.io "^2.0.3"
     url-loader "^0.6.2"
+
+webpack-log@^1.1.2:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/webpack-log/-/webpack-log-1.2.0.tgz#a4b34cda6b22b518dbb0ab32e567962d5c72a43d"
+  dependencies:
+    chalk "^2.1.0"
+    log-symbols "^2.1.0"
+    loglevelnext "^1.0.1"
+    uuid "^3.1.0"
 
 webpack-log@^2.0.0:
   version "2.0.0"

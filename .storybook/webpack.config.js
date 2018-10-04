@@ -1,5 +1,5 @@
 const webpackMerge = require('webpack-merge');
-const path = require('path')
+const path = require('path');
 
 module.exports = (baseConfig, env) => {
   const config = {
@@ -16,7 +16,10 @@ module.exports = (baseConfig, env) => {
       rules: [
         {
           test: /\.(ts|tsx)$/,
-          loader: 'babel-loader',
+          use: [
+            'babel-loader',
+            require.resolve("react-docgen-typescript-loader"),
+          ],
         },
         {
           test: /\.svg$/,

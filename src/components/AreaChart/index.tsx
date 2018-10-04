@@ -1,10 +1,10 @@
-import * as React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import { XAxis, YAxis, AreaSeries, FlexibleXYPlot } from 'react-vis'
 
 import { Props } from './types'
 
-export default class AreaChart extends React.Component<Props> {
+export class AreaChart extends Component<Props> {
   render() {
     const { data } = this.props
 
@@ -27,6 +27,8 @@ export default class AreaChart extends React.Component<Props> {
     )
   }
 }
+
+export default AreaChart
 
 const Chart = styled.div`
   width: 100%;

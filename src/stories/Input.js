@@ -1,16 +1,13 @@
 import React from 'react'
-
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
-import { HeatMapChart } from '@components/HeatMapChart'
+import { Input } from '@components/Input/Input'
 
-//const data = 
-
-storiesOf('HeatMapChart', module)
+storiesOf('Input', module)
   .add(
-    'HeatMapChart',
+    'Input',
     withInfo({ inline: true })(() =>
-      <HeatMapChart />
+      <Input />
     )
   )
