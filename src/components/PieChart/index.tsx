@@ -9,10 +9,10 @@ import {
 
 import { Props, State, PiePiece } from './PieChart.types'
 import { customAquaScrollBar } from '@styles/cssUtils'
-
+import { withTheme } from '@material-ui/core/styles'
 const FlexibleRadialChart = makeVisFlexible(RadialChart)
 
-export default class PieChart extends React.Component<Props, State> {
+class PieChartWitoutTheme extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
@@ -167,6 +167,10 @@ export default class PieChart extends React.Component<Props, State> {
     return <NonFLRadialChart />
   }
 }
+
+export const PieChart = withTheme()(PieChartWitoutTheme)
+
+export default PieChart
 
 const ChartTooltip = styled.span`
   color: ${(props: { textColor: string }) => props.textColor};
