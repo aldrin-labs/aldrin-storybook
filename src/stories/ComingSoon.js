@@ -3,10 +3,11 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import { Card } from '@material-ui/core'
+import styled from 'styled-components'
 
+import { backgrounds } from './backgrounds'
 import ComingSoon from '@components/ComingSoon'
 
-import styled from 'styled-components'
 
 const PTWrapper = styled(Card)`
   min-height: 100%;
@@ -24,10 +25,12 @@ const PTWrapper = styled(Card)`
 `
 
 storiesOf('ComingSoon', module)
+  .addDecorator(backgrounds)
   .add(
     'ComingSoon',
-    () =>
+    withInfo()(() =>
     <PTWrapper>
       <ComingSoon />
     </PTWrapper>
   )
+)

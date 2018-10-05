@@ -7,8 +7,7 @@ import { withInfo } from '@storybook/addon-info'
 import { muiTheme } from 'storybook-addon-material-ui'
 
 import { customThemes } from './customTheme'
-
-addDecorator((story, context) => withInfo()(story)(context))
+console.log(customThemes)
 addDecorator(
   muiTheme([customThemes.light, customThemes.dark])
 )
@@ -18,6 +17,7 @@ addDecorator((story) => (
   </div>
 ))	
 addDecorator(withKnobs)
+
 
 setOptions({
   name: 'Storybook',

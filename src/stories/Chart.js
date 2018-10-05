@@ -1,9 +1,11 @@
 import React from 'react'
 import { text } from '@storybook/addon-knobs/react'
-
 import { storiesOf } from '@storybook/react'
+import { withInfo } from '@storybook/addon-info'
 import styled from 'styled-components'
 
+
+import { backgrounds } from './backgrounds'
 import {SingleChart} from '@components/Chart/Chart'
 
 const TablesContainer = styled.div`
@@ -34,9 +36,10 @@ const ChartsContainer = styled(TablesContainer)`
 
 
 storiesOf('Chart', module)
+  .addDecorator(backgrounds)
   .add(
     'Chart',
-    () => {
+    withInfo()(() => {
       const base = text('First currency', 'BTC');
       const quote = text('Second currency','USDT');
 
@@ -45,5 +48,5 @@ storiesOf('Chart', module)
         <SingleChart additionalUrl={`/?symbol=${base}/${quote}`} />
       </ChartsContainer>
     )
-  }
+  })
 )

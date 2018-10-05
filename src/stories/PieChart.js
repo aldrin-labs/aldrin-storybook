@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
 import { object } from '@storybook/addon-knobs/react'
 
+import { backgrounds } from './backgrounds'
 import PieChart from '@components/PieChart' 
 
 const chartCoins = [
@@ -44,9 +45,10 @@ const chartCoins = [
 ]
 
 storiesOf('PieChart', module)
+  .addDecorator(backgrounds)
   .add(
     'PieChart',
-    () =>
+    withInfo()(() =>
       <PieChart
         data={object('data', chartCoins)}
         width={256}
@@ -55,3 +57,4 @@ storiesOf('PieChart', module)
         colorLegend={true}
       />
   )
+)

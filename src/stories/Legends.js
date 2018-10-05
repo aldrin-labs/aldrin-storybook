@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
 import { object  } from '@storybook/addon-knobs/react'
 
+import { backgrounds } from './backgrounds'
 import Legends from '@components/Legends'
 
 const legends = [
@@ -13,11 +14,13 @@ const legends = [
 const groupId = 'GROUP-ID1'
 
 storiesOf('Legends', module)
+  .addDecorator(backgrounds)
   .add(
     'Legends',
-    () => 
+    withInfo()(() => 
       <Legends
         legends={object('legends', legends, groupId)}
         onChange={action('Changed')}
       />
   )
+)
