@@ -8,7 +8,6 @@ import { ErrorFallback } from '@components/ErrorFallback'
 storiesOf('ErrorFallback', module)
   .add(
     'ErrorFallback',
-    withInfo({ inline: true })(() =>
+    () =>
       <ErrorFallback />
-    )
   )

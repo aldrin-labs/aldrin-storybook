@@ -2,10 +2,8 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { createMuiTheme, withTheme  } from '@material-ui/core/styles'
-import { muiTheme } from 'storybook-addon-material-ui'
+import { object } from '@storybook/addon-knobs/react'
 
-import { customThemes } from './customTheme'
 import PieChart from '@components/PieChart' 
 
 const chartCoins = [
@@ -46,18 +44,14 @@ const chartCoins = [
 ]
 
 storiesOf('PieChart', module)
-  .addDecorator(
-    muiTheme([customThemes.light, customThemes.dark]),
-  )
   .add(
     'PieChart',
-    withInfo({ inline: true })(() =>
+    () =>
       <PieChart
-        data={chartCoins}
+        data={object('data', chartCoins)}
         width={256}
         height={256}
         radius={128}
         colorLegend={true}
       />
-    )
   )

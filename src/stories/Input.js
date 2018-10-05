@@ -7,7 +7,6 @@ import { Input } from '@components/Input/Input'
 storiesOf('Input', module)
   .add(
     'Input',
-    withInfo({ inline: true })(() =>
+    () =>
       <Input />
-    )
   )
