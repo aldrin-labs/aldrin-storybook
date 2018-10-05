@@ -32,6 +32,15 @@ module.exports = (baseConfig, env) => {
           test: /\.css$/,
           include: /node_modules/,
           loaders: ['style-loader', 'css-loader']
+        },
+        {
+          test: /\.(png|jpg|gif)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {}
+            }
+          ]
         }
       ],
     },
