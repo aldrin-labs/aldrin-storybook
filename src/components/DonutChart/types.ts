@@ -3,13 +3,20 @@ import { Theme } from '@material-ui/core'
 export interface DonutPiece {
   angle: number
   label: string
+  realValue: number
+  gradientIndex: number
   opacity?: number
   color?: string | number
   style?: object
 }
 
+export interface InputRecord {
+  label: string
+  realValue: number
+}
+
 export interface Props {
-  data: DonutPiece[]
+  inputData: InputRecord[]
   width?: number
   height?: number
   radius?: number

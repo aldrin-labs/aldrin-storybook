@@ -9,33 +9,24 @@ import DonutChart from '@components/DonutChart'
 
 const chartCoins = [
   {
-    angle: 30.589999999999996,
-    label: "Smart contracts",
     title: "Smart contracts",
-    realValue: "30.59%"
+    realValue: 1,
   },
   {
-    angle: 31.45, label: "Payments",
     title: "Payments",
-    realValue: "31.45%"
+    realValue: 1,
   },
   {
-    angle: 16.58,
-    label: "Entertainment",
     title: "Entertainment",
-    realValue: "16.58%"
+    realValue: 1,
   },
   {
-    angle: 21.38,
-    label: "Blockchain platform",
     title: "Blockchain platform",
-    realValue: "21.38%"
+    realValue: 1,
   },
   {
-    angle: 0,
-    label: "Privacy coin",
     title: "Privacy coin",
-    realValue: "0.00%"
+    realValue: 1,
   }
 ]
 

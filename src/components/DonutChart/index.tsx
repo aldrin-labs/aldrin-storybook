@@ -5,7 +5,7 @@ import {
   GradientDefs
 } from 'react-vis'
 
-import { Props, State, DonutPiece } from './types'
+import { Props, State, DonutPiece, InputRecord } from './types'
 import { withTheme } from '@material-ui/core/styles'
 
 class DonutChartWitoutTheme extends Component<Props, State> {
@@ -19,9 +19,21 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     }
   }
 
+  componentDidMount = () => {
+    const newData = this.props.data.map((record: InputRecord, index: number) => (
+      {
+        angle: record.realValue,
+        label: record.label,
+        realValue: record.realValue,
+        gradientIndex: 1
+      }
+    ))
+    this.setState({ data: newData })
+    console.log(this.state.data)
+  }
+
   onValueMouseOver = (value: DonutPiece) => {
     const { data } = this.state
-    console.log(value)
     if (this.state.value && this.state.value.label === value.label) return
 
     const index = data.findIndex((d) => d.label === value.label)
@@ -40,16 +52,13 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   render() {
-    const { value } = this.state
-    const { data } = this.props
+    const { value, data } = this.state
 
     const {
       width,
       height,
       radius,
-      showLabels,
-      labelsRadiusMultiplier,
-      labelsStyle,
+
       theme,
     } = this.props
 
@@ -58,37 +67,39 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     const textColor: string = theme.palette.getContrastText(background)
 
     return (
+      <>
         <RadialChart
           data={data}
           animation
           width={width || 200}
           height={height || 200}
           radius={radius || 100}
-          innerRadius={radius ? radius - 10 : 90}
-  //        colorType={hasCustomColors ? 'literal' : 'linear'}
+          innerRadius={radius ? radius - 15 : 90}
+          colorType={'literal'}
+          getColor={(d) => `url(#${d.gradientIndex})`}
           onValueMouseOver={(v: DonutPiece) => this.setState({ value: v })}
           onSeriesMouseOut={() => this.setState({ value: null })}
-          labelsRadiusMultiplier={1}
-          labelsStyle={labelsStyle || {}}
+          style={{strokeWidth: 0}}
         >
-          <TextContainer textColor={textColor}>
-            { this.state.value && this.state.value.title }
-          </TextContainer>
+          <ValueContainer textColor={textColor}>
+            { this.state.value && this.state.value.realValue }
+          </ValueContainer>
           <GradientDefs>
-            <linearGradient id="grad1" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="red" stopOpacity={0.4} />
-              <stop offset="100%" stopColor="blue" stopOpacity={0.3} />
+            <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="red"  />
+              <stop offset="100%" stopColor="blue" />
             </linearGradient>
-            <linearGradient id="grad2" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="blue" stopOpacity={0.4} />
-              <stop offset="100%" stopColor="green" stopOpacity={0.3} />
+            <linearGradient id="2" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="blue"  />
+              <stop offset="100%" stopColor="green"  />
             </linearGradient>
-            <linearGradient id="grad3" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="yellow" stopOpacity={0.4} />
-              <stop offset="100%" stopColor="green" stopOpacity={0.3} />
+            <linearGradient id="3" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="yellow"  />
+              <stop offset="100%" stopColor="green" />
             </linearGradient>
           </GradientDefs>
         </RadialChart>
+      </>
     )
   }
 }
@@ -97,7 +108,8 @@ export const DonutChart = withTheme()(DonutChartWitoutTheme)
 
 export default DonutChart
 
-const TextContainer = styled.div`
+const ValueContainer = styled.div`
+  font-size: 20;
   color: ${(props: { textColor: string }) => 
     props.textColor
   };
