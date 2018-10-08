@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import styled from 'styled-components'
 import { HeatmapSeries, XYPlot, XAxis, YAxis } from 'react-vis'
 
 import { Props } from './annotations'

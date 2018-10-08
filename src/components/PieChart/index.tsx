@@ -69,10 +69,8 @@ class PieChartWitoutTheme extends React.Component<Props, State> {
           <SDiscreteColorLegend
             width={400}
             items={data
-              // .concat(data, data, data, data, data)
               .map((d) => d.title)}
             colors={data
-              // .concat(data, data, data, data, data)
               .map((d) => d.color)}
             textColor={textColor}
           />
@@ -116,10 +114,8 @@ class PieChartWitoutTheme extends React.Component<Props, State> {
           <SDiscreteColorLegend
             width={400}
             items={data
-              // .concat(data, data, data, data, data)
               .map((d) => d.title)}
             colors={data
-              // .concat(data, data, data, data, data)
               .map((d) => d.color)}
             textColor={textColor}
           />
