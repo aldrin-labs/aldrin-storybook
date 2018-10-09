@@ -5,9 +5,10 @@ import {
   RadialChart,
   GradientDefs
 } from 'react-vis'
+import { withTheme } from '@material-ui/core/styles'
 
 import { Props, State, DonutPiece, InputRecord } from './types'
-import { withTheme } from '@material-ui/core/styles'
+import Gradients from './Gradients'
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   constructor(props: Props) {
@@ -31,7 +32,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         angle: record.realValue,
         label: record.label,
         realValue: record.realValue,
-        gradientIndex: index % 4 + 1
+        gradientIndex: index % 5 + 1,
       }
     ))
   )
@@ -41,11 +42,10 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     if (this.state.value && this.state.value.label === value.label) return
 
     const index = data.findIndex((d) => d.label === value.label)
-    const newData = data.slice().map((d) => ({ ...d }))
+    const newData = data.slice().map((d) => ({ ...d, opacity: 0.1 }))
     newData.splice(index, 1, {
       ...data[index],
       opacity: 1,
-      gradientIndex: 0
     })
 
     this.setState({ value, data: newData })
@@ -79,6 +79,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           </Typography>
         </LabelConteiner>
         <RadialChart
+          animation
           data={data}
           width={WithDefaults.width}
           height={WithDefaults.height}
@@ -89,7 +90,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
           onSeriesMouseOut={() => this.onSeriesMouseOut()}
           style={{
-            strokeWidth: 0
+            strokeWidth: 0,
           }}
         >
           <ValueContainer>
@@ -97,29 +98,28 @@ class DonutChartWitoutTheme extends Component<Props, State> {
               { value && value.realValue }
             </Typography>
           </ValueContainer>
-          <GradientDefs>
-            <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#335ecc" opacity={0.6} />
-              <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="2" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#6dd000" opacity={0.6} />
-              <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="3" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#06beb6" opacity={0.6} />
-              <stop offset="100%" stopColor="#47bf53" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="4" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#5B86E5" opacity={0.6} />
-              <stop offset="100%" stopColor="#36D1DC" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="0" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#acb6e5" />
-              <stop offset="50%" stopColor="#86fde8" />
-              <stop offset="100%" stopColor="#acb6e5" />
-            </linearGradient>
-          </GradientDefs>
+            <GradientDefs>
+              <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#335ecc" opacity={0.6} />
+                <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
+              </linearGradient>
+              <linearGradient id="2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#07c61b" opacity={0.6} />
+                <stop offset="100%" stopColor="#17b27c" opacity={0.6} />
+              </linearGradient>
+              <linearGradient id="3" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#bc1e7d" opacity={0.6} />
+                <stop offset="100%" stopColor="#77395f" opacity={0.6} />
+              </linearGradient>
+              <linearGradient id="4" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#f05b11" opacity={0.6} />
+                <stop offset="100%" stopColor="#f57819" opacity={0.6} />
+              </linearGradient>
+              <linearGradient id="5" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#CAC531" opacity={0.6} />
+                <stop offset="100%" stopColor="#F3F9A7" opacity={0.6} />
+              </linearGradient>
+            </GradientDefs>
         </RadialChart>
       </ChartContainer>
     )

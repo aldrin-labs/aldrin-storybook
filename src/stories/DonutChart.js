@@ -23,7 +23,11 @@ const chartCoins = [
   {
     label: "Privacy coin",
     realValue: 1547,
-  }
+  },
+  {
+    label: "Some other things",
+    realValue: 2500,
+  },
 ]
 
 storiesOf('DonutChart', module)
