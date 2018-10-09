@@ -64,9 +64,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       height,
       radius,
       thickness,
-      theme,
     } = this.props
-    const background = theme.palette.background.paper
     const WithDefaults = {
       width: width || 200,
       height: height || 200,
@@ -77,7 +75,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       <ChartContainer width={width? width : 200}>
         <LabelConteiner>
           <Typography variant='display1'>
-            { this.state.value && this.state.value.label }
+            { value && value.label }
           </Typography>
         </LabelConteiner>
         <RadialChart
@@ -96,7 +94,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         >
           <ValueContainer>
             <Typography variant='display2'>
-              { this.state.value && this.state.value.realValue }
+              { value && value.realValue }
             </Typography>
           </ValueContainer>
           <GradientDefs>
