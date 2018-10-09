@@ -63,13 +63,16 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       width,
       height,
       radius,
-
+      thickness,
       theme,
     } = this.props
-
     const background = theme.palette.background.paper
-    const textColor: string = theme.palette.getContrastText(background)
-
+    const WithDefaults = {
+      width: width || 200,
+      height: height || 200,
+      radius: radius || 100,
+      thickness: thickness || 20
+    }
     return (
       <ChartContainer width={width? width : 200}>
         <LabelConteiner>
@@ -79,10 +82,10 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         </LabelConteiner>
         <RadialChart
           data={data}
-          width={width || 200}
-          height={height || 200}
-          radius={radius || 100}
-          innerRadius={radius ? radius - 15 : 90}
+          width={WithDefaults.width}
+          height={WithDefaults.height}
+          radius={WithDefaults.radius}
+          innerRadius={WithDefaults.radius - WithDefaults.thickness}
           colorType={'literal'}
           getColor={(d) => `url(#${d.gradientIndex})`}
           onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
@@ -99,23 +102,19 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           <GradientDefs>
             <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#335ecc" opacity={0.6} />
-              <stop offset="50%" stopColor="#2193b0" opacity={0.6} />
-              <stop offset="100%" stopColor="#335ecc" opacity={0.6} />
+              <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
             </linearGradient>
             <linearGradient id="2" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#6dd000" opacity={0.6} />
-              <stop offset="50%" stopColor="#2193b0" opacity={0.6} />
-              <stop offset="100%" stopColor="#6dd000" opacity={0.6} />
+              <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
             </linearGradient>
             <linearGradient id="3" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#06beb6" opacity={0.6} />
-              <stop offset="50%" stopColor="#48b1bf" opacity={0.6} />
-              <stop offset="100%" stopColor="#06beb6" opacity={0.6} />
+              <stop offset="100%" stopColor="#47bf53" opacity={0.6} />
             </linearGradient>
             <linearGradient id="4" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#5B86E5" opacity={0.6} />
-              <stop offset="50%" stopColor="#36D1DC" opacity={0.6} />
-              <stop offset="100%" stopColor="#5B86E5" opacity={0.6} />
+              <stop offset="100%" stopColor="#36D1DC" opacity={0.6} />
             </linearGradient>
             <linearGradient id="0" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stopColor="#acb6e5" />
@@ -145,6 +144,7 @@ const ValueContainer = styled.div`
   top: -50%;
   transform: translate(0,-50%);
   text-align: center;
+  z-index: -1;
 `
 
 const LabelConteiner = styled.div`

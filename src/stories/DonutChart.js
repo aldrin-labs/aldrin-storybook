@@ -36,6 +36,7 @@ storiesOf('DonutChart', module)
         width={number('width', 256)}
         height={number('height', 256)}
         radius={number('radius', 128)}
+        thickness={number('thickness', 20)}
       />
   )
 )
