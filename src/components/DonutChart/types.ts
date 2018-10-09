@@ -16,7 +16,7 @@ export interface InputRecord {
 }
 
 export interface Props {
-  inputData: InputRecord[]
+  data: InputRecord[]
   width?: number
   height?: number
   radius?: number

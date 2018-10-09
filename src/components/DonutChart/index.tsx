@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { Typography } from '@material-ui/core'
 import {
   RadialChart,
   GradientDefs
@@ -14,41 +15,45 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     super(props)
 
     this.state = {
+
       data: [],
       value: null,
     }
   }
 
   componentDidMount = () => {
-    const newData = this.props.data.map((record: InputRecord, index: number) => (
+    this.setState({ data: this.getDataFromImput(this.props.data) })
+  }
+
+  getDataFromImput = (inputData: InputRecord[]) => (
+    inputData.map((record: InputRecord, index: number) => (
       {
         angle: record.realValue,
         label: record.label,
         realValue: record.realValue,
-        gradientIndex: 1
+        gradientIndex: index % 4 + 1
       }
     ))
-    this.setState({ data: newData })
-    console.log(this.state.data)
-  }
+  )
 
   onValueMouseOver = (value: DonutPiece) => {
     const { data } = this.state
     if (this.state.value && this.state.value.label === value.label) return
 
     const index = data.findIndex((d) => d.label === value.label)
-    const newData = data.slice().map((d) => ({ ...d, opacity: 0.5 }))
+    const newData = data.slice().map((d) => ({ ...d }))
     newData.splice(index, 1, {
       ...data[index],
       opacity: 1,
-      style: { stroke: '#fff', strokeWidth: '0.5px' },
+      gradientIndex: 0
     })
 
     this.setState({ value, data: newData })
   }
 
   onSeriesMouseOut = () => {
-    this.setState({ value: null, data: this.props.data })
+    this.setState({ value: null })
+    this.setState({ data: this.getDataFromImput(this.props.data) })
   }
 
   render() {
@@ -62,44 +67,64 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       theme,
     } = this.props
 
-    const hasCustomColors = data.some((a) => !!a.color || !!a.style)
     const background = theme.palette.background.paper
     const textColor: string = theme.palette.getContrastText(background)
 
     return (
-      <>
+      <ChartContainer width={width? width : 200}>
+        <LabelConteiner>
+          <Typography variant='display1'>
+            { this.state.value && this.state.value.label }
+          </Typography>
+        </LabelConteiner>
         <RadialChart
           data={data}
-          animation
           width={width || 200}
           height={height || 200}
           radius={radius || 100}
           innerRadius={radius ? radius - 15 : 90}
           colorType={'literal'}
           getColor={(d) => `url(#${d.gradientIndex})`}
-          onValueMouseOver={(v: DonutPiece) => this.setState({ value: v })}
-          onSeriesMouseOut={() => this.setState({ value: null })}
-          style={{strokeWidth: 0}}
+          onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
+          onSeriesMouseOut={() => this.onSeriesMouseOut()}
+          style={{
+            strokeWidth: 0
+          }}
         >
-          <ValueContainer textColor={textColor}>
-            { this.state.value && this.state.value.realValue }
+          <ValueContainer>
+            <Typography variant='display2'>
+              { this.state.value && this.state.value.realValue }
+            </Typography>
           </ValueContainer>
           <GradientDefs>
             <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="red"  />
-              <stop offset="100%" stopColor="blue" />
+              <stop offset="0%" stopColor="#335ecc" opacity={0.6} />
+              <stop offset="50%" stopColor="#2193b0" opacity={0.6} />
+              <stop offset="100%" stopColor="#335ecc" opacity={0.6} />
             </linearGradient>
             <linearGradient id="2" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="blue"  />
-              <stop offset="100%" stopColor="green"  />
+              <stop offset="0%" stopColor="#6dd000" opacity={0.6} />
+              <stop offset="50%" stopColor="#2193b0" opacity={0.6} />
+              <stop offset="100%" stopColor="#6dd000" opacity={0.6} />
             </linearGradient>
             <linearGradient id="3" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="yellow"  />
-              <stop offset="100%" stopColor="green" />
+              <stop offset="0%" stopColor="#06beb6" opacity={0.6} />
+              <stop offset="50%" stopColor="#48b1bf" opacity={0.6} />
+              <stop offset="100%" stopColor="#06beb6" opacity={0.6} />
+            </linearGradient>
+            <linearGradient id="4" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#5B86E5" opacity={0.6} />
+              <stop offset="50%" stopColor="#36D1DC" opacity={0.6} />
+              <stop offset="100%" stopColor="#5B86E5" opacity={0.6} />
+            </linearGradient>
+            <linearGradient id="0" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#acb6e5" />
+              <stop offset="50%" stopColor="#86fde8" />
+              <stop offset="100%" stopColor="#acb6e5" />
             </linearGradient>
           </GradientDefs>
         </RadialChart>
-      </>
+      </ChartContainer>
     )
   }
 }
@@ -108,14 +133,23 @@ export const DonutChart = withTheme()(DonutChartWitoutTheme)
 
 export default DonutChart
 
+const ChartContainer = styled.div`
+  width: ${(props: {width: number}) =>
+      props.width + 'px'
+    };
+`
+
 const ValueContainer = styled.div`
-  font-size: 20;
-  color: ${(props: { textColor: string }) => 
-    props.textColor
-  };
   margin: 0px;
   position: relative;
   top: -50%;
   transform: translate(0,-50%);
   text-align: center;
+`
+
+const LabelConteiner = styled.div`
+  margin: 0px;
+  position: relative;
+  text-align: center;
+  height: 90px;
 `
