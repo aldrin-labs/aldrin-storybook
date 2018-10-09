@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
 import { Typography } from '@material-ui/core'
 import {
   RadialChart,
@@ -8,6 +7,7 @@ import {
 import { withTheme } from '@material-ui/core/styles'
 
 import { Props, State, DonutPiece, InputRecord } from './types'
+import { ChartContainer, ValueContainer, LabelContainer } from './styles'
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   constructor(props: Props) {
@@ -51,8 +51,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   onSeriesMouseOut = () => {
-    this.setState({ value: null })
-    this.setState({ data: this.getDataFromImput(this.props.data) })
+    this.setState({ value: null, data: this.getDataFromImput(this.props.data) })
   }
 
   render() {
@@ -72,11 +71,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     }
     return (
       <ChartContainer width={width? width : 200}>
-        <LabelConteiner>
+        <LabelContainer>
           <Typography variant='display1'>
             { value && value.label }
           </Typography>
-        </LabelConteiner>
+        </LabelContainer>
         <RadialChart
           
           data={data}
@@ -129,25 +128,3 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 export const DonutChart = withTheme()(DonutChartWitoutTheme)
 
 export default DonutChart
-
-const ChartContainer = styled.div`
-  width: ${(props: {width: number}) =>
-      props.width + 'px'
-    };
-`
-
-const ValueContainer = styled.div`
-  margin: 0px;
-  position: relative;
-  top: -50%;
-  transform: translate(0,-50%);
-  text-align: center;
-  z-index: -1;
-`
-
-const LabelConteiner = styled.div`
-  margin: 0px;
-  position: relative;
-  text-align: center;
-  height: 90px;
-`
