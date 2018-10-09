@@ -10,23 +10,23 @@ import DonutChart from '@components/DonutChart'
 const chartCoins = [
   {
     label: "Payments",
-    realValue: 2777,
+    realValue: 25.1,
   },
   {
     label: "Entertainment",
-    realValue: 1999,
+    realValue: 10,
   },
   {
     label: "Blockchain platform",
-    realValue: 6716,
+    realValue: 14,
   },
   {
     label: "Privacy coin",
-    realValue: 1547,
+    realValue: 17,
   },
   {
     label: "Some other things",
-    realValue: 2500,
+    realValue: 30,
   },
 ]
 
