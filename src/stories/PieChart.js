@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { object } from '@storybook/addon-knobs/react'
+import { object, number } from '@storybook/addon-knobs/react'
 
 import { backgrounds } from './backgrounds'
 import PieChart from '@components/PieChart' 
@@ -44,16 +44,18 @@ const chartCoins = [
   }
 ]
 
+const groupId = 'GROUP-ID2'
+
 storiesOf('PieChart', module)
   .addDecorator(backgrounds)
   .add(
     'PieChart',
     withInfo()(() =>
       <PieChart
-        data={object('data', chartCoins)}
-        width={256}
-        height={256}
-        radius={128}
+        data={object('data', chartCoins, groupId)}
+        width={number('width', 256)}
+        height={number('height', 256)}
+        radius={number('radius', 128)}
         colorLegend={true}
       />
   )
