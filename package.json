@@ -1,10 +1,10 @@
 {
-  "name": "components-in-storybook",
+  "name": "components",
   "repository": "git@gitlab.com:crypto_project/frontend/storybook.git",
   "author": "CCAI-team",
   "version": "0.0.1",
   "sideEffects": false,
-  "main": "src/index.ts",
+  "main": "src/components/index.ts",
   "license": "MIT",
   "scripts": {
     "start": "yarn run storybook",
