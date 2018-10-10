@@ -3,7 +3,7 @@ import SelectReact, { components } from 'react-select'
 import AsyncSelect from 'react-select/lib/Async';
 import { OptionProps } from 'react-select/lib/types'
 
-import SvgIcon from '@components/SvgIcon/SvgIcon'
+import SvgIcon from '@components/SvgIcon'
 import dropDownIcon from '@icons/baseline-arrow_drop_down.svg'
 import { IProps } from './index.types'
 import withTheme from '@material-ui/core/styles/withTheme'
