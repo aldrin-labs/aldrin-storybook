@@ -4,7 +4,11 @@
   "author": "CCAI-team",
   "version": "0.0.1",
   "sideEffects": false,
-  "main": "src/components/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "scripts": {
     "start": "yarn run storybook",
@@ -12,7 +16,7 @@
     "build-storybook": "build-storybook",
     "clear": "rimraf ./dist",
     "create": "mkdir dist",
-    "build": "tsc ./dist/index.ts --jsx react",
+    "build": "tsc",
     "dist": "yarn run clear && yarn run create && yarn run copy && yarn run build"
   },
   "jest": {
@@ -87,6 +91,7 @@
     "@types/storybook__addon-options": "^3.2.0",
     "@types/storybook__react": "^3.0.6",
     "@types/styled-components": "^3.0.1",
+    "babel-plugin-graphql-tag": "^1.5.0",
     "date-fns": "^1.29.0",
     "enzyme": "^3.6.0",
     "formik": "^0.11.11",

@@ -16,7 +16,6 @@
     "allowJs": false,
     "jsx": "react",
     "lib": ["esnext", "dom"],
-    "typeRoots": ["./node_modules/@types", "./typings"],
     "paths": {
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
@@ -36,5 +35,6 @@
       }
     ]
   },
-  "include": ["src", "typings", "custom.d.ts"]
+//  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
