@@ -1,0 +1,12 @@
+stages:
+  - bundle
+
+bundle:
+  stage: bundle
+  image: node:9.0.0
+  script:
+    - yarn
+    - yarn build
+  artifacts:
+    paths:
+    - ./dist
