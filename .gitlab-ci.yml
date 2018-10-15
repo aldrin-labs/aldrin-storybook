@@ -65,9 +65,9 @@ bundle:
     - eval $(ssh-agent -s) && ssh-add <(echo "$DEPLOY_PRIVATE_KEY") && mkdir -p ~/.ssh
     - yarn
     - yarn build
-    - mkdir temp/
-    - temp && git clone git@gitlab.com:anibaka/tets-repo.git
-    - cd tets-repo && cp -r ../dist .
+    - mkdir temp
+    - cd temp && git clone git@gitlab.com:anibaka/tets-repo.git
+    - cd tets-repo && cp -r ../../dist .
     - git config user.email "your.email@example.com"
     - git config user.name "CI Bot"
     - git add .
