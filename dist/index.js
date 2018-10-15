@@ -1,5 +1,5 @@
 //export { AreaChart } from "./AreaChart"
-//export { default as  Chart } from "./Chart"
+export { default as Chart } from "./Chart";
 //export { default as CoinsList } from "./Chart"
 //export { default as ComingSoon } from "./ComingSoon"
 //export { default as DominanceChart } from "./DominanceChart"
