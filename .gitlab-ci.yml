@@ -65,13 +65,14 @@ bundle:
     - yarn
     - yarn build
     - mkdir temp
-    - cd temp && git clone git@gitlab.com:anibaka/tets-repo.git
+    - cd temp
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/anibaka/tets-repo
     - cd tets-repo && cp -r ../../dist .
     - git config user.email "anibaka9@gmail.com"
     - git config user.name "anibaka"
     - git add .
     - git commit -am "test push"
-    - git push origin master
+    - git push https://anibaka:xM7YPi69yMJs4T6FXvHd@gitlab.com/anibaka/tets-repo master
   artifacts:
     paths:
     - ./dist
