@@ -6,14 +6,15 @@
     "sourceMap": true,
     "declaration": true,
     "strict": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": false,
     "module": "esnext",
     "moduleResolution": "node",
     "alwaysStrict": false,
     "allowJs": false,
+    "skipLibCheck": true,
     "jsx": "react",
     "lib": ["esnext", "dom"],
     "paths": {
@@ -28,10 +29,6 @@
     "plugins": [
       {
         "name": "typescript-styled-plugin"
-      },
-      {
-        "name": "ts-graphql-plugin",
-        "tag": "gql"
       }
     ]
   },

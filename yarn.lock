@@ -1605,9 +1605,9 @@
     "@types/react" "*"
     "@types/webpack-env" "*"
 
-"@types/styled-components@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-3.0.1.tgz#0f591a38e005aeb10687e85eb078c92d9b988ed1"
+"@types/styled-components@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-4.0.1.tgz#5eb9a5474dbde3becab2bcc8f04e0b8e8dcf8c06"
   dependencies:
     "@types/node" "*"
     "@types/react" "*"
