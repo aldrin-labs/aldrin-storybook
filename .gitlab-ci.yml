@@ -72,6 +72,7 @@ bundle:
     - git config user.name "CI Bot"
     - git add .
     - git commit -am "test push"
+    - git push origin master
   artifacts:
     paths:
     - ./dist
