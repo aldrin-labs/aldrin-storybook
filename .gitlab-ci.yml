@@ -1,5 +1,6 @@
 stages:
   - bundle
+  - release_generated_build
 
 bundle:
   stage: bundle
@@ -7,6 +8,9 @@ bundle:
   script:
     - yarn
     - yarn build
+    - mkdir temp/
+    - cd temp && cp -r ../dist .
+    - ll
   artifacts:
     paths:
     - ./dist
