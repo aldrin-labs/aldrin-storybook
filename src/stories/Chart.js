@@ -45,7 +45,10 @@ storiesOf('Chart', module)
 
     return (
       <ChartsContainer>
-        <SingleChart additionalUrl={`/?symbol=${base}/${quote}`} />
+        <SingleChart
+          chartsApiUrl='chart.cryptocurrencies.ai'
+          additionalUrl={`/?symbol=${base}/${quote}`} 
+        />
       </ChartsContainer>
     )
   })
