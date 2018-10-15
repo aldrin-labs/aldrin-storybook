@@ -59,12 +59,10 @@ bundle:
   stage: bundle
   image: node:9.0.0
   script:
-    - apk add --update git openssh gettext
-    # Setup SSH
-    - mkdir ~/.ssh && chmod 700 ~/.ssh && touch ~/.ssh/known_hosts
-    - eval $(ssh-agent -s)
-    - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
-    - echo "$DEPLOY_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    # Install ssh-agent through openssh-client if not present
+    - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
+    # Add the private key to this user
+    - eval $(ssh-agent -s) && ssh-add <(echo "$DEPLOY_PRIVATE_KEY") && mkdir -p ~/.ssh
     - yarn
     - yarn build
     - mkdir temp/
