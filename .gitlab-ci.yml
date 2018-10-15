@@ -72,7 +72,7 @@ bundle:
     - git config user.name "anibaka"
     - git add .
     - git commit -m "test push"
-    - git push https://anibaka:xM7YPi69yMJs4T6FXvHd@gitlab.com/anibaka/tets-repo ci-test-branch
+    - git push https://anibaka:xM7YPi69yMJs4T6FXvHd@gitlab.com/crypto_project/frontend/storybook ci-test-branch
   artifacts:
     paths:
     - ./dist
