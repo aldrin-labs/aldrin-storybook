@@ -32,6 +32,6 @@
       }
     ]
   },
-//  "include": ["src/**/*"],
+  "include": ["src/components/index.ts"],
   "exclude": ["node_modules", "dist"]
 }
