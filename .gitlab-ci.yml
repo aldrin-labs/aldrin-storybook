@@ -1,3 +1,56 @@
+variables:
+  DEPLOY_PRIVATE_KEY: "-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAACFwAAAAdzc2gtcn
+NhAAAAAwEAAQAAAgEA3b8VHj0gaoaDIx9ce9b4fafRqDoycuQsLIREWe4bRXr88n/KPfaB
+lCppNtgcyZASzV56EaYHKVt5eXMmQz5DrGIg69zxcMIpxn0mx9vgU5NMFfZPZA0VJUpIaK
+kZP0QX3L/PPkrRpI5aCMV3ZXE+VTBw1HSOXYvA6KZXgk4O//739uOvBXG01GDiRUemJmw2
+2TyYv3Ei/JtopKicJf3N87haIl15WoWvue9My1EBdTjXzA3q9dnbB8H3JrwLkokEqwulM9
+ReaSrzAO638FKn+xfaZb8sfq7qoAPA8kNHXMZDiW6lyGS+AMONhdza0XJmeXBipVtLApTv
+ieqj46+CKb70Vamxclezdyb0KZ8ia+vv/vt4hvcV7hz53dbY6KUgh1Y0knI5a7o7EBlpa9
+igzXCJLHq02tQd3JD1DF5oLiKrPUoZuvSJkIzzcygfXF9vBJj4FXLhO2hC2vzP2LghQVgj
+C4U9Df1XV0VGE98hlWCblkfNKBmxU/46CfsXcLBMnPmLwMBvHlvlMuakPZpncM7sTAleGN
+oFAgRul84zaustkwf/FljgfUNjUJmumDuhpybhf6WHGcbrj2IBkLWkL9a3J4gpRIjd8nTw
+XDgpS+JxVOTwgseW2VxDWjIMAlV2YjuRb8Dny7fhIrNzn+IIFNLaoXcC2OT+lDdFTcqIoW
+sAAAdQ8Gkw5fBpMOUAAAAHc3NoLXJzYQAAAgEA3b8VHj0gaoaDIx9ce9b4fafRqDoycuQs
+LIREWe4bRXr88n/KPfaBlCppNtgcyZASzV56EaYHKVt5eXMmQz5DrGIg69zxcMIpxn0mx9
+vgU5NMFfZPZA0VJUpIaKkZP0QX3L/PPkrRpI5aCMV3ZXE+VTBw1HSOXYvA6KZXgk4O//73
+9uOvBXG01GDiRUemJmw22TyYv3Ei/JtopKicJf3N87haIl15WoWvue9My1EBdTjXzA3q9d
+nbB8H3JrwLkokEqwulM9ReaSrzAO638FKn+xfaZb8sfq7qoAPA8kNHXMZDiW6lyGS+AMON
+hdza0XJmeXBipVtLApTvieqj46+CKb70Vamxclezdyb0KZ8ia+vv/vt4hvcV7hz53dbY6K
+Ugh1Y0knI5a7o7EBlpa9igzXCJLHq02tQd3JD1DF5oLiKrPUoZuvSJkIzzcygfXF9vBJj4
+FXLhO2hC2vzP2LghQVgjC4U9Df1XV0VGE98hlWCblkfNKBmxU/46CfsXcLBMnPmLwMBvHl
+vlMuakPZpncM7sTAleGNoFAgRul84zaustkwf/FljgfUNjUJmumDuhpybhf6WHGcbrj2IB
+kLWkL9a3J4gpRIjd8nTwXDgpS+JxVOTwgseW2VxDWjIMAlV2YjuRb8Dny7fhIrNzn+IIFN
+LaoXcC2OT+lDdFTcqIoWsAAAADAQABAAACAQCB3CGV795IBDZQH1GeBKrJi7owdsSMnCty
+dpNAxzyZWAlCSqw51V7VUnEDeVSChik8tBNwunZ/Nd7RzSmfP5uKHH2DI4URr+OfJjPL32
+xkBWMNiY283hyAFhyJjl4Guu3ujTXlGRPk9qirclkVw1fps9Cf2xJ0nh9/H8snuGb4bGzy
+3SvmWEy6A3L/d5JJ9h244s/hbXQ70xdZNpUbeqNeE5xVe8BRzvC2RvoGJ45fA8b87TmoeM
+jYpjMDMCTmz+837D33OGuB03E0HpkB2KYfWjzAUVDRb8Zfp1MbjWMBZeqvVWkpDjZnZB5B
+QrGy7vgsLjDW/bvT6zzM2+jWsjXa/aX7gCroacotzb2x3PN1dGew3EOPgWQ4SrDq0Q7C6b
+jP8IgdcQgz7SmOuOiNYWiWBBwMtSA/B6bKL4U9SBZDrzfE0YSBELMVlwy3eHTIhuFnrHBO
+B5ZC1sq4dawxUe6A7OXSrgk0k1izMhgo1MXsSR21cXDSv5SCHQ0CRV0o8i90SMaIrrcUkp
+gMgm4vm2cS93fK7m9ajbp2CdRr5WajwSLIs0Qp0P6aDKBnr9CgqExAZz4m73pBIiTLAK5N
+RVBwRWgIpde1+hjepGD8qcEdmP0DYdHJlp2g3Zou/QIXKlMzOH2JbRSpdZA9nI2xvqfLAp
+3O3AvLD8DPoHhz+5gzIQAAAQAn2FaF6nDcTsKTffnTbClVtJm7w1UzGhxuiQjRbd+b3/XL
+y4391HXgN6i76fehNPaKXmrOOFx+9H+ZbT0DhE2zvsPy92MpLUMp3RZ72kW/nJFD7M3qCn
+La1eCeogEEjhLeJi+q2JUmvXTZD5BS9izkDXlC6MHpnE3BhZowWnTaHoE5D/Hb7d/OXY6p
+eGlRUkBJA4gm/2L8gHPcdIPK2KDwenkU98lZ3wlTvmH7aqZ1vQwXQFsjyQx1/IUPLxCpjw
+bRydXwnr9QcSGHr69tp9EOTQF+1FZe3jbCmDFGtTMrwBkd3Tv6tXpQcL8Fa/N/MxgK0XFp
+BGBV/UK+7GDm5I7aAAABAQDzL6vk5WldWrZBhQuYvNYKfTH//qcdC9OcuPE/cbEB2bRnNh
+sB/VQckih678y31KuwZ4gjBe8VoOQZJPNWlynaIsaMT6p5xh4+WBF45WZ7U27yTS5fKVi2
+Mpggo7Qe90Q87tI/uAcDDQH/TicqAeXt4GPKuPzd7JSzQc9wq15UXzNeJfVgnC5HZLHJWd
+sfDa1Ik6EfUJgsHPKXvXfLLwUrUf6+Ma4zdcNlaQ2pjbMu6Ys4m/AU+iA2QJVJyvJ78Cb8
+kSMRM9QD/As0xf4bAyTX02UYtDcvla4lDmXUC2qVUZpNlsIU0EmQex91fGt7v5IpJl9htc
+CP/tucIp9IeYkVAAABAQDpbjXhdmnMCeNytgKbPSX7uJ2Ela1WzLNH+erKZ+lGFVIH4vjw
+Lwn/6hYNrzv4Vid7cR4vTynNw5TvIdd3sOvqAencAnMptPhqf9triT+ja9KalNkY3Z9R8y
+GIjRtaR3OgFOB6xlm8s/9zMkFpfiCiLsKmO1Wt92AqjwFLijSRZH+CnojFc6qQ6McpObjx
+ZO1XzAuJUgnWPaBZ+PAHKZUb44SPTKp3YHXdDdfJkq8mFhmc59gZJbC5ee4vaq99g4ugwa
+9QgnlkQoI6ziBAAjfWEMRzHVmLhfYgX+gE/R+GccwlruSQOTBjyry/KFW/d1LcqJbBRDCP
+nfDkuE2hbyB/AAAAFnlvdXIuZW1haWxAZXhhbXBsZS5jb20BAgME
+-----END OPENSSH PRIVATE KEY-----
+"
+
+
 stages:
   - bundle
   - release_generated_build
@@ -6,11 +59,21 @@ bundle:
   stage: bundle
   image: node:9.0.0
   script:
+    - apk add --update git openssh gettext
+    # Setup SSH
+    - mkdir ~/.ssh && chmod 700 ~/.ssh && touch ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+    - echo "$DEPLOY_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - yarn
     - yarn build
     - mkdir temp/
-    - cd temp && cp -r ../dist .
-    - ll
+    - temp && git clone git@gitlab.com:anibaka/tets-repo.git
+    - cd tets-repo && cp -r ../dist .
+    - git config user.email "your.email@example.com"
+    - git config user.name "CI Bot"
+    - git add .
+    - git commit -am "test push"
   artifacts:
     paths:
     - ./dist
