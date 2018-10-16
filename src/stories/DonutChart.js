@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { object, number } from '@storybook/addon-knobs/react'
+import { object, number, string } from '@storybook/addon-knobs/react'
 
 import { backgrounds } from './backgrounds'
 import DonutChart from '@components/DonutChart' 
@@ -36,9 +36,8 @@ storiesOf('DonutChart', module)
     'DonutChart',
     withInfo()(() =>
       <DonutChart
+        labelPlaceholder={string('labelPlaceholder', 'Industries %')}
         data={object('data', chartCoins)}
-        width={number('width', 256)}
-        height={number('height', 256)}
         radius={number('radius', 128)}
         thickness={number('thickness', 20)}
       />

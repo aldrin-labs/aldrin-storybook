@@ -3,7 +3,13 @@ import { Typography } from '@material-ui/core'
 import { RadialChart, GradientDefs, makeVisFlexible } from 'react-vis'
 import { withTheme } from '@material-ui/core/styles'
 
-import { Props, State, DonutPiece, InputRecord } from './types'
+import { 
+  Props,
+  State,
+  DonutPiece,
+  InputRecord,
+  gradient,
+  } from './types'
 import {
   ChartContainer,
   ValueContainer,
@@ -14,6 +20,11 @@ import {
 const FlexibleChart = makeVisFlexible(RadialChart)
 
 class DonutChartWitoutTheme extends Component<Props, State> {
+  static defaultProps: Props = {
+    radius: 100,
+    thickness: 20,
+    gradients: [['#335ecc', '#2193b0']]
+  }
   state: State = {
     data: [],
     value: null,
@@ -52,13 +63,13 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   render() {
     const { value, data } = this.state
 
-    const { width, height, radius, thickness, labelPlaceholder } = this.props
-    const WithDefaults = {
-      width: width || 200,
-      height: height || 200,
-      radius: radius || 100,
-      thickness: thickness || 20,
-    }
+    const { 
+      radius,
+      thickness,
+      labelPlaceholder,
+      gradients,
+    } = this.props
+
     return (
       <ChartContainer>
         <LabelContainer>
@@ -69,8 +80,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         <ChartWrapper>
           <FlexibleChart
             data={data}
-            radius={WithDefaults.radius}
-            innerRadius={WithDefaults.radius - WithDefaults.thickness}
+            radius={radius}
+            innerRadius={radius - thickness}
             animation={true}
             colorType={'literal'}
             getColor={(d) => `url(#${d.gradientIndex})`}
@@ -86,6 +97,12 @@ class DonutChartWitoutTheme extends Component<Props, State> {
               </Typography>
             </ValueContainer>
             <GradientDefs>
+              {gradients.map((pair: gradient, index: number) => (
+                <linearGradient id={index.toString()} x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor={pair[0]} opacity={0.6} />
+                  <stop offset="100%" stopColor={pair[1]} opacity={0.6} />
+                </linearGradient>
+              ))}
               <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="#335ecc" opacity={0.6} />
                 <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
