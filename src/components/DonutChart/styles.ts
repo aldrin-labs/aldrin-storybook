@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { DiscreteColorLegend } from 'react-vis'
+import { customAquaScrollBar } from '@styles/cssUtils'
 
 export const ChartContainer = styled.div`
   min-height: 25rem;
@@ -21,6 +23,27 @@ export const ValueContainer = styled.div`
   z-index: 1;
   opacity: ${(props: { value: string }) => (props.value ? 1 : 0)};
   transition: opacity 0.25s ease-in-out;
+`
+
+export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  ${customAquaScrollBar} & .rv-discrete-color-legend-item {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    color: ${(props: { textColor: string }) => props.textColor};
+  }
+  & .rv-discrete-color-legend-item__color {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+  }
+  & .rv-discrete-color-legend-item__title {
+    text-align: left;
+    font-family: Roboto, sans-serif;
+  }
 `
 
 export const LabelContainer = styled.div`

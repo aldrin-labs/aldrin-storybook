@@ -26,6 +26,7 @@ export interface Props {
   thickness: number
   gradients: gradient[]
   theme: Theme
+  colorLegend: boolean
 }
 
 export interface State {
