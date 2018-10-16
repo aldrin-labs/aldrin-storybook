@@ -6,6 +6,7 @@ import {
   makeVisFlexible,
   DiscreteColorLegend
 } from 'react-vis'
+import { Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 
 import { 
@@ -21,6 +22,7 @@ import {
   LabelContainer,
   ChartWrapper,
   SDiscreteColorLegend,
+  ChartWithLegend,
 } from './styles'
 import defaultGradients from './gradients'
 
@@ -79,54 +81,56 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     } = this.props
 
     return (
-      <ChartContainer>
-      {colorLegend && (
-          <SDiscreteColorLegend
-            width={400}
-            items={data
-              .map((d) => d.label)}
-            colors={data
-              .map((d, index) => 
-                gradients[index % gradients.length][0]
-              )}
-            textColor={'black'}
-          />
+      <ChartWithLegend>
+        {colorLegend && (
+            <SDiscreteColorLegend
+              width={400}
+              items={data
+                .map((d) => d.label)}
+              colors={data
+                .map((d, index) => 
+                  gradients[index % gradients.length][0]
+                )}
+              textColor={'black'}
+            />
         )}
-        <LabelContainer>
-          <Typography variant="display1">
-            {value ? value.label : labelPlaceholder || ''}
-          </Typography>
-        </LabelContainer>
-        <ChartWrapper>
-          <FlexibleChart
-            data={data}
-            radius={radius}
-            innerRadius={radius - thickness}
-            animation={true}
-            colorType={'literal'}
-            getColor={(d) => `url(#${d.gradientIndex})`}
-            onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
-            onSeriesMouseOut={() => this.onSeriesMouseOut()}
-            style={{
-              strokeWidth: 0,
-            }}
-          >
-            <ValueContainer value={value}>
-              <Typography variant="display2">
-                {value ? `${value.realValue}%` : '\u2063'}
-              </Typography>
-            </ValueContainer>
-            <GradientDefs>
-              {gradients.map((pair: gradient, index: number) => (
-                <linearGradient id={index.toString()} x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor={pair[0]} opacity={0.6} />
-                  <stop offset="100%" stopColor={pair[1]} opacity={0.6} />
-                </linearGradient>
-              ))}
-            </GradientDefs>
-          </FlexibleChart>
-        </ChartWrapper>
-      </ChartContainer>
+        <ChartContainer>
+          <LabelContainer>
+            <Typography variant="display1">
+              {value ? value.label : labelPlaceholder || ''}
+            </Typography>
+          </LabelContainer>
+          <ChartWrapper>
+            <FlexibleChart
+              data={data}
+              radius={radius}
+              innerRadius={radius - thickness}
+              animation={true}
+              colorType={'literal'}
+              getColor={(d) => `url(#${d.gradientIndex})`}
+              onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
+              onSeriesMouseOut={() => this.onSeriesMouseOut()}
+              style={{
+                strokeWidth: 0,
+              }}
+            >
+              <ValueContainer value={value}>
+                <Typography variant="display2">
+                  {value ? `${value.realValue}%` : '\u2063'}
+                </Typography>
+              </ValueContainer>
+              <GradientDefs>
+                {gradients.map((pair: gradient, index: number) => (
+                  <linearGradient id={index.toString()} x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor={pair[0]} opacity={0.6} />
+                    <stop offset="100%" stopColor={pair[1]} opacity={0.6} />
+                  </linearGradient>
+                ))}
+              </GradientDefs>
+            </FlexibleChart>
+          </ChartWrapper>
+        </ChartContainer>
+      </ChartWithLegend>
     )
   }
 }

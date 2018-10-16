@@ -2,6 +2,11 @@ import styled from 'styled-components'
 import { DiscreteColorLegend } from 'react-vis'
 import { customAquaScrollBar } from '@styles/cssUtils'
 
+export const ChartWithLegend = styled.div`
+  width: 100%;
+  height: 100%;
+`
+
 export const ChartContainer = styled.div`
   min-height: 25rem;
   z-index: 2;
