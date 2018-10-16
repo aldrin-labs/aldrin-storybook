@@ -3,11 +3,16 @@ import { DiscreteColorLegend } from 'react-vis'
 import { customAquaScrollBar } from '@styles/cssUtils'
 
 export const ChartWithLegend = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
 `
 
 export const ChartContainer = styled.div`
+  text-align: center;
   min-height: 25rem;
   z-index: 2;
   width: 100%;
@@ -16,6 +21,7 @@ export const ChartContainer = styled.div`
 
 export const ChartWrapper = styled.div`
   width: 100%;
+  height: initial;
   height: calc(100% - 90px);
 `
 
@@ -35,7 +41,6 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
   flex-direction: column;
   flex-wrap: wrap;
   ${customAquaScrollBar} & .rv-discrete-color-legend-item {
-    width: 50%;
     display: flex;
     align-items: center;
     color: ${(props: { textColor: string }) => props.textColor};

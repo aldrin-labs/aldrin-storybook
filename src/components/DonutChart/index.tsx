@@ -78,20 +78,21 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       labelPlaceholder,
       gradients,
       colorLegend,
+      theme,
     } = this.props
 
     return (
       <ChartWithLegend>
         {colorLegend && (
             <SDiscreteColorLegend
-              width={400}
+              width={200}
               items={data
                 .map((d) => d.label)}
               colors={data
                 .map((d, index) => 
                   gradients[index % gradients.length][0]
                 )}
-              textColor={'black'}
+              textColor={theme.typography.body1.color}
             />
         )}
         <ChartContainer>
