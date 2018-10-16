@@ -19,6 +19,7 @@ export interface Props {
   data: InputRecord[]
   width?: number
   height?: number
+  labelPlaceholder?: string
   radius?: number
   thickness?: number
   theme: Theme
