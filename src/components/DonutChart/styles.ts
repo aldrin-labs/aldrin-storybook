@@ -22,7 +22,7 @@ export const ChartContainer = styled.div`
 export const ChartWrapper = styled.div`
   width: 100%;
   height: initial;
-  height: calc(100% - 90px);
+  height: calc(100% - 178px);
 `
 
 export const ValueContainer = styled.div`
