@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 
 import { backgrounds } from './backgrounds'
-import {SingleChart} from '@components/Chart/Chart'
+import { Chart } from '@components'
 
 const TablesContainer = styled.div`
   position: relative;
@@ -45,7 +45,7 @@ storiesOf('Chart', module)
 
     return (
       <ChartsContainer>
-        <SingleChart
+        <Chart
           chartsApiUrl='chart.cryptocurrencies.ai'
           additionalUrl={`/?symbol=${base}/${quote}`} 
         />
