@@ -30,7 +30,7 @@ export interface Props {
   isSizeFlexible: boolean
   hightCoefficient: number
   widthCoefficient: number
-  radiusCoefficient: number
+  thicknessCoefficient: number
 }
 
 export interface State {

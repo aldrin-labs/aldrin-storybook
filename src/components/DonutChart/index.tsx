@@ -24,6 +24,17 @@ const FlexibleChart = makeVisFlexible(RadialChart)
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Props = {
+    labelPlaceholder: '',
+    data: [
+      {
+        label: "Default 1",
+        realValue: 50,
+      },
+      {
+        label: "Default 2",
+        realValue: 50,
+      },
+    ],
     radius: 100,
     hightCoefficient: 16,
     widthCoefficient: 6,
