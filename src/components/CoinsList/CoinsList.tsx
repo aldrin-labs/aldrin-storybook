@@ -10,8 +10,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-// TODO: add types
-import * as T from '@components/CoinsList/types'
+import * as T from './types'
 
 import { CoinLink, ShowMoreLink } from '@components/CoinsList/CoinLink'
 
@@ -61,7 +60,6 @@ const tableRows = [
   'Total Supply',
 ]
 
-// TODO: fix types
 export const CoinsListHead = ({ tableRows }: T.ICoinsTableList[]) => (
   <TableHead>
     <TableRow>
@@ -75,7 +73,6 @@ export const CoinsListHead = ({ tableRows }: T.ICoinsTableList[]) => (
 )
 
 export const CoinsListBody = ({ tableData }: any) => {
-  console.log(tableData)
   return (
     <TableBody>
       {tableData.map((coin: any) => (

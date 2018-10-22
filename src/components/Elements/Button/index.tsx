@@ -1,9 +1,9 @@
-import * as React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 
-import { Props } from '@components/Elements/Button/types'
+import { Props } from './types'
 
-export default class Button extends React.Component<Props> {
+export class Button extends Component<Props> {
   onClick = (e: MouseEvent) => {
     const { onClick } = this.props
 
@@ -24,6 +24,8 @@ export default class Button extends React.Component<Props> {
     )
   }
 }
+
+export default Button
 
 const Btn = styled.button`
   border-radius: 2px;

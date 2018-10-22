@@ -1,29 +1,37 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "module": "esnext",
+    "baseUrl": ".",
+    "outDir": "./dist/",
     "target": "es2018",
-    "lib": ["esnext", "dom"],
     "sourceMap": true,
     "declaration": true,
-    "allowJs": true,
-    "jsx": "react",
-    "moduleResolution": "node",
-    "rootDir": "src",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
+    "strict": false,
+    "noUnusedLocals": false,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": false,
+    "module": "esnext",
+    "moduleResolution": "node",
     "alwaysStrict": false,
-    "typeRoots": ["./node_modules/@types", "./typings"]
-  },
-  "paths": {
+    "allowJs": false,
+    "skipLibCheck": true,
+    "jsx": "react",
+    "lib": ["esnext", "dom"],
+    "paths": {
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
+      "@utils/*": ["src/utils/*"],
       "@styles/*": ["src/styles/*"],
+      "@hoc/*": ["src/hoc/*"],
       "@icons/*": ["src/icons/*"],
-      "@utils/*": ["src/utils/*"]
+      "@graphql/*": ["src/graphql/*"]
     },
-  "include": ["src", "typings", "custom.d.ts"]
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin"
+      }
+    ]
+  },
+  "include": ["src/components/index.ts"],
+  "exclude": ["node_modules", "dist"]
 }
