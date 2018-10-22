@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
 import { backgrounds } from './backgrounds'
-import { Input } from '@components/Input/Input'
+import { Input } from '@components/Input'
 
 storiesOf('Input', module)
   .addDecorator(backgrounds)

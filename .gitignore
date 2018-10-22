@@ -62,3 +62,6 @@ dist
 
 # output of build-storybook
 storybook-static
+
+#temp folder for CI
+temp

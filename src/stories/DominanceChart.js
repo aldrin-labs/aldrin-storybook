@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
 import { backgrounds } from './backgrounds'
-import DominanceChart from '@components/DominanceChart/DominanceChart'
+import DominanceChart from '@components/DominanceChart'
 
 storiesOf('DominanceChart', module)
   .addDecorator(backgrounds)

@@ -5,18 +5,18 @@
     "target": "es2018",
     "sourceMap": true,
     "declaration": true,
-    "strict": true,
-    "noUnusedLocals": true,
+    "strict": false,
+    "noUnusedLocals": false,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": false,
     "module": "esnext",
     "moduleResolution": "node",
     "alwaysStrict": false,
     "allowJs": false,
+    "skipLibCheck": true,
     "jsx": "react",
     "lib": ["esnext", "dom"],
-    "typeRoots": ["./node_modules/@types", "./typings"],
     "paths": {
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
@@ -29,12 +29,9 @@
     "plugins": [
       {
         "name": "typescript-styled-plugin"
-      },
-      {
-        "name": "ts-graphql-plugin",
-        "tag": "gql"
       }
     ]
   },
-  "include": ["src", "typings", "custom.d.ts"]
+  "include": ["src/components/index.ts"],
+  "exclude": ["node_modules", "dist"]
 }
