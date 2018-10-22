@@ -43,6 +43,18 @@ const chartData = [
     label: "Some other things",
     realValue: 30,
   },
+  {
+    label: "Some other things2",
+    realValue: 30,
+  },
+  {
+    label: "Some other things3",
+    realValue: 30,
+  },
+  {
+    label: "Some other things4",
+    realValue: 30,
+  }
 ]
 
 const groupId = 'GROUP-ID1';
