@@ -2,43 +2,54 @@ import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
 import {
   RadialChart,
-  GradientDefs
+  GradientDefs,
+  makeVisFlexible,
+  DiscreteColorLegend,
 } from 'react-vis'
+import { Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 
-import { Props, State, DonutPiece, InputRecord } from './types'
-import { ChartContainer, ValueContainer, LabelContainer } from './styles'
+import { Props, State, DonutPiece, InputRecord, gradient } from './types'
+import {
+  ChartContainer,
+  ValueContainer,
+  LabelContainer,
+  ChartWrapper,
+  SDiscreteColorLegend,
+  ChartWithLegend,
+} from './styles'
+import defaultGradients from './gradients'
+
+const FlexibleChart = makeVisFlexible(RadialChart)
 
 class DonutChartWitoutTheme extends Component<Props, State> {
-  constructor(props: Props) {
-
-    super(props)
-
-    this.state = {
-
-      data: [],
-      value: null,
-    }
+  static defaultProps: Props = {
+    radius: 100,
+    hightCoefficient: 16,
+    widthCoefficient: 6,
+    thicknessCoefficient: 10,
+    gradients: defaultGradients,
+  }
+  state: State = {
+    data: [],
+    value: null,
   }
 
   componentDidMount = () => {
     this.setState({ data: this.getDataFromImput(this.props.data) })
   }
 
-  getDataFromImput = (inputData: InputRecord[]) => (
-    inputData.map((record: InputRecord, index: number) => (
-      {
-        angle: record.realValue,
-        label: record.label,
-        realValue: record.realValue,
-        gradientIndex: index % 5 + 1,
-      }
-    ))
-  )
+  getDataFromImput = (inputData: InputRecord[]) =>
+    inputData.map((record: InputRecord, index: number) => ({
+      angle: record.realValue,
+      label: record.label,
+      realValue: record.realValue,
+      gradientIndex: index % this.props.gradients.length,
+    }))
 
   onValueMouseOver = (value: DonutPiece) => {
-    const { data } = this.state
-    if (this.state.value && this.state.value.label === value.label) return
+    const { data, value: stateValue } = this.state
+    if (stateValue && stateValue.label === value.label) return
 
     const index = data.findIndex((d) => d.label === value.label)
     const newData = data.slice().map((d) => ({ ...d, opacity: 0.1 }))
@@ -58,69 +69,84 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     const { value, data } = this.state
 
     const {
-      width,
-      height,
       radius,
       thickness,
+      labelPlaceholder,
+      gradients,
+      colorLegend,
+      theme,
+      isSizeFlexible,
+      hightCoefficient,
+      widthCoefficient,
+      thicknessCoefficient,
     } = this.props
-    const WithDefaults = {
-      width: width || 200,
-      height: height || 200,
-      radius: radius || 100,
-      thickness: thickness || 20
-    }
+
+    var FlexibleRadius = isSizeFlexible
+      ? Math.min(
+          window.innerWidth / hightCoefficient,
+          window.innerHeight / widthCoefficient
+        )
+      : radius
+
+    var innerRadius = thickness
+      ? FlexibleRadius - thickness
+      : FlexibleRadius - FlexibleRadius / thicknessCoefficient
+
     return (
-      <ChartContainer width={width? width : 200}>
-        <LabelContainer>
-          <Typography variant='display1'>
-            { value && value.label }
-          </Typography>
-        </LabelContainer>
-        <RadialChart
-          
-          data={data}
-          width={WithDefaults.width}
-          height={WithDefaults.height}
-          radius={WithDefaults.radius}
-          innerRadius={WithDefaults.radius - WithDefaults.thickness}
-          animation
-          colorType={'literal'}         
-          getColor={(d) => `url(#${d.gradientIndex})`}
-          onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
-          onSeriesMouseOut={() => this.onSeriesMouseOut()}
-          style={{
-            strokeWidth: 0,
-          }}
-        >
-          <ValueContainer>
-            <Typography variant='display2'>
-              { value && `${value.realValue}%`}
+      <ChartWithLegend>
+        {colorLegend && (
+          <SDiscreteColorLegend
+            width={250}
+            items={data.map((d) => d.label)}
+            colors={data.map(
+              (d, index) => gradients[index % gradients.length][0]
+            )}
+            textColor={theme.typography.body1.color}
+          />
+        )}
+        <ChartContainer>
+          <LabelContainer>
+            <Typography variant="h4">
+              {value ? value.label : labelPlaceholder || ''}
             </Typography>
-          </ValueContainer>
-          <GradientDefs>
-            <linearGradient id="1" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#335ecc" opacity={0.6} />
-              <stop offset="100%" stopColor="#2193b0" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="2" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#07c61b" opacity={0.6} />
-              <stop offset="100%" stopColor="#17b27c" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="3" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#ce549d" opacity={0.6} />
-              <stop offset="100%" stopColor="#ce39bd" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="4" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#f05011" opacity={0.6} />
-              <stop offset="100%" stopColor="#f59519" opacity={0.6} />
-            </linearGradient>
-            <linearGradient id="5" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#CAC531" opacity={0.6} />
-              <stop offset="100%" stopColor="#F3F9A7" opacity={0.6} />
-            </linearGradient>
-          </GradientDefs>
-        </RadialChart>
-      </ChartContainer>
+          </LabelContainer>
+          <ChartWrapper>
+            <FlexibleChart
+              data={data}
+              radius={FlexibleRadius}
+              innerRadius={innerRadius}
+              animation={true}
+              colorType={'literal'}
+              getColor={(d) => `url(#${d.gradientIndex})`}
+              onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
+              onSeriesMouseOut={() => this.onSeriesMouseOut()}
+              style={{
+                strokeWidth: 0,
+              }}
+            >
+              <ValueContainer value={value}>
+                <Typography variant="h3">
+                  {value ? `${value.realValue}%` : '\u2063'}
+                </Typography>
+              </ValueContainer>
+              <GradientDefs>
+                {gradients.map((pair: gradient, index: number) => (
+                  <linearGradient
+                    id={index.toString()}
+                    x1="0"
+                    x2="0"
+                    y1="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor={pair[0]} opacity={0.6} />
+                    <stop offset="100%" stopColor={pair[1]} opacity={0.6} />
+                  </linearGradient>
+                ))}
+              </GradientDefs>
+            </FlexibleChart>
+          </ChartWrapper>
+        </ChartContainer>
+      </ChartWithLegend>
     )
   }
 }
