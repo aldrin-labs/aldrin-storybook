@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 
-import * as T from '@components/CoinsList/types'
+import * as T from './types'
 
 const SCoinLink = styled(Link)`
   color: inherit;
