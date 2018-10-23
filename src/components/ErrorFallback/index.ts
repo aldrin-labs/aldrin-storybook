@@ -1,1 +1,1 @@
-export { ErrorFallback } from '@components/ErrorFallback/ErrorFallback'
+export { ErrorFallback } from './ErrorFallback'
