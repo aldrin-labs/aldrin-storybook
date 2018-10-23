@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography } from '@material-ui/core'
+import { Typography, Theme } from '@material-ui/core'
 import {
   RadialChart,
   GradientDefs,
@@ -23,7 +23,7 @@ import defaultGradients from './gradients'
 const FlexibleChart = makeVisFlexible(RadialChart)
 
 class DonutChartWitoutTheme extends Component<Props, State> {
-  static defaultProps: Props = {
+  static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
     data: [
       {
