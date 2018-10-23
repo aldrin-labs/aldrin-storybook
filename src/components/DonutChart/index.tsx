@@ -135,7 +135,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 strokeWidth: 0,
               }}
             >
-              <ValueContainer value={value}>
+              <ValueContainer opacity={value != undefined}>
                 <Typography variant="h3">
                   {value ? `${value.realValue}%` : '\u2063'}
                 </Typography>

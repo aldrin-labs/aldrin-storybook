@@ -16,8 +16,7 @@
     "build-storybook": "build-storybook",
     "clear": "rimraf ./dist",
     "create": "mkdir dist",
-    "build": "tsc -p .",
-    "babel-build": "babel --plugins @babel/plugin-transform-typescript src --out-dir dist"
+    "build": "tsc -p ."
   },
   "jest": {
     "setupFiles": [
