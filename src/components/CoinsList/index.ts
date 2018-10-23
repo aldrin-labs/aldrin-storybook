@@ -1,1 +1,1 @@
-export { CoinsList } from '@components/CoinsList/CoinsList'
+export { CoinsList } from './CoinsList'

@@ -12,7 +12,7 @@ import TableRow from '@material-ui/core/TableRow'
 
 import * as T from './types'
 
-import { CoinLink, ShowMoreLink } from '@components/CoinsList/CoinLink'
+import { CoinLink, ShowMoreLink } from './CoinLink'
 
 const CoinsListPaper = styled(Paper)`
   width: 100%;
