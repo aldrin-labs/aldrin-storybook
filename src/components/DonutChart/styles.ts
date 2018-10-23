@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { DiscreteColorLegend } from 'react-vis'
-import { customAquaScrollBar } from '@styles/cssUtils'
+import { customAquaScrollBar } from '@components/cssUtils'
 
 export const ChartWithLegend = styled.div`
   display: flex;
@@ -32,7 +32,7 @@ export const ValueContainer = styled.div`
   transform: translate(0, -50%);
   text-align: center;
   z-index: 1;
-  opacity: ${(props: { value: string }) => (props.value ? 1 : 0)};
+  opacity: ${(props: { opacity: boolean }) => (props.opacity ? 1 : 0)};
   transition: opacity 0.25s ease-in-out;
 `
 
