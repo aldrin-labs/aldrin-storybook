@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography, Theme } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import {
   RadialChart,
   GradientDefs,
