@@ -2,12 +2,27 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { object, number } from '@storybook/addon-knobs/react'
+import { 
+  object,
+  number,
+  boolean,
+  text
+} from '@storybook/addon-knobs/react'
+
+import styled from 'styled-components'
+import { Paper } from '@material-ui/core'
 
 import { backgrounds } from './backgrounds'
-import DonutChart from '@components/DonutChart' 
+import DonutChart from '@components/DonutChart'
 
-const chartCoins = [
+
+const ChartWrapper = styled(Paper)`
+  max-height: 100%;
+  height: 100vh;
+  width: 50%;
+`
+
+const chartData = [
   {
     label: "Payments",
     realValue: 25.1,
@@ -28,19 +43,37 @@ const chartCoins = [
     label: "Some other things",
     realValue: 30,
   },
+  {
+    label: "Some other things2",
+    realValue: 30,
+  },
+  {
+    label: "Some other things3",
+    realValue: 30,
+  },
+  {
+    label: "Some other things4",
+    realValue: 30,
+  }
 ]
+
+const groupId = 'GROUP-ID1';
 
 storiesOf('DonutChart', module)
   .addDecorator(backgrounds)
   .add(
     'DonutChart',
     withInfo()(() =>
-      <DonutChart
-        data={object('data', chartCoins)}
-        width={number('width', 256)}
-        height={number('height', 256)}
-        radius={number('radius', 128)}
-        thickness={number('thickness', 20)}
-      />
+      <ChartWrapper elevation={8}>
+        <DonutChart
+          labelPlaceholder={text("Label Placeholder" , "Industries %")}
+          data={object("data", chartData, groupId)}
+          isSizeFlexible={boolean("Is Size Flexible" , true)}
+          colorLegend={boolean("Color Legend", true)}
+          hightCoefficient={number("Hight Coefficient", 16)}
+          widthCoefficient={number("Width Coefficient", 6)}
+          thicknessCoefficient={number("Thickness Coefficient", 10)}
+        />
+      </ChartWrapper>
   )
 )
