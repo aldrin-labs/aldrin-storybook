@@ -16,6 +16,7 @@ export type OnChange = (id: number) => void;
 export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void;
 
 export type Row = Cell[];
+export type ExtendableRow = Cell[];
 
 export type Rows = { head: TObj[]; body: Row[]; footer: Row };
 
