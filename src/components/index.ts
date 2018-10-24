@@ -1,9 +1,10 @@
 //export { AreaChart } from "./AreaChart"
-export { default as  Chart } from "./Chart"
+export { default as Chart } from './Chart';
 //export { default as CoinsList } from "./Chart"
 //export { default as ComingSoon } from "./ComingSoon"
 //export { default as DominanceChart } from "./DominanceChart"
-export { DonutChart } from "./DonutChart"
+export { DonutChart } from './DonutChart';
+export { default as Table } from './Tables';
 //export { default as Elements } from "./Elements"
 //export { ErrorFallback } from "./ErrorFallback"
 //export { HeatMapChart } from "./HeatMapChart"
