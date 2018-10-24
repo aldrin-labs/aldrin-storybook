@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableFooter from '@material-ui/core/TableFooter';
 import Paper from '@material-ui/core/Paper';
-import { hexToRgbAWithOpacity } from '@styles/helpers';
+import { hexToRgbAWithOpacity } from '../cssUtils';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Checkbox from '@material-ui/core/Checkbox';
 import ExpandMore from '@material-ui/icons/ExpandMore';
