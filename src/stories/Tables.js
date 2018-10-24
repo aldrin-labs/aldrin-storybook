@@ -7,13 +7,13 @@ import { mock } from '../components/Tables/mocks';
 import { withInfo } from '@storybook/addon-info';
 import { object } from '@storybook/addon-knobs/react';
 
-const groupId = 'GROUP-ID1';
+const groupId = 'GROUP-ID11';
 
-const props = {};
+const props = { withCheckboxes: true };
 
 storiesOf('TablesWithCheckbox', module)
   .addDecorator(backgrounds)
   .add(
     'Table',
-    withInfo()(() => <Tables rows={mock} {...object('legends', props, groupId)} />),
+    withInfo()(() => <Tables rows={mock} {...{ ...object('props', props, groupId) }} />),
   );
