@@ -9,7 +9,6 @@
   "files": [
     "dist"
   ],
-  "license": "MIT",
   "scripts": {
     "start": "yarn run storybook",
     "storybook": "start-storybook -p 6006",
