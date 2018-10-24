@@ -17,3 +17,9 @@ export interface ICellContentProps {
   color?: string
   active?: boolean 
 }
+
+export interface ICellProps { 
+  isFullscreenEnabled?: boolean
+  cols?: number
+  textColor?: string
+}

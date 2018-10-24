@@ -9,6 +9,7 @@ import {
   IState,
   IGridTableProps,
   ICellContentProps,
+  ICellProps,
 } from './types'
 
 export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
@@ -168,7 +169,7 @@ const Cell = styled.div`
   z-index: 100;
 
   font-family: Roboto, sans-serif;
-  font-size: ${(props: { isFullscreenEnabled: boolean; cols: number }) => {
+  font-size: ${(props: ICellProps) => {
     const { isFullscreenEnabled, cols } = props
 
     if (!isFullscreenEnabled && cols > 1 && cols < 5) {
@@ -199,7 +200,7 @@ const Cell = styled.div`
 
     return '1rem'
   }};
-  color: ${(props: { textColor: string }) => props.textColor};
+  color: ${(props: ICellProps) => props.textColor};
   font-weight: 500;
   display: flex;
   place-content: center;
@@ -214,7 +215,7 @@ const Cell = styled.div`
 const HeadCell = styled(Cell)`
   z-index: 101;
   position: relative;
-  position: ${(props) => (props.sticky ? 'sticky' : 'relative')};
+  position: ${(props: {sticky: boolean}) => (props.sticky ? 'sticky' : 'relative')};
 
   top: 0;
 `
