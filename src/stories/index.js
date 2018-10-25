@@ -7,6 +7,5 @@ import './ErrorFallback';
 import './HeatMapChart';
 import './Input';
 import './Legends';
-import './PieChart';
 import './DonutChart';
 import './Tables';
