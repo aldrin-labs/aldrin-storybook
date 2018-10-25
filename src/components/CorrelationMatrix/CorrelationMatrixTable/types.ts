@@ -1,6 +1,7 @@
 export interface IProps {
   data: any
   isFullscreenEnabled: boolean
+  colors: string[]
 }
 export interface IState {
   activeColumn: number | null

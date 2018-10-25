@@ -1,3 +1,5 @@
+import chroma from 'chroma-js'
+
 export function getColor(
   value: string
 ): { backgroundColor: string; textColor: string } {
@@ -45,4 +47,9 @@ export function getColor(
   } else {
     return { backgroundColor: '#FFCDD2', textColor: 'black' }
   }
+}
+
+export function getColorNew(value: string, colors: string[]) {
+  const n = Number(value)
+  return chroma.scale(colors).domain([-1, 1])(n)
 }

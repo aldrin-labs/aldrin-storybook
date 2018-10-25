@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { DiscreteColorLegend } from 'react-vis'
-import { customAquaScrollBar } from '../cssUtils'
+import { customAquaScrollBar } from '../Utils/cssUtils'
 
 export const ChartWithLegend = styled.div`
   display: flex;

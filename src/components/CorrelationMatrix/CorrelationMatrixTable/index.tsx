@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import FaAngleRight from '@material-ui/icons/ChevronRight'
 import FaAngleDown from '@material-ui/icons/ExpandMore'
 
-import { getColor } from './utils'
+import { getColor, getColorNew } from './utils'
 import {
   IProps,
   IState,
@@ -13,6 +13,7 @@ import {
 } from './types'
 
 export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
+
   state: IState = {
     activeRow: null,
     activeColumn: null,
@@ -27,7 +28,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
   }
 
   render() {
-    const { isFullscreenEnabled, data } = this.props
+    const { isFullscreenEnabled, data, colors } = this.props
     const { activeRow, activeColumn } = this.state
 
     const cols = data.values
@@ -75,8 +76,8 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* content */}
         {cols.map((col, ind) =>
           col.map((el: string, i: number) => {
-            const { backgroundColor, textColor } = getColor(el)
-
+            const backgroundColor = getColorNew(el, colors)
+            const textColor = "back"
             let value = +el
 
             if (value < 0 && value > -0.01) {
