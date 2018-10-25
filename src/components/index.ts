@@ -10,6 +10,5 @@ export { default as Table } from './Tables';
 //export { HeatMapChart } from "./HeatMapChart"
 //export { Input } from "./Input"
 //export { Legends } from "./Legends"
-//export { PieChart } from "./PieChart"
 //export { default as ReactSelectComponent } from "./ReactSelectComponent"
 //export { default as SvgIcon } from "./SvgIcon"
