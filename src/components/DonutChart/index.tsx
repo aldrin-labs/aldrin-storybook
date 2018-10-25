@@ -8,6 +8,8 @@ import {
 } from 'react-vis'
 import { Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
+import _ from 'lodash'
+import chroma from 'chroma-js'
 
 import { Props, State, DonutPiece, InputRecord, gradient } from './types'
 import {
@@ -55,7 +57,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       angle: record.realValue,
       label: record.label,
       realValue: record.realValue,
-      gradientIndex: index % this.props.gradients.length,
+      gradientIndex: index,
     }))
 
   onValueMouseOver = (value: DonutPiece) => {
@@ -92,6 +94,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       thicknessCoefficient,
     } = this.props
 
+    const gradientsWithRandom = [ ...gradients, ...(_.range(10)).map(() => {
+        const color = chroma().random()
+        return [color, chroma(color).darken()]
+      })]
+
     var FlexibleRadius = isSizeFlexible
       ? Math.min(
           window.innerWidth / hightCoefficient,
@@ -110,7 +117,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             width={250}
             items={data.map((d) => d.label)}
             colors={data.map(
-              (d, index) => gradients[index % gradients.length][0]
+              (d, index) => gradients[index][0]
             )}
             textColor={theme.typography.body1.color}
           />
@@ -141,7 +148,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 </Typography>
               </ValueContainer>
               <GradientDefs>
-                {gradients.map((pair: gradient, index: number) => (
+                {gradientsWithRandom.map((pair: gradient, index: number) => (
                   <linearGradient
                     id={index.toString()}
                     x1="0"

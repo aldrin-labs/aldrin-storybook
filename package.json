@@ -72,7 +72,8 @@
     "nanoid": "^1.0.2",
     "css-loader": "^1.0.0",
     "typescript-styled-plugin": "^0.6.0",
-    "typescript": "^3.0.3"
+    "typescript": "^3.0.3",
+    "chroma-js": "^1.4.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "3.3.4",
