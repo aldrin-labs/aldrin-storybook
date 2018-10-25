@@ -6,4 +6,5 @@ export interface IProps {
   period: string
   dates: { startDate: number; endDate: number }
   colors: string[]
+  oneColor?: string
 }

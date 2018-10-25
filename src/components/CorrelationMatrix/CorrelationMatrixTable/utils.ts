@@ -49,7 +49,10 @@ export function getColor(
   }
 }
 
-export function getColorNew(value: string, colors: string[]) {
+export function getColorNew(value: string, colors: string[], oneColor?: string) {
   const n = Number(value)
+  if (oneColor && n === 1) {
+    return oneColor
+  }
   return chroma.scale(colors).domain([-1, 1])(n)
 }

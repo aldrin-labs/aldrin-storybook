@@ -28,7 +28,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
   }
 
   render() {
-    const { isFullscreenEnabled, data, colors } = this.props
+    const { isFullscreenEnabled, data, colors, oneColor } = this.props
     const { activeRow, activeColumn } = this.state
 
     const cols = data.values
@@ -76,8 +76,8 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* content */}
         {cols.map((col, ind) =>
           col.map((el: string, i: number) => {
-            const backgroundColor = getColorNew(el, colors)
-            const textColor = "back"
+            const backgroundColor = getColorNew(el, colors, oneColor)
+            const textColor = "white"
             let value = +el
 
             if (value < 0 && value > -0.01) {
@@ -100,7 +100,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
                   color={backgroundColor}
                   active={i === activeRow && ind === activeColumn}
                 >
-                  <CenterText>{(value * 100).toFixed(1)}</CenterText>
+                  {value !== 1 && <CenterText>{(value * 100).toFixed(1)}</CenterText>}
                 </CellContent>
               </Cell>
             )

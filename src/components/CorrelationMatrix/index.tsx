@@ -49,6 +49,7 @@ export class CorrelationMatrix extends PureComponent<IProps> {
       setCorrelationPeriod,
       period,
       colors,
+      oneColor,
       dates: { startDate, endDate },
     } = this.props
 
@@ -111,7 +112,8 @@ export class CorrelationMatrix extends PureComponent<IProps> {
                 {...{
                   isFullscreenEnabled,
                   data,
-                  colors
+                  colors,
+                  oneColor
                 }}
               />
             ) : (
