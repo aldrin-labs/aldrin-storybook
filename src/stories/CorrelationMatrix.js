@@ -24,6 +24,7 @@ const TableWrapper = styled(Paper)`
 const colors = [
   ['red', 'white', 'green'],
   ['#FFCDD2', 'white', '#4caf50'],
+  ['#ff2600', '#ffaa00', '#ffffff', '#90de2a', '#008000'],
 ]
 
 const groupId = 'GROUP-ID1'
@@ -48,7 +49,7 @@ storiesOf('CorrelationMatrixTable', module)
             startDate: number('startDate', 1539810000),
             endDate: number('endDate', 1540414800)
           }}
-          colors={object('colors', colors[1], groupId2)}
+          colors={object('colors', colors[2], groupId2)}
         />
       </TableWrapper>
   )
