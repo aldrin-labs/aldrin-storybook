@@ -1,6 +1,6 @@
 import React from 'react'
-import Table from '.'
-import { Props as TableProps, HeadCell, Cell } from './index.types'
+import Table from '../'
+import { Props as TableProps, HeadCell } from '../index.types'
 import { zip, isObject, has } from 'lodash-es'
 
 const decideSort = (cell: HeadCell, sortDirection: 'asc' | 'desc') => {

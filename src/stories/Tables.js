@@ -2,7 +2,6 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 
 import { backgrounds } from './backgrounds'
-import Tables from '../components/Tables'
 import { mock } from '../components/Tables/mocks'
 import { withInfo } from '@storybook/addon-info'
 import {
@@ -14,7 +13,7 @@ import {
 } from '@storybook/addon-knobs/react'
 import Paper from '@material-ui/core/Paper'
 import { Grid } from '@material-ui/core'
-import Sort from '../components/Tables/sort'
+import Sort from '../components/Tables/WithSort'
 
 const groupId = 'GROUP-ID11'
 
