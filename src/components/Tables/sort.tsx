@@ -3,34 +3,50 @@ import Table from '.'
 import { Props as TableProps, HeadCell, Cell } from './index.types'
 import { zip, isObject, has } from 'lodash-es'
 
-interface Props extends TableProps {
-  sort: {
-    sortColumn: number | null
-    sortDirection: 'up' | 'down'
-  }
-}
-const decideSort = (cell: HeadCell, sortDirection: 'up' | 'down') => {
-  const ascendingNumberSort = (a, b) => a - b
-  const descendingNumberSort = (a, b) => b - a
-  const ascendingDateSort = (a, b) => +new Date(a) - +new Date(b)
-  const descendingDateSort = (a, b) => +new Date(b) - +new Date(a)
+const decideSort = (cell: HeadCell, sortDirection: 'asc' | 'desc') => {
+  const flatten = (a) =>
+    isObject(a) && has(a, 'contentToSort')
+      ? a.contentToSort
+      : has(a, 'render')
+        ? a.render
+        : a
+
+  const ascendingNumberSort = (a, b) => flatten(a) - flatten(b)
+  const descendingNumberSort = (a, b) => flatten(b) - flatten(a)
+  const ascendingDateSort = (a, b) =>
+    +new Date(flatten(a)) - +new Date(flatten(b))
+  const descendingDateSort = (a, b) =>
+    +new Date(flatten(b)) - +new Date(flatten(a))
 
   if (cell.sortBy === 'number' || cell.isNumber) {
-    return sortDirection === 'up' ? ascendingNumberSort : descendingNumberSort
+    return sortDirection === 'asc' ? ascendingNumberSort : descendingNumberSort
   }
 
   if (cell.sortBy === 'date') {
-    return sortDirection === 'up' ? ascendingDateSort : descendingDateSort
+    return sortDirection === 'asc' ? ascendingDateSort : descendingDateSort
   }
 
   if (typeof cell.sortBy === 'function') {
     return cell.sortBy
   }
 
-  return undefined
+  return (a, b) => {
+    const flatA = flatten(a).toascperCase()
+    const flatB = flatten(b).toascperCase()
+
+    if (flatA < flatB) {
+      return -1
+    }
+    if (flatA > flatB) {
+      return 1
+    }
+
+    // must be equal
+    return 0
+  }
 }
 
-export default class Sort extends React.Component<Props> {
+export default class Sort extends React.Component<TableProps> {
   render() {
     const {
       rows: RawRows,
@@ -40,17 +56,9 @@ export default class Sort extends React.Component<Props> {
     const sortedBody = zip(...RawRows.body).map((column, ind) => {
       if (ind === sortColumn) {
         const sortFunction = decideSort(RawRows.head[ind], sortDirection)
-        const flatColumn = column.map(
-          (cell: Cell) =>
-            isObject(cell) && has(cell, 'contentToSort')
-              ? cell.contentToSort
-              : has(cell, 'render')
-                ? cell.render
-                : cell
-        )
 
-        const sort = flatColumn.slice().sort(sortFunction)
-        return sortDirection === 'up' ? sort.reverse() : sort
+        const sort = column.slice().sort(sortFunction)
+        return sortDirection === 'asc' ? sort.reverse() : sort
       }
 
       return column
@@ -61,7 +69,6 @@ export default class Sort extends React.Component<Props> {
       body: zip(...sortedBody),
     }
 
-    console.log(rows.body)
     return <Table {...{ ...this.props, rows }} />
   }
 }

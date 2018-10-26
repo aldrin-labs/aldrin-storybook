@@ -1,37 +1,52 @@
-import { WithStyles } from '@material-ui/core';
-import React from 'react';
+import { WithStyles } from '@material-ui/core'
+import React from 'react'
+import { boolean } from '@storybook/addon-knobs'
 
-type T = string | number;
+type T = string | number
 type TObj = {
-  render: string;
-  color: string;
-  isNumber: boolean;
-  style: any;
-};
+  render: string
+  color: string
+  isNumber: boolean
+  style: any
+  // if you wrap you render with JSX but still want to use
+  //  out-of-the-box sort put value to sort into content
+  contentToSort: string | number
+}
 
-export type Cell = T & TObj;
+export type HeadCell = TObj & {
+  sortBy: 'number' | 'date' | 'default' | (() => number)
+}
 
-export type OnChange = (id: number) => void;
+export type Cell = T & TObj
 
-export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void;
+export type OnChange = (id: number) => void
 
-export type Row = Cell[];
-export type ExtendableRow = Cell[];
+export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 
-export type Rows = { head: TObj[]; body: Row[]; footer: Row };
+export type Row = Cell[]
+export type ExtendableRow = Cell[]
+
+export type Rows = { head: HeadCell[]; body: Row[]; footer: Row }
+
+export type sortTypes = {
+  sortColumn: number | null
+  sortDirection: 'asc' | 'desc'
+  sortHandler: (index: number) => void
+}
 
 export interface Props extends WithStyles {
-  withCheckboxes?: boolean;
-  expandableRows?: boolean;
+  withCheckboxes?: boolean
+  expandableRows?: boolean
   // removes animation from checkbox
-  staticCheckbox?: boolean;
-  padding: 'default' | 'checkbox' | 'dense' | 'none';
-  rows?: Rows;
-  checkedRows?: number[];
-  expandedRows?: number[];
-  title?: string | number;
-  onChange?: OnChange & OnChangeWithEvent;
-  onSelectAllClick?: OnChange & OnChangeWithEvent;
+  staticCheckbox?: boolean
+  padding: 'default' | 'checkbox' | 'dense' | 'none'
+  rows?: Rows
+  checkedRows?: number[]
+  expandedRows?: number[]
+  title?: string | number
+  onChange?: OnChange & OnChangeWithEvent
+  onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
-  elevation?: number;
+  elevation?: number
+  sort: sortTypes
 }
