@@ -1,17 +1,17 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Typography } from '@material-ui/core'
+import React from 'react';
+import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 
 export default ({ show = true }) =>
   show ? (
     <Container>
-      <Typography variant="display2" color="textPrimary">
+      <Typography variant="h3" color="textPrimary">
         Coming Soon
       </Typography>
     </Container>
   ) : (
     <></>
-  )
+  );
 
 const Container = styled.div`
   height: 100%;
@@ -24,4 +24,4 @@ const Container = styled.div`
   place-items: center;
   position: absolute;
   z-index: 1;
-`
+`;
