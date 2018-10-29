@@ -37,7 +37,13 @@ const CustomTableCell = withStyles(theme => ({
     padding: '1px 14px 1px 6px',
   },
   footer: {
+    position: 'sticky',
+    bottom: 0,
+    zIndex: 100,
     color: 'white',
+    backgroundColor:
+      theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[500],
+    padding: '1px 14px 1px 6px',
   },
 }))(TableCell);
 
@@ -108,10 +114,6 @@ const styles = (theme: Theme) =>
     },
     footer: {
       height: theme.spacing.unit * 5,
-      backgroundColor: hexToRgbAWithOpacity(theme.palette.primary[900], 0.45),
-      '&:hover': {
-        backgroundColor: hexToRgbAWithOpacity(theme.palette.primary[900], 0.45),
-      },
     },
   });
 
@@ -188,12 +190,17 @@ const renderCheckBox = ({
     />
   ) : null;
 
-const renderCell = (cell: Cell, id: number, numeric: boolean) => {
+const renderCell = (
+  cell: Cell,
+  id: number,
+  numeric: boolean,
+  variant: 'body' | 'footer' | 'head' = 'body',
+) => {
   if (cell !== null && typeof cell === 'object') {
     return (
       <CustomTableCell
         scope="row"
-        variant="body"
+        variant={variant}
         style={{ color: cell.color, ...cell.style }}
         key={id}
         numeric={numeric}
@@ -204,14 +211,14 @@ const renderCell = (cell: Cell, id: number, numeric: boolean) => {
   }
   if (typeof cell !== 'object') {
     return (
-      <CustomTableCell scope="row" variant="body" numeric={numeric} key={id}>
+      <CustomTableCell scope="row" variant={variant} numeric={numeric} key={id}>
         {cell}
       </CustomTableCell>
     );
   }
 
   return (
-    <CustomTableCell scope="row" variant="body" numeric={numeric} key={id}>
+    <CustomTableCell scope="row" variant={variant} numeric={numeric} key={id}>
       {''}
     </CustomTableCell>
   );
@@ -248,6 +255,8 @@ const CustomTable = (props: Props) => {
   }
 
   const howManyColumns = withCheckboxes ? rows.head.length : rows.head.length - 1;
+  //  if there is no title head must be at the top
+  const isOnTop = !title ? { top: 0 } : {};
 
   return (
     <Paper className={classes.root} elevation={elevation}>
@@ -273,7 +282,7 @@ const CustomTable = (props: Props) => {
           )}
           <TableRow className={classes.headRow}>
             {(withCheckboxes || expandableRows) && (
-              <CustomTableCell padding="checkbox">
+              <CustomTableCell padding="checkbox" style={{ ...isOnTop }}>
                 {renderCheckBox({
                   rows,
                   checkedRows,
@@ -293,7 +302,7 @@ const CustomTable = (props: Props) => {
             {rows.head.map(cell => {
               return (
                 <CustomTableCell
-                  style={{ ...cell.style }}
+                  style={{ ...cell.style, ...isOnTop }}
                   variant="head"
                   numeric={cell.isNumber}
                   key={cell.render}
@@ -393,12 +402,11 @@ const CustomTable = (props: Props) => {
                 const footerCell = {
                   ...(spreadedCell as object),
                   style: {
-                    opacity: 0.84,
                     ...cell.style,
                   },
                 };
 
-                return renderCell(footerCell as Cell, cellIndex, numeric);
+                return renderCell(footerCell as Cell, cellIndex, numeric, 'footer');
               })}
             </TableRow>
           </TableFooter>

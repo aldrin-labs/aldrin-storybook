@@ -31,7 +31,7 @@ export const ValueContainer = styled.div`
   top: -50%;
   transform: translate(0, -50%);
   text-align: center;
-  z-index: 1;
+  z-index: -1;
   opacity: ${(props: { opacity: boolean }) => (props.opacity ? 1 : 0)};
   transition: opacity 0.25s ease-in-out;
 `
