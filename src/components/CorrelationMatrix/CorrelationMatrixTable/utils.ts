@@ -1,4 +1,5 @@
 import chroma from 'chroma-js'
+import { darken } from '@material-ui/core/styles/colorManipulator'
 
 export function getColor(
   value: string
@@ -55,4 +56,19 @@ export function getColorNew(value: string, colors: string[], oneColor?: string) 
     return oneColor
   }
   return chroma.scale(colors).domain([-1, 1])(n)
+}
+
+export function getColorDarken(
+  value: string,
+  colors: string[],
+  oneColor: string,
+  darkenCoeff?: number
+  ) {
+  const n = Number(value)
+  if (oneColor && n === 1) {
+    return oneColor
+  }
+  if (n < 0) return darken(colors[0], 1 + n * (darkenCoeff || 1))
+  if (n === 1) return colors[1]
+  return darken(colors[3], 1 - n * (darkenCoeff || 1))
 }
