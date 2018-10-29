@@ -6,13 +6,13 @@ export const mock = {
     { isNumber: false, render: 'Account' },
     { isNumber: false, render: 'Datetime' },
   ],
-  footer: [[
+  footer: [
     'Footer',
     'Footer',
     0.00011183,
     'Footer',
     { render: 'Footer', isNumber: false, style: { fontSize: 11 } },
-  ]],
+  ],
   body: [
     [
       'LTC',
