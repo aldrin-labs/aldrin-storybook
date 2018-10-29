@@ -1,3 +1,5 @@
+import { Theme } from '@material-ui/core'
+
 export interface IProps {
   data: any
   isFullscreenEnabled: boolean
@@ -5,6 +7,6 @@ export interface IProps {
   setCorrelationPeriod: Function
   period: string
   dates: { startDate: number; endDate: number }
-  colors: string[]
-  oneColor?: string
+  CustomColors?: string[]
+  theme: Theme
 }

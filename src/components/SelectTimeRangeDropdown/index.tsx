@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { daysFromNow } from '../Utils/dateUtils'
 import Selector from '../SimpleDropDownSelector'
-import { IProps } from './index.types'
+import { IProps } from './types'
 
 class DropDownMenu extends Component<IProps> {
   optionsMap: { [id: string]: any } = {

@@ -5,8 +5,8 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import CardContent from '@material-ui/core/CardContent'
-
 import FullScreenIcon from '@material-ui/icons/Fullscreen'
+import { withTheme } from '@material-ui/core/styles'
 
 import { customAquaScrollBar } from '../cssUtils'
 import SelectTimeRange from '../SelectTimeRangeDropdown'
@@ -15,15 +15,7 @@ import { IProps } from './types'
 import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
 
-export class CorrelationMatrix extends PureComponent<IProps> {
-  static defaultProps: Partial<IProps> = {
-    colors: [
-      'red',
-      'white',
-      'green',
-    ],
-  }
-
+class CorrelationMatrixComponent extends PureComponent<IProps> {
   constructor(props: IProps) {
     super(props)
   }
@@ -52,10 +44,19 @@ export class CorrelationMatrix extends PureComponent<IProps> {
       fullScreenChangeHandler,
       setCorrelationPeriod,
       period,
-      colors,
+      CustomColors,
       oneColor,
       dates: { startDate, endDate },
+      theme: { palette },
     } = this.props
+
+    const colors = CustomColors 
+    ||  [
+      palette.red.main,
+      palette.background.default,
+      palette.green.main,
+      palette.background.default,
+    ]
 
     return (
       <ScrolledWrapper>
@@ -141,6 +142,10 @@ export class CorrelationMatrix extends PureComponent<IProps> {
   }
 }
 
+export const CorrelationMatrix = withTheme()(CorrelationMatrixComponent)
+
+export default CorrelationMatrix
+
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -176,4 +181,3 @@ const ScrolledWrapper = styled.div`
   margin: 0 auto;
   ${customAquaScrollBar};
 `
-export default CorrelationMatrix
