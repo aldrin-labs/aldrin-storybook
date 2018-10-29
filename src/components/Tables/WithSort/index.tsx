@@ -1,7 +1,9 @@
 import React from 'react'
 import Table from '../'
-import { Props as TableProps, HeadCell } from '../index.types'
 import { zip, isObject, has } from 'lodash-es'
+
+import { Props as TableProps, HeadCell } from '../index.types'
+import { SortState } from './index.types'
 
 const decideSort = (cell: HeadCell, sortDirection: 'asc' | 'desc') => {
   const flatten = (a) =>
@@ -31,8 +33,8 @@ const decideSort = (cell: HeadCell, sortDirection: 'asc' | 'desc') => {
   }
 
   return (a, b) => {
-    const flatA = flatten(a).toascperCase()
-    const flatB = flatten(b).toascperCase()
+    const flatA = flatten(a).toUpperCase()
+    const flatB = flatten(b).toUpperCase()
 
     if (flatA < flatB) {
       return -1
@@ -47,11 +49,26 @@ const decideSort = (cell: HeadCell, sortDirection: 'asc' | 'desc') => {
 }
 
 export default class Sort extends React.Component<TableProps> {
+  state: SortState = {
+    sortColumn: null,
+    sortDirection: 'desc',
+  }
+  sortHandler = (column: number) => {
+    this.setState((prevState: SortState) => {
+      let sortDirection = prevState.sortDirection
+      if (prevState.sortColumn !== column) {
+        sortDirection = 'desc'
+      } else {
+        sortDirection = prevState.sortDirection === 'asc' ? 'desc' : 'asc'
+      }
+
+      return { sortDirection, sortColumn: column }
+    })
+  }
+
   render() {
-    const {
-      rows: RawRows,
-      sort: { sortColumn, sortDirection },
-    } = this.props
+    const { rows: RawRows } = this.props
+    const { sortColumn, sortDirection } = this.state
 
     const sortedBody = zip(...RawRows.body).map((column, ind) => {
       if (ind === sortColumn) {
@@ -69,6 +86,17 @@ export default class Sort extends React.Component<TableProps> {
       body: zip(...sortedBody),
     }
 
-    return <Table {...{ ...this.props, rows }} />
+    return (
+      <Table
+        {...{
+          ...this.props,
+          rows,
+          sort: {
+            sortHandler: this.sortHandler,
+            ...this.state,
+          },
+        }}
+      />
+    )
   }
 }

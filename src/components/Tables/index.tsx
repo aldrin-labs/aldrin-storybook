@@ -324,7 +324,7 @@ const CustomTable = (props: Props) => {
               </CustomTableCell>
             )}
 
-            {rows.head.map((cell, index) => {
+            {rows.head.map((cell, column) => {
               return (
                 <CustomTableCell
                   style={{ ...cell.style, ...isOnTop }}
@@ -333,9 +333,9 @@ const CustomTable = (props: Props) => {
                   key={cell.render}
                 >
                   <TableSortLabel
-                    active={sortColumn === index}
+                    active={sortColumn === column}
                     direction={sortDirection}
-                    onClick={() => sortHandler(index)}
+                    onClick={() => sortHandler(column)}
                   >
                     {cell.render}
                   </TableSortLabel>
