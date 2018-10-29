@@ -17,7 +17,11 @@ import { ErrorFallback } from '../ErrorFallback'
 
 export class CorrelationMatrix extends PureComponent<IProps> {
   static defaultProps: Partial<IProps> = {
-    colors: ['red', 'white', 'green']
+    colors: [
+      'red',
+      'white',
+      'green',
+    ],
   }
 
   constructor(props: IProps) {
@@ -113,7 +117,7 @@ export class CorrelationMatrix extends PureComponent<IProps> {
                   isFullscreenEnabled,
                   data,
                   colors,
-                  oneColor
+                  oneColor,
                 }}
               />
             ) : (

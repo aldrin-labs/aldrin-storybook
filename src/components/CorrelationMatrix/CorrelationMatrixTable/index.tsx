@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import FaAngleRight from '@material-ui/icons/ChevronRight'
 import FaAngleDown from '@material-ui/icons/ExpandMore'
 
-import { getColor, getColorNew } from './utils'
+import { getColorDarken } from './utils'
 import {
   IProps,
   IState,
@@ -76,7 +76,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* content */}
         {cols.map((col, ind) =>
           col.map((el: string, i: number) => {
-            const backgroundColor = getColorNew(el, colors, oneColor)
+            const backgroundColor = getColorDarken(el, colors, oneColor, 0.8)
             const textColor = "white"
             let value = +el
 

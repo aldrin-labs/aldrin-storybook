@@ -68,7 +68,7 @@ export function getColorDarken(
   if (oneColor && n === 1) {
     return oneColor
   }
-  if (n < 0) return darken(colors[0], 1 + n * (darkenCoeff || 1))
+  if (n < 0) return darken(colors[0], (1 + n) * (darkenCoeff || 1))
   if (n === 1) return colors[1]
-  return darken(colors[3], 1 - n * (darkenCoeff || 1))
+  return darken(colors[2], (1 - n) * (darkenCoeff || 1))
 }
