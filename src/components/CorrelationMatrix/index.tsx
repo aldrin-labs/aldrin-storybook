@@ -8,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent'
 
 import FullScreenIcon from '@material-ui/icons/Fullscreen'
 
-import { customAquaScrollBar } from '../Utils/cssUtils'
+import { customAquaScrollBar } from '../cssUtils'
 import SelectTimeRange from '../SelectTimeRangeDropdown'
 import { CorrelationMatrixTable } from './CorrelationMatrixTable'
 import { IProps } from './types'
