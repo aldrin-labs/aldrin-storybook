@@ -3,7 +3,9 @@ import { blueGrey, cyan, green, red } from '@material-ui/core/colors';
 
 const createcustomTheme = themeMode =>
   createMuiTheme({
-    useNextVariants: true,
+    typography: {
+      useNextVariants: true,
+    },
     palette: {
       type: themeMode,
       red: {
