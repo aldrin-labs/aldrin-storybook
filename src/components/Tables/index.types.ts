@@ -18,9 +18,10 @@ export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 export type Row = Cell[];
 export type ExtendableRow = Cell[];
 
-export type Rows = { head: TObj[]; body: Row[]; footer: Row };
+export type Rows = { head: TObj[]; body: Row[]; footer: Row[]; upperFooter: Row[] };
 
 export interface Props extends WithStyles {
+  showUpperFooter?: boolean;
   withCheckboxes?: boolean;
   expandableRows?: boolean;
   // removes animation from checkbox

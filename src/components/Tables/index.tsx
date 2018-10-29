@@ -235,7 +235,7 @@ const CustomTable = (props: Props) => {
   const {
     classes,
     padding = 'dense',
-    rows = { head: [], body: [], footer: [] },
+    rows = { head: [], body: [], footer: [], upperFooter: [] },
     withCheckboxes = false,
     title,
     elevation = 0,
@@ -249,6 +249,7 @@ const CustomTable = (props: Props) => {
     },
     checkedRows = [],
     staticCheckbox = false,
+    showUpperFooter = false,
   } = props;
   if (rows !== undefined && !Array.isArray(rows.head) && !Array.isArray(rows.body)) {
     return null;
@@ -388,27 +389,54 @@ const CustomTable = (props: Props) => {
             );
           })}
         </TableBody>
-        {Array.isArray(rows.footer) && (
+        {Array.isArray(rows.upperFooter) &&
+        showUpperFooter && (
+          <TableBody>
+            {rows.upperFooter.map((row, ind: number) => {
+              return (
+                <React.Fragment key={ind}>
+                  <TableRow className={classes.row}>
+                    {row.map((cell, cellIndex: number) => {
+                      const numeric = isNumeric(cell)
+
+                      return renderCell(cell, cellIndex, numeric)
+                    })}
+                  </TableRow>
+                </React.Fragment>
+              )
+            })}
+          </TableBody>
+        )}
+        {(Array.isArray(rows.footer) && Array.isArray(rows.footer[0])) && (
           <TableFooter>
-            <TableRow className={`${classes.row} ${classes.footer}`}>
-              {(withCheckboxes || expandableRows) && (
-                <CustomTableCell padding="checkbox" />
-              )}
-              {rows.footer.map((cell, cellIndex) => {
-                const numeric = isNumeric(cell);
+            {rows.footer.map((row, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <TableRow className={`${classes.row} ${classes.footer}`}>
+                    {(withCheckboxes || expandableRows) && (
+                      <CustomTableCell padding="checkbox" />
+                    )}
+                    {row.map((cell, cellIndex) => {
+                      const numeric = isNumeric(cell)
 
-                const spreadedCell = isObject(cell) ? cell : { render: cell };
+                      const spreadedCell = isObject(cell)
+                        ? cell
+                        : { render: cell }
 
-                const footerCell = {
-                  ...(spreadedCell as object),
-                  style: {
-                    ...cell.style,
-                  },
-                };
+                      const footerCell = {
+                        ...(spreadedCell as object),
+                        style: {
+                          opacity: 0.84,
+                          ...cell.style,
+                        },
+                      }
 
-                return renderCell(footerCell as Cell, cellIndex, numeric, 'footer');
-              })}
-            </TableRow>
+                      return renderCell(footerCell as Cell, cellIndex, numeric)
+                    })}
+                  </TableRow>
+                </React.Fragment>
+              )
+            })}
           </TableFooter>
         )}
       </Table>
