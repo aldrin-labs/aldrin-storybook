@@ -7,9 +7,9 @@ import { withInfo } from '@storybook/addon-info'
 import { muiTheme } from 'storybook-addon-material-ui'
 
 import { customThemes } from './customTheme'
-
+console.log(customThemes)
 addDecorator(
-  muiTheme([customThemes.dark, customThemes.light])
+  muiTheme([customThemes.light, customThemes.dark])
 )
 addDecorator((story) => (
   <div style={{ margin: 20 }}>

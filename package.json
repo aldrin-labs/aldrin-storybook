@@ -71,7 +71,6 @@
     "lodash-es": "^4.17.10",
     "nanoid": "^1.0.2",
     "react-fullscreen-crossbrowser": "^1.0.9",
-    "chroma-js": "^1.4.0",
     "css-loader": "^1.0.0",
     "typescript-styled-plugin": "^0.6.0",
     "typescript": "^3.0.3"
