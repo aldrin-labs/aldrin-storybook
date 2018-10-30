@@ -62,7 +62,7 @@ export const LabelContainer = styled.div`
   bottom: 3vh;
 `
 
-export const LebelVraper = styled.div`
+export const LabelVraper = styled.div`
   margin: 0px;
   position: relative;
   display: flex;

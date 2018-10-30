@@ -16,7 +16,7 @@ import {
   ChartContainer,
   ValueContainer,
   LabelContainer,
-  LebelVraper,
+  LabelVraper,
   ChartWrapper,
   SDiscreteColorLegend,
   ChartWithLegend,
@@ -135,13 +135,13 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           />
         )}
         <ChartContainer>
-          <LebelVraper>
+          <LabelVraper>
             <LabelContainer>
               <Typography variant="h4">
                 {value ? value.label : labelPlaceholder || ''}
               </Typography>
             </LabelContainer>
-          </LebelVraper>
+          </LabelVraper>
           <ChartWrapper>
             <FlexibleChart
               data={data}
