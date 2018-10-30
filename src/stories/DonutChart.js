@@ -18,7 +18,7 @@ import DonutChart from '@components/DonutChart'
 
 const ChartWrapper = styled(Paper)`
   max-height: 100%;
-  height: 100vh;
+  height: 90vh;
   width: 50%;
 `
 
@@ -102,8 +102,8 @@ storiesOf('DonutChart', module)
           data={object("data", chartData, groupId)}
           isSizeFlexible={boolean("Is Size Flexible" , true)}
           colorLegend={boolean("Color Legend", true)}
-          hightCoefficient={number("Hight Coefficient", 16)}
-          widthCoefficient={number("Width Coefficient", 6)}
+          hightCoefficient={number("Hight Coefficient", 10)}
+          widthCoefficient={number("Width Coefficient", 5)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
       </ChartWrapper>

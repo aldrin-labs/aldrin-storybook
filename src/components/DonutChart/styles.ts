@@ -58,6 +58,11 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
 `
 
 export const LabelContainer = styled.div`
+  position: absolute;
+  bottom: 3vh;
+`
+
+export const LebelVraper = styled.div`
   margin: 0px;
   position: relative;
   display: flex;
