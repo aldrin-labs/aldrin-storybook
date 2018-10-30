@@ -39,8 +39,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       },
     ],
     radius: 100,
-    hightCoefficient: 16,
-    widthCoefficient: 6,
+    hightCoefficient: 10,
+    widthCoefficient: 5,
     thicknessCoefficient: 10,
     colors: defaultColors,
   }
