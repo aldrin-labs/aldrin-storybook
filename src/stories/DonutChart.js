@@ -98,7 +98,7 @@ storiesOf('DonutChart', module)
     withInfo()(() =>
       <ChartWrapper elevation={8}>
         <DonutChart
-          labelPlaceholder={text("Label Placeholder" , "Industries %")}
+          labelPlaceholder={text("Label Placeholder" , "Industry %")}
           data={object("data", chartData, groupId)}
           isSizeFlexible={boolean("Is Size Flexible" , true)}
           colorLegend={boolean("Color Legend", true)}
