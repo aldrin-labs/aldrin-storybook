@@ -8,12 +8,11 @@ export const ChartWithLegend = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 90%;
 `
 
 export const ChartContainer = styled.div`
   text-align: center;
-  min-height: 25rem;
   z-index: 2;
   width: 100%;
   height: 100%;
@@ -23,7 +22,7 @@ export const ChartContainer = styled.div`
 export const ChartWrapper = styled.div`
   width: 100%;
   height: initial;
-  height: 50%;
+  height: 100%;
 `
 
 export const ValueContainer = styled.div`
@@ -63,7 +62,7 @@ position: relative;
 display: flex;
 place-content: center;
 place-items: center;
-height: 25%;
+height: 10%;
 `
 
 export const ChartWithTitle = styled.div`

@@ -19,7 +19,7 @@ import DonutChart from '@components/DonutChart'
 const ChartWrapper = styled(Paper)`
   max-height: 100%;
   height: 90vh;
-  width: 40%;
+  width: 60%;
 `
 
 const chartData = [
