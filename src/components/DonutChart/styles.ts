@@ -22,7 +22,8 @@ export const ChartContainer = styled.div`
 export const ChartWrapper = styled.div`
   width: 100%;
   height: initial;
-  height: calc(100% - 178px);
+  height: 50%;
+  margin-bottom: 25%;
 `
 
 export const ValueContainer = styled.div`
@@ -62,5 +63,5 @@ export const LabelContainer = styled.div`
   display: flex;
   place-content: center;
   place-items: center;
-  height: 90px;
+  margin-top: 25%;
 `
