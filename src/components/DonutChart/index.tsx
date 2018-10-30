@@ -6,10 +6,12 @@ import {
   makeVisFlexible,
   DiscreteColorLegend,
 } from 'react-vis'
-import { Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
+import { darken } from '@material-ui/core/styles/colorManipulator'
+import _ from 'lodash'
+import { getRandomColor } from './utils'
 
-import { Props, State, DonutPiece, InputRecord, gradient } from './types'
+import { Props, State, DonutPiece, InputRecord } from './types'
 import {
   ChartContainer,
   ValueContainer,
@@ -18,7 +20,7 @@ import {
   SDiscreteColorLegend,
   ChartWithLegend,
 } from './styles'
-import defaultGradients from './gradients'
+import defaultColors from './colors'
 
 const FlexibleChart = makeVisFlexible(RadialChart)
 
@@ -27,11 +29,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     labelPlaceholder: '',
     data: [
       {
-        label: "Default 1",
+        label: 'Default 1',
         realValue: 50,
       },
       {
-        label: "Default 2",
+        label: 'Default 2',
         realValue: 50,
       },
     ],
@@ -39,23 +41,33 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     hightCoefficient: 16,
     widthCoefficient: 6,
     thicknessCoefficient: 10,
-    gradients: defaultGradients,
+    colors: defaultColors,
   }
   state: State = {
     data: [],
     value: null,
+    colorsWithRandom: [],
   }
 
   componentDidMount = () => {
     this.setState({ data: this.getDataFromImput(this.props.data) })
+    this.setState({colorsWithRandom : this.getColorsWithRandom(this.props.colors, this.props.data.length)})
   }
+
+  getColorsWithRandom = ( colors: string[], dataLengh ) => {
+    return [
+    ...colors, ...(_.range(dataLengh - colors.length)).map(() =>
+      getRandomColor()
+    ),
+  ]
+}
 
   getDataFromImput = (inputData: InputRecord[]) =>
     inputData.map((record: InputRecord, index: number) => ({
       angle: record.realValue,
       label: record.label,
       realValue: record.realValue,
-      gradientIndex: index % this.props.gradients.length,
+      colorIndex: index,
     }))
 
   onValueMouseOver = (value: DonutPiece) => {
@@ -77,13 +89,17 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   render() {
-    const { value, data } = this.state
+    const {
+      value,
+      data,
+      colorsWithRandom,
+    } = this.state
 
     const {
       radius,
       thickness,
       labelPlaceholder,
-      gradients,
+      colors,
       colorLegend,
       theme,
       isSizeFlexible,
@@ -92,14 +108,16 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       thicknessCoefficient,
     } = this.props
 
-    var FlexibleRadius = isSizeFlexible
+
+
+    const FlexibleRadius = isSizeFlexible
       ? Math.min(
           window.innerWidth / hightCoefficient,
           window.innerHeight / widthCoefficient
         )
       : radius
 
-    var innerRadius = thickness
+    const innerRadius = thickness
       ? FlexibleRadius - thickness
       : FlexibleRadius - FlexibleRadius / thicknessCoefficient
 
@@ -110,7 +128,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             width={250}
             items={data.map((d) => d.label)}
             colors={data.map(
-              (d, index) => gradients[index % gradients.length][0]
+              (d, index) => colorsWithRandom[index]
             )}
             textColor={theme.typography.body1.color}
           />
@@ -128,20 +146,20 @@ class DonutChartWitoutTheme extends Component<Props, State> {
               innerRadius={innerRadius}
               animation={true}
               colorType={'literal'}
-              getColor={(d) => `url(#${d.gradientIndex})`}
+              getColor={(d) => `url(#${d.colorIndex})`}
               onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
               onSeriesMouseOut={() => this.onSeriesMouseOut()}
               style={{
                 strokeWidth: 0,
               }}
             >
-              <ValueContainer opacity={value != undefined}>
+              <ValueContainer opacity={value !== undefined}>
                 <Typography variant="h3">
                   {value ? `${value.realValue}%` : '\u2063'}
                 </Typography>
               </ValueContainer>
               <GradientDefs>
-                {gradients.map((pair: gradient, index: number) => (
+                {colorsWithRandom.map((color: string, index: number) => (
                   <linearGradient
                     id={index.toString()}
                     x1="0"
@@ -149,8 +167,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                     y1="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor={pair[0]} opacity={0.6} />
-                    <stop offset="100%" stopColor={pair[1]} opacity={0.6} />
+                    <stop offset="0%" stopColor={color} opacity={0.6} />
+                    <stop offset="100%" stopColor={darken(color, 0.3)} opacity={0.6} />
                   </linearGradient>
                 ))}
               </GradientDefs>
