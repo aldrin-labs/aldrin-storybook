@@ -17,13 +17,13 @@ export const ChartContainer = styled.div`
   z-index: 2;
   width: 100%;
   height: 100%;
+  marigin: 0px;
 `
 
 export const ChartWrapper = styled.div`
   width: 100%;
   height: initial;
   height: 50%;
-  margin-bottom: 25%;
 `
 
 export const ValueContainer = styled.div`
@@ -63,5 +63,5 @@ export const LabelContainer = styled.div`
   display: flex;
   place-content: center;
   place-items: center;
-  margin-top: 25%;
+  height: 25%;
 `
