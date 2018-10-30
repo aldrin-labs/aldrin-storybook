@@ -19,7 +19,7 @@ import DonutChart from '@components/DonutChart'
 const ChartWrapper = styled(Paper)`
   max-height: 100%;
   height: 90vh;
-  width: 50%;
+  width: 40%;
 `
 
 const chartData = [
@@ -43,50 +43,6 @@ const chartData = [
     label: "Some other things",
     realValue: 30,
   },
-  {
-    label: "Some other things2",
-    realValue: 30,
-  },
-  {
-    label: "Some other things3",
-    realValue: 30,
-  },
-  {
-    label: "Some other things4",
-    realValue: 30,
-  },
-  {
-    label: "Some other things5",
-    realValue: 30,
-  },
-  {
-    label: "Some other things6",
-    realValue: 30,
-  },
-  {
-    label: "Some other things7",
-    realValue: 30,
-  },
-  {
-    label: "Some other things8",
-    realValue: 30,
-  },
-  {
-    label: "Some other things9",
-    realValue: 30,
-  },
-  {
-    label: "Some other things10",
-    realValue: 30,
-  },
-  {
-    label: "Some other things11",
-    realValue: 30,
-  },
-  {
-    label: "Some other things12",
-    realValue: 30,
-  }
 ]
 
 const groupId = 'GROUP-ID1';

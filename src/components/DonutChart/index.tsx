@@ -16,7 +16,7 @@ import {
   ChartContainer,
   ValueContainer,
   LabelContainer,
-  LabelVraper,
+  ChartWithTitle,
   ChartWrapper,
   SDiscreteColorLegend,
   ChartWithLegend,
@@ -123,6 +123,12 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       : FlexibleRadius - FlexibleRadius / thicknessCoefficient
 
     return (
+      <ChartWithTitle>
+      <LabelContainer>
+        <Typography variant="h4">
+          {value ? value.label : labelPlaceholder || ''}
+        </Typography>
+      </LabelContainer>
       <ChartWithLegend>
         {colorLegend && (
           <SDiscreteColorLegend
@@ -135,13 +141,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           />
         )}
         <ChartContainer>
-          <LabelVraper>
-            <LabelContainer>
-              <Typography variant="h4">
-                {value ? value.label : labelPlaceholder || ''}
-              </Typography>
-            </LabelContainer>
-          </LabelVraper>
+
           <ChartWrapper>
             <FlexibleChart
               data={data}
@@ -179,6 +179,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           </ChartWrapper>
         </ChartContainer>
       </ChartWithLegend>
+      </ChartWithTitle>
     )
   }
 }

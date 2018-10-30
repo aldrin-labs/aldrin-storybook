@@ -58,15 +58,14 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
 `
 
 export const LabelContainer = styled.div`
-  position: absolute;
-  bottom: 3vh;
+margin: 0px;
+position: relative;
+display: flex;
+place-content: center;
+place-items: center;
+height: 25%;
 `
 
-export const LabelVraper = styled.div`
-  margin: 0px;
-  position: relative;
-  display: flex;
-  place-content: center;
-  place-items: center;
-  height: 25%;
+export const ChartWithTitle = styled.div`
+  height: 100%;
 `
