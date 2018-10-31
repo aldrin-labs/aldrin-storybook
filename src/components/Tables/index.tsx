@@ -463,7 +463,7 @@ const CustomTable = (props: Props) => {
                       padding="checkbox"
                       style={{
                         // temporary
-                        position: 'sticky',
+                        position: row && row[0].variant && 'static' || 'sticky',
                         bottom: stickyOffset,
                         background:
                           row && row[0].variant === 'body'
