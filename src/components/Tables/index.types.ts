@@ -6,6 +6,7 @@ type T = string | number
 type TObj = {
   render: string
   color: string
+  variant: 'body' | 'head' | 'footer'
   isNumber: boolean
   style: any
   // if you wrap you render with JSX but still want to use
