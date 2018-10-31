@@ -12,7 +12,6 @@ import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import nanoid from 'nanoid'
 
 import {
   Props,
@@ -288,6 +287,7 @@ const CustomTable = (props: Props) => {
     sort,
     theme,
   } = props
+
   const isSortable = typeof sort !== 'undefined'
   if (
     rows !== undefined &&
@@ -466,41 +466,42 @@ const CustomTable = (props: Props) => {
                         position: 'sticky',
                         bottom: stickyOffset,
                         background:
-                          row[0].variant === 'body'
+                          row && row[0].variant === 'body'
                             ? theme.palette.background.paper
                             : '',
                       }}
-                      variant={row[0].variant || 'footer'}
+                      variant={(row && row[0].variant) || 'footer'}
                     />
                   )}
-                  {row.map((cell, cellIndex) => {
-                    const numeric = isNumeric(cell)
+                  {Array.isArray(row) &&
+                    row.map((cell, cellIndex) => {
+                      const numeric = isNumeric(cell)
 
-                    const spreadedCell = isObject(cell)
-                      ? cell
-                      : { render: cell }
-                    const bodyBackground =
-                      cell.variant === 'body'
-                        ? { background: theme.palette.background.paper }
-                        : {}
-                    const footerCell = {
-                      ...(spreadedCell as object),
-                      style: {
-                        // temporary
-                        ...bodyBackground,
-                        position: 'sticky',
-                        bottom: stickyOffset,
-                        ...cell.style,
-                      },
-                    }
+                      const spreadedCell = isObject(cell)
+                        ? cell
+                        : { render: cell }
+                      const bodyBackground =
+                        cell.variant === 'body'
+                          ? { background: theme.palette.background.paper }
+                          : {}
+                      const footerCell = {
+                        ...(spreadedCell as object),
+                        style: {
+                          // temporary
+                          ...bodyBackground,
+                          position: 'sticky',
+                          bottom: stickyOffset,
+                          ...cell.style,
+                        },
+                      }
 
-                    return renderCell({
-                      numeric,
-                      cell: footerCell as Cell,
-                      id: cellIndex,
-                      variant: cell.variant || 'footer',
-                    })
-                  })}
+                      return renderCell({
+                        numeric,
+                        cell: footerCell as Cell,
+                        id: cellIndex,
+                        variant: cell.variant || 'footer',
+                      })
+                    })}
                 </TableRow>
               )
             })}
