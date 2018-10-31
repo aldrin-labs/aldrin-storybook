@@ -35,6 +35,7 @@ storiesOf('TablesWithCheckbox', module)
             }}
           >
             <Sort
+              withCheckboxes={boolean('witchCheckboxes', false)}
               title="Title"
               sort={{
                 sortColumn: 2,

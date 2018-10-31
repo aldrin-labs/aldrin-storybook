@@ -12,6 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
+import nanoid from 'nanoid'
 
 import {
   Props,
@@ -25,7 +26,6 @@ import {
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
-import { inherits } from 'util'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -451,49 +451,59 @@ const CustomTable = (props: Props) => {
         </TableBody>
         {Array.isArray(rows.footer) && (
           <TableFooter>
-            <TableRow className={`${classes.row} ${classes.footer}`}>
-              {(withCheckboxes || expandableRows) && (
-                <CustomTableCell
-                  padding="checkbox"
-                  style={{
-                    // temporary
-                    position: 'sticky',
-                    bottom: 0,
-                    background:
-                      rows.footer[0].variant === 'body'
-                        ? theme.palette.background.paper
-                        : '',
-                  }}
-                  variant={rows.footer[0].variant || 'footer'}
-                />
-              )}
-              {rows.footer.map((cell, cellIndex) => {
-                const numeric = isNumeric(cell)
+            {rows.footer.map((row, index) => {
+              const stickyOffset = (rows.footer.length - 1 - index) * 40
+              return (
+                <TableRow
+                  key={index}
+                  className={`${classes.row} ${classes.footer}`}
+                >
+                  {(withCheckboxes || expandableRows) && (
+                    <CustomTableCell
+                      padding="checkbox"
+                      style={{
+                        // temporary
+                        position: 'sticky',
+                        bottom: stickyOffset,
+                        background:
+                          row[0].variant === 'body'
+                            ? theme.palette.background.paper
+                            : '',
+                      }}
+                      variant={row[0].variant || 'footer'}
+                    />
+                  )}
+                  {row.map((cell, cellIndex) => {
+                    const numeric = isNumeric(cell)
 
-                const spreadedCell = isObject(cell) ? cell : { render: cell }
-                const bodyBackground =
-                  cell.variant === 'body'
-                    ? { background: theme.palette.background.paper }
-                    : {}
-                const footerCell = {
-                  ...(spreadedCell as object),
-                  style: {
-                    // temporary
-                    ...bodyBackground,
-                    position: 'sticky',
-                    bottom: 0,
-                    ...cell.style,
-                  },
-                }
+                    const spreadedCell = isObject(cell)
+                      ? cell
+                      : { render: cell }
+                    const bodyBackground =
+                      cell.variant === 'body'
+                        ? { background: theme.palette.background.paper }
+                        : {}
+                    const footerCell = {
+                      ...(spreadedCell as object),
+                      style: {
+                        // temporary
+                        ...bodyBackground,
+                        position: 'sticky',
+                        bottom: stickyOffset,
+                        ...cell.style,
+                      },
+                    }
 
-                return renderCell({
-                  numeric,
-                  cell: footerCell as Cell,
-                  id: cellIndex,
-                  variant: cell.variant || 'footer',
-                })
-              })}
-            </TableRow>
+                    return renderCell({
+                      numeric,
+                      cell: footerCell as Cell,
+                      id: cellIndex,
+                      variant: cell.variant || 'footer',
+                    })
+                  })}
+                </TableRow>
+              )
+            })}
           </TableFooter>
         )}
       </Table>

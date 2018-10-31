@@ -7,11 +7,20 @@ export const mock = {
     { isNumber: false, render: 'Datetime' },
   ],
   footer: [
-    'Footer',
-    'Footer',
-    0.00011183,
-    'Footer',
-    { render: 'Footer', isNumber: false, style: { fontSize: 11 } },
+    [
+      { render: 'Footer' },
+      { render: 'Footer' },
+      { render: 'Footer' },
+      { render: 'Footer' },
+      { render: 'Footer' },
+    ],
+    [
+      { render: 'Footer', variant: 'footer' },
+      { render: 'Footer', variant: 'footer' },
+      0.00011183,
+      'Footer',
+      { render: 'Footer', isNumber: false, style: { fontSize: 11 } },
+    ],
   ],
   body: [
     [
