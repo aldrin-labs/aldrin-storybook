@@ -1,6 +1,5 @@
 import { WithStyles } from '@material-ui/core'
 import React from 'react'
-import { boolean } from '@storybook/addon-knobs'
 
 type T = string | number
 type TObj = {
@@ -49,5 +48,5 @@ export interface Props extends WithStyles {
   onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
-  sort: sortTypes
+  sort: sortTypes | undefined
 }

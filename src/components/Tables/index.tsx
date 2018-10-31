@@ -20,6 +20,8 @@ import {
   Row,
   Rows,
   OnChangeWithEvent,
+  sortTypes,
+  HeadCell,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
@@ -239,6 +241,25 @@ const renderCell = ({
     </CustomTableCell>
   )
 }
+
+const renderHeadCell = (
+  cell: HeadCell,
+  isSortable: boolean,
+  sort: sortTypes | undefined,
+  column: number
+) =>
+  isSortable ? (
+    <TableSortLabel
+      active={sort!.sortColumn === column}
+      direction={sort!.sortDirection}
+      onClick={() => sort!.sortHandler(column)}
+    >
+      {cell.render}
+    </TableSortLabel>
+  ) : (
+    cell.render
+  )
+
 {
   /* ToDo:
             - Add settings render
@@ -264,8 +285,9 @@ const CustomTable = (props: Props) => {
     },
     checkedRows = [],
     staticCheckbox = false,
-    sort: { sortColumn, sortDirection, sortHandler },
+    sort,
   } = props
+  const isSortable = typeof sort !== 'undefined'
   if (
     rows !== undefined &&
     !Array.isArray(rows.head) &&
@@ -332,13 +354,7 @@ const CustomTable = (props: Props) => {
                   numeric={cell.isNumber}
                   key={cell.render}
                 >
-                  <TableSortLabel
-                    active={sortColumn === column}
-                    direction={sortDirection}
-                    onClick={() => sortHandler(column)}
-                  >
-                    {cell.render}
-                  </TableSortLabel>
+                  {renderHeadCell(cell, isSortable, sort, column)}
                 </CustomTableCell>
               )
             })}
