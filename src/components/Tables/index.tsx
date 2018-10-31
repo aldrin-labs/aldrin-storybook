@@ -52,8 +52,8 @@ const CustomTableCell = withStyles((theme) => ({
     color: 'white',
     backgroundColor:
       theme.palette.type === 'dark'
-        ? theme.palette.grey[900]
-        : theme.palette.grey[500],
+        ? theme.palette.primary[700]
+        : theme.palette.primary[400],
     padding: '1px 14px 1px 6px',
   },
 }))(TableCell)
