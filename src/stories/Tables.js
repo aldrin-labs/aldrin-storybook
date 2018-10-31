@@ -1,17 +1,23 @@
-import React from 'react';
-import { storiesOf } from '@storybook/react';
+import React from 'react'
+import { storiesOf } from '@storybook/react'
 
-import { backgrounds } from './backgrounds';
-import Tables from '../components/Tables';
-import { mock } from '../components/Tables/mocks';
-import { withInfo } from '@storybook/addon-info';
-import { object } from '@storybook/addon-knobs/react';
-import Paper from '@material-ui/core/Paper';
-import { Grid } from '@material-ui/core';
+import { backgrounds } from './backgrounds'
+import { mock } from '../components/Tables/mocks'
+import { withInfo } from '@storybook/addon-info'
+import {
+  object,
+  number,
+  boolean,
+  text,
+  array,
+} from '@storybook/addon-knobs/react'
+import Paper from '@material-ui/core/Paper'
+import { Grid } from '@material-ui/core'
+import Sort from '../components/Tables/WithSort'
 
-const groupId = 'GROUP-ID11';
+const groupId = 'GROUP-ID11'
 
-const props = { withCheckboxes: true };
+const props = { withCheckboxes: true }
 
 storiesOf('TablesWithCheckbox', module)
   .addDecorator(backgrounds)
@@ -28,9 +34,19 @@ storiesOf('TablesWithCheckbox', module)
               flexDirection: 'column',
             }}
           >
-            <Tables rows={mock} title="hi" {...{ ...object('props', props, groupId) }} />
+            <Sort
+              title="Title"
+              sort={{
+                sortColumn: 2,
+                sortDirection: 'desc',
+                sortHandler: () => {
+                  console.log('sorted')
+                },
+              }}
+              rows={mock}
+            />
           </Paper>
         </Grid>
       </Grid>
-    )),
-  );
+    ))
+  )
