@@ -25,6 +25,7 @@ import {
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
+import { inherits } from 'util'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -44,7 +45,6 @@ const CustomTableCell = withStyles((theme) => ({
     padding: '1px 14px 1px 6px',
   },
   body: {
-    background: theme.palette.background.paper,
     borderBottom: 'none',
     fontSize: 12,
     padding: '1px 14px 1px 6px',
@@ -286,6 +286,7 @@ const CustomTable = (props: Props) => {
     checkedRows = [],
     staticCheckbox = false,
     sort,
+    theme,
   } = props
   const isSortable = typeof sort !== 'undefined'
   if (
@@ -458,6 +459,10 @@ const CustomTable = (props: Props) => {
                     // temporary
                     position: 'sticky',
                     bottom: 0,
+                    background:
+                      rows.footer[0].variant === 'body'
+                        ? theme.palette.background.paper
+                        : '',
                   }}
                   variant={rows.footer[0].variant || 'footer'}
                 />
@@ -466,11 +471,15 @@ const CustomTable = (props: Props) => {
                 const numeric = isNumeric(cell)
 
                 const spreadedCell = isObject(cell) ? cell : { render: cell }
-
+                const bodyBackground =
+                  cell.variant === 'body'
+                    ? { background: theme.palette.background.paper }
+                    : {}
                 const footerCell = {
                   ...(spreadedCell as object),
                   style: {
                     // temporary
+                    ...bodyBackground,
                     position: 'sticky',
                     bottom: 0,
                     ...cell.style,

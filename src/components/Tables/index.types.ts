@@ -1,4 +1,4 @@
-import { WithStyles } from '@material-ui/core'
+import { WithStyles, Theme, WithTheme } from '@material-ui/core'
 import React from 'react'
 
 type T = string | number
@@ -37,6 +37,7 @@ export type sortTypes = {
 export interface Props extends WithStyles {
   withCheckboxes?: boolean
   expandableRows?: boolean
+  theme: Theme
   // removes animation from checkbox
   staticCheckbox?: boolean
   padding: 'default' | 'checkbox' | 'dense' | 'none'
