@@ -33,7 +33,7 @@ const colors = [
 console.log(colors[3])
 
 const groupId = 'GROUP-ID1'
-const groupId2 = 'GROUP-ID2'
+//const groupId2 = 'GROUP-ID2'
 
 storiesOf('CorrelationMatrixTable', module)
   .add(
