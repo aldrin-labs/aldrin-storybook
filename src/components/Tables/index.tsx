@@ -7,7 +7,6 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableFooter from '@material-ui/core/TableFooter'
 import Paper from '@material-ui/core/Paper'
-import { hexToRgbAWithOpacity } from '../cssUtils'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
@@ -43,13 +42,12 @@ const CustomTableCell = withStyles((theme) => ({
     padding: '1px 14px 1px 6px',
   },
   body: {
+    background: theme.palette.background.paper,
     borderBottom: 'none',
     fontSize: 12,
     padding: '1px 14px 1px 6px',
   },
   footer: {
-    position: 'sticky',
-    bottom: 0,
     zIndex: 100,
     color: 'white',
     backgroundColor:
@@ -97,10 +95,7 @@ const styles = (theme: Theme) =>
     },
     table: {},
     title: {
-      backgroundColor:
-        theme.palette.type === 'light'
-          ? theme.palette.primary[700]
-          : theme.palette.primary[900],
+      backgroundColor: theme.palette.grey[900],
       position: 'sticky',
       top: 0,
     },
@@ -206,12 +201,17 @@ const renderCheckBox = ({
     />
   ) : null
 
-const renderCell = (
-  cell: Cell,
-  id: number,
-  numeric: boolean,
-  variant: 'body' | 'footer' | 'head' = 'body'
-) => {
+const renderCell = ({
+  cell,
+  id,
+  numeric,
+  variant = 'body',
+}: {
+  cell: Cell
+  id: number
+  numeric: boolean
+  variant?: 'body' | 'footer' | 'head'
+}) => {
   if (cell !== null && typeof cell === 'object') {
     return (
       <CustomTableCell
@@ -389,7 +389,12 @@ const CustomTable = (props: Props) => {
                       return null
                     }
 
-                    return renderCell(cell, cellIndex, numeric)
+                    return renderCell({
+                      cell,
+                      numeric,
+                      id: cellIndex,
+                      variant: cell.variant || 'body',
+                    })
                   })}
                 </TableRow>
                 {expandable && // rendering content of expanded row if it is expandable
@@ -410,7 +415,12 @@ const CustomTable = (props: Props) => {
                               (cell: Cell, cellIndex: number) => {
                                 const numeric = isNumeric(cell)
 
-                                return renderCell(cell, cellIndex, numeric)
+                                return renderCell({
+                                  cell,
+                                  numeric,
+                                  id: cellIndex,
+                                  variant: cell.variant || 'body',
+                                })
                               }
                             )}
                           </TableRow>
@@ -426,7 +436,15 @@ const CustomTable = (props: Props) => {
           <TableFooter>
             <TableRow className={`${classes.row} ${classes.footer}`}>
               {(withCheckboxes || expandableRows) && (
-                <CustomTableCell padding="checkbox" />
+                <CustomTableCell
+                  padding="checkbox"
+                  style={{
+                    // temporary
+                    position: 'sticky',
+                    bottom: 0,
+                  }}
+                  variant={rows.footer[0].variant || 'footer'}
+                />
               )}
               {rows.footer.map((cell, cellIndex) => {
                 const numeric = isNumeric(cell)
@@ -436,16 +454,19 @@ const CustomTable = (props: Props) => {
                 const footerCell = {
                   ...(spreadedCell as object),
                   style: {
+                    // temporary
+                    position: 'sticky',
+                    bottom: 0,
                     ...cell.style,
                   },
                 }
 
-                return renderCell(
-                  footerCell as Cell,
-                  cellIndex,
+                return renderCell({
                   numeric,
-                  'footer'
-                )
+                  cell: footerCell as Cell,
+                  id: cellIndex,
+                  variant: cell.variant || 'footer',
+                })
               })}
             </TableRow>
           </TableFooter>
