@@ -3,6 +3,7 @@ export interface Props {
   value: any
   colorsWithRandom: string[]
   thicknessCoefficient: number
+  isEmpty: boolean
   onValueMouseOver: (v: DonutPiece) => any
   onSeriesMouseOut: () => any
 }
