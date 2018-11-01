@@ -53,7 +53,16 @@ export const mock: { head: Head[]; data: Rows } = {
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },
-      { id: nanoid(), coin: 1, coen: 2, coan: 3 },
+      {
+        coin: 1,
+        id: 'e',
+        coen: 2,
+        coan: 3,
+        expandableContent: [
+          { id: nanoid(), coin: 1, coen: 2, coan: 3 },
+          { id: nanoid(), coin: 1, coen: 2, coan: 3 },
+        ],
+      },
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },
@@ -63,7 +72,7 @@ export const mock: { head: Head[]; data: Rows } = {
     footer: [
       {
         id: ' 1',
-        coin: { render: '1', style: { color: 'red' }, isNumber: false },
+        coin: { render: '1', style: { color: 'green' }, isNumber: false },
         coen: 2,
         coan: 3,
         options: {

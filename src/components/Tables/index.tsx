@@ -437,7 +437,7 @@ const CustomTable = (props: Props) => {
         <TableBody>
           {data.body.map((row, ind: number) => {
             const selected = checkedRows.indexOf(row.id) !== -1
-            const expandedRow = expandedRows.indexOf(ind) !== -1
+            const expandedRow = expandedRows.indexOf(row.id) !== -1
             const rowClassName = selected
               ? `${classes.row} + ${classes.rowSelected}`
               : classes.row
@@ -471,37 +471,22 @@ const CustomTable = (props: Props) => {
                   )}
                   {renderCells(row)}
                 </TableRow>
-                {/* {expandable && // rendering content of expanded row if it is expandable
-                  ((row[row.length - 1] as unknown) as Row[]).map(
-                    (collapsedRows: Row, i: number) => {
-                      return (
-                        <Grow
-                          // but we hiding until have an expandedRow
-                          // saying to open expanded content
-                          in={expandedRow}
-                          key={i}
-                          unmountOnExit={true}
-                          mountOnEnter={true}
-                        >
-                          <TableRow className={classes.rowExpanded}>
-                            <CustomTableCell padding="checkbox" />
-                            {collapsedRows.map(
-                              (cell: Cell, cellIndex: number) => {
-                                const numeric = isNumeric(cell)
-
-                                return renderCell({
-                                  cell,
-                                  numeric,
-                                  id: cellIndex,
-                                  variant: cell.variant || 'body',
-                                })
-                              }
-                            )}
-                          </TableRow>
-                        </Grow>
-                      )
-                    }
-                  )} */}
+                {expandable && // rendering content of expanded row if it is expandable
+                  row.expandableContent.map((collapsedRows: Row, i: number) => {
+                    return (
+                      <Grow
+                        in={expandedRow}
+                        key={i}
+                        unmountOnExit={true}
+                        mountOnEnter={true}
+                      >
+                        <TableRow className={classes.rowExpanded}>
+                          <CustomTableCell padding="checkbox" />
+                          {renderCells(collapsedRows)}
+                        </TableRow>
+                      </Grow>
+                    )
+                  })}
               </React.Fragment>
             )
           })}

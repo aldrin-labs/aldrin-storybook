@@ -46,7 +46,8 @@ storiesOf('TablesWithCheckbox', module)
               //   },
               // }}
               data={mock.data}
-              checkedRows={['2', '1']}
+              expandedRows={['e']}
+              expandableRows
               columnNames={mock.head}
               // rows={mock}
             />

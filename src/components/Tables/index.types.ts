@@ -23,8 +23,14 @@ export type OnChange = (id: number) => void
 
 export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 
+// ToDo
+// change data structure
+// for expandedRows
+
 export type RowContent = {
   [key: string]: Cell
+} & { id: string } & {
+  expandableContent?: ExpandedContent[]
 }
 
 export type Options = {
@@ -32,11 +38,11 @@ export type Options = {
   variant?: 'body' | 'footer' | 'head'
 }
 
-export type Row = RowContent & { id: string } & { options?: Options } & {
-  expandableContent?: Row
+export type ExpandedContent = RowContent & { id: string } & {
+  options?: Options
 }
 
-export type ExtendableRow = Cell[]
+export type Row = RowContent & { options?: Options }
 
 export type Rows = { body: Row[]; footer?: Row[] }
 
@@ -64,7 +70,7 @@ export interface Props extends WithStyles {
   data: Rows
   columnNames: Head[]
   checkedRows?: string[]
-  expandedRows?: number[]
+  expandedRows?: string[]
   title?: string | number
   onChange?: OnChange & OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
