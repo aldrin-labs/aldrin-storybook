@@ -28,24 +28,28 @@ export class FlexibleChart extends Component<Props, State>{
     window.addEventListener('resize', this.shuffle)
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.shuffle)
+  }
+
   shuffle = () => {
     this.setState({doReportSize: true})
   }
 
   refCallback = element => {
-    if (element) {
-      this.setState({elementRef: element})
-    }
+    this.setState({elementRef: element})
     this.setRadius(element)
   }
 
   setRadius = (element) => {
-    this.setState({chartRadius:
+    if (element) {
+      this.setState({chartRadius:
       Math.min(
         element.getBoundingClientRect().width,
         element.getBoundingClientRect().height
       ) / 2.2})
       this.setState({doReportSize: false})
+    }
   }
 
   componentDidUpdate() {
