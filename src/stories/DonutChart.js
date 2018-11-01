@@ -56,10 +56,7 @@ storiesOf('DonutChart', module)
         <DonutChart
           labelPlaceholder={text("Label Placeholder" , "Industry %")}
           data={object("data", chartData, groupId)}
-          isSizeFlexible={boolean("Is Size Flexible" , true)}
           colorLegend={boolean("Color Legend", true)}
-          hightCoefficient={number("Hight Coefficient", 10)}
-          widthCoefficient={number("Width Coefficient", 5)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
       </ChartWrapper>

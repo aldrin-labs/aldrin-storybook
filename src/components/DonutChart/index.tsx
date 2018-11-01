@@ -54,12 +54,12 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 }
 
   getDataFromImput = (inputData: InputRecord[]) =>
-    inputData.map((record: InputRecord, index: number) => ({
+    (inputData.map((record: InputRecord, index: number) => ({
       angle: record.realValue,
       label: record.label,
       realValue: record.realValue,
       colorIndex: index,
-    }))
+    }))).filter((piece: DonutPiece) => piece.realValue > 0)
 
   onValueMouseOver = (value: DonutPiece) => {
     const { data, value: stateValue } = this.state
