@@ -1,29 +1,21 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
-import {
-  RadialChart,
-  GradientDefs,
-  makeVisFlexible,
-  DiscreteColorLegend,
-} from 'react-vis'
+
 import { withTheme } from '@material-ui/core/styles'
-import { darken } from '@material-ui/core/styles/colorManipulator'
 import _ from 'lodash'
 import { getRandomColor } from './utils'
 
 import { Props, State, DonutPiece, InputRecord } from './types'
 import {
   ChartContainer,
-  ValueContainer,
   LabelContainer,
   ChartWithTitle,
-  ChartWrapper,
   SDiscreteColorLegend,
   ChartWithLegend,
 } from './styles'
 import defaultColors from './colors'
 
-const FlexibleChart = makeVisFlexible(RadialChart)
+import { FlexibleChart } from './FlexibleChart'
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
@@ -38,9 +30,6 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         realValue: 50,
       },
     ],
-    radius: 100,
-    hightCoefficient: 7,
-    widthCoefficient: 6,
     thicknessCoefficient: 10,
     colors: defaultColors,
   }
@@ -48,6 +37,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     data: [],
     value: null,
     colorsWithRandom: [],
+    chartSize: 0,
   }
 
   componentDidMount = () => {
@@ -89,6 +79,12 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     this.setState({ value: null, data: this.getDataFromImput(this.props.data) })
   }
 
+  refSizeMesure = element => {
+    if (element) {
+      this.setState({ chartSize: element.getBoundingClientRect})
+    }
+  }
+
   render() {
     const {
       value,
@@ -97,88 +93,41 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     } = this.state
 
     const {
-      radius,
-      thickness,
       labelPlaceholder,
-      colors,
       colorLegend,
       theme,
-      isSizeFlexible,
-      hightCoefficient,
-      widthCoefficient,
       thicknessCoefficient,
     } = this.props
 
-
-
-    const FlexibleRadius = isSizeFlexible
-      ? Math.min(
-          window.innerWidth / hightCoefficient,
-          window.innerHeight / widthCoefficient
-        )
-      : radius
-
-    const innerRadius = thickness
-      ? FlexibleRadius - thickness
-      : FlexibleRadius - FlexibleRadius / thicknessCoefficient
-
     return (
       <ChartWithTitle>
-      <LabelContainer>
-        <Typography variant="h4">
-          {value ? value.label : labelPlaceholder || ''}
-        </Typography>
-      </LabelContainer>
-      <ChartWithLegend>
-        {colorLegend && (
-          <SDiscreteColorLegend
-            width={250}
-            items={data.map((d) => d.label)}
-            colors={data.map(
-              (d, index) => colorsWithRandom[index]
-            )}
-            textColor={theme.typography.body1.color}
-          />
-        )}
-        <ChartContainer>
-
-          <ChartWrapper>
+        <LabelContainer>
+          <Typography variant="h4">
+            {value ? value.label : labelPlaceholder || ''}
+          </Typography>
+        </LabelContainer>
+        <ChartWithLegend>
+          {colorLegend && (
+            <SDiscreteColorLegend
+              width={250}
+              items={data.map((d) => d.label)}
+              colors={data.map(
+                (d, index) => colorsWithRandom[index]
+              )}
+              textColor={theme.typography.body1.color}
+            />
+          )}
+          <ChartContainer>
             <FlexibleChart
               data={data}
-              radius={FlexibleRadius}
-              innerRadius={innerRadius}
-              animation={true}
-              colorType={'literal'}
-              getColor={(d) => `url(#${d.colorIndex})`}
               onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
               onSeriesMouseOut={() => this.onSeriesMouseOut()}
-              style={{
-                strokeWidth: 0,
-              }}
-            >
-              <ValueContainer opacity={value !== undefined}>
-                <Typography variant="h3">
-                  {value ? `${value.realValue}%` : '\u2063'}
-                </Typography>
-              </ValueContainer>
-              <GradientDefs>
-                {colorsWithRandom.map((color: string, index: number) => (
-                  <linearGradient
-                    id={index.toString()}
-                    x1="0"
-                    x2="0"
-                    y1="0"
-                    y2="1"
-                  >
-                    <stop offset="0%" stopColor={color} opacity={0.6} />
-                    <stop offset="100%" stopColor={darken(color, 0.3)} opacity={0.6} />
-                  </linearGradient>
-                ))}
-              </GradientDefs>
-            </FlexibleChart>
-          </ChartWrapper>
-        </ChartContainer>
-      </ChartWithLegend>
+              value={value}
+              colorsWithRandom={colorsWithRandom}
+              thicknessCoefficient={thicknessCoefficient}
+            />
+          </ChartContainer>
+        </ChartWithLegend>
       </ChartWithTitle>
     )
   }

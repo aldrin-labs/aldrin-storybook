@@ -18,14 +18,9 @@ export interface InputRecord {
 export interface Props {
   data: InputRecord[]
   labelPlaceholder: string
-  radius: number
-  thickness?: number
   colors: string[]
   theme: Theme
   colorLegend: boolean
-  isSizeFlexible: boolean
-  hightCoefficient: number
-  widthCoefficient: number
   thicknessCoefficient: number
 }
 
@@ -33,4 +28,5 @@ export interface State {
   data: DonutPiece[]
   value: DonutPiece | null
   colorsWithRandom: string[]
+  chartSize: number
 }

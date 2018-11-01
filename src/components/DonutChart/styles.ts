@@ -19,24 +19,8 @@ export const ChartContainer = styled.div`
   marigin: 0px;
 `
 
-export const ChartWrapper = styled.div`
-  width: 100%;
-  height: initial;
-  height: 100%;
-`
-
-export const ValueContainer = styled.div`
-  margin: 0px;
-  position: relative;
-  top: -50%;
-  transform: translate(0, -50%);
-  text-align: center;
-  z-index: -1;
-  opacity: ${(props: { opacity: boolean }) => (props.opacity ? 1 : 0)};
-  transition: opacity 0.25s ease-in-out;
-`
-
 export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
+  min-width: 150px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
