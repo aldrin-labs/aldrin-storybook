@@ -36,12 +36,12 @@ export class FlexibleChart extends Component<Props, State>{
     this.setState({doReportSize: true})
   }
 
-  refCallback = (element: any) => {
+  refCallback = element => {
     this.setState({elementRef: element})
     this.setRadius(element)
   }
 
-  setRadius = (element: any) => {
+  setRadius = element => {
     if (element) {
       this.setState({chartRadius:
       Math.min(
