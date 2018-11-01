@@ -13,7 +13,7 @@ import {
   SDiscreteColorLegend,
   ChartWithLegend,
 } from './styles'
-import defaultColors from './colors'
+import { defaultColors, emptyColor}  from './colors'
 
 import { FlexibleChart } from './FlexibleChart'
 
@@ -99,6 +99,13 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       thicknessCoefficient,
     } = this.props
 
+    const emptyData = {
+      angle: 1,
+      label: '1',
+      realValue: 1,
+      colorIndex: 0,
+    }
+
     return (
       <ChartWithTitle>
         <LabelContainer>
@@ -107,7 +114,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           </Typography>
         </LabelContainer>
         <ChartWithLegend>
-          {colorLegend && (
+          {colorLegend && data.length && (
             <SDiscreteColorLegend
               width={250}
               items={data.map((d) => d.label)}
@@ -118,7 +125,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             />
           )}
           <ChartContainer>
-            <FlexibleChart
+            {data.length
+            ? <FlexibleChart
               data={data}
               onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
               onSeriesMouseOut={() => this.onSeriesMouseOut()}
@@ -126,6 +134,14 @@ class DonutChartWitoutTheme extends Component<Props, State> {
               colorsWithRandom={colorsWithRandom}
               thicknessCoefficient={thicknessCoefficient}
             />
+          :<FlexibleChart
+            data={[emptyData]}
+            onValueMouseOver={() => undefined}
+            onSeriesMouseOut={() => undefined}
+            value={value}
+            colorsWithRandom={[emptyColor]}
+            thicknessCoefficient={thicknessCoefficient}
+        />}
           </ChartContainer>
         </ChartWithLegend>
       </ChartWithTitle>
