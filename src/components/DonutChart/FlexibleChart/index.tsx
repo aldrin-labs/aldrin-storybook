@@ -36,12 +36,12 @@ export class FlexibleChart extends Component<Props, State>{
     this.setState({doReportSize: true})
   }
 
-  refCallback = element => {
+  refCallback = (element: any) => {
     this.setState({elementRef: element})
     this.setRadius(element)
   }
 
-  setRadius = (element) => {
+  setRadius = (element: any) => {
     if (element) {
       this.setState({chartRadius:
       Math.min(
@@ -59,28 +59,42 @@ export class FlexibleChart extends Component<Props, State>{
   }
 
   render() {
+    const {
+      data,
+      value,
+      thicknessCoefficient,
+      colorsWithRandom,
+      isEmpty,
+      onValueMouseOver,
+      onSeriesMouseOut,
+    } = this.props
+
     return (
       <ChartWrapper ref={this.refCallback}>
         <Chart
-        data={this.props.data}
+        data={data}
         radius={this.state.chartRadius}
-        innerRadius={this.state.chartRadius * (1 - 1 / this.props.thicknessCoefficient)}
+        innerRadius={this.state.chartRadius * (1 - 1 / thicknessCoefficient)}
         animation={true}
         colorType={'literal'}
-        getColor={(d) => `url(#${d.colorIndex})`}
-        onValueMouseOver={(v: DonutPiece) => this.props.onValueMouseOver(v)}
-        onSeriesMouseOut={() => this.props.onSeriesMouseOut()}
+        getColor={(d: any) => `url(#${d.colorIndex})`}
+        onValueMouseOver={(v: DonutPiece) => onValueMouseOver(v)}
+        onSeriesMouseOut={() => onSeriesMouseOut()}
         style={{
           strokeWidth: 0,
         }}
         >
-        <ValueContainer isOpacity={this.props.value !== undefined}>
+        <ValueContainer isOpacity={value !== undefined}>
           <Typography variant="h3">
-            {this.props.value ? `${this.props.value.realValue}%` : '\u2063'}
+            {
+              isEmpty
+              ? 'Empty'
+              : value ? `${value.realValue}%` : '\u2063'
+            }
           </Typography>
         </ValueContainer>
         <GradientDefs>
-          {this.props.colorsWithRandom.map((color: string, index: number) => (
+          {colorsWithRandom.map((color: string, index: number) => (
             <linearGradient
               key={index}
               id={index.toString()}

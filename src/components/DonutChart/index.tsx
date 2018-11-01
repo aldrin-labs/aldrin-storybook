@@ -38,6 +38,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     value: null,
     colorsWithRandom: [],
     chartSize: 0,
+    isEmpty: false,
   }
 
   componentDidMount = () => {
@@ -47,19 +48,20 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
   getColorsWithRandom = ( colors: string[], dataLengh ) => {
     return [
-    ...colors, ...(_.range(dataLengh - colors.length)).map(() =>
-      getRandomColor()
-    ),
-  ]
-}
+      ...colors, ...(_.range(dataLengh - colors.length)).map(() => getRandomColor()),
+    ]
+  }
 
-  getDataFromImput = (inputData: InputRecord[]) =>
-    (inputData.map((record: InputRecord, index: number) => ({
-      angle: record.realValue,
-      label: record.label,
-      realValue: record.realValue,
-      colorIndex: index,
-    }))).filter((piece: DonutPiece) => piece.realValue > 0)
+  getDataFromImput = (inputData: InputRecord[]) =>{
+    const data = (inputData.map((record: InputRecord, index: number) => ({
+        angle: record.realValue,
+        label: record.label,
+        realValue: record.realValue,
+        colorIndex: index,
+      }))).filter((piece: DonutPiece) => piece.realValue > 0)
+    if (data.length === 0) this.setState({ isEmpty: true })
+    return data
+  }
 
   onValueMouseOver = (value: DonutPiece) => {
     const { data, value: stateValue } = this.state
@@ -90,6 +92,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       value,
       data,
       colorsWithRandom,
+      isEmpty,
     } = this.state
 
     const {
@@ -114,7 +117,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           </Typography>
         </LabelContainer>
         <ChartWithLegend>
-          {colorLegend && data.length && (
+          {colorLegend && !isEmpty && (
             <SDiscreteColorLegend
               width={250}
               items={data.map((d) => d.label)}
@@ -133,6 +136,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
               value={value}
               colorsWithRandom={colorsWithRandom}
               thicknessCoefficient={thicknessCoefficient}
+              isEmpty={isEmpty}
             />
           :<FlexibleChart
             data={[emptyData]}
@@ -141,6 +145,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             value={value}
             colorsWithRandom={[emptyColor]}
             thicknessCoefficient={thicknessCoefficient}
+            isEmpty={isEmpty}
         />}
           </ChartContainer>
         </ChartWithLegend>

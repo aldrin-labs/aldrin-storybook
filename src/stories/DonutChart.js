@@ -45,6 +45,17 @@ const chartData = [
   },
 ]
 
+const zeroTestData = [
+  {
+    label: "Payments",
+    realValue: 0,
+  },
+  {
+    label: "Entertainment",
+    realValue: 0,
+  },
+]
+
 const groupId = 'GROUP-ID1';
 
 storiesOf('DonutChart', module)
@@ -60,5 +71,18 @@ storiesOf('DonutChart', module)
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
       </ChartWrapper>
+    )
   )
-)
+  .add(
+    'DonutChart zero values',
+    withInfo()(() =>
+      <ChartWrapper elevation={8}>
+        <DonutChart
+          labelPlaceholder={text("Label Placeholder" , "Industry %")}
+          data={object("data", zeroTestData, groupId)}
+          colorLegend={boolean("Color Legend", true)}
+          thicknessCoefficient={number("Thickness Coefficient", 10)}
+        />
+      </ChartWrapper>
+    )
+  )
