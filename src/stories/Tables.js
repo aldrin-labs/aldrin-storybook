@@ -14,6 +14,7 @@ import {
 import Paper from '@material-ui/core/Paper'
 import { Grid } from '@material-ui/core'
 import Sort from '../components/Tables/WithSort'
+import Tables from '../components/Tables'
 
 const groupId = 'GROUP-ID11'
 
@@ -34,17 +35,20 @@ storiesOf('TablesWithCheckbox', module)
               flexDirection: 'column',
             }}
           >
-            <Sort
+            <Tables
               withCheckboxes={boolean('witchCheckboxes', false)}
               title="Title"
-              sort={{
-                sortColumn: 2,
-                sortDirection: 'desc',
-                sortHandler: () => {
-                  console.log('sorted')
-                },
-              }}
-              rows={mock}
+              // sort={{
+              //   sortColumn: 2,
+              //   sortDirection: 'desc',
+              //   sortHandler: () => {
+              //     console.log('sorted')
+              //   },
+              // }}
+              data={mock.data}
+              checkedRows={['2', '1']}
+              columnNames={mock.head}
+              // rows={mock}
             />
           </Paper>
         </Grid>

@@ -22,6 +22,8 @@ import {
   OnChangeWithEvent,
   sortTypes,
   HeadCell,
+  Head,
+  TObj,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
@@ -130,9 +132,10 @@ const styles = (theme: Theme) =>
   })
 
 const isNumeric = (cell: Cell) =>
-  (cell !== null && typeof cell.render === 'number') ||
-  typeof cell === 'number' ||
-  cell.isNumber
+  typeof cell !== 'string' &&
+  ((cell !== null && typeof cell === 'number') ||
+    (typeof cell !== 'number' &&
+      (typeof cell.render === 'number' || cell.isNumber)))
 
 const renderCheckBox = ({
   type,
@@ -147,7 +150,7 @@ const renderCheckBox = ({
   type: 'check' | 'expand' | 'checkAll' | 'expandAll' | null
   onChange: OnChange & OnChangeWithEvent
   ind?: number
-  checkedRows?: number[]
+  checkedRows?: string[]
   rows?: Rows
   className?: any
   checked?: boolean
@@ -209,7 +212,7 @@ const renderCell = ({
   variant = 'body',
 }: {
   cell: Cell
-  id: number
+  id: string
   numeric: boolean
   variant?: 'body' | 'footer' | 'head'
 }) => {
@@ -242,7 +245,7 @@ const renderCell = ({
 }
 
 const renderHeadCell = (
-  cell: HeadCell,
+  cell: Head,
   isSortable: boolean,
   sort: sortTypes | undefined,
   column: number
@@ -253,16 +256,81 @@ const renderHeadCell = (
       direction={sort!.sortDirection}
       onClick={() => sort!.sortHandler(column)}
     >
-      {cell.render}
+      {cell.label}
     </TableSortLabel>
   ) : (
-    cell.render
+    cell.label
   )
+
+const renderCells = (row: Row) => {
+  const cells = []
+  for (const key of Object.keys(row)) {
+    // skiping rendering
+    if (key === 'id' || key === 'options' || key === 'expandableContent') {
+      continue
+    }
+
+    const cell = row[key]
+    const numeric = isNumeric(cell)
+
+    cells.push(
+      renderCell({
+        cell,
+        numeric,
+        id: key,
+        variant: (row.options && row.options.variant) || 'body',
+      })
+    )
+  }
+
+  return cells
+}
+
+const renderFooterCells = (row: Row, stickyOffset: number, theme: Theme) => {
+  const cells = []
+  for (const key of Object.keys(row)) {
+    // skiping rendering
+    if (key === 'id' || key === 'options' || key === 'expandableContent') {
+      continue
+    }
+
+    const cell = row[key]
+    const numeric = isNumeric(cell)
+    const spreadedCell = isObject(cell) ? cell : { render: cell }
+    const bodyBackground =
+      row.options && row.options.variant === 'body'
+        ? { background: theme.palette.background.paper }
+        : {}
+    const style =
+      typeof cell !== 'number' && typeof cell !== 'string' ? cell.style : {}
+    const footerCell = {
+      ...(spreadedCell as object),
+      style: {
+        ...bodyBackground,
+        position: 'sticky',
+        bottom: stickyOffset,
+        ...style,
+      },
+    }
+
+    cells.push(
+      renderCell({
+        numeric,
+        cell: footerCell as Cell,
+        id: key,
+        variant: 'footer',
+      })
+    )
+  }
+
+  return cells
+}
 
 {
   /* ToDo:
             - Add settings render
             - Add Tooltips To header
+            - Break into files
           */
 }
 
@@ -270,7 +338,7 @@ const CustomTable = (props: Props) => {
   const {
     classes,
     padding = 'dense',
-    rows = { head: [], body: [], footer: [] },
+    columnNames = [],
     withCheckboxes = false,
     title,
     elevation = 0,
@@ -286,20 +354,23 @@ const CustomTable = (props: Props) => {
     staticCheckbox = false,
     sort,
     theme,
+    data,
   } = props
 
   const isSortable = typeof sort !== 'undefined'
   if (
-    rows !== undefined &&
-    !Array.isArray(rows.head) &&
-    !Array.isArray(rows.body)
+    data !== undefined &&
+    !Array.isArray(data.body) &&
+    !Array.isArray(columnNames)
+    // here you also can add check in future
+    // for crashes
   ) {
     return null
   }
 
   const howManyColumns = withCheckboxes
-    ? rows.head.length
-    : rows.head.length - 1
+    ? columnNames.length
+    : columnNames.length - 1
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
 
@@ -332,11 +403,11 @@ const CustomTable = (props: Props) => {
             {(withCheckboxes || expandableRows) && (
               <CustomTableCell padding="checkbox" style={{ ...isOnTop }}>
                 {renderCheckBox({
-                  rows,
                   checkedRows,
+                  rows: data,
                   type: withCheckboxes ? 'checkAll' : 'expandAll',
                   checked: withCheckboxes
-                    ? rows && rows.body.length === checkedRows.length
+                    ? data && data.body.length === checkedRows.length
                     : expandedRows.length > 0,
                   onChange: onSelectAllClick,
                   className: {
@@ -347,28 +418,30 @@ const CustomTable = (props: Props) => {
               </CustomTableCell>
             )}
 
-            {rows.head.map((cell, column) => {
+            {columnNames.map((column, index) => {
               return (
                 <CustomTableCell
-                  style={{ ...cell.style, ...isOnTop }}
+                  style={{ ...column.style, ...isOnTop }}
                   variant="head"
-                  numeric={cell.isNumber}
-                  key={cell.render}
+                  padding={column.disablePadding ? 'none' : 'default'}
+                  numeric={column.isNumber}
+                  key={column.id}
                 >
-                  {renderHeadCell(cell, isSortable, sort, column)}
+                  {renderHeadCell(column, isSortable, sort, index)}
                 </CustomTableCell>
               )
             })}
           </TableRow>
         </TableHead>
+
         <TableBody>
-          {rows.body.map((row, ind: number) => {
-            const selected = checkedRows.indexOf(ind) !== -1
+          {data.body.map((row, ind: number) => {
+            const selected = checkedRows.indexOf(row.id) !== -1
             const expandedRow = expandedRows.indexOf(ind) !== -1
             const rowClassName = selected
               ? `${classes.row} + ${classes.rowSelected}`
               : classes.row
-            const expandable = Array.isArray(row[row.length - 1])
+            const expandable = row.expandableContent
             const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
               ? 'check'
               : expandableRows
@@ -379,7 +452,7 @@ const CustomTable = (props: Props) => {
               : classes.checkbox
 
             return (
-              <React.Fragment key={ind}>
+              <React.Fragment key={row.id}>
                 <TableRow className={rowClassName}>
                   {typeOfCheckbox !== null && (
                     <CustomTableCell padding="checkbox">
@@ -389,32 +462,16 @@ const CustomTable = (props: Props) => {
                         checked: withCheckboxes ? selected : expandedRow,
                         disabled:
                           expandable &&
-                          ((row[row.length - 1] as unknown) as Row[]).length ===
-                            0,
+                          row.expandableContent &&
+                          row.expandableContent.length === 0,
                         className: { checkboxClasses, disabledExpandRow: '' },
                         type: typeOfCheckbox,
                       })}
                     </CustomTableCell>
                   )}
-
-                  {row.map((cell, cellIndex: number) => {
-                    const numeric = isNumeric(cell)
-
-                    // skiping rendering cell if it is array and last one
-                    //  this is how we are detecting if row expandable
-                    if (cellIndex === row.length - 1 && expandable) {
-                      return null
-                    }
-
-                    return renderCell({
-                      cell,
-                      numeric,
-                      id: cellIndex,
-                      variant: cell.variant || 'body',
-                    })
-                  })}
+                  {renderCells(row)}
                 </TableRow>
-                {expandable && // rendering content of expanded row if it is expandable
+                {/* {expandable && // rendering content of expanded row if it is expandable
                   ((row[row.length - 1] as unknown) as Row[]).map(
                     (collapsedRows: Row, i: number) => {
                       return (
@@ -444,15 +501,15 @@ const CustomTable = (props: Props) => {
                         </Grow>
                       )
                     }
-                  )}
+                  )} */}
               </React.Fragment>
             )
           })}
         </TableBody>
-        {Array.isArray(rows.footer) && (
+        {Array.isArray(data.footer) && (
           <TableFooter>
-            {rows.footer.map((row, index) => {
-              const stickyOffset = (rows.footer.length - 1 - index) * 40
+            {data.footer.map((row, index) => {
+              const stickyOffset = (data.footer.length - 1 - index) * 40
               return (
                 <TableRow
                   key={index}
@@ -463,45 +520,17 @@ const CustomTable = (props: Props) => {
                       padding="checkbox"
                       style={{
                         // temporary
-                        position: row && row[0].variant && 'static' || 'sticky',
+                        position: 'sticky',
                         bottom: stickyOffset,
                         background:
-                          row && row[0].variant === 'body'
+                          row.options && row.options.variant === 'body'
                             ? theme.palette.background.paper
                             : '',
                       }}
-                      variant={(row && row[0].variant) || 'footer'}
+                      variant={(row.options && row.options.variant) || 'footer'}
                     />
                   )}
-                  {Array.isArray(row) &&
-                    row.map((cell, cellIndex) => {
-                      const numeric = isNumeric(cell)
-
-                      const spreadedCell = isObject(cell)
-                        ? cell
-                        : { render: cell }
-                      const bodyBackground =
-                        cell.variant === 'body'
-                          ? { background: theme.palette.background.paper }
-                          : {}
-                      const footerCell = {
-                        ...(spreadedCell as object),
-                        style: {
-                          // temporary
-                          ...bodyBackground,
-                          position: 'sticky',
-                          bottom: stickyOffset,
-                          ...cell.style,
-                        },
-                      }
-
-                      return renderCell({
-                        numeric,
-                        cell: footerCell as Cell,
-                        id: cellIndex,
-                        variant: cell.variant || 'footer',
-                      })
-                    })}
+                  {renderFooterCells(row, stickyOffset, theme)}
                 </TableRow>
               )
             })}

@@ -2,36 +2,56 @@ import { WithStyles, Theme, WithTheme } from '@material-ui/core'
 import React from 'react'
 
 type T = string | number
-type TObj = {
-  render: string
-  color: string
-  variant: 'body' | 'head' | 'footer'
-  isNumber: boolean
-  style: any
+export type TObj = {
+  render?: string | number
+  color?: string
+  variant?: 'body' | 'head' | 'footer'
+  isNumber?: boolean
+  style?: any
   // if you wrap you render with JSX but still want to use
   //  out-of-the-box sort put value to sort into content
-  contentToSort: string | number
+  contentToSort?: string | number
 }
 
 export type HeadCell = TObj & {
   sortBy: 'number' | 'date' | 'default' | (() => number)
 }
 
-export type Cell = T & TObj
+export type Cell = T | TObj
 
 export type OnChange = (id: number) => void
 
 export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 
-export type Row = Cell[]
+export type RowContent = {
+  [key: string]: Cell
+}
+
+export type Options = {
+  // default 'body'
+  variant?: 'body' | 'footer' | 'head'
+}
+
+export type Row = RowContent & { id: string } & { options?: Options } & {
+  expandableContent?: Row
+}
+
 export type ExtendableRow = Cell[]
 
-export type Rows = { head: HeadCell[]; body: Row[]; footer: Row[] }
+export type Rows = { body: Row[]; footer?: Row[] }
 
 export type sortTypes = {
   sortColumn: number | null
   sortDirection: 'asc' | 'desc'
   sortHandler: (index: number) => void
+}
+
+export type Head = {
+  id: string
+  isNumber?: boolean
+  disablePadding?: boolean
+  label: string
+  style?: object
 }
 
 export interface Props extends WithStyles {
@@ -41,8 +61,9 @@ export interface Props extends WithStyles {
   // removes animation from checkbox
   staticCheckbox?: boolean
   padding: 'default' | 'checkbox' | 'dense' | 'none'
-  rows?: Rows
-  checkedRows?: number[]
+  data: Rows
+  columnNames: Head[]
+  checkedRows?: string[]
   expandedRows?: number[]
   title?: string | number
   onChange?: OnChange & OnChangeWithEvent
