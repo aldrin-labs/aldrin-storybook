@@ -29,3 +29,14 @@ export const hexToRgbAWithOpacity = (hex, opacity) => {
   }
   throw new Error('Bad Hex');
 };
+
+export const LegendContainer = styled.div`
+  border-radius: 5px;
+  position: absolute;
+  font-family: Roboto, sans-serif;
+  background-color: #869eb180;
+  top: 0px;
+  left: 10%;
+  color: white;
+  transition: opacity 0.25s ease-out;
+`
