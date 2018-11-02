@@ -20,16 +20,7 @@ import { FlexibleChart } from './FlexibleChart'
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
-    data: [
-      {
-        label: 'Default 1',
-        realValue: 50,
-      },
-      {
-        label: 'Default 2',
-        realValue: 50,
-      },
-    ],
+    data: [],
     thicknessCoefficient: 10,
     colors: defaultColors,
   }
