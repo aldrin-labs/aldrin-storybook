@@ -21,12 +21,11 @@ import {
   Rows,
   OnChangeWithEvent,
   sortTypes,
-  HeadCell,
   Head,
-  TObj,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
+import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -34,8 +33,8 @@ const CustomTableCell = withStyles((theme) => ({
     top: theme.spacing.unit * 4,
     backgroundColor:
       theme.palette.type === 'dark'
-        ? theme.palette.primary[700]
-        : theme.palette.primary[400],
+        ? theme.palette.primary.dark
+        : theme.palette.primary.light,
     color: fade(theme.palette.common.white, 0.66),
     textTransform: 'uppercase',
     fontSize: 12,
@@ -55,8 +54,8 @@ const CustomTableCell = withStyles((theme) => ({
     color: 'white',
     backgroundColor:
       theme.palette.type === 'dark'
-        ? theme.palette.primary[700]
-        : theme.palette.primary[400],
+        ? theme.palette.primary.dark
+        : theme.palette.primary.light,
     padding: '1px 14px 1px 6px',
   },
 }))(TableCell)
@@ -140,7 +139,7 @@ const isNumeric = (cell: Cell) =>
 const renderCheckBox = ({
   type,
   onChange,
-  ind = -1,
+  id = '',
   rows,
   checkedRows = [],
   className = '',
@@ -148,8 +147,8 @@ const renderCheckBox = ({
   disabled = false,
 }: {
   type: 'check' | 'expand' | 'checkAll' | 'expandAll' | null
-  onChange: OnChange & OnChangeWithEvent
-  ind?: number
+  onChange: OnChange | OnChangeWithEvent
+  id?: string
   checkedRows?: string[]
   rows?: Rows
   className?: any
@@ -165,7 +164,7 @@ const renderCheckBox = ({
       checkedIcon={<ExpandLess />}
       icon={<ExpandMore />}
       onChange={() => {
-        onChange(ind)
+        ;(onChange as OnChange)(id)
       }}
       checked={checked}
     />
@@ -177,7 +176,7 @@ const renderCheckBox = ({
       indeterminate={false}
       checked={checked}
       onChange={() => {
-        onChange(ind)
+        ;(onChange as OnChange)(id)
       }}
     />
   ) : type === 'checkAll' ? (
@@ -276,7 +275,7 @@ const renderCells = (row: Row) => {
     cells.push(
       renderCell({
         cell,
-        numeric,
+        numeric: numeric as boolean,
         id: key,
         variant: (row.options && row.options.variant) || 'body',
       })
@@ -315,7 +314,7 @@ const renderFooterCells = (row: Row, stickyOffset: number, theme: Theme) => {
 
     cells.push(
       renderCell({
-        numeric,
+        numeric: numeric as boolean,
         cell: footerCell as Cell,
         id: key,
         variant: 'footer',
@@ -354,12 +353,12 @@ const CustomTable = (props: Props) => {
     staticCheckbox = false,
     sort,
     theme,
-    data,
+    data = { body: [] },
   } = props
 
   const isSortable = typeof sort !== 'undefined'
   if (
-    data !== undefined &&
+    data.body &&
     !Array.isArray(data.body) &&
     !Array.isArray(columnNames)
     // here you also can add check in future
@@ -435,8 +434,9 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.map((row, ind: number) => {
+          {data.body.map((row) => {
             const selected = checkedRows.indexOf(row.id) !== -1
+
             const expandedRow = expandedRows.indexOf(row.id) !== -1
             const rowClassName = selected
               ? `${classes.row} + ${classes.rowSelected}`
@@ -458,7 +458,7 @@ const CustomTable = (props: Props) => {
                     <CustomTableCell padding="checkbox">
                       {renderCheckBox({
                         onChange,
-                        ind,
+                        id: row.id,
                         checked: withCheckboxes ? selected : expandedRow,
                         disabled:
                           expandable &&
@@ -472,21 +472,23 @@ const CustomTable = (props: Props) => {
                   {renderCells(row)}
                 </TableRow>
                 {expandable && // rendering content of expanded row if it is expandable
-                  row.expandableContent.map((collapsedRows: Row, i: number) => {
-                    return (
-                      <Grow
-                        in={expandedRow}
-                        key={i}
-                        unmountOnExit={true}
-                        mountOnEnter={true}
-                      >
-                        <TableRow className={classes.rowExpanded}>
-                          <CustomTableCell padding="checkbox" />
-                          {renderCells(collapsedRows)}
-                        </TableRow>
-                      </Grow>
-                    )
-                  })}
+                  row!.expandableContent!.map(
+                    (collapsedRows: Row, i: number) => {
+                      return (
+                        <Grow
+                          in={expandedRow}
+                          key={i}
+                          unmountOnExit={true}
+                          mountOnEnter={true}
+                        >
+                          <TableRow className={classes.rowExpanded}>
+                            <CustomTableCell padding="checkbox" />
+                            {renderCells(collapsedRows)}
+                          </TableRow>
+                        </Grow>
+                      )
+                    }
+                  )}
               </React.Fragment>
             )
           })}
@@ -494,7 +496,7 @@ const CustomTable = (props: Props) => {
         {Array.isArray(data.footer) && (
           <TableFooter>
             {data.footer.map((row, index) => {
-              const stickyOffset = (data.footer.length - 1 - index) * 40
+              const stickyOffset = (data.footer!.length - 1 - index) * 40
               return (
                 <TableRow
                   key={index}
@@ -509,13 +511,13 @@ const CustomTable = (props: Props) => {
                         bottom: stickyOffset,
                         background:
                           row.options && row.options.variant === 'body'
-                            ? theme.palette.background.paper
+                            ? theme!.palette.background.paper
                             : '',
                       }}
                       variant={(row.options && row.options.variant) || 'footer'}
                     />
                   )}
-                  {renderFooterCells(row, stickyOffset, theme)}
+                  {renderFooterCells(row, stickyOffset, theme!)}
                 </TableRow>
               )
             })}
@@ -526,4 +528,6 @@ const CustomTable = (props: Props) => {
   )
 }
 
-export default withStyles(styles, { withTheme: true })(CustomTable)
+export default withStyles(styles, { withTheme: true })(
+  withErrorFallback(CustomTable)
+)

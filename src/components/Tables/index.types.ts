@@ -1,4 +1,4 @@
-import { WithStyles, Theme, WithTheme } from '@material-ui/core'
+import { WithStyles, Theme } from '@material-ui/core'
 import React from 'react'
 
 type T = string | number
@@ -19,7 +19,7 @@ export type HeadCell = TObj & {
 
 export type Cell = T | TObj
 
-export type OnChange = (id: number) => void
+export type OnChange = (id: string) => void
 
 export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 
@@ -63,7 +63,7 @@ export type Head = {
 export interface Props extends WithStyles {
   withCheckboxes?: boolean
   expandableRows?: boolean
-  theme: Theme
+  theme?: Theme
   // removes animation from checkbox
   staticCheckbox?: boolean
   padding: 'default' | 'checkbox' | 'dense' | 'none'
@@ -72,7 +72,7 @@ export interface Props extends WithStyles {
   checkedRows?: string[]
   expandedRows?: string[]
   title?: string | number
-  onChange?: OnChange & OnChangeWithEvent
+  onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
