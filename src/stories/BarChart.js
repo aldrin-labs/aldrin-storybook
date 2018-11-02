@@ -25,10 +25,12 @@ storiesOf('BarChart', module)
     withInfo()(() =>
     <Paper>
       <BarChart
-        height={350}
-        hideDashForToolTip={true}
-        xAxisVertical={true}
-        alwaysShowLegend={true}
+        height={number('height', 350)}
+        hideDashForToolTip={boolean('Hide dash for tool tip', true)}
+        xAxisVertical={boolean('xAxisVertical', true)}
+        alwaysShowLegend={boolean('alwaysShowLegend', true)}
+        animated={boolean('animated', false)}
+        minColumnWidth={number('Minimum column width', 50)}
         charts={object(
           'data',
           [
@@ -42,7 +44,8 @@ storiesOf('BarChart', module)
               color: '#4ed8da',
               title: 'Rebalanced',
             },
-          ]
+          ],
+          groupId
         )}
       />
     </Paper>
@@ -53,10 +56,12 @@ storiesOf('BarChart', module)
     withInfo()(() =>
     <Paper>
       <BarChart
-        height={350}
-        hideDashForToolTip={true}
-        xAxisVertical={true}
-        alwaysShowLegend={true}
+        height={number('height' ,350)}
+        hideDashForToolTip={boolean('Hide dash for tool tip', true)}
+        xAxisVertical={boolean('xAxisVertical', true)}
+        alwaysShowLegend={boolean('alwaysShowLegend', true)}
+        animated={boolean('animated', false)}
+        minColumnWidth={number('Minimum column width', 50)}
         charts={object(
           'data',
           [
@@ -70,7 +75,8 @@ storiesOf('BarChart', module)
               color: '#4ed8da',
               title: 'Rebalanced',
             },
-          ]
+          ],
+          groupId
         )}
       />
     </Paper>
