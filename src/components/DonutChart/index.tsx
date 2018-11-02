@@ -46,7 +46,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     this.setState({colorsWithRandom : this.getColorsWithRandom(this.props.colors, this.props.data.length)})
   }
 
-  getColorsWithRandom = ( colors: string[], dataLengh ) => {
+  getColorsWithRandom = ( colors: string[], dataLengh: number ) => {
     return [
       ...colors, ...(_.range(dataLengh - colors.length)).map(() => getRandomColor()),
     ]
@@ -59,8 +59,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           label: record.label,
           realValue: record.realValue,
         })))
-        .filter((piece: DonutPiece) => piece.realValue > 0)
-        .map((record: InputRecord, index: number) => ({ ...record, colorIndex: index }))
+        .filter((piece) => piece.realValue > 0)
+        .map((record, index: number) => ({ ...record, colorIndex: index }))
     if (data.length === 0) this.setState({ isEmpty: true })
     return data
   }

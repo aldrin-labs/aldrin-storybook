@@ -4,7 +4,7 @@ export interface DonutPiece {
   angle: number
   label: string
   realValue: number
-  colorIndex?: number
+  colorIndex: number
   opacity?: number
   color?: string | number
   style?: object
