@@ -368,8 +368,8 @@ const CustomTable = (props: Props) => {
   }
 
   const howManyColumns = withCheckboxes
-    ? columnNames.length
-    : columnNames.length - 1
+    ? columnNames.filter(Boolean).length
+    : columnNames.filter(Boolean).length - 1
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
 
@@ -434,7 +434,7 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.map((row) => {
+          {data.body.filter(Boolean).map((row) => {
             const selected = checkedRows.indexOf(row.id) !== -1
 
             const expandedRow = expandedRows.indexOf(row.id) !== -1
@@ -495,8 +495,9 @@ const CustomTable = (props: Props) => {
         </TableBody>
         {Array.isArray(data.footer) && (
           <TableFooter>
-            {data.footer.map((row, index) => {
-              const stickyOffset = (data.footer!.length - 1 - index) * 40
+            {data.footer.filter(Boolean).map((row, index) => {
+              const stickyOffset =
+                (data.footer!.filter(Boolean).length - 1 - index) * 40
               return (
                 <TableRow
                   key={index}
@@ -507,7 +508,10 @@ const CustomTable = (props: Props) => {
                       padding="checkbox"
                       style={{
                         // temporary
-                        position: 'sticky',
+                        position:
+                          row.options && row.options.variant === 'body'
+                            ? 'static'
+                            : 'sticky',
                         bottom: stickyOffset,
                         background:
                           row.options && row.options.variant === 'body'
