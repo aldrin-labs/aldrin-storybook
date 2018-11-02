@@ -14,6 +14,7 @@ import { Paper } from '@material-ui/core'
 
 import { backgrounds } from './backgrounds'
 import DonutChart from '@components/DonutChart'
+import { DonutChartTableMocks } from './mocks'
 
 
 const ChartWrapper = styled(Paper)`
@@ -22,39 +23,7 @@ const ChartWrapper = styled(Paper)`
   width: 60%;
 `
 
-const chartData = [
-  {
-    label: "Payments",
-    realValue: 25.1,
-  },
-  {
-    label: "Entertainment",
-    realValue: 10,
-  },
-  {
-    label: "Blockchain platform",
-    realValue: 14,
-  },
-  {
-    label: "Privacy coin",
-    realValue: 17,
-  },
-  {
-    label: "Some other things",
-    realValue: 30,
-  },
-]
 
-const zeroTestData = [
-  {
-    label: "Payments",
-    realValue: 0,
-  },
-  {
-    label: "Entertainment",
-    realValue: 0,
-  },
-]
 
 const groupId = 'GROUP-ID1';
 
@@ -66,7 +35,7 @@ storiesOf('DonutChart', module)
       <ChartWrapper elevation={8}>
         <DonutChart
           labelPlaceholder={text("Label Placeholder" , "Industry %")}
-          data={object("data", chartData, groupId)}
+          data={object("data", DonutChartTableMocks.chartData, groupId)}
           colorLegend={boolean("Color Legend", true)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
@@ -74,12 +43,25 @@ storiesOf('DonutChart', module)
     )
   )
   .add(
-    'DonutChart zero values',
+    'DonutChart check some zero values',
     withInfo()(() =>
       <ChartWrapper elevation={8}>
         <DonutChart
           labelPlaceholder={text("Label Placeholder" , "Industry %")}
-          data={object("data", zeroTestData, groupId)}
+          data={object("data", DonutChartTableMocks.someZeroTestData, groupId)}
+          colorLegend={boolean("Color Legend", true)}
+          thicknessCoefficient={number("Thickness Coefficient", 10)}
+        />
+      </ChartWrapper>
+    )
+  )
+  .add(
+    'DonutChart all zero values',
+    withInfo()(() =>
+      <ChartWrapper elevation={8}>
+        <DonutChart
+          labelPlaceholder={text("Label Placeholder" , "Industry %")}
+          data={object("data", DonutChartTableMocks.allZeroTestData, groupId)}
           colorLegend={boolean("Color Legend", true)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />

@@ -20,16 +20,7 @@ import { FlexibleChart } from './FlexibleChart'
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
-    data: [
-      {
-        label: 'Default 1',
-        realValue: 50,
-      },
-      {
-        label: 'Default 2',
-        realValue: 50,
-      },
-    ],
+    data: [],
     thicknessCoefficient: 10,
     colors: defaultColors,
   }
@@ -46,19 +37,21 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     this.setState({colorsWithRandom : this.getColorsWithRandom(this.props.colors, this.props.data.length)})
   }
 
-  getColorsWithRandom = ( colors: string[], dataLengh ) => {
+  getColorsWithRandom = ( colors: string[], dataLengh: number ) => {
     return [
       ...colors, ...(_.range(dataLengh - colors.length)).map(() => getRandomColor()),
     ]
   }
 
-  getDataFromImput = (inputData: InputRecord[]) =>{
-    const data = (inputData.map((record: InputRecord, index: number) => ({
-        angle: record.realValue,
-        label: record.label,
-        realValue: record.realValue,
-        colorIndex: index,
-      }))).filter((piece: DonutPiece) => piece.realValue > 0)
+  getDataFromImput = (inputData: InputRecord[]) => {
+    const data = (inputData
+        .map((record: InputRecord) => ({
+          angle: record.realValue,
+          label: record.label,
+          realValue: record.realValue,
+        })))
+        .filter((piece) => piece.realValue > 0)
+        .map((record, index: number) => ({ ...record, colorIndex: index }))
     if (data.length === 0) this.setState({ isEmpty: true })
     return data
   }
