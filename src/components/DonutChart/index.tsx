@@ -52,13 +52,15 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     ]
   }
 
-  getDataFromImput = (inputData: InputRecord[]) =>{
-    const data = (inputData.map((record: InputRecord, index: number) => ({
-        angle: record.realValue,
-        label: record.label,
-        realValue: record.realValue,
-        colorIndex: index,
-      }))).filter((piece: DonutPiece) => piece.realValue > 0)
+  getDataFromImput = (inputData: InputRecord[]) => {
+    const data = (inputData
+        .map((record: InputRecord) => ({
+          angle: record.realValue,
+          label: record.label,
+          realValue: record.realValue,
+        })))
+        .filter((piece: DonutPiece) => piece.realValue > 0)
+        .map((record: InputRecord, index: number) => ({ ...record, colorIndex: index }))
     if (data.length === 0) this.setState({ isEmpty: true })
     return data
   }
