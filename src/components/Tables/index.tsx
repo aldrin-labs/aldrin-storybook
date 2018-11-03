@@ -96,7 +96,10 @@ const styles = (theme: Theme) =>
     },
     table: {},
     title: {
-      backgroundColor: theme.palette.grey[900],
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? theme.palette.grey[900]
+          : theme.palette.primary.dark,
       position: 'sticky',
       top: 0,
     },
@@ -463,7 +466,8 @@ const CustomTable = (props: Props) => {
                       padding="checkbox"
                       style={{
                         // temporary
-                        position: row && row[0].variant && 'static' || 'sticky',
+                        position:
+                          (row && row[0].variant && 'static') || 'sticky',
                         bottom: stickyOffset,
                         background:
                           row && row[0].variant === 'body'
