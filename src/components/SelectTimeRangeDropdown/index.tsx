@@ -35,11 +35,18 @@ class DropDownMenu extends Component<IProps> {
       endDate: 1531873380,
     }),
   }
+  componentDidMount() {
+    this.setDates(this.props.period)
+  }
 
-  handleChange = (event) => {
-    const { startDate, endDate } = this.optionsMap[event.target.value]()
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setDates(event.target.value)
+  }
+
+  setDates = (period: string) => {
+    const { startDate, endDate } = this.optionsMap[period]()
     this.props.setPeriodToStore({
-      correlationPeriod: event.target.value,
+      correlationPeriod: period,
       correlationStartDate: startDate,
       correlationEndDate: endDate,
     })
