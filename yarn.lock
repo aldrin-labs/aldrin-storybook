@@ -9791,6 +9791,10 @@ react-favicon@^0.0.11:
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/react-favicon/-/react-favicon-0.0.11.tgz#2c4216ca9003ecf9d8aee4f11e6a20f729577925"
 
+react-fullscreen-crossbrowser@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-fullscreen-crossbrowser/-/react-fullscreen-crossbrowser-1.0.9.tgz#15f536906942d3deff7ae36f410eaeee902d3ca3"
+
 react-fuzzy@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/react-fuzzy/-/react-fuzzy-0.5.2.tgz#fc13bf6f0b785e5fefe908724efebec4935eaefe"

@@ -97,7 +97,10 @@ const styles = (theme: Theme) =>
     },
     table: {},
     title: {
-      backgroundColor: theme.palette.grey[900],
+      backgroundColor:
+        theme.palette.type === 'dark'
+          ? theme.palette.grey[900]
+          : theme.palette.primary.dark,
       position: 'sticky',
       top: 0,
     },

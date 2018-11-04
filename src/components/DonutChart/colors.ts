@@ -1,4 +1,4 @@
-export const colors = [
+export const defaultColors = [
   '#335ecc',
   '#07c61b',
   '#ce549d',
@@ -16,4 +16,7 @@ export const colors = [
   '#e6dada',
   '#dc2424',
 ]
-export default colors
+
+export const emptyColor = '#787878'
+
+export default defaultColors
