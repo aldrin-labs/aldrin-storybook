@@ -327,6 +327,7 @@ const renderFooterCells = (row: Row, stickyOffset: number, theme: Theme) => {
 
 {
   /* ToDo:
+            - Use reduce instead of for in loop
             - Add settings render
             - Add Tooltips To header
             - Break into files
@@ -366,9 +367,9 @@ const CustomTable = (props: Props) => {
   ) {
     return null
   }
-
   const howManyColumns = withCheckboxes
-    ? columnNames.filter(Boolean).length
+    ? // space for checkbox
+      columnNames.filter(Boolean).length
     : columnNames.filter(Boolean).length - 1
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
