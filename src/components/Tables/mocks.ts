@@ -77,6 +77,7 @@ export const mock: { head: Head[]; data: Rows } = {
         coan: 3,
         options: {
           variant: 'body',
+          static: true,
         },
       },
       { id: '2', coin: 1, coen: 2, coan: 3 },

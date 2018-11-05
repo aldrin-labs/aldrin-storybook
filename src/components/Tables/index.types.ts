@@ -36,6 +36,8 @@ export type RowContent =
     }
 
 export type Options = {
+  // implemented only for footer
+  static?: true
   // default 'body'
   variant?: 'body' | 'footer' | 'head'
 }

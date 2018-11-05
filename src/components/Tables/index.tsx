@@ -314,7 +314,7 @@ const renderFooterCells = (
       ...(spreadedCell as object),
       style: {
         ...bodyBackground,
-        position: 'sticky',
+        position: row.options && row.options.static ? 'static' : 'sticky',
         bottom: stickyOffset,
         ...style,
       },
@@ -519,7 +519,7 @@ const CustomTable = (props: Props) => {
                       style={{
                         // temporary
                         position:
-                          row.options && row.options.variant === 'body'
+                          row.options && row.options.static
                             ? 'static'
                             : 'sticky',
                         bottom: stickyOffset,
