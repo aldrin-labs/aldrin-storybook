@@ -22,6 +22,7 @@ import {
   OnChangeWithEvent,
   sortTypes,
   Head,
+  NotExpandableRow,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
@@ -156,14 +157,14 @@ const renderCheckBox = ({
   rows?: Rows
   className?: any
   checked?: boolean
-  disabled?: boolean
+  disabled?: boolean | '' | 0
 }) =>
   type === 'expand' ? (
     <Checkbox
       classes={{
         root: className.checkboxClasses,
       }}
-      disabled={disabled}
+      disabled={Boolean(disabled)}
       checkedIcon={<ExpandLess />}
       icon={<ExpandMore />}
       onChange={() => {
@@ -201,7 +202,7 @@ const renderCheckBox = ({
       }}
       checkedIcon={<ExpandLess />}
       icon={<ExpandMore />}
-      disabled={disabled}
+      disabled={Boolean(disabled)}
       checked={checked}
       onChange={onChange as OnChangeWithEvent}
     />
@@ -264,7 +265,7 @@ const renderHeadCell = (
     cell.label
   )
 
-const renderCells = (row: Row) => {
+const renderCells = (row: NotExpandableRow) => {
   const cells = []
   for (const key of Object.keys(row)) {
     // skiping rendering
@@ -288,7 +289,11 @@ const renderCells = (row: Row) => {
   return cells
 }
 
-const renderFooterCells = (row: Row, stickyOffset: number, theme: Theme) => {
+const renderFooterCells = (
+  row: NotExpandableRow,
+  stickyOffset: number,
+  theme: Theme
+) => {
   const cells = []
   for (const key of Object.keys(row)) {
     // skiping rendering
@@ -467,7 +472,8 @@ const CustomTable = (props: Props) => {
                         disabled:
                           expandable &&
                           row.expandableContent &&
-                          row.expandableContent.length === 0,
+                          (row.expandableContent as NotExpandableRow[])
+                            .length === 0,
                         className: { checkboxClasses, disabledExpandRow: '' },
                         type: typeOfCheckbox,
                       })}
@@ -476,7 +482,7 @@ const CustomTable = (props: Props) => {
                   {renderCells(row)}
                 </TableRow>
                 {expandable && // rendering content of expanded row if it is expandable
-                  row!.expandableContent!.map(
+                  (row!.expandableContent! as NotExpandableRow[]).map(
                     (collapsedRows: Row, i: number) => {
                       return (
                         <Grow
@@ -525,6 +531,7 @@ const CustomTable = (props: Props) => {
                       variant={(row.options && row.options.variant) || 'footer'}
                     />
                   )}
+
                   {renderFooterCells(row, stickyOffset, theme!)}
                 </TableRow>
               )

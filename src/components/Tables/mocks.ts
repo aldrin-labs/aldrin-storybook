@@ -59,8 +59,8 @@ export const mock: { head: Head[]; data: Rows } = {
         coen: 2,
         coan: 3,
         expandableContent: [
-          { id: nanoid(), coin: 1, coen: 2, coan: 3 },
-          { id: nanoid(), coin: 1, coen: 2, coan: 3 },
+          { id: nanoid(), coin: { render: 1 } },
+          // { id: nanoid(), coin: 1, coen: 2, coan: 3 },
         ],
       },
       { id: nanoid(), coin: 1, coen: 2, coan: 3 },

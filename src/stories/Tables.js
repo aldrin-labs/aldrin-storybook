@@ -38,18 +38,10 @@ storiesOf('TablesWithCheckbox', module)
             <Tables
               withCheckboxes={boolean('witchCheckboxes', false)}
               title="Title"
-              // sort={{
-              //   sortColumn: 2,
-              //   sortDirection: 'desc',
-              //   sortHandler: () => {
-              //     console.log('sorted')
-              //   },
-              // }}
               data={mock.data}
               expandedRows={['e']}
               expandableRows
               columnNames={mock.head}
-              // rows={mock}
             />
           </Paper>
         </Grid>

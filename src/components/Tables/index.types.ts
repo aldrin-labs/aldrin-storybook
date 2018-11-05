@@ -27,22 +27,23 @@ export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 // change data structure
 // for expandedRows
 
-export type RowContent = {
-  [key: string]: Cell
-} & { id: string } & {
-  expandableContent?: ExpandedContent[]
-}
+export type RowContent =
+  | {
+      [key: string]: Cell
+    }
+  | {
+      expandableContent?: NotExpandableRow[]
+    }
 
 export type Options = {
   // default 'body'
   variant?: 'body' | 'footer' | 'head'
 }
 
-export type ExpandedContent = RowContent & { id: string } & {
-  options?: Options
-}
-
-export type Row = RowContent & { options?: Options }
+export type Row = RowContent & { options?: Options } & { id: string }
+export type NotExpandableRow = {
+  [key: string]: Cell
+} & { options?: Options } & { id: string }
 
 export type Rows = { body: Row[]; footer?: Row[] }
 
