@@ -1,6 +1,13 @@
 import { WithStyles, Theme } from '@material-ui/core'
 import React from 'react'
 
+export type renderCellType = {
+  cell: Cell
+  id: string
+  numeric: boolean
+  variant?: 'body' | 'footer' | 'head'
+}
+
 type T = string | number
 export type TObj = {
   render?: string | number

@@ -23,6 +23,7 @@ import {
   sortTypes,
   Head,
   NotExpandableRow,
+  renderCellType,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
@@ -213,12 +214,7 @@ const renderCell = ({
   id,
   numeric,
   variant = 'body',
-}: {
-  cell: Cell
-  id: string
-  numeric: boolean
-  variant?: 'body' | 'footer' | 'head'
-}) => {
+}: renderCellType) => {
   if (cell !== null && typeof cell === 'object') {
     return (
       <CustomTableCell
@@ -265,28 +261,33 @@ const renderHeadCell = (
     cell.label
   )
 
-const renderCells = (row: NotExpandableRow) => {
-  const cells = []
-  for (const key of Object.keys(row)) {
-    // skiping rendering
-    if (key === 'id' || key === 'options' || key === 'expandableContent') {
-      continue
-    }
+const renderCells = (
+  row: NotExpandableRow,
+  renderCellObject?: (cell: Cell, key: string) => renderCellType
+) => {
+  const reduce = Object.keys(row)
+    .map((key) => {
+      if (key === 'id' || key === 'options' || key === 'expandableContent') {
+        return null
+      }
 
-    const cell = row[key]
-    const numeric = isNumeric(cell)
+      const cell = row[key]
+      const numeric = isNumeric(cell)
 
-    cells.push(
-      renderCell({
-        cell,
-        numeric: numeric as boolean,
-        id: key,
-        variant: (row.options && row.options.variant) || 'body',
-      })
-    )
-  }
+      const renderCellArg = renderCellObject
+        ? renderCellObject(cell, key)
+        : {
+            cell,
+            numeric: numeric as boolean,
+            id: key,
+            variant: (row.options && row.options.variant) || 'body',
+          }
 
-  return cells
+      return renderCell(renderCellArg)
+    })
+    .filter(Boolean)
+
+  return reduce
 }
 
 const renderFooterCells = (
@@ -294,14 +295,7 @@ const renderFooterCells = (
   stickyOffset: number,
   theme: Theme
 ) => {
-  const cells = []
-  for (const key of Object.keys(row)) {
-    // skiping rendering
-    if (key === 'id' || key === 'options' || key === 'expandableContent') {
-      continue
-    }
-
-    const cell = row[key]
+  const setFooterCellObject = (cell: Cell, key: string) => {
     const numeric = isNumeric(cell)
     const spreadedCell = isObject(cell) ? cell : { render: cell }
     const bodyBackground =
@@ -319,18 +313,17 @@ const renderFooterCells = (
         ...style,
       },
     }
+    const variant: 'footer' | 'body' = 'footer'
 
-    cells.push(
-      renderCell({
-        numeric: numeric as boolean,
-        cell: footerCell as Cell,
-        id: key,
-        variant: 'footer',
-      })
-    )
+    return {
+      numeric: numeric as boolean,
+      cell: footerCell as Cell,
+      id: key,
+      variant: variant,
+    }
   }
 
-  return cells
+  return renderCells(row, setFooterCellObject)
 }
 
 {
