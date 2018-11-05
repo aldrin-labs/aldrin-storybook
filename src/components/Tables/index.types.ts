@@ -54,7 +54,7 @@ export type NotExpandableRow = {
   [key: string]: Cell
 } & { options?: Options } & { id: string }
 
-export type Rows = { body: Row[]; footer?: Row[] }
+export type Data = { body: Row[]; footer?: Row[] }
 
 export type sortTypes = {
   sortColumn: number | null
@@ -77,7 +77,7 @@ export interface Props extends WithStyles {
   // removes animation from checkbox
   staticCheckbox?: boolean
   padding: 'default' | 'checkbox' | 'dense' | 'none'
-  data: Rows
+  data: Data
   columnNames: Head[]
   checkedRows?: string[]
   expandedRows?: string[]

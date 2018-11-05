@@ -1,7 +1,7 @@
-import { Head, Rows } from './index.types'
+import { Head, Data } from './index.types'
 import nanoid from 'nanoid'
 
-export const mock: { head: Head[]; data: Rows } = {
+export const mock: { head: Head[]; data: Data } = {
   head: [
     { id: nanoid(), isNumber: true, label: 'Coin' },
     { id: nanoid(), isNumber: true, label: 'Coin' },

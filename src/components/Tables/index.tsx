@@ -18,7 +18,7 @@ import {
   Cell,
   OnChange,
   Row,
-  Rows,
+  Data,
   OnChangeWithEvent,
   sortTypes,
   Head,
@@ -155,7 +155,7 @@ const renderCheckBox = ({
   onChange: OnChange | OnChangeWithEvent
   id?: string
   checkedRows?: string[]
-  rows?: Rows
+  rows?: Data
   className?: any
   checked?: boolean
   disabled?: boolean | '' | 0
