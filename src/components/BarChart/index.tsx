@@ -37,7 +37,7 @@ const axisStyle = {
 }
 export class BarChart extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
-    minColumnWidth: 10,
+    minColumnWidth: 20,
   }
 
   state = {
@@ -62,7 +62,7 @@ export class BarChart extends Component<IProps, IState> {
     const { value } = this.state
 
     const ITEMS: Items[] = []
-    const minWidth = Math.max(charts[0].data.length, charts[1].data.length) * minColumnWidth
+    const minWidth = Math.min(charts[0].data.length, charts[1].data.length) * minColumnWidth
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
       const { color, title, data } = chart
