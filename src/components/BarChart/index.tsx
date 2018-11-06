@@ -37,7 +37,7 @@ const axisStyle = {
 }
 export class BarChart extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
-    minColumnWidth: 50,
+    minColumnWidth: 10,
   }
 
   state = {
