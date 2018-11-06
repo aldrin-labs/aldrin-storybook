@@ -30,11 +30,21 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     colorsWithRandom: [],
     chartSize: 0,
     isEmpty: false,
+    sizeKey: 1,
   }
 
   componentDidMount = () => {
     this.setState({ data: this.getDataFromImput(this.props.data) })
     this.setState({colorsWithRandom : this.getColorsWithRandom(this.props.colors, this.props.data.length)})
+    window.addEventListener('resize', this.shuffle)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.shuffle)
+  }
+
+  shuffle = () => {
+    this.setState((prevState: State) => ({sizeKey: (-prevState.sizeKey)}))
   }
 
   getColorsWithRandom = ( colors: string[], dataLengh: number ) => {
@@ -86,6 +96,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       data,
       colorsWithRandom,
       isEmpty,
+      sizeKey,
     } = this.state
 
     const {
@@ -103,7 +114,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     }
 
     return (
-      <ChartWithTitle>
+      <ChartWithTitle key={sizeKey}>
         <LabelContainer>
           <Typography variant="h4">
             {value ? value.label : labelPlaceholder || ''}

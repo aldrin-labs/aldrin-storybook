@@ -30,4 +30,5 @@ export interface State {
   colorsWithRandom: string[]
   chartSize: number
   isEmpty: boolean
+  sizeKey: number
 }
