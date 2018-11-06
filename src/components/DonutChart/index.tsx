@@ -44,8 +44,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   shuffle = () => {
-    const oldKey = this.state.sizeKey
-    this.setState({sizeKey: (-oldKey)})
+    this.setState((prevState: State) => ({sizeKey: (-prevState.sizeKey)}))
   }
 
   getColorsWithRandom = ( colors: string[], dataLengh: number ) => {
