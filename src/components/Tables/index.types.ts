@@ -50,7 +50,7 @@ export type Options = {
 export type Row = RowContent & { options?: Options } & { id: string }
 export type NotExpandableRow = {
   [key: string]: Cell
-} & { options?: Options } & { id: string }
+} & { options?: Options } & { id: string } & { contentToSort?: string }
 
 export type Data = { body: Row[]; footer?: Row[] }
 

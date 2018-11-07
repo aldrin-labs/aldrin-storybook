@@ -14,20 +14,11 @@ import { SortState } from './index.types'
 import { SortDirection } from '@material-ui/core/TableCell'
 
 const stableSort = (array: RowContent[], cmp: (a: any, b: any) => number) => {
-  const flatten = (a: Cell) =>
-    isObject(a) && has(a, 'contentToSort')
-      ? (a as TObj).contentToSort
-      : has(a, 'render')
-        ? (a as TObj).render
-        : (a as T)
   const stabilizedThis = array.map((el, index) => [el, index])
   stabilizedThis.sort((a: any, b: any) => {
-    const fa: any = flatten(a)
-    const fb: any = flatten(b)
-
-    const order = cmp(fa[0], fb[0])
+    const order = cmp(a[0], b[0])
     if (order !== 0) return order
-    return fa[1] - fb[1]
+    return a[1] - b[1]
   })
 
   return stabilizedThis.map((el) => el[0])
@@ -40,10 +31,19 @@ const getSorting = (order: SortDirection, orderBy: string) => {
 }
 
 const desc = (a: Content, b: Content, orderBy: string): number => {
-  if (b[orderBy] < a[orderBy]) {
+  const flatten = (o: Cell) =>
+    isObject(o) && has(o, 'contentToSort')
+      ? (o as TObj).contentToSort
+      : has(o, 'render')
+        ? (o as TObj).render
+        : (o as T)
+
+  const fa = flatten(a[orderBy]) || a[orderBy]
+  const fb = flatten(b[orderBy]) || b[orderBy]
+  if (fb < fa) {
     return -1
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (fb > fa) {
     return 1
   }
   return 0
