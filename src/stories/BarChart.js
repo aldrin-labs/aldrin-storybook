@@ -56,7 +56,7 @@ storiesOf('BarChart', module)
     withInfo()(() =>
     <Paper>
       <BarChart
-        height={number('height' ,350)}
+        height={number('height', 350)}
         hideDashForToolTip={boolean('Hide dash for tool tip', true)}
         xAxisVertical={boolean('xAxisVertical', true)}
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
@@ -72,6 +72,37 @@ storiesOf('BarChart', module)
             },
             {
               data: longMocksGenirator(100),
+              color: '#4ed8da',
+              title: 'Rebalanced',
+            },
+          ],
+          groupId
+        )}
+      />
+    </Paper>
+    )
+  )
+  .add(
+    'BarChart long data with doubles',
+    withInfo()(() =>
+    <Paper>
+      <BarChart
+        height={number('height', 350)}
+        hideDashForToolTip={boolean('Hide dash for tool tip', true)}
+        xAxisVertical={boolean('xAxisVertical', true)}
+        alwaysShowLegend={boolean('alwaysShowLegend', true)}
+        animated={boolean('animated', false)}
+        minColumnWidth={number('Minimum column width', 50)}
+        charts={object(
+          'data',
+          [
+            {
+              data: longMocksGenirator(50).concat(longMocksGenirator(50)),
+              color: '#fff',
+              title: 'Current',
+            },
+            {
+              data: longMocksGenirator(50).concat(longMocksGenirator(50)),
               color: '#4ed8da',
               title: 'Rebalanced',
             },

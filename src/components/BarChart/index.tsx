@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
 import {
   FlexibleXYPlot,
   VerticalBarSeries,
@@ -62,7 +63,12 @@ export class BarChart extends Component<IProps, IState> {
     const { value } = this.state
 
     const ITEMS: Items[] = []
-    const minWidth = Math.max(charts[0].data.length, charts[1].data.length) * minColumnWidth
+    const uniqueXLengh = (data: any[]) => {
+      const uniqueLength = _.uniq(data.map(element => element.x)).length
+      if (uniqueLength > data.length) throw new Error('There are duplicate x indices in the input')
+      return uniqueLength
+    }
+    const minWidth = Math.max(uniqueXLengh(charts[1].data), uniqueXLengh(charts[1].data)) * minColumnWidth
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
       const { color, title, data } = chart
