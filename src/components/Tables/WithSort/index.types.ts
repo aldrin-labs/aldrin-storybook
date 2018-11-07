@@ -1,4 +1,6 @@
+import { SortDirection } from '@material-ui/core/TableCell'
+
 export interface SortState {
-  sortDirection: 'asc' | 'desc'
-  sortColumn: number
+  sortDirection: SortDirection
+  sortColumn: string
 }

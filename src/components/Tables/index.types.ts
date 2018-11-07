@@ -8,7 +8,7 @@ export type renderCellType = {
   variant?: 'body' | 'footer' | 'head'
 }
 
-type T = string | number
+export type T = string | number
 export type TObj = {
   render?: string | number
   color?: string
@@ -18,10 +18,6 @@ export type TObj = {
   // if you wrap you render with JSX but still want to use
   //  out-of-the-box sort put value to sort into content
   contentToSort?: string | number
-}
-
-export type HeadCell = TObj & {
-  sortBy: 'number' | 'date' | 'default' | (() => number)
 }
 
 export type Cell = T | TObj
@@ -34,10 +30,12 @@ export type OnChangeWithEvent = (e: React.ChangeEvent<HTMLInputElement>) => void
 // change data structure
 // for expandedRows
 
+export type Content = {
+  [key: string]: Cell
+}
+
 export type RowContent =
-  | {
-      [key: string]: Cell
-    }
+  | Content
   | {
       expandableContent?: NotExpandableRow[]
     }
@@ -57,17 +55,19 @@ export type NotExpandableRow = {
 export type Data = { body: Row[]; footer?: Row[] }
 
 export type sortTypes = {
-  sortColumn: number | null
+  sortColumn: string | null
   sortDirection: 'asc' | 'desc'
-  sortHandler: (index: number) => void
+  sortHandler: (id: string) => void
 }
 
 export type Head = {
+  // id should be equal to shape of body element  to enable sorting by default
   id: string
   isNumber?: boolean
   disablePadding?: boolean
   label: string
   style?: object
+  sortBy?: 'default' | (() => number)
 }
 
 export interface Props extends WithStyles {
