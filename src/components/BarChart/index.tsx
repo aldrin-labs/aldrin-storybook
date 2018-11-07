@@ -70,7 +70,9 @@ export class BarChart extends Component<IProps, IState> {
       return uniqueLength
     }
 
-    const minWidth = Math.max(uniqueXLengh((charts[0]).data), uniqueXLengh((charts[1]).data)) * minColumnWidth
+    const minWidth = charts[0] && charts[1]
+      ? Math.max(uniqueXLengh((charts[0]).data), uniqueXLengh((charts[1]).data)) * minColumnWidth
+      : 0
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
       const { color, title, data } = chart
