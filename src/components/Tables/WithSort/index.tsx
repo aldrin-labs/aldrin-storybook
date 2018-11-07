@@ -24,6 +24,7 @@ const stableSort = (array: RowContent[], cmp: (a: any, b: any) => number) => {
   stabilizedThis.sort((a: any, b: any) => {
     const fa: any = flatten(a)
     const fb: any = flatten(b)
+
     const order = cmp(fa[0], fb[0])
     if (order !== 0) return order
     return fa[1] - fb[1]
@@ -35,7 +36,7 @@ const stableSort = (array: RowContent[], cmp: (a: any, b: any) => number) => {
 const getSorting = (order: SortDirection, orderBy: string) => {
   return order === 'desc'
     ? (a: any, b: any) => desc(a, b, orderBy)
-    : (a: any, b: any) => -!desc(a, b, orderBy)
+    : (a: any, b: any) => -desc(a, b, orderBy)
 }
 
 const desc = (a: Content, b: Content, orderBy: string): number => {
