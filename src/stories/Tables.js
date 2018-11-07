@@ -35,12 +35,10 @@ storiesOf('TablesWithCheckbox', module)
               flexDirection: 'column',
             }}
           >
-            <Tables
-              withCheckboxes={boolean('witchCheckboxes', false)}
+            <Sort
+              withCheckboxes={boolean('witchCheckboxes', true)}
               title="Title"
               data={mock.data}
-              expandedRows={['e']}
-              expandableRows
               columnNames={mock.head}
             />
           </Paper>

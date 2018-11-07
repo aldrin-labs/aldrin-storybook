@@ -2,10 +2,10 @@ import React from 'react'
 import Table from '../'
 import { zip, isObject, has } from 'lodash-es'
 
-import { Props as TableProps, HeadCell } from '../index.types'
+import { Props as TableProps, Head } from '../index.types'
 import { SortState } from './index.types'
 
-const decideSort = (cell: HeadCell, sortDirection: 'asc' | 'desc') => {
+const decideSort = (cell: Head, sortDirection: 'asc' | 'desc') => {
   const flatten = (a) =>
     isObject(a) && has(a, 'contentToSort')
       ? a.contentToSort
@@ -67,12 +67,14 @@ export default class Sort extends React.Component<TableProps> {
   }
 
   render() {
-    const { rows: RawRows } = this.props
+    const { data: RawRows, columnNames } = this.props
     const { sortColumn, sortDirection } = this.state
 
-    const sortedBody = zip(...RawRows.body).map((column, ind) => {
+    const sortedBody = zip(
+      ...RawRows.body.map((row) => Object.values(row))
+    ).map((column, ind) => {
       if (ind === sortColumn) {
-        const sortFunction = decideSort(RawRows.head[ind], sortDirection)
+        const sortFunction = decideSort(columnNames[ind], sortDirection)
 
         const sort = column.slice().sort(sortFunction)
         return sortDirection === 'asc' ? sort.reverse() : sort

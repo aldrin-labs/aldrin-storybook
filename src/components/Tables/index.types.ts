@@ -20,10 +20,6 @@ export type TObj = {
   contentToSort?: string | number
 }
 
-export type HeadCell = TObj & {
-  sortBy: 'number' | 'date' | 'default' | (() => number)
-}
-
 export type Cell = T | TObj
 
 export type OnChange = (id: string) => void
@@ -68,6 +64,7 @@ export type Head = {
   disablePadding?: boolean
   label: string
   style?: object
+  sortBy?: 'number' | 'date' | 'default' | (() => number)
 }
 
 export interface Props extends WithStyles {
