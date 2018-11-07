@@ -13,7 +13,7 @@ import { Paper } from '@material-ui/core'
 
 import { backgrounds } from './backgrounds'
 import { BarChart } from '@components/BarChart'
-import { basic, longMocksGenirator } from './mocks/BarChartMocks'
+import { basic, longMocksGenirator, doubled } from './mocks/BarChartMocks'
 
 
 const groupId = 'GROUP-ID1';
@@ -103,6 +103,37 @@ storiesOf('BarChart', module)
             },
             {
               data: longMocksGenirator(50).concat(longMocksGenirator(50)),
+              color: '#4ed8da',
+              title: 'Rebalanced',
+            },
+          ],
+          groupId
+        )}
+      />
+    </Paper>
+    )
+  )
+  .add(
+    'BarChart doubles',
+    withInfo()(() =>
+    <Paper>
+      <BarChart
+        height={number('height', 350)}
+        hideDashForToolTip={boolean('Hide dash for tool tip', true)}
+        xAxisVertical={boolean('xAxisVertical', true)}
+        alwaysShowLegend={boolean('alwaysShowLegend', true)}
+        animated={boolean('animated', false)}
+        minColumnWidth={number('Minimum column width', 50)}
+        charts={object(
+          'data',
+          [
+            {
+              data: doubled.staticRows,
+              color: '#fff',
+              title: 'Current',
+            },
+            {
+              data: doubled.rows,
               color: '#4ed8da',
               title: 'Rebalanced',
             },

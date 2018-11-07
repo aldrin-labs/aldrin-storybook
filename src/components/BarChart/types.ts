@@ -19,7 +19,7 @@ export interface IProps {
   height?: number
   alwaysShowLegend?: boolean
   animated?: boolean
-  minColumnWidth?: number
+  minColumnWidth: number
 }
 export interface IState {
   value: IValue | { x: null; y: null }

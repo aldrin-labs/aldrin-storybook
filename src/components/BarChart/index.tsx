@@ -63,12 +63,14 @@ export class BarChart extends Component<IProps, IState> {
     const { value } = this.state
 
     const ITEMS: Items[] = []
+
     const uniqueXLengh = (data: any[]) => {
-      const uniqueLength = _.uniq(data.map(element => element.x)).length
-      if (uniqueLength > data.length) throw new Error('There are duplicate x indices in the input')
+      const uniqueLength = _.uniqBy(data, 'x').length
+      if (uniqueLength > data.length) console.warn('There are duplicate x indices in the input')
       return uniqueLength
     }
-    const minWidth = Math.max(uniqueXLengh(charts[1].data), uniqueXLengh(charts[1].data)) * minColumnWidth
+
+    const minWidth = Math.max(uniqueXLengh((charts[0]).data), uniqueXLengh((charts[1]).data)) * minColumnWidth
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
       const { color, title, data } = chart
