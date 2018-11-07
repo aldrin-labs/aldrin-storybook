@@ -38,8 +38,11 @@ const desc = (a: Content, b: Content, orderBy: string): number => {
         ? (o as TObj).render
         : (o as T)
 
-  const fa = flatten(a[orderBy]) || a[orderBy]
-  const fb = flatten(b[orderBy]) || b[orderBy]
+  const fa = flatten(a[orderBy])
+  const fb = flatten(b[orderBy])
+  if (typeof fb === 'undefined' || typeof fa === 'undefined') {
+    return 0
+  }
   if (fb < fa) {
     return -1
   }
