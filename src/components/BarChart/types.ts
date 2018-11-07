@@ -20,6 +20,8 @@ export interface IProps {
   alwaysShowLegend?: boolean
   animated?: boolean
   minColumnWidth: number
+  xAxisVertical?: boolean
+  hideDashForToolTip?: boolean
 }
 export interface IState {
   value: IValue | { x: null; y: null }
