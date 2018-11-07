@@ -39,6 +39,7 @@ storiesOf('TablesWithCheckbox', module)
               withCheckboxes={boolean('witchCheckboxes', true)}
               title="Title"
               data={mock.data}
+              checkedRows={['1']}
               columnNames={mock.head}
             />
           </Paper>

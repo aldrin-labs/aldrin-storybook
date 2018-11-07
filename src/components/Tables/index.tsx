@@ -243,17 +243,20 @@ const renderCell = ({
   )
 }
 
-const renderHeadCell = (
-  cell: Head,
-  isSortable: boolean,
-  sort: sortTypes | undefined,
-  column: number
-) =>
+const renderHeadCell = ({
+  cell,
+  isSortable,
+  sort,
+}: {
+  cell: Head
+  isSortable: boolean
+  sort: sortTypes | undefined
+}) =>
   isSortable ? (
     <TableSortLabel
-      active={sort!.sortColumn === column}
+      active={sort!.sortColumn === cell.id}
       direction={sort!.sortDirection}
-      onClick={() => sort!.sortHandler(column)}
+      onClick={() => sort!.sortHandler(cell.id)}
     >
       {cell.label}
     </TableSortLabel>
@@ -419,7 +422,7 @@ const CustomTable = (props: Props) => {
               </CustomTableCell>
             )}
 
-            {columnNames.map((column, index) => {
+            {columnNames.map((column) => {
               return (
                 <CustomTableCell
                   style={{ ...column.style, ...isOnTop }}
@@ -428,7 +431,7 @@ const CustomTable = (props: Props) => {
                   numeric={column.isNumber}
                   key={column.id}
                 >
-                  {renderHeadCell(column, isSortable, sort, index)}
+                  {renderHeadCell({ isSortable, sort, cell: column })}
                 </CustomTableCell>
               )
             })}
