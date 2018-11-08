@@ -24,6 +24,7 @@ export interface IProps {
   minColumnWidth: number
   xAxisVertical?: boolean
   hideDashForToolTip?: boolean
+  bottomMargin: number
   theme: Theme
 }
 export interface IState {

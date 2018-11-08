@@ -31,6 +31,7 @@ storiesOf('BarChart', module)
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
         minColumnWidth={number('Minimum column width', 50)}
+        showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
           [
@@ -62,6 +63,7 @@ storiesOf('BarChart', module)
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
         minColumnWidth={number('Minimum column width', 50)}
+        showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
           [
@@ -93,6 +95,7 @@ storiesOf('BarChart', module)
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
         minColumnWidth={number('Minimum column width', 50)}
+        showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
           [
@@ -124,6 +127,7 @@ storiesOf('BarChart', module)
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
         minColumnWidth={number('Minimum column width', 50)}
+        showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
           [

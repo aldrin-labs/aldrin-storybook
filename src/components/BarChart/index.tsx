@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Typography } from '@material-ui/core'
 import _ from 'lodash'
 import {
   FlexibleXYPlot,
@@ -30,6 +31,7 @@ import {
 class BarChartComponent extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
     minColumnWidth: 20,
+    bottomMargin: 55,
   }
 
   state = {
@@ -50,11 +52,10 @@ class BarChartComponent extends Component<IProps, IState> {
       hideDashForToolTip,
       animated = false,
       xAxisVertical,
+      bottomMargin,
       theme,
     } = this.props
     const { value } = this.state
-
-    console.log('theme', theme)
 
     const items: Items[] = charts.map((chart: IChart, chartIndex: number) => {
       const { title, color } = chart
@@ -90,10 +91,18 @@ class BarChartComponent extends Component<IProps, IState> {
           height={height}
           minWidth={minWidth}
         >
-          <FlexibleXYPlot onMouseLeave={this.onSeriesMouseOut} xType="ordinal" margin={{ bottom: 55}}>
+          <FlexibleXYPlot onMouseLeave={this.onSeriesMouseOut} xType="ordinal" margin={{ bottom: bottomMargin }}>
             {alwaysShowLegend && (
-              <LegendContainer>
-                <StyledDiscreteColorLegend orientation="horizontal" items={items} />
+              <LegendContainer
+                backgroundColor={theme.palette.background.default}
+                textColor={theme.palette.text.primary}
+                transition={theme.transitions.duration.short}
+              >
+                <StyledDiscreteColorLegend
+                  orientation="horizontal"
+                  fontFamily={theme.typography.fontFamily}
+                  items={items}
+                />
               </LegendContainer>
             )}
             {showPlaceholder ? (
@@ -107,18 +116,24 @@ class BarChartComponent extends Component<IProps, IState> {
                   { x: 'Q4', y: 25 },
                   { x: 'Q5', y: 20 },
                 ]}
-                color="rgba(91, 96, 102, 0.7)"
+                color={theme.palette.action.disabledBackground}
               />
             ) : (
               [
                 <YAxis
                   animation={animated && 'gentle'}
-                  style={axisStyle(theme)}
+                  style={axisStyle(
+                    theme.palette.text.primary,
+                    theme.typography.fontFamily,
+                    theme.palette.secondary.main)}
                   key="y"
                 />,
                 <XAxis
                   animation={animated && 'gentle'}
-                  style={axisStyle(theme)}
+                  style={axisStyle(
+                    theme.palette.text.primary,
+                    theme.typography.fontFamily,
+                    theme.palette.secondary.main)}
                   key="x"
                   tickLabelAngle={xAxisVertical ? -90 : 0}
                 />,
@@ -128,7 +143,9 @@ class BarChartComponent extends Component<IProps, IState> {
 
             {value.x === null || value.y === null ? null : (
               <Hint value={value}>
-                <ChartTooltip>{`${value.x} ${hideDashForToolTip ? '' : '-'} ${value.y}%`}</ChartTooltip>
+                <ChartTooltip>
+                  <Typography variant="title">{`${value.x} ${hideDashForToolTip ? '' : '-'} ${value.y}%`}</Typography>
+                </ChartTooltip>
               </Hint>
             )}
           </FlexibleXYPlot>
