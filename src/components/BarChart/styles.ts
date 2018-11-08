@@ -25,17 +25,19 @@ export const ChartTooltip = styled(Card)`
 // it's a hotfix but we don't know why these items are height 0 and width 0 now.
 // They should be not zero without this code
 export const StyledDiscreteColorLegend = styled(DiscreteColorLegend)`
-  font-family: ${(props: { fontFamily: string }) => props.fontFamily};
+  font-family: ${(props: { fontFamily: string, textColor: string }) => props.fontFamily};
+  color: ${(props: { fontFamily: string, textColor: string }) => props.textColor};
   & .rv-discrete-color-legend-item__color {
     height: 3px;
     width: 30px;
   }
 `
 
-export const axisStyle = ({stroke, textColor, fontSize}) => ({
+export const axisStyle = ({stroke, textColor, fontFamily, fontSize}) => ({
   ticks: {
     padding: '1rem',
     stroke: stroke,
+    fontFamily: fontFamily,
     opacity: 0.75,
     fontSize: fontSize,
     fontWeight: 100,
