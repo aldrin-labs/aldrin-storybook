@@ -2,7 +2,7 @@ import React from 'react'
 
 import { configure, addDecorator } from '@storybook/react'
 import { setOptions } from '@storybook/addon-options'
-import { withKnobs } from '@storybook/addon-knobs/react'
+import { withKnobs } from '@storybook/addon-knobs'
 import { withInfo } from '@storybook/addon-info'
 import { MuiThemeProvider } from '@material-ui/core/styles';
 

@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import StoryRouter from 'storybook-react-router'
 import { IntlProvider } from 'react-intl'
-import { text, array } from '@storybook/addon-knobs/react'
+import { text, array } from '@storybook/addon-knobs'
 
 import { backgrounds } from './backgrounds'
 import {CoinsList} from '@components/CoinsList'

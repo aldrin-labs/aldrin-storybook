@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { object, number, boolean, text } from '@storybook/addon-knobs/react'
+import { object, number, boolean, text } from '@storybook/addon-knobs'
 
 import styled from 'styled-components'
 import { Card } from '@material-ui/core'

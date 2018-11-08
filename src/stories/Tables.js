@@ -10,7 +10,7 @@ import {
   boolean,
   text,
   array,
-} from '@storybook/addon-knobs/react'
+} from '@storybook/addon-knobs'
 import Paper from '@material-ui/core/Paper'
 import { Grid } from '@material-ui/core'
 import Sort from '../components/Tables/WithSort'

@@ -7,7 +7,7 @@ import {
   number,
   boolean,
   text
-} from '@storybook/addon-knobs/react'
+} from '@storybook/addon-knobs'
 
 import styled from 'styled-components'
 import { Paper } from '@material-ui/core'
