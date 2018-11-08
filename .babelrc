@@ -17,7 +17,8 @@
       "plugins": [
         "react-hot-loader/babel",
         "styled-components",
-        "@babel/plugin-transform-runtime"
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-proposal-class-properties"
       ]
     },
     "production": {
@@ -36,7 +37,11 @@
         "@babel/react",
         "@babel/preset-typescript"
       ],
-      "plugins": ["lodash", "@babel/plugin-transform-runtime"]
+      "plugins": [
+        "lodash",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-proposal-class-properties"
+      ]
     },
     "development": {
       "presets": [
