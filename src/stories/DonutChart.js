@@ -14,7 +14,12 @@ import { Paper } from '@material-ui/core'
 
 import { backgrounds } from './backgrounds'
 import DonutChart from '@components/DonutChart'
-import { DonutChartTableMocks } from './mocks'
+import {
+  chartData,
+  someZeroTestData,
+  allZeroTestData,
+  longMocksGenirator
+} from './mocks/DonutChartMoks'
 
 
 const ChartWrapper = styled(Paper)`
@@ -35,7 +40,7 @@ storiesOf('DonutChart', module)
       <ChartWrapper elevation={8}>
         <DonutChart
           labelPlaceholder={text("Label Placeholder" , "Industry %")}
-          data={object("data", DonutChartTableMocks.chartData, groupId)}
+          data={object("data", chartData, groupId)}
           colorLegend={boolean("Color Legend", true)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
@@ -48,7 +53,7 @@ storiesOf('DonutChart', module)
       <ChartWrapper elevation={8}>
         <DonutChart
           labelPlaceholder={text("Label Placeholder" , "Industry %")}
-          data={object("data", DonutChartTableMocks.someZeroTestData, groupId)}
+          data={object("data", someZeroTestData, groupId)}
           colorLegend={boolean("Color Legend", true)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
@@ -61,7 +66,20 @@ storiesOf('DonutChart', module)
       <ChartWrapper elevation={8}>
         <DonutChart
           labelPlaceholder={text("Label Placeholder" , "Industry %")}
-          data={object("data", DonutChartTableMocks.allZeroTestData, groupId)}
+          data={object("data", allZeroTestData, groupId)}
+          colorLegend={boolean("Color Legend", true)}
+          thicknessCoefficient={number("Thickness Coefficient", 10)}
+        />
+      </ChartWrapper>
+    )
+  )
+  .add(
+    'DonutChart long data',
+    withInfo()(() =>
+      <ChartWrapper elevation={8}>
+        <DonutChart
+          labelPlaceholder={text("Label Placeholder" , "Industry %")}
+          data={object("data", longMocksGenirator(100), groupId)}
           colorLegend={boolean("Color Legend", true)}
           thicknessCoefficient={number("Thickness Coefficient", 10)}
         />
