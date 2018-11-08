@@ -32,13 +32,12 @@ export const StyledDiscreteColorLegend = styled(DiscreteColorLegend)`
   }
 `
 
-export const axisStyle = (stroke, fontFamily, textColor) => ({
+export const axisStyle = ({stroke, textColor, fontSize}) => ({
   ticks: {
     padding: '1rem',
     stroke: stroke,
     opacity: 0.75,
-    fontFamily: fontFamily,
-    fontSize: '12px',
+    fontSize: fontSize,
     fontWeight: 100,
   },
   text: { stroke: 'none', fill: textColor, fontWeight: 600, opacity: 1 },

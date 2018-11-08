@@ -70,6 +70,12 @@ class BarChartComponent extends Component<IProps, IState> {
 
     const minWidth = Math.max.apply(null, charts.map(chart => uniqueXLengh(chart.data))) * minColumnWidth
 
+    const axisStyleWithTheme = axisStyle({
+      stroke: theme.palette.text.primary,
+      textColor: theme.palette.secondary.main,
+      fontSize: theme.typography.fontSize,
+    })
+
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
       const { color, data } = chart
       return (
@@ -122,18 +128,12 @@ class BarChartComponent extends Component<IProps, IState> {
               [
                 <YAxis
                   animation={animated && 'gentle'}
-                  style={axisStyle(
-                    theme.palette.text.primary,
-                    theme.typography.fontFamily,
-                    theme.palette.secondary.main)}
+                  style={axisStyleWithTheme}
                   key="y"
                 />,
                 <XAxis
                   animation={animated && 'gentle'}
-                  style={axisStyle(
-                    theme.palette.text.primary,
-                    theme.typography.fontFamily,
-                    theme.palette.secondary.main)}
+                  style={axisStyleWithTheme}
                   key="x"
                   tickLabelAngle={xAxisVertical ? -90 : 0}
                 />,

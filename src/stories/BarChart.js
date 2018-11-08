@@ -16,7 +16,7 @@ import { BarChart } from '@components/BarChart'
 import { basic, longMocksGenirator, doubled } from './mocks/BarChartMocks'
 
 
-const groupId = 'GROUP-ID1';
+const groupId = 'GROUP-ID1'
 
 storiesOf('BarChart', module)
   .addDecorator(backgrounds)
@@ -30,7 +30,7 @@ storiesOf('BarChart', module)
         xAxisVertical={boolean('xAxisVertical', true)}
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
-        minColumnWidth={number('Minimum column width', 50)}
+        minColumnWidth={number('Minimum column width', 20)}
         showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
@@ -62,7 +62,7 @@ storiesOf('BarChart', module)
         xAxisVertical={boolean('xAxisVertical', true)}
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
-        minColumnWidth={number('Minimum column width', 50)}
+        minColumnWidth={number('Minimum column width', 20)}
         showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
@@ -94,7 +94,7 @@ storiesOf('BarChart', module)
         xAxisVertical={boolean('xAxisVertical', true)}
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
-        minColumnWidth={number('Minimum column width', 50)}
+        minColumnWidth={number('Minimum column width', 20)}
         showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
@@ -126,7 +126,7 @@ storiesOf('BarChart', module)
         xAxisVertical={boolean('xAxisVertical', true)}
         alwaysShowLegend={boolean('alwaysShowLegend', true)}
         animated={boolean('animated', false)}
-        minColumnWidth={number('Minimum column width', 50)}
+        minColumnWidth={number('Minimum column width', 20)}
         showPlaceholder={boolean('Show Placeholder', false)}
         charts={object(
           'data',
