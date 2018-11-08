@@ -7,6 +7,7 @@ import {
   YAxis,
   Hint,
 } from 'react-vis'
+import { withTheme } from '@material-ui/core/styles'
 
 import {
   IProps,
@@ -23,20 +24,10 @@ import {
   ChartTooltip,
   StyledDiscreteColorLegend,
   ScrollContainer,
+  axisStyle,
 } from './styles'
 
-const axisStyle = {
-  ticks: {
-    padding: '1rem',
-    stroke: '#fff',
-    opacity: 0.75,
-    fontFamily: 'Roboto',
-    fontSize: '12px',
-    fontWeight: 100,
-  },
-  text: { stroke: 'none', fill: '#4ed8da', fontWeight: 600, opacity: 1 },
-}
-export class BarChart extends Component<IProps, IState> {
+class BarChartComponent extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
     minColumnWidth: 20,
   }
@@ -59,8 +50,11 @@ export class BarChart extends Component<IProps, IState> {
       hideDashForToolTip,
       animated = false,
       xAxisVertical,
+      theme,
     } = this.props
     const { value } = this.state
+
+    console.log('theme', theme)
 
     const items: Items[] = charts.map((chart: IChart, chartIndex: number) => {
       const { title, color } = chart
@@ -119,12 +113,12 @@ export class BarChart extends Component<IProps, IState> {
               [
                 <YAxis
                   animation={animated && 'gentle'}
-                  style={axisStyle}
+                  style={axisStyle(theme)}
                   key="y"
                 />,
                 <XAxis
                   animation={animated && 'gentle'}
-                  style={axisStyle}
+                  style={axisStyle(theme)}
                   key="x"
                   tickLabelAngle={xAxisVertical ? -90 : 0}
                 />,
@@ -144,4 +138,5 @@ export class BarChart extends Component<IProps, IState> {
   }
 }
 
+export const BarChart = withTheme()(BarChartComponent)
 export default BarChart

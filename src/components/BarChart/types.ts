@@ -1,3 +1,5 @@
+import { Theme } from '@material-ui/core'
+
 export interface Items {
   title: string
   color: string
@@ -22,6 +24,7 @@ export interface IProps {
   minColumnWidth: number
   xAxisVertical?: boolean
   hideDashForToolTip?: boolean
+  theme: Theme
 }
 export interface IState {
   value: IValue | { x: null; y: null }

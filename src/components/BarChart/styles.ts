@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import { DiscreteColorLegend } from 'react-vis'
+import { Theme } from '@material-ui/core'
+
 import { customAquaScrollBar } from '../cssUtils'
 
 
@@ -36,5 +38,16 @@ export const StyledDiscreteColorLegend = styled(DiscreteColorLegend)`
     width: 30px;
 
   }
-  
 `
+
+export const axisStyle = (theme: Theme) => ({
+  ticks: {
+    padding: '1rem',
+    stroke: theme.palette.text.primary,
+    opacity: 0.75,
+    fontFamily: theme.typography.fontFamily,
+    fontSize: '12px',
+    fontWeight: 100,
+  },
+  text: { stroke: 'none', fill: theme.palette.secondary.main, fontWeight: 600, opacity: 1 },
+})
