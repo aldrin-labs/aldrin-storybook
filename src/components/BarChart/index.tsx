@@ -62,7 +62,10 @@ export class BarChart extends Component<IProps, IState> {
     } = this.props
     const { value } = this.state
 
-    const ITEMS: Items[] = []
+    const items: Items[] = charts.map((chart: IChart, chartIndex: number) => {
+      const { title, color } = chart
+      return { title, color }
+    })
 
     const uniqueXLengh = (data: any[]) => {
       const uniqueLength = _.uniqBy(data, 'x').length
@@ -70,14 +73,10 @@ export class BarChart extends Component<IProps, IState> {
       return uniqueLength
     }
 
-    const minWidth = charts[0] && charts[1]
-      ? Math.max(uniqueXLengh((charts[0]).data), uniqueXLengh((charts[1]).data)) * minColumnWidth
-      : 0
+    const minWidth = Math.max.apply(null, charts.map(chart => uniqueXLengh(chart.data))) * minColumnWidth
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
-      const { color, title, data } = chart
-      ITEMS.push({ title, color })
-
+      const { color, data } = chart
       return (
         <VerticalBarSeries
           style={{ cursor: 'pointer' }}
@@ -90,6 +89,7 @@ export class BarChart extends Component<IProps, IState> {
         />
       )
     })
+
     return (
       <ScrollContainer height={height}>
         <Container
@@ -99,7 +99,7 @@ export class BarChart extends Component<IProps, IState> {
           <FlexibleXYPlot onMouseLeave={this.onSeriesMouseOut} xType="ordinal" margin={{ bottom: 55}}>
             {alwaysShowLegend && (
               <LegendContainer>
-                <StyledDiscreteColorLegend orientation="horizontal" items={ITEMS} />
+                <StyledDiscreteColorLegend orientation="horizontal" items={items} />
               </LegendContainer>
             )}
             {showPlaceholder ? (
