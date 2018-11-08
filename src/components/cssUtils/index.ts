@@ -1,6 +1,4 @@
 import styled from 'styled-components'
-import { fade } from '@material-ui/core/styles/colorManipulator'
-import { ILegendContainer } from './types'
 
 export const customAquaScrollBar = `
   &::-webkit-scrollbar {
@@ -37,9 +35,8 @@ export const hexToRgbAWithOpacity = (hex, opacity) => {
 export const LegendContainer = styled.div`
   border-radius: 5px;
   position: absolute;
-  background-color: ${(props: ILegendContainer) => fade(props.backgroundColor, 0.8)};
+  background-color: #869eb180;
   top: 0px;
   left: 10%;
-  color: ${(props: ILegendContainer) => props.textColor};
-  transition: ${(props: ILegendContainer) => props.transition};
+  transition: ${(props: {transition: number}) => props.transition};
 `

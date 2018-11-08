@@ -72,6 +72,7 @@ class BarChartComponent extends Component<IProps, IState> {
 
     const axisStyleWithTheme = axisStyle({
       stroke: theme.palette.text.primary,
+      fontFamily: theme.typography.fontFamily,
       textColor: theme.palette.secondary.main,
       fontSize: theme.typography.fontSize,
     })
@@ -100,13 +101,12 @@ class BarChartComponent extends Component<IProps, IState> {
           <FlexibleXYPlot onMouseLeave={this.onSeriesMouseOut} xType="ordinal" margin={{ bottom: bottomMargin }}>
             {alwaysShowLegend && (
               <LegendContainer
-                backgroundColor={theme.palette.background.default}
-                textColor={theme.palette.text.primary}
                 transition={theme.transitions.duration.short}
               >
                 <StyledDiscreteColorLegend
                   orientation="horizontal"
                   fontFamily={theme.typography.fontFamily}
+                  textColor={theme.palette.text.primary}
                   items={items}
                 />
               </LegendContainer>
