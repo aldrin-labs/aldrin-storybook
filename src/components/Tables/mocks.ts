@@ -10,6 +10,7 @@ export const mock: { head: Head[]; data: Data } = {
   data: {
     body: [
       { id: nanoid(), coin: 'BCH', coen: 1, coan: 'A' },
+      { id: '1', coin: 'BCH', coen: 1, coan: 'A' },
       { id: nanoid(), coin: 'DASH', coen: 4, coan: 'D' },
       { id: nanoid(), coin: 'AION', coen: 3, coan: 'B' },
       { id: nanoid(), coin: 'ETH', coen: 2, coan: 'C' },
