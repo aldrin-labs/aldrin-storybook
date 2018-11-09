@@ -37,7 +37,7 @@ export type Content = {
 export type RowContent =
   | Content
   | {
-      expandableContent?: NotExpandableRow[]
+      expandableContent?: ReadonlyArray<NotExpandableRow>
     }
 
 export type Options = {
@@ -52,7 +52,7 @@ export type NotExpandableRow = {
   [key: string]: Cell
 } & { options?: Options } & { id: string } & { contentToSort?: string }
 
-export type Data = { body: Row[]; footer?: Row[] }
+export type Data = { body: ReadonlyArray<Row>; footer?: ReadonlyArray<Row> }
 
 export type sortTypes = {
   sortColumn: string | null
@@ -78,9 +78,9 @@ export interface Props extends WithStyles {
   staticCheckbox?: boolean
   padding: 'default' | 'checkbox' | 'dense' | 'none'
   data: Data
-  columnNames: Head[]
-  checkedRows?: string[]
-  expandedRows?: string[]
+  columnNames: ReadonlyArray<Head>
+  checkedRows?: ReadonlyArray<string>
+  expandedRows?: ReadonlyArray<string>
   title?: string | number
   onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
