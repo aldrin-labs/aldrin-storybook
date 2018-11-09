@@ -63,5 +63,8 @@ dist
 # output of build-storybook
 storybook-static
 
+# cache of hotSource webpack plugin
+.cache
+
 #temp folder for CI
 temp
