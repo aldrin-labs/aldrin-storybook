@@ -1,5 +1,6 @@
-import { WithStyles, Theme } from '@material-ui/core'
+import { WithStyles, Theme, PropTypes } from '@material-ui/core'
 import React from 'react'
+import { SvgIconProps } from '@material-ui/core/SvgIcon'
 
 export type renderCellType = {
   cell: Cell
@@ -70,6 +71,13 @@ export type Head = {
   sortBy?: 'default' | (() => number)
 }
 
+export type action = {
+  readonly onClick: (event: React.MouseEvent<HTMLElement>) => void
+  readonly id: string
+  readonly icon: React.ComponentType<SvgIconProps>
+  readonly color?: PropTypes.Color
+}
+
 export interface Props extends WithStyles {
   withCheckboxes?: boolean
   expandableRows?: boolean
@@ -87,4 +95,7 @@ export interface Props extends WithStyles {
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
   sort: sortTypes | undefined
+  actions?: ReadonlyArray<action>
+  // how long will be cell with actions
+  actionsColSpan?: number
 }

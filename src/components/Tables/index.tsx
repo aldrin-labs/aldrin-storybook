@@ -7,7 +7,6 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableFooter from '@material-ui/core/TableFooter'
 import Paper from '@material-ui/core/Paper'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -62,8 +61,8 @@ const CustomTableCell = withStyles((theme) => ({
   },
 }))(TableCell)
 
-const Settings = withStyles((theme: Theme) => ({
-  root: { color: theme.palette.common.white, padding: 0 },
+const ActionButton = withStyles(() => ({
+  root: { padding: 0 },
 }))(IconButton)
 
 const styles = (theme: Theme) =>
@@ -359,6 +358,8 @@ const CustomTable = (props: Props) => {
     sort,
     theme,
     data = { body: [] },
+    actions = [],
+    actionsColSpan = 1,
   } = props
 
   const isSortable = typeof sort !== 'undefined'
@@ -373,8 +374,9 @@ const CustomTable = (props: Props) => {
   }
   const howManyColumns = withCheckboxes
     ? // space for checkbox
-      columnNames.filter(Boolean).length
-    : columnNames.filter(Boolean).length - 1
+      columnNames.filter(Boolean).length + 1
+    : columnNames.filter(Boolean).length
+
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
 
@@ -386,20 +388,26 @@ const CustomTable = (props: Props) => {
             <TableRow className={classes.headRow}>
               <CustomTableCell
                 className={classes.title}
-                colSpan={howManyColumns}
+                colSpan={howManyColumns - actionsColSpan}
               >
                 <Typography variant="button" color="secondary">
                   {title}
                 </Typography>
               </CustomTableCell>
               <CustomTableCell
+                colSpan={actionsColSpan}
                 className={classes.title}
                 numeric={true}
-                colSpan={howManyColumns}
               >
-                <Settings>
-                  <MoreVertIcon />
-                </Settings>
+                {actions.map((action) => (
+                  <ActionButton
+                    color={action.color || 'default'}
+                    key={action.id}
+                    onClick={action.onClick}
+                  >
+                    {action.icon}
+                  </ActionButton>
+                ))}
               </CustomTableCell>
             </TableRow>
           )}
@@ -450,8 +458,8 @@ const CustomTable = (props: Props) => {
             const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
               ? 'check'
               : expandableRows
-                ? 'expand'
-                : null
+              ? 'expand'
+              : null
             const checkboxClasses = staticCheckbox
               ? `${classes.staticCheckbox} ${classes.checkbox}`
               : classes.checkbox
