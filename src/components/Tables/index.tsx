@@ -382,7 +382,6 @@ const CustomTable = (props: Props) => {
       },
     },
   } = props
-  console.log(pagination)
 
   const isSortable = typeof sort !== 'undefined'
   if (
