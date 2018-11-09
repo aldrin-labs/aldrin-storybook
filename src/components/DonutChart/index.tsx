@@ -24,6 +24,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     data: [],
     thicknessCoefficient: 10,
     colors: defaultColors,
+    colorLegendWhidh: 150,
   }
   state: State = {
     data: [],
@@ -105,6 +106,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       colorLegend,
       theme,
       thicknessCoefficient,
+      colorLegendWhidh,
     } = this.props
 
     const emptyData = {
@@ -123,9 +125,9 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         </LabelContainer>
         <ChartWithLegend>
           {colorLegend && !isEmpty && (
-            <ColorLegendContainer>
+            <ColorLegendContainer width={colorLegendWhidh}>
               <SDiscreteColorLegend
-                width={150}
+                width={colorLegendWhidh}
                 items={data.map((d) => d.label)}
                 colors={data.map(
                   (d, index) => colorsWithRandom[index]
