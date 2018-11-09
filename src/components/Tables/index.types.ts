@@ -87,4 +87,13 @@ export interface Props extends WithStyles {
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
   sort: sortTypes | undefined
+  pagination?: Pagination
+}
+
+export type Pagination = {
+  handleChangeRowsPerPage: () => void
+  handleChangePage: () => void
+  rowsPerPage: 10 | 50 | 100 | 200
+  // start from  0
+  page: number
 }
