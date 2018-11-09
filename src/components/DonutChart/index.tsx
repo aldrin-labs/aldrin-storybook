@@ -12,6 +12,7 @@ import {
   ChartWithTitle,
   SDiscreteColorLegend,
   ChartWithLegend,
+  ColorLegendContainer,
 } from './styles'
 import { defaultColors, emptyColor}  from './colors'
 
@@ -122,14 +123,16 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         </LabelContainer>
         <ChartWithLegend>
           {colorLegend && !isEmpty && (
-            <SDiscreteColorLegend
-              width={250}
-              items={data.map((d) => d.label)}
-              colors={data.map(
-                (d, index) => colorsWithRandom[index]
-              )}
-              textColor={theme.typography.body1.color}
-            />
+            <ColorLegendContainer>
+              <SDiscreteColorLegend
+                width={150}
+                items={data.map((d) => d.label)}
+                colors={data.map(
+                  (d, index) => colorsWithRandom[index]
+                )}
+                textColor={theme.typography.body1.color}
+              />
+            </ColorLegendContainer>
           )}
           <ChartContainer>
             {data.length

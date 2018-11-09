@@ -19,8 +19,17 @@ export const ChartContainer = styled.div`
   marigin: 0px;
 `
 
+export const ColorLegendContainer = styled.div`
+  height: 100%;
+  overflow: auto;
+  transform: scaleX(-1);
+  min-width: 153px;
+  ${customAquaScrollBar}
+`
+
 export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
-  min-width: 150px;
+  transform: scaleX(-1);
+  width: 100%;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
