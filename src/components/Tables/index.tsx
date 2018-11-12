@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -614,5 +614,5 @@ const CustomTable = (props: Props) => {
 }
 
 export default withStyles(styles, { withTheme: true })(
-  withErrorFallback(withStandartSettings(CustomTable))
+  withErrorFallback(withStandartSettings(memo(CustomTable)))
 )
