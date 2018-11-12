@@ -98,4 +98,5 @@ export interface Props extends WithStyles {
   actions?: ReadonlyArray<action>
   // how long will be cell with actions
   actionsColSpan?: number
+  borderBottom?: boolean
 }
