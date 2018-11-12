@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -23,9 +23,16 @@ import {
   Head,
   NotExpandableRow,
   renderCellType,
+  Pagination,
 } from './index.types'
 import { isObject } from 'lodash-es'
-import { Typography, IconButton, Grow, TableSortLabel } from '@material-ui/core'
+import {
+  Typography,
+  IconButton,
+  Grow,
+  TableSortLabel,
+  TablePagination,
+} from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
 
@@ -154,7 +161,7 @@ const renderCheckBox = ({
   type: 'check' | 'expand' | 'checkAll' | 'expandAll' | null
   onChange: OnChange | OnChangeWithEvent
   id?: string
-  checkedRows?: string[]
+  checkedRows?: ReadonlyArray<string>
   rows?: Data
   className?: any
   checked?: boolean
@@ -329,9 +336,14 @@ const renderFooterCells = (
   return renderCells(row, setFooterCellObject)
 }
 
+const addPagination = (data: ReadonlyArray<any> = [], pagination: Pagination) =>
+  data.slice(
+    pagination!.page * pagination!.rowsPerPage,
+    pagination!.page * pagination!.rowsPerPage + pagination!.rowsPerPage
+  )
+
 {
   /* ToDo:
-            - Use reduce instead of for in loop
             - Add settings render
             - Add Tooltips To header
             - Break into files
@@ -339,6 +351,8 @@ const renderFooterCells = (
 }
 
 const CustomTable = (props: Props) => {
+  const defaultRowsPerPage: 10 | 25 | 100 = 100
+
   const {
     classes,
     padding = 'dense',
@@ -359,6 +373,16 @@ const CustomTable = (props: Props) => {
     sort,
     theme,
     data = { body: [] },
+    pagination = {
+      rowsPerPage: defaultRowsPerPage,
+      page: 0,
+      handleChangePage: () => {
+        return
+      },
+      handleChangeRowsPerPage: () => {
+        return
+      },
+    },
     actions = [],
     actionsColSpan = 1,
     borderBottom = false,
@@ -376,8 +400,8 @@ const CustomTable = (props: Props) => {
   }
   const howManyColumns = withCheckboxes
     ? // space for checkbox
-      columnNames.filter(Boolean).length + 1
-    : columnNames.filter(Boolean).length
+      (columnNames as ReadonlyArray<any>).filter(Boolean).length + 1
+    : (columnNames as ReadonlyArray<any>).filter(Boolean).length
 
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
@@ -432,7 +456,7 @@ const CustomTable = (props: Props) => {
               </CustomTableCell>
             )}
 
-            {columnNames.map((column) => {
+            {(columnNames as ReadonlyArray<Head>).map((column) => {
               return (
                 <CustomTableCell
                   style={{ ...column.style, ...isOnTop }}
@@ -449,56 +473,59 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.filter(Boolean).map((row) => {
-            const selected = checkedRows.indexOf(row.id) !== -1
+          {addPagination(
+            data.body.filter(Boolean).map((row) => {
+              const selected = checkedRows.indexOf(row.id) !== -1
 
-            const expandedRow = expandedRows.indexOf(row.id) !== -1
-            const rowClassName = selected
-              ? `${classes.row} + ${classes.rowSelected}`
-              : classes.row
-            const expandable = row.expandableContent
-            const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
-              ? 'check'
-              : expandableRows
-              ? 'expand'
-              : null
-            const checkboxClasses = staticCheckbox
-              ? `${classes.staticCheckbox} ${classes.checkbox}`
-              : classes.checkbox
+              const expandedRow = expandedRows.indexOf(row.id) !== -1
+              const rowClassName = selected
+                ? `${classes.row} + ${classes.rowSelected}`
+                : classes.row
+              const expandable = row.expandableContent
+              const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
+                ? 'check'
+                : expandableRows
+                ? 'expand'
+                : null
+              const checkboxClasses = staticCheckbox
+                ? `${classes.staticCheckbox} ${classes.checkbox}`
+                : classes.checkbox
 
-            return (
-              <React.Fragment key={row.id}>
-                <TableRow
-                  style={
-                    borderBottom
-                      ? {
-                          borderBottom: `1px solid ${theme!.palette.divider}`,
-                        }
-                      : {}
-                  }
-                  className={rowClassName}
-                >
-                  {typeOfCheckbox !== null && (
-                    <CustomTableCell padding="checkbox">
-                      {renderCheckBox({
-                        onChange,
-                        id: row.id,
-                        checked: withCheckboxes ? selected : expandedRow,
-                        disabled:
-                          expandable &&
-                          row.expandableContent &&
-                          (row.expandableContent as NotExpandableRow[])
-                            .length === 0,
-                        className: { checkboxClasses, disabledExpandRow: '' },
-                        type: typeOfCheckbox,
-                      })}
-                    </CustomTableCell>
-                  )}
-                  {renderCells(row)}
-                </TableRow>
-                {expandable && // rendering content of expanded row if it is expandable
-                  (row!.expandableContent! as NotExpandableRow[]).map(
-                    (collapsedRows: Row, i: number) => {
+              return (
+                <React.Fragment key={row.id}>
+                  <TableRow
+                    style={
+                      borderBottom
+                        ? {
+                            borderBottom: `1px solid ${theme!.palette.divider}`,
+                          }
+                        : {}
+                    }
+                    className={rowClassName}
+                  >
+                    {typeOfCheckbox !== null && (
+                      <CustomTableCell padding="checkbox">
+                        {renderCheckBox({
+                          onChange,
+                          id: row.id,
+                          checked: withCheckboxes ? selected : expandedRow,
+                          disabled:
+                            expandable &&
+                            row.expandableContent &&
+                            (row.expandableContent as ReadonlyArray<
+                              NotExpandableRow
+                            >).length === 0,
+                          className: { checkboxClasses, disabledExpandRow: '' },
+                          type: typeOfCheckbox,
+                        })}
+                      </CustomTableCell>
+                    )}
+                    {renderCells(row)}
+                  </TableRow>
+                  {expandable && // rendering content of expanded row if it is expandable
+                    (row!.expandableContent! as ReadonlyArray<
+                      NotExpandableRow
+                    >).map((collapsedRows: Row, i: number) => {
                       return (
                         <Grow
                           in={expandedRow}
@@ -512,11 +539,12 @@ const CustomTable = (props: Props) => {
                           </TableRow>
                         </Grow>
                       )
-                    }
-                  )}
-              </React.Fragment>
-            )
-          })}
+                    })}
+                </React.Fragment>
+              )
+            }),
+            pagination
+          )}
         </TableBody>
         {Array.isArray(data.footer) && (
           <TableFooter>
@@ -554,10 +582,37 @@ const CustomTable = (props: Props) => {
           </TableFooter>
         )}
       </Table>
+
+      <Grow
+        // only show paginations
+        // when there is more rows then
+        // we can display on 1 page
+        in={data.body.length > pagination.rowsPerPage}
+        mountOnEnter
+        unmountOnExit
+      >
+        <>
+          <TablePagination
+            component="div"
+            count={data.body.length}
+            rowsPerPage={pagination.rowsPerPage}
+            page={pagination.page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            rowsPerPageOptions={[10, 50, 100, 200]}
+            onChangePage={pagination.handleChangePage}
+            onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
+          />
+        </>
+      </Grow>
     </Paper>
   )
 }
 
 export default withStyles(styles, { withTheme: true })(
-  withErrorFallback(withStandartSettings(CustomTable))
+  withErrorFallback(withStandartSettings(memo(CustomTable)))
 )

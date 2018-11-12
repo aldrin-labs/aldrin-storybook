@@ -13,7 +13,10 @@ import {
 import { SortState } from './index.types'
 import { SortDirection } from '@material-ui/core/TableCell'
 
-const stableSort = (array: RowContent[], cmp: (a: any, b: any) => number) => {
+const stableSort = (
+  array: ReadonlyArray<RowContent>,
+  cmp: (a: any, b: any) => number
+) => {
   const stabilizedThis = array.map((el, index) => [el, index])
   stabilizedThis.sort((a: any, b: any) => {
     const order = cmp(a[0], b[0])
@@ -35,8 +38,8 @@ const desc = (a: Content, b: Content, orderBy: string): number => {
     isObject(o) && has(o, 'contentToSort')
       ? (o as TObj).contentToSort
       : has(o, 'render')
-        ? (o as TObj).render
-        : (o as T)
+      ? (o as TObj).render
+      : (o as T)
 
   const fa = flatten(a[orderBy])
   const fb = flatten(b[orderBy])
@@ -55,13 +58,13 @@ const desc = (a: Content, b: Content, orderBy: string): number => {
 export default class Sort extends React.Component<TableProps> {
   state: SortState = {
     sortColumn: '',
-    sortDirection: 'desc',
+    sortDirection: 'asc',
   }
   sortHandler = (column: string) => {
     this.setState((prevState: SortState) => {
       let sortDirection = prevState.sortDirection
       if (prevState.sortColumn !== column) {
-        sortDirection = 'desc'
+        sortDirection = 'asc'
       } else {
         sortDirection = prevState.sortDirection === 'asc' ? 'desc' : 'asc'
       }

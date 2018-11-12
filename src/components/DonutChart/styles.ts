@@ -19,14 +19,24 @@ export const ChartContainer = styled.div`
   marigin: 0px;
 `
 
+export const ColorLegendContainer = styled.div`
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transform: scaleX(-1);
+  min-width: ${(props: {width: number}) => props.width + 3}px;
+  ${customAquaScrollBar}
+`
+
 export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
-  min-width: 150px;
+  transform: scaleX(-1);
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   ${customAquaScrollBar} & .rv-discrete-color-legend-item {
     display: flex;
     align-items: center;
+    margin-left: 5px;
     color: ${(props: { textColor: string }) => props.textColor};
   }
   & .rv-discrete-color-legend-item__color {
