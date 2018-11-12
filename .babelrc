@@ -40,7 +40,7 @@
       "plugins": [
         "lodash",
         "@babel/plugin-transform-runtime",
-        "@babel/plugin-proposal-class-properties"
+        "@babel/plugin-proposal-class-properties",
       ]
     },
     "development": {
@@ -62,7 +62,7 @@
         "react-hot-loader/babel",
         "styled-components",
         "@babel/plugin-proposal-class-properties",
-        "@babel/plugin-transform-runtime"
+        "@babel/plugin-transform-runtime",
       ]
     }
   }

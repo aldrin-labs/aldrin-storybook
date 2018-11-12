@@ -34,6 +34,7 @@ import {
   TablePagination,
 } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
+import withStandartSettings from './withStandartSettings/withStandartSettings'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -384,6 +385,7 @@ const CustomTable = (props: Props) => {
     },
     actions = [],
     actionsColSpan = 1,
+    borderBottom = false,
   } = props
 
   const isSortable = typeof sort !== 'undefined'
@@ -491,7 +493,16 @@ const CustomTable = (props: Props) => {
 
               return (
                 <React.Fragment key={row.id}>
-                  <TableRow className={rowClassName}>
+                  <TableRow
+                    style={
+                      borderBottom
+                        ? {
+                            borderBottom: `1px solid ${theme!.palette.divider}`,
+                          }
+                        : {}
+                    }
+                    className={rowClassName}
+                  >
                     {typeOfCheckbox !== null && (
                       <CustomTableCell padding="checkbox">
                         {renderCheckBox({
@@ -603,5 +614,5 @@ const CustomTable = (props: Props) => {
 }
 
 export default withStyles(styles, { withTheme: true })(
-  withErrorFallback(memo(CustomTable))
+  withErrorFallback(withStandartSettings(memo(CustomTable)))
 )
