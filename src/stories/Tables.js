@@ -28,9 +28,15 @@ storiesOf('TablesWithCheckbox', module)
           >
             <Sort
               withCheckboxes={boolean('witchCheckboxes', true)}
-              title="Title"
+              title={text('Title', 'undefined')}
               data={mock.data}
               checkedRows={['1']}
+              pagination={{
+                rowsPerPage: number('rowsPerPage', 2),
+                page: number('page', 0),
+                handleChangeRowsPerPage: () => {},
+                handleChangePage: () => {},
+              }}
               columnNames={mock.head}
               actionsColSpan={number('actionsColSpan', 1)}
               actions={[
