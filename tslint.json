@@ -8,10 +8,8 @@
   ],
   "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
-    // Recommended built-in rules
     "no-var-keyword": true,
     "no-parameter-reassignment": true,
-    // Immutability rules
     "readonly-keyword": false,
     "readonly-array": true,
     "no-object-mutation": true,
