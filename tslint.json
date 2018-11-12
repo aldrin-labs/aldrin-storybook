@@ -7,6 +7,16 @@
   ],
   "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
+    // Recommended built-in rules
+    "no-var-keyword": true,
+    "no-parameter-reassignment": true,
+    // Immutability rules
+    "readonly-keyword": false,
+    "readonly-array": true,
+    "no-object-mutation": true,
+    "no-delete": true,
+    "no-method-signature": true,
+    "jsx-boolean-value": false,
     "arrow-parens": false,
     "arrow-return-shorthand": [false],
     "comment-format": [true, "check-space"],
