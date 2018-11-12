@@ -614,5 +614,5 @@ const CustomTable = (props: Props) => {
 }
 
 export default withStyles(styles, { withTheme: true })(
-  withErrorFallback(withStandartSettings(memo(CustomTable)))
+  withErrorFallback(withStandartSettings(CustomTable))
 )
