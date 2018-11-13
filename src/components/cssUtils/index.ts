@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+
+
 export const customAquaScrollBar = `
   &::-webkit-scrollbar {
     width: 3px;
