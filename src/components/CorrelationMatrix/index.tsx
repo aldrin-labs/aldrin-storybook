@@ -90,7 +90,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
           >
             {isFullscreenEnabled ? null : (
               <ButtonsWrapper>
-                <Typography noWrap={true} align="center" variant="h6">
+                <Typography noWrap align="center" variant="h6">
                   Time Range
                 </Typography>
                 <SelectTimeRange
