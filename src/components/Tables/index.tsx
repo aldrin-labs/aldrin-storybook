@@ -35,6 +35,7 @@ import {
 } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
+import withPagination from './withPagination/withPagination'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -613,6 +614,7 @@ const CustomTable = (props: Props) => {
   )
 }
 
+// rewrite with hooks
 export default withStyles(styles, { withTheme: true })(
-  withErrorFallback(withStandartSettings(memo(CustomTable)))
+  withErrorFallback(withStandartSettings(withPagination(memo(CustomTable))))
 )

@@ -30,7 +30,6 @@ storiesOf('TablesWithCheckbox', module)
             data={mock.data}
             checkedRows={['1']}
             columnNames={mock.head}
-            actionsColSpan={number('actionsColSpan', 1)}
             actions={[
               {
                 id: '1',

@@ -17,8 +17,11 @@ export default (WrappedComponent: React.ReactType) => {
     }
 
     handleClose = () => {
+      this.setState({ anchorEl: null })
+    }
+
+    toggleBorder = () => {
       this.setState(({ borderBottom }: { borderBottom: boolean }) => ({
-        anchorEl: null,
         borderBottom: !borderBottom,
       }))
     }
@@ -56,7 +59,7 @@ export default (WrappedComponent: React.ReactType) => {
               Borders{' '}
               <Switch
                 checked={this.state.borderBottom}
-                onChange={this.handleClose}
+                onClick={this.toggleBorder}
                 value="checkedB"
                 color="primary"
               />
