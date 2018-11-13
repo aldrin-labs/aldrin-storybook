@@ -11,7 +11,6 @@ import {
   ICellContentProps,
   ICellProps,
 } from './types'
-import { withTheme } from '@material-ui/core/styles'
 
 export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
   state: IState = {
