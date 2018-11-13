@@ -24,7 +24,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
     <>
       <StyledCard raised={true}>
         <CardContent>
-          <Typography gutterBottom={true} align="center" variant="h2">
+          <Typography gutterBottom align="center" variant="h2">
             🤔
           </Typography>
           <Typography color="secondary" variant="h5">
@@ -50,8 +50,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       theme: { palette },
     } = this.props
 
-    const colors = CustomColors 
-    ||  [
+    const colors = CustomColors || [
       palette.red.main,
       palette.background.default,
       palette.green.main,
@@ -75,8 +74,8 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                     gridTemplateColumns: isFullscreenEnabled
                       ? '1fr'
                       : data.values.length < 10
-                        ? '20% 1fr 28%'
-                        : '30% 1fr 29%',
+                      ? '20% 1fr 28%'
+                      : '30% 1fr 29%',
                     gridTemplateRows: '100%',
                     alignItems: 'center',
                   }
