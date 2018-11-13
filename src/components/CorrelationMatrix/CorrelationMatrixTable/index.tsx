@@ -11,9 +11,9 @@ import {
   ICellContentProps,
   ICellProps,
 } from './types'
+import { withTheme } from '@material-ui/core/styles'
 
 export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
-
   state: IState = {
     activeRow: null,
     activeColumn: null,
@@ -28,7 +28,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
   }
 
   render() {
-    const { isFullscreenEnabled, data, colors } = this.props
+    const { isFullscreenEnabled, data, colors, theme } = this.props
     const { activeRow, activeColumn } = this.state
 
     const cols = data.values
@@ -47,6 +47,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* first row with coin names */}
         {rows.map((el, i) => (
           <HeadCell
+            fontFamily={theme.typography.fontFamily}
             cols={cols[0].length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
@@ -61,10 +62,13 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* first column with coin names */}
         {rows.map((el, i) => (
           <HeadCell
+            fontFamily={theme.typography.fontFamily}
             cols={cols[0].length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={false}
-            textColor={activeColumn === i ? '#4ed8da' : '#dedede'}
+            textColor={
+              activeColumn === i ? '#4ed8da' : theme.typography.body1.color
+            }
             style={{ gridColumnStart: 1 }}
             key={el}
           >
@@ -86,6 +90,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
 
             return (
               <Cell
+                fontFamily={theme.typography.fontFamily}
                 cols={cols[0].length}
                 isFullscreenEnabled={isFullscreenEnabled}
                 textColor={textColor}
@@ -100,7 +105,10 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
                   color={backgroundColor}
                   active={i === activeRow && ind === activeColumn}
                 >
-                  {value !== 1 && <CenterText>{(value * 100).toFixed(1)}</CenterText>}
+                  {/* dont show text if is is on diagonal */}
+                  <CenterText style={value === 1 ? { opacity: 0 } : {}}>
+                    {(value * 100).toFixed(1)}
+                  </CenterText>
                 </CellContent>
               </Cell>
             )
@@ -129,10 +137,13 @@ const StyledArrowDown = styled(FaAngleDown)`
 `
 
 const GridTable = styled.div`
-  width: ${(props: IGridTableProps) => (props.isFullscreenEnabled ? 'auto' : '100%')};
-  margin: ${(props: IGridTableProps) => (props.isFullscreenEnabled ? '0 auto' : '')};
+  width: ${(props: IGridTableProps) =>
+    props.isFullscreenEnabled ? 'auto' : '100%'};
+  margin: ${(props: IGridTableProps) =>
+    props.isFullscreenEnabled ? '0 auto' : ''};
   position: relative;
-  right: ${(props: IGridTableProps) => (props.isFullscreenEnabled ? '5vh' : '0')};
+  right: ${(props: IGridTableProps) =>
+    props.isFullscreenEnabled ? '5vh' : '0'};
   height: 100%;
   display: grid;
   background: ${(props: IGridTableProps) =>
@@ -151,7 +162,7 @@ const CellContent = styled.div`
   display: flex;
   place-content: center;
   place-items: center;
-  background-color: ${(props: { color?: string, active?: boolean }) => {
+  background-color: ${(props: { color?: string; active?: boolean }) => {
     if (props.color) {
       return props.color
     }
@@ -168,8 +179,10 @@ const CellContent = styled.div`
 /* tslint:disable */
 const Cell = styled.div`
   z-index: 100;
+  min-width: 2rem;
+  min-height: 2rem;
 
-  font-family: Roboto, sans-serif;
+  font-family: ${({ fontFamily }: ICellProps) => fontFamily};
   font-size: ${(props: ICellProps) => {
     const { isFullscreenEnabled, cols } = props
 
@@ -216,7 +229,8 @@ const Cell = styled.div`
 const HeadCell = styled(Cell)`
   z-index: 101;
   position: relative;
-  position: ${(props: {sticky: boolean}) => (props.sticky ? 'sticky' : 'relative')};
+  position: ${(props: { sticky: boolean }) =>
+    props.sticky ? 'sticky' : 'relative'};
 
   top: 0;
 `
