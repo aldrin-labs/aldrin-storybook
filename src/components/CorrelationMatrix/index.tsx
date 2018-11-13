@@ -22,7 +22,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
 
   renderPlaceholder = () => (
     <>
-      <StyledCard raised={true}>
+      <StyledCard raised>
         <CardContent>
           <Typography gutterBottom align="center" variant="h2">
             🤔
