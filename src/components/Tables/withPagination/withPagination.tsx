@@ -6,14 +6,17 @@ export default (WrappedComponent: React.ReactType) => {
   return class WithPagination extends React.Component<Props> {
     state = {
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 100,
     }
 
-    handleChangePage = (event, page) => {
+    handleChangePage = (
+      event: React.ChangeEvent<HTMLInputElement>,
+      page: number
+    ) => {
       this.setState({ page })
     }
 
-    handleChangeRowsPerPage = (event) => {
+    handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
       this.setState({ rowsPerPage: event.target.value })
     }
 
