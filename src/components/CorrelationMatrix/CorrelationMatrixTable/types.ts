@@ -18,6 +18,8 @@ export interface IGridTableProps {
 
 export interface ICellContentProps {
   color?: string
+  activeBorderColor?: string
+  mainBorderColor?: string
   active?: boolean
 }
 

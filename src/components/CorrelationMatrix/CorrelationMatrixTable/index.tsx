@@ -51,10 +51,16 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
             cols={cols[0].length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
-            textColor={activeRow === i ? '#4ed8da' : '#dedede'}
+            textColor={
+              activeRow === i
+                ? theme.palette.secondary.main
+                : theme.typography.body1.color
+            }
             key={el}
           >
-            {rows.length <= 5 && <StyledArrowDown show={activeRow === i} />}
+            {rows.length <= 5 && (
+              <StyledArrowDown color="secondary" show={activeRow === i} />
+            )}
             {el}
           </HeadCell>
         ))}
@@ -67,12 +73,16 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={false}
             textColor={
-              activeColumn === i ? '#4ed8da' : theme.typography.body1.color
+              activeColumn === i
+                ? theme.palette.secondary.main
+                : theme.typography.body1.color
             }
             style={{ gridColumnStart: 1 }}
             key={el}
           >
-            {rows.length <= 5 && <StyledArrowRight show={activeColumn === i} />}{' '}
+            {rows.length <= 5 && (
+              <StyledArrowRight color="secondary" show={activeColumn === i} />
+            )}{' '}
             {el}
           </HeadCell>
         ))}
@@ -103,6 +113,8 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
               >
                 <CellContent
                   color={backgroundColor}
+                  activeBorderColor={theme.palette.secondary.main}
+                  mainBorderColor={theme.palette.divider}
                   active={i === activeRow && ind === activeColumn}
                 >
                   {/* dont show text if is is on diagonal */}
@@ -124,14 +136,14 @@ const CenterText = styled.span``
 const StyledArrowRight = styled(FaAngleRight)`
   opacity: ${(props: { show?: boolean }) => (props.show ? '1' : '0')};
   left: 0rem;
-  color: #4ed8da;
+
   position: absolute;
   transition: opacity 0.25s ease-out;
 `
 const StyledArrowDown = styled(FaAngleDown)`
   opacity: ${(props: { show?: boolean }) => (props.show ? '1' : '0')};
   top: 0;
-  color: #4ed8da;
+
   position: absolute;
   transition: opacity 0.25s ease-out;
 `
@@ -173,7 +185,9 @@ const CellContent = styled.div`
   width: ${(props: ICellContentProps) => (props.active ? '100%' : '97%')};
   height: ${(props: ICellContentProps) => (props.active ? '100%' : '97%')};
   border: ${(props: ICellContentProps) =>
-    props.active ? '2px solid #4ed8da' : '1px solid #292d31'};
+    props.active
+      ? `2px solid ${props.activeBorderColor}`
+      : `1px solid ${props.mainBorderColor}`};
   transition: border 0.25s ease-in-out;
 `
 /* tslint:disable */
