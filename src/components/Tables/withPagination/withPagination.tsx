@@ -23,13 +23,13 @@ export default (WrappedComponent: React.ReactType) => {
     render() {
       return (
         <WrappedComponent
-          {...this.props}
           pagination={{
             handleChangePage: this.handleChangePage,
             page: this.state.page,
             rowsPerPage: this.state.rowsPerPage,
             handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           }}
+          {...this.props}
         />
       )
     }
