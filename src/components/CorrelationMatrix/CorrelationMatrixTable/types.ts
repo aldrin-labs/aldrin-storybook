@@ -1,7 +1,9 @@
-export interface IProps {
+import { WithTheme } from '@material-ui/core'
+
+export interface IProps extends WithTheme {
   data: any
   isFullscreenEnabled: boolean
-  colors: string[]
+  colors: ReadonlyArray<string>
 }
 export interface IState {
   activeColumn: number | null
@@ -14,13 +16,16 @@ export interface IGridTableProps {
   columns: number
 }
 
-export interface ICellContentProps { 
+export interface ICellContentProps {
   color?: string
-  active?: boolean 
+  activeBorderColor?: string
+  mainBorderColor?: string
+  active?: boolean
 }
 
-export interface ICellProps { 
+export interface ICellProps {
   isFullscreenEnabled?: boolean
   cols?: number
   textColor?: string
+  fontFamily?: string | undefined
 }

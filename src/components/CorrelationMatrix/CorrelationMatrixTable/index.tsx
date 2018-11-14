@@ -13,7 +13,6 @@ import {
 } from './types'
 
 export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
-
   state: IState = {
     activeRow: null,
     activeColumn: null,
@@ -28,7 +27,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
   }
 
   render() {
-    const { isFullscreenEnabled, data, colors } = this.props
+    const { isFullscreenEnabled, data, colors, theme } = this.props
     const { activeRow, activeColumn } = this.state
 
     const cols = data.values
@@ -47,13 +46,20 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* first row with coin names */}
         {rows.map((el, i) => (
           <HeadCell
+            fontFamily={theme.typography.fontFamily}
             cols={cols[0].length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
-            textColor={activeRow === i ? '#4ed8da' : '#dedede'}
+            textColor={
+              activeRow === i
+                ? theme.palette.secondary.main
+                : theme.typography.body1.color
+            }
             key={el}
           >
-            {rows.length <= 5 && <StyledArrowDown show={activeRow === i} />}
+            {rows.length <= 5 && (
+              <StyledArrowDown color="secondary" show={activeRow === i} />
+            )}
             {el}
           </HeadCell>
         ))}
@@ -61,14 +67,23 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* first column with coin names */}
         {rows.map((el, i) => (
           <HeadCell
+            fontFamily={theme.typography.fontFamily}
             cols={cols[0].length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={false}
-            textColor={activeColumn === i ? '#4ed8da' : '#dedede'}
+            textColor={
+              activeColumn === i
+                ? theme.palette.secondary.main
+                : theme.typography.body1.color
+            }
             style={{ gridColumnStart: 1 }}
             key={el}
           >
-            {rows.length <= 5 && <StyledArrowRight show={activeColumn === i} />}{' '}
+        //   hiding Arrow if there more then 5 assets
+        // because we need space
+            {rows.length <= 5 && (
+              <StyledArrowRight color="secondary" show={activeColumn === i} />
+            )}{' '}
             {el}
           </HeadCell>
         ))}
@@ -86,6 +101,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
 
             return (
               <Cell
+                fontFamily={theme.typography.fontFamily}
                 cols={cols[0].length}
                 isFullscreenEnabled={isFullscreenEnabled}
                 textColor={textColor}
@@ -98,9 +114,14 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
               >
                 <CellContent
                   color={backgroundColor}
+                  activeBorderColor={theme.palette.secondary.main}
+                  mainBorderColor={theme.palette.divider}
                   active={i === activeRow && ind === activeColumn}
                 >
-                  {value !== 1 && <CenterText>{(value * 100).toFixed(1)}</CenterText>}
+                  {/* dont show text if is is on diagonal */}
+                  <CenterText style={value === 1 ? { opacity: 0 } : {}}>
+                    {(value * 100).toFixed(1)}
+                  </CenterText>
                 </CellContent>
               </Cell>
             )
@@ -116,23 +137,26 @@ const CenterText = styled.span``
 const StyledArrowRight = styled(FaAngleRight)`
   opacity: ${(props: { show?: boolean }) => (props.show ? '1' : '0')};
   left: 0rem;
-  color: #4ed8da;
+
   position: absolute;
   transition: opacity 0.25s ease-out;
 `
 const StyledArrowDown = styled(FaAngleDown)`
   opacity: ${(props: { show?: boolean }) => (props.show ? '1' : '0')};
   top: 0;
-  color: #4ed8da;
+
   position: absolute;
   transition: opacity 0.25s ease-out;
 `
 
 const GridTable = styled.div`
-  width: ${(props: IGridTableProps) => (props.isFullscreenEnabled ? 'auto' : '100%')};
-  margin: ${(props: IGridTableProps) => (props.isFullscreenEnabled ? '0 auto' : '')};
+  width: ${(props: IGridTableProps) =>
+    props.isFullscreenEnabled ? 'auto' : '100%'};
+  margin: ${(props: IGridTableProps) =>
+    props.isFullscreenEnabled ? '0 auto' : ''};
   position: relative;
-  right: ${(props: IGridTableProps) => (props.isFullscreenEnabled ? '5vh' : '0')};
+  right: ${(props: IGridTableProps) =>
+    props.isFullscreenEnabled ? '5vh' : '0'};
   height: 100%;
   display: grid;
   background: ${(props: IGridTableProps) =>
@@ -151,7 +175,7 @@ const CellContent = styled.div`
   display: flex;
   place-content: center;
   place-items: center;
-  background-color: ${(props: { color?: string, active?: boolean }) => {
+  background-color: ${(props: { color?: string; active?: boolean }) => {
     if (props.color) {
       return props.color
     }
@@ -162,14 +186,18 @@ const CellContent = styled.div`
   width: ${(props: ICellContentProps) => (props.active ? '100%' : '97%')};
   height: ${(props: ICellContentProps) => (props.active ? '100%' : '97%')};
   border: ${(props: ICellContentProps) =>
-    props.active ? '2px solid #4ed8da' : '1px solid #292d31'};
+    props.active
+      ? `2px solid ${props.activeBorderColor}`
+      : `1px solid ${props.mainBorderColor}`};
   transition: border 0.25s ease-in-out;
 `
 /* tslint:disable */
 const Cell = styled.div`
   z-index: 100;
+  min-width: 2rem;
+  min-height: 2rem;
 
-  font-family: Roboto, sans-serif;
+  font-family: ${({ fontFamily }: ICellProps) => fontFamily};
   font-size: ${(props: ICellProps) => {
     const { isFullscreenEnabled, cols } = props
 
@@ -216,7 +244,8 @@ const Cell = styled.div`
 const HeadCell = styled(Cell)`
   z-index: 101;
   position: relative;
-  position: ${(props: {sticky: boolean}) => (props.sticky ? 'sticky' : 'relative')};
+  position: ${(props: { sticky: boolean }) =>
+    props.sticky ? 'sticky' : 'relative'};
 
   top: 0;
 `

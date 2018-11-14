@@ -48,6 +48,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       oneColor,
       dates: { startDate, endDate },
       theme: { palette },
+      theme,
     } = this.props
 
     const colors = CustomColors || [
@@ -118,6 +119,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                   data,
                   colors,
                   oneColor,
+                  theme,
                 }}
               />
             ) : (
@@ -125,6 +127,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             )}
             {isFullscreenEnabled ? null : (
               <StyledFullscreenButton
+                size="large"
                 color="primary"
                 variant="contained"
                 onClick={() => {
@@ -152,11 +155,10 @@ const ButtonsWrapper = styled.div`
 
 const StyledFullscreenButton = styled(Button)`
   z-index: 100;
-  color: #fff;
+
   width: 25%;
 
   && {
-    font-size: 2rem;
     margin: 0 auto;
   }
 `
@@ -173,7 +175,6 @@ const StyledCard = styled(Card)`
 `
 
 const ScrolledWrapper = styled.div`
-  max-height: 70vh;
   height: 100%;
   width: 100%;
   overflow-y: scroll;
