@@ -399,10 +399,11 @@ const CustomTable = (props: Props) => {
   ) {
     return null
   }
-  const howManyColumns = withCheckboxes
-    ? // space for checkbox
-      (columnNames as ReadonlyArray<any>).filter(Boolean).length + 1
-    : (columnNames as ReadonlyArray<any>).filter(Boolean).length
+  const howManyColumns =
+    withCheckboxes || expandableRows
+      ? // space for checkbox
+        (columnNames as ReadonlyArray<any>).filter(Boolean).length + 1
+      : (columnNames as ReadonlyArray<any>).filter(Boolean).length
 
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
