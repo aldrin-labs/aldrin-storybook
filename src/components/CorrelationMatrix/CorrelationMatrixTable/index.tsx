@@ -79,6 +79,8 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
             style={{ gridColumnStart: 1 }}
             key={el}
           >
+        //   hiding Arrow if there more then 5 assets
+        // because we need space
             {rows.length <= 5 && (
               <StyledArrowRight color="secondary" show={activeColumn === i} />
             )}{' '}
