@@ -47,7 +47,7 @@ const CustomTableCell = withStyles((theme) => ({
         : theme.palette.primary.light,
     color: fade(theme.palette.common.white, 0.66),
     textTransform: 'uppercase',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     border: 0,
     whiteSpace: 'nowrap',
@@ -56,12 +56,12 @@ const CustomTableCell = withStyles((theme) => ({
   },
   body: {
     borderBottom: 'none',
-    fontSize: 12,
+    fontSize: 14,
     padding: '1px 14px 1px 6px',
   },
   footer: {
+    fontSize: 14,
     zIndex: 100,
-    color: 'white',
     backgroundColor:
       theme.palette.type === 'dark'
         ? theme.palette.primary.dark
@@ -85,10 +85,10 @@ const styles = (theme: Theme) =>
       },
 
       '&::-webkit-scrollbar-track': {
-        background: 'rgba(45, 49, 54, 0.1)',
+        background: theme.palette.background.default,
       },
       '&::-webkit-scrollbar-thumb': {
-        background: '#4ed8da',
+        background: theme.palette.primary.main,
       },
     },
     rowExpanded: {
@@ -99,7 +99,7 @@ const styles = (theme: Theme) =>
       },
     },
     indeterminateCheckbox: {
-      color: theme.palette.secondary.main,
+      color: theme.palette.primary.main,
       padding: '0',
     },
     checkbox: {
@@ -109,10 +109,11 @@ const styles = (theme: Theme) =>
     title: {
       backgroundColor:
         theme.palette.type === 'dark'
-          ? theme.palette.grey[900]
-          : theme.palette.primary.dark,
+          ? theme.palette.primary.main
+          : theme.palette.primary.main,
       position: 'sticky',
       top: 0,
+      fontSize: 16,
     },
     staticCheckbox: {
       '&& input': {
@@ -139,7 +140,7 @@ const styles = (theme: Theme) =>
       },
     },
     footer: {
-      height: theme.spacing.unit * 5,
+      height: theme.spacing.unit * 4,
     },
   })
 
@@ -179,6 +180,7 @@ const renderCheckBox = ({
       onChange={() => {
         ;(onChange as OnChange)(id)
       }}
+      color="default"
       checked={checked}
     />
   ) : type === 'check' ? (
@@ -186,6 +188,7 @@ const renderCheckBox = ({
       classes={{
         root: className.checkboxClasses,
       }}
+      color="default"
       indeterminate={false}
       checked={checked}
       onChange={() => {
@@ -198,6 +201,7 @@ const renderCheckBox = ({
         indeterminate: className.indeterminate,
         root: className.root,
       }}
+      color="default"
       indeterminate={
         rows && checkedRows.length > 0 && rows.body.length > checkedRows.length
       }
@@ -209,6 +213,7 @@ const renderCheckBox = ({
       classes={{
         root: className.root,
       }}
+      color="default"
       checkedIcon={<ExpandLess />}
       icon={<ExpandMore />}
       disabled={Boolean(disabled)}
@@ -418,7 +423,11 @@ const CustomTable = (props: Props) => {
                 className={classes.title}
                 colSpan={howManyColumns - actionsColSpan}
               >
-                <Typography variant="button" color="secondary">
+                <Typography
+                  style={{ fontSize: 16, textTransform: 'none' }}
+                  variant="button"
+                  color="default"
+                >
                   {title}
                 </Typography>
               </CustomTableCell>
@@ -552,7 +561,7 @@ const CustomTable = (props: Props) => {
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
-                (data.footer!.filter(Boolean).length - 1 - index) * 40
+                (data.footer!.filter(Boolean).length - 1 - index) * 32
               return (
                 <TableRow
                   key={index}
