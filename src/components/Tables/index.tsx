@@ -508,7 +508,10 @@ const CustomTable = (props: Props) => {
                     style={
                       borderBottom
                         ? {
-                            borderBottom: `1px solid ${theme!.palette.divider}`,
+                            borderBottom: `1px solid ${fade(
+                              theme!.palette.divider,
+                              0.5
+                            )}`,
                           }
                         : {}
                     }

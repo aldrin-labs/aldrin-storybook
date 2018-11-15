@@ -45,7 +45,7 @@ export default (WrappedComponent: React.ReactType) => {
                   />
                 ),
                 onClick: this.handleClick,
-                color: 'primary',
+                color: 'default',
               },
             ]}
           />
