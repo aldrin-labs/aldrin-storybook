@@ -109,7 +109,7 @@ const styles = (theme: Theme) =>
     title: {
       backgroundColor:
         theme.palette.type === 'dark'
-          ? fade(theme.palette.primary.main, 0.5)
+          ? theme.palette.primary.light
           : fade(theme.palette.primary.main, 0.5),
       position: 'sticky',
       top: 0,
