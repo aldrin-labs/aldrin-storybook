@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
+import TableCell, { Padding } from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableFooter from '@material-ui/core/TableFooter'
@@ -52,12 +52,12 @@ const CustomTableCell = withStyles((theme) => ({
     border: 0,
     whiteSpace: 'nowrap',
     zIndex: 100,
-    padding: '1px 14px 1px 6px',
+    padding: '0.125rem 1rem 0.125rem  0.375rem',
   },
   body: {
     borderBottom: 'none',
     fontSize: 14,
-    padding: '1px 14px 1px 6px',
+    padding: '0.125rem 1rem 0.125rem  0.375rem',
   },
   footer: {
     fontSize: 14,
@@ -66,7 +66,19 @@ const CustomTableCell = withStyles((theme) => ({
       theme.palette.type === 'dark'
         ? theme.palette.primary.dark
         : theme.palette.primary.light,
-    padding: '1px 14px 1px 6px',
+    padding: '0.125rem 1rem 0.125rem  0.375rem',
+  },
+  paddingDense: {
+    padding: '1px 0.25rem 1px 0.25rem',
+    '&:last-child': {
+      padding: '1px 0.5rem 1px 0.25rem',
+    },
+  },
+  paddingNone: {
+    padding: '0',
+    '&:last-child': {
+      padding: '0',
+    },
   },
 }))(TableCell)
 
@@ -227,6 +239,7 @@ const renderCell = ({
   id,
   numeric,
   variant = 'body',
+  padding = 'default',
 }: renderCellType) => {
   if (cell !== null && typeof cell === 'object') {
     return (
@@ -235,6 +248,7 @@ const renderCell = ({
         variant={variant}
         style={{ color: cell.color, ...cell.style }}
         key={id}
+        padding={padding}
         numeric={numeric}
       >
         {cell.render}
@@ -243,14 +257,26 @@ const renderCell = ({
   }
   if (typeof cell !== 'object') {
     return (
-      <CustomTableCell scope="row" variant={variant} numeric={numeric} key={id}>
+      <CustomTableCell
+        padding={padding}
+        scope="row"
+        variant={variant}
+        numeric={numeric}
+        key={id}
+      >
         {cell}
       </CustomTableCell>
     )
   }
 
   return (
-    <CustomTableCell scope="row" variant={variant} numeric={numeric} key={id}>
+    <CustomTableCell
+      padding={padding}
+      scope="row"
+      variant={variant}
+      numeric={numeric}
+      key={id}
+    >
       {''}
     </CustomTableCell>
   )
@@ -277,10 +303,15 @@ const renderHeadCell = ({
     cell.label
   )
 
-const renderCells = (
-  row: NotExpandableRow,
+const renderCells = ({
+  row,
+  renderCellObject,
+  padding,
+}: {
+  row: NotExpandableRow
   renderCellObject?: (cell: Cell, key: string) => renderCellType
-) => {
+  padding?: Padding
+}) => {
   const reduce = Object.keys(row)
     .map((key) => {
       if (key === 'id' || key === 'options' || key === 'expandableContent') {
@@ -297,6 +328,7 @@ const renderCells = (
             numeric: numeric as boolean,
             id: key,
             variant: (row.options && row.options.variant) || 'body',
+            padding: padding ? padding : 'default',
           }
 
       return renderCell(renderCellArg)
@@ -306,11 +338,17 @@ const renderCells = (
   return reduce
 }
 
-const renderFooterCells = (
-  row: NotExpandableRow,
-  stickyOffset: number,
+const renderFooterCells = ({
+  row,
+  stickyOffset,
+  theme,
+  padding,
+}: {
+  row: NotExpandableRow
+  stickyOffset: number
   theme: Theme
-) => {
+  padding?: Padding
+}) => {
   const setFooterCellObject = (cell: Cell, key: string) => {
     const numeric = isNumeric(cell)
     const spreadedCell = isObject(cell) ? cell : { render: cell }
@@ -332,6 +370,7 @@ const renderFooterCells = (
     const variant: 'footer' | 'body' = 'footer'
 
     return {
+      padding,
       numeric: numeric as boolean,
       cell: footerCell as Cell,
       id: key,
@@ -339,7 +378,7 @@ const renderFooterCells = (
     }
   }
 
-  return renderCells(row, setFooterCellObject)
+  return renderCells({ row, renderCellObject: setFooterCellObject })
 }
 
 const addPagination = (data: ReadonlyArray<any> = [], pagination: Pagination) =>
@@ -361,7 +400,7 @@ const CustomTable = (props: Props) => {
 
   const {
     classes,
-    padding = 'dense',
+    padding = 'default',
     columnNames = [],
     withCheckboxes = false,
     title,
@@ -420,6 +459,7 @@ const CustomTable = (props: Props) => {
           {title && (
             <TableRow className={classes.headRow}>
               <CustomTableCell
+                padding="default"
                 className={classes.title}
                 colSpan={howManyColumns - actionsColSpan}
               >
@@ -432,6 +472,7 @@ const CustomTable = (props: Props) => {
                 </Typography>
               </CustomTableCell>
               <CustomTableCell
+                padding="default"
                 colSpan={actionsColSpan}
                 className={classes.title}
                 numeric={true}
@@ -472,7 +513,7 @@ const CustomTable = (props: Props) => {
                 <CustomTableCell
                   style={{ ...column.style, ...isOnTop }}
                   variant="head"
-                  padding={column.disablePadding ? 'none' : 'default'}
+                  padding={column.disablePadding ? 'none' : padding}
                   numeric={column.isNumber}
                   key={column.id}
                 >
@@ -534,7 +575,7 @@ const CustomTable = (props: Props) => {
                         })}
                       </CustomTableCell>
                     )}
-                    {renderCells(row)}
+                    {renderCells({ row, padding })}
                   </TableRow>
                   {expandable && // rendering content of expanded row if it is expandable
                     (row!.expandableContent! as ReadonlyArray<
@@ -549,7 +590,7 @@ const CustomTable = (props: Props) => {
                         >
                           <TableRow className={classes.rowExpanded}>
                             <CustomTableCell padding="checkbox" />
-                            {renderCells(collapsedRows)}
+                            {renderCells({ padding, row: collapsedRows })}
                           </TableRow>
                         </Grow>
                       )
@@ -589,7 +630,12 @@ const CustomTable = (props: Props) => {
                     />
                   )}
 
-                  {renderFooterCells(row, stickyOffset, theme!)}
+                  {renderFooterCells({
+                    row,
+                    stickyOffset,
+                    padding,
+                    theme: theme!,
+                  })}
                 </TableRow>
               )
             })}

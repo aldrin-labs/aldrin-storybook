@@ -1,6 +1,7 @@
 import { WithStyles, Theme, PropTypes } from '@material-ui/core'
 import React from 'react'
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
+import { Padding } from '@material-ui/core/TableCell'
 
 export type renderCellType = {
   cell: Cell
@@ -84,7 +85,7 @@ export interface Props extends WithStyles {
   theme?: Theme
   // removes animation from checkbox
   staticCheckbox?: boolean
-  padding: 'default' | 'checkbox' | 'dense' | 'none'
+  padding: Padding
   data: Data
   columnNames: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
