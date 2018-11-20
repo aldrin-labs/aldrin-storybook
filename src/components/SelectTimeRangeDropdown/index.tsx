@@ -74,7 +74,7 @@ class DropDownMenu extends Component<IProps> {
           { value: 'threeMonths', label: 'Last 3 Months' },
           { value: 'sixMonths', label: 'Last 6 Months' },
           { value: 'lastYear', label: 'Last Year' },
-          { value: 'testDates', label: 'Test Dates' },
+          // { value: 'testDates', label: 'Test Dates' },
         ]}
       />
     )
