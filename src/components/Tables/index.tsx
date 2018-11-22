@@ -41,11 +41,8 @@ const CustomTableCell = withStyles((theme) => ({
   head: {
     position: 'sticky',
     top: theme.spacing.unit * 4,
-    backgroundColor:
-      theme.palette.type === 'dark'
-        ? theme.palette.primary.dark
-        : theme.palette.primary.light,
-    color: fade(theme.palette.common.white, 0.66),
+    backgroundColor: theme.palette.primary.dark,
+    color: theme.palette.text.primary,
     textTransform: 'uppercase',
     fontSize: 14,
     fontWeight: 'bold',
@@ -55,6 +52,7 @@ const CustomTableCell = withStyles((theme) => ({
     padding: '0.125rem 1rem 0.125rem  0.375rem',
   },
   body: {
+    color: theme.palette.text.primary,
     borderBottom: 'none',
     fontSize: 14,
     padding: '0.125rem 1rem 0.125rem  0.375rem',
@@ -62,10 +60,7 @@ const CustomTableCell = withStyles((theme) => ({
   footer: {
     fontSize: 14,
     zIndex: 100,
-    backgroundColor:
-      theme.palette.type === 'dark'
-        ? theme.palette.primary.dark
-        : theme.palette.primary.light,
+    backgroundColor: theme.palette.primary.dark,
     padding: '0.125rem 1rem 0.125rem  0.375rem',
   },
   paddingDense: {
@@ -97,10 +92,13 @@ const styles = (theme: Theme) =>
       },
 
       '&::-webkit-scrollbar-track': {
-        background: theme.palette.background.default,
+        background: theme.palette.background.paper,
       },
       '&::-webkit-scrollbar-thumb': {
-        background: theme.palette.primary.main,
+        background:
+          theme.palette.type === 'dark'
+            ? theme.palette.primary.main
+            : theme.palette.secondary.main,
       },
     },
     rowExpanded: {
@@ -119,10 +117,8 @@ const styles = (theme: Theme) =>
     },
     table: {},
     title: {
-      backgroundColor:
-        theme.palette.type === 'dark'
-          ? theme.palette.primary.light
-          : fade(theme.palette.primary.main, 0.5),
+      color: theme.typography.title.color,
+      backgroundColor: theme.palette.primary.light,
       position: 'sticky',
       top: 0,
       fontSize: 16,
