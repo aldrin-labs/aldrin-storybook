@@ -7,8 +7,9 @@ import { customAquaScrollBar } from '../cssUtils'
 
 export const ScrollContainer = styled.div`
   height: ${(props: { height: number }) =>
-  props.height ? `${ props.height + 9 }px` : `calc(100% + 6px)`};
-  overflow: auto;
+  props.height ? `${ props.height }px` : '100%'};
+  overflow-x: auto;
+  overflow-y: hidden;
   ${customAquaScrollBar};
 `
 

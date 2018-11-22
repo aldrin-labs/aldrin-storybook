@@ -68,3 +68,6 @@ storybook-static
 
 #temp folder for CI
 temp
+
+#VS Code settings
+.vscode
