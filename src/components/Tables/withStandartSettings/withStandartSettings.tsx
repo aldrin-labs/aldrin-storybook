@@ -1,5 +1,5 @@
 import React from 'react'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { Menu, MenuItem } from '@material-ui/core'
 import Switch from '@material-ui/core/Switch'
 
@@ -40,7 +40,7 @@ export default (WrappedComponent: React.ReactType) => {
               {
                 id: '5',
                 icon: (
-                  <MoreVertIcon
+                  <MoreHorizIcon
                     aria-owns={anchorEl ? 'settings-tables-menu' : undefined}
                   />
                 ),
