@@ -21,15 +21,23 @@ export default (WrappedComponent: React.ReactType) => {
     }
 
     toggleBorder = () => {
-      this.setState(({ borderBottom }: { borderBottom: boolean }) => ({
-        borderBottom: !borderBottom,
-      }))
+      const borderBottomTrue =
+        localStorage.getItem('CCAItablesSettingsBorder') === 'true'
+
+      if (borderBottomTrue) {
+        localStorage.setItem('CCAItablesSettingsBorder', 'false')
+      } else {
+        localStorage.setItem('CCAItablesSettingsBorder', 'true')
+      }
+
+      window.location.reload()
     }
 
     render() {
-      const { anchorEl, borderBottom } = this.state
+      const { anchorEl } = this.state
       const actions = this.props.actions ? this.props.actions : []
-
+      const borderBottom =
+        localStorage.getItem('CCAItablesSettingsBorder') === 'true'
       return (
         <>
           <WrappedComponent
@@ -58,7 +66,7 @@ export default (WrappedComponent: React.ReactType) => {
             <MenuItem>
               Borders{' '}
               <Switch
-                checked={this.state.borderBottom}
+                checked={borderBottom}
                 onClick={this.toggleBorder}
                 value="checkedB"
                 color="primary"
