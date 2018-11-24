@@ -213,14 +213,12 @@ const Cell = styled.div`
     }
 
     if (isFullscreenEnabled && cols > 1 && cols <= 10) {
-      return '2.5rem'
-    }
-    if (isFullscreenEnabled && cols > 10 && cols <= 15) {
       return '2rem'
     }
-    if (isFullscreenEnabled && cols > 15 && cols <= 20) {
+    if (isFullscreenEnabled && cols > 10 && cols <= 20) {
       return '1rem'
     }
+
     if (isFullscreenEnabled && cols > 20) {
       return '0.5rem'
     }
