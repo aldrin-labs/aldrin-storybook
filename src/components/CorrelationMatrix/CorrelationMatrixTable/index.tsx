@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, memo } from 'react'
 import styled from 'styled-components'
 import FaAngleRight from '@material-ui/icons/ChevronRight'
 import FaAngleDown from '@material-ui/icons/ExpandMore'
@@ -11,6 +11,67 @@ import {
   ICellContentProps,
   ICellProps,
 } from './types'
+
+const MemoizedRow = memo(
+  ({
+    col,
+    colors,
+    theme,
+    cols,
+    isFullscreenEnabled,
+    ind,
+    rows,
+    activeColumn,
+    activeRow,
+    onCellMouseOver,
+  }) => (
+    <>
+      {col.map((el: string, i: number) => {
+        const backgroundColor = getColorDarken(el, colors, 0.8)
+        const textColor = 'white'
+        let value = +el
+
+        if (value < 0 && value > -0.01) {
+          value = 0
+        }
+
+        return (
+          <Cell
+            fontFamily={theme.typography.fontFamily}
+            cols={cols[0].length}
+            isFullscreenEnabled={isFullscreenEnabled}
+            textColor={textColor}
+            onMouseOver={() => {
+              onCellMouseOver(i, ind)
+            }}
+            style={{ gridColumnStart: i + 2, gridRowStart: ind + 2 }}
+            //  ETH/ETH BTC/ETH etc...
+            key={`${rows[i]}/${rows[ind]}`}
+          >
+            <CellContent
+              color={backgroundColor}
+              activeBorderColor={theme.palette.secondary.main}
+              mainBorderColor={theme.palette.divider}
+              active={i === activeRow && ind === activeColumn}
+            >
+              {/* dont show text if is is on diagonal */}
+              <CenterText style={value === 1 ? { opacity: 0 } : {}}>
+                {(value * 100).toFixed(1)}
+              </CenterText>
+            </CellContent>
+          </Cell>
+        )
+      })}
+    </>
+  ),
+  // when to skip new render
+  (prevProps, nextProps) =>
+    nextProps.isFullscreenEnabled === prevProps.isFullscreenEnabled &&
+    (prevProps.i !== prevProps.activeRow &&
+      prevProps.ind !== prevProps.activeColumn) &&
+    (nextProps.i !== nextProps.activeRow &&
+      nextProps.ind !== nextProps.activeColumn)
+)
 
 export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
   state: IState = {
@@ -87,44 +148,23 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         ))}
 
         {/* content */}
-        {cols.map((col, ind) =>
-          col.map((el: string, i: number) => {
-            const backgroundColor = getColorDarken(el, colors, 0.8)
-            const textColor = 'white'
-            let value = +el
-
-            if (value < 0 && value > -0.01) {
-              value = 0
-            }
-
-            return (
-              <Cell
-                fontFamily={theme.typography.fontFamily}
-                cols={cols[0].length}
-                isFullscreenEnabled={isFullscreenEnabled}
-                textColor={textColor}
-                onMouseOver={() => {
-                  this.onCellMouseOver(i, ind)
-                }}
-                style={{ gridColumnStart: i + 2, gridRowStart: ind + 2 }}
-                //  ETH/ETH BTC/ETH etc...
-                key={`${rows[i]}/${rows[ind]}`}
-              >
-                <CellContent
-                  color={backgroundColor}
-                  activeBorderColor={theme.palette.secondary.main}
-                  mainBorderColor={theme.palette.divider}
-                  active={i === activeRow && ind === activeColumn}
-                >
-                  {/* dont show text if is is on diagonal */}
-                  <CenterText style={value === 1 ? { opacity: 0 } : {}}>
-                    {(value * 100).toFixed(1)}
-                  </CenterText>
-                </CellContent>
-              </Cell>
-            )
-          })
-        )}
+        {cols.map((col, ind) => (
+          <MemoizedRow
+            key={ind}
+            {...{
+              col,
+              colors,
+              theme,
+              cols,
+              isFullscreenEnabled,
+              ind,
+              rows,
+              activeColumn,
+              activeRow,
+              onCellMouseOver: this.onCellMouseOver,
+            }}
+          />
+        ))}
       </GridTable>
     )
   }
