@@ -601,7 +601,7 @@ const CustomTable = (props: Props) => {
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
-                (data.footer!.filter(Boolean).length - 1 - index) * 32
+                ((data.footer!.filter(Boolean).length - 1 - index) * 32) - (data.footer.length - index + 1)
               return (
                 <TableRow
                   key={index}
