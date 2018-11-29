@@ -74,7 +74,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                     display: 'grid',
                     gridTemplateColumns: isFullscreenEnabled
                       ? '1fr'
-                      : '15% 1fr 15%',
+                      : '15% 70% 15%',
                     gridTemplateRows: '100%',
                     alignItems: 'center',
                   }

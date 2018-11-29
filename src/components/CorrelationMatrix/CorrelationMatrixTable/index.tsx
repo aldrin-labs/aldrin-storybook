@@ -11,6 +11,7 @@ import {
   ICellContentProps,
   ICellProps,
 } from './types'
+import debounce from 'lodash-es/debounce'
 
 const MemoizedRow = memo(
   ({
@@ -79,13 +80,13 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
     activeColumn: null,
   }
 
-  onCellMouseOver = (activeRow: number, activeColumn: number) => {
+  onCellMouseOver = debounce((activeRow: number, activeColumn: number) => {
     this.setState({ activeRow, activeColumn })
-  }
+  }, 250)
 
-  onMouseLeave = () => {
+  onMouseLeave = debounce(() => {
     this.setState({ activeRow: null, activeColumn: null })
-  }
+  }, 250)
 
   render() {
     const { isFullscreenEnabled, data, colors, theme } = this.props
@@ -102,13 +103,19 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         columns={cols[0].length + 1}
       >
         {/* first empty cell */}
-        <HeadCell sticky={!isFullscreenEnabled} style={{ zIndex: 102 }} />
+        <HeadCell
+          background={theme.palette.background.paper}
+          sticky={!isFullscreenEnabled}
+          style={{ zIndex: 102, top: 0, left: 0 }}
+        />
 
         {/* first row with coin names */}
         {rows.map((el, i) => (
           <HeadCell
+            background={theme.palette.background.paper}
             fontFamily={theme.typography.fontFamily}
             cols={cols[0].length}
+            style={{ top: 0 }}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
             textColor={
@@ -128,16 +135,17 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         {/* first column with coin names */}
         {rows.map((el, i) => (
           <HeadCell
+            background={theme.palette.background.paper}
             fontFamily={theme.typography.fontFamily}
             cols={cols[0].length}
             isFullscreenEnabled={isFullscreenEnabled}
-            sticky={false}
+            sticky={!isFullscreenEnabled}
             textColor={
               activeColumn === i
                 ? theme.palette.secondary.main
                 : theme.typography.body1.color
             }
-            style={{ gridColumnStart: 1 }}
+            style={{ gridColumnStart: 1, left: 0 }}
             key={el}
           >
             {rows.length <= 5 && (
@@ -188,6 +196,7 @@ const StyledArrowDown = styled(FaAngleDown)`
 `
 
 const GridTable = styled.div`
+  overflow: auto;
   width: ${(props: IGridTableProps) =>
     props.isFullscreenEnabled ? 'auto' : '100%'};
   margin: ${(props: IGridTableProps) =>
@@ -280,10 +289,10 @@ const Cell = styled.div`
 const HeadCell = styled(Cell)`
   z-index: 101;
   position: relative;
-  position: ${(props: { sticky: boolean }) =>
+  position: ${(props: { sticky: boolean; background: string }) =>
     props.sticky ? 'sticky' : 'relative'};
-
-  top: 0;
+  background: ${(props: { background: string; sticky: boolean }) =>
+    props.background};
 `
 
 export default CorrelationMatrixTable
