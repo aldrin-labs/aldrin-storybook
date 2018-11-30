@@ -478,6 +478,7 @@ const CustomTable = (props: Props) => {
                     color={action.color || 'default'}
                     key={action.id}
                     onClick={action.onClick}
+                    style={action.style}
                   >
                     {action.icon}
                   </ActionButton>
