@@ -450,7 +450,10 @@ const CustomTable = (props: Props) => {
 
   return (
     <Paper className={classes.root} elevation={elevation}>
-      <Table padding={padding ? padding : 'default'} className={classes.table}>
+      <Table
+        padding={padding ? padding : 'default'}
+        className={`${classes.table} ${props.className}`}
+      >
         <TableHead>
           {title && (
             <TableRow className={classes.headRow}>
@@ -602,7 +605,9 @@ const CustomTable = (props: Props) => {
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
-                ((data.footer!.filter(Boolean).length - 1 - index) * 32) - (data.footer.length - index + 1)
+                data.footer !== undefined &&
+                (data.footer!.filter(Boolean).length - 1 - index) * 32 -
+                  (data.footer.length - index + 1)
               return (
                 <TableRow
                   key={index}
@@ -617,7 +622,7 @@ const CustomTable = (props: Props) => {
                           row.options && row.options.static
                             ? 'static'
                             : 'sticky',
-                        bottom: stickyOffset,
+                        bottom: stickyOffset || 0,
                         background:
                           row.options && row.options.variant === 'body'
                             ? theme!.palette.background.paper
@@ -629,8 +634,8 @@ const CustomTable = (props: Props) => {
 
                   {renderFooterCells({
                     row,
-                    stickyOffset,
                     padding,
+                    stickyOffset: stickyOffset || 0,
                     theme: theme!,
                   })}
                 </TableRow>

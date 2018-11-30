@@ -7,6 +7,7 @@ export type renderCellType = {
   cell: Cell
   id: string
   numeric: boolean
+  padding?: Padding
   variant?: 'body' | 'footer' | 'head'
 }
 
@@ -75,6 +76,7 @@ export type Head = {
 export type action = {
   readonly onClick: (event: React.MouseEvent<HTMLElement>) => void
   readonly id: string
+  readonly style: object
   readonly icon: React.ComponentType<SvgIconProps>
   readonly color?: PropTypes.Color
 }
@@ -82,6 +84,7 @@ export type action = {
 export interface Props extends WithStyles {
   withCheckboxes?: boolean
   expandableRows?: boolean
+  className?: string
   theme?: Theme
   // removes animation from checkbox
   staticCheckbox?: boolean
