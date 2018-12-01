@@ -86,6 +86,7 @@ export interface Props extends WithStyles {
   expandableRows?: boolean
   className?: string
   theme?: Theme
+  id?: string
   // removes animation from checkbox
   staticCheckbox?: boolean
   padding: Padding

@@ -452,7 +452,8 @@ const CustomTable = (props: Props) => {
     <Paper className={classes.root} elevation={elevation}>
       <Table
         padding={padding ? padding : 'default'}
-        className={`${classes.table} ${props.className}`}
+        className={`${classes.table} ${props.className || ''}`}
+        id={props.id}
       >
         <TableHead>
           {title && (
