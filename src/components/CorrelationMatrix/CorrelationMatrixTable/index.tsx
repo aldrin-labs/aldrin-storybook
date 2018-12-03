@@ -97,6 +97,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
 
     return (
       <GridTable
+        id="CorrelationGrid"
         isFullscreenEnabled={isFullscreenEnabled}
         onMouseLeave={this.onMouseLeave}
         rows={cols.length + 1}

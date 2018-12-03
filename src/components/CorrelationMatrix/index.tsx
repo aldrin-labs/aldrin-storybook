@@ -88,7 +88,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             className="full-screenable-node"
           >
             {isFullscreenEnabled ? null : (
-              <ButtonsWrapper>
+              <ButtonsWrapper id="ButtonsWrapper">
                 <Typography noWrap align="center" variant="h6">
                   Time Range
                 </Typography>
@@ -125,6 +125,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             )}
             {isFullscreenEnabled ? null : (
               <StyledFullscreenButton
+                id="FullscreenButton"
                 size="large"
                 color="primary"
                 variant="contained"
