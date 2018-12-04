@@ -21,18 +21,16 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
   }
 
   renderPlaceholder = () => (
-    <>
-      <StyledCard raised>
-        <CardContent>
-          <Typography gutterBottom align="center" variant="h2">
-            🤔
-          </Typography>
-          <Typography color="secondary" variant="h5">
-            Empty Response...
-          </Typography>
-        </CardContent>
-      </StyledCard>
-    </>
+    <StyledCard raised>
+      <CardContent>
+        <Typography gutterBottom align="center" variant="h2">
+          🤔
+        </Typography>
+        <Typography color="secondary" variant="h5">
+          Empty Response...
+        </Typography>
+      </CardContent>
+    </StyledCard>
   )
 
   renderError = (error: string) => <ErrorFallback>{error}</ErrorFallback>
@@ -112,6 +110,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
               this.renderError(data.error)
             ) : data ? (
               <CorrelationMatrixTable
+                key="1234124"
                 {...{
                   isFullscreenEnabled,
                   data,
