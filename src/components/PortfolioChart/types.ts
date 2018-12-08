@@ -1,6 +1,7 @@
 import { Theme } from '@material-ui/core'
 
 export interface Props {
+  title: string
   style: object
   height: string
   lastDrawLocation: {

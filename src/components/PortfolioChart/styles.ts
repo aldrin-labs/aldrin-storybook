@@ -28,3 +28,24 @@ export const axisStyle = {
     fontSize: '14px',
   },
 }
+
+
+export const horizontalGridLinesStyle = {
+  stroke: 'rgba(134, 134, 134, 0.2)',
+}
+
+export const verticalGridLinesStyle = {
+  stroke: '#848484',
+}
+
+export const areaSeriesStyle = {
+  stroke: 'rgb(78, 216, 218)',
+  strokeWidth: '1px',
+}
+
+export const crosshairStyle = {
+  background: '#4c5055',
+  color: '#4ed8da',
+  padding: '5px',
+  fontSize: '14px',
+}

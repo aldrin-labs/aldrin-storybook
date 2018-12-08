@@ -19,6 +19,10 @@ import {
   Chart,
   SProfileChart,
   axisStyle,
+  horizontalGridLinesStyle,
+  verticalGridLinesStyle,
+  areaSeriesStyle,
+  crosshairStyle,
 } from './styles'
 import CardHeader from '../CardHeader'
 
@@ -68,15 +72,16 @@ export default class PortfolioChart extends Component<Props> {
       activeChart,
       theme,
       chartBtns,
+      title,
     } = this.state
-    if (!(data.length)) {
+    if (!(data && data.length)) {
       return <Loading centerAligned={true} />
     }
 
     return (
       <SProfileChart style={{ ...style, height }}>
         <CardHeader
-          title={'Portfolio Value | Coming Soon | In development'}
+          title={title}
           action={
             <>
               {chartBtns && chartBtns.map((chartBtn) => (
@@ -110,14 +115,14 @@ export default class PortfolioChart extends Component<Props> {
             }
           >
             <VerticalGridLines
-              style={{ stroke: '#848484' }}
+              style={ verticalGridLinesStyle }
               tickTotal={12}
               tickFormat={(v: number) => '`$${v}`'}
               tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
               labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
             />
             <HorizontalGridLines
-              style={{ stroke: 'rgba(134, 134, 134, 0.2)' }}
+              style={horizontalGridLinesStyle}
             />
             <XAxis
               style={axisStyle}
@@ -129,19 +134,19 @@ export default class PortfolioChart extends Component<Props> {
             {false && (
               <YAxis
                 style={axisStyle}
-                tickFormat={(value) => `$${abbrNum(+value.toFixed(2), 2)}`}
+                tickFormat={(value: any) => `$${abbrNum(+value.toFixed(2), 2)}`}
               />
             )}
             <GradientDefs>
               <linearGradient id="CoolGradient" x1="0" x2="0" y1="0" y2="1">
                 <stop
                   offset="0%"
-                  stopColor={theme.palette.secondary.main}
+                  stopColor={theme && theme.palette.secondary.main}
                   stopOpacity={0.3}
                 />
                 <stop
                   offset="60%"
-                  stopColor={theme.palette.secondary.main}
+                  stopColor={theme && theme.palette.secondary.main}
                   stopOpacity={0}
                 />
               </linearGradient>
@@ -150,20 +155,12 @@ export default class PortfolioChart extends Component<Props> {
               color={'url(#CoolGradient)'}
               onNearestX={this._onNearestX}
               data={data}
-              style={{
-                stroke: 'rgb(78, 216, 218)',
-                strokeWidth: '1px',
-              }}
+              style={areaSeriesStyle}
             />
 
             <Crosshair values={crosshairValues}>
               <div
-                style={{
-                  background: '#4c5055',
-                  color: '#4ed8da',
-                  padding: '5px',
-                  fontSize: '14px',
-                }}
+                style={crosshairStyle}
               >
                 <p>
                   {crosshairValues && crosshairValues
