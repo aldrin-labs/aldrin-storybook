@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Loading } from '@components/Loading/Loading'
-import { CustomError } from '@components/ErrorFallback/ErrorFallback'
 
 export default class LoadableLoading extends React.Component {
   render() {
