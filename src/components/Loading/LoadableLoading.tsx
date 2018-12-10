@@ -7,11 +7,7 @@ export default class LoadableLoading extends React.Component {
     const { error, timedOut, pastDelay } = this.props
 
     if (error) {
-      // When the loader has errored
-      console.log('ERROR in LoadableLoading: ', error)
-      console.log('error.stack: ', error.stack)
-
-      return <CustomError error={error.message} />
+      throw new Error(`ERROR in LoadableLoading: &{error}`)
     } else if (timedOut) {
       // When the loader has taken longer than the timeout
       return <div>Taking a long time...</div>
