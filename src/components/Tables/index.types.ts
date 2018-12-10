@@ -110,7 +110,8 @@ export interface Props extends WithStyles {
 export type Pagination = {
   handleChangeRowsPerPage: () => void
   handleChangePage: () => void
-  rowsPerPage: 10 | 50 | 100 | 200
+  rowsPerPageOptions: number[]
+  rowsPerPage: number
   // start from  0
   page: number
 }

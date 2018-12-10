@@ -392,7 +392,8 @@ const addPagination = (data: ReadonlyArray<any> = [], pagination: Pagination) =>
 }
 
 const CustomTable = (props: Props) => {
-  const defaultRowsPerPage: 10 | 25 | 100 = 100
+  const defaultrowsPerPageOptions: number[] = [10, 25, 100, 200]
+  const defaultRowsPerPage = 100
 
   const {
     classes,
@@ -416,6 +417,7 @@ const CustomTable = (props: Props) => {
     data = { body: [] },
     pagination = {
       rowsPerPage: defaultRowsPerPage,
+      rowsPerPageOptions: defaultrowsPerPageOptions,
       page: 0,
       handleChangePage: () => {
         return
@@ -666,7 +668,7 @@ const CustomTable = (props: Props) => {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            rowsPerPageOptions={[10, 50, 100, 200]}
+            rowsPerPageOptions={pagination.rowsPerPageOptions}
             onChangePage={pagination.handleChangePage}
             onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
           />
