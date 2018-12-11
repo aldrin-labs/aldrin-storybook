@@ -10,13 +10,7 @@ import {
 } from 'react-vis'
 import { withTheme } from '@material-ui/core/styles'
 
-import {
-  IProps,
-  IState,
-  Items,
-  IValue,
-  IChart,
-} from './types'
+import { IProps, IState, Items, IValue, IChart } from './types'
 
 import { LegendContainer } from '../cssUtils'
 
@@ -64,11 +58,14 @@ class BarChartComponent extends Component<IProps, IState> {
 
     const uniqueXLengh = (data: any[]) => {
       const uniqueLength = _.uniqBy(data, 'x').length
-      if (uniqueLength > data.length) console.warn('There are duplicate x indices in the input')
+      if (uniqueLength > data.length)
+        console.warn('There are duplicate x indices in the input')
       return uniqueLength
     }
 
-    const minWidth = Math.max.apply(null, charts.map(chart => uniqueXLengh(chart.data))) * minColumnWidth
+    const minWidth =
+      Math.max.apply(null, charts.map((chart) => uniqueXLengh(chart.data))) *
+      minColumnWidth
 
     const axisStyleWithTheme = axisStyle({
       stroke: theme.palette.text.primary,
@@ -94,15 +91,14 @@ class BarChartComponent extends Component<IProps, IState> {
 
     return (
       <ScrollContainer height={height}>
-        <Container
-          height={height}
-          minWidth={minWidth}
-        >
-          <FlexibleXYPlot onMouseLeave={this.onSeriesMouseOut} xType="ordinal" margin={{ bottom: bottomMargin }}>
+        <Container height={height} minWidth={minWidth}>
+          <FlexibleXYPlot
+            onMouseLeave={this.onSeriesMouseOut}
+            xType="ordinal"
+            margin={{ bottom: bottomMargin }}
+          >
             {alwaysShowLegend && (
-              <LegendContainer
-                transition={theme.transitions.duration.short}
-              >
+              <LegendContainer transition={theme.transitions.duration.short}>
                 <StyledDiscreteColorLegend
                   orientation="horizontal"
                   fontFamily={theme.typography.fontFamily}
@@ -144,7 +140,9 @@ class BarChartComponent extends Component<IProps, IState> {
             {value.x === null || value.y === null ? null : (
               <Hint value={value}>
                 <ChartTooltip>
-                  <Typography variant="title">{`${value.x} ${hideDashForToolTip ? '' : '-'} ${value.y}%`}</Typography>
+                  <Typography variant="h5">{`${value.x} ${
+                    hideDashForToolTip ? '' : '-'
+                  } ${value.y}%`}</Typography>
                 </ChartTooltip>
               </Hint>
             )}

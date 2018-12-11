@@ -26,7 +26,6 @@ import {
 } from './styles'
 import CardHeader from '../CardHeader'
 
-
 export default class PortfolioChart extends Component<Props> {
   state: Partial<Props> = {
     activeChart: '1Y',
@@ -35,12 +34,15 @@ export default class PortfolioChart extends Component<Props> {
   }
 
   static getDerivedStateFromProps(newProps: Props, state: Props) {
-    return Object.assign(state, newProps)
+    return Object.assign(state, newProps) || null
   }
 
   onChangeActiveChart = (label: string) => {
     if (this.state.mapLabelToDays && this.state.mapLabelToDays[label]) {
-      this.props.setActiveChartAndUpdateDays(label, this.state.mapLabelToDays[label])
+      this.props.setActiveChartAndUpdateDays(
+        label,
+        this.state.mapLabelToDays[label]
+      )
     }
   }
 
@@ -84,20 +86,21 @@ export default class PortfolioChart extends Component<Props> {
           title={title}
           action={
             <>
-              {chartBtns && chartBtns.map((chartBtn) => (
-                <Button
-                  color="secondary"
-                  size="small"
-                  onClick={() => {
-                    this.onChangeActiveChart(chartBtn)
-                  }}
-                  variant={chartBtn !== activeChart ? 'text' : 'contained'}
-                  key={chartBtn}
-                  style={{ margin: '0 1rem' }}
-                >
-                  {chartBtn}
-                </Button>
-              ))}
+              {chartBtns &&
+                chartBtns.map((chartBtn) => (
+                  <Button
+                    color="secondary"
+                    size="small"
+                    onClick={() => {
+                      this.onChangeActiveChart(chartBtn)
+                    }}
+                    variant={chartBtn !== activeChart ? 'text' : 'contained'}
+                    key={chartBtn}
+                    style={{ margin: '0 1rem' }}
+                  >
+                    {chartBtn}
+                  </Button>
+                ))}
             </>
           }
         />
@@ -115,15 +118,13 @@ export default class PortfolioChart extends Component<Props> {
             }
           >
             <VerticalGridLines
-              style={ verticalGridLinesStyle }
+              style={verticalGridLinesStyle}
               tickTotal={12}
               tickFormat={(v: number) => '`$${v}`'}
               tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
               labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
             />
-            <HorizontalGridLines
-              style={horizontalGridLinesStyle}
-            />
+            <HorizontalGridLines style={horizontalGridLinesStyle} />
             <XAxis
               style={axisStyle}
               tickFormat={(v: number) =>
@@ -159,17 +160,17 @@ export default class PortfolioChart extends Component<Props> {
             />
 
             <Crosshair values={crosshairValues}>
-              <div
-                style={crosshairStyle}
-              >
+              <div style={crosshairStyle}>
                 <p>
-                  {crosshairValues && crosshairValues
-                    .map((v) => new Date(v.x * 1000).toDateString())
-                    .join(' ')}
+                  {crosshairValues &&
+                    crosshairValues
+                      .map((v) => new Date(v.x * 1000).toDateString())
+                      .join(' ')}
                   :{' '}
-                  {crosshairValues && crosshairValues
-                    .map((v) => `$${Number(v.y).toFixed(2)}`)
-                    .join(' ')}
+                  {crosshairValues &&
+                    crosshairValues
+                      .map((v) => `$${Number(v.y).toFixed(2)}`)
+                      .join(' ')}
                 </p>
               </div>
             </Crosshair>
