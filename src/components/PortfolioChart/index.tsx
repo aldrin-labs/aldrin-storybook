@@ -94,6 +94,7 @@ export default class PortfolioChart extends Component<Props> {
                     onClick={() => {
                       this.onChangeActiveChart(chartBtn)
                     }}
+                    data-e2e={`${chartBtn}`}
                     variant={chartBtn !== activeChart ? 'text' : 'contained'}
                     key={chartBtn}
                     style={{ margin: '0 1rem' }}
