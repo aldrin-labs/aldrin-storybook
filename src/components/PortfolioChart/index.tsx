@@ -25,6 +25,7 @@ import {
   crosshairStyle,
 } from './styles'
 import CardHeader from '../CardHeader'
+import { Grow } from '@material-ui/core'
 
 export default class PortfolioChart extends Component<Props> {
   state: Partial<Props> = {
@@ -107,79 +108,88 @@ export default class PortfolioChart extends Component<Props> {
         />
         {/* minus cardHeader Height */}
         <Chart height={`calc(100% - 68px)`}>
-          <FlexibleXYPlot
-            margin={{ left: 50 }}
-            animation={true}
-            onMouseLeave={this._onMouseLeave}
-            xDomain={
-              lastDrawLocation && [
-                lastDrawLocation.left,
-                lastDrawLocation.right,
-              ]
-            }
+          <Grow
+            in={this.props.tab === 'main'}
+            mountOnEnter
+            unmountOnExit
+            timeout={1}
           >
-            <VerticalGridLines
-              style={verticalGridLinesStyle}
-              tickTotal={12}
-              tickFormat={(v: number) => '`$${v}`'}
-              tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
-              labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
-            />
-            <HorizontalGridLines style={horizontalGridLinesStyle} />
-            <XAxis
-              style={axisStyle}
-              tickFormat={(v: number) =>
-                new Date(v * 1000).toUTCString().substring(5, 11)
+            <FlexibleXYPlot
+              margin={{ left: 50 }}
+              animation={true}
+              onMouseLeave={this._onMouseLeave}
+              xDomain={
+                lastDrawLocation && [
+                  lastDrawLocation.left,
+                  lastDrawLocation.right,
+                ]
               }
-            />
-            {/* hiding Axis for a while */}
-            {false && (
-              <YAxis
-                style={axisStyle}
-                tickFormat={(value: any) => `$${abbrNum(+value.toFixed(2), 2)}`}
+            >
+              <VerticalGridLines
+                style={verticalGridLinesStyle}
+                tickTotal={12}
+                tickFormat={(v: number) => '`$${v}`'}
+                tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
+                labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
               />
-            )}
-            <GradientDefs>
-              <linearGradient id="CoolGradient" x1="0" x2="0" y1="0" y2="1">
-                <stop
-                  offset="0%"
-                  stopColor={theme && theme.palette.secondary.main}
-                  stopOpacity={0.3}
+              <HorizontalGridLines style={horizontalGridLinesStyle} />
+              <XAxis
+                style={axisStyle}
+                tickFormat={(v: number) =>
+                  new Date(v * 1000).toUTCString().substring(5, 11)
+                }
+              />
+              {/* hiding Axis for a while */}
+              {false && (
+                <YAxis
+                  style={axisStyle}
+                  tickFormat={(value: any) =>
+                    `$${abbrNum(+value.toFixed(2), 2)}`
+                  }
                 />
-                <stop
-                  offset="60%"
-                  stopColor={theme && theme.palette.secondary.main}
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </GradientDefs>
-            <AreaSeries
-              color={'url(#CoolGradient)'}
-              onNearestX={this._onNearestX}
-              data={data}
-              style={areaSeriesStyle}
-            />
+              )}
+              <GradientDefs>
+                <linearGradient id="CoolGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop
+                    offset="0%"
+                    stopColor={theme && theme.palette.secondary.main}
+                    stopOpacity={0.3}
+                  />
+                  <stop
+                    offset="60%"
+                    stopColor={theme && theme.palette.secondary.main}
+                    stopOpacity={0}
+                  />
+                </linearGradient>
+              </GradientDefs>
+              <AreaSeries
+                color={'url(#CoolGradient)'}
+                onNearestX={this._onNearestX}
+                data={data}
+                style={areaSeriesStyle}
+              />
 
-            <Crosshair values={crosshairValues}>
-              <div style={crosshairStyle}>
-                <p>
-                  {crosshairValues &&
-                    crosshairValues
-                      .map((v) => new Date(v.x * 1000).toDateString())
-                      .join(' ')}
-                  :{' '}
-                  {crosshairValues &&
-                    crosshairValues
-                      .map((v) => `$${Number(v.y).toFixed(2)}`)
-                      .join(' ')}
-                </p>
-              </div>
-            </Crosshair>
+              <Crosshair values={crosshairValues}>
+                <div style={crosshairStyle}>
+                  <p>
+                    {crosshairValues &&
+                      crosshairValues
+                        .map((v) => new Date(v.x * 1000).toDateString())
+                        .join(' ')}
+                    :{' '}
+                    {crosshairValues &&
+                      crosshairValues
+                        .map((v) => `$${Number(v.y).toFixed(2)}`)
+                        .join(' ')}
+                  </p>
+                </div>
+              </Crosshair>
 
-            {this.props.isShownMocks ? null : (
-              <Highlight onBrushEnd={this._onBrushEnd} />
-            )}
-          </FlexibleXYPlot>
+              {this.props.isShownMocks ? null : (
+                <Highlight onBrushEnd={this._onBrushEnd} />
+              )}
+            </FlexibleXYPlot>
+          </Grow>
         </Chart>
       </SProfileChart>
     )
