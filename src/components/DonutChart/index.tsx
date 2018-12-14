@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
 
-import { withTheme } from '@material-ui/styles'
 import _ from 'lodash'
 import { getRandomColor } from './utils'
 
@@ -163,6 +162,6 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 }
 
-export const DonutChart = withTheme()(DonutChartWitoutTheme)
+export const DonutChart = DonutChartWitoutTheme
 
 export default DonutChart
