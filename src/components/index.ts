@@ -15,5 +15,5 @@ export { default as TableWithSort } from './Tables/WithSort'
 // export { Legends } from "./Legends"
 // export { default as ReactSelectComponent } from "./ReactSelectComponent"
 // export { default as SvgIcon } from "./SvgIcon"
-export { CorrelationMatrix } from './CorrelationMatrix'
+export { default as CorrelationMatrix } from './CorrelationMatrix'
 export { default as PortfolioChart } from './PortfolioChart'

@@ -8,7 +8,7 @@ import {
   YAxis,
   Hint,
 } from 'react-vis'
-import { withTheme } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/styles'
 
 import { IProps, IState, Items, IValue, IChart } from './types'
 

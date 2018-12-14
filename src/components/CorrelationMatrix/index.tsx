@@ -6,7 +6,6 @@ import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import CardContent from '@material-ui/core/CardContent'
 import FullScreenIcon from '@material-ui/icons/Fullscreen'
-import { withTheme } from '@material-ui/core/styles'
 
 import { customAquaScrollBar } from '../cssUtils'
 import SelectTimeRange from '../SelectTimeRangeDropdown'
@@ -142,7 +141,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
   }
 }
 
-export const CorrelationMatrix = withTheme()(CorrelationMatrixComponent)
+export const CorrelationMatrix = CorrelationMatrixComponent
 
 export default CorrelationMatrix
 

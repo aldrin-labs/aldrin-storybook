@@ -2,6 +2,7 @@ import { WithStyles, Theme, PropTypes } from '@material-ui/core'
 import React from 'react'
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
+import { Classes } from 'jss'
 
 export type renderCellType = {
   cell: Cell
@@ -81,7 +82,8 @@ export type action = {
   readonly color?: PropTypes.Color
 }
 
-export interface Props extends WithStyles {
+export interface Props {
+  classes?: Classes
   withCheckboxes?: boolean
   expandableRows?: boolean
   className?: string
@@ -89,9 +91,9 @@ export interface Props extends WithStyles {
   id?: string
   // removes animation from checkbox
   staticCheckbox?: boolean
-  padding: Padding
-  data: Data
-  columnNames: ReadonlyArray<Head>
+  padding?: Padding
+  data?: Data
+  columnNames?: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
   expandedRows?: ReadonlyArray<string>
   title?: string | number
@@ -99,7 +101,7 @@ export interface Props extends WithStyles {
   onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
-  sort: sortTypes | undefined
+  sort?: sortTypes | undefined
   pagination?: Pagination
   actions?: ReadonlyArray<action>
   // how long will be cell with actions
