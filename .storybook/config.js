@@ -8,7 +8,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 
 import { customThemes } from './customTheme'
-import { ThemeProvider } from 'styled-components'
 
 //You need to change customThemes.dark to customThemes.light to change theme in storybook
 addDecorator((story) => (
