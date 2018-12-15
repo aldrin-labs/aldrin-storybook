@@ -30,6 +30,5 @@ export interface State {
   value: DonutPiece | null
   colorsWithRandom: string[]
   chartSize: number
-  isEmpty: boolean
   sizeKey: number
 }

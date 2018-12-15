@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
+import { isEqual, range } from 'lodash-es'
 
-import _ from 'lodash'
 import { getRandomColor } from './utils'
-
 import { Props, State, DonutPiece, InputRecord } from './types'
 import {
   ChartContainer,
@@ -14,8 +13,27 @@ import {
   ColorLegendContainer,
 } from './styles'
 import { defaultColors, emptyColor } from './colors'
-
 import { FlexibleChart } from './FlexibleChart'
+
+const getDataFromImput = (inputData: InputRecord[]) => {
+  const data = inputData
+    .map((record: InputRecord) => ({
+      angle: record.realValue,
+      label: record.label,
+      realValue: record.realValue,
+    }))
+    .filter((piece) => piece.realValue > 0)
+    .map((record, index: number) => ({ ...record, colorIndex: index }))
+
+  return data
+}
+
+const getColorsWithRandom = (colors: string[], dataLengh: number) => {
+  return [
+    ...colors,
+    ...range(dataLengh - colors.length).map(() => getRandomColor()),
+  ]
+}
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
@@ -30,18 +48,25 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     value: null,
     colorsWithRandom: [],
     chartSize: 0,
-    isEmpty: false,
     sizeKey: 1,
   }
 
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    const newData = getDataFromImput(nextProps.data)
+    if (!isEqual(prevState.data, newData)) {
+      return {
+        sizeKey: -prevState.sizeKey,
+        data: newData,
+        colorsWithRandom: getColorsWithRandom(
+          nextProps.colors,
+          nextProps.data.length
+        ),
+      }
+    }
+    return {}
+  }
+
   componentDidMount = () => {
-    this.setState({ data: this.getDataFromImput(this.props.data) })
-    this.setState({
-      colorsWithRandom: this.getColorsWithRandom(
-        this.props.colors,
-        this.props.data.length
-      ),
-    })
     window.addEventListener('resize', this.shuffle)
   }
 
@@ -51,26 +76,6 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
   shuffle = () => {
     this.setState((prevState: State) => ({ sizeKey: -prevState.sizeKey }))
-  }
-
-  getColorsWithRandom = (colors: string[], dataLengh: number) => {
-    return [
-      ...colors,
-      ..._.range(dataLengh - colors.length).map(() => getRandomColor()),
-    ]
-  }
-
-  getDataFromImput = (inputData: InputRecord[]) => {
-    const data = inputData
-      .map((record: InputRecord) => ({
-        angle: record.realValue,
-        label: record.label,
-        realValue: record.realValue,
-      }))
-      .filter((piece) => piece.realValue > 0)
-      .map((record, index: number) => ({ ...record, colorIndex: index }))
-    if (data.length === 0) this.setState({ isEmpty: true })
-    return data
   }
 
   onValueMouseOver = (value: DonutPiece) => {
@@ -88,17 +93,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   onSeriesMouseOut = () => {
-    this.setState({ value: null, data: this.getDataFromImput(this.props.data) })
-  }
-
-  refSizeMesure = (element) => {
-    if (element) {
-      this.setState({ chartSize: element.getBoundingClientRect })
-    }
+    this.setState({ value: null, data: getDataFromImput(this.props.data) })
   }
 
   render() {
-    const { value, data, colorsWithRandom, isEmpty, sizeKey } = this.state
+    const { value, data, colorsWithRandom, sizeKey } = this.state
 
     const {
       labelPlaceholder,
@@ -107,6 +106,10 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       thicknessCoefficient,
       colorLegendWhidh,
     } = this.props
+
+    // show chart withoutData UI
+    let isEmpty = false
+    if (data.length === 0) isEmpty = true
 
     const emptyData = {
       angle: 1,
