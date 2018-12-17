@@ -107,6 +107,8 @@ export interface Props {
   // how long will be cell with actions
   actionsColSpan?: number
   borderBottom?: boolean
+  rowsWithHover?: boolean
+
 }
 
 export type Pagination = {

@@ -143,6 +143,8 @@ const styles = (theme: Theme) =>
         theme.transitions.easing.easeOut
       }`,
       borderBottom: '0',
+    },
+    rowWithHover: {
       '&:hover': {
         backgroundColor: theme.palette.action.hover,
       },
@@ -429,6 +431,7 @@ const CustomTable = (props: Props) => {
     actions = [],
     actionsColSpan = 1,
     borderBottom = false,
+    rowsWithHover = true,
   } = props
 
   const isSortable = typeof sort !== 'undefined'
@@ -536,6 +539,7 @@ const CustomTable = (props: Props) => {
               const rowClassName = selected
                 ? `${classes.row} + ${classes.rowSelected}`
                 : classes.row
+              const rowHoverClassName = rowsWithHover ? `${rowClassName} + ${classes.rowWithHover}` : rowClassName
               const expandable = row.expandableContent
               const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
                 ? 'check'
@@ -559,7 +563,7 @@ const CustomTable = (props: Props) => {
                           }
                         : {}
                     }
-                    className={rowClassName}
+                    className={rowHoverClassName}
                   >
                     {typeOfCheckbox !== null && (
                       <CustomTableCell padding="checkbox">
