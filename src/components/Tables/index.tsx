@@ -81,6 +81,13 @@ const ActionButton = withStyles(() => ({
   root: { padding: 0 },
 }))(IconButton)
 
+/**
+ * Create a point.
+ * @param {number} i -  is curr index.
+ * @param {number} n - is how long array of data.
+ */
+const rowOffset = (i: number, n: number) => (n - i - 1) * 32
+
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -539,7 +546,9 @@ const CustomTable = (props: Props) => {
               const rowClassName = selected
                 ? `${classes.row} + ${classes.rowSelected}`
                 : classes.row
-              const rowHoverClassName = rowsWithHover ? `${rowClassName} + ${classes.rowWithHover}` : rowClassName
+              const rowHoverClassName = rowsWithHover
+                ? `${rowClassName} + ${classes.rowWithHover}`
+                : rowClassName
               const expandable = row.expandableContent
               const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
                 ? 'check'
@@ -613,8 +622,7 @@ const CustomTable = (props: Props) => {
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
                 data.footer !== undefined &&
-                (data.footer!.filter(Boolean).length - 1 - index) * 32 -
-                  (data.footer.length - index + 1)
+                rowOffset(index, data.footer.filter(Boolean).length)
               return (
                 <TableRow
                   key={index}
