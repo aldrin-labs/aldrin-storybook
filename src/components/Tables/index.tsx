@@ -396,7 +396,7 @@ const CustomTable = (props: Props) => {
   const defaultRowsPerPage = 100
 
   const {
-    classes,
+    classes = {},
     padding = 'default',
     columnNames = [],
     withCheckboxes = false,
