@@ -86,7 +86,7 @@ const ActionButton = withStyles(() => ({
  * @param {number} i -  is curr index.
  * @param {number} n - is how long array of data.
  */
-const rowOffset = (i: number, n: number) => (n - i - 1) * 32
+const rowOffset = (i: number, n: number) => (n === 1 ? 0 : (n - i - 1) * 32 - 1)
 
 const styles = (theme: Theme) =>
   createStyles({
