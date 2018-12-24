@@ -17,3 +17,5 @@ export { default as TableWithSort } from './Tables/WithSort'
 // export { default as SvgIcon } from "./SvgIcon"
 export { default as CorrelationMatrix } from './CorrelationMatrix'
 export { default as PortfolioChart } from './PortfolioChart'
+export { addMainSymbol } from './AddMainSymbol'
+export { default as PrivacyPolicy } from './PrivacyPolicy'

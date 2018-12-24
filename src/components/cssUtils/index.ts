@@ -32,6 +32,10 @@ export const hexToRgbAWithOpacity = (hex, opacity) => {
   throw new Error('Bad Hex')
 }
 
+export const Icon = styled.i`
+  padding-right: 5px;
+`
+
 export const LegendContainer = styled.div`
   border-radius: 5px;
   position: absolute;
