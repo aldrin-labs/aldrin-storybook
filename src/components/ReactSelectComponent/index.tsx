@@ -1,12 +1,12 @@
 import React, { CSSProperties, Component } from 'react'
 import SelectReact, { components } from 'react-select'
-import AsyncSelect from 'react-select/lib/Async';
+import AsyncSelect from 'react-select/lib/Async'
 import { OptionProps } from 'react-select/lib/types'
 
 import SvgIcon from '../SvgIcon'
 import dropDownIcon from '@icons/baseline-arrow_drop_down.svg'
 import { IProps } from './index.types'
-import withTheme from '@material-ui/core/styles/withTheme'
+import { withTheme } from '@material-ui/styles'
 import { hexToRgbAWithOpacity } from '@styles/helpers'
 
 class ReactSelectComponent extends Component<IProps> {
@@ -78,8 +78,8 @@ class ReactSelectComponent extends Component<IProps> {
         backgroundColor: state.isSelected
           ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.2)
           : state.isFocused
-            ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.1)
-            : theme.palette.grey[800],
+          ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.1)
+          : theme.palette.grey[800],
         [':active']: null,
         ...optionStyles,
       }),
@@ -151,10 +151,10 @@ class ReactSelectComponent extends Component<IProps> {
         ...indicatorSeparatorStyles,
       }),
       loadingIndicator: (base: CSSProperties) => ({
-          ...base,
-          display: 'none',
-          ...loadingIndicatorStyles,
-        }),
+        ...base,
+        display: 'none',
+        ...loadingIndicatorStyles,
+      }),
     }
 
     if (asyncSelect) {

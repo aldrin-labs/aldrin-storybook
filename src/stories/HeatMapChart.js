@@ -2,7 +2,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
-import { number, object } from '@storybook/addon-knobs/react'
+import { number, object } from '@storybook/addon-knobs'
 
 import { backgrounds } from './backgrounds'
 import { HeatMapChart } from '@components/HeatMapChart'

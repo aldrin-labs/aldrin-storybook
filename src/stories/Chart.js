@@ -1,5 +1,5 @@
 import React from 'react'
-import { text } from '@storybook/addon-knobs/react'
+import { text } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import styled from 'styled-components'

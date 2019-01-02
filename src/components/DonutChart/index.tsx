@@ -1,62 +1,82 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
-import {
-  RadialChart,
-  GradientDefs,
-  makeVisFlexible,
-  DiscreteColorLegend,
-} from 'react-vis'
-import { Grid } from '@material-ui/core'
-import { withTheme } from '@material-ui/core/styles'
+import { isEqual, range } from 'lodash-es'
 
-import { Props, State, DonutPiece, InputRecord, gradient } from './types'
+import { getRandomColor } from './utils'
+import { Props, State, DonutPiece, InputRecord } from './types'
 import {
   ChartContainer,
-  ValueContainer,
   LabelContainer,
-  ChartWrapper,
+  ChartWithTitle,
   SDiscreteColorLegend,
   ChartWithLegend,
+  ColorLegendContainer,
 } from './styles'
-import defaultGradients from './gradients'
+import { defaultColors, emptyColor } from './colors'
+import { FlexibleChart } from './FlexibleChart'
 
-const FlexibleChart = makeVisFlexible(RadialChart)
+const getDataFromImput = (inputData: InputRecord[]) => {
+  const data = inputData
+    .map((record: InputRecord) => ({
+      angle: record.realValue,
+      label: record.label,
+      realValue: record.realValue,
+    }))
+    .filter((piece) => piece.realValue > 0)
+    .map((record, index: number) => ({ ...record, colorIndex: index }))
+
+  return data
+}
+
+const getColorsWithRandom = (colors: string[], dataLengh: number) => {
+  return [
+    ...colors,
+    ...range(dataLengh - colors.length).map(() => getRandomColor()),
+  ]
+}
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
-    data: [
-      {
-        label: "Default 1",
-        realValue: 50,
-      },
-      {
-        label: "Default 2",
-        realValue: 50,
-      },
-    ],
-    radius: 100,
-    hightCoefficient: 16,
-    widthCoefficient: 6,
+    data: [],
     thicknessCoefficient: 10,
-    gradients: defaultGradients,
+    colors: defaultColors,
+    colorLegendWhidh: 150,
   }
   state: State = {
     data: [],
     value: null,
+    colorsWithRandom: [],
+    chartSize: 0,
+    sizeKey: 1,
+  }
+
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    const newData = getDataFromImput(nextProps.data)
+    if (!isEqual(prevState.data, newData)) {
+      return {
+        sizeKey: -prevState.sizeKey,
+        data: newData,
+        colorsWithRandom: getColorsWithRandom(
+          nextProps.colors,
+          nextProps.data.length
+        ),
+      }
+    }
+    return {}
   }
 
   componentDidMount = () => {
-    this.setState({ data: this.getDataFromImput(this.props.data) })
+    window.addEventListener('resize', this.shuffle)
   }
 
-  getDataFromImput = (inputData: InputRecord[]) =>
-    inputData.map((record: InputRecord, index: number) => ({
-      angle: record.realValue,
-      label: record.label,
-      realValue: record.realValue,
-      gradientIndex: index % this.props.gradients.length,
-    }))
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.shuffle)
+  }
+
+  shuffle = () => {
+    this.setState((prevState: State) => ({ sizeKey: -prevState.sizeKey }))
+  }
 
   onValueMouseOver = (value: DonutPiece) => {
     const { data, value: stateValue } = this.state
@@ -73,95 +93,78 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   onSeriesMouseOut = () => {
-    this.setState({ value: null, data: this.getDataFromImput(this.props.data) })
+    this.setState({ value: null, data: getDataFromImput(this.props.data) })
   }
 
   render() {
-    const { value, data } = this.state
+    const { value, data, colorsWithRandom, sizeKey } = this.state
 
     const {
-      radius,
-      thickness,
       labelPlaceholder,
-      gradients,
       colorLegend,
       theme,
-      isSizeFlexible,
-      hightCoefficient,
-      widthCoefficient,
       thicknessCoefficient,
+      colorLegendWhidh,
     } = this.props
 
-    var FlexibleRadius = isSizeFlexible
-      ? Math.min(
-          window.innerWidth / hightCoefficient,
-          window.innerHeight / widthCoefficient
-        )
-      : radius
+    // show chart withoutData UI
+    let isEmpty = false
+    if (data.length === 0) isEmpty = true
 
-    var innerRadius = thickness
-      ? FlexibleRadius - thickness
-      : FlexibleRadius - FlexibleRadius / thicknessCoefficient
+    const emptyData = {
+      angle: 1,
+      label: '1',
+      realValue: 1,
+      colorIndex: 0,
+    }
 
     return (
-      <ChartWithLegend>
-        {colorLegend && (
-          <SDiscreteColorLegend
-            width={250}
-            items={data.map((d) => d.label)}
-            colors={data.map(
-              (d, index) => gradients[index % gradients.length][0]
+      <ChartWithTitle key={sizeKey}>
+        <LabelContainer>
+          <Typography variant="h4">
+            {value ? value.label : labelPlaceholder || ''}
+          </Typography>
+        </LabelContainer>
+        <ChartWithLegend>
+          {colorLegend && !isEmpty && (
+            <ColorLegendContainer width={colorLegendWhidh}>
+              <SDiscreteColorLegend
+                width={colorLegendWhidh}
+                items={data.map((d) => d.label)}
+                colors={data.map((d, index) => colorsWithRandom[index])}
+                textColor={theme.typography.body1.color}
+              />
+            </ColorLegendContainer>
+          )}
+          <ChartContainer>
+            {data.length ? (
+              <FlexibleChart
+                data={data}
+                onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
+                onSeriesMouseOut={() => this.onSeriesMouseOut()}
+                value={value}
+                colorsWithRandom={colorsWithRandom}
+                thicknessCoefficient={thicknessCoefficient}
+                isEmpty={isEmpty}
+              />
+            ) : (
+              <FlexibleChart
+                data={[emptyData]}
+                onValueMouseOver={() => undefined}
+                onSeriesMouseOut={() => undefined}
+                value={value}
+                colorsWithRandom={[emptyColor]}
+                thicknessCoefficient={thicknessCoefficient}
+                isEmpty={isEmpty}
+              />
             )}
-            textColor={theme.typography.body1.color}
-          />
-        )}
-        <ChartContainer>
-          <LabelContainer>
-            <Typography variant="h4">
-              {value ? value.label : labelPlaceholder || ''}
-            </Typography>
-          </LabelContainer>
-          <ChartWrapper>
-            <FlexibleChart
-              data={data}
-              radius={FlexibleRadius}
-              innerRadius={innerRadius}
-              animation={true}
-              colorType={'literal'}
-              getColor={(d) => `url(#${d.gradientIndex})`}
-              onValueMouseOver={(v: DonutPiece) => this.onValueMouseOver(v)}
-              onSeriesMouseOut={() => this.onSeriesMouseOut()}
-              style={{
-                strokeWidth: 0,
-              }}
-            >
-              <ValueContainer opacity={value != undefined}>
-                <Typography variant="h3">
-                  {value ? `${value.realValue}%` : '\u2063'}
-                </Typography>
-              </ValueContainer>
-              <GradientDefs>
-                {gradients.map((pair: gradient, index: number) => (
-                  <linearGradient
-                    id={index.toString()}
-                    x1="0"
-                    x2="0"
-                    y1="0"
-                    y2="1"
-                  >
-                    <stop offset="0%" stopColor={pair[0]} opacity={0.6} />
-                    <stop offset="100%" stopColor={pair[1]} opacity={0.6} />
-                  </linearGradient>
-                ))}
-              </GradientDefs>
-            </FlexibleChart>
-          </ChartWrapper>
-        </ChartContainer>
-      </ChartWithLegend>
+          </ChartContainer>
+        </ChartWithLegend>
+      </ChartWithTitle>
     )
   }
 }
 
-export const DonutChart = withTheme()(DonutChartWitoutTheme)
+export const DonutChart = DonutChartWitoutTheme
 
 export default DonutChart

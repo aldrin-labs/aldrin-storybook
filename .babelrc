@@ -10,27 +10,15 @@
             }
           }
         ],
-        [
-          "@babel/stage-1",
-          {
-            "decoratorsLegacy": true
-          }
-        ],
+
         "@babel/react",
         "@babel/preset-typescript"
       ],
       "plugins": [
         "react-hot-loader/babel",
         "styled-components",
-        [
-          "@babel/plugin-transform-runtime",
-          {
-            "helpers": false,
-            "polyfill": false,
-            "regenerator": true,
-            "moduleName": "@babel/runtime"
-          }
-        ]
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-proposal-class-properties"
       ]
     },
     "production": {
@@ -45,25 +33,14 @@
             "modules": false
           }
         ],
-        [
-          "@babel/stage-1",
-          {
-            "decoratorsLegacy": true
-          }
-        ],
+
         "@babel/react",
         "@babel/preset-typescript"
       ],
       "plugins": [
         "lodash",
-        [
-          "@babel/plugin-transform-runtime",
-          {
-            "polyfill": false,
-            "regenerator": true,
-            "useESModules": true
-          }
-        ]
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-proposal-class-properties",
       ]
     },
     "development": {
@@ -77,27 +54,15 @@
             "modules": false
           }
         ],
-        [
-          "@babel/stage-1",
-          {
-            "decoratorsLegacy": true
-          }
-        ],
+
         "@babel/react",
         "@babel/preset-typescript"
       ],
       "plugins": [
         "react-hot-loader/babel",
         "styled-components",
-        [
-          "@babel/plugin-transform-runtime",
-          {
-            "helpers": false,
-            "polyfill": false,
-            "regenerator": true,
-            "moduleName": "@babel/runtime"
-          }
-        ]
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-runtime",
       ]
     }
   }

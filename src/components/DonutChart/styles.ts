@@ -8,41 +8,35 @@ export const ChartWithLegend = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 90%;
 `
 
 export const ChartContainer = styled.div`
   text-align: center;
-  min-height: 25rem;
   z-index: 2;
   width: 100%;
   height: 100%;
+  marigin: 0px;
 `
 
-export const ChartWrapper = styled.div`
-  width: 100%;
-  height: initial;
-  height: calc(100% - 178px);
-`
-
-export const ValueContainer = styled.div`
-  margin: 0px;
-  position: relative;
-  top: -50%;
-  transform: translate(0, -50%);
-  text-align: center;
-  z-index: 1;
-  opacity: ${(props: { opacity: boolean }) => (props.opacity ? 1 : 0)};
-  transition: opacity 0.25s ease-in-out;
+export const ColorLegendContainer = styled.div`
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transform: scaleX(-1);
+  min-width: ${(props: {width: number}) => props.width + 3}px;
+  ${customAquaScrollBar}
 `
 
 export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
+  transform: scaleX(-1);
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   ${customAquaScrollBar} & .rv-discrete-color-legend-item {
     display: flex;
     align-items: center;
+    margin-left: 5px;
     color: ${(props: { textColor: string }) => props.textColor};
   }
   & .rv-discrete-color-legend-item__color {
@@ -57,10 +51,14 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
 `
 
 export const LabelContainer = styled.div`
-  margin: 0px;
-  position: relative;
-  display: flex;
-  place-content: center;
-  place-items: center;
-  height: 90px;
+margin: 0px;
+position: relative;
+display: flex;
+place-content: center;
+place-items: center;
+height: 10%;
+`
+
+export const ChartWithTitle = styled.div`
+  height: 100%;
 `
