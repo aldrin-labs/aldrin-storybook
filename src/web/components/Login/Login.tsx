@@ -1,23 +1,21 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
-import { connect } from 'react-redux'
 import { graphql } from 'react-apollo'
 import jwtDecode from 'jwt-decode'
 import Button from '@material-ui/core/Button'
 
-import { withErrorFallback } from '../../hoc'
+// import { withErrorFallback } from '../../hoc'
 import { Props, State } from '@containers/Login/interfaces'
-import * as actions from '@containers/Login/actions'
 import * as API from '@containers/Login/api'
+import * as CLIENT_API_MUTATIONS from '@core/graphql/mutations/login/index'
+import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
 import { LoginMenu } from '@containers/Login/components'
 import MainLogo from '@icons/AuthLogo.png'
 import { Grow, Slide } from '@material-ui/core'
 import { MASTER_BUILD } from '@utils/config'
 import { client } from '@core/graphql/apolloClient'
 import { persistor } from '@utils/persistConfig'
-import { Login } from '@storybook-components'
-import storage from '@storage'
 
 const auth0Options = {
   auth: {
@@ -68,10 +66,10 @@ class LoginQuery extends React.Component<Props, State> {
 
   componentDidMount() {
     if (this.props.isShownModal) this.showLogin()
-    this.props.checkToken()
-    this.props.listenersWillOn()
+    this.onListenersChanges(true)
     this.setLockListeners()
-    if (this.props.loginStatus) this.addFSIdentify(this.props.user)
+    if (this.props.loginStatus)
+      this.addFSIdentify(this.props.user)
   }
 
   addFSIdentify(profile) {
@@ -83,76 +81,110 @@ class LoginQuery extends React.Component<Props, State> {
     }
   }
 
+  handleMenu = (event: Event) => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
   setLockListeners = () => {
     this.state.lock.on('authenticated', (authResult: any) => {
-      this.props.onLogin()
+      this.props.onLoginProcessChanges(true)
       this.state.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
           if (error) {
             console.error(error)
           }
-          await this.props.setToken(authResult.idToken)
-          await this.createUserReq(profile)
-          await this.props.resumeApollo()
-          this.props.storeLogin(profile)
+          this.props.onLogin(profile, authResult.idToken)
           this.addFSIdentify(profile)
         }
       )
     })
     this.state.lock.on('hide', () => {
-      this.props.storeModalIsClosing()
-      this.props.listenersWillOff()
-      setTimeout(() => this.props.storeClosedModal(), 1000)
+      this.onModalProcessChanges(true)
+      this.onListenersChanges(false)
+      setTimeout(() => this.onModalChanges(false), 1000)
     })
   }
 
-  handleMenu = (event: Event) => {
-    this.setState({ anchorEl: event.currentTarget })
+  onListenersChanges = async (listenersStatus: boolean) => {
+    const { listenersStatusMutation } = this.props
+    const variables = {
+      listenersStatus,
+    }
+
+    try {
+      await listenersStatusMutation({ variables })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  onModalChanges = async (modalIsOpen: boolean) => {
+    const { modalStatusMutation } = this.props
+    const variables = {
+      modalIsOpen,
+    }
+
+    try {
+      await modalStatusMutation({ variables })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  onListenersChanges = async (listenersStatus: boolean) => {
+    const { listenersStatusMutation } = this.props
+    const variables = {
+      listenersStatus,
+    }
+
+    try {
+      await listenersStatusMutation({ variables })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  onModalProcessChanges = async (modalLogging: boolean) => {
+    const { modalProcessMutation } = this.props
+    const variables = {
+      modalLogging,
+    }
+
+    try {
+      await modalProcessMutation({ variables })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   handleClose = () => {
     this.setState({ anchorEl: null })
   }
 
-  createUserReq = async (profile: any) => {
-    const { createUser } = this.props
-
-    const variables = {
-      idToken: this.props.getToken(),
-      emailAddress: profile.email,
-      name: profile.nickname,
-      emailSubscription: true,
-    }
-
-    try {
-      await createUser({ variables })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   showLogin = () => {
     const isLoginPopUpClosed =
-      !this.props.modalIsOpen &&
-      !this.props.isLogging &&
-      !this.props.modalLogging
+      !this.props.loginDataQuery.login.modalIsOpen &&
+      !this.props.loginDataQuery.login.isLogging &&
+      !this.props.loginDataQuery.login.modalLogging
 
     if (isLoginPopUpClosed) {
-      this.props.storeOpenedModal()
+      this.onModalChanges(true)
       this.state.lock.show()
-      if (this.props.listenersOff) {
+      if (this.props.loginDataQuery.login.listenersOff) {
         this.setLockListeners()
       }
     }
   }
 
   render() {
-    const { loginStatus, user, isShownModal } = this.props
-    const { anchorEl } = this.state
-    const open = Boolean(anchorEl)
+    const {
+      loginStatus,
+      handleLogout,
+      user,
+    } = this.props
 
-    if (isShownModal) return null
+    if (this.props.isShownModal) return null
 
     return (
       <SWrapper className="LoginButton">
@@ -173,11 +205,11 @@ class LoginQuery extends React.Component<Props, State> {
           mountOnEnter={true}
         >
           <LoginMenu
-            anchorEl={anchorEl}
+            anchorEl={this.state.anchorEl}
             open={open}
             handleClose={this.handleClose}
             handleMenu={this.handleMenu}
-            handleLogout={this.props.handleLogout}
+            handleLogout={handleLogout}
             userName={user && user.name}
           />
         </Slide>
@@ -185,3 +217,16 @@ class LoginQuery extends React.Component<Props, State> {
     )
   }
 }
+
+export const LoginComponent = compose(
+  graphql(GET_LOGIN_DATA, { name: 'loginDataQuery' }),
+  graphql(CLIENT_API_MUTATIONS.UPDATE_MODAL_STATUS, {
+    name: 'modalStatusMutation',
+  }),
+  graphql(CLIENT_API_MUTATIONS.UPDATE_MODAL_PROCESS, {
+    name: 'modalProcessMutation',
+  }),
+  graphql(CLIENT_API_MUTATIONS.UPDATE_LISTNERES, {
+    name: 'listenersStatusMutation',
+  })
+)(LoginQuery)
