@@ -219,14 +219,4 @@ class LoginQuery extends React.Component<Props, State> {
 }
 
 export const LoginComponent = compose(
-  graphql(GET_LOGIN_DATA, { name: 'loginDataQuery' }),
-  graphql(CLIENT_API_MUTATIONS.UPDATE_MODAL_STATUS, {
-    name: 'modalStatusMutation',
-  }),
-  graphql(CLIENT_API_MUTATIONS.UPDATE_MODAL_PROCESS, {
-    name: 'modalProcessMutation',
-  }),
-  graphql(CLIENT_API_MUTATIONS.UPDATE_LISTNERES, {
-    name: 'listenersStatusMutation',
-  })
 )(LoginQuery)
