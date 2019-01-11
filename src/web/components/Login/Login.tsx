@@ -166,9 +166,9 @@ class LoginQuery extends React.Component<Props, State> {
       this.onModalChanges(true)
       this.state.lock.show()
       console.log('listenersOff', this.props.loginDataQuery.login.listenersOff)
-//      if (this.props.loginDataQuery.login.listenersOff) {
+      if (this.props.loginDataQuery.login.listenersOff) {
         this.setLockListeners()
-//     }
+     }
     }
   }
 
