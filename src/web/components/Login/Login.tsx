@@ -67,10 +67,7 @@ class LoginQuery extends React.Component<Props, State> {
   componentDidMount() {
     if (this.props.isShownModal) this.showLogin()
     this.onListenersChanges(true);
-
-    (async () => {
-      await this.setLockListeners()
-    })()
+    this.setLockListeners()
     if (this.props.loginStatus)
       this.addFSIdentify(this.props.user)
   }
