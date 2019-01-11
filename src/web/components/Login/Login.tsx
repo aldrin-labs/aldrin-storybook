@@ -45,24 +45,18 @@ const SWrapper = styled.div`
 `
 
 class LoginQuery extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
+    state = {
       anchorEl: null,
-      lock: null,
-    }
-  }
-
-  static getDerivedStateFromProps(props: Props) {
-    auth0Options.theme.primaryColor = props.mainColor
-    return {
       lock: new Auth0Lock(
         '0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm',
         'ccai.auth0.com',
-        auth0Options
-      ),
+        {
+          ...auth0Options, theme: {
+            ...auth0Options.theme,
+            primaryColor: this.props.mainColor,
+          },
+        }),
     }
-  }
 
   componentDidMount() {
     if (this.props.isShownModal) this.showLogin()
@@ -156,7 +150,6 @@ class LoginQuery extends React.Component<Props, State> {
 
     const isLoginPopUpClosed =
       !this.props.loginDataQuery.login.modalIsOpen &&
-      !this.props.loginDataQuery.login.isLogging &&
       !this.props.loginDataQuery.login.modalLogging
 
     console.log('isLoginPopUpClosed', isLoginPopUpClosed);
