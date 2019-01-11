@@ -1,21 +1,12 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
-import jwtDecode from 'jwt-decode'
 import Button from '@material-ui/core/Button'
-
-// import { withErrorFallback } from '../../hoc'
 import { Props, State } from '@containers/Login/interfaces'
-import * as API from '@containers/Login/api'
-import * as CLIENT_API_MUTATIONS from '@core/graphql/mutations/login/index'
-import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
 import { LoginMenu } from '@containers/Login/components'
 import MainLogo from '@icons/AuthLogo.png'
 import { Grow, Slide } from '@material-ui/core'
 import { MASTER_BUILD } from '@utils/config'
-import { client } from '@core/graphql/apolloClient'
-import { persistor } from '@utils/persistConfig'
+import { SWrapper } from './Login.styles'
 
 const auth0Options = {
   auth: {
@@ -36,13 +27,6 @@ const auth0Options = {
   oidcConformant: true,
 }
 
-const SWrapper = styled.div`
-  z-index: 100000;
-  padding: 0 1rem;
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-`
 
 class LoginQuery extends React.Component<Props, State> {
     state = {
@@ -206,5 +190,4 @@ class LoginQuery extends React.Component<Props, State> {
   }
 }
 
-export const LoginComponent = compose(
-)(LoginQuery)
+export const LoginComponent = LoginQuery
