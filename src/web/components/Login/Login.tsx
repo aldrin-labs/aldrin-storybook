@@ -65,11 +65,16 @@ class LoginQuery extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    if (this.props.isShownModal) this.showLogin()
     this.onListenersChanges(true)
-    this.setLockListeners()
-    if (this.props.loginStatus)
-      this.addFSIdentify(this.props.user)
+    this.onModalChanges(false)
+    setTimeout(() => {
+      console.log(this.props.isShownModal)
+      if (this.props.isShownModal) this.showLogin()
+      this.setLockListeners()
+      if (this.props.loginStatus)
+        this.addFSIdentify(this.props.user)
+    }
+    , 1000)
   }
 
   addFSIdentify(profile) {
@@ -86,7 +91,9 @@ class LoginQuery extends React.Component<Props, State> {
   }
 
   setLockListeners = () => {
+    console.log('setLockListeners')
     this.state.lock.on('authenticated', (authResult: any) => {
+      console.log('authenticated')
       this.props.onLoginProcessChanges(true)
       this.state.lock.getUserInfo(
         authResult.accessToken,
@@ -100,6 +107,7 @@ class LoginQuery extends React.Component<Props, State> {
       )
     })
     this.state.lock.on('hide', () => {
+      console.log('hide')
       this.onModalProcessChanges(true)
       this.onListenersChanges(false)
       setTimeout(() => this.onModalChanges(false), 1000)
@@ -132,19 +140,6 @@ class LoginQuery extends React.Component<Props, State> {
     }
   }
 
-  onListenersChanges = async (listenersStatus: boolean) => {
-    const { listenersStatusMutation } = this.props
-    const variables = {
-      listenersStatus,
-    }
-
-    try {
-      await listenersStatusMutation({ variables })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   onModalProcessChanges = async (modalLogging: boolean) => {
     const { modalProcessMutation } = this.props
     const variables = {
@@ -167,13 +162,13 @@ class LoginQuery extends React.Component<Props, State> {
       !this.props.loginDataQuery.login.modalIsOpen &&
       !this.props.loginDataQuery.login.isLogging &&
       !this.props.loginDataQuery.login.modalLogging
-
     if (isLoginPopUpClosed) {
       this.onModalChanges(true)
       this.state.lock.show()
-      if (this.props.loginDataQuery.login.listenersOff) {
+      console.log('listenersOff', this.props.loginDataQuery.login.listenersOff)
+//      if (this.props.loginDataQuery.login.listenersOff) {
         this.setLockListeners()
-      }
+//     }
     }
   }
 
