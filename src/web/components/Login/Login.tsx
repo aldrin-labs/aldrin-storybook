@@ -65,7 +65,12 @@ class LoginQuery extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    if (this.props.isShownModal) this.showLogin()
+    if (this.props.isShownModal) {
+      this.state.lock.show()
+      this.onModalChanges(true)
+    } else {
+      this.onModalChanges(false)
+    }
     this.onListenersChanges(true);
     this.setLockListeners()
     if (this.props.loginStatus)
@@ -184,7 +189,6 @@ class LoginQuery extends React.Component<Props, State> {
     } = this.props
 
     if (this.props.isShownModal) return null
-
     return (
       <SWrapper className="LoginButton">
         <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
