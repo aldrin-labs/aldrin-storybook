@@ -81,7 +81,6 @@ class LoginQuery extends React.Component<Props, State> {
 
   setLockListeners = () => {
     this.state.lock.on('authenticated', (authResult: any) => {
-      this.props.onLoginProcessChanges(true)
       this.state.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
@@ -144,15 +143,9 @@ class LoginQuery extends React.Component<Props, State> {
   }
 
   showLogin = async () => {
-    console.log('showLogin');
-    console.log('loginDataQuery.login', this.props.loginDataQuery.login);
-
-
     const isLoginPopUpClosed =
       !this.props.loginDataQuery.login.modalIsOpen &&
       !this.props.loginDataQuery.login.modalLogging
-
-    console.log('isLoginPopUpClosed', isLoginPopUpClosed);
 
     if(!isLoginPopUpClosed) {
       this.onModalChanges(false)
@@ -162,7 +155,6 @@ class LoginQuery extends React.Component<Props, State> {
     if (isLoginPopUpClosed) {
       await this.onModalChanges(true)
       this.state.lock.show()
-      console.log('this.props.loginDataQuery.login.listenersOff', this.props.loginDataQuery.login.listenersOff)
       if (this.props.loginDataQuery.login.listenersOff) {
         this.setLockListeners()
      }
