@@ -39,4 +39,4 @@ export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
     width: calc(100% - 20px);
   }
 `
-`
+
