@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TableWithSort } from '@storybook-components/index'
+import { TableWithSort } from '@storybook/components/index'
 import Loader from '@components/TablePlaceholderLoader/newLoader'
 import { IProps } from './TraderOrderHistoryTable.types'
 
