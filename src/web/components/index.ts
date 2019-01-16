@@ -25,3 +25,4 @@ export { default as TradeOrderHistoryTable } from './TradeOrderHistoryTable/Trad
 export { default as ErrorBoundary, ErrorFallback, CustomError } from './ErrorFallback/ErrorFallback'
 export { Loading } from './Loading/Loading'
 export { QueryRenderPlaceholder } from './QueryRenderPlaceholder/QueryRenderPlaceholder'
+export { colorful } from './ColorfulTableCell'

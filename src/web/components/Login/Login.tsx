@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { compose } from 'recompose'
 import Button from '@material-ui/core/Button'
-import { Props, State } from '@containers/Login/interfaces'
-import { LoginMenu } from '@containers/Login/components'
-import MainLogo from '@icons/AuthLogo.png'
 import { Grow, Slide } from '@material-ui/core'
+import { Props, State } from './interfaces'
+import { LoginMenu } from '@storybook-components/LoginMenu'
+import MainLogo from '@icons/AuthLogo.png'
 import { MASTER_BUILD } from '@utils/config'
 import { SWrapper } from './Login.styles'
 
