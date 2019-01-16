@@ -1,20 +1,38 @@
 import * as React from 'react'
 import { Fade } from '@material-ui/core'
 import Joyride from 'react-joyride'
+import { connect } from 'react-redux'
 
-import DonutChart from '@containers/Portfolio/components/PortfolioTable/Industry/DonutChart/DonutChart'
+import { withErrorFallback } from '@storybook/components/hoc/withErrorFallback/withErrorFallback'
+import * as actions from '@containers/User/actions'
+
 import { IProps, IState } from './types'
 import { portfolioIndustrySteps } from '@utils/joyrideSteps'
 import Template from './Template'
-import IndustryTable from '@containers/Portfolio/components/PortfolioTable/Industry/IndustryTable/IndustryTable'
+import IndustryTable from '@core/components/IndustryTable'
+import IndustryChart from '@core/components/IndustryChart'
 
 class PortfolioTableIndustries extends React.Component<IProps, IState> {
+  state: IState = {
+    key: 0,
+  }
+
+  handleJoyrideCallback = (data) => {
+    if (
+      data.action === 'close' ||
+      data.action === 'skip' ||
+      data.status === 'finished'
+    ) {
+      this.props.hideToolTip('Industry')
+    }
+    if (data.status === 'finished') {
+      const oldKey = this.state.key
+      this.setState({ key: oldKey + 1 })
+    }
+  }
+
   render() {
-    const {
-      theme,
-      tab,
-      joyrideSettings,
-    } = this.props
+    const { theme, tab } = this.props
 
     return (
       <>
@@ -27,15 +45,15 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
               mountOnEnter
               unmountOnExit
             >
-              <DonutChart />
+              <IndustryChart />
             </Fade>
           }
         />
         <Joyride
           steps={portfolioIndustrySteps}
-          run={joyrideSettings.run}
-          callback={joyrideSettings.handleJoyrideCallback}
-          key={joyrideSettings.key}
+          run={this.props.toolTip.portfolioIndustry && tab === 'industry'}
+          callback={this.handleJoyrideCallback}
+          key={this.state.key}
           styles={{
             options: {
               backgroundColor: theme.palette.getContrastText(
@@ -55,5 +73,15 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
   }
 }
 
+const mapDispatchToProps = (dispatch: any) => ({
+  hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
+})
 
-export default PortfolioTableIndustries
+const mapStateToProps = (store) => ({
+  toolTip: store.user.toolTip,
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorFallback(PortfolioTableIndustries))
