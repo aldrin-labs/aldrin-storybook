@@ -15,7 +15,7 @@ import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMai
 import { portfolioMainSteps } from '@storybook/config/joyrideSteps'
 import * as actions from '@containers/User/actions'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import Template from '@storybook-components/Template/Template'
+import Template from '@storybook/components/Template/Template'
 
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
