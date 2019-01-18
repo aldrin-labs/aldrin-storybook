@@ -26,4 +26,5 @@ export { default as ErrorBoundary, ErrorFallback, CustomError } from './ErrorFal
 export { Loading } from './Loading/Loading'
 export { QueryRenderPlaceholder } from './QueryRenderPlaceholder/QueryRenderPlaceholder'
 export { colorful } from './ColorfulTableCell'
-export { default } from './PortfolioRebalanceChart/PortfolioRebalanaceChart'
+export { default as PortfolioRebalanceChartComponent } from './PortfolioRebalanceChart/PortfolioRebalanaceChart'
+export { default as TooltipCustom} from './TooltipCustom/TooltipCustom'
