@@ -7,11 +7,11 @@ import QueryRenderer from '@core/components/QueryRenderer'
 import { CorrelationMatrixMockData } from './mocks'
 import { CorrelationMatrix, CustomError } from '@storybook/components/index'
 import { IProps } from './Correlation.types'
-import { getCorrelationQuery } from '@core/graphql/queries/portfolio/getCorrelation'
+import { getCorrelationQuery } from '@core/graphql/queries/portfolio/correlation/getCorrelation'
 import { swapDates } from '@core/utils/PortfolioTableUtils'
 import { PTWrapper as PTWrapperRaw } from '@storybook/styles/cssUtils'
 import { testJSON } from '@core/utils/chartPageUtils'
-import { portfolioCorrelationSteps } from '@utils/joyrideSteps'
+import { portfolioCorrelationSteps } from '@storybook/config/joyrideSteps'
 import * as actions from '@containers/User/actions'
 import {
   toggleCorrelationTableFullscreen,

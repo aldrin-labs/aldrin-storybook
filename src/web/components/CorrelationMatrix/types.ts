@@ -10,3 +10,7 @@ export interface IProps {
   CustomColors?: string[]
   theme: Theme
 }
+
+export interface IState {
+  isFullscreenEnabled: boolean
+}

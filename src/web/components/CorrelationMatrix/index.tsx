@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import FullScreen from 'react-fullscreen-crossbrowser'
 import Button from '@material-ui/core/Button'
@@ -10,14 +10,29 @@ import FullScreenIcon from '@material-ui/icons/Fullscreen'
 import { customAquaScrollBar } from '../cssUtils'
 import SelectTimeRange from '../SelectTimeRangeDropdown'
 import { CorrelationMatrixTable } from './CorrelationMatrixTable'
-import { IProps } from './types'
+import { IProps, IState } from './types'
 import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
 
-class CorrelationMatrixComponent extends PureComponent<IProps> {
-  constructor(props: IProps) {
-    super(props)
+class CorrelationMatrixComponent extends Component<IProps, IState> {
+
+  state: IState = {
+    isFullscreenEnabled: false,
   }
+
+  fullScreenChangeHandler = () => {
+    this.setState((state) => ({ isFullscreenEnabled: !state.isFullscreenEnabled }))
+  }
+
+  setPeriodToStore = (data: {
+    correlationPeriod: string,
+    correlationStartDate: number,
+    correlationEndDate: number
+  }) => setCorrelationPeriod(
+    data.correlationStartDate,
+    data.correlationEndDate,
+    data.correlationPeriod
+    )
 
   renderPlaceholder = () => (
     <StyledCard raised>
@@ -36,9 +51,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
 
   render() {
     const {
-      isFullscreenEnabled,
       data,
-      fullScreenChangeHandler,
       setCorrelationPeriod,
       period,
       CustomColors,
@@ -48,6 +61,8 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       theme,
     } = this.props
 
+    const { isFullscreenEnabled } = this.state
+
     const colors = CustomColors || [
       palette.red.main,
       palette.background.default,
@@ -55,11 +70,14 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       palette.background.default,
     ]
 
+    console.log(this.state)
+    console.log(isFullscreenEnabled)
+
     return (
       <ScrolledWrapper>
         <FullScreen
           onClose={() => {
-            fullScreenChangeHandler(isFullscreenEnabled)
+            this.fullScreenChangeHandler()
           }}
           style={{ height: '100%' }}
           enabled={isFullscreenEnabled}
@@ -95,7 +113,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                     maxWidth: '10rem',
                     margin: '2rem 0',
                   }}
-                  setPeriodToStore={setCorrelationPeriod}
+                  setPeriodToStore={this.setPeriodToStore}
                   period={period}
                 />
                 <Typography noWrap={true} align="center" variant="body1">
@@ -128,7 +146,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                 color="primary"
                 variant="contained"
                 onClick={() => {
-                  this.props.fullScreenChangeHandler()
+                  this.fullScreenChangeHandler()
                 }}
               >
                 <FullScreenIcon />
