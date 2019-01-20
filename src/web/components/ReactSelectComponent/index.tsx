@@ -3,11 +3,11 @@ import SelectReact, { components } from 'react-select'
 import AsyncSelect from 'react-select/lib/Async'
 import { OptionProps } from 'react-select/lib/types'
 
-import SvgIcon from '@components/SvgIcon/SvgIcon'
-import dropDownIcon from '@icons/baseline-arrow_drop_down.svg'
+import SvgIcon from '@storybook/components/SvgIcon/'
+import dropDownIcon from '../../../icons/baseline-arrow_drop_down.svg'
 import { IProps } from './index.types'
 import { withTheme } from '@material-ui/styles'
-import ForwarderRefHoc from '@components/ForwardedRefHOC/ForwarderRef'
+import ForwarderRefHoc from '@core/hoc/ForwarderRef'
 
 class ReactSelectComponent extends Component<IProps> {
   render() {

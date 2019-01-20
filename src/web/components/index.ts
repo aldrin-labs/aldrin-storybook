@@ -44,3 +44,6 @@ export { default as AddIcon } from './AddIcon/AddIcon'
 export {
   default as IconButtonWithHover,
 } from './IconButtonWithHover/IconButtonWithHover'
+export {
+  default as PortfolioRebalanceTable
+} from './PortfolioRebalanceTable/PortfolioRebalanceTable'

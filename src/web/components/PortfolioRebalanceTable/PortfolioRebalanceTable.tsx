@@ -9,8 +9,6 @@ import {
   LoaderWrapper,
   LoaderInnerWrapper,
   ContentInner,
-  SDeleteIcon,
-  StyledSlider,
   TitleContainer,
   TitleItem,
 } from './RebalancedPortfolioTable.styles'
@@ -32,6 +30,8 @@ const PortfolioRebalanceTable = ({
   tableData,
 }: IProps) => {
 
+  const { columnNames, data: { body, footer } } = tableData
+
   const Table = isEditModeEnabled ? ImTable : TableWithSort
 
   return (
@@ -48,8 +48,9 @@ const PortfolioRebalanceTable = ({
       )}
       <ContentInner>
         <Table
+          columnNames={columnNames}
           id="PortfolioRebalanceTable"
-          data={tableData}
+          data={{ body, footer }}
           rowsWithHover={false}
           actionsColSpan={2}
           actions={getArrayOfActionElements({
