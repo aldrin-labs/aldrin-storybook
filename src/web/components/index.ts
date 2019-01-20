@@ -21,10 +21,26 @@ export { addMainSymbol } from './AddMainSymbol'
 export { default as PrivacyPolicy } from './PrivacyPolicy'
 export { default as CardHeader } from './CardHeader'
 export { LoginComponent } from './Login'
-export { default as TradeOrderHistoryTable } from './TradeOrderHistoryTable/TraderOrderHistoryTable'
-export { default as ErrorBoundary, ErrorFallback, CustomError } from './ErrorFallback/ErrorFallback'
+export {
+  default as TradeOrderHistoryTable,
+} from './TradeOrderHistoryTable/TraderOrderHistoryTable'
+export {
+  default as ErrorBoundary,
+  ErrorFallback,
+  CustomError,
+} from './ErrorFallback/ErrorFallback'
 export { Loading } from './Loading/Loading'
-export { QueryRenderPlaceholder } from './QueryRenderPlaceholder/QueryRenderPlaceholder'
+export {
+  QueryRenderPlaceholder,
+} from './QueryRenderPlaceholder/QueryRenderPlaceholder'
 export { colorful } from './ColorfulTableCell'
-export { default as PortfolioRebalanceChartComponent } from './PortfolioRebalanceChart/PortfolioRebalanaceChart'
-export { default as TooltipCustom} from './TooltipCustom/TooltipCustom'
+export {
+  default as PortfolioRebalanceChartComponent,
+} from './PortfolioRebalanceChart/PortfolioRebalanaceChart'
+export { default as TooltipCustom } from './TooltipCustom/TooltipCustom'
+export { default as Slider } from './Slider/Slider'
+export { default as DeleteIcon } from './DeleteIcon/DeleteIcon'
+export { default as AddIcon } from './AddIcon/AddIcon'
+export {
+  default as IconButtonWithHover,
+} from './IconButtonWithHover/IconButtonWithHover'
