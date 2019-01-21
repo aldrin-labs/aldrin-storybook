@@ -52,3 +52,15 @@ export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
     width: 100%;
   }
 `
+
+export const LegendContainer = styled.div`
+  border-radius: 5px;
+  position: absolute;
+  font-family: ${(props: { fontFamily: string }) => props.fontFamily};
+  background-color: #869eb180;
+  top: ${({ top }: { top: number }) => (top ? `${top}` : 0)};
+  left: ${({ left }: { left: number }) => (left ? `${left}` : '')};
+  right: ${({ right }: { right: number }) => (right ? `${right}` : '')};
+  color: ${(props: { color: string }) => props.color};
+  transition: opacity 0.25s ease-out;
+`

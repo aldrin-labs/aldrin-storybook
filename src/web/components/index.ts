@@ -47,3 +47,6 @@ export {
 export {
   default as PortfolioRebalanceTable
 } from './PortfolioRebalanceTable/PortfolioRebalanceTable'
+export {
+  default as SwitchButtons
+} from './SwitchButtons/SwitchButtons'
