@@ -3,10 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 
-import {
-  IProps,
-  IState,
-} from './PortfolioMainPage.types'
+import { IProps, IState } from './PortfolioMainPage.types'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
@@ -38,9 +35,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
   render() {
     const { theme, tab } = this.props
-
-    console.log('this.props', this.props);
-
 
     return (
       <>
