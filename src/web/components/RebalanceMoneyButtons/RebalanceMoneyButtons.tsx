@@ -12,7 +12,7 @@ import {
 } from './RebalanceMoneyButtons.styles'
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
-import { IRow } from '@containers/Portfolio/components/PortfolioTable/Rebalance/Rebalance.types'
+import { IRow } from '@core/types/PortfolioTypes'
 import RebalanceActionButtons from '@storybook/components/RebalanceActionButtons/RebalanceActionButtons'
 import { Card } from '@material-ui/core'
 
