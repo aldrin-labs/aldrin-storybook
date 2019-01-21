@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loading } from '@components/Loading/Loading'
+import { Loading } from '@storybook/components/Loading/Loading'
 
 export default class LoadableLoading extends React.Component {
   render() {

@@ -3,18 +3,7 @@ import styled from 'styled-components'
 import { Grid, Card } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 import { CardProps } from '@material-ui/core/Card'
-
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
-
-
-export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
-  && {
-    overflow-y: auto;
-    height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
-    margin: 0;
-    width: 100%;
-  }
-`
+import { Container } from '@storybook/styles/cssUtils'
 
 export const GridContainer = styled(Container as React.SFC<GridProps>)`
   flex-wrap: nowrap;

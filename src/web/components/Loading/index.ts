@@ -1,1 +1,1 @@
-export { Loading } from '@components/Loading/Loading'
+export { Loading } from '@storybook/components/Loading/Loading'

@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card } from '@material-ui/core'
+import { Grid, Card } from '@material-ui/core'
+import { GridProps } from '@material-ui/core/Grid'
+
+import { CSS_CONFIG } from '@storybook/config/cssConfig'
 
 export const customAquaScrollBar = `
   &::-webkit-scrollbar {
@@ -41,3 +44,11 @@ export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
   }
 `
 
+export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
+  && {
+    overflow-y: auto;
+    height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
+    margin: 0;
+    width: 100%;
+  }
+`

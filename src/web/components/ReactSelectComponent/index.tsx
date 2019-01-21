@@ -3,11 +3,11 @@ import SelectReact, { components } from 'react-select'
 import AsyncSelect from 'react-select/lib/Async'
 import { OptionProps } from 'react-select/lib/types'
 
-import SvgIcon from '../SvgIcon'
-import dropDownIcon from '@icons/baseline-arrow_drop_down.svg'
+import SvgIcon from '@storybook/components/SvgIcon/'
+import dropDownIcon from '../../../icons/baseline-arrow_drop_down.svg'
 import { IProps } from './index.types'
 import { withTheme } from '@material-ui/styles'
-import { hexToRgbAWithOpacity } from '@styles/helpers'
+import ForwarderRefHoc from '@core/hoc/ForwarderRef'
 
 class ReactSelectComponent extends Component<IProps> {
   render() {
@@ -29,8 +29,16 @@ class ReactSelectComponent extends Component<IProps> {
       multiValueRemoveStyles,
       indicatorSeparatorStyles,
       loadingIndicatorStyles,
+      noOptionsMessageStyles,
+      menuPortalStyles,
+      forwardedRef,
       ...otherProps
     } = this.props
+
+    const textColor: string = theme.typography.body2.color
+    const fontFamily: string = theme.typography.fontFamily
+
+    const background: string = theme.palette.background.default
 
     const customStyles = {
       control: () => {
@@ -47,14 +55,21 @@ class ReactSelectComponent extends Component<IProps> {
           backgroundColor: 'transparent',
           minHeight: '0.8em',
           border: 'none',
+          width: '100%',
           ...controlStyles,
         }
       },
       menu: (base: CSSProperties) => ({
         ...base,
-        backgroundColor: theme.palette.grey[800],
-        minWidth: '250px',
+        backgroundColor: background,
+        zIndex: 10,
+        color: textColor,
+        fontFamily: theme.typography.fontFamily,
         ...menuStyles,
+      }),
+      menuPortal: (base: CSSProperties) => ({
+        ...base,
+        ...menuPortalStyles,
       }),
       menuList: (base: CSSProperties) => ({
         ...base,
@@ -68,18 +83,22 @@ class ReactSelectComponent extends Component<IProps> {
         ['::-webkit-scrollbar-thumb']: {
           background: theme.palette.secondary.main,
         },
+        color: textColor,
+        fontFamily: theme.typography.fontFamily,
         ...menuListStyles,
       }),
       option: (base: CSSProperties, state: OptionProps) => ({
         ...base,
-        color: theme.palette.primary.contrastText,
-        fontSize: '1.5em',
-        fontFamily: 'Roboto',
+        color: textColor,
+        fontSize: '1em',
+        fontFamily: fontFamily,
         backgroundColor: state.isSelected
-          ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.2)
-          : state.isFocused
-          ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.1)
-          : theme.palette.grey[800],
+          ? theme.palette.action.selected
+          : // ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.2)
+          state.isFocused
+          ? theme.palette.action.hover
+          : // ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.1)
+            background,
         [':active']: null,
         ...optionStyles,
       }),
@@ -88,13 +107,14 @@ class ReactSelectComponent extends Component<IProps> {
           display: 'flex',
           width: '20px',
           boxSizing: 'border-box',
-          color: theme.palette.primary.contrastText,
+          color: textColor,
           padding: '2px',
           transition: 'color 150ms',
           ...clearIndicatorStyles,
         }
       },
       dropdownIndicator: (base: CSSProperties) => ({
+        color: textColor,
         display: 'flex',
         width: '19px',
         boxSizing: 'border-box',
@@ -104,22 +124,25 @@ class ReactSelectComponent extends Component<IProps> {
       valueContainer: (base: CSSProperties) => ({
         ...base,
         paddingLeft: 0,
+        fontFamily: theme.typography.fontFamily,
         ...valueContainerStyles,
       }),
       singleValue: (base: CSSProperties) => ({
         ...base,
-        color: theme.palette.primary.contrastText,
+        color: textColor,
         marginLeft: '0',
         ...singleValueStyles,
       }),
       placeholder: (base: CSSProperties) => ({
         ...base,
+        fontFamily: theme.typography.fontFamily,
         marginLeft: 0,
         ...placeholderStyles,
       }),
       input: (base: CSSProperties) => ({
         ...base,
-        color: theme.palette.primary.contrastText,
+        color: textColor,
+        fontFamily: theme.typography.fontFamily,
         ...inputStyles,
       }),
       multiValue: (base: CSSProperties) => ({
@@ -127,7 +150,7 @@ class ReactSelectComponent extends Component<IProps> {
         [':hover']: {
           borderColor: theme.palette.secondary.main,
         },
-        color: theme.palette.primary.contrastText,
+        color: textColor,
         borderRadius: '3px',
         fontWeight: 'bold',
         backgroundColor: theme.palette.grey[900],
@@ -135,13 +158,13 @@ class ReactSelectComponent extends Component<IProps> {
       }),
       multiValueLabel: (base: CSSProperties) => ({
         ...base,
-        color: theme.palette.primary.contrastText,
+        color: textColor,
         ...multiValueLabelStyles,
       }),
       multiValueRemove: (base: CSSProperties) => ({
         ...base,
         [':hover']: {
-          color: theme.palette.primary.contrastText,
+          color: textColor,
           backgroundColor: theme.palette.secondary.main,
           ...multiValueRemoveStyles,
         },
@@ -153,13 +176,22 @@ class ReactSelectComponent extends Component<IProps> {
       loadingIndicator: (base: CSSProperties) => ({
         ...base,
         display: 'none',
+        color: textColor,
+        fontFamily: theme.typography.fontFamily,
         ...loadingIndicatorStyles,
+      }),
+      noOptionsMessage: (base: CSSProperties) => ({
+        ...base,
+        color: textColor,
+        fontFamily: theme.typography.fontFamily,
+        ...noOptionsMessageStyles,
       }),
     }
 
     if (asyncSelect) {
       return (
         <AsyncSelect
+          ref={forwardedRef}
           className="custom-async-select-box"
           classNamePrefix="custom-async-select-box"
           styles={customStyles}
@@ -171,6 +203,7 @@ class ReactSelectComponent extends Component<IProps> {
 
     return (
       <SelectReact
+        ref={forwardedRef}
         className="custom-select-box"
         classNamePrefix="custom-select-box"
         styles={customStyles}
@@ -195,4 +228,4 @@ const DropdownIndicator = (props: object) =>
     </components.DropdownIndicator>
   )
 
-export default withTheme()(ReactSelectComponent)
+export default ForwarderRefHoc(withTheme()(ReactSelectComponent))
