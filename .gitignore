@@ -71,3 +71,6 @@ temp
 
 #VS Code settings
 .vscode
+
+#mac
+.DS_Store

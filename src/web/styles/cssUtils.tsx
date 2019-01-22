@@ -1,9 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { Grid, Card } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
 import { CSS_CONFIG } from '@storybook/config/cssConfig'
+import ReactSelectComponent from '@storybook/components/ReactSelectComponent'
 
 export const customAquaScrollBar = `
   &::-webkit-scrollbar {
@@ -63,4 +64,33 @@ export const LegendContainer = styled.div`
   right: ${({ right }: { right: number }) => (right ? `${right}` : '')};
   color: ${(props: { color: string }) => props.color};
   transition: opacity 0.25s ease-out;
+`
+
+
+export const GlobalStyle = createGlobalStyle`
+ &::-webkit-scrollbar {
+    width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
+  scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(45, 49, 54, 0.1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(39, 39, 45);
+  }
+`
+
+export const SelectR = styled(ReactSelectComponent)`
+  font-family: Roboto;
+  width: 100%;
+  font-size: 16px;
+  border-bottom: 1px solid #c1c1c1;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-bottom: 2px solid #fff;
+  }
 `

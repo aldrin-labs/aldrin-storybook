@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import PieChart from '../PieChart'
 import SvgIcon from '../SvgIcon'
-import mask from '../../icons/mask.svg'
+import mask from '@icons/mask.svg'
 
 const chartCoins = [
   { angle: 5, label: 'BCash', color: '#f9b057' },
