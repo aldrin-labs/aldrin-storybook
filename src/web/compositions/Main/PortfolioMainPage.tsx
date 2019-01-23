@@ -10,7 +10,7 @@ import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHist
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 
 import { portfolioMainSteps } from '@storybook/config/joyrideSteps'
-import * as actions from '@containers/User/actions'
+import * as actions from '@core/redux/user/actions'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import Template from '@storybook/components/Template/Template'
 

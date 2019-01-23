@@ -4,7 +4,7 @@ import Joyride from 'react-joyride'
 import { connect } from 'react-redux'
 
 import { withErrorFallback } from '@storybook/components/hoc/withErrorFallback/withErrorFallback'
-import * as actions from '@containers/User/actions'
+import * as actions from '@core/redux/user/actions'
 
 import { IProps, IState } from './types'
 import { portfolioIndustrySteps } from '@storybook/config/joyrideSteps'

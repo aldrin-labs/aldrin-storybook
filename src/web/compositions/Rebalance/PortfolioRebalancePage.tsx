@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 
 import Joyride from 'react-joyride'
-import * as actions from '@containers/User/actions'
+import * as actions from '@core/redux/user/actions'
 
 import { Container as Content } from '@storybook/styles/cssUtils'
 import { portfolioRebalanceSteps } from '@storybook/config/joyrideSteps'
