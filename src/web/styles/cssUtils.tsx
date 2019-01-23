@@ -94,3 +94,7 @@ export const SelectR = styled(ReactSelectComponent)`
     border-bottom: 2px solid #fff;
   }
 `
+
+export const Icon = styled.i`
+  padding-right: 5px;
+`
