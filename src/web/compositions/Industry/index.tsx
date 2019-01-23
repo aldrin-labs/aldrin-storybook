@@ -7,7 +7,7 @@ import { withErrorFallback } from '@storybook/components/hoc/withErrorFallback/w
 import * as actions from '@containers/User/actions'
 
 import { IProps, IState } from './types'
-import { portfolioIndustrySteps } from '@utils/joyrideSteps'
+import { portfolioIndustrySteps } from '@storybook/config/joyrideSteps'
 import Template from './Template'
 import IndustryTable from '@core/components/IndustryTable'
 import IndustryChart from '@core/components/IndustryChart'

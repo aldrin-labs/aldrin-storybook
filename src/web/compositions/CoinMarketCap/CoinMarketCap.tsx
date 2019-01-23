@@ -23,7 +23,7 @@ import {
   TableContainer,
 } from './styles'
 
-import withAuth from '@hoc/withAuth'
+import withAuth from '@core/hoc/withAuth'
 
 interface Props {
   data: CoinMarketCapQueryQuery

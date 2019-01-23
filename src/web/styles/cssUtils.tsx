@@ -1,14 +1,16 @@
 import React from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle, css } from 'styled-components'
 import { Grid, Card } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
 import { CSS_CONFIG } from '@storybook/config/cssConfig'
 import ReactSelectComponent from '@storybook/components/ReactSelectComponent'
+import { TypographyWithCustomColor } from '@storybook/styles/StyledComponents/TypographyWithCustomColor'
 
-export const customAquaScrollBar = `
+export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
-    width: 3px;
+    width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
+      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -17,8 +19,14 @@ export const customAquaScrollBar = `
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #4ed8da;
-  }`
+    background: rgb(39, 39, 45);
+  }
+`
+
+export const TypographyFullWidth = styled(TypographyWithCustomColor)`
+  width: 100%;
+  flex-grow: 1;
+`
 
 export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
   grid-column: 2;
@@ -66,11 +74,10 @@ export const LegendContainer = styled.div`
   transition: opacity 0.25s ease-out;
 `
 
-
 export const GlobalStyle = createGlobalStyle`
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-  scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 

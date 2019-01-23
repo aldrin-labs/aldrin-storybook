@@ -8,7 +8,7 @@ import {
 } from 'react-vis'
 
 import { Props, State, PiePiece } from './PieChart.types'
-import { customAquaScrollBar } from '@styles/cssUtils'
+import { customAquaScrollBar } from '@storybook/styles/cssUtils'
 
 const FlexibleRadialChart = makeVisFlexible(RadialChart)
 

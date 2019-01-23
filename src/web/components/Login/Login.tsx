@@ -4,7 +4,7 @@ import { Grow, Slide } from '@material-ui/core'
 import { Props, State } from './interfaces'
 import { LoginMenu } from '@storybook/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
-import { MASTER_BUILD } from '@utils/config'
+import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
 
 const auth0Options = {
