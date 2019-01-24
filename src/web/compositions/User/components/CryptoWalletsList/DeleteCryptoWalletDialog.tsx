@@ -17,9 +17,7 @@ import Typography from '@material-ui/core/Typography'
 
 import { deleteCryptoWalletMutation } from '@core/graphql/mutations/user/deleteCryptoWalletMutation'
 import { getCryptoWalletsQuery } from '@core/graphql/queries/user/getCryptoWalletsQuery'
-
-
-import { portfolioKeyAndWalletsQuery } from '@containers/Portfolio/api'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 
 const DeleteCryptoWalletDialogComponent = ({
   handleClickOpen,

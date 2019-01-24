@@ -6,7 +6,7 @@ import Joyride from 'react-joyride'
 import { Grow, Switch } from '@material-ui/core'
 
 import * as Useractions from '@core/redux/user/actions'
-import * as actions from '@containers/Portfolio/actions'
+import * as actions from '@core/redux/portfolio/actions'
 import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import { GET_OPTIMIZATION_COUNT_OF_RUNS } from '@core/graphql/queries/portfolio/getOptimizationCountOfRuns'
 import { UPDATE_OPTIMIZATION_COUNT_OF_RUNS } from '@core/graphql/mutations/portfolio/updateOptimizationCountOfRuns'

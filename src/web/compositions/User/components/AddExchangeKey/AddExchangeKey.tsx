@@ -17,7 +17,7 @@ import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchange
 
 import SelectExchangeList from '@storybook/components/SelectExchangeList/SelectExchangeList'
 import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
-import { portfolioKeyAndWalletsQuery } from '@containers/Portfolio/api'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 
 const MIN_CHAR = 3
 

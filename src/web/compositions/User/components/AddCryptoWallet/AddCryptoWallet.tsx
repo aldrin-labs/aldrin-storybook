@@ -15,7 +15,7 @@ import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 
 import { getCryptoWalletsQuery } from '@core/graphql/queries/user/getCryptoWalletsQuery'
 import { addCryptoWalletMutation } from '@core/graphql/mutations/user/addCryptoWalletMutation'
-import { portfolioKeyAndWalletsQuery } from '@containers/Portfolio/api'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 
 const MIN_CHAR = 3
 
