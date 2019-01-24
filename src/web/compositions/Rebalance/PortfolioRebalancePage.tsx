@@ -117,6 +117,7 @@ class PortfolioRebalancePage extends Component {
               isEditModeEnabled={isEditModeEnabled}
             >
               <PortfolioRebalanceTableContainer
+                key={`PortfolioRebalanceTableContainer`}
                 {...{
                   isEditModeEnabled,
                   staticRows,
@@ -157,6 +158,7 @@ class PortfolioRebalancePage extends Component {
               className="PortfolioDistributionChart"
             >
               <PortfolioRebalanceChart
+                key={`PortfolioRebalanceChart`}
                 title={`Portfolio Distribution`}
                 background={theme.palette.background.default}
                 staticRows={staticRows}
@@ -174,6 +176,7 @@ class PortfolioRebalancePage extends Component {
             {/* end of a grid */}
 
             <DialogComponent
+              key={`DialogComponent`}
               {...{
                 openWarning,
                 warningMessage,

@@ -11,7 +11,7 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import CloseIcon from '@material-ui/icons/Close'
 import { connect } from 'react-redux'
-import { toggleMobilePopup } from '@containers/App/actions'
+import { toggleMobilePopup } from '@core/redux/app/actions'
 
 const styles = theme => ({
   largeButton: {

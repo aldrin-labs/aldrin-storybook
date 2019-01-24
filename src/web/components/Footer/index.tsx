@@ -11,7 +11,7 @@ import Telegram from '@material-ui/icons/NearMeSharp'
 import {
   changeThemeMode,
   togglePrivacyPolicy as togglePrivacyPolicyAction,
-} from '@containers/App/actions'
+} from '@core/redux/app/actions'
 import Props from './index.types'
 import { AppBar, IconButton } from '@material-ui/core'
 import { PrivacyPolicy } from '@storybook/components/index'
