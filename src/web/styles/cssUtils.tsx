@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { createGlobalStyle, css } from 'styled-components'
-import { Grid, Card } from '@material-ui/core'
+import { Grid, Card, Theme } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -105,3 +105,12 @@ export const SelectR = styled(ReactSelectComponent)`
 export const Icon = styled.i`
   padding-right: 5px;
 `
+
+export const chooseRed = (theme: Theme) =>
+  theme.palette.type === 'dark'
+    ? theme.palette.red.main
+    : theme.palette.red.dark
+export const chooseGreen = (theme: Theme) =>
+  theme.palette.type === 'dark'
+    ? theme.palette.green.main
+    : theme.palette.green.dark

@@ -1,5 +1,6 @@
 import React from 'react'
 import { WithTheme } from '@material-ui/core'
+import { KeyOrWallet } from '@core/types/PortfolioTypes'
 
 export interface IProps extends WithTheme {
   filterValuesLessThenThat: Function
@@ -22,8 +23,3 @@ export interface IProps extends WithTheme {
   login: boolean
 }
 
-export type KeyOrWallet = {
-  _id: string;
-  name: string;
-  selected: boolean
-}
