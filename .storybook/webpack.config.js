@@ -3,13 +3,21 @@ const path = require('path')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const webpack = require('webpack')
 
-module.exports = (baseConfig, env) => {
+module.exports = (baseConfig, env, ...rest) => {
+
+  const platform = process.env.PLATFORM
+
   const config = {
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {
-        '@components': path.join(__dirname, '..', 'src', 'components'),
-        '@styles': path.join(__dirname, '..', 'src', 'styles'),
+        '@core': path.join(__dirname, '..', 'src', 'core', 'src'),
+        '@sb': path.join(__dirname, '..', 'src', `${platform}`),
+        '@components': path.join(__dirname, '..', 'src', `${platform}`, 'components'),
+        '@compositions': path.join(__dirname, '..', 'src', `${platform}`, 'compositions'),
+        '@config': path.join(__dirname, '..', 'src', `${platform}`, 'config'),
+        '@styles': path.join(__dirname, '..', 'src', `${platform}`, 'styles'),
+
         '@icons': path.join(__dirname, '..', 'src', 'icons'),
         '@utils': path.join(__dirname, '..', 'src', 'utils'),
       },
@@ -17,11 +25,13 @@ module.exports = (baseConfig, env) => {
     module: {
       rules: [
         {
-          test: /\.(ts|tsx)$/,
-          use: [
-            'babel-loader',
-            require.resolve('react-docgen-typescript-loader'),
+          test: /\.tsx?$/,
+          exclude: [
+            path.join(__dirname, '..', '/node_modules/'),
+            path.join(__dirname, '..', '/src/core/node_modules/'),
+
           ],
+          loaders: ['babel-loader?cacheDirectory=true'],
         },
         {
           test: /\.svg$/,

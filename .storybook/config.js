@@ -10,11 +10,11 @@ import { ThemeProvider } from '@material-ui/styles'
 import { customThemes } from './customTheme'
 
 
-configure(() => require('../src/stories/index'), module)
+configure(() => require('../src/web/stories/index'), module)
 export let StorybookUI = null;
 if (process.env.REACT_NATIVE) { // IF MOBILE
-  const { AppRegistry } = require('react-native');
-  const { getStorybookUI, configure } = require('@storybook/react-native');
+  // const { AppRegistry } = require('react-native');
+  // const { getStorybookUI, configure } = require('@storybook/react-native');
 
   StorybookUI = getStorybookUI({
     port: 7007,
@@ -25,7 +25,7 @@ if (process.env.REACT_NATIVE) { // IF MOBILE
   AppRegistry.registerComponent('RNStorybook', () => StorybookUI);
 
 } else { // IF WEB
-    
+
     //You need to change customThemes.dark to customThemes.light to change theme in storybook
     addDecorator((story) => (
                              <MuiThemeProvider theme={customThemes.dark}>{story()}</MuiThemeProvider>
@@ -35,7 +35,7 @@ if (process.env.REACT_NATIVE) { // IF MOBILE
                              ))
     addDecorator((story) => <div style={{ margin: 20 }}>{story()}</div>)
     addDecorator(withKnobs)
-    
+
     setOptions({
                name: 'Storybook',
                url: '#',
