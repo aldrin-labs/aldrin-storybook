@@ -2,8 +2,8 @@ import React from 'react'
 import { Grow, Typography } from '@material-ui/core'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
-import { Table as ImTable, TableWithSort, Loading } from '@storybook/components'
-import { getArrayOfActionElements } from '@storybook/styles/PortfolioRebalanceTableUtils'
+import { Table as ImTable, TableWithSort, Loading } from '@sb/components'
+import { getArrayOfActionElements } from '@sb/styles/PortfolioRebalanceTableUtils'
 
 import {
   LoaderWrapper,

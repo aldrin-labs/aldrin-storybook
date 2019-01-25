@@ -2,8 +2,8 @@ import React from 'react'
 import { Fade } from '@material-ui/core'
 
 import { LoaderInnerWrapper, LoaderWrapper } from '../Optimization.styles'
-import { Loading } from '@storybook/components'
-import { TypographyWithCustomColor } from '@storybook/styles/StyledComponents/TypographyWithCustomColor'
+import { Loading } from '@sb/components'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 interface Props {
   textColor?: string

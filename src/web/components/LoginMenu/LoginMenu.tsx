@@ -7,7 +7,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import Tooltip from '@material-ui/core/Tooltip'
 import { connect } from 'react-redux'
 
-import * as userActions from '@containers/User/actions'
+import * as userActions from '@core/redux/user/actions'
 
 const UserLink = (props) => <Link to="/user" {...props} />
 

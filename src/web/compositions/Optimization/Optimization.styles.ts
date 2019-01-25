@@ -1,7 +1,7 @@
 import { LinearProgress, Card, CardContent } from '@material-ui/core'
 import styled from 'styled-components'
-import { customAquaScrollBar } from '@styles/cssUtils'
-import { CardHeader } from '@storybook/components/index'
+import { customAquaScrollBar } from '@sb/styles/cssUtils'
+import { CardHeader } from '@sb/components/index'
 
 export const Loader = styled(LinearProgress)`
   margin-bottom: 0.5rem;

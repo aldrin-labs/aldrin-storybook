@@ -1,17 +1,25 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Card } from '@material-ui/core'
 
-const Wrapper = styled.div`
+import { CHARTS_API_URL } from '@core/utils/config'
+
+const Wrapper = styled(Card)`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 `
 
-export const SingleChart = ({ additionalUrl, chartsApiUrl }: { additionalUrl: string, chartsApiUrl: string }) => (
+export const SingleChart = ({ additionalUrl }: { additionalUrl: string }) => (
   <Wrapper>
-    <iframe src={`https://${chartsApiUrl}${additionalUrl}`} height={'100%'} />
+    <iframe
+      style={{ borderWidth: 0 }}
+      src={`https://${CHARTS_API_URL}${additionalUrl}`}
+      height={'100%'}
+    />
   </Wrapper>
 )
+
 
 export default SingleChart

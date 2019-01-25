@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Tooltip } from '@material-ui/core'
-import { FullWidthBlock } from '@components/OldTable/Table'
+import { FullWidthBlock } from '@sb/components/OldTable/Table'
 
 
 const config = {

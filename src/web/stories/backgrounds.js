@@ -1,6 +1,6 @@
 import addonBackgrounds from "@storybook/addon-backgrounds";
 
-import { customThemes } from '../../.storybook/customTheme'
+import { customThemes } from '../../../.storybook/customTheme'
 
 export const backgrounds = addonBackgrounds([
   { name: "Default light", value: customThemes.light.palette.background.default, default: true },

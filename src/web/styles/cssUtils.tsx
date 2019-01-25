@@ -1,13 +1,16 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Grid, Card } from '@material-ui/core'
+import styled, { createGlobalStyle, css } from 'styled-components'
+import { Grid, Card, Theme } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
+import ReactSelectComponent from '@sb/components/ReactSelectComponent'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
-export const customAquaScrollBar = `
+export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
-    width: 3px;
+    width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
+      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -16,8 +19,14 @@ export const customAquaScrollBar = `
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #4ed8da;
-  }`
+    background: rgb(39, 39, 45);
+  }
+`
+
+export const TypographyFullWidth = styled(TypographyWithCustomColor)`
+  width: 100%;
+  flex-grow: 1;
+`
 
 export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
   grid-column: 2;
@@ -64,3 +73,44 @@ export const LegendContainer = styled.div`
   color: ${(props: { color: string }) => props.color};
   transition: opacity 0.25s ease-out;
 `
+
+export const GlobalStyle = createGlobalStyle`
+ &::-webkit-scrollbar {
+    width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
+      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(45, 49, 54, 0.1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(39, 39, 45);
+  }
+`
+
+export const SelectR = styled(ReactSelectComponent)`
+  font-family: Roboto;
+  width: 100%;
+  font-size: 16px;
+  border-bottom: 1px solid #c1c1c1;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-bottom: 2px solid #fff;
+  }
+`
+
+export const Icon = styled.i`
+  padding-right: 5px;
+`
+
+export const chooseRed = (theme: Theme) =>
+  theme.palette.type === 'dark'
+    ? theme.palette.red.main
+    : theme.palette.red.dark
+export const chooseGreen = (theme: Theme) =>
+  theme.palette.type === 'dark'
+    ? theme.palette.green.main
+    : theme.palette.green.dark

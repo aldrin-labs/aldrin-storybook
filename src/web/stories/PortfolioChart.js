@@ -6,7 +6,7 @@ import { object  } from '@storybook/addon-knobs'
 
 import PortfolioChart from '@components/PortfolioChart'
 import { data } from './mocks/PortfolioChartMoks'
-import { customThemes } from '../../.storybook/customTheme'
+import { customThemes } from '../../../.storybook/customTheme'
 
 const chartBtns = ['1D', '7D', '1M', '3M', '1Y']
 
@@ -23,7 +23,7 @@ console.log(data)
 storiesOf('PortfolioChart', module)
   .add(
     'PortfolioChart',
-    () => 
+    () =>
       <PortfolioChart
         theme={customThemes.dark}
         data={data}

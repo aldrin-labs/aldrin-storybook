@@ -11,14 +11,14 @@ import {
   LineMarkSeries,
 } from 'react-vis'
 
-import { formatDate } from '../../../../../core/src/utils/dateUtils'
+import { formatDate } from '@core/utils/dateUtils'
 import { Props, State } from './LineChart.types'
 import {
   ContainerForCrossHairValues,
   StyledDiscreteColorLegend,
 } from './LineChart.styles'
-import { CSS_CONFIG } from '../../config/cssConfig'
-import { LegendContainer } from '../../styles/cssUtils'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
+import { LegendContainer } from '@sb/styles/cssUtils'
 
 const axisStyle = {
   ticks: {

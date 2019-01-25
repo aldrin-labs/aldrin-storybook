@@ -1,4 +1,4 @@
-import { MASTER_BUILD } from '@utils/config'
+import { MASTER_BUILD } from '@core/utils/config'
 
 export const RebalancePeriod = [
   // { label: '3 days', value: '3' },

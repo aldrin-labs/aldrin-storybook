@@ -3,7 +3,7 @@ import { HeatmapSeries, XYPlot, XAxis, YAxis } from 'react-vis'
 
 import { Props } from './annotations'
 
-export class HeatMapChart extends Component<Props> {
+export default class HeatMapChart extends Component<Props> {
   render() {
     const { data, width, height } = this.props
     return (
@@ -15,5 +15,3 @@ export class HeatMapChart extends Component<Props> {
     )
   }
 }
-
-export default HeatMapChart

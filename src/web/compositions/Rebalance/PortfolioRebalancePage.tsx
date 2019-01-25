@@ -3,12 +3,12 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 
 import Joyride from 'react-joyride'
-import * as actions from '@containers/User/actions'
+import * as actions from '@core/redux/user/actions'
 
-import { Container as Content } from '@storybook/styles/cssUtils'
-import { portfolioRebalanceSteps } from '@storybook/config/joyrideSteps'
-import DialogComponent from '@storybook/components/RebalanceDialog/RebalanceDialog'
-import EmptyTablePlaceholder from '@storybook/components/EmptyTablePlaceholder'
+import { Container as Content } from '@sb/styles/cssUtils'
+import { portfolioRebalanceSteps } from '@sb/config/joyrideSteps'
+import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
+import EmptyTablePlaceholder from '@sb/components/EmptyTablePlaceholder'
 
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
@@ -117,6 +117,7 @@ class PortfolioRebalancePage extends Component {
               isEditModeEnabled={isEditModeEnabled}
             >
               <PortfolioRebalanceTableContainer
+                key={`PortfolioRebalanceTableContainer`}
                 {...{
                   isEditModeEnabled,
                   staticRows,
@@ -157,6 +158,7 @@ class PortfolioRebalancePage extends Component {
               className="PortfolioDistributionChart"
             >
               <PortfolioRebalanceChart
+                key={`PortfolioRebalanceChart`}
                 title={`Portfolio Distribution`}
                 background={theme.palette.background.default}
                 staticRows={staticRows}
@@ -174,6 +176,7 @@ class PortfolioRebalancePage extends Component {
             {/* end of a grid */}
 
             <DialogComponent
+              key={`DialogComponent`}
               {...{
                 openWarning,
                 warningMessage,

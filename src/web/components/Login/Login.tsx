@@ -2,9 +2,9 @@ import * as React from 'react'
 import Button from '@material-ui/core/Button'
 import { Grow, Slide } from '@material-ui/core'
 import { Props, State } from './interfaces'
-import { LoginMenu } from '@storybook/components/LoginMenu'
+import { LoginMenu } from '@sb/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
-import { MASTER_BUILD } from '@utils/config'
+import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
 
 const auth0Options = {
