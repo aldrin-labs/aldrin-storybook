@@ -74,3 +74,6 @@ temp
 
 #mac
 .DS_Store
+
+#Webstorm
+.idea
