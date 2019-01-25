@@ -9,7 +9,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-import { Loading } from '@storybook/components/Loading'
+import { Loading } from '@sb/components/Loading'
 
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { DeleteKeyDialog } from './DeleteKeyDialog'

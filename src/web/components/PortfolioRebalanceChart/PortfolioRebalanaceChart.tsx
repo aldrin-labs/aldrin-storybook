@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BarChart, CardHeader } from '@storybook/components/index'
+import { BarChart, CardHeader } from '@sb/components/index'
 import { ChartContainer, Chart } from './PortfolioRebalanceChart.styles'
 import { IProps } from './PortfolioRebalanceChart.types'
 

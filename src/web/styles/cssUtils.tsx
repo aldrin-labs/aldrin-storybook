@@ -3,9 +3,9 @@ import styled, { createGlobalStyle, css } from 'styled-components'
 import { Grid, Card } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
-import ReactSelectComponent from '@storybook/components/ReactSelectComponent'
-import { TypographyWithCustomColor } from '@storybook/styles/StyledComponents/TypographyWithCustomColor'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
+import ReactSelectComponent from '@sb/components/ReactSelectComponent'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 export const customAquaScrollBar = css`
   &::-webkit-scrollbar {

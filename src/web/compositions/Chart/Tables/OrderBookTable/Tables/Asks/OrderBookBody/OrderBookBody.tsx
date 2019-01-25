@@ -1,7 +1,7 @@
 import React, { Component, memo } from 'react'
 
-import { Row, Cell, Body } from '@storybook/components/OldTable/Table'
-import { Loading } from '@storybook/components/Loading'
+import { Row, Cell, Body } from '@sb/components/OldTable/Table'
+import { Loading } from '@sb/components/Loading'
 import {
   calculatePercentagesOfOrderSize,
   ScrollToBottom,
@@ -12,7 +12,7 @@ import {
   RowWithVolumeChart,
   StyledTypography,
 } from '../../../../SharedStyles'
-import { hexToRgbAWithOpacity } from '@storybook/styles/helpers'
+import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 
 let objDiv: HTMLElement | null
 

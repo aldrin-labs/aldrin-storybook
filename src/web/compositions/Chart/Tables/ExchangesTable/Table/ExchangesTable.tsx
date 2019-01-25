@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 
-import { Row, Title, Body, Head } from '@storybook/components/OldTable/Table'
+import { Row, Title, Body, Head } from '@sb/components/OldTable/Table'
 import { IProps } from './ExchangesTable.types'
-import { TypographyWithCustomColor } from '@storybook/styles/StyledComponents/TypographyWithCustomColor'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 import {
   StyledTable,
   SwitchTablesButton,

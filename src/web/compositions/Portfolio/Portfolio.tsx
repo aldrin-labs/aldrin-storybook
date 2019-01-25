@@ -5,11 +5,11 @@ import { withTheme } from '@material-ui/styles'
 import { Fade, LinearProgress } from '@material-ui/core'
 
 import { IProps, IState } from './Portfolio.types'
-import SelectExchangeOrWalletWindow from '@storybook/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
-import AddExchangeOrWalletWindow from '@storybook/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
+import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
+import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
 
-import { CustomError } from '@storybook/components/'
+import { CustomError } from '@sb/components/'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'

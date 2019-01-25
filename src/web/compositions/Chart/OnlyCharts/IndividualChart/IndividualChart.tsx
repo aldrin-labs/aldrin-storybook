@@ -3,14 +3,14 @@ import styled from 'styled-components'
 import { IconButton as Button, Switch, Grow, Paper } from '@material-ui/core'
 import MdClear from '@material-ui/icons/Clear'
 
-import { SingleChart } from '@storybook/components/Chart'
+import { SingleChart } from '@sb/components/Chart'
 import {
   IChartProps,
   IChartState,
 } from './IndividualChart.types'
 import DepthChartContainer from '../DepthChartContainer/DepthChartContainer'
-import { CustomError } from '@storybook/components/index'
-import { TypographyWithCustomColor } from '@storybook/styles/StyledComponents/TypographyWithCustomColor'
+import { CustomError } from '@sb/components/index'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 export default class Charts extends Component<IChartProps, IChartState> {
   state: IChartState = {

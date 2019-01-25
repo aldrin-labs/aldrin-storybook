@@ -1,7 +1,7 @@
 import React from 'react'
 import { Typography } from '@material-ui/core'
 
-import { PTWrapper } from '@storybook/styles/cssUtils'
+import { PTWrapper } from '@sb/styles/cssUtils'
 
 export default (props: { isEmpty: boolean; children: React.ReactChild }) => {
   if (props.isEmpty) {

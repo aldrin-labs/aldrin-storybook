@@ -9,7 +9,7 @@ import {
   STypography,
   PTextBox,
   PTWrapper,
-} from '@storybook/styles/walletWindows.styles'
+} from '@sb/styles/walletWindows.styles'
 
 const MyLinkToUserSettings = (props: object) => <Link to="/user" {...props} />
 

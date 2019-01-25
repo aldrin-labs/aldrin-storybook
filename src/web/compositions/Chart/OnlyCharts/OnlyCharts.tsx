@@ -5,12 +5,12 @@ import { Slide } from '@material-ui/core'
 import Joyride from 'react-joyride'
 
 import * as actions from '@core/redux/chart/actions'
-import WarningMessageSnack from '@storybook/components/WarningMessageSnack/WarningMessageSnack'
+import WarningMessageSnack from '@sb/components/WarningMessageSnack/WarningMessageSnack'
 import IndividualChart from './IndividualChart/IndividualChart'
 import * as userActions from '@core/redux/user/actions'
 
 import { IProps, IChart } from './OnlyCharts.types'
-import { multiChartsSteps } from '@storybook/config/joyrideSteps'
+import { multiChartsSteps } from '@sb/config/joyrideSteps'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 class OnlyCharts extends Component<IProps> {

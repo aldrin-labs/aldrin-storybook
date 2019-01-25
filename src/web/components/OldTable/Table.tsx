@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { customAquaScrollBar } from '@storybook/styles/cssUtils'
+import { customAquaScrollBar } from '@sb/styles/cssUtils'
 
 export const Table = styled.div`
   font-family: Roboto, sans-serif;

@@ -14,13 +14,13 @@ jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 //
 
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Footer from '@storybook/components/Footer'
+import Footer from '@sb/components/Footer'
 
-import AnimatedNavBar from '@storybook/components/NavBar/AnimatedNavBar'
+import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import { AppGridLayout } from './App.styles'
-import ShowWarningOnMoblieDevice from '@storybook/components/ShowWarningOnMoblieDevice'
-import { GlobalStyle } from '@storybook/styles/cssUtils'
+import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
+import { GlobalStyle } from '@sb/styles/cssUtils'
 
 const version = `1`
 const currentVersion = localStorage.getItem('version')

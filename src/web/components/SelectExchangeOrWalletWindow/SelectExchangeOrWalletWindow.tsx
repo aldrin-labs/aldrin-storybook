@@ -8,7 +8,7 @@ import {
   STypography,
   PTextBox,
   PTWrapper,
-} from '@storybook/styles/walletWindows.styles'
+} from '@sb/styles/walletWindows.styles'
 
 export default class SelectExchangeOrWalletWindow extends React.Component<
   IProps

@@ -1,7 +1,7 @@
 import { Grid, Card } from '@material-ui/core'
 import styled from 'styled-components'
-import { customAquaScrollBar } from '@storybook/styles/cssUtils'
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
+import { customAquaScrollBar } from '@sb/styles/cssUtils'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { CardProps } from '@material-ui/core/Card'
 import { GridProps } from '@material-ui/core/Grid'
 

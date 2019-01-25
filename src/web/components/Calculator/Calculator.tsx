@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import Button from '@storybook/components/Elements/Button'
+import Button from '@sb/components/Elements/Button'
 
 import { Props, State } from './types'
 

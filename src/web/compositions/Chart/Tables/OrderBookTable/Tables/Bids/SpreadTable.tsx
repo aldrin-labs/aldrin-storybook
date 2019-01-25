@@ -10,10 +10,10 @@ import {
   Cell,
   HeadCell,
   Body,
-} from '@storybook/components/OldTable/Table'
-import { Loading } from '@storybook/components/Loading'
-import { TypographyFullWidth } from '@storybook/styles/cssUtils'
-import { hexToRgbAWithOpacity } from '@storybook/styles/helpers'
+} from '@sb/components/OldTable/Table'
+import { Loading } from '@sb/components/Loading'
+import { TypographyFullWidth } from '@sb/styles/cssUtils'
+import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import {
   EmptyCell,
   StyledTypography,

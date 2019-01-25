@@ -2,12 +2,12 @@ import * as React from 'react'
 import { withTheme } from '@material-ui/styles'
 
 import { Slide, Typography } from '@material-ui/core'
-import Dropdown from '@storybook/components/SimpleDropDownSelector'
+import Dropdown from '@sb/components/SimpleDropDownSelector'
 
 
 import { IProps } from './PortfolioSelector.types'
-import Accounts from '@storybook/components/Accounts/Accounts'
-import Wallets from '@storybook/components/Wallets/Wallets'
+import Accounts from '@sb/components/Accounts/Accounts'
+import Wallets from '@sb/components/Wallets/Wallets'
 import {
   AccountsWalletsBlock,
   FilterIcon,

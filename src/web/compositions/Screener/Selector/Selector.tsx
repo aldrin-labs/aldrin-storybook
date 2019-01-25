@@ -10,9 +10,9 @@ import Select from '@material-ui/core/Select'
 import SaveIcon from '@material-ui/icons/Save'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-import ReactSelectComponent from '@storybook/components/ReactSelectComponent'
+import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import sortIcon from '@icons/arrow.svg'
-import SvgIcon from '@storybook/components/SvgIcon/'
+import SvgIcon from '@sb/components/SvgIcon/'
 import { IProps, IState } from './Selector.types'
 import { data } from './selectsData'
 

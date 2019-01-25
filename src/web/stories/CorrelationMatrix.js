@@ -7,7 +7,7 @@ import { object, number, boolean, text } from '@storybook/addon-knobs'
 import styled from 'styled-components'
 import { Card } from '@material-ui/core'
 
-import { customThemes } from '../../.storybook/customTheme'
+import { customThemes } from '../../../.storybook/customTheme'
 
 import { CorrelationMatrix } from '@components/CorrelationMatrix'
 import { CorrelationMatrixTableMocks } from './mocks'

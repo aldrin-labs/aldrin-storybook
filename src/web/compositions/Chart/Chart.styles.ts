@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Card, Grid } from '@material-ui/core'
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
   ${(props: { fullscreen: boolean }) => props.fullscreen && 'height: 100vh'};

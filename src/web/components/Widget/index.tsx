@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import SvgIcon from '@storybook/components/SvgIcon/'
+import SvgIcon from '@sb/components/SvgIcon/'
 import menuIcon from '@icons/menu.svg'
 
 import { Props } from './types'

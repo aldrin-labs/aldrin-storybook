@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Widget from '@storybook/components/Widget'
-import BitcoinPriceChart from '@storybook/components/BitcoinPriceChart/BitcoinPriceChart'
+import Widget from '@sb/components/Widget'
+import BitcoinPriceChart from '@sb/components/BitcoinPriceChart/BitcoinPriceChart'
 import bitcoinIcon from '@icons/bitcoin.svg'
 import styled from 'styled-components'
 

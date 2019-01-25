@@ -14,7 +14,7 @@ import {
 } from '@core/redux/app/actions'
 import Props from './index.types'
 import { AppBar, IconButton } from '@material-ui/core'
-import { PrivacyPolicy } from '@storybook/components/index'
+import { PrivacyPolicy } from '@sb/components/index'
 
 const Footer = ({
   changeModeTheme,

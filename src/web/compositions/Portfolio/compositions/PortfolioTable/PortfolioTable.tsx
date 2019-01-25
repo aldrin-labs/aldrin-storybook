@@ -9,15 +9,15 @@ const PortfolioTableIndustries = React.lazy(() =>
 )
 import Rebalance from '@core/compositions/PortfolioRebalance'
 const Optimization = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@storybook/compositions/Optimization/Optimization')
+  import(/* webpackPrefetch: true */ '@sb/compositions/Optimization/Optimization')
 )
 const Correlation = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@storybook/compositions/Correlation/Correlation')
+  import(/* webpackPrefetch: true */ '@sb/compositions/Correlation/Correlation')
 )
 
-import PortfolioTableTabs from '@storybook/components/PortfolioTableTabs/PortfolioTableTabs'
+import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
-import { Loading } from '@storybook/components/index'
+import { Loading } from '@sb/components/index'
 import { Mutation } from 'react-apollo'
 import { TOGGLE_BASE_COIN } from '@core/graphql/mutations/portfolio/toggleBaseCoin'
 

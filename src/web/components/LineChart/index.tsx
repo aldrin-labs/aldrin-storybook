@@ -17,8 +17,8 @@ import {
   ContainerForCrossHairValues,
   StyledDiscreteColorLegend,
 } from './LineChart.styles'
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
-import { LegendContainer } from '@storybook/styles/cssUtils'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
+import { LegendContainer } from '@sb/styles/cssUtils'
 
 const axisStyle = {
   ticks: {

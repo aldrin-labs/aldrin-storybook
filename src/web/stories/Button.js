@@ -11,7 +11,7 @@ storiesOf('Button', module)
   .addDecorator(backgrounds)
   .add(
     'Button',
-    withInfo()(() => 
+    withInfo()(() =>
       <Button
         title={text('Title', 'Button')}
         active={boolean('Active', true)}

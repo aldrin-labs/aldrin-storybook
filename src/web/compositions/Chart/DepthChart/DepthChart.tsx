@@ -17,11 +17,11 @@ import {
 } from '@material-ui/core'
 import { red, green } from '@material-ui/core/colors'
 
-import { Loading } from '@storybook/components/Loading/Loading'
+import { Loading } from '@sb/components/Loading/Loading'
 import { abbrNum } from '../DepthChart/depthChartUtil'
-import { hexToRgbAWithOpacity } from '@storybook/styles/helpers'
+import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import { IDepthChartProps, IDepthChartState } from './DepthChart.types'
-import ComingSoon from '@storybook/components/ComingSoon'
+import ComingSoon from '@sb/components/ComingSoon'
 
 class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
   state = {

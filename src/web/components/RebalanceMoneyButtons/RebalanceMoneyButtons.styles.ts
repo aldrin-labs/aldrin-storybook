@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Button, CardContent } from '@material-ui/core'
-import { CardHeader } from '@storybook/components/index'
+import { CardHeader } from '@sb/components/index'
 
 export {
   ButtonsInnerWrapper,

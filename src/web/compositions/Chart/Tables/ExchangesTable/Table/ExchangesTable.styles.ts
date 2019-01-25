@@ -6,7 +6,7 @@ import {
   HeadCell,
   FullWidthBlock,
   Cell,
-} from '@storybook/components/OldTable/Table'
+} from '@sb/components/OldTable/Table'
 
 export const Icon = styled(FaCircle)`
   font-size: 0.5rem;

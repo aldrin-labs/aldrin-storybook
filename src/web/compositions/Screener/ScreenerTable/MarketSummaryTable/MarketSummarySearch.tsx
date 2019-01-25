@@ -4,7 +4,7 @@ import SelectReact, { components } from 'react-select'
 import { IProps, IState } from '../../ScreenerSearch/ScreenerSearch.types'
 import { data } from '../../Selector/selectsData'
 import dropDownIcon from '@icons/baseline-arrow_drop_down.svg'
-import SvgIcon from '@storybook/components/SvgIcon/'
+import SvgIcon from '@sb/components/SvgIcon/'
 
 // TODO: Update types
 

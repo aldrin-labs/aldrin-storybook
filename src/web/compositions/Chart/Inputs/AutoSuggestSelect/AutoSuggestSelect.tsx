@@ -6,8 +6,8 @@ import { createFilter } from 'react-select'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 import * as actions from '@core/redux/chart/actions'
 import QueryRenderer from '@core/components/QueryRenderer'
-import { Loading } from '@storybook/components/Loading/Loading'
-import TextInputLoader from '@storybook/components/Placeholders/TextInputLoader'
+import { Loading } from '@sb/components/Loading/Loading'
+import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 

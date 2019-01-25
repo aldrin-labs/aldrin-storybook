@@ -1,6 +1,6 @@
 import { Grid, Card } from '@material-ui/core'
 import styled from 'styled-components'
-import { CSS_CONFIG } from '@storybook/config/cssConfig'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const GridContainer = styled(Grid)`
   && {

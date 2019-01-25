@@ -8,9 +8,9 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
 import { Nav } from './NavBar.styles'
-import Feedback from '@storybook/components/Feedback'
+import Feedback from '@sb/components/Feedback'
 import styled from 'styled-components'
-import Logo from '@storybook/components/Logo/Logo'
+import Logo from '@sb/components/Logo/Logo'
 
 export interface Props extends WithTheme {
   $hide?: boolean

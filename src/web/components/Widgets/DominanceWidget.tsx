@@ -1,6 +1,6 @@
 import * as React from 'react'
-import Widget from '@storybook/components/Widget'
-import DominanceChart from '@storybook/components/DominanceChart'
+import Widget from '@sb/components/Widget'
+import DominanceChart from '@sb/components/DominanceChart'
 import bubble from '@icons/bubble.svg'
 
 export default class DominanceWidget extends React.Component {

@@ -9,10 +9,10 @@ import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMai
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 
-import { portfolioMainSteps } from '@storybook/config/joyrideSteps'
+import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import * as actions from '@core/redux/user/actions'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import Template from '@storybook/components/Template/Template'
+import Template from '@sb/components/Template/Template'
 
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {

@@ -6,7 +6,7 @@ import { Theme } from '@material-ui/core'
 import {
   TableWithSort,
   addMainSymbol,
-} from '@storybook/components/index'
+} from '@sb/components/index'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import {

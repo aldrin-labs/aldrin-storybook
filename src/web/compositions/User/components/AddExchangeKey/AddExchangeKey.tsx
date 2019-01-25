@@ -15,7 +15,7 @@ import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
 
 
-import SelectExchangeList from '@storybook/components/SelectExchangeList/SelectExchangeList'
+import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 

@@ -4,7 +4,7 @@ import { Card, withStyles, Theme } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-import { customAquaScrollBar } from '@storybook/styles/cssUtils'
+import { customAquaScrollBar } from '@sb/styles/cssUtils'
 
 export {
   AddStyled,

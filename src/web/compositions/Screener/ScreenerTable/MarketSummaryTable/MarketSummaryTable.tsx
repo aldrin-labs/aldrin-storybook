@@ -7,16 +7,16 @@ import {
   IMarketSummaryTableData,
 } from './MarketSummaryTable.types'
 import sortIcon from '@icons/arrow.svg'
-import SvgIcon from '@storybook/components/SvgIcon/'
+import SvgIcon from '@sb/components/SvgIcon/'
 import { tableData } from './mocks'
 import {
   onSortTableFull,
   getArrayContainsOnlyOnePropertyType,
   combineDataToSelect,
 } from '@core/utils/PortfolioTableUtils'
-import { customAquaScrollBar } from '@storybook/styles/cssUtils'
+import { customAquaScrollBar } from '@sb/styles/cssUtils'
 import MarketSummarySearch from './MarketSummarySearch'
-import { Icon } from '@storybook/styles/cssUtils'
+import { Icon } from '@sb/styles/cssUtils'
 
 
 // TODO: Think about this

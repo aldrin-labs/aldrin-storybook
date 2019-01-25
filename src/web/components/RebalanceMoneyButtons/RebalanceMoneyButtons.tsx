@@ -13,7 +13,7 @@ import {
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 import { IRow } from '@core/types/PortfolioTypes'
-import RebalanceActionButtons from '@storybook/components/RebalanceActionButtons/RebalanceActionButtons'
+import RebalanceActionButtons from '@sb/components/RebalanceActionButtons/RebalanceActionButtons'
 import { Card } from '@material-ui/core'
 
 export class RebalanceMoneyButtons extends React.Component<IProps> {

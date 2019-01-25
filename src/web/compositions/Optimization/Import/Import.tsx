@@ -14,7 +14,7 @@ import { OPTIMIZE_PORTFOLIO } from '@core/graphql/queries/portfolio/optimization
 import { sliceCoinName } from '@core/utils/PortfolioTableUtils'
 import { systemError } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
-import { BarChart, SwitchButtons } from '@storybook/components/index'
+import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
 import {
   InnerChartContainer,

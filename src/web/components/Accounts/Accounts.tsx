@@ -11,8 +11,8 @@ import {
   AccountName,
   AccountsList,
   AccountsListItem,
-} from '@storybook/styles/selectorSharedStyles'
-import { TypographyFullWidth } from '@storybook/styles/cssUtils'
+} from '@sb/styles/selectorSharedStyles'
+import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 export default class Accounts extends React.PureComponent<IProps> {
   render() {

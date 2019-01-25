@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import ReactSelectComponent from '@storybook/components/ReactSelectComponent'
+import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 
 export const SelectR = styled(ReactSelectComponent)`
   width: 100%;

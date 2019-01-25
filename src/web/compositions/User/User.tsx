@@ -10,8 +10,8 @@ import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
 import { MASTER_BUILD } from '@core/utils/config'
 import { updateBinanceWarning, toggleMocks } from '@core/redux/user/actions'
 
-import ComingSoon from '@storybook/components/ComingSoon'
-import { CardHeader } from '@storybook/components/index'
+import ComingSoon from '@sb/components/ComingSoon'
+import { CardHeader } from '@sb/components/index'
 
 import {
   KeysList,

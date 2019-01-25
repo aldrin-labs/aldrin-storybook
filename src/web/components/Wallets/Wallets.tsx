@@ -6,7 +6,7 @@ import {
   AccountName,
   AccountsList,
   AccountsListItem,
-} from '@storybook/styles/selectorSharedStyles'
+} from '@sb/styles/selectorSharedStyles'
 
 export default class Wallets extends React.PureComponent<IProps> {
   render() {

@@ -1,11 +1,11 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import Button from '@storybook/components/Elements/Button'
-import AreaChart from '@storybook/components/AreaChart'
-import Widget from '@storybook/components/Widget'
+import Button from '@sb/components/Elements/Button'
+import AreaChart from '@sb/components/AreaChart'
+import Widget from '@sb/components/Widget'
 import { intervalsData } from './marketCapMocks'
-import { yearData } from '@storybook/mocks/chartMocks'
+import { yearData } from '@sb/mocks/chartMocks'
 
 export const intervals = ['YTD', '1D', '7D', '1M', '1Y']
 

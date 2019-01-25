@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { searchSupportedNetworksQuery } from '@core/graphql/queries/user/searchSupportedNetworksQuery'
 import QueryRenderer from '@core/components/QueryRenderer/index'
-import { SelectR } from '@storybook/styles/cssUtils'
+import { SelectR } from '@sb/styles/cssUtils'
 
 const SelectWalletList = ({ data, ...otherPropsForSelect }) => {
   // console.log(otherPropsForSelect, 'this props in wallet')
