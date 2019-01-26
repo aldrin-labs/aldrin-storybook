@@ -11,6 +11,7 @@ module.exports = (baseConfig, env, ...rest) => {
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {
+        '@storage': path.join(__dirname, '..', 'src', 'core', 'src', 'mocks'),
         '@core': path.join(__dirname, '..', 'src', 'core', 'src'),
         '@sb': path.join(__dirname, '..', 'src', `${platform}`),
         '@components': path.join(__dirname, '..', 'src', `${platform}`, 'components'),

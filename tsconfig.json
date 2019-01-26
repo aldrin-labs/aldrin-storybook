@@ -27,6 +27,9 @@
       "@config/*": ["src/web/config/*"],
       "@utils/*": ["src/utils/*"],
       "@icons/*": ["src/icons/*"],
+      "@storage": [
+        "src/core/src/mocks/storage"
+      ]
     },
     "plugins": [
       {
