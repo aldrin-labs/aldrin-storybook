@@ -1,4 +1,5 @@
 import React, { Component, lazy, Suspense, memo } from 'react'
+import { withTheme } from '@material-ui/styles'
 
 import { IState, IProps } from './PortfolioTable.types'
 
@@ -25,7 +26,7 @@ const MemoizedTab = memo(
   (props: any) => <>{props.children}</>,
   (prevProps: any, nextProps: any) => nextProps.tab === prevProps.tab
 )
-export class PortfolioTable extends Component<IProps, IState> {
+class PortfolioTable extends Component<IProps, IState> {
   state: IState = {
     isShownChart: true,
     tab: 'main',
@@ -133,3 +134,5 @@ export class PortfolioTable extends Component<IProps, IState> {
     )
   }
 }
+
+export default withTheme()(PortfolioTable)
