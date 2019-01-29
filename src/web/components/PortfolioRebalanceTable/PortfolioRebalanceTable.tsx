@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grow, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
 import { Table as ImTable, TableWithSort, Loading } from '@sb/components'
@@ -66,12 +66,10 @@ const PortfolioRebalanceTable = ({
           title={
             <TitleContainer>
               <TitleItem>Rebalanced Portfolio</TitleItem>
-              <Grow in={!!timestampSnapshot}>
                 <TitleItem>
-                  {`Snapshot time:${timestampSnapshot &&
+                  {`Snapshot time: ${timestampSnapshot &&
                     timestampSnapshot.format('MM-DD-YYYY h:mm:ss A')}`}
                 </TitleItem>
-              </Grow>
             </TitleContainer>
           }
         />
