@@ -29,8 +29,10 @@ const PortfolioRebalanceTable = ({
   onNewSnapshot,
   tableData,
 }: IProps) => {
-
-  const { columnNames, data: { body, footer } } = tableData
+  const {
+    columnNames,
+    data: { body, footer },
+  } = tableData
 
   const Table = isEditModeEnabled ? ImTable : TableWithSort
 
@@ -66,10 +68,12 @@ const PortfolioRebalanceTable = ({
           title={
             <TitleContainer>
               <TitleItem>Rebalanced Portfolio</TitleItem>
-                <TitleItem>
-                  {`Snapshot time: ${timestampSnapshot &&
-                    timestampSnapshot.format('MM-DD-YYYY h:mm:ss A')}`}
-                </TitleItem>
+              <TitleItem>
+                {timestampSnapshot &&
+                  `Snapshot time: ${timestampSnapshot.format(
+                    'MM-DD-YYYY h:mm:ss A'
+                  )}`}
+              </TitleItem>
             </TitleContainer>
           }
         />
