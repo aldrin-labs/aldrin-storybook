@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "start": "yarn run storybook",
-    "storybook": "PLATFORM=web start-storybook -p 6006",
+    "storybook": "PLATFORM=web start-storybook -p 3000",
     "fetch-local-core": "rsync -azP --exclude=.git ../core ./src",
     "native-storybook": "REACT_NATIVE=1 start-storybook -p 6006",
     "build-storybook": "PLATFORM=web npm run submodule && PLATFORM=web build-storybook",
