@@ -156,6 +156,7 @@
     "@types/storybook__react": "^4.0.0",
     "@types/styled-components": "^4.0.3",
     "@types/yup": "^0.24.4",
+    "auth0-js": "^9.8.2",
     "awesome-typescript-loader": "^5.2.1",
     "babel-eslint": "^8.2.2",
     "babel-plugin-graphql-tag": "^1.6.0",
