@@ -49,6 +49,10 @@ import {
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
+
+import { graphql } from 'react-apollo'
+import { getCharts } from '@core/graphql/queries/ui/getCharts'
+
 class Chart extends React.Component<IProps, IState> {
   state = {
     view: 'default',
@@ -387,9 +391,13 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { view, currencyPair, activeExchange, theme } = this.props
+    const { view, currencyPair, activeExchange, theme, getCharts } = this.props
     const { activeChart } = this.state
     const { palette } = theme
+
+    const { ui: { charts } } = getCharts
+
+    console.log('charts', charts)
 
     if (!currencyPair) {
       return
@@ -460,11 +468,11 @@ const mapDispatchToProps = (dispatch: any) => ({
 const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
-export default withAuth(
+export default   graphql(getCharts, { name: 'getCharts' })(withAuth(
   withErrorFallback(
     connect(
       mapStateToProps,
       mapDispatchToProps
     )(ThemedChart)
   )
-)
+))
