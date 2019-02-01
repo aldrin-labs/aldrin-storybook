@@ -32,6 +32,7 @@ class ReactSelectComponent extends Component<IProps> {
       noOptionsMessageStyles,
       menuPortalStyles,
       forwardedRef,
+      closeMenuOnSelect,
       ...otherProps
     } = this.props
 
@@ -203,6 +204,7 @@ class ReactSelectComponent extends Component<IProps> {
 
     return (
       <SelectReact
+        closeMenuOnSelect={closeMenuOnSelect}
         ref={forwardedRef}
         className="custom-select-box"
         classNamePrefix="custom-select-box"

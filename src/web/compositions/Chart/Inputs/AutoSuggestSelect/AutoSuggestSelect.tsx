@@ -47,6 +47,7 @@ class IntegrationReactSelect extends React.PureComponent {
   }
   render() {
     const {
+      view,
       value,
       data,
       theme: {
@@ -92,6 +93,7 @@ class IntegrationReactSelect extends React.PureComponent {
           fullWidth={true}
           options={suggestions || []}
           onChange={this.handleChange}
+          closeMenuOnSelect={view === 'default'}
         />
       </ExchangePair>
     )
