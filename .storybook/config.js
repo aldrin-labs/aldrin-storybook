@@ -4,16 +4,23 @@ import { configure, addDecorator } from '@storybook/react'
 // import { setOptions } from '@storybook/addon-options'
 import { withOptions } from '@storybook/addon-options';
 import { withKnobs } from '@storybook/addon-knobs'
-import { withInfo } from '@storybook/addon-info'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 
 import { customThemes } from './customTheme'
 
+import { getToken } from '@core/utils/autoLogin'
+import storage from '@storage'
+
+async function login() {
+  const authResult = await getToken()
+  await storage.setItem('token', authResult.idToken)
+}
+
 function loadStories() {
-  // automatically import all story js files that end with *.stories.tsx
-  const req = require.context('../src/web/stories', true, /.js$/);
-  req.keys().forEach(filename => req(filename));
+  // automatically import all story js files that end with *.stories.tsx  
+  const req = require.context('../src/web/stories', true, /.js$/)
+  req.keys().forEach(filename => req(filename))
 }
 
 // export let StorybookUI = null
@@ -40,6 +47,7 @@ if (process.env.REACT_NATIVE) {
     <ThemeProvider theme={customThemes.dark}>{story()}</ThemeProvider>
   ))
   addDecorator((story) => <div style={{ margin: 20 }}>{story()}</div>)
+//  addDecorator(withToken)
   addDecorator(withKnobs)
 
   addDecorator(withOptions({
@@ -48,4 +56,6 @@ if (process.env.REACT_NATIVE) {
   }))
 }
 
-configure(loadStories, module);
+login().then(() => {
+  configure(loadStories, module)
+})
