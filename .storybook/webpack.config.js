@@ -8,6 +8,7 @@ module.exports = (baseConfig, env, ...rest) => {
   const platform = process.env.PLATFORM
 
   const config = {
+    devtool: 'eval-cheap-module-source-map',
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       alias: {

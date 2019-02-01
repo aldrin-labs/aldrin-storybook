@@ -13,13 +13,12 @@ import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
 import { object } from '@storybook/addon-knobs'
 
-import PortfolioChart from '@components/PortfolioChart'
-import { PortfolioTable } from '../compositions/Portfolio/compositions/PortfolioTable'
+import PortfolioTable from '../compositions/Portfolio/compositions/PortfolioTable/PortfolioTable'
 import { App } from '../compositions/App/App'
 import ThemeWrapper from '../compositions/App/ThemeWrapper/ThemeWrapper'
 
 import { client } from '@core/graphql/apolloClient'
-import { persistor, store } from '../../../../utils/configureStore'
+import { persistor, store } from '../mocks/configureStore'
 import createHistory from 'history/createBrowserHistory'
 
 const history = createHistory()
@@ -31,11 +30,8 @@ storiesOf('Rebalance', module).add('Rebalance', () => (
     <IntlProvider locale="en">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ConnectedRouter history={history}>
               <ErrorBoundary>
                 <Suspense fallback={<Loading centerAligned />}>
-                  <Switch>
-                    <Route>
                       <ThemeWrapper>
                         <PortfolioTable
                           tab={'rebalance'}
@@ -45,11 +41,8 @@ storiesOf('Rebalance', module).add('Rebalance', () => (
                           filterValueSmallerThenPercentage={-100}
                         />
                       </ThemeWrapper>
-                    </Route>
-                  </Switch>
                 </Suspense>
               </ErrorBoundary>
-          </ConnectedRouter>
         </PersistGate>
       </Provider>
     </IntlProvider>
@@ -66,3 +59,13 @@ storiesOf('Rebalance', module).add('Rebalance', () => (
 // />
 // </App>
 // </Route>
+
+// <ThemeWrapper>
+// <PortfolioTable
+// tab={'rebalance'}
+// baseCoin={`USDT`}
+// showTable={true}
+// isUSDCurrently={true}
+// filterValueSmallerThenPercentage={-100}
+// />
+// </ThemeWrapper>
