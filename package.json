@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "start": "yarn run storybook",
-    "storybook": "PLATFORM=web start-storybook -p 6006",
+    "storybook": "PLATFORM=web start-storybook -p 3000",
     "fetch-local-core": "rsync -azP --exclude=.git ../core ./src",
     "native-storybook": "REACT_NATIVE=1 start-storybook -p 6006",
     "build-storybook": "PLATFORM=web npm run submodule && PLATFORM=web build-storybook",
@@ -156,6 +156,7 @@
     "@types/storybook__react": "^4.0.0",
     "@types/styled-components": "^4.0.3",
     "@types/yup": "^0.24.4",
+    "auth0-js": "^9.8.2",
     "awesome-typescript-loader": "^5.2.1",
     "babel-eslint": "^8.2.2",
     "babel-plugin-graphql-tag": "^1.6.0",
