@@ -15,7 +15,20 @@ type T = { value: string; data: string }
 
 let suggestions: T[] = []
 
-class IntegrationReactSelect extends React.PureComponent {
+class IntegrationReactSelect extends React.Component {
+
+  state = {
+    isClosed: true,
+  }
+
+  onMenuOpen = () => {
+    this.setState({ isClosed: false })
+  }
+
+  onMenuClose = () => {
+    this.setState({ isClosed: true })
+  }
+
   handleChange = ({ value }) => {
     const {
       selectCurrencies,
@@ -89,10 +102,12 @@ class IntegrationReactSelect extends React.PureComponent {
           style={{ width: '100%' }}
           filterOption={createFilter(filterConfig)}
           placeholder="Add chart"
-          value={value && { value, label: value }}
+          value={this.state.isClosed && value && { value, label: value }}
           fullWidth={true}
           options={suggestions || []}
           onChange={this.handleChange}
+          onMenuOpen={this.onMenuOpen}
+          onMenuClose={this.onMenuClose}
           closeMenuOnSelect={view === 'default'}
         />
       </ExchangePair>
