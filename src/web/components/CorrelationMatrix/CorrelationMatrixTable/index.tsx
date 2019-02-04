@@ -2,6 +2,7 @@ import React, { PureComponent, memo } from 'react'
 import styled from 'styled-components'
 import FaAngleRight from '@material-ui/icons/ChevronRight'
 import FaAngleDown from '@material-ui/icons/ExpandMore'
+import * as UTILS from '@core/utils/PortfolioCorrelationUtils'
 
 import { getColorDarken } from './utils'
 import {
@@ -12,6 +13,7 @@ import {
   ICellProps,
 } from './types'
 import debounce from 'lodash-es/debounce'
+import { DiscreteColorLegend } from "react-vis"
 
 const MemoizedRow = memo(
   ({
@@ -92,8 +94,9 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
     const { isFullscreenEnabled, data, colors, theme } = this.props
     const { activeRow, activeColumn } = this.state
 
-    const cols = data.values
+    const cols = UTILS.reduceCorrelationData(data.values)
     const rows = data.header
+
 
     return (
       <GridTable
@@ -101,7 +104,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
         isFullscreenEnabled={isFullscreenEnabled}
         onMouseLeave={this.onMouseLeave}
         rows={cols.length + 1}
-        columns={cols[0].length + 1}
+        columns={cols.length + 1}
       >
         {/* first empty cell */}
         <HeadCell
@@ -156,6 +159,13 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
           </HeadCell>
         ))}
 
+        <StyledDiscreteColorLegend
+          fontFamily={theme.typography.fontFamily}
+          textColor={theme.palette.text.primary}
+          items={['Highly correlated', 'Negatively correlated']}
+          colors={[theme.palette.green.main, theme.palette.red.main]}
+        />
+
         {/* content */}
         {cols.map((col, ind) => (
           <MemoizedRow
@@ -197,6 +207,9 @@ const StyledArrowDown = styled(FaAngleDown)`
 `
 
 const GridTable = styled.div`
+  grid-row-start: 1;
+  grid-row: 1 / span 3;
+
   overflow: auto;
   width: ${(props: IGridTableProps) =>
     props.isFullscreenEnabled ? 'auto' : '100%'};
@@ -295,5 +308,25 @@ const HeadCell = styled(Cell)`
   background: ${(props: { background: string; sticky: boolean }) =>
     props.background};
 `
+
+export const StyledDiscreteColorLegend = styled(DiscreteColorLegend)`
+  position: absolute;
+  z-index: 108;
+  top: 30%;
+  right: 5%;
+
+
+  font-family: ${(props: { fontFamily: string; textColor: string }) =>
+  props.fontFamily};
+  & .rv-discrete-color-legend-item {
+    color: ${(props: { fontFamily: string; textColor: string }) =>
+  props.textColor};
+  }
+  & .rv-discrete-color-legend-item__color {
+    height: 3px;
+    width: 30px;
+  }
+`
+
 
 export default CorrelationMatrixTable

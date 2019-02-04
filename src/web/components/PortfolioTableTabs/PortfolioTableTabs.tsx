@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
+
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'
 import Industry from '@material-ui/icons/DonutLarge'
@@ -15,7 +17,11 @@ import {
   DividerWithMargin,
   Marker,
   Tab,
+  SAddIcon,
 } from './PortfolioTableTabs.styles'
+
+const MyLinkToUserSettings = (props: object) => <Link to="/user" style={{ textDecoration: 'none' }} {...props}>{props.children} </Link>
+
 
 class PortfolioTableTabs extends React.Component<IProps> {
   onChangeTab = (tab: string) => {
@@ -42,14 +48,15 @@ class PortfolioTableTabs extends React.Component<IProps> {
           primary,
           type,
           secondary: { main },
+          background,
         },
       },
     } = this.props
     const switchUSDBTC = tab === 'main'
-    const background = type === 'dark' ? primary.light : primary[100]
+    const backgroundColor = type === 'dark' ? primary.light : primary[100]
 
     return (
-      <Container background={background} elevation={0}>
+      <Container background={backgroundColor} elevation={0}>
         <BarTab
           id="main_tab_button"
           thisTab="main"
@@ -113,6 +120,15 @@ class PortfolioTableTabs extends React.Component<IProps> {
             Accounts
           </Typography>
         </BarContainer>
+        <MyLinkToUserSettings>
+        <BarTab
+          mainColor={main}
+          thisTab={`user`}
+          thisTabName={`Add key`}
+        >
+          <SAddIcon />
+        </BarTab>
+        </MyLinkToUserSettings >
         <DividerWithMargin />
         <Fade in={switchUSDBTC} mountOnEnter unmountOnExit>
           <>

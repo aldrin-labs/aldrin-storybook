@@ -9,6 +9,25 @@ export const HeatMapMocks = [
 ]
 
 const mocks = {
+  '2': {
+    unique_id_for_redis: 1336,
+    status: 0,
+    header: ['ETH', 'BTC'],
+    values: [
+      [1],
+      [-0.01, 1],
+    ],
+  },
+  '3': {
+    unique_id_for_redis: 1336,
+    status: 0,
+    header: ['ETH', 'BTC'],
+    values: [
+      [1, 0.2, 0.3],
+      [0.7, 1, 0.4],
+      [-0.01, -0.7, 1],
+    ],
+  },
   '5': {
     unique_id_for_redis: 1336,
     status: 0,
@@ -280,4 +299,4 @@ const mocks = {
   },
 }
 
-export const CorrelationMatrixMockData = mocks['15']
+export const CorrelationMatrixMockData = mocks['3']

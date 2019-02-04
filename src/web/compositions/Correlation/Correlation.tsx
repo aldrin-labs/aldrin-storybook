@@ -164,3 +164,4 @@ const storeComponent = connect(
 )(CorrelationWrapper)
 
 export default storeComponent
+
