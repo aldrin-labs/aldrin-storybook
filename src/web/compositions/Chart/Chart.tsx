@@ -51,7 +51,10 @@ import { IProps, IState } from './Chart.types'
 
 
 import { graphql } from 'react-apollo'
-import { getCharts } from '@core/graphql/queries/ui/getCharts'
+
+import { compose } from 'recompose'
+import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
 
 class Chart extends React.Component<IProps, IState> {
   state = {
@@ -391,11 +394,17 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { view, currencyPair, activeExchange, theme, getCharts } = this.props
+    const { view, currencyPair, activeExchange, theme, getCharts, addChartMutation } = this.props
     const { activeChart } = this.state
     const { palette } = theme
 
     const { ui: { charts } } = getCharts
+
+    const variables = {
+      pair: 'aaa',
+    }
+
+//    addChartMutation({ variables })
 
     console.log('charts', charts)
 
@@ -468,7 +477,10 @@ const mapDispatchToProps = (dispatch: any) => ({
 const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
-export default   graphql(getCharts, { name: 'getCharts' })(withAuth(
+export default compose(
+    graphql(GET_CHARTS, { name: 'getCharts' }),
+    graphql(ADD_CHART, { name: 'addChartMutation' })
+  )(withAuth(
   withErrorFallback(
     connect(
       mapStateToProps,
