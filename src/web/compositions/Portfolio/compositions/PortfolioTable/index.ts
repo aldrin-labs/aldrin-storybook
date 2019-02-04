@@ -1,1 +1,1 @@
-export { PortfolioTable } from './PortfolioTable'
+export { default as PortfolioTable } from './PortfolioTable'
