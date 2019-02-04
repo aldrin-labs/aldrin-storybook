@@ -112,6 +112,9 @@ export class CoinMarket extends React.Component<Props, State> {
           Symbol: value.symbol,
           PriceUSD: {
             contentToSort: value.price_usd || 0,
+            style: {
+              color: '#ff8100',
+            },
             render: addMainSymbol(
               typeof value.price_usd === 'number'
                 ? roundAndFormatNumber(value.price_usd, 2)
@@ -151,6 +154,9 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           Volume24h: {
             contentToSort: value.volume_usd_24h || 0,
+            style: {
+              color: '#ff8100',
+            },
             render: addMainSymbol(
               typeof value.volume_usd_24h === 'number'
                 ? roundAndFormatNumber(value.volume_usd_24h, 2)
