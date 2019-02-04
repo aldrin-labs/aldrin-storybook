@@ -72,7 +72,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                     gridTemplateColumns: isFullscreenEnabled
                       ? '1fr'
                       : '15% 70% 15%',
-                    gridTemplateRows: '100%',
+                    gridTemplateRows: '1fr 1fr 1fr 0.2fr',
                     alignItems: 'center',
                   }
                 : {
@@ -85,24 +85,24 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             className="full-screenable-node"
           >
             {isFullscreenEnabled ? null : (
-              <ButtonsWrapper id="ButtonsWrapper">
-                <Typography noWrap align="center" variant="h6">
-                  Time Range
-                </Typography>
-                <SelectTimeRange
-                  style={{
-                    height: 'auto',
-                    maxWidth: '10rem',
-                    margin: '2rem 0',
-                  }}
-                  setPeriodToStore={setCorrelationPeriod}
-                  period={period}
-                />
-                <Typography noWrap={true} align="center" variant="body1">
-                  {formatDate(startDate, 'MM/DD/YYYY')}–
-                  {formatDate(endDate, 'MM/DD/YYYY')}
-                </Typography>
-              </ButtonsWrapper>
+                <ButtonsWrapper id="ButtonsWrapper" style={{ gridRowStart: 1 }}>
+                  <Typography noWrap align="center" variant="h6">
+                    Time Range
+                  </Typography>
+                  <SelectTimeRange
+                    style={{
+                      height: 'auto',
+                      maxWidth: '10rem',
+                      margin: '2rem 0',
+                    }}
+                    setPeriodToStore={setCorrelationPeriod}
+                    period={period}
+                  />
+                  <Typography noWrap={true} align="center" variant="body1">
+                    {formatDate(startDate, 'MM/DD/YYYY')}-
+                    {formatDate(endDate, 'MM/DD/YYYY')}
+                  </Typography>
+                </ButtonsWrapper>
             )}
 
             {data.error ? (
@@ -134,6 +134,13 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                 <FullScreenIcon />
               </StyledFullscreenButton>
             )}
+            {
+              isFullscreenEnabled ? null : (
+                <Typography noWrap={true} align="center" variant="body1" style={{gridColumn: '1 / span 3', gridRowStart: 4}}>
+                  Correlation between returns of your assets
+                </Typography>
+              )
+            }
           </FullscreenNode>
         </FullScreen>
       </ScrolledWrapper>
@@ -151,6 +158,9 @@ const ButtonsWrapper = styled.div`
 `
 
 const StyledFullscreenButton = styled(Button)`
+  grid-row-start: 2;
+  grid-column-start: 3;
+
   z-index: 100;
 
   width: 25%;
