@@ -13,11 +13,21 @@ import { IProps, IChart } from './OnlyCharts.types'
 import { multiChartsSteps } from '@sb/config/joyrideSteps'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
+import { graphql } from 'react-apollo'
+
+import { compose } from 'recompose'
+import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
+
+
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
-    const { charts, addChart, mainPair } = this.props
+    const { addChart, mainPair, getCharts, addChartMutation } = this.props
+    const { ui: { charts } } = getCharts
     if (charts.length === 0) {
-      addChart(mainPair)
+      addChartMutation({ variables: {
+        pair: mainPair,
+      } })
     }
   }
 
@@ -32,14 +42,16 @@ class OnlyCharts extends Component<IProps> {
 
   render() {
     const {
-      charts,
       removeChart,
       openedWarning,
       removeWarningMessage,
       theme,
       view,
       demoMode,
+      getCharts,
     } = this.props
+
+    const { ui: { charts } } = getCharts
 
     return (
       <>
@@ -158,9 +170,12 @@ const mapDispatchToProps = (dispatch: any) => ({
   hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 
-export default withErrorFallback(
+export default compose(
+  graphql(GET_CHARTS, { name: 'getCharts' }),
+  graphql(ADD_CHART, { name: 'addChartMutation' })
+)(withErrorFallback(
   connect(
     mapStateToProps,
     mapDispatchToProps
   )(OnlyCharts)
-)
+))

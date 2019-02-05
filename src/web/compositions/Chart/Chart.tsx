@@ -368,8 +368,18 @@ class Chart extends React.Component<IProps, IState> {
   )
 
   renderToggler = () => {
-    const { toggleView, view, isNoCharts, currencyPair, addChart } = this.props
+    const {
+      toggleView,
+      view,
+      isNoCharts,
+      currencyPair,
+      addChart,
+      addChartMutation,
+      getCharts,
+    } = this.props
 
+    const { ui: { charts } } = getCharts
+    console.log('charts', charts)
     const defaultView = view === 'default'
 
     return (
@@ -383,9 +393,16 @@ class Chart extends React.Component<IProps, IState> {
           variant="extendedFab"
           color="secondary"
           onClick={() => {
+            console.log('onClick')
             toggleView(defaultView ? 'onlyCharts' : 'default')
-            if (defaultView && isNoCharts) addChart(currencyPair)
-          }}
+            if (defaultView && charts === []) {
+              console.log('add charts')
+              addChart(currencyPair)
+              addChartMutation({ variables: {
+                pair: currencyPair,
+              } })
+            }}
+          }
         >
           {defaultView ? 'Multi Charts' : ' Single Chart'}
         </Button>
@@ -394,23 +411,14 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { view, currencyPair, activeExchange, theme, getCharts, addChartMutation } = this.props
+    const { view, currencyPair, activeExchange, theme } = this.props
     const { activeChart } = this.state
     const { palette } = theme
-
-    const { ui: { charts } } = getCharts
-
-    const variables = {
-      pair: 'aaa',
-    }
-
-//    addChartMutation({ variables })
-
-    console.log('charts', charts)
 
     if (!currencyPair) {
       return
     }
+
     const [base, quote] = currencyPair.split('_')
     const toggler = this.renderToggler()
 

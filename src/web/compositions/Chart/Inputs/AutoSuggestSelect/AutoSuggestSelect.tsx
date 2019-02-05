@@ -11,6 +11,14 @@ import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 
+import { graphql } from 'react-apollo'
+
+import { compose } from 'recompose'
+import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
+import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
+
+
+
 type T = { value: string; data: string }
 
 let suggestions: T[] = []
@@ -19,12 +27,14 @@ class IntegrationReactSelect extends React.PureComponent {
   handleChange = ({ value }) => {
     const {
       selectCurrencies,
-      charts,
+      getCharts,
       view,
       addChart,
       openWarningMessage,
       removeWarningMessage,
+      addChartMutation,
     } = this.props
+    const { ui: { charts } } = getCharts
 
     if (!value) {
       return
@@ -35,7 +45,9 @@ class IntegrationReactSelect extends React.PureComponent {
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
-      addChart(value)
+      addChartMutation({ variables: {
+        pair: value,
+      } })
 
       return
     } else {
@@ -127,9 +139,12 @@ const mapDispatchToProps = (dispatch: any) => ({
   addChart: (baseQuote: string) => dispatch(actions.addChart(baseQuote)),
 })
 
-export default withTheme()(
+export default compose(
+  graphql(GET_CHARTS, { name: 'getCharts' }),
+  graphql(ADD_CHART, { name: 'addChartMutation' })
+  )(withTheme()(
   connect(
     mapStateToProps,
     mapDispatchToProps
   )(queryRender)
-)
+))
