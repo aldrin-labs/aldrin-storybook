@@ -41,7 +41,7 @@ const MemoizedRow = memo(
         return (
           <Cell
             fontFamily={theme.typography.fontFamily}
-            cols={cols[0].length}
+            cols={cols.length}
             isFullscreenEnabled={isFullscreenEnabled}
             textColor={textColor}
             onMouseOver={() => {
@@ -118,7 +118,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
           <HeadCell
             background={theme.palette.background.paper}
             fontFamily={theme.typography.fontFamily}
-            cols={cols[0].length}
+            cols={cols.length}
             style={{ top: 0 }}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
@@ -141,7 +141,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
           <HeadCell
             background={theme.palette.background.paper}
             fontFamily={theme.typography.fontFamily}
-            cols={cols[0].length}
+            cols={cols.length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
             textColor={
@@ -268,7 +268,7 @@ const Cell = styled.div`
     if (!isFullscreenEnabled && cols >= 5 && cols < 10) {
       return '1.5rem'
     }
-    if (!isFullscreenEnabled && cols >= 10 && cols < 16) {
+    if (!isFullscreenEnabled && cols >= 10 && cols < 20) {
       return '0.7rem'
     }
     if (!isFullscreenEnabled) {
