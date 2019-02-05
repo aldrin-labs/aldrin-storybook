@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import Divider from '@material-ui/core/Divider'
-import AddIcon from '@material-ui/icons/Add'
 
 export const DividerWithMargin = styled(Divider)`
   margin: 0.5rem auto;
@@ -50,8 +49,4 @@ export const Tab = styled(IconButton)`
 export const BarContainer = styled.div`
   text-align: center;
   cursor: pointer;
-`
-
-export const SAddIcon = styled(AddIcon)`
-  font-size: 28px;
 `

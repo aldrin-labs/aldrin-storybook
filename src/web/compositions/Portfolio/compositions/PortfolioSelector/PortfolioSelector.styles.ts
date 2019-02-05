@@ -51,3 +51,10 @@ export const AccountsWalletsBlock = styled.div`
     }) => (isSideNavOpen ? background : hoverBackground)};
   }
 `
+
+export const AddAccountBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+`

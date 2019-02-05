@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
 
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'
@@ -17,10 +16,7 @@ import {
   DividerWithMargin,
   Marker,
   Tab,
-  SAddIcon,
 } from './PortfolioTableTabs.styles'
-
-const MyLinkToUserSettings = (props: object) => <Link to="/user" style={{ textDecoration: 'none' }} {...props}>{props.children} </Link>
 
 
 class PortfolioTableTabs extends React.Component<IProps> {
@@ -120,15 +116,6 @@ class PortfolioTableTabs extends React.Component<IProps> {
             Accounts
           </Typography>
         </BarContainer>
-        <MyLinkToUserSettings>
-        <BarTab
-          mainColor={main}
-          thisTab={`user`}
-          thisTabName={`Add key`}
-        >
-          <SAddIcon />
-        </BarTab>
-        </MyLinkToUserSettings >
         <DividerWithMargin />
         <Fade in={switchUSDBTC} mountOnEnter unmountOnExit>
           <>

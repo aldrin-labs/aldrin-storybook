@@ -1,11 +1,11 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
+
 import { withTheme } from '@material-ui/styles'
+import AddIcon from '@material-ui/icons/Add'
+import { Slide, Typography, Button } from '@material-ui/core'
 
-import { Slide, Typography } from '@material-ui/core'
 import Dropdown from '@sb/components/SimpleDropDownSelector'
-
-
-import { IProps } from './PortfolioSelector.types'
 import Accounts from '@sb/components/Accounts/Accounts'
 import Wallets from '@sb/components/Wallets/Wallets'
 import {
@@ -13,9 +13,14 @@ import {
   FilterIcon,
   FilterValues,
   Name,
+  AddAccountBlock,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import { MASTER_BUILD } from '@core/utils/config'
+import { IProps } from './PortfolioSelector.types'
+
+
+const MyLinkToUserSettings = (props: any) => <Link to="/user" style={{ textDecoration: 'none' }} {...props}>{props.children} </Link>
 
 class PortfolioSelector extends React.Component<IProps> {
   updateSettings = async (objectForMutation) => {
@@ -168,7 +173,22 @@ class PortfolioSelector extends React.Component<IProps> {
               Login to add <br /> or edit accounts
             </Typography>
           )}
-          {!MASTER_BUILD && (
+          <AddAccountBlock>
+            <MyLinkToUserSettings>
+            <Button
+              size="small"
+              style={{
+                height: 36,
+              }}
+              variant="extendedFab"
+              color="secondary"
+            >
+              <AddIcon fontSize={`small`}/>
+              Add account
+            </Button>
+            </MyLinkToUserSettings>
+          </AddAccountBlock>
+            {!MASTER_BUILD && (
             <>
               <Name color={color}>Dust</Name>
               <FilterValues>
