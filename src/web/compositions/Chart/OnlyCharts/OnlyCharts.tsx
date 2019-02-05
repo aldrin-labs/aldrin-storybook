@@ -18,6 +18,7 @@ import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
+import { REMOVE_CHART } from '@core/graphql/mutations/ui/removeChart'
 
 
 class OnlyCharts extends Component<IProps> {
@@ -40,9 +41,14 @@ class OnlyCharts extends Component<IProps> {
       this.props.hideToolTip('multiChartPage')
   }
 
+  removeChart = (index) => {
+    this.props.removeChartMutation({variables: {
+      index: index,
+    }})
+  }
+
   render() {
     const {
-      removeChart,
       openedWarning,
       removeWarningMessage,
       theme,
@@ -94,7 +100,7 @@ class OnlyCharts extends Component<IProps> {
                 <IndividualChart
                   key={chart.id}
                   theme={theme}
-                  removeChart={removeChart}
+                  removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
                   currencyPair={chart.pair}
@@ -172,7 +178,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 export default compose(
   graphql(GET_CHARTS, { name: 'getCharts' }),
-  graphql(ADD_CHART, { name: 'addChartMutation' })
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
+  graphql(REMOVE_CHART, { name: 'removeChartMutation' })
 )(withErrorFallback(
   connect(
     mapStateToProps,
