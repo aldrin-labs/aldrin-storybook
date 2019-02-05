@@ -3,27 +3,27 @@ import { History } from 'history'
 import { withTheme } from '@material-ui/styles'
 import { Theme } from '@material-ui/core'
 
-import {
-  TableWithSort,
-  addMainSymbol,
-} from '@sb/components/index'
+import { TableWithSort, addMainSymbol } from '@sb/components/index'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
+import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import withAuth from '@core/hoc/withAuth'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { CoinMarketCapQueryQuery } from './types'
-
 import {
   Container,
   GridContainer,
   TableWrapper,
   TableContainer,
+  CoinSymbolContainer,
 } from './styles'
 
-import withAuth from '@core/hoc/withAuth'
+
 
 interface Props {
   data: CoinMarketCapQueryQuery
@@ -48,6 +48,7 @@ export const rates = [
   { name: 'XRP/USD', rate: 0.709714 },
   { name: 'USD/XRP', rate: 1 },
 ]
+
 
 export class CoinMarket extends React.Component<Props, State> {
   state: State = {
@@ -98,7 +99,11 @@ export class CoinMarket extends React.Component<Props, State> {
         { id: 'PriceUSD', isNumber: true, label: 'Price USD' },
         { id: 'PriceBTC', isNumber: true, label: 'Price BTC' },
         { id: 'MarketCap', isNumber: true, label: 'Market Cap' },
-        { id: 'CirculatingSupply', isNumber: true, label: 'Circulating Supply' },
+        {
+          id: 'CirculatingSupply',
+          isNumber: true,
+          label: 'Circulating Supply',
+        },
         { id: 'Volume24h', isNumber: true, label: 'Volume 24 hr' },
         { id: 'PercentChange1h', isNumber: true, label: '%1hr' },
         { id: 'PercentChange24h', isNumber: true, label: '%24hr' },
@@ -109,7 +114,22 @@ export class CoinMarket extends React.Component<Props, State> {
           id: index,
           Number: value.rank,
           Name: value.name,
-          Symbol: value.symbol,
+          Symbol: {
+            contentToSort: value.symbol,
+            render: (
+              <CoinSymbolContainer>
+                {
+                  <SvgIcon
+                    style={{marginRight: '5px'}}
+                    width={`17px`}
+                    height={`17px`}
+                    src={importCoinIcon(value.symbol)}
+                  />
+                }
+                {value.symbol}
+              </CoinSymbolContainer>
+            ),
+          },
           PriceUSD: {
             contentToSort: value.price_usd || 0,
             style: {

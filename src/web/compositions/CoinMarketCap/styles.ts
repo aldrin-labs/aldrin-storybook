@@ -54,3 +54,7 @@ export const CalculatorWrapper = styled.div`
   margin-right: auto;
 `
 
+export const CoinSymbolContainer = styled.span`
+  display: flex;
+  align-items: center;
+`
