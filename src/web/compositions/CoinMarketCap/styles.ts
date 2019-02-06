@@ -54,3 +54,11 @@ export const CalculatorWrapper = styled.div`
   margin-right: auto;
 `
 
+export const CoinSymbolContainer = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+export const CoinMarketCapLink = styled.div`
+    ${(props: { isSupported: boolean }) => (props.isSupported ? 'font-weight: bold; text-decoration: underline; color: blue' : '')}
+`
