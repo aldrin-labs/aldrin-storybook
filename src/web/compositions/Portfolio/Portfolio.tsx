@@ -156,7 +156,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                       <PortfolioTable
                         key={activeKeys.length + activeWallets.length}
                         showTable={hasActiveKeysOrWallets}
-                        dustFilter={dustFilter || -100}
+                        dustFilter={dustFilter}
                         theme={theme}
                         baseCoin={baseCoin}
                         onToggleUSDBTC={this.onToggleUSDBTC}
