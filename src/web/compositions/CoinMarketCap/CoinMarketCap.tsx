@@ -32,7 +32,6 @@ import {
   CoinSymbolContainer,
   CoinMarketCapLink,
 } from './styles'
-import { SyntheticEvent } from 'react'
 
 interface Props {
   data: CoinMarketCapQueryQuery
@@ -57,6 +56,9 @@ export const rates = [
   { name: 'XRP/USD', rate: 0.709714 },
   { name: 'USD/XRP', rate: 1 },
 ]
+
+@withRouter
+@withTheme()
 
 export class CoinMarket extends React.Component<Props, State> {
   state: State = {
@@ -103,7 +105,7 @@ export class CoinMarket extends React.Component<Props, State> {
     this.props.history.push('/chart')
   }
 
-  getCoinSymbol = (coinSymbol: string) => {
+  wrapWithLinkToChartPage = (content: any, coinSymbol: string) => {
     const {
       marketsByExchangeQueryData: { getMarketsByExchange },
     } = this.props
@@ -114,21 +116,31 @@ export class CoinMarket extends React.Component<Props, State> {
 
     if (isSupported && coinSymbol === 'BTC') {
       return (
-        <CoinMarketCapLink isSupported={isSupported} onClick={this.handleSymbolClick.bind(this, 'BTC_USDT')}>
-          {coinSymbol}
+        <CoinMarketCapLink
+          isSupported={isSupported}
+          onClick={this.handleSymbolClick.bind(this, 'BTC_USDT')}
+        >
+          {content}
         </CoinMarketCapLink>
       )
     }
 
     if (isSupported && coinSymbol !== 'BTC') {
       return (
-        <CoinMarketCapLink isSupported={isSupported} onClick={this.handleSymbolClick.bind(this, `${coinSymbol}_BTC`)}>
-          {coinSymbol}
+        <CoinMarketCapLink
+          isSupported={isSupported}
+          onClick={this.handleSymbolClick.bind(this, `${coinSymbol}_BTC`)}
+        >
+          {content}
         </CoinMarketCapLink>
       )
     }
 
-    return <CoinMarketCapLink isSupported={isSupported}>{coinSymbol}</CoinMarketCapLink>
+    return (
+      <CoinMarketCapLink isSupported={isSupported}>
+        {content}
+      </CoinMarketCapLink>
+    )
   }
 
   getDataForTabale = (data, green, red) => {
@@ -167,21 +179,18 @@ export class CoinMarket extends React.Component<Props, State> {
                     src={importCoinIcon(value.symbol)}
                   />
                 }
-                {this.getCoinSymbol(value.symbol)}
+                {value.symbol}
               </CoinSymbolContainer>
             ),
           },
           PriceUSD: {
             contentToSort: value.price_usd || 0,
-            style: {
-              color: '#ff8100',
-            },
-            render: addMainSymbol(
+            render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.price_usd === 'number'
                 ? roundAndFormatNumber(value.price_usd, 2)
                 : '?',
               true
-            ),
+            ), value.symbol),
             isNumber: true,
           },
           PriceBTC: {
@@ -215,15 +224,12 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           Volume24h: {
             contentToSort: value.volume_usd_24h || 0,
-            style: {
-              color: '#ff8100',
-            },
-            render: addMainSymbol(
+            render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.volume_usd_24h === 'number'
                 ? roundAndFormatNumber(value.volume_usd_24h, 2)
                 : '?',
               true
-            ),
+            ), value.symbol),
             isNumber: true,
           },
           PercentChange1h: {
@@ -322,15 +328,6 @@ const options = ({ location }) => {
   return { perPage: 1000, page }
 }
 
-const mapStateToProps = (store: any) => ({
-  activeExchange: store.chart.activeExchange,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  selectCurrencies: (baseQuote: string) =>
-    dispatch(actions.selectCurrencies(baseQuote)),
-})
-
 // this is what actually you see at /market route
 
 const queryRender = (props: any) => {
@@ -348,20 +345,27 @@ const queryRender = (props: any) => {
   )
 }
 
+const mapStateToProps = (store: any) => ({
+  activeExchange: store.chart.activeExchange,
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  selectCurrencies: (baseQuote: string) =>
+    dispatch(actions.selectCurrencies(baseQuote)),
+})
+
 export const MyCoinMarket = withAuth(
   compose(
-    withRouter,
     connect(
       mapStateToProps,
       mapDispatchToProps
     ),
-    queryRendererHoc({
-      query: marketsQuery,
-      pollInterval: 30 * 1000,
-      fetchPolicy: 'network-only',
-      variables: options(location),
-    })
-  )(withTheme()(queryRender))
+  queryRendererHoc({
+    query: marketsQuery,
+    pollInterval: 30 * 1000,
+    fetchPolicy: 'network-only',
+    variables: options(location),
+  }))(queryRender)
 )
 
 export default MyCoinMarket
