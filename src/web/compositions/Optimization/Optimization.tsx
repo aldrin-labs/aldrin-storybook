@@ -37,6 +37,7 @@ import {
   StyledCardHeader,
 } from './Optimization.styles'
 
+import { ChartPlaceholder } from './ChartPlaceholder/ChartPlaceholder'
 import Import from './Import/Import'
 import LoaderWrapperComponent from './LoaderWrapper/LoaderWrapper'
 import ErrorDialog from './Dialog/Dialog'
@@ -142,7 +143,9 @@ class Optimization extends Component<IProps, IState> {
 
   renderInput = (
     showBlurOnSections: boolean,
-    optimizationCountOfRuns: number
+    optimizationCountOfRuns: number,
+    showCustomPlaceholder: boolean,
+    placeholderElement: string
   ) => {
     // importing stuff from backend or manually bu user
     const { activeButton, rawOptimizedData } = this.state
@@ -181,11 +184,13 @@ class Optimization extends Component<IProps, IState> {
         showBlurOnSections={showBlurOnSections}
         updateOptimizationCountOfRuns={updateOptimizationCountOfRuns}
         optimizationCountOfRuns={optimizationCountOfRuns}
+        showCustomPlaceholder={showCustomPlaceholder}
+        placeholderElement={placeholderElement}
       />
     )
   }
 
-  renderCharts = (showBlurOnSections: boolean) => {
+  renderCharts = (showBlurOnSections: boolean, showCustomPlaceholder: boolean, placeholderElement: any) => {
     const { activeButton, rawOptimizedData, showAllLineChartData } = this.state
     const { storeData, theme } = this.props
 
@@ -259,6 +264,8 @@ class Optimization extends Component<IProps, IState> {
           <InnerChartContainer>
             <Chart background={theme.palette.background.default}>
               <LineChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 theme={theme}
                 additionalInfoInPopup={true}
                 alwaysShowLegend={showAllLineChartData}
@@ -282,6 +289,8 @@ class Optimization extends Component<IProps, IState> {
           <InnerChartContainer>
             <Chart background={theme.palette.background.default}>
               <EfficientFrontierChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 data={efficientFrontierData}
                 theme={theme}
               />
@@ -317,10 +326,17 @@ class Optimization extends Component<IProps, IState> {
       },
     } = this.props
 
-    const showBlurOnSections = optimizationCountOfRuns <= 0
+    const { loading, openWarning, warningMessage, isSystemError, rawOptimizedData } = this.state
+
+
+    console.log('rawOptimizedData', rawOptimizedData);
+
+
+    const showBlurOnSections = false
+    const showCustomPlaceholder = !rawOptimizedData.length
+    const placeholderElement = <ChartPlaceholder />
     const textColor: string = palette.getContrastText(palette.background.paper)
 
-    const { loading, openWarning, warningMessage, isSystemError } = this.state
 
     return (
       <PTWrapper background={palette.background.default}>
@@ -348,7 +364,7 @@ class Optimization extends Component<IProps, IState> {
           {children}
           <LoaderWrapperComponent textColor={textColor} open={loading} />
           <ContentInner loading={loading}>
-            {this.renderInput(showBlurOnSections, optimizationCountOfRuns)}
+            {this.renderInput(showBlurOnSections, optimizationCountOfRuns, showCustomPlaceholder, placeholderElement)}
 
             <MainArea background={palette.background.paper}>
               <Grow
@@ -357,7 +373,7 @@ class Optimization extends Component<IProps, IState> {
                 mountOnEnter
                 unmountOnExit
               >
-                {this.renderCharts(showBlurOnSections)}
+                {this.renderCharts(showBlurOnSections, showCustomPlaceholder, placeholderElement)}
               </Grow>
             </MainArea>
           </ContentInner>

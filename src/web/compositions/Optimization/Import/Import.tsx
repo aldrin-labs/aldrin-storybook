@@ -16,10 +16,7 @@ import { systemError } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
 import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
-import {
-  InnerChartContainer,
-  ChartContainer,
-} from '../shared.styles.tsx'
+import { InnerChartContainer, ChartContainer } from '../shared.styles.tsx'
 import {
   SwitchButtonsWrapper,
   InputContainer,
@@ -252,6 +249,8 @@ export default class Import extends PureComponent<IProps> {
       rawOptimizedData,
       tab,
       showBlurOnSections,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
 
     if (!storeData) {
@@ -305,6 +304,8 @@ export default class Import extends PureComponent<IProps> {
               unmountOnExit
             >
               <BarChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 bottomMargin={75}
                 theme={theme}
                 height={340}
@@ -369,6 +370,8 @@ export default class Import extends PureComponent<IProps> {
       activeButton,
       theme,
       showBlurOnSections,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
 
     const {
@@ -388,9 +391,7 @@ export default class Import extends PureComponent<IProps> {
       )
     }
 
-    const textColor: string = this.props.theme.palette.getContrastText(
-      this.props.theme.palette.background.paper
-    )
+    const textColor: string = this.props.theme.palette.text.primary
 
     const fontFamily = theme.typography.fontFamily
 
@@ -407,7 +408,7 @@ export default class Import extends PureComponent<IProps> {
           <ImportData>
             <TableSelectsContaienr>
               <InputContainer
-                showHighlightShadows={showBlurOnSections}
+                showHighlightShadows={true}
                 id="Back-test"
                 className="OptimizationInput"
               >
