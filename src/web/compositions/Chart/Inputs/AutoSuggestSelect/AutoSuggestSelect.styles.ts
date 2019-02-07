@@ -8,6 +8,7 @@ export const SelectR = styled(ReactSelectComponent)`
 `
 
 export const ExchangePair = styled.div`
+  margin-left: 0.7rem;
   border-radius: 24px;
   border: 2px solid ${(props: { border: string }) => props.border};
   padding: 0 16px;
