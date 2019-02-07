@@ -7,6 +7,8 @@ export interface Serie {
 export interface Props {
   data: Serie[][] | undefined
   activeLine: number | null
+  showCustomPlaceholder: boolean
+  placeholderElement: any
   onChangeData?: Function
 }
 

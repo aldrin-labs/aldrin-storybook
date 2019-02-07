@@ -1,6 +1,4 @@
 import * as React from 'react'
-import Typography from '@material-ui/core/Typography'
-
 import {
   FlexibleXYPlot,
   XAxis,
@@ -10,6 +8,8 @@ import {
   Crosshair,
   LineMarkSeries,
 } from 'react-vis'
+import { Typography } from '@material-ui/core'
+
 
 import { formatDate } from '@core/utils/dateUtils'
 import { Props, State } from './LineChart.types'
@@ -18,7 +18,7 @@ import {
   StyledDiscreteColorLegend,
 } from './LineChart.styles'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { LegendContainer } from '@sb/styles/cssUtils'
+import { LegendContainer, CentredContainer } from '@sb/styles/cssUtils'
 
 const axisStyle = {
   ticks: {
@@ -61,14 +61,23 @@ export default class LineChart extends React.Component<Props, State> {
       itemsForChartLegend,
       additionalInfoInPopup,
       theme,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
+
+    const { crosshairValues } = this.state
 
     const textColor = theme.palette.getContrastText(
       theme.palette.background.paper
     )
     const fontFamily = theme.typography.fontFamily
 
-    const { crosshairValues } = this.state
+
+    if (showCustomPlaceholder) {
+      return (
+        placeholderElement
+      )
+    }
 
     if (!data) {
       return (

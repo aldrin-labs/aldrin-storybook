@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'
 import Industry from '@material-ui/icons/DonutLarge'
@@ -16,6 +17,7 @@ import {
   Marker,
   Tab,
 } from './PortfolioTableTabs.styles'
+
 
 class PortfolioTableTabs extends React.Component<IProps> {
   onChangeTab = (tab: string) => {
@@ -42,14 +44,15 @@ class PortfolioTableTabs extends React.Component<IProps> {
           primary,
           type,
           secondary: { main },
+          background,
         },
       },
     } = this.props
     const switchUSDBTC = tab === 'main'
-    const background = type === 'dark' ? primary.light : primary[100]
+    const backgroundColor = type === 'dark' ? primary.light : primary[100]
 
     return (
-      <Container background={background} elevation={0}>
+      <Container background={backgroundColor} elevation={0}>
         <BarTab
           id="main_tab_button"
           thisTab="main"

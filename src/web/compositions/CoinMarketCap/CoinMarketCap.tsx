@@ -1,29 +1,37 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'recompose'
+import { flattenDeep } from 'lodash'
 import { History } from 'history'
 import { withTheme } from '@material-ui/styles'
 import { Theme } from '@material-ui/core'
+import { withRouter } from 'react-router-dom'
 
+import * as actions from '@core/redux/chart/actions'
 import {
-  TableWithSort,
-  addMainSymbol,
-} from '@sb/components/index'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+  default as QueryRenderer,
+  queryRendererHoc,
+} from '@core/components/QueryRenderer'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
+import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
+import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import withAuth from '@core/hoc/withAuth'
+import { TableWithSort, addMainSymbol } from '@sb/components/index'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { CoinMarketCapQueryQuery } from './types'
-
 import {
   Container,
   GridContainer,
   TableWrapper,
   TableContainer,
+  CoinSymbolContainer,
+  CoinMarketCapLink,
 } from './styles'
-
-import withAuth from '@core/hoc/withAuth'
 
 interface Props {
   data: CoinMarketCapQueryQuery
@@ -48,6 +56,9 @@ export const rates = [
   { name: 'XRP/USD', rate: 0.709714 },
   { name: 'USD/XRP', rate: 1 },
 ]
+
+@withRouter
+@withTheme()
 
 export class CoinMarket extends React.Component<Props, State> {
   state: State = {
@@ -89,6 +100,49 @@ export class CoinMarket extends React.Component<Props, State> {
     this.setState({ activeSortArg: index })
   }
 
+  handleSymbolClick = (currencyPair: string): void => {
+    this.props.selectCurrencies(currencyPair)
+    this.props.history.push('/chart')
+  }
+
+  wrapWithLinkToChartPage = (content: any, coinSymbol: string) => {
+    const {
+      marketsByExchangeQueryData: { getMarketsByExchange },
+    } = this.props
+
+    const isSupported = flattenDeep(
+      getMarketsByExchange.map((el) => el.symbol.split('_'))
+    ).some((el: string) => el === coinSymbol)
+
+    if (isSupported && coinSymbol === 'BTC') {
+      return (
+        <CoinMarketCapLink
+          isSupported={isSupported}
+          onClick={this.handleSymbolClick.bind(this, 'BTC_USDT')}
+        >
+          {content}
+        </CoinMarketCapLink>
+      )
+    }
+
+    if (isSupported && coinSymbol !== 'BTC') {
+      return (
+        <CoinMarketCapLink
+          isSupported={isSupported}
+          onClick={this.handleSymbolClick.bind(this, `${coinSymbol}_BTC`)}
+        >
+          {content}
+        </CoinMarketCapLink>
+      )
+    }
+
+    return (
+      <CoinMarketCapLink isSupported={isSupported}>
+        {content}
+      </CoinMarketCapLink>
+    )
+  }
+
   getDataForTabale = (data, green, red) => {
     return {
       head: [
@@ -98,26 +152,45 @@ export class CoinMarket extends React.Component<Props, State> {
         { id: 'PriceUSD', isNumber: true, label: 'Price USD' },
         { id: 'PriceBTC', isNumber: true, label: 'Price BTC' },
         { id: 'MarketCap', isNumber: true, label: 'Market Cap' },
-        { id: 'CirculatingSupply', isNumber: true, label: 'Circulating Supply' },
+        {
+          id: 'CirculatingSupply',
+          isNumber: true,
+          label: 'Circulating Supply',
+        },
         { id: 'Volume24h', isNumber: true, label: 'Volume 24 hr' },
         { id: 'PercentChange1h', isNumber: true, label: '%1hr' },
         { id: 'PercentChange24h', isNumber: true, label: '%24hr' },
         { id: 'PercentChange7d', isNumber: true, label: '%7days' },
       ],
       data: {
-        body: data.markets.map((value, index) => ({
+        body: data.markets.map((value, index: number) => ({
           id: index,
           Number: value.rank,
           Name: value.name,
-          Symbol: value.symbol,
+          Symbol: {
+            contentToSort: value.symbol,
+            render: (
+              <CoinSymbolContainer>
+                {
+                  <SvgIcon
+                    style={{ marginRight: '5px' }}
+                    width={`17px`}
+                    height={`17px`}
+                    src={importCoinIcon(value.symbol)}
+                  />
+                }
+                {value.symbol}
+              </CoinSymbolContainer>
+            ),
+          },
           PriceUSD: {
             contentToSort: value.price_usd || 0,
-            render: addMainSymbol(
+            render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.price_usd === 'number'
                 ? roundAndFormatNumber(value.price_usd, 2)
                 : '?',
               true
-            ),
+            ), value.symbol),
             isNumber: true,
           },
           PriceBTC: {
@@ -151,12 +224,12 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           Volume24h: {
             contentToSort: value.volume_usd_24h || 0,
-            render: addMainSymbol(
+            render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.volume_usd_24h === 'number'
                 ? roundAndFormatNumber(value.volume_usd_24h, 2)
                 : '?',
               true
-            ),
+            ), value.symbol),
             isNumber: true,
           },
           PercentChange1h: {
@@ -227,6 +300,7 @@ export class CoinMarket extends React.Component<Props, State> {
                 data={dataForTable.data}
                 padding="default"
                 pagination={{
+                  enabled: true,
                   page: this.state.page,
                   rowsPerPage: this.state.rowsPerPage,
                   rowsPerPageOptions: [20, 50, 100, 200],
@@ -252,15 +326,45 @@ const options = ({ location }) => {
   }
   return { perPage: 1000, page }
 }
+
 // this is what actually you see at /market route
 
+const queryRender = (props: any) => {
+  return (
+    <QueryRenderer
+      component={CoinMarket}
+      name={`marketsByExchangeQueryData`}
+      query={MARKETS_BY_EXCHANE_QUERY}
+      variables={{
+        splitter: '_',
+        exchange: props.activeExchange.exchange.symbol,
+      }}
+      {...props}
+    />
+  )
+}
+
+const mapStateToProps = (store: any) => ({
+  activeExchange: store.chart.activeExchange,
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  selectCurrencies: (baseQuote: string) =>
+    dispatch(actions.selectCurrencies(baseQuote)),
+})
+
 export const MyCoinMarket = withAuth(
+  compose(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    ),
   queryRendererHoc({
     query: marketsQuery,
     pollInterval: 30 * 1000,
     fetchPolicy: 'network-only',
     variables: options(location),
-  })(withTheme()(CoinMarket))
+  }))(queryRender)
 )
 
 export default MyCoinMarket

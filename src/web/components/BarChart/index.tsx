@@ -13,6 +13,7 @@ import { withTheme } from '@material-ui/styles'
 import { IProps, IState, Items, IValue, IChart } from './types'
 
 import { LegendContainer } from '../cssUtils'
+import { CentredContainer } from '@sb/styles/cssUtils'
 
 import {
   Container,
@@ -39,6 +40,8 @@ class BarChartComponent extends Component<IProps, IState> {
   render() {
     const {
       showPlaceholder,
+      showCustomPlaceholder,
+      placeholderElement,
       charts,
       height,
       alwaysShowLegend,
@@ -49,6 +52,7 @@ class BarChartComponent extends Component<IProps, IState> {
       bottomMargin,
       theme,
     } = this.props
+
     const { value } = this.state
 
     const items: Items[] = charts.map((chart: IChart, chartIndex: number) => {
@@ -92,6 +96,9 @@ class BarChartComponent extends Component<IProps, IState> {
     return (
       <ScrollContainer height={height}>
         <Container height={height} minWidth={minWidth}>
+          {showCustomPlaceholder ? (
+            placeholderElement
+          ) : (
           <FlexibleXYPlot
             onMouseLeave={this.onSeriesMouseOut}
             xType="ordinal"
@@ -147,6 +154,7 @@ class BarChartComponent extends Component<IProps, IState> {
               </Hint>
             )}
           </FlexibleXYPlot>
+            )}
         </Container>
       </ScrollContainer>
     )

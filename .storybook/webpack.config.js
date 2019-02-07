@@ -10,7 +10,7 @@ module.exports = (baseConfig, env, ...rest) => {
   const config = {
     devtool: 'eval-cheap-module-source-map',
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.png'],
       alias: {
         '@storage': path.join(__dirname, '..', 'src', 'core', 'src', 'mocks'),
         '@core': path.join(__dirname, '..', 'src', 'core', 'src'),
@@ -22,6 +22,7 @@ module.exports = (baseConfig, env, ...rest) => {
 
         '@icons': path.join(__dirname, '..', 'src', 'icons'),
         '@utils': path.join(__dirname, '..', 'src', 'utils'),
+        '@nodemodules': path.resolve(__dirname, '..', 'node_modules'),
       },
     },
     module: {
