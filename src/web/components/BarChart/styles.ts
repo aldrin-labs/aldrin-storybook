@@ -13,6 +13,7 @@ export const ScrollContainer = styled.div`
 `
 
 export const Container = styled.div`
+  position: relative;
   height: ${(props: { height: number; minWidth: number }) =>
     props.height ? `${props.height}px` : `100%`};
   min-width: ${(props: { height: number; minWidth: number }) =>
