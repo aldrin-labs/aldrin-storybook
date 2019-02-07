@@ -11,7 +11,6 @@ class LayoutSelecorComponent extends React.Component {
   }
 
   handleChange = ({ value }) => {
-    console.log('handleChange')
     const {
       loadLayout
     } = this.props
