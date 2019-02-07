@@ -8,9 +8,12 @@ import {
   MarkSeries,
   Hint,
 } from 'react-vis'
+import { Typography } from '@material-ui/core'
+
 
 import { IState, IProps, Data } from './EfficientFrontierChart.types'
 import { ChartTooltip, Container } from './EfficientFrontierChart.styles'
+import { CentredContainer } from '@sb/styles/cssUtils'
 
 
 export default class EfficientFrontierChart extends Component<IProps, IState> {
@@ -24,7 +27,7 @@ export default class EfficientFrontierChart extends Component<IProps, IState> {
   onSeriesMouseOut = () => this.setState({ value: { x: null, y: null } })
 
   render() {
-    const { theme, showBlurOnSections } = this.props
+    const { theme, showBlurOnSections, showCustomPlaceholder, placeholderElement } = this.props
     const { percentages, risk, activeButton } = this.props.data
     const { value } = this.state
 
@@ -66,6 +69,9 @@ export default class EfficientFrontierChart extends Component<IProps, IState> {
         hide={showBlurOnSections}
         className="EfficientFrontierChart"
       >
+        {showCustomPlaceholder ? (
+          placeholderElement
+        ) : (
           <FlexibleXYPlot margin={{ left: 80, bottom: 65 }}>
             {highlightedDotData.length < 1 ? (
               <LineMarkSeries
@@ -120,6 +126,7 @@ export default class EfficientFrontierChart extends Component<IProps, IState> {
               </Hint>
             )}
           </FlexibleXYPlot>
+          )}
       </Container>
     )
   }
