@@ -166,6 +166,7 @@ export const TableSelectsContaienr = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  min-height: 420px;
 `
 
 export const InputInnerContainer = styled.div`

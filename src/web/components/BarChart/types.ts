@@ -26,6 +26,8 @@ export interface IProps {
   hideDashForToolTip?: boolean
   bottomMargin: number
   theme: Theme
+  showCustomPlaceholder: boolean
+  placeholderElement: any
 }
 export interface IState {
   value: IValue | { x: null; y: null }

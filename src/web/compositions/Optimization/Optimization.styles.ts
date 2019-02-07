@@ -17,6 +17,7 @@ export const ChartsContainer = styled.div`
   }
 `
 export const Chart = styled.div`
+  position: relative;
   padding: 0.5rem;
   flex-grow: 1;
   min-width: 0;
