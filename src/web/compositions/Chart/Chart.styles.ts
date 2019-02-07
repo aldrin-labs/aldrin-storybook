@@ -3,7 +3,7 @@ import { Card, Grid } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
-  ${(props: { fullscreen: boolean }) => props.fullscreen && 'height: 100vh'};
+  ${(props: { fullscreen: boolean }) => props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
 export const DepthChartContainer = styled(Card)`
   height: 100%;
