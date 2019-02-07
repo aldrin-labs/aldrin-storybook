@@ -51,8 +51,8 @@ import { IProps, IState } from './Chart.types'
 
 
 import { graphql } from 'react-apollo'
-import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
-import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 
 
 import { compose } from 'recompose'
@@ -376,10 +376,9 @@ class Chart extends React.Component<IProps, IState> {
       view,
       isNoCharts,
       currencyPair,
-      getCharts: { ui: { charts } },
+      getCharts: { multichart: { charts } },
       addChartMutation,
     } = this.props
-
     const defaultView = view === 'default'
 
     return (

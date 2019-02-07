@@ -16,16 +16,16 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { graphql } from 'react-apollo'
 
 import { compose } from 'recompose'
-import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
-import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
-import { REMOVE_CHART } from '@core/graphql/mutations/ui/removeChart'
-import { GET_LAYOUTS } from '@core/graphql/queries/ui/getLayouts'
-import { ADD_LAYOUT } from '@core/graphql/mutations/ui/addLayout'
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
+import { GET_LAYOUTS } from '@core/graphql/queries/chart/getLayouts'
+import { ADD_LAYOUT } from '@core/graphql/mutations/chart/addLayout'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
     const { addChart, mainPair, getCharts, addChartMutation } = this.props
-    const { ui: { charts } } = getCharts
+    const { multichart: { charts } } = getCharts
     if (charts.length === 0) {
       addChartMutation({ variables: {
         pair: mainPair,
@@ -38,8 +38,9 @@ class OnlyCharts extends Component<IProps> {
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
-    )
+    ) {
       this.props.hideToolTip('multiChartPage')
+    }
   }
 
   removeChart = (index) => {
@@ -50,9 +51,10 @@ class OnlyCharts extends Component<IProps> {
 
   saveLayout = (name: String) => {
     const {
-      getCharts: { ui: { charts } },
+      getCharts: { multichart: { charts } },
       addLayoutMutation,
     } = this.props
+
     addLayoutMutation({variables: {
       name,
       charts: charts,
@@ -66,10 +68,8 @@ class OnlyCharts extends Component<IProps> {
       theme,
       view,
       demoMode,
-      getCharts,
+      getCharts: { multichart: { charts } },
     } = this.props
-
-    const { ui: { charts } } = getCharts
     return (
       <>
         <Joyride

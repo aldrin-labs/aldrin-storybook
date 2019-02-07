@@ -14,8 +14,8 @@ import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { graphql } from 'react-apollo'
 
 import { compose } from 'recompose'
-import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
-import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 
 
 
@@ -34,7 +34,7 @@ class IntegrationReactSelect extends React.PureComponent {
       removeWarningMessage,
       addChartMutation,
     } = this.props
-    const { ui: { charts } } = getCharts
+    const { multichart: { charts } } = getCharts
 
     if (!value) {
       return
