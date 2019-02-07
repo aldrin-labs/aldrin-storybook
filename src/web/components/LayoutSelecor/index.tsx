@@ -48,6 +48,7 @@ class LayoutSelecorComponent extends React.Component {
           border={divider}
         >
           <SelectR
+            value=""
             placeholder="Select layout"
             fullWidth={true}
             options={layouts}
