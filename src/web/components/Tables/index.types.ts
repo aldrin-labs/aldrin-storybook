@@ -112,6 +112,7 @@ export interface Props {
 }
 
 export type Pagination = {
+  enabled: boolean
   handleChangeRowsPerPage: () => void
   handleChangePage: () => void
   rowsPerPageOptions: number[]
