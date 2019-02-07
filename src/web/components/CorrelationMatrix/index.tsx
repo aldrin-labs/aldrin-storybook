@@ -85,7 +85,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             className="full-screenable-node"
           >
             {isFullscreenEnabled ? null : (
-                <ButtonsWrapper id="ButtonsWrapper" style={{ gridRowStart: 1 }}>
+                <ButtonsWrapper id="ButtonsWrapper">
                   <Typography noWrap align="center" variant="h6">
                     Time Range
                   </Typography>
@@ -155,6 +155,7 @@ export default CorrelationMatrix
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  grid-row-start: 2;
 `
 
 const StyledFullscreenButton = styled(Button)`
