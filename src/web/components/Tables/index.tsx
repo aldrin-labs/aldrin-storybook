@@ -425,6 +425,7 @@ const CustomTable = (props: Props) => {
     theme,
     data = { body: [] },
     pagination = {
+      enabled: false,
       rowsPerPage: defaultRowsPerPage,
       rowsPerPageOptions: defaultrowsPerPageOptions,
       page: 0,
@@ -661,10 +662,8 @@ const CustomTable = (props: Props) => {
       </Table>
 
       <Grow
-        // only show paginations
-        // when there is more rows then
-        // we can display on 1 page
-        in={data.body.length > pagination.rowsPerPage}
+        // we show pagination only when you pass pagination.enabled = true
+        in={pagination.enabled}
         mountOnEnter
         unmountOnExit
       >

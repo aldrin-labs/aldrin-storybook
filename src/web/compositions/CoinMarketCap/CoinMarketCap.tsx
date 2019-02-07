@@ -283,8 +283,6 @@ export class CoinMarket extends React.Component<Props, State> {
   }
 
   render() {
-    console.log('this.props in MarketCap', this.props)
-
     const dataForTable = this.getDataForTabale(
       this.props.data,
       this.props.theme.palette.green.main,
@@ -302,6 +300,7 @@ export class CoinMarket extends React.Component<Props, State> {
                 data={dataForTable.data}
                 padding="default"
                 pagination={{
+                  enabled: true,
                   page: this.state.page,
                   rowsPerPage: this.state.rowsPerPage,
                   rowsPerPageOptions: [20, 50, 100, 200],

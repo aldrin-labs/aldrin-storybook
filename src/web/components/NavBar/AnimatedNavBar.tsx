@@ -14,7 +14,7 @@ const AnimatedContainer = styled(
     hidden: { bottom: 100, opacity: 0.25 },
   })
 )`
-  position: relative;
+  position: sticky;
   z-index: 1;
 `
 
