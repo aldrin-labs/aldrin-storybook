@@ -19,7 +19,8 @@ import { compose } from 'recompose'
 import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
 import { REMOVE_CHART } from '@core/graphql/mutations/ui/removeChart'
-
+import { GET_LAYOUTS } from '@core/graphql/queries/ui/getLayouts'
+import { ADD_LAYOUT } from '@core/graphql/mutations/ui/addLayout'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
@@ -47,6 +48,17 @@ class OnlyCharts extends Component<IProps> {
     }})
   }
 
+  saveLayout = (name: String) => {
+    const {
+      getCharts: { ui: { charts } },
+      addLayoutMutation,
+    } = this.props
+    addLayoutMutation({variables: {
+      name,
+      charts: charts,
+    }})
+  }
+
   render() {
     const {
       openedWarning,
@@ -58,7 +70,6 @@ class OnlyCharts extends Component<IProps> {
     } = this.props
 
     const { ui: { charts } } = getCharts
-
     return (
       <>
         <Joyride
@@ -179,7 +190,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 export default compose(
   graphql(GET_CHARTS, { name: 'getCharts' }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
-  graphql(REMOVE_CHART, { name: 'removeChartMutation' })
+  graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
+  graphql(GET_LAYOUTS, { name: 'getLayouts' }),
+  graphql(ADD_LAYOUT, { name: 'addLayoutMutation' })
 )(withErrorFallback(
   connect(
     mapStateToProps,

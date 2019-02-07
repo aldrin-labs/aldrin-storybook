@@ -51,10 +51,13 @@ import { IProps, IState } from './Chart.types'
 
 
 import { graphql } from 'react-apollo'
-
-import { compose } from 'recompose'
 import { GET_CHARTS } from '@core/graphql/queries/ui/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/ui/addChart'
+
+
+import { compose } from 'recompose'
+
+import LayoutSelecor from '@core/components/LayoutSelector'
 
 class Chart extends React.Component<IProps, IState> {
   state = {
@@ -373,13 +376,10 @@ class Chart extends React.Component<IProps, IState> {
       view,
       isNoCharts,
       currencyPair,
-      addChart,
+      getCharts: { ui: { charts } },
       addChartMutation,
-      getCharts,
     } = this.props
 
-    const { ui: { charts } } = getCharts
-    console.log('charts', charts)
     const defaultView = view === 'default'
 
     return (
@@ -396,8 +396,6 @@ class Chart extends React.Component<IProps, IState> {
             console.log('onClick')
             toggleView(defaultView ? 'onlyCharts' : 'default')
             if (defaultView && charts === []) {
-              console.log('add charts')
-              addChart(currencyPair)
               addChartMutation({ variables: {
                 pair: currencyPair,
               } })
@@ -435,6 +433,9 @@ class Chart extends React.Component<IProps, IState> {
             alignItems="center"
             justify="flex-end"
           >
+            {view === 'onlyCharts' && (
+              <LayoutSelecor />
+            )}
             <AutoSuggestSelect
               value={view === 'default' && currencyPair}
               id={'currencyPair'}
@@ -486,8 +487,8 @@ const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
 export default compose(
-    graphql(GET_CHARTS, { name: 'getCharts' }),
-    graphql(ADD_CHART, { name: 'addChartMutation' })
+  graphql(GET_CHARTS, { name: 'getCharts' }),
+  graphql(ADD_CHART, { name: 'addChartMutations' })
   )(withAuth(
   withErrorFallback(
     connect(
