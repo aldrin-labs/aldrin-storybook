@@ -4,6 +4,8 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import Joyride from 'react-joyride'
 import { Grow, Switch } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
+
 
 import * as Useractions from '@core/redux/user/actions'
 import * as actions from '@core/redux/portfolio/actions'
@@ -393,6 +395,7 @@ const storeComponent = connect(
 )(Optimization)
 
 export default compose(
+  withTheme(),
   queryRendererHoc({
     query: GET_OPTIMIZATION_COUNT_OF_RUNS,
   }),
