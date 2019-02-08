@@ -62,6 +62,6 @@ export const CoinSymbolContainer = styled.span`
 export const CoinMarketCapLink = styled.div`
   ${(props: { isSupported: boolean }) =>
     props.isSupported
-      ? 'font-weight: bold; text-decoration: underline; color: #69c;'
+      ? 'font-weight: bold; text-decoration: underline; color: #69c; cursor: pointer'
       : 'font-weight: bold; color: #69c;'}
 `
