@@ -4,12 +4,14 @@ import { withTheme } from '@material-ui/styles'
 
 import { SelectR, SelectContainer } from './styles'
 import { AddLayoutDialog } from '@sb/components/AddLayoutDialog'
+import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
+
 
 const LayoutSelecorComponent = ({...props}) => {
-  const handleChange = ({ value }) => {
+  const handleChange = ({ value }: {value: string}) => {
     const {
-      loadLayout
-    } = this.props
+      loadLayout,
+    } = props
 
     if (!value) {
       return
@@ -24,10 +26,16 @@ const LayoutSelecorComponent = ({...props}) => {
     theme: {
       palette: { divider },
     },
+    setTopMarkets,
   } = props
 
   return (
     <>
+      <TransparentExtendedFAB
+        onClick={setTopMarkets}
+      >
+        set Top Markets
+      </TransparentExtendedFAB>
       <SelectContainer
         border={divider}
       >
