@@ -27,6 +27,7 @@ const LayoutSelecorComponent = ({...props}) => {
       palette: { divider },
     },
     setTopMarkets,
+    setTopCoinInPortfolio,
   } = props
 
   return (
@@ -35,6 +36,11 @@ const LayoutSelecorComponent = ({...props}) => {
         onClick={setTopMarkets}
       >
         set Top Markets
+      </TransparentExtendedFAB>
+      <TransparentExtendedFAB
+        onClick={setTopCoinInPortfolio}
+      >
+        set Top Coins from portfolio
       </TransparentExtendedFAB>
       <SelectContainer
         border={divider}
