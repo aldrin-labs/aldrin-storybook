@@ -34,7 +34,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, tab } = this.props
+    const { theme, tab, dustFilter } = this.props
 
     return (
       <>
@@ -61,7 +61,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           }}
         />
         <Template
-          PortfolioMainTable={<PortfolioMainTable theme={theme} tab={tab} />}
+          PortfolioMainTable={<PortfolioMainTable theme={theme} tab={tab} dustFilter={dustFilter}/>}
           PortfolioActions={<TradeOrderHistory />}
           Chart={
             <PortfolioMainChart

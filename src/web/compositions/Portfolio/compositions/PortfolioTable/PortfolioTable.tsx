@@ -75,13 +75,14 @@ class PortfolioTable extends Component<IProps, IState> {
                         theme={theme}
                         variables={{ baseCoin }}
                         baseCoin={baseCoin}
-                        filterValueSmallerThenPercentage={dustFilter}
+                        dustFilter={dustFilter}
                       />
                     </MemoizedTab>
                   </div>
                   <div id="industry_tab" hidden={tab !== 'industry'}>
                     <MemoizedTab tab={tab}>
                       <PortfolioTableIndustries
+                        dustFilter={dustFilter}
                         isUSDCurrently={isUSDCurrently}
                         theme={theme}
                         tab={this.state.tab}

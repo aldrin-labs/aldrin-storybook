@@ -330,10 +330,6 @@ class Optimization extends Component<IProps, IState> {
 
     const { loading, openWarning, warningMessage, isSystemError, rawOptimizedData } = this.state
 
-
-    console.log('rawOptimizedData', rawOptimizedData);
-
-
     const showBlurOnSections = false
     const showCustomPlaceholder = !rawOptimizedData.length
     const placeholderElement = <ChartPlaceholder />
