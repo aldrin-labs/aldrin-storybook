@@ -5,7 +5,7 @@ import { withInfo } from '@storybook/addon-info'
 import styled from 'styled-components'
 
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import { Chart } from '@components'
 
 const TablesContainer = styled.div`

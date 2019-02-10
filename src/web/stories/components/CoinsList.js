@@ -5,7 +5,7 @@ import StoryRouter from 'storybook-react-router'
 import { IntlProvider } from 'react-intl'
 import { text, array } from '@storybook/addon-knobs'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import {CoinsList} from '@components/CoinsList'
 
 storiesOf('Components/CoinsList', module)

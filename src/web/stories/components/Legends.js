@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
 import { object  } from '@storybook/addon-knobs'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import Legends from '@components/Legends'
 
 const legends = [

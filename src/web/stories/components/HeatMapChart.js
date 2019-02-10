@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import { number, object } from '@storybook/addon-knobs'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import { default as HeatMapChart } from '@components/HeatMapChart'
 
 const data = [

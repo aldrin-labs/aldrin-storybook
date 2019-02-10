@@ -3,24 +3,17 @@ import { ApolloProvider } from 'react-apollo'
 import { IntlProvider } from 'react-intl'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
-import { Route, Switch } from 'react-router-dom'
 import { PersistGate } from 'redux-persist/integration/react'
 import { ErrorBoundary, Loading } from '@sb/components'
 
 import { storiesOf } from '@storybook/react'
+import Optimization from '@sb/compositions/Optimization/Optimization'
 
-import { action } from '@storybook/addon-actions'
-import { withInfo } from '@storybook/addon-info'
-import { object } from '@storybook/addon-knobs'
-
-import PortfolioTable from '../compositions/Portfolio/compositions/PortfolioTable/PortfolioTable'
-import Optimization from '../compositions/Optimization/Optimization'
-
-import { App } from '../compositions/App/App'
-import ThemeWrapper from '../compositions/App/ThemeWrapper/ThemeWrapper'
+import { App } from '@sb/compositions/App/App'
+import ThemeWrapper from '@sb/compositions/App/ThemeWrapper/ThemeWrapper'
 
 import { client } from '@core/graphql/apolloClient'
-import { persistor, store } from '../mocks/configureStore'
+import { persistor, store } from '@sb/mocks/configureStore'
 import createHistory from 'history/createBrowserHistory'
 
 const history = createHistory()
@@ -49,24 +42,3 @@ storiesOf('Compositions/Optimization', module).add('Optimization', () => (
     </IntlProvider>
   </ApolloProvider>
 ))
-
-// <Route>
-// <App>
-// <PortfolioTable
-// tab={'rebalance'}
-// baseCoin={`USDT`}
-// isUSDCurrently={true}
-// filterValueSmallerThenPercentage={-100}
-// />
-// </App>
-// </Route>
-
-// <ThemeWrapper>
-// <PortfolioTable
-// tab={'rebalance'}
-// baseCoin={`USDT`}
-// showTable={true}
-// isUSDCurrently={true}
-// filterValueSmallerThenPercentage={-100}
-// />
-// </ThemeWrapper>

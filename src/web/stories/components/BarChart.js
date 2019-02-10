@@ -11,9 +11,9 @@ import {
 
 import { Paper } from '@material-ui/core'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import { BarChart } from '@components/BarChart'
-import { basic, longMocksGenirator, doubled } from './mocks/BarChartMocks'
+import { basic, longMocksGenirator, doubled } from '../mocks/BarChartMocks'
 
 
 const groupId = 'GROUP-ID1'

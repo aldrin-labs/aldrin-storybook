@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import { object } from '@storybook/addon-knobs'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 
 import {AreaChart} from '@components/AreaChart'
 
