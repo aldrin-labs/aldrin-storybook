@@ -146,7 +146,7 @@ export class CoinMarket extends React.Component<Props, State> {
   getDataForTabale = (data, green, red) => {
     return {
       head: [
-        { id: 'Number', isNumber: true, label: '№' },
+        { id: 'Number', isNumber: true, label: 'Rank' },
         { id: 'Name', isNumber: false, label: 'Name' },
         { id: 'Symbol', isNumber: false, label: 'Symbol' },
         { id: 'PriceUSD', isNumber: true, label: 'Price USD' },
