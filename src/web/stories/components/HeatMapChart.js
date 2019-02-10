@@ -21,7 +21,7 @@ const data = [
 ]
 const groupId = 'GROUP-ID1'
 
-storiesOf('HeatMapChart', module)
+storiesOf('Components/HeatMapChart', module)
   .addDecorator(backgrounds)
   .add(
     'HeatMapChart',

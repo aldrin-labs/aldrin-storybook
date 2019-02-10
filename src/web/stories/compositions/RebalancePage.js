@@ -14,8 +14,6 @@ import { withInfo } from '@storybook/addon-info'
 import { object } from '@storybook/addon-knobs'
 
 import PortfolioTable from '../compositions/Portfolio/compositions/PortfolioTable/PortfolioTable'
-import Optimization from '../compositions/Optimization/Optimization'
-
 import { App } from '../compositions/App/App'
 import ThemeWrapper from '../compositions/App/ThemeWrapper/ThemeWrapper'
 
@@ -27,17 +25,18 @@ const history = createHistory()
 
 
 
-storiesOf('Optimization', module).add('Optimization', () => (
+storiesOf('Compositions/Rebalance', module).add('Rebalance', () => (
   <ApolloProvider client={client}>
     <IntlProvider locale="en">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
               <ErrorBoundary>
                 <Suspense fallback={<Loading centerAligned />}>
-                      <ThemeWrapper themeMode={`dark`}>
-                        <Optimization
-                          tab={'optimization'}
+                      <ThemeWrapper>
+                        <PortfolioTable
+                          tab={'rebalance'}
                           baseCoin={`USDT`}
+                          showTable={true}
                           isUSDCurrently={true}
                           filterValueSmallerThenPercentage={-100}
                         />

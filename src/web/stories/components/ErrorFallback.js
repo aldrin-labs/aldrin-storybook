@@ -1,15 +1,16 @@
 import React from 'react'
+
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
 import { backgrounds } from './backgrounds'
-import { Input } from '@components/Input'
+import { ErrorFallback } from '@components/ErrorFallback'
 
-storiesOf('Input', module)
+storiesOf('Components/ErrorFallback', module)
   .addDecorator(backgrounds)
   .add(
-    'Input',
+    'ErrorFallback',
     withInfo()(() =>
-      <Input />
+      <ErrorFallback />
   )
 )

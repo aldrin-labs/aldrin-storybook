@@ -4,13 +4,13 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
 import { backgrounds } from './backgrounds'
-import { ErrorFallback } from '@components/ErrorFallback'
+import DominanceChart from '@components/DominanceChart'
 
-storiesOf('ErrorFallback', module)
+storiesOf('Components/DominanceChart', module)
   .addDecorator(backgrounds)
   .add(
-    'ErrorFallback',
-    withInfo()(() =>
-      <ErrorFallback />
+    'DominanceChart',
+    () => (
+      <DominanceChart />
+    )
   )
-)

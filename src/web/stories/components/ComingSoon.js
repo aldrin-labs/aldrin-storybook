@@ -24,7 +24,7 @@ const PTWrapper = styled(Card)`
   height: calc(100vh - 130px);
 `
 
-storiesOf('ComingSoon', module)
+storiesOf('Components/ComingSoon', module)
   .addDecorator(backgrounds)
   .add(
     'ComingSoon',

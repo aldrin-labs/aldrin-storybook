@@ -35,7 +35,7 @@ const ChartsContainer = styled(TablesContainer)`
 `
 
 
-storiesOf('Chart', module)
+storiesOf('Components/Chart', module)
   .addDecorator(backgrounds)
   .add(
     'Chart',
@@ -47,7 +47,7 @@ storiesOf('Chart', module)
       <ChartsContainer>
         <Chart
           chartsApiUrl='chart.cryptocurrencies.ai'
-          additionalUrl={`/?symbol=${base}/${quote}`} 
+          additionalUrl={`/?symbol=${base}/${quote}`}
         />
       </ChartsContainer>
     )

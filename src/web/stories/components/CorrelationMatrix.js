@@ -10,7 +10,7 @@ import { Card } from '@material-ui/core'
 import { customThemes } from '../../../.storybook/customTheme'
 
 import { CorrelationMatrix } from '@components/CorrelationMatrix'
-import { CorrelationMatrixTableMocks } from './mocks'
+import { CorrelationMatrixTableMocks } from './mocks/CorrelationMatrixMocks'
 
 const TableWrapper = styled(Card)`
   height: 100vh;
@@ -33,7 +33,7 @@ const colors = [
 const groupId = 'GROUP-ID1'
 //const groupId2 = 'GROUP-ID2'
 
-storiesOf('CorrelationMatrixTable', module).add(
+storiesOf('Components/CorrelationMatrixTable', module).add(
   'CorrelationMatrixTable',
   withInfo()(() => (
     <TableWrapper>

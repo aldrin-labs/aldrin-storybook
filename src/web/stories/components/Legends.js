@@ -13,11 +13,11 @@ const legends = [
 ]
 const groupId = 'GROUP-ID1'
 
-storiesOf('Legends', module)
+storiesOf('Components/Legends', module)
   .addDecorator(backgrounds)
   .add(
     'Legends',
-    withInfo()(() => 
+    withInfo()(() =>
       <Legends
         legends={object('legends', legends, groupId)}
         onChange={action('Changed')}

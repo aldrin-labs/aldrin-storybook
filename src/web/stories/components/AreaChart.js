@@ -10,7 +10,7 @@ import {AreaChart} from '@components/AreaChart'
 
 const data = [{ x: 1, y: 2 }, { x: 2, y: 4 }]
 
-storiesOf('AreaChart', module)
+storiesOf('Components/AreaChart', module)
   .addDecorator(backgrounds)
   .add(
     'AreaChart',

@@ -8,7 +8,7 @@ import { text, array } from '@storybook/addon-knobs'
 import { backgrounds } from './backgrounds'
 import {CoinsList} from '@components/CoinsList'
 
-storiesOf('CoinsList', module)
+storiesOf('Components/CoinsList', module)
   .addDecorator(backgrounds)
   .addDecorator(StoryRouter())
   .add(

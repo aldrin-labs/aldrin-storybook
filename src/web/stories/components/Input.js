@@ -1,16 +1,15 @@
 import React from 'react'
-
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
 import { backgrounds } from './backgrounds'
-import DominanceChart from '@components/DominanceChart'
+import { Input } from '@components/Input'
 
-storiesOf('DominanceChart', module)
+storiesOf('Components/Input', module)
   .addDecorator(backgrounds)
   .add(
-    'DominanceChart',
-    () => (
-      <DominanceChart />
-    )
+    'Input',
+    withInfo()(() =>
+      <Input />
   )
+)

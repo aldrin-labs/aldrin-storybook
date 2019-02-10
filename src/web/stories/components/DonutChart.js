@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { 
+import {
   object,
   number,
   boolean,
@@ -32,7 +32,7 @@ const ChartWrapper = styled(Paper)`
 
 const groupId = 'GROUP-ID1';
 
-storiesOf('DonutChart', module)
+storiesOf('Components/DonutChart', module)
   .addDecorator(backgrounds)
   .add(
     'DonutChart',

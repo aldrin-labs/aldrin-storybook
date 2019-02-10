@@ -20,7 +20,7 @@ const mapLabelToDays = {
 
 const groupId = 'GROUP-ID1'
 console.log(data)
-storiesOf('PortfolioChart', module)
+storiesOf('Components/PortfolioChart', module)
   .add(
     'PortfolioChart',
     () =>

@@ -7,7 +7,7 @@ import { text, boolean } from '@storybook/addon-knobs'
 import { backgrounds } from './backgrounds'
 import Button from '@components/Elements/Button'
 
-storiesOf('Button', module)
+storiesOf('Components/Button', module)
   .addDecorator(backgrounds)
   .add(
     'Button',
