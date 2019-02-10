@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
 
 import { getRandomColor } from './utils'
@@ -34,6 +35,8 @@ const getColorsWithRandom = (colors: string[], dataLengh: number) => {
     ...range(dataLengh - colors.length).map(() => getRandomColor()),
   ]
 }
+
+@withTheme()
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
