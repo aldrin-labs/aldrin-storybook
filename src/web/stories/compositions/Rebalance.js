@@ -5,9 +5,10 @@ import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { ErrorBoundary, Loading } from '@sb/components'
+import { radios } from '@storybook/addon-knobs'
 
 import { storiesOf } from '@storybook/react'
-import PortfolioTable from '@sb/compositions/Portfolio/compositions/PortfolioTable/PortfolioTable'
+import Rebalance from '@core/compositions/PortfolioRebalance'
 import { App } from '@sb/compositions/App/App'
 import ThemeWrapper from '@sb/compositions/App/ThemeWrapper/ThemeWrapper'
 
@@ -17,25 +18,29 @@ import createHistory from 'history/createBrowserHistory'
 
 const history = createHistory()
 
-
 storiesOf('Compositions/Rebalance', module).add('Rebalance', () => (
   <ApolloProvider client={client}>
     <IntlProvider locale="en">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-              <ErrorBoundary>
-                <Suspense fallback={<Loading centerAligned />}>
-                      <ThemeWrapper>
-                        <PortfolioTable
-                          tab={'rebalance'}
-                          baseCoin={`USDT`}
-                          showTable={true}
-                          isUSDCurrently={true}
-                          filterValueSmallerThenPercentage={-100}
-                        />
-                      </ThemeWrapper>
-                </Suspense>
-              </ErrorBoundary>
+          <ErrorBoundary>
+            <Suspense fallback={<Loading centerAligned />}>
+              <ThemeWrapper
+                themeMode={radios(
+                  `Theme`,
+                  { dark: 'dark', light: 'light' },
+                  'dark'
+                )}
+              >
+                <Rebalance
+                  baseCoin={`USDT`}
+                  tab={'rebalance'}
+                  isUSDCurrently={true}
+                  dustFilter={-100}
+                />
+              </ThemeWrapper>
+            </Suspense>
+          </ErrorBoundary>
         </PersistGate>
       </Provider>
     </IntlProvider>

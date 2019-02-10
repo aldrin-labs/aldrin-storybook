@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 import Joyride from 'react-joyride'
 import { connect } from 'react-redux'
@@ -11,6 +12,8 @@ import { portfolioIndustrySteps } from '@sb/config/joyrideSteps'
 import Template from './Template'
 import IndustryTable from '@core/containers/IndustryTable'
 import IndustryChart from '@core/containers/IndustryChart'
+
+@withTheme()
 
 class PortfolioTableIndustries extends React.Component<IProps, IState> {
   state: IState = {
