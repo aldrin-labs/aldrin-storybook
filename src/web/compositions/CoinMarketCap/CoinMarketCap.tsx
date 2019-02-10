@@ -18,7 +18,7 @@ import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
-import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import { importCoinIcon, marketPriceRound } from '@core/utils/MarketCapUtils'
 import withAuth from '@core/hoc/withAuth'
 import { TableWithSort, addMainSymbol } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -187,7 +187,7 @@ export class CoinMarket extends React.Component<Props, State> {
             contentToSort: value.price_usd || 0,
             render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.price_usd === 'number'
-                ? roundAndFormatNumber(value.price_usd, 2)
+                ? formatNumberToUSFormat(marketPriceRound(value.price_usd))
                 : '?',
               true
             ), value.symbol),
