@@ -14,7 +14,7 @@ export const GridContainer = styled(Grid)`
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
+  height: calc(100vh - ${CSS_CONFIG.navBarHeight * 2}px);
   z-index: 0;
   margin-left: auto;
   margin-right: auto;
@@ -34,6 +34,7 @@ export const DonutChatWrapper = styled(TableWrapper)`
 export const TableContainer = styled(Grid)`
   && {
     max-height: 100%;
+    padding: 8px 8px 0;
   }
 `
 
