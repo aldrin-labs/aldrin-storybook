@@ -2,10 +2,10 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import { Input } from '@components/Input'
 
-storiesOf('Input', module)
+storiesOf('Components/Input', module)
   .addDecorator(backgrounds)
   .add(
     'Input',
