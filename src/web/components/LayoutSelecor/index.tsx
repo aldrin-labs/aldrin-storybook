@@ -4,12 +4,16 @@ import { withTheme, withStyles } from '@material-ui/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 
-import { SelectR, SelectContainer } from './styles'
+import { components } from 'react-select'
+
 import { SaveLayoutDialog } from '@sb/components/SaveLayoutDialog'
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 
-
-import { components } from 'react-select'
+import {
+  SelectR,
+  SelectContainer,
+  OptionContainer,
+} from './styles'
 
 const ActionButton = withStyles(() => ({
   root: { padding: 6 },
@@ -30,7 +34,6 @@ const LayoutSelecorComponent = ({...props}) => {
   const {
     layouts,
     saveLayout,
-    charts,
     theme: {
       palette: { divider },
     },
@@ -39,18 +42,14 @@ const LayoutSelecorComponent = ({...props}) => {
     removeLayout,
   } = props
 
-  const Option = (optionProps) => {
-    console.log(optionProps)
-    return (
-      <div style={{display: 'flex'}}>
-        <components.Option {...optionProps}/>
-        <ActionButton aria-label="Delete" onClick={() => {removeLayout(optionProps.value)}}>
-          <DeleteIcon fontSize="small" />
-        </ActionButton>
-
-      </div>
-    )
-  }
+  const Option = (optionProps: any) => (
+    <OptionContainer>
+      <components.Option {...optionProps} />
+      <ActionButton aria-label="Delete" onClick={() => { removeLayout(optionProps.value); } }>
+        <DeleteIcon fontSize="small" />
+      </ActionButton>
+    </OptionContainer>
+  )
   return (
     <>
       <TransparentExtendedFAB

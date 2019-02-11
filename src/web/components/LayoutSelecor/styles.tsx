@@ -17,3 +17,7 @@ export const SelectContainer = styled.div`
   display: flex;
   background: transparent;
 `
+
+export const OptionContainer = styled.div`
+  display: flex
+`
