@@ -15,54 +15,50 @@ import { compose, withStateHandlers } from 'recompose'
 
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 
-const SaveLayoutDialogComponent = ({
-  handleClickOpen,
-  handleClose,
-  open,
-  handleChange,
-  values,
-  handleSubmit,
-  errors,
-}) => (
-  <div>
-    <TransparentExtendedFAB
-        onClick={handleClickOpen}
-      >
+import { IProps, IhandleSubmitProps } from './types'
+
+const SaveLayoutDialogComponent = ({ ...props }: IProps) => {
+    const { handleClickOpen,
+      handleClose,
+      open,
+      handleChange,
+      values,
+      handleSubmit,
+      errors,
+    } = props
+    return (<div>
+      <TransparentExtendedFAB onClick={handleClickOpen}>
         Save layout
-    </TransparentExtendedFAB>
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogContent>
-        <DialogContentText>
-          To save layout please enter name:
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="layoutNameInput"
-          name="layoutNameInput"
-          label="Layout name"
-          onChange={handleChange}
-          value={values.layoutNameInput}
-          type="text"
-          fullWidth
-        />
-        <Typography color="error">{errors.layoutNameInput}</Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} id="SaveDialogButton">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </div>
-)
+      </TransparentExtendedFAB>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogContent>
+          <DialogContentText>
+            To save layout please enter name:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="layoutNameInput"
+            name="layoutNameInput"
+            label="Layout name"
+            onChange={handleChange}
+            value={values.layoutNameInput}
+            type="text"
+            fullWidth
+          />
+          <Typography color="error">{errors.layoutNameInput}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} id="SaveDialogButton">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>)
+  }
 
 const formikDialog = withFormik({
   validationSchema: Yup.object().shape({
@@ -71,7 +67,7 @@ const formikDialog = withFormik({
   mapPropsToValues: () => ({
     layoutNameInput: '',
   }),
-  handleSubmit: async ({ layoutNameInput }, props) => {
+  handleSubmit: async ({ layoutNameInput }, props: IhandleSubmitProps) => {
     const {
       handleClose,
       saveLayout,
@@ -90,7 +86,7 @@ const formikDialog = withFormik({
 })
 
 const handleState = withStateHandlers(
-  ({ open = false }) => ({
+  ({ open = false }: {open: boolean}) => ({
     open,
   }),
   {
