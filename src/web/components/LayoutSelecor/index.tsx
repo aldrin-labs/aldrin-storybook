@@ -1,10 +1,16 @@
 import React from 'react'
 
 import { withTheme } from '@material-ui/styles'
+import DeleteIcon from '@material-ui/icons/Delete'
+import Button from '@material-ui/core/Button'
 
 import { SelectR, SelectContainer } from './styles'
-import { AddLayoutDialog } from '@sb/components/AddLayoutDialog'
+import { SaveLayoutDialog } from '@sb/components/SaveLayoutDialog'
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
+
+
+import { components } from 'react-select'
+
 
 
 const LayoutSelecorComponent = ({...props}) => {
@@ -28,8 +34,20 @@ const LayoutSelecorComponent = ({...props}) => {
     },
     setTopMarkets,
     setTopCoinInPortfolio,
+    removeLayout,
   } = props
 
+  const Option = (optionProps) => {
+    console.log(optionProps)
+    return (
+      <div>
+        <components.Option {...optionProps}/>
+        <Button variant="contained" onClick={() => {removeLayout(optionProps.value)}}>
+          <DeleteIcon />
+        </Button>
+      </div>
+    )
+  }
   return (
     <>
       <TransparentExtendedFAB
@@ -46,6 +64,7 @@ const LayoutSelecorComponent = ({...props}) => {
         border={divider}
       >
         <SelectR
+          components={{ Option }}
           value=""
           placeholder="Select layout"
           fullWidth={true}
@@ -53,7 +72,7 @@ const LayoutSelecorComponent = ({...props}) => {
           onChange={handleChange}
         />
       </SelectContainer>
-      <AddLayoutDialog
+      <SaveLayoutDialog
         charts={charts}
         saveLayout={saveLayout}
       />

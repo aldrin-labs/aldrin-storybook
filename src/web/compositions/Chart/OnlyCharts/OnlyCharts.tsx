@@ -20,7 +20,7 @@ import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
 import { GET_LAYOUTS } from '@core/graphql/queries/chart/getLayouts'
-import { ADD_LAYOUT } from '@core/graphql/mutations/chart/addLayout'
+import { SAVE_LAYOUT } from '@core/graphql/mutations/chart/saveLayout'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
@@ -52,10 +52,10 @@ class OnlyCharts extends Component<IProps> {
   saveLayout = (name: String) => {
     const {
       getCharts: { multichart: { charts } },
-      addLayoutMutation,
+      saveLayoutMutation,
     } = this.props
 
-    addLayoutMutation({variables: {
+    saveLayoutMutation({variables: {
       name,
       charts: charts,
     }})
@@ -192,7 +192,7 @@ export default compose(
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
   graphql(GET_LAYOUTS, { name: 'getLayouts' }),
-  graphql(ADD_LAYOUT, { name: 'addLayoutMutation' })
+  graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' })
 )(withErrorFallback(
   connect(
     mapStateToProps,

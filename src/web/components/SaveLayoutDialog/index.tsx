@@ -15,7 +15,7 @@ import { compose, withStateHandlers } from 'recompose'
 
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 
-const AddLayoutDialogComponent = ({
+const SaveLayoutDialogComponent = ({
   handleClickOpen,
   handleClose,
   open,
@@ -103,7 +103,7 @@ const handleState = withStateHandlers(
   }
 )
 
-export const AddLayoutDialog = compose(
+export const SaveLayoutDialog = compose(
   handleState,
   formikDialog
-)(AddLayoutDialogComponent)
+)(SaveLayoutDialogComponent)
