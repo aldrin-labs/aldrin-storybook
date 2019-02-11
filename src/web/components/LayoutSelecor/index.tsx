@@ -56,7 +56,7 @@ const LayoutSelecorComponent = ({...props}) => {
       <TransparentExtendedFAB
         onClick={setTopMarkets}
       >
-        set Top Markets
+        set Top Coins from marketcap
       </TransparentExtendedFAB>
       <TransparentExtendedFAB
         onClick={setTopCoinInPortfolio}
@@ -76,7 +76,6 @@ const LayoutSelecorComponent = ({...props}) => {
         />
       </SelectContainer>
       <SaveLayoutDialog
-        charts={charts}
         saveLayout={saveLayout}
       />
     </>
