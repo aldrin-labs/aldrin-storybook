@@ -15,6 +15,5 @@ export const SelectContainer = styled.div`
   height: 38px;
   place-content: center;
   display: flex;
-  width: 130px;
   background: transparent;
 `
