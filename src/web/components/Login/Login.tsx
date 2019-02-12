@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Button from '@material-ui/core/Button'
 import { Grow, Slide } from '@material-ui/core'
-import { Props, State } from './interfaces'
+import { Props } from './interfaces'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -27,7 +27,7 @@ const auth0Options = {
   oidcConformant: true,
 }
 
-class LoginQuery extends React.Component<Props, State> {
+class LoginQuery extends React.Component<Props> {
 
   lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
     ...auth0Options,
