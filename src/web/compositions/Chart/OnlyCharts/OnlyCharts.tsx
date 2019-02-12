@@ -13,11 +13,25 @@ import { IProps, IChart } from './OnlyCharts.types'
 import { multiChartsSteps } from '@sb/config/joyrideSteps'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
+import { graphql } from 'react-apollo'
+
+import { compose } from 'recompose'
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
+import { GET_LAYOUTS } from '@core/graphql/queries/chart/getLayouts'
+import { SAVE_LAYOUT } from '@core/graphql/mutations/chart/saveLayout'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
-    const { charts, addChart, mainPair } = this.props
+    const { addChart, mainPair, getCharts, addChartMutation } = this.props
+    const { multichart: { charts } } = getCharts
     if (charts.length === 0) {
-      addChart(mainPair)
+      addChartMutation({ variables: {
+        pair: mainPair,
+      } })
     }
   }
 
@@ -26,21 +40,38 @@ class OnlyCharts extends Component<IProps> {
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
-    )
+    ) {
       this.props.hideToolTip('multiChartPage')
+    }
+  }
+
+  removeChart = (index) => {
+    this.props.removeChartMutation({variables: {
+      index: index,
+    }})
+  }
+
+  saveLayout = (name: String) => {
+    const {
+      getCharts: { multichart: { charts } },
+      saveLayoutMutation,
+    } = this.props
+
+    saveLayoutMutation({variables: {
+      name,
+      charts: charts,
+    }})
   }
 
   render() {
     const {
-      charts,
-      removeChart,
       openedWarning,
       removeWarningMessage,
       theme,
       view,
       demoMode,
+      getCharts: { multichart: { charts } },
     } = this.props
-
     return (
       <>
         <Joyride
@@ -82,7 +113,7 @@ class OnlyCharts extends Component<IProps> {
                 <IndividualChart
                   key={chart.id}
                   theme={theme}
-                  removeChart={removeChart}
+                  removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
                   currencyPair={chart.pair}
@@ -158,9 +189,24 @@ const mapDispatchToProps = (dispatch: any) => ({
   hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 
-export default withErrorFallback(
+export default queryRendererHoc({
+  query: GET_LAYOUTS,
+  fetchPolicy: 'cache-only',
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getLayouts',
+})(queryRendererHoc({
+  query: GET_CHARTS,
+  fetchPolicy: 'cache-only',
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getCharts',
+})(compose(
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
+  graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
+  graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' })
+)(withErrorFallback(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OnlyCharts)
-)
+  )(OnlyCharts)))))
