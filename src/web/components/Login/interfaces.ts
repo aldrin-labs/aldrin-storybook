@@ -16,9 +16,10 @@ export interface Props {
   storeClosedModal: Function
   listenersWillOn: Function
   listenersWillOff: Function
+  authErrorsMutation: Function
+  handleLogout: Function
 }
 
 export interface State {
   anchorEl: EventTarget | null
-  lock: Auth0LockStatic | null
 }

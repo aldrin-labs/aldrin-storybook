@@ -21,37 +21,48 @@ const auth0Options = {
   languageDictionary: {
     title: 'Be an early adopter',
   },
+  // loginAfterSignUp: false,
   autofocus: true,
   autoclose: true,
   oidcConformant: true,
 }
 
-
 class LoginQuery extends React.Component<Props, State> {
-    state = {
-      anchorEl: null,
-      lock: new Auth0Lock(
-        '0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm',
-        'ccai.auth0.com',
-        {
-          ...auth0Options, theme: {
-            ...auth0Options.theme,
-            primaryColor: this.props.mainColor,
-          },
-        }),
-    }
+  state = {
+    anchorEl: null,
+  }
+
+  lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
+    ...auth0Options,
+    theme: {
+      ...auth0Options.theme,
+      primaryColor: this.props.mainColor,
+    },
+  })
 
   componentDidMount() {
     if (this.props.isShownModal) {
-      this.state.lock.show()
+      this.lock.show()
       this.onModalChanges(true)
     } else {
       this.onModalChanges(false)
     }
-    this.onListenersChanges(true);
+    this.onListenersChanges(true)
     this.setLockListeners()
-    if (this.props.loginStatus)
-      this.addFSIdentify(this.props.user)
+    if (this.props.loginStatus) this.addFSIdentify(this.props.user)
+  }
+
+  handleAuthError = async (errorArgument: string) => {
+    const { authErrorsMutation } = this.props
+    console.log('errorArgument', errorArgument);
+
+
+    await authErrorsMutation({
+      variables: {
+        authError: true,
+        authErrorText: 'as23123',
+      },
+    })
   }
 
   addFSIdentify(profile) {
@@ -63,14 +74,11 @@ class LoginQuery extends React.Component<Props, State> {
     }
   }
 
-  handleMenu = (event: Event) => {
-    this.setState({ anchorEl: event.currentTarget })
-  }
-
   setLockListeners = () => {
-    this.state.lock.on('authenticated', (authResult: any) => {
+    this.lock.on('authenticated', (authResult: any) => {
       this.props.isLogging()
-      this.state.lock.getUserInfo(
+
+      this.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
           if (error) {
@@ -81,13 +89,15 @@ class LoginQuery extends React.Component<Props, State> {
         }
       )
     })
-    this.state.lock.on('hide', async () => {
+    this.lock.on('hide', async () => {
       await this.onModalProcessChanges(true)
       await this.onListenersChanges(true)
       setTimeout(() => {
         this.onModalChanges(false)
       }, 1000)
     })
+
+    this.lock.on('authorization_error', this.handleAuthError)
   }
 
   onListenersChanges = async (listenersStatus: boolean) => {
@@ -129,35 +139,29 @@ class LoginQuery extends React.Component<Props, State> {
     }
   }
 
-  handleClose = () => {
-    this.setState({ anchorEl: null })
-  }
-
   showLogin = async () => {
     const isLoginPopUpClosed =
       !this.props.loginDataQuery.login.modalIsOpen &&
       !this.props.loginDataQuery.login.modalLogging &&
       !this.props.logging
-    if(!isLoginPopUpClosed) {
+    if (!isLoginPopUpClosed) {
       this.onModalChanges(false)
     }
-    console.log('ff isLoginPopUpClosed', isLoginPopUpClosed)
 
     if (isLoginPopUpClosed) {
       await this.onModalChanges(true)
-      this.state.lock.show()
+      this.lock.show()
       if (this.props.loginDataQuery.login.listenersOff) {
         this.setLockListeners()
-     }
+      }
     }
   }
 
   render() {
-    const {
-      loginStatus,
-      handleLogout,
-      user,
-    } = this.props
+    const { loginStatus, handleLogout, user, loginDataQuery } = this.props
+
+    console.log('loginDataQuery', loginDataQuery);
+
 
     if (this.props.isShownModal) return null
     return (
@@ -179,10 +183,6 @@ class LoginQuery extends React.Component<Props, State> {
           mountOnEnter={true}
         >
           <LoginMenu
-            anchorEl={this.state.anchorEl}
-            open={open}
-            handleClose={this.handleClose}
-            handleMenu={this.handleMenu}
             handleLogout={handleLogout}
             userName={user && user.name}
           />
