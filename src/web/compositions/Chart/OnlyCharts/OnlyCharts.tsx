@@ -191,13 +191,11 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 export default queryRendererHoc({
   query: GET_LAYOUTS,
-  fetchPolicy: 'cache-only',
   withOutSpinner: false,
   withTableLoader: false,
   name: 'getLayouts',
 })(queryRendererHoc({
   query: GET_CHARTS,
-  fetchPolicy: 'cache-only',
   withOutSpinner: false,
   withTableLoader: false,
   name: 'getCharts',
