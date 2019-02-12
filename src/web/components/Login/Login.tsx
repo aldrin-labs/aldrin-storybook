@@ -28,9 +28,6 @@ const auth0Options = {
 }
 
 class LoginQuery extends React.Component<Props, State> {
-  state = {
-    anchorEl: null,
-  }
 
   lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
     ...auth0Options,

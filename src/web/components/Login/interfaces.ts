@@ -19,7 +19,3 @@ export interface Props {
   authErrorsMutation: Function
   handleLogout: Function
 }
-
-export interface State {
-  anchorEl: EventTarget | null
-}
