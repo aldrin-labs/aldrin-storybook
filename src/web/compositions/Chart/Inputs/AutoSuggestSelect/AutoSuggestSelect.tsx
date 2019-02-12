@@ -17,6 +17,8 @@ import { compose } from 'recompose'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+
 
 
 type T = { value: string; data: string }
@@ -156,12 +158,17 @@ const mapDispatchToProps = (dispatch: any) => ({
   addChart: (baseQuote: string) => dispatch(actions.addChart(baseQuote)),
 })
 
-export default compose(
-  graphql(GET_CHARTS, { name: 'getCharts' }),
+export default queryRendererHoc({
+  query: GET_CHARTS,
+  fetchPolicy: 'cache-only',
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getCharts',
+})(compose(
   graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withTheme()(
   connect(
     mapStateToProps,
     mapDispatchToProps
   )(queryRender)
-))
+)))

@@ -54,6 +54,7 @@ import { graphql } from 'react-apollo'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import { compose } from 'recompose'
 
@@ -485,8 +486,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
-export default compose(
-  graphql(GET_CHARTS, { name: 'getCharts' }),
+export default queryRendererHoc({
+  query: GET_CHARTS,
+  fetchPolicy: 'cache-only',
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getCharts',
+})(compose(
   graphql(ADD_CHART, { name: 'addChartMutations' })
   )(withAuth(
   withErrorFallback(
@@ -495,4 +501,4 @@ export default compose(
       mapDispatchToProps
     )(ThemedChart)
   )
-))
+)))
