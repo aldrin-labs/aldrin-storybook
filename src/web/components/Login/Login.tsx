@@ -8,6 +8,7 @@ import MainLogo from '@icons/AuthLogo.png'
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
 import { withTheme } from '@material-ui/styles'
+import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage } from '@core/utils/errorsConfig'
 
 @withTheme()
 class LoginQuery extends React.Component<Props> {
@@ -35,10 +36,17 @@ class LoginQuery extends React.Component<Props> {
     setTimeout(this.showLogin, delay)
   }
 
-  handleAuthError = async (errorArgument: string) => {
+  handleAuthError = async (errorObject: any) => {
     const { authErrorsMutation } = this.props
-    console.log('errorArgument', errorArgument)
-    // TODO: handle EXACTLY ERROR CODE
+    console.log('errorArgument', errorObject)
+
+    // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
+    if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
+      console.log('inside handleAuthError condition', errorObject)
+
+      return
+    }
+
     await authErrorsMutation({
       variables: {
         authError: true,
