@@ -55,28 +55,13 @@ const LayoutSelecorComponent = ({...props}) => {
       <TransparentExtendedFAB
         onClick={setTopMarkets}
       >
-        set Top Coins from marketcap
+        Top Marketcap Charts
       </TransparentExtendedFAB>
       <TransparentExtendedFAB
         onClick={setTopCoinInPortfolio}
       >
-        set Top Coins from portfolio
+        Top Portfolio Charts
       </TransparentExtendedFAB>
-      <SelectContainer
-        border={divider}
-      >
-        <SelectR
-          components={{ Option }}
-          value=""
-          placeholder="Select layout"
-          fullWidth={true}
-          options={layouts}
-          onChange={handleChange}
-        />
-      </SelectContainer>
-      <SaveLayoutDialog
-        saveLayout={saveLayout}
-      />
     </>
   )
 }
