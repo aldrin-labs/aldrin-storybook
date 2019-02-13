@@ -52,8 +52,7 @@ class LoginQuery extends React.Component<Props> {
   handleAuthError = async (errorArgument: string) => {
     const { authErrorsMutation } = this.props
     console.log('errorArgument', errorArgument);
-
-
+    // TODO: handle EXACTLY ERROR CODE
     await authErrorsMutation({
       variables: {
         authError: true,
@@ -75,12 +74,22 @@ class LoginQuery extends React.Component<Props> {
     this.lock.on('authenticated', (authResult: any) => {
       this.props.isLogging()
 
+      console.log('authenticated event');
+      console.log('authResult', authResult);
+
+
       this.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
           if (error) {
             console.error(error)
           }
+
+          console.log('error in authenticated', error);
+          console.log('profile in authenticated', profile);
+          console.log('authResult.idToken', authResult.idToken);
+
+
           this.props.onLogin(profile, authResult.idToken)
           this.addFSIdentify(profile)
         }
@@ -158,7 +167,6 @@ class LoginQuery extends React.Component<Props> {
     const { loginStatus, handleLogout, user, loginDataQuery } = this.props
 
     console.log('loginDataQuery', loginDataQuery);
-
 
     if (this.props.isShownModal) return null
     return (
