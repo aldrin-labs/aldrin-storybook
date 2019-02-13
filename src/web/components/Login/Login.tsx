@@ -1,57 +1,43 @@
 import * as React from 'react'
+import { auth0Options } from '@core/config/authConfig'
 import Button from '@material-ui/core/Button'
 import { Grow, Slide } from '@material-ui/core'
-import { Props } from './interfaces'
+import { Props } from './Login.types'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
+import { withTheme } from '@material-ui/styles'
 
-const auth0Options = {
-  auth: {
-    responseType: 'token id_token',
-    redirectUri: 'localhost:3000/login',
-    scope: 'openid',
-    audience: 'localhost:5080',
-  },
-  theme: {
-    logo: MainLogo,
-    primaryColor: '#4ed8da',
-  },
-  languageDictionary: {
-    title: 'Be an early adopter',
-  },
-  // loginAfterSignUp: false,
-  autofocus: true,
-  autoclose: true,
-  oidcConformant: true,
-}
-
+@withTheme()
 class LoginQuery extends React.Component<Props> {
-
   lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
     ...auth0Options,
     theme: {
       ...auth0Options.theme,
-      primaryColor: this.props.mainColor,
+      primaryColor: this.props.theme.palette.secondary.main,
+      logo: MainLogo,
     },
   })
 
-  componentDidMount() {
-    if (this.props.isShownModal) {
-      this.lock.show()
-      this.onModalChanges(true)
-    } else {
-      this.onModalChanges(false)
+  componentDidUpdate(prevProps: Props) {
+    if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
+      this.showLoginAfterDelay()
     }
-    this.onListenersChanges(true)
+  }
+
+  componentDidMount() {
     this.setLockListeners()
     if (this.props.loginStatus) this.addFSIdentify(this.props.user)
   }
 
+  showLoginAfterDelay = (delay = 1500): void => {
+    setTimeout(this.showLogin, delay)
+  }
+
   handleAuthError = async (errorArgument: string) => {
     const { authErrorsMutation } = this.props
-    console.log('errorArgument', errorArgument);
+    console.log('errorArgument', errorArgument)
     // TODO: handle EXACTLY ERROR CODE
     await authErrorsMutation({
       variables: {
@@ -74,21 +60,12 @@ class LoginQuery extends React.Component<Props> {
     this.lock.on('authenticated', (authResult: any) => {
       this.props.isLogging()
 
-      console.log('authenticated event');
-      console.log('authResult', authResult);
-
-
       this.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
           if (error) {
             console.error(error)
           }
-
-          console.log('error in authenticated', error);
-          console.log('profile in authenticated', profile);
-          console.log('authResult.idToken', authResult.idToken);
-
 
           this.props.onLogin(profile, authResult.idToken)
           this.addFSIdentify(profile)
@@ -97,26 +74,12 @@ class LoginQuery extends React.Component<Props> {
     })
     this.lock.on('hide', async () => {
       await this.onModalProcessChanges(true)
-      await this.onListenersChanges(true)
       setTimeout(() => {
         this.onModalChanges(false)
       }, 1000)
     })
 
     this.lock.on('authorization_error', this.handleAuthError)
-  }
-
-  onListenersChanges = async (listenersStatus: boolean) => {
-    const { listenersStatusMutation } = this.props
-    const variables = {
-      listenersStatus,
-    }
-
-    try {
-      await listenersStatusMutation({ variables })
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   onModalChanges = async (modalIsOpen: boolean) => {
@@ -147,26 +110,20 @@ class LoginQuery extends React.Component<Props> {
 
   showLogin = async () => {
     const isLoginPopUpClosed =
-      !this.props.modalIsOpen &&
-      !this.props.modalLogging &&
-      !this.props.logging
+      !this.props.modalIsOpen && !this.props.modalLogging && !this.props.logging
     if (!isLoginPopUpClosed) {
-      this.onModalChanges(false)
+      await this.onModalChanges(false)
     }
 
     if (isLoginPopUpClosed) {
       await this.onModalChanges(true)
       this.lock.show()
-      if (this.props.listenersOff) {
-        this.setLockListeners()
-      }
     }
   }
 
   render() {
     const { loginStatus, handleLogout, user } = this.props
 
-    if (this.props.isShownModal) return null
     return (
       <SWrapper className="LoginButton">
         <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
@@ -185,10 +142,7 @@ class LoginQuery extends React.Component<Props> {
           unmountOnExit={true}
           mountOnEnter={true}
         >
-          <LoginMenu
-            handleLogout={handleLogout}
-            userName={user && user.name}
-          />
+          <LoginMenu handleLogout={handleLogout} userName={user && user.name} />
         </Slide>
       </SWrapper>
     )
