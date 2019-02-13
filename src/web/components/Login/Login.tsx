@@ -147,8 +147,8 @@ class LoginQuery extends React.Component<Props> {
 
   showLogin = async () => {
     const isLoginPopUpClosed =
-      !this.props.loginDataQuery.login.modalIsOpen &&
-      !this.props.loginDataQuery.login.modalLogging &&
+      !this.props.modalIsOpen &&
+      !this.props.modalLogging &&
       !this.props.logging
     if (!isLoginPopUpClosed) {
       this.onModalChanges(false)
@@ -157,16 +157,14 @@ class LoginQuery extends React.Component<Props> {
     if (isLoginPopUpClosed) {
       await this.onModalChanges(true)
       this.lock.show()
-      if (this.props.loginDataQuery.login.listenersOff) {
+      if (this.props.listenersOff) {
         this.setLockListeners()
       }
     }
   }
 
   render() {
-    const { loginStatus, handleLogout, user, loginDataQuery } = this.props
-
-    console.log('loginDataQuery', loginDataQuery);
+    const { loginStatus, handleLogout, user } = this.props
 
     if (this.props.isShownModal) return null
     return (
