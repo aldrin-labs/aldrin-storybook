@@ -40,8 +40,6 @@ class LoginQuery extends React.Component<Props> {
     const { authErrorsMutation } = this.props
     // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
     if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
-      console.log('inside handleAuthError condition', errorObject)
-
       return
     }
 
