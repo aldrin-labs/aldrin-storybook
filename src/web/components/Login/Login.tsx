@@ -38,8 +38,6 @@ class LoginQuery extends React.Component<Props> {
 
   handleAuthError = async (errorObject: any) => {
     const { authErrorsMutation } = this.props
-    console.log('errorArgument', errorObject)
-
     // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
     if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
       console.log('inside handleAuthError condition', errorObject)
@@ -66,8 +64,6 @@ class LoginQuery extends React.Component<Props> {
 
   setLockListeners = () => {
     this.lock.on('authenticated', (authResult: any) => {
-      this.props.isLogging()
-
       this.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
@@ -147,7 +143,10 @@ class LoginQuery extends React.Component<Props> {
           unmountOnExit={true}
           mountOnEnter={true}
         >
-          <LoginMenu handleLogout={handleLogout} userName={user && user.name} />
+          <LoginMenu
+            handleLogout={handleLogout}
+            userName={user && user.name}
+          />
         </Slide>
       </SWrapper>
     )
