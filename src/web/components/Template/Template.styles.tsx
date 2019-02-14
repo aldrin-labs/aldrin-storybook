@@ -46,3 +46,7 @@ export const TablesWrapper = styled(Grid as React.SFC<GridProps>)`
     max-height: inherit;
   }
 `
+
+export const GridTableContainer = styled(Grid as React.SFC<GridProps>)`
+  max-height: 100%;
+`
