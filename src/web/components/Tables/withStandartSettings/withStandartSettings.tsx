@@ -2,12 +2,13 @@ import React from 'react'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { Menu, MenuItem } from '@material-ui/core'
 import Switch from '@material-ui/core/Switch'
+import { saveAs } from 'file-saver'
 
 import GetApp from '@material-ui/icons/GetApp'
 
 import { getCSVData } from '@core/utils/PortfolioTableUtils'
-
 import { Props } from '../index.types'
+
 
 export default (WrappedComponent: React.ReactType) => {
   return class Settings extends React.Component<Props> {
@@ -42,7 +43,8 @@ export default (WrappedComponent: React.ReactType) => {
         data: { body },
         columnNames,
       } = this.props
-      getCSVData(body, columnNames)
+      const blob = new Blob([getCSVData(body, columnNames)], {type: 'text/plain;charset=utf-8'});
+      saveAs(blob, 'result.csv')
     }
 
     render() {
