@@ -8,7 +8,7 @@ import MainLogo from '@icons/AuthLogo.png'
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
 import { withTheme } from '@material-ui/styles'
-import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage } from '@core/utils/errorsConfig'
+import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInProcessOfLoginin } from '@core/utils/errorsConfig'
 
 @withTheme()
 class LoginQuery extends React.Component<Props> {
@@ -50,7 +50,7 @@ class LoginQuery extends React.Component<Props> {
     await authErrorsMutation({
       variables: {
         authError: true,
-        authErrorText: 'as23123',
+        authErrorText: errorObject.error || errorInProcessOfLoginin,
       },
     })
   }
@@ -75,15 +75,15 @@ class LoginQuery extends React.Component<Props> {
             console.error(error)
           }
 
-          this.props.onLogin(profile, authResult.idToken)
+          await this.props.onLogin(profile, authResult.idToken)
           this.addFSIdentify(profile)
         }
       )
     })
     this.lock.on('hide', async () => {
       await this.onModalProcessChanges(true)
-      setTimeout(() => {
-        this.onModalChanges(false)
+      setTimeout(async () => {
+        await this.onModalChanges(false)
       }, 1000)
     })
 
@@ -117,16 +117,13 @@ class LoginQuery extends React.Component<Props> {
   }
 
   showLogin = async () => {
-    const isLoginPopUpClosed =
-      !this.props.modalIsOpen && !this.props.modalLogging && !this.props.logging
-    if (!isLoginPopUpClosed) {
-      await this.onModalChanges(false)
-    }
-
-    if (isLoginPopUpClosed) {
+    if (!this.props.modalIsOpen && !this.props.modalLogging) {
       await this.onModalChanges(true)
       this.lock.show()
+      return
     }
+
+    await this.onModalChanges(false)
   }
 
   render() {
