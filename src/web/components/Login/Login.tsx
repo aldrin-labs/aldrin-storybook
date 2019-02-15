@@ -21,15 +21,19 @@ class LoginQuery extends React.Component<Props> {
     },
   })
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate = async (prevProps: Props) => {
     if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
+      await this.onModalChanges(true)
       this.showLoginAfterDelay()
     }
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.setLockListeners()
     if (this.props.loginStatus) this.addFSIdentify(this.props.user)
+    if (this.props.modalIsOpen) {
+      await this.onModalChanges(false)
+    }
   }
 
   showLoginAfterDelay = (delay = 1500): void => {
