@@ -14,4 +14,5 @@ export interface Props {
   onLogin: Function
   handleLogout: Function
   isLogging: Function
+  persistCacheImmediately: Function
 }

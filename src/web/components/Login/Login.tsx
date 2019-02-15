@@ -37,7 +37,7 @@ class LoginQuery extends React.Component<Props> {
   }
 
   handleAuthError = async (errorObject: any) => {
-    const { authErrorsMutation } = this.props
+    const { authErrorsMutation, persistCacheImmediately } = this.props
     // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
     if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
       return
@@ -49,6 +49,8 @@ class LoginQuery extends React.Component<Props> {
         authErrorText: errorObject.error || errorInProcessOfLoginin,
       },
     })
+    await this.onModalChanges(false)
+    await persistCacheImmediately()
   }
 
   addFSIdentify(profile) {
