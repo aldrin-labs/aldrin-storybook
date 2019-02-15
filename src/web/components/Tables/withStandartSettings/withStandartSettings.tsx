@@ -44,7 +44,6 @@ export default (WrappedComponent: React.ReactType) => {
         columnNames,
         expandableRows,
       } = this.props
-      console.log(this.props)
       const blob = new Blob([getCSVData(
         body,
         columnNames,
