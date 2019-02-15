@@ -1,9 +1,17 @@
 import MdLock from '@material-ui/icons/Lock'
 import styled from 'styled-components'
-import { Card, Dialog } from '@material-ui/core'
+import { Card } from '@material-ui/core'
 
-export const StyledDialog = styled(Dialog)`
-  z-index: -1;
+export const StyledDialog = styled.div`
+  && {
+    z-index: -10;
+  }
+
+  outline: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `
 
 export const StyledCard = styled(Card)`
