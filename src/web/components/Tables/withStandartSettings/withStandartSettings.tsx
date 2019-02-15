@@ -42,8 +42,14 @@ export default (WrappedComponent: React.ReactType) => {
       const {
         data: { body },
         columnNames,
+        expandableRows,
       } = this.props
-      const blob = new Blob([getCSVData(body, columnNames)], {type: 'text/plain;charset=utf-8'});
+      console.log(this.props)
+      const blob = new Blob([getCSVData(
+        body,
+        columnNames,
+        expandableRows
+        )], {type: 'text/plain;charset=utf-8'})
       saveAs(blob, 'result.csv')
     }
 
