@@ -13,7 +13,6 @@ const UserLink = (props) => <Link to="/user" {...props} />
 
 const LoginMenuComponent = ({
   userName,
-  handleMenu,
   handleLogout,
   showToolTip,
 }: any) => (
