@@ -379,7 +379,6 @@ class Chart extends React.Component<IProps, IState> {
       getCharts: { multichart: { charts } },
       addChartMutation,
     } = this.props
-    console.log(charts)
     const defaultView = view === 'default'
 
     return (
