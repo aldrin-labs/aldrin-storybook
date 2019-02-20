@@ -375,11 +375,11 @@ class Chart extends React.Component<IProps, IState> {
     const {
       toggleView,
       view,
-      isNoCharts,
       currencyPair,
       getCharts: { multichart: { charts } },
       addChartMutation,
     } = this.props
+    console.log(charts)
     const defaultView = view === 'default'
 
     return (
@@ -397,7 +397,7 @@ class Chart extends React.Component<IProps, IState> {
             toggleView(defaultView ? 'onlyCharts' : 'default')
             if (defaultView && charts === []) {
               addChartMutation({ variables: {
-                pair: currencyPair,
+                chart: currencyPair,
               } })
             }}
           }
@@ -492,7 +492,7 @@ export default queryRendererHoc({
   withTableLoader: false,
   name: 'getCharts',
 })(compose(
-  graphql(ADD_CHART, { name: 'addChartMutations' })
+  graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withAuth(
   withErrorFallback(
     connect(

@@ -30,7 +30,7 @@ class OnlyCharts extends Component<IProps> {
     const { multichart: { charts } } = getCharts
     if (charts.length === 0) {
       addChartMutation({ variables: {
-        pair: mainPair,
+        chart: mainPair,
       } })
     }
   }
@@ -108,15 +108,15 @@ class OnlyCharts extends Component<IProps> {
             chartsCount={charts.length || 1}
           >
             {charts
-              .filter((chart) => chart.id && chart.pair)
+              .filter((chart) => chart)
               .map((chart: IChart, i: number) => (
                 <IndividualChart
-                  key={chart.id}
+                  key={chart}
                   theme={theme}
                   removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
-                  currencyPair={chart.pair}
+                  currencyPair={chart}
                 />
               ))}
             <WarningMessageSnack
