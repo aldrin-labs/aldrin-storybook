@@ -26,7 +26,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
-    const { addChart, mainPair, getCharts, addChartMutation } = this.props
+    const { mainPair, getCharts, addChartMutation } = this.props
     const { multichart: { charts } } = getCharts
     if (charts.length === 0) {
       addChartMutation({ variables: {
@@ -190,11 +190,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 export default queryRendererHoc({
-  query: GET_LAYOUTS,
-  withOutSpinner: false,
-  withTableLoader: false,
-  name: 'getLayouts',
-})(queryRendererHoc({
   query: GET_CHARTS,
   withOutSpinner: false,
   withTableLoader: false,
@@ -207,4 +202,4 @@ export default queryRendererHoc({
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OnlyCharts)))))
+  )(OnlyCharts))))
