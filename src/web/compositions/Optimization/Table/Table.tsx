@@ -57,7 +57,7 @@ export default class Table extends Component<IProps, IState> {
       onClickDeleteIcon,
       onPlusClick,
       optimizedData,
-      filterValueSmallerThenPercentage,
+      // filterValueSmallerThenPercentage,
       activeButton,
       theme: { palette },
     } = this.props
@@ -100,7 +100,7 @@ export default class Table extends Component<IProps, IState> {
 
             <Col>
               {data
-                .filter((d) => d.percentage > filterValueSmallerThenPercentage)
+                // .filter((d) => d.percentage > filterValueSmallerThenPercentage)
                 .map((item, i) => (
                   <Item
                     background={palette.background.paper}
@@ -116,7 +116,7 @@ export default class Table extends Component<IProps, IState> {
 
             <Col>
               {data
-                .filter((d) => d.percentage > filterValueSmallerThenPercentage)
+                // .filter((d) => d.percentage > filterValueSmallerThenPercentage)
                 .map((item, i) => (
                   <Item
                     background={palette.background.paper}
@@ -132,9 +132,9 @@ export default class Table extends Component<IProps, IState> {
             {optimizedData.length >= 1 ? (
               <Col>
                 {data
-                  .filter(
-                    (d) => d.percentage > filterValueSmallerThenPercentage
-                  )
+                  // .filter(
+                  //   (d) => d.percentage > filterValueSmallerThenPercentage
+                  // )
                   .map((item, i) => (
                     <Item
                       background={palette.background.paper}
@@ -161,9 +161,9 @@ export default class Table extends Component<IProps, IState> {
             ) : (
               <Col>
                 {data
-                  .filter(
-                    (d) => d.percentage > filterValueSmallerThenPercentage
-                  )
+                  // .filter(
+                  //   (d) => d.percentage > filterValueSmallerThenPercentage
+                  // )
                   .map((item, i) => (
                     <Item
                       background={palette.background.paper}
