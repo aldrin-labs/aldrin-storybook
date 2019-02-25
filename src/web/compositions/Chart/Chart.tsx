@@ -333,6 +333,7 @@ class Chart extends React.Component<IProps, IState> {
       currencyPair,
       theme,
       getMyProfile: { getMyProfile: { _id }},
+      themeMode,
     } = this.props
 
     if (!currencyPair) {
@@ -344,7 +345,7 @@ class Chart extends React.Component<IProps, IState> {
       <Container container spacing={16}>
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}`} />
+            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`} />
           ) : (
             <Fade timeout={1000} in={activeChart === 'depth'}>
               <DepthChartContainer data-e2e="mainDepthChart">
@@ -368,7 +369,8 @@ class Chart extends React.Component<IProps, IState> {
 
   renderOnlyCharts = () => {
     const {
-      getMyProfile: { getMyProfile: { _id }}
+      getMyProfile: { getMyProfile: { _id }},
+      themeMode,
     } = this.props
 
     return (<OnlyCharts
@@ -377,6 +379,7 @@ class Chart extends React.Component<IProps, IState> {
         mainPair: this.props.currencyPair,
         view: this.props.view,
         userId: _id,
+        themeMode: themeMode,
       }}
     />
   )}
@@ -480,6 +483,7 @@ const mapStateToProps = (store: any) => ({
   view: store.chart.view,
   currencyPair: store.chart.currencyPair,
   isShownMocks: store.user.isShownMocks,
+  themeMode: store.ui.theme,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
