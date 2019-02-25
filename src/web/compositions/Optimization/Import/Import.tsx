@@ -56,7 +56,7 @@ export default class Import extends PureComponent<IProps> {
     const assets =
       this.props.data &&
       this.props.data.myPortfolios[0] &&
-      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets)
+      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets, this.props.dustFilter)
 
     this.props.updateData(assets[0])
     const isUSDTInInitialPortfolioExists = assets[0].some(
