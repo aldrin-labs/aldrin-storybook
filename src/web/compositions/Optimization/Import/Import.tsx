@@ -209,25 +209,27 @@ export default class Import extends PureComponent<IProps> {
     const optimizedData = backendResultParsed.returns
 
     if (isRiskFreeAssetEnabled) {
-      this.addRow('USDT', 0)
+      this.addRow('USDT', 0, true)
     }
 
     optimizedToState(optimizedData)
   }
 
-  addRow = (name: string, value: number) => {
+  addRow = (name: string, value: number, disableFiltering = false) => {
     if (this.props.storeData.some((el) => el.coin === name)) {
       return
     }
 
-    if (this.props.dustFilter.usdKey >= 0 || this.props.dustFilter.percentageKey >= 0) {
-      this.props.showWarning('Disable Dust filter first to see added coins')
+    if ((this.props.dustFilter.usd >= 0 || this.props.dustFilter.percentage >= 0) && !disableFiltering) {
+      this.props.showWarning('Disable Dust filter first to add new coins')
+
+      return
     }
 
     if (name) {
       this.props.updateData([
         ...this.props.storeData,
-        { coin: name, percentage: value },
+        { disableFiltering, coin: name, percentage: value },
       ])
     }
   }

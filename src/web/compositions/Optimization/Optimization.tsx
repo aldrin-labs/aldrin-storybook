@@ -115,7 +115,7 @@ class Optimization extends Component<IProps, IState> {
       'percentage'
     )
 
-    const filtredDustOptimizationAssets = filterDust(summedAssetsWithoutDuplicates, dustFilter, { usdKey: 'price', percentageKey: 'percentage' })
+    const filtredDustOptimizationAssets = filterDust(summedAssetsWithoutDuplicates, dustFilter, { usdKey: 'price', percentageKey: 'percentage' }, {disableFilteringKey: 'disableFiltering'})
 
     return [filtredDustOptimizationAssets, allSum]
   }
