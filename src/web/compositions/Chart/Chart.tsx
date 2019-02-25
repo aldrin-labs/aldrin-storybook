@@ -52,6 +52,7 @@ import { IProps, IState } from './Chart.types'
 
 import { graphql } from 'react-apollo'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
@@ -328,7 +329,11 @@ class Chart extends React.Component<IProps, IState> {
 
   renderDefaultView = () => {
     const { activeChart } = this.state
-    const { currencyPair, theme } = this.props
+    const {
+      currencyPair,
+      theme,
+      getMyProfile: { getMyProfile: { _id }},
+    } = this.props
 
     if (!currencyPair) {
       return
@@ -339,7 +344,7 @@ class Chart extends React.Component<IProps, IState> {
       <Container container spacing={16}>
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}`} />
+            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}`} />
           ) : (
             <Fade timeout={1000} in={activeChart === 'depth'}>
               <DepthChartContainer data-e2e="mainDepthChart">
@@ -486,6 +491,11 @@ const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
 export default queryRendererHoc({
+  query: GET_MY_PROFILE,
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getMyProfile',
+})(queryRendererHoc({
   query: GET_CHARTS,
   withOutSpinner: false,
   withTableLoader: false,
@@ -499,4 +509,4 @@ export default queryRendererHoc({
       mapDispatchToProps
     )(ThemedChart)
   )
-)))
+))))
