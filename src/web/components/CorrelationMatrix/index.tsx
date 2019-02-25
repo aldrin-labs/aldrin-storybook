@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
+import { withTheme } from '@material-ui/styles'
 import FullScreen from 'react-fullscreen-crossbrowser'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
@@ -13,6 +14,8 @@ import { CorrelationMatrixTable } from './CorrelationMatrixTable'
 import { IProps } from './types'
 import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
+
+@withTheme()
 
 class CorrelationMatrixComponent extends PureComponent<IProps> {
   constructor(props: IProps) {
@@ -85,7 +88,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             className="full-screenable-node"
           >
             {isFullscreenEnabled ? null : (
-                <ButtonsWrapper id="ButtonsWrapper" style={{ gridRowStart: 1 }}>
+                <ButtonsWrapper id="ButtonsWrapper">
                   <Typography noWrap align="center" variant="h6">
                     Time Range
                   </Typography>
@@ -155,6 +158,7 @@ export default CorrelationMatrix
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  grid-row-start: 2;
 `
 
 const StyledFullscreenButton = styled(Button)`

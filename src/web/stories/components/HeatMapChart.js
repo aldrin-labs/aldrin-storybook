@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import { withInfo } from '@storybook/addon-info'
 import { number, object } from '@storybook/addon-knobs'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import { default as HeatMapChart } from '@components/HeatMapChart'
 
 const data = [
@@ -21,7 +21,7 @@ const data = [
 ]
 const groupId = 'GROUP-ID1'
 
-storiesOf('HeatMapChart', module)
+storiesOf('Components/HeatMapChart', module)
   .addDecorator(backgrounds)
   .add(
     'HeatMapChart',

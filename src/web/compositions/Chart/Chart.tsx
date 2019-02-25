@@ -49,6 +49,17 @@ import {
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
+
+import { graphql } from 'react-apollo'
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+
+import { compose } from 'recompose'
+
+import LayoutSelecor from '@core/components/LayoutSelector'
+
 class Chart extends React.Component<IProps, IState> {
   state = {
     view: 'default',
@@ -361,8 +372,14 @@ class Chart extends React.Component<IProps, IState> {
   )
 
   renderToggler = () => {
-    const { toggleView, view, isNoCharts, currencyPair, addChart } = this.props
-
+    const {
+      toggleView,
+      view,
+      isNoCharts,
+      currencyPair,
+      getCharts: { multichart: { charts } },
+      addChartMutation,
+    } = this.props
     const defaultView = view === 'default'
 
     return (
@@ -376,9 +393,14 @@ class Chart extends React.Component<IProps, IState> {
           variant="extendedFab"
           color="secondary"
           onClick={() => {
+            console.log('onClick')
             toggleView(defaultView ? 'onlyCharts' : 'default')
-            if (defaultView && isNoCharts) addChart(currencyPair)
-          }}
+            if (defaultView && charts === []) {
+              addChartMutation({ variables: {
+                pair: currencyPair,
+              } })
+            }}
+          }
         >
           {defaultView ? 'Multi Charts' : ' Single Chart'}
         </Button>
@@ -394,6 +416,7 @@ class Chart extends React.Component<IProps, IState> {
     if (!currencyPair) {
       return
     }
+
     const [base, quote] = currencyPair.split('_')
     const toggler = this.renderToggler()
 
@@ -410,6 +433,9 @@ class Chart extends React.Component<IProps, IState> {
             alignItems="center"
             justify="flex-end"
           >
+            {view === 'onlyCharts' && (
+              <LayoutSelecor />
+            )}
             <AutoSuggestSelect
               value={view === 'default' && currencyPair}
               id={'currencyPair'}
@@ -460,11 +486,18 @@ const mapDispatchToProps = (dispatch: any) => ({
 const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
-export default withAuth(
+export default queryRendererHoc({
+  query: GET_CHARTS,
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getCharts',
+})(compose(
+  graphql(ADD_CHART, { name: 'addChartMutations' })
+  )(withAuth(
   withErrorFallback(
     connect(
       mapStateToProps,
       mapDispatchToProps
     )(ThemedChart)
   )
-)
+)))

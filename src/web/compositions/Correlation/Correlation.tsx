@@ -2,6 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Joyride from 'react-joyride'
+import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { CorrelationMatrixMockData } from './mocks'
@@ -163,5 +164,4 @@ const storeComponent = connect(
   mapDispatchToProps
 )(CorrelationWrapper)
 
-export default storeComponent
-
+export default withTheme()(storeComponent)

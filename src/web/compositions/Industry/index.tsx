@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 import Joyride from 'react-joyride'
 import { connect } from 'react-redux'
@@ -9,8 +10,10 @@ import * as actions from '@core/redux/user/actions'
 import { IProps, IState } from './types'
 import { portfolioIndustrySteps } from '@sb/config/joyrideSteps'
 import Template from './Template'
-import IndustryTable from '@core/components/IndustryTable'
-import IndustryChart from '@core/components/IndustryChart'
+import IndustryTable from '@core/containers/IndustryTable'
+import IndustryChart from '@core/containers/IndustryChart'
+
+@withTheme()
 
 class PortfolioTableIndustries extends React.Component<IProps, IState> {
   state: IState = {
@@ -32,12 +35,12 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, tab } = this.props
+    const { theme, tab, dustFilter } = this.props
 
     return (
       <>
         <Template
-          Table={<IndustryTable />}
+          Table={<IndustryTable dustFilter={dustFilter} />}
           Chart={
             <Fade
               timeout={0}

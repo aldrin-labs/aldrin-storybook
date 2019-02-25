@@ -1,6 +1,7 @@
 import { Theme } from '@material-ui/core'
 
 import { IData } from '@core/types/PortfolioTypes'
+import { DustFilterType } from '../../../../../core/src/types/PortfolioTypes'
 
 export type RawOptimizedData = {
   backtest_results: [number, number]
@@ -26,6 +27,7 @@ export interface IState {
 }
 
 export interface IProps {
+  dustFilter: DustFilterType
   hideToolTip: (any: any) => void
   storeData: IData[]
   isShownMocks: boolean

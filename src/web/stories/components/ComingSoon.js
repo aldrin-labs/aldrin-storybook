@@ -5,7 +5,7 @@ import { withInfo } from '@storybook/addon-info'
 import { Card } from '@material-ui/core'
 import styled from 'styled-components'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import ComingSoon from '@components/ComingSoon'
 
 
@@ -24,7 +24,7 @@ const PTWrapper = styled(Card)`
   height: calc(100vh - 130px);
 `
 
-storiesOf('ComingSoon', module)
+storiesOf('Components/ComingSoon', module)
   .addDecorator(backgrounds)
   .add(
     'ComingSoon',

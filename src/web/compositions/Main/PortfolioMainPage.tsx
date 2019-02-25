@@ -1,4 +1,5 @@
 import React from 'react'
+import { withTheme } from '@material-ui/styles'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
@@ -13,6 +14,8 @@ import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import * as actions from '@core/redux/user/actions'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import Template from '@sb/components/Template/Template'
+
+@withTheme()
 
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {

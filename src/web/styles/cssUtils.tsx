@@ -114,3 +114,11 @@ export const chooseGreen = (theme: Theme) =>
   theme.palette.type === 'dark'
     ? theme.palette.green.main
     : theme.palette.green.dark
+
+
+export const CentredContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`

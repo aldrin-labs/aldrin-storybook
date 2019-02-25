@@ -2,7 +2,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withInfo } from '@storybook/addon-info'
-import { 
+import {
   object,
   number,
   boolean,
@@ -11,14 +11,14 @@ import {
 
 import { Paper } from '@material-ui/core'
 
-import { backgrounds } from './backgrounds'
+import { backgrounds } from '../backgrounds'
 import { BarChart } from '@components/BarChart'
-import { basic, longMocksGenirator, doubled } from './mocks/BarChartMocks'
+import { basic, longMocksGenirator, doubled } from '../mocks/BarChartMocks'
 
 
 const groupId = 'GROUP-ID1'
 
-storiesOf('BarChart', module)
+storiesOf('Components/BarChart', module)
   .addDecorator(backgrounds)
   .add(
     'BarChart',

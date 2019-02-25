@@ -106,6 +106,12 @@ class PortfolioComponent extends React.Component<IProps, IState> {
           const hasActiveKeysOrWallets =
             activeKeys.length + activeWallets.length > 0
 
+          // TODO: DELETE THIS MOCK FOR DUST FILTER
+          const mockedDustFilter = {
+            usd: -100,
+            percentage: dustFilter,
+          }
+
           return (
             <Mutation
               onCompleted={() => refetch()}
@@ -156,7 +162,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                       <PortfolioTable
                         key={activeKeys.length + activeWallets.length}
                         showTable={hasActiveKeysOrWallets}
-                        dustFilter={dustFilter}
+                        dustFilter={mockedDustFilter}
                         theme={theme}
                         baseCoin={baseCoin}
                         onToggleUSDBTC={this.onToggleUSDBTC}

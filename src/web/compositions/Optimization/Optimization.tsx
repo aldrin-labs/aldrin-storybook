@@ -4,6 +4,8 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import Joyride from 'react-joyride'
 import { Grow, Switch } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
+
 
 import * as Useractions from '@core/redux/user/actions'
 import * as actions from '@core/redux/portfolio/actions'
@@ -15,6 +17,7 @@ import {
   calcAllSumOfPortfolioAsset,
   percentagesOfCoinInPortfolio,
   roundPercentage,
+  filterDust,
 } from '@core/utils/PortfolioTableUtils'
 
 import {
@@ -37,6 +40,7 @@ import {
   StyledCardHeader,
 } from './Optimization.styles'
 
+import { ChartPlaceholder } from './ChartPlaceholder/ChartPlaceholder'
 import Import from './Import/Import'
 import LoaderWrapperComponent from './LoaderWrapper/LoaderWrapper'
 import ErrorDialog from './Dialog/Dialog'
@@ -49,6 +53,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import config from '@core/utils/linkConfig'
 import { sumSame } from '@core/utils/PortfolioOptimizationUtils'
+import { DustFilterType } from '../../../../../core/src/types/PortfolioTypes'
 
 
 
@@ -94,7 +99,7 @@ class Optimization extends Component<IProps, IState> {
     this.setState({ rawOptimizedData: data })
   }
 
-  transformData = (assets: any[]): IData[] => {
+  transformData = (assets: any[], dustFilter: DustFilterType): IData[] => {
     const allSum = calcAllSumOfPortfolioAsset(assets)
     // TODO: Avoid mutations in array of objects
     const newAssets = assets.map((asset: IData) => ({
@@ -102,6 +107,7 @@ class Optimization extends Component<IProps, IState> {
       percentage: +roundPercentage(
         percentagesOfCoinInPortfolio(asset, allSum, true)
       ),
+      price: asset.price * asset.quantity,
     }))
     const summedAssetsWithoutDuplicates = sumSame(
       newAssets,
@@ -109,7 +115,9 @@ class Optimization extends Component<IProps, IState> {
       'percentage'
     )
 
-    return [summedAssetsWithoutDuplicates, allSum]
+    const filtredDustOptimizationAssets = filterDust(summedAssetsWithoutDuplicates, dustFilter, { usdKey: 'price', percentageKey: 'percentage' })
+
+    return [filtredDustOptimizationAssets, allSum]
   }
 
   onNewBtnClick = (index: number) => {
@@ -142,7 +150,9 @@ class Optimization extends Component<IProps, IState> {
 
   renderInput = (
     showBlurOnSections: boolean,
-    optimizationCountOfRuns: number
+    optimizationCountOfRuns: number,
+    showCustomPlaceholder: boolean,
+    placeholderElement: string
   ) => {
     // importing stuff from backend or manually bu user
     const { activeButton, rawOptimizedData } = this.state
@@ -155,6 +165,7 @@ class Optimization extends Component<IProps, IState> {
       theme,
       tab,
       updateOptimizationCountOfRuns,
+      dustFilter,
     } = this.props
 
     return (
@@ -181,11 +192,14 @@ class Optimization extends Component<IProps, IState> {
         showBlurOnSections={showBlurOnSections}
         updateOptimizationCountOfRuns={updateOptimizationCountOfRuns}
         optimizationCountOfRuns={optimizationCountOfRuns}
+        showCustomPlaceholder={showCustomPlaceholder}
+        placeholderElement={placeholderElement}
+        dustFilter={dustFilter}
       />
     )
   }
 
-  renderCharts = (showBlurOnSections: boolean) => {
+  renderCharts = (showBlurOnSections: boolean, showCustomPlaceholder: boolean, placeholderElement: any) => {
     const { activeButton, rawOptimizedData, showAllLineChartData } = this.state
     const { storeData, theme } = this.props
 
@@ -259,6 +273,8 @@ class Optimization extends Component<IProps, IState> {
           <InnerChartContainer>
             <Chart background={theme.palette.background.default}>
               <LineChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 theme={theme}
                 additionalInfoInPopup={true}
                 alwaysShowLegend={showAllLineChartData}
@@ -282,6 +298,8 @@ class Optimization extends Component<IProps, IState> {
           <InnerChartContainer>
             <Chart background={theme.palette.background.default}>
               <EfficientFrontierChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 data={efficientFrontierData}
                 theme={theme}
               />
@@ -317,10 +335,13 @@ class Optimization extends Component<IProps, IState> {
       },
     } = this.props
 
-    const showBlurOnSections = optimizationCountOfRuns <= 0
+    const { loading, openWarning, warningMessage, isSystemError, rawOptimizedData } = this.state
+
+    const showBlurOnSections = false
+    const showCustomPlaceholder = !rawOptimizedData.length
+    const placeholderElement = <ChartPlaceholder />
     const textColor: string = palette.getContrastText(palette.background.paper)
 
-    const { loading, openWarning, warningMessage, isSystemError } = this.state
 
     return (
       <PTWrapper background={palette.background.default}>
@@ -348,7 +369,7 @@ class Optimization extends Component<IProps, IState> {
           {children}
           <LoaderWrapperComponent textColor={textColor} open={loading} />
           <ContentInner loading={loading}>
-            {this.renderInput(showBlurOnSections, optimizationCountOfRuns)}
+            {this.renderInput(showBlurOnSections, optimizationCountOfRuns, showCustomPlaceholder, placeholderElement)}
 
             <MainArea background={palette.background.paper}>
               <Grow
@@ -357,7 +378,7 @@ class Optimization extends Component<IProps, IState> {
                 mountOnEnter
                 unmountOnExit
               >
-                {this.renderCharts(showBlurOnSections)}
+                {this.renderCharts(showBlurOnSections, showCustomPlaceholder, placeholderElement)}
               </Grow>
             </MainArea>
           </ContentInner>
@@ -393,6 +414,7 @@ const storeComponent = connect(
 )(Optimization)
 
 export default compose(
+  withTheme(),
   queryRendererHoc({
     query: GET_OPTIMIZATION_COUNT_OF_RUNS,
   }),

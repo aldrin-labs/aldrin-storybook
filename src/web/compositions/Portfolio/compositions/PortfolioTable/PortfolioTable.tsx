@@ -87,7 +87,8 @@ class PortfolioTable extends Component<IProps, IState> {
                         tab={this.state.tab}
                         variables={{ baseCoin: 'USDT' }}
                         baseCoin="USDT"
-                        filterValueSmallerThenPercentage={dustFilter}
+                        filterValueSmallerThenPercentage={-100}
+                        dustFilter={dustFilter}
                       />
                     </MemoizedTab>
                   </div>
@@ -98,7 +99,7 @@ class PortfolioTable extends Component<IProps, IState> {
                           baseCoin={`USDT`}
                           tab={this.state.tab}
                           isUSDCurrently={true}
-                          filterValueSmallerThenPercentage={dustFilter}
+                          dustFilter={dustFilter}
                         />
                       </MemoizedTab>
                     </div>
@@ -109,7 +110,7 @@ class PortfolioTable extends Component<IProps, IState> {
                         baseCoin="USDT"
                         tab={this.state.tab}
                         theme={theme}
-                        filterValueSmallerThenPercentage={dustFilter}
+                        filterValueSmallerThenPercentage={-100}
                       />
                     </MemoizedTab>
                   </div>
@@ -121,7 +122,8 @@ class PortfolioTable extends Component<IProps, IState> {
                         tab={this.state.tab}
                         isUSDCurrently={isUSDCurrently}
                         baseCoin="USDT"
-                        filterValueSmallerThenPercentage={dustFilter}
+                        dustFilter={dustFilter}
+                        // filterValueSmallerThenPercentage={-100}
                       />
                     </MemoizedTab>
                   </div>

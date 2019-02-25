@@ -16,10 +16,7 @@ import { systemError } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
 import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
-import {
-  InnerChartContainer,
-  ChartContainer,
-} from '../shared.styles.tsx'
+import { InnerChartContainer, ChartContainer } from '../shared.styles.tsx'
 import {
   SwitchButtonsWrapper,
   InputContainer,
@@ -59,7 +56,7 @@ export default class Import extends PureComponent<IProps> {
     const assets =
       this.props.data &&
       this.props.data.myPortfolios[0] &&
-      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets)
+      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets, this.props.dustFilter)
 
     this.props.updateData(assets[0])
     const isUSDTInInitialPortfolioExists = assets[0].some(
@@ -223,7 +220,7 @@ export default class Import extends PureComponent<IProps> {
       return
     }
 
-    if (this.props.filterValueSmallerThenPercentage >= 0) {
+    if (this.props.dustFilter.usdKey >= 0 || this.props.dustFilter.percentageKey >= 0) {
       this.props.showWarning('Disable Dust filter first to see added coins')
     }
 
@@ -252,6 +249,8 @@ export default class Import extends PureComponent<IProps> {
       rawOptimizedData,
       tab,
       showBlurOnSections,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
 
     if (!storeData) {
@@ -305,6 +304,8 @@ export default class Import extends PureComponent<IProps> {
               unmountOnExit
             >
               <BarChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 bottomMargin={75}
                 theme={theme}
                 height={340}
@@ -365,10 +366,12 @@ export default class Import extends PureComponent<IProps> {
     const {
       storeData, // data from redux (data from portfolio and mannualy added)
       onNewBtnClick,
-      filterValueSmallerThenPercentage,
+      // filterValueSmallerThenPercentage,
       activeButton,
       theme,
       showBlurOnSections,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
 
     const {
@@ -388,9 +391,7 @@ export default class Import extends PureComponent<IProps> {
       )
     }
 
-    const textColor: string = this.props.theme.palette.getContrastText(
-      this.props.theme.palette.background.paper
-    )
+    const textColor: string = this.props.theme.palette.text.primary
 
     const fontFamily = theme.typography.fontFamily
 
@@ -407,7 +408,7 @@ export default class Import extends PureComponent<IProps> {
           <ImportData>
             <TableSelectsContaienr>
               <InputContainer
-                showHighlightShadows={showBlurOnSections}
+                showHighlightShadows={true}
                 id="Back-test"
                 className="OptimizationInput"
               >
@@ -551,9 +552,9 @@ export default class Import extends PureComponent<IProps> {
                   activeButton={activeButton}
                   withInput={true}
                   onClickDeleteIcon={this.deleteRow}
-                  filterValueSmallerThenPercentage={
-                    filterValueSmallerThenPercentage
-                  }
+                  // filterValueSmallerThenPercentage={
+                  //   filterValueSmallerThenPercentage
+                  // }
                   theme={this.props.theme}
                 />
               </TableContainer>

@@ -1,57 +1,60 @@
 import * as React from 'react'
+import { auth0Options } from '@core/config/authConfig'
 import Button from '@material-ui/core/Button'
 import { Grow, Slide } from '@material-ui/core'
-import { Props, State } from './interfaces'
+import { Props } from './Login.types'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
+import { withTheme } from '@material-ui/styles'
+import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInProcessOfLoginin } from '@core/utils/errorsConfig'
 
-const auth0Options = {
-  auth: {
-    responseType: 'token id_token',
-    redirectUri: 'localhost:3000/login',
-    scope: 'openid',
-    audience: 'localhost:5080',
-  },
-  theme: {
-    logo: MainLogo,
-    primaryColor: '#4ed8da',
-  },
-  languageDictionary: {
-    title: 'Be an early adopter',
-  },
-  autofocus: true,
-  autoclose: true,
-  oidcConformant: true,
-}
+@withTheme()
+class LoginQuery extends React.Component<Props> {
+  lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
+    ...auth0Options,
+    theme: {
+      ...auth0Options.theme,
+      primaryColor: this.props.theme.palette.secondary.main,
+      logo: MainLogo,
+    },
+  })
 
-
-class LoginQuery extends React.Component<Props, State> {
-    state = {
-      anchorEl: null,
-      lock: new Auth0Lock(
-        '0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm',
-        'ccai.auth0.com',
-        {
-          ...auth0Options, theme: {
-            ...auth0Options.theme,
-            primaryColor: this.props.mainColor,
-          },
-        }),
+  componentDidUpdate = async (prevProps: Props) => {
+    if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
+      await this.onModalChanges(true)
+      this.showLoginAfterDelay()
     }
+  }
 
-  componentDidMount() {
-    if (this.props.isShownModal) {
-      this.state.lock.show()
-      this.onModalChanges(true)
-    } else {
-      this.onModalChanges(false)
-    }
-    this.onListenersChanges(true);
+  componentDidMount = async () => {
     this.setLockListeners()
-    if (this.props.loginStatus)
-      this.addFSIdentify(this.props.user)
+    if (this.props.loginStatus) this.addFSIdentify(this.props.user)
+    if (this.props.modalIsOpen) {
+      await this.onModalChanges(false)
+    }
+  }
+
+  showLoginAfterDelay = (delay = 1500): void => {
+    setTimeout(this.showLogin, delay)
+  }
+
+  handleAuthError = async (errorObject: any) => {
+    const { authErrorsMutation, persistCacheImmediately } = this.props
+    // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
+    if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
+      return
+    }
+
+    await authErrorsMutation({
+      variables: {
+        authError: true,
+        authErrorText: errorObject.error || errorInProcessOfLoginin,
+      },
+    })
+    await this.onModalChanges(false)
+    await persistCacheImmediately()
   }
 
   addFSIdentify(profile) {
@@ -63,44 +66,28 @@ class LoginQuery extends React.Component<Props, State> {
     }
   }
 
-  handleMenu = (event: Event) => {
-    this.setState({ anchorEl: event.currentTarget })
-  }
-
   setLockListeners = () => {
-    this.state.lock.on('authenticated', (authResult: any) => {
-      this.props.isLogging()
-      this.state.lock.getUserInfo(
+    this.lock.on('authenticated', (authResult: any) => {
+      this.lock.getUserInfo(
         authResult.accessToken,
         async (error: Error, profile: any) => {
           if (error) {
             console.error(error)
           }
-          this.props.onLogin(profile, authResult.idToken)
+
+          await this.props.onLogin(profile, authResult.idToken)
           this.addFSIdentify(profile)
         }
       )
     })
-    this.state.lock.on('hide', async () => {
+    this.lock.on('hide', async () => {
       await this.onModalProcessChanges(true)
-      await this.onListenersChanges(true)
-      setTimeout(() => {
-        this.onModalChanges(false)
+      setTimeout(async () => {
+        await this.onModalChanges(false)
       }, 1000)
     })
-  }
 
-  onListenersChanges = async (listenersStatus: boolean) => {
-    const { listenersStatusMutation } = this.props
-    const variables = {
-      listenersStatus,
-    }
-
-    try {
-      await listenersStatusMutation({ variables })
-    } catch (error) {
-      console.log(error)
-    }
+    this.lock.on('authorization_error', this.handleAuthError)
   }
 
   onModalChanges = async (modalIsOpen: boolean) => {
@@ -129,37 +116,19 @@ class LoginQuery extends React.Component<Props, State> {
     }
   }
 
-  handleClose = () => {
-    this.setState({ anchorEl: null })
-  }
-
   showLogin = async () => {
-    const isLoginPopUpClosed =
-      !this.props.loginDataQuery.login.modalIsOpen &&
-      !this.props.loginDataQuery.login.modalLogging &&
-      !this.props.logging
-    if(!isLoginPopUpClosed) {
-      this.onModalChanges(false)
-    }
-    console.log('ff isLoginPopUpClosed', isLoginPopUpClosed)
-
-    if (isLoginPopUpClosed) {
+    if (!this.props.modalIsOpen && !this.props.modalLogging) {
       await this.onModalChanges(true)
-      this.state.lock.show()
-      if (this.props.loginDataQuery.login.listenersOff) {
-        this.setLockListeners()
-     }
+      this.lock.show()
+      return
     }
+
+    await this.onModalChanges(false)
   }
 
   render() {
-    const {
-      loginStatus,
-      handleLogout,
-      user,
-    } = this.props
+    const { loginStatus, handleLogout, user } = this.props
 
-    if (this.props.isShownModal) return null
     return (
       <SWrapper className="LoginButton">
         <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
@@ -179,10 +148,6 @@ class LoginQuery extends React.Component<Props, State> {
           mountOnEnter={true}
         >
           <LoginMenu
-            anchorEl={this.state.anchorEl}
-            open={open}
-            handleClose={this.handleClose}
-            handleMenu={this.handleMenu}
             handleLogout={handleLogout}
             userName={user && user.name}
           />

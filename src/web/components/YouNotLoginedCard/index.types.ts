@@ -1,9 +1,3 @@
-import { WithTheme } from '@material-ui/core/styles'
-
-export interface IProps extends WithTheme {
-  showModalAfterDelay?: number
+export interface IProps {
   open: boolean
-}
-export interface IState {
-  showModal: boolean
 }
