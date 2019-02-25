@@ -366,15 +366,20 @@ class Chart extends React.Component<IProps, IState> {
     )
   }
 
-  renderOnlyCharts = () => (
-    <OnlyCharts
+  renderOnlyCharts = () => {
+    const {
+      getMyProfile: { getMyProfile: { _id }}
+    } = this.props
+
+    return (<OnlyCharts
       {...{
         theme: this.props.theme,
         mainPair: this.props.currencyPair,
         view: this.props.view,
+        userId: _id,
       }}
     />
-  )
+  )}
 
   renderToggler = () => {
     const {
