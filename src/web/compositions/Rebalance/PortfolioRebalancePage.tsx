@@ -72,6 +72,7 @@ class PortfolioRebalancePage extends Component {
       onNewSnapshot,
       hideWarning,
       createNewSnapshot,
+      dustFilter,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -147,6 +148,7 @@ class PortfolioRebalancePage extends Component {
                   onEditModeEnable,
                   updateState,
                   onNewSnapshot,
+                  dustFilter,
                 }}
               />
             </Container>
