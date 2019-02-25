@@ -165,6 +165,7 @@ class Optimization extends Component<IProps, IState> {
       theme,
       tab,
       updateOptimizationCountOfRuns,
+      dustFilter,
     } = this.props
 
     return (
@@ -193,6 +194,7 @@ class Optimization extends Component<IProps, IState> {
         optimizationCountOfRuns={optimizationCountOfRuns}
         showCustomPlaceholder={showCustomPlaceholder}
         placeholderElement={placeholderElement}
+        dustFilter={dustFilter}
       />
     )
   }

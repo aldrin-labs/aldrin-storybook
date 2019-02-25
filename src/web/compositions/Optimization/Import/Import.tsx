@@ -220,7 +220,7 @@ export default class Import extends PureComponent<IProps> {
       return
     }
 
-    if (this.props.filterValueSmallerThenPercentage >= 0) {
+    if (this.props.dustFilter.usdKey >= 0 || this.props.dustFilter.percentageKey >= 0) {
       this.props.showWarning('Disable Dust filter first to see added coins')
     }
 
@@ -366,7 +366,7 @@ export default class Import extends PureComponent<IProps> {
     const {
       storeData, // data from redux (data from portfolio and mannualy added)
       onNewBtnClick,
-      filterValueSmallerThenPercentage,
+      // filterValueSmallerThenPercentage,
       activeButton,
       theme,
       showBlurOnSections,
@@ -552,9 +552,9 @@ export default class Import extends PureComponent<IProps> {
                   activeButton={activeButton}
                   withInput={true}
                   onClickDeleteIcon={this.deleteRow}
-                  filterValueSmallerThenPercentage={
-                    filterValueSmallerThenPercentage
-                  }
+                  // filterValueSmallerThenPercentage={
+                  //   filterValueSmallerThenPercentage
+                  // }
                   theme={this.props.theme}
                 />
               </TableContainer>
