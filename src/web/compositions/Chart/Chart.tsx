@@ -52,6 +52,7 @@ import { IProps, IState } from './Chart.types'
 
 import { graphql } from 'react-apollo'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
@@ -328,7 +329,12 @@ class Chart extends React.Component<IProps, IState> {
 
   renderDefaultView = () => {
     const { activeChart } = this.state
-    const { currencyPair, theme } = this.props
+    const {
+      currencyPair,
+      theme,
+      getMyProfile: { getMyProfile: { _id }},
+      themeMode,
+    } = this.props
 
     if (!currencyPair) {
       return
@@ -339,7 +345,7 @@ class Chart extends React.Component<IProps, IState> {
       <Container container spacing={16}>
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}`} />
+            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`} />
           ) : (
             <Fade timeout={1000} in={activeChart === 'depth'}>
               <DepthChartContainer data-e2e="mainDepthChart">
@@ -361,15 +367,22 @@ class Chart extends React.Component<IProps, IState> {
     )
   }
 
-  renderOnlyCharts = () => (
-    <OnlyCharts
+  renderOnlyCharts = () => {
+    const {
+      getMyProfile: { getMyProfile: { _id }},
+      themeMode,
+    } = this.props
+
+    return (<OnlyCharts
       {...{
         theme: this.props.theme,
         mainPair: this.props.currencyPair,
         view: this.props.view,
+        userId: _id,
+        themeMode: themeMode,
       }}
     />
-  )
+  )}
 
   renderToggler = () => {
     const {
@@ -470,6 +483,7 @@ const mapStateToProps = (store: any) => ({
   view: store.chart.view,
   currencyPair: store.chart.currencyPair,
   isShownMocks: store.user.isShownMocks,
+  themeMode: store.ui.theme,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -486,6 +500,11 @@ const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
 export default queryRendererHoc({
+  query: GET_MY_PROFILE,
+  withOutSpinner: false,
+  withTableLoader: false,
+  name: 'getMyProfile',
+})(queryRendererHoc({
   query: GET_CHARTS,
   withOutSpinner: false,
   withTableLoader: false,
@@ -499,4 +518,4 @@ export default queryRendererHoc({
       mapDispatchToProps
     )(ThemedChart)
   )
-)))
+))))

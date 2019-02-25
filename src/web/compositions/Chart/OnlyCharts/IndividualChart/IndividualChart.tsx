@@ -19,7 +19,7 @@ export default class Charts extends Component<IChartProps, IChartState> {
   }
 
   render() {
-    const { currencyPair, removeChart, index, theme } = this.props
+    const { currencyPair, removeChart, index, theme, userId, themeMode } = this.props
     const { palette } = theme
     const { primary } = palette
     const { activeChart, show } = this.state
@@ -72,7 +72,7 @@ export default class Charts extends Component<IChartProps, IChartState> {
             </Button>
           </ChartsSwitcher>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}`} />
+            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`} />
           ) : (
             <DepthChartStyledWrapper>
               <DepthChartContainer

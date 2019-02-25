@@ -71,6 +71,8 @@ class OnlyCharts extends Component<IProps> {
       view,
       demoMode,
       getCharts: { multichart: { charts } },
+      userId,
+      themeMode,
     } = this.props
     return (
       <>
@@ -117,6 +119,8 @@ class OnlyCharts extends Component<IProps> {
                   index={i}
                   chartsCount={charts.length}
                   currencyPair={chart}
+                  userId={userId}
+                  themeMode={themeMode}
                 />
               ))}
             <WarningMessageSnack
