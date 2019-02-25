@@ -61,7 +61,7 @@ class IntegrationReactSelect extends React.Component {
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
       addChartMutation({ variables: {
-        pair: value,
+        chart: value,
       } })
 
       return

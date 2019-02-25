@@ -62,6 +62,21 @@ const LayoutSelecorComponent = ({...props}) => {
       >
         Top Portfolio Charts
       </TransparentExtendedFAB>
+      <SelectContainer
+        border={divider}
+      >
+        <SelectR
+          components={{ Option }}
+          value=""
+          placeholder="Select layout"
+          fullWidth={true}
+          options={layouts}
+          onChange={handleChange}
+        />
+      </SelectContainer>
+      <SaveLayoutDialog
+        saveLayout={saveLayout}
+      />
     </>
   )
 }

@@ -26,11 +26,11 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
-    const { addChart, mainPair, getCharts, addChartMutation } = this.props
+    const { mainPair, getCharts, addChartMutation } = this.props
     const { multichart: { charts } } = getCharts
     if (charts.length === 0) {
       addChartMutation({ variables: {
-        pair: mainPair,
+        chart: mainPair,
       } })
     }
   }
@@ -108,15 +108,15 @@ class OnlyCharts extends Component<IProps> {
             chartsCount={charts.length || 1}
           >
             {charts
-              .filter((chart) => chart.id && chart.pair)
+              .filter((chart) => chart)
               .map((chart: IChart, i: number) => (
                 <IndividualChart
-                  key={chart.id}
+                  key={chart}
                   theme={theme}
                   removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
-                  currencyPair={chart.pair}
+                  currencyPair={chart}
                 />
               ))}
             <WarningMessageSnack
@@ -190,11 +190,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 export default queryRendererHoc({
-  query: GET_LAYOUTS,
-  withOutSpinner: false,
-  withTableLoader: false,
-  name: 'getLayouts',
-})(queryRendererHoc({
   query: GET_CHARTS,
   withOutSpinner: false,
   withTableLoader: false,
@@ -207,4 +202,4 @@ export default queryRendererHoc({
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OnlyCharts)))))
+  )(OnlyCharts))))
