@@ -12,7 +12,7 @@ import { DateRangePicker } from 'react-dates'
 import { RebalancePeriod } from './config'
 import { OPTIMIZE_PORTFOLIO } from '@core/graphql/queries/portfolio/optimization/optimizePortfolio'
 import { sliceCoinName } from '@core/utils/PortfolioTableUtils'
-import { systemError } from '@core/utils/errorsConfig'
+import { systemError, dustFilterEnabled } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
 import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
@@ -221,7 +221,7 @@ export default class Import extends PureComponent<IProps> {
     }
 
     if ((this.props.dustFilter.usd >= 0 || this.props.dustFilter.percentage >= 0) && !disableFiltering) {
-      this.props.showWarning('Disable Dust filter first to add new coins')
+      this.props.showWarning(dustFilterEnabled)
 
       return
     }
