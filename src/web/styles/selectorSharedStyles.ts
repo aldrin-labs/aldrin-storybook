@@ -33,7 +33,7 @@ export const StyledIcon = styled(Arrow)`
   right: -0.5rem;
 
   position: absolute;
-  bottom: 40%;
+  bottom: 50%;
   transition: opacity 0.2s linear;
 `
 
