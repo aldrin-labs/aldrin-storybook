@@ -18,6 +18,7 @@ import {
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import { MASTER_BUILD } from '@core/utils/config'
 import { IProps } from './PortfolioSelector.types'
+import { percentageDustFilterOptions, usdDustFilterOptions } from './PortfolioSelector.options'
 
 
 const MyLinkToUserSettings = (props: any) => <Link to="/user" style={{ textDecoration: 'none' }} {...props}>{props.children} </Link>
@@ -102,12 +103,12 @@ class PortfolioSelector extends React.Component<IProps> {
     target: { value },
   }: {
     target: { value: number }
-  }) => {
-    const { portfolioId } = this.props
+  }, dustFilterParam: string) => {
+    const { portfolioId, dustFilter } = this.props
     this.updateSettings({
       settings: {
         portfolioId,
-        dustFilter: value,
+        dustFilter: {...dustFilter, [dustFilterParam]: value},
       },
     })
   }
@@ -199,19 +200,17 @@ class PortfolioSelector extends React.Component<IProps> {
                 />
                 <Dropdown
                   style={{ width: '100%' }}
-                  value={dustFilter}
-                  handleChange={this.onDustFilterChange}
+                  value={dustFilter.percentage}
+                  handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
                   name="filterValuesInMain"
-                  options={[
-                    { value: -100.0, label: 'No Filter' },
-                    { value: 0, label: '0% <' },
-                    { value: 0.1, label: '0.1% <' },
-                    { value: 0.2, label: '0.2% <' },
-                    { value: 0.3, label: '0.3% <' },
-                    { value: 0.5, label: '0.5% <' },
-                    { value: 1, label: '1% <' },
-                    { value: 10, label: '10% <' },
-                  ]}
+                  options={percentageDustFilterOptions}
+                />
+                <Dropdown
+                  style={{ width: '100%' }}
+                  value={dustFilter.usd}
+                  handleChange={(e) => this.onDustFilterChange(e, 'usd')}
+                  name="filterValuesInMain"
+                  options={usdDustFilterOptions}
                 />
               </FilterValues>
             </>
