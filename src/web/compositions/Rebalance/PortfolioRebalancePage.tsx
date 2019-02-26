@@ -13,7 +13,7 @@ import EmptyTablePlaceholder from '@sb/components/EmptyTablePlaceholder'
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
 import { Container, ChartWrapper } from './PortfolioRebalancePage.styles'
-import { withTheme } from "@material-ui/styles"
+import { withTheme } from '@material-ui/styles'
 
 class PortfolioRebalancePage extends Component {
   state = {
@@ -162,6 +162,7 @@ class PortfolioRebalancePage extends Component {
               className="PortfolioDistributionChart"
             >
               <PortfolioRebalanceChart
+                dustFilter={dustFilter}
                 key={`PortfolioRebalanceChart`}
                 title={`Portfolio Distribution`}
                 background={theme.palette.background.default}
