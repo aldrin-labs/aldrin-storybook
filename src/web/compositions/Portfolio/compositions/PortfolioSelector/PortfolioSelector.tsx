@@ -115,10 +115,11 @@ class PortfolioSelector extends React.Component<IProps> {
     dustFilterParam: string
   ) => {
     const { portfolioId, dustFilter } = this.props
+    const { usd, percentage } = dustFilter
     this.updateSettings({
       settings: {
         portfolioId,
-        dustFilter: { ...dustFilter, [dustFilterParam]: value },
+        dustFilter: { ...{usd, percentage}, [dustFilterParam]: value },
       },
     })
   }

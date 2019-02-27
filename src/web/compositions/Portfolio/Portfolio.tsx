@@ -106,12 +106,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
           const hasActiveKeysOrWallets =
             activeKeys.length + activeWallets.length > 0
 
-          // TODO: DELETE THIS MOCK FOR DUST FILTER
-          const mockedDustFilter = {
-            usd: -100,
-            percentage: 4,
-          }
-
           return (
             <Mutation
               onCompleted={() => refetch()}
