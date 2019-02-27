@@ -1,3 +1,5 @@
+import { DustFilterType } from '@core/types/PortfolioTypes'
+
 export interface IProps {
   children: object
   toggleFullscreen: Function
@@ -12,5 +14,5 @@ export interface IProps {
   period: string
   startDate: number
   endDate: number
-  filterValueSmallerThenPercentage: number
+  dustFilter: DustFilterType
 }
