@@ -499,7 +499,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
-export default queryRendererHoc({
+export default withAuth(queryRendererHoc({
   query: GET_MY_PROFILE,
   withOutSpinner: false,
   withTableLoader: false,
@@ -510,9 +510,8 @@ export default queryRendererHoc({
   withTableLoader: false,
   name: 'getCharts',
 })(compose(
-  graphql(ADD_CHART, { name: 'addChartMutation' })
-  )(withAuth(
-  withErrorFallback(
+  graphql(ADD_CHART, { name: 'addChartMutation' }))
+  (withErrorFallback(
     connect(
       mapStateToProps,
       mapDispatchToProps
