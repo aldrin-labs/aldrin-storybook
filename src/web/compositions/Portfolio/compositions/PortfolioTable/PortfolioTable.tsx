@@ -110,7 +110,7 @@ class PortfolioTable extends Component<IProps, IState> {
                         baseCoin="USDT"
                         tab={this.state.tab}
                         theme={theme}
-                        filterValueSmallerThenPercentage={-100}
+                        dustFilter={dustFilter}
                       />
                     </MemoizedTab>
                   </div>
