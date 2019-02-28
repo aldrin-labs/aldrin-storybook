@@ -1,7 +1,6 @@
 import { Theme } from '@material-ui/core'
 
-import { IData } from '@core/types/PortfolioTypes'
-import { DustFilterType } from '../../../../../core/src/types/PortfolioTypes'
+import { IData, DustFilterType } from '@core/types/PortfolioTypes'
 
 export type RawOptimizedData = {
   backtest_results: [number, number]
