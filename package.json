@@ -89,7 +89,7 @@
     "react-apollo-hooks": "^0.3.1",
     "react-content-loader": "^4.0.0",
     "react-dates": "^18.4.1",
-    "react-dom": "^16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2",
     "react-fullscreen-crossbrowser": "^1.0.9",
     "react-joyride": "^2.0.3",
     "react-jss": "^8.6.1",

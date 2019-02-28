@@ -17,6 +17,7 @@ import {
   calcAllSumOfPortfolioAsset,
   percentagesOfCoinInPortfolio,
   roundPercentage,
+  filterDust,
 } from '@core/utils/PortfolioTableUtils'
 
 import {
@@ -52,6 +53,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import config from '@core/utils/linkConfig'
 import { sumSame } from '@core/utils/PortfolioOptimizationUtils'
+import { DustFilterType } from '../../../../../core/src/types/PortfolioTypes'
 
 
 
@@ -97,7 +99,7 @@ class Optimization extends Component<IProps, IState> {
     this.setState({ rawOptimizedData: data })
   }
 
-  transformData = (assets: any[]): IData[] => {
+  transformData = (assets: any[], dustFilter: DustFilterType): IData[] => {
     const allSum = calcAllSumOfPortfolioAsset(assets)
     // TODO: Avoid mutations in array of objects
     const newAssets = assets.map((asset: IData) => ({
@@ -105,6 +107,7 @@ class Optimization extends Component<IProps, IState> {
       percentage: +roundPercentage(
         percentagesOfCoinInPortfolio(asset, allSum, true)
       ),
+      price: asset.price * asset.quantity,
     }))
     const summedAssetsWithoutDuplicates = sumSame(
       newAssets,
@@ -112,7 +115,9 @@ class Optimization extends Component<IProps, IState> {
       'percentage'
     )
 
-    return [summedAssetsWithoutDuplicates, allSum]
+    const filtredDustOptimizationAssets = filterDust(summedAssetsWithoutDuplicates, dustFilter, { usdKey: 'price', percentageKey: 'percentage' }, {disableFilteringKey: 'disableFiltering'})
+
+    return [filtredDustOptimizationAssets, allSum]
   }
 
   onNewBtnClick = (index: number) => {
@@ -160,6 +165,7 @@ class Optimization extends Component<IProps, IState> {
       theme,
       tab,
       updateOptimizationCountOfRuns,
+      dustFilter,
     } = this.props
 
     return (
@@ -188,6 +194,7 @@ class Optimization extends Component<IProps, IState> {
         optimizationCountOfRuns={optimizationCountOfRuns}
         showCustomPlaceholder={showCustomPlaceholder}
         placeholderElement={placeholderElement}
+        dustFilter={dustFilter}
       />
     )
   }

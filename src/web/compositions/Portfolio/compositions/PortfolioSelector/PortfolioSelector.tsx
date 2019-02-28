@@ -14,13 +14,21 @@ import {
   FilterValues,
   Name,
   AddAccountBlock,
+  FilterContainer,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import { MASTER_BUILD } from '@core/utils/config'
 import { IProps } from './PortfolioSelector.types'
+import {
+  percentageDustFilterOptions,
+  usdDustFilterOptions,
+} from './PortfolioSelector.options'
 
-
-const MyLinkToUserSettings = (props: any) => <Link to="/user" style={{ textDecoration: 'none' }} {...props}>{props.children} </Link>
+const MyLinkToUserSettings = (props: any) => (
+  <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
+    {props.children}{' '}
+  </Link>
+)
 
 class PortfolioSelector extends React.Component<IProps> {
   updateSettings = async (objectForMutation) => {
@@ -98,16 +106,20 @@ class PortfolioSelector extends React.Component<IProps> {
     this.updateSettings(objForQuery)
   }
 
-  onDustFilterChange = ({
-    target: { value },
-  }: {
-    target: { value: number }
-  }) => {
-    const { portfolioId } = this.props
+  onDustFilterChange = (
+    {
+      target: { value },
+    }: {
+      target: { value: number }
+    },
+    dustFilterParam: string
+  ) => {
+    const { portfolioId, dustFilter } = this.props
+    const { usd, percentage } = dustFilter
     this.updateSettings({
       settings: {
         portfolioId,
-        dustFilter: value,
+        dustFilter: { ...{usd, percentage}, [dustFilterParam]: value },
       },
     })
   }
@@ -175,45 +187,54 @@ class PortfolioSelector extends React.Component<IProps> {
           )}
           <AddAccountBlock>
             <MyLinkToUserSettings>
-            <Button
-              size="small"
-              style={{
-                height: 36,
-              }}
-              variant="extendedFab"
-              color="secondary"
-            >
-              <AddIcon fontSize={`small`}/>
-              Add account
-            </Button>
+              <Button
+                size="small"
+                style={{
+                  height: 36,
+                }}
+                variant="extendedFab"
+                color="secondary"
+              >
+                <AddIcon fontSize={`small`} />
+                Add account
+              </Button>
             </MyLinkToUserSettings>
           </AddAccountBlock>
-            {!MASTER_BUILD && (
+          {!MASTER_BUILD && (
             <>
               <Name color={color}>Dust</Name>
-              <FilterValues>
-                <FilterIcon
-                  color={theme.palette.getContrastText(
-                    theme.palette.background.paper
-                  )}
-                />
-                <Dropdown
-                  style={{ width: '100%' }}
-                  value={dustFilter}
-                  handleChange={this.onDustFilterChange}
-                  name="filterValuesInMain"
-                  options={[
-                    { value: -100.0, label: 'No Filter' },
-                    { value: 0, label: '0% <' },
-                    { value: 0.1, label: '0.1% <' },
-                    { value: 0.2, label: '0.2% <' },
-                    { value: 0.3, label: '0.3% <' },
-                    { value: 0.5, label: '0.5% <' },
-                    { value: 1, label: '1% <' },
-                    { value: 10, label: '10% <' },
-                  ]}
-                />
-              </FilterValues>
+              <FilterContainer>
+                <FilterValues>
+                  <FilterIcon
+                    color={theme.palette.getContrastText(
+                      theme.palette.background.paper
+                    )}
+                  />
+                  <Dropdown
+                    style={{ width: '100%' }}
+                    value={dustFilter.percentage}
+                    handleChange={(e) =>
+                      this.onDustFilterChange(e, 'percentage')
+                    }
+                    name="filterValuesInMain"
+                    options={percentageDustFilterOptions}
+                  />
+                </FilterValues>
+                <FilterValues>
+                  <FilterIcon
+                    color={theme.palette.getContrastText(
+                      theme.palette.background.paper
+                    )}
+                  />
+                  <Dropdown
+                    style={{ width: '100%' }}
+                    value={dustFilter.usd}
+                    handleChange={(e) => this.onDustFilterChange(e, 'usd')}
+                    name="filterValuesInMain"
+                    options={usdDustFilterOptions}
+                  />
+                </FilterValues>
+              </FilterContainer>
             </>
           )}
         </AccountsWalletsBlock>
@@ -221,6 +242,5 @@ class PortfolioSelector extends React.Component<IProps> {
     )
   }
 }
-
 
 export default withTheme()(PortfolioSelector)

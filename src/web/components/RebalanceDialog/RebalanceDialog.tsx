@@ -15,6 +15,7 @@ const DialogComponent = ({
   isSaveError,
   isSystemError,
   isCurrentAssetsChangedError,
+  isDustFilterError,
   hideWarning,
   onSaveClick,
   onReset,
@@ -79,6 +80,18 @@ const DialogComponent = ({
           autoFocus={true}
         >
           Reset my rebalanced portfolio and update snapshot
+        </Button>
+      )}
+      {isDustFilterError && (
+        <Button
+          id="resetRebalancedPortfolioButton"
+          onClick={() => {
+            hideWarning()
+          }}
+          color="secondary"
+          autoFocus={true}
+        >
+          Ok
         </Button>
       )}
     </DialogActions>

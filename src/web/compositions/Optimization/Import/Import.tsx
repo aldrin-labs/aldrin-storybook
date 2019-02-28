@@ -12,7 +12,7 @@ import { DateRangePicker } from 'react-dates'
 import { RebalancePeriod } from './config'
 import { OPTIMIZE_PORTFOLIO } from '@core/graphql/queries/portfolio/optimization/optimizePortfolio'
 import { sliceCoinName } from '@core/utils/PortfolioTableUtils'
-import { systemError } from '@core/utils/errorsConfig'
+import { systemError, dustFilterEnabled } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
 import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
@@ -56,7 +56,7 @@ export default class Import extends PureComponent<IProps> {
     const assets =
       this.props.data &&
       this.props.data.myPortfolios[0] &&
-      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets)
+      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets, this.props.dustFilter)
 
     this.props.updateData(assets[0])
     const isUSDTInInitialPortfolioExists = assets[0].some(
@@ -209,25 +209,27 @@ export default class Import extends PureComponent<IProps> {
     const optimizedData = backendResultParsed.returns
 
     if (isRiskFreeAssetEnabled) {
-      this.addRow('USDT', 0)
+      this.addRow('USDT', 0, true)
     }
 
     optimizedToState(optimizedData)
   }
 
-  addRow = (name: string, value: number) => {
+  addRow = (name: string, value: number, disableFiltering = false) => {
     if (this.props.storeData.some((el) => el.coin === name)) {
       return
     }
 
-    if (this.props.filterValueSmallerThenPercentage >= 0) {
-      this.props.showWarning('Disable Dust filter first to see added coins')
+    if ((this.props.dustFilter.usd >= 0 || this.props.dustFilter.percentage >= 0) && !disableFiltering) {
+      this.props.showWarning(dustFilterEnabled)
+
+      return
     }
 
     if (name) {
       this.props.updateData([
         ...this.props.storeData,
-        { coin: name, percentage: value },
+        { disableFiltering, coin: name, percentage: value },
       ])
     }
   }
@@ -366,7 +368,7 @@ export default class Import extends PureComponent<IProps> {
     const {
       storeData, // data from redux (data from portfolio and mannualy added)
       onNewBtnClick,
-      filterValueSmallerThenPercentage,
+      // filterValueSmallerThenPercentage,
       activeButton,
       theme,
       showBlurOnSections,
@@ -552,9 +554,9 @@ export default class Import extends PureComponent<IProps> {
                   activeButton={activeButton}
                   withInput={true}
                   onClickDeleteIcon={this.deleteRow}
-                  filterValueSmallerThenPercentage={
-                    filterValueSmallerThenPercentage
-                  }
+                  // filterValueSmallerThenPercentage={
+                  //   filterValueSmallerThenPercentage
+                  // }
                   theme={this.props.theme}
                 />
               </TableContainer>

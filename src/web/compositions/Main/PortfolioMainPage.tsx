@@ -64,7 +64,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           }}
         />
         <Template
-          PortfolioMainTable={<PortfolioMainTable theme={theme} tab={tab} dustFilter={dustFilter}/>}
+          PortfolioMainTable={<PortfolioMainTable theme={theme} tab={tab} dustFilter={dustFilter} />}
           PortfolioActions={<TradeOrderHistory />}
           Chart={
             <PortfolioMainChart

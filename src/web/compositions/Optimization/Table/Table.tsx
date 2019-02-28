@@ -57,7 +57,6 @@ export default class Table extends Component<IProps, IState> {
       onClickDeleteIcon,
       onPlusClick,
       optimizedData,
-      filterValueSmallerThenPercentage,
       activeButton,
       theme: { palette },
     } = this.props
@@ -99,9 +98,7 @@ export default class Table extends Component<IProps, IState> {
             ) : null}
 
             <Col>
-              {data
-                .filter((d) => d.percentage > filterValueSmallerThenPercentage)
-                .map((item, i) => (
+              {data.map((item, i) => (
                   <Item
                     background={palette.background.paper}
                     evenBackground={palette.action.hover}
@@ -115,9 +112,7 @@ export default class Table extends Component<IProps, IState> {
             </Col>
 
             <Col>
-              {data
-                .filter((d) => d.percentage > filterValueSmallerThenPercentage)
-                .map((item, i) => (
+              {data.map((item, i) => (
                   <Item
                     background={palette.background.paper}
                     evenBackground={palette.action.hover}
@@ -131,11 +126,7 @@ export default class Table extends Component<IProps, IState> {
             </Col>
             {optimizedData.length >= 1 ? (
               <Col>
-                {data
-                  .filter(
-                    (d) => d.percentage > filterValueSmallerThenPercentage
-                  )
-                  .map((item, i) => (
+                {data.map((item, i) => (
                     <Item
                       background={palette.background.paper}
                       evenBackground={palette.action.hover}
@@ -160,11 +151,7 @@ export default class Table extends Component<IProps, IState> {
               </Col>
             ) : (
               <Col>
-                {data
-                  .filter(
-                    (d) => d.percentage > filterValueSmallerThenPercentage
-                  )
-                  .map((item, i) => (
+                {data.map((item, i) => (
                     <Item
                       background={palette.background.paper}
                       evenBackground={palette.action.hover}

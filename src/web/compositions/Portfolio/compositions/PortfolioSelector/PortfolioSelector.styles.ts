@@ -12,10 +12,16 @@ export const Name = styled.h1`
   color: ${(props: { color: string }) => props.color};
 `
 
+export const FilterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 export const FilterValues = styled.div`
   width: 100%;
   display: flex;
   place-items: center;
+  margin-bottom: 2rem;
 `
 export const FilterIcon = styled(FaFilter)`
   color: ${(props: { color: string }) => props.color};

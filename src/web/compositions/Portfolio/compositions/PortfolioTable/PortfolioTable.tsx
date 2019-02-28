@@ -75,7 +75,7 @@ class PortfolioTable extends Component<IProps, IState> {
                         theme={theme}
                         variables={{ baseCoin }}
                         baseCoin={baseCoin}
-                        dustFilter={-100}
+                        dustFilter={dustFilter}
                       />
                     </MemoizedTab>
                   </div>
@@ -88,7 +88,7 @@ class PortfolioTable extends Component<IProps, IState> {
                         variables={{ baseCoin: 'USDT' }}
                         baseCoin="USDT"
                         filterValueSmallerThenPercentage={-100}
-                        dustFilter={-100}
+                        dustFilter={dustFilter}
                       />
                     </MemoizedTab>
                   </div>
@@ -99,7 +99,7 @@ class PortfolioTable extends Component<IProps, IState> {
                           baseCoin={`USDT`}
                           tab={this.state.tab}
                           isUSDCurrently={true}
-                          filterValueSmallerThenPercentage={-100}
+                          dustFilter={dustFilter}
                         />
                       </MemoizedTab>
                     </div>
@@ -110,7 +110,7 @@ class PortfolioTable extends Component<IProps, IState> {
                         baseCoin="USDT"
                         tab={this.state.tab}
                         theme={theme}
-                        filterValueSmallerThenPercentage={-100}
+                        dustFilter={dustFilter}
                       />
                     </MemoizedTab>
                   </div>
@@ -122,7 +122,8 @@ class PortfolioTable extends Component<IProps, IState> {
                         tab={this.state.tab}
                         isUSDCurrently={isUSDCurrently}
                         baseCoin="USDT"
-                        filterValueSmallerThenPercentage={-100}
+                        dustFilter={dustFilter}
+                        // filterValueSmallerThenPercentage={-100}
                       />
                     </MemoizedTab>
                   </div>

@@ -12,8 +12,8 @@ import {
   toggleCorrelationTableFullscreen,
   setCorrelationPeriod as setCorrelationPeriodAction,
 } from '@core/redux/portfolio/actions'
-import { getCorrelationQuery } from '@core/graphql/queries/portfolio/correlation/getCorrelationQuery'
-import { swapDates } from '@core/utils/PortfolioTableUtils'
+import { getCorrelationAndPortfolioAssetsQuery } from '@core/graphql/queries/portfolio/correlation/getCorrelationAndPortfolioAssetsQuery'
+import { combineTableData, swapDates } from '@core/utils/PortfolioTableUtils'
 import { PTWrapper as PTWrapperRaw } from '@sb/styles/cssUtils'
 import { testJSON } from '@core/utils/chartPageUtils'
 import { CustomError } from '@sb/components/index'
@@ -41,6 +41,21 @@ const Correlation = (props: IProps) => {
   ) {
     const matrix = props.data.myPortfolios[0].correlationMatrixByDay
     dataRaw = testJSON(matrix) ? JSON.parse(matrix) : matrix
+
+    const dustFiltredCoinList = combineTableData(props.data.myPortfolios[0].portfolioAssets, props.dustFilter, true).map((el) => el.coin)
+
+    const processedHeadValues = dataRaw.header.map((el) => ({
+      coin: el,
+      isActive: dustFiltredCoinList.includes(el),
+    }))
+
+    const filtredRealValues = dataRaw.values.filter((el, i) => processedHeadValues[i].isActive).map((arr) => arr.map((el, i) => processedHeadValues[i].isActive ? el : null).filter(el => +el)  )
+
+    dataRaw.values = filtredRealValues
+    dataRaw.header = processedHeadValues.filter((el) => el.isActive).map((el) => el.coin)
+
+
+
   } else {
     return <CustomError error={'wrongShape'} />
   }
@@ -127,7 +142,7 @@ const CorrelationWrapper = (props: IProps) => {
           key="=/asfasd"
           fetchPolicy="network-only"
           component={Correlation}
-          query={getCorrelationQuery}
+          query={getCorrelationAndPortfolioAssetsQuery}
           variables={{
             startDate,
             endDate,
