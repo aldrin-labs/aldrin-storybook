@@ -72,7 +72,10 @@ export default class Charts extends Component<IChartProps, IChartState> {
             </Button>
           </ChartsSwitcher>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`} />
+            <SingleChart
+              additionalUrl={`/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`}
+              name={`name${index}`}
+            />
           ) : (
             <DepthChartStyledWrapper>
               <DepthChartContainer

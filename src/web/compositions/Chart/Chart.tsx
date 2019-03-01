@@ -436,7 +436,14 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { view, currencyPair, activeExchange, theme } = this.props
+    const {
+      view,
+      currencyPair,
+      activeExchange,
+      theme,
+      getMyProfile: { getMyProfile: { _id }},
+      themeMode,
+    } = this.props
     const { activeChart } = this.state
     const { palette } = theme
 
@@ -461,7 +468,10 @@ class Chart extends React.Component<IProps, IState> {
             justify="flex-end"
           >
             {view === 'onlyCharts' && (
-              <LayoutSelecor />
+              <LayoutSelecor
+                userId={_id}
+                themeMode={themeMode}
+               />
             )}
             <AutoSuggestSelect
               value={view === 'default' && currencyPair}
