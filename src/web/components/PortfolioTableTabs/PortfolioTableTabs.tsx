@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { withRouter, NavLink } from 'react-router-dom'
 
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'
@@ -11,6 +12,7 @@ import { Typography, Fade, Button } from '@material-ui/core'
 import { IProps } from './PortfolioTableTabs.types'
 import {
   BarContainer,
+  BarLink,
   Container,
   BlurForMarker,
   DividerWithMargin,
@@ -18,14 +20,8 @@ import {
   Tab,
 } from './PortfolioTableTabs.styles'
 
-
+@withRouter
 class PortfolioTableTabs extends React.Component<IProps> {
-  onChangeTab = (tab: string) => {
-    const { onChangeTab } = this.props
-    if (onChangeTab) {
-      onChangeTab(tab)
-    }
-  }
 
   onToggleUSDBTC = () => {
     const { onToggleUSDBTC } = this.props
@@ -44,10 +40,11 @@ class PortfolioTableTabs extends React.Component<IProps> {
           primary,
           type,
           secondary: { main },
-          background,
         },
       },
+      location: { pathname },
     } = this.props
+
     const switchUSDBTC = tab === 'main'
     const backgroundColor = type === 'dark' ? primary.light : primary[100]
 
@@ -55,51 +52,46 @@ class PortfolioTableTabs extends React.Component<IProps> {
       <Container background={backgroundColor} elevation={0}>
         <BarTab
           id="main_tab_button"
-          thisTab="main"
+          to="/portfolio/main"
           thisTabName="Main"
-          curentTab={tab}
-          onClick={() => this.onChangeTab('main')}
           mainColor={main}
+          pathname={pathname}
         >
           <Main />
         </BarTab>
         <BarTab
           id="industry_tab_button"
-          thisTab="industry"
+          to="/portfolio/industry"
           thisTabName="Industry"
-          curentTab={tab}
-          onClick={() => this.onChangeTab('industry')}
           mainColor={main}
+          pathname={pathname}
         >
           <Industry />
         </BarTab>
         <BarTab
           id="rebalance_tab_button"
-          thisTab="rebalance"
+          to="/portfolio/rebalance"
           thisTabName="Rebalance"
-          curentTab={tab}
-          onClick={() => this.onChangeTab('rebalance')}
           mainColor={main}
+          pathname={pathname}
         >
           <Rebalance />
         </BarTab>
         <BarTab
           id="correlation_tab_button"
-          thisTab="correlation"
+          to="/portfolio/correlation"
           thisTabName="Correlation"
-          curentTab={tab}
-          onClick={() => this.onChangeTab('correlation')}
           mainColor={main}
+          pathname={pathname}
         >
           <Correlation />
         </BarTab>
         <BarTab
           id="optimization_tab_button"
-          thisTab="optimization"
+          to="/portfolio/optimization"
           thisTabName="Optimization"
-          curentTab={tab}
-          onClick={() => this.onChangeTab('optimization')}
           mainColor={main}
+          pathname={pathname}
         >
           <Optimization />
         </BarTab>
@@ -152,30 +144,26 @@ const renderMarker = (color: string) => (
 )
 
 const BarTab = (props: {
-  children?: any
-  thisTab: string
-  thisTabName: string
   id: string
-  curentTab: string
-  onClick: () => void
+  children?: any
+  thisTabName: string
   mainColor: string
-}) => (
-  <BarContainer onClick={props.onClick}>
-    <Tab
-      id={props.id}
-      color={props.curentTab === props.thisTab ? 'secondary' : 'primary'}
-    >
-      {props.curentTab === props.thisTab && renderMarker(props.mainColor)}
-      {props.children}
-    </Tab>
-    <Typography
-      variant="caption"
-      color={props.curentTab === props.thisTab ? 'secondary' : 'default'}
-    >
-      {' '}
-      {props.thisTabName}{' '}
-    </Typography>
-  </BarContainer>
-)
+  to: string
+  pathname: string
+}) => {
+  const isActive = new RegExp(props.to, 'i').test(props.pathname)
+
+  return (
+    <BarLink to={props.to}>
+      <Tab id={props.id} color={isActive ? 'secondary' : 'primary'}>
+        {isActive && renderMarker(props.mainColor)}
+        {props.children}
+      </Tab>
+      <Typography variant="caption" color={isActive ? 'secondary' : 'default'}>
+        {props.thisTabName}
+      </Typography>
+    </BarLink>
+  )
+}
 
 export default PortfolioTableTabs
