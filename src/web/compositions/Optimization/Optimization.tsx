@@ -99,7 +99,7 @@ class Optimization extends Component<IProps, IState> {
     this.setState({ rawOptimizedData: data })
   }
 
-  transformData = (assets: any[], dustFilter: DustFilterType): IData[] => {
+  transformData = (assets: any[], dustFilter: DustFilterType): [IData[], number] => {
     const allSum = calcAllSumOfPortfolioAsset(assets)
     // TODO: Avoid mutations in array of objects
     const newAssets = assets.map((asset: IData) => ({
@@ -116,6 +116,7 @@ class Optimization extends Component<IProps, IState> {
     )
 
     const filtredDustOptimizationAssets = filterDust(summedAssetsWithoutDuplicates, dustFilter, { usdKey: 'price', percentageKey: 'percentage' }, {disableFilteringKey: 'disableFiltering'})
+
 
     return [filtredDustOptimizationAssets, allSum]
   }
@@ -160,7 +161,6 @@ class Optimization extends Component<IProps, IState> {
       isShownMocks,
       updateData,
       storeData,
-      filterValueSmallerThenPercentage,
       baseCoin,
       theme,
       tab,
@@ -174,7 +174,6 @@ class Optimization extends Component<IProps, IState> {
         fetchPolicy="cache-and-network"
         query={getCoinsForOptimization}
         variables={{ baseCoin }}
-        filterValueSmallerThenPercentage={filterValueSmallerThenPercentage}
         showWarning={this.showWarning}
         toggleLoading={this.toggleLoading}
         setActiveButtonToDefault={this.setActiveButtonToDefault}
@@ -329,7 +328,6 @@ class Optimization extends Component<IProps, IState> {
       theme,
       theme: { palette },
       toolTip,
-      tab,
       data: { portfolioOptimization: { optimizationCountOfRuns } } = {
         portfolioOptimization: { optimizationCountOfRuns: 1 },
       },
@@ -345,12 +343,34 @@ class Optimization extends Component<IProps, IState> {
 
     return (
       <PTWrapper background={palette.background.default}>
+        <Content>
+          {children}
+          <LoaderWrapperComponent textColor={textColor} open={loading} />
+          <ContentInner loading={loading}>
+            {this.renderInput(showBlurOnSections, optimizationCountOfRuns, showCustomPlaceholder, placeholderElement)}
+
+            <MainArea background={palette.background.paper}>
+                {this.renderCharts(showBlurOnSections, showCustomPlaceholder, placeholderElement)}
+            </MainArea>
+          </ContentInner>
+
+          <ErrorDialog
+            onReportButton={() => {
+              this.openLink(config.bugLink)
+            }}
+            open={openWarning}
+            isSystemError={isSystemError}
+            warningMessage={warningMessage}
+            onConfirmButton={this.hideWarning}
+          />
+        </Content>
+
         <Joyride
           continuous={true}
           showProgress={true}
           showSkipButton={true}
           steps={portfolioOptimizationSteps}
-          run={toolTip.portfolioOptimization && tab === 'optimization'}
+          run={toolTip.portfolioOptimization}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -365,34 +385,7 @@ class Optimization extends Component<IProps, IState> {
             },
           }}
         />
-        <Content>
-          {children}
-          <LoaderWrapperComponent textColor={textColor} open={loading} />
-          <ContentInner loading={loading}>
-            {this.renderInput(showBlurOnSections, optimizationCountOfRuns, showCustomPlaceholder, placeholderElement)}
 
-            <MainArea background={palette.background.paper}>
-              <Grow
-                timeout={0}
-                in={tab === 'optimization'}
-                mountOnEnter
-                unmountOnExit
-              >
-                {this.renderCharts(showBlurOnSections, showCustomPlaceholder, placeholderElement)}
-              </Grow>
-            </MainArea>
-          </ContentInner>
-
-          <ErrorDialog
-            onReportButton={() => {
-              this.openLink(config.bugLink)
-            }}
-            open={openWarning}
-            isSystemError={isSystemError}
-            warningMessage={warningMessage}
-            onConfirmButton={this.hideWarning}
-          />
-        </Content>
       </PTWrapper>
     )
   }
