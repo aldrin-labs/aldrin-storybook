@@ -49,7 +49,7 @@ const SaveLayoutDialogComponent = ({ ...props }: IProps) => {
           <Typography color="error">{errors.layoutNameInput}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} id="SaveDialogButton">
