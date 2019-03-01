@@ -18,7 +18,7 @@ export const SingleChart = ({ additionalUrl, name }: { additionalUrl: string }) 
       style={{ borderWidth: 0 }}
       src={`http://localhost:8080${additionalUrl}`}
       height={'100%'}
-      name={name}
+      id={name}
     />
   </Wrapper>
 )
