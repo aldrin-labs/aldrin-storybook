@@ -114,7 +114,7 @@ class OnlyCharts extends Component<IProps> {
               .filter((chart) => chart)
               .map((chart: IChart, i: number) => (
                 <IndividualChart
-                  key={i}
+                  key={chart}
                   theme={theme}
                   removeChart={this.removeChart}
                   index={i}
