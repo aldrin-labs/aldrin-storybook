@@ -95,12 +95,6 @@ class Chart extends React.Component<IProps, IState> {
 
     const [base, quote] = currencyPair.split('_')
 
-    const win = window.frames.target
-
-    setTimeout(() =>
-      win.postMessage('Hello to iframe from parent!',
-        `http://localhost:8080/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`
-      ), 5000)
   }
 
   componentWillUnmount() {
@@ -360,7 +354,9 @@ class Chart extends React.Component<IProps, IState> {
       <Container container spacing={16}>
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`} />
+            <SingleChart
+              additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}&location=chart`}
+            />
           ) : (
             <Fade timeout={1000} in={activeChart === 'depth'}>
               <DepthChartContainer data-e2e="mainDepthChart">

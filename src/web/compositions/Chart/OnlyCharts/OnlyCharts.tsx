@@ -74,6 +74,7 @@ class OnlyCharts extends Component<IProps> {
       userId,
       themeMode,
     } = this.props
+    console.log(charts.length)
     return (
       <>
         <Joyride
@@ -113,7 +114,7 @@ class OnlyCharts extends Component<IProps> {
               .filter((chart) => chart)
               .map((chart: IChart, i: number) => (
                 <IndividualChart
-                  key={chart}
+                  key={i}
                   theme={theme}
                   removeChart={this.removeChart}
                   index={i}
