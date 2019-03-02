@@ -5,6 +5,7 @@ import Switch from '@material-ui/core/Switch'
 import { saveAs } from 'file-saver'
 
 import GetApp from '@material-ui/icons/GetApp'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import { getCSVData } from '@core/utils/PortfolioTableUtils'
 import { Props } from '../index.types'
@@ -67,15 +68,21 @@ export default (WrappedComponent: React.ReactType) => {
               {
                 onClick: this.downloadData,
                 id: '4',
-                icon: (<GetApp />),
+                icon: (
+                  <Tooltip title="Download CSV">
+                    <GetApp />
+                  </Tooltip>
+                  ),
                 color: 'default',
               },
               {
                 id: '5',
                 icon: (
+                  <Tooltip title="More">
                   <MoreHorizIcon
                     aria-owns={anchorEl ? 'settings-tables-menu' : undefined}
                   />
+                  </Tooltip>
                 ),
                 onClick: this.handleClick,
                 color: 'default',

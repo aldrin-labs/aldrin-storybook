@@ -169,6 +169,7 @@ export class CoinMarket extends React.Component<Props, State> {
           Name: value.name,
           Symbol: {
             contentToSort: value.symbol,
+            contentToCSV: value.symbol,
             render: (
               <CoinSymbolContainer>
                 {
@@ -185,6 +186,9 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PriceUSD: {
             contentToSort: value.price_usd || 0,
+            contentToCSV: typeof value.price_usd === 'number'
+              ? formatNumberToUSFormat(marketPriceRound(value.price_usd))
+              : '?',
             render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.price_usd === 'number'
                 ? formatNumberToUSFormat(marketPriceRound(value.price_usd))
@@ -195,6 +199,9 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PriceBTC: {
             contentToSort: value.price_btc || 0,
+            contentToCSV: typeof value.price_btc === 'number'
+              ? roundAndFormatNumber(value.price_btc, 8)
+              : '?',
             render: addMainSymbol(
               typeof value.price_btc === 'number'
                 ? roundAndFormatNumber(value.price_btc, 8)
@@ -205,6 +212,7 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           MarketCap: {
             contentToSort: value.market_cap_usd || 0,
+            contentToCSV: value.market_cap_usd || 0,
             render: addMainSymbol(
               typeof value.market_cap_usd === 'number'
                 ? formatNumberToUSFormat(value.market_cap_usd)
@@ -215,6 +223,7 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           CirculatingSupply: {
             contentToSort: value.available_supply || 0,
+            contentToCSV: value.available_supply || 0,
             render: `${
               typeof value.available_supply === 'number'
                 ? formatNumberToUSFormat(value.available_supply)
@@ -224,6 +233,7 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           Volume24h: {
             contentToSort: value.volume_usd_24h || 0,
+            contentToCSV: value.volume_usd_24h || 0,
             render: this.wrapWithLinkToChartPage(addMainSymbol(
               typeof value.volume_usd_24h === 'number'
                 ? roundAndFormatNumber(value.volume_usd_24h, 2)
@@ -234,6 +244,9 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PercentChange1h: {
             contentToSort: value.percent_change_1h || 0,
+            contentToCSV: typeof value.percent_change_1h === 'number'
+              ? formatNumberToUSFormat(value.percent_change_1h)
+              : '?',
             render: `${
               typeof value.percent_change_1h === 'number'
                 ? formatNumberToUSFormat(value.percent_change_1h)
@@ -249,6 +262,9 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PercentChange24h: {
             contentToSort: value.percent_change_24h || 0,
+            contentToCSV: typeof value.percent_change_24h === 'number'
+              ? formatNumberToUSFormat(value.percent_change_24h || 0)
+              : '?',
             render: `${
               typeof value.percent_change_24h === 'number'
                 ? formatNumberToUSFormat(value.percent_change_24h || 0)
@@ -264,6 +280,9 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PercentChange7d: {
             contentToSort: value.percent_change_7d || 0,
+            contentToCSV: typeof value.percent_change_7d === 'number'
+              ? formatNumberToUSFormat(value.percent_change_7d || 0)
+              : '?',
             render: `${
               typeof value.percent_change_7d === 'number'
                 ? formatNumberToUSFormat(value.percent_change_7d || 0)
