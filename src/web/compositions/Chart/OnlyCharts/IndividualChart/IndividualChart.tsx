@@ -19,7 +19,15 @@ export default class Charts extends Component<IChartProps, IChartState> {
   }
 
   render() {
-    const { currencyPair, removeChart, index, theme, userId, themeMode } = this.props
+    const {
+      currencyPair,
+      removeChart,
+      index,
+      theme,
+      userId,
+      themeMode,
+      activeLayout
+    } = this.props
     const { palette } = theme
     const { primary } = palette
     const { activeChart, show } = this.state
@@ -72,7 +80,9 @@ export default class Charts extends Component<IChartProps, IChartState> {
           </ChartsSwitcher>
           {activeChart === 'candle' ? (
             <SingleChart
-              additionalUrl={`/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart`}
+              additionalUrl={activeLayout
+                ? `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart&layout=${activeLayout}index${index}`
+                : `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart`}
               name={`name${index}`}
             />
           ) : (
