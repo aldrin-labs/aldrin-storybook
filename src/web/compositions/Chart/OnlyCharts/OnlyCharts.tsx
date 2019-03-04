@@ -76,7 +76,6 @@ class OnlyCharts extends Component<IProps> {
       userId,
       themeMode,
     } = this.props
-    console.log(charts.length)
     return (
       <>
         <Joyride
@@ -124,7 +123,6 @@ class OnlyCharts extends Component<IProps> {
                   currencyPair={chart}
                   userId={userId}
                   themeMode={themeMode}
-                  activeLayout={activeLayout}
                 />
               ))}
             <WarningMessageSnack

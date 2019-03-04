@@ -59,7 +59,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import { compose } from 'recompose'
 
-import LayoutSelecor from '@core/components/LayoutSelector'
+import LayoutSelector from '@core/components/LayoutSelector'
 
 class Chart extends React.Component<IProps, IState> {
   state = {
@@ -464,7 +464,7 @@ class Chart extends React.Component<IProps, IState> {
             justify="flex-end"
           >
             {view === 'onlyCharts' && (
-              <LayoutSelecor
+              <LayoutSelector
                 userId={_id}
                 themeMode={themeMode}
                />

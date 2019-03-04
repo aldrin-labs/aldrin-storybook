@@ -80,9 +80,8 @@ export default class Charts extends Component<IChartProps, IChartState> {
           </ChartsSwitcher>
           {activeChart === 'candle' ? (
             <SingleChart
-              additionalUrl={activeLayout
-                ? `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart&layout=${activeLayout}index${index}`
-                : `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart`}
+              additionalUrl={
+                `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart`}
               name={`name${index}`}
             />
           ) : (
