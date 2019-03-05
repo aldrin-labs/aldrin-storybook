@@ -249,7 +249,6 @@ export default class Import extends PureComponent<IProps> {
       activeButton,
       theme,
       rawOptimizedData,
-      tab,
       showBlurOnSections,
       showCustomPlaceholder,
       placeholderElement,
@@ -299,12 +298,6 @@ export default class Import extends PureComponent<IProps> {
         <StyledCardHeader title="Portfolio Distribution" />
         <InnerChartContainer>
           <Chart background={theme.palette.background.default}>
-            <Grow
-              timeout={0}
-              in={tab === 'optimization'}
-              mountOnEnter
-              unmountOnExit
-            >
               <BarChart
                 showCustomPlaceholder={showCustomPlaceholder}
                 placeholderElement={placeholderElement}
@@ -317,7 +310,6 @@ export default class Import extends PureComponent<IProps> {
                 hideDashForToolTip={true}
                 xAxisVertical={true}
               />
-            </Grow>
           </Chart>
         </InnerChartContainer>
       </ChartContainer>
@@ -368,7 +360,6 @@ export default class Import extends PureComponent<IProps> {
     const {
       storeData, // data from redux (data from portfolio and mannualy added)
       onNewBtnClick,
-      // filterValueSmallerThenPercentage,
       activeButton,
       theme,
       showBlurOnSections,
@@ -554,9 +545,6 @@ export default class Import extends PureComponent<IProps> {
                   activeButton={activeButton}
                   withInput={true}
                   onClickDeleteIcon={this.deleteRow}
-                  // filterValueSmallerThenPercentage={
-                  //   filterValueSmallerThenPercentage
-                  // }
                   theme={this.props.theme}
                 />
               </TableContainer>

@@ -5,7 +5,6 @@ export interface IState {
 }
 
 export interface IProps {
-  tab: string
   theme: Theme
   isShownMocks: boolean
   dustFilter: number

@@ -1,9 +1,11 @@
+import { DustFilterType } from '@core/types/PortfolioTypes'
+
 export interface IProps {
+  dustFilter: DustFilterType
   optimizationPeriod: string
   isShownMocks: boolean
   startDate: number
   endDate: number
-  filterValueSmallerThenPercentage: number
   data?: { getProfile: object }
   optimizedData: IData[]
   storeData: IData[]

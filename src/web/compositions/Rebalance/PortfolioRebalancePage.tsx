@@ -63,7 +63,6 @@ class PortfolioRebalancePage extends Component {
       isUSDCurrently,
       theme,
       theme: { palette, customPalette },
-      tab,
       timestampSnapshot,
       onDiscardChanges,
       onSaveClick,
@@ -87,29 +86,6 @@ class PortfolioRebalancePage extends Component {
 
     return (
       <>
-        <Joyride
-          continuous={true}
-          showProgress={true}
-          showSkipButton={true}
-          steps={portfolioRebalanceSteps}
-          run={this.props.toolTip.portfolioRebalance && tab === 'rebalance'}
-          callback={this.handleJoyrideCallback}
-          key={this.state.key}
-          styles={{
-            options: {
-              backgroundColor: theme.palette.getContrastText(
-                theme.palette.primary.main
-              ),
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.primary.main,
-            },
-            tooltip: {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-            },
-          }}
-        />
-
         <EmptyTablePlaceholder isEmpty={tableDataHasData}>
           {children}
           <Content key={`content`} container spacing={16}>
@@ -198,6 +174,30 @@ class PortfolioRebalancePage extends Component {
             />
           </Content>
         </EmptyTablePlaceholder>
+
+        <Joyride
+          continuous={true}
+          showProgress={true}
+          showSkipButton={true}
+          steps={portfolioRebalanceSteps}
+          run={this.props.toolTip.portfolioRebalance}
+          callback={this.handleJoyrideCallback}
+          key={this.state.key}
+          styles={{
+            options: {
+              backgroundColor: theme.palette.getContrastText(
+                theme.palette.primary.main
+              ),
+              primaryColor: theme.palette.secondary.main,
+              textColor: theme.palette.primary.main,
+            },
+            tooltip: {
+              fontFamily: theme.typography.fontFamily,
+              fontSize: theme.typography.fontSize,
+            },
+          }}
+        />
+
       </>
     )
   }

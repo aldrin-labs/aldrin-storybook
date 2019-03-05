@@ -37,16 +37,30 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, tab, dustFilter } = this.props
+    const { theme, dustFilter } = this.props
 
     return (
       <>
+        <Template
+          PortfolioMainTable={<PortfolioMainTable theme={theme} dustFilter={dustFilter} />}
+          PortfolioActions={<TradeOrderHistory />}
+          Chart={
+            <PortfolioMainChart
+              title="Portfolio Value | Coming Soon | In development"
+              style={{
+                marginLeft: 0,
+                minHeight: '10vh',
+              }}
+              marginTopHr="10px"
+            />
+          }
+        />
         <Joyride
           continuous={true}
           showProgress={true}
           showSkipButton={true}
           steps={portfolioMainSteps}
-          run={this.props.toolTip.portfolioMain && tab === 'main'}
+          run={this.props.toolTip.portfolioMain}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -62,21 +76,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               fontSize: theme.typography.fontSize,
             },
           }}
-        />
-        <Template
-          PortfolioMainTable={<PortfolioMainTable theme={theme} tab={tab} dustFilter={dustFilter} />}
-          PortfolioActions={<TradeOrderHistory />}
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-                minHeight: '10vh',
-              }}
-              tab={tab}
-              marginTopHr="10px"
-            />
-          }
         />
       </>
     )

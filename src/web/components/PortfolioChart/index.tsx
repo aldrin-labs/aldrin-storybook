@@ -25,7 +25,6 @@ import {
   crosshairStyle,
 } from './styles'
 import CardHeader from '../CardHeader'
-import { Grow } from '@material-ui/core'
 
 export default class PortfolioChart extends Component<Props> {
   state: Partial<Props> = {
@@ -108,12 +107,6 @@ export default class PortfolioChart extends Component<Props> {
         />
         {/* minus cardHeader Height */}
         <Chart height={`calc(100% - 68px)`}>
-          <Grow
-            in={this.props.tab === 'main'}
-            mountOnEnter
-            unmountOnExit
-            timeout={1}
-          >
             <FlexibleXYPlot
               margin={{ left: 50 }}
               animation={true}
@@ -189,7 +182,6 @@ export default class PortfolioChart extends Component<Props> {
                 <Highlight onBrushEnd={this._onBrushEnd} />
               )}
             </FlexibleXYPlot>
-          </Grow>
         </Chart>
       </SProfileChart>
     )
