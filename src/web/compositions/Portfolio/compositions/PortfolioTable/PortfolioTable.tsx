@@ -65,7 +65,7 @@ class PortfolioTable extends Component<IProps, IState> {
                 />
                 <Route
                   exact
-                  path="/portfolio/industries"
+                  path="/portfolio/industry"
                   render={(...rest) => (
                     <PortfolioTableIndustries
                       isUSDCurrently={isUSDCurrently}
