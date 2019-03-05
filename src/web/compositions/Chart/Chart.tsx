@@ -355,7 +355,7 @@ class Chart extends React.Component<IProps, IState> {
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
             <SingleChart
-              additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}&location=chart`}
+              additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`}
             />
           ) : (
             <Fade timeout={1000} in={activeChart === 'depth'}>

@@ -81,7 +81,7 @@ export default class Charts extends Component<IChartProps, IChartState> {
           {activeChart === 'candle' ? (
             <SingleChart
               additionalUrl={
-                `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}&location=multichart`}
+                `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`}
               name={`name${index}`}
             />
           ) : (
