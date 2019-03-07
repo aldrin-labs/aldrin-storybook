@@ -140,6 +140,9 @@ const LayoutSelecorComponent = ({...props}) => {
       >
         Top Portfolio Charts
       </TransparentExtendedFAB>
+      <SaveLayoutDialog
+        saveLayout={saveLayoutWithCharts}
+      />
       <SelectContainer
         border={divider}
       >
@@ -152,9 +155,6 @@ const LayoutSelecorComponent = ({...props}) => {
           onChange={handleChange}
         />
       </SelectContainer>
-      <SaveLayoutDialog
-        saveLayout={saveLayoutWithCharts}
-      />
     </>
   )
 }

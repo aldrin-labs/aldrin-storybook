@@ -9,8 +9,8 @@ import Hidden from '@material-ui/core/Hidden'
 
 import { Nav } from './NavBar.styles'
 import Feedback from '@sb/components/Feedback'
-import styled from 'styled-components'
 import Logo from '@sb/components/Logo/Logo'
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 
 export interface Props extends WithTheme {
   $hide?: boolean
@@ -31,19 +31,10 @@ const NavBarRaw: SFC<Props> = ({
       divider,
     },
   },
+  theme,
   pathname,
   $hide = false,
 }) => {
-  const nonActiveButtonStyle =
-    type === 'dark'
-      ? { color: fade(common.white, 0.5), margin: '0.5rem 1rem' }
-      : { color: fade(common.black, 0.5), margin: '0.5rem 1rem' }
-  const activeButtonStyle = { margin: '0.5rem 1rem' }
-  const createStyleForButton = (
-    route: string,
-    button: string
-  ): { color?: string; margin?: string } =>
-    route === button ? activeButtonStyle : nonActiveButtonStyle
 
   return (
     <Nav
@@ -71,37 +62,27 @@ const NavBarRaw: SFC<Props> = ({
                 flexWrap: 'nowrap',
               }}
             >
-              <Button
-                style={createStyleForButton(pathname, '/portfolio')}
-                size="medium"
+              <NavLinkButton
+                page={`portfolio`}
                 component={Portfolio}
-                color="default"
-                variant="text"
+                pathname={pathname}
               >
-                {pathname === '/portfolio' && <Marker color={main} />}
                 Portfolio
-              </Button>
-
-              <Button
-                style={createStyleForButton(pathname, '/chart')}
+              </NavLinkButton>
+              <NavLinkButton
+                page={`chart`}
                 component={Chart}
-                size="medium"
-                variant="text"
-                color="default"
+                pathname={pathname}
               >
-                {pathname === '/chart' && <Marker color={main} />}
                 Chart
-              </Button>
-              <Button
-                style={createStyleForButton(pathname, '/market')}
+              </NavLinkButton>
+              <NavLinkButton
+                page={`market`}
                 component={Market}
-                size="medium"
-                variant="text"
-                color="default"
+                pathname={pathname}
               >
-                {pathname === '/market' && <Marker color={main} />}
                 Market
-              </Button>
+              </NavLinkButton>
             </Grid>
           </Grid>
 
@@ -125,14 +106,5 @@ const NavBarRaw: SFC<Props> = ({
     </Nav>
   )
 }
-
-const Marker = styled.span`
-  width: 28px;
-  height: 6px;
-  border-radius: 6px;
-  background: ${(props: { color: string }) => props.color};
-  position: absolute;
-  bottom: -9px;
-`
 
 export const NavBar = withTheme()(NavBarRaw)

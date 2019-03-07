@@ -14,9 +14,9 @@ const Wrapper = styled(Card)`
 export const SingleChart = ({ additionalUrl, name }: { additionalUrl: string }) =>(
   <Wrapper>
     <iframe
-      allow-scripts
+      allowfullscreen=""
       style={{ borderWidth: 0 }}
-      src={`http://localhost:8080${additionalUrl}`}
+      src={`https://${CHARTS_API_URL}${additionalUrl}`}
       height={'100%'}
       id={name}
     />

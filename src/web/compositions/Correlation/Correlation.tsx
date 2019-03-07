@@ -77,7 +77,7 @@ const Correlation = (props: IProps) => {
 }
 
 const CorrelationWrapper = (props: IProps) => {
-  const { isShownMocks, children, theme, tab } = props
+  const { isShownMocks, children, theme } = props
   let { startDate, endDate } = props
   let key = 0
 
@@ -102,25 +102,6 @@ const CorrelationWrapper = (props: IProps) => {
 
   return (
     <PTWrapper>
-      <Joyride
-        steps={portfolioCorrelationSteps}
-        run={props.toolTip.portfolioCorrelation && tab === 'correlation'}
-        callback={handleJoyrideCallback}
-        key={key}
-        styles={{
-          options: {
-            backgroundColor: theme.palette.getContrastText(
-              theme.palette.primary.main
-            ),
-            primaryColor: theme.palette.secondary.main,
-            textColor: theme.palette.primary.main,
-          },
-          tooltip: {
-            fontFamily: theme.typography.fontFamily,
-            fontSize: theme.typography.fontSize,
-          },
-        }}
-      />
       {isShownMocks && !MASTER_BUILD ? (
         <Correlation
           key="=/"
@@ -150,6 +131,26 @@ const CorrelationWrapper = (props: IProps) => {
           {...props}
         />
       )}
+
+      <Joyride
+        steps={portfolioCorrelationSteps}
+        run={props.toolTip.portfolioCorrelation}
+        callback={handleJoyrideCallback}
+        key={key}
+        styles={{
+          options: {
+            backgroundColor: theme.palette.getContrastText(
+              theme.palette.primary.main
+            ),
+            primaryColor: theme.palette.secondary.main,
+            textColor: theme.palette.primary.main,
+          },
+          tooltip: {
+            fontFamily: theme.typography.fontFamily,
+            fontSize: theme.typography.fontSize,
+          },
+        }}
+      />
     </PTWrapper>
   )
 }

@@ -1,8 +1,9 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import Divider from '@material-ui/core/Divider'
+import { NavLink } from 'react-router-dom'
 
 export const DividerWithMargin = styled(Divider)`
   margin: 0.5rem auto;
@@ -46,7 +47,16 @@ export const Tab = styled(IconButton)`
   margin-bottom: 0px;
 `
 
-export const BarContainer = styled.div`
+export const BarStyles = css`
   text-align: center;
   cursor: pointer;
+`
+
+export const BarContainer = styled.div`
+  ${BarStyles}
+`
+
+export const BarLink = styled(NavLink)`
+  text-decoration: none;
+  ${BarStyles}
 `
