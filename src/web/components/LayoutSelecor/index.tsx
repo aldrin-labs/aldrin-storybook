@@ -52,10 +52,10 @@ const LayoutSelecorComponent = ({...props}) => {
     if (charts.length > 0) {
       let i = 0
       let id = null
-      const func = (event) => {
+      const savingOnCallback = (event) => {
         i = i + 1
         if (i === charts.length) {
-          window.removeEventListener('message', func)
+          window.removeEventListener('message', savingOnCallback)
           return null
         }
 
@@ -65,16 +65,16 @@ const LayoutSelecorComponent = ({...props}) => {
           ? document.getElementById(`name${i}`).contentWindow
           : null
         if (frame) {
-          setTimeout(() => {frame.postMessage(JSON.stringify({
+          setTimeout(() => frame.postMessage(JSON.stringify({
             action: 'save',
             name: `${name}index${i}`,
           }),
             `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
-          )}, 2000)
+          
+          ), 1000)}
         }
-      }
 
-      window.addEventListener('message', func)
+      window.addEventListener('message', savingOnCallback)
 
       const chart = charts[0]
       const [base, quote] = chart.split('_')
@@ -91,12 +91,13 @@ const LayoutSelecorComponent = ({...props}) => {
       }
     }
   }
+  
 
   const loadLayoutWithCharts = (name: string) => {
     loadLayout(name)
     const chartsInLayout = layouts ? layouts.find((layout => layout.name === name)).charts: []
+
     setTimeout(() => {
-      console.log('loadEvent')
       chartsInLayout.forEach((chart, index) => {
       const [base, quote] = chart.split('_')
       const frame = document.getElementById(`name${index}`)
