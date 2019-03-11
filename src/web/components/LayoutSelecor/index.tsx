@@ -69,8 +69,7 @@ const LayoutSelecorComponent = ({...props}) => {
             action: 'save',
             name: `${name}index${i}`,
           }),
-            `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
-          
+            `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
           ), 1000)}
         }
 
@@ -86,12 +85,12 @@ const LayoutSelecorComponent = ({...props}) => {
           action: 'save',
           name: `${name}index0`,
         }),
-          `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
+          `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
         )
       }
     }
   }
-  
+
 
   const loadLayoutWithCharts = (name: string) => {
     loadLayout(name)
@@ -108,7 +107,7 @@ const LayoutSelecorComponent = ({...props}) => {
           action: 'load',
           name: `${name}index${index}`,
         }),
-          `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
+          `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
         )
       }
     })}, 1000)
