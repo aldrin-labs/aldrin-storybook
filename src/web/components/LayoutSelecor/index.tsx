@@ -20,16 +20,6 @@ const ActionButton = withStyles(() => ({
 }))(IconButton)
 
 const LayoutSelecorComponent = ({...props}) => {
-  const handleChange = ({ value }: {value: string}) => {
-    const {
-      loadLayout,
-    } = props
-
-    if (!value) {
-      return
-    }
-    loadLayout(value)
-  }
 
   const {
     layouts,
@@ -40,7 +30,96 @@ const LayoutSelecorComponent = ({...props}) => {
     setTopMarkets,
     setTopCoinInPortfolio,
     removeLayout,
+    charts,
+    userId,
+    themeMode,
+    loadLayout,
+    chartApiUrl,
   } = props
+
+  let suggestions = []
+
+  if (layouts) {
+    suggestions = layouts
+      .map((suggestion: any) => ({
+        value: suggestion.name,
+        label: suggestion.name,
+      }))
+  }
+
+  const saveLayoutWithCharts = (name: string) => {
+    saveLayout(name)
+    if (charts.length > 0) {
+      let i = 0
+      let id = null
+      const savingOnCallback = (event) => {
+        i = i + 1
+        if (i === charts.length) {
+          window.removeEventListener('message', savingOnCallback)
+          return null
+        }
+
+        const chart = charts[i]
+        const [base, quote] = chart.split('_')
+        const frame = document.getElementById(`name${i}`)
+          ? document.getElementById(`name${i}`).contentWindow
+          : null
+        if (frame) {
+          setTimeout(() => frame.postMessage(JSON.stringify({
+            action: 'save',
+            name: `${name}index${i}`,
+          }),
+            `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
+          
+          ), 1000)}
+        }
+
+      window.addEventListener('message', savingOnCallback)
+
+      const chart = charts[0]
+      const [base, quote] = chart.split('_')
+      const frame = document.getElementById(`name0`)
+        ? document.getElementById(`name0`).contentWindow
+        : null
+      if (frame) {
+        frame.postMessage(JSON.stringify({
+          action: 'save',
+          name: `${name}index0`,
+        }),
+          `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
+        )
+      }
+    }
+  }
+  
+
+  const loadLayoutWithCharts = (name: string) => {
+    loadLayout(name)
+    const chartsInLayout = layouts ? layouts.find((layout => layout.name === name)).charts: []
+
+    setTimeout(() => {
+      chartsInLayout.forEach((chart, index) => {
+      const [base, quote] = chart.split('_')
+      const frame = document.getElementById(`name${index}`)
+        ? document.getElementById(`name${index}`).contentWindow
+        : null
+      if (frame) {
+        frame.postMessage(JSON.stringify({
+          action: 'load',
+          name: `${name}index${index}`,
+        }),
+          `http://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
+        )
+      }
+    })}, 1000)
+  }
+
+  const handleChange = ({ value }: {value: string}) => {
+    if (!value) {
+      return
+    }
+    loadLayoutWithCharts(value)
+  }
 
   const Option = (optionProps: any) => (
     <OptionContainer>
@@ -63,7 +142,7 @@ const LayoutSelecorComponent = ({...props}) => {
         Top Portfolio Charts
       </TransparentExtendedFAB>
       <SaveLayoutDialog
-        saveLayout={saveLayout}
+        saveLayout={saveLayoutWithCharts}
       />
       <SelectContainer
         border={divider}
@@ -73,7 +152,7 @@ const LayoutSelecorComponent = ({...props}) => {
           value=""
           placeholder="Select layout"
           fullWidth={true}
-          options={layouts}
+          options={suggestions}
           onChange={handleChange}
         />
       </SelectContainer>

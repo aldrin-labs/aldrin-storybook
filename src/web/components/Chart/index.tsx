@@ -11,16 +11,16 @@ const Wrapper = styled(Card)`
   height: 100%;
 `
 
-export const SingleChart = ({ additionalUrl }: { additionalUrl: string }) => (
+export const SingleChart = ({ additionalUrl, name }: { additionalUrl: string }) =>(
   <Wrapper>
     <iframe
       allowfullscreen=""
       style={{ borderWidth: 0 }}
       src={`https://${CHARTS_API_URL}${additionalUrl}`}
       height={'100%'}
+      id={name}
     />
   </Wrapper>
 )
-
 
 export default SingleChart

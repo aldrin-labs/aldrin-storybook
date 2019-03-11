@@ -20,6 +20,7 @@ import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
 import { GET_LAYOUTS } from '@core/graphql/queries/chart/getLayouts'
+import { ACTIVE_LAYOUT } from '@core/graphql/queries/chart/activeLayout'
 import { SAVE_LAYOUT } from '@core/graphql/mutations/chart/saveLayout'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
@@ -71,6 +72,7 @@ class OnlyCharts extends Component<IProps> {
       view,
       demoMode,
       getCharts: { multichart: { charts } },
+      activeLayout: { multichart: { activeLayout } },
       userId,
       themeMode,
     } = this.props
@@ -193,17 +195,24 @@ const mapDispatchToProps = (dispatch: any) => ({
   hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 
-export default queryRendererHoc({
-  query: GET_CHARTS,
-  withOutSpinner: false,
-  withTableLoader: false,
-  name: 'getCharts',
-})(compose(
+export default compose(
+  queryRendererHoc({
+    query: ACTIVE_LAYOUT,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'activeLayout',
+  }),
+  queryRendererHoc({
+    query: GET_CHARTS,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'getCharts',
+  }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
-  graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' })
-)(withErrorFallback(
-  connect(
+  graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' }),
+  withErrorFallback
+)(connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OnlyCharts))))
+  )(OnlyCharts))

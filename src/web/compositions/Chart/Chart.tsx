@@ -59,7 +59,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import { compose } from 'recompose'
 
-import LayoutSelecor from '@core/components/LayoutSelector'
+import LayoutSelector from '@core/components/LayoutSelector'
 
 class Chart extends React.Component<IProps, IState> {
   state = {
@@ -86,6 +86,15 @@ class Chart extends React.Component<IProps, IState> {
         this.setState({ joyride: true })
       }, 1000)
     }
+    const {
+      currencyPair,
+      theme,
+      getMyProfile: { getMyProfile: { _id }},
+      themeMode,
+    } = this.props
+
+    const [base, quote] = currencyPair.split('_')
+
   }
 
   componentWillUnmount() {
@@ -345,7 +354,9 @@ class Chart extends React.Component<IProps, IState> {
       <Container container spacing={16}>
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`} />
+            <SingleChart
+              additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`}
+            />
           ) : (
             <Fade timeout={1000} in={activeChart === 'depth'}>
               <DepthChartContainer data-e2e="mainDepthChart">
@@ -421,7 +432,14 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { view, currencyPair, activeExchange, theme } = this.props
+    const {
+      view,
+      currencyPair,
+      activeExchange,
+      theme,
+      getMyProfile: { getMyProfile: { _id }},
+      themeMode,
+    } = this.props
     const { activeChart } = this.state
     const { palette } = theme
 
@@ -446,7 +464,10 @@ class Chart extends React.Component<IProps, IState> {
             justify="flex-end"
           >
             {view === 'onlyCharts' && (
-              <LayoutSelecor />
+              <LayoutSelector
+                userId={_id}
+                themeMode={themeMode}
+               />
             )}
             <AutoSuggestSelect
               value={view === 'default' && currencyPair}
