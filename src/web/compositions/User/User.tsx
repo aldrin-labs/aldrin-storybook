@@ -29,7 +29,6 @@ import {
   Card,
 } from '@material-ui/core'
 
-
 class UserContainer extends React.Component {
   store: any
 
@@ -44,7 +43,7 @@ class UserContainer extends React.Component {
   }
 
   render() {
-  //TODO: Made it with react-apollo-hooks
+    //TODO: Made it with react-apollo-hooks
     const {
       loginDataQuery: { login: { loginStatus } } = {
         login: { loginStatus: null },
@@ -140,5 +139,10 @@ const storeComponent = connect(
 
 export const User = compose(
   withErrorFallback,
-  graphql(GET_LOGIN_DATA, { name: 'loginDataQuery' }),
+  graphql(GET_LOGIN_DATA, {
+    name: 'loginDataQuery',
+    options: {
+      fetchPolicy: 'network-only',
+    },
+  })
 )(storeComponent)
