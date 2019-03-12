@@ -112,6 +112,7 @@ export default (props) =>(
     <QueryRenderer
       component={CryptoWalletsListComponent}
       query={getCryptoWalletsQuery}
+      fetchPolicy="network-only"
       {...props}
     />
 )

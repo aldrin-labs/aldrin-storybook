@@ -9,6 +9,7 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
 import { MASTER_BUILD } from '@core/utils/config'
 import { updateBinanceWarning, toggleMocks } from '@core/redux/user/actions'
+import withAuth from '@core/hoc/withAuth'
 
 import ComingSoon from '@sb/components/ComingSoon'
 import { CardHeader } from '@sb/components/index'
@@ -43,16 +44,6 @@ class UserContainer extends React.Component {
   }
 
   render() {
-    //TODO: Made it with react-apollo-hooks
-    const {
-      loginDataQuery: { login: { loginStatus } } = {
-        login: { loginStatus: null },
-      },
-    } = this.props
-
-    if (!loginStatus) {
-      return <Redirect to="/portfolio" />
-    }
     return (
       <>
         <UserWrap>
@@ -138,11 +129,6 @@ const storeComponent = connect(
 )(UserContainer)
 
 export const User = compose(
-  withErrorFallback,
-  graphql(GET_LOGIN_DATA, {
-    name: 'loginDataQuery',
-    options: {
-      fetchPolicy: 'network-only',
-    },
-  })
+  withAuth,
+  withErrorFallback
 )(storeComponent)

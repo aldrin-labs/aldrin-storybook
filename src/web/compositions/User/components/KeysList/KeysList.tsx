@@ -115,5 +115,11 @@ const KeysTable = styled(Table)`
 `
 
 export default (props) => (
-  <QueryRenderer component={KeysListComponent} query={getKeysQuery} {...props} />
+  <QueryRenderer
+  component={KeysListComponent}
+  query={getKeysQuery}
+  fetchPolicy="network-only"
+  withOutSpinner={true}
+  {...props}
+  />
 )
