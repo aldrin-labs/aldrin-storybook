@@ -44,8 +44,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
       },
       location: { pathname },
     } = this.props
-
-    const switchUSDBTC = tab === 'main'
+    const switchUSDBTC = pathname === '/portfolio/main'
     const backgroundColor = type === 'dark' ? primary.light : primary[100]
 
     return (
