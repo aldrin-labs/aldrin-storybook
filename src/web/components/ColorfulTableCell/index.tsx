@@ -11,6 +11,7 @@ const config = {
 
 export const colorful = (value: number, red: string, green: string) => ({
   contentToSort: value,
+  contentToCSV: value,
   render:
     value === 0 ? (
       <Tooltip enterDelay={250} title={config.industryTableEmptyCellTooltip}>
