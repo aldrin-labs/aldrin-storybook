@@ -1,4 +1,4 @@
-import { IActiveExchange } from '@core/types/ChartTypes'
+import { IActiveExchange, IGetCharts, IGetMyProfile } from '@core/types/ChartTypes'
 
 export interface IProps {
   isNoCharts: boolean
@@ -13,6 +13,10 @@ export interface IProps {
   setOrders: Function
   addChart: (currencyPair: string) => void
   theme: any
+  themeMode: 'dark' | 'light'
+  getMyProfile: IGetMyProfile
+  getCharts: IGetCharts
+  addChartMutation: (queryObject: any) => Promise<any>
 }
 
 export interface IState {
@@ -24,4 +28,5 @@ export interface IState {
   activeChart: string
   exchanges: []
   tradeHistory: []
+  joyride: boolean
 }
