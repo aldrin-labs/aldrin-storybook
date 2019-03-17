@@ -1,3 +1,5 @@
+import { Theme } from '@material-ui/core'
+
 export interface IState {
   tableExpanded: boolean
 }
@@ -14,5 +16,5 @@ export interface IProps {
   quote: string
   data: ITicker[]
   numbersAfterDecimalForPrice: number
-  theme: { pallet: any }
+  theme: Theme
 }

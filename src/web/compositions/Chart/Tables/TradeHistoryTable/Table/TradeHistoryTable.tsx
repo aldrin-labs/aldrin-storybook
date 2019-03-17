@@ -1,8 +1,4 @@
 import React, { memo, PureComponent } from 'react'
-import styled, { keyframes } from 'styled-components'
-import Collapse from '@material-ui/core/Collapse'
-import MdArrowDropUp from '@material-ui/icons/ArrowDropUp'
-import MdArrowUpward from '@material-ui/icons/ArrowUpward'
 
 import {
   Table,
@@ -16,6 +12,7 @@ import {
 import { IProps, IState, ITicker } from './TradeHistoryTable.types'
 import { Loading } from '@sb/components/Loading'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
+import { StyledTypography, CollapseWrapper, StyledArrow, StyledArrowSign, TradeHistoryTableCollapsible, TriggerTitle } from './TradeHistoryTable.styles'
 
 const OptimizedRow = memo(
   ({ ticker, background, numbersAfterDecimalForPrice, red, green }) => (
@@ -203,97 +200,5 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
     )
   }
 }
-
-const StyledTypography = styled(TypographyFullWidth)`
-  && {
-    color: ${(props: { textColor: string }) => props.textColor};
-    font-variant-numeric: lining-nums tabular-nums;
-  }
-`
-
-const TriggerTitle = styled(Title)`
-  cursor: pointer;
-  position: relative;
-  padding: 0.5rem;
-  transition: opacity 0.75s ease-in-out;
-  height: 2.875rem;
-  &:hover {
-    opacity: 0.85;
-  }
-`
-
-const CollapseWrapper = styled(Collapse)`
-  width: 100%;
-`
-
-const CollapsibleTable = styled(Table)`
-  position: absolute;
-  bottom: 0;
-  max-height: calc(70% - 37px);
-  z-index: 10;
-  width: 100%;
-
-  @-moz-document url-prefix() {
-    bottom: 22.5px;
-  }
-`
-
-const TradeHistoryTableCollapsible = styled(CollapsibleTable)`
-  max-height: 50%;
-
-  @media (max-width: 1080px) {
-    bottom: 0.5rem;
-  }
-`
-
-const StyledArrowSign = styled(MdArrowDropUp)`
-  font-size: 2rem;
-  transform: ${(props) =>
-    props.variant.up ? 'rotate(0deg)' : 'rotate(180deg)'};
-
-  position: absolute;
-  left: 0.25rem;
-
-  bottom: 15%;
-  transition: all 0.5s ease;
-
-  ${TriggerTitle}:hover & {
-    animation: ${(props) =>
-        props.variant.tableCollapsed ? JumpUpArrow : JumpDownArrow}
-      0.5s linear 0.5s 2;
-  }
-`
-
-const JumpDownArrow = keyframes`
-0% {
-  bottom: 15%;
-}
-50% {
-  bottom: -10%;
-}
-100% {
-  bottom: 15%;
-
-}
-`
-const JumpUpArrow = keyframes`
-0% {
-  bottom: 15%;
-}
-50% {
-  bottom: 50%;
-}
-100% {
-  bottom: 15%;
-}
-`
-
-const StyledArrow = styled(MdArrowUpward)`
-  min-width: 20%;
-  color: ${(props: { direction: string; color: string }) => props.color};
-
-  transform: ${(props: { direction: string; color: string }) =>
-    props.direction === 'up' ? 'rotate(0deg)' : 'rotate(180deg)'};
-`
 
 export default TradeHistoryTable

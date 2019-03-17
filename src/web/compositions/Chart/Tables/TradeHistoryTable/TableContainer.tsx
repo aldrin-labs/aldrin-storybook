@@ -13,7 +13,7 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 let unsubscribe: Function | undefined
 
 class TableContainer extends Component<IProps, IState> {
-  state = {
+  state: IState = {
     data: [],
   }
 
