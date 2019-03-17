@@ -1,4 +1,5 @@
 import { IActiveExchange, IGetCharts, IGetMyProfile } from '@core/types/ChartTypes'
+import { ITooltipType } from '@core/types/UserTypes'
 
 export interface IProps {
   isNoCharts: boolean
@@ -17,6 +18,8 @@ export interface IProps {
   getMyProfile: IGetMyProfile
   getCharts: IGetCharts
   addChartMutation: (queryObject: any) => Promise<any>
+  hideToolTip: (tab: string) => any
+  demoMode: ITooltipType
 }
 
 export interface IState {

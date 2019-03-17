@@ -14,7 +14,6 @@ import {
   TradeHistoryTable,
   ExchangesTable,
 } from './Tables/Tables'
-import { orders } from './mocks'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import MainDepthChart from './DepthChart/MainDepthChart/MainDepthChart'
@@ -60,7 +59,7 @@ import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 
 class Chart extends React.Component<IProps, IState> {
   state: IState = {
-    orders,
+    orders: [],
     view: 'default',
     exchangeTableCollapsed: true,
     aggregation: 0.01,
@@ -84,7 +83,6 @@ class Chart extends React.Component<IProps, IState> {
         this.setState({ joyride: true })
       }, 1000)
     }
-
   }
 
   componentWillUnmount() {
@@ -186,7 +184,7 @@ class Chart extends React.Component<IProps, IState> {
     }
   }
 
-  handleJoyrideCallback = (data) => {
+  handleJoyrideCallback = (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
@@ -504,8 +502,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(actions.toggleView(view)),
   selectCurrencies: (baseQuote: string) =>
     dispatch(actions.selectCurrencies(baseQuote)),
-  addChart: (payload) => dispatch(actions.addChart(payload)),
-  setOrders: (payload) => dispatch(actions.setOrders(payload)),
+  addChart: (payload: string) => dispatch(actions.addChart(payload)),
+  setOrders: (payload: any) => dispatch(actions.setOrders(payload)),
   hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 const ThemeWrapper = (props) => <Chart {...props} />
