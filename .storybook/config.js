@@ -56,6 +56,4 @@ if (process.env.REACT_NATIVE) {
   }))
 }
 
-login().then(() => {
   configure(loadStories, module)
-})
