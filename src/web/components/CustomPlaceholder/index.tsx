@@ -1,7 +1,3 @@
-// Put in container that you want to be covered by coming soon
-// it must have it's own heihgt and width
-// because this component has Width 100% and height 100%
-// also container must have position: relative
 import React from 'react'
 import styled from 'styled-components'
 import { Typography, Fade } from '@material-ui/core'
