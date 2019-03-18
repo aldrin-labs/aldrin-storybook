@@ -29,8 +29,6 @@ const AddStyled = withStyles((theme: Theme) => ({
   },
 }))(AddIcon)
 
-
-
 const StyledCard = styled(Card)`
   height: 190px;
   width: 100%;
@@ -78,7 +76,15 @@ const Item = styled.div`
   min-width: 0px;
   white-space: nowrap;
   background: ${(props: { background: string }) => props.background};
-  
+
+  && .custom-async-select-box {
+    width: 100%;
+    border-bottom: 2px solid ${(props: { color?: string }) => props.color};
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      border-bottom: 2px solid ${(props: { secondary?: string }) => props.secondary};
+    }
   }
 `
 

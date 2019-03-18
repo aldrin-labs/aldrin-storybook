@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import { Typography, CardContent } from '@material-ui/core'
 
-import {
-  IProps,
-  IState,
-} from './Table.types'
+import { IProps, IState } from './Table.types'
 import {
   AddStyled,
   StyledCard,
@@ -19,6 +16,8 @@ import {
   Body,
   StyledDeleteIcon,
 } from './Table.styles'
+import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
+import { handleRef } from '@sb/components/ReactSelectComponent/utils'
 
 export default class Table extends Component<IProps, IState> {
   state = {
@@ -50,6 +49,15 @@ export default class Table extends Component<IProps, IState> {
     }
   }
 
+  handleSelectChange = (optionSelected: { label: string; value: string } | null) => {
+    const label = optionSelected ? optionSelected.label  : ''
+
+    this.setState({
+      name: label,
+      value: 0,
+    })
+  }
+
   render() {
     const {
       withInput,
@@ -68,7 +76,6 @@ export default class Table extends Component<IProps, IState> {
           <Head bottomCollor={textColor}>
             <HeadItem background={palette.background.paper}>
               <Typography variant="body1" align="center">
-                {' '}
                 Coin
               </Typography>
             </HeadItem>
@@ -99,87 +106,120 @@ export default class Table extends Component<IProps, IState> {
 
             <Col>
               {data.map((item, i) => (
-                  <Item
-                    background={palette.background.paper}
-                    evenBackground={palette.action.hover}
-                    key={`percentage-opt-${item.coin}${item.percentage}${i}`}
-                  >
-                    <Typography variant="body1" align="center">
-                      {item.coin}
-                    </Typography>
-                  </Item>
-                ))}
+                <Item
+                  background={palette.background.paper}
+                  evenBackground={palette.action.hover}
+                  key={`percentage-opt-${item.coin}${item.percentage}${i}`}
+                >
+                  <Typography variant="body1" align="center">
+                    {item.coin}
+                  </Typography>
+                </Item>
+              ))}
             </Col>
 
             <Col>
               {data.map((item, i) => (
+                <Item
+                  background={palette.background.paper}
+                  evenBackground={palette.action.hover}
+                  key={`percentage-opt-${item.coin}${item.percentage}${i}`}
+                >
+                  <Typography variant="body1" align="center">
+                    {`${Number(item.percentage).toFixed(2)}%`}{' '}
+                  </Typography>
+                </Item>
+              ))}
+            </Col>
+            {optimizedData.length >= 1 ? (
+              <Col>
+                {data.map((item, i) => (
                   <Item
                     background={palette.background.paper}
                     evenBackground={palette.action.hover}
                     key={`percentage-opt-${item.coin}${item.percentage}${i}`}
                   >
                     <Typography variant="body1" align="center">
-                      {`${Number(item.percentage).toFixed(2)}%`}{' '}
+                      {item.optimizedPercentageArray &&
+                      item.optimizedPercentageArray[activeButton]
+                        ? `${item.optimizedPercentageArray[activeButton]}%`
+                        : '-'}
                     </Typography>
+
+                    <StyledDeleteIcon
+                      onClick={() => {
+                        if (onClickDeleteIcon) {
+                          onClickDeleteIcon(i)
+                        }
+                      }}
+                    />
                   </Item>
                 ))}
-            </Col>
-            {optimizedData.length >= 1 ? (
-              <Col>
-                {data.map((item, i) => (
-                    <Item
-                      background={palette.background.paper}
-                      evenBackground={palette.action.hover}
-                      key={`percentage-opt-${item.coin}${item.percentage}${i}`}
-                    >
-                      <Typography variant="body1" align="center">
-                        {item.optimizedPercentageArray &&
-                        item.optimizedPercentageArray[activeButton]
-                          ? `${item.optimizedPercentageArray[activeButton]}%`
-                          : '-'}
-                      </Typography>
-
-                      <StyledDeleteIcon
-                        onClick={() => {
-                          if (onClickDeleteIcon) {
-                            onClickDeleteIcon(i)
-                          }
-                        }}
-                      />
-                    </Item>
-                  ))}
               </Col>
             ) : (
               <Col>
                 {data.map((item, i) => (
-                    <Item
-                      background={palette.background.paper}
-                      evenBackground={palette.action.hover}
-                      key={i}
-                    >
-                      <Typography variant="body1" align="center">
-                        {'-'}{' '}
-                      </Typography>
-                      <StyledDeleteIcon
-                        onClick={() => {
-                          onClickDeleteIcon && onClickDeleteIcon(i)
-                        }}
-                      />{' '}
-                    </Item>
-                  ))}
+                  <Item
+                    background={palette.background.paper}
+                    evenBackground={palette.action.hover}
+                    key={i}
+                  >
+                    <Typography variant="body1" align="center">
+                      {'-'}{' '}
+                    </Typography>
+                    <StyledDeleteIcon
+                      onClick={() => {
+                        onClickDeleteIcon && onClickDeleteIcon(i)
+                      }}
+                    />{' '}
+                  </Item>
+                ))}
               </Col>
             )}
           </Body>
           <TableInput>
-            <Item background={palette.background.paper}>
-              <Input
-                id="AddCoinText"
-                color={textColor}
-                placeholder="Coin"
-                type="text"
-                value={this.state.name || ''}
-                onChange={this.handleChangeName}
-                onKeyDown={this.onKeyDown}
+            <Item background={palette.background.paper} secondary={palette.secondary.main} color={palette.text.primary}>
+              <SelectCoinList
+                value={
+                  this.state.name
+                    ? [{ value: this.state.value, label: this.state.name }]
+                    : null
+                }
+                ref={handleRef}
+                classNamePrefix="custom-select-box"
+                isClearable={true}
+                isSearchable={true}
+                openMenuOnClick={false}
+                menuPortalTarget={document.body}
+                menuPortalStyles={{
+                  zIndex: 111,
+                }}
+                menuStyles={{
+                  fontSize: '12px',
+                  minWidth: '150px',
+                  height: '200px',
+                }}
+                menuListStyles={{
+                  height: '200px',
+                }}
+                optionStyles={{
+                  fontSize: '12px',
+                }}
+                clearIndicatorStyles={{
+                  padding: '2px',
+                }}
+                valueContainerStyles={{
+                  minWidth: '35px',
+                  overflow: 'hidden',
+                }}
+                inputStyles={{
+                  marginLeft: '0',
+                }}
+                dropdownIndicatorStyles={{
+                  display: 'none',
+                }}
+                noOptionsMessage={() => `No such coin in our DB found`}
+                onChange={this.handleSelectChange}
               />
             </Item>
             <Item background={palette.background.paper} />
