@@ -76,10 +76,6 @@ export default class PortfolioChart extends Component<Props> {
       chartBtns,
       title,
     } = this.state
-    if (!(data && data.length)) {
-      return <Loading centerAligned={true} />
-    }
-
     return (
       <SProfileChart style={{ ...style, height }}>
         <CardHeader

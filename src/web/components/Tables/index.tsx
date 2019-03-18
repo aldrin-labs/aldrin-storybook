@@ -12,6 +12,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
+
+import styled from 'styled-components'
+
 import {
   Props,
   Cell,
@@ -36,6 +39,9 @@ import {
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
+
+import ComingSoon from '@sb/components/ComingSoon'
+
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -87,6 +93,7 @@ const ActionButton = withStyles(() => ({
  * @param {number} n - is how long array of data.
  */
 const rowOffset = (i: number, n: number) => (n === 1 ? 0 : (n - i - 1) * 32 - 1)
+
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -460,6 +467,25 @@ const CustomTable = (props: Props) => {
 
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
+
+  const Container = styled.div`
+    height: 100%;
+    width: 100%;
+    position: relative;
+  `
+
+  const PlaceHolder = styled.div`
+  height: 400px;
+`
+
+  if (data.body.length === 0) {
+    return(
+      <Container>
+        <ComingSoon />
+        <PlaceHolder />
+      </Container>
+    )
+  }
 
   return (
     <Paper className={classes.root} elevation={elevation}>
