@@ -3,8 +3,10 @@ import { connect } from 'react-redux'
 import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { setTimeout } from 'timers'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 
-import { Button, Fade, Card, Grid, Hidden } from '@material-ui/core'
+import { Button, Fade, Grid, Hidden } from '@material-ui/core'
 
 import {
   OrderBookTable,
@@ -12,7 +14,6 @@ import {
   TradeHistoryTable,
   ExchangesTable,
 } from './Tables/Tables'
-import { orders } from './mocks'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import MainDepthChart from './DepthChart/MainDepthChart/MainDepthChart'
@@ -22,7 +23,7 @@ import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 import TablePlaceholderLoader from '@sb/components/TablePlaceholderLoader'
 import { SingleChart } from '@sb/components/Chart'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import * as actions from '@core/redux/chart/actions'
 import * as userActions from '@core/redux/user/actions'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
@@ -36,6 +37,7 @@ import {
 } from '@core/utils/chartPageUtils'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withAuth from '@core/hoc/withAuth'
+import LayoutSelector from '@core/components/LayoutSelector'
 
 import {
   Container,
@@ -50,21 +52,15 @@ import {
 import { IProps, IState } from './Chart.types'
 
 
-import { graphql } from 'react-apollo'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-
-import { compose } from 'recompose'
-
-import LayoutSelector from '@core/components/LayoutSelector'
 
 class Chart extends React.Component<IProps, IState> {
-  state = {
+  state: IState = {
+    orders: [],
     view: 'default',
-    orders,
     exchangeTableCollapsed: true,
     aggregation: 0.01,
     showTableOnMobile: 'ORDER',
@@ -76,6 +72,7 @@ class Chart extends React.Component<IProps, IState> {
 
   static getDerivedStateFromProps(nextProps: IProps) {
     const [base, quote] = nextProps.currencyPair.split('_')
+    /* tslint:disable-next-line:no-object-mutation */
     document.title = `${base} to ${quote} | CCAI`
     return null
   }
@@ -86,18 +83,10 @@ class Chart extends React.Component<IProps, IState> {
         this.setState({ joyride: true })
       }, 1000)
     }
-    const {
-      currencyPair,
-      theme,
-      getMyProfile: { getMyProfile: { _id }},
-      themeMode,
-    } = this.props
-
-    const [base, quote] = currencyPair.split('_')
-
   }
 
   componentWillUnmount() {
+    /* tslint:disable-next-line:no-object-mutation */
     document.title = 'Cryptocurrencies AI'
   }
 
@@ -127,26 +116,6 @@ class Chart extends React.Component<IProps, IState> {
     /* tslint:enable */
 
     return +initial - agg
-  }
-
-  sortOrders = (index: number) => {
-    const { orders, currentSort } = this.state
-
-    const newOrders = orders.slice().sort((a, b) => {
-      if (currentSort && currentSort.index === index) {
-        if (currentSort.arg === 'ASC') {
-          this.setState({ currentSort: { index, arg: 'DESC' } })
-          return b[index] - a[index]
-        } else {
-          this.setState({ currentSort: { index, arg: 'ASC' } })
-          return a[index] - b[index]
-        }
-      }
-      this.setState({ currentSort: { index, arg: 'ASC' } })
-      return a[index] - b[index]
-    })
-
-    this.setState({ orders: newOrders })
   }
 
   changeExchange = (i: any) => {
@@ -194,13 +163,14 @@ class Chart extends React.Component<IProps, IState> {
     }
   }
 
-  handleJoyrideCallback = (data) => {
+  handleJoyrideCallback = (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
-    )
+    ) {
       this.props.hideToolTip('chartPage')
+    }
   }
 
   renderTables: any = () => {
@@ -263,15 +233,15 @@ class Chart extends React.Component<IProps, IState> {
               updateQueryFunction: updateOrderBookQuerryFunction,
             }}
             {...{
-              onButtonClick: this.changeTable,
-              roundTill: this.roundTill,
+              quote,
+              symbol,
+              exchange,
               activeExchange,
               currencyPair,
               aggregation,
-              quote,
+              onButtonClick: this.changeTable,
+              roundTill: this.roundTill,
               setOrders: this.props.setOrders,
-              symbol,
-              exchange,
               ...this.props,
             }}
           />
@@ -415,15 +385,14 @@ class Chart extends React.Component<IProps, IState> {
           }}
           variant="extendedFab"
           color="secondary"
-          onClick={() => {
-            console.log('onClick')
-            toggleView(defaultView ? 'onlyCharts' : 'default')
+          onClick={async () => {
             if (defaultView && charts === []) {
-              addChartMutation({ variables: {
+              await addChartMutation({ variables: {
                 chart: currencyPair,
               } })
-            }}
-          }
+            }
+            toggleView(defaultView ? 'onlyCharts' : 'default')
+          }}
         >
           {defaultView ? 'Multi Charts' : ' Single Chart'}
         </Button>
@@ -436,18 +405,15 @@ class Chart extends React.Component<IProps, IState> {
       view,
       currencyPair,
       activeExchange,
-      theme,
       getMyProfile: { getMyProfile: { _id }},
       themeMode,
     } = this.props
     const { activeChart } = this.state
-    const { palette } = theme
 
     if (!currencyPair) {
       return
     }
 
-    const [base, quote] = currencyPair.split('_')
     const toggler = this.renderToggler()
 
     return (
@@ -513,24 +479,27 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(actions.toggleView(view)),
   selectCurrencies: (baseQuote: string) =>
     dispatch(actions.selectCurrencies(baseQuote)),
-  addChart: (payload) => dispatch(actions.addChart(payload)),
-  setOrders: (payload) => dispatch(actions.setOrders(payload)),
+  addChart: (payload: string) => dispatch(actions.addChart(payload)),
+  setOrders: (payload: any) => dispatch(actions.setOrders(payload)),
   hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 const ThemeWrapper = (props) => <Chart {...props} />
 const ThemedChart = withTheme()(ThemeWrapper)
 
-export default withAuth(queryRendererHoc({
-  query: GET_MY_PROFILE,
-  withOutSpinner: false,
-  withTableLoader: false,
-  name: 'getMyProfile',
-})(queryRendererHoc({
-  query: GET_CHARTS,
-  withOutSpinner: false,
-  withTableLoader: false,
-  name: 'getCharts',
-})(compose(
+export default withAuth(
+  compose(
+  queryRendererHoc({
+    query: GET_MY_PROFILE,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'getMyProfile',
+  }),
+  queryRendererHoc({
+    query: GET_CHARTS,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'getCharts',
+  }),
   graphql(ADD_CHART, { name: 'addChartMutation' }))
   (withErrorFallback(
     connect(
@@ -538,4 +507,4 @@ export default withAuth(queryRendererHoc({
       mapDispatchToProps
     )(ThemedChart)
   )
-))))
+))
