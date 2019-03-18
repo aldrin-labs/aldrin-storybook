@@ -12,7 +12,15 @@ import {
 import { IProps, IState, ITicker } from './TradeHistoryTable.types'
 import { Loading } from '@sb/components/Loading'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import { StyledTypography, CollapseWrapper, StyledArrow, StyledArrowSign, TradeHistoryTableCollapsible, TriggerTitle } from './TradeHistoryTable.styles'
+
+import {
+  StyledTypography,
+  CollapseWrapper,
+  StyledArrow,
+  StyledArrowSign,
+  TradeHistoryTableCollapsible,
+  TriggerTitle
+} from './TradeHistoryTable.styles'
 
 const OptimizedRow = memo(
   ({ ticker, background, numbersAfterDecimalForPrice, red, green }) => (

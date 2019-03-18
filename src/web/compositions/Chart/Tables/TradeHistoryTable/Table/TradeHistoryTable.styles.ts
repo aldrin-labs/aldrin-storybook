@@ -3,6 +3,13 @@ import MdArrowDropUp from '@material-ui/icons/ArrowDropUp'
 import Collapse from '@material-ui/core/Collapse'
 import MdArrowUpward from '@material-ui/icons/ArrowUpward'
 
+import { TypographyFullWidth } from '@sb/styles/cssUtils'
+
+import {
+  Table,
+  Title,
+} from '@sb/components/OldTable/Table'
+
 export const StyledTypography = styled(TypographyFullWidth)`
   && {
     color: ${(props: { textColor: string }) => props.textColor};
