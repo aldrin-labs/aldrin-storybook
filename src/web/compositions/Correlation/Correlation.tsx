@@ -60,6 +60,8 @@ const Correlation = (props: IProps) => {
     return <CustomError error={'wrongShape'} />
   }
 
+  console.log('dataRaw', dataRaw)
+
   return (
     <>
       {children}
