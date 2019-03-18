@@ -418,7 +418,7 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
-        <TogglerContainer container className="AutoSuggestSelect">
+        <TogglerContainer container>
           <Grid
             spacing={16}
             item
@@ -441,6 +441,7 @@ class Chart extends React.Component<IProps, IState> {
               view={view}
               exchange={activeExchange}
             />
+
             {view === 'default' && (
               <TransparentExtendedFAB
                 onClick={() => {
