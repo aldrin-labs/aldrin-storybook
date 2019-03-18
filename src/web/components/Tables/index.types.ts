@@ -108,7 +108,7 @@ export interface Props {
   actionsColSpan?: number
   borderBottom?: boolean
   rowsWithHover?: boolean
-
+  emptyTableText?: string
 }
 
 export type Pagination = {

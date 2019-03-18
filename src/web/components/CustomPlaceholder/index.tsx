@@ -10,7 +10,7 @@ export default ({ show = true, text }) => (
       <Container>
         <Fade timeout={1000} in={show}>
           <Typography variant="h3" color="textPrimary">
-            Key is empty
+            {text}
           </Typography>
         </Fade>
       </Container>

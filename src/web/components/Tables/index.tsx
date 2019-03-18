@@ -447,6 +447,7 @@ const CustomTable = (props: Props) => {
     actionsColSpan = 1,
     borderBottom = false,
     rowsWithHover = true,
+    emptyTableText = 'no data',
   } = props
 
   const isSortable = typeof sort !== 'undefined'
@@ -481,7 +482,7 @@ const CustomTable = (props: Props) => {
   if (data.body.length === 0) {
     return(
       <Container>
-        <CustomPlaceholder />
+        <CustomPlaceholder text={emptyTableText} />
         <PlaceHolder />
       </Container>
     )
