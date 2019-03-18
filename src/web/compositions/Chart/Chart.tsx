@@ -118,27 +118,6 @@ class Chart extends React.Component<IProps, IState> {
     return +initial - agg
   }
 
-  // TODO: Delete this function or provide a case when we should use it
-  sortOrders = (index: number) => {
-    const { orders, currentSort } = this.state
-
-    const newOrders = orders.slice().sort((a, b) => {
-      if (currentSort && currentSort.index === index) {
-        if (currentSort.arg === 'ASC') {
-          this.setState({ currentSort: { index, arg: 'DESC' } })
-          return b[index] - a[index]
-        } else {
-          this.setState({ currentSort: { index, arg: 'ASC' } })
-          return a[index] - b[index]
-        }
-      }
-      this.setState({ currentSort: { index, arg: 'ASC' } })
-      return a[index] - b[index]
-    })
-
-    this.setState({ orders: newOrders })
-  }
-
   changeExchange = (i: any) => {
     this.props.selectExchange(i)
   }
@@ -406,16 +385,14 @@ class Chart extends React.Component<IProps, IState> {
           }}
           variant="extendedFab"
           color="secondary"
-          onClick={() => {
-            console.log('onClick')
-            toggleView(defaultView ? 'onlyCharts' : 'default')
+          onClick={async () => {
             if (defaultView && charts === []) {
-              // TODO: I guess we should use await for a mutation to have a consistent behaviour
-              addChartMutation({ variables: {
+              await addChartMutation({ variables: {
                 chart: currencyPair,
               } })
-            }}
-          }
+            }
+            toggleView(defaultView ? 'onlyCharts' : 'default')
+          }}
         >
           {defaultView ? 'Multi Charts' : ' Single Chart'}
         </Button>
