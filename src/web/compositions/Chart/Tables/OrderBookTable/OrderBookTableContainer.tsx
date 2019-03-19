@@ -151,7 +151,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
   componentDidUpdate(prevProps: IProps) {
     if (
-      prevProps.activeExchange.index !== this.props.activeExchange.index ||
+      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
       prevProps.currencyPair !== this.props.currencyPair
     ) {
       // when change exchange delete all data and...

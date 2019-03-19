@@ -1,10 +1,9 @@
-import { Theme } from '@material-ui/core'
 import { IExchange } from '@core/types/ChartTypes'
+import { Theme } from '@material-ui/core'
 
 export interface IProps {
+  selectExchange: (exchange: IExchange) => void
   activeExchange: IExchange
-  animated: boolean
-  base: string
-  quote: string
+  currencyPair: string
   theme: Theme
 }

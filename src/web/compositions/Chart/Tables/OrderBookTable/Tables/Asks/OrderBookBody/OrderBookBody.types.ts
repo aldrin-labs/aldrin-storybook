@@ -4,7 +4,7 @@ import { IOrder, IExchange } from '@core/types/ChartTypes'
 
 export interface IProps {
   action: { hover: string }
-  activeExchange: { exchange: IExchange; index: number }
+  activeExchange: IExchange
   background: any
   index: number
   tableExpanded: boolean

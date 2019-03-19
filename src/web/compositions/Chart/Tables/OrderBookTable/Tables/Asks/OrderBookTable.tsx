@@ -69,7 +69,7 @@ class OrderBookTable extends Component<IProps> {
   shouldComponentUpdate(nextProps: IProps) {
     const shouldUpdate =
       difference(nextProps.data, this.props.data).length > 0 ||
-      nextProps.activeExchange.index !== this.props.activeExchange.index ||
+      nextProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
       nextProps.currencyPair !== this.props.currencyPair ||
       (this.props.data.length > 0 && nextProps.data.length === 0) ||
       nextProps.tableExpanded !== this.props.tableExpanded
