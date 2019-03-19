@@ -10,10 +10,7 @@ class DepthChartContainer extends Component<IProps> {
   render() {
     const { activeExchange, base, quote } = this.props
     const symbol = `${base}_${quote}` || ''
-    const exchange =
-      activeExchange && activeExchange.exchange
-        ? activeExchange.exchange.symbol
-        : ''
+    const exchange = activeExchange.symbol
 
     return (
       <QueryRenderer
