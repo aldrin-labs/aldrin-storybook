@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Joyride from 'react-joyride'
-import { withTheme } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 import { setTimeout } from 'timers'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
