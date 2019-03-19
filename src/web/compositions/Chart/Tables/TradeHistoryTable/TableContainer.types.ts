@@ -1,9 +1,9 @@
-import { IActiveExchange } from '@core/types/ChartTypes'
+import { IExchange } from '@core/types/ChartTypes'
 
 export interface IProps {
   data: {marketTickers: []}
   subscribeToMore: Function
-  activeExchange: IActiveExchange
+  activeExchange: IExchange
   currencyPair: string
 }
 
