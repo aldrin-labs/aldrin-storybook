@@ -1,8 +1,8 @@
 import { Theme } from '@material-ui/core'
-import { IActiveExchange } from '@core/types/ChartTypes'
+import { IExchange } from '@core/types/ChartTypes'
 
 export interface IProps {
-  activeExchange: IActiveExchange
+  activeExchange: IExchange
   currencyPair: string
   aggregation: number
   spread: number
