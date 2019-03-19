@@ -16,29 +16,8 @@ import {
   TitleContainer,
 } from './styles'
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    margin: 'auto',
-    maxWidth: 240,
-  },
-  image: {
-    width: 128,
-    height: 128,
-  },
-  img: {
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-  },
-})
 
-function ComplexGrid(props) {
-  const { classes } = props;
+export const TraidingTerminal = (props) => {
   return (
     <ChartContainer>
       <div>
@@ -100,5 +79,4 @@ function ComplexGrid(props) {
   )
 }
 
-export const TraidingTerminal = withStyles(styles)(ComplexGrid)
 export default TraidingTerminal
