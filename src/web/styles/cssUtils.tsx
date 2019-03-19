@@ -122,3 +122,15 @@ export const CentredContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 `
+
+export const ChartSelectStyles = css`
+  margin-left: 0.7rem;
+  border-radius: 24px;
+  border: 2px solid ${(props: { border: string }) => props.border};
+  padding: 0 16px;
+  height: 38px;
+  place-content: center;
+  display: flex;
+  width: 130px;
+  background: transparent;
+`
