@@ -76,6 +76,7 @@ const PortfolioRebalanceTable = ({
               </TitleItem>
             </TitleContainer>
           }
+          emptyTableText="No assets"
         />
       </ContentInner>
     </>

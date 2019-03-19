@@ -13,6 +13,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         title="Portfolio Actions"
         data={{ body: rows.body }}
         columnNames={rows.head}
+        emptyTableText="No history"
       />
     )
   }

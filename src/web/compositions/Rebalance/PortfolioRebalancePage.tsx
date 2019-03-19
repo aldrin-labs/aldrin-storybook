@@ -8,7 +8,6 @@ import * as actions from '@core/redux/user/actions'
 import { Container as Content } from '@sb/styles/cssUtils'
 import { portfolioRebalanceSteps } from '@sb/config/joyrideSteps'
 import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
-import EmptyTablePlaceholder from '@sb/components/EmptyTablePlaceholder'
 
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
@@ -86,7 +85,6 @@ class PortfolioRebalancePage extends Component {
 
     return (
       <>
-        <EmptyTablePlaceholder isEmpty={tableDataHasData}>
           {children}
           <Content key={`content`} container spacing={16}>
             <Container
@@ -173,7 +171,6 @@ class PortfolioRebalancePage extends Component {
               }}
             />
           </Content>
-        </EmptyTablePlaceholder>
 
         <Joyride
           continuous={true}
