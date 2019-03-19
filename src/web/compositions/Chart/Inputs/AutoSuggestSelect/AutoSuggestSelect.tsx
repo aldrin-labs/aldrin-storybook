@@ -1,32 +1,28 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withTheme } from '@material-ui/styles'
+import { withTheme } from '@material-ui/core'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 import { createFilter } from 'react-select'
 
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 import * as actions from '@core/redux/chart/actions'
-import QueryRenderer from '@core/components/QueryRenderer'
+
 import { Loading } from '@sb/components/Loading/Loading'
 import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
+import { IProps, IState } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
-
-import { graphql } from 'react-apollo'
-
-import { compose } from 'recompose'
-import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
-import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-
-
 
 type T = { value: string; data: string }
 
 let suggestions: T[] = []
 
-class IntegrationReactSelect extends React.Component {
-
+@withTheme()
+class IntegrationReactSelect extends React.Component<IProps, IState> {
   state = {
     isClosed: true,
   }
@@ -44,12 +40,13 @@ class IntegrationReactSelect extends React.Component {
       selectCurrencies,
       getCharts,
       view,
-      addChart,
       openWarningMessage,
       removeWarningMessage,
       addChartMutation,
     } = this.props
-    const { multichart: { charts } } = getCharts
+    const {
+      multichart: { charts },
+    } = getCharts
 
     if (!value) {
       return
@@ -60,9 +57,12 @@ class IntegrationReactSelect extends React.Component {
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
-      addChartMutation({ variables: {
-        chart: value,
-      } })
+      //TODO: I guess we should await the addChartMutation function
+      addChartMutation({
+        variables: {
+          chart: value,
+        },
+      })
 
       return
     } else {
@@ -129,25 +129,19 @@ class IntegrationReactSelect extends React.Component {
   }
 }
 
-
-const queryRender = (props: any) => {
-  return (
-    <QueryRenderer
-      centerAlign={false}
-      placeholder={() => <TextInputLoader style={{ width: 100, margin: 0 }} />}
-      component={IntegrationReactSelect}
-      query={MARKETS_BY_EXCHANE_QUERY}
-      variables={{ splitter: '_', exchange: props.exchange.exchange.symbol }}
-      {...props}
-    />
-  )
-}
+const queryRender = (props: IProps) => (
+  <QueryRenderer
+    centerAlign={false}
+    placeholder={() => <TextInputLoader style={{ width: 100, margin: 0 }} />}
+    component={IntegrationReactSelect}
+    query={MARKETS_BY_EXCHANE_QUERY}
+    variables={{ splitter: '_', exchange: props.activeExchange.symbol }}
+    {...props}
+  />
+)
 
 const mapStateToProps = (store: any) => ({
-  activeExchange: store.chart.activeExchange,
   view: store.chart.view,
-  charts: store.chart.charts,
-  isShownMocks: store.user.isShownMocks,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -155,19 +149,18 @@ const mapDispatchToProps = (dispatch: any) => ({
   removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
   selectCurrencies: (baseQuote: string) =>
     dispatch(actions.selectCurrencies(baseQuote)),
-  addChart: (baseQuote: string) => dispatch(actions.addChart(baseQuote)),
 })
 
-export default queryRendererHoc({
-  query: GET_CHARTS,
-  withOutSpinner: false,
-  withTableLoader: false,
-  name: 'getCharts',
-})(compose(
-  graphql(ADD_CHART, { name: 'addChartMutation' })
-  )(withTheme()(
+export default compose(
+  queryRendererHoc({
+    query: GET_CHARTS,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'getCharts',
+  }),
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(queryRender)
-)))
+  )
+)(queryRender)
