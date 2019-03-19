@@ -1,13 +1,7 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { Grid, Paper, TextField } from '@material-ui/core'
+import { Grid, TextField } from '@material-ui/core'
 
-import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
-
-import { Table, Row, Title, Head, HeadCell } from '@sb/components/OldTable/Table'
-
 
 import {
   ChartContainer,
@@ -15,7 +9,6 @@ import {
   InputContainer,
   TitleContainer,
 } from './styles'
-
 
 export const TraidingTerminal = (props) => {
   return (
