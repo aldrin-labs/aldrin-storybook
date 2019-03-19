@@ -5,11 +5,13 @@ import { withInfo } from '@storybook/addon-info'
 import { backgrounds } from '../backgrounds'
 import { TraidingTerminal } from '@components/TraidingTerminal'
 
-storiesOf('Components/Input', module)
+storiesOf('Components/TraidingTerminal', module)
   .addDecorator(backgrounds)
   .add(
-    'Input',
+    'TraidingTerminal',
     withInfo()(() =>
-      <TraidingTerminal />
+      <div style={{width: 300}}>
+        <TraidingTerminal />
+      </div>
   )
 )
