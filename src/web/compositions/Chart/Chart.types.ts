@@ -1,9 +1,9 @@
-import { IActiveExchange, IGetCharts, IGetMyProfile } from '@core/types/ChartTypes'
+import { IExchange, IGetCharts, IGetMyProfile } from '@core/types/ChartTypes'
 import { ITooltipType } from '@core/types/UserTypes'
 
 export interface IProps {
   isNoCharts: boolean
-  activeExchange: IActiveExchange
+  activeExchange: IExchange
   view: string
   currencyPair: string
   isShownMocks: boolean
