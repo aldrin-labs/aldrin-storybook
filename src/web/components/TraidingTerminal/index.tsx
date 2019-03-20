@@ -10,6 +10,7 @@ import {
   TitleContainer,
   PriceButton,
   GridContainer,
+  ButtonContainer,
 } from './styles'
 
 export const TraidingTerminal = (props) => {
@@ -33,7 +34,7 @@ export const TraidingTerminal = (props) => {
         </NameHeader>
       <GridContainer>
       <Grid container spacing={0}>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
@@ -43,7 +44,7 @@ export const TraidingTerminal = (props) => {
           </TypographyWithCustomColor>
           </TitleContainer>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={9}>
         <InputContainer>
         <TextField
           type="number"
@@ -54,7 +55,7 @@ export const TraidingTerminal = (props) => {
         />
         </InputContainer>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
@@ -64,7 +65,7 @@ export const TraidingTerminal = (props) => {
           </TypographyWithCustomColor>
           </TitleContainer>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={9}>
         <InputContainer>
         <TextField
           type="number"
@@ -76,28 +77,36 @@ export const TraidingTerminal = (props) => {
         />
         </InputContainer>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           {''}
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs>
+        <ButtonContainer>
         <PriceButton>
           25%
         </PriceButton>
+        </ButtonContainer>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs>
+        <ButtonContainer>
         <PriceButton >
           50%
         </PriceButton>
+        </ButtonContainer>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs>
+        <ButtonContainer>
         <PriceButton>
           75%
         </PriceButton>
+        </ButtonContainer>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs>
+        <ButtonContainer>
         <PriceButton>
           100%
         </PriceButton>
+        </ButtonContainer>
         </Grid>
       </Grid>
       </GridContainer>
