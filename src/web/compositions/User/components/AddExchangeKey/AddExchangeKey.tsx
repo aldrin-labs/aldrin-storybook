@@ -70,6 +70,10 @@ const formikEnhancer = withFormik({
       })
       resetForm({})
       setSubmitting(false)
+      window.gtag('event', 'Submit exchange form', {
+        event_category: 'App - adding exchange key',
+        event_label: 'Adding key to user account',
+      })
     } catch (error) {
       setSubmitting(false)
       console.log(error)
