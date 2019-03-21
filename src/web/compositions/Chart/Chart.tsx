@@ -414,17 +414,18 @@ class Chart extends React.Component<IProps, IState> {
             {view === 'onlyCharts' && (
               <LayoutSelector userId={_id} themeMode={themeMode} />
             )}
-            <AutoSuggestSelect
-              value={view === 'default' && currencyPair}
-              id={'currencyPair'}
-              view={view}
-              activeExchange={activeExchange}
-            />
 
             <SelectExchange
               selectExchange={this.props.selectExchange}
               activeExchange={activeExchange}
               currencyPair={currencyPair}
+            />
+
+            <AutoSuggestSelect
+              value={view === 'default' && currencyPair}
+              id={'currencyPair'}
+              view={view}
+              activeExchange={activeExchange}
             />
 
             {view === 'default' && (
