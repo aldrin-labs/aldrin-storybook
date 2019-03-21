@@ -13,6 +13,7 @@ storiesOf('Components/TraidingTerminal', module)
       <div style={{width: '50%'}}>
         <TraidingTerminal
           type='buy'
+          priceType='limit'
           pair={['BTC', 'USDT']}
           amount={0}
           marketPrice={4040.45}

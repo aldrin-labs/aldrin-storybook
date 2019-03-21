@@ -17,12 +17,12 @@ import {
 } from './styles'
 
 export const TraidingTerminal = (props: IProps) => {
-  console.log(props)
   const typeIsBuy = props.type === 'buy'
   const {
     pair,
     amount,
     marketPrice,
+    priceType,
   } = props
   return (
     <Container>
@@ -38,13 +38,13 @@ export const TraidingTerminal = (props: IProps) => {
             : `Sell ${pair[0]}`
           }
         </TypographyWithCustomColor>
-        <TypographyWithCustomColor
-          textColor
-          variant="subtitle1"
-          align="left"
-        >
-          {`${amount} ${pair[1]}`}
-        </TypographyWithCustomColor>
+          <TypographyWithCustomColor
+            textColor
+            variant="subtitle1"
+            align="left"
+          >
+            {`${amount} ${pair[1]}`}
+          </TypographyWithCustomColor>
         </NameHeader>
       <GridContainer>
       <Grid container spacing={0}>
@@ -54,7 +54,9 @@ export const TraidingTerminal = (props: IProps) => {
             textColor
             variant="subtitle2"
           >
-            Price:
+            {priceType === 'stop-limit'
+              ? 'Stop'
+              : 'Price'}
           </TypographyWithCustomColor>
           </TitleContainer>
         </Grid>
@@ -62,7 +64,11 @@ export const TraidingTerminal = (props: IProps) => {
         <InputContainer>
         <TextField
           type="number"
-          defaultValue={marketPrice}
+          defaultValue={priceType === 'market'
+            ? 'Market Price'
+            : marketPrice
+          }
+          disabled={priceType === 'market'}
           InputProps={{
             endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
           }}
@@ -138,7 +144,6 @@ export const TraidingTerminal = (props: IProps) => {
         <InputContainer>
         <TextField
           type="number"
-          defaultValue="12324"
           InputProps={{
             endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
           }}
