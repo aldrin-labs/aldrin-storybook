@@ -1,7 +1,9 @@
 import React from 'react';
-import { Grid, TextField, InputAdornment } from '@material-ui/core'
+import { Grid, TextField, InputAdornment, Button } from '@material-ui/core'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+
+import { IProps } from './types'
 
 import {
   Container,
@@ -11,9 +13,17 @@ import {
   PriceButton,
   GridContainer,
   ButtonContainer,
+  ByButtonContainer,
 } from './styles'
 
-export const TraidingTerminal = (props) => {
+export const TraidingTerminal = (props: IProps) => {
+  console.log(props)
+  const typeIsBuy = props.type === 'buy'
+  const {
+    pair,
+    amount,
+    marketPrice,
+  } = props
   return (
     <Container>
       <div>
@@ -22,14 +32,18 @@ export const TraidingTerminal = (props) => {
           textColor
           variant="subtitle1"
         >
-          Buy BTC
+          {
+            typeIsBuy
+            ? `Buy ${pair[0]}`
+            : `Sell ${pair[0]}`
+          }
         </TypographyWithCustomColor>
         <TypographyWithCustomColor
           textColor
           variant="subtitle1"
           align="left"
         >
-          0.00000000 USDT
+          {`${amount} ${pair[1]}`}
         </TypographyWithCustomColor>
         </NameHeader>
       <GridContainer>
@@ -48,7 +62,7 @@ export const TraidingTerminal = (props) => {
         <InputContainer>
         <TextField
           type="number"
-          defaultValue="12324"
+          defaultValue={marketPrice}
           InputProps={{
             endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
           }}
@@ -61,7 +75,7 @@ export const TraidingTerminal = (props) => {
             textColor
             variant="subtitle2"
           >
-            Price:
+            Amount:
           </TypographyWithCustomColor>
           </TitleContainer>
         </Grid>
@@ -69,8 +83,6 @@ export const TraidingTerminal = (props) => {
         <InputContainer>
         <TextField
           type="number"
-          defaultValue="12324"
-          style={{ fontSize: '63px' }}
           InputProps={{
             endAdornment: <InputAdornment position="end">BTC</InputAdornment>,
           }}
@@ -80,33 +92,65 @@ export const TraidingTerminal = (props) => {
         <Grid item xs={3}>
           {''}
         </Grid>
-        <Grid item xs>
-        <ButtonContainer>
-        <PriceButton>
-          25%
-        </PriceButton>
-        </ButtonContainer>
+        <Grid item xs={9}>
+        <Grid container spacing={8}>
+          <Grid item xs>
+          <ButtonContainer>
+          <PriceButton>
+            25%
+          </PriceButton>
+          </ButtonContainer>
+          </Grid>
+          <Grid item xs>
+          <ButtonContainer>
+          <PriceButton >
+            50%
+          </PriceButton>
+          </ButtonContainer>
+          </Grid>
+          <Grid item xs>
+          <ButtonContainer>
+          <PriceButton>
+            75%
+          </PriceButton>
+          </ButtonContainer>
+          </Grid>
+          <Grid item xs>
+          <ButtonContainer>
+          <PriceButton>
+            100%
+          </PriceButton>
+          </ButtonContainer>
+          </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs>
-        <ButtonContainer>
-        <PriceButton >
-          50%
-        </PriceButton>
-        </ButtonContainer>
+        <Grid item xs={3}>
+          <TitleContainer>
+          <TypographyWithCustomColor
+            textColor
+            variant="subtitle2"
+          >
+            Total:
+          </TypographyWithCustomColor>
+          </TitleContainer>
         </Grid>
-        <Grid item xs>
-        <ButtonContainer>
-        <PriceButton>
-          75%
-        </PriceButton>
-        </ButtonContainer>
+        <Grid item xs={9}>
+        <InputContainer>
+        <TextField
+          type="number"
+          defaultValue="12324"
+          InputProps={{
+            endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
+          }}
+        />
+        </InputContainer>
         </Grid>
-        <Grid item xs>
-        <ButtonContainer>
-        <PriceButton>
-          100%
-        </PriceButton>
-        </ButtonContainer>
+        <Grid item xs={12}>
+          <ByButtonContainer>
+            <Button variant="outlined">
+              Buy
+            </Button>
+          </ByButtonContainer>
         </Grid>
       </Grid>
       </GridContainer>

@@ -11,17 +11,20 @@ const styles = {
     borderRadius: 3,
     color: 'white',
     minWidth: 45,
+    width: '100%',
     height: 10,
     padding: '0px',
   },
   input: {
     fontSize: '0.875rem',
     height: '0.5rem',
+    width: '100%',
   },
 };
 
 export const PriceInput = styled(withStyles(styles)((props) =>
   <TextField
+  className={props.classes.input}
     type="number"
     defaultValue="12324"
     InputProps={{
@@ -32,8 +35,14 @@ margin: 5px;
 padding: 2px;
 `
 
+
 export const ButtonContainer = styled.div`
   padding: 0px;
+  text-align: center;
+`
+
+export const ByButtonContainer = styled.div`
+  padding-top: 20px;
   text-align: center;
 `
 
@@ -70,7 +79,7 @@ export const HighlightStyles = `
 export const Container = styled(({ minHeight, margin, hide, ...other }) => (
   <Card {...other} />
 ))`
-  max-width: 100%;
+  max-width: 320px;
 `
 export const GridContainer = styled.div`
   padding: 8px;

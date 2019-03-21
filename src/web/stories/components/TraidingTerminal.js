@@ -10,8 +10,13 @@ storiesOf('Components/TraidingTerminal', module)
   .add(
     'TraidingTerminal',
     withInfo()(() =>
-      <div style={{width: 300}}>
-        <TraidingTerminal />
+      <div style={{width: '50%'}}>
+        <TraidingTerminal
+          type='buy'
+          pair={['BTC', 'USDT']}
+          amount={0}
+          marketPrice={4040.45}
+          />
       </div>
   )
 )
