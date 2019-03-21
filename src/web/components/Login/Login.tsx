@@ -124,6 +124,11 @@ class LoginQuery extends React.Component<Props> {
     }
 
     await this.onModalChanges(false)
+
+    window.gtag && window.gtag('event', 'Login button click', {
+      event_category: 'App - sign in / sign up',
+      event_label: 'Sign in / sing up button clicked',
+    })
   }
 
   render() {
