@@ -78,6 +78,11 @@ export default class Import extends PureComponent<IProps> {
     startDate: object,
     endDate: object
   ) => {
+    window.gtag && window.gtag('event', 'Optimization run', {
+      event_category: 'App - Optimization',
+      event_label: 'Optimization run',
+    })
+
     const { totalPriceOfAllAssets, isUSDTInInitialPortfolioExists } = this.state
     const {
       showWarning,
