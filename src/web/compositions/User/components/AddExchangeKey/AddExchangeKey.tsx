@@ -19,7 +19,6 @@ import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchange
 import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 
-const MIN_CHAR = 3
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>

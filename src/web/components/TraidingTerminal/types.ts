@@ -1,8 +1,10 @@
+import { Theme } from '@material-ui/core'
 export interface IProps {
-  type: 'buy' | 'sell'
+  byType: 'buy' | 'sell'
   priceType: 'limit' | 'market' | 'stop-limit'
   pair: [string, string]
   amount: number
   marketPrice: number
+  theme: Theme
 }
 
