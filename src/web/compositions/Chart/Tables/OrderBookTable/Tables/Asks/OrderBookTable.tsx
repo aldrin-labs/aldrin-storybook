@@ -16,8 +16,7 @@ let index: number | null = null
 const MemoHead = memo(
   ({ palette, primary, type, onButtonClick, background, quote }) => (
     <>
-      {
-      console.log(primary[type], palette.getContrastText(primary[type]))}
+      {' '}
       <Title background={primary[type]}>
         <TypographyWithCustomColor
           textColor={palette.getContrastText(primary[type])}
