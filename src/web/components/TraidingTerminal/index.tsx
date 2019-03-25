@@ -217,7 +217,7 @@ render() {
           id="amount"
           name="amount"
           value={values.amount || ''}
-          onChange={onAmountChange}
+          onChange={this.onAmountChange}
           type="number"
           InputProps={{
             endAdornment: <InputAdornment position="end">BTC</InputAdornment>,
@@ -238,28 +238,28 @@ render() {
           <Grid container spacing={8}>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => {onProcentageClick(0.25)}}>
+                <PriceButton onClick={() => this.onProcentageClick(0.25)}>
                   25%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => {onProcentageClick(0.50)}}>
+                <PriceButton onClick={() => this.onProcentageClick(0.50)}>
                   50%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => {onProcentageClick(0.75)}}>
+                <PriceButton onClick={() => this.onProcentageClick(0.75)}>
                   75%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => {onProcentageClick(1)}}>
+                <PriceButton onClick={() => this.onProcentageClick(1)}>
                   100%
                 </PriceButton>
               </ButtonContainer>
@@ -283,7 +283,7 @@ render() {
             <TextField
               fullWidth
               value={values.total || ''}
-              onChange={onTotalChange}
+              onChange={this.onTotalChange}
               id="total"
               name="total"
               type="number"
