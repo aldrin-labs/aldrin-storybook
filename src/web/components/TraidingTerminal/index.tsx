@@ -33,7 +33,7 @@ class TraidingTerminal extends PureComponent<IProps> {
 render() {
   const {
     pair,
-    wallet,
+    walletValue,
     marketPrice,
     byType,
     priceType,
@@ -56,7 +56,11 @@ render() {
     setFieldValue('total', total, false)
   }
 
-
+  const onProcentageClick = (value) => {
+    console.log('a')
+    setFieldValue('total', walletValue * value, false)
+    setFieldValue('amount', walletValue * value / values.price, false)
+  }
 
   const { background, primary, type } = palette
 
@@ -87,7 +91,7 @@ render() {
             textColor
             variant="subtitle1"
           >
-            {`${wallet} ${pair[1]}`}
+            {`${walletValue} ${pair[1]}`}
           </TypographyWithCustomColor>
           </Grid>
           </Grid>
@@ -197,28 +201,28 @@ render() {
           <Grid container spacing={8}>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton>
+                <PriceButton onClick={() => {onProcentageClick(0.25)}}>
                   25%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton >
+                <PriceButton onClick={() => {onProcentageClick(0.50)}}>
                   50%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton>
+                <PriceButton onClick={() => {onProcentageClick(0.75)}}>
                   75%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton>
+                <PriceButton onClick={() => {onProcentageClick(1)}}>
                   100%
                 </PriceButton>
               </ButtonContainer>

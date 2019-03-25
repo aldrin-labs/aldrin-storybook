@@ -32,7 +32,7 @@ storiesOf('Components/TraidingTerminal', module)
           byType='buy'
           priceType='stop-limit'
           pair={['BTC', 'USDT']}
-          wallet={0}
+          walletValue={1000}
           marketPrice={4040.45}
           />
       </TablesBlockWrapper>

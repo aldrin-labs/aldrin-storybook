@@ -28,13 +28,14 @@ export const ByButtonContainer = styled.div`
   text-align: center;
 `
 
-export const PriceButton = withStyles(styles)((props: {children: any, classes: any}) =>
+export const PriceButton = withStyles(styles)(({classes, children, ...others}: {children: any, classes: any}) =>
   <Button
-    className={props.classes.button}
+    className={classes.button}
     variant="outlined"
     size="small"
+    {...others}
     >
-      {props.children}
+      {children}
   </Button>
 )
 
