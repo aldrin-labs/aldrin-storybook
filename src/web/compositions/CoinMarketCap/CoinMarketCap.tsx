@@ -356,7 +356,7 @@ const queryRender = (props: any) => {
       query={MARKETS_BY_EXCHANE_QUERY}
       variables={{
         splitter: '_',
-        exchange: props.activeExchange.exchange.symbol,
+        exchange: props.activeExchange.symbol,
       }}
       {...props}
     />
