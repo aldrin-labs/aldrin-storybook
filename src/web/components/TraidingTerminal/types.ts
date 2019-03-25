@@ -3,8 +3,14 @@ export interface IProps {
   byType: 'buy' | 'sell'
   priceType: 'limit' | 'market' | 'stop-limit'
   pair: [string, string]
-  amount: number
   marketPrice: number
   theme: Theme
+  walletValue: number
+  values: any
+  handleChange: Function
+  handleSubmit: Function
+  setFieldValue: Function
+  touched: boolean
+  errors: any
 }
 

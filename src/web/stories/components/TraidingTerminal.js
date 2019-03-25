@@ -6,6 +6,9 @@ import styled from 'styled-components'
 
 import { Card } from '@material-ui/core'
 
+import { select, number } from '@storybook/addon-knobs'
+import { action } from '@storybook/addon-actions'
+
 import { backgrounds } from '../backgrounds'
 import TraidingTerminal from '@components/TraidingTerminal'
 
@@ -30,10 +33,18 @@ storiesOf('Components/TraidingTerminal', module)
       >
         <TraidingTerminal
           byType='buy'
-          priceType='stop-limit'
+          priceType={select(
+            'priceType', {
+              limit: 'limit',
+              market: 'market',
+              stopLimit: 'stop-limit'
+            },
+            'limit'
+          )}
           pair={['BTC', 'USDT']}
-          walletValue={1000}
-          marketPrice={4040.45}
+          walletValue={number('walletValue', 1000000)}
+          marketPrice={number('marketPrice', 4040.45)}
+          handleSubmit={(byType, priceType, pair, values) => console.log(values)}
           />
       </TablesBlockWrapper>
   )
