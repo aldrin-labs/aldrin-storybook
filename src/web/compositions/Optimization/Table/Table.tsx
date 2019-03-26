@@ -180,6 +180,7 @@ export default class Table extends Component<IProps, IState> {
           <TableInput>
             <Item background={palette.background.paper} secondary={palette.secondary.main} color={palette.text.primary}>
               <SelectCoinList
+                placeholder={`Search symbol`}
                 value={
                   this.state.name
                     ? [{ value: this.state.value, label: this.state.name }]
