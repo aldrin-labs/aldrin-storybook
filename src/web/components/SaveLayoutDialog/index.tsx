@@ -27,9 +27,12 @@ const SaveLayoutDialogComponent = ({ ...props }: IProps) => {
       errors,
     } = props
     return (<div>
-      <TransparentExtendedFAB onClick={handleClickOpen}>
-        Save layout
-      </TransparentExtendedFAB>
+      <Button
+        variant="outlined"
+        onClick={handleClickOpen}
+        >
+        {text}
+      </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogContent>
           <DialogContentText>
