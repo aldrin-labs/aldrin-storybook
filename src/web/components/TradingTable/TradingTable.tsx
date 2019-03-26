@@ -6,12 +6,18 @@ import { IProps, IState } from './TradingTable.types'
 import { openOrdersColumnNames, openOrdersBody } from './TradingTable.mocks'
 
 export default class TradingTable extends React.PureComponent<IProps, IState> {
+  state: IState = {
+    tab: 'openOrders',
+  }
+
   render() {
     return (
       <Table
         withCheckboxes={false}
-        title={new Array(4).fill(undefined).map(el => <div>Button</div>)}
-        data={{body: openOrdersBody}}
+        title={new Array(4).fill(undefined).map((el, i) => (
+          <button>{`Button ${i}`}</button>
+        ))}
+        data={{ body: openOrdersBody }}
         columnNames={openOrdersColumnNames}
         // actions={[
         //   {
