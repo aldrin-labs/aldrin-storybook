@@ -32,6 +32,7 @@ import {
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withAuth from '@core/hoc/withAuth'
 import LayoutSelector from '@core/components/LayoutSelector'
+import TradingComponent from '@core/components/TradingComponent'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
 
 import {
@@ -43,6 +44,8 @@ import {
   TablesContainer,
   Toggler,
   TogglerContainer,
+  TradingTabelContainer,
+  TradingTerminalContainer,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
@@ -293,6 +296,7 @@ class Chart extends React.Component<IProps, IState> {
     const [base, quote] = currencyPair.split('_')
 
     return (
+      <div>
       <Container container spacing={16}>
         <ChartsContainer item sm={8}>
           {activeChart === 'candle' ? (
@@ -314,9 +318,17 @@ class Chart extends React.Component<IProps, IState> {
             </Fade>
           )}
         </ChartsContainer>
-
         {this.renderTables()}
       </Container>
+      <Container container spacing={16}>
+        <TradingTabelContainer item sm={8}>
+        aaa
+        </TradingTabelContainer>
+        <TradingTerminalContainer item sm={4}>
+        <TradingComponent />
+        </TradingTerminalContainer>
+      </Container>
+    </div>
     )
   }
 

@@ -35,6 +35,7 @@ import {
   GridContainer,
   ButtonContainer,
   ByButtonContainer,
+  InputTextField,
 } from './styles'
 import { toNumber } from 'lodash-es';
 
@@ -99,11 +100,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values,
       setFieldValue,
       validateForm,
+      priceType,
     } = this.props
     await setFieldValue('total', toNumber(walletValue * value), false)
-    await setFieldValue('amount', toNumber(walletValue * value / values.price), false)
+    await setFieldValue('amount', toNumber(walletValue * value / (priceType === 'stop-limit'
+      ? toNumber(values.limit)
+      : toNumber(values.price))), false)
     validateForm()
   }
+
 render() {
   const {
     pair,
@@ -138,7 +143,7 @@ render() {
           {
             typeIsBuy
             ? `Buy ${pair[0]}`
-            : `Sell ${pair[0]}`
+            : `Sell ${pair[1]}`
           }
         </TypographyWithCustomColor>
         </Grid>
@@ -159,7 +164,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             {priceType === 'stop-limit'
               ? 'Stop:'
@@ -170,16 +175,14 @@ render() {
         <Grid item xs={9}>
         <InputContainer>
         {priceType === 'stop-limit'
-        ? <TextField
+        ? <InputTextField
           fullWidth
           name="stop"
           value={values.stop || ''}
           id="stop"
           type="number"
           onChange={handleChange}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-          }}
+          endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
           helperText={
             touched.stop &&
             errors.stop && (
@@ -187,16 +190,14 @@ render() {
             )
           }
         />
-        : <TextField
+        : <InputTextField
             fullWidth
             id="price"
             name="price"
             type={priceType === 'market' ? 'string' : 'number'} // if priceType is market we show Market Price in price
             value={priceType === 'market' ? 'Market Price' : values.price || ''}
             onChange={this.onPriceChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-            }}
+            endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
             disabled={priceType === 'market'}
             helperText={
               touched.price &&
@@ -212,7 +213,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             Limit:
           </TypographyWithCustomColor>
@@ -222,16 +223,14 @@ render() {
         {priceType === 'stop-limit' &&
         <Grid item xs={9}>
         <InputContainer>
-        <TextField
+        <InputTextField
           fullWidth
           id="limit"
           name="limit"
           value={values.limit || ''}
           onChange={this.onLimitChange}
           type="number"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-          }}
+            endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
           helperText={
             touched.limit &&
             errors.limit && (
@@ -246,7 +245,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             Amount:
           </TypographyWithCustomColor>
@@ -254,16 +253,14 @@ render() {
         </Grid>
         <Grid item xs={9}>
         <InputContainer>
-        <TextField
+        <InputTextField
           fullWidth
           id="amount"
           name="amount"
           value={values.amount || ''}
           onChange={this.onAmountChange}
           type="number"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">BTC</InputAdornment>,
-          }}
+          endAdornment={<InputAdornment position="end">BTC</InputAdornment>}
           helperText={
             errors.amount && (
               <FormError>{errors.amount}</FormError>
@@ -312,7 +309,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             Total:
           </TypographyWithCustomColor>
@@ -321,16 +318,16 @@ render() {
         {priceType !== 'market' &&
         <Grid item xs={9}>
           <InputContainer>
-            <TextField
+            <InputTextField
               fullWidth
               value={values.total || ''}
               onChange={this.onTotalChange}
               id="total"
               name="total"
               type="number"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-              }}
+              endAdornment={
+                (<InputAdornment position="end">USDT</InputAdornment>)
+              }
             />
           </InputContainer>
         </Grid>}
@@ -413,7 +410,6 @@ const validate = (values: FormValues, props: IProps) => {
   try {
     validateYupSchema(values, validationSchema, true);
   } catch (err) {
-    console.log(err)
     return yupToFormErrors(err);
   }
 
