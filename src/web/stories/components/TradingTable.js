@@ -6,8 +6,8 @@ import { backgrounds } from '../backgrounds'
 import { withInfo } from '@storybook/addon-info'
 import Paper from '@material-ui/core/Paper'
 import { Grid } from '@material-ui/core'
-import { Table } from '@sb/components'
-
+// import { Table } from '@sb/components'
+import TradingTable from '@sb/components/TradingTable/TradingTable'
 storiesOf('Components/TradingTable', module)
   .addDecorator(backgrounds)
   .add('Table', () => (
@@ -21,6 +21,7 @@ storiesOf('Components/TradingTable', module)
             flexDirection: 'column',
           }}
         >
+            <TradingTable />
 
         </Paper>
       </Grid>
