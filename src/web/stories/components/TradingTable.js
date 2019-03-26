@@ -8,7 +8,7 @@ import Paper from '@material-ui/core/Paper'
 import { Grid } from '@material-ui/core'
 import { Table } from '@sb/components'
 
-storiesOf('Components/TablesWithCheckbox', module)
+storiesOf('Components/TradingTable', module)
   .addDecorator(backgrounds)
   .add('Table', () => (
     <Grid container style={{ height: '25rem' }}>
