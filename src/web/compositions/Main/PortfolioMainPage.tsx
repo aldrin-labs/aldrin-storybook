@@ -1,6 +1,6 @@
 import React from 'react'
 import { withTheme } from '@material-ui/styles'
-import { connect } from 'react-redux'
+import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 
@@ -10,10 +10,13 @@ import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMai
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 
+import { tooltipsConfig } from '@sb/config/tooltipsConfig'
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
-import * as actions from '@core/redux/user/actions'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import Template from '@sb/components/Template/Template'
+import { getTooltipSettings } from '@core/graphql/queries/user/getTooltipSettings'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 
 @withTheme()
 
@@ -22,13 +25,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     key: 0,
   }
 
-  handleJoyrideCallback = (data: any) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
     ) {
-      this.props.hideToolTip('Main')
+      await this.props.updateTooltipSettings({ variables: tooltipsConfig.disabled })
     }
     if (data.status === 'finished') {
       const oldKey = this.state.key
@@ -60,7 +63,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           showProgress={true}
           showSkipButton={true}
           steps={portfolioMainSteps}
-          run={this.props.toolTip.portfolioMain}
+          run={this.props.getTooltipSettings.getTooltipSettings.portfolioMain}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -82,19 +85,9 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
-})
-
-const mapStateToProps = (store: any) => ({
-  isShownMocks: store.user.isShownMocks,
-  toolTip: store.user.toolTip,
-})
 
 export default compose(
   withErrorFallback,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettings' }),
+  queryRendererHoc({ query: getTooltipSettings, name: 'getTooltipSettings' }),
 )(PortfolioMainPage)
