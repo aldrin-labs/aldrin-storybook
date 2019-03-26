@@ -1,4 +1,14 @@
 import { Theme } from '@material-ui/core'
+import { FormikProps } from 'formik'
+
+export interface FormValues {
+  price: number | string
+  stop: number | string
+  limit: number | string
+  amount: number | string
+  total: number | string
+}
+
 export interface IProps {
   byType: 'buy' | 'sell'
   priceType: 'limit' | 'market' | 'stop-limit'
@@ -6,11 +16,9 @@ export interface IProps {
   marketPrice: number
   theme: Theme
   walletValue: number
-  values: any
-  handleChange: Function
-  handleSubmit: Function
-  setFieldValue: Function
-  touched: boolean
-  errors: any
+  confirmOperation: (
+    filtredValues: Partial<FormValues>) => null
 }
+
+export interface IPropsWithFormik extends FormikProps<FormValues>, IProps {}
 

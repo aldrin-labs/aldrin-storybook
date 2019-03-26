@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, SyntheticEvent } from 'react'
 
 import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -13,7 +13,11 @@ import { Grid, TextField, InputAdornment, Button, Typography } from '@material-u
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
-import { IProps } from './types'
+import {
+  IProps,
+  FormValues,
+  IPropsWithFormik
+} from './types'
 
 import {
   Container,
@@ -31,8 +35,8 @@ const FormError = ({ children }: any) => (
 )
 @withTheme()
 
-class TraidingTerminal extends PureComponent<IProps> {
-  onTotalChange = (e: any) => {
+class TraidingTerminal extends PureComponent<IPropsWithFormik> {
+  onTotalChange = (e: SyntheticEvent<Element>) => {
     const {
       values,
       setFieldValue,
@@ -42,7 +46,7 @@ class TraidingTerminal extends PureComponent<IProps> {
     setFieldValue('amount', amount, false)
   }
 
-  onAmountChange = (e: any) => {
+  onAmountChange = (e: SyntheticEvent<Element>) => {
     const {
       values,
       setFieldValue,
@@ -52,7 +56,7 @@ class TraidingTerminal extends PureComponent<IProps> {
     setFieldValue('total', total, false)
   }
 
-  onProcentageClick = (value: number) => {
+  onPercentageClick = (value: number) => {
     const {
       walletValue,
       values,
@@ -149,7 +153,7 @@ render() {
             fullWidth
             id="price"
             name="price"
-            type={priceType === 'market' ? 'string' : 'number'}
+            type={priceType === 'market' ? 'string' : 'number'} // if priceType is market we show Market Price in price
             value={priceType === 'market' ? 'Market Price' : values.price || ''}
             onChange={handleChange}
             InputProps={{
@@ -238,28 +242,28 @@ render() {
           <Grid container spacing={8}>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => this.onProcentageClick(0.25)}>
+                <PriceButton onClick={() => this.onPercentageClick(0.25)}>
                   25%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => this.onProcentageClick(0.50)}>
+                <PriceButton onClick={() => this.onPercentageClick(0.50)}>
                   50%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => this.onProcentageClick(0.75)}>
+                <PriceButton onClick={() => this.onPercentageClick(0.75)}>
                   75%
                 </PriceButton>
               </ButtonContainer>
             </Grid>
             <Grid item sm={3} xs={6}>
               <ButtonContainer>
-                <PriceButton onClick={() => this.onProcentageClick(1)}>
+                <PriceButton onClick={() => this.onPercentageClick(1)}>
                   100%
                 </PriceButton>
               </ButtonContainer>
@@ -299,7 +303,11 @@ render() {
               variant="outlined"
               onClick={handleSubmit}
               >
-              Buy
+              {
+                typeIsBuy
+                ? `Buy ${pair[0]}`
+                : `Sell ${pair[0]}`
+              }
             </Button>
           </ByButtonContainer>
         </Grid>
@@ -311,7 +319,7 @@ render() {
   }
 }
 
-const validate = (values, props) => {
+const validate = (values: FormValues, props: IProps) => {
   const {
     priceType,
     walletValue,
@@ -325,7 +333,10 @@ const validate = (values, props) => {
       amount: Yup.number()
       .required()
       .min(0)
-      .max(walletValue / values.price, 'Your balance is not enough'),
+      .max(walletValue / (
+        typeof(values.price) === 'number'
+        ? values.price
+        : props.marketPrice), 'Your balance is not enough'),
   })
   : priceType === 'market'
   ? Yup.object().shape({
@@ -344,7 +355,14 @@ const validate = (values, props) => {
     amount: Yup.number()
     .required()
     .min(0)
-    .max(Math.max(walletValue / values.stop, walletValue / values.limit), 'Your balance is not enough'),
+    .max(Math.max(walletValue / (
+      typeof(values.stop) === 'number'
+        ? values.stop
+        : props.marketPrice),
+      walletValue / (
+        typeof(values.limit) === 'number'
+        ? values.limit
+        : props.marketPrice)), 'Your balance is not enough'),
   })
 
   try {
@@ -356,9 +374,9 @@ const validate = (values, props) => {
   return {};
 }
 
-const formikEnhancer = withFormik({
+const formikEnhancer = withFormik<IProps, FormValues>({
   validate: validate,
-  mapPropsToValues: (props: any) => ({
+  mapPropsToValues: (props) => ({
     price: props.marketPrice,
     stop: '',
     limit: '',
@@ -366,7 +384,7 @@ const formikEnhancer = withFormik({
     total: '',
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
-    const {byType, priceType, pair} = props
+    const {byType, priceType} = props
     if (priceType || byType) {
       const filtredValues = priceType === 'limit'
       ? {price: values.price, amount: values.amount}
@@ -377,7 +395,7 @@ const formikEnhancer = withFormik({
           limit: values.limit,
           amount: values.amount,
         }
-      props.handleSubmit(byType, priceType, pair, filtredValues)
+      props.confirmOperation(filtredValues)
     }
   },
 })

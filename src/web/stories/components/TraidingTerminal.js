@@ -26,25 +26,50 @@ export const TablesBlockWrapper = styled(Card)`
 storiesOf('Components/TraidingTerminal', module)
   .addDecorator(backgrounds)
   .add(
-    'TraidingTerminal',
+    'TraidingTerminal Limit',
     withInfo()(() =>
       <TablesBlockWrapper
         rightBorderColor='rgba(112, 112, 112, 0.26)'
       >
         <TraidingTerminal
           byType='buy'
-          priceType={select(
-            'priceType', {
-              limit: 'limit',
-              market: 'market',
-              stopLimit: 'stop-limit'
-            },
-            'limit'
-          )}
+          priceType='limit'
           pair={['BTC', 'USDT']}
           walletValue={number('walletValue', 1000000)}
           marketPrice={number('marketPrice', 4040.45)}
-          handleSubmit={(byType, priceType, pair, values) => console.log(values)}
+          confirmOperation={(values) => console.log(values)}
+          />
+      </TablesBlockWrapper>
+    )
+  ).add(
+    'TraidingTerminal Market',
+    withInfo()(() =>
+      <TablesBlockWrapper
+        rightBorderColor='rgba(112, 112, 112, 0.26)'
+      >
+        <TraidingTerminal
+          byType='buy'
+          priceType='market'
+          pair={['BTC', 'USDT']}
+          walletValue={number('walletValue', 1000000)}
+          marketPrice={number('marketPrice', 4040.45)}
+          confirmOperation={(values) => console.log(values)}
+          />
+      </TablesBlockWrapper>
+    )
+  ).add(
+    'TraidingTerminal Stop-limit',
+    withInfo()(() =>
+      <TablesBlockWrapper
+        rightBorderColor='rgba(112, 112, 112, 0.26)'
+      >
+        <TraidingTerminal
+          byType='buy'
+          priceType='stop-limit'
+          pair={['BTC', 'USDT']}
+          walletValue={number('walletValue', 1000000)}
+          marketPrice={number('marketPrice', 4040.45)}
+          confirmOperation={(values) => console.log(values)}
           />
       </TablesBlockWrapper>
   )

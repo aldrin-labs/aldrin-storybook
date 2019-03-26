@@ -39,17 +39,6 @@ export const PriceButton = withStyles(styles)(({classes, children, ...others}: {
   </Button>
 )
 
-export const StyledCardHeader = styled(CardHeader)`
-  margin-bottom: 15px;
-  background: rgb(31, 31, 36);
-  & > div {
-    align-self: auto !important;
-    margin-top: 0 !important;
-    margin-right: 0 !important;
-  }
-`
-
-
 export const Container = styled.div`
   && {
     background-color: ${(props: { background?: string }) => props.background};
