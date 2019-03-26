@@ -18,7 +18,7 @@ async function login() {
 }
 
 function loadStories() {
-  // automatically import all story js files that end with *.stories.tsx  
+  // automatically import all story js files that end with *.stories.tsx
   const req = require.context('../src/web/stories', true, /.js$/)
   req.keys().forEach(filename => req(filename))
 }
@@ -56,6 +56,4 @@ if (process.env.REACT_NATIVE) {
   }))
 }
 
-login().then(() => {
-  configure(loadStories, module)
-})
+configure(loadStories, module)
