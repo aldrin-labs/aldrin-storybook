@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'
+import React, { ChangeEvent } from 'react'
 import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
 import { Tabs, Tab } from '@material-ui/core'
@@ -50,6 +50,13 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     startDate: null,
     endDate: null,
     focusedInput: null,
+    activeDateButton: null,
+  }
+
+  onDateButtonClick = (stringDate: string) => {
+    this.setState({
+      activeDateButton: stringDate,
+    })
   }
 
   onDatesChange = ({
@@ -62,7 +69,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
 
   onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
 
-  handleTabChange = (e: SyntheticEvent<Element>, tabIndex: number) => {
+  handleTabChange = (e: ChangeEvent<{}>, tabIndex: number | any) => {
     this.setState({
       tabIndex,
       tab: tradingTableTabConfig[tabIndex],
@@ -70,9 +77,10 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
   }
 
   render() {
-    const { tab } = this.state
+    const { tab, activeDateButton } = this.state
     const { theme } = this.props
     const textColor: string = theme.palette.text.primary
+    const secondary = theme.palette.secondary.main
     const fontFamily = theme.typography.fontFamily
     const maximumDate = moment()
     const minimumDate = moment().subtract(3, 'years')
@@ -97,16 +105,40 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
             </div>
             {(tab === 'orderHistory' || tab === 'tradeHistory') && (
               <TitleSecondRowContainer>
-                <TitleButton size={`small`} variant={`outlined`}>
+                <TitleButton
+                  size={`small`}
+                  variant={`outlined`}
+                  isActive={activeDateButton === '1Day'}
+                  secondary={secondary}
+                  onClick={() => this.onDateButtonClick('1Day')}
+                >
                   1 Day
                 </TitleButton>
-                <TitleButton size={`small`} variant={`outlined`}>
+                <TitleButton
+                  size={`small`}
+                  variant={`outlined`}
+                  isActive={activeDateButton === '1Week'}
+                  secondary={secondary}
+                  onClick={() => this.onDateButtonClick('1Week')}
+                >
                   1 Week
                 </TitleButton>
-                <TitleButton size={`small`} variant={`outlined`}>
+                <TitleButton
+                  size={`small`}
+                  variant={`outlined`}
+                  isActive={activeDateButton === '1Month'}
+                  secondary={secondary}
+                  onClick={() => this.onDateButtonClick('1Month')}
+                >
                   1 Month
                 </TitleButton>
-                <TitleButton size={`small`} variant={`outlined`}>
+                <TitleButton
+                  size={`small`}
+                  variant={`outlined`}
+                  isActive={activeDateButton === '3Month'}
+                  secondary={secondary}
+                  onClick={() => this.onDateButtonClick('3Month')}
+                >
                   3 Month
                 </TitleButton>
                 <StyledWrapperForDateRangePicker

@@ -11,4 +11,5 @@ export interface IState {
   startDate: moment.Moment | null,
   endDate: moment.Moment | null,
   focusedInput: null | string,
+  activeDateButton: null | string
 }

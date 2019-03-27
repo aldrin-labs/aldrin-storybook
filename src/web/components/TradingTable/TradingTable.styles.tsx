@@ -8,6 +8,7 @@ export const TitleSecondRowContainer = styled.div`
 
 export const TitleButton = styled(Button)`
   && {
+    border: ${(props: { isActive: boolean, secondary: string }) => props.isActive ? `2px solid ${props.secondary}` : ''};
     margin: 7px;
     max-height: 30px;
   }
