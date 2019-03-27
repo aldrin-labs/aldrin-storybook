@@ -7,23 +7,23 @@ export const TitleSecondRowContainer = styled.div`
   display: flex;
 `
 
-export const TitleButton = styled(({ isActive, secondary, ...rest }) => (
+export const TitleButton = styled(({ isActive = false, secondary = '', ...rest }) => (
   <Button {...rest} />
 ))`
   && {
-    color: ${(props: { isActive: boolean; secondary: string }) =>
+    color: ${(props: { isActive?: boolean; secondary?: string }) =>
       props.isActive ? props.secondary : ''};
-    border-color: ${(props: { isActive: boolean; secondary: string }) =>
+    border-color: ${(props: { isActive?: boolean; secondary?: string }) =>
       props.isActive ? props.secondary : ''};
     margin: 7px;
     max-height: 30px;
   }
 `
 
-export const TitleTab = styled(({ selected, primary, ...rest }) => (
-  <Tab selected={selected} {...rest} />
+export const TitleTab = styled(({ primary, ...rest }) => (
+  <Tab {...rest} />
 ))`
   &&& {
-    color: ${(props: { selected: boolean, primary: string }) => props.selected ? props.primary : ''}
+    color: ${(props: { selected?: boolean, primary: string }) => props.selected ? props.primary : ''}
  }
 `

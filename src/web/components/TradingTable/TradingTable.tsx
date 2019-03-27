@@ -115,7 +115,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
             {(tab === 'orderHistory' || tab === 'tradeHistory') && (
               <TitleSecondRowContainer>
                 <TitleButton
-                  size={`small`}
+                  size="small"
                   variant={`outlined`}
                   isActive={activeDateButton === '1Day'}
                   secondary={secondary}
@@ -124,7 +124,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                   1 Day
                 </TitleButton>
                 <TitleButton
-                  size={`small`}
+                  size="small"
                   variant={`outlined`}
                   isActive={activeDateButton === '1Week'}
                   secondary={secondary}
@@ -133,7 +133,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                   1 Week
                 </TitleButton>
                 <TitleButton
-                  size={`small`}
+                  size="small"
                   variant={`outlined`}
                   isActive={activeDateButton === '1Month'}
                   secondary={secondary}
@@ -142,7 +142,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                   1 Month
                 </TitleButton>
                 <TitleButton
-                  size={`small`}
+                  size="small"
                   variant={`outlined`}
                   isActive={activeDateButton === '3Month'}
                   secondary={secondary}
@@ -173,10 +173,10 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                     displayFormat="MM-DD-YYYY"
                   />
                 </StyledWrapperForDateRangePicker>
-                <TitleButton size={`small`} variant={`outlined`}>
+                <TitleButton size="small" variant={`outlined`}>
                   Search
                 </TitleButton>
-                <TitleButton size={`small`} variant={`outlined`} onClick={this.onClearDateButtonClick}>
+                <TitleButton size="small" variant={`outlined`} onClick={this.onClearDateButtonClick}>
                   Clear
                 </TitleButton>
               </TitleSecondRowContainer>
