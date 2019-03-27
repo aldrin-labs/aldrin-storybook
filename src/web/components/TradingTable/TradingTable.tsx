@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { SyntheticEvent } from 'react'
 import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
 import { Tabs, Tab } from '@material-ui/core'
@@ -45,22 +45,27 @@ const getTableHead = (tab: string) =>
 @withTheme()
 export default class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
-    tabValue: 0,
+    tabIndex: 0,
     tab: 'openOrders',
     startDate: null,
     endDate: null,
     focusedInput: null,
   }
 
-  onDatesChange = ({ startDate, endDate }) =>
-    this.setState({ startDate, endDate })
+  onDatesChange = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: moment.Moment | null
+    endDate: moment.Moment | null
+  }) => this.setState({ startDate, endDate })
 
-  onFocusChange = (focusedInput) => this.setState({ focusedInput })
+  onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
 
-  handleTabChange = (e, tabValue) => {
+  handleTabChange = (e: SyntheticEvent<Element>, tabIndex: number) => {
     this.setState({
-      tabValue,
-      tab: tradingTableTabConfig[tabValue],
+      tabIndex,
+      tab: tradingTableTabConfig[tabIndex],
     })
   }
 
@@ -79,7 +84,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
           <div>
             <div>
               <Tabs
-                value={this.state.tabValue}
+                value={this.state.tabIndex}
                 onChange={this.handleTabChange}
                 indicatorColor="secondary"
                 textColor="primary"
