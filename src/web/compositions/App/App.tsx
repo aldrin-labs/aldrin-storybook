@@ -21,6 +21,8 @@ import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import { AppGridLayout } from './App.styles'
 import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/cssUtils'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
 
 const version = `1`
 const currentVersion = localStorage.getItem('version')

@@ -19,8 +19,6 @@ import {
   fundsColumnNames,
 } from './TradingTable.mocks'
 import { DateRangePicker } from 'react-dates'
-import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
 
 const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -141,28 +139,6 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
         }
         data={{ body: getTableBody(this.state.tab) }}
         columnNames={getTableHead(this.state.tab)}
-
-        // actions={[
-        //     {
-        //       id: '1',
-        //       icon: <MoreVertIcon />,
-        //       onClick: action('1'),
-        //       color: 'primary',
-        //     },
-        // ]}
-        // actions={[
-        //   {
-        //     id: '1',
-        //     icon: <MoreVertIcon />,
-        //     onClick: action('1'),
-        //     color: 'primary',
-        //   },
-        //   {
-        //     id: '2',
-        //     icon: <MoreVertIcon />,
-        //     onClick: action('2'),
-        //   },
-        // ]}
       />
     )
   }
