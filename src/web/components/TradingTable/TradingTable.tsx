@@ -46,6 +46,17 @@ const getTableHead = (tab: string) =>
     ? fundsColumnNames
     : []
 
+const getEmptyTextPlaceholder = (tab: string) =>
+  tab === 'openOrders'
+    ? 'You have no open orders.'
+    : tab === 'orderHistory'
+    ? 'You have no order history'
+    : tab === 'tradeHistory'
+    ? 'You have no trades.'
+    : tab === 'funds'
+    ? 'You have no Funds'
+    : []
+
 const getEndDate = (stringDate: string) =>
   stringDate === '1Day'
     ? moment().subtract(1, 'days')
@@ -111,6 +122,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
 
     return (
       <Table
+        emptyTableText={getEmptyTextPlaceholder(tab)}
         withCheckboxes={false}
         title={
           <div>
