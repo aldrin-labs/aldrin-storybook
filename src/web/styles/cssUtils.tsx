@@ -134,3 +134,48 @@ export const ChartSelectStyles = css`
   width: 130px;
   background: transparent;
 `
+
+export const StyledWrapperForDateRangePicker = styled.div`
+  width: 206px;
+  padding: 6px 0;
+
+  & .DateInput {
+    width: 95px;
+  }
+
+  & .DateInput:first-child .DateInput_input {
+    padding-left: 0;
+  }
+
+  & .DateInput_input {
+    padding: 5px;
+    font-size: 0.875rem;
+    font-family: ${(props: { fontFamily: string }) => props.fontFamily};
+    font-weight: 400;
+    height: 36px;
+    color: ${(props: { color: string }) => props.color};
+    background: ${(props: { background: string }) => props.background};
+  }
+
+  & .DateRangePicker_picker {
+    font-family: ${(props: { fontFamily: string }) => props.fontFamily};
+    z-index: 10;
+  }
+
+  & .DateRangePickerInput {
+    border: 0;
+    background: ${(props: { background: string }) => props.background};
+    border-bottom: 1px solid #c1c1c1;
+  }
+
+  & .DateInput_input__focused {
+    border-bottom: 1px solid #fff;
+    transition: all 100ms;
+  }
+
+  & .DateRangePickerInput_arrow_svg {
+    fill: ${(props: { color: string }) => props.color};
+    width: 14px;
+    height: 14px;
+  }
+`
