@@ -152,14 +152,14 @@ export const StyledWrapperForDateRangePicker = styled.div`
     font-size: 0.875rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-weight: 400;
-    height: 36px;
+    height: ${(props: { dateInputHeight?: string }) => props.dateInputHeight || '36px'};
     color: ${(props: { color: string }) => props.color};
     background: ${(props: { background: string }) => props.background};
   }
 
   & .DateRangePicker_picker {
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
-    z-index: 10;
+    z-index: ${(props: { zIndexPicker: number }) => props.zIndexPicker || 10};
   }
 
   & .DateRangePickerInput {
