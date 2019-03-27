@@ -5,7 +5,7 @@ import { Tabs, Tab } from '@material-ui/core'
 import { Table } from '@sb/components'
 import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
-import { TitleSecondRowContainer, TitleButton } from './TradingTable.styles'
+import { TitleSecondRowContainer, TitleButton, TitleTab } from './TradingTable.styles'
 import { IProps, IState } from './TradingTable.types'
 import {
   tradingTableTabConfig,
@@ -53,6 +53,15 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     activeDateButton: null,
   }
 
+  onClearDateButtonClick = () => {
+    this.setState({
+      startDate: null,
+      endDate: null,
+      focusedInput: null,
+      activeDateButton: null,
+    })
+  }
+
   onDateButtonClick = (stringDate: string) => {
     this.setState({
       activeDateButton: stringDate,
@@ -97,10 +106,10 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                 indicatorColor="secondary"
                 textColor="primary"
               >
-                <Tab label="Open orders" />
-                <Tab label="Order history" />
-                <Tab label="Trade history" />
-                <Tab label="Funds" />
+                <TitleTab label="Open orders" primary={textColor} />
+                <TitleTab label="Order history" primary={textColor} />
+                <TitleTab label="Trade history" primary={textColor} />
+                <TitleTab label="Funds" primary={textColor} />
               </Tabs>
             </div>
             {(tab === 'orderHistory' || tab === 'tradeHistory') && (
@@ -167,7 +176,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                 <TitleButton size={`small`} variant={`outlined`}>
                   Search
                 </TitleButton>
-                <TitleButton size={`small`} variant={`outlined`}>
+                <TitleButton size={`small`} variant={`outlined`} onClick={this.onClearDateButtonClick}>
                   Clear
                 </TitleButton>
               </TitleSecondRowContainer>
