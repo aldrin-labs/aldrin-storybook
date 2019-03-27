@@ -81,6 +81,24 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     activeDateButton: null,
   }
 
+  onCancelOrder = async (arg: any) => {
+    // TODO: here should be a mutation order to cancel a specific order
+    // TODO: Also it should receive an argument to edentify the order that we should cancel
+
+
+    // TODO: Also it would be good to show the dialog message here after mutation completed
+  }
+
+  onCancelAll = async () => {
+    // TODO: here should be a mutation func to cancel all orders
+
+    // TODO: Also it would be good to show the dialog message here after mutation completed
+  }
+
+  onSearchDateButtonClick = async () => {
+    // TODO: there should be mutation for search
+  }
+
   onClearDateButtonClick = () => {
     this.setState({
       startDate: null,
@@ -90,12 +108,17 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     })
   }
 
-  onDateButtonClick = (stringDate: string) => {
-    this.setState({
-      activeDateButton: stringDate,
-      startDate: moment(),
-      endDate: getEndDate(stringDate),
-    })
+  onDateButtonClick = async (stringDate: string) => {
+    this.setState(
+      {
+        activeDateButton: stringDate,
+        startDate: moment(),
+        endDate: getEndDate(stringDate),
+      },
+      () => {
+        // TODO: there should be mutation for search:
+      }
+    )
   }
 
   onDatesChange = ({
@@ -204,7 +227,11 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                     displayFormat="MM-DD-YYYY"
                   />
                 </StyledWrapperForDateRangePicker>
-                <TitleButton size="small" variant={`outlined`}>
+                <TitleButton
+                  size="small"
+                  variant={`outlined`}
+                  onClick={this.onSearchDateButtonClick}
+                >
                   Search
                 </TitleButton>
                 <TitleButton

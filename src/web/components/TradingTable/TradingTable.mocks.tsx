@@ -39,6 +39,7 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   filled: { render: '100%', isNumber: true },
   total: 100,
   triggerConditions: '-',
+  cancel: <Button>Cancel</Button>
 }))
 
 export const orderHistoryColumnNames = [
