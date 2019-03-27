@@ -1,4 +1,8 @@
 import React, { ChangeEvent } from 'react'
+// MOVE THIS TO APP -_>
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
+// <-- MOVE THIS TO APP
 import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
 import { Tabs, Tab } from '@material-ui/core'
