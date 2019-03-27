@@ -5,7 +5,11 @@ import { Tabs, Tab } from '@material-ui/core'
 import { Table } from '@sb/components'
 import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
-import { TitleSecondRowContainer, TitleButton, TitleTab } from './TradingTable.styles'
+import {
+  TitleSecondRowContainer,
+  TitleButton,
+  TitleTab,
+} from './TradingTable.styles'
 import { IProps, IState } from './TradingTable.types'
 import {
   tradingTableTabConfig,
@@ -42,6 +46,15 @@ const getTableHead = (tab: string) =>
     ? fundsColumnNames
     : []
 
+const getEndDate = (stringDate: string) =>
+  stringDate === '1Day'
+    ? moment().subtract(1, 'days')
+    : stringDate === '1Week'
+    ? moment().subtract(1, 'weeks')
+    : stringDate === '1Month'
+    ? moment().subtract(1, 'months')
+    : moment().subtract(3, 'months')
+
 @withTheme()
 export default class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -65,6 +78,8 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
   onDateButtonClick = (stringDate: string) => {
     this.setState({
       activeDateButton: stringDate,
+      startDate: moment(),
+      endDate: getEndDate(stringDate),
     })
   }
 
@@ -176,7 +191,11 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                 <TitleButton size="small" variant={`outlined`}>
                   Search
                 </TitleButton>
-                <TitleButton size="small" variant={`outlined`} onClick={this.onClearDateButtonClick}>
+                <TitleButton
+                  size="small"
+                  variant={`outlined`}
+                  onClick={this.onClearDateButtonClick}
+                >
                   Clear
                 </TitleButton>
               </TitleSecondRowContainer>
