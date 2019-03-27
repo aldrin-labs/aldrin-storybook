@@ -26,7 +26,7 @@ export const TablesBlockWrapper = styled(Card)`
     display: ${(props: { variant: { show?: boolean } }) =>
   props.variant.show ? 'block' : 'none'};
     width: 100%;
-    height: calc(70vh - 57px - 70px);
+    height: calc(66vh - 57px - 70px);
     position: relative;
   }
 `
@@ -35,7 +35,7 @@ export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
 
-  height: calc(70vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  height: calc(66vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   overflow: hidden;
 
   @media (max-width: 1080px) {
@@ -47,7 +47,7 @@ export const TradingTerminalContainer = styled(Grid)`
   position: relative;
   display: flex;
 
-  height: 30vh;
+  height: 34vh;
   overflow: hidden;
 
   @media (max-width: 1080px) {
@@ -56,7 +56,7 @@ export const TradingTerminalContainer = styled(Grid)`
 `
 
 export const ChartsContainer = styled(TablesContainer)`
-  height: calc(70vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  height: calc(66vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   justify-content: flex-end;
   flex-direction: column;
   width: 60%;
@@ -67,7 +67,7 @@ export const ChartsContainer = styled(TablesContainer)`
 `
 
 export const TradingTabelContainer = styled(TablesContainer)`
-  height: 30vh;
+  height: 34vh;
   justify-content: flex-end;
   flex-direction: column;
   width: 60%;

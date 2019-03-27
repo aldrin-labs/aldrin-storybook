@@ -124,39 +124,43 @@ render() {
     validateForm,
   } = this.props
 
-  const { background, primary, type } = palette
+  const { background, primary, type, divider } = palette
 
   const typeIsBuy = byType === 'buy'
   return (
     <Container background={background.default}>
       <div>
-        <NameHeader background={primary[type]}>
-        <Grid container spacing={0}>
-        <Grid item xs={1}>
-          {''}
-        </Grid>
-        <Grid item xs>
-        <TypographyWithCustomColor
-          textColor
-          variant="subtitle1"
-        >
-          {
-            typeIsBuy
-            ? `Buy ${pair[0]}`
-            : `Sell ${pair[1]}`
-          }
-        </TypographyWithCustomColor>
-        </Grid>
-        <Grid item xs>
+        <NameHeader background={background.default} border={divider}>
+          <Grid container spacing={0}>
+          <Grid item xs={1}>
+            {''}
+          </Grid>
+          <Grid item xs>
           <TypographyWithCustomColor
-            align="right"
             textColor
             variant="subtitle1"
           >
-            {`${walletValue} ${pair[1]}`}
+            {
+              typeIsBuy
+              ? `Buy ${pair[0]}`
+              : `Sell ${pair[0]}`
+            }
           </TypographyWithCustomColor>
           </Grid>
-          </Grid>
+          <Grid item xs>
+            <TypographyWithCustomColor
+              align="right"
+              textColor
+              variant="subtitle1"
+            >
+              {`${walletValue} ${
+                typeIsBuy
+                  ? pair[1]
+                  : pair[0]
+                }`}
+            </TypographyWithCustomColor>
+            </Grid>
+            </Grid>
         </NameHeader>
       <GridContainer>
       <Grid container spacing={0}>
@@ -182,7 +186,7 @@ render() {
           id="stop"
           type="number"
           onChange={handleChange}
-          endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
+          endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
           helperText={
             touched.stop &&
             errors.stop && (
@@ -197,7 +201,7 @@ render() {
             type={priceType === 'market' ? 'string' : 'number'} // if priceType is market we show Market Price in price
             value={priceType === 'market' ? 'Market Price' : values.price || ''}
             onChange={this.onPriceChange}
-            endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
+            endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
             disabled={priceType === 'market'}
             helperText={
               touched.price &&
@@ -230,7 +234,7 @@ render() {
           value={values.limit || ''}
           onChange={this.onLimitChange}
           type="number"
-            endAdornment={<InputAdornment position="end">USDT</InputAdornment>}
+            endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
           helperText={
             touched.limit &&
             errors.limit && (
@@ -260,7 +264,7 @@ render() {
           value={values.amount || ''}
           onChange={this.onAmountChange}
           type="number"
-          endAdornment={<InputAdornment position="end">BTC</InputAdornment>}
+          endAdornment={<InputAdornment position="end">{pair[0]}</InputAdornment>}
           helperText={
             errors.amount && (
               <FormError>{errors.amount}</FormError>
@@ -269,39 +273,34 @@ render() {
         />
         </InputContainer>
         </Grid>
-        <Grid item xs={3}>
-          {''}
-        </Grid>
-        <Grid item xs={9}>
-          <Grid container spacing={8}>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(0.25)}>
-                  25%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(0.50)}>
-                  50%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(0.75)}>
-                  75%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(1)}>
-                  100%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
+        <Grid container spacing={8}>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(0.25)}>
+                25%
+              </PriceButton>
+            </ButtonContainer>
+          </Grid>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(0.50)}>
+                50%
+              </PriceButton>
+            </ButtonContainer>
+          </Grid>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(0.75)}>
+                75%
+              </PriceButton>
+            </ButtonContainer>
+          </Grid>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(1)}>
+                100%
+              </PriceButton>
+            </ButtonContainer>
           </Grid>
         </Grid>
         {priceType !== 'market' &&
@@ -326,7 +325,7 @@ render() {
               name="total"
               type="number"
               endAdornment={
-                (<InputAdornment position="end">USDT</InputAdornment>)
+                (<InputAdornment position="end">{pair[1]}</InputAdornment>)
               }
             />
           </InputContainer>
@@ -345,10 +344,10 @@ render() {
               }
               text={priceType === 'stop-limit'
               ? `If the last price drops to or below ${values.stop} ${pair[1]},
-                  an order to buy ${values.amount} ${pair[0]} at a price of ${values.limit} ${pair[1]} will be placed.`
+                  an order to ${typeIsBuy? 'Buy': 'Sell'} ${values.amount} ${pair[0]} at a price of ${values.limit} ${pair[1]} will be placed.`
               : priceType === 'limit'
-              ? `An order to buy ${values.amount} BTC at a price of ${values.price} ${pair[1]} will be placed.`
-              : `An order to buy ${values.amount} BTC at a market price will be placed.`
+              ? `An order to ${typeIsBuy? 'Buy': 'Sell'} ${values.amount} ${pair[0]} at a price of ${values.price} ${pair[1]} will be placed.`
+              : `An order to ${typeIsBuy? 'Buy': 'Sell'} ${values.amount} ${pair[0]} at a market price will be placed.`
             }
               />
           </ByButtonContainer>

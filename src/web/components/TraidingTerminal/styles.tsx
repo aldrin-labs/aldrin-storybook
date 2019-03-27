@@ -21,7 +21,7 @@ const styles = {
 
 
 export const ButtonContainer = styled.div`
-  padding: 0px;
+  padding-top: 5px;
   text-align: center;
 `
 
@@ -66,6 +66,8 @@ export const GridContainer = styled.div`
 export const NameHeader = styled.div`
   background: ${(props: { background?: string }) => props.background};
   padding: 6px 8px;
+  border-bottom: 1px solid
+  ${({ border }: { border?: string; background?: string }) => border};
 `
 
 export const TitleContainer = styled.div`
