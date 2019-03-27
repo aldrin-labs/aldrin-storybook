@@ -136,6 +136,7 @@ const styles = (theme: Theme) =>
       position: 'sticky',
       top: 0,
       fontSize: 16,
+      zIndex: 103,
     },
     staticCheckbox: {
       '&& input': {
