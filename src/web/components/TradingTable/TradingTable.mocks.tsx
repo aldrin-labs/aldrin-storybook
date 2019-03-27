@@ -1,3 +1,6 @@
+import { Button } from '@material-ui/core'
+
+
 const arrayOfSides = ['sell', 'buy']
 
 const arrayOfOrdersType = ['market', 'limit', 'stop']
@@ -21,7 +24,7 @@ export const openOrdersColumnNames = [
   { label: 'Filled %', id: 'filled', isNumber: true },
   { label: 'Total', id: 'total', isNumber: true },
   { label: 'Trigger Conditions', id: 'triggerConditions' },
-  { label: <button>Cancel all</button>, id: 'cancel' },
+  { label: <Button variant="outlined">Cancel all</Button>, id: 'cancel' },
 ]
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
