@@ -65,7 +65,7 @@ export const GridContainer = styled.div`
 
 export const NameHeader = styled.div`
   background: ${(props: { background?: string }) => props.background};
-  padding: 6px 8px;
+  padding: 0px 8px;
   border-bottom: 1px solid
   ${({ border }: { border?: string; background?: string }) => border};
 `

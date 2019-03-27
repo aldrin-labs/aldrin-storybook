@@ -135,9 +135,10 @@ render() {
           <Grid item xs={1}>
             {''}
           </Grid>
-          <Grid item xs>
+          <Grid item xs={5}>
           <TypographyWithCustomColor
             textColor
+            noWrap
             variant="subtitle1"
           >
             {
@@ -147,11 +148,12 @@ render() {
             }
           </TypographyWithCustomColor>
           </Grid>
-          <Grid item xs>
+          <Grid item xs={6}>
             <TypographyWithCustomColor
               align="right"
               textColor
               variant="subtitle1"
+              noWrap
             >
               {`${walletValue} ${
                 typeIsBuy
