@@ -5,15 +5,10 @@ import 'react-dates/lib/css/_datepicker.css'
 // <-- MOVE THIS TO APP
 import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
-import { Tabs, Tab } from '@material-ui/core'
+import { Tabs, Grow } from '@material-ui/core'
 import { Table } from '@sb/components'
-import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
-import {
-  TitleSecondRowContainer,
-  TitleButton,
-  TitleTab,
-} from './TradingTable.styles'
+import { TitleTab } from './TradingTable.styles'
 import { IProps, IState } from './TradingTable.types'
 import {
   tradingTableTabConfig,
@@ -26,7 +21,9 @@ import {
   fundsBody,
   fundsColumnNames,
 } from './TradingTable.mocks'
-import { DateRangePicker } from 'react-dates'
+
+import TitleOrderHistory from './TitleOrderHistory/TitleOrderHistory'
+import TitleTradeHistory from './TitleTradeHistory/TitleTradeHistory'
 
 const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -61,15 +58,6 @@ const getEmptyTextPlaceholder = (tab: string) =>
     ? 'You have no Funds'
     : []
 
-const getEndDate = (stringDate: string) =>
-  stringDate === '1Day'
-    ? moment().subtract(1, 'days')
-    : stringDate === '1Week'
-    ? moment().subtract(1, 'weeks')
-    : stringDate === '1Month'
-    ? moment().subtract(1, 'months')
-    : moment().subtract(3, 'months')
-
 @withTheme()
 export default class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -84,52 +72,13 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
   onCancelOrder = async (arg: any) => {
     // TODO: here should be a mutation order to cancel a specific order
     // TODO: Also it should receive an argument to edentify the order that we should cancel
-
-
     // TODO: Also it would be good to show the dialog message here after mutation completed
   }
 
   onCancelAll = async () => {
     // TODO: here should be a mutation func to cancel all orders
-
     // TODO: Also it would be good to show the dialog message here after mutation completed
   }
-
-  onSearchDateButtonClick = async () => {
-    // TODO: there should be mutation for search
-  }
-
-  onClearDateButtonClick = () => {
-    this.setState({
-      startDate: null,
-      endDate: null,
-      focusedInput: null,
-      activeDateButton: null,
-    })
-  }
-
-  onDateButtonClick = async (stringDate: string) => {
-    this.setState(
-      {
-        activeDateButton: stringDate,
-        startDate: moment(),
-        endDate: getEndDate(stringDate),
-      },
-      () => {
-        // TODO: there should be mutation for search:
-      }
-    )
-  }
-
-  onDatesChange = ({
-    startDate,
-    endDate,
-  }: {
-    startDate: moment.Moment | null
-    endDate: moment.Moment | null
-  }) => this.setState({ startDate, endDate })
-
-  onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
 
   handleTabChange = (e: ChangeEvent<{}>, tabIndex: number | any) => {
     this.setState({
@@ -143,6 +92,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     const { theme } = this.props
     const textColor: string = theme.palette.text.primary
     const secondary = theme.palette.secondary.main
+    const primaryLight = theme.palette.primary.light
     const fontFamily = theme.typography.fontFamily
     const maximumDate = moment()
     const minimumDate = moment().subtract(3, 'years')
@@ -166,83 +116,28 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                 <TitleTab label="Funds" primary={textColor} />
               </Tabs>
             </div>
-            {(tab === 'orderHistory' || tab === 'tradeHistory') && (
-              <TitleSecondRowContainer>
-                <TitleButton
-                  size="small"
-                  variant={`outlined`}
-                  isActive={activeDateButton === '1Day'}
-                  secondary={secondary}
-                  onClick={() => this.onDateButtonClick('1Day')}
-                >
-                  1 Day
-                </TitleButton>
-                <TitleButton
-                  size="small"
-                  variant={`outlined`}
-                  isActive={activeDateButton === '1Week'}
-                  secondary={secondary}
-                  onClick={() => this.onDateButtonClick('1Week')}
-                >
-                  1 Week
-                </TitleButton>
-                <TitleButton
-                  size="small"
-                  variant={`outlined`}
-                  isActive={activeDateButton === '1Month'}
-                  secondary={secondary}
-                  onClick={() => this.onDateButtonClick('1Month')}
-                >
-                  1 Month
-                </TitleButton>
-                <TitleButton
-                  size="small"
-                  variant={`outlined`}
-                  isActive={activeDateButton === '3Month'}
-                  secondary={secondary}
-                  onClick={() => this.onDateButtonClick('3Month')}
-                >
-                  3 Month
-                </TitleButton>
-                <StyledWrapperForDateRangePicker
-                  color={textColor}
-                  background={theme.palette.primary.light}
-                  fontFamily={fontFamily}
-                  style={{ marginLeft: '18px' }}
-                  zIndexPicker={200}
-                  dateInputHeight={`24px`}
-                >
-                  <DateRangePicker
-                    isOutsideRange={(date) =>
-                      date.isBefore(minimumDate, 'day') ||
-                      date.isAfter(maximumDate, 'day')
-                    }
-                    startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-                    startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-                    endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-                    endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
-                    onDatesChange={this.onDatesChange} // PropTypes.func.isRequired,
-                    focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-                    onFocusChange={this.onFocusChange} // PropTypes.func.isRequired,
-                    displayFormat="MM-DD-YYYY"
-                  />
-                </StyledWrapperForDateRangePicker>
-                <TitleButton
-                  size="small"
-                  variant={`outlined`}
-                  onClick={this.onSearchDateButtonClick}
-                >
-                  Search
-                </TitleButton>
-                <TitleButton
-                  size="small"
-                  variant={`outlined`}
-                  onClick={this.onClearDateButtonClick}
-                >
-                  Clear
-                </TitleButton>
-              </TitleSecondRowContainer>
-            )}
+             <TitleOrderHistory
+                {...{
+                  minimumDate,
+                  maximumDate,
+                  secondary,
+                  fontFamily,
+                  textColor,
+                  primaryLight,
+                  show: tab === 'orderHistory',
+                }}
+              />
+              <TitleTradeHistory
+                {...{
+                  minimumDate,
+                  maximumDate,
+                  secondary,
+                  fontFamily,
+                  textColor,
+                  primaryLight,
+                  show: tab === 'tradeHistory',
+                }}
+              />
           </div>
         }
         data={{ body: getTableBody(this.state.tab) }}
