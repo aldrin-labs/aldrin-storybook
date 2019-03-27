@@ -2,7 +2,7 @@ import React from 'react'
 
 import { configure, addDecorator } from '@storybook/react'
 // import { setOptions } from '@storybook/addon-options'
-import { withOptions } from '@storybook/addon-options';
+import { withOptions } from '@storybook/addon-options'
 import { withKnobs } from '@storybook/addon-knobs'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
@@ -20,7 +20,7 @@ async function login() {
 function loadStories() {
   // automatically import all story js files that end with *.stories.tsx
   const req = require.context('../src/web/stories', true, /.js$/)
-  req.keys().forEach(filename => req(filename))
+  req.keys().forEach((filename) => req(filename))
 }
 
 // export let StorybookUI = null
@@ -47,13 +47,15 @@ if (process.env.REACT_NATIVE) {
     <ThemeProvider theme={customThemes.dark}>{story()}</ThemeProvider>
   ))
   addDecorator((story) => <div style={{ margin: 20 }}>{story()}</div>)
-//  addDecorator(withToken)
+  //  addDecorator(withToken)
   addDecorator(withKnobs)
 
-  addDecorator(withOptions({
-    name: 'CCAI Storybook',
-    url: '#',
-  }))
+  addDecorator(
+    withOptions({
+      name: 'CCAI Storybook',
+      url: '#',
+    })
+  )
 }
 
 configure(loadStories, module)

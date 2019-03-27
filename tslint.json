@@ -8,6 +8,7 @@
   ],
   "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
+    "experimentalDecorators": true,
     "no-var-keyword": true,
     "no-parameter-reassignment": true,
     "readonly-keyword": false,
