@@ -6,7 +6,7 @@ import 'react-dates/lib/css/_datepicker.css'
 import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
 import { Tabs, Grow } from '@material-ui/core'
-import { Table } from '@sb/components'
+import { Table, TableWithSort } from '@sb/components'
 
 import { TitleTab } from './TradingTable.styles'
 import { IProps, IState } from './TradingTable.types'
@@ -88,7 +88,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
   }
 
   render() {
-    const { tab, activeDateButton } = this.state
+    const { tab } = this.state
     const { theme } = this.props
     const textColor: string = theme.palette.text.primary
     const secondary = theme.palette.secondary.main
@@ -98,7 +98,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     const minimumDate = moment().subtract(3, 'years')
 
     return (
-      <Table
+      <TableWithSort
         emptyTableText={getEmptyTextPlaceholder(tab)}
         withCheckboxes={false}
         title={

@@ -24,7 +24,7 @@ export const openOrdersColumnNames = [
   { label: 'Filled %', id: 'filled', isNumber: true },
   { label: 'Total', id: 'total', isNumber: true },
   { label: 'Trigger Conditions', id: 'triggerConditions' },
-  { label: <Button variant="outlined">Cancel all</Button>, id: 'cancel' },
+  { label: <Button size="small" variant="outlined">Cancel all</Button>, id: 'cancel', isSortable: false },
 ]
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
@@ -39,7 +39,7 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   filled: { render: '100%', isNumber: true },
   total: 100,
   triggerConditions: '-',
-  cancel: <Button>Cancel</Button>
+  cancel: {render: <Button key={i} variant="outlined" size={`small`}>Cancel</Button>},
 }))
 
 export const orderHistoryColumnNames = [
