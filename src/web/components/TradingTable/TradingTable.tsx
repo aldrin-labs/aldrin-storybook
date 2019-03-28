@@ -125,6 +125,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                   textColor,
                   primaryLight,
                   show: tab === 'orderHistory',
+                  key: 'titleOrder'
                 }}
               />
               <TitleTradeHistory
@@ -136,6 +137,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                   textColor,
                   primaryLight,
                   show: tab === 'tradeHistory',
+                  key: 'titleTrade'
                 }}
               />
           </div>
