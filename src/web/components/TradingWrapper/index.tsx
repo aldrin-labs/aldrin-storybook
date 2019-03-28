@@ -1,12 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import { Button, Toolbar,Paper, Tabs } from '@material-ui/core'
-import Tab from '@material-ui/core/Tab'
-import Typography from '@material-ui/core/Typography'
 
-import Grid from '@material-ui/core/Grid'
+import {
+  Button,
+  Toolbar,
+  Paper,
+  Tabs,
+  AppBar,
+  Grid,
+  Typography,
+  Tab,
+} from '@material-ui/core'
+
+import { compose } from 'recompose'
 
 import TraidingTerminal from '../TraidingTerminal'
 
@@ -16,6 +23,7 @@ import {
   ScrollWrapper,
 } from './styles'
 
+import { IProps } from './types'
 
 const styles = theme => ({
   appBar: {
@@ -41,36 +49,46 @@ const wrapperStyles = theme => ({
   },
 })
 
-const BySellWrapper = withStyles(wrapperStyles)((props: {priceType: string, classes: any}) => (
+const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
+  const {
+    pair,
+    funds,
+    price,
+    classes,
+    priceType,
+    placeOrder,
+  } = props
+  console.log('pair', pair)
+  return (
   <ScrollWrapper>
   <Grid container spacing={0} alignItems="center" justify="center">
-    <Grid item xs={6} className={props.classes.gridWithBorder}>
-    <TerminalContainer>
-      <TraidingTerminal
-        byType="buy"
-        priceType={props.priceType}
-        pair={['BTC', 'USDT']}
-        walletValue={1678}
-        marketPrice={4040.40}
-        confirmOperation={(values) => console.log(values)}
-      />
+    <Grid item xs={6} className={classes.gridWithBorder}>
+      <TerminalContainer>
+        <TraidingTerminal
+          byType="buy"
+          priceType={priceType}
+          pair={pair}
+          walletValue={funds[1]}
+          marketPrice={price}
+          confirmOperation={placeOrder}
+        />
       </TerminalContainer>
     </Grid>
     <Grid item xs={6}>
-    <TerminalContainer>
-      <TraidingTerminal
-        byType="sell"
-        priceType={props.priceType}
-        pair={['BTC', 'USDT']}
-        walletValue={500}
-        marketPrice={4040.40}
-        confirmOperation={(values) => console.log(values)}
-      />
+      <TerminalContainer>
+        <TraidingTerminal
+          byType="sell"
+          priceType={props.priceType}
+          pair={pair}
+          walletValue={funds[0]}
+          marketPrice={price}
+          confirmOperation={placeOrder}
+        />
       </TerminalContainer>
     </Grid>
   </Grid>
   </ScrollWrapper>
-))
+)})
 
 class SimpleTabs extends React.Component {
   state = {
@@ -84,13 +102,18 @@ class SimpleTabs extends React.Component {
 
   render() {
     const { value } = this.state
-    const { classes } = this.props
+    const {
+      classes,
+      pair,
+      funds,
+      price,
+      placeOrder,
+   } = this.props
 
     return (
       <TablesBlockWrapper>
         <AppBar position="static" className={classes.appBar}>
         <Tabs
-          centered
           value={value}
           onChange={this.handleChange}
         >
@@ -111,12 +134,18 @@ class SimpleTabs extends React.Component {
           />
         </Tabs>
         </AppBar>
-        {value === 0 && <BySellWrapper priceType="limit"/>}
-        {value === 1 && <BySellWrapper priceType="market"/>}
-        {value === 2 && <BySellWrapper priceType="stop-limit"/>}
+        <BySellWrapper
+          priceType={value === 0 ? 'limit' : value === 1 ? 'market' : 'stop-limit'}
+          pair={pair}
+          funds={funds}
+          price={price}
+          placeOrder={placeOrder}
+        />
       </TablesBlockWrapper>
     )
   }
 }
 
-export default withStyles(styles)(SimpleTabs)
+export default compose(
+  withStyles(styles)
+  )(SimpleTabs)
