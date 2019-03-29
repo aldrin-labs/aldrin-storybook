@@ -33,8 +33,12 @@ const styles = theme => ({
   toolBar: {
     flex: 1,
   },
+  tabGroupRoot: {
+    minHeight: 30,
+  },
   tabRoot: {
     minWidth: 60,
+    minHeight: 30,
     '&$tabSelected': {
       fontWeight: theme.typography.fontWeightMedium,
     },
@@ -113,6 +117,7 @@ class SimpleTabs extends React.Component {
       <TablesBlockWrapper>
         <AppBar position="static" className={classes.appBar}>
         <Tabs
+          classes={{ root: classes.tabGroupRoot }}
           value={value}
           onChange={this.handleChange}
         >
