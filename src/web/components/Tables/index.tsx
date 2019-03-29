@@ -136,6 +136,7 @@ const styles = (theme: Theme) =>
       position: 'sticky',
       top: 0,
       fontSize: 16,
+      zIndex: 103,
     },
     staticCheckbox: {
       '&& input': {
@@ -450,7 +451,6 @@ const CustomTable = (props: Props) => {
     emptyTableText = 'no data',
   } = props
 
-  const isSortable = typeof sort !== 'undefined'
   if (
     data.body &&
     !Array.isArray(data.body) &&
@@ -558,7 +558,7 @@ const CustomTable = (props: Props) => {
                   numeric={column.isNumber}
                   key={column.id}
                 >
-                  {renderHeadCell({ isSortable, sort, cell: column })}
+                  {renderHeadCell({ isSortable: (typeof sort !== 'undefined' && column.isSortable !== false), sort, cell: column })}
                 </CustomTableCell>
               )
             })}

@@ -5,8 +5,6 @@ import { ApolloConsumer } from 'react-apollo'
 import MdReplay from '@material-ui/icons/Replay'
 import { Fab, Button as ButtonMUI, Typography, Grow } from '@material-ui/core'
 import Tooltip from '@material-ui/core/Tooltip'
-import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
 
 import { RebalancePeriod } from './config'
@@ -16,6 +14,7 @@ import { systemError, dustFilterEnabled } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
 import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
+import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 import { InnerChartContainer, ChartContainer } from '../shared.styles.tsx'
 import {
   SwitchButtonsWrapper,
@@ -30,7 +29,6 @@ import {
   STextField,
   StyledInputLabel,
   StyledSwitch,
-  StyledWrapperForDateRangePicker,
   TableSelectsContaienr,
 } from './Import.styles'
 import { StyledCardHeader } from '../Optimization.styles'
