@@ -141,7 +141,7 @@ export const ChartSelectStyles = css`
 
 export const StyledWrapperForDateRangePicker = styled.div`
   width: 206px;
-  padding: 6px 0;
+  padding: ${(props: { dateRangePadding: string }) => props.dateRangePadding || '6px 0'};
 
   & .DateInput {
     width: 95px;
@@ -153,7 +153,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateInput_input {
-    padding: 5px;
+    padding: ${(props: { dateInputPadding: string }) => props.dateInputPadding || '5px'};
     font-size: 0.875rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-weight: 400;
