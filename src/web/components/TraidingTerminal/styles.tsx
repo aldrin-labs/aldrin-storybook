@@ -12,6 +12,7 @@ const styles = {
     minWidth: 45,
     width: '100%',
     padding: '0px',
+    minHeight: 30,
   },
   input: {
     fontSize: '0.875rem',
