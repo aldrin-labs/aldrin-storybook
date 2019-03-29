@@ -33,6 +33,7 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withAuth from '@core/hoc/withAuth'
 import LayoutSelector from '@core/components/LayoutSelector'
 import TradingComponent from '@core/components/TradingComponent'
+import TradingTable from '@sb/components/TradingTable/TradingTable'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
 
 import {
@@ -322,7 +323,7 @@ class Chart extends React.Component<IProps, IState> {
       </Container>
       <Container container spacing={16}>
         <TradingTabelContainer item sm={8}>
-        aaa
+          <TradingTable />
         </TradingTabelContainer>
         <TradingTerminalContainer item sm={4}>
         <TradingComponent
