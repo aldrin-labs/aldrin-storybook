@@ -34,7 +34,6 @@ const styles = theme => ({
     flex: 1,
   },
   tabRoot: {
-    textTransform: 'initial',
     minWidth: 60,
     '&$tabSelected': {
       fontWeight: theme.typography.fontWeightMedium,
