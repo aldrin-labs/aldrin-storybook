@@ -88,6 +88,10 @@ export const GlobalStyle = createGlobalStyle`
   &::-webkit-scrollbar-thumb {
     background: rgb(39, 39, 45);
   }
+  
+  .DateRangePicker_picker.DateRangePicker_picker__portal {
+    z-index: 200;
+  }
 `
 
 export const SelectR = styled(ReactSelectComponent)`
@@ -141,6 +145,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
 
   & .DateInput {
     width: 95px;
+    background-color: transparent;
   }
 
   & .DateInput:first-child .DateInput_input {
@@ -154,7 +159,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) => props.dateInputHeight || '36px'};
     color: ${(props: { color: string }) => props.color};
-    background: ${(props: { background: string }) => props.background};
+    background: ${(props: { background?: string }) => props.background || 'transparent'};
   }
 
   & .DateRangePicker_picker {
@@ -164,7 +169,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
 
   & .DateRangePickerInput {
     border: 0;
-    background: ${(props: { background: string }) => props.background};
+    background: ${(props: { background: string }) => props.background || 'transparent'};
     border-bottom: 1px solid #c1c1c1;
   }
 
