@@ -113,13 +113,13 @@ export default class TitleOrderHistory extends React.PureComponent<
         </TitleButton>
         <StyledWrapperForDateRangePicker
           color={textColor}
-          background={primaryLight}
           fontFamily={fontFamily}
           style={{ marginLeft: '18px' }}
           zIndexPicker={200}
           dateInputHeight={`24px`}
         >
           <DateRangePicker
+            withPortal={true}
             isOutsideRange={(date) =>
               date.isBefore(minimumDate, 'day') ||
               date.isAfter(maximumDate, 'day')
