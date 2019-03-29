@@ -23,7 +23,7 @@ export const openOrdersColumnNames = [
   { label: 'Amount', id: 'amount', isNumber: true },
   { label: 'Filled %', id: 'filled', isNumber: true },
   { label: 'Total', id: 'total', isNumber: true },
-  { label: 'Trigger Conditions', id: 'triggerConditions' },
+  { label: 'Trigger', id: 'triggerConditions' },
   { label: <TableButton size="small" variant="outlined">Cancel all</TableButton>, id: 'cancel', isSortable: false },
 ]
 
