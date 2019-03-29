@@ -5,10 +5,9 @@ import 'react-dates/lib/css/_datepicker.css'
 // <-- MOVE THIS TO APP
 import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
-import { Tabs, Grow } from '@material-ui/core'
-import { Table, TableWithSort } from '@sb/components'
+import { TableWithSort } from '@sb/components'
 
-import { TitleTab } from './TradingTable.styles'
+import { TitleTab, TitleTabsGroup } from './TradingTable.styles'
 import { IProps, IState } from './TradingTable.types'
 import {
   tradingTableTabConfig,
@@ -104,7 +103,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
         title={
           <div>
             <div>
-              <Tabs
+              <TitleTabsGroup
                 value={this.state.tabIndex}
                 onChange={this.handleTabChange}
                 indicatorColor="secondary"
@@ -114,7 +113,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                 <TitleTab label="Order history" primary={textColor} />
                 <TitleTab label="Trade history" primary={textColor} />
                 <TitleTab label="Funds" primary={textColor} />
-              </Tabs>
+              </TitleTabsGroup>
             </div>
              <TitleOrderHistory
                 {...{
