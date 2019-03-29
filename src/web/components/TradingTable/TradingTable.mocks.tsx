@@ -52,7 +52,7 @@ export const orderHistoryColumnNames = [
   { label: 'Filled %', id: 'filled', isNumber: true },
   { label: 'Amount', id: 'amount' , isNumber: true},
   { label: 'Total', id: 'total', isNumber: true },
-  { label: 'Trigger Conditions', id: 'triggerConditions' },
+  { label: 'Trigger', id: 'triggerConditions' },
   { label: 'Status', id: 'status' },
 ]
 

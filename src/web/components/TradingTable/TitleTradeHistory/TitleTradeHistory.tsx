@@ -117,7 +117,7 @@ export default class TitleTradeHistory extends React.PureComponent<
           style={{ marginLeft: '18px' }}
           zIndexPicker={200}
           dateInputHeight={`24px`}
-          dateInputPadding={`0px`}
+          dateInputPadding={`0 5px`}
           dateRangePadding={`0px`}
         >
           <DateRangePicker
