@@ -23,6 +23,7 @@ import {
 
 import TitleOrderHistory from './TitleOrderHistory/TitleOrderHistory'
 import TitleTradeHistory from './TitleTradeHistory/TitleTradeHistory'
+import { getEmptyTextPlaceholder } from './TradingTable.utils'
 
 const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -46,26 +47,11 @@ const getTableHead = (tab: string) =>
     ? fundsColumnNames
     : []
 
-const getEmptyTextPlaceholder = (tab: string) =>
-  tab === 'openOrders'
-    ? 'You have no open orders.'
-    : tab === 'orderHistory'
-    ? 'You have no order history'
-    : tab === 'tradeHistory'
-    ? 'You have no trades.'
-    : tab === 'funds'
-    ? 'You have no Funds'
-    : []
-
 @withTheme()
 export default class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     tabIndex: 0,
     tab: 'openOrders',
-    startDate: null,
-    endDate: null,
-    focusedInput: null,
-    activeDateButton: null,
   }
 
   onCancelOrder = async (arg: any) => {
@@ -90,9 +76,6 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     const { tab } = this.state
     const { theme } = this.props
     const textColor: string = theme.palette.text.primary
-    const secondary = theme.palette.secondary.main
-    const primaryLight = theme.palette.primary.light
-    const fontFamily = theme.typography.fontFamily
     const maximumDate = moment()
     const minimumDate = moment().subtract(3, 'years')
 
@@ -119,24 +102,16 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
                 {...{
                   minimumDate,
                   maximumDate,
-                  secondary,
-                  fontFamily,
-                  textColor,
-                  primaryLight,
                   show: tab === 'orderHistory',
-                  key: 'titleOrder'
+                  key: 'titleOrder',
                 }}
               />
               <TitleTradeHistory
                 {...{
                   minimumDate,
                   maximumDate,
-                  secondary,
-                  fontFamily,
-                  textColor,
-                  primaryLight,
                   show: tab === 'tradeHistory',
-                  key: 'titleTrade'
+                  key: 'titleTrade',
                 }}
               />
           </div>

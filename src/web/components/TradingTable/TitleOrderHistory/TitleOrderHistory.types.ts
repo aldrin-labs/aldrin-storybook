@@ -3,10 +3,6 @@ import moment from 'moment'
 export interface IProps {
   minimumDate: moment.Moment
   maximumDate: moment.Moment
-  secondary: string
-  fontFamily: string | undefined
-  textColor: string
-  primaryLight: string
   show: boolean
 }
 
