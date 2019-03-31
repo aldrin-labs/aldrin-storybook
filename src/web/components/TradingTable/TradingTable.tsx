@@ -24,6 +24,7 @@ import {
 import TitleOrderHistory from './TitleOrderHistory/TitleOrderHistory'
 import TitleTradeHistory from './TitleTradeHistory/TitleTradeHistory'
 import { getEmptyTextPlaceholder } from './TradingTable.utils'
+import TradingTabs from '@components/TradingTable/TradingTabs/TradingTabs'
 
 const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -47,7 +48,6 @@ const getTableHead = (tab: string) =>
     ? fundsColumnNames
     : []
 
-@withTheme()
 export default class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     tabIndex: 0,
@@ -74,8 +74,6 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
 
   render() {
     const { tab } = this.state
-    const { theme } = this.props
-    const textColor: string = theme.palette.text.primary
     const maximumDate = moment()
     const minimumDate = moment().subtract(3, 'years')
 
@@ -85,19 +83,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
         withCheckboxes={false}
         title={
           <div>
-            <div>
-              <TitleTabsGroup
-                value={this.state.tabIndex}
-                onChange={this.handleTabChange}
-                indicatorColor="secondary"
-                textColor="primary"
-              >
-                <TitleTab label="Open orders" primary={textColor} />
-                <TitleTab label="Order history" primary={textColor} />
-                <TitleTab label="Trade history" primary={textColor} />
-                <TitleTab label="Funds" primary={textColor} />
-              </TitleTabsGroup>
-            </div>
+             <TradingTabs />
              <TitleOrderHistory
                 {...{
                   minimumDate,
