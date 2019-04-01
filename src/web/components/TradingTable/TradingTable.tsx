@@ -4,10 +4,8 @@ import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 // <-- MOVE THIS TO APP
 import moment from 'moment'
-import { withTheme } from '@material-ui/styles'
 import { TableWithSort } from '@sb/components'
 
-import { TitleTab, TitleTabsGroup } from './TradingTable.styles'
 import { IProps, IState } from './TradingTable.types'
 import {
   tradingTableTabConfig,
@@ -73,7 +71,7 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
   }
 
   render() {
-    const { tab } = this.state
+    const { tab, tabIndex } = this.state
     const maximumDate = moment()
     const minimumDate = moment().subtract(3, 'years')
 
@@ -83,23 +81,26 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
         withCheckboxes={false}
         title={
           <div>
-             <TradingTabs />
-             <TitleOrderHistory
-                {...{
-                  minimumDate,
-                  maximumDate,
-                  show: tab === 'orderHistory',
-                  key: 'titleOrder',
-                }}
-              />
-              <TitleTradeHistory
-                {...{
-                  minimumDate,
-                  maximumDate,
-                  show: tab === 'tradeHistory',
-                  key: 'titleTrade',
-                }}
-              />
+            <TradingTabs
+              tabIndex={tabIndex}
+              handleTabChange={this.handleTabChange}
+            />
+            <TitleOrderHistory
+              {...{
+                minimumDate,
+                maximumDate,
+                show: tab === 'orderHistory',
+                key: 'titleOrder',
+              }}
+            />
+            <TitleTradeHistory
+              {...{
+                minimumDate,
+                maximumDate,
+                show: tab === 'tradeHistory',
+                key: 'titleTrade',
+              }}
+            />
           </div>
         }
         data={{ body: getTableBody(this.state.tab) }}
