@@ -13,8 +13,8 @@ import {
 } from '@components/TradingTable/TradingTable.utils'
 import TradingTabs from '@components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@components/TradingTable/TradingTitle/TradingTitle'
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
+import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
 
 class OrderHistoryTable extends React.PureComponent<IProps> {
   state = {
@@ -23,7 +23,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentDidMount() {
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      this.props.getOpenOrderHistory.getOpenOrderHistory
+      this.props.getOrderHistory.getOrderHistory
     )
     this.setState({
       orderHistoryProcessedData,
@@ -32,7 +32,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getOpenOrderHistory.getOpenOrderHistory
+      nextProps.getOrderHistory.getOrderHistory
     )
     this.setState({
       orderHistoryProcessedData,
@@ -104,12 +104,12 @@ const TableDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={OrderHistoryTable}
       withOutSpinner
-      query={getOpenOrderHistory}
+      query={getOrderHistory}
       fetchPolicy="network-only"
       placeholder={TablePlaceholderLoader}
       variables={{ startDate, endDate }}
       subscriptionArgs={{
-        subscription: OPEN_ORDER_HISTORY,
+        subscription: ORDER_HISTORY,
         variables: { startDate, endDate },
         updateQueryFunction: updateOrderHistoryQuerryFunction,
       }}
