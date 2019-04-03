@@ -17,7 +17,6 @@ export default class TradingTitle extends React.PureComponent<IProps> {
       activeDateButton,
       minimumDate,
       maximumDate,
-      show,
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
@@ -31,10 +30,6 @@ export default class TradingTitle extends React.PureComponent<IProps> {
         typography: { fontFamily },
       },
     } = this.props
-
-    if (!show) {
-      return null
-    }
 
     return (
       <TitleSecondRowContainer>

@@ -1,5 +1,4 @@
 import moment from 'moment'
-import { Theme } from '@material-ui/core'
 
 export interface IProps {
   startDate: moment.Moment | null
@@ -8,7 +7,6 @@ export interface IProps {
   activeDateButton: null | string
   minimumDate: moment.Moment
   maximumDate: moment.Moment
-  show: boolean
   onDateButtonClick: (stringDate: string) => void
   onDatesChange: ({
     startDate,
