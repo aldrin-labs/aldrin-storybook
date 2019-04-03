@@ -25,6 +25,7 @@ import { getEmptyTextPlaceholder, getTableHead } from './TradingTable.utils'
 import TradingTabs from '@components/TradingTable/TradingTabs/TradingTabs'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
+import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 
 const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -68,6 +69,14 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             tabIndex,
             show: tab === 'orderHistory',
+            handleTabChange: this.handleTabChange,
+          }}
+        />
+        <TradeHistoryTable
+          {...{
+            tab,
+            tabIndex,
+            show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}
         />
