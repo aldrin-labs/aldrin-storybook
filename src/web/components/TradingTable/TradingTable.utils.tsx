@@ -1,6 +1,23 @@
 import moment from 'moment'
 import { OrderType, TradeType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
+import {
+  fundsColumnNames,
+  openOrdersColumnNames,
+  orderHistoryColumnNames,
+  tradeHistoryColumnNames
+} from '@sb/components/TradingTable/TradingTable.mocks'
+
+export const getTableHead = (tab: string) =>
+  tab === 'openOrders'
+    ? openOrdersColumnNames
+    : tab === 'orderHistory'
+    ? orderHistoryColumnNames
+    : tab === 'tradeHistory'
+      ? tradeHistoryColumnNames
+      : tab === 'funds'
+        ? fundsColumnNames
+        : []
 
 export const getEndDate = (stringDate: string) =>
   stringDate === '1Day'
@@ -139,6 +156,7 @@ export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
   return processedTradeHistoryData
 }
 
+// TODO: WIP, IN PROGRESS.
 export const combineFundsTable = (fundsData: FundsType[]) => {
   const processedFundsDaata = fundsData.map((el: FundsType) => {
 
@@ -155,4 +173,48 @@ export const combineFundsTable = (fundsData: FundsType[]) => {
     }
 
   })
+}
+
+
+
+// Update queries functions ->>
+
+
+export const updateOpenOrderHistoryQuerryFunction = (prev, { subscriptionData }) => {
+  if (!subscriptionData.data) {
+    return prev
+  }
+
+  const newOrder = JSON.parse(subscriptionData.data.listenMarketOrders)
+  let obj = Object.assign({}, prev, {
+    marketOrders: [newOrder],
+  })
+
+  return obj
+}
+
+export const updateOrderHistoryQuerryFunction = (prev, { subscriptionData }) => {
+  if (!subscriptionData.data) {
+    return prev
+  }
+
+  const newOrder = JSON.parse(subscriptionData.data.listenMarketOrders)
+  let obj = Object.assign({}, prev, {
+    marketOrders: [newOrder],
+  })
+
+  return obj
+}
+
+export const updateTradeHistoryQuerryFunction = (prev, { subscriptionData }) => {
+  if (!subscriptionData.data) {
+    return prev
+  }
+
+  const newOrder = JSON.parse(subscriptionData.data.listenMarketOrders)
+  let obj = Object.assign({}, prev, {
+    marketOrders: [newOrder],
+  })
+
+  return obj
 }
