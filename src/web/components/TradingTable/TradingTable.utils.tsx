@@ -12,7 +12,7 @@ import {
   openOrdersBody,
   orderHistoryBody,
   tradeHistoryBody,
-} from '@components/TradingTable/TradingTable.mocks'
+} from '@sb/components/TradingTable/TradingTable.mocks'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'

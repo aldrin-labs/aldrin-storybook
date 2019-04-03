@@ -10,9 +10,9 @@ import {
   updateTradeHistoryQuerryFunction,
   getEmptyTextPlaceholder,
   getTableHead,
-} from '@components/TradingTable/TradingTable.utils'
-import TradingTabs from '@components/TradingTable/TradingTabs/TradingTabs'
-import TradingTitle from '@components/TradingTable/TradingTitle/TradingTitle'
+} from '@sb/components/TradingTable/TradingTable.utils'
+import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
 import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
 

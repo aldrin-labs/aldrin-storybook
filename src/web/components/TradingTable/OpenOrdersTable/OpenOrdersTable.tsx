@@ -10,8 +10,8 @@ import {
   combineOpenOrdersTable,
   getEmptyTextPlaceholder,
   getTableHead,
-} from '@components/TradingTable/TradingTable.utils'
-import TradingTabs from '@components/TradingTable/TradingTabs/TradingTabs'
+} from '@sb/components/TradingTable/TradingTable.utils'
+import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 
