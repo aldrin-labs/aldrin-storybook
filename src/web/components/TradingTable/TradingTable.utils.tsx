@@ -5,8 +5,25 @@ import {
   fundsColumnNames,
   openOrdersColumnNames,
   orderHistoryColumnNames,
-  tradeHistoryColumnNames
+  tradeHistoryColumnNames,
 } from '@sb/components/TradingTable/TradingTable.mocks'
+import {
+  fundsBody,
+  openOrdersBody,
+  orderHistoryBody,
+  tradeHistoryBody,
+} from '@components/TradingTable/TradingTable.mocks'
+
+export const getTableBody = (tab: string) =>
+  tab === 'openOrders'
+    ? openOrdersBody
+    : tab === 'orderHistory'
+    ? orderHistoryBody
+    : tab === 'tradeHistory'
+    ? tradeHistoryBody
+    : tab === 'funds'
+    ? fundsBody
+    : []
 
 export const getTableHead = (tab: string) =>
   tab === 'openOrders'
@@ -14,10 +31,10 @@ export const getTableHead = (tab: string) =>
     : tab === 'orderHistory'
     ? orderHistoryColumnNames
     : tab === 'tradeHistory'
-      ? tradeHistoryColumnNames
-      : tab === 'funds'
-        ? fundsColumnNames
-        : []
+    ? tradeHistoryColumnNames
+    : tab === 'funds'
+    ? fundsColumnNames
+    : []
 
 export const getEndDate = (stringDate: string) =>
   stringDate === '1Day'
@@ -159,28 +176,26 @@ export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
 // TODO: WIP, IN PROGRESS.
 export const combineFundsTable = (fundsData: FundsType[]) => {
   const processedFundsDaata = fundsData.map((el: FundsType) => {
-
     const {} = el
 
     return {
       coin: `${String.fromCharCode(getRandomInt(65, 80)) +
-      String.fromCharCode(getRandomInt(65, 80)) +
-      String.fromCharCode(getRandomInt(65, 80))}`,
+        String.fromCharCode(getRandomInt(65, 80)) +
+        String.fromCharCode(getRandomInt(65, 80))}`,
       totalBalance: getRandomInt(100, 300000),
       availableBalance: getRandomInt(100, 3000),
       inOrder: getRandomInt(1, 100),
       btcValue: getRandomInt(1, 10000),
     }
-
   })
 }
-
-
 
 // Update queries functions ->>
 
-
-export const updateOpenOrderHistoryQuerryFunction = (prev, { subscriptionData }) => {
+export const updateOpenOrderHistoryQuerryFunction = (
+  prev,
+  { subscriptionData }
+) => {
   if (!subscriptionData.data) {
     return prev
   }
@@ -193,7 +208,10 @@ export const updateOpenOrderHistoryQuerryFunction = (prev, { subscriptionData })
   return obj
 }
 
-export const updateOrderHistoryQuerryFunction = (prev, { subscriptionData }) => {
+export const updateOrderHistoryQuerryFunction = (
+  prev,
+  { subscriptionData }
+) => {
   if (!subscriptionData.data) {
     return prev
   }
@@ -206,7 +224,10 @@ export const updateOrderHistoryQuerryFunction = (prev, { subscriptionData }) => 
   return obj
 }
 
-export const updateTradeHistoryQuerryFunction = (prev, { subscriptionData }) => {
+export const updateTradeHistoryQuerryFunction = (
+  prev,
+  { subscriptionData }
+) => {
   if (!subscriptionData.data) {
     return prev
   }
