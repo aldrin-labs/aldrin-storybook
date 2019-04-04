@@ -105,6 +105,7 @@ const TableDataWrapper = ({ ...props }) => {
       component={TradeHistoryTable}
       withOutSpinner
       query={getTradeHistory}
+      name={getTradeHistory}
       fetchPolicy="network-only"
       placeholder={TablePlaceholderLoader}
       variables={{ startDate, endDate }}
