@@ -6,7 +6,7 @@ import { backgrounds } from '../backgrounds'
 import { withInfo } from '@storybook/addon-info'
 import Paper from '@material-ui/core/Paper'
 import { Grid } from '@material-ui/core'
-// import { Table } from '@sb/components'
+import { GlobalStyle } from '@sb/styles/cssUtils'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 storiesOf('Components/TradingTable', module)
   .addDecorator(backgrounds)
@@ -22,7 +22,7 @@ storiesOf('Components/TradingTable', module)
           }}
         >
             <TradingTable />
-
+            <GlobalStyle />
         </Paper>
       </Grid>
     </Grid>

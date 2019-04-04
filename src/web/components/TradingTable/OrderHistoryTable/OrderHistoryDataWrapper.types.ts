@@ -1,9 +1,11 @@
+import { ChangeEvent } from 'react'
 import moment from 'moment'
 
 export interface IProps {
-  minimumDate: moment.Moment
-  maximumDate: moment.Moment
+  tab: string
+  tabIndex: number
   show: boolean
+  handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
 }
 
 export interface IState {

@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core'
-
+import { TableButton } from './TradingTable.styles'
 
 const arrayOfSides = ['sell', 'buy']
 
@@ -23,8 +23,8 @@ export const openOrdersColumnNames = [
   { label: 'Amount', id: 'amount', isNumber: true },
   { label: 'Filled %', id: 'filled', isNumber: true },
   { label: 'Total', id: 'total', isNumber: true },
-  { label: 'Trigger Conditions', id: 'triggerConditions' },
-  { label: <Button size="small" variant="outlined">Cancel all</Button>, id: 'cancel', isSortable: false },
+  { label: 'Trigger', id: 'triggerConditions' },
+  { label: <TableButton size="small" variant="outlined">Cancel all</TableButton>, id: 'cancel', isSortable: false },
 ]
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
@@ -39,7 +39,7 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   filled: { render: '100%', isNumber: true },
   total: 100,
   triggerConditions: '-',
-  cancel: {render: <Button key={i} variant="outlined" size={`small`}>Cancel</Button>},
+  cancel: {render: <TableButton key={i} variant="outlined" size={`small`}>Cancel</TableButton>},
 }))
 
 export const orderHistoryColumnNames = [
@@ -52,7 +52,7 @@ export const orderHistoryColumnNames = [
   { label: 'Filled %', id: 'filled', isNumber: true },
   { label: 'Amount', id: 'amount' , isNumber: true},
   { label: 'Total', id: 'total', isNumber: true },
-  { label: 'Trigger Conditions', id: 'triggerConditions' },
+  { label: 'Trigger', id: 'triggerConditions' },
   { label: 'Status', id: 'status' },
 ]
 

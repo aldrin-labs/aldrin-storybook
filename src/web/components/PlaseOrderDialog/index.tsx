@@ -1,12 +1,13 @@
 import React from 'react'
 
-import Button from '@material-ui/core/Button'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogContent from '@material-ui/core/DialogContent'
 import Dialog from '@material-ui/core/Dialog'
 import { compose, withStateHandlers } from 'recompose'
 import _ from 'lodash'
+
+import { TradeButton } from './styles'
 
 const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
     const { handleClickOpen,
@@ -31,12 +32,12 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
     }
 
     return (<div>
-      <Button
+      <TradeButton
           variant="outlined"
           onClick={handleOpen}
         >
         {battonText}
-      </Button>
+      </TradeButton>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogContent>
           <DialogContentText>
@@ -44,12 +45,12 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>
+          <TradeButton onClick={handleClose}>
             Cancel
-          </Button>
-          <Button onClick={handleClick}>
+          </TradeButton>
+          <TradeButton onClick={handleClick}>
             Place Order
-          </Button>
+          </TradeButton>
         </DialogActions>
       </Dialog>
     </div>)

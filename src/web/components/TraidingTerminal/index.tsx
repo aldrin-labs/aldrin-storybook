@@ -35,6 +35,7 @@ import {
   GridContainer,
   ButtonContainer,
   ByButtonContainer,
+  InputTextField,
 } from './styles'
 import { toNumber } from 'lodash-es';
 
@@ -99,11 +100,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values,
       setFieldValue,
       validateForm,
+      priceType,
     } = this.props
     await setFieldValue('total', toNumber(walletValue * value), false)
-    await setFieldValue('amount', toNumber(walletValue * value / values.price), false)
+    await setFieldValue('amount', toNumber(walletValue * value / (priceType === 'stop-limit'
+      ? toNumber(values.limit)
+      : toNumber(values.price))), false)
     validateForm()
   }
+
 render() {
   const {
     pair,
@@ -119,39 +124,45 @@ render() {
     validateForm,
   } = this.props
 
-  const { background, primary, type } = palette
+  const { background, primary, type, divider } = palette
 
   const typeIsBuy = byType === 'buy'
   return (
     <Container background={background.default}>
       <div>
-        <NameHeader background={primary[type]}>
-        <Grid container spacing={0}>
-        <Grid item xs={1}>
-          {''}
-        </Grid>
-        <Grid item xs>
-        <TypographyWithCustomColor
-          textColor
-          variant="subtitle1"
-        >
-          {
-            typeIsBuy
-            ? `Buy ${pair[0]}`
-            : `Sell ${pair[0]}`
-          }
-        </TypographyWithCustomColor>
-        </Grid>
-        <Grid item xs>
+        <NameHeader background={background.default} border={divider}>
+          <Grid container spacing={0}>
+          <Grid item xs={1}>
+            {''}
+          </Grid>
+          <Grid item xs={5}>
           <TypographyWithCustomColor
-            align="right"
             textColor
+            noWrap
             variant="subtitle1"
           >
-            {`${walletValue} ${pair[1]}`}
+            {
+              typeIsBuy
+              ? `Buy ${pair[0]}`
+              : `Sell ${pair[0]}`
+            }
           </TypographyWithCustomColor>
           </Grid>
-          </Grid>
+          <Grid item xs={6}>
+            <TypographyWithCustomColor
+              align="right"
+              textColor
+              variant="subtitle1"
+              noWrap
+            >
+              {`${walletValue} ${
+                typeIsBuy
+                  ? pair[1]
+                  : pair[0]
+                }`}
+            </TypographyWithCustomColor>
+            </Grid>
+            </Grid>
         </NameHeader>
       <GridContainer>
       <Grid container spacing={0}>
@@ -159,7 +170,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             {priceType === 'stop-limit'
               ? 'Stop:'
@@ -170,16 +181,14 @@ render() {
         <Grid item xs={9}>
         <InputContainer>
         {priceType === 'stop-limit'
-        ? <TextField
+        ? <InputTextField
           fullWidth
           name="stop"
           value={values.stop || ''}
           id="stop"
           type="number"
           onChange={handleChange}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-          }}
+          endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
           helperText={
             touched.stop &&
             errors.stop && (
@@ -187,16 +196,14 @@ render() {
             )
           }
         />
-        : <TextField
+        : <InputTextField
             fullWidth
             id="price"
             name="price"
             type={priceType === 'market' ? 'string' : 'number'} // if priceType is market we show Market Price in price
             value={priceType === 'market' ? 'Market Price' : values.price || ''}
             onChange={this.onPriceChange}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-            }}
+            endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
             disabled={priceType === 'market'}
             helperText={
               touched.price &&
@@ -212,7 +219,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             Limit:
           </TypographyWithCustomColor>
@@ -222,16 +229,14 @@ render() {
         {priceType === 'stop-limit' &&
         <Grid item xs={9}>
         <InputContainer>
-        <TextField
+        <InputTextField
           fullWidth
           id="limit"
           name="limit"
           value={values.limit || ''}
           onChange={this.onLimitChange}
           type="number"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-          }}
+            endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
           helperText={
             touched.limit &&
             errors.limit && (
@@ -246,7 +251,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             Amount:
           </TypographyWithCustomColor>
@@ -254,16 +259,14 @@ render() {
         </Grid>
         <Grid item xs={9}>
         <InputContainer>
-        <TextField
+        <InputTextField
           fullWidth
           id="amount"
           name="amount"
           value={values.amount || ''}
           onChange={this.onAmountChange}
           type="number"
-          InputProps={{
-            endAdornment: <InputAdornment position="end">BTC</InputAdornment>,
-          }}
+          endAdornment={<InputAdornment position="end">{pair[0]}</InputAdornment>}
           helperText={
             errors.amount && (
               <FormError>{errors.amount}</FormError>
@@ -272,39 +275,34 @@ render() {
         />
         </InputContainer>
         </Grid>
-        <Grid item xs={3}>
-          {''}
-        </Grid>
-        <Grid item xs={9}>
-          <Grid container spacing={8}>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(0.25)}>
-                  25%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(0.50)}>
-                  50%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(0.75)}>
-                  75%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
-            <Grid item sm={3} xs={6}>
-              <ButtonContainer>
-                <PriceButton onClick={() => this.onPercentageClick(1)}>
-                  100%
-                </PriceButton>
-              </ButtonContainer>
-            </Grid>
+        <Grid container spacing={8}>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(0.25)}>
+                25%
+              </PriceButton>
+            </ButtonContainer>
+          </Grid>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(0.50)}>
+                50%
+              </PriceButton>
+            </ButtonContainer>
+          </Grid>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(0.75)}>
+                75%
+              </PriceButton>
+            </ButtonContainer>
+          </Grid>
+          <Grid item sm={3} xs={6}>
+            <ButtonContainer>
+              <PriceButton onClick={() => this.onPercentageClick(1)}>
+                100%
+              </PriceButton>
+            </ButtonContainer>
           </Grid>
         </Grid>
         {priceType !== 'market' &&
@@ -312,7 +310,7 @@ render() {
           <TitleContainer>
           <TypographyWithCustomColor
             textColor
-            variant="subtitle2"
+            variant="body2"
           >
             Total:
           </TypographyWithCustomColor>
@@ -321,16 +319,16 @@ render() {
         {priceType !== 'market' &&
         <Grid item xs={9}>
           <InputContainer>
-            <TextField
+            <InputTextField
               fullWidth
               value={values.total || ''}
               onChange={this.onTotalChange}
               id="total"
               name="total"
               type="number"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">USDT</InputAdornment>,
-              }}
+              endAdornment={
+                (<InputAdornment position="end">{pair[1]}</InputAdornment>)
+              }
             />
           </InputContainer>
         </Grid>}
@@ -348,10 +346,10 @@ render() {
               }
               text={priceType === 'stop-limit'
               ? `If the last price drops to or below ${values.stop} ${pair[1]},
-                  an order to buy ${values.amount} ${pair[0]} at a price of ${values.limit} ${pair[1]} will be placed.`
+                  an order to ${typeIsBuy? 'Buy': 'Sell'} ${values.amount} ${pair[0]} at a price of ${values.limit} ${pair[1]} will be placed.`
               : priceType === 'limit'
-              ? `An order to buy ${values.amount} BTC at a price of ${values.price} ${pair[1]} will be placed.`
-              : `An order to buy ${values.amount} BTC at a market price will be placed.`
+              ? `An order to ${typeIsBuy? 'Buy': 'Sell'} ${values.amount} ${pair[0]} at a price of ${values.price} ${pair[1]} will be placed.`
+              : `An order to ${typeIsBuy? 'Buy': 'Sell'} ${values.amount} ${pair[0]} at a market price will be placed.`
             }
               />
           </ByButtonContainer>
@@ -413,7 +411,6 @@ const validate = (values: FormValues, props: IProps) => {
   try {
     validateYupSchema(values, validationSchema, true);
   } catch (err) {
-    console.log(err)
     return yupToFormErrors(err);
   }
 

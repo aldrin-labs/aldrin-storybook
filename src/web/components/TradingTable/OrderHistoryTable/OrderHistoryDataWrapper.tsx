@@ -2,11 +2,10 @@ import React from 'react'
 import moment from 'moment'
 
 import { getEndDate } from '../TradingTable.utils'
-import { IState, IProps } from './TitleTradeHistory.types'
+import { IProps, IState } from './OrderHistoryDataWrapper.types'
+import OrderHistoryTable from './OrderHistoryTable'
 
-import TradingTitle from '../TradingTitle/TradingTitle'
-
-export default class TitleTradeHistory extends React.PureComponent<
+export default class OrderHistoryDataWrapper extends React.PureComponent<
   IProps,
   IState
 > {
@@ -34,7 +33,7 @@ export default class TitleTradeHistory extends React.PureComponent<
     this.setState(
       {
         activeDateButton: stringDate,
-        startDate: moment(),
+        startDate: moment().endOf('day'),
         endDate: getEndDate(stringDate),
       },
       () => {
@@ -54,29 +53,30 @@ export default class TitleTradeHistory extends React.PureComponent<
   onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
 
   render() {
-    const { activeDateButton, startDate, endDate, focusedInput } = this.state
+    const { tab, tabIndex, show, handleTabChange } = this.props
+    const { focusedInput, endDate, activeDateButton, startDate } = this.state
 
-    const {
-      minimumDate,
-      maximumDate,
-      show,
-    } = this.props
+    const maximumDate = moment().endOf('day')
+    const minimumDate = moment().subtract(3, 'years')
 
     return (
-      <TradingTitle
+      <OrderHistoryTable
         {...{
-          startDate,
-          endDate,
-          focusedInput,
-          activeDateButton,
-          minimumDate,
-          maximumDate,
+          tab,
+          tabIndex,
           show,
+          handleTabChange,
+          focusedInput,
+          endDate,
+          activeDateButton,
+          startDate,
+          maximumDate,
+          minimumDate,
+          onSearchDateButtonClick: this.onSearchDateButtonClick,
+          onClearDateButtonClick: this.onClearDateButtonClick,
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,
           onFocusChange: this.onFocusChange,
-          onSearchDateButtonClick: this.onSearchDateButtonClick,
-          onClearDateButtonClick: this.onClearDateButtonClick,
         }}
       />
     )

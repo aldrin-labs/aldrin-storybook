@@ -35,7 +35,7 @@ export const CollapseWrapper = styled(Collapse)`
 export const CollapsibleTable = styled(Table)`
   position: absolute;
   top: 0;
-  max-height: calc(70% - 37px);
+  max-height: calc(100% - 37px);
   z-index: 10;
   width: 100%;
 
@@ -45,7 +45,7 @@ export const CollapsibleTable = styled(Table)`
 `
 
 export const TradeHistoryTableCollapsible = styled(CollapsibleTable)`
-  max-height: 50%;
+  max-height: 100%;
 
   @media (max-width: 1080px) {
     bottom: 0.5rem;

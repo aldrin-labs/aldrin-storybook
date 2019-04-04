@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Tab } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 
 export const TitleSecondRowContainer = styled.div`
   align-items: center;
@@ -16,14 +16,17 @@ export const TitleButton = styled(({ isActive = false, secondary = '', ...rest }
     border-color: ${(props: { isActive?: boolean; secondary?: string }) =>
       props.isActive ? props.secondary : ''};
     margin: 7px;
+    min-height: 30px;
     max-height: 30px;
+    padding: 4px 8px;
   }
 `
 
-export const TitleTab = styled(({ primary, ...rest }) => (
-  <Tab {...rest} />
+export const TableButton = styled(({ ...rest }) => (
+  <Button {...rest} />
 ))`
   &&& {
-    color: ${(props: { selected?: boolean, primary: string }) => props.selected ? props.primary : ''}
+    padding: 4px 8px;
+    min-height: 30px;
  }
 `
