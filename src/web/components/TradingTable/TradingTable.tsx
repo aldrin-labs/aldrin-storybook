@@ -12,8 +12,9 @@ import {
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
-export default class TradingTable extends React.PureComponent<IProps, IState> {
+class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     tabIndex: 0,
     tab: 'openOrders',
@@ -59,3 +60,6 @@ export default class TradingTable extends React.PureComponent<IProps, IState> {
     )
   }
 }
+
+
+export default withErrorFallback(TradingTable)
