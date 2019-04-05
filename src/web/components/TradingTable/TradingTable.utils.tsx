@@ -65,14 +65,16 @@ export const combineOpenOrdersTable = (
     .map((el: OrderType, i: number) => {
       const {
         symbol,
-        orderId,
         timestamp,
         type,
         side,
         price,
-        stopPrice,
-        origQty,
-        executedQty,
+        info: {
+          orderId,
+          stopPrice,
+          origQty,
+          executedQty,
+        },
       } = el
 
       return {
@@ -112,15 +114,17 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
   const processedOrderHistoryData = orderData.map((el: OrderType) => {
     const {
       symbol,
-      orderId,
       timestamp,
       type,
       side,
       price,
-      stopPrice,
       status,
-      origQty,
-      executedQty,
+      info: {
+        orderId,
+        stopPrice,
+        origQty,
+        executedQty,
+      },
     } = el
 
     return {
@@ -174,21 +178,21 @@ export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
 }
 
 // TODO: WIP, IN PROGRESS.
-export const combineFundsTable = (fundsData: FundsType[]) => {
-  const processedFundsDaata = fundsData.map((el: FundsType) => {
-    const {} = el
-
-    return {
-      coin: `${String.fromCharCode(getRandomInt(65, 80)) +
-        String.fromCharCode(getRandomInt(65, 80)) +
-        String.fromCharCode(getRandomInt(65, 80))}`,
-      totalBalance: getRandomInt(100, 300000),
-      availableBalance: getRandomInt(100, 3000),
-      inOrder: getRandomInt(1, 100),
-      btcValue: getRandomInt(1, 10000),
-    }
-  })
-}
+// export const combineFundsTable = (fundsData: FundsType[]) => {
+//   const processedFundsDaata = fundsData.map((el: FundsType) => {
+//     const {} = el
+//
+//     return {
+//       coin: `${String.fromCharCode(getRandomInt(65, 80)) +
+//         String.fromCharCode(getRandomInt(65, 80)) +
+//         String.fromCharCode(getRandomInt(65, 80))}`,
+//       totalBalance: getRandomInt(100, 300000),
+//       availableBalance: getRandomInt(100, 3000),
+//       inOrder: getRandomInt(1, 100),
+//       btcValue: getRandomInt(1, 10000),
+//     }
+//   })
+// }
 
 // Update queries functions ->>
 
