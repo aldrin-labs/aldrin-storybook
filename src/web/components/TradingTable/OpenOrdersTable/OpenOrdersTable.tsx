@@ -84,7 +84,7 @@ const TableDataWrapper = ({ ...props }) => {
       component={OpenOrdersTable}
       withOutSpinner
       query={getOpenOrderHistory}
-      name={getOpenOrderHistory}
+      name={`getOpenOrderHistory`}
       fetchPolicy="network-only"
       placeholder={TablePlaceholderLoader}
       subscriptionArgs={{
