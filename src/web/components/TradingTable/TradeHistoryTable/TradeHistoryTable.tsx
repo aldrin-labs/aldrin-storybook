@@ -67,7 +67,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
-        // emptyTableText={getEmptyTextPlaceholder(tab)}
+        emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
             <TradingTabs

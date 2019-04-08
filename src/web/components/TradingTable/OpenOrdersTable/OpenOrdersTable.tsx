@@ -3,7 +3,6 @@ import { graphql } from 'react-apollo'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
-import TablePlaceholderLoader from '@sb/components/TablePlaceholderLoader'
 
 import { IProps } from './OpenOrdersTable.types'
 import {
@@ -82,7 +81,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
-        // emptyTableText={getEmptyTextPlaceholder(tab)}
+        emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
             <TradingTabs
