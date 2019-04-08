@@ -12,8 +12,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
-
-import styled from 'styled-components'
+import { Container, PlaceHolder } from './styles'
 
 import {
   Props,
@@ -41,7 +40,6 @@ import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
-
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -93,7 +91,6 @@ const ActionButton = withStyles(() => ({
  * @param {number} n - is how long array of data.
  */
 const rowOffset = (i: number, n: number) => (n === 1 ? 0 : (n - i - 1) * 32 - 1)
-
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -168,6 +165,8 @@ const styles = (theme: Theme) =>
       height: theme.spacing.unit * 4,
     },
   })
+
+// TODO: Handle undefined value of cell
 
 const isNumeric = (cell: Cell) =>
   typeof cell !== 'string' &&
@@ -469,25 +468,6 @@ const CustomTable = (props: Props) => {
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
 
-  const Container = styled.div`
-    height: 100%;
-    width: 100%;
-    position: relative;
-  `
-
-  const PlaceHolder = styled.div`
-  height: 400px;
-`
-
-  if (data.body.length === 0) {
-    return(
-      <Container>
-        <CustomPlaceholder text={emptyTableText} />
-        <PlaceHolder />
-      </Container>
-    )
-  }
-
   return (
     <Paper className={classes.root} elevation={elevation}>
       <Table
@@ -558,7 +538,13 @@ const CustomTable = (props: Props) => {
                   numeric={column.isNumber}
                   key={column.id}
                 >
-                  {renderHeadCell({ isSortable: (typeof sort !== 'undefined' && column.isSortable !== false), sort, cell: column })}
+                  {renderHeadCell({
+                    isSortable:
+                      typeof sort !== 'undefined' &&
+                      column.isSortable !== false,
+                    sort,
+                    cell: column,
+                  })}
                 </CustomTableCell>
               )
             })}
@@ -566,12 +552,13 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.length === 0
-          ? <Container>
-              <CustomPlaceholder text="aaaaaa" />
+          {data.body.length === 0 ? (
+            <Container>
+              <CustomPlaceholder text={emptyTableText} />
               <PlaceHolder />
             </Container>
-          : addPagination(
+          ) : (
+            addPagination(
               data.body.filter(Boolean).map((row) => {
                 const selected = checkedRows.indexOf(row.id) !== -1
 
@@ -619,7 +606,10 @@ const CustomTable = (props: Props) => {
                               (row.expandableContent as ReadonlyArray<
                                 NotExpandableRow
                               >).length === 0,
-                            className: { checkboxClasses, disabledExpandRow: '' },
+                            className: {
+                              checkboxClasses,
+                              disabledExpandRow: '',
+                            },
                             type: typeOfCheckbox,
                           })}
                         </CustomTableCell>
@@ -648,77 +638,78 @@ const CustomTable = (props: Props) => {
                 )
               }),
               pagination
-            )}
-          </TableBody>
-          {Array.isArray(data.footer) && (
-            <TableFooter>
-              {data.footer.filter(Boolean).map((row, index) => {
-                const stickyOffset =
-                  data.footer !== undefined &&
-                  rowOffset(index, data.footer.filter(Boolean).length)
-                return (
-                  <TableRow
-                    key={index}
-                    className={`${classes.row} ${classes.footer}`}
-                  >
-                    {(withCheckboxes || expandableRows) && (
-                      <CustomTableCell
-                        padding="checkbox"
-                        style={{
-                          // temporary
-                          position:
-                            row.options && row.options.static
-                              ? 'static'
-                              : 'sticky',
-                          bottom: stickyOffset || 0,
-                          background:
-                            row.options && row.options.variant === 'body'
-                              ? theme!.palette.background.paper
-                              : '',
-                        }}
-                        variant={(row.options && row.options.variant) || 'footer'}
-                      />
-                    )}
-
-                    {renderFooterCells({
-                      row,
-                      padding,
-                      stickyOffset: stickyOffset || 0,
-                      theme: theme!,
-                    })}
-                  </TableRow>
-                )
-              })}
-            </TableFooter>
+            )
           )}
-        </Table>
+        </TableBody>
+        {Array.isArray(data.footer) && (
+          <TableFooter>
+            {data.footer.filter(Boolean).map((row, index) => {
+              const stickyOffset =
+                data.footer !== undefined &&
+                rowOffset(index, data.footer.filter(Boolean).length)
+              return (
+                <TableRow
+                  key={index}
+                  className={`${classes.row} ${classes.footer}`}
+                >
+                  {(withCheckboxes || expandableRows) && (
+                    <CustomTableCell
+                      padding="checkbox"
+                      style={{
+                        // temporary
+                        position:
+                          row.options && row.options.static
+                            ? 'static'
+                            : 'sticky',
+                        bottom: stickyOffset || 0,
+                        background:
+                          row.options && row.options.variant === 'body'
+                            ? theme!.palette.background.paper
+                            : '',
+                      }}
+                      variant={(row.options && row.options.variant) || 'footer'}
+                    />
+                  )}
 
-        <Grow
-          // we show pagination only when you pass pagination.enabled = true
-          in={pagination.enabled}
-          mountOnEnter
-          unmountOnExit
-        >
-          <>
-            <TablePagination
-              component="div"
-              count={data.body.length}
-              rowsPerPage={pagination.rowsPerPage}
-              page={pagination.page}
-              backIconButtonProps={{
-                'aria-label': 'Previous Page',
-              }}
-              nextIconButtonProps={{
-                'aria-label': 'Next Page',
-              }}
-              rowsPerPageOptions={pagination.rowsPerPageOptions}
-              onChangePage={pagination.handleChangePage}
-              onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
-            />
-          </>
-        </Grow>
-      </Paper>
-    )
+                  {renderFooterCells({
+                    row,
+                    padding,
+                    stickyOffset: stickyOffset || 0,
+                    theme: theme!,
+                  })}
+                </TableRow>
+              )
+            })}
+          </TableFooter>
+        )}
+      </Table>
+
+      <Grow
+        // we show pagination only when you pass pagination.enabled = true
+        in={pagination.enabled}
+        mountOnEnter
+        unmountOnExit
+      >
+        <>
+          <TablePagination
+            component="div"
+            count={data.body.length}
+            rowsPerPage={pagination.rowsPerPage}
+            page={pagination.page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            rowsPerPageOptions={pagination.rowsPerPageOptions}
+            onChangePage={pagination.handleChangePage}
+            onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
+          />
+        </>
+      </Grow>
+    </Paper>
+  )
 }
 
 // rewrite with hooks
