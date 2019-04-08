@@ -22,6 +22,9 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import * as actions from '@core/redux/chart/actions'
 import * as userActions from '@core/redux/user/actions'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
+
+import { keysNames } from '@core/graphql/queries/chart/keysNames'
+
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
@@ -289,12 +292,18 @@ class Chart extends React.Component<IProps, IState> {
         getMyProfile: { _id },
       },
       themeMode,
+      activeExchange,
+      keysNames: { myPortfolios },
     } = this.props
 
     if (!currencyPair) {
       return
     }
     const [base, quote] = currencyPair.split('_')
+
+    const filteredKeys = myPortfolios[0].keys.filter(key => key.exchange === activeExchange.name)
+
+    const activeKey = filteredKeys.length ? filteredKeys[0].name : ''
 
     return (
       <div>
@@ -327,6 +336,7 @@ class Chart extends React.Component<IProps, IState> {
         </TradingTabelContainer>
         <TradingTerminalContainer item sm={4}>
         <TradingComponent
+          activeKey={activeKey}
           pair={[base, quote]}
         />
         </TradingTerminalContainer>
@@ -494,6 +504,12 @@ export default withAuth(
       withOutSpinner: false,
       withTableLoader: false,
       name: 'getCharts',
+    }),
+    queryRendererHoc({
+      query: keysNames,
+      withOutSpinner: false,
+      withTableLoader: false,
+      name: 'keysNames',
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(
