@@ -19,11 +19,11 @@ export const openOrdersColumnNames = [
   { label: 'Pair', id: 'pair' },
   { label: 'Type', id: 'type' },
   { label: 'Side', id: 'side' },
-  { label: 'Price', id: 'price' },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Filled %', id: 'filled' },
-  { label: 'Total', id: 'total' },
-  { label: 'Trigger', id: 'triggerConditions' },
+  { label: 'Price', id: 'price', isNumber: true },
+  { label: 'Amount', id: 'amount', isNumber: true },
+  { label: 'Filled %', id: 'filled', isNumber: true },
+  { label: 'Total', id: 'total', isNumber: true },
+  { label: 'Trigger', id: 'triggerConditions', isNumber: true },
   {
     label: (
       <TableButton size="small" variant="outlined">
@@ -62,12 +62,12 @@ export const orderHistoryColumnNames = [
   { label: 'Pair', id: 'pair' },
   { label: 'Type', id: 'type' },
   { label: 'Side', id: 'side' },
-  { label: 'Average', id: 'average' },
-  { label: 'Price', id: 'price' },
-  { label: 'Filled %', id: 'filled' },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Total', id: 'total' },
-  { label: 'Trigger', id: 'triggerConditions' },
+  { label: 'Average', id: 'average', isNumber: true },
+  { label: 'Price', id: 'price', isNumber: true },
+  { label: 'Filled %', id: 'filled', isNumber: true },
+  { label: 'Amount', id: 'amount', isNumber: true },
+  { label: 'Total', id: 'total', isNumber: true },
+  { label: 'Trigger', id: 'triggerConditions', isNumber: true },
   { label: 'Status', id: 'status' },
 ]
 
@@ -91,10 +91,10 @@ export const tradeHistoryColumnNames = [
   { label: 'Time', id: 'time' },
   { label: 'Pair', id: 'pair' },
   { label: 'Type', id: 'type' },
-  { label: 'Price', id: 'price' },
-  { label: 'Filled', id: 'filled' },
-  { label: 'Fee', id: 'fee' },
-  { label: 'Total', id: 'total' },
+  { label: 'Price', id: 'price', isNumber: true },
+  { label: 'Filled', id: 'filled', isNumber: true },
+  { label: 'Fee', id: 'fee', isNumber: true },
+  { label: 'Total', id: 'total', isNumber: true },
 ]
 
 export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({

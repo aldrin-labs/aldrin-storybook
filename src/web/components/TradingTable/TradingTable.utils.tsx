@@ -91,13 +91,13 @@ export const combineOpenOrdersTable = (
         type: type,
         side: side,
         // TODO: We should change average "price" to average param from backend when it will be ready
-        price: { render: price },
-        amount: { render: origQty },
-        filled: { render: executedQty },
+        price: { render: price, isNumber: true },
+        amount: { render: origQty, isNumber: true },
+        filled: { render: executedQty, isNumber: true },
         // TODO: We should change "total" to total param from backend when it will be ready
-        total: { render: price },
+        total: { render: price, isNumber: true },
         // TODO: Not sure about triggerConditions
-        triggerConditions: { render: stopPrice },
+        triggerConditions: { render: stopPrice, isNumber: true },
         // TODO: We should update cancelOrderFunc param
         cancel: {
           render: (
@@ -149,14 +149,14 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
       type: type,
       side: side,
       // TODO: We should change average "price" to average param from backend when it will be ready
-      average: { render: price },
-      price: { render: price },
-      filled: { render: executedQty },
-      amount: { render: origQty },
+      average: { render: price, isNumber: true },
+      price: { render: price, isNumber: true },
+      filled: { render: executedQty, isNumber: true },
+      amount: { render: origQty, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: { render: price },
+      total: { render: price, isNumber: true },
       // TODO: Not sure about triggerConditions
-      triggerConditions: { render: stopPrice },
+      triggerConditions: { render: stopPrice, isNumber: true },
       status: status,
     }
   })
@@ -189,11 +189,11 @@ export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
       time: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
       pair: symbol,
       type: side,
-      price: { render: price },
-      filled: { render: amount },
-      fee: { render: `${cost} ${currency}` },
+      price: { render: price, isNumber: true },
+      filled: { render: amount, isNumber: true },
+      fee: { render: `${cost} ${currency}`, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: { render: 0 },
+      total: { render: 0, isNumber: true },
     }
   })
 
