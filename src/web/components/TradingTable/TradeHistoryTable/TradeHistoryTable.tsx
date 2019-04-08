@@ -29,7 +29,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IProps) {
     const tradeHistoryProcessedData = combineTradeHistoryTable(
       nextProps.getTradeHistory.getTradeHistory
     )
