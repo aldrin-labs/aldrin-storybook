@@ -28,9 +28,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     console.log('cancelOrderMutation', cancelOrderMutation)
 
     const responseResult = await cancelOrderMutation({
-      cancelOrderInput: {
-        keyId,
-        orderId,
+      variables: {
+        cancelOrderInput: {
+          keyId,
+          orderId,
+        },
       },
     })
 
