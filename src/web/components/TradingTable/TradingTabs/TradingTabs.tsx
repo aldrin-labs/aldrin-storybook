@@ -22,7 +22,7 @@ const TradingTabs = ({
       <TitleTab label="Open orders" primary={primary} />
       <TitleTab label="Order history" primary={primary} />
       <TitleTab label="Trade history" primary={primary} />
-      <TitleTab label="Funds" primary={primary} />
+      {/*<TitleTab label="Funds" primary={primary} />*/}
     </TitleTabsGroup>
   </div>
 )

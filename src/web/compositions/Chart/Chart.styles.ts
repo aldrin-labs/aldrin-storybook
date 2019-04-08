@@ -68,7 +68,7 @@ export const ChartsContainer = styled(TablesContainer)`
 
 export const TradingTabelContainer = styled(TablesContainer)`
   height: 32vh;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-direction: column;
   width: 60%;
 

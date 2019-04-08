@@ -10,14 +10,10 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   IState
 > {
   state: IState = {
-    startDate: null,
-    endDate: null,
+    startDate: moment().startOf('day'),
+    endDate: moment().endOf('day'),
     focusedInput: null,
-    activeDateButton: null,
-  }
-
-  onSearchDateButtonClick = async () => {
-    // TODO: there should be mutation for search
+    activeDateButton: '1Day',
   }
 
   onClearDateButtonClick = () => {
@@ -33,8 +29,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     this.setState(
       {
         activeDateButton: stringDate,
-        startDate: moment().endOf('day'),
-        endDate: getEndDate(stringDate),
+        startDate: getEndDate(stringDate),
+        endDate: moment().endOf('day'),
       },
       () => {
         // TODO: there should be mutation for search:
@@ -72,7 +68,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           startDate,
           maximumDate,
           minimumDate,
-          onSearchDateButtonClick: this.onSearchDateButtonClick,
           onClearDateButtonClick: this.onClearDateButtonClick,
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,

@@ -58,23 +58,30 @@ export const getEmptyTextPlaceholder = (tab: string) =>
 
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
-  cancelOrderFunc: () => Promise<any>
+  cancelOrderFunc: (keyId: string, orderId: string) => Promise<any>
 ) => {
-  const processedOpenOrdersData = openOrdersData
-    .filter((el) => el.status === 'open')
-    .map((el: OrderType, i: number) => {
+  if (!openOrdersData && !Array.isArray(openOrdersData)) {
+    console.log(
+      'inside combineOpenOrdersTable',
+      !openOrdersData,
+      Array.isArray(openOrdersData)
+    )
+
+    return []
+  }
+
+  console.log('outside combineOpenOrdersTable')
+
+  const processedOpenOrdersData = openOrdersData.map(
+    (el: OrderType, i: number) => {
       const {
+        keyId,
         symbol,
         timestamp,
         type,
         side,
         price,
-        info: {
-          orderId,
-          stopPrice,
-          origQty,
-          executedQty,
-        },
+        info: { orderId, stopPrice = 0, origQty = 0, executedQty = 0 },
       } = el
 
       return {
@@ -84,13 +91,13 @@ export const combineOpenOrdersTable = (
         type: type,
         side: side,
         // TODO: We should change average "price" to average param from backend when it will be ready
-        price: price,
-        amount: origQty,
-        filled: executedQty,
+        price: { render: price, isNumber: true },
+        amount: { render: origQty, isNumber: true },
+        filled: { render: executedQty, isNumber: true },
         // TODO: We should change "total" to total param from backend when it will be ready
-        total: executedQty * price,
+        total: { render: price, isNumber: true },
         // TODO: Not sure about triggerConditions
-        triggerConditions: stopPrice || '-',
+        triggerConditions: { render: stopPrice, isNumber: true },
         // TODO: We should update cancelOrderFunc param
         cancel: {
           render: (
@@ -98,19 +105,32 @@ export const combineOpenOrdersTable = (
               key={i}
               variant="outlined"
               size={`small`}
-              onClick={() => cancelOrderFunc()}
+              onClick={() => cancelOrderFunc(keyId, orderId)}
             >
               Cancel
             </TableButton>
           ),
         },
       }
-    })
+    }
+  )
+
+  console.log('processedOpenOrdersData in utils', processedOpenOrdersData)
 
   return processedOpenOrdersData
 }
 
 export const combineOrderHistoryTable = (orderData: OrderType[]) => {
+  if (!orderData && !Array.isArray(orderData)) {
+    console.log(
+      'inside condition combineOrderHistoryTable',
+      !orderData,
+      Array.isArray(orderData)
+    )
+
+    return []
+  }
+
   const processedOrderHistoryData = orderData.map((el: OrderType) => {
     const {
       symbol,
@@ -119,12 +139,7 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
       side,
       price,
       status,
-      info: {
-        orderId,
-        stopPrice,
-        origQty,
-        executedQty,
-      },
+      info: { orderId, stopPrice = 0, origQty = 0, executedQty = 0 },
     } = el
 
     return {
@@ -134,14 +149,14 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
       type: type,
       side: side,
       // TODO: We should change average "price" to average param from backend when it will be ready
-      average: price,
-      price: price,
-      filled: executedQty,
-      amount: origQty,
+      average: { render: price, isNumber: true },
+      price: { render: price, isNumber: true },
+      filled: { render: executedQty, isNumber: true },
+      amount: { render: origQty, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: executedQty * price,
+      total: { render: price, isNumber: true },
       // TODO: Not sure about triggerConditions
-      triggerConditions: stopPrice || '-',
+      triggerConditions: { render: stopPrice, isNumber: true },
       status: status,
     }
   })
@@ -150,27 +165,35 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
 }
 
 export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
+  if (!tradeData && !Array.isArray(tradeData)) {
+    console.log(
+      'inside condition combineTradeHistoryTable',
+      !tradeData,
+      Array.isArray(tradeData)
+    )
+
+    return []
+  }
+
+  console.log('outside combineTradeHistoryTable')
+  console.log('tradeData', tradeData)
+
   const processedTradeHistoryData = tradeData.map((el: TradeType) => {
-    const {
-      id,
-      timestamp,
-      symbol,
-      side,
-      price,
-      amount,
-      fee: { cost, currency },
-    } = el
+    const { id, timestamp, symbol, side, price, amount } = el
+
+    const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
+    const { cost, currency } = fee
 
     return {
       id: id,
       time: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
       pair: symbol,
       type: side,
-      price: price,
-      filled: amount,
+      price: { render: price, isNumber: true },
+      filled: { render: amount, isNumber: true },
       fee: { render: `${cost} ${currency}`, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: 0,
+      total: { render: 0, isNumber: true },
     }
   })
 

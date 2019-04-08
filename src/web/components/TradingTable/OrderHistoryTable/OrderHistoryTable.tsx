@@ -2,7 +2,6 @@ import React from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
-import TablePlaceholderLoader from '@sb/components/TablePlaceholderLoader'
 
 import { IProps } from './OpenOrdersTable.types'
 import {
@@ -30,7 +29,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
       nextProps.getOrderHistory.getOrderHistory
     )
@@ -52,12 +51,14 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       startDate,
       maximumDate,
       minimumDate,
-      onSearchDateButtonClick,
       onClearDateButtonClick,
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
     } = this.props
+
+    console.log('this.props in OrderHistoryTable', this.props);
+    console.log('orderHistoryProcessedData', orderHistoryProcessedData);
 
     if (!show) {
       return null
@@ -84,7 +85,6 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
                 onDateButtonClick,
                 onDatesChange,
                 onFocusChange,
-                onSearchDateButtonClick,
                 onClearDateButtonClick,
               }}
             />
@@ -98,17 +98,20 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  const { startDate, endDate } = props
+  let { startDate, endDate } = props
+
+  startDate = +startDate
+  endDate = +endDate
 
   return (
     <QueryRenderer
       component={OrderHistoryTable}
-      withOutSpinner
+      withOutSpinner={true}
+      withTableLoader={true}
       query={getOrderHistory}
       name={`getOrderHistory`}
       fetchPolicy="network-only"
-      placeholder={TablePlaceholderLoader}
-      variables={{ startDate, endDate }}
+      variables={{ orderHistoryInput: { startDate, endDate } }}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
         variables: { startDate, endDate },
