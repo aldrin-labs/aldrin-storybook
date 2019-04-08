@@ -1,4 +1,5 @@
 import React from 'react'
+import { graphql } from 'react-apollo'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -14,13 +15,27 @@ import {
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+import { CANCEL_ORDER } from '@core/graphql/mutations/chart/cancelOrder'
 
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state = {
     openOrdersProcessedData: [],
   }
 
-  onCancelOrder = async (arg: any) => {
+  onCancelOrder = async (keyId: string, orderId: string) => {
+    const { cancelOrderMutation } = this.props
+
+    console.log('cancelOrderMutation', cancelOrderMutation)
+
+    const responseResult = await cancelOrderMutation({
+      cancelOrderInput: {
+        keyId,
+        orderId,
+      },
+    })
+
+    console.log('responseResult', responseResult)
+
     // TODO: here should be a mutation order to cancel a specific order
     // TODO: Also it should receive an argument to edentify the order that we should cancel
     // TODO: Also it would be good to show the dialog message here after mutation completed
@@ -55,6 +70,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const { openOrdersProcessedData } = this.state
     const { tab, tabIndex, handleTabChange, show } = this.props
 
+    console.log('this.props in OpenOrdersTable', this.props)
+    console.log('openOrdersProcessedData', openOrdersProcessedData)
+
     if (!show) {
       return null
     }
@@ -62,7 +80,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
-        emptyTableText={getEmptyTextPlaceholder(tab)}
+        // emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
             <TradingTabs
@@ -82,11 +100,12 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={OpenOrdersTable}
-      withOutSpinner
+      withOutSpinner={true}
+      withTableLoader={true}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistory`}
       fetchPolicy="network-only"
-      placeholder={TablePlaceholderLoader}
+      // placeholder={TablePlaceholderLoader}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
@@ -96,4 +115,6 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default TableDataWrapper
+export default graphql(CANCEL_ORDER, { name: 'cancelOrderMutation' })(
+  TableDataWrapper
+)
