@@ -10,10 +10,10 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   IState
 > {
   state: IState = {
-    startDate: null,
-    endDate: null,
+    startDate: moment().startOf('day'),
+    endDate: moment().endOf('day'),
     focusedInput: null,
-    activeDateButton: null,
+    activeDateButton: '1Day',
   }
 
   onSearchDateButtonClick = async () => {

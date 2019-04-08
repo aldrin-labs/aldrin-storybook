@@ -1,9 +1,7 @@
 import React from 'react'
-import moment from 'moment'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
-import TablePlaceholderLoader from '@sb/components/TablePlaceholderLoader'
 
 import { IProps } from './OpenOrdersTable.types'
 import {
@@ -104,13 +102,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 const TableDataWrapper = ({ ...props }) => {
   let { startDate, endDate } = props
 
-  if (!startDate && !endDate) {
-    startDate = +moment().startOf('day')
-    endDate = +moment().endOf('day')
-  } else {
-    startDate = +startDate
-    endDate = +endDate
-  }
+  startDate = +startDate
+  endDate = +endDate
 
   return (
     <QueryRenderer
@@ -120,7 +113,6 @@ const TableDataWrapper = ({ ...props }) => {
       query={getTradeHistory}
       name={`getTradeHistory`}
       fetchPolicy="network-only"
-      // placeholder={TablePlaceholderLoader}
       variables={{ tradeHistoryInput: {startDate, endDate} }}
       subscriptionArgs={{
         subscription: TRADE_HISTORY,
