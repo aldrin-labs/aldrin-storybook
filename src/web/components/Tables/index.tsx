@@ -12,8 +12,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
-import { Container, PlaceHolder } from './styles'
-
 import {
   Props,
   Cell,
@@ -553,10 +551,7 @@ const CustomTable = (props: Props) => {
 
         <TableBody>
           {data.body.length === 0 ? (
-            <Container>
               <CustomPlaceholder text={emptyTableText} />
-              <PlaceHolder />
-            </Container>
           ) : (
             addPagination(
               data.body.filter(Boolean).map((row) => {
