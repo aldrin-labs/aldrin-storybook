@@ -52,7 +52,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values,
       setFieldValue,
     } = this.props
-    const amount =priceType === 'limit'
+    const amount = priceType === 'limit'
     ? e.target.value / values.price
     : e.target.value / values.limit
     setFieldValue('total', toNumber(e.target.value))
@@ -101,11 +101,19 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
       validateForm,
       priceType,
+      byType,
     } = this.props
-    await setFieldValue('total', toNumber(walletValue * value), false)
-    await setFieldValue('amount', toNumber(walletValue * value / (priceType === 'stop-limit'
-      ? toNumber(values.limit)
-      : toNumber(values.price))), false)
+    if (byType === 'buy') {
+      await setFieldValue('total', toNumber(walletValue * value), false)
+      await setFieldValue('amount', toNumber(walletValue * value / (priceType === 'stop-limit'
+        ? toNumber(values.limit)
+        : toNumber(values.price))), false)
+    } else {
+      await setFieldValue('total', toNumber(walletValue * value / (priceType === 'stop-limit'
+        ? toNumber(values.limit)
+        : toNumber(values.price))), false)
+      await setFieldValue('amount', toNumber(walletValue * value), false)
+    }
     validateForm()
   }
 
@@ -365,6 +373,7 @@ render() {
 const validate = (values: FormValues, props: IProps) => {
   const {
     priceType,
+    byType,
     walletValue,
     marketPrice,
   } = props
@@ -376,17 +385,22 @@ const validate = (values: FormValues, props: IProps) => {
       amount: Yup.number()
       .required()
       .min(0)
-      .max(walletValue / (
-        typeof(values.price) === 'number'
-        ? values.price
-        : props.marketPrice), 'Your balance is not enough'),
+      .max(byType === 'buy'
+        ? walletValue / (
+          typeof(values.price) === 'number'
+          ? values.price
+          : props.marketPrice)
+        : walletValue
+      , 'Your balance is not enough'),
   })
   : priceType === 'market'
   ? Yup.object().shape({
     amount: Yup.number()
     .required()
     .min(0)
-    .max(walletValue / marketPrice, 'Your balance is not enough'),
+    .max(byType === 'buy'
+      ? walletValue / marketPrice
+      : walletValue, 'Your balance is not enough'),
   })
   : Yup.object().shape({
     stop: Yup.number()
@@ -398,14 +412,16 @@ const validate = (values: FormValues, props: IProps) => {
     amount: Yup.number()
     .required()
     .min(0)
-    .max(Math.max(walletValue / (
-      typeof(values.stop) === 'number'
-        ? values.stop
-        : props.marketPrice),
-      walletValue / (
-        typeof(values.limit) === 'number'
-        ? values.limit
-        : props.marketPrice)), 'Your balance is not enough'),
+    .max(byType === 'buy'
+      ? Math.max(walletValue / (
+        typeof(values.stop) === 'number'
+          ? values.stop
+          : props.marketPrice),
+        walletValue / (
+          typeof(values.limit) === 'number'
+          ? values.limit
+          : props.marketPrice))
+      : walletValue, 'Your balance is not enough'),
   })
 
   try {
@@ -438,7 +454,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           limit: values.limit,
           amount: values.amount,
         }
-      props.confirmOperation(filtredValues)
+      props.confirmOperation(byType, priceType, filtredValues)
       resetForm()
       setSubmitting(false)
     }

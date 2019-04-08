@@ -17,6 +17,8 @@ export interface IProps {
   theme: Theme
   walletValue: number
   confirmOperation: (
+    byType: 'buy' | 'sell',
+    priceType: 'limit' | 'market' | 'stop-limit',
     filtredValues: Partial<FormValues>) => null
 }
 

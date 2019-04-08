@@ -303,7 +303,7 @@ class Chart extends React.Component<IProps, IState> {
 
     const filteredKeys = myPortfolios[0].keys.filter(key => key.exchange === activeExchange.name)
 
-    const activeKey = filteredKeys.length ? filteredKeys[0].name : ''
+    const activeKey = filteredKeys.length ? filteredKeys[0] : ''
 
     return (
       <div>
