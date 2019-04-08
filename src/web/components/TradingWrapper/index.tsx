@@ -61,7 +61,6 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
     priceType,
     placeOrder,
   } = props
-  console.log('pair', pair)
   return (
   <ScrollWrapper>
   <Grid container spacing={0} alignItems="center" justify="center">
