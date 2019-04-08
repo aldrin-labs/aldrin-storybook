@@ -20,7 +20,6 @@ export default class TradingTitle extends React.PureComponent<IProps> {
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
-      onSearchDateButtonClick,
       onClearDateButtonClick,
       theme: {
         palette: {
@@ -94,13 +93,6 @@ export default class TradingTitle extends React.PureComponent<IProps> {
             displayFormat="MM-DD-YYYY"
           />
         </StyledWrapperForDateRangePicker>
-        <TitleButton
-          size="small"
-          variant={`outlined`}
-          onClick={onSearchDateButtonClick}
-        >
-          Search
-        </TitleButton>
         <TitleButton
           size="small"
           variant={`outlined`}

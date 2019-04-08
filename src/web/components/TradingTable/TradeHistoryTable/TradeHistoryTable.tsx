@@ -54,7 +54,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       startDate,
       maximumDate,
       minimumDate,
-      onSearchDateButtonClick,
       onClearDateButtonClick,
       onDateButtonClick,
       onDatesChange,
@@ -86,7 +85,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
                 onDateButtonClick,
                 onDatesChange,
                 onFocusChange,
-                onSearchDateButtonClick,
                 onClearDateButtonClick,
               }}
             />

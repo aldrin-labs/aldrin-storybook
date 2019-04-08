@@ -16,6 +16,5 @@ export interface IProps {
     endDate: moment.Moment | null
   }) => void
   onFocusChange: (focusedInput: string) => void
-  onSearchDateButtonClick: () => Promise<any>
   onClearDateButtonClick: () => void
 }

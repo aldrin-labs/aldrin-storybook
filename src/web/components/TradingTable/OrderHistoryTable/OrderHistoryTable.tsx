@@ -51,7 +51,6 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       startDate,
       maximumDate,
       minimumDate,
-      onSearchDateButtonClick,
       onClearDateButtonClick,
       onDateButtonClick,
       onDatesChange,
@@ -86,7 +85,6 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
                 onDateButtonClick,
                 onDatesChange,
                 onFocusChange,
-                onSearchDateButtonClick,
                 onClearDateButtonClick,
               }}
             />

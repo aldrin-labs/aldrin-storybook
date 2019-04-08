@@ -72,7 +72,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           startDate,
           maximumDate,
           minimumDate,
-          onSearchDateButtonClick: this.onSearchDateButtonClick,
           onClearDateButtonClick: this.onClearDateButtonClick,
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,
