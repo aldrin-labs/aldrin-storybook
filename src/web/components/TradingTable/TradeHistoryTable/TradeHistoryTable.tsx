@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -41,6 +42,9 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
   render() {
     const { tradeHistoryProcessedData } = this.state
+    console.log('this.props in TradeHistoryTable', this.props);
+    console.log('tradeHistoryProcessedData', tradeHistoryProcessedData);
+
     const {
       tab,
       tabIndex,
@@ -66,7 +70,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
-        emptyTableText={getEmptyTextPlaceholder(tab)}
+        // emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
             <TradingTabs
@@ -98,17 +102,26 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  const { startDate, endDate } = props
+  let { startDate, endDate } = props
+
+  if (!startDate && !endDate) {
+    startDate = +moment().startOf('day')
+    endDate = +moment().endOf('day')
+  } else {
+    startDate = +startDate
+    endDate = +endDate
+  }
 
   return (
     <QueryRenderer
       component={TradeHistoryTable}
-      withOutSpinner
+      withOutSpinner={true}
+      withTableLoader={true}
       query={getTradeHistory}
       name={`getTradeHistory`}
       fetchPolicy="network-only"
-      placeholder={TablePlaceholderLoader}
-      variables={{ startDate, endDate }}
+      // placeholder={TablePlaceholderLoader}
+      variables={{ tradeHistoryInput: {startDate, endDate} }}
       subscriptionArgs={{
         subscription: TRADE_HISTORY,
         variables: { startDate, endDate },
