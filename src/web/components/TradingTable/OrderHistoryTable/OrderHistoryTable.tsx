@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -59,6 +60,9 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       onFocusChange,
     } = this.props
 
+    console.log('this.props in OrderHistoryTable', this.props);
+    console.log('orderHistoryProcessedData', orderHistoryProcessedData);
+
     if (!show) {
       return null
     }
@@ -66,7 +70,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
-        emptyTableText={getEmptyTextPlaceholder(tab)}
+        // emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
             <TradingTabs
@@ -98,17 +102,26 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  const { startDate, endDate } = props
+  let { startDate, endDate } = props
+
+  if (!startDate && !endDate) {
+    startDate = +moment().startOf('day')
+    endDate = +moment().endOf('day')
+  } else {
+    startDate = +startDate
+    endDate = +endDate
+  }
 
   return (
     <QueryRenderer
       component={OrderHistoryTable}
-      withOutSpinner
+      withOutSpinner={true}
+      withTableLoader={true}
       query={getOrderHistory}
       name={`getOrderHistory`}
       fetchPolicy="network-only"
-      placeholder={TablePlaceholderLoader}
-      variables={{ startDate, endDate }}
+      // placeholder={TablePlaceholderLoader}
+      variables={{ orderHistoryInput: { startDate, endDate } }}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
         variables: { startDate, endDate },

@@ -33,8 +33,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     this.setState(
       {
         activeDateButton: stringDate,
-        startDate: moment().endOf('day'),
-        endDate: getEndDate(stringDate),
+        startDate: getEndDate(stringDate),
+        endDate: moment().endOf('day'),
       },
       () => {
         // TODO: there should be mutation for search:
