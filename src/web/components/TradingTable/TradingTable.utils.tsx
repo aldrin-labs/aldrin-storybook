@@ -49,11 +49,11 @@ export const getEmptyTextPlaceholder = (tab: string) =>
   tab === 'openOrders'
     ? 'You have no open orders.'
     : tab === 'orderHistory'
-    ? 'You have no order history'
+    ? 'You have no order history.'
     : tab === 'tradeHistory'
     ? 'You have no trades.'
     : tab === 'funds'
-    ? 'You have no Funds'
+    ? 'You have no Funds.'
     : []
 
 export const combineOpenOrdersTable = (
