@@ -337,6 +337,7 @@ class Chart extends React.Component<IProps, IState> {
         <TradingTerminalContainer item sm={4}>
         <TradingComponent
           activeKey={activeKey}
+          activeExchange={activeExchange}
           pair={[base, quote]}
         />
         </TradingTerminalContainer>
