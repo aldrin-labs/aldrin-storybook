@@ -203,10 +203,6 @@ export const updateOpenOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
 
-  // console.log('prev', prev)
-  // console.log('subscription data', subscriptionData)
-  // console.log('isEmptySubscription', isEmptySubscription)
-
   if (isEmptySubscription) {
     return prev
   }
@@ -217,7 +213,6 @@ export const updateOpenOrderHistoryQuerryFunction = (
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
-  // console.log('openOrderAlreadyExists', openOrderAlreadyExists);
 
   if (openOrderAlreadyExists) {
     prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex] = {
@@ -235,9 +230,6 @@ export const updateOpenOrderHistoryQuerryFunction = (
     result = { ...prev }
   }
 
-  // console.log('result', result);
-
-
   return result
 }
 
@@ -249,10 +241,6 @@ export const updateOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
-  // console.log('prev', prev)
-  // console.log('subscription data', subscriptionData)
-  // console.log('isEmptySubscription', isEmptySubscription)
-
   if (isEmptySubscription) {
     return prev
   }
@@ -263,7 +251,6 @@ export const updateOrderHistoryQuerryFunction = (
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
-  // console.log('openOrderAlreadyExists', openOrderAlreadyExists);
 
   if (openOrderAlreadyExists) {
     prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
@@ -281,9 +268,6 @@ export const updateOrderHistoryQuerryFunction = (
     result = { ...prev }
   }
 
-  // console.log('result', result);
-
-
   return result
 
 }
@@ -295,10 +279,6 @@ export const updateTradeHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenTradeHistory
 
-  // console.log('prev', prev)
-  // console.log('subscription data', subscriptionData)
-  // console.log('isEmptySubscription', isEmptySubscription)
-
   if (isEmptySubscription) {
     return prev
   }
@@ -309,7 +289,6 @@ export const updateTradeHistoryQuerryFunction = (
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
-  // console.log('openOrderAlreadyExists', openOrderAlreadyExists);
 
   if (openOrderAlreadyExists) {
     prev.getTradeHistory[openOrderHasTheSameOrderIndex] = {
@@ -326,9 +305,6 @@ export const updateTradeHistoryQuerryFunction = (
 
     result = { ...prev }
   }
-
-  // console.log('result', result);
-
 
   return result
 }
