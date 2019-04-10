@@ -194,6 +194,7 @@ export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
 // }
 
 // Update queries functions ->>
+// TODO: Make it one function
 
 export const updateOpenOrderHistoryQuerryFunction = (
   prev,
@@ -244,30 +245,90 @@ export const updateOrderHistoryQuerryFunction = (
   prev,
   { subscriptionData }
 ) => {
-  if (!subscriptionData.data) {
+
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenOrderHistory
+
+  // console.log('prev', prev)
+  // console.log('subscription data', subscriptionData)
+  // console.log('isEmptySubscription', isEmptySubscription)
+
+  if (isEmptySubscription) {
     return prev
   }
 
-  const newOrder = JSON.parse(subscriptionData.data.listenMarketOrders)
-  let obj = Object.assign({}, prev, {
-    marketOrders: [newOrder],
-  })
+  const openOrderHasTheSameOrderIndex = prev.getOrderHistory.findIndex(
+    (el) => el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+  )
+  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
-  return obj
+  let result
+  // console.log('openOrderAlreadyExists', openOrderAlreadyExists);
+
+  if (openOrderAlreadyExists) {
+    prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
+      ...prev.getOrderHistory[openOrderHasTheSameOrderIndex],
+      ...subscriptionData.data.listenOrderHistory,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getOrderHistory = [
+      {...subscriptionData.data.listenOrderHistory},
+      ...prev.getOrderHistory,
+    ]
+
+    result = { ...prev }
+  }
+
+  // console.log('result', result);
+
+
+  return result
+
 }
 
 export const updateTradeHistoryQuerryFunction = (
   prev,
   { subscriptionData }
 ) => {
-  if (!subscriptionData.data) {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenTradeHistory
+
+  // console.log('prev', prev)
+  // console.log('subscription data', subscriptionData)
+  // console.log('isEmptySubscription', isEmptySubscription)
+
+  if (isEmptySubscription) {
     return prev
   }
 
-  const newOrder = JSON.parse(subscriptionData.data.listenMarketOrders)
-  let obj = Object.assign({}, prev, {
-    marketOrders: [newOrder],
-  })
+  const openOrderHasTheSameOrderIndex = prev.getTradeHistory.findIndex(
+    (el) => el.info.orderId === subscriptionData.data.listenTradeHistory.info.orderId
+  )
+  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
-  return obj
+  let result
+  // console.log('openOrderAlreadyExists', openOrderAlreadyExists);
+
+  if (openOrderAlreadyExists) {
+    prev.getTradeHistory[openOrderHasTheSameOrderIndex] = {
+      ...prev.getTradeHistory[openOrderHasTheSameOrderIndex],
+      ...subscriptionData.data.listenTradeHistory,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getTradeHistory = [
+      {...subscriptionData.data.listenTradeHistory},
+      ...prev.getTradeHistory,
+    ]
+
+    result = { ...prev }
+  }
+
+  // console.log('result', result);
+
+
+  return result
 }
