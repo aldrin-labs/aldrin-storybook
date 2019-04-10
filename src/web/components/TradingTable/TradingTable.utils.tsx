@@ -6,8 +6,6 @@ import {
   openOrdersColumnNames,
   orderHistoryColumnNames,
   tradeHistoryColumnNames,
-} from '@sb/components/TradingTable/TradingTable.mocks'
-import {
   fundsBody,
   openOrdersBody,
   orderHistoryBody,
@@ -61,18 +59,11 @@ export const combineOpenOrdersTable = (
   cancelOrderFunc: (keyId: string, orderId: string) => Promise<any>
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
-    console.log(
-      'inside combineOpenOrdersTable',
-      !openOrdersData,
-      Array.isArray(openOrdersData)
-    )
-
     return []
   }
 
-  console.log('outside combineOpenOrdersTable')
 
-  const processedOpenOrdersData = openOrdersData.map(
+  const processedOpenOrdersData = openOrdersData.filter(el => el.status === 'open').map(
     (el: OrderType, i: number) => {
       const {
         keyId,
@@ -81,6 +72,7 @@ export const combineOpenOrdersTable = (
         type,
         side,
         price,
+        filled,
         info: { orderId, stopPrice = 0, origQty = 0, executedQty = 0 },
       } = el
 
@@ -93,7 +85,7 @@ export const combineOpenOrdersTable = (
         // TODO: We should change average "price" to average param from backend when it will be ready
         price: { render: price, isNumber: true },
         amount: { render: origQty, isNumber: true },
-        filled: { render: executedQty, isNumber: true },
+        filled: { render: filled, isNumber: true },
         // TODO: We should change "total" to total param from backend when it will be ready
         total: { render: price, isNumber: true },
         // TODO: Not sure about triggerConditions
@@ -115,19 +107,11 @@ export const combineOpenOrdersTable = (
     }
   )
 
-  console.log('processedOpenOrdersData in utils', processedOpenOrdersData)
-
   return processedOpenOrdersData
 }
 
 export const combineOrderHistoryTable = (orderData: OrderType[]) => {
   if (!orderData && !Array.isArray(orderData)) {
-    console.log(
-      'inside condition combineOrderHistoryTable',
-      !orderData,
-      Array.isArray(orderData)
-    )
-
     return []
   }
 
@@ -139,6 +123,7 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
       side,
       price,
       status,
+      filled,
       info: { orderId, stopPrice = 0, origQty = 0, executedQty = 0 },
     } = el
 
@@ -151,7 +136,7 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
       // TODO: We should change average "price" to average param from backend when it will be ready
       average: { render: price, isNumber: true },
       price: { render: price, isNumber: true },
-      filled: { render: executedQty, isNumber: true },
+      filled: { render: filled, isNumber: true },
       amount: { render: origQty, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
       total: { render: price, isNumber: true },
@@ -166,17 +151,8 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
 
 export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
   if (!tradeData && !Array.isArray(tradeData)) {
-    console.log(
-      'inside condition combineTradeHistoryTable',
-      !tradeData,
-      Array.isArray(tradeData)
-    )
-
     return []
   }
-
-  console.log('outside combineTradeHistoryTable')
-  console.log('tradeData', tradeData)
 
   const processedTradeHistoryData = tradeData.map((el: TradeType) => {
     const { id, timestamp, symbol, side, price, amount } = el
@@ -223,16 +199,45 @@ export const updateOpenOrderHistoryQuerryFunction = (
   prev,
   { subscriptionData }
 ) => {
-  if (!subscriptionData.data) {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenOpenOrders
+
+  // console.log('prev', prev)
+  // console.log('subscription data', subscriptionData)
+  // console.log('isEmptySubscription', isEmptySubscription)
+
+  if (isEmptySubscription) {
     return prev
   }
 
-  const newOrder = JSON.parse(subscriptionData.data.listenMarketOrders)
-  let obj = Object.assign({}, prev, {
-    marketOrders: [newOrder],
-  })
+  const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
+    (el) => el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
+  )
+  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
-  return obj
+  let result
+  // console.log('openOrderAlreadyExists', openOrderAlreadyExists);
+
+  if (openOrderAlreadyExists) {
+    prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex] = {
+      ...prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex],
+      ...subscriptionData.data.listenOpenOrders,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getOpenOrderHistory = [
+      {...subscriptionData.data.listenOpenOrders},
+      ...prev.getOpenOrderHistory,
+    ]
+
+    result = { ...prev }
+  }
+
+  // console.log('result', result);
+
+
+  return result
 }
 
 export const updateOrderHistoryQuerryFunction = (
