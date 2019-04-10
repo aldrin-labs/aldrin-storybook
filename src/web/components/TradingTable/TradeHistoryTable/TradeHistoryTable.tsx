@@ -21,12 +21,16 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
+    const { getTradeHistory, subscribeToMore } = this.props
+
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      this.props.getTradeHistory.getTradeHistory
+      getTradeHistory.getTradeHistory
     )
     this.setState({
       tradeHistoryProcessedData,
     })
+
+    subscribeToMore()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -40,8 +44,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
   render() {
     const { tradeHistoryProcessedData } = this.state
-    console.log('this.props in TradeHistoryTable', this.props);
-    console.log('tradeHistoryProcessedData', tradeHistoryProcessedData);
 
     const {
       tab,

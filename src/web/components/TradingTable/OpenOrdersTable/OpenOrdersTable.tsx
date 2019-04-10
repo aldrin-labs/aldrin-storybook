@@ -48,13 +48,18 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
+
+    const { getOpenOrderHistory, subscribeToMore } = this.props
+
     const openOrdersProcessedData = combineOpenOrdersTable(
-      this.props.getOpenOrderHistory.getOpenOrderHistory,
+      getOpenOrderHistory.getOpenOrderHistory,
       this.onCancelOrder
     )
     this.setState({
       openOrdersProcessedData,
     })
+
+    subscribeToMore()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,9 +75,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   render() {
     const { openOrdersProcessedData } = this.state
     const { tab, tabIndex, handleTabChange, show } = this.props
-
-    console.log('this.props in OpenOrdersTable', this.props)
-    console.log('openOrdersProcessedData', openOrdersProcessedData)
 
     if (!show) {
       return null
