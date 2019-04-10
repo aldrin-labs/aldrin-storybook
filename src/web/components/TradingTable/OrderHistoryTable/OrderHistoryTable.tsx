@@ -57,8 +57,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       onFocusChange,
     } = this.props
 
-    console.log('this.props in OrderHistoryTable', this.props);
-    console.log('orderHistoryProcessedData', orderHistoryProcessedData);
+    // console.log('this.props in OrderHistoryTable', this.props);
+    // console.log('orderHistoryProcessedData', orderHistoryProcessedData);
 
     if (!show) {
       return null
