@@ -59,11 +59,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       openOrdersProcessedData,
     })
 
-    //start subscribing
     subscribeToMore()
-
-    console.log('this.props.in.did.mount', this.props);
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -74,19 +70,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     this.setState({
       openOrdersProcessedData,
     })
-
-    console.log('this.props.in componentWillReceiveProps', this.props);
   }
 
   render() {
     const { openOrdersProcessedData } = this.state
     const { tab, tabIndex, handleTabChange, show } = this.props
-
-    // console.log('this.props in OpenOrdersTable', this.props)
-    // console.log('openOrdersProcessedData', openOrdersProcessedData)
-
-    console.log('render in OpenOrdersTable');
-
 
     if (!show) {
       return null

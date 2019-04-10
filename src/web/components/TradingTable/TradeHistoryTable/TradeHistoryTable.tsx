@@ -44,8 +44,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
   render() {
     const { tradeHistoryProcessedData } = this.state
-    // console.log('this.props in TradeHistoryTable', this.props);
-    // console.log('tradeHistoryProcessedData', tradeHistoryProcessedData);
 
     const {
       tab,
