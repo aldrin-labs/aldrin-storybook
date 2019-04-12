@@ -51,32 +51,21 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       values,
       setFieldValue,
+      setFieldTouched,
+      errors,
     } = this.props
-    const amount = priceType === 'limit'
-    ? e.target.value / values.price
-    : e.target.value / values.limit
-    setFieldValue('total', toNumber(e.target.value))
-    setFieldValue('amount', toNumber(amount), false)
-  }
-
-  onPriceChange = (e: SyntheticEvent<Element>) => {
-    const {
-      values,
-      setFieldValue,
-    } = this.props
-    const total = e.target.value * values.amount
-    setFieldValue('price',toNumber( e.target.value))
-    setFieldValue('total', toNumber(total), false)
-  }
-
-  onLimitChange = (e: SyntheticEvent<Element>) => {
-    const {
-      values,
-      setFieldValue,
-    } = this.props
-    const total = e.target.value * values.amount
-    setFieldValue('limit', toNumber(e.target.value))
-    setFieldValue('total', toNumber(total), false)
+    console.log(values)
+    console.log(e.target.value === '')
+    if(errors.amount === 'Your balance is not enough' && e.target.value > values.total) return null
+    const price = priceType === 'limit' ? values.price : values.limit
+    if(price && price !== '') {
+      console.log(price)
+      const amount = e.target.value / price
+      setFieldValue('amount', toNumber(amount), false)
+      setFieldTouched('amount', true)
+    }
+    setFieldValue('total', e.target.value === '' ? null : toNumber(e.target.value))
+    setFieldTouched('total', true)
   }
 
   onAmountChange = (e: SyntheticEvent<Element>) => {
@@ -84,14 +73,50 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       values,
       setFieldValue,
+      setFieldTouched,
+      errors,
     } = this.props
+    if(errors.amount === 'Your balance is not enough' && e.target.value > values.amount) return null
     const total = priceType === 'limit'
       ? e.target.value * values.price
       : priceType === 'stop-limit'
       ? e.target.value * values.limit
       : 0
-    setFieldValue('amount', toNumber(e.target.value))
-    if (priceType !== 'market') setFieldValue('total', toNumber(total), false)
+    setFieldValue('amount', e.target.value === '' ? null : toNumber(e.target.value))
+    setFieldTouched('amount', true)
+    if (priceType !== 'market') {
+      setFieldValue('total', toNumber(total), false)
+      setFieldTouched('total', true)
+    }
+  }
+
+  onPriceChange = (e: SyntheticEvent<Element>) => {
+    const {
+      values,
+      setFieldValue,
+      setFieldTouched,
+    } = this.props
+    console.log('values', values)
+    console.log('values.amount', values.amount)
+    console.log('values.total', values.total)
+    setFieldValue('price', e.target.value === '' ? null : toNumber( e.target.value))
+    const total = e.target.value * values.amount
+    setFieldValue('total', toNumber(total), false)
+    setFieldTouched('price', true)
+    setFieldTouched('total', true)
+  }
+
+  onLimitChange = (e: SyntheticEvent<Element>) => {
+    const {
+      values,
+      setFieldValue,
+      setFieldTouched,
+    } = this.props
+    const total = e.target.value * values.amount
+    setFieldValue('limit', e.target.value === '' ? null : toNumber(e.target.value))
+    setFieldValue('total', toNumber(total), false)
+    setFieldTouched('limit', true)
+    setFieldTouched('total', true)
   }
 
   onPercentageClick = async (value: number) => {
@@ -192,13 +217,12 @@ render() {
         ? <InputTextField
           fullWidth
           name="stop"
-          value={values.stop || ''}
+          value={values.stop}
           id="stop"
           type="number"
           onChange={handleChange}
           endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
           helperText={
-            touched.stop &&
             errors.stop && (
               <FormError>{errors.stop}</FormError>
             )
@@ -209,7 +233,7 @@ render() {
             id="price"
             name="price"
             type={priceType === 'market' ? 'string' : 'number'} // if priceType is market we show Market Price in price
-            value={priceType === 'market' ? 'Market Price' : values.price || ''}
+            value={priceType === 'market' ? 'Market Price' : values.price}
             onChange={this.onPriceChange}
             endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
             disabled={priceType === 'market'}
@@ -241,7 +265,7 @@ render() {
           fullWidth
           id="limit"
           name="limit"
-          value={values.limit || ''}
+          value={values.limit}
           onChange={this.onLimitChange}
           type="number"
             endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
@@ -271,7 +295,7 @@ render() {
           fullWidth
           id="amount"
           name="amount"
-          value={values.amount || ''}
+          value={values.amount}
           onChange={this.onAmountChange}
           type="number"
           endAdornment={<InputAdornment position="end">{pair[0]}</InputAdornment>}
@@ -329,7 +353,7 @@ render() {
           <InputContainer>
             <InputTextField
               fullWidth
-              value={values.total || ''}
+              value={values.total}
               onChange={this.onTotalChange}
               id="total"
               name="total"
@@ -345,6 +369,7 @@ render() {
             <PlaseOrderDialog
               handleSubmit={handleSubmit}
               errors={errors}
+              touched={touched}
               amount={values.amount}
               validateForm={validateForm}
               battonText={
@@ -380,11 +405,13 @@ const validate = (values: FormValues, props: IProps) => {
   const validationSchema = priceType === 'limit'
     ? Yup.object().shape({
       price: Yup.number()
+      .nullable(true)
       .required()
-      .min(0),
+      .moreThan(0),
       amount: Yup.number()
+      .nullable(true)
       .required()
-      .min(0)
+      .moreThan(0)
       .max(byType === 'buy'
         ? walletValue / (
           typeof(values.price) === 'number'
@@ -396,22 +423,26 @@ const validate = (values: FormValues, props: IProps) => {
   : priceType === 'market'
   ? Yup.object().shape({
     amount: Yup.number()
+    .nullable(true)
     .required()
-    .min(0)
+    .moreThan(0)
     .max(byType === 'buy'
       ? walletValue / marketPrice
       : walletValue, 'Your balance is not enough'),
   })
   : Yup.object().shape({
     stop: Yup.number()
+    .nullable(true)
     .required()
-    .min(0),
+    .moreThan(0),
     limit: Yup.number()
+    .nullable(true)
     .required()
-    .min(0),
+    .moreThan(0),
     amount: Yup.number()
+    .nullable(true)
     .required()
-    .min(0)
+    .moreThan(0)
     .max(byType === 'buy'
       ? Math.max(walletValue / (
         typeof(values.stop) === 'number'
@@ -437,10 +468,10 @@ const formikEnhancer = withFormik<IProps, FormValues>({
   validate: validate,
   mapPropsToValues: (props) => ({
     price: props.marketPrice,
-    stop: '',
-    limit: '',
-    amount: '',
-    total: '',
+    stop: null,
+    limit: null,
+    amount: null,
+    total: null,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {byType, priceType} = props
