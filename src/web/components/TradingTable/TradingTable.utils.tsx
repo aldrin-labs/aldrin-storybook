@@ -23,7 +23,7 @@ export const getTableBody = (tab: string) =>
     ? fundsBody
     : []
 
-export const getTableHead = (tab: string) =>
+export const getTableHead = (tab: string): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames
     : tab === 'orderHistory'
@@ -43,7 +43,7 @@ export const getEndDate = (stringDate: string) =>
     ? moment().subtract(1, 'months')
     : moment().subtract(3, 'months')
 
-export const getEmptyTextPlaceholder = (tab: string) =>
+export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
     ? 'You have no open orders.'
     : tab === 'orderHistory'
@@ -52,7 +52,7 @@ export const getEmptyTextPlaceholder = (tab: string) =>
     ? 'You have no trades.'
     : tab === 'funds'
     ? 'You have no Funds.'
-    : []
+    : 'You have no assets'
 
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],

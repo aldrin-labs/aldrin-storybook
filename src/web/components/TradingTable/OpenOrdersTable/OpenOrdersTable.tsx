@@ -62,7 +62,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     subscribeToMore()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistory.getOpenOrderHistory,
       this.onCancelOrder
@@ -108,7 +108,6 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOpenOrderHistory}
       name={`getOpenOrderHistory`}
       fetchPolicy="network-only"
-      // placeholder={TablePlaceholderLoader}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
