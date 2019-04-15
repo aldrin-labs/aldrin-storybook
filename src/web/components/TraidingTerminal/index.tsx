@@ -56,7 +56,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
     console.log(values)
     console.log(e.target.value === '')
-    if(errors.amount === 'Your balance is not enough' && e.target.value > values.total) return null
+    if(
+      (errors.amount === 'Your balance is not enough'
+      || errors.total === 'Your balance is not enough')
+      && e.target.value > values.total) return null
     const price = priceType === 'limit' ? values.price : values.limit
     if(price && price !== '') {
       console.log(price)
@@ -361,6 +364,11 @@ render() {
               endAdornment={
                 (<InputAdornment position="end">{pair[1]}</InputAdornment>)
               }
+              helperText={
+                errors.total && (
+                  <FormError>{errors.total}</FormError>
+                )
+              }
             />
           </InputContainer>
         </Grid>}
@@ -408,27 +416,49 @@ const validate = (values: FormValues, props: IProps) => {
       .nullable(true)
       .required()
       .moreThan(0),
-      amount: Yup.number()
+      amount: byType === 'sell'
+      ? Yup.number()
       .nullable(true)
       .required()
       .moreThan(0)
-      .max(byType === 'buy'
-        ? walletValue / (
-          typeof(values.price) === 'number'
-          ? values.price
-          : props.marketPrice)
-        : walletValue
-      , 'Your balance is not enough'),
+      .max(walletValue, 'Your balance is not enough')
+      : Yup.number()
+      .nullable(true)
+      .required()
+      .moreThan(0),
+      total: byType === 'buy'
+      ? Yup.number()
+      .nullable(true)
+      .required()
+      .moreThan(0)
+      .max(walletValue, 'Your balance is not enough')
+      : Yup.number()
+      .nullable(true)
+      .required()
+      .moreThan(0),
   })
   : priceType === 'market'
   ? Yup.object().shape({
-    amount: Yup.number()
+    amount: byType === 'sell'
+    ? Yup.number()
     .nullable(true)
     .required()
     .moreThan(0)
-    .max(byType === 'buy'
-      ? walletValue / marketPrice
-      : walletValue, 'Your balance is not enough'),
+    .max(walletValue, 'Your balance is not enough')
+    : Yup.number()
+    .nullable(true)
+    .required()
+    .moreThan(0),
+    total: byType === 'buy'
+    ? Yup.number()
+    .nullable(true)
+    .required()
+    .moreThan(0)
+    .max(walletValue, 'Your balance is not enough')
+    : Yup.number()
+    .nullable(true)
+    .required()
+    .moreThan(0),
   })
   : Yup.object().shape({
     stop: Yup.number()
@@ -439,20 +469,26 @@ const validate = (values: FormValues, props: IProps) => {
     .nullable(true)
     .required()
     .moreThan(0),
-    amount: Yup.number()
+    amount: byType === 'sell'
+    ? Yup.number()
     .nullable(true)
     .required()
     .moreThan(0)
-    .max(byType === 'buy'
-      ? Math.max(walletValue / (
-        typeof(values.stop) === 'number'
-          ? values.stop
-          : props.marketPrice),
-        walletValue / (
-          typeof(values.limit) === 'number'
-          ? values.limit
-          : props.marketPrice))
-      : walletValue, 'Your balance is not enough'),
+    .max(walletValue, 'Your balance is not enough')
+    : Yup.number()
+    .nullable(true)
+    .required()
+    .moreThan(0),
+    total: byType === 'buy'
+    ? Yup.number()
+    .nullable(true)
+    .required()
+    .moreThan(0)
+    .max(walletValue, 'Your balance is not enough')
+    : Yup.number()
+    .nullable(true)
+    .required()
+    .moreThan(0),
   })
 
   try {
