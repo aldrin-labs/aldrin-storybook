@@ -78,7 +78,7 @@ export const combineOpenOrdersTable = (
 
       return {
         id: orderId,
-        date: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
+        date: { render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'), style: { whiteSpace: 'nowrap' } },
         pair: symbol,
         type: type,
         side: side,
@@ -129,7 +129,7 @@ export const combineOrderHistoryTable = (orderData: OrderType[]) => {
 
     return {
       id: orderId,
-      date: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
+      date: { render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'), style: { whiteSpace: 'nowrap' } },
       pair: symbol,
       type: type,
       side: side,
