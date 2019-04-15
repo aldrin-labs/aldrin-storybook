@@ -46,6 +46,15 @@ const FormError = ({ children }: any) => (
 
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
+  onStopChange = (e: SyntheticEvent<Element>) => {
+    const {
+      setFieldValue,
+      setFieldTouched,
+    } = this.props
+    setFieldValue('stop', e.target.value === '' ? null : toNumber(e.target.value))
+    setFieldTouched('stop', true)
+  }
+
   onTotalChange = (e: SyntheticEvent<Element>) => {
     const {
       priceType,
@@ -99,9 +108,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
       setFieldTouched,
     } = this.props
-    console.log('values', values)
-    console.log('values.amount', values.amount)
-    console.log('values.total', values.total)
     setFieldValue('price', e.target.value === '' ? null : toNumber( e.target.value))
     const total = e.target.value * values.amount
     setFieldValue('total', toNumber(total), false)
@@ -153,7 +159,6 @@ render() {
     priceType,
     theme: { palette },
     values,
-    handleChange,
     handleSubmit,
     touched,
     errors,
@@ -223,9 +228,10 @@ render() {
           value={values.stop}
           id="stop"
           type="number"
-          onChange={handleChange}
+          onChange={this.onStopChange}
           endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
           helperText={
+            touched.stop &&
             errors.stop && (
               <FormError>{errors.stop}</FormError>
             )
@@ -303,6 +309,7 @@ render() {
           type="number"
           endAdornment={<InputAdornment position="end">{pair[0]}</InputAdornment>}
           helperText={
+            touched.amount &&
             errors.amount && (
               <FormError>{errors.amount}</FormError>
             )
@@ -365,6 +372,7 @@ render() {
                 (<InputAdornment position="end">{pair[1]}</InputAdornment>)
               }
               helperText={
+                touched.total &&
                 errors.total && (
                   <FormError>{errors.total}</FormError>
                 )
