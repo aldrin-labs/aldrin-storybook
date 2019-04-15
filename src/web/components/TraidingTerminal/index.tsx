@@ -85,7 +85,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldTouched,
       errors,
     } = this.props
-    if(errors.amount === 'Your balance is not enough' && e.target.value > values.amount) return null
+    if(
+      (errors.amount === 'Your balance is not enough'
+      || errors.total === 'Your balance is not enough')
+      && e.target.value > values.amount) return null
     const total = priceType === 'limit'
       ? e.target.value * values.price
       : priceType === 'stop-limit'
