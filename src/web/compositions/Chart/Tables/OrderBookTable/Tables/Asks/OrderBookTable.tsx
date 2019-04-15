@@ -20,7 +20,7 @@ const MemoHead = memo(
       <Title background={primary[type]}>
         <TypographyWithCustomColor
           textColor={palette.getContrastText(primary[type])}
-          variant="subtitle1"
+          variant="subtitle2"
           align="center"
         >
           Order Book

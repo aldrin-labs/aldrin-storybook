@@ -20,18 +20,20 @@ export const FullWidthBlock = styled.div`
 `
 
 export const Title = styled.div`
+  padding: 0;
+  height: 21px;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  padding: 6px;
-  height: 40px;
   background: ${(props: { background: string }) => props.background};
   text-align: center;
   vertical-align: middle;
 
   @media (max-width: 1080px) {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
-  }
+}
 `
 
 export const Body = styled.ul`
@@ -55,7 +57,7 @@ export const Row = styled.li`
   transition: background 0.25s ease;
   background-color: ${(props: { isHead?: boolean; background: string }) =>
     props.background};
-  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '2rem')};
+  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '21px')};
   will-change: background;
 
   &:hover {
@@ -95,7 +97,7 @@ export const Head = styled.ul`
   margin: 0;
   padding: 0;
   padding-right: 6px;
-  height: 2rem;
+  height: 21px;
   width: 100%;
   background-color: ${(props: { background?: string; border?: string }) =>
     props.background};

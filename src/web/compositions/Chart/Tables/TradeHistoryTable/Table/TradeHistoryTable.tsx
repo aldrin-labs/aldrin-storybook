@@ -72,22 +72,22 @@ const MemoizedHead = memo(
       >
         <TypographyFullWidth
           textColor={palette.getContrastText(primary[type])}
-          variant="subtitle1"
+          variant="subtitle2"
           align="center"
         >
           Trade history
         </TypographyFullWidth>
 
-        <StyledArrowSign
-          variant={{
-            tableCollapsed: !tableExpanded,
-            up: !tableExpanded,
-          }}
-          style={{
-            marginRight: '0.5rem',
-            color: palette.secondary.main,
-          }}
-        />
+        {/*<StyledArrowSign*/}
+          {/*variant={{*/}
+            {/*tableCollapsed: !tableExpanded,*/}
+            {/*up: !tableExpanded,*/}
+          {/*}}*/}
+          {/*style={{*/}
+            {/*marginRight: '0.5rem',*/}
+            {/*color: palette.secondary.main,*/}
+          {/*}}*/}
+        {/*/>*/}
       </TriggerTitle>
       <Head background={palette.background.default} border={palette.divider}>
         <Row

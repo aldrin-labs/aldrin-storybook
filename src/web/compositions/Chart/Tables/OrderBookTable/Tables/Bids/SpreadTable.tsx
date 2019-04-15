@@ -77,7 +77,7 @@ const HeadRowWithMemo = memo(
   ({ primary, type, palette, quote, spread, digitsAfterDecimalForSpread }) => (
     <Head
       background={primary[type]}
-      style={{ height: '2.875rem' }}
+      style={{ height: '21px' }}
       border={'none'}
     >
       <TriggerRow isHead={true} background={primary[type]}>

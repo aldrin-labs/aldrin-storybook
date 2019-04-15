@@ -20,9 +20,9 @@ export const StyledTypography = styled(TypographyFullWidth)`
 export const TriggerTitle = styled(Title)`
   cursor: pointer;
   position: relative;
-  padding: 0.5rem;
+  padding: 0;
   transition: opacity 0.75s ease-in-out;
-  height: 2.875rem;
+  height: 21px;
   &:hover {
     opacity: 0.85;
   }
