@@ -133,6 +133,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       walletValue,
       values,
       setFieldValue,
+      setFieldTouched,
       validateForm,
       priceType,
       byType,
@@ -148,6 +149,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         : toNumber(values.price))), false)
       await setFieldValue('amount', toNumber(walletValue * value), false)
     }
+    setFieldTouched('amount', true)
+    setFieldTouched('total', true)
     validateForm()
   }
 
