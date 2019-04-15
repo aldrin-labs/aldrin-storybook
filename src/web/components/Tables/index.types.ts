@@ -1,4 +1,4 @@
-import { WithStyles, Theme, PropTypes } from '@material-ui/core'
+import { Theme, PropTypes } from '@material-ui/core'
 import React from 'react'
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
@@ -72,6 +72,7 @@ export type Head = {
   label: string
   style?: object
   sortBy?: 'default' | (() => number)
+  isSortable: boolean
 }
 
 export type action = {
@@ -96,7 +97,7 @@ export interface Props {
   columnNames?: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
   expandedRows?: ReadonlyArray<string>
-  title?: string | number
+  title?: string | number | React.ReactElement<any>
   onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
