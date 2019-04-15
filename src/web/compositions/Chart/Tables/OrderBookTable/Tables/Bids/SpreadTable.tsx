@@ -53,8 +53,8 @@ const RowFunc = ({
         </StyledTypography>
       </Cell>
       <Cell width={'45%'}>
-        style={{fontSize: '0.75rem'}}
         <StyledTypography
+          style={{fontSize: '0.75rem'}}
           textColor={green.main}
           color="default"
           noWrap={true}
