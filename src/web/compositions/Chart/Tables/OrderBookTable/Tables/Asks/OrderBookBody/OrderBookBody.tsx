@@ -93,7 +93,7 @@ class ClassBody extends Component<IProps> {
     } = this.props
 
     return (
-      <Body id="body" height={'calc(100% - 44px - 30px)'}>
+      <Body id="body" height={'calc(100% - 44px)'}>
         {data.length === 0 ? (
           <Loading centerAligned={true} />
         ) : (
