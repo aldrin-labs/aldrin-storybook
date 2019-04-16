@@ -21,6 +21,7 @@ import {
 } from '../../../SharedStyles'
 import { IProps } from './SpreadTable.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 const RowFunc = ({
   order,
@@ -42,7 +43,8 @@ const RowFunc = ({
 
       <Cell width={'45%'}>
         <StyledTypography
-          style={{fontSize: '0.75rem'}}
+          // style={{fontSize: '0.75rem'}}
+          fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
           textColor={green.main}
           color="default"
           noWrap={true}
@@ -54,7 +56,8 @@ const RowFunc = ({
       </Cell>
       <Cell width={'45%'}>
         <StyledTypography
-          style={{fontSize: '0.75rem'}}
+          // style={{fontSize: '0.75rem'}}
+          fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
           textColor={green.main}
           color="default"
           noWrap={true}
@@ -77,11 +80,7 @@ const MemoizedRow = memo(
 
 const HeadRowWithMemo = memo(
   ({ primary, type, palette, quote, spread, digitsAfterDecimalForSpread }) => (
-    <Head
-      background={primary[type]}
-      style={{ height: '21px' }}
-      border={'none'}
-    >
+    <Head background={primary[type]} style={{ height: '21px' }} border={'none'}>
       <TriggerRow isHead={true} background={primary[type]}>
         <EmptyCell width="10%" />
         <HeadCell width={'45%'}>

@@ -1,5 +1,6 @@
 import React, { Component, memo } from 'react'
 
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { Row, Cell, Body } from '@sb/components/OldTable/Table'
 import { Loading } from '@sb/components/Loading'
 import {
@@ -35,7 +36,8 @@ const OptimizedRow = memo(
         <EmptyCell width={'10%'} />
         <Cell width={'45%'}>
           <StyledTypography
-            style={{fontSize: '0.75rem'}}
+            // style={{fontSize: '0.75rem'}}
+            fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
             textColor={red.main}
             color="default"
             noWrap={true}
@@ -47,7 +49,8 @@ const OptimizedRow = memo(
         </Cell>
         <Cell width={'45%'}>
           <StyledTypography
-            style={{fontSize: '0.75rem'}}
+            fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
+            // style={{fontSize: '0.75rem'}}
             textColor={red.main}
             color="default"
             noWrap={true}

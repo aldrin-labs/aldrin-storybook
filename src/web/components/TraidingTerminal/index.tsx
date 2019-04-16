@@ -38,6 +38,7 @@ import {
   InputTextField,
 } from './styles'
 import { toNumber } from 'lodash-es';
+import {CSS_CONFIG} from '@sb/config/cssConfig'
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
@@ -147,7 +148,8 @@ render() {
           <TypographyWithCustomColor
             textColor
             noWrap
-            variant="subtitle1"
+            variant="subtitle2"
+            fontSize={CSS_CONFIG.chart.headCell.fontSize}
           >
             {
               typeIsBuy
@@ -160,7 +162,8 @@ render() {
             <TypographyWithCustomColor
               align="right"
               textColor
-              variant="subtitle1"
+              variant="subtitle2"
+              fontSize={CSS_CONFIG.chart.headCell.fontSize}
               noWrap
             >
               {`${walletValue} ${
@@ -179,6 +182,7 @@ render() {
           <TypographyWithCustomColor
             textColor
             variant="body2"
+            fontSize={CSS_CONFIG.chart.content.fontSize}
           >
             {priceType === 'stop-limit'
               ? 'Stop:'
@@ -228,6 +232,7 @@ render() {
           <TypographyWithCustomColor
             textColor
             variant="body2"
+            fontSize={CSS_CONFIG.chart.content.fontSize}
           >
             Limit:
           </TypographyWithCustomColor>
@@ -260,6 +265,7 @@ render() {
           <TypographyWithCustomColor
             textColor
             variant="body2"
+            fontSize={CSS_CONFIG.chart.content.fontSize}
           >
             Amount:
           </TypographyWithCustomColor>
@@ -319,6 +325,7 @@ render() {
           <TypographyWithCustomColor
             textColor
             variant="body2"
+            fontSize={CSS_CONFIG.chart.content.fontSize}
           >
             Total:
           </TypographyWithCustomColor>

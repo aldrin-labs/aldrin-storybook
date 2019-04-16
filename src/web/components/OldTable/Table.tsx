@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { customAquaScrollBar } from '@sb/styles/cssUtils'
 
 export const Table = styled.div`
@@ -75,7 +76,7 @@ export const Cell = styled.div`
   list-style: none;
   padding: 0rem 0.4rem;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: ${CSS_CONFIG.chart.bodyCell.fontSize};
   flex-basis: ${(props: { width: string }) => props.width};
   text-align: center;
   vertical-align: middle;
@@ -86,7 +87,7 @@ export const Cell = styled.div`
 
 export const HeadCell = styled(Cell)`
   font-weight: 400;
-  font-size: 0.75rem;
+  font-size: ${CSS_CONFIG.chart.headCell.fontSize};
   white-space: nowrap;
   display: flex;
   width: 7%;
