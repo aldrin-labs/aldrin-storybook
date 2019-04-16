@@ -178,9 +178,9 @@ export default class Table extends Component<IProps, IState> {
             )}
           </Body>
           <TableInput>
-            <Item background={palette.background.paper} secondary={palette.secondary.main} color={palette.text.primary}>
+            <Item background={palette.background.paper} secondary={palette.secondary.main} color={palette.text.primary} style={{ minWidth: '125px'}}>
               <SelectCoinList
-                placeholder={`Search symbol`}
+                placeholder={`Search coin`}
                 value={
                   this.state.name
                     ? [{ value: this.state.value, label: this.state.name }]

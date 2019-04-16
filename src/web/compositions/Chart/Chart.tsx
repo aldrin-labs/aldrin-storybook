@@ -38,6 +38,7 @@ import LayoutSelector from '@core/components/LayoutSelector'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
+import ComingSoon from '@sb/components/ComingSoon'
 
 import {
   Container,
@@ -56,6 +57,7 @@ import { IProps, IState } from './Chart.types'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { MASTER_BUILD } from '@core/utils/config'
 
 @withTheme()
 
@@ -332,10 +334,12 @@ class Chart extends React.Component<IProps, IState> {
       </Container>
       <Container container spacing={16}>
         <TradingTabelContainer item sm={8}>
+          {MASTER_BUILD && <ComingSoon />}
           <TradingTable />
         </TradingTabelContainer>
         <TradingTerminalContainer item sm={4}>
-        <TradingComponent
+          {MASTER_BUILD && <ComingSoon />}
+          <TradingComponent
           activeKey={activeKey}
           activeExchange={activeExchange}
           pair={[base, quote]}
