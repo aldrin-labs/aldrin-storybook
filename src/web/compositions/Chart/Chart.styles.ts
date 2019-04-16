@@ -34,6 +34,7 @@ export const TablesBlockWrapper = styled(Card)`
 export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
+  padding: 3px;
 
   height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   overflow: hidden;
