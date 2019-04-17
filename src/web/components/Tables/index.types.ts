@@ -1,5 +1,5 @@
 import { Theme, PropTypes } from '@material-ui/core'
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
 import { Classes } from 'jss'
@@ -10,6 +10,7 @@ export type renderCellType = {
   numeric: boolean
   padding?: Padding
   variant?: 'body' | 'footer' | 'head'
+  tableStyles?: TableStyles
 }
 
 export type T = string | number
@@ -83,6 +84,12 @@ export type action = {
   readonly color?: PropTypes.Color
 }
 
+export type TableStyles = {
+  heading?: CSSProperties
+  title?: CSSProperties
+  cell?: CSSProperties
+}
+
 export interface Props {
   classes?: Classes
   withCheckboxes?: boolean
@@ -110,6 +117,7 @@ export interface Props {
   borderBottom?: boolean
   rowsWithHover?: boolean
   emptyTableText?: string
+  tableStyles?: TableStyles
 }
 
 export type Pagination = {

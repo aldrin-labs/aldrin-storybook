@@ -23,7 +23,7 @@ import {
   Head,
   NotExpandableRow,
   renderCellType,
-  Pagination,
+  Pagination, TableStyles,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import {
@@ -250,13 +250,16 @@ const renderCell = ({
   numeric,
   variant = 'body',
   padding = 'default',
+  tableStyles = {
+    cell: {},
+  },
 }: renderCellType) => {
   if (cell !== null && typeof cell === 'object') {
     return (
       <CustomTableCell
         scope="row"
         variant={variant}
-        style={{ color: cell.color, ...cell.style }}
+        style={{ color: cell.color, ...cell.style, ...tableStyles.cell }}
         key={id}
         padding={padding}
         numeric={numeric}
@@ -268,6 +271,7 @@ const renderCell = ({
   if (typeof cell !== 'object') {
     return (
       <CustomTableCell
+        style={{ ...tableStyles.cell }}
         padding={padding}
         scope="row"
         variant={variant}
@@ -316,11 +320,12 @@ const renderHeadCell = ({
 const renderCells = ({
   row,
   renderCellObject,
-  padding,
+  padding, tableStyles,
 }: {
   row: NotExpandableRow
   renderCellObject?: (cell: Cell, key: string) => renderCellType
   padding?: Padding
+  tableStyles?: TableStyles
 }) => {
   const reduce = Object.keys(row)
     .map((key) => {
@@ -341,7 +346,7 @@ const renderCells = ({
             padding: padding ? padding : 'default',
           }
 
-      return renderCell(renderCellArg)
+      return renderCell({ tableStyles, ...renderCellArg })
     })
     .filter(Boolean)
 
@@ -446,6 +451,11 @@ const CustomTable = (props: Props) => {
     borderBottom = false,
     rowsWithHover = true,
     emptyTableText = 'no data',
+    tableStyles = {
+      heading: {},
+      title: {},
+      cell: {},
+    },
   } = props
 
   if (
@@ -530,17 +540,17 @@ const CustomTable = (props: Props) => {
             {(columnNames as ReadonlyArray<Head>).map((column) => {
               return (
                 <CustomTableCell
-                  style={{ ...column.style, ...isOnTop }}
+                  style={{ ...column.style, ...isOnTop, ...tableStyles.heading }}
                   variant="head"
                   padding={column.disablePadding ? 'none' : padding}
                   numeric={column.isNumber}
                   key={column.id}
                 >
                   {renderHeadCell({
+                    sort,
                     isSortable:
                       typeof sort !== 'undefined' &&
                       column.isSortable !== false,
-                    sort,
                     cell: column,
                   })}
                 </CustomTableCell>
@@ -609,7 +619,7 @@ const CustomTable = (props: Props) => {
                           })}
                         </CustomTableCell>
                       )}
-                      {renderCells({ row, padding })}
+                      {renderCells({ row, padding, tableStyles })}
                     </TableRow>
                     {expandable && // rendering content of expanded row if it is expandable
                       (row!.expandableContent! as ReadonlyArray<
@@ -624,7 +634,7 @@ const CustomTable = (props: Props) => {
                           >
                             <TableRow className={classes.rowExpanded}>
                               <CustomTableCell padding="checkbox" />
-                              {renderCells({ padding, row: collapsedRows })}
+                              {renderCells({ padding, tableStyles, row: collapsedRows })}
                             </TableRow>
                           </Grow>
                         )
