@@ -43,6 +43,16 @@ import { toNumber } from 'lodash-es';
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
 )
+
+const toFixedTrunc = (value, n) => {
+  const v = value.toString().split('.');
+  if (n <= 0) return v[0];
+  let f = v[1] || '';
+  if (f.length > n) return `${v[0]}.${f.substr(0,n)}`;
+  while (f.length < n) f += '0';
+  return `${v[0]}.${f}`
+}
+
 @withTheme()
 
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
@@ -64,7 +74,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         value.toString().split('.')[1]
         && value.toString().split('.')[1].length > decimals[index]
         ) {
-          setFieldValue(fild, numberValue.toFixed(decimals[index]), false)
+          setFieldValue(fild, toFixedTrunc(numberValue, decimals[index]), false)
         }
      else setFieldValue(fild, numberValue, false)
   }
