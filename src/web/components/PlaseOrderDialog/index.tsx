@@ -18,6 +18,7 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
       text,
       amount,
       errors,
+      touched,
       validateForm,
     } = props
 
@@ -28,7 +29,9 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
 
     const handleOpen = () => {
       validateForm()
-      if (_.isEmpty(errors) && amount !== '') handleClickOpen()
+      console.log(errors)
+      console.log(touched)
+      if (_.isEmpty(errors) && !_.isEmpty(touched)) handleClickOpen()
     }
 
     return (<div>

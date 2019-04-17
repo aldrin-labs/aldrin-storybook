@@ -21,12 +21,16 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
+    const { getOrderHistory, subscribeToMore } = this.props
+
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      this.props.getOrderHistory.getOrderHistory
+      getOrderHistory.getOrderHistory
     )
     this.setState({
       orderHistoryProcessedData,
     })
+
+    subscribeToMore()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -56,9 +60,6 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       onDatesChange,
       onFocusChange,
     } = this.props
-
-    console.log('this.props in OrderHistoryTable', this.props);
-    console.log('orderHistoryProcessedData', orderHistoryProcessedData);
 
     if (!show) {
       return null
