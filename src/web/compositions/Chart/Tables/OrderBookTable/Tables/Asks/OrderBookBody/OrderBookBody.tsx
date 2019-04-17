@@ -36,7 +36,6 @@ const OptimizedRow = memo(
         <EmptyCell width={'10%'} />
         <Cell width={'45%'}>
           <StyledTypography
-            // style={{fontSize: '0.75rem'}}
             fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
             textColor={red.main}
             color="default"
@@ -50,7 +49,6 @@ const OptimizedRow = memo(
         <Cell width={'45%'}>
           <StyledTypography
             fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
-            // style={{fontSize: '0.75rem'}}
             textColor={red.main}
             color="default"
             noWrap={true}

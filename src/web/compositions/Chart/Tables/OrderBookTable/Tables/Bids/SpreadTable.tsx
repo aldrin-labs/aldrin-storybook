@@ -43,7 +43,6 @@ const RowFunc = ({
 
       <Cell width={'45%'}>
         <StyledTypography
-          // style={{fontSize: '0.75rem'}}
           fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
           textColor={green.main}
           color="default"
@@ -56,7 +55,6 @@ const RowFunc = ({
       </Cell>
       <Cell width={'45%'}>
         <StyledTypography
-          // style={{fontSize: '0.75rem'}}
           fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
           textColor={green.main}
           color="default"

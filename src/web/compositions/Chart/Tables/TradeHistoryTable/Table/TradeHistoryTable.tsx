@@ -77,17 +77,6 @@ const MemoizedHead = memo(
         >
           Trade history
         </TypographyFullWidth>
-
-        {/*<StyledArrowSign*/}
-          {/*variant={{*/}
-            {/*tableCollapsed: !tableExpanded,*/}
-            {/*up: !tableExpanded,*/}
-          {/*}}*/}
-          {/*style={{*/}
-            {/*marginRight: '0.5rem',*/}
-            {/*color: palette.secondary.main,*/}
-          {/*}}*/}
-        {/*/>*/}
       </TriggerTitle>
       <Head background={palette.background.default} border={palette.divider}>
         <Row
