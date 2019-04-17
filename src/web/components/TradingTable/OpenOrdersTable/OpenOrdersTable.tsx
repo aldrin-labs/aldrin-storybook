@@ -11,6 +11,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
@@ -83,6 +84,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
+        tableStyles={{
+          heading: {
+            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+          cell: {
+            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>

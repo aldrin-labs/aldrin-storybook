@@ -14,6 +14,7 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 class OrderHistoryTable extends React.PureComponent<IProps> {
   state = {
@@ -68,6 +69,14 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
+        tableStyles={{
+          heading: {
+            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+          cell: {
+            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
