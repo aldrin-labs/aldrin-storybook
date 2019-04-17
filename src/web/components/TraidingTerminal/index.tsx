@@ -23,7 +23,8 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 import {
   IProps,
   FormValues,
-  IPropsWithFormik
+  IPropsWithFormik,
+  priceType,
 } from './types'
 
 import {
@@ -46,12 +47,33 @@ const FormError = ({ children }: any) => (
 
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
+  componentWillReceiveProps(newProps: IPropsWithFormik) {
+    if (this.props.priceType !== newProps.priceType) {
+      this.props.setTouched([])
+    }
+  }
+
+  setFormatted = (fild: priceType, value: any, index: number) => {
+    const {
+      decimals = [8, 8],
+      setFieldValue,
+    } = this.props
+    const numberValue = toNumber(value)
+    if (value === '') setFieldValue(fild, '', false)
+    else if (
+        value.toString().split('.')[1]
+        && value.toString().split('.')[1].length > decimals[index]
+        ) {
+          setFieldValue(fild, numberValue.toFixed(decimals[index]), false)
+        }
+     else setFieldValue(fild, numberValue, false)
+  }
+
   onStopChange = (e: SyntheticEvent<Element>) => {
     const {
-      setFieldValue,
       setFieldTouched,
     } = this.props
-    setFieldValue('stop', e.target.value === '' ? null : toNumber(e.target.value))
+    this.setFormatted('stop', e.target.value, 1)
     setFieldTouched('stop', true)
   }
 
@@ -59,7 +81,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       priceType,
       values,
-      setFieldValue,
       setFieldTouched,
       errors,
     } = this.props
@@ -70,10 +91,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const price = priceType === 'limit' ? values.price : values.limit
     if(price && price !== '') {
       const amount = e.target.value / price
-      setFieldValue('amount', toNumber(amount), false)
+      this.setFormatted('amount', amount, 0)
       setFieldTouched('amount', true)
     }
-    setFieldValue('total', e.target.value === '' ? null : toNumber(e.target.value))
+    this.setFormatted('total', e.target.value, 1)
     setFieldTouched('total', true)
   }
 
@@ -81,7 +102,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       priceType,
       values,
-      setFieldValue,
       setFieldTouched,
       errors,
     } = this.props
@@ -94,10 +114,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       : priceType === 'stop-limit'
       ? e.target.value * values.limit
       : 0
-    setFieldValue('amount', e.target.value === '' ? null : toNumber(e.target.value))
+    this.setFormatted('amount', e.target.value, 0)
     setFieldTouched('amount', true)
     if (priceType !== 'market') {
-      setFieldValue('total', toNumber(total), false)
+      this.setFormatted('total', total, 1)
       setFieldTouched('total', true)
     }
   }
@@ -105,12 +125,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   onPriceChange = (e: SyntheticEvent<Element>) => {
     const {
       values,
-      setFieldValue,
       setFieldTouched,
     } = this.props
-    setFieldValue('price', e.target.value === '' ? null : toNumber( e.target.value))
+    this.setFormatted('price', e.target.value, 1)
     const total = e.target.value * values.amount
-    setFieldValue('total', toNumber(total), false)
+    this.setFormatted('total', total, 1)
     setFieldTouched('price', true)
     setFieldTouched('total', true)
   }
@@ -118,12 +137,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   onLimitChange = (e: SyntheticEvent<Element>) => {
     const {
       values,
-      setFieldValue,
       setFieldTouched,
     } = this.props
     const total = e.target.value * values.amount
-    setFieldValue('limit', e.target.value === '' ? null : toNumber(e.target.value))
-    setFieldValue('total', toNumber(total), false)
+    this.setFormatted('limit', e.target.value, 1)
+    this.setFormatted('total', total, 1)
     setFieldTouched('limit', true)
     setFieldTouched('total', true)
   }
@@ -132,22 +150,21 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       walletValue,
       values,
-      setFieldValue,
       setFieldTouched,
       validateForm,
       priceType,
       byType,
     } = this.props
     if (byType === 'buy') {
-      await setFieldValue('total', toNumber(walletValue * value), false)
-      await setFieldValue('amount', toNumber(walletValue * value / (priceType === 'stop-limit'
-        ? toNumber(values.limit)
-        : toNumber(values.price))), false)
+      await this.setFormatted('total', walletValue * value, 1)
+      await this.setFormatted('amount', walletValue * value / (priceType === 'stop-limit'
+        ? values.limit
+        : values.price), 0)
     } else {
-      await setFieldValue('total', toNumber(walletValue * value / (priceType === 'stop-limit'
-        ? toNumber(values.limit)
-        : toNumber(values.price))), false)
-      await setFieldValue('amount', toNumber(walletValue * value), false)
+      await this.setFormatted('total', walletValue * value / (priceType === 'stop-limit'
+        ? values.limit
+        : values.price), 1)
+      await this.setFormatted('amount', walletValue * value, 0)
     }
     setFieldTouched('amount', true)
     setFieldTouched('total', true)
@@ -166,9 +183,10 @@ render() {
     touched,
     errors,
     validateForm,
+    decimals,
   } = this.props
 
-  const { background, primary, type, divider } = palette
+  const { background, divider } = palette
 
   const typeIsBuy = byType === 'buy'
   return (
