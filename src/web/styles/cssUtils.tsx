@@ -156,6 +156,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
     padding: ${(props: { dateInputPadding: string }) => props.dateInputPadding || '5px'};
     font-size: 0.875rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
+    font-size: ${(props: { fontSize?: string }) => props.fontSize ? props.fontSize : ''};
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) => props.dateInputHeight || '36px'};
     color: ${(props: { color: string }) => props.color};
@@ -163,6 +164,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateRangePicker_picker {
+    font-size: ${(props: { fontSize?: string }) => props.fontSize ? props.fontSize : ''};
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     z-index: ${(props: { zIndexPicker: number }) => props.zIndexPicker || 10};
   }
