@@ -6,6 +6,7 @@ import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
 import { TitleSecondRowContainer, TitleButton } from '../TradingTable.styles'
 import { IProps } from './TradingTitle.types'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 @withTheme()
 export default class TradingTitle extends React.PureComponent<IProps> {
@@ -71,6 +72,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
         <StyledWrapperForDateRangePicker
           color={primary}
           fontFamily={fontFamily}
+          fontSize={CSS_CONFIG.chart.content.fontSize}
           style={{ marginLeft: '18px' }}
           zIndexPicker={200}
           dateInputHeight={`24px`}
