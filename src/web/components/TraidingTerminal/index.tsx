@@ -44,6 +44,7 @@ const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
 )
 
+// function is removing all decimals after set number without rounding 
 const toFixedTrunc = (value, n) => {
   const v = value.toString().split('.');
   if (n <= 0) return v[0];
