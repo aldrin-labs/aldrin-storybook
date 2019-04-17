@@ -22,7 +22,7 @@
     "typeRoots": ["./node_modules/@types", "./typings"],
     "paths": {
       "@core/*": ["src/core/src/*"],
-      "@sb/*": ["src/web/sb/*"],
+      "@sb/*": ["src/web/*"],
       "@components/*": ["src/web/components/*"],
       "@compositions/*": ["src/web/compositions/*"],
       "@styles/*": ["src/web/styles/*"],

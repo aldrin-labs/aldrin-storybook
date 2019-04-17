@@ -1,5 +1,5 @@
-import { WithStyles, Theme, PropTypes } from '@material-ui/core'
-import React from 'react'
+import { Theme, PropTypes } from '@material-ui/core'
+import React, { CSSProperties } from 'react'
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
 import { Classes } from 'jss'
@@ -10,6 +10,7 @@ export type renderCellType = {
   numeric: boolean
   padding?: Padding
   variant?: 'body' | 'footer' | 'head'
+  tableStyles?: TableStyles
 }
 
 export type T = string | number
@@ -72,6 +73,7 @@ export type Head = {
   label: string
   style?: object
   sortBy?: 'default' | (() => number)
+  isSortable: boolean
 }
 
 export type action = {
@@ -80,6 +82,12 @@ export type action = {
   readonly style: object
   readonly icon: React.ComponentType<SvgIconProps>
   readonly color?: PropTypes.Color
+}
+
+export type TableStyles = {
+  heading?: CSSProperties
+  title?: CSSProperties
+  cell?: CSSProperties
 }
 
 export interface Props {
@@ -96,7 +104,7 @@ export interface Props {
   columnNames?: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
   expandedRows?: ReadonlyArray<string>
-  title?: string | number
+  title?: string | number | React.ReactElement<any>
   onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
@@ -109,6 +117,7 @@ export interface Props {
   borderBottom?: boolean
   rowsWithHover?: boolean
   emptyTableText?: string
+  tableStyles?: TableStyles
 }
 
 export type Pagination = {

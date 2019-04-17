@@ -72,22 +72,11 @@ const MemoizedHead = memo(
       >
         <TypographyFullWidth
           textColor={palette.getContrastText(primary[type])}
-          variant="subtitle1"
+          variant="subtitle2"
           align="center"
         >
           Trade history
         </TypographyFullWidth>
-
-        <StyledArrowSign
-          variant={{
-            tableCollapsed: !tableExpanded,
-            up: !tableExpanded,
-          }}
-          style={{
-            marginRight: '0.5rem',
-            color: palette.secondary.main,
-          }}
-        />
       </TriggerTitle>
       <Head background={palette.background.default} border={palette.divider}>
         <Row
@@ -182,7 +171,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
           <Body
             data-e2e="tradeHistory__body"
             background={background.default}
-            height="42vh"
+            height="44vh"
           >
             {data.length === 0 && tableExpanded ? (
               <Loading centerAligned={true} />

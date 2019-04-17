@@ -1,5 +1,6 @@
 import React, { Component, memo } from 'react'
 
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { Row, Cell, Body } from '@sb/components/OldTable/Table'
 import { Loading } from '@sb/components/Loading'
 import {
@@ -35,6 +36,7 @@ const OptimizedRow = memo(
         <EmptyCell width={'10%'} />
         <Cell width={'45%'}>
           <StyledTypography
+            fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
             textColor={red.main}
             color="default"
             noWrap={true}
@@ -46,6 +48,7 @@ const OptimizedRow = memo(
         </Cell>
         <Cell width={'45%'}>
           <StyledTypography
+            fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
             textColor={red.main}
             color="default"
             noWrap={true}
@@ -91,7 +94,7 @@ class ClassBody extends Component<IProps> {
     } = this.props
 
     return (
-      <Body id="body" height={'calc(100% - 44px - 30px)'}>
+      <Body id="body" height={'calc(100% - 44px)'}>
         {data.length === 0 ? (
           <Loading centerAligned={true} />
         ) : (

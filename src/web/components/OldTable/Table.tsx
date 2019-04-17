@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { customAquaScrollBar } from '@sb/styles/cssUtils'
 
 export const Table = styled.div`
@@ -20,18 +21,20 @@ export const FullWidthBlock = styled.div`
 `
 
 export const Title = styled.div`
+  padding: 0;
+  height: 21px;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  padding: 6px;
-  height: 40px;
   background: ${(props: { background: string }) => props.background};
   text-align: center;
   vertical-align: middle;
 
   @media (max-width: 1080px) {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
-  }
+}
 `
 
 export const Body = styled.ul`
@@ -55,7 +58,7 @@ export const Row = styled.li`
   transition: background 0.25s ease;
   background-color: ${(props: { isHead?: boolean; background: string }) =>
     props.background};
-  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '2rem')};
+  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '21px')};
   will-change: background;
 
   &:hover {
@@ -73,7 +76,7 @@ export const Cell = styled.div`
   list-style: none;
   padding: 0rem 0.4rem;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: ${CSS_CONFIG.chart.bodyCell.fontSize};
   flex-basis: ${(props: { width: string }) => props.width};
   text-align: center;
   vertical-align: middle;
@@ -84,7 +87,7 @@ export const Cell = styled.div`
 
 export const HeadCell = styled(Cell)`
   font-weight: 400;
-  font-size: 0.75rem;
+  font-size: ${CSS_CONFIG.chart.headCell.fontSize};
   white-space: nowrap;
   display: flex;
   width: 7%;
@@ -95,7 +98,7 @@ export const Head = styled.ul`
   margin: 0;
   padding: 0;
   padding-right: 6px;
-  height: 2rem;
+  height: 21px;
   width: 100%;
   background-color: ${(props: { background?: string; border?: string }) =>
     props.background};

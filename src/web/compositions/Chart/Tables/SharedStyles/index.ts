@@ -24,7 +24,7 @@ export const RowWithVolumeChart = styled.div`
 
   background-color: ${(props: { isHead?: boolean; background: string }) =>
     props.background};
-  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '2rem')};
+  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '21px')};
 
   &:before {
     position: absolute;

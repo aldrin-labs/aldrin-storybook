@@ -24,6 +24,7 @@ import {
 } from './styles'
 
 import { IProps } from './types'
+import {CSS_CONFIG} from '@sb/config/cssConfig'
 
 const styles = theme => ({
   appBar: {
@@ -37,6 +38,7 @@ const styles = theme => ({
     minHeight: 30,
   },
   tabRoot: {
+    fontSize: CSS_CONFIG.chart.title.fontSize,
     minWidth: 60,
     minHeight: 30,
     '&$tabSelected': {

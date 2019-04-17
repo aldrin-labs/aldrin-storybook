@@ -11,6 +11,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
@@ -62,7 +63,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     subscribeToMore()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistory.getOpenOrderHistory,
       this.onCancelOrder
@@ -83,6 +84,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         withCheckboxes={false}
+        tableStyles={{
+          heading: {
+            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+          cell: {
+            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
@@ -108,7 +117,6 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOpenOrderHistory}
       name={`getOpenOrderHistory`}
       fetchPolicy="network-only"
-      // placeholder={TablePlaceholderLoader}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
