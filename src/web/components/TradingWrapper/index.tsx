@@ -62,6 +62,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
     classes,
     priceType,
     placeOrder,
+    decimals,
   } = props
   return (
   <ScrollWrapper>
@@ -75,6 +76,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           walletValue={funds[1]}
           marketPrice={price}
           confirmOperation={placeOrder}
+          decimals={decimals}
         />
       </TerminalContainer>
     </Grid>
@@ -87,6 +89,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           walletValue={funds[0]}
           marketPrice={price}
           confirmOperation={placeOrder}
+          decimals={decimals}
         />
       </TerminalContainer>
     </Grid>
@@ -112,6 +115,7 @@ class SimpleTabs extends React.Component {
       funds,
       price,
       placeOrder,
+      decimals,
    } = this.props
 
     return (
@@ -145,6 +149,7 @@ class SimpleTabs extends React.Component {
           funds={funds}
           price={price}
           placeOrder={placeOrder}
+          decimals={decimals}
         />
       </TablesBlockWrapper>
     )

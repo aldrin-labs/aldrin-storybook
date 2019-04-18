@@ -37,6 +37,7 @@ import withAuth from '@core/hoc/withAuth'
 import LayoutSelector from '@core/components/LayoutSelector'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
+import KeySelector from '@core/components/KeySelector'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
 import ComingSoon from '@sb/components/ComingSoon'
 
@@ -296,18 +297,12 @@ class Chart extends React.Component<IProps, IState> {
       },
       themeMode,
       activeExchange,
-      keysNames: { myPortfolios },
     } = this.props
 
     if (!currencyPair) {
       return
     }
     const [base, quote] = currencyPair.split('_')
-
-    const filteredKeys = myPortfolios[0].keys.filter(key => key.exchange === activeExchange.name)
-
-    const activeKey = filteredKeys.length ? filteredKeys[0] : ''
-    const toggler = this.renderToggler()
 
     return (
       <div>
@@ -346,7 +341,6 @@ class Chart extends React.Component<IProps, IState> {
         <TradingTerminalContainer item sm={4} style={{ flex: 'auto' }}>
           {MASTER_BUILD && <ComingSoon />}
           <TradingComponent
-          activeKey={activeKey}
           activeExchange={activeExchange}
           pair={[base, quote]}
         />
@@ -442,6 +436,12 @@ class Chart extends React.Component<IProps, IState> {
           currencyPair={currencyPair}
         />
 
+        {view === 'default' && (
+          <KeySelector
+            exchange={activeExchange}
+          />
+        )}
+
         <AutoSuggestSelect
           value={view === 'default' && currencyPair}
           id={'currencyPair'}
@@ -530,12 +530,6 @@ export default withAuth(
       withOutSpinner: false,
       withTableLoader: false,
       name: 'getCharts',
-    }),
-    queryRendererHoc({
-      query: keysNames,
-      withOutSpinner: false,
-      withTableLoader: false,
-      name: 'keysNames',
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(

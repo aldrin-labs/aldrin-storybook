@@ -9,10 +9,13 @@ export interface FormValues {
   total: number | string
 }
 
+export type priceType = 'limit' | 'market' | 'stop-limit'
+
 export interface IProps {
   byType: 'buy' | 'sell'
-  priceType: 'limit' | 'market' | 'stop-limit'
+  priceType: priceType
   pair: [string, string]
+  decimals: [number, number]
   marketPrice: number
   theme: Theme
   walletValue: number
