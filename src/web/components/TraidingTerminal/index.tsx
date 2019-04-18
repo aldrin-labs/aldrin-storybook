@@ -197,7 +197,7 @@ render() {
     validateForm,
     decimals,
   } = this.props
-
+  
   const { background, divider } = palette
 
   const typeIsBuy = byType === 'buy'
@@ -568,7 +568,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           limit: values.limit,
           amount: values.amount,
         }
-      props.confirmOperation(byType, priceType, filtredValues)
+      const result = await props.confirmOperation(byType, priceType, filtredValues)
+      props.showOrderResult(result)
       resetForm()
       setSubmitting(false)
     }
