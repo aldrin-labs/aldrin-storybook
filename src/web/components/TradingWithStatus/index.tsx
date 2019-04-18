@@ -8,16 +8,12 @@ import TradingWrapper from '../TradingWrapper'
 const canselStyeles = theme => ({
   icon: {
     fontSize: 20,
-  },
-  snackbar: {
-    margin: theme.spacing.unit,
-  },
+  }
 })
 
 const snackStyeles = theme => ({
-  snackbar: {
-    margin: theme.spacing.unit,
-  },
+  success: { backgroundColor: theme.customPalette.green.main },
+  error: { backgroundColor: theme.customPalette.red.main },
 })
 
 const CloseButton = withStyles(canselStyeles)((props) => (
@@ -39,6 +35,7 @@ class App extends React.Component {
           <>
           <Button
             size="small"
+            color="inherit"
             onClick={() => this.props.canselOrder(result.orderId)}
           >
             {'Cancel'}
@@ -82,7 +79,8 @@ const IntegrationNotistack = ({classes, ...otherProps}) => {
       <CloseButton />
     )}
     classes={{
-      variantError: classes.snackbar,
+      variantSuccess: classes.success,
+      variantError: classes.error,
     }}
     >
       <MyApp
