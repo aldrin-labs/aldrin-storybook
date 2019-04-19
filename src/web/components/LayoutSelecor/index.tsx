@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 import { withTheme, withStyles } from '@material-ui/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 
 import { components } from 'react-select'
+
+import { Loading } from '@sb/components/index'
 
 import { SaveLayoutDialog } from '@sb/components/SaveLayoutDialog'
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
@@ -19,43 +21,27 @@ const ActionButton = withStyles(() => ({
   root: { padding: 6 },
 }))(IconButton)
 
-const LayoutSelecorComponent = ({...props}) => {
-
-  const {
-    layouts,
-    saveLayout,
-    theme: {
-      palette: { divider },
-    },
-    setTopMarkets,
-    setTopCoinInPortfolio,
-    removeLayout,
-    charts,
-    userId,
-    themeMode,
-    loadLayout,
-    chartApiUrl,
-  } = props
-
-  let suggestions = []
-
-  if (layouts) {
-    suggestions = layouts
-      .map((suggestion: any) => ({
-        value: suggestion.name,
-        label: suggestion.name,
-      }))
+class LayoutSelecorComponent extends Component {
+  state = {
+    layoutSaving: false,
   }
 
-  const saveLayoutWithCharts = (name: string) => {
+  saveLayoutWithCharts = (name: string) => {
+    const {
+      saveLayout,
+      charts,
+      userId,
+      themeMode,
+      chartApiUrl,
+    } = this.props
     saveLayout(name)
     if (charts.length > 0) {
       let i = 0
-      let id = null
       const savingOnCallback = (event) => {
         i = i + 1
         if (i === charts.length) {
           window.removeEventListener('message', savingOnCallback)
+          this.setState({layoutSaving: false})
           return null
         }
 
@@ -70,10 +56,11 @@ const LayoutSelecorComponent = ({...props}) => {
             name: `${name}index${i}`,
           }),
             `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
-          ), 1000)}
+          ), 100)}
         }
 
       window.addEventListener('message', savingOnCallback)
+      this.setState({layoutSaving: true})
 
       const chart = charts[0]
       const [base, quote] = chart.split('_')
@@ -92,7 +79,14 @@ const LayoutSelecorComponent = ({...props}) => {
   }
 
 
-  const loadLayoutWithCharts = (name: string) => {
+  loadLayoutWithCharts = (name: string) => {
+    const {
+      layouts,
+      userId,
+      themeMode,
+      loadLayout,
+      chartApiUrl,
+    } = this.props
     loadLayout(name)
     const chartsInLayout = layouts ? layouts.find((layout => layout.name === name)).charts: []
 
@@ -113,50 +107,80 @@ const LayoutSelecorComponent = ({...props}) => {
     })}, 1000)
   }
 
-  const handleChange = ({ value }: {value: string}) => {
+  handleChange = ({ value }: {value: string}) => {
     if (!value) {
       return
     }
-    loadLayoutWithCharts(value)
+    this.loadLayoutWithCharts(value)
   }
 
-  const Option = (optionProps: any) => (
-    <OptionContainer>
-      <components.Option {...optionProps} />
-      <ActionButton aria-label="Delete" onClick={() => { removeLayout(optionProps.value); } }>
-        <DeleteIcon fontSize="small" />
-      </ActionButton>
-    </OptionContainer>
-  )
-  return (
-    <>
-      <TransparentExtendedFAB
-        onClick={setTopMarkets}
-      >
-        Top Marketcap Charts
-      </TransparentExtendedFAB>
-      <TransparentExtendedFAB
-        onClick={setTopCoinInPortfolio}
-      >
-        Top Portfolio Charts
-      </TransparentExtendedFAB>
-      <SaveLayoutDialog
-        saveLayout={saveLayoutWithCharts}
-      />
-      <SelectContainer
-        border={divider}
-      >
-        <SelectR
-          components={{ Option }}
-          value=""
-          placeholder="Select layout"
-          fullWidth={true}
-          options={suggestions}
-          onChange={handleChange}
+  render() {
+    const {
+      layouts,
+      saveLayout,
+      theme: {
+        palette: { divider },
+      },
+      setTopMarkets,
+      setTopCoinInPortfolio,
+      removeLayout,
+      charts,
+      userId,
+      themeMode,
+      loadLayout,
+      chartApiUrl,
+    } = this.props
+
+    let suggestions = []
+
+    if (layouts) {
+      suggestions = layouts
+        .map((suggestion: any) => ({
+          value: suggestion.name,
+          label: suggestion.name,
+        }))
+    }
+
+
+    const Option = (optionProps: any) => (
+      <OptionContainer>
+        <components.Option {...optionProps} />
+        <ActionButton aria-label="Delete" onClick={() => { removeLayout(optionProps.value); } }>
+          <DeleteIcon fontSize="small" />
+        </ActionButton>
+      </OptionContainer>
+    )
+    return (
+      <>
+        {this.state.layoutSaving && <Loading centerAligned={true} />}
+        <TransparentExtendedFAB
+          onClick={setTopMarkets}
+        >
+          Top Marketcap Charts
+        </TransparentExtendedFAB>
+        <TransparentExtendedFAB
+          onClick={setTopCoinInPortfolio}
+        >
+          Top Portfolio Charts
+        </TransparentExtendedFAB>
+        <SaveLayoutDialog
+          saveLayout={this.saveLayoutWithCharts}
         />
-      </SelectContainer>
-    </>
-  )
+        <SelectContainer
+          border={divider}
+        >
+          <SelectR
+            components={{ Option }}
+            value=""
+            placeholder="Select layout"
+            fullWidth={true}
+            options={suggestions}
+            onChange={this.handleChange}
+          />
+        </SelectContainer>
+      </>
+    )
+  }
 }
 
 export default withTheme()(LayoutSelecorComponent)
