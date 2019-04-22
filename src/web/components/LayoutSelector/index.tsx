@@ -8,6 +8,8 @@ import { components } from 'react-select'
 
 import { Loading } from '@sb/components/index'
 
+import LayoutError from '@sb/components/LayoutError'
+
 import { SaveLayoutDialog } from '@sb/components/SaveLayoutDialog'
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 
@@ -21,12 +23,26 @@ const ActionButton = withStyles(() => ({
   root: { padding: 6 },
 }))(IconButton)
 
-class LayoutSelecorComponent extends Component {
+class LayoutSelectorComponent extends Component {
+
   state = {
     layoutSaving: false,
+    errorOpen: false,
   }
 
-  saveLayoutWithCharts = (name: string) => {
+  handleErrorOpen = () => {
+    this.setState({ errorOpen: true })
+  }
+
+  handleErrorClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    this.setState({ errorOpen: false })
+  }
+
+  saveLayoutWithCharts = async (name: string) => {
     const {
       saveLayout,
       charts,
@@ -39,6 +55,13 @@ class LayoutSelecorComponent extends Component {
       let i = 0
       const savingOnCallback = (event) => {
         i = i + 1
+        if (event.data) {
+          const resp = JSON.parse(event.data)
+          if (resp.status !== 'ok') {
+            this.handleErrorOpen()
+            i = charts.length
+          }
+        }
         if (i === charts.length) {
           window.removeEventListener('message', savingOnCallback)
           this.setState({layoutSaving: false})
@@ -51,12 +74,13 @@ class LayoutSelecorComponent extends Component {
           ? document.getElementById(`name${i}`).contentWindow
           : null
         if (frame) {
-          setTimeout(() => frame.postMessage(JSON.stringify({
-            action: 'save',
-            name: `${name}index${i}`,
-          }),
-            `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
-          ), 100)}
+          setTimeout(async () => 
+            frame.postMessage(JSON.stringify({
+              action: 'save',
+              name: `${name}index${i}`,
+            }),
+              `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
+            ), 100)}
         }
 
       window.addEventListener('message', savingOnCallback)
@@ -70,7 +94,7 @@ class LayoutSelecorComponent extends Component {
       if (frame) {
         frame.postMessage(JSON.stringify({
           action: 'save',
-          name: `${name}index0`,
+          name: `${name}index${i}`,
         }),
           `https://${chartApiUrl}/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`
         )
@@ -131,6 +155,8 @@ class LayoutSelecorComponent extends Component {
       chartApiUrl,
     } = this.props
 
+    const { errorOpen } = this.state
+
     let suggestions = []
 
     if (layouts) {
@@ -178,9 +204,14 @@ class LayoutSelecorComponent extends Component {
             onChange={this.handleChange}
           />
         </SelectContainer>
+        <LayoutError
+          open={errorOpen}
+          handleErrorOpen={this.handleErrorOpen}
+          handleClose={this.handleErrorClose}
+        />
       </>
     )
   }
 }
 
-export default withTheme()(LayoutSelecorComponent)
+export default withTheme()(LayoutSelectorComponent)
