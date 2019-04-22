@@ -8,17 +8,21 @@ import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
 import Yup from 'yup'
 
+import { toNumber, toPairs } from 'lodash-es'
 
 import {
   Grid,
-  TextField,
   InputAdornment,
   Typography,
 } from '@material-ui/core'
 
+import { traidingErrorMessages } from '@core/config/errorMessages'
+
 import { PlaseOrderDialog } from '../PlaseOrderDialog'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+
+import {CSS_CONFIG} from '@sb/config/cssConfig'
 
 import {
   IProps,
@@ -38,8 +42,7 @@ import {
   ByButtonContainer,
   InputTextField,
 } from './styles'
-import { toNumber } from 'lodash-es';
-import {CSS_CONFIG} from '@sb/config/cssConfig'
+
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
@@ -54,6 +57,8 @@ const toFixedTrunc = (value, n) => {
   while (f.length < n) f += '0';
   return `${v[0]}.${f}`
 }
+
+
 
 @withTheme()
 
@@ -95,19 +100,20 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values,
       setFieldTouched,
       errors,
+      decimals,
     } = this.props
     if(
-      (errors.amount === 'Your balance is not enough'
-      || errors.total === 'Your balance is not enough')
+      (errors.amount === traidingErrorMessages[1]
+      || errors.total === traidingErrorMessages[1])
       && e.target.value > values.total) return null
     const price = priceType === 'limit' ? values.price : values.limit
+    this.setFormatted('total', e.target.value, 1)
+    setFieldTouched('total', true)
     if(price && price !== '') {
-      const amount = e.target.value / price
+      const amount = toFixedTrunc(e.target.value, decimals[1]) / price
       this.setFormatted('amount', amount, 0)
       setFieldTouched('amount', true)
     }
-    this.setFormatted('total', e.target.value, 1)
-    setFieldTouched('total', true)
   }
 
   onAmountChange = (e: SyntheticEvent<Element>) => {
@@ -118,13 +124,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       errors,
     } = this.props
     if(
-      (errors.amount === 'Your balance is not enough'
-      || errors.total === 'Your balance is not enough')
+      (errors.amount === traidingErrorMessages[1]
+      || errors.total === traidingErrorMessages[1])
       && e.target.value > values.amount) return null
     const total = priceType === 'limit'
-      ? e.target.value * values.price
+      ? toFixedTrunc(e.target.value, 0) * values.price
       : priceType === 'stop-limit'
-      ? e.target.value * values.limit
+      ? toFixedTrunc(e.target.value, 0) * values.limit
       : 0
     this.setFormatted('amount', e.target.value, 0)
     setFieldTouched('amount', true)
@@ -158,7 +164,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     setFieldTouched('total', true)
   }
 
-  onPercentageClick = async (value: number) => {
+  onPercentageClick = (value: number) => {
     const {
       walletValue,
       values,
@@ -168,15 +174,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       byType,
     } = this.props
     if (byType === 'buy') {
-      await this.setFormatted('total', walletValue * value, 1)
-      await this.setFormatted('amount', walletValue * value / (priceType === 'stop-limit'
+      this.setFormatted('total', walletValue * value, 1)
+      this.setFormatted('amount', walletValue * value / (priceType === 'stop-limit'
         ? values.limit
         : values.price), 0)
     } else {
-      await this.setFormatted('total', walletValue * value / (priceType === 'stop-limit'
+      this.setFormatted('total', walletValue * value * (priceType === 'stop-limit'
         ? values.limit
         : values.price), 1)
-      await this.setFormatted('amount', walletValue * value, 0)
+      this.setFormatted('amount', walletValue * value, 0)
     }
     setFieldTouched('amount', true)
     setFieldTouched('total', true)
@@ -197,6 +203,8 @@ render() {
     validateForm,
     decimals,
   } = this.props
+
+  const pairsErrors = toPairs(errors)
 
   const { background, divider } = palette
 
@@ -266,12 +274,6 @@ render() {
           type="number"
           onChange={this.onStopChange}
           endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
-          helperText={
-            touched.stop &&
-            errors.stop && (
-              <FormError>{errors.stop}</FormError>
-            )
-          }
         />
         : <InputTextField
             fullWidth
@@ -282,12 +284,6 @@ render() {
             onChange={this.onPriceChange}
             endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
             disabled={priceType === 'market'}
-            helperText={
-              touched.price &&
-              errors.price && (
-                <FormError>{errors.price}</FormError>
-              )
-            }
         />}
         </InputContainer>
         </Grid>
@@ -315,12 +311,6 @@ render() {
           onChange={this.onLimitChange}
           type="number"
             endAdornment={<InputAdornment position="end">{pair[1]}</InputAdornment>}
-          helperText={
-            touched.limit &&
-            errors.limit && (
-              <FormError>{errors.limit}</FormError>
-            )
-          }
         />
         </InputContainer>
         </Grid>
@@ -346,12 +336,6 @@ render() {
           onChange={this.onAmountChange}
           type="number"
           endAdornment={<InputAdornment position="end">{pair[0]}</InputAdornment>}
-          helperText={
-            touched.amount &&
-            errors.amount && (
-              <FormError>{errors.amount}</FormError>
-            )
-          }
         />
         </InputContainer>
         </Grid>
@@ -410,15 +394,19 @@ render() {
               endAdornment={
                 (<InputAdornment position="end">{pair[1]}</InputAdornment>)
               }
-              helperText={
-                touched.total &&
-                errors.total && (
-                  <FormError>{errors.total}</FormError>
-                )
-              }
             />
           </InputContainer>
         </Grid>}
+        <Grid item xs={3}>
+          {' '}
+        </Grid>
+        <Grid item xs={9}>
+          <FormError hidden={!pairsErrors.length}>{
+            pairsErrors.length
+              ? pairsErrors[0][1]
+              : '\u00A0'
+            }</FormError>
+        </Grid>
         <Grid item xs={12}>
           <ByButtonContainer>
             <PlaseOrderDialog
@@ -458,85 +446,86 @@ const validate = (values: FormValues, props: IProps) => {
     walletValue,
     marketPrice,
   } = props
+
   const validationSchema = priceType === 'limit'
     ? Yup.object().shape({
       price: Yup.number()
       .nullable(true)
-      .required()
-      .moreThan(0),
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0]),
       amount: byType === 'sell'
       ? Yup.number()
       .nullable(true)
-      .required()
-      .moreThan(0)
-      .max(walletValue, 'Your balance is not enough')
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0])
+      .max(walletValue, traidingErrorMessages[1])
       : Yup.number()
       .nullable(true)
-      .required()
-      .moreThan(0),
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0]),
       total: byType === 'buy'
       ? Yup.number()
       .nullable(true)
-      .required()
-      .moreThan(0)
-      .max(walletValue, 'Your balance is not enough')
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0])
+      .max(walletValue, traidingErrorMessages[1])
       : Yup.number()
       .nullable(true)
-      .required()
-      .moreThan(0),
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0]),
   })
   : priceType === 'market'
   ? Yup.object().shape({
     amount: byType === 'sell'
     ? Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0)
-    .max(walletValue, 'Your balance is not enough')
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     total: byType === 'buy'
     ? Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0)
-    .max(walletValue, 'Your balance is not enough')
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
   })
   : Yup.object().shape({
     stop: Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     limit: Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     amount: byType === 'sell'
     ? Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0)
-    .max(walletValue, 'Your balance is not enough')
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     total: byType === 'buy'
     ? Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0)
-    .max(walletValue, 'Your balance is not enough')
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-    .required()
-    .moreThan(0),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
   })
 
   try {
