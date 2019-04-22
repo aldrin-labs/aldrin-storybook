@@ -8,6 +8,7 @@ import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
 import Yup from 'yup'
 
+import { toNumber, toPairs } from 'lodash-es'
 
 import {
   Grid,
@@ -15,9 +16,13 @@ import {
   Typography,
 } from '@material-ui/core'
 
+import { traidingErrorMessages } from '@core/config/errorMessages'
+
 import { PlaseOrderDialog } from '../PlaseOrderDialog'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+
+import {CSS_CONFIG} from '@sb/config/cssConfig'
 
 import {
   IProps,
@@ -36,10 +41,8 @@ import {
   ButtonContainer,
   ByButtonContainer,
   InputTextField,
-  HiddenFormError,
 } from './styles'
-import { toNumber, toPairs } from 'lodash-es'
-import {CSS_CONFIG} from '@sb/config/cssConfig'
+
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
@@ -55,10 +58,6 @@ const toFixedTrunc = (value, n) => {
   return `${v[0]}.${f}`
 }
 
-const errorMessages = [
-  'Fill in all the fields',
-  'Your balance is not enough',
-]
 
 
 @withTheme()
@@ -104,8 +103,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       decimals,
     } = this.props
     if(
-      (errors.amount === errorMessages[1]
-      || errors.total === errorMessages[1])
+      (errors.amount === traidingErrorMessages[1]
+      || errors.total === traidingErrorMessages[1])
       && e.target.value > values.total) return null
     const price = priceType === 'limit' ? values.price : values.limit
     this.setFormatted('total', e.target.value, 1)
@@ -125,8 +124,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       errors,
     } = this.props
     if(
-      (errors.amount === errorMessages[1]
-      || errors.total === errorMessages[1])
+      (errors.amount === traidingErrorMessages[1]
+      || errors.total === traidingErrorMessages[1])
       && e.target.value > values.amount) return null
     const total = priceType === 'limit'
       ? toFixedTrunc(e.target.value, 0) * values.price
@@ -452,81 +451,81 @@ const validate = (values: FormValues, props: IProps) => {
     ? Yup.object().shape({
       price: Yup.number()
       .nullable(true)
-       .required(errorMessages[0])
-      .moreThan(0, errorMessages[0]),
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0]),
       amount: byType === 'sell'
       ? Yup.number()
       .nullable(true)
-       .required(errorMessages[0])
-      .moreThan(0, errorMessages[0])
-      .max(walletValue, errorMessages[1])
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0])
+      .max(walletValue, traidingErrorMessages[1])
       : Yup.number()
       .nullable(true)
-       .required(errorMessages[0])
-      .moreThan(0, errorMessages[0]),
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0]),
       total: byType === 'buy'
       ? Yup.number()
       .nullable(true)
-       .required(errorMessages[0])
-      .moreThan(0, errorMessages[0])
-      .max(walletValue, errorMessages[1])
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0])
+      .max(walletValue, traidingErrorMessages[1])
       : Yup.number()
       .nullable(true)
-       .required(errorMessages[0])
-      .moreThan(0, errorMessages[0]),
+       .required(traidingErrorMessages[0])
+      .moreThan(0, traidingErrorMessages[0]),
   })
   : priceType === 'market'
   ? Yup.object().shape({
     amount: byType === 'sell'
     ? Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0])
-    .max(walletValue, errorMessages[1])
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0]),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     total: byType === 'buy'
     ? Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0])
-    .max(walletValue, errorMessages[1])
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0]),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
   })
   : Yup.object().shape({
     stop: Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0]),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     limit: Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0]),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     amount: byType === 'sell'
     ? Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0])
-    .max(walletValue, errorMessages[1])
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0]),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
     total: byType === 'buy'
     ? Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0])
-    .max(walletValue, errorMessages[1])
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0])
+    .max(walletValue, traidingErrorMessages[1])
     : Yup.number()
     .nullable(true)
-     .required(errorMessages[0])
-    .moreThan(0, errorMessages[0]),
+     .required(traidingErrorMessages[0])
+    .moreThan(0, traidingErrorMessages[0]),
   })
 
   try {
