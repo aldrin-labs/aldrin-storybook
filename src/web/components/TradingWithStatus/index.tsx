@@ -3,6 +3,9 @@ import { Button, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { SnackbarProvider, withSnackbar } from 'notistack'
 import { withStyles } from '@material-ui/core/styles'
+
+import { orderError } from '@core/utils/errorsConfig'
+
 import TradingWrapper from '../TradingWrapper'
 
 const canselStyeles = theme => ({
@@ -26,7 +29,7 @@ const CloseButton = withStyles(canselStyeles)((props) => (
 </IconButton>
 ))
 
-class App extends React.Component {
+class OrderStatusWrapper extends React.Component {
   showOrderResult = (result) => {
     if (result.status === 'success' && result.orderId && result.message) {
       this.props.enqueueSnackbar(result.message, {
@@ -45,7 +48,7 @@ class App extends React.Component {
         ),
       })
     } else if (result.status === 'success' || !result.message) {
-      this.props.enqueueSnackbar('Something went wrong', { variant: 'error' })
+      this.props.enqueueSnackbar(orderError, { variant: 'error' })
     } else {
       this.props.enqueueSnackbar(result.message, { variant: 'error' })
     }
@@ -65,26 +68,26 @@ class App extends React.Component {
 }
 
 
-const MyApp = withSnackbar(App)
+const SnackbarWrapper = withSnackbar(OrderStatusWrapper)
 
 const IntegrationNotistack = ({classes, ...otherProps}) => {
   return (
     <SnackbarProvider
-    maxSnack={3}
-    autoHideDuration={3000}
-    anchorOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    action={(
-      <CloseButton />
-    )}
-    classes={{
-      variantSuccess: classes.success,
-      variantError: classes.error,
-    }}
+      maxSnack={3}
+      autoHideDuration={3000}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      action={(
+        <CloseButton />
+      )}
+      classes={{
+        variantSuccess: classes.success,
+        variantError: classes.error,
+      }}
     >
-      <MyApp
+      <SnackbarWrapper
         {...otherProps}
       />
     </SnackbarProvider>
