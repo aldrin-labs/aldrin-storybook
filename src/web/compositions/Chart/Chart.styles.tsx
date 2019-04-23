@@ -14,8 +14,6 @@ export const TablesBlockWrapper = styled(Card)`
   min-width: 150px;
   width: 50%;
   position: relative;
-  ${(props: { blur?: boolean }) => (props.blur ? 'filter: blur(5px);' : '')}
-
   && {
     overflow: hidden;
     background-color: ${(props: { background?: string }) => props.background};
@@ -23,8 +21,6 @@ export const TablesBlockWrapper = styled(Card)`
   }
 
   @media (max-width: 1080px) {
-    display: ${(props: { variant: { show?: boolean } }) =>
-  props.variant.show ? 'block' : 'none'};
     width: 100%;
     height: calc(68vh - 57px - 70px);
     position: relative;

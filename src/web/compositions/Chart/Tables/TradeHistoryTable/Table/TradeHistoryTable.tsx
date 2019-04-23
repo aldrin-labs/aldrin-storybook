@@ -15,9 +15,7 @@ import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 import {
   StyledTypography,
-  CollapseWrapper,
   StyledArrow,
-  StyledArrowSign,
   TradeHistoryTableCollapsible,
   TriggerTitle
 } from './TradeHistoryTable.styles'
@@ -156,8 +154,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
     const { onClick } = this
 
     return (
-      <TradeHistoryTableCollapsible tableExpanded={tableExpanded}>
-        <CollapseWrapper in={tableExpanded} collapsedHeight="2.5rem">
+      <TradeHistoryTableCollapsible tableExpanded={tableExpanded} key={`trade_history_table-collapsible`}>
           <MemoizedHead
             {...{
               tableExpanded,
@@ -166,6 +163,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
               palette,
               onClick,
               quote,
+              key: 'tradehistory_head'
             }}
           />
           <Body
@@ -173,13 +171,9 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
             background={background.default}
             height="44vh"
           >
-            {data.length === 0 && tableExpanded ? (
-              <Loading centerAligned={true} />
-            ) : (
-              <>
                 {data.map((ticker: ITicker, i: number) => (
                   <OptimizedRow
-                    key={ticker.id}
+                    key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${ticker.fall}`}
                     {...{
                       ticker,
                       background,
@@ -189,10 +183,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                     }}
                   />
                 ))}
-              </>
-            )}
           </Body>
-        </CollapseWrapper>
       </TradeHistoryTableCollapsible>
     )
   }
