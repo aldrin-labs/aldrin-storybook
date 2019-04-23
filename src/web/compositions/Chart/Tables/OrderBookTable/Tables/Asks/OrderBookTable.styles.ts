@@ -1,6 +1,7 @@
 import styled from 'styled-components'
-import { Table } from '@components/OldTable/Table'
 import { Button } from '@material-ui/core'
+
+import { Table } from '@sb/components/OldTable/Table'
 
 export const AsksTable = styled(Table)`
   height: 50%;
