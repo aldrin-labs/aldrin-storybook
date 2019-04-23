@@ -31,7 +31,7 @@ export const RowWithVolumeChart = styled.div`
     z-index: 1;
     top: 0;
     left: 0;
-    width: ${(props: { colored?: string }) => Number(props.colored)}%;
+    width: ${(props: { colored?: string }) => parseFloat(props.colored)}%;
     height: 100%;
     content: '';
     background: ${(props: { volumeColor?: string; colored?: string }) =>
