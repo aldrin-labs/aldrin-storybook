@@ -200,7 +200,6 @@ class PortfolioSelector extends React.Component<IProps> {
               </Button>
             </MyLinkToUserSettings>
           </AddAccountBlock>
-          {!MASTER_BUILD && (
             <>
               <Name color={color}>Dust</Name>
               <FilterContainer>
@@ -236,7 +235,6 @@ class PortfolioSelector extends React.Component<IProps> {
                 </FilterValues>
               </FilterContainer>
             </>
-          )}
         </AccountsWalletsBlock>
       </Slide>
     )
