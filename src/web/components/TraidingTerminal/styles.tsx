@@ -1,10 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card, Button, TextField } from '@material-ui/core'
+import { Button, TextField } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
-
-import { CardHeader } from '@sb/components/index'
 import {CSS_CONFIG} from '@sb/config/cssConfig'
 
 const styles = {
@@ -20,7 +18,6 @@ const styles = {
     fontSize: CSS_CONFIG.chart.content.fontSize,
   },
 };
-
 
 
 export const ButtonContainer = styled.div`

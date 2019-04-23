@@ -8,6 +8,7 @@ import { compose, withStateHandlers } from 'recompose'
 import _ from 'lodash'
 
 import { TradeButton } from './styles'
+import { withTheme } from '@material-ui/styles'
 
 const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
     const { handleClickOpen,
@@ -20,6 +21,7 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
       errors,
       touched,
       validateForm,
+      typeIsBuy,
     } = props
 
     const handleClick = async () => {
@@ -34,6 +36,8 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
 
     return (<div>
       <TradeButton
+          typeIsBuy={typeIsBuy}
+          buyButton={true}
           variant="outlined"
           onClick={handleOpen}
         >
@@ -72,5 +76,5 @@ const handleState = withStateHandlers(
 )
 
 export const PlaseOrderDialog = compose(
-  handleState
+  handleState,
 )(PlaseOrderDialogComponent)

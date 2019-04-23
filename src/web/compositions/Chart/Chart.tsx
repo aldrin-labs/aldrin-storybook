@@ -52,6 +52,7 @@ import {
   TogglerContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
+  ChartGridContainer,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
@@ -189,7 +190,7 @@ class Chart extends React.Component<IProps, IState> {
     const exchange = activeExchange.symbol
 
     return (
-      <TablesContainer item sm={4}>
+      <TablesContainer item sm={4} style={{ flex: 'auto' }}>
         <Joyride
           showProgress={true}
           showSkipButton={true}
@@ -305,8 +306,12 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <div>
-      <Container container spacing={16}>
-        <ChartsContainer item sm={8}>
+      <Container direction="row" container spacing={16}>
+        <ChartGridContainer item sm={10}>
+          {this.renderTogglerBody()}
+        </ChartGridContainer>
+
+        <ChartsContainer item sm={10} style={{ flex: 'auto' }}>
           {activeChart === 'candle' ? (
             <SingleChart
               additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`}
@@ -326,14 +331,14 @@ class Chart extends React.Component<IProps, IState> {
             </Fade>
           )}
         </ChartsContainer>
-        {this.renderTables()}
-      </Container>
-      <Container container spacing={16}>
-        <TradingTabelContainer item sm={8}>
+        <TradingTabelContainer item sm={10} style={{ flex: 'auto' }}>
           {MASTER_BUILD && <ComingSoon />}
           <TradingTable />
         </TradingTabelContainer>
-        <TradingTerminalContainer item sm={4}>
+
+        {this.renderTables()}
+
+        <TradingTerminalContainer item sm={4} style={{ flex: 'auto' }}>
           {MASTER_BUILD && <ComingSoon />}
           <TradingComponent
           activeExchange={activeExchange}
@@ -405,7 +410,7 @@ class Chart extends React.Component<IProps, IState> {
     )
   }
 
-  render() {
+  renderTogglerBody = () => {
     const {
       view,
       currencyPair,
@@ -417,61 +422,78 @@ class Chart extends React.Component<IProps, IState> {
     } = this.props
     const { activeChart } = this.state
 
+    const toggler = this.renderToggler()
+
+    return (
+      <>
+        {view === 'onlyCharts' && (
+          <LayoutSelector userId={_id} themeMode={themeMode} />
+        )}
+
+        <SelectExchange
+          selectExchange={this.props.selectExchange}
+          activeExchange={activeExchange}
+          currencyPair={currencyPair}
+        />
+
+        {view === 'default' && (
+          <KeySelector
+            exchange={activeExchange}
+          />
+        )}
+
+        <AutoSuggestSelect
+          value={view === 'default' && currencyPair}
+          id={'currencyPair'}
+          view={view}
+          activeExchange={activeExchange}
+        />
+
+        {view === 'default' && (
+          <TransparentExtendedFAB
+            onClick={() => {
+              this.setState((prevState) => ({
+                activeChart:
+                  prevState.activeChart === 'candle' ? 'depth' : 'candle',
+              }))
+            }}
+          >
+            {activeChart === 'candle' ? 'orderbook' : 'chart'}
+          </TransparentExtendedFAB>
+        )}
+        <Hidden smDown>{toggler}</Hidden>
+      </>
+    )
+  }
+
+  render() {
+    const {
+      view,
+      currencyPair,
+    } = this.props
+
     if (!currencyPair) {
       return
     }
 
-    const toggler = this.renderToggler()
-
     return (
       <MainContainer fullscreen={view !== 'default'}>
+        {view === 'onlyCharts' && (
         <TogglerContainer container>
           <Grid
             spacing={16}
             item
             sm={view === 'default' ? 8 : 12}
             xs={view === 'default' ? 8 : 12}
-            style={{ margin: '0 -8px', height: '100%' }}
+            // style={{ margin: '0 -8px', height: '100%' }}
             container
-            alignItems="center"
+            alignItems="left"
             justify="flex-end"
           >
-            {view === 'onlyCharts' && (
-              <LayoutSelector userId={_id} themeMode={themeMode} />
-            )}
-
-            <SelectExchange
-              selectExchange={this.props.selectExchange}
-              activeExchange={activeExchange}
-              currencyPair={currencyPair}
-            />
-            {view === 'default' && (
-              <KeySelector
-                exchange={activeExchange}
-              />
-            )}
-            <AutoSuggestSelect
-              value={view === 'default' && currencyPair}
-              id={'currencyPair'}
-              view={view}
-              activeExchange={activeExchange}
-            />
-
-            {view === 'default' && (
-              <TransparentExtendedFAB
-                onClick={() => {
-                  this.setState((prevState) => ({
-                    activeChart:
-                      prevState.activeChart === 'candle' ? 'depth' : 'candle',
-                  }))
-                }}
-              >
-                {activeChart === 'candle' ? 'orderbook' : 'chart'}
-              </TransparentExtendedFAB>
-            )}
-            <Hidden smDown>{toggler}</Hidden>
+            {this.renderTogglerBody()}
           </Grid>
         </TogglerContainer>
+        )}
         {view === 'default' && this.renderDefaultView()}
         {view === 'onlyCharts' && this.renderOnlyCharts()}
       </MainContainer>

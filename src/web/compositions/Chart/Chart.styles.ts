@@ -31,6 +31,19 @@ export const TablesBlockWrapper = styled(Card)`
   }
 `
 
+export const ChartGridContainer = styled(Grid)`
+  position: relative;
+  display: flex;
+  flex: auto;
+  width: 66.6%;
+  align-items: center;
+
+  && {
+    padding: 3px;
+  }
+  
+`
+
 export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
@@ -45,6 +58,7 @@ export const TablesContainer = styled(Grid)`
   @media (max-width: 1080px) {
     flex-wrap: wrap;
   }
+  flex: auto;
 `
 
 export const TradingTerminalContainer = styled(Grid)`
@@ -67,27 +81,30 @@ export const ChartsContainer = styled(TablesContainer)`
   height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   justify-content: flex-end;
   flex-direction: column;
-  width: 60%;
+  width: 66.6%;
+
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
+  flex: auto;
 `
 
 export const TradingTabelContainer = styled(TablesContainer)`
   height: 32vh;
   justify-content: flex-start;
   flex-direction: column;
-  width: 60%;
+  width: 66.6%;
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
+  
+  flex: auto;
 `
 
-// margin for centring
 export const TogglerContainer = styled(Grid)`
-  margin-bottom: -8px;
+  align-items: center;
   height: 4rem;
   width: 100%;
 `
@@ -99,6 +116,9 @@ export const Toggler = styled.div`
 `
 
 export const Container = styled(Grid)`
+  display: flex;
+  flex-flow: column wrap;
+  height: calc(100vh - 48px);
   width: 100%;
   margin: 0;
 `
