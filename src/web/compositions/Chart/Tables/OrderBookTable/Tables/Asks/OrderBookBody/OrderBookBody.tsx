@@ -2,7 +2,6 @@ import React, { Component, memo } from 'react'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { Row, Cell, Body } from '@sb/components/OldTable/Table'
-import { Loading } from '@sb/components/Loading'
 import {
   calculatePercentagesOfOrderSize,
   ScrollToBottom,
@@ -86,7 +85,6 @@ class ClassBody extends Component<IProps> {
       digitsAfterDecimalForAsksPrice,
       digitsAfterDecimalForAsksSize,
       action,
-      index,
       background,
       theme: {
         palette: { red, type },
@@ -95,17 +93,13 @@ class ClassBody extends Component<IProps> {
 
     return (
       <Body id="body" height={'calc(100% - 44px)'}>
-        {data.length === 0 ? (
-          <Loading centerAligned={true} />
-        ) : (
-          <>
             {data.map(
               (
-                order: { size: number | string; price: number | string },
+                order: { size: number | string, price: number | string, type: string },
                 i: number
               ) => (
                 <OptimizedRow
-                  key={order.price}
+                  key={`${order.price}${order.size}${order.type}`}
                   {...{
                     type,
                     order,
@@ -119,8 +113,6 @@ class ClassBody extends Component<IProps> {
                 />
               )
             )}
-          </>
-        )}
       </Body>
     )
   }

@@ -1,17 +1,14 @@
 import React, { Component, memo } from 'react'
-import styled from 'styled-components'
-import { Button } from '@material-ui/core'
 import { difference } from 'lodash-es'
 
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import { Table, Row, Title, Head, HeadCell } from '@sb/components/OldTable/Table'
+import { Row, Title, Head, HeadCell } from '@sb/components/OldTable/Table'
 import OrderBookBody from './OrderBookBody/OrderBookBody'
 import { EmptyCell } from '../../../SharedStyles'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 import { IProps } from './OrderBookTable.types'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-
-let index: number | null = null
+import { AsksTable, SwitchTablesButton } from './OrderBookTable.styles'
 
 const MemoHead = memo(
   ({ palette, primary, type, onButtonClick, background, quote }) => (
@@ -77,14 +74,6 @@ class OrderBookTable extends Component<IProps> {
     return shouldUpdate
   }
 
-  componentDidUpdate(prevProps: IProps) {
-    index =
-      this.props.data &&
-      this.props.data.findIndex(
-        (el) => el === difference(this.props.data, prevProps.data)[0]
-      )
-  }
-
   render() {
     const {
       onButtonClick,
@@ -97,38 +86,20 @@ class OrderBookTable extends Component<IProps> {
     return (
       <AsksTable>
         <MemoHead
-          {...{ palette, primary, type, onButtonClick, background, quote }}
+          {...{ palette, primary, type, onButtonClick, background, quote, key: 'asks_headrow' }}
         />
         {/* hack to autoscroll to bottom */}
         <OrderBookBody
           {...{
             background,
             action,
-            index,
             ...this.props,
+            key: 'asks_body',
           }}
         />
       </AsksTable>
     )
   }
 }
-
-const AsksTable = styled(Table)`
-  height: 50%;
-  flex-wrap: nowrap;
-  flex-direction: column;
-  justify-content: flex-start;
-  display: flex;
-`
-
-const SwitchTablesButton = styled(Button)`
-  && {
-    display: none;
-
-    @media (max-width: 1080px) {
-      display: block;
-    }
-  }
-`
 
 export default withErrorFallback(OrderBookTable)
