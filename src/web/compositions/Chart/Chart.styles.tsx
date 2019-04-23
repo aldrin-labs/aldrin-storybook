@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Card, Grid } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -10,7 +11,7 @@ export const DepthChartContainer = styled(Card)`
   width: 100%;
 `
 
-export const TablesBlockWrapper = styled(Card)`
+export const TablesBlockWrapper = styled(({background = '', ...rest}) => <Card {...rest} />)`
   min-width: 150px;
   width: 50%;
   position: relative;

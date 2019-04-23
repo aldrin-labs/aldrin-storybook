@@ -25,7 +25,7 @@ export interface IProps {
 export interface IState {
   view: string
   orders: []
-  exchangeTableCollapsed: boolean
+  // exchangeTableCollapsed: boolean
   aggregation: number
   showTableOnMobile: string
   activeChart: string
