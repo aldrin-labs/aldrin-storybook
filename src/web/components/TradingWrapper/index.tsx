@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withStyles } from '@material-ui/core/styles'
 
 import {
@@ -63,7 +63,9 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
     priceType,
     placeOrder,
     decimals,
+    showOrderResult,
   } = props
+
   return (
   <ScrollWrapper>
   <Grid container spacing={0} alignItems="center" justify="center">
@@ -73,10 +75,11 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           byType="buy"
           priceType={priceType}
           pair={pair}
-          walletValue={funds[1]}
+          walletValue={funds && funds[1]}
           marketPrice={price}
           confirmOperation={placeOrder}
           decimals={decimals}
+          showOrderResult={showOrderResult}
         />
       </TerminalContainer>
     </Grid>
@@ -86,10 +89,11 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           byType="sell"
           priceType={props.priceType}
           pair={pair}
-          walletValue={funds[0]}
+          walletValue={funds && funds[0]}
           marketPrice={price}
           confirmOperation={placeOrder}
           decimals={decimals}
+          showOrderResult={showOrderResult}
         />
       </TerminalContainer>
     </Grid>
@@ -116,9 +120,10 @@ class SimpleTabs extends React.Component {
       price,
       placeOrder,
       decimals,
-   } = this.props
+      showOrderResult,
+    } = this.props
 
-    return (
+    return(
       <TablesBlockWrapper>
         <AppBar position="static" className={classes.appBar}>
         <Tabs
@@ -150,6 +155,7 @@ class SimpleTabs extends React.Component {
           price={price}
           placeOrder={placeOrder}
           decimals={decimals}
+          showOrderResult={showOrderResult}
         />
       </TablesBlockWrapper>
     )
@@ -157,5 +163,6 @@ class SimpleTabs extends React.Component {
 }
 
 export default compose(
+  withErrorFallback,
   withStyles(styles)
   )(SimpleTabs)
