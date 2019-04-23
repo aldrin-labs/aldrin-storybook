@@ -28,53 +28,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
   // transforming data
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-    // when get data from querry
     let iterator = state.i
-    if (newProps.data.marketOrders.length > 1) {
-      let bids = sortAndFilterOrders(
-        newProps.data.marketOrders
-          .map((o) => (testJSON(o) ? JSON.parse(o) : o))
-          .filter((o) => o.type === 'bid')
-      )
-
-      const asks = sortAndFilterOrders(
-        newProps.data.marketOrders
-          .map((o) => (testJSON(o) ? JSON.parse(o) : o))
-          .filter((o) => o.type === 'ask')
-      )
-
-      bids = bidsPriceFiltering(asks, bids)
-
-      newProps.setOrders({
-        bids,
-        asks: asks.slice().reverse(),
-      })
-
-      const spread = findSpread(asks, bids)
-
-      return {
-        bids,
-        asks,
-        spread,
-        i: 0,
-        digitsAfterDecimalForAsksPrice: getNumberOfDigitsAfterDecimal(
-          asks,
-          'price'
-        ),
-        digitsAfterDecimalForAsksSize: getNumberOfDigitsAfterDecimal(
-          asks,
-          'size'
-        ),
-        digitsAfterDecimalForBidsPrice: getNumberOfDigitsAfterDecimal(
-          bids,
-          'price'
-        ),
-        digitsAfterDecimalForBidsSize: getNumberOfDigitsAfterDecimal(
-          bids,
-          'size'
-        ),
-      }
-    }
 
     // when get data from subscr
     if (
