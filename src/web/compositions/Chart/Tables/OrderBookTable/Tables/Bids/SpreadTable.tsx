@@ -143,16 +143,13 @@ class SpreadTable extends Component<IProps> {
             quote,
             spread,
             digitsAfterDecimalForSpread,
+            key: 'bids_headrow'
           }}
         />
         <Body background={background.default} height="calc(100% - 26px)">
-          {data.length === 0 ? (
-            <Loading centerAligned={true} />
-          ) : (
-            <>
-              {data.map((order: { size: number; price: number }, i: number) => (
+              {data.map((order: { size: number; price: number, type: string }, i: number) => (
                 <MemoizedRow
-                  key={order.price}
+                  key={`${order.price}${order.size}${order.type}`}
                   {...{
                     type,
                     order,
@@ -165,8 +162,6 @@ class SpreadTable extends Component<IProps> {
                   }}
                 />
               ))}
-            </>
-          )}
         </Body>
       </SpreadreadTableWrapper>
     )
