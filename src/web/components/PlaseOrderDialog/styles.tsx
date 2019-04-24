@@ -2,20 +2,9 @@ import React from 'react'
 import { Button } from '@material-ui/core'
 
 import { withStyles } from '@material-ui/core/styles'
-import { withTheme } from '@material-ui/styles'
-
 import { CSS_CONFIG } from '@sb/config/cssConfig'
+import { fade } from '@material-ui/core/styles/colorManipulator'
 
-const styles = {
-  button: {
-    borderRadius: 3,
-    minWidth: 45,
-    width: '100%',
-    padding: '0px',
-    minHeight: 30,
-    fontSize: CSS_CONFIG.chart.content.fontSize,
-  },
-}
 
 export const TradeButton = withStyles((theme) => ({
   button: {
@@ -32,10 +21,10 @@ export const TradeButton = withStyles((theme) => ({
     },
   },
   red: {
-      backgroundColor: theme.customPalette.red.main,
+      backgroundColor: fade(theme.customPalette.red.main, 0.85),
   },
   green: {
-      backgroundColor: theme.customPalette.green.main,
+      backgroundColor: fade(theme.customPalette.green.main, 0.85),
   },
 }))(
   ({
