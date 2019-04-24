@@ -84,6 +84,7 @@
     "lodash-es": "^4.17.10",
     "moment": "^2.24.0",
     "nanoid": "^2.0.0",
+    "notistack": "^0.6.1",
     "papaparse": "^4.6.3",
     "react": "^16.7.0-alpha.2",
     "react-apollo": "^2.4.0",
