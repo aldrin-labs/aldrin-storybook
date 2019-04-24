@@ -22,15 +22,6 @@ export const TablesBlockWrapper = styled(Card)`
 
 `
 
-const placeOrder = (status) => (values) => {
-  console.log(values)
-  return {
-    status: status,
-    message: 'Order plased',
-    orderId: 'orderId',
-  }
-}
-
 storiesOf('Components/TradingWithStatus', module)
   .addDecorator(backgrounds)
   .add(

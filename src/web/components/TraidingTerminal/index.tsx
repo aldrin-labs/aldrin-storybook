@@ -122,15 +122,16 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values,
       setFieldTouched,
       errors,
+      decimals,
     } = this.props
     if(
       (errors.amount === traidingErrorMessages[1]
       || errors.total === traidingErrorMessages[1])
       && e.target.value > values.amount) return null
     const total = priceType === 'limit'
-      ? toFixedTrunc(e.target.value, 0) * values.price
+      ? toFixedTrunc(e.target.value, decimals[0]) * values.price
       : priceType === 'stop-limit'
-      ? toFixedTrunc(e.target.value, 0) * values.limit
+      ? toFixedTrunc(e.target.value, decimals[0]) * values.limit
       : 0
     this.setFormatted('amount', e.target.value, 0)
     setFieldTouched('amount', true)
