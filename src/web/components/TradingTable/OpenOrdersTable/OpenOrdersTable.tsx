@@ -22,21 +22,28 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     openOrdersProcessedData: [],
   }
 
-  onCancelOrder = async (keyId: string, orderId: string) => {
+  onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
     const { cancelOrderMutation } = this.props
 
-    console.log('cancelOrderMutation', cancelOrderMutation)
 
-    const responseResult = await cancelOrderMutation({
-      variables: {
-        cancelOrderInput: {
-          keyId,
-          orderId,
+    try {
+
+      const responseResult = await cancelOrderMutation({
+        variables: {
+          cancelOrderInput: {
+            keyId,
+            orderId,
+            pair,
+          },
         },
-      },
-    })
+      })
 
-    console.log('responseResult', responseResult)
+      console.log('responseResult', responseResult)
+    } catch (e) {
+      console.log('error in cancelOrder', e);
+
+    }
+
 
     // TODO: here should be a mutation order to cancel a specific order
     // TODO: Also it should receive an argument to edentify the order that we should cancel
