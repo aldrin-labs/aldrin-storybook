@@ -171,7 +171,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
           <Body
             data-e2e="tradeHistory__body"
             background={background.default}
-            height="44vh"
+            height="50vh"
           >
             {data.length === 0 && tableExpanded ? (
               <Loading centerAligned={true} />

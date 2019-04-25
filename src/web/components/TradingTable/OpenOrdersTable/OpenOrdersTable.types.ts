@@ -12,6 +12,7 @@ export interface IProps {
         cancelOrderInput: {
           keyId: string
           orderId: string
+          pair: string
         }
       }
     }

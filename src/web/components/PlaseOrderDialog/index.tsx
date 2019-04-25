@@ -31,8 +31,6 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
 
     const handleOpen = () => {
       validateForm()
-      console.log(errors)
-      console.log(touched)
       if (_.isEmpty(errors) && !_.isEmpty(touched)) handleClickOpen()
     }
 

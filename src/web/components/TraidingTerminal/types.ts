@@ -11,6 +11,12 @@ export interface FormValues {
 
 export type priceType = 'limit' | 'market' | 'stop-limit'
 
+interface IResult {
+  status: 'success' | 'error'
+  message: string
+  orderId?: string
+}
+
 export interface IProps {
   byType: 'buy' | 'sell'
   priceType: priceType
@@ -22,7 +28,8 @@ export interface IProps {
   confirmOperation: (
     byType: 'buy' | 'sell',
     priceType: 'limit' | 'market' | 'stop-limit',
-    filtredValues: Partial<FormValues>) => null
+    filtredValues: Partial<FormValues>) => IResult
+  showOrderResult: (result: IResult) => null
 }
 
 export interface IPropsWithFormik extends FormikProps<FormValues>, IProps {}
