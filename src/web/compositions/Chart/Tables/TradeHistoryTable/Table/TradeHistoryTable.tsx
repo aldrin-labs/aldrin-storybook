@@ -1,16 +1,14 @@
 import React, { memo, PureComponent } from 'react'
+import { withTheme } from '@material-ui/styles'
 
 import {
-  Table,
   Row,
-  Title,
   Body,
   Head,
   HeadCell,
   Cell,
 } from '@sb/components/OldTable/Table'
 import { IProps, IState, ITicker } from './TradeHistoryTable.types'
-import { Loading } from '@sb/components/Loading'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 import {
@@ -25,7 +23,7 @@ const OptimizedRow = memo(
     <Row background={background.default}>
       <Cell style={{ padding: '0 0.2rem' }} width={'30%'}>
         <TypographyFullWidth noWrap={true} variant="caption" align="right">
-          {Number(ticker.size).toFixed(4)}
+          {parseFloat(ticker.size).toFixed(4)}
         </TypographyFullWidth>
       </Cell>
       <Cell width={'40%'} style={{ padding: '0 0.2rem', display: 'flex' }}>
@@ -40,7 +38,7 @@ const OptimizedRow = memo(
           variant="caption"
           align="right"
         >
-          {Number(ticker.price).toFixed(numbersAfterDecimalForPrice)}
+          {parseFloat(ticker.price).toFixed(numbersAfterDecimalForPrice)}
         </StyledTypography>
       </Cell>
       <Cell style={{ padding: '0 0.2rem' }} width={'30%'}>
@@ -61,12 +59,11 @@ const OptimizedRow = memo(
 )
 
 const MemoizedHead = memo(
-  ({ tableExpanded, primary, type, palette, onClick, quote }) => (
+  ({ primary, type, palette, quote }) => (
     <>
       <TriggerTitle
         data-e2e="tradeHistory__arrowButton"
         background={primary[type]}
-        onClick={onClick}
       >
         <TypographyFullWidth
           textColor={palette.getContrastText(primary[type])}
@@ -126,49 +123,38 @@ const MemoizedHead = memo(
     </>
   ),
   (prevProps, nextProps) =>
-    nextProps.tableExpanded === prevProps.tableExpanded &&
     nextProps.type === prevProps.type &&
     nextProps.quote === prevProps.quote
 )
 
-class TradeHistoryTable extends PureComponent<IProps, IState> {
-  state = {
-    tableExpanded: true,
-  }
 
-  onClick = () => {
-    this.setState((prevState) => ({
-      tableExpanded: !prevState.tableExpanded,
-    }))
-  }
+@withTheme()
+
+class TradeHistoryTable extends PureComponent<IProps, IState> {
 
   render() {
     const {
       numbersAfterDecimalForPrice,
       quote,
       data,
-      theme: { palette },
+      theme: { palette, customPalette },
     } = this.props
-    const { tableExpanded } = this.state
-    const { background, primary, type, red, green } = palette
-    const { onClick } = this
+    const { background, primary, type, } = palette
+    const { red, green } = customPalette
 
     return (
-      <TradeHistoryTableCollapsible tableExpanded={tableExpanded} key={`trade_history_table-collapsible`}>
+      <TradeHistoryTableCollapsible key={`trade_history_table-collapsible`}>
           <MemoizedHead
             {...{
-              tableExpanded,
               primary,
               type,
               palette,
-              onClick,
               quote,
-              key: 'tradehistory_head'
+              key: 'tradehistory_head',
             }}
           />
           <Body
             data-e2e="tradeHistory__body"
-            background={background.default}
             height="44vh"
           >
                 {data.map((ticker: ITicker, i: number) => (

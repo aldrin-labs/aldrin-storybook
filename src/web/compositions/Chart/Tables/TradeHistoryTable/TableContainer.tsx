@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import {
-  maximumItemsInArray,
+  reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
   testJSON,
 } from '@core/utils/chartPageUtils'
@@ -15,6 +15,7 @@ let unsubscribe: Function | undefined
 class TableContainer extends Component<IProps, IState> {
   state: IState = {
     data: [],
+    numbersAfterDecimalForPrice: 8,
   }
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
@@ -52,17 +53,15 @@ class TableContainer extends Component<IProps, IState> {
         time: new Date(tickerData[7]).toLocaleTimeString(),
       }
 
-      // temporary fix you should remove it when backend will be fixed
-      if (+ticker.size === 35.4 && ticker.time === '16:30:37') {
-        return null
-      }
+      const updatedData = [ticker].concat(state.data)
+      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
+        updatedData,
+        'price'
+      )
 
       return {
-        data: maximumItemsInArray([ticker, ...state.data], 100, 40),
-        numbersAfterDecimalForPrice: getNumberOfDigitsAfterDecimal(
-          [ticker, ...state.data],
-          'price'
-        ),
+        numbersAfterDecimalForPrice,
+        data: reduceArrayLength(updatedData),
       }
     }
 
@@ -95,12 +94,14 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   render() {
-    const { data, ...rest } = this.props
+    const { quote, currencyPair } = this.props
+    const { data, numbersAfterDecimalForPrice } = this.state
     return (
       <TradeHistoryTable
-        data={this.state.data}
-        numbersAfterDecimalForPrice={this.state.numbersAfterDecimalForPrice}
-        {...rest}
+        data={data}
+        numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
+        quote={quote}
+        currencyPair={currencyPair}
       />
     )
   }
