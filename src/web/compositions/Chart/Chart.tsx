@@ -234,11 +234,8 @@ class Chart extends React.Component<IProps, IState> {
             }}
             {...{
               quote,
-              theme,
+              activeExchange,
               currencyPair,
-              symbol,
-              exchange,
-              ...this.props,
               key: 'tradeyistory_table_query_render',
             }}
           />
