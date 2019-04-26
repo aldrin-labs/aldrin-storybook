@@ -23,12 +23,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation } = this.props
+    const { cancelOrder } = this.props
 
 
     try {
 
-      const responseResult = await cancelOrderMutation({
+      const responseResult = await cancelOrder({
         variables: {
           cancelOrderInput: {
             keyId,
@@ -40,7 +40,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
       console.log('responseResult', responseResult)
     } catch (e) {
-      console.log('error in cancelOrder', e);
+      console.log('error in cancelOrder 2', e);
 
     }
 
@@ -133,6 +133,6 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default graphql(CANCEL_ORDER, { name: 'cancelOrderMutation' })(
+export default graphql(CANCEL_ORDER, { name: 'cancelOrder' })(
   TableDataWrapper
 )
