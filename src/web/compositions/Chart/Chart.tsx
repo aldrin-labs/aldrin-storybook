@@ -61,6 +61,8 @@ import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { MASTER_BUILD } from '@core/utils/config'
 
+import DefaultView from './DefaultView/StatusWrapper'
+
 @withTheme()
 
 class Chart extends React.Component<IProps, IState> {
@@ -470,7 +472,14 @@ class Chart extends React.Component<IProps, IState> {
     const {
       view,
       currencyPair,
+      getMyProfile: {
+        getMyProfile: { _id },
+      },
+      activeExchange,
+      themeMode,
     } = this.props
+
+    const defaultView = view === 'default'
 
     if (!currencyPair) {
       return
@@ -494,7 +503,19 @@ class Chart extends React.Component<IProps, IState> {
           </Grid>
         </TogglerContainer>
         )}
-        {view === 'default' && this.renderDefaultView()}
+        {view === 'default' &&
+          <DefaultView
+            currencyPair={currencyPair}
+            theme={theme}
+            id={_id}
+            themeMode={themeMode}
+            activeExchange={activeExchange}
+            activeChart={this.state.activeChart}
+            renderTogglerBody={this.renderTogglerBody}
+            renderTables={this.renderTables}
+            MASTER_BUILD={MASTER_BUILD}
+          />
+        }
         {view === 'onlyCharts' && this.renderOnlyCharts()}
       </MainContainer>
     )

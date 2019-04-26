@@ -560,7 +560,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           amount: values.amount,
         }
       const result = await props.confirmOperation(byType, priceType, filtredValues)
-      props.showOrderResult(result)
+      props.showOrderResult(result, props.cancelOrder)
       resetForm()
       setSubmitting(false)
     }
