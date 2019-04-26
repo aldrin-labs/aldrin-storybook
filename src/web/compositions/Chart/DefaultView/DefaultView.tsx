@@ -32,6 +32,7 @@ export const DefaultView = (props) => {
     renderTables,
     MASTER_BUILD,
     showOrderResult,
+    showCancelResult,
   } = props
 
   if (!currencyPair) {
@@ -68,7 +69,9 @@ export const DefaultView = (props) => {
       </ChartsContainer>
       <TradingTabelContainer item sm={10} style={{ flex: 'auto' }}>
         {MASTER_BUILD && <ComingSoon />}
-        <TradingTable />
+        <TradingTable
+          showCancelResult={showCancelResult}
+        />
       </TradingTabelContainer>
 
       {renderTables()}
@@ -79,6 +82,7 @@ export const DefaultView = (props) => {
           activeExchange={activeExchange}
           pair={[base, quote]}
           showOrderResult={showOrderResult}
+          showCancelResult={showCancelResult}
         />
       </TradingTerminalContainer>
     </Container>

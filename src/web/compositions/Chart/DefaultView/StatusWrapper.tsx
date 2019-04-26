@@ -54,11 +54,27 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
+  showCancelResult = (result) => {
+    if (result.status === 'success' && result.message) {
+      this.props.enqueueSnackbar(result.message, {
+        variant: 'success',
+        action: (
+          <CloseButton />
+        ),
+      })
+    } else if (result.status === 'success' || !result.message) {
+      this.props.enqueueSnackbar(orderError, { variant: 'error' })
+    } else {
+      this.props.enqueueSnackbar(result.message, { variant: 'error' })
+    }
+  }
+
 
   render() {
     return (
       <DefaultView
         showOrderResult={this.showOrderResult}
+        showCancelResult={this.showCancelResult}
         {...this.props}
       />
     )
