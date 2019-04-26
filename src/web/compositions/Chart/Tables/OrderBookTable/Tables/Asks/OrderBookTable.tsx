@@ -1,5 +1,5 @@
-import React, { Component, memo } from 'react'
-import { difference } from 'lodash-es'
+import React, {  memo , PureComponent} from 'react'
+import { withTheme } from '@material-ui/styles'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
@@ -62,18 +62,8 @@ const MemoHead = memo(
     nextProps.quote === prevProps.quote && nextProps.type === prevProps.type
 )
 
-class OrderBookTable extends Component<IProps> {
-  shouldComponentUpdate(nextProps: IProps) {
-    const shouldUpdate =
-      difference(nextProps.data, this.props.data).length > 0 ||
-      nextProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
-      nextProps.currencyPair !== this.props.currencyPair ||
-      (this.props.data.length > 0 && nextProps.data.length === 0) ||
-      nextProps.tableExpanded !== this.props.tableExpanded
-
-    return shouldUpdate
-  }
-
+@withTheme()
+class OrderBookTable extends PureComponent<IProps> {
   render() {
     const {
       onButtonClick,
