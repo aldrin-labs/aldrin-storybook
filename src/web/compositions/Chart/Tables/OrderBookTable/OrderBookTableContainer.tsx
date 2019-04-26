@@ -87,7 +87,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       return {
         spread,
         asks: order.type === 'ask' ? maximumItemsInArray(asks, 100, 40, true): state.asks,
-        bids: reduceArrayLength(bids.slice()),
+        bids: reduceArrayLength(bids),
         // bids: [],
         // asks: [],
         i: iterator,
