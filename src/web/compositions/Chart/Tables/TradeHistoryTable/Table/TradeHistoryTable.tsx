@@ -23,7 +23,7 @@ const OptimizedRow = memo(
     <Row background={background.default}>
       <Cell style={{ padding: '0 0.2rem' }} width={'30%'}>
         <TypographyFullWidth noWrap={true} variant="caption" align="right">
-          {parseFloat(ticker.size).toFixed(4)}
+          {(+ticker.size).toFixed(4)}
         </TypographyFullWidth>
       </Cell>
       <Cell width={'40%'} style={{ padding: '0 0.2rem', display: 'flex' }}>
@@ -38,7 +38,7 @@ const OptimizedRow = memo(
           variant="caption"
           align="right"
         >
-          {parseFloat(ticker.price).toFixed(numbersAfterDecimalForPrice)}
+          {(+ticker.price).toFixed(numbersAfterDecimalForPrice)}
         </StyledTypography>
       </Cell>
       <Cell style={{ padding: '0 0.2rem' }} width={'30%'}>
