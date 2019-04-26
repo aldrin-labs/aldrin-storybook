@@ -15,7 +15,7 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
-import { CANCEL_ORDER } from '@core/graphql/mutations/chart/cancelOrder'
+import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state = {
@@ -40,7 +40,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
       console.log('responseResult', responseResult)
     } catch (e) {
-      console.log('error in cancelOrder', e);
+      console.log('error in cancelOrder 2', e);
 
     }
 
@@ -133,6 +133,6 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default graphql(CANCEL_ORDER, { name: 'cancelOrderMutation' })(
+export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
   TableDataWrapper
 )
