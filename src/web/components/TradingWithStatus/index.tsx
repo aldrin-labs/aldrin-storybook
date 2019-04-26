@@ -39,7 +39,7 @@ class OrderStatusWrapper extends React.Component {
           <Button
             size="small"
             color="inherit"
-            onClick={() => this.props.canselOrder(result.orderId)}
+            onClick={() => this.props.cancelOrder(result.orderId)}
           >
             {'Cancel'}
           </Button>
@@ -56,11 +56,9 @@ class OrderStatusWrapper extends React.Component {
 
 
   render() {
-    const { canselOrder } = this.props
     return (
       <TradingWrapper
         showOrderResult={this.showOrderResult}
-        canselOrder={canselOrder}
         {...this.props}
       />
     )
