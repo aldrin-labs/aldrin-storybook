@@ -31,9 +31,9 @@ export const HeadRow = memo(
             align="right"
             color="secondary"
           >
-            {+spread.toFixed(digitsAfterDecimalForSpread) <= 0
+            {(+spread).toFixed(digitsAfterDecimalForSpread) <= 0
               ? '~ 0'
-              : spread.toFixed(digitsAfterDecimalForSpread)}
+              : (+spread).toFixed(digitsAfterDecimalForSpread)}
           </TypographyFullWidth>
         </HeadCell>
       </TriggerRow>
