@@ -86,7 +86,7 @@ class SpreadTable extends PureComponent<IProps> {
 
     return (
       <SpreadreadTableWrapper>
-        <Body>
+        <Body height="calc(100% - 26px)">
         {data.map(
             (
               order: { size: number; price: number; type: string },
