@@ -45,7 +45,7 @@ const RowFunc = ({
           variant="body1"
           align="right"
         >
-          {parseFloat(order.size).toFixed(digitsAfterDecimalForBidsSize)}
+          {(order.size).toFixed(digitsAfterDecimalForBidsSize)}
         </StyledTypography>
       </Cell>
       <Cell width={'45%'}>
@@ -57,7 +57,7 @@ const RowFunc = ({
           variant="body1"
           align="right"
         >
-          {parseFloat(order.price).toFixed(digitsAfterDecimalForBidsPrice)}
+          {(order.price).toFixed(digitsAfterDecimalForBidsPrice)}
         </StyledTypography>
       </Cell>
     </RowWithVolumeChart>
