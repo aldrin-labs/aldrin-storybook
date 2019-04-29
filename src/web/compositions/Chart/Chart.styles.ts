@@ -64,7 +64,7 @@ export const TablesContainer = styled(Grid)`
 export const TradingTerminalContainer = styled(Grid)`
   position: relative;
   display: flex;
-  
+
   && {
     padding: 3px;
   }
