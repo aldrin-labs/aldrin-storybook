@@ -38,6 +38,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tabIndex,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
+            showCancelResult: this.props.showCancelResult
           }}
         />
         <OrderHistoryTable
