@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Card, Grid } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -10,12 +11,10 @@ export const DepthChartContainer = styled(Card)`
   width: 100%;
 `
 
-export const TablesBlockWrapper = styled(Card)`
+export const TablesBlockWrapper = styled(({background = '', ...rest}) => <Card {...rest} />)`
   min-width: 150px;
   width: 50%;
   position: relative;
-  ${(props: { blur?: boolean }) => (props.blur ? 'filter: blur(5px);' : '')}
-
   && {
     overflow: hidden;
     background-color: ${(props: { background?: string }) => props.background};
@@ -23,8 +22,6 @@ export const TablesBlockWrapper = styled(Card)`
   }
 
   @media (max-width: 1080px) {
-    display: ${(props: { variant: { show?: boolean } }) =>
-  props.variant.show ? 'block' : 'none'};
     width: 100%;
     height: calc(68vh - 57px - 70px);
     position: relative;

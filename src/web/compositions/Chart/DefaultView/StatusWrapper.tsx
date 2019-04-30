@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 import { orderError } from '@core/utils/errorsConfig'
 
-import TradingWrapper from '../TradingWrapper'
+import { DefaultView } from './DefaultView'
 
 const canselStyeles = theme => ({
   icon: {
@@ -21,16 +21,16 @@ const snackStyeles = theme => ({
 
 const CloseButton = withStyles(canselStyeles)((props) => (
   <IconButton
-  key="close"
-  aria-label="Close"
-  color="inherit"
+    key="close"
+    aria-label="Close"
+    color="inherit"
   >
-  <CloseIcon className={props.classes.icon} />
+    <CloseIcon className={props.classes.icon} />
 </IconButton>
 ))
 
 class OrderStatusWrapper extends React.Component {
-  showOrderResult = (result) => {
+  showOrderResult = (result, cancelOrder) => {
     if (result.status === 'success' && result.orderId && result.message) {
       this.props.enqueueSnackbar(result.message, {
         variant: 'success',
@@ -39,7 +39,7 @@ class OrderStatusWrapper extends React.Component {
           <Button
             size="small"
             color="inherit"
-            onClick={() => this.props.canselOrder(result.orderId)}
+            onClick={() => cancelOrder(result.orderId)}
           >
             {'Cancel'}
           </Button>
@@ -54,13 +54,27 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
+  showCancelResult = (result) => {
+    if (result.status === 'success' && result.message) {
+      this.props.enqueueSnackbar(result.message, {
+        variant: 'success',
+        action: (
+          <CloseButton />
+        ),
+      })
+    } else if (result.status === 'success' || !result.message) {
+      this.props.enqueueSnackbar(orderError, { variant: 'error' })
+    } else {
+      this.props.enqueueSnackbar(result.message, { variant: 'error' })
+    }
+  }
+
 
   render() {
-    const { canselOrder } = this.props
     return (
-      <TradingWrapper
+      <DefaultView
         showOrderResult={this.showOrderResult}
-        canselOrder={canselOrder}
+        showCancelResult={this.showCancelResult}
         {...this.props}
       />
     )

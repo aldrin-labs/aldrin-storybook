@@ -62,6 +62,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
     classes,
     priceType,
     placeOrder,
+    cancelOrder,
     decimals,
     showOrderResult,
   } = props
@@ -78,6 +79,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           walletValue={funds && funds[1]}
           marketPrice={price}
           confirmOperation={placeOrder}
+          cancelOrder={cancelOrder}
           decimals={decimals}
           showOrderResult={showOrderResult}
         />
@@ -92,6 +94,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           walletValue={funds && funds[0]}
           marketPrice={price}
           confirmOperation={placeOrder}
+          cancelOrder={cancelOrder}
           decimals={decimals}
           showOrderResult={showOrderResult}
         />
@@ -121,6 +124,7 @@ class SimpleTabs extends React.Component {
       placeOrder,
       decimals,
       showOrderResult,
+      cancelOrder,
     } = this.props
 
     return(
@@ -154,6 +158,7 @@ class SimpleTabs extends React.Component {
           funds={funds}
           price={price}
           placeOrder={placeOrder}
+          cancelOrder={cancelOrder}
           decimals={decimals}
           showOrderResult={showOrderResult}
         />
