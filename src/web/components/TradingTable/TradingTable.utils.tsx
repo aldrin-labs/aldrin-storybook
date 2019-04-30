@@ -56,7 +56,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
 
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
-  cancelOrderFunc: (keyId: string, orderId: string) => Promise<any>
+  cancelOrderFunc: (keyId: string, orderId: string, pair: string) => Promise<any>
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -97,7 +97,7 @@ export const combineOpenOrdersTable = (
               key={i}
               variant="outlined"
               size={`small`}
-              onClick={() => cancelOrderFunc(keyId, orderId)}
+              onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
             >
               Cancel
             </TableButton>
