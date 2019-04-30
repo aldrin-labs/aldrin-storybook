@@ -7,15 +7,13 @@ import { withKnobs } from '@storybook/addon-knobs'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 
+import { autoLogin } from '../src/utils/autoLogin'
+
 import { customThemes } from './customTheme'
 
 import { getToken } from '@core/utils/autoLogin'
 import storage from '@storage'
 
-async function login() {
-  const authResult = await getToken()
-  await storage.setItem('token', authResult.idToken)
-}
 
 function loadStories() {
   // automatically import all story js files that end with *.stories.tsx
@@ -58,4 +56,7 @@ if (process.env.REACT_NATIVE) {
   )
 }
 
-configure(loadStories, module)
+autoLogin(storage).then(() => {
+  console.log('aaaaa')
+  configure(loadStories, module)
+})
