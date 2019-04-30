@@ -1,25 +1,44 @@
 import * as React from 'react'
 
-import { Grid, Paper } from '@material-ui/core'
+import {
+  Grid,
+  Paper,
+  Typography,
+} from '@material-ui/core'
 
 import {
   MainContainer,
   StepContainer,
+  MainWrapper,
+  LogoWrapper,
+  StepGrid,
+  ContentGrid,
 } from './styles'
 
 
 const Onboarding = () => (
   <MainContainer>
     <Grid container>
-      <Grid item xs={6}>
-        <StepContainer>xs=6</StepContainer>
-      </Grid>
-      <Grid item xs={2}>
-        <Paper>xs=6</Paper>
-      </Grid>
-      <Grid item xs={4}>
-        <Paper>xs=6</Paper>
-      </Grid>
+      <StepGrid item>
+        <StepContainer>
+          <MainWrapper>
+            <LogoWrapper>
+              aaaa
+            </LogoWrapper>
+            <Typography variant="h5">
+              Welcome to the future of crypto
+            </Typography>
+            <Typography variant="h6">
+              Welcome to the future of crypto
+            </Typography>
+          </MainWrapper>
+        </StepContainer>
+      </StepGrid>
+      <ContentGrid item>
+        <Typography>
+          Welcome to the future of crypto
+        </Typography>
+      </ContentGrid>
     </Grid>
   </MainContainer>
 )
