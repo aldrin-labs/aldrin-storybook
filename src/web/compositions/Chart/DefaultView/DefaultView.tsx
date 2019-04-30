@@ -47,7 +47,7 @@ export const DefaultView = (props) => {
         {renderTogglerBody()}
       </ChartGridContainer>
 
-      <ChartsContainer item sm={10} style={{ flex: 'auto' }}>
+      <ChartsContainer item sm={10}>
         {activeChart === 'candle' ? (
           <SingleChart
             additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`}
@@ -67,7 +67,7 @@ export const DefaultView = (props) => {
           </Fade>
         )}
       </ChartsContainer>
-      <TradingTabelContainer item sm={10} style={{ flex: 'auto' }}>
+      <TradingTabelContainer item sm={10}>
         {MASTER_BUILD && <ComingSoon />}
         <TradingTable
           showCancelResult={showCancelResult}
@@ -76,7 +76,7 @@ export const DefaultView = (props) => {
 
       {renderTables()}
 
-      <TradingTerminalContainer item sm={4} style={{ flex: 'auto' }}>
+      <TradingTerminalContainer item sm={4}>
         {MASTER_BUILD && <ComingSoon />}
         <TradingComponent
           activeExchange={activeExchange}
