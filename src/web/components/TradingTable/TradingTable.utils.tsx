@@ -60,7 +60,7 @@ export const getCurrentCurrencySymbol = (symbolPair: string, tradeType: string):
   const splittedSymbolPair = symbolPair.split('/')
   const [quote, base] = splittedSymbolPair
 
-  return tradeType === 'BUY' ? base : quote
+  return tradeType === 'BUY' ? quote : base
 
 }
 
