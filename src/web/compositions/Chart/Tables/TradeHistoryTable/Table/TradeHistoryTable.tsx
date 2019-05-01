@@ -156,7 +156,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
           <Body
             data-e2e="tradeHistory__body"
             background={background.default}
-            height="50vh"
+            height="calc((68vh - 59px) - 48px)"
           >
                 {data.map((ticker: ITicker, i: number) => (
                   <OptimizedRow
