@@ -198,8 +198,6 @@ render() {
     decimals,
   } = this.props
 
-  console.log('render')
-
   const pairsErrors = toPairs(errors)
 
   const { background, divider } = palette
