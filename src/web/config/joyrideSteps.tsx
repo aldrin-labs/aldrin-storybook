@@ -141,11 +141,6 @@ export const portfolioOptimizationSteps = [
 ]
 
 export const singleChartSteps: T[] = [
-  {
-    target: '.AutoSuggestSelect',
-    content: 'Select the pair.',
-    placement: 'auto',
-  },
 ]
 
 export const multiChartsSteps: T[] = [
