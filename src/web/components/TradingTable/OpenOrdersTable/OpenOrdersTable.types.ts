@@ -1,8 +1,10 @@
 import { ChangeEvent } from 'react'
-import { OrderType } from '@core/types/ChartTypes'
 import { Theme } from '@material-ui/core'
+import { WithTheme } from '@material-ui/styles/withTheme'
 
-export interface IProps {
+import { OrderType } from '@core/types/ChartTypes'
+
+export interface IProps extends WithTheme<Theme> {
   tab: string
   tabIndex: number
   show: boolean
@@ -18,7 +20,7 @@ export interface IProps {
       }
     }
   ) => Promise<any>
-  getOpenOrderHistory: {
+  getOpenOrderHistoryQuery: {
     getOpenOrderHistory: OrderType[]
   }
   subscribeToMore: () => void
@@ -26,3 +28,7 @@ export interface IProps {
   theme: Theme
 }
 
+
+export interface IState {
+  openOrdersProcessedData: any[]
+}

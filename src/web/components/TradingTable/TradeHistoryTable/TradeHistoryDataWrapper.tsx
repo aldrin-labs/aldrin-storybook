@@ -16,10 +16,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     activeDateButton: '1Day',
   }
 
-  onSearchDateButtonClick = async () => {
-    // TODO: there should be mutation for search
-  }
-
   onClearDateButtonClick = () => {
     this.setState({
       startDate: null,

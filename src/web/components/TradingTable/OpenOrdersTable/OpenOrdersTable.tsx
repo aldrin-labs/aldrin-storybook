@@ -5,7 +5,7 @@ import { withTheme } from '@material-ui/styles'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps } from './OpenOrdersTable.types'
+import { IProps, IState } from './OpenOrdersTable.types'
 import {
   updateOpenOrderHistoryQuerryFunction,
   combineOpenOrdersTable,
@@ -22,7 +22,7 @@ import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme()
 class OpenOrdersTable extends React.PureComponent<IProps> {
-  state = {
+  state: IState = {
     openOrdersProcessedData: [],
   }
 

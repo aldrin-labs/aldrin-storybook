@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/styles'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps } from './OpenOrdersTable.types'
+import { IProps, IState } from './TradeHistoryTable.types'
 import {
   combineTradeHistoryTable,
   updateTradeHistoryQuerryFunction,
@@ -19,7 +19,7 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 @withTheme()
 class TradeHistoryTable extends React.PureComponent<IProps> {
-  state = {
+  state: IState = {
     tradeHistoryProcessedData: [],
   }
 
