@@ -1,5 +1,6 @@
 import { ChangeEvent } from 'react'
 import { OrderType } from '@core/types/ChartTypes'
+import { Theme } from '@material-ui/core'
 
 export interface IProps {
   tab: string
@@ -21,5 +22,7 @@ export interface IProps {
     getOpenOrderHistory: OrderType[]
   }
   subscribeToMore: () => void
+  showCancelResult: ({ status, message }: { status: string, message: string }) => void
+  theme: Theme
 }
 

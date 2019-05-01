@@ -1,5 +1,6 @@
 import React from 'react'
 import { graphql } from 'react-apollo'
+import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -19,6 +20,7 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
+@withTheme()
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state = {
     openOrdersProcessedData: [],
@@ -65,11 +67,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   componentDidMount() {
 
-    const { getOpenOrderHistory, subscribeToMore } = this.props
+    const { getOpenOrderHistory, subscribeToMore, theme } = this.props
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       getOpenOrderHistory.getOpenOrderHistory,
-      this.cancelOrderWithStatus
+      this.cancelOrderWithStatus,
+      theme
     )
     this.setState({
       openOrdersProcessedData,
@@ -81,7 +84,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistory.getOpenOrderHistory,
-      this.cancelOrderWithStatus
+      this.cancelOrderWithStatus,
+      nextProps.theme,
     )
     this.setState({
       openOrdersProcessedData,
