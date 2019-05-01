@@ -76,6 +76,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           byType="buy"
           priceType={priceType}
           pair={pair}
+          key={[pair, funds, priceType]}
           walletValue={funds && funds[1]}
           marketPrice={price}
           confirmOperation={placeOrder}
@@ -91,6 +92,7 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
           byType="sell"
           priceType={props.priceType}
           pair={pair}
+          key={[pair, funds]}
           walletValue={funds && funds[0]}
           marketPrice={price}
           confirmOperation={placeOrder}
