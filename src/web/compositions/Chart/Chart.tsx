@@ -183,39 +183,39 @@ class Chart extends React.Component<IProps, IState> {
             show: showTableOnMobile === 'ORDER',
           }}
         >
-          {MASTER_BUILD && <ComingSoon />}
-          {/*<QueryRenderer*/}
-            {/*component={OrderBookTable}*/}
-            {/*withOutSpinner*/}
-            {/*query={ORDERS_MARKET_QUERY}*/}
-            {/*fetchPolicy="network-only"*/}
-            {/*variables={{ symbol, exchange }}*/}
-            {/*subscriptionArgs={{*/}
-              {/*subscription: MARKET_ORDERS,*/}
-              {/*variables: { symbol, exchange },*/}
-              {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
-            {/*}}*/}
-            {/*{...{*/}
-              {/*quote,*/}
-              {/*symbol,*/}
-              {/*activeExchange,*/}
-              {/*currencyPair,*/}
-              {/*aggregation,*/}
-              {/*onButtonClick: this.changeTable,*/}
-              {/*setOrders: this.props.setOrders,*/}
-              {/*...this.props,*/}
-              {/*key: 'orderbook_table_query_render',*/}
-            {/*}}*/}
-          {/*/>*/}
+          {/*{MASTER_BUILD && <ComingSoon />}*/}
+          <QueryRenderer
+            component={OrderBookTable}
+            withOutSpinner
+            query={ORDERS_MARKET_QUERY}
+            fetchPolicy="network-only"
+            variables={{ symbol, exchange }}
+            subscriptionArgs={{
+              subscription: MARKET_ORDERS,
+              variables: { symbol, exchange },
+              updateQueryFunction: updateOrderBookQuerryFunction,
+            }}
+            {...{
+              quote,
+              symbol,
+              activeExchange,
+              currencyPair,
+              aggregation,
+              onButtonClick: this.changeTable,
+              setOrders: this.props.setOrders,
+              ...this.props,
+              key: 'orderbook_table_query_render',
+            }}
+          />
 
-          {/*<Aggregation*/}
-            {/*{...{*/}
-              {/*theme,*/}
-              {/*aggregation: this.state.aggregation,*/}
-              {/*onButtonClick: this.setAggregation,*/}
-              {/*key: 'aggregation_component',*/}
-            {/*}}*/}
-          {/*/>*/}
+          <Aggregation
+            {...{
+              theme,
+              aggregation: this.state.aggregation,
+              onButtonClick: this.setAggregation,
+              key: 'aggregation_component',
+            }}
+          />
         </TablesBlockWrapper>
 
         <TablesBlockWrapper

@@ -1,10 +1,11 @@
 import React from 'react'
 import { graphql } from 'react-apollo'
+import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps } from './OpenOrdersTable.types'
+import { IProps, IState } from './OpenOrdersTable.types'
 import {
   updateOpenOrderHistoryQuerryFunction,
   combineOpenOrdersTable,
@@ -19,15 +20,14 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
+@withTheme()
 class OpenOrdersTable extends React.PureComponent<IProps> {
-  state = {
+  state: IState = {
     openOrdersProcessedData: [],
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const {
-      cancelOrderMutation,
-    } = this.props
+    const { cancelOrderMutation } = this.props
 
     try {
       const responseResult = await cancelOrderMutation({
@@ -42,21 +42,22 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
       return responseResult
     } catch (err) {
-      return {errors: err}
+      return { errors: err }
     }
   }
 
-  cancelOrderWithStatus = async (keyId: string, orderId: string, pair: string) => {
-    const {
-      showCancelResult,
-    } = this.props
+  cancelOrderWithStatus = async (
+    keyId: string,
+    orderId: string,
+    pair: string
+  ) => {
+    const { showCancelResult } = this.props
     const result = await this.onCancelOrder(keyId, orderId, pair)
     showCancelResult(cancelOrderStatus(result))
   }
 
-
-    // TODO: here should be a mutation order to cancel a specific order
-    // TODO: Also it should receive an argument to edentify the order that we should cancel
+  // TODO: here should be a mutation order to cancel a specific order
+  // TODO: Also it should receive an argument to edentify the order that we should cancel
 
   onCancelAll = async () => {
     // TODO: here should be a mutation func to cancel all orders
@@ -64,12 +65,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
-
-    const { getOpenOrderHistory, subscribeToMore } = this.props
+    const { getOpenOrderHistoryQuery, subscribeToMore, theme } = this.props
 
     const openOrdersProcessedData = combineOpenOrdersTable(
-      getOpenOrderHistory.getOpenOrderHistory,
-      this.cancelOrderWithStatus
+      getOpenOrderHistoryQuery.getOpenOrderHistory,
+      this.cancelOrderWithStatus,
+      theme
     )
     this.setState({
       openOrdersProcessedData,
@@ -80,8 +81,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
-      nextProps.getOpenOrderHistory.getOpenOrderHistory,
-      this.cancelOrderWithStatus
+      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
+      this.cancelOrderWithStatus,
+      nextProps.theme
     )
     this.setState({
       openOrdersProcessedData,
@@ -130,7 +132,7 @@ const TableDataWrapper = ({ ...props }) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={getOpenOrderHistory}
-      name={`getOpenOrderHistory`}
+      name={`getOpenOrderHistoryQuery`}
       fetchPolicy="network-only"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
