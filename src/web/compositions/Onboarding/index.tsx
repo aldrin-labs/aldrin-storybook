@@ -6,7 +6,7 @@ import {
 
 import StepArrow from '@icons/StepArrow.png'
 
-import Inputs from './Inputs'
+import Register from './Register'
 import Steps from './Steps'
 import Confirm from './Confirm'
 
@@ -31,7 +31,7 @@ class Onboarding extends React.Component {
             <Arrow step={this.state.step} src={StepArrow} />
           </ArrowGrid>
           {this.state.step === 'first'
-          ? <Inputs changeStep={() => this.setState({ step: 'second' })}/>
+          ? <Register changeStep={() => this.setState({ step: 'second' })}/>
           : <Confirm name="Antonio" />}
         </Grid>
       </MainContainer>
