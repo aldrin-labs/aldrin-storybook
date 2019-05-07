@@ -7,6 +7,7 @@ import {
 import StepArrow from '@icons/StepArrow.png'
 
 import Register from './Register'
+
 import Steps from './Steps'
 import Confirm from './Confirm'
 
@@ -18,20 +19,18 @@ import {
 
 
 class Onboarding extends React.Component {
-  state = {
-    step: 'first',
-  }
 
   render() {
+    const { step } = this.props
     return (
       <MainContainer>
         <Grid container>
-          <Steps step={this.state.step} />
+          <Steps step={step} />
           <ArrowGrid item>
-            <Arrow step={this.state.step} src={StepArrow} />
+            <Arrow step={step} src={StepArrow} />
           </ArrowGrid>
-          {this.state.step === 'first'
-          ? <Register changeStep={() => this.setState({ step: 'second' })}/>
+          {step === 'first'
+          ? <Register changeStep={() => this.setState({ step: 'second' })} auth={this.props.auth}/>
           : <Confirm name="Antonio" />}
         </Grid>
       </MainContainer>

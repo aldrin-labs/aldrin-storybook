@@ -72,7 +72,7 @@ const Inputs = (props) => (
           </SocialSvgContainer>
           Using Facebook
         </FacebookButton>
-        <GoogleButton>
+        <GoogleButton onClick={props.loginWithGoogle}>
           <GoolgeSvgContainer>
             <SvgIcon src={googlePlus} />
           </GoolgeSvgContainer>
