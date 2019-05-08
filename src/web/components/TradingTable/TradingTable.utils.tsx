@@ -278,7 +278,6 @@ export const combineTradeHistoryTable = (
         },
       }
     })
-    .sort((a, b) => b - a)
 
   return processedTradeHistoryData
 }
