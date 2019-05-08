@@ -56,6 +56,10 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     ? 'You have no Funds.'
     : 'You have no assets'
 
+export const isBuyTypeOrder = (orderStringType: string): boolean => /buy/i.test(orderStringType)
+
+//order.filled / order.info.origQty
+
 export const getCurrentCurrencySymbol = (
   symbolPair: string,
   tradeType: string
@@ -63,8 +67,9 @@ export const getCurrentCurrencySymbol = (
   const splittedSymbolPair = symbolPair.split('/')
   const [quote, base] = splittedSymbolPair
 
-  return tradeType === 'BUY' ? quote : base
+  return isBuyTypeOrder(tradeType) ? quote : base
 }
+
 
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
@@ -100,29 +105,32 @@ export const combineOpenOrdersTable = (
         date: {
           render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
           style: { whiteSpace: 'nowrap' },
+          contentToSort: timestamp,
         },
         pair: symbol,
         type: type,
+        // TODO: fix side
         side: {
           render: side,
           style: {
             color:
-              side === 'BUY'
+              isBuyTypeOrder(side)
                 ? theme.customPalette.green.main
                 : theme.customPalette.red.main,
           },
         },
         // TODO: We should change average "price" to average param from backend when it will be ready
-        price: { render: price, isNumber: true },
-        amount: { render: origQty, isNumber: true },
-        filled: { render: `${filled} %`, isNumber: true },
+        price: { render: price, isNumber: true, contentToSort: price },
+        amount: { render: origQty, isNumber: true, contentToSort: origQty },
+        filled: { render: `${filled} %`, isNumber: true, contentToSort: filled },
         // TODO: We should change "total" to total param from backend when it will be ready
         total: {
           render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`,
           isNumber: true,
+          contentToSort: price,
         },
         // TODO: Not sure about triggerConditions
-        triggerConditions: { render: triggerConditions, isNumber: true },
+        triggerConditions: { render: triggerConditions, isNumber: true, contentToSort: +stopPrice },
         // TODO: We should update cancelOrderFunc param
         cancel: {
           render: (
@@ -169,30 +177,33 @@ export const combineOrderHistoryTable = (
       date: {
         render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
         style: { whiteSpace: 'nowrap' },
+        contentToSort: timestamp,
       },
       pair: symbol,
       type: type,
+      // TODO: fix side
       side: {
         render: side,
         style: {
           color:
-            side === 'BUY'
+            isBuyTypeOrder(side)
               ? theme.customPalette.green.main
               : theme.customPalette.red.main,
         },
       },
       // TODO: We should change average "price" to average param from backend when it will be ready
-      average: { render: price, isNumber: true },
-      price: { render: price, isNumber: true },
-      filled: { render: `${filled} %`, isNumber: true },
-      amount: { render: origQty, isNumber: true },
+      average: { render: price, isNumber: true, contentToSort: price },
+      price: { render: price, isNumber: true, contentToSort: price },
+      filled: { render: `${filled} %`, isNumber: true, contentToSort: filled },
+      amount: { render: origQty, isNumber: true, contentToSort: origQty },
       // TODO: We should change "total" to total param from backend when it will be ready
       total: {
         render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`,
         isNumber: true,
+        contentToSort: price,
       },
       // TODO: Not sure about triggerConditions
-      triggerConditions: { render: triggerConditions, isNumber: true },
+      triggerConditions: { render: triggerConditions, isNumber: true, contentToSort: +stopPrice },
       status: status || '-',
     }
   })
@@ -216,24 +227,25 @@ export const combineTradeHistoryTable = (
 
     return {
       id: id,
-      time: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
+      time: { render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'), contentToSort: timestamp },
       pair: symbol,
       type: {
         render: side,
         style: {
           color:
-            side === 'BUY'
+            isBuyTypeOrder(side)
               ? theme.customPalette.green.main
               : theme.customPalette.red.main,
         },
       },
       price: { render: price, isNumber: true },
-      filled: { render: `${amount} %`, isNumber: true },
-      fee: { render: `${cost} ${currency}`, isNumber: true },
+      filled: { render: `${amount} %`, isNumber: true, contentToSort: +amount },
+      fee: { render: `${cost} ${currency}`, isNumber: true, contentToSort: cost },
       // TODO: We should change "total" to total param from backend when it will be ready
       total: {
         render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`,
         isNumber: true,
+        contentToSort: price,
       },
     }
   })
@@ -260,6 +272,7 @@ export const combineFundsTable = (
     } = el
 
     return {
+      id: symbol,
       coin: symbol || 'unknown',
       totalBalance: {
         render: quantity || '-',
