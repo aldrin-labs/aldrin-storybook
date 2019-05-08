@@ -10,10 +10,10 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   IState
 > {
   state: IState = {
-    startDate: moment().startOf('day'),
+    startDate: getEndDate('1Week'),
     endDate: moment().endOf('day'),
     focusedInput: null,
-    activeDateButton: '1Day',
+    activeDateButton: '1Week',
   }
 
   onClearDateButtonClick = () => {
