@@ -134,7 +134,8 @@ export const combineOpenOrdersTable = (
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         total: {
-          render: `- ${getCurrentCurrencySymbol(symbol, side)}`,
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: '-',
           isNumber: true,
           contentToSort: 0,
         },
@@ -205,7 +206,7 @@ export const combineOrderHistoryTable = (
               : theme.customPalette.red.main,
           },
         },
-        average: { render: average, isNumber: true, contentToSort: average },
+        average: { render: average || '-', isNumber: true, contentToSort: +average },
         price: { render: price, isNumber: true, contentToSort: price },
         filled: {
           render: `${filledQuantityProcessed} %`,
@@ -215,7 +216,8 @@ export const combineOrderHistoryTable = (
         amount: { render: origQty, isNumber: true, contentToSort: +origQty },
         // TODO: We should change "total" to total param from backend when it will be ready
         total: {
-          render: `- ${getCurrentCurrencySymbol(symbol, side)}`,
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: '-',
           isNumber: true,
           contentToSort: 0,
         },
@@ -276,7 +278,8 @@ export const combineTradeHistoryTable = (
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         total: {
-          render: `- ${getCurrentCurrencySymbol(symbol, side)}`,
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: '-',
           isNumber: true,
           contentToSort: 0,
         },
