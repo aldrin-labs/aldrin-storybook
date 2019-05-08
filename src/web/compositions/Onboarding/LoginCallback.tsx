@@ -1,20 +1,22 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 
+import Comfirm from './Confirm'
 
 class LoginResult extends React.Component {
   state = {
     redirected: false
   }
-  componentDidMount() {
-    const result = this.props.auth.handleAuthentication()
-    if (result !== 'err') this.setState({redirected: true})
+  componentDidMount = async () => {
+    const result = await this.props.auth.handleAuthentication()
+    console.log(result)
+    if (result && result !== 'err') this.setState({redirected: true})
   }
 
   render() {
     if (this.state.redirected) {
       return (
-        <Redirect to="/register/confirm" />
+        <Comfirm name="Antonio" />
       )
     }
     return (

@@ -9,7 +9,7 @@ import StepArrow from '@icons/StepArrow.png'
 import Register from './Register'
 
 import Steps from './Steps'
-import Confirm from './Confirm'
+import LoginCallback from './LoginCallback'
 
 import {
   MainContainer,
@@ -31,7 +31,7 @@ class Onboarding extends React.Component {
           </ArrowGrid>
           {step === 'first'
           ? <Register changeStep={() => this.setState({ step: 'second' })} auth={this.props.auth}/>
-          : <Confirm name="Antonio" />}
+          : <LoginCallback auth={this.props.auth}/>}
         </Grid>
       </MainContainer>
     )

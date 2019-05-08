@@ -35,6 +35,7 @@ export default class Auth {
       email,
       password,
       realm: 'Username-Password-Authentication',
+      redirectUri: 'http://localhost:3000/registration/confirm'
     }, () => null)
   }
 
@@ -46,6 +47,7 @@ export default class Auth {
 
 
   handleAuthentication = () => {
+    return new Promise ((resolve) => {
     this.auth0.parseHash((err, authResult) => {
       if (err) {
         throw err
@@ -54,12 +56,13 @@ export default class Auth {
 
       console.log(authResult)
       if (!authResult || !authResult.idToken) {
-        return 'err'
+        resolve('err')
       }
       this.auth0.client.userInfo(authResult.accessToken, (err, user) => {
         console.log('user', user)
-        return user
+        resolve(user)
       });
-    });
+    })
+  })
   }
 }
