@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { OrderType, TradeType } from '@core/types/ChartTypes'
+import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import {
   fundsColumnNames,
@@ -12,6 +12,7 @@ import {
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
 import { Theme } from '@material-ui/core'
+import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -55,13 +56,14 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     ? 'You have no Funds.'
     : 'You have no assets'
 
-export const getCurrentCurrencySymbol = (symbolPair: string, tradeType: string): string => {
-
+export const getCurrentCurrencySymbol = (
+  symbolPair: string,
+  tradeType: string
+): string => {
   const splittedSymbolPair = symbolPair.split('/')
   const [quote, base] = splittedSymbolPair
 
   return tradeType === 'BUY' ? quote : base
-
 }
 
 export const combineOpenOrdersTable = (
@@ -115,7 +117,10 @@ export const combineOpenOrdersTable = (
         amount: { render: origQty, isNumber: true },
         filled: { render: `${filled} %`, isNumber: true },
         // TODO: We should change "total" to total param from backend when it will be ready
-        total: { render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`, isNumber: true },
+        total: {
+          render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`,
+          isNumber: true,
+        },
         // TODO: Not sure about triggerConditions
         triggerConditions: { render: triggerConditions, isNumber: true },
         // TODO: We should update cancelOrderFunc param
@@ -182,7 +187,10 @@ export const combineOrderHistoryTable = (
       filled: { render: `${filled} %`, isNumber: true },
       amount: { render: origQty, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: { render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`, isNumber: true },
+      total: {
+        render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`,
+        isNumber: true,
+      },
       // TODO: Not sure about triggerConditions
       triggerConditions: { render: triggerConditions, isNumber: true },
       status: status || '-',
@@ -223,29 +231,61 @@ export const combineTradeHistoryTable = (
       filled: { render: `${amount} %`, isNumber: true },
       fee: { render: `${cost} ${currency}`, isNumber: true },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: { render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`, isNumber: true },
+      total: {
+        render: `${price} ${getCurrentCurrencySymbol(symbol, side)}`,
+        isNumber: true,
+      },
     }
   })
 
   return processedTradeHistoryData
 }
 
-// TODO: WIP, IN PROGRESS.
-// export const combineFundsTable = (fundsData: FundsType[]) => {
-//   const processedFundsDaata = fundsData.map((el: FundsType) => {
-//     const {} = el
-//
-//     return {
-//       coin: `${String.fromCharCode(getRandomInt(65, 80)) +
-//         String.fromCharCode(getRandomInt(65, 80)) +
-//         String.fromCharCode(getRandomInt(65, 80))}`,
-//       totalBalance: getRandomInt(100, 300000),
-//       availableBalance: getRandomInt(100, 3000),
-//       inOrder: getRandomInt(1, 100),
-//       btcValue: getRandomInt(1, 10000),
-//     }
-//   })
-// }
+export const combineFundsTable = (
+  fundsData: FundsType[],
+  hideSmallAssets: boolean
+) => {
+  const filtredFundsData = hideSmallAssets
+    ? fundsData.filter(
+        (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
+      )
+    : fundsData
+
+  const processedFundsData = filtredFundsData.map((el: FundsType) => {
+    const {
+      quantity,
+      locked,
+      free,
+      asset: { symbol, priceBTC },
+    } = el
+
+    return {
+      coin: symbol || 'unknown',
+      totalBalance: {
+        render: quantity || '-',
+        isNumber: true,
+        contentToSort: +quantity,
+      },
+      availableBalance: {
+        render: free || '-',
+        isNumber: true,
+        contentToSort: +free,
+      },
+      inOrder: {
+        render: locked || '-',
+        isNumber: true,
+        contentToSort: +locked,
+      },
+      btcValue: {
+        render: priceBTC || '-',
+        isNumber: true,
+        contentToSort: +priceBTC,
+      },
+    }
+  })
+
+  return processedFundsData
+}
 
 // Update queries functions ->>
 // TODO: Make it one function
@@ -357,6 +397,37 @@ export const updateTradeHistoryQuerryFunction = (
       { ...subscriptionData.data.listenTradeHistory },
       ...prev.getTradeHistory,
     ]
+
+    result = { ...prev }
+  }
+
+  return result
+}
+
+export const updateFundsQuerryFunction = (prev, { subscriptionData }) => {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenFunds
+
+  if (isEmptySubscription) {
+    return prev
+  }
+
+  const fundHasTheSameIndex = prev.getFunds.findIndex(
+    (el) => el.asset.symbol === subscriptionData.data.listenFunds.asset.symbol
+  )
+  const fundAlreadyExists = fundHasTheSameIndex !== -1
+
+  let result
+
+  if (fundAlreadyExists) {
+    prev.getFunds[fundHasTheSameIndex] = {
+      ...prev.getFunds[fundHasTheSameIndex],
+      ...subscriptionData.data.listenFunds,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getFunds = [{ ...subscriptionData.data.listenFunds }, ...prev.getFunds]
 
     result = { ...prev }
   }
