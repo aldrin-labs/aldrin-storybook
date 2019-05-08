@@ -9,21 +9,43 @@ export default class Auth {
     ...auth0Options.auth,
   })
 
-  singup(callback) {
-    const email = `testaccount-${+ new Date()}@test.test`
-    auth0.singup({connection: 'Username-Password-Authentication',
+  register = (email, password) => {
+    return new Promise ((resolve) => {this.auth0.signup({
+      connection: 'Username-Password-Authentication',
       email,
-      password: 'nge',
+      password,
       user_metadata: { fullName: 'AAA' }
-    }, callback)
+    }, async (err, result) => {
+        if (err) {
+          resolve({
+            status: 'error',
+            message: err,
+          })
+        }
+        resolve({
+          status: 'ok',
+          messafe: '',
+        })
+    })
+  })
+  }
+
+  login = (email, password) => {
+    this.auth0.login({
+      email,
+      password,
+      realm: 'Username-Password-Authentication',
+    }, () => null)
+  }
+
+  googleSingup = () => {
+    this.auth0.authorize({
+      connection: 'google-oauth2',
+    })
   }
 
 
-  login() {
-    this.auth0.authorize();
-  }
-
-  handleAuthentication() {
+  handleAuthentication = () => {
     this.auth0.parseHash((err, authResult) => {
       if (err) {
         throw err
@@ -34,29 +56,10 @@ export default class Auth {
       if (!authResult || !authResult.idToken) {
         return 'err'
       }
-      return authResult
+      this.auth0.client.userInfo(authResult.accessToken, (err, user) => {
+        console.log('user', user)
+        return user
+      });
     });
-  }
-
-  setSession(authResult) {
-    // Set the time that the access token will expire at
-    let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
-    localStorage.setItem('access_token', authResult.accessToken);
-    localStorage.setItem('id_token', authResult.idToken);
-    localStorage.setItem('expires_at', expiresAt);
-  }
-
-  logout() {
-    // Clear access token and ID token from local storage
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('expires_at');
-  }
-
-  isAuthenticated() {
-    // Check whether the current time is past the 
-    // access token's expiry time
-    const expiresAt = JSON.parse(String(localStorage.getItem('expires_at')));
-    return new Date().getTime() < expiresAt;
   }
 }

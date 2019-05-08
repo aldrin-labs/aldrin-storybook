@@ -93,10 +93,9 @@ const styles = {
     borderColor: '#43619C',
   },
   googleButton: {
-    marginLeft: '14px',
     color: 'white',
     borderWidth: '2px',
-    width: '170px',
+    width: '100%',
     textTransform: 'none',
     borderRadius: '24px',
     borderColor: '#EA3E32',
