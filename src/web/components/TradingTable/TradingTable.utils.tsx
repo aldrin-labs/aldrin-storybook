@@ -307,6 +307,8 @@ export const combineFundsTable = (
       asset: { symbol, priceBTC },
     } = el
 
+    const btcValue = +priceBTC * +quantity
+
     return {
       id: symbol,
       coin: symbol || 'unknown',
@@ -326,9 +328,9 @@ export const combineFundsTable = (
         contentToSort: +locked,
       },
       btcValue: {
-        render: priceBTC || '-',
+        render: btcValue || '-',
         isNumber: true,
-        contentToSort: +priceBTC,
+        contentToSort: btcValue,
       },
     }
   })
