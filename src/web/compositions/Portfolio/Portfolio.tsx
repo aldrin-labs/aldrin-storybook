@@ -129,7 +129,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               {(updatePortfolioSettings) => (
                 <>
                   <PortfolioContainer>
-                    <Welcome />
                     {/* refactor this */}
                     <PortfolioSelector
                       login={true}

@@ -47,21 +47,17 @@ export default class Auth {
 
 
   handleAuthentication = () => {
-    return new Promise ((resolve) => {
-    this.auth0.parseHash((err, authResult) => {
+    return new Promise ((resolve, ) => {
+    this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
       if (err) {
         throw err
         return 'err'
       }
 
-      console.log(authResult)
       if (!authResult || !authResult.idToken) {
         resolve('err')
       }
-      this.auth0.client.userInfo(authResult.accessToken, (err, user) => {
-        console.log('user', user)
-        resolve(user)
-      });
+      resolve(authResult)
     })
   })
   }

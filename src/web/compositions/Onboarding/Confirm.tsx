@@ -25,8 +25,11 @@ const Inputs = (props) => (
           You should have received a confirmation email to complete the rgistration process.
         </ConfirmText>
       </ConfirmTextContainer>
-      <StyledLaunchButton>
-        launch
+      <StyledLaunchButton
+        href="/"
+        disabled={!props.registred}
+      >
+        {props.registred ? 'launch': 'loading'}
       </StyledLaunchButton>
     </ConfirmContainer>
   </ContentGrid>

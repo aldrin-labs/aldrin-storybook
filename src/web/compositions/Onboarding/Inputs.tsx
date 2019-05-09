@@ -156,7 +156,7 @@ const validate = (values) => {
 const formikEnhancer = withFormik({
   validate,
   mapPropsToValues: (props) => ({
-    fullName: 'aaaaaa',
+    fullName: 'Alexey',
     email: `testaccount-${+ new Date()}@test.test`,
     password: 'ngenge',
     confirmPassword: 'ngenge',
