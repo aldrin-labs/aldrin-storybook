@@ -162,7 +162,8 @@ const formikEnhancer = withFormik({
     confirmPassword: 'ngenge',
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm, setError }) => {
-    const { email, password } = values
+    const { email, password, fullName } = values
+    await props.persistFullName(fullName)
     const registerResult = await props.auth.register(email, password)
     if (registerResult.status === 'error') {
       const errCode = registerResult.message.code

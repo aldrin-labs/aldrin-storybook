@@ -6,10 +6,10 @@ import {
 
 import StepArrow from '@icons/StepArrow.png'
 
-import Register from './Register'
+import Register from '@core/components/Register'
 
 import Steps from './Steps'
-import LoginCallback from './LoginCallback'
+import RegisterCallback from '@core/components/RegisterCallback'
 
 import {
   MainContainer,
@@ -31,7 +31,7 @@ class Onboarding extends React.Component {
           </ArrowGrid>
           {step === 'first'
           ? <Register changeStep={() => this.setState({ step: 'second' })} auth={this.props.auth}/>
-          : <LoginCallback auth={this.props.auth}/>}
+          : <RegisterCallback auth={this.props.auth}/>}
         </Grid>
       </MainContainer>
     )
