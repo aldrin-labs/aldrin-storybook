@@ -92,7 +92,6 @@ export const combineOpenOrdersTable = (
 
   const processedOpenOrdersData = openOrdersData
     .filter((el) => el.status === 'open')
-    .sort((a, b) => b.timestamp - a.timestamp)
     .map((el: OrderType, i: number) => {
       const {
         keyId,
@@ -160,6 +159,7 @@ export const combineOpenOrdersTable = (
       }
     })
 
+
   return processedOpenOrdersData
 }
 
@@ -172,7 +172,6 @@ export const combineOrderHistoryTable = (
   }
 
   const processedOrderHistoryData = orderData
-    .sort((a, b) => b.timestamp - a.timestamp)
     .map((el: OrderType) => {
       const {
         symbol,
@@ -231,6 +230,7 @@ export const combineOrderHistoryTable = (
       }
     })
 
+
   return processedOrderHistoryData
 }
 
@@ -243,7 +243,6 @@ export const combineTradeHistoryTable = (
   }
 
   const processedTradeHistoryData = tradeData
-    .sort((a, b) => b.timestamp - a.timestamp)
     .map((el: TradeType) => {
       const { id, timestamp, symbol, side, price, amount } = el
 
@@ -285,6 +284,7 @@ export const combineTradeHistoryTable = (
         },
       }
     })
+
 
   return processedTradeHistoryData
 }
@@ -353,7 +353,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
   }
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
-    (el) =>
+    (el: OrderType) =>
       el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
@@ -391,7 +391,7 @@ export const updateOrderHistoryQuerryFunction = (
   }
 
   const openOrderHasTheSameOrderIndex = prev.getOrderHistory.findIndex(
-    (el) =>
+    (el: OrderType) =>
       el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
@@ -428,17 +428,17 @@ export const updateTradeHistoryQuerryFunction = (
     return prev
   }
 
-  const openOrderHasTheSameOrderIndex = prev.getTradeHistory.findIndex(
-    (el) =>
-      el.info.orderId === subscriptionData.data.listenTradeHistory.info.orderId
+  const tradeHasTheSameIndex = prev.getTradeHistory.findIndex(
+    (el: TradeType) =>
+      el.id === subscriptionData.data.listenTradeHistory.id
   )
-  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
+  const tradeAlreadyExists = tradeHasTheSameIndex !== -1
 
   let result
 
-  if (openOrderAlreadyExists) {
-    prev.getTradeHistory[openOrderHasTheSameOrderIndex] = {
-      ...prev.getTradeHistory[openOrderHasTheSameOrderIndex],
+  if (tradeAlreadyExists) {
+    prev.getTradeHistory[tradeHasTheSameIndex] = {
+      ...prev.getTradeHistory[tradeHasTheSameIndex],
       ...subscriptionData.data.listenTradeHistory,
     }
 

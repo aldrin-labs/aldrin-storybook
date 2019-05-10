@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 
-import { FundsType } from '@core/types/ChartTypes'
+import { FundsType, Key } from '@core/types/ChartTypes'
 
 export interface IProps extends WithTheme<Theme> {
   tab: string
@@ -14,6 +14,7 @@ export interface IProps extends WithTheme<Theme> {
   }
   subscribeToMore: () => void
   theme: Theme
+  selectedKey: Key
 }
 
 export interface IState {

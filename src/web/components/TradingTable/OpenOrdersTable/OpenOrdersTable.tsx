@@ -129,6 +129,11 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={OpenOrdersTable}
+      variables={{
+        openOrderInput: {
+          activeExchangeKey: props.selectedKey.keyId,
+        },
+      }}
       withOutSpinner={true}
       withTableLoader={true}
       query={getOpenOrderHistory}
@@ -136,6 +141,11 @@ const TableDataWrapper = ({ ...props }) => {
       fetchPolicy="network-only"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: props.selectedKey.keyId,
+          },
+        },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
       }}
       {...props}

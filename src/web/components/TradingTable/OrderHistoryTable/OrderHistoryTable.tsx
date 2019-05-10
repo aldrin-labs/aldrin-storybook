@@ -120,15 +120,27 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={OrderHistoryTable}
+      variables={{
+        orderHistoryInput: {
+          startDate,
+          endDate,
+          activeExchangeKey: props.selectedKey.keyId,
+        },
+      }}
       withOutSpinner={true}
       withTableLoader={true}
       query={getOrderHistory}
       name={`getOrderHistoryQuery`}
       fetchPolicy="network-only"
-      variables={{ orderHistoryInput: { startDate, endDate } }}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
-        variables: { startDate, endDate },
+        variables: {
+          orderHistoryInput: {
+            startDate,
+            endDate,
+            activeExchangeKey: props.selectedKey.keyId,
+          },
+        },
         updateQueryFunction: updateOrderHistoryQuerryFunction,
       }}
       {...props}
