@@ -37,9 +37,18 @@ const Inputs = (props) => {
     loading,
     values,
     errors,
+    status,
     handleChange,
+    setFieldValue,
     handleSubmit,
+    setStatus,
   } = props
+
+  const onEmailChange = (e: SyntheticEvent<Element>) => {
+    setStatus({email: ''})
+    setFieldValue('email', e.target.value)
+  } 
+
   const pairsErrors = toPairs(errors)
   return (
     <ContentGrid item>
@@ -66,7 +75,7 @@ const Inputs = (props) => {
           label="Email"
           margin="normal"
           value={values.email}
-          onChange={handleChange}
+          onChange={onEmailChange}
         />
         <InputTextField
           autoComplete="off"
@@ -92,6 +101,8 @@ const Inputs = (props) => {
           {
           pairsErrors.length
             ? pairsErrors[0][1]
+            : status && status.email
+            ? status.email
             : '\u00A0'
           }
         </Typography>
@@ -156,12 +167,12 @@ const validate = (values) => {
 const formikEnhancer = withFormik({
   validate,
   mapPropsToValues: (props) => ({
-    fullName: 'Alexey',
-    email: `testaccount-${+ new Date()}@test.test`,
-    password: 'ngenge',
-    confirmPassword: 'ngenge',
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   }),
-  handleSubmit: async (values, { props, setSubmitting, resetForm, setError }) => {
+  handleSubmit: async (values, { props, setSubmitting, resetForm, setStatus }) => {
     const { email, password, fullName } = values
     props.setLoading()
     await props.persistFullName(fullName)
@@ -169,8 +180,7 @@ const formikEnhancer = withFormik({
     if (registerResult.status === 'error') {
       const errCode = registerResult.message.code
       if (errCode === 'user_exists') {
-        console.log('aaa')
-        setError({email: 'The user already exists.'})
+        setStatus({email: 'The user already exists.'})
       }
     }
     else {
