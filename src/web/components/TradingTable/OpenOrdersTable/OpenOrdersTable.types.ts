@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 
-import { OrderType } from '@core/types/ChartTypes'
+import { OrderType, Key } from '@core/types/ChartTypes'
 
 export interface IProps extends WithTheme<Theme> {
   tab: string
@@ -26,7 +26,7 @@ export interface IProps extends WithTheme<Theme> {
   subscribeToMore: () => void
   showCancelResult: ({ status, message }: { status: string, message: string }) => void
   theme: Theme
-  selectedKey: string
+  selectedKey: Key
 }
 
 

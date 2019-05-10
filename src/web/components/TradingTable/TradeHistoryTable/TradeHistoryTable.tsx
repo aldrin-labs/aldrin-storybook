@@ -130,7 +130,7 @@ const TableDataWrapper = ({ ...props }) => {
         tradeHistoryInput: {
           startDate,
           endDate,
-          activeExchangeKey: props.selectedKey,
+          activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       subscriptionArgs={{
@@ -139,7 +139,7 @@ const TableDataWrapper = ({ ...props }) => {
           tradeHistoryInput: {
             startDate,
             endDate,
-            activeExchangeKey: props.selectedKey,
+            activeExchangeKey: props.selectedKey.keyId,
           },
         },
         updateQueryFunction: updateTradeHistoryQuerryFunction,

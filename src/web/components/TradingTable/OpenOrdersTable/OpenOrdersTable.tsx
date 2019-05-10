@@ -130,8 +130,8 @@ const TableDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={OpenOrdersTable}
       variables={{
-        openOrdersInput: {
-          activeExchangeKey: props.selectedKey,
+        openOrderInput: {
+          activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
@@ -142,8 +142,8 @@ const TableDataWrapper = ({ ...props }) => {
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {
-          openOrdersInput: {
-            activeExchangeKey: props.selectedKey,
+          openOrderInput: {
+            activeExchangeKey: props.selectedKey.keyId,
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,

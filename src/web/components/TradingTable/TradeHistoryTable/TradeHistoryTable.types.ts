@@ -3,7 +3,7 @@ import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 import moment from 'moment'
 
-import { TradeType } from '@core/types/ChartTypes'
+import { TradeType, Key } from '@core/types/ChartTypes'
 
 export interface IProps extends WithTheme<Theme>{
   tab: string
@@ -31,7 +31,7 @@ export interface IProps extends WithTheme<Theme>{
   getTradeHistoryQuery: {
     getTradeHistory: TradeType[]
   }
-  selectedKey: string
+  selectedKey: Key
 }
 
 export interface IState {

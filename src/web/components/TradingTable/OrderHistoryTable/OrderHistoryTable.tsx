@@ -124,7 +124,7 @@ const TableDataWrapper = ({ ...props }) => {
         orderHistoryInput: {
           startDate,
           endDate,
-          activeExchangeKey: props.selectedKey,
+          activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
@@ -138,7 +138,7 @@ const TableDataWrapper = ({ ...props }) => {
           orderHistoryInput: {
             startDate,
             endDate,
-            activeExchangeKey: props.selectedKey,
+            activeExchangeKey: props.selectedKey.keyId,
           },
         },
         updateQueryFunction: updateOrderHistoryQuerryFunction,
