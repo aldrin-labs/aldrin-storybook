@@ -47,17 +47,25 @@ export default class Auth {
 
 
   handleAuthentication = () => {
-    return new Promise ((resolve, ) => {
+    return new Promise ((resolve ) => {
     this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
       if (err) {
-        throw err
-        return 'err'
+        resolve({
+          status: 'err',
+          data: err}
+        )
       }
 
       if (!authResult || !authResult.idToken) {
-        resolve('err')
+        resolve({
+          status: 'err',
+          data: 'no authResult'}
+        )
       }
-      resolve(authResult)
+      resolve({
+        status: 'ok',
+        data: authResult,
+      })
     })
   })
   }

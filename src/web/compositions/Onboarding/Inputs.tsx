@@ -26,16 +26,15 @@ import {
   InputTextField,
   ButtonsWrapper,
   StyledButton,
-  FacebookButton,
   SocialContainer,
   GoogleButton,
   ContentGrid,
   GoolgeSvgContainer,
-  SocialSvgContainer,
 } from './styles'
 
 const Inputs = (props) => {
   const {
+    loading,
     values,
     errors,
     handleChange,
@@ -100,9 +99,10 @@ const Inputs = (props) => {
       <ButtonsWrapper>
         <StyledButton
           onClick={handleSubmit}
+          disabled={loading}
           fullWidth
         >
-            create account
+          {loading ? 'loading': 'create account'}
         </StyledButton>
         <SocialContainer>
           <GoogleButton onClick={props.loginWithGoogle}>
@@ -163,6 +163,7 @@ const formikEnhancer = withFormik({
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm, setError }) => {
     const { email, password, fullName } = values
+    props.setLoading()
     await props.persistFullName(fullName)
     const registerResult = await props.auth.register(email, password)
     if (registerResult.status === 'error') {
@@ -177,7 +178,6 @@ const formikEnhancer = withFormik({
     }
   },
 })
-
 
 export default compose(
   withErrorFallback,

@@ -72,7 +72,7 @@ const Steps = (props) => (
             <StyledTypography variant="subtitle1">
               Already have an account?
               <StyledLink
-                href={'aaa'}
+                href={'/'}
                 weight="bold"
                 color="inherit"
               >
