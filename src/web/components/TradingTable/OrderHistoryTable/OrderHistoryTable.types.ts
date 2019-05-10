@@ -31,6 +31,7 @@ export interface IProps extends WithTheme<Theme> {
     getOrderHistory: OrderType[]
   }
   theme: Theme
+  selectedKey: string
 }
 
 export interface IState {

@@ -6,6 +6,7 @@ export interface IProps {
   tabIndex: number
   show: boolean
   handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
+  selectedKey: string
 }
 
 export interface IState {

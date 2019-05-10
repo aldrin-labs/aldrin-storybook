@@ -126,10 +126,22 @@ const TableDataWrapper = ({ ...props }) => {
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
       fetchPolicy="network-only"
-      variables={{ tradeHistoryInput: { startDate, endDate } }}
+      variables={{
+        tradeHistoryInput: {
+          startDate,
+          endDate,
+          activeExchangeKey: props.selectedKey,
+        },
+      }}
       subscriptionArgs={{
         subscription: TRADE_HISTORY,
-        variables: { startDate, endDate },
+        variables: {
+          tradeHistoryInput: {
+            startDate,
+            endDate,
+            activeExchangeKey: props.selectedKey,
+          },
+        },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...props}

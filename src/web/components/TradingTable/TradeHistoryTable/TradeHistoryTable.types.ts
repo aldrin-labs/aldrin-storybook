@@ -31,6 +31,7 @@ export interface IProps extends WithTheme<Theme>{
   getTradeHistoryQuery: {
     getTradeHistory: TradeType[]
   }
+  selectedKey: string
 }
 
 export interface IState {

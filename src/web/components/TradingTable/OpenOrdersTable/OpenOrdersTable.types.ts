@@ -26,6 +26,7 @@ export interface IProps extends WithTheme<Theme> {
   subscribeToMore: () => void
   showCancelResult: ({ status, message }: { status: string, message: string }) => void
   theme: Theme
+  selectedKey: string
 }
 
 
