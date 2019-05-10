@@ -19,7 +19,6 @@ import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/por
 import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
 
-
 const safePortfolioDestruction = (
   portfolio = {
     userSettings: {
