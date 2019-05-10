@@ -154,7 +154,6 @@ const getValidationSchema = (values) => {
 }
 
 const validate = (values) => {
-  console.log(values)
   const validationSchema = getValidationSchema(values)
   try {
     validateYupSchema(values, validationSchema, true)
