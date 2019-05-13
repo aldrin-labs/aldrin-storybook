@@ -82,6 +82,7 @@ export type action = {
   readonly style: object
   readonly icon: React.ComponentType<SvgIconProps>
   readonly color?: PropTypes.Color
+  readonly withoutHover?: boolean
 }
 
 export type TableStyles = {
