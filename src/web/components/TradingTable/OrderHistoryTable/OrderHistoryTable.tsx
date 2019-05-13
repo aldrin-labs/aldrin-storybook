@@ -76,6 +76,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         tableStyles={{
           heading: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            top: CSS_CONFIG.chart.headCell.top,
           },
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
