@@ -19,6 +19,9 @@ import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/por
 import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
 
+// import Welcome from '@sb/components/OnboardingMenu/Welcome'
+import Welcome from '@sb/components/OnboardingMenu/ChooseExchange'
+
 const safePortfolioDestruction = (
   portfolio = {
     userSettings: {
@@ -126,6 +129,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             >
               {(updatePortfolioSettings) => (
                 <>
+                  <Welcome />
                   <PortfolioContainer>
                     {/* refactor this */}
                     <PortfolioSelector

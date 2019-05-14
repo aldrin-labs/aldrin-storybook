@@ -5,10 +5,11 @@ import { Typography, Link } from '@material-ui/core'
 
 import {
   Wrapper,
+  HeaderContainer,
   StyledTypography,
   StyledBeginButton,
   ButtonContainer,
-  ContentContainer,
+  SubHeader,
 } from './styles'
 
 export default class Welcome extends React.Component {
@@ -21,22 +22,20 @@ export default class Welcome extends React.Component {
           color="secondary"
           align="center"
         >
-          Welcome to Cryptocurrencies.ai
+          Select Exchange
         </Typography>
-        <ContentContainer>
+        <SubHeader>
           <StyledTypography
-            color="inherit"
-            align="center"
-          >
-              Our entire platform is designed to help you optimize and
-              maximize your portfolio. To better understand your needs, we
-              would first like to ask you a few questions.
+              color="inherit"
+              align="center"
+            >
+              Import your wallet to get started
             </StyledTypography>
-          </ContentContainer>
+          </SubHeader>
           <ButtonContainer>
-            <StyledBeginButton>
-              Let's begin
-            </StyledBeginButton>
+          <StyledBeginButton>
+            Let's begin
+          </StyledBeginButton>
           </ButtonContainer>
           <Link
             variant="body2"
