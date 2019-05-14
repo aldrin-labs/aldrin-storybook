@@ -12,7 +12,7 @@ import {
 } from '@sb/components/TradingTable/TradingTable.utils'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
-import { Switch } from '@material-ui/core'
+import { Switch, Typography } from '@material-ui/core'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 
@@ -74,6 +74,7 @@ class FundsTable extends React.PureComponent<IProps> {
         tableStyles={{
           heading: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            top: CSS_CONFIG.chart.headCell.customTop,
           },
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
@@ -93,16 +94,24 @@ class FundsTable extends React.PureComponent<IProps> {
             />
           </div>
         }
+        actionsColSpan={2}
         actions={[
           {
             id: '1',
             icon: (
-              <Switch
-                style={{ height: '28px' }}
-                onChange={this.handleSmallAssetsCheckboxChange}
-                checked={hideSmallAssets}
-              />
+              <>
+                <Typography style={{ fontSize: CSS_CONFIG.chart.actionCell.fontSize, }}>
+                  Hide small assets
+                </Typography>
+                <Switch
+                  style={{ height: '28px' }}
+                  onChange={this.handleSmallAssetsCheckboxChange}
+                  checked={hideSmallAssets}
+                />
+              </>
             ),
+            color: 'transparent',
+            withoutHover: true,
           },
         ]}
         data={{ body: fundsProcessedData }}

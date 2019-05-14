@@ -23,7 +23,8 @@ import {
   Head,
   NotExpandableRow,
   renderCellType,
-  Pagination, TableStyles,
+  Pagination,
+  TableStyles,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import {
@@ -157,6 +158,14 @@ const styles = (theme: Theme) =>
     rowWithHover: {
       '&:hover': {
         backgroundColor: theme.palette.action.hover,
+      },
+    },
+    actionButton: {
+      padding: 0,
+    },
+    actionButtonWithoutHover: {
+      '&:hover': {
+        backgroundColor: 'transparent',
       },
     },
     footer: {
@@ -320,7 +329,8 @@ const renderHeadCell = ({
 const renderCells = ({
   row,
   renderCellObject,
-  padding, tableStyles,
+  padding,
+  tableStyles,
 }: {
   row: NotExpandableRow
   renderCellObject?: (cell: Cell, key: string) => renderCellType
@@ -507,6 +517,11 @@ const CustomTable = (props: Props) => {
               >
                 {actions.map((action) => (
                   <ActionButton
+                    className={`${classes.actionButton} + ${
+                      action.withoutHover
+                        ? classes.actionButtonWithoutHover
+                        : ''
+                    }`}
                     color={action.color || 'default'}
                     key={action.id}
                     onClick={action.onClick}
@@ -540,7 +555,11 @@ const CustomTable = (props: Props) => {
             {(columnNames as ReadonlyArray<Head>).map((column) => {
               return (
                 <CustomTableCell
-                  style={{ ...column.style, ...isOnTop, ...tableStyles.heading }}
+                  style={{
+                    ...column.style,
+                    ...isOnTop,
+                    ...tableStyles.heading,
+                  }}
                   variant="head"
                   padding={column.disablePadding ? 'none' : padding}
                   numeric={column.isNumber}
@@ -561,7 +580,7 @@ const CustomTable = (props: Props) => {
 
         <TableBody>
           {data.body.length === 0 ? (
-              <CustomPlaceholder text={emptyTableText} />
+            <CustomPlaceholder text={emptyTableText} />
           ) : (
             addPagination(
               data.body.filter(Boolean).map((row) => {
@@ -634,7 +653,11 @@ const CustomTable = (props: Props) => {
                           >
                             <TableRow className={classes.rowExpanded}>
                               <CustomTableCell padding="checkbox" />
-                              {renderCells({ padding, tableStyles, row: collapsedRows })}
+                              {renderCells({
+                                padding,
+                                tableStyles,
+                                row: collapsedRows,
+                              })}
                             </TableRow>
                           </Grow>
                         )
