@@ -9,9 +9,10 @@ import {
   StyledBeginButton,
   ButtonContainer,
   ContentContainer,
+  WelcomeTextContainer,
 } from './styles'
 
-export default class Welcome extends React.Component {
+export class Welcome extends React.Component {
 
   render() {
     return (
@@ -24,26 +25,30 @@ export default class Welcome extends React.Component {
           Welcome to Cryptocurrencies.ai
         </Typography>
         <ContentContainer>
+          <WelcomeTextContainer>
           <StyledTypography
             color="inherit"
             align="center"
           >
-              Our entire platform is designed to help you optimize and
-              maximize your portfolio. To better understand your needs, we
-              would first like to ask you a few questions.
-            </StyledTypography>
-          </ContentContainer>
-          <ButtonContainer>
-            <StyledBeginButton>
-              Let's begin
-            </StyledBeginButton>
-          </ButtonContainer>
-          <Link
-            variant="body2"
-          >
-            No thanks. Continue.
-          </Link>
+            Our entire platform is designed to help you optimize and
+            maximize your portfolio. To better understand your needs, we
+            would first like to ask you a few questions.
+          </StyledTypography>
+          </WelcomeTextContainer>
+        </ContentContainer>
+        <ButtonContainer>
+          <StyledBeginButton>
+            Let's begin
+          </StyledBeginButton>
+        </ButtonContainer>
+        <Link
+          variant="body2"
+        >
+          No thanks. Continue.
+        </Link>
       </Wrapper>
     )
   }
 }
+
+export default Welcome

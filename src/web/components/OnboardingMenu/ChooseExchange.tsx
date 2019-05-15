@@ -5,14 +5,19 @@ import { Typography, Link } from '@material-ui/core'
 
 import {
   Wrapper,
-  HeaderContainer,
   StyledTypography,
+  ContentContainer,
+  SubHeader,
   StyledBeginButton,
   ButtonContainer,
-  SubHeader,
+  ExchangeContainer,
 } from './styles'
+import ExchangeTable from './ExchangeTable'
 
 export default class Welcome extends React.Component {
+  state = {
+    selected: -1,
+  }
 
   render() {
     return (
@@ -32,16 +37,19 @@ export default class Welcome extends React.Component {
               Import your wallet to get started
             </StyledTypography>
           </SubHeader>
+          <ContentContainer>
+            <ExchangeContainer>
+              <ExchangeTable
+              selectExgange={(index) => this.setState({selected: index})}
+              selected={this.state.selected}
+              />
+            </ExchangeContainer>
+          </ContentContainer>
           <ButtonContainer>
           <StyledBeginButton>
-            Let's begin
+            Import
           </StyledBeginButton>
-          </ButtonContainer>
-          <Link
-            variant="body2"
-          >
-            No thanks. Continue.
-          </Link>
+        </ButtonContainer>
       </Wrapper>
     )
   }

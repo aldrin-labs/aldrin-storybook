@@ -6,8 +6,11 @@ import { withOptions } from '@storybook/addon-options'
 import { withKnobs } from '@storybook/addon-knobs'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 import { customThemes } from './customTheme'
+
+import { GlobalStyle } from '@sb/styles/cssUtils'
 
 import { getToken } from '@core/utils/autoLogin'
 import storage from '@storage'
@@ -39,6 +42,12 @@ if (process.env.REACT_NATIVE) {
 } else {
   // IF WEB
 
+  addDecorator((story) => (
+    <>
+      <CssBaseline theme={customThemes.dark}>{story()}</CssBaseline>
+      <GlobalStyle />
+    </>
+  ))
   //You need to change customThemes.dark to customThemes.light to change theme in storybook
   addDecorator((story) => (
     <MuiThemeProvider theme={customThemes.dark}>{story()}</MuiThemeProvider>
