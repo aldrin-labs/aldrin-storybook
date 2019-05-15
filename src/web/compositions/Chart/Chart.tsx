@@ -59,6 +59,7 @@ import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { MASTER_BUILD } from '@core/utils/config'
 
 import DefaultView from './DefaultView/StatusWrapper'
+import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
 
 @withTheme()
 class Chart extends React.Component<IProps, IState> {
@@ -247,69 +248,6 @@ class Chart extends React.Component<IProps, IState> {
     )
   }
 
-  renderDefaultView = () => {
-    const { activeChart } = this.state
-    const {
-      currencyPair,
-      theme,
-      getMyProfile: {
-        getMyProfile: { _id },
-      },
-      themeMode,
-      activeExchange,
-    } = this.props
-
-    if (!currencyPair) {
-      return
-    }
-    const [base, quote] = currencyPair.split('_')
-
-    return (
-      <div>
-        <Container direction="row" container spacing={16}>
-          <ChartGridContainer item sm={10}>
-            {this.renderTogglerBody()}
-          </ChartGridContainer>
-
-          <ChartsContainer item sm={10} style={{ flex: 'auto' }}>
-            {activeChart === 'candle' ? (
-              <SingleChart
-                additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`}
-              />
-            ) : (
-              <Fade timeout={1000} in={activeChart === 'depth'}>
-                <DepthChartContainer data-e2e="mainDepthChart">
-                  <MainDepthChart
-                    {...{
-                      theme,
-                      base,
-                      quote,
-                      animated: false,
-                    }}
-                  />
-                </DepthChartContainer>
-              </Fade>
-            )}
-          </ChartsContainer>
-          <TradingTabelContainer item sm={10} style={{ flex: 'auto' }}>
-            {MASTER_BUILD && <ComingSoon />}
-            <TradingTable />
-          </TradingTabelContainer>
-
-          {this.renderTables()}
-
-          <TradingTerminalContainer item sm={4} style={{ flex: 'auto' }}>
-            {MASTER_BUILD && <ComingSoon />}
-            <TradingComponent
-              activeExchange={activeExchange}
-              pair={[base, quote]}
-            />
-          </TradingTerminalContainer>
-        </Container>
-      </div>
-    )
-  }
-
   renderOnlyCharts = () => {
     const {
       getMyProfile: {
@@ -431,9 +369,8 @@ class Chart extends React.Component<IProps, IState> {
       },
       activeExchange,
       themeMode,
+      getSelectedKeyQuery : { chart : { selectedKey }},
     } = this.props
-
-    const defaultView = view === 'default'
 
     if (!currencyPair) {
       return
@@ -448,7 +385,6 @@ class Chart extends React.Component<IProps, IState> {
               item
               sm={view === 'default' ? 8 : 12}
               xs={view === 'default' ? 8 : 12}
-              // style={{ margin: '0 -8px', height: '100%' }}
               container
               alignItems="left"
               justify="flex-end"
@@ -459,6 +395,7 @@ class Chart extends React.Component<IProps, IState> {
         )}
         {view === 'default' &&
           <DefaultView
+            selectedKey={selectedKey}
             currencyPair={currencyPair}
             theme={theme}
             id={_id}
@@ -505,6 +442,10 @@ export default withAuth(
       withOutSpinner: false,
       withTableLoader: false,
       name: 'getCharts',
+    }),
+    queryRendererHoc({
+      query: getSelectedKey,
+      name: 'getSelectedKeyQuery',
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(
