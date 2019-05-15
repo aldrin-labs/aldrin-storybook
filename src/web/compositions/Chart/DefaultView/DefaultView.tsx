@@ -33,6 +33,7 @@ export const DefaultView = (props) => {
     MASTER_BUILD,
     showOrderResult,
     showCancelResult,
+    selectedKey,
   } = props
 
   if (!currencyPair) {
@@ -79,6 +80,7 @@ export const DefaultView = (props) => {
       <TradingTerminalContainer item sm={4}>
         {MASTER_BUILD && <ComingSoon />}
         <TradingComponent
+          selectedKey={selectedKey}
           activeExchange={activeExchange}
           pair={[base, quote]}
           showOrderResult={showOrderResult}

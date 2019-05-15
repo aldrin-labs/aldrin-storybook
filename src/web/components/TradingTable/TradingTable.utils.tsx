@@ -454,34 +454,3 @@ export const updateTradeHistoryQuerryFunction = (
 
   return result
 }
-
-export const updateFundsQuerryFunction = (prev, { subscriptionData }) => {
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenFunds
-
-  if (isEmptySubscription) {
-    return prev
-  }
-
-  const fundHasTheSameIndex = prev.getFunds.findIndex(
-    (el) => el.asset.symbol === subscriptionData.data.listenFunds.asset.symbol
-  )
-  const fundAlreadyExists = fundHasTheSameIndex !== -1
-
-  let result
-
-  if (fundAlreadyExists) {
-    prev.getFunds[fundHasTheSameIndex] = {
-      ...prev.getFunds[fundHasTheSameIndex],
-      ...subscriptionData.data.listenFunds,
-    }
-
-    result = { ...prev }
-  } else {
-    prev.getFunds = [{ ...subscriptionData.data.listenFunds }, ...prev.getFunds]
-
-    result = { ...prev }
-  }
-
-  return result
-}
