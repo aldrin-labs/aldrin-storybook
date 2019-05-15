@@ -4,8 +4,6 @@
   "author": "CCAI-team",
   "version": "0.0.1",
   "sideEffects": false,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -57,7 +55,6 @@
     "@material-ui/icons": "^3.0.1",
     "@material-ui/lab": "^3.0.0-alpha.23",
     "@material-ui/styles": "^3.0.0-alpha.3",
-    "@storybook/react-native": "^4.0.11",
     "@types/react": "16.4.18",
     "@types/react-dom": "^16.0.9",
     "@types/react-select": "^2.0.6",
@@ -96,7 +93,6 @@
     "react-joyride": "^2.0.3",
     "react-jss": "^8.6.1",
     "react-loadable": "^5.4.0",
-    "react-native": "^0.57.7",
     "react-pose": "3.3.3",
     "react-redux": "^6.0.0",
     "react-router-redux": "^4.0.8",
@@ -111,6 +107,8 @@
     "typescript-styled-plugin": "^0.12.0"
   },
   "devDependencies": {
+    "@emotion/core": "^10.0.10",
+    "emotion-theming": "^10.0.10",
     "@babel/cli": "7.1.5",
     "@babel/core": "^7.1.5",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -136,6 +134,7 @@
     "@babel/preset-typescript": "7.1.0",
     "@babel/runtime": "7.1.5",
     "@playlyfe/gql": "^2.6.0",
+    "@storybook/addons": "^5.0.11",
     "@storybook/addon-actions": "4.0.4",
     "@storybook/addon-backgrounds": "^4.0.4",
     "@storybook/addon-info": "^4.0.4",
@@ -144,6 +143,7 @@
     "@storybook/addon-notes": "4.0.4",
     "@storybook/addon-options": "4.0.4",
     "@storybook/react": "4.0.4",
+    "@storybook/react-native": "^4.1.18",
     "@types/auth0-lock": "^11.4.3",
     "@types/classnames": "^2.2.3",
     "@types/enzyme": "^3.1.13",
