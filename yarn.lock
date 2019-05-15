@@ -2006,7 +2006,7 @@
     lodash "^4.17.11"
     shallowequal "^1.1.0"
 
-"@storybook/react-native@^5.0.11":
+"@storybook/react-native@^5.2.0-alpha.8":
   version "5.2.0-alpha.8"
   resolved "https://registry.yarnpkg.com/@storybook/react-native/-/react-native-5.2.0-alpha.8.tgz#d01e028b7f51a9324a5290af3d167cf6bb31727b"
   integrity sha512-a0kY3VCYGpqdudPMyfqTFcQozz39txcjuh8n8ejhp22PDawVePx28t68XOID8ARpCBhQCkAf08kxcwlDMXk+hg==
