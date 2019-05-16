@@ -9,6 +9,7 @@ import Welcome from '@components/OnboardingMenu/Welcome'
 import ChooseExchange from '@components/OnboardingMenu/ChooseExchange'
 import ImportKey from '@components/OnboardingMenu/ImportKey'
 import ImportHelp from '@components/OnboardingMenu/ImportHelp'
+import Launch from '@components/OnboardingMenu/Launch'
 
 
 storiesOf('Components/OnboardingMenu', module)
@@ -35,5 +36,11 @@ storiesOf('Components/OnboardingMenu', module)
     'ImportHelp',
     withInfo()(() =>
       <ImportHelp />
+    )
+  )
+  .add(
+    'Launch',
+    withInfo()(() =>
+      <Launch />
     )
   )

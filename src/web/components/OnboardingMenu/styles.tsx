@@ -175,6 +175,9 @@ export const WelcomeTextContainer = styled.div`
   width: 504px;
 `
 
+export const LaunchContainer = styled.div`
+  width: 450px;
+`
 
 export const StyledLogo = styled.img`
   position: relative;
