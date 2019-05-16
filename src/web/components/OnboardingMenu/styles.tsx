@@ -51,13 +51,31 @@ const styles = theme => ({
 })
 
 export const ExhangeButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
   cursor: pointer;
   width: 132px;
   height: 36px;
-  padding-top: 9px;
-  border-radius: 2px;
-  background: ${(props: { active: boolean}) => props.active ? '#2B3245' : '#377C8A'};
+  border-radius: 3px;
+  background: ${(props: { active: boolean, addButton: boolean}) => props.active
+    ? '#2B3245'
+    : props.addButton
+    ? '#EFF3FF'
+    :'#377C8A'
+  };
+  border: ${(props: { active: boolean, addButton: boolean}) => props.addButton
+  ? '2px dotted'
+  : ''
+};
 `
+
+export const AddContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
 
 /*
 export const ExhangeButton = withStyles(styles)(({classes, active, ...others}: {classes: any}) =>

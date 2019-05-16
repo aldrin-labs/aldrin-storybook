@@ -2,7 +2,9 @@ import * as React from 'react'
 import { Paper, Grid, Typography } from '@material-ui/core'
 import SvgIcon from '@sb/components/SvgIcon/'
 
-import { withStyles } from '@material-ui/core/styles'
+import Add from '@material-ui/icons/Add'
+
+
 import BinanceLogo from '@icons/Binance_logo.svg'
 import CoinBasePro from '@icons/CoinBasePro.svg'
 import SelectedLogo from '@icons/Selected.png'
@@ -14,6 +16,7 @@ import {
   StyledLogo,
   Selected,
   SelectedContainer,
+  AddContainer,
 } from './styles'
 
 const exchangeList = [
@@ -43,8 +46,8 @@ const exchangeList = [
     icon: BinanceLogo,
   },
   {
-    icon: BinanceLogo,
-  }
+    addButton: true,
+  },
 ]
 
 const styles = theme => ({
@@ -58,7 +61,7 @@ const styles = theme => ({
   },
 })
 
-const Cell = ({active, icon, selected, selectExgange}) => (
+const Cell = ({active, icon, selected, selectExgange, addButton}) => (
   <>
     {selected &&
     <SelectedContainer>
@@ -71,8 +74,14 @@ const Cell = ({active, icon, selected, selectExgange}) => (
     >
       {active ? '\u00A0' : `Comming Soon`}
     </ExhangeTypography>
-    <ExhangeButton active={active} onClick={selectExgange}>
-      <SvgIcon src={icon} width={84} height={18} />
+    <ExhangeButton active={active} addButton={addButton} onClick={selectExgange}>
+      {icon && <SvgIcon src={icon} width={84} height={18} />}
+      {addButton && (<AddContainer>
+        <Add fontSize="small" color="secondary"/>
+        <Typography color="secondary">
+           ADD
+        </Typography>
+        </AddContainer>)}
     </ExhangeButton>
   </>
 )
@@ -80,7 +89,7 @@ const Cell = ({active, icon, selected, selectExgange}) => (
 export class ExchangeTable extends React.Component {
 
   render() {
-    const { classes, selected, selectExgange } = this.props
+    const { classes, selected, selectExgange, addExhange } = this.props
     return (
       <Grid container spacing={0}>
         {exchangeList.map((exchange, index) => (
@@ -88,8 +97,14 @@ export class ExchangeTable extends React.Component {
             <Cell
               icon={exchange.icon}
               active={exchange.active}
-              selectExgange={() => selectExgange(index)}
+              selectExgange={exchange.addButton
+                ? addExhange
+                : exchange.active
+                ? () => selectExgange(index)
+                : () => null
+              }
               selected={selected === index}
+              addButton={exchange.addButton}
             />
           </Grid>
         ))}
@@ -99,4 +114,4 @@ export class ExchangeTable extends React.Component {
   }
 }
 
-export default withStyles(styles)(ExchangeTable)
+export default ExchangeTable

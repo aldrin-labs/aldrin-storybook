@@ -19,6 +19,11 @@ export default class Welcome extends React.Component {
     selected: -1,
   }
 
+  addExchange = () => {
+    this.setState({ selected: -1 })
+    console.log('aaaa')
+  }
+
   render() {
     return (
       <Wrapper>
@@ -40,8 +45,9 @@ export default class Welcome extends React.Component {
           <ContentContainer>
             <ExchangeContainer>
               <ExchangeTable
-              selectExgange={(index) => this.setState({selected: index})}
-              selected={this.state.selected}
+                addExhange={this.addExchange}
+                selectExgange={(index) => this.setState({selected: index})}
+                selected={this.state.selected}
               />
             </ExchangeContainer>
           </ContentContainer>
