@@ -8,8 +8,10 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
   combineFundsTable,
-  updateFundsQuerryFunction,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import {
+  updateFundsQuerryFunction
+} from '@core/utils/TradingTable.utils'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { Switch, Typography } from '@material-ui/core'
