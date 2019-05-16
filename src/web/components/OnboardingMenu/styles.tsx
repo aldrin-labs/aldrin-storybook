@@ -67,6 +67,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
   beginButton: {
+    boxShadow: 'none',
     color: 'white',
     width: '201px',
     textTransform: 'none',

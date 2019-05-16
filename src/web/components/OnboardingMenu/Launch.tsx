@@ -28,6 +28,7 @@ export class Lounch extends React.Component {
         <ContentContainer>
           <LaunchContainer>
             <StyledTypography
+              variant="h6"
               color="inherit"
               align="center"
             >
