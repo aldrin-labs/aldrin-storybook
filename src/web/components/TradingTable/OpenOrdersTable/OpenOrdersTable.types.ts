@@ -2,24 +2,14 @@ import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 
-import { OrderType, Key } from '@core/types/ChartTypes'
+import { OrderType, Key, CancelOrderMutationType } from '@core/types/ChartTypes'
 
 export interface IProps extends WithTheme<Theme> {
   tab: string
   tabIndex: number
   show: boolean
   handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
-  cancelOrderMutation: (
-    mutationObject: {
-      variables: {
-        cancelOrderInput: {
-          keyId: string
-          orderId: string
-          pair: string
-        }
-      }
-    }
-  ) => Promise<any>
+  cancelOrderMutation: CancelOrderMutationType
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory: OrderType[]
   }
