@@ -72,7 +72,7 @@ const Cell = ({active, icon, selected, selectExgange, addButton}) => (
       align="center"
       variant="caption"
     >
-      {active ? '\u00A0' : `Comming Soon`}
+      {(active || addButton)? '\u00A0' : `Comming Soon`}
     </ExhangeTypography>
     <ExhangeButton active={active} addButton={addButton} onClick={selectExgange}>
       {icon && <SvgIcon src={icon} width={84} height={18} />}

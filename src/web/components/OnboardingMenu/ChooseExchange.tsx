@@ -38,6 +38,7 @@ export default class Welcome extends React.Component {
           <StyledTypography
               color="inherit"
               align="center"
+              variant="h6"
             >
               Import your wallet to get started
             </StyledTypography>

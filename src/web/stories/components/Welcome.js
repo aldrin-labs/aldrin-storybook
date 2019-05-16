@@ -7,6 +7,8 @@ import { backgrounds } from '../backgrounds'
 
 import Welcome from '@components/OnboardingMenu/Welcome'
 import ChooseExchange from '@components/OnboardingMenu/ChooseExchange'
+import ImportKey from '@components/OnboardingMenu/ImportKey'
+import ImportHelp from '@components/OnboardingMenu/ImportHelp'
 
 
 storiesOf('Components/OnboardingMenu', module)
@@ -21,5 +23,17 @@ storiesOf('Components/OnboardingMenu', module)
     'ChooseExchange',
     withInfo()(() =>
       <ChooseExchange />
+    )
+  )
+  .add(
+    'ImportKey',
+    withInfo()(() =>
+      <ImportKey />
+    )
+  )
+  .add(
+    'ImportHelp',
+    withInfo()(() =>
+      <ImportHelp />
     )
   )

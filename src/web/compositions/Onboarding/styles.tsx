@@ -75,6 +75,7 @@ export const InputContainer = styled.div`
 const styles = {
   input: {
     paddingBottom: '13px',
+    color: 'black',
   },
   button: {
     color: 'white',

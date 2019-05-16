@@ -2,7 +2,10 @@ import React from 'react'
 
 import {
   Typography,
-  Button
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core'
 
 import styled from 'styled-components'
@@ -11,7 +14,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Done from '@material-ui/icons/Done'
 
 
-import { Paper, Grid } from '@material-ui/core'
+import { Paper, Grid, Input } from '@material-ui/core'
 
 const exchangeButton = {
   width: '132px',
@@ -21,7 +24,35 @@ const exchangeButton = {
 
 }
 
+
 const styles = theme => ({
+  underline: {
+		color: theme.palette.common.black,
+		borderBottom: 'rgba(0,0,0,.42)',
+		'&:after': {
+			borderBottom: `1px solid ${theme.palette.common.black}`,
+		},
+		'&:focused::after': {
+			borderBottom: `1px solid ${theme.palette.common.black}`,
+		},
+		'&:before': {
+			borderBottom: `1px solid rgba(0,0,0,.42)`,
+		},
+		'&:hover:not($disabled):not($focused):not($error):before': {
+			borderBottom: `1px solid ${theme.palette.common.black} !important`,
+		},
+		'&$disabled:before': {
+			borderBottom: `1px dotted ${theme.palette.common.black}`,
+    },
+    paddingBottom: '13px',
+	},
+  input: {
+    paddingBottom: '13px',
+    color: theme.palette.primary.main,
+  },
+  inputLabel: {
+    color: theme.palette.primary.main,
+  },
   root: {
     background: '#FFFFFF',
     zIndex: '200',
@@ -49,6 +80,17 @@ const styles = theme => ({
     ...exchangeButton,
   },
 })
+
+export const InputTextField = withStyles(styles)(({classes, label, ...others}: {classes: any}) =>
+<FormControl fullWidth>
+  <InputLabel className={classes.inputLabel}>{label}</InputLabel>
+  <Input
+    classes={{underline: classes.underline}}
+    {...others}
+  />
+</FormControl>
+)
+
 
 export const ExhangeButton = styled.div`
   display: flex;
@@ -89,6 +131,11 @@ export const ExhangeButton = withStyles(styles)(({classes, active, ...others}: {
   />
 )*/
 
+export const FormContainer = styled.form`
+  width: 100%;
+`
+
+
 
 export const ExhangeTypography = styled(Typography)`
   width: 132px;
@@ -111,6 +158,19 @@ export const ExchangeContainer = styled.div`
   padding: 0px 70px;
 `
 
+export const ImportContent = styled.div`
+  width: 610px;
+`
+
+export const HelpContent = styled.div`
+  width: 610px;
+  padding: 0px 58px;
+`
+
+export const HelpStepContainer = styled.div`
+  padding-bottom: 48px;
+`
+
 export const WelcomeTextContainer = styled.div`
   width: 504px;
 `
@@ -120,6 +180,8 @@ export const StyledLogo = styled.img`
   position: relative;
   height: 18px;
 `
+
+
 
 export const StyledBeginButton = withStyles(styles)(({classes, ...others}: {classes: any}) =>
   <Button
