@@ -26,15 +26,7 @@ import {
 class ImportHelp extends React.Component {
   render() {
     const {
-      values,
-      touched,
-      dirty,
-      errors,
-      handleChange,
-      handleBlur,
-      handleSubmit,
-      setFieldValue,
-      isSubmitting,
+      changePage,
     } = this.props
 
     return (
@@ -90,7 +82,7 @@ class ImportHelp extends React.Component {
 
           </ContentContainer>
           <ButtonContainer>
-          <StyledBeginButton onClick={handleSubmit}>
+          <StyledBeginButton onClick={() => changePage('ImportKey')}>
             Back
           </StyledBeginButton>
         </ButtonContainer>

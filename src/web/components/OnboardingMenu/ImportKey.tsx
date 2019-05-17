@@ -39,6 +39,7 @@ class ImportKey extends React.Component {
       handleSubmit,
       setFieldValue,
       isSubmitting,
+      changePage,
     } = this.props
     const pairsErrors = toPairs(errors)
 
@@ -61,6 +62,7 @@ class ImportKey extends React.Component {
               Grab your keys from your Binane account and place them here.
             </StyledTypography>
             <Link
+                onClick={() => changePage('ImportHelp')}
                 color="inherit"
                 align="center"
                 variant="caption"
@@ -147,8 +149,9 @@ const formikEnhancer = withFormik({
 
     try {
       await props.addExchangeKey({ variables })
-      resetForm({})
-      setSubmitting(false)
+      await resetForm({})
+      await setSubmitting(false)
+      props.changePage('finish')
     } catch (error) {
       setSubmitting(false)
       console.log(error)

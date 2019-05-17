@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Redirect } from 'react-router-dom'
+
 import Welcome from './Welcome'
 import Launch from './Launch'
 import ChooseExchange from './ChooseExchange'
@@ -21,6 +23,7 @@ const OnboardingMenu = (props) => {
     case('ChooseExchange'): return <ChooseExchange changePage={changePage} selectExchange={selectExchange}/>
     case('ImportHelp'): return <ImportHelp changePage={changePage}/>
     case('ImportKey'): return <ImportKey changePage={changePage} addExchangeKey={addExchangeKey} exchange={exchange} />
+    default: return <Redirect to="/user" />
   }
 }
 
