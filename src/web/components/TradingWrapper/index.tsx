@@ -90,9 +90,9 @@ const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
       <TerminalContainer>
         <TraidingTerminal
           byType="sell"
-          priceType={props.priceType}
+          priceType={priceType}
           pair={pair}
-          key={[pair, funds]}
+          key={[pair, funds, priceType]}
           walletValue={funds && funds[0]}
           marketPrice={price}
           confirmOperation={placeOrder}
