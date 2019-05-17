@@ -37,7 +37,7 @@ export class Page extends React.Component {
       >
         <Grid>
           <Grid item>
-            <OptionButton onCLick={() => console.log('aa')} selected={selected === 1}>
+            <OptionButton onCLick={() => this.select(1)} selected={selected === 1}>
               Beginner
             </OptionButton>
           </Grid>
