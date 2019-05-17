@@ -34,7 +34,7 @@ export const Welcome = (props) => (
       </WelcomeTextContainer>
     </ContentContainer>
     <ButtonContainer>
-      <StyledBeginButton>
+      <StyledBeginButton onClick={() => props.changePage('Questions')}>
         Let's begin
       </StyledBeginButton>
     </ButtonContainer>

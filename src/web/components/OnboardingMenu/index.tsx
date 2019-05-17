@@ -7,6 +7,7 @@ import Launch from './Launch'
 import ChooseExchange from './ChooseExchange'
 import ImportHelp from './ImportHelp'
 import ImportKey from './ImportKey'
+import Questions from './Questions'
 
 const OnboardingMenu = (props) => {
   const {
@@ -19,6 +20,7 @@ const OnboardingMenu = (props) => {
   } = props
   switch(page) {
     case('Welcome'): return <Welcome fullName={fullName} changePage={changePage}/>
+    case('Questions'): return <Questions changePage={changePage} />
     case('Launch'): return <Launch changePage={changePage}/>
     case('ChooseExchange'): return <ChooseExchange changePage={changePage} selectExchange={selectExchange}/>
     case('ImportHelp'): return <ImportHelp changePage={changePage}/>
