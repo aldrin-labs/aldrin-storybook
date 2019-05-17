@@ -20,7 +20,7 @@ import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimiz
 import withAuth from '@core/hoc/withAuth'
 
 // import Welcome from '@sb/components/OnboardingMenu/Welcome'
-import Welcome from '@sb/components/OnboardingMenu/ChooseExchange'
+import OnboardingMenu from '@core/components/OnboardingMenu'
 
 const safePortfolioDestruction = (
   portfolio = {
@@ -129,7 +129,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             >
               {(updatePortfolioSettings) => (
                 <>
-                  <Welcome />
+                  <OnboardingMenu />
                   <PortfolioContainer>
                     {/* refactor this */}
                     <PortfolioSelector
