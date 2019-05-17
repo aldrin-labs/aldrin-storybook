@@ -40,6 +40,7 @@ export const DefaultView = (props) => {
     return
   }
   const [base, quote] = currencyPair.split('_')
+  const baseQuoteArr = [base, quote]
 
   return (
     <div>
@@ -82,7 +83,7 @@ export const DefaultView = (props) => {
         <TradingComponent
           selectedKey={selectedKey}
           activeExchange={activeExchange}
-          pair={[base, quote]}
+          pair={baseQuoteArr}
           showOrderResult={showOrderResult}
           showCancelResult={showCancelResult}
         />
