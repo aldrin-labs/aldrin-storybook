@@ -4,9 +4,6 @@ import SvgIcon from '@sb/components/SvgIcon/'
 
 import Add from '@material-ui/icons/Add'
 
-
-import BinanceLogo from '@icons/Binance_logo.svg'
-import CoinBasePro from '@icons/CoinBasePro.svg'
 import SelectedLogo from '@icons/Selected.png'
 
 import {
@@ -19,36 +16,6 @@ import {
   AddContainer,
 } from './styles'
 
-const exchangeList = [
-  {
-    active: true,
-    icon: BinanceLogo,
-  },
-  {
-    icon: CoinBasePro,
-  },
-  {
-    icon: BinanceLogo,
-  },
-  {
-    icon: BinanceLogo,
-  },
-  {
-    icon: BinanceLogo,
-  },
-  {
-    icon: BinanceLogo,
-  },
-  {
-    icon: BinanceLogo,
-  },
-  {
-    icon: BinanceLogo,
-  },
-  {
-    addButton: true,
-  },
-]
 
 const styles = theme => ({
   root: {
@@ -89,7 +56,7 @@ const Cell = ({active, icon, selected, selectExgange, addButton}) => (
 export class ExchangeTable extends React.Component {
 
   render() {
-    const { classes, selected, selectExgange, addExhange } = this.props
+    const { classes, selected, selectExgange, addExhange, exchangeList } = this.props
     return (
       <Grid container spacing={0}>
         {exchangeList.map((exchange, index) => (

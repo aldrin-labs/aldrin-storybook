@@ -146,14 +146,7 @@ const formikEnhancer = withFormik({
     }
 
     try {
-      await props.addExchangeKey({
-        variables,
-        update: (proxy, { data: { addExchangeKey } }) => {
-          const proxyData = proxy.readQuery({ query: getKeysQuery })
-          proxyData.myPortfolios[0].keys.push(addExchangeKey)
-          proxy.writeQuery({ query: getKeysQuery, data: proxyData })
-        },
-      })
+      await props.addExchangeKey({ variables })
       resetForm({})
       setSubmitting(false)
     } catch (error) {

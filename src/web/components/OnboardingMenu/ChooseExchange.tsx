@@ -2,6 +2,8 @@ import * as React from 'react'
 
 import { Typography, Link } from '@material-ui/core'
 
+import BinanceLogo from '@icons/Binance_logo.svg'
+import CoinBasePro from '@icons/CoinBasePro.svg'
 
 import {
   Wrapper,
@@ -14,9 +16,52 @@ import {
 } from './styles'
 import ExchangeTable from './ExchangeTable'
 
+const exchangeList = [
+  {
+    name: 'binance',
+    active: true,
+    icon: BinanceLogo,
+  },
+  {
+    icon: CoinBasePro,
+  },
+  {
+    icon: BinanceLogo,
+  },
+  {
+    icon: BinanceLogo,
+  },
+  {
+    icon: BinanceLogo,
+  },
+  {
+    icon: BinanceLogo,
+  },
+  {
+    icon: BinanceLogo,
+  },
+  {
+    icon: BinanceLogo,
+  },
+  {
+    addButton: true,
+  },
+]
+
 export default class Welcome extends React.Component {
   state = {
     selected: -1,
+  }
+
+  confirmExchange = () => {
+    const {
+      selectExchange,
+      changePage,
+     } = this.props
+    if (this.state.selected > -1) {
+      this.props.selectExchange((exchangeList[this.state.selected]).name)
+      this.props.changePage('ImportKey')
+    }
   }
 
   addExchange = () => {
@@ -46,6 +91,7 @@ export default class Welcome extends React.Component {
           <ContentContainer>
             <ExchangeContainer>
               <ExchangeTable
+                exchangeList={exchangeList}
                 addExhange={this.addExchange}
                 selectExgange={(index) => this.setState({selected: index})}
                 selected={this.state.selected}
@@ -53,7 +99,7 @@ export default class Welcome extends React.Component {
             </ExchangeContainer>
           </ContentContainer>
           <ButtonContainer>
-          <StyledBeginButton>
+          <StyledBeginButton onClick={this.confirmExchange}>
             Import
           </StyledBeginButton>
         </ButtonContainer>
