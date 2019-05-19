@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Typography, Link, Grid } from '@material-ui/core'
 
-import Layout from './Layout'
+import Layout from './Page'
 
 import {
   OptionButton,
@@ -13,7 +13,7 @@ export class Page extends React.Component {
     selected: 0,
   }
 
-  select = (option) => {
+  select = (option: number) => {
     console.log('aaa')
     this.setState({selected: option})
   }

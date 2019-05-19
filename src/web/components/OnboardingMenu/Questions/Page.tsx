@@ -1,7 +1,6 @@
 import * as React from 'react'
 
-import { Typography } from '@material-ui/core'
-
+import { Typography, Grid } from '@material-ui/core'
 
 import {
   Wrapper,
@@ -10,16 +9,38 @@ import {
   ContentContainer,
   WelcomeTextContainer,
   BottomContainer,
+  OptionButton,
 } from './styles'
 
-export const Welcome = (props) => (
+export class Page extends React.Component {
+  state = {
+    selected: 0,
+  }
+
+  select = (option: number) => {
+    console.log('aaa')
+    this.setState({selected: option})
+  }
+  render() {
+    const {
+      step,
+      changeStep,
+      changePage,
+      data: { question, answers, input }
+    } = this.props
+
+    const { selected } = this.state
+
+    console.log('selected', selected)
+
+    return(
   <Wrapper>
     <Typography
       variant="h5"
       color="secondary"
       align="center"
     >
-      Page {props.step}
+      Page {step}
     </Typography>
     <ContentContainer>
       <WelcomeTextContainer>
@@ -27,17 +48,26 @@ export const Welcome = (props) => (
         color="inherit"
         align="center"
       >
-        {props.question}
+        {question}
       </StyledTypography>
       </WelcomeTextContainer>
-      { props.children }
+      <Grid>
+        {answers.map((answer, key) => (
+          <Grid item>
+          <OptionButton onCLick={() => this.select(key)} selected={selected === key}>
+            {answer}
+          </OptionButton>
+        </Grid>
+        ))
+        }
+        </Grid>
     </ContentContainer>
     <BottomContainer>
         <StyledBeginButton onClick={props.step === 1
           ? () => props.changePage('Welcome')
           : () => props.changeStep(props.step - 1)}>
           BACK
-        </StyledBeginButton>
+        </StyledBeginButton>2
         <StyledBeginButton onClick={props.step === 4
           ? () => props.changePage('ChooseExchange')
           : () => props.changeStep(props.step + 1)}>
@@ -45,6 +75,8 @@ export const Welcome = (props) => (
         </StyledBeginButton>
     </BottomContainer>
   </Wrapper>
-)
+    )
+  }
+}
 
 export default Welcome
