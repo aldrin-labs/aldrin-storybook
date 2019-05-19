@@ -14,24 +14,18 @@ import {
 
 export class Page extends React.Component {
   state = {
-    selected: 0,
+    selected: -1,
   }
 
-  select = (option: number) => {
-    console.log('aaa')
-    this.setState({selected: option})
-  }
   render() {
     const {
       step,
       changeStep,
       changePage,
-      data: { question, answers, input }
+      question: { question, answers, input },
+      allAnswers,
+      saveAnswer,
     } = this.props
-
-    const { selected } = this.state
-
-    console.log('selected', selected)
 
     return(
   <Wrapper>
@@ -40,7 +34,7 @@ export class Page extends React.Component {
       color="secondary"
       align="center"
     >
-      Page {step}
+      Page {step + 1}
     </Typography>
     <ContentContainer>
       <WelcomeTextContainer>
@@ -54,7 +48,10 @@ export class Page extends React.Component {
       <Grid>
         {answers.map((answer, key) => (
           <Grid item>
-          <OptionButton onCLick={() => this.select(key)} selected={selected === key}>
+          <OptionButton
+            onClick={() => saveAnswer({answer, key})}
+            selected={allAnswers[step] && allAnswers[step].key === key}
+          >
             {answer}
           </OptionButton>
         </Grid>
@@ -63,14 +60,14 @@ export class Page extends React.Component {
         </Grid>
     </ContentContainer>
     <BottomContainer>
-        <StyledBeginButton onClick={props.step === 1
-          ? () => props.changePage('Welcome')
-          : () => props.changeStep(props.step - 1)}>
+        <StyledBeginButton onClick={step === 0
+          ? () => changePage('Welcome')
+          : () => changeStep(step - 1)}>
           BACK
-        </StyledBeginButton>2
-        <StyledBeginButton onClick={props.step === 4
-          ? () => props.changePage('ChooseExchange')
-          : () => props.changeStep(props.step + 1)}>
+        </StyledBeginButton>
+        <StyledBeginButton onClick={step === 7
+          ? () => changePage('ChooseExchange')
+          : () => changeStep(step + 1)}>
           NEXT
         </StyledBeginButton>
     </BottomContainer>
@@ -79,4 +76,4 @@ export class Page extends React.Component {
   }
 }
 
-export default Welcome
+export default Page

@@ -66,9 +66,10 @@ export const StyledBeginButton = withStyles(styles)(({classes, ...others}: {clas
   />
 )
 
-export const OptionButton = withStyles(styles)(({classes, ...others}: {classes: any}) =>
+export const OptionButton = withStyles(styles)(({classes, selected,  ...others}: {classes: any}) =>
   <Button
     variant="contained"
+    color={selected ? 'secondary' : 'default'}
     style={{
       height: 43,
     }}
