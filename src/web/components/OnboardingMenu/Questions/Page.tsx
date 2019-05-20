@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { Typography, Grid } from '@material-ui/core'
+import { Typography, Grid, Input } from '@material-ui/core'
 
 import {
   Wrapper,
@@ -10,6 +10,7 @@ import {
   WelcomeTextContainer,
   BottomContainer,
   OptionButton,
+  StyledInput,
 } from './styles'
 
 export class Page extends React.Component {
@@ -26,6 +27,8 @@ export class Page extends React.Component {
       allAnswers,
       saveAnswer,
     } = this.props
+
+    const multi = answers && answers.length > 3
 
     return(
   <Wrapper>
@@ -45,9 +48,9 @@ export class Page extends React.Component {
         {question}
       </StyledTypography>
       </WelcomeTextContainer>
-      <Grid>
-        {answers.map((answer, key) => (
-          <Grid item>
+      <Grid container spacing={0}>
+        {answers && answers.map((answer, key) => (
+          <Grid item xs={multi ? 6 : 12}>
           <OptionButton
             onClick={() => saveAnswer({answer, key})}
             selected={allAnswers[step] && allAnswers[step].key === key}
@@ -56,6 +59,11 @@ export class Page extends React.Component {
           </OptionButton>
         </Grid>
         ))
+        }
+        {input && <OptionButton
+          >
+            <StyledInput />
+          </OptionButton>
         }
         </Grid>
     </ContentContainer>

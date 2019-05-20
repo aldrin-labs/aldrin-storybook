@@ -6,15 +6,15 @@ import {
   TextField,
   FormControl,
   InputLabel,
+  Input,
+  Paper,
+  Grid,
 } from '@material-ui/core'
 
 import styled from 'styled-components'
 import { withStyles } from '@material-ui/core/styles'
 
 import Done from '@material-ui/icons/Done'
-
-
-import { Paper, Grid, Input } from '@material-ui/core'
 
 const exchangeButton = {
   width: '132px',
@@ -48,6 +48,9 @@ const styles = theme => ({
     textTransform: 'none',
     marginBottom: '20px',
   },
+  input: {
+    color: 'black',
+  }
 })
 
 export const WelcomeTextContainer = styled.div`
@@ -74,6 +77,13 @@ export const OptionButton = withStyles(styles)(({classes, selected,  ...others}:
       height: 43,
     }}
     className={classes.optionButton}
+    {...others}
+  />
+)
+
+export const StyledInput = withStyles(styles)(({classes,  ...others}: {classes: any}) =>
+  <Input
+    className={classes.input}
     {...others}
   />
 )
