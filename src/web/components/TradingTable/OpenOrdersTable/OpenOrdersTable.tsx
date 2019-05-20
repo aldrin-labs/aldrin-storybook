@@ -100,6 +100,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        defaultSort={{
+          sortColumn: getTableHead(tab)[0].id,
+          sortDirection: 'desc',
+        }}
         withCheckboxes={false}
         tableStyles={{
           heading: {
