@@ -65,6 +65,11 @@ export type sortTypes = {
   sortHandler: (id: string) => void
 }
 
+export type defaultSortTypes = {
+  sortColumn: string
+  sortDirection: 'asc' | 'desc'
+}
+
 export type Head = {
   // id should be equal to shape of body element  to enable sorting by default
   id: string
@@ -111,6 +116,7 @@ export interface Props {
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
   sort?: sortTypes | undefined
+  defaultSort?: defaultSortTypes | undefined
   pagination?: Pagination
   actions?: ReadonlyArray<action>
   // how long will be cell with actions
