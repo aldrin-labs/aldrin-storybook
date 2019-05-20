@@ -108,7 +108,7 @@ export const combineOpenOrdersTable = (
       const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
       return {
-        id: orderId,
+        id: `${orderId}${timestamp}`,
         date: {
           render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
           style: { whiteSpace: 'nowrap' },
@@ -189,7 +189,7 @@ export const combineOrderHistoryTable = (
       const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
       return {
-        id: orderId,
+        id: `${orderId}${timestamp}`,
         date: {
           render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
           style: { whiteSpace: 'nowrap' },
