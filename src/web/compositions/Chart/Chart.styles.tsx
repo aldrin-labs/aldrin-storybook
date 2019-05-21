@@ -38,17 +38,16 @@ export const ChartGridContainer = styled(Grid)`
   && {
     padding: 3px;
   }
-  
 `
 
 export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
-  
+
   && {
     padding: 3px;
   }
-  
+
   height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   overflow: hidden;
 
@@ -61,7 +60,7 @@ export const TablesContainer = styled(Grid)`
 export const TradingTerminalContainer = styled(Grid)`
   position: relative;
   display: flex;
-  
+
   && {
     padding: 3px;
   }
