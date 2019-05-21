@@ -64,7 +64,10 @@ export class Page extends React.Component {
         {input &&
           <Grid item>
             <InputContainer>
-              <StyledInput />
+              <StyledInput
+                onChange={(e) => saveAnswer({answer: e.target.value, key: 0})}
+                value={allAnswers[step] && allAnswers[step].answer}
+              />
             </InputContainer>
           </Grid>
         }
