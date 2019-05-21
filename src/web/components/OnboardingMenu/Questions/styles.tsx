@@ -3,26 +3,14 @@ import React from 'react'
 import {
   Typography,
   Button,
-  TextField,
-  FormControl,
-  InputLabel,
   Input,
   Paper,
-  Grid,
 } from '@material-ui/core'
 
 import styled from 'styled-components'
 import { withStyles } from '@material-ui/core/styles'
 
-import Done from '@material-ui/icons/Done'
 
-const exchangeButton = {
-  width: '132px',
-  height: '36px',
-  paddingTop: '9px',
-  borderRadius: '2px',
-
-}
 
 
 const styles = theme => ({
@@ -48,6 +36,12 @@ const styles = theme => ({
     textTransform: 'none',
     marginBottom: '20px',
   },
+  primary: {
+    background: 'white',
+    '&:hover': {
+      background: '#fafafa',
+    },
+  },
   input: {
     color: 'black',
   }
@@ -72,17 +66,32 @@ export const StyledBeginButton = withStyles(styles)(({classes, ...others}: {clas
 export const OptionButton = withStyles(styles)(({classes, selected,  ...others}: {classes: any}) =>
   <Button
     variant="contained"
-    color={selected ? 'secondary' : 'default'}
+    color={selected ? 'secondary' : 'primary'}
     style={{
       height: 43,
     }}
-    className={classes.optionButton}
+    classes={{
+      root: classes.optionButton, // class name, e.g. `root-x`
+      containedPrimary: classes.primary, // class name, e.g. `disabled-x`
+    } }
     {...others}
   />
 )
 
+export const InputContainer = styled.div`
+  color: black;
+  width: 286px;
+  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12);
+  padding: 6px 16px;
+  font-size: 0.875rem;
+  min-width: 64px;
+  box-sizing: border-box;
+  border-radius: 4px;
+`
+
 export const StyledInput = withStyles(styles)(({classes,  ...others}: {classes: any}) =>
   <Input
+    fullWidth
     className={classes.input}
     {...others}
   />

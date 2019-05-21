@@ -109,7 +109,7 @@ export const ExhangeButton = styled.div`
     :'#377C8A'
   };
   border: ${(props: { active: boolean, addButton: boolean}) => props.addButton
-  ? '2px dotted'
+  ? '1.5px dotted'
   : ''
 };
 `

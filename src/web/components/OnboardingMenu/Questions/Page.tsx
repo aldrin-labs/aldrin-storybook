@@ -11,6 +11,7 @@ import {
   BottomContainer,
   OptionButton,
   StyledInput,
+  InputContainer,
 } from './styles'
 
 export class Page extends React.Component {
@@ -48,7 +49,7 @@ export class Page extends React.Component {
         {question}
       </StyledTypography>
       </WelcomeTextContainer>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} justify="center">
         {answers && answers.map((answer, key) => (
           <Grid item xs={multi ? 6 : 12}>
           <OptionButton
@@ -60,10 +61,12 @@ export class Page extends React.Component {
         </Grid>
         ))
         }
-        {input && <OptionButton
-          >
-            <StyledInput />
-          </OptionButton>
+        {input &&
+          <Grid item>
+            <InputContainer>
+              <StyledInput />
+            </InputContainer>
+          </Grid>
         }
         </Grid>
     </ContentContainer>

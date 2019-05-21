@@ -33,6 +33,7 @@ class Questions extends React.Component {
 
   return (
     <Page
+      key={step}
       page={page}
       fullName={fullName}
       changePage={changePage}
