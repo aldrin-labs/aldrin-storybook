@@ -71,8 +71,8 @@ export const OptionButton = withStyles(styles)(({classes, selected,  ...others}:
       height: 43,
     }}
     classes={{
-      root: classes.optionButton, // class name, e.g. `root-x`
-      containedPrimary: classes.primary, // class name, e.g. `disabled-x`
+      root: classes.optionButton,
+      containedPrimary: classes.primary,
     } }
     {...others}
   />
