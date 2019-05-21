@@ -14,6 +14,7 @@ import {
   Selected,
   SelectedContainer,
   AddContainer,
+  LogoContainer,  
 } from './styles'
 
 
@@ -42,7 +43,7 @@ const Cell = ({active, icon, selected, selectExgange, addButton}) => (
       {(active || addButton)? '\u00A0' : `Comming Soon`}
     </ExhangeTypography>
     <ExhangeButton active={active} addButton={addButton} onClick={selectExgange}>
-      {icon && <SvgIcon src={icon} width={84} height={18} />}
+      {icon && <StyledLogo src={icon} width={84} />}
       {addButton && (<AddContainer>
         <Add fontSize="small" color="secondary"/>
         <Typography color="secondary">

@@ -29,6 +29,7 @@ class Questions extends React.Component {
     page,
     fullName,
     changePage,
+    SendResults,
   } = this.props
 
   const {
@@ -47,6 +48,7 @@ class Questions extends React.Component {
       allAnswers={allAnswers}
       saveAnswer={this.saveAnswer}
       question={questions[step]}
+      SendResults={this.SendResults}
     />
     )
   }

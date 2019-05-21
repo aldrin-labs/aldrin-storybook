@@ -27,7 +27,10 @@ export class Page extends React.Component {
       question: { question, answers, input },
       allAnswers,
       saveAnswer,
+      SendResults,
     } = this.props
+
+    console.log(SendResults)
 
     const multi = answers && answers.length > 3
 
