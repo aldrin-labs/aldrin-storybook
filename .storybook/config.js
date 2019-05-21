@@ -10,6 +10,8 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import { autoLogin } from '../src/utils/autoLogin'
 
+import { autoLogin } from '../src/utils/autoLogin'
+
 import { customThemes } from './customTheme'
 
 import { GlobalStyle } from '@sb/styles/cssUtils'
