@@ -119,19 +119,6 @@ export const AddContainer = styled.div`
   justify-content: center;
 `
 
-
-/*
-export const ExhangeButton = withStyles(styles)(({classes, active, ...others}: {classes: any}) =>
-  <Button
-    variant="extendedFab"
-    style={{
-      height: 37,
-    }}
-    className={active ? classes.active : classes.notActive}
-    {...others}
-  />
-)*/
-
 export const FormContainer = styled.form`
   width: 100%;
 `
