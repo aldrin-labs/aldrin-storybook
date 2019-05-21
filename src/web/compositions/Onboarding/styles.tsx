@@ -58,12 +58,20 @@ export const MainContainer = styled.div`
   margin: 0px auto;
 `
 
-export const StyledTypography = styled((weight, ...rest) => <Typography {...rest} />)`
+export const StyledTypography = styled(({weight, children, ...rest}) => (
+  <Typography {...rest}>
+    {children}
+  </Typography>
+  ))`
   color: white;
   font-weight: ${(props: { weight?: string }) => props.weight || 'normal'};
 `
 
-export const StyledLink = styled((weight, ...rest) => <Link  {...rest} />)`
+export const StyledLink = styled(({weight, children, ...rest}) => (
+  <Link  {...rest}>
+    {children}
+  </Link>
+  ))`
   padding-left: 4px;
   font-weight: ${(props: { weight?: string }) => props.weight || 'normal'};
 `
@@ -75,7 +83,6 @@ export const InputContainer = styled.div`
 const styles = {
   input: {
     paddingBottom: '13px',
-    color: 'black',
   },
   button: {
     color: 'white',
