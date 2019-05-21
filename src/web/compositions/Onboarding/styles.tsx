@@ -31,11 +31,11 @@ export const Logo = styled.img`
 `
 
 export const SocialSvgContainer = styled.div`
-  transform: translateX(-10px) translateY(2px)
+  transform: translateX(-10px) translateY(2px);
 `
 
 export const GoolgeSvgContainer = styled.div`
-  transform: translateX(-10px) translateY(3px)
+  transform: translateX(-10px) translateY(3px);
 `
 
 export const StepContainer = styled.div`
@@ -58,12 +58,20 @@ export const MainContainer = styled.div`
   margin: 0px auto;
 `
 
-export const StyledTypography = styled(Typography)`
+export const StyledTypography = styled(({weight, children, ...rest}) => (
+  <Typography {...rest}>
+    {children}
+  </Typography>
+  ))`
   color: white;
   font-weight: ${(props: { weight?: string }) => props.weight || 'normal'};
 `
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(({weight, children, ...rest}) => (
+  <Link  {...rest}>
+    {children}
+  </Link>
+  ))`
   padding-left: 4px;
   font-weight: ${(props: { weight?: string }) => props.weight || 'normal'};
 `

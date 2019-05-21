@@ -14,7 +14,6 @@ export default class Auth {
       connection: 'Username-Password-Authentication',
       email,
       password,
-      user_metadata: { fullName: 'AAA' }
     }, async (err, result) => {
         if (err) {
           resolve({

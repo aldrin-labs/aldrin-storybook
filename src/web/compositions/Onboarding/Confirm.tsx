@@ -31,7 +31,7 @@ const Inputs = (props) => {
           </ConfirmText>
         </ConfirmTextContainer>
         <StyledLaunchButton
-          href="/"
+          href="/registration/import"
           disabled={!props.registred}
         >
           {props.registred ? 'launch': 'loading'}
