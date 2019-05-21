@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { OrderType, TradeType } from '@core/types/ChartTypes'
+import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import {
   fundsColumnNames,
@@ -11,6 +11,8 @@ import {
   orderHistoryBody,
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
+import { Theme } from '@material-ui/core'
+import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -54,17 +56,43 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     ? 'You have no Funds.'
     : 'You have no assets'
 
+export const isBuyTypeOrder = (orderStringType: string): boolean =>
+  /buy/i.test(orderStringType)
+
+export const getFilledQuantity = (
+  filledQuantity: number,
+  origQuantity: string
+): number =>
+  filledQuantity === 0 ? filledQuantity : (filledQuantity / +origQuantity) * 100
+
+// order.filled / order.info.origQty
+
+export const getCurrentCurrencySymbol = (
+  symbolPair: string,
+  tradeType: string
+): string => {
+  const splittedSymbolPair = symbolPair.split('/')
+  const [quote, base] = splittedSymbolPair
+
+  return isBuyTypeOrder(tradeType) ? quote : base
+}
+
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
-  cancelOrderFunc: (keyId: string, orderId: string, pair: string) => Promise<any>
+  cancelOrderFunc: (
+    keyId: string,
+    orderId: string,
+    pair: string
+  ) => Promise<any>,
+  theme: Theme
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
   }
 
-
-  const processedOpenOrdersData = openOrdersData.filter(el => el.status === 'open').map(
-    (el: OrderType, i: number) => {
+  const processedOpenOrdersData = openOrdersData
+    .filter((el) => el.status === 'open')
+    .map((el: OrderType, i: number) => {
       const {
         keyId,
         symbol,
@@ -73,24 +101,49 @@ export const combineOpenOrdersTable = (
         side,
         price,
         filled,
-        info: { orderId, stopPrice = 0, origQty = 0, executedQty = 0 },
+        info: { orderId, stopPrice = 0, origQty = '0' },
       } = el
 
+      const triggerConditions = +stopPrice ? stopPrice : '-'
+      const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+
       return {
-        id: orderId,
-        date: { render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'), style: { whiteSpace: 'nowrap' } },
+        id: `${orderId}${timestamp}`,
+        date: {
+          render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
+          style: { whiteSpace: 'nowrap' },
+          contentToSort: timestamp,
+        },
         pair: symbol,
         type: type,
-        side: side,
-        // TODO: We should change average "price" to average param from backend when it will be ready
-        price: { render: price, isNumber: true },
-        amount: { render: origQty, isNumber: true },
-        filled: { render: filled, isNumber: true },
+        side: {
+          render: side,
+          style: {
+            color: isBuyTypeOrder(side)
+              ? theme.customPalette.green.main
+              : theme.customPalette.red.main,
+          },
+        },
+        price: { render: price, isNumber: true, contentToSort: price },
+        amount: { render: origQty, isNumber: true, contentToSort: +origQty },
+        filled: {
+          render: `${filledQuantityProcessed} %`,
+          isNumber: true,
+          contentToSort: filledQuantityProcessed,
+        },
         // TODO: We should change "total" to total param from backend when it will be ready
-        total: { render: price, isNumber: true },
+        total: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: '-',
+          isNumber: true,
+          contentToSort: 0,
+        },
         // TODO: Not sure about triggerConditions
-        triggerConditions: { render: stopPrice, isNumber: true },
-        // TODO: We should update cancelOrderFunc param
+        triggerConditions: {
+          render: triggerConditions,
+          isNumber: true,
+          contentToSort: +stopPrice,
+        },
         cancel: {
           render: (
             <TableButton
@@ -104,94 +157,186 @@ export const combineOpenOrdersTable = (
           ),
         },
       }
-    }
-  )
+    })
+
 
   return processedOpenOrdersData
 }
 
-export const combineOrderHistoryTable = (orderData: OrderType[]) => {
+export const combineOrderHistoryTable = (
+  orderData: OrderType[],
+  theme: Theme
+) => {
   if (!orderData && !Array.isArray(orderData)) {
     return []
   }
 
-  const processedOrderHistoryData = orderData.map((el: OrderType) => {
-    const {
-      symbol,
-      timestamp,
-      type,
-      side,
-      price,
-      status,
-      filled,
-      info: { orderId, stopPrice = 0, origQty = 0, executedQty = 0 },
-    } = el
+  const processedOrderHistoryData = orderData
+    .map((el: OrderType) => {
+      const {
+        symbol,
+        timestamp,
+        type,
+        side,
+        price,
+        status,
+        filled,
+        average,
+        info: { orderId, stopPrice = 0, origQty = '0' },
+      } = el
 
-    return {
-      id: orderId,
-      date: { render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'), style: { whiteSpace: 'nowrap' } },
-      pair: symbol,
-      type: type,
-      side: side,
-      // TODO: We should change average "price" to average param from backend when it will be ready
-      average: { render: price, isNumber: true },
-      price: { render: price, isNumber: true },
-      filled: { render: filled, isNumber: true },
-      amount: { render: origQty, isNumber: true },
-      // TODO: We should change "total" to total param from backend when it will be ready
-      total: { render: price, isNumber: true },
-      // TODO: Not sure about triggerConditions
-      triggerConditions: { render: stopPrice, isNumber: true },
-      status: status,
-    }
-  })
+      const triggerConditions = +stopPrice ? stopPrice : '-'
+      const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+
+      return {
+        id: `${orderId}${timestamp}`,
+        date: {
+          render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
+          style: { whiteSpace: 'nowrap' },
+          contentToSort: timestamp,
+        },
+        pair: symbol,
+        type: type,
+        side: {
+          render: side,
+          style: {
+            color: isBuyTypeOrder(side)
+              ? theme.customPalette.green.main
+              : theme.customPalette.red.main,
+          },
+        },
+        average: { render: average || '-', isNumber: true, contentToSort: +average },
+        price: { render: price, isNumber: true, contentToSort: price },
+        filled: {
+          render: `${filledQuantityProcessed} %`,
+          isNumber: true,
+          contentToSort: filledQuantityProcessed,
+        },
+        amount: { render: origQty, isNumber: true, contentToSort: +origQty },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        total: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: '-',
+          isNumber: true,
+          contentToSort: 0,
+        },
+        // TODO: Not sure about triggerConditions
+        triggerConditions: {
+          render: triggerConditions,
+          isNumber: true,
+          contentToSort: +stopPrice,
+        },
+        status: status || '-',
+      }
+    })
+
 
   return processedOrderHistoryData
 }
 
-export const combineTradeHistoryTable = (tradeData: TradeType[]) => {
+export const combineTradeHistoryTable = (
+  tradeData: TradeType[],
+  theme: Theme
+) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
   }
 
-  const processedTradeHistoryData = tradeData.map((el: TradeType) => {
-    const { id, timestamp, symbol, side, price, amount } = el
+  const processedTradeHistoryData = tradeData
+    .map((el: TradeType) => {
+      const { id, timestamp, symbol, side, price, amount } = el
 
-    const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
-    const { cost, currency } = fee
+      const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
+      const { cost, currency } = fee
 
-    return {
-      id: id,
-      time: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
-      pair: symbol,
-      type: side,
-      price: { render: price, isNumber: true },
-      filled: { render: amount, isNumber: true },
-      fee: { render: `${cost} ${currency}`, isNumber: true },
-      // TODO: We should change "total" to total param from backend when it will be ready
-      total: { render: 0, isNumber: true },
-    }
-  })
+      return {
+        id: id,
+        time: {
+          render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
+          contentToSort: timestamp,
+        },
+        pair: symbol,
+        type: {
+          render: side,
+          style: {
+            color: isBuyTypeOrder(side)
+              ? theme.customPalette.green.main
+              : theme.customPalette.red.main,
+          },
+        },
+        price: { render: price, isNumber: true },
+        filled: {
+          render: `${amount}`,
+          isNumber: true,
+          contentToSort: +amount,
+        },
+        fee: {
+          render: `${cost} ${currency}`,
+          isNumber: true,
+          contentToSort: cost,
+        },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        total: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: '-',
+          isNumber: true,
+          contentToSort: 0,
+        },
+      }
+    })
+
 
   return processedTradeHistoryData
 }
 
-// TODO: WIP, IN PROGRESS.
-// export const combineFundsTable = (fundsData: FundsType[]) => {
-//   const processedFundsDaata = fundsData.map((el: FundsType) => {
-//     const {} = el
-//
-//     return {
-//       coin: `${String.fromCharCode(getRandomInt(65, 80)) +
-//         String.fromCharCode(getRandomInt(65, 80)) +
-//         String.fromCharCode(getRandomInt(65, 80))}`,
-//       totalBalance: getRandomInt(100, 300000),
-//       availableBalance: getRandomInt(100, 3000),
-//       inOrder: getRandomInt(1, 100),
-//       btcValue: getRandomInt(1, 10000),
-//     }
-//   })
-// }
+export const combineFundsTable = (
+  fundsData: FundsType[],
+  hideSmallAssets: boolean
+) => {
+  const filtredFundsData = hideSmallAssets
+    ? fundsData.filter(
+        (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
+      )
+    : fundsData
+
+  const processedFundsData = filtredFundsData.map((el: FundsType) => {
+    const {
+      quantity,
+      locked,
+      free,
+      asset: { symbol, priceBTC },
+    } = el
+
+    const btcValue = +priceBTC * +quantity
+
+    return {
+      id: symbol,
+      coin: symbol || 'unknown',
+      totalBalance: {
+        render: quantity || '-',
+        isNumber: true,
+        contentToSort: +quantity,
+      },
+      availableBalance: {
+        render: free || '-',
+        isNumber: true,
+        contentToSort: +free,
+      },
+      inOrder: {
+        render: locked || '-',
+        isNumber: true,
+        contentToSort: +locked,
+      },
+      btcValue: {
+        render: btcValue || '-',
+        isNumber: true,
+        contentToSort: btcValue,
+      },
+    }
+  })
+
+  return processedFundsData
+}
 
 // Update queries functions ->>
 // TODO: Make it one function
@@ -208,7 +353,8 @@ export const updateOpenOrderHistoryQuerryFunction = (
   }
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
-    (el) => el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
+    (el: OrderType) =>
+      el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
@@ -223,7 +369,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
     result = { ...prev }
   } else {
     prev.getOpenOrderHistory = [
-      {...subscriptionData.data.listenOpenOrders},
+      { ...subscriptionData.data.listenOpenOrders },
       ...prev.getOpenOrderHistory,
     ]
 
@@ -237,7 +383,6 @@ export const updateOrderHistoryQuerryFunction = (
   prev,
   { subscriptionData }
 ) => {
-
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
@@ -246,7 +391,8 @@ export const updateOrderHistoryQuerryFunction = (
   }
 
   const openOrderHasTheSameOrderIndex = prev.getOrderHistory.findIndex(
-    (el) => el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+    (el: OrderType) =>
+      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
@@ -261,7 +407,7 @@ export const updateOrderHistoryQuerryFunction = (
     result = { ...prev }
   } else {
     prev.getOrderHistory = [
-      {...subscriptionData.data.listenOrderHistory},
+      { ...subscriptionData.data.listenOrderHistory },
       ...prev.getOrderHistory,
     ]
 
@@ -269,7 +415,6 @@ export const updateOrderHistoryQuerryFunction = (
   }
 
   return result
-
 }
 
 export const updateTradeHistoryQuerryFunction = (
@@ -283,23 +428,24 @@ export const updateTradeHistoryQuerryFunction = (
     return prev
   }
 
-  const openOrderHasTheSameOrderIndex = prev.getTradeHistory.findIndex(
-    (el) => el.info.orderId === subscriptionData.data.listenTradeHistory.info.orderId
+  const tradeHasTheSameIndex = prev.getTradeHistory.findIndex(
+    (el: TradeType) =>
+      el.id === subscriptionData.data.listenTradeHistory.id
   )
-  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
+  const tradeAlreadyExists = tradeHasTheSameIndex !== -1
 
   let result
 
-  if (openOrderAlreadyExists) {
-    prev.getTradeHistory[openOrderHasTheSameOrderIndex] = {
-      ...prev.getTradeHistory[openOrderHasTheSameOrderIndex],
+  if (tradeAlreadyExists) {
+    prev.getTradeHistory[tradeHasTheSameIndex] = {
+      ...prev.getTradeHistory[tradeHasTheSameIndex],
       ...subscriptionData.data.listenTradeHistory,
     }
 
     result = { ...prev }
   } else {
     prev.getTradeHistory = [
-      {...subscriptionData.data.listenTradeHistory},
+      { ...subscriptionData.data.listenTradeHistory },
       ...prev.getTradeHistory,
     ]
 

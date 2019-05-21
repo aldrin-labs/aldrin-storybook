@@ -74,15 +74,17 @@ export default class Sort extends React.Component<TableProps> {
   }
 
   render() {
-    const { data: RawRows, columnNames } = this.props
+    const { data: RawRows, columnNames, defaultSort } = this.props
     const { sortColumn, sortDirection } = this.state
+    const defaultSortEnabled = defaultSort && defaultSort.sortColumn && defaultSort.sortDirection
+    const standartSortEnabled = sortColumn && sortDirection
 
     const result = {
       head: columnNames,
       data: {
         footer: RawRows.footer,
         body:
-          stableSort(RawRows.body, getSorting(sortDirection, sortColumn)) || [],
+          stableSort(RawRows.body, (defaultSortEnabled && !standartSortEnabled) ? getSorting(defaultSort.sortDirection, defaultSort.sortColumn) : getSorting(sortDirection, sortColumn)) || [],
       },
     }
 
@@ -94,7 +96,7 @@ export default class Sort extends React.Component<TableProps> {
           columnNames: result.head,
           sort: {
             sortHandler: this.sortHandler,
-            ...this.state,
+            ...((defaultSortEnabled && !standartSortEnabled) ? defaultSort : this.state),
           },
         }}
       />

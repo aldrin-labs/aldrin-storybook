@@ -11,6 +11,8 @@ const SelectExchangeList = ({ data, ...otherPropsForSelect }) => {
     data.exchangePagination.items
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
+      // TODO: hardcode it for now, because we currently support only Binance
+      .filter(el => el.name === 'Binance')
       .map(({ name }) => ({
         label: name,
         value: name,

@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core'
 import { TableButton } from './TradingTable.styles'
 
 const arrayOfSides = ['sell', 'buy']

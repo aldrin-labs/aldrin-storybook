@@ -5,8 +5,13 @@ export const CSS_CONFIG = {
     title: {
       fontSize: '0.875rem',
     },
+    actionCell: {
+      fontSize: '0.8125rem',
+    },
     headCell: {
       fontSize: '0.75rem',
+      top: '82px',
+      customTop: '38px',
     },
     bodyCell: {
       fontSize: '0.75rem',

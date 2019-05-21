@@ -1,9 +1,10 @@
 import React from 'react'
+import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps } from './OpenOrdersTable.types'
+import { IProps, IState } from './TradeHistoryTable.types'
 import {
   combineTradeHistoryTable,
   updateTradeHistoryQuerryFunction,
@@ -16,16 +17,18 @@ import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
 import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
+@withTheme()
 class TradeHistoryTable extends React.PureComponent<IProps> {
-  state = {
+  state: IState = {
     tradeHistoryProcessedData: [],
   }
 
   componentDidMount() {
-    const { getTradeHistory, subscribeToMore } = this.props
+    const { getTradeHistoryQuery, subscribeToMore, theme } = this.props
 
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      getTradeHistory.getTradeHistory
+      getTradeHistoryQuery.getTradeHistory,
+      theme
     )
     this.setState({
       tradeHistoryProcessedData,
@@ -36,7 +39,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      nextProps.getTradeHistory.getTradeHistory
+      nextProps.getTradeHistoryQuery.getTradeHistory,
+      nextProps.theme
     )
     this.setState({
       tradeHistoryProcessedData,
@@ -69,10 +73,15 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        defaultSort={{
+          sortColumn: getTableHead(tab)[0].id,
+          sortDirection: 'desc',
+        }}
         withCheckboxes={false}
         tableStyles={{
           heading: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            top: CSS_CONFIG.chart.headCell.top,
           },
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
@@ -120,12 +129,24 @@ const TableDataWrapper = ({ ...props }) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={getTradeHistory}
-      name={`getTradeHistory`}
+      name={`getTradeHistoryQuery`}
       fetchPolicy="network-only"
-      variables={{ tradeHistoryInput: {startDate, endDate} }}
+      variables={{
+        tradeHistoryInput: {
+          startDate,
+          endDate,
+          activeExchangeKey: props.selectedKey.keyId,
+        },
+      }}
       subscriptionArgs={{
         subscription: TRADE_HISTORY,
-        variables: { startDate, endDate },
+        variables: {
+          tradeHistoryInput: {
+            startDate,
+            endDate,
+            activeExchangeKey: props.selectedKey.keyId,
+          },
+        },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...props}

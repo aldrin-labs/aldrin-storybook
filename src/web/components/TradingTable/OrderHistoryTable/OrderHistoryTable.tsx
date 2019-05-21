@@ -1,9 +1,10 @@
 import React from 'react'
+import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps } from './OpenOrdersTable.types'
+import { IProps, IState } from './OrderHistoryTable.types'
 import {
   updateOrderHistoryQuerryFunction,
   combineOrderHistoryTable,
@@ -16,16 +17,18 @@ import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
+@withTheme()
 class OrderHistoryTable extends React.PureComponent<IProps> {
-  state = {
+  state: IState = {
     orderHistoryProcessedData: [],
   }
 
   componentDidMount() {
-    const { getOrderHistory, subscribeToMore } = this.props
+    const { getOrderHistoryQuery, subscribeToMore, theme } = this.props
 
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      getOrderHistory.getOrderHistory
+      getOrderHistoryQuery.getOrderHistory,
+      theme
     )
     this.setState({
       orderHistoryProcessedData,
@@ -36,7 +39,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getOrderHistory.getOrderHistory
+      nextProps.getOrderHistoryQuery.getOrderHistory,
+      nextProps.theme
     )
     this.setState({
       orderHistoryProcessedData,
@@ -68,10 +72,15 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        defaultSort={{
+          sortColumn: getTableHead(tab)[0].id,
+          sortDirection: 'desc',
+        }}
         withCheckboxes={false}
         tableStyles={{
           heading: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            top: CSS_CONFIG.chart.headCell.top,
           },
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
@@ -116,15 +125,27 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={OrderHistoryTable}
+      variables={{
+        orderHistoryInput: {
+          startDate,
+          endDate,
+          activeExchangeKey: props.selectedKey.keyId,
+        },
+      }}
       withOutSpinner={true}
       withTableLoader={true}
       query={getOrderHistory}
-      name={`getOrderHistory`}
+      name={`getOrderHistoryQuery`}
       fetchPolicy="network-only"
-      variables={{ orderHistoryInput: { startDate, endDate } }}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
-        variables: { startDate, endDate },
+        variables: {
+          orderHistoryInput: {
+            startDate,
+            endDate,
+            activeExchangeKey: props.selectedKey.keyId,
+          },
+        },
         updateQueryFunction: updateOrderHistoryQuerryFunction,
       }}
       {...props}

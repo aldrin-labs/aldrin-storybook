@@ -1,5 +1,6 @@
 import { Theme } from '@material-ui/core'
 import { FormikProps } from 'formik'
+import { IResult } from '@core/types/ChartTypes'
 
 export interface FormValues {
   price: number | string
@@ -10,12 +11,6 @@ export interface FormValues {
 }
 
 export type priceType = 'limit' | 'market' | 'stop-limit'
-
-interface IResult {
-  status: 'success' | 'error'
-  message: string
-  orderId?: string
-}
 
 export interface IProps {
   byType: 'buy' | 'sell'
@@ -29,7 +24,7 @@ export interface IProps {
     byType: 'buy' | 'sell',
     priceType: 'limit' | 'market' | 'stop-limit',
     filtredValues: Partial<FormValues>) => IResult
-  showOrderResult: (result: IResult) => null
+  showOrderResult: (result: IResult, cancelOrderFunction: (arg: any) => void) => null
 }
 
 export interface IPropsWithFormik extends FormikProps<FormValues>, IProps {}

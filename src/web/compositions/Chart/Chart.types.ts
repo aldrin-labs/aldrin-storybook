@@ -1,4 +1,4 @@
-import { IExchange, IGetCharts, IGetMyProfile } from '@core/types/ChartTypes'
+import { IExchange, IGetCharts, IGetMyProfile, Key } from '@core/types/ChartTypes'
 import { ITooltipType } from '@core/types/UserTypes'
 
 export interface IProps {
@@ -20,12 +20,17 @@ export interface IProps {
   addChartMutation: (queryObject: any) => Promise<any>
   hideToolTip: (tab: string) => any
   demoMode: ITooltipType
+  getSelectedKeyQuery: {
+    chart: {
+      selectedKey: Key
+    }
+  }
 }
 
 export interface IState {
   view: string
   orders: []
-  exchangeTableCollapsed: boolean
+  // exchangeTableCollapsed: boolean
   aggregation: number
   showTableOnMobile: string
   activeChart: string

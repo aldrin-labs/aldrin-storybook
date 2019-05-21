@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import InputLabel from '@material-ui/core/InputLabel'
 
+import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
 
@@ -202,7 +203,7 @@ const SExchangeSelect = styled.div`
   flex-direction: column;
   margin: 30px 5px 5px 5px;
   width: 80%;
-  min-height: 50px;
+  min-height: 52px;
 `
 
 const SPaper = styled(Paper)`
@@ -221,7 +222,7 @@ export const AddExchangeKey = compose(
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
     options: {
-      refetchQueries: [{ query: portfolioKeyAndWalletsQuery }],
+      refetchQueries: [{ query: portfolioKeyAndWalletsQuery }, { query: getKeysQuery }, { query: keysNames }],
     },
   }),
   formikEnhancer

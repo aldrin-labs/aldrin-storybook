@@ -6,7 +6,7 @@ import { setTimeout } from 'timers'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
-import { Button, Fade, Grid, Hidden } from '@material-ui/core'
+import { Fade, Grid, Hidden, Fab } from '@material-ui/core'
 
 import { OrderBookTable, Aggregation, TradeHistoryTable } from './Tables/Tables'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
@@ -15,15 +15,12 @@ import MainDepthChart from './DepthChart/MainDepthChart/MainDepthChart'
 
 import { singleChartSteps } from '@sb/config/joyrideSteps'
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
-import TablePlaceholderLoader from '@sb/components/TablePlaceholderLoader'
 import { SingleChart } from '@sb/components/Chart'
 
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import * as actions from '@core/redux/chart/actions'
 import * as userActions from '@core/redux/user/actions'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-
-import { keysNames } from '@core/graphql/queries/chart/keysNames'
 
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
@@ -61,18 +58,16 @@ import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { MASTER_BUILD } from '@core/utils/config'
 
-@withTheme()
+import DefaultView from './DefaultView/StatusWrapper'
+import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
 
+@withTheme()
 class Chart extends React.Component<IProps, IState> {
   state: IState = {
-    orders: [],
     view: 'default',
-    exchangeTableCollapsed: true,
     aggregation: 0.01,
     showTableOnMobile: 'ORDER',
     activeChart: 'candle',
-    exchanges: [],
-    tradeHistory: [],
     joyride: false,
   }
 
@@ -94,34 +89,6 @@ class Chart extends React.Component<IProps, IState> {
   componentWillUnmount() {
     /* tslint:disable-next-line:no-object-mutation */
     document.title = 'Cryptocurrencies AI'
-  }
-
-  roundTill = (n: number, initial: string): number => {
-    //  need testing. Not working on all numbers
-    // sorry have not much time
-    // also working only on aggregation <=10
-    // and keeps floor of number instead of round it
-    let s = 0
-
-    if (this.state.aggregation <= 5.0) {
-      s = -4
-    } else {
-      s = -5
-    }
-
-    let agg = Number(
-      initial
-        .split('')
-        .slice(s)
-        .join('')
-    )
-    /* tslint:disable */
-    while (n < agg) {
-      agg = agg - n
-    }
-    /* tslint:enable */
-
-    return +initial - agg
   }
 
   changeTable = () => {
@@ -211,52 +178,51 @@ class Chart extends React.Component<IProps, IState> {
           }}
         />
         <TablesBlockWrapper
-          blur={false}
+          key={`orderbook_table`}
           background={theme.palette.background.default}
-          rightBorderColor={theme.palette.divider}
           variant={{
             show: showTableOnMobile === 'ORDER',
           }}
         >
-          <QueryRenderer
-            component={OrderBookTable}
-            withOutSpinner
-            query={ORDERS_MARKET_QUERY}
-            fetchPolicy="network-only"
-            variables={{ symbol, exchange }}
-            placeholder={TablePlaceholderLoader}
-            subscriptionArgs={{
-              subscription: MARKET_ORDERS,
-              variables: { symbol, exchange },
-              updateQueryFunction: updateOrderBookQuerryFunction,
-            }}
-            {...{
-              quote,
-              symbol,
-              activeExchange,
-              currencyPair,
-              aggregation,
-              onButtonClick: this.changeTable,
-              roundTill: this.roundTill,
-              setOrders: this.props.setOrders,
-              ...this.props,
-            }}
-          />
+          {/*{MASTER_BUILD && <ComingSoon />}*/}
+          {/*<QueryRenderer*/}
+            {/*component={OrderBookTable}*/}
+            {/*withOutSpinner*/}
+            {/*query={ORDERS_MARKET_QUERY}*/}
+            {/*fetchPolicy="network-only"*/}
+            {/*variables={{ symbol, exchange }}*/}
+            {/*subscriptionArgs={{*/}
+              {/*subscription: MARKET_ORDERS,*/}
+              {/*variables: { symbol, exchange },*/}
+              {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
+            {/*}}*/}
+            {/*{...{*/}
+              {/*quote,*/}
+              {/*symbol,*/}
+              {/*activeExchange,*/}
+              {/*currencyPair,*/}
+              {/*aggregation,*/}
+              {/*onButtonClick: this.changeTable,*/}
+              {/*setOrders: this.props.setOrders,*/}
+              {/*...this.props,*/}
+              {/*key: 'orderbook_table_query_render',*/}
+            {/*}}*/}
+          {/*/>*/}
 
-          <Aggregation
-            {...{
-              theme,
-              aggregation: this.state.aggregation,
-              onButtonClick: this.setAggregation,
-            }}
-          />
+          {/*<Aggregation*/}
+            {/*{...{*/}
+              {/*theme,*/}
+              {/*aggregation: this.state.aggregation,*/}
+              {/*onButtonClick: this.setAggregation,*/}
+              {/*key: 'aggregation_component',*/}
+            {/*}}*/}
+          {/*/>*/}
         </TablesBlockWrapper>
 
         <TablesBlockWrapper
+          key={`tradehistory_table`}
           className="ExchangesTable"
-          blur={false}
           background={theme.palette.background.default}
-          rightBorderColor={theme.palette.divider}
           variant={{
             show: showTableOnMobile === 'TRADE',
           }}
@@ -265,9 +231,6 @@ class Chart extends React.Component<IProps, IState> {
             component={TradeHistoryTable}
             query={MARKET_QUERY}
             variables={{ symbol, exchange }}
-            placeholder={() => (
-              <TablePlaceholderLoader margin={'20% 0px 0px'} />
-            )}
             subscriptionArgs={{
               subscription: MARKET_TICKERS,
               variables: { symbol, exchange },
@@ -275,78 +238,13 @@ class Chart extends React.Component<IProps, IState> {
             }}
             {...{
               quote,
-              theme,
+              activeExchange,
               currencyPair,
-              symbol,
-              exchange,
-              ...this.props,
+              key: 'tradeyistory_table_query_render',
             }}
           />
         </TablesBlockWrapper>
       </TablesContainer>
-    )
-  }
-
-  renderDefaultView = () => {
-    const { activeChart } = this.state
-    const {
-      currencyPair,
-      theme,
-      getMyProfile: {
-        getMyProfile: { _id },
-      },
-      themeMode,
-      activeExchange,
-    } = this.props
-
-    if (!currencyPair) {
-      return
-    }
-    const [base, quote] = currencyPair.split('_')
-
-    return (
-      <div>
-      <Container direction="row" container spacing={16}>
-        <ChartGridContainer item sm={10}>
-          {this.renderTogglerBody()}
-        </ChartGridContainer>
-
-        <ChartsContainer item sm={10} style={{ flex: 'auto' }}>
-          {activeChart === 'candle' ? (
-            <SingleChart
-              additionalUrl={`/?symbol=${base}/${quote}&user_id=${_id}&theme=${themeMode}`}
-            />
-          ) : (
-            <Fade timeout={1000} in={activeChart === 'depth'}>
-              <DepthChartContainer data-e2e="mainDepthChart">
-                <MainDepthChart
-                  {...{
-                    theme,
-                    base,
-                    quote,
-                    animated: false,
-                  }}
-                />
-              </DepthChartContainer>
-            </Fade>
-          )}
-        </ChartsContainer>
-        <TradingTabelContainer item sm={10} style={{ flex: 'auto' }}>
-          {MASTER_BUILD && <ComingSoon />}
-          <TradingTable />
-        </TradingTabelContainer>
-
-        {this.renderTables()}
-
-        <TradingTerminalContainer item sm={4} style={{ flex: 'auto' }}>
-          {MASTER_BUILD && <ComingSoon />}
-          <TradingComponent
-          activeExchange={activeExchange}
-          pair={[base, quote]}
-        />
-        </TradingTerminalContainer>
-      </Container>
-    </div>
     )
   }
 
@@ -385,13 +283,13 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <Toggler>
-        <Button
+        <Fab
           data-e2e="switchChartPageMode"
           size="small"
           style={{
             height: 36,
           }}
-          variant="extendedFab"
+          variant="extended"
           color="secondary"
           onClick={async () => {
             if (defaultView && charts === []) {
@@ -405,7 +303,7 @@ class Chart extends React.Component<IProps, IState> {
           }}
         >
           {defaultView ? 'Multi Charts' : ' Single Chart'}
-        </Button>
+        </Fab>
       </Toggler>
     )
   }
@@ -436,11 +334,7 @@ class Chart extends React.Component<IProps, IState> {
           currencyPair={currencyPair}
         />
 
-        {view === 'default' && (
-          <KeySelector
-            exchange={activeExchange}
-          />
-        )}
+        {view === 'default' && <KeySelector exchange={activeExchange} />}
 
         <AutoSuggestSelect
           value={view === 'default' && currencyPair}
@@ -470,6 +364,12 @@ class Chart extends React.Component<IProps, IState> {
     const {
       view,
       currencyPair,
+      getMyProfile: {
+        getMyProfile: { _id },
+      },
+      activeExchange,
+      themeMode,
+      getSelectedKeyQuery : { chart : { selectedKey }},
     } = this.props
 
     if (!currencyPair) {
@@ -479,22 +379,34 @@ class Chart extends React.Component<IProps, IState> {
     return (
       <MainContainer fullscreen={view !== 'default'}>
         {view === 'onlyCharts' && (
-        <TogglerContainer container>
-          <Grid
-            spacing={16}
-            item
-            sm={view === 'default' ? 8 : 12}
-            xs={view === 'default' ? 8 : 12}
-            // style={{ margin: '0 -8px', height: '100%' }}
-            container
-            alignItems="left"
-            justify="flex-end"
-          >
-            {this.renderTogglerBody()}
-          </Grid>
-        </TogglerContainer>
+          <TogglerContainer container>
+            <Grid
+              spacing={16}
+              item
+              sm={view === 'default' ? 8 : 12}
+              xs={view === 'default' ? 8 : 12}
+              container
+              alignItems="left"
+              justify="flex-end"
+            >
+              {this.renderTogglerBody()}
+            </Grid>
+          </TogglerContainer>
         )}
-        {view === 'default' && this.renderDefaultView()}
+        {view === 'default' &&
+          <DefaultView
+            selectedKey={selectedKey}
+            currencyPair={currencyPair}
+            theme={theme}
+            id={_id}
+            themeMode={themeMode}
+            activeExchange={activeExchange}
+            activeChart={this.state.activeChart}
+            renderTogglerBody={this.renderTogglerBody}
+            renderTables={this.renderTables}
+            MASTER_BUILD={MASTER_BUILD}
+          />
+        }
         {view === 'onlyCharts' && this.renderOnlyCharts()}
       </MainContainer>
     )
@@ -530,6 +442,10 @@ export default withAuth(
       withOutSpinner: false,
       withTableLoader: false,
       name: 'getCharts',
+    }),
+    queryRendererHoc({
+      query: getSelectedKey,
+      name: 'getSelectedKeyQuery',
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(

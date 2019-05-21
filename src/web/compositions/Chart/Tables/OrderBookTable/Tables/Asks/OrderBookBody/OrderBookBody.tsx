@@ -1,8 +1,7 @@
-import React, { Component, memo } from 'react'
+import React, { PureComponent, Component, memo } from 'react'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { Row, Cell, Body } from '@sb/components/OldTable/Table'
-import { Loading } from '@sb/components/Loading'
 import {
   calculatePercentagesOfOrderSize,
   ScrollToBottom,
@@ -43,7 +42,7 @@ const OptimizedRow = memo(
             variant="body2"
             align="right"
           >
-            {Number(order.size).toFixed(digitsAfterDecimalForAsksSize)}
+            {(order.size).toFixed(digitsAfterDecimalForAsksSize)}
           </StyledTypography>
         </Cell>
         <Cell width={'45%'}>
@@ -55,7 +54,7 @@ const OptimizedRow = memo(
             variant="body1"
             align="right"
           >
-            {Number(order.price).toFixed(digitsAfterDecimalForAsksPrice)}
+            {(order.price).toFixed(digitsAfterDecimalForAsksPrice)}
           </StyledTypography>
         </Cell>
       </RowWithVolumeChart>
@@ -66,7 +65,7 @@ const OptimizedRow = memo(
     nextProps.type === prevProps.type
 )
 
-class ClassBody extends Component<IProps> {
+class ClassBody extends PureComponent<IProps> {
   componentDidMount() {
     objDiv = document.getElementById('body')
     ScrollToBottom(objDiv)
@@ -80,32 +79,30 @@ class ClassBody extends Component<IProps> {
       ScrollToBottom(objDiv)
     }
   }
+
+
   render() {
     const {
       data,
       digitsAfterDecimalForAsksPrice,
       digitsAfterDecimalForAsksSize,
       action,
-      index,
       background,
       theme: {
         palette: { red, type },
       },
     } = this.props
 
+
     return (
       <Body id="body" height={'calc(100% - 44px)'}>
-        {data.length === 0 ? (
-          <Loading centerAligned={true} />
-        ) : (
-          <>
             {data.map(
               (
-                order: { size: number | string; price: number | string },
+                order: { size: number | string, price: number | string, type: string },
                 i: number
               ) => (
                 <OptimizedRow
-                  key={order.price}
+                  key={`${order.price}${order.size}${order.type}`}
                   {...{
                     type,
                     order,
@@ -119,8 +116,6 @@ class ClassBody extends Component<IProps> {
                 />
               )
             )}
-          </>
-        )}
       </Body>
     )
   }

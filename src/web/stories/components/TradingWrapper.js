@@ -9,7 +9,7 @@ import { Card } from '@material-ui/core'
 import { select, number } from '@storybook/addon-knobs'
 
 import { backgrounds } from '../backgrounds'
-import TradingWithStatus from '@components/TradingWithStatus'
+import TradingWrapper from '@components/TradingWrapper'
 
 export const TablesBlockWrapper = styled(Card)`
   width: 50%;
@@ -22,15 +22,15 @@ export const TablesBlockWrapper = styled(Card)`
 
 `
 
-storiesOf('Components/TradingWithStatus', module)
+storiesOf('Components/TradingWrapper', module)
   .addDecorator(backgrounds)
   .add(
-    'TradingWithStatus success',
+    'TradingWrapper success',
     withInfo()(() =>
       <TablesBlockWrapper
         rightBorderColor='rgba(112, 112, 112, 0.26)'
       >
-        <TradingWithStatus
+        <TradingWrapper
           pair={['BTC', 'USDT']}
           funds={[number('walletValue1', 1000000), number('walletValue2', 1000000)]}
           price={number('marketPrice', 4040.45)}
@@ -43,30 +43,8 @@ storiesOf('Components/TradingWithStatus', module)
             }
           }}
           canselOrder={(orderId) => console.log('cansel', orderId)}
-          decimals={[8, 8]}
-          />
-      </TablesBlockWrapper>
-    )
-  )
-  .add(
-    'TradingWithStatus error',
-    withInfo()(() =>
-      <TablesBlockWrapper
-        rightBorderColor='rgba(112, 112, 112, 0.26)'
-      >
-        <TradingWithStatus
-          pair={['BTC', 'USDT']}
-          funds={[number('walletValue1', 1000000), number('walletValue2', 1000000)]}
-          price={number('marketPrice', 4040.45)}
-          placeOrder={(values) => {
-            console.log(values)
-            return {
-              status: 'error',
-              message: 'Someting went wrong',
-              orderId: 'orderId',
-            }
-          }}
-          canselOrder={(orderId) => console.log('cansel', orderId)}
+          showOrderResult={(result) => console.log(result)}
+          showCancelResult={(result) => console.log(result)}    
           decimals={[8, 8]}
           />
       </TablesBlockWrapper>

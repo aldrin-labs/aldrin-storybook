@@ -63,13 +63,6 @@ const toFixedTrunc = (value, n) => {
 @withTheme()
 
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
-
-  componentWillReceiveProps(newProps: IPropsWithFormik) {
-    if (this.props.priceType !== newProps.priceType) {
-      this.props.setTouched([])
-    }
-  }
-
   setFormatted = (fild: priceType, value: any, index: number) => {
     const {
       decimals = [8, 8],
@@ -560,8 +553,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           amount: values.amount,
         }
       const result = await props.confirmOperation(byType, priceType, filtredValues)
-      props.showOrderResult(result)
-      resetForm()
+      props.showOrderResult(result, props.cancelOrder)
       setSubmitting(false)
     }
   },
