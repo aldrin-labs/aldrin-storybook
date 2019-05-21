@@ -2,8 +2,14 @@ import * as React from 'react'
 
 import { Typography, Link } from '@material-ui/core'
 
-import BinanceLogo from '@icons/Binance_logo.svg'
-import CoinBasePro from '@icons/CoinBasePro.svg'
+import binance from '@icons/exchages/binance-logo.png'
+import coinbase from '@icons/exchages/gdax_logo.png'
+import Bittrex from '@icons/exchages/Bittrex-Logotype.png'
+import KuCoin from '@icons/exchages/800px-KuCoin-logo.png'
+import Poloniex from '@icons/exchages/Poloniex-logo-800px.png'
+import Cryptopia from '@icons/exchages/Cryptopia.png'
+import OKEx from '@icons/exchages/Official_logo_of_OKEx.png'
+import Kraken from '@icons/exchages/Kraken-Logo-2.png'
 
 import {
   Wrapper,
@@ -20,28 +26,28 @@ const exchangeList = [
   {
     name: 'binance',
     active: true,
-    icon: BinanceLogo,
+    icon: binance,
   },
   {
-    icon: CoinBasePro,
+    icon: coinbase,
   },
   {
-    icon: BinanceLogo,
+    icon: Bittrex,
   },
   {
-    icon: BinanceLogo,
+    icon: KuCoin,
   },
   {
-    icon: BinanceLogo,
+    icon: Poloniex,
   },
   {
-    icon: BinanceLogo,
+    icon: Cryptopia,
   },
   {
-    icon: BinanceLogo,
+    icon: OKEx,
   },
   {
-    icon: BinanceLogo,
+    icon: Kraken,
   },
   {
     addButton: true,

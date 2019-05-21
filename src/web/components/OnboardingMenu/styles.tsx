@@ -167,9 +167,14 @@ export const LaunchContainer = styled.div`
   width: 450px;
 `
 
+export const LogoContainer = styled.div`
+  display: block;
+  position: relative;
+  overflow: hidden;
+`
+
 export const StyledLogo = styled.img`
   position: relative;
-  height: 18px;
 `
 
 

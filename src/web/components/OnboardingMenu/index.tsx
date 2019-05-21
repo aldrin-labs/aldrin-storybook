@@ -17,10 +17,13 @@ const OnboardingMenu = (props) => {
     changePage,
     exchange,
     selectExchange,
+    SendResultsApi,
   } = props
+
+  console.log('SendResultsApi', SendResultsApi)
   switch(page) {
     case('Welcome'): return <Welcome fullName={fullName} changePage={changePage}/>
-    case('Questions'): return <Questions changePage={changePage} />
+    case('Questions'): return <Questions changePage={changePage} SendResultsApi={SendResultsApi}/>
     case('Launch'): return <Launch changePage={changePage}/>
     case('ChooseExchange'): return <ChooseExchange changePage={changePage} selectExchange={selectExchange}/>
     case('ImportHelp'): return <ImportHelp changePage={changePage}/>
