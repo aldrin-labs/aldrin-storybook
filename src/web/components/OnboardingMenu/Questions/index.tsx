@@ -19,6 +19,11 @@ class Questions extends React.Component {
     this.setState((prevState) => ({allAnswers: { ...prevState.allAnswers, [prevState.step]: answer }}))
   }
 
+  SendResults = async () => {
+    const { SendResultsApi } = this.props
+    await SendResultsApi(this.state.allAnswers)
+  }
+
   render() {
   const {
     page,

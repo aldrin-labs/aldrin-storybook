@@ -80,7 +80,10 @@ export class Page extends React.Component {
           BACK
         </StyledBeginButton>
         <StyledBeginButton onClick={step === 7
-          ? () => changePage('ChooseExchange')
+          ? async () => {
+            await SendResults()
+            changePage('ChooseExchange')
+          }
           : () => changeStep(step + 1)}>
           NEXT
         </StyledBeginButton>
