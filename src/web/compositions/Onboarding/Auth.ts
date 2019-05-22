@@ -48,6 +48,7 @@ export default class Auth {
   googleSingup = () => {
     this.auth0.authorize({
       connection: 'google-oauth2',
+      redirectUri: `${callBackUrl}/registration/confirm`,
     })
   }
 
