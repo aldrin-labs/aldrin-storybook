@@ -1,6 +1,13 @@
 import auth0 from 'auth0-js'
 
 import { auth0Options } from '@core/config/authConfig'
+import { PRODUCTION, LOCAL_BUILD } from '@core/utils/config'
+
+const callBackUrl = LOCAL_BUILD
+  ? 'http://localhost:3000'
+  : PRODUCTION
+  ? 'https://beta.cryptocurrencies.ai'
+  : 'https://develop.beta.cryptocurrencies.ai'
 
 export default class Auth {
   auth0 = new auth0.WebAuth({
@@ -34,7 +41,7 @@ export default class Auth {
       email,
       password,
       realm: 'Username-Password-Authentication',
-      redirectUri: 'http://localhost:3000/registration/confirm'
+      redirectUri: `${callBackUrl}/registration/confirm`
     }, () => null)
   }
 
