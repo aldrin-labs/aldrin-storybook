@@ -116,7 +116,7 @@ const Inputs = (props) => {
           {loading ? 'loading': 'create account'}
         </StyledButton>
         <SocialContainer>
-          <GoogleButton onClick={props.loginWithGoogle}>
+          <GoogleButton onClick={props.auth.googleSingup}>
             <GoolgeSvgContainer>
               <SvgIcon src={googlePlus} />
             </GoolgeSvgContainer>
