@@ -13,7 +13,6 @@ import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import MainDepthChart from './DepthChart/MainDepthChart/MainDepthChart'
 
-import { singleChartSteps } from '@sb/config/joyrideSteps'
 import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 import { SingleChart } from '@sb/components/Chart'
 
@@ -158,25 +157,6 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <TablesContainer item sm={4} style={{ flex: 'auto' }}>
-        <Joyride
-          showProgress={true}
-          showSkipButton={true}
-          continuous={true}
-          steps={singleChartSteps}
-          run={this.state.joyride && demoMode.chartPage}
-          callback={this.handleJoyrideCallback}
-          styles={{
-            options: {
-              backgroundColor: theme.palette.common.white,
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.common.black,
-            },
-            tooltip: {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-            },
-          }}
-        />
         <TablesBlockWrapper
           key={`orderbook_table`}
           background={theme.palette.background.default}
