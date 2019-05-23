@@ -52,7 +52,7 @@ const Inputs = (props) => {
   }
 
   const OnGoogleClick = async () => {
-    await persistFullName(fullName)
+    await persistFullName(values.fullName)
     googleSingup()
   }
 
