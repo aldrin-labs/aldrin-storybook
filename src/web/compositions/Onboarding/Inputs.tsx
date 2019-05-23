@@ -42,12 +42,19 @@ const Inputs = (props) => {
     setFieldValue,
     handleSubmit,
     setStatus,
+    persistFullName,
+    auth : { googleSingup },
   } = props
 
   const onEmailChange = (e: SyntheticEvent<Element>) => {
     setStatus({email: ''})
     setFieldValue('email', e.target.value)
-  } 
+  }
+
+  const OnGoogleClick = async () => {
+    await persistFullName(fullName)
+    googleSingup()
+  }
 
   const pairsErrors = toPairs(errors)
   return (
@@ -116,7 +123,7 @@ const Inputs = (props) => {
           {loading ? 'loading': 'create account'}
         </StyledButton>
         <SocialContainer>
-          <GoogleButton onClick={props.auth.googleSingup}>
+          <GoogleButton onClick={OnGoogleClick}>
             <GoolgeSvgContainer>
               <SvgIcon src={googlePlus} />
             </GoolgeSvgContainer>
