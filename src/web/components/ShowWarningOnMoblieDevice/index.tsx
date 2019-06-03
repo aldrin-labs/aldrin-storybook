@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Dialog,
   IconButton,
@@ -8,20 +8,19 @@ import {
   DialogActions,
   DialogContent,
 } from '@material-ui/core'
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { connect } from 'react-redux'
-import { toggleMobilePopup } from '@core/redux/app/actions'
 
-const styles = theme => ({
+const styles = (theme) => ({
   largeButton: {
     margin: theme.spacing.unit,
-    padding: 24
+    padding: 24,
   },
   largeIcon: {
-    fontSize: "3em"
+    fontSize: '3em',
   },
-});
+})
 
 function isMobileDevice() {
   return (
@@ -34,14 +33,9 @@ const Transition = (props: any) => {
   return <Slide direction="up" {...props} />
 }
 
-const PopUp = ({
-  mobilePopup,
-  togglePopUp,
-  classes,
-}: {
-  mobilePopup: boolean
-  togglePopUp: () => void
-}) => {
+const PopUp = ({ classes }: { classes: any }) => {
+  const [showMobilePopUp, toggleMobilePopUp] = useState(true)
+
   return (
     <Dialog
       css={`
@@ -49,7 +43,7 @@ const PopUp = ({
       `}
       TransitionComponent={Transition}
       fullScreen
-      open={isMobileDevice() && mobilePopup}
+      open={isMobileDevice() && showMobilePopUp}
     >
       <DialogContent
         css={`
@@ -65,14 +59,14 @@ const PopUp = ({
             text-align: right;
           `}
         >
-        <IconButton
-          color="secondary"
-          onClick={togglePopUp}
-          aria-label="Close"
-          className={classes.largeButton}
-        >
-          <CloseIcon className={classes.largeIcon} />
-        </IconButton>
+          <IconButton
+            color="secondary"
+            onClick={() => toggleMobilePopUp(!showMobilePopUp)}
+            aria-label="Close"
+            className={classes.largeButton}
+          >
+            <CloseIcon className={classes.largeIcon} />
+          </IconButton>
         </div>
         <Typography color="error" variant="h2">
           We are currently in beta and don't support your screen resolution.
@@ -80,7 +74,11 @@ const PopUp = ({
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button color="secondary" size="large" onClick={togglePopUp}>
+        <Button
+          color="secondary"
+          size="large"
+          onClick={() => toggleMobilePopUp(!showMobilePopUp)}
+        >
           okay
         </Button>
       </DialogActions>
@@ -89,16 +87,7 @@ const PopUp = ({
 }
 
 const mapStateToProps = (store: any) => ({
-  themeMode: store.ui.theme,
-  mobilePopup: store.ui.mobilePopup,
   chartPageView: store.chart.view,
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
-  togglePopUp: () => dispatch(toggleMobilePopup()),
-})
-
-export default withStyles(styles)(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PopUp))
+export default withStyles(styles)(connect(mapStateToProps)(PopUp))
