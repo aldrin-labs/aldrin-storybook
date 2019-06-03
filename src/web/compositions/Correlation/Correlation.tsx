@@ -10,10 +10,6 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { CorrelationMatrixMockData } from './mocks'
 import { CorrelationMatrix } from '@sb/components/index'
 import { IProps } from './Correlation.types'
-import {
-  toggleCorrelationTableFullscreen,
-  setCorrelationPeriod as setCorrelationPeriodAction,
-} from '@core/redux/portfolio/actions'
 import { getCorrelationAndPortfolioAssetsQuery } from '@core/graphql/queries/portfolio/correlation/getCorrelationAndPortfolioAssetsQuery'
 import { combineTableData, swapDates } from '@core/utils/PortfolioTableUtils'
 import { PTWrapper as PTWrapperRaw } from '@sb/styles/cssUtils'
