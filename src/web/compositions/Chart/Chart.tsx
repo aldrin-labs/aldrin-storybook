@@ -25,6 +25,8 @@ import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_Q
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+
 import {
   updateTradeHistoryQuerryFunction,
   updateOrderBookQuerryFunction,
@@ -368,9 +370,12 @@ class Chart extends React.Component<IProps, IState> {
         getMyProfile: { _id },
       },
       activeExchange,
-      themeMode,
       getSelectedKeyQuery : { chart : { selectedKey }},
+      getThemeModeQuery,
     } = this.props
+
+    const themeMode = getThemeModeQuery && getThemeModeQuery.app && getThemeModeQuery.app.themeMode
+
 
     if (!currencyPair) {
       return
@@ -397,7 +402,6 @@ class Chart extends React.Component<IProps, IState> {
           <DefaultView
             selectedKey={selectedKey}
             currencyPair={currencyPair}
-            theme={theme}
             id={_id}
             themeMode={themeMode}
             activeExchange={activeExchange}
@@ -418,7 +422,6 @@ const mapStateToProps = (store: any) => ({
   activeExchange: store.chart.activeExchange,
   view: store.chart.view,
   currencyPair: store.chart.currencyPair,
-  themeMode: store.ui.theme,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -446,6 +449,10 @@ export default withAuth(
     queryRendererHoc({
       query: getSelectedKey,
       name: 'getSelectedKeyQuery',
+    }),
+    queryRendererHoc({
+      query: GET_THEME_MODE,
+      name: 'getThemeModeQuery',
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(
