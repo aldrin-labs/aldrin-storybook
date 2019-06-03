@@ -1,10 +1,10 @@
-import { Theme } from '@material-ui/core'
 
 export default interface IProps {
-  theme: Theme
-  changeModeTheme: () => void
-  togglePrivacyPolicy: () => void
-  themeMode: 'dark' | 'light'
+  getThemeModeQuery: {
+    app: {
+      themeMode: 'dark' | 'light'
+    }
+  }
+  toggleThemeModeMutation: () => Promise<any>
   fullscreenMode: boolean
-  openPrivacyPolicy: boolean
 }
