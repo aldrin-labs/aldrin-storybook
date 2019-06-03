@@ -2,9 +2,11 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Joyride from 'react-joyride'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { CorrelationMatrixMockData } from './mocks'
 import { CorrelationMatrix } from '@sb/components/index'
 import { IProps } from './Correlation.types'
@@ -20,16 +22,16 @@ import { CustomError } from '@sb/components/index'
 import { portfolioCorrelationSteps } from '@sb/config/joyrideSteps'
 import * as actions from '@core/redux/user/actions'
 import { MASTER_BUILD } from '@core/utils/config'
+import { getCorrelationPeriod } from '@core/graphql/queries/portfolio/correlation/getCorrelationPeriod'
+import { updateCorrelationPeriod } from '@core/graphql/mutations/portfolio/correlation/updateCorrelationPeriod'
 
 const Correlation = (props: IProps) => {
   const {
     children,
-    isFullscreenEnabled,
-    period,
-    setCorrelationPeriodToStore,
-    theme,
-    startDate,
-    endDate,
+    getCorrelationPeriodQuery: {
+      portfolioCorrelation: { startDate, endDate, period },
+    },
+    updateCorrelationPeriodMutation,
   } = props
 
   let dataRaw = {}
@@ -42,20 +44,29 @@ const Correlation = (props: IProps) => {
     const matrix = props.data.myPortfolios[0].correlationMatrixByDay
     dataRaw = testJSON(matrix) ? JSON.parse(matrix) : matrix
 
-    const dustFiltredCoinList = combineTableData(props.data.myPortfolios[0].portfolioAssets, props.dustFilter, true).map((el) => el.coin)
+    const dustFiltredCoinList = combineTableData(
+      props.data.myPortfolios[0].portfolioAssets,
+      props.dustFilter,
+      true
+    ).map((el) => el.coin)
 
     const processedHeadValues = dataRaw.header.map((el) => ({
       coin: el,
       isActive: dustFiltredCoinList.includes(el),
     }))
 
-    const filtredRealValues = dataRaw.values.filter((el, i) => processedHeadValues[i].isActive).map((arr) => arr.map((el, i) => processedHeadValues[i].isActive ? el : null).filter(el => +el)  )
+    const filtredRealValues = dataRaw.values
+      .filter((el, i) => processedHeadValues[i].isActive)
+      .map((arr) =>
+        arr
+          .map((el, i) => (processedHeadValues[i].isActive ? el : null))
+          .filter((el) => +el)
+      )
 
     dataRaw.values = filtredRealValues
-    dataRaw.header = processedHeadValues.filter((el) => el.isActive).map((el) => el.coin)
-
-
-
+    dataRaw.header = processedHeadValues
+      .filter((el) => el.isActive)
+      .map((el) => el.coin)
   } else {
     return <CustomError error={'wrongShape'} />
   }
@@ -64,11 +75,8 @@ const Correlation = (props: IProps) => {
     <>
       {children}
       <CorrelationMatrix
-        fullScreenChangeHandler={props.toggleFullscreen}
-        isFullscreenEnabled={isFullscreenEnabled || false}
         data={dataRaw}
-        theme={theme}
-        setCorrelationPeriod={setCorrelationPeriodToStore}
+        updateCorrelationPeriodMutation={updateCorrelationPeriodMutation}
         period={period}
         dates={{ startDate, endDate }}
       />
@@ -77,16 +85,15 @@ const Correlation = (props: IProps) => {
 }
 
 const CorrelationWrapper = (props: IProps) => {
-  const { isShownMocks, children, theme } = props
-  let { startDate, endDate } = props
+  const {
+    isShownMocks,
+    children,
+    theme,
+    getCorrelationPeriodQuery: {
+      portfolioCorrelation: { startDate, endDate },
+    },
+  } = props
   let key = 0
-
-  // startDate must be less always
-  //  but if somehow not I will swap them
-  if (startDate > endDate) {
-    startDate = swapDates({ startDate, endDate }).startDate
-    endDate = swapDates({ startDate, endDate }).endDate
-  }
 
   const handleJoyrideCallback = (data) => {
     if (
@@ -114,7 +121,6 @@ const CorrelationWrapper = (props: IProps) => {
               },
             ],
           }}
-          theme={theme}
           children={children}
           {...props}
         />
@@ -161,10 +167,6 @@ const PTWrapper = styled(PTWrapperRaw)`
 
 const mapStateToProps = (store: any) => ({
   isShownMocks: store.user.isShownMocks,
-  isFullscreenEnabled: store.portfolio.correlationTableFullscreenEnabled,
-  startDate: store.portfolio.correlationStartDate,
-  endDate: store.portfolio.correlationEndDate,
-  period: store.portfolio.correlationPeriod,
   toolTip: store.user.toolTip,
 })
 
@@ -175,9 +177,17 @@ const mapDispatchToProps = (dispatch: any) => ({
   hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
 })
 
-const storeComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  withTheme(),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  queryRendererHoc({
+    query: getCorrelationPeriod,
+    name: 'getCorrelationPeriodQuery',
+  }),
+  graphql(updateCorrelationPeriod, {
+    name: 'updateCorrelationPeriodMutation',
+  })
 )(CorrelationWrapper)
-
-export default withTheme()(storeComponent)

@@ -16,6 +16,7 @@ export type RawOptimizedData = {
 export interface IState {
   loading: boolean
   activeButton: number
+  optimizationData: any[]
   rawOptimizedData: RawOptimizedData
   openWarning: boolean
   warningMessage: string
@@ -28,10 +29,7 @@ export interface IState {
 export interface IProps {
   dustFilter: DustFilterType
   hideToolTip: (any: any) => void
-  storeData: IData[]
   isShownMocks: boolean
-  updateData: Function
-  filterValueSmallerThenPercentage: number
   baseCoin: string
   theme: Theme
 }

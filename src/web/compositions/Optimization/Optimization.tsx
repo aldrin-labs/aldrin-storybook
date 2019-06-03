@@ -59,6 +59,7 @@ import { DustFilterType } from '../../../../../core/src/types/PortfolioTypes'
 
 class Optimization extends Component<IProps, IState> {
   state: IState = {
+    optimizationData: [],
     loading: false,
     activeButton: 2,
     rawOptimizedData: [],
@@ -68,6 +69,12 @@ class Optimization extends Component<IProps, IState> {
     isSystemError: false,
     run: true,
     key: 0,
+  }
+
+  updateData = (updatedData: any): void => {
+    this.setState({
+      optimizationData: updatedData,
+    })
   }
 
   optimizedToState = (data: RawOptimizedData) => {
@@ -89,8 +96,8 @@ class Optimization extends Component<IProps, IState> {
       return accMap
     }, new Map())
 
-    this.props.updateData(
-      [...this.props.storeData].map((el) => ({
+    this.updateData(
+      [...this.state.optimizationData].map((el) => ({
         ...el,
         optimizedPercentageArray: optimizedCoinsWeightsMap.get(el.coin),
       }))
@@ -156,17 +163,16 @@ class Optimization extends Component<IProps, IState> {
     placeholderElement: string
   ) => {
     // importing stuff from backend or manually bu user
-    const { activeButton, rawOptimizedData } = this.state
+    const { activeButton, rawOptimizedData, optimizationData } = this.state
     const {
       isShownMocks,
-      updateData,
-      storeData,
       baseCoin,
       theme,
       tab,
       updateOptimizationCountOfRuns,
       dustFilter,
     } = this.props
+    const { updateData } = this
 
     return (
       <QueryRenderer
@@ -179,7 +185,7 @@ class Optimization extends Component<IProps, IState> {
         setActiveButtonToDefault={this.setActiveButtonToDefault}
         rawOptimizedData={rawOptimizedData}
         transformData={this.transformData}
-        storeData={storeData}
+        storeData={optimizationData}
         isShownMocks={isShownMocks}
         updateData={updateData}
         optimizedToState={this.optimizedToState}
@@ -199,10 +205,10 @@ class Optimization extends Component<IProps, IState> {
   }
 
   renderCharts = (showBlurOnSections: boolean, showCustomPlaceholder: boolean, placeholderElement: any) => {
-    const { activeButton, rawOptimizedData, showAllLineChartData } = this.state
-    const { storeData, theme } = this.props
+    const { activeButton, rawOptimizedData, showAllLineChartData, optimizationData } = this.state
+    const { theme } = this.props
 
-    if (!storeData) return
+    if (!optimizationData) return
 
     const arrayOfReturnedValues =
       rawOptimizedData && rawOptimizedData.map((el) => el.return_value)
@@ -393,12 +399,10 @@ class Optimization extends Component<IProps, IState> {
 
 const mapStateToProps = (store: any) => ({
   isShownMocks: store.user.isShownMocks,
-  storeData: store.portfolio.optimizationData,
   toolTip: store.user.toolTip,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  updateData: (data: any) => dispatch(actions.updateDataForOptimization(data)),
   hideToolTip: (tab: string) => dispatch(Useractions.hideToolTip(tab)),
 })
 const storeComponent = connect(
