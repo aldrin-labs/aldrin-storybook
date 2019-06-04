@@ -1,24 +1,37 @@
 import React from 'react'
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
 import { Link } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import LiveHelp from '@material-ui/icons/Help'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Tooltip from '@material-ui/core/Tooltip'
-import { connect } from 'react-redux'
-
-import * as userActions from '@core/redux/user/actions'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { tooltipsConfig } from '@core/config/tooltipsConfig'
 
 const UserLink = (props) => <Link to="/user" {...props} />
 
 const LoginMenuComponent = ({
   userName,
   handleLogout,
-  showToolTip,
+  updateTooltipSettingsMutation,
 }: any) => (
   <>
     <Tooltip title={'Show Tips'} enterDelay={250}>
-      <IconButton onClick={showToolTip} color="default" className="TipButton">
+      <IconButton
+        onClick={async () =>
+          updateTooltipSettingsMutation({
+            variables: {
+              settings: {
+                ...tooltipsConfig,
+              },
+            },
+          })
+        }
+        color="default"
+        className="TipButton"
+      >
         <LiveHelp />
       </IconButton>
     </Tooltip>
@@ -35,11 +48,6 @@ const LoginMenuComponent = ({
   </>
 )
 
-const mapDispatchToProps = (dispatch: any) => ({
-  showToolTip: () => dispatch(userActions.showToolTip()),
-})
-
-export const LoginMenu = connect(
-  null,
-  mapDispatchToProps
+export const LoginMenu = compose(
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
 )(LoginMenuComponent)

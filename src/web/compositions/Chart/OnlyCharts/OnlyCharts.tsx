@@ -22,46 +22,71 @@ import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
 import { GET_LAYOUTS } from '@core/graphql/queries/chart/getLayouts'
 import { ACTIVE_LAYOUT } from '@core/graphql/queries/chart/activeLayout'
 import { SAVE_LAYOUT } from '@core/graphql/mutations/chart/saveLayout'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
     const { mainPair, getCharts, addChartMutation } = this.props
-    const { multichart: { charts } } = getCharts
+    const {
+      multichart: { charts },
+    } = getCharts
     if (charts.length === 0) {
-      addChartMutation({ variables: {
-        chart: mainPair,
-      } })
+      addChartMutation({
+        variables: {
+          chart: mainPair,
+        },
+      })
     }
   }
 
-  handleJoyrideCallback = (data) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
     ) {
-      this.props.hideToolTip('multiChartPage')
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            multiChartPage: false,
+          },
+        },
+      })
     }
   }
 
   removeChart = (index) => {
-    this.props.removeChartMutation({variables: {
-      index: index,
-    }})
+    this.props.removeChartMutation({
+      variables: {
+        index: index,
+      },
+    })
   }
 
   saveLayout = (name: String) => {
     const {
-      getCharts: { multichart: { charts } },
+      getCharts: {
+        multichart: { charts },
+      },
       saveLayoutMutation,
     } = this.props
 
-    saveLayoutMutation({variables: {
-      name,
-      charts: charts,
-    }})
+    saveLayoutMutation({
+      variables: {
+        name,
+        charts: charts,
+      },
+    })
   }
 
   render() {
@@ -70,11 +95,15 @@ class OnlyCharts extends Component<IProps> {
       removeWarningMessage,
       theme,
       view,
-      demoMode,
-      getCharts: { multichart: { charts } },
-      activeLayout: { multichart: { activeLayout } },
+      getCharts: {
+        multichart: { charts },
+      },
+      activeLayout: {
+        multichart: { activeLayout },
+      },
       userId,
       themeMode,
+      getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
     return (
       <>
@@ -83,7 +112,7 @@ class OnlyCharts extends Component<IProps> {
           showSkipButton={true}
           continuous={true}
           steps={multiChartsSteps}
-          run={demoMode.multiChartPage}
+          run={getTooltipSettings.multiChartPage}
           callback={this.handleJoyrideCallback}
           styles={{
             options: {
@@ -183,16 +212,13 @@ const ChartContainer = styled.div`
 const mapStateToProps = (store: any) => ({
   charts: store.chart.charts,
   currencyPair: store.chart.currencyPair,
-  isShownMocks: store.user.isShownMocks,
   openedWarning: store.chart.warningMessageOpened,
-  demoMode: store.user.toolTip,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
   removeChart: (i: number) => dispatch(actions.removeChart(i)),
   addChart: (baseQuote: string) => dispatch(actions.addChart(baseQuote)),
   removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
-  hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 
 export default compose(
@@ -208,11 +234,20 @@ export default compose(
     withTableLoader: false,
     name: 'getCharts',
   }),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
   graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
   withErrorFallback
-)(connect(
+)(
+  connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OnlyCharts))
+  )(OnlyCharts)
+)

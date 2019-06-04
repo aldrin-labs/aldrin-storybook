@@ -26,6 +26,7 @@ import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import {
   updateTradeHistoryQuerryFunction,
@@ -62,6 +63,8 @@ import { MASTER_BUILD } from '@core/utils/config'
 
 import DefaultView from './DefaultView/StatusWrapper'
 import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 
 @withTheme()
 class Chart extends React.Component<IProps, IState> {
@@ -134,13 +137,25 @@ class Chart extends React.Component<IProps, IState> {
     }
   }
 
-  handleJoyrideCallback = (data: any) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
     ) {
-      this.props.hideToolTip('chartPage')
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            chartPage: false,
+          },
+        },
+      })
     }
   }
 
@@ -153,7 +168,11 @@ class Chart extends React.Component<IProps, IState> {
       quote = currencyPair.split('_')[1]
     }
 
-    const { activeExchange, theme, demoMode } = this.props
+    const {
+      activeExchange,
+      theme,
+      getTooltipSettingsQuery: { getTooltipSettings },
+    } = this.props
 
     const symbol = currencyPair || ''
     const exchange = activeExchange.symbol
@@ -165,7 +184,7 @@ class Chart extends React.Component<IProps, IState> {
           showSkipButton={true}
           continuous={true}
           steps={singleChartSteps}
-          run={this.state.joyride && demoMode.chartPage}
+          run={this.state.joyride && getTooltipSettings.chartPage}
           callback={this.handleJoyrideCallback}
           styles={{
             options: {
@@ -188,36 +207,36 @@ class Chart extends React.Component<IProps, IState> {
         >
           {/*{MASTER_BUILD && <ComingSoon />}*/}
           {/*<QueryRenderer*/}
-            {/*component={OrderBookTable}*/}
-            {/*withOutSpinner*/}
-            {/*query={ORDERS_MARKET_QUERY}*/}
-            {/*fetchPolicy="network-only"*/}
-            {/*variables={{ symbol, exchange }}*/}
-            {/*subscriptionArgs={{*/}
-              {/*subscription: MARKET_ORDERS,*/}
-              {/*variables: { symbol, exchange },*/}
-              {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
-            {/*}}*/}
-            {/*{...{*/}
-              {/*quote,*/}
-              {/*symbol,*/}
-              {/*activeExchange,*/}
-              {/*currencyPair,*/}
-              {/*aggregation,*/}
-              {/*onButtonClick: this.changeTable,*/}
-              {/*setOrders: this.props.setOrders,*/}
-              {/*...this.props,*/}
-              {/*key: 'orderbook_table_query_render',*/}
-            {/*}}*/}
+          {/*component={OrderBookTable}*/}
+          {/*withOutSpinner*/}
+          {/*query={ORDERS_MARKET_QUERY}*/}
+          {/*fetchPolicy="network-only"*/}
+          {/*variables={{ symbol, exchange }}*/}
+          {/*subscriptionArgs={{*/}
+          {/*subscription: MARKET_ORDERS,*/}
+          {/*variables: { symbol, exchange },*/}
+          {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
+          {/*}}*/}
+          {/*{...{*/}
+          {/*quote,*/}
+          {/*symbol,*/}
+          {/*activeExchange,*/}
+          {/*currencyPair,*/}
+          {/*aggregation,*/}
+          {/*onButtonClick: this.changeTable,*/}
+          {/*setOrders: this.props.setOrders,*/}
+          {/*...this.props,*/}
+          {/*key: 'orderbook_table_query_render',*/}
+          {/*}}*/}
           {/*/>*/}
 
           {/*<Aggregation*/}
-            {/*{...{*/}
-              {/*theme,*/}
-              {/*aggregation: this.state.aggregation,*/}
-              {/*onButtonClick: this.setAggregation,*/}
-              {/*key: 'aggregation_component',*/}
-            {/*}}*/}
+          {/*{...{*/}
+          {/*theme,*/}
+          {/*aggregation: this.state.aggregation,*/}
+          {/*onButtonClick: this.setAggregation,*/}
+          {/*key: 'aggregation_component',*/}
+          {/*}}*/}
           {/*/>*/}
         </TablesBlockWrapper>
 
@@ -370,12 +389,16 @@ class Chart extends React.Component<IProps, IState> {
         getMyProfile: { _id },
       },
       activeExchange,
-      getSelectedKeyQuery : { chart : { selectedKey }},
+      getSelectedKeyQuery: {
+        chart: { selectedKey },
+      },
       getThemeModeQuery,
     } = this.props
 
-    const themeMode = getThemeModeQuery && getThemeModeQuery.app && getThemeModeQuery.app.themeMode
-
+    const themeMode =
+      getThemeModeQuery &&
+      getThemeModeQuery.app &&
+      getThemeModeQuery.app.themeMode
 
     if (!currencyPair) {
       return
@@ -398,7 +421,7 @@ class Chart extends React.Component<IProps, IState> {
             </Grid>
           </TogglerContainer>
         )}
-        {view === 'default' &&
+        {view === 'default' && (
           <DefaultView
             selectedKey={selectedKey}
             currencyPair={currencyPair}
@@ -410,7 +433,7 @@ class Chart extends React.Component<IProps, IState> {
             renderTables={this.renderTables}
             MASTER_BUILD={MASTER_BUILD}
           />
-        }
+        )}
         {view === 'onlyCharts' && this.renderOnlyCharts()}
       </MainContainer>
     )
@@ -418,7 +441,6 @@ class Chart extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (store: any) => ({
-  demoMode: store.user.toolTip,
   activeExchange: store.chart.activeExchange,
   view: store.chart.view,
   currencyPair: store.chart.currencyPair,
@@ -429,7 +451,6 @@ const mapDispatchToProps = (dispatch: any) => ({
   toggleView: (view: 'default' | 'onlyCharts') =>
     dispatch(actions.toggleView(view)),
   setOrders: (payload: any) => dispatch(actions.setOrders(payload)),
-  hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
 })
 
 export default withAuth(
@@ -454,6 +475,11 @@ export default withAuth(
       query: GET_THEME_MODE,
       name: 'getThemeModeQuery',
     }),
+    queryRendererHoc({
+      query: GET_TOOLTIP_SETTINGS,
+      name: 'getTooltipSettingsQuery',
+    }),
+    graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(
     withErrorFallback(

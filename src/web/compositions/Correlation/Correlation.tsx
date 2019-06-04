@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Joyride from 'react-joyride'
 import { compose } from 'recompose'
@@ -11,15 +10,18 @@ import { CorrelationMatrixMockData } from './mocks'
 import { CorrelationMatrix } from '@sb/components/index'
 import { IProps } from './Correlation.types'
 import { getCorrelationAndPortfolioAssetsQuery } from '@core/graphql/queries/portfolio/correlation/getCorrelationAndPortfolioAssetsQuery'
-import { combineTableData, swapDates } from '@core/utils/PortfolioTableUtils'
+import { combineTableData } from '@core/utils/PortfolioTableUtils'
 import { PTWrapper as PTWrapperRaw } from '@sb/styles/cssUtils'
 import { testJSON } from '@core/utils/chartPageUtils'
 import { CustomError } from '@sb/components/index'
 import { portfolioCorrelationSteps } from '@sb/config/joyrideSteps'
-import * as actions from '@core/redux/user/actions'
 import { MASTER_BUILD } from '@core/utils/config'
 import { getCorrelationPeriod } from '@core/graphql/queries/portfolio/correlation/getCorrelationPeriod'
 import { updateCorrelationPeriod } from '@core/graphql/mutations/portfolio/correlation/updateCorrelationPeriod'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { GET_MOCKS_MODE } from '@core/graphql/queries/app/getMocksMode'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 const Correlation = (props: IProps) => {
   const {
@@ -28,21 +30,23 @@ const Correlation = (props: IProps) => {
       portfolioCorrelation: { startDate, endDate, period },
     },
     updateCorrelationPeriodMutation,
+    getCorrelationAndPortfolioAssetsQuery,
+    dustFilter,
   } = props
 
   let dataRaw = {}
   if (
-    props.data.myPortfolios &&
-    props.data.myPortfolios.length > 0 &&
-    typeof props.data.myPortfolios[0].correlationMatrixByDay === 'string' &&
-    props.data.myPortfolios[0].correlationMatrixByDay.length > 0
+    getCorrelationAndPortfolioAssetsQuery.myPortfolios &&
+    getCorrelationAndPortfolioAssetsQuery.myPortfolios.length > 0 &&
+    typeof getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay === 'string' &&
+    getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay.length > 0
   ) {
-    const matrix = props.data.myPortfolios[0].correlationMatrixByDay
+    const matrix = getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay
     dataRaw = testJSON(matrix) ? JSON.parse(matrix) : matrix
 
     const dustFiltredCoinList = combineTableData(
-      props.data.myPortfolios[0].portfolioAssets,
-      props.dustFilter,
+      getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].portfolioAssets,
+      dustFilter,
       true
     ).map((el) => el.coin)
 
@@ -82,22 +86,37 @@ const Correlation = (props: IProps) => {
 
 const CorrelationWrapper = (props: IProps) => {
   const {
-    isShownMocks,
     children,
     theme,
     getCorrelationPeriodQuery: {
       portfolioCorrelation: { startDate, endDate },
     },
+    getTooltipSettingsQuery: { getTooltipSettings },
+    updateTooltipSettingsMutation,
+    getMocksModeQuery: {
+      app: {
+        mocksEnabled,
+      },
+    },
   } = props
   let key = 0
 
-  const handleJoyrideCallback = (data) => {
+  const handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
-    )
-      props.hideToolTip('Correlation')
+    ) {
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            portfolioCorrelation: false,
+          },
+        },
+      })
+    }
+
     if (data.status === 'finished') {
       key = key + 1
     }
@@ -105,7 +124,7 @@ const CorrelationWrapper = (props: IProps) => {
 
   return (
     <PTWrapper>
-      {isShownMocks && !MASTER_BUILD ? (
+      {mocksEnabled && !MASTER_BUILD ? (
         <Correlation
           key="=/"
           data={{
@@ -126,6 +145,7 @@ const CorrelationWrapper = (props: IProps) => {
           fetchPolicy="network-only"
           component={Correlation}
           query={getCorrelationAndPortfolioAssetsQuery}
+          name={`getCorrelationAndPortfolioAssetsQuery`}
           variables={{
             startDate,
             endDate,
@@ -136,7 +156,7 @@ const CorrelationWrapper = (props: IProps) => {
 
       <Joyride
         steps={portfolioCorrelationSteps}
-        run={props.toolTip.portfolioCorrelation}
+        run={getTooltipSettings.portfolioCorrelation}
         callback={handleJoyrideCallback}
         key={key}
         styles={{
@@ -161,28 +181,21 @@ const PTWrapper = styled(PTWrapperRaw)`
   width: 98%;
 `
 
-const mapStateToProps = (store: any) => ({
-  isShownMocks: store.user.isShownMocks,
-  toolTip: store.user.toolTip,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  toggleFullscreen: (data: any) => dispatch(toggleCorrelationTableFullscreen()),
-  setCorrelationPeriodToStore: (payload: object) =>
-    dispatch(setCorrelationPeriodAction(payload)),
-  hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
-})
-
 export default compose(
   withTheme(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
   queryRendererHoc({
     query: getCorrelationPeriod,
     name: 'getCorrelationPeriodQuery',
   }),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  queryRendererHoc({
+    query: GET_MOCKS_MODE,
+    name: 'getMocksModeQuery',
+  }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
   graphql(updateCorrelationPeriod, {
     name: 'updateCorrelationPeriodMutation',
   })

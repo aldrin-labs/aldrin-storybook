@@ -1,6 +1,6 @@
 import { Theme } from '@material-ui/core'
 
-import { IData, DustFilterType } from '@core/types/PortfolioTypes'
+import { IData, DustFilterType, TooltipsType } from '@core/types/PortfolioTypes'
 
 export type RawOptimizedData = {
   backtest_results: [number, number]
@@ -28,8 +28,19 @@ export interface IState {
 
 export interface IProps {
   dustFilter: DustFilterType
-  hideToolTip: (any: any) => void
-  isShownMocks: boolean
   baseCoin: string
   theme: Theme
+  updateTooltipSettingsMutation: ({
+    variables: { settings },
+  }: {
+    variables: { settings: TooltipsType }
+  }) => Promise<any>
+  getTooltipSettingsQuery: {
+    getTooltipSettings: TooltipsType
+  }
+  getMocksModeQuery: {
+    app: {
+      mocksEnabled: boolean
+    }
+  }
 }

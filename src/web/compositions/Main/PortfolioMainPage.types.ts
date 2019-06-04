@@ -1,4 +1,5 @@
 import { Theme } from '@material-ui/core'
+import { TooltipsType } from '@core/types/PortfolioTypes'
 
 export interface IState {
   key: number
@@ -6,14 +7,13 @@ export interface IState {
 
 export interface IProps {
   theme: Theme
-  isShownMocks: boolean
   dustFilter: number
-  toolTip: {
-    portfolioMain: boolean
-    portfolioIndustry: boolean
-    portfolioRebalance: boolean
-    portfolioCorrelation: boolean
-    portfolioOptimization: boolean
+  updateTooltipSettingsMutation: ({
+    variables: { settings },
+  }: {
+    variables: { settings: TooltipsType }
+  }) => Promise<any>
+  getTooltipSettingsQuery: {
+    getTooltipSettings: TooltipsType
   }
-  hideToolTip: (tab: string) => void
 }

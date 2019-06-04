@@ -1,12 +1,17 @@
-import { IExchange, IGetCharts, IGetMyProfile, Key } from '@core/types/ChartTypes'
+import {
+  IExchange,
+  IGetCharts,
+  IGetMyProfile,
+  Key,
+} from '@core/types/ChartTypes'
 import { ITooltipType } from '@core/types/UserTypes'
+import { TooltipsType } from '@core/types/PortfolioTypes'
 
 export interface IProps {
   isNoCharts: boolean
   activeExchange: IExchange
   view: string
   currencyPair: string
-  isShownMocks: boolean
   showTableOnMobile: string
   selectExchange: Function
   toggleView: Function
@@ -24,6 +29,14 @@ export interface IProps {
     chart: {
       selectedKey: Key
     }
+  }
+  updateTooltipSettingsMutation: ({
+    variables: { settings },
+  }: {
+    variables: { settings: TooltipsType }
+  }) => Promise<any>
+  getTooltipSettingsQuery: {
+    getTooltipSettings: TooltipsType
   }
 }
 

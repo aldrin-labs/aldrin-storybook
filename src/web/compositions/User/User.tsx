@@ -27,7 +27,7 @@ import {
 } from './components'
 import { IProps, IState } from './User.types'
 import { GET_MOCKS_MODE } from '@core/graphql/queries/app/getMocksMode'
-import { toggleMocks } from '@core/graphql/mutations/app/toggleMocks'
+import { TOGGLE_MOCKS } from '@core/graphql/mutations/app/toggleMocks'
 
 class UserContainer extends React.Component<IProps, IState> {
   state: IState = {
@@ -122,7 +122,7 @@ const UserWrap = styled.div`
 `
 
 export const User = compose(
-  graphql(toggleMocks, {
+  graphql(TOGGLE_MOCKS, {
     name: 'toggleMocksMutation',
   }),
   queryRendererHoc({
