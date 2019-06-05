@@ -16,6 +16,8 @@ import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import { IProps, IState } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 
 type T = { value: string; data: string }
 
@@ -35,14 +37,16 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
     this.setState({ isClosed: true })
   }
 
-  handleChange = ({ value }) => {
+  handleChange = async ({ value }) => {
     const {
-      selectCurrencies,
       getCharts,
-      view,
+      getViewModeQuery: {
+        chart: { view },
+      },
       openWarningMessage,
       removeWarningMessage,
       addChartMutation,
+      changeCurrencyPairMutation,
     } = this.props
     const {
       multichart: { charts },
@@ -53,12 +57,17 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
     }
 
     if (view === 'default') {
-      selectCurrencies(value)
+      await changeCurrencyPairMutation({
+        variables: {
+          pairInput: {
+            pair: value,
+          },
+        },
+      })
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
-      //TODO: I guess we should await the addChartMutation function
-      addChartMutation({
+      await addChartMutation({
         variables: {
           chart: value,
         },
@@ -74,7 +83,9 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
   }
   render() {
     const {
-      view,
+      getViewModeQuery: {
+        chart: { view },
+      },
       value,
       data,
       theme: {
@@ -140,27 +151,29 @@ const queryRender = (props: IProps) => (
   />
 )
 
-const mapStateToProps = (store: any) => ({
-  view: store.chart.view,
-})
 
 const mapDispatchToProps = (dispatch: any) => ({
   openWarningMessage: () => dispatch(actions.openWarningMessage()),
   removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
-  selectCurrencies: (baseQuote: string) =>
-    dispatch(actions.selectCurrencies(baseQuote)),
 })
 
 export default compose(
+  queryRendererHoc({
+    query: GET_VIEW_MODE,
+    name: 'getViewModeQuery',
+  }),
   queryRendererHoc({
     query: GET_CHARTS,
     withOutSpinner: false,
     withTableLoader: false,
     name: 'getCharts',
   }),
+  graphql(CHANGE_CURRENCY_PAIR, {
+    name: 'changeCurrencyPairMutation',
+  }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
   )
 )(queryRender)

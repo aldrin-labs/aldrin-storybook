@@ -86,8 +86,5 @@ const PopUp = ({ classes }: { classes: any }) => {
   )
 }
 
-const mapStateToProps = (store: any) => ({
-  chartPageView: store.chart.view,
-})
 
-export default withStyles(styles)(connect(mapStateToProps)(PopUp))
+export default withStyles(styles)(PopUp)

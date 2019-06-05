@@ -148,7 +148,6 @@ class OnlyCharts extends Component<IProps> {
                   removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
-                  {/* TODO: Check this currencyPair={chart} */}
                   currencyPair={chart}
                   userId={userId}
                   themeMode={themeMode}

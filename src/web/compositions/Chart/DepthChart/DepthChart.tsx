@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { withTheme } from '@material-ui/styles'
 import MdAddCircleOutline from '@material-ui/icons/AddOutlined'
 import MdRemoveCircleOutline from '@material-ui/icons/RemoveOutlined'
 import {
@@ -23,6 +24,7 @@ import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import { IDepthChartProps, IDepthChartState } from './DepthChart.types'
 import ComingSoon from '@sb/components/ComingSoon'
 
+@withTheme()
 class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
   state = {
     // must be calculated

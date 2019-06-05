@@ -69,6 +69,7 @@ import { updateTooltipSettings } from '@core/graphql/mutations/user/updateToolti
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { GET_CURRENCY_PAIR } from '@core/graphql/queries/chart/getCurrencyPair'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
 @withTheme()
 class Chart extends React.Component<IProps, IState> {
@@ -83,7 +84,7 @@ class Chart extends React.Component<IProps, IState> {
     const {
       getCurrencyPairQuery: {
         chart: {
-          currecyPair: { pair },
+          currencyPair: { pair },
         },
       },
     } = nextProps
@@ -175,7 +176,7 @@ class Chart extends React.Component<IProps, IState> {
     const {
       getCurrencyPairQuery: {
         chart: {
-          currecyPair: { pair },
+          currencyPair: { pair },
         },
       },
     } = this.props
@@ -293,14 +294,18 @@ class Chart extends React.Component<IProps, IState> {
       getMyProfile: {
         getMyProfile: { _id },
       },
+      theme,
       themeMode,
       getCurrencyPairQuery: {
         chart: {
-          currecyPair: { pair },
+          currencyPair: { pair },
         },
       },
-      theme,
-      view,
+      getViewModeQuery: {
+        chart: {
+          view,
+        },
+      },
     } = this.props
 
     return (
@@ -319,11 +324,14 @@ class Chart extends React.Component<IProps, IState> {
   renderToggler = () => {
     const {
       toggleView,
-      view,
-      // currencyPair,
+      getViewModeQuery: {
+        chart: {
+          view,
+        },
+      },
       getCurrencyPairQuery: {
         chart: {
-          currecyPair: { pair },
+          currencyPair: { pair },
         },
       },
       getCharts: {
@@ -362,18 +370,21 @@ class Chart extends React.Component<IProps, IState> {
 
   renderTogglerBody = () => {
     const {
-      view,
       getCurrencyPairQuery: {
         chart: {
-          currecyPair: { pair },
+          currencyPair: { pair },
         },
       },
-      // currencyPair,
       getActiveExchangeQuery: {
         chart: { activeExchange },
       },
       getMyProfile: {
         getMyProfile: { _id },
+      },
+      getViewModeQuery: {
+        chart: {
+          view,
+        },
       },
       themeMode,
       changeActiveExchangeMutation,
@@ -422,7 +433,6 @@ class Chart extends React.Component<IProps, IState> {
 
   render() {
     const {
-      view,
       getMyProfile: {
         getMyProfile: { _id },
       },
@@ -435,7 +445,12 @@ class Chart extends React.Component<IProps, IState> {
       },
       getCurrencyPairQuery: {
         chart: {
-          currecyPair: { pair },
+          currencyPair: { pair },
+        },
+      },
+      getViewModeQuery: {
+        chart: {
+          view,
         },
       },
     } = this.props
@@ -486,7 +501,6 @@ class Chart extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (store: any) => ({
-  view: store.chart.view,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -528,6 +542,10 @@ export default withAuth(
     queryRendererHoc({
       query: GET_CURRENCY_PAIR,
       name: 'getCurrencyPairQuery',
+    }),
+    queryRendererHoc({
+      query: GET_VIEW_MODE,
+      name: 'getViewModeQuery',
     }),
     graphql(CHANGE_CURRENCY_PAIR, {
       name: 'changeCurrencyPairMutation',
