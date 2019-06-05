@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
@@ -9,7 +8,6 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
-// import * as actions from '@core/redux/chart/actions'
 
 import { Loading } from '@sb/components/Loading/Loading'
 import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'

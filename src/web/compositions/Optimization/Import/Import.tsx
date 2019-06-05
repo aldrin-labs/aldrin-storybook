@@ -361,7 +361,7 @@ export default class Import extends PureComponent<IProps> {
 
   render() {
     const {
-      storeData, // data from redux (data from portfolio and mannualy added)
+      storeData,
       onNewBtnClick,
       activeButton,
       theme,
