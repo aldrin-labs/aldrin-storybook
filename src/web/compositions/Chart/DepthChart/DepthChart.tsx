@@ -172,6 +172,9 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       xAxisTickTotal,
       theme,
     } = this.props
+
+    console.log('theme', theme);
+
     const { palette } = theme
     const axisStyle = {
       ticks: {

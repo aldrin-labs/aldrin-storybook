@@ -28,6 +28,8 @@ import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_ACTIVE_EXCHANGE } from '@core/graphql/queries/chart/getActiveExchange'
 import { CHANGE_ACTIVE_EXCHANGE } from '@core/graphql/mutations/chart/changeActiveExchange'
+import { CHANGE_VIEW_MODE } from '@core/graphql/mutations/chart/changeViewMode'
+
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import {
@@ -302,9 +304,7 @@ class Chart extends React.Component<IProps, IState> {
         },
       },
       getViewModeQuery: {
-        chart: {
-          view,
-        },
+        chart: { view },
       },
     } = this.props
 
@@ -323,11 +323,9 @@ class Chart extends React.Component<IProps, IState> {
 
   renderToggler = () => {
     const {
-      toggleView,
+      changeViewModeMutation,
       getViewModeQuery: {
-        chart: {
-          view,
-        },
+        chart: { view },
       },
       getCurrencyPairQuery: {
         chart: {
@@ -359,7 +357,12 @@ class Chart extends React.Component<IProps, IState> {
                 },
               })
             }
-            toggleView(defaultView ? 'onlyCharts' : 'default')
+
+            await changeViewModeMutation({
+              variables: {
+                view: defaultView ? 'onlyCharts' : 'default',
+              },
+            })
           }}
         >
           {defaultView ? 'Multi Charts' : ' Single Chart'}
@@ -382,9 +385,7 @@ class Chart extends React.Component<IProps, IState> {
         getMyProfile: { _id },
       },
       getViewModeQuery: {
-        chart: {
-          view,
-        },
+        chart: { view },
       },
       themeMode,
       changeActiveExchangeMutation,
@@ -449,10 +450,9 @@ class Chart extends React.Component<IProps, IState> {
         },
       },
       getViewModeQuery: {
-        chart: {
-          view,
-        },
+        chart: { view },
       },
+      theme,
     } = this.props
 
     const themeMode =
@@ -500,12 +500,7 @@ class Chart extends React.Component<IProps, IState> {
   }
 }
 
-const mapStateToProps = (store: any) => ({
-})
-
 const mapDispatchToProps = (dispatch: any) => ({
-  // toggleView: (view: 'default' | 'onlyCharts') =>
-  //   dispatch(actions.toggleView(view)),
   setOrders: (payload: any) => dispatch(actions.setOrders(payload)),
 })
 
@@ -552,6 +547,9 @@ export default withAuth(
     }),
     graphql(CHANGE_ACTIVE_EXCHANGE, {
       name: 'changeActiveExchangeMutation',
+    }),
+    graphql(CHANGE_VIEW_MODE, {
+      name: 'changeViewModeMutation',
     }),
     graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
     graphql(ADD_CHART, { name: 'addChartMutation' })

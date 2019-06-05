@@ -59,7 +59,6 @@ export const DefaultView = (props) => {
             <DepthChartContainer data-e2e="mainDepthChart">
               <MainDepthChart
                 {...{
-                  theme,
                   base,
                   quote,
                   animated: false,
