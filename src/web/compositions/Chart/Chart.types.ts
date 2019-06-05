@@ -13,7 +13,6 @@ export interface IProps {
   currencyPair: string
   showTableOnMobile: string
   selectCurrencies: Function
-  setOrders: Function
   theme: any
   themeMode: 'dark' | 'light'
   getMyProfile: IGetMyProfile

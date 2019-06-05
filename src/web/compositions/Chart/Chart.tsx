@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { setTimeout } from 'timers'
@@ -500,10 +499,6 @@ class Chart extends React.Component<IProps, IState> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  setOrders: (payload: any) => dispatch(actions.setOrders(payload)),
-})
-
 export default withAuth(
   compose(
     queryRendererHoc({
@@ -553,12 +548,5 @@ export default withAuth(
     }),
     graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
-  )(
-    withErrorFallback(
-      connect(
-        mapStateToProps,
-        mapDispatchToProps
-      )(Chart)
-    )
-  )
+  )(withErrorFallback(Chart))
 )

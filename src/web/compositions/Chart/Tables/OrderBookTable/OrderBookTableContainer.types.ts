@@ -8,7 +8,6 @@ export interface IProps {
   digitsAfterDecimalForAsksSize: number
   digitsAfterDecimalForBidsPrice: number
   digitsAfterDecimalForBidsSize: number
-  setOrders: Function
   data: { marketOrders: any[] }
 }
 
