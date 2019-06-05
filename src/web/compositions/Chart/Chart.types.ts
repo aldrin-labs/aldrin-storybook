@@ -4,10 +4,9 @@ import {
   IGetMyProfile,
   Key,
 } from '@core/types/ChartTypes'
-import { ITooltipType } from '@core/types/UserTypes'
-import { TooltipsType } from '@core/types/PortfolioTypes'
+import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 
-export interface IProps {
+export interface IProps extends TooltipQueryType, TooltipMutationType {
   isNoCharts: boolean
   view: string
   currencyPair: string
@@ -19,19 +18,10 @@ export interface IProps {
   getCharts: IGetCharts
   addChartMutation: (queryObject: any) => Promise<any>
   hideToolTip: (tab: string) => any
-  demoMode: ITooltipType
   getSelectedKeyQuery: {
     chart: {
       selectedKey: Key
     }
-  }
-  updateTooltipSettingsMutation: ({
-    variables: { settings },
-  }: {
-    variables: { settings: TooltipsType }
-  }) => Promise<any>
-  getTooltipSettingsQuery: {
-    getTooltipSettings: TooltipsType
   }
   changeActiveExchangeMutation: ({
     variables: exchange,
@@ -43,7 +33,6 @@ export interface IProps {
 export interface IState {
   view: string
   orders: []
-  // exchangeTableCollapsed: boolean
   aggregation: number
   showTableOnMobile: string
   activeChart: string
