@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { flattenDeep } from 'lodash'
 import { History } from 'history'
@@ -7,7 +6,6 @@ import { withTheme } from '@material-ui/styles'
 import { Theme } from '@material-ui/core'
 import { withRouter } from 'react-router-dom'
 
-import * as actions from '@core/redux/chart/actions'
 import {
   default as QueryRenderer,
   queryRendererHoc,
@@ -32,12 +30,22 @@ import {
   CoinSymbolContainer,
   CoinMarketCapLink,
 } from './styles'
+import { graphql } from 'react-apollo'
+import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
+import { GET_ACTIVE_EXCHANGE } from '@core/graphql/queries/chart/getActiveExchange'
 
 interface Props {
   data: CoinMarketCapQueryQuery
   history: History
   location: Location
   theme: Theme
+  changeCurrencyPairMutation: ({
+    variables: {
+      pairInput: { pair },
+    },
+  }: {
+    variables: { pairInput: { pair: string } }
+  }) => Promise<any>
 }
 
 interface State {
@@ -59,7 +67,6 @@ export const rates = [
 
 @withRouter
 @withTheme()
-
 export class CoinMarket extends React.Component<Props, State> {
   state: State = {
     activeSortArg: null,
@@ -100,8 +107,14 @@ export class CoinMarket extends React.Component<Props, State> {
     this.setState({ activeSortArg: index })
   }
 
-  handleSymbolClick = (currencyPair: string): void => {
-    this.props.selectCurrencies(currencyPair)
+  handleSymbolClick = async (currencyPair: string): void => {
+    await this.props.changeCurrencyPairMutation({
+      variables: {
+        pairInput: {
+          pair: currencyPair,
+        },
+      },
+    })
     this.props.history.push('/chart')
   }
 
@@ -137,9 +150,7 @@ export class CoinMarket extends React.Component<Props, State> {
     }
 
     return (
-      <CoinMarketCapLink isSupported={isSupported}>
-        {content}
-      </CoinMarketCapLink>
+      <CoinMarketCapLink isSupported={isSupported}>{content}</CoinMarketCapLink>
     )
   }
 
@@ -186,22 +197,27 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PriceUSD: {
             contentToSort: value.price_usd || 0,
-            contentToCSV: typeof value.price_usd === 'number'
-              ? formatNumberToUSFormat(marketPriceRound(value.price_usd))
-              : '?',
-            render: this.wrapWithLinkToChartPage(addMainSymbol(
+            contentToCSV:
               typeof value.price_usd === 'number'
                 ? formatNumberToUSFormat(marketPriceRound(value.price_usd))
                 : '?',
-              true
-            ), value.symbol),
+            render: this.wrapWithLinkToChartPage(
+              addMainSymbol(
+                typeof value.price_usd === 'number'
+                  ? formatNumberToUSFormat(marketPriceRound(value.price_usd))
+                  : '?',
+                true
+              ),
+              value.symbol
+            ),
             isNumber: true,
           },
           PriceBTC: {
             contentToSort: value.price_btc || 0,
-            contentToCSV: typeof value.price_btc === 'number'
-              ? roundAndFormatNumber(value.price_btc, 8)
-              : '?',
+            contentToCSV:
+              typeof value.price_btc === 'number'
+                ? roundAndFormatNumber(value.price_btc, 8)
+                : '?',
             render: addMainSymbol(
               typeof value.price_btc === 'number'
                 ? roundAndFormatNumber(value.price_btc, 8)
@@ -234,19 +250,23 @@ export class CoinMarket extends React.Component<Props, State> {
           Volume24h: {
             contentToSort: value.volume_usd_24h || 0,
             contentToCSV: value.volume_usd_24h || 0,
-            render: this.wrapWithLinkToChartPage(addMainSymbol(
-              typeof value.volume_usd_24h === 'number'
-                ? roundAndFormatNumber(value.volume_usd_24h, 2)
-                : '?',
-              true
-            ), value.symbol),
+            render: this.wrapWithLinkToChartPage(
+              addMainSymbol(
+                typeof value.volume_usd_24h === 'number'
+                  ? roundAndFormatNumber(value.volume_usd_24h, 2)
+                  : '?',
+                true
+              ),
+              value.symbol
+            ),
             isNumber: true,
           },
           PercentChange1h: {
             contentToSort: value.percent_change_1h || 0,
-            contentToCSV: typeof value.percent_change_1h === 'number'
-              ? formatNumberToUSFormat(value.percent_change_1h)
-              : '?',
+            contentToCSV:
+              typeof value.percent_change_1h === 'number'
+                ? formatNumberToUSFormat(value.percent_change_1h)
+                : '?',
             render: `${
               typeof value.percent_change_1h === 'number'
                 ? formatNumberToUSFormat(value.percent_change_1h)
@@ -262,9 +282,10 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PercentChange24h: {
             contentToSort: value.percent_change_24h || 0,
-            contentToCSV: typeof value.percent_change_24h === 'number'
-              ? formatNumberToUSFormat(value.percent_change_24h || 0)
-              : '?',
+            contentToCSV:
+              typeof value.percent_change_24h === 'number'
+                ? formatNumberToUSFormat(value.percent_change_24h || 0)
+                : '?',
             render: `${
               typeof value.percent_change_24h === 'number'
                 ? formatNumberToUSFormat(value.percent_change_24h || 0)
@@ -280,9 +301,10 @@ export class CoinMarket extends React.Component<Props, State> {
           },
           PercentChange7d: {
             contentToSort: value.percent_change_7d || 0,
-            contentToCSV: typeof value.percent_change_7d === 'number'
-              ? formatNumberToUSFormat(value.percent_change_7d || 0)
-              : '?',
+            contentToCSV:
+              typeof value.percent_change_7d === 'number'
+                ? formatNumberToUSFormat(value.percent_change_7d || 0)
+                : '?',
             render: `${
               typeof value.percent_change_7d === 'number'
                 ? formatNumberToUSFormat(value.percent_change_7d || 0)
@@ -349,6 +371,12 @@ const options = ({ location }) => {
 // this is what actually you see at /market route
 
 const queryRender = (props: any) => {
+  const {
+    getActiveExchangeQuery: {
+      chart: { activeExchange },
+    },
+  } = props
+
   return (
     <QueryRenderer
       component={CoinMarket}
@@ -356,34 +384,29 @@ const queryRender = (props: any) => {
       query={MARKETS_BY_EXCHANE_QUERY}
       variables={{
         splitter: '_',
-        exchange: props.activeExchange.symbol,
+        exchange: activeExchange.symbol,
       }}
       {...props}
     />
   )
 }
 
-const mapStateToProps = (store: any) => ({
-  activeExchange: store.chart.activeExchange,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  selectCurrencies: (baseQuote: string) =>
-    dispatch(actions.selectCurrencies(baseQuote)),
-})
-
 export const MyCoinMarket = withAuth(
   compose(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    ),
-  queryRendererHoc({
-    query: marketsQuery,
-    pollInterval: 30 * 1000,
-    fetchPolicy: 'network-only',
-    variables: options(location),
-  }))(queryRender)
+    graphql(CHANGE_CURRENCY_PAIR, {
+      name: 'changeCurrencyPairMutation',
+    }),
+    queryRendererHoc({
+      query: GET_ACTIVE_EXCHANGE,
+      name: 'getActiveExchangeQuery',
+    }),
+    queryRendererHoc({
+      query: marketsQuery,
+      pollInterval: 30 * 1000,
+      fetchPolicy: 'network-only',
+      variables: options(location),
+    })
+  )(queryRender)
 )
 
 export default MyCoinMarket

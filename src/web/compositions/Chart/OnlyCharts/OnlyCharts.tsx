@@ -7,7 +7,6 @@ import Joyride from 'react-joyride'
 import * as actions from '@core/redux/chart/actions'
 import WarningMessageSnack from '@sb/components/WarningMessageSnack/WarningMessageSnack'
 import IndividualChart from './IndividualChart/IndividualChart'
-import * as userActions from '@core/redux/user/actions'
 
 import { IProps, IChart } from './OnlyCharts.types'
 import { multiChartsSteps } from '@sb/config/joyrideSteps'
@@ -65,8 +64,8 @@ class OnlyCharts extends Component<IProps> {
     }
   }
 
-  removeChart = (index) => {
-    this.props.removeChartMutation({
+  removeChart = async (index) => {
+    await this.props.removeChartMutation({
       variables: {
         index: index,
       },
@@ -149,6 +148,7 @@ class OnlyCharts extends Component<IProps> {
                   removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
+                  {/* TODO: Check this currencyPair={chart} */}
                   currencyPair={chart}
                   userId={userId}
                   themeMode={themeMode}
@@ -210,14 +210,10 @@ const ChartContainer = styled.div`
 `
 
 const mapStateToProps = (store: any) => ({
-  charts: store.chart.charts,
-  currencyPair: store.chart.currencyPair,
   openedWarning: store.chart.warningMessageOpened,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-  removeChart: (i: number) => dispatch(actions.removeChart(i)),
-  addChart: (baseQuote: string) => dispatch(actions.addChart(baseQuote)),
   removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
 })
 

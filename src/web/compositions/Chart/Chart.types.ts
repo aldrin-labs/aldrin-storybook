@@ -9,15 +9,11 @@ import { TooltipsType } from '@core/types/PortfolioTypes'
 
 export interface IProps {
   isNoCharts: boolean
-  activeExchange: IExchange
   view: string
   currencyPair: string
   showTableOnMobile: string
-  selectExchange: Function
-  toggleView: Function
   selectCurrencies: Function
   setOrders: Function
-  addChart: (currencyPair: string) => void
   theme: any
   themeMode: 'dark' | 'light'
   getMyProfile: IGetMyProfile
@@ -38,6 +34,11 @@ export interface IProps {
   getTooltipSettingsQuery: {
     getTooltipSettings: TooltipsType
   }
+  changeActiveExchangeMutation: ({
+    variables: exchange,
+  }: {
+    variables: { exchange: IExchange }
+  }) => Promise<any>
 }
 
 export interface IState {

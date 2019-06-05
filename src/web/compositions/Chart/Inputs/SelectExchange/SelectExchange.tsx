@@ -4,18 +4,21 @@ import { withTheme } from '@material-ui/styles'
 import { ExchangeListContainer } from './SelectExchange.styles'
 import { IProps } from './SelectExchange.types'
 
-
 @withTheme()
 export default class SelectExchange extends React.Component<IProps> {
-  onSelectChange = (
+  onSelectChange = async (
     optionSelected: { label: string; value: string } | null
   ) => {
-    const { selectExchange } = this.props
+    const { changeActiveExchangeMutation } = this.props
 
     if (optionSelected) {
-      selectExchange({
-        symbol: optionSelected.value,
-        name: optionSelected.label,
+      await changeActiveExchangeMutation({
+        variables: {
+          exchange: {
+            name: optionSelected.label,
+            symbol: optionSelected.value,
+          },
+        },
       })
     }
   }
@@ -42,5 +45,3 @@ export default class SelectExchange extends React.Component<IProps> {
     )
   }
 }
-
-

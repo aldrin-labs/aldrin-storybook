@@ -2,41 +2,40 @@
 //  This file was automatically generated and should not be edited.
 
 export interface CoinMarketCapQueryQueryVariables {
-  page?: number | null,
-  perPage?: number | null,
+  page?: number | null
+  perPage?: number | null
 }
 
 export interface CoinMarketCapQueryQuery {
-  assetPagination:  {
+  assetPagination: {
     // Information to aid in pagination.
-    pageInfo:  {
+    pageInfo: {
       // Total number of pages
-      pageCount: number | null,
+      pageCount: number | null
       // When paginating forwards, are there more items?
-      hasNextPage: boolean | null,
+      hasNextPage: boolean | null
       // Current page number
-      currentPage: number,
+      currentPage: number
       // When paginating backwards, are there more items?
-      hasPreviousPage: boolean | null,
+      hasPreviousPage: boolean | null
       // Number of items per page
-      perPage: number,
-    },
+      perPage: number
+    }
     // Total object count.
-    count: number | null,
+    count: number | null
     // Array of objects.
-    items:  Array< {
-      _id: string,
-      name: string | null,
-      symbol: string | null,
-      priceUSD: string | null,
-      maxSupply: number | null,
-      totalSupply: number | null,
-      availableSupply: number | null,
-      percentChangeDay: string | null,
-    } | null > | null,
-  } | null,
+    items: Array<{
+      _id: string
+      name: string | null
+      symbol: string | null
+      priceUSD: string | null
+      maxSupply: number | null
+      totalSupply: number | null
+      availableSupply: number | null
+      percentChangeDay: string | null
+    } | null> | null
+  } | null
 }
-
 
 export type CoinLink = {
   name: string
