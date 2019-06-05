@@ -140,8 +140,7 @@ export const portfolioOptimizationSteps = [
   },
 ]
 
-export const singleChartSteps: T[] = [
-]
+export const singleChartSteps: T[] = []
 
 export const multiChartsSteps: T[] = [
   {
