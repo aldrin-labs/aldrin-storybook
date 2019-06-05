@@ -4,8 +4,6 @@ import { IExchange, IGetCharts, IGetMarketsByExchangeQuery } from '@core/types/C
 export interface IProps {
   theme: Theme
   activeExchange: IExchange
-  openWarningMessage: () => void
-  removeWarningMessage: () => void
   selectCurrencies: (baseQuote: string) => void
   addChartMutation: (mutationObject: any) => Promise<any>
   getCharts: IGetCharts

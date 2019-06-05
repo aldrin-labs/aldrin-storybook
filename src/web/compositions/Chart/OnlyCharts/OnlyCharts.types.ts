@@ -1,28 +1,12 @@
-import { TooltipsType } from '@core/types/PortfolioTypes'
+import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 
 export interface IChart {
   pair: string
   id: string
 }
 
-export interface IProps {
-  addChart: (pair: string) => void
+export interface IProps extends TooltipMutationType, TooltipQueryType {
   mainPair: string
-  removeChart: () => void
-  removeWarningMessage: () => void
   charts: IChart[]
-  currencyPair: string
-  isShownMocks: boolean
-  openedWarning: boolean
   theme: any
-  view: any
-  demoMode: { chartPage: boolean; multiChartPage: boolean }
-  updateTooltipSettingsMutation: ({
-    variables: { settings },
-  }: {
-    variables: { settings: TooltipsType }
-  }) => Promise<any>
-  getTooltipSettingsQuery: {
-    getTooltipSettings: TooltipsType
-  }
 }

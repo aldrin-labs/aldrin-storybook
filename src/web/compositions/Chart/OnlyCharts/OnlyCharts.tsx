@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
+import { compose } from 'recompose'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
 import { Slide } from '@material-ui/core'
 import Joyride from 'react-joyride'
-
-import * as actions from '@core/redux/chart/actions'
 import WarningMessageSnack from '@sb/components/WarningMessageSnack/WarningMessageSnack'
 import IndividualChart from './IndividualChart/IndividualChart'
 
@@ -14,7 +12,6 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 import { graphql } from 'react-apollo'
 
-import { compose } from 'recompose'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
@@ -23,9 +20,11 @@ import { ACTIVE_LAYOUT } from '@core/graphql/queries/chart/activeLayout'
 import { SAVE_LAYOUT } from '@core/graphql/mutations/chart/saveLayout'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { GET_WARNING_MESSAGE } from '@core/graphql/queries/chart/getWarningMessage'
+import { TOGGLE_WARNING_MESSAGE } from '@core/graphql/mutations/chart/toggleWarningMessage'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
@@ -90,8 +89,10 @@ class OnlyCharts extends Component<IProps> {
 
   render() {
     const {
-      openedWarning,
-      removeWarningMessage,
+      getWarningMessageQuery: {
+        chart: { warningMessageOpened },
+      },
+      toggleWarningMessageMutation,
       theme,
       view,
       getCharts: {
@@ -154,8 +155,10 @@ class OnlyCharts extends Component<IProps> {
                 />
               ))}
             <WarningMessageSnack
-              open={openedWarning}
-              onCloseClick={removeWarningMessage}
+              open={warningMessageOpened}
+              onCloseClick={async () => {
+                await toggleWarningMessageMutation({})
+              }}
               messageText={'You can create up to 8 charts.'}
             />
           </ChartContainer>
@@ -208,15 +211,11 @@ const ChartContainer = styled.div`
   );
 `
 
-const mapStateToProps = (store: any) => ({
-  openedWarning: store.chart.warningMessageOpened,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
-})
-
 export default compose(
+  queryRendererHoc({
+    query: GET_WARNING_MESSAGE,
+    name: 'getWarningMessageQuery',
+  }),
   queryRendererHoc({
     query: ACTIVE_LAYOUT,
     withOutSpinner: false,
@@ -233,16 +232,11 @@ export default compose(
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+  graphql(TOGGLE_WARNING_MESSAGE, { name: 'toggleWarningMessageMutation' }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
   graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' }),
   graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   withErrorFallback
-)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OnlyCharts)
-)
+)(OnlyCharts)

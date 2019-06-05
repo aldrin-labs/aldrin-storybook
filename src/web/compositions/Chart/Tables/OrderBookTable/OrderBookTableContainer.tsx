@@ -79,10 +79,6 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
       // update depth chart every 100 iterations
       if (iterator === 100) {
-        // newProps.setOrders({
-        //   bids,
-        //   asks: asks.slice().reverse(),
-        // })
         newProps.setOrdersMutation({
           variables: {
             setOrdersInput: {

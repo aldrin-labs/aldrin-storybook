@@ -17,8 +17,6 @@ import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 import { SingleChart } from '@sb/components/Chart'
 
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
-import * as actions from '@core/redux/chart/actions'
-import * as userActions from '@core/redux/user/actions'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
 
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'

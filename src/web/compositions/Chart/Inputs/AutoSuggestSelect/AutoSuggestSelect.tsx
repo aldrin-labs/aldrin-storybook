@@ -9,7 +9,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
-import * as actions from '@core/redux/chart/actions'
+// import * as actions from '@core/redux/chart/actions'
 
 import { Loading } from '@sb/components/Loading/Loading'
 import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
@@ -18,6 +18,7 @@ import { IProps, IState } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
+import { TOGGLE_WARNING_MESSAGE } from '@core/graphql/mutations/chart/toggleWarningMessage'
 
 type T = { value: string; data: string }
 
@@ -43,10 +44,9 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
       getViewModeQuery: {
         chart: { view },
       },
-      openWarningMessage,
-      removeWarningMessage,
       addChartMutation,
       changeCurrencyPairMutation,
+      toggleWarningMessageMutation,
     } = this.props
     const {
       multichart: { charts },
@@ -75,10 +75,10 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
 
       return
     } else {
-      setTimeout(() => {
-        removeWarningMessage()
+
+      setTimeout(async () => {
+        await toggleWarningMessageMutation({})
       }, 1500)
-      openWarningMessage()
     }
   }
   render() {
@@ -152,11 +152,6 @@ const queryRender = (props: IProps) => (
 )
 
 
-const mapDispatchToProps = (dispatch: any) => ({
-  openWarningMessage: () => dispatch(actions.openWarningMessage()),
-  removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
-})
-
 export default compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
@@ -168,12 +163,9 @@ export default compose(
     withTableLoader: false,
     name: 'getCharts',
   }),
+  graphql(TOGGLE_WARNING_MESSAGE, { name: 'toggleWarningMessageMutation' }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
   }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
-  connect(
-    null,
-    mapDispatchToProps
-  )
 )(queryRender)
