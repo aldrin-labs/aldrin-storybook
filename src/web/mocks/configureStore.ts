@@ -1,5 +1,3 @@
-import rootReducer from '@core/redux/rootReducer'
-
 import createHistory from 'history/createBrowserHistory'
 import { routerMiddleware } from 'react-router-redux'
 import { applyMiddleware, createStore } from 'redux'

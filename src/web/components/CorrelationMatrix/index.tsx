@@ -18,8 +18,8 @@ import { ErrorFallback } from '../ErrorFallback'
 @withTheme()
 
 class CorrelationMatrixComponent extends PureComponent<IProps> {
-  constructor(props: IProps) {
-    super(props)
+  state = {
+    isFullscreenEnabled: false,
   }
 
   renderPlaceholder = () => (
@@ -35,21 +35,32 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
     </StyledCard>
   )
 
+  changeScreenMode = () => {
+    this.setState((prevstate) => ({
+      isFullscreenEnabled: !prevstate.isFullscreenEnabled
+    }))
+  }
+
   renderError = (error: string) => <ErrorFallback>{error}</ErrorFallback>
 
   render() {
     const {
-      isFullscreenEnabled,
+      // isFullscreenEnabled,
       data,
-      fullScreenChangeHandler,
-      setCorrelationPeriod,
+      // fullScreenChangeHandler,
+      // setCorrelationPeriod,
       period,
       CustomColors,
       oneColor,
       dates: { startDate, endDate },
       theme: { palette },
       theme,
+      updateCorrelationPeriodMutation,
     } = this.props
+
+    const {
+      isFullscreenEnabled,
+    } = this.state
 
     const colors = CustomColors || [
       palette.red.main,
@@ -62,7 +73,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       <ScrolledWrapper>
         <FullScreen
           onClose={() => {
-            fullScreenChangeHandler(isFullscreenEnabled)
+            this.changeScreenMode(isFullscreenEnabled)
           }}
           style={{ height: '100%' }}
           enabled={isFullscreenEnabled}
@@ -98,7 +109,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                       maxWidth: '10rem',
                       margin: '2rem 0',
                     }}
-                    setPeriodToStore={setCorrelationPeriod}
+                    updateCorrelationPeriodMutation={updateCorrelationPeriodMutation}
                     period={period}
                   />
                   <Typography noWrap={true} align="center" variant="body1">
@@ -131,7 +142,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                 color="primary"
                 variant="contained"
                 onClick={() => {
-                  this.props.fullScreenChangeHandler()
+                  this.changeScreenMode()
                 }}
               >
                 <FullScreenIcon />
@@ -151,9 +162,8 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
   }
 }
 
-export const CorrelationMatrix = CorrelationMatrixComponent
 
-export default CorrelationMatrix
+export default CorrelationMatrixComponent
 
 const ButtonsWrapper = styled.div`
   display: flex;

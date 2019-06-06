@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 
 // https://material-ui.com/customization/css-in-js/#other-html-element
@@ -23,6 +23,9 @@ import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/cssUtils'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
 const version = `1`
 const currentVersion = localStorage.getItem('version')
@@ -33,10 +36,17 @@ if (currentVersion !== version) {
 
 const AppRaw = ({
   children,
-  themeMode,
-  chartPageView,
+  getViewModeQuery,
+  getThemeModeQuery,
   location: { pathname: currentPage },
 }: any) => {
+  const themeMode =
+    getThemeModeQuery &&
+    getThemeModeQuery.app &&
+    getThemeModeQuery.app.themeMode
+  const chartPageView =
+    getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
+
   const fullscreen: boolean =
     currentPage === '/chart' && chartPageView !== 'default'
   const pageIsRegistration = currentPage.includes('regist')
@@ -45,7 +55,9 @@ const AppRaw = ({
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
         <AppGridLayout>
-          {!pageIsRegistration && <AnimatedNavBar pathname={currentPage} hide={fullscreen} />}
+          {!pageIsRegistration && (
+            <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
+          )}
           {children}
         </AppGridLayout>
         <Footer fullscreenMode={fullscreen} />
@@ -56,9 +68,16 @@ const AppRaw = ({
   )
 }
 
-const mapStateToProps = (store: any) => ({
-  themeMode: store.ui.theme,
-  chartPageView: store.chart.view,
-})
 
-export const App = withRouter(connect(mapStateToProps)(AppRaw))
+export const App = withRouter(
+  compose(
+    queryRendererHoc({
+      query: GET_VIEW_MODE,
+      name: 'getViewModeQuery',
+    }),
+    queryRendererHoc({
+      query: GET_THEME_MODE,
+      name: 'getThemeModeQuery',
+    })
+  )(AppRaw)
+)

@@ -4,7 +4,6 @@ export interface IProps {
   onChangeTab?: Function
   onToggleChart?: Function
   onToggleUSDBTC?: Function
-  filterValuesLessThen: Function
   isShownMocks: boolean
   isSideNavOpen: boolean
   isUSDCurrently?: boolean

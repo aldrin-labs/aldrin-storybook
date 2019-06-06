@@ -43,12 +43,14 @@ class DropDownMenu extends Component<IProps> {
     this.setDates(event.target.value)
   }
 
-  setDates = (period: string) => {
+  setDates = async (period: string) => {
     const { startDate, endDate } = this.optionsMap[period]()
-    this.props.setPeriodToStore({
-      correlationPeriod: period,
-      correlationStartDate: startDate,
-      correlationEndDate: endDate,
+    await this.props.updateCorrelationPeriodMutation({
+      variables: {
+        startDate,
+        period,
+        endDate,
+      },
     })
   }
 

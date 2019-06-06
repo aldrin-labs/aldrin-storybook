@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
 import { uniqBy } from 'lodash-es'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import {
   maximumItemsInArray,
   findSpread,
@@ -20,10 +23,14 @@ import ComingSoon from '@sb/components/ComingSoon'
 import { IProps, IState } from './OrderBookTableContainer.types'
 import { MASTER_BUILD } from '@core/utils/config'
 import { IOrder } from '@core/types/ChartTypes'
+
+import { GET_ORDERS } from '@core/graphql/queries/chart/getOrders'
+import { SET_ORDERS } from '@core/graphql/mutations/chart/setOrders'
+
 let unsubscribe: Function | undefined
 
 class OrderBookTableContainer extends Component<IProps, IState> {
-  state = {
+  state: IState = {
     asks: [],
     bids: [],
     spread: null,
@@ -36,57 +43,61 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
   // transforming data
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-
     // when get data from subscr
     if (
       newProps.data &&
       newProps.data.marketOrders &&
       newProps.data.marketOrders.length > 0
     ) {
-
       let iterator = state.i
 
       const orderData = newProps.data.marketOrders[0]
       const order: IOrder = {
-        price: +((+orderData.price).toFixed(8)),
-        size: +((+orderData.size).toFixed(8)),
+        price: +(+orderData.price).toFixed(8),
+        size: +(+orderData.size).toFixed(8),
         type: orderData.side,
       }
 
       const asks =
         order.type === 'ask'
-          ? sortDesc(removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price')))
+          ? sortDesc(
+              removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price'))
+            )
           : state.asks
-
 
       let bids =
         order.type === 'bid'
-          ? sortDesc(removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price')))
+          ? sortDesc(
+              removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price'))
+            )
           : state.bids
-
-
 
       // find spread
       const spread = findSpread(asks, bids)
       //  you must remove zero orders here after merge new order to orderbook
       bids = bidsPriceFiltering(asks, bids)
 
-
       // update depth chart every 100 iterations
       if (iterator === 100) {
-        newProps.setOrders({
-          bids,
-          asks: asks.slice().reverse(),
+        newProps.setOrdersMutation({
+          variables: {
+            setOrdersInput: {
+              bids,
+              asks,
+            },
+          },
         })
         iterator = 0
       } else {
         iterator += 1
       }
 
-
       return {
         spread,
-        asks: order.type === 'ask' ? maximumItemsInArray(asks, 100, 40, true): state.asks,
+        asks:
+          order.type === 'ask'
+            ? maximumItemsInArray(asks, 100, 40, true)
+            : state.asks,
         bids: reduceArrayLength(bids),
         // bids: [],
         // asks: [],
@@ -174,7 +185,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             palette,
             quote,
             spread,
-            digitsAfterDecimalForSpread: Math.max(digitsAfterDecimalForBidsPrice, digitsAfterDecimalForAsksPrice),
+            digitsAfterDecimalForSpread: Math.max(
+              digitsAfterDecimalForBidsPrice,
+              digitsAfterDecimalForAsksPrice
+            ),
             key: 'bids_headrow',
           }}
         />
@@ -189,4 +203,12 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   }
 }
 
-export default OrderBookTableContainer
+export default compose(
+  queryRendererHoc({
+    query: GET_ORDERS,
+    name: 'getOrders',
+  }),
+  graphql(SET_ORDERS, {
+    name: 'setOrdersMutation',
+  })
+)(OrderBookTableContainer)

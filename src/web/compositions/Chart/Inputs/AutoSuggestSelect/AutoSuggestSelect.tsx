@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
@@ -9,13 +8,15 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
-import * as actions from '@core/redux/chart/actions'
 
 import { Loading } from '@sb/components/Loading/Loading'
 import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import { IProps, IState } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
+import { TOGGLE_WARNING_MESSAGE } from '@core/graphql/mutations/chart/toggleWarningMessage'
 
 type T = { value: string; data: string }
 
@@ -35,14 +36,15 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
     this.setState({ isClosed: true })
   }
 
-  handleChange = ({ value }) => {
+  handleChange = async ({ value }) => {
     const {
-      selectCurrencies,
       getCharts,
-      view,
-      openWarningMessage,
-      removeWarningMessage,
+      getViewModeQuery: {
+        chart: { view },
+      },
       addChartMutation,
+      changeCurrencyPairMutation,
+      toggleWarningMessageMutation,
     } = this.props
     const {
       multichart: { charts },
@@ -53,12 +55,17 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
     }
 
     if (view === 'default') {
-      selectCurrencies(value)
+      await changeCurrencyPairMutation({
+        variables: {
+          pairInput: {
+            pair: value,
+          },
+        },
+      })
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
-      //TODO: I guess we should await the addChartMutation function
-      addChartMutation({
+      await addChartMutation({
         variables: {
           chart: value,
         },
@@ -66,15 +73,17 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
 
       return
     } else {
-      setTimeout(() => {
-        removeWarningMessage()
+
+      setTimeout(async () => {
+        await toggleWarningMessageMutation({})
       }, 1500)
-      openWarningMessage()
     }
   }
   render() {
     const {
-      view,
+      getViewModeQuery: {
+        chart: { view },
+      },
       value,
       data,
       theme: {
@@ -140,27 +149,21 @@ const queryRender = (props: IProps) => (
   />
 )
 
-const mapStateToProps = (store: any) => ({
-  view: store.chart.view,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  openWarningMessage: () => dispatch(actions.openWarningMessage()),
-  removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
-  selectCurrencies: (baseQuote: string) =>
-    dispatch(actions.selectCurrencies(baseQuote)),
-})
 
 export default compose(
+  queryRendererHoc({
+    query: GET_VIEW_MODE,
+    name: 'getViewModeQuery',
+  }),
   queryRendererHoc({
     query: GET_CHARTS,
     withOutSpinner: false,
     withTableLoader: false,
     name: 'getCharts',
   }),
+  graphql(TOGGLE_WARNING_MESSAGE, { name: 'toggleWarningMessageMutation' }),
+  graphql(CHANGE_CURRENCY_PAIR, {
+    name: 'changeCurrencyPairMutation',
+  }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
 )(queryRender)

@@ -1,36 +1,38 @@
-import { IExchange, IGetCharts, IGetMyProfile, Key } from '@core/types/ChartTypes'
-import { ITooltipType } from '@core/types/UserTypes'
+import {
+  IExchange,
+  IGetCharts,
+  IGetMyProfile,
+  Key,
+} from '@core/types/ChartTypes'
+import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 
-export interface IProps {
+export interface IProps extends TooltipQueryType, TooltipMutationType {
   isNoCharts: boolean
-  activeExchange: IExchange
   view: string
   currencyPair: string
-  isShownMocks: boolean
   showTableOnMobile: string
-  selectExchange: Function
-  toggleView: Function
   selectCurrencies: Function
-  setOrders: Function
-  addChart: (currencyPair: string) => void
   theme: any
   themeMode: 'dark' | 'light'
   getMyProfile: IGetMyProfile
   getCharts: IGetCharts
   addChartMutation: (queryObject: any) => Promise<any>
   hideToolTip: (tab: string) => any
-  demoMode: ITooltipType
   getSelectedKeyQuery: {
     chart: {
       selectedKey: Key
     }
   }
+  changeActiveExchangeMutation: ({
+    variables: exchange,
+  }: {
+    variables: { exchange: IExchange }
+  }) => Promise<any>
 }
 
 export interface IState {
   view: string
   orders: []
-  // exchangeTableCollapsed: boolean
   aggregation: number
   showTableOnMobile: string
   activeChart: string

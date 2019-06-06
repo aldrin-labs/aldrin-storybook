@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
-import { connect } from 'react-redux'
-
 import Joyride from 'react-joyride'
-import * as actions from '@core/redux/user/actions'
 
 import { Container as Content } from '@sb/styles/cssUtils'
 import { portfolioRebalanceSteps } from '@sb/config/joyrideSteps'
@@ -13,19 +10,38 @@ import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanc
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
 import { Container, ChartWrapper } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { graphql } from 'react-apollo'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
-class PortfolioRebalancePage extends Component {
+import { IState, IProps } from './PortfolioRebalancePage.types'
+
+class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
   }
 
-  handleJoyrideCallback = (data: any) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
     ) {
-      this.props.hideToolTip('Rebalance')
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            portfolioRebalance: false,
+          },
+        },
+      })
     }
     if (data.status === 'finished') {
       const oldKey = this.state.key
@@ -73,6 +89,7 @@ class PortfolioRebalancePage extends Component {
       createNewSnapshot,
       dustFilter,
       showWarning,
+      getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
 
     const secondary = palette.secondary.main
@@ -85,99 +102,99 @@ class PortfolioRebalancePage extends Component {
 
     return (
       <>
-          {children}
-          <Content key={`content`} container spacing={16}>
-            <Container
-              key={`table-container`}
-              item
-              md={12}
-              isEditModeEnabled={isEditModeEnabled}
-            >
-              <PortfolioRebalanceTableContainer
-                key={`PortfolioRebalanceTableContainer`}
-                {...{
-                  isEditModeEnabled,
-                  staticRows,
-                  staticRowsMap,
-                  totalStaticRows,
-                  rows,
-                  selectedActive,
-                  areAllActiveChecked,
-                  totalRows,
-                  totalPercents,
-                  totalTableRows,
-                  isPercentSumGood,
-                  undistributedMoney,
-                  isUSDCurrently,
-                  addMoneyInputValue,
-                  theme,
-                  loading,
-                  red,
-                  saveButtonColor,
-                  secondary,
-                  fontFamily,
-                  totalSnapshotRows,
-                  timestampSnapshot,
-                  onDiscardChanges,
-                  onSaveClick,
-                  onReset,
-                  onEditModeEnable,
-                  updateState,
-                  onNewSnapshot,
-                  dustFilter,
-                  showWarning,
-                }}
-              />
-            </Container>
-
-            <ChartWrapper
-              key={`chart-container`}
-              item
-              md={12}
-              className="PortfolioDistributionChart"
-            >
-              <PortfolioRebalanceChart
-                dustFilter={dustFilter}
-                key={`PortfolioRebalanceChart`}
-                title={`Portfolio Distribution`}
-                background={theme.palette.background.default}
-                staticRows={staticRows}
-                rows={rows}
-                bottomMargin={75}
-                theme={theme}
-                hideDashForToolTip={true}
-                xAxisVertical={true}
-                alwaysShowLegend={true}
-                leftBar={leftBar}
-                rightBar={rightBar}
-              />
-            </ChartWrapper>
-
-            {/* end of a grid */}
-
-            <DialogComponent
-              key={`DialogComponent`}
+        {children}
+        <Content key={`content`} container spacing={16}>
+          <Container
+            key={`table-container`}
+            item
+            md={12}
+            isEditModeEnabled={isEditModeEnabled}
+          >
+            <PortfolioRebalanceTableContainer
+              key={`PortfolioRebalanceTableContainer`}
               {...{
-                openWarning,
-                warningMessage,
-                isSaveError,
-                isSystemError,
-                isCurrentAssetsChangedError,
-                isDustFilterError,
-                hideWarning,
+                isEditModeEnabled,
+                staticRows,
+                staticRowsMap,
+                totalStaticRows,
+                rows,
+                selectedActive,
+                areAllActiveChecked,
+                totalRows,
+                totalPercents,
+                totalTableRows,
+                isPercentSumGood,
+                undistributedMoney,
+                isUSDCurrently,
+                addMoneyInputValue,
+                theme,
+                loading,
+                red,
+                saveButtonColor,
+                secondary,
+                fontFamily,
+                totalSnapshotRows,
+                timestampSnapshot,
+                onDiscardChanges,
                 onSaveClick,
                 onReset,
-                createNewSnapshot,
+                onEditModeEnable,
+                updateState,
+                onNewSnapshot,
+                dustFilter,
+                showWarning,
               }}
             />
-          </Content>
+          </Container>
+
+          <ChartWrapper
+            key={`chart-container`}
+            item
+            md={12}
+            className="PortfolioDistributionChart"
+          >
+            <PortfolioRebalanceChart
+              dustFilter={dustFilter}
+              key={`PortfolioRebalanceChart`}
+              title={`Portfolio Distribution`}
+              background={theme.palette.background.default}
+              staticRows={staticRows}
+              rows={rows}
+              bottomMargin={75}
+              theme={theme}
+              hideDashForToolTip={true}
+              xAxisVertical={true}
+              alwaysShowLegend={true}
+              leftBar={leftBar}
+              rightBar={rightBar}
+            />
+          </ChartWrapper>
+
+          {/* end of a grid */}
+
+          <DialogComponent
+            key={`DialogComponent`}
+            {...{
+              openWarning,
+              warningMessage,
+              isSaveError,
+              isSystemError,
+              isCurrentAssetsChangedError,
+              isDustFilterError,
+              hideWarning,
+              onSaveClick,
+              onReset,
+              createNewSnapshot,
+            }}
+          />
+        </Content>
 
         <Joyride
           continuous={true}
           showProgress={true}
           showSkipButton={true}
           steps={portfolioRebalanceSteps}
-          run={this.props.toolTip.portfolioRebalance}
+          run={getTooltipSettings.portfolioRebalance}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -194,24 +211,16 @@ class PortfolioRebalancePage extends Component {
             },
           }}
         />
-
       </>
     )
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
-})
-
-const mapStateToProps = (store: any) => ({
-  toolTip: store.user.toolTip,
-})
-
 export default compose(
   withTheme(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
 )(PortfolioRebalancePage)

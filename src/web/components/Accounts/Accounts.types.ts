@@ -7,8 +7,6 @@ export interface IProps {
   isSideNavOpen: boolean
   onToggleAll: React.ReactEventHandler
   onToggleKeyCheckbox: Function
-  setKeys: Function
-  setActiveKeys: Function
   keys: string[]
   activeKeys: string[]
   color: string

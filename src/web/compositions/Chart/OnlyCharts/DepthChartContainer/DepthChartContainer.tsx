@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
+import { GET_ACTIVE_EXCHANGE } from '@core/graphql/queries/chart/getActiveExchange'
 import TransformDataToDepthChartComponent from './TransformDataToDepthChartComponent/TransformDataToDepthChartComponent'
 import { IProps } from './DepthChartContainer.types'
 
 class DepthChartContainer extends Component<IProps> {
   render() {
-    const { activeExchange, base, quote } = this.props
+    const {
+      getActiveExchangeQuery: {
+        chart: { activeExchange },
+      },
+      base,
+      quote,
+    } = this.props
     const symbol = `${base}_${quote}` || ''
     const exchange = activeExchange.symbol
 
@@ -26,8 +32,7 @@ class DepthChartContainer extends Component<IProps> {
   }
 }
 
-const mapStateToProps = (store: any) => ({
-  activeExchange: store.chart.activeExchange,
-})
-
-export default connect(mapStateToProps)(DepthChartContainer)
+export default queryRendererHoc({
+  query: GET_ACTIVE_EXCHANGE,
+  name: 'getActiveExchangeQuery',
+})(DepthChartContainer)

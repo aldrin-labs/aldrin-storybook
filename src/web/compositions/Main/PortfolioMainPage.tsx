@@ -1,6 +1,5 @@
 import React from 'react'
 import { withTheme } from '@material-ui/styles'
-import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 
@@ -11,25 +10,41 @@ import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHist
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
-import * as actions from '@core/redux/user/actions'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import Template from '@sb/components/Template/Template'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { graphql } from 'react-apollo'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 @withTheme()
-
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
   }
 
-  handleJoyrideCallback = (data: any) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
     ) {
-      this.props.hideToolTip('Main')
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            portfolioMain: false,
+          },
+        },
+      })
     }
+
     if (data.status === 'finished') {
       const oldKey = this.state.key
       this.setState({ key: oldKey + 1 })
@@ -37,12 +52,18 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, dustFilter } = this.props
+    const {
+      theme,
+      dustFilter,
+      getTooltipSettingsQuery: { getTooltipSettings },
+    } = this.props
 
     return (
       <>
         <Template
-          PortfolioMainTable={<PortfolioMainTable theme={theme} dustFilter={dustFilter} />}
+          PortfolioMainTable={
+            <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+          }
           PortfolioActions={<TradeOrderHistory />}
           Chart={
             <PortfolioMainChart
@@ -60,7 +81,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           showProgress={true}
           showSkipButton={true}
           steps={portfolioMainSteps}
-          run={this.props.toolTip.portfolioMain}
+          run={getTooltipSettings.portfolioMain}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -82,19 +103,11 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
-})
-
-const mapStateToProps = (store: any) => ({
-  isShownMocks: store.user.isShownMocks,
-  toolTip: store.user.toolTip,
-})
-
 export default compose(
-  withErrorFallback,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+  withErrorFallback
 )(PortfolioMainPage)

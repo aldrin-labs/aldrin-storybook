@@ -1,6 +1,7 @@
 import { Theme } from '@material-ui/core'
 
-import { IData, DustFilterType } from '@core/types/PortfolioTypes'
+import { DustFilterType } from '@core/types/PortfolioTypes'
+import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 
 export type RawOptimizedData = {
   backtest_results: [number, number]
@@ -16,6 +17,7 @@ export type RawOptimizedData = {
 export interface IState {
   loading: boolean
   activeButton: number
+  optimizationData: any[]
   rawOptimizedData: RawOptimizedData
   openWarning: boolean
   warningMessage: string
@@ -25,13 +27,13 @@ export interface IState {
   key: number
 }
 
-export interface IProps {
+export interface IProps extends TooltipMutationType, TooltipQueryType {
   dustFilter: DustFilterType
-  hideToolTip: (any: any) => void
-  storeData: IData[]
-  isShownMocks: boolean
-  updateData: Function
-  filterValueSmallerThenPercentage: number
   baseCoin: string
   theme: Theme
+  getMocksModeQuery: {
+    app: {
+      mocksEnabled: boolean
+    }
+  }
 }
