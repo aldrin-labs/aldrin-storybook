@@ -25,6 +25,7 @@ import { updateTooltipSettings } from '@core/graphql/mutations/user/updateToolti
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { GET_WARNING_MESSAGE } from '@core/graphql/queries/chart/getWarningMessage'
 import { TOGGLE_WARNING_MESSAGE } from '@core/graphql/mutations/chart/toggleWarningMessage'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
@@ -236,7 +237,12 @@ export default compose(
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
   graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   withErrorFallback
 )(OnlyCharts)

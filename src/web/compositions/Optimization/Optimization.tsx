@@ -47,6 +47,7 @@ import { updateTooltipSettings } from '@core/graphql/mutations/user/updateToolti
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { GET_MOCKS_MODE } from '@core/graphql/queries/app/getMocksMode'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 class Optimization extends Component<IProps, IState> {
   state: IState = {
@@ -449,5 +450,10 @@ export default compose(
     query: GET_MOCKS_MODE,
     name: 'getMocksModeQuery',
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  })
 )(Optimization)

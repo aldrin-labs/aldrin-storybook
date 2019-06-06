@@ -14,6 +14,7 @@ import IndustryChart from '@core/containers/IndustryChart'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 @withTheme()
 class PortfolioTableIndustries extends React.Component<IProps, IState> {
@@ -90,8 +91,11 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    // TODO: avoid this
-    fetchPolicy: 'network-only',
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  })
 )(PortfolioTableIndustries)
