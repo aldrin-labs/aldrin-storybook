@@ -17,6 +17,7 @@ import { graphql } from 'react-apollo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
@@ -108,6 +109,11 @@ export default compose(
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  }),
   withErrorFallback
 )(PortfolioMainPage)

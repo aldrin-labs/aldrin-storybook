@@ -69,6 +69,7 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { GET_CURRENCY_PAIR } from '@core/graphql/queries/chart/getCurrencyPair'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 @withTheme()
 class Chart extends React.Component<IProps, IState> {
@@ -544,7 +545,12 @@ export default withAuth(
     graphql(CHANGE_VIEW_MODE, {
       name: 'changeViewModeMutation',
     }),
-    graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+    graphql(updateTooltipSettings, {
+      name: 'updateTooltipSettingsMutation',
+      options: {
+        update: updateTooltipMutation,
+      },
+    }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withErrorFallback(Chart))
 )

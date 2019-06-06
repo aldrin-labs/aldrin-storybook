@@ -22,6 +22,7 @@ import { updateTooltipSettings } from '@core/graphql/mutations/user/updateToolti
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { GET_MOCKS_MODE } from '@core/graphql/queries/app/getMocksMode'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 const Correlation = (props: IProps) => {
   const {
@@ -38,10 +39,14 @@ const Correlation = (props: IProps) => {
   if (
     getCorrelationAndPortfolioAssetsQuery.myPortfolios &&
     getCorrelationAndPortfolioAssetsQuery.myPortfolios.length > 0 &&
-    typeof getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay === 'string' &&
-    getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay.length > 0
+    typeof getCorrelationAndPortfolioAssetsQuery.myPortfolios[0]
+      .correlationMatrixByDay === 'string' &&
+    getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay
+      .length > 0
   ) {
-    const matrix = getCorrelationAndPortfolioAssetsQuery.myPortfolios[0].correlationMatrixByDay
+    const matrix =
+      getCorrelationAndPortfolioAssetsQuery.myPortfolios[0]
+        .correlationMatrixByDay
     dataRaw = testJSON(matrix) ? JSON.parse(matrix) : matrix
 
     const dustFiltredCoinList = combineTableData(
@@ -94,9 +99,7 @@ const CorrelationWrapper = (props: IProps) => {
     getTooltipSettingsQuery: { getTooltipSettings },
     updateTooltipSettingsMutation,
     getMocksModeQuery: {
-      app: {
-        mocksEnabled,
-      },
+      app: { mocksEnabled },
     },
   } = props
   let key = 0
@@ -195,7 +198,12 @@ export default compose(
     query: GET_MOCKS_MODE,
     name: 'getMocksModeQuery',
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  }),
   graphql(updateCorrelationPeriod, {
     name: 'updateCorrelationPeriodMutation',
   })
