@@ -118,7 +118,6 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
       <ExchangePair
         style={{ width: '9rem' }}
         border={divider}
-        className="AutoSuggestSelect"
       >
         <SelectR
           id={this.props.id}

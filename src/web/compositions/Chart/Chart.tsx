@@ -95,14 +95,6 @@ class Chart extends React.Component<IProps, IState> {
     return null
   }
 
-  componentDidMount() {
-    if (!this.state.joyride) {
-      setTimeout(() => {
-        this.setState({ joyride: true })
-      }, 1000)
-    }
-  }
-
   componentWillUnmount() {
     /* tslint:disable-next-line:no-object-mutation */
     document.title = 'Cryptocurrencies AI'
