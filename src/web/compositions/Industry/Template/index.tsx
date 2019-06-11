@@ -12,7 +12,7 @@ const Template = ({
 }) => {
   return (
     <Container container={true} spacing={16}>
-      <Grid item={true} xs={12} md={8}>
+      <Grid item={true} xs={12} md={8} style={{position: "relative"}}>
         <Wrapper>{Table}</Wrapper>
       </Grid>
       <Grid item={true} xs={12} md={4}>

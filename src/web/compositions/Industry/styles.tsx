@@ -7,6 +7,8 @@ import { GridProps } from '@material-ui/core/Grid'
 
 export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
   && {
+    position: relative;
+    overflow-x: hidden;
     overflow-y: auto;
     height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
 
@@ -16,6 +18,7 @@ export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
 `
 
 export const Wrapper = styled(Card as React.FunctionComponent<CardProps>)`
+
   max-height: 100%;
   display: flex;
   width: 100%;
