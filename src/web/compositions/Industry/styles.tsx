@@ -18,6 +18,7 @@ export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
 `
 
 export const Wrapper = styled(Card as React.FunctionComponent<CardProps>)`
+
   max-height: 100%;
   display: flex;
   width: 100%;
