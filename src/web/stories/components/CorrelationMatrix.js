@@ -9,7 +9,7 @@ import { Card } from '@material-ui/core'
 
 import ThemeWrapper from '@sb/compositions/App/ThemeWrapper/ThemeWrapper'
 
-import { CorrelationMatrix } from '@components/CorrelationMatrix'
+import CorrelationMatrix from '@sb/components/CorrelationMatrix'
 import { CorrelationMatrixTableMocks } from '../mocks/CorrelationMatrixMocks'
 
 const TableWrapper = styled(Card)`
