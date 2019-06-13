@@ -11,7 +11,7 @@ import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
 
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
-import { Container, ChartWrapper } from './PortfolioRebalancePage.styles'
+import { Container, ChartWrapper, ButtonWrapper } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
 
 class PortfolioRebalancePage extends Component {
@@ -85,8 +85,74 @@ class PortfolioRebalancePage extends Component {
 
     return (
       <>
+
+
+
           {children}
           <Content key={`content`} container spacing={16}>
+
+{/* TODO */}
+            <ChartWrapper
+              key={`chart-container`}
+              item
+              md={10}
+              className="PortfolioDistributionChart"
+            >
+              <PortfolioRebalanceChart
+                dustFilter={dustFilter}
+                key={`PortfolioRebalanceChart`}
+                title={`Current Allocation`}
+                background={theme.palette.background.default}
+                staticRows={staticRows}
+                rows={rows}
+                bottomMargin={75}
+                theme={theme}
+                hideDashForToolTip={true}
+                xAxisVertical={true}
+                alwaysShowLegend={true}
+                leftBar={leftBar}
+                rightBar={rightBar}
+              />
+            </ChartWrapper>
+{/* 
+            <ButtonWrapper
+              key={`button-container`}
+              item
+              md={2}
+              className="PortfolioDistributionChart"
+            >
+              <button>{`<=>`}</button>
+            </ButtonWrapper>
+
+            <ChartWrapper
+              key={`chart-container`}
+              item
+              md={5}
+              className="PortfolioDistributionChart"
+            >
+              <PortfolioRebalanceChart
+                dustFilter={dustFilter}
+                key={`PortfolioRebalanceChart`}
+                title={`Target Allocation`}
+                background={theme.palette.background.default}
+                staticRows={staticRows}
+                rows={rows}
+                bottomMargin={75}
+                theme={theme}
+                hideDashForToolTip={true}
+                xAxisVertical={true}
+                alwaysShowLegend={true}
+                leftBar={leftBar}
+                rightBar={rightBar}
+              />
+            </ChartWrapper> */}
+
+
+            {/* TODO */}
+
+
+
+
             <Container
               key={`table-container`}
               item
@@ -130,28 +196,6 @@ class PortfolioRebalancePage extends Component {
               />
             </Container>
 
-            <ChartWrapper
-              key={`chart-container`}
-              item
-              md={12}
-              className="PortfolioDistributionChart"
-            >
-              <PortfolioRebalanceChart
-                dustFilter={dustFilter}
-                key={`PortfolioRebalanceChart`}
-                title={`Portfolio Distribution`}
-                background={theme.palette.background.default}
-                staticRows={staticRows}
-                rows={rows}
-                bottomMargin={75}
-                theme={theme}
-                hideDashForToolTip={true}
-                xAxisVertical={true}
-                alwaysShowLegend={true}
-                leftBar={leftBar}
-                rightBar={rightBar}
-              />
-            </ChartWrapper>
 
             {/* end of a grid */}
 

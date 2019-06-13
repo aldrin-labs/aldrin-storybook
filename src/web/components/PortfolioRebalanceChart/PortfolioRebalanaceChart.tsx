@@ -9,7 +9,11 @@ const PortfolioRebalanceChartComponent = ({
   title,
   rebalanceChartsData,
   ...otherProps
-}: IProps) => (
+}: IProps) => {
+  
+  console.log('rebalanceChartsData', rebalanceChartsData)
+  
+  return (
   <ChartContainer>
     <CardHeader title={title} />
 
@@ -18,5 +22,6 @@ const PortfolioRebalanceChartComponent = ({
     </Chart>
   </ChartContainer>
 )
+  }
 
 export default PortfolioRebalanceChartComponent

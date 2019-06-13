@@ -4,6 +4,7 @@ import _ from 'lodash'
 import {
   FlexibleXYPlot,
   VerticalBarSeries,
+  HorizontalBarSeries,
   XAxis,
   YAxis,
   Hint,
@@ -80,16 +81,18 @@ class BarChartComponent extends Component<IProps, IState> {
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
       const { color, data } = chart
+      const isVertical = true
+   
       return (
-        <VerticalBarSeries
-          style={{ cursor: 'pointer' }}
-          onSeriesMouseOut={this.onSeriesMouseOut}
-          onValueMouseOver={this.onValueMouseOver}
-          key={chartIndex}
-          data={data}
-          color={color}
-          animation={animated && 'wobbly'}
-        />
+          <HorizontalBarSeries
+            style={{ cursor: 'pointer' }}
+            onSeriesMouseOut={this.onSeriesMouseOut}
+            onValueMouseOver={this.onValueMouseOver}
+            key={chartIndex}
+            data={data}
+            color={color}
+            animation={animated && 'wobbly'}
+          />
       )
     })
 
@@ -130,17 +133,34 @@ class BarChartComponent extends Component<IProps, IState> {
             ) : (
               [
                 <YAxis
-                  animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
-                  key="y"
-                />,
+                animation={animated && 'gentle'}
+                style={axisStyleWithTheme}
+              />,
+                // <YAxis
+                //   animation={animated && 'gentle'}
+                //   style={axisStyleWithTheme}
+                //   orientation={'right'}
+                // />,
                 <XAxis
                   animation={animated && 'gentle'}
                   style={axisStyleWithTheme}
                   key="x"
                   tickLabelAngle={xAxisVertical ? -90 : 0}
+                  orientation={'right'}
                 />,
-                ...Charts,
+                // ...Charts,
+                <HorizontalBarSeries
+                animation={animated && 'gentle'}
+                key="chart"
+                data={[
+                  { y: 'BTC', x: 10 },
+                  { y: 'Q2', x: 5 },
+                  { y: 'Q3', x: 15 },
+                  { y: 'Q4', x: 25 },
+                  { y: 'Q5', x: 20 },
+                ]}
+                color={'#fff'}
+              />
               ]
             )}
 

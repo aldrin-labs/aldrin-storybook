@@ -46,3 +46,21 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
 
   max-height: 55%;
 `
+
+
+//TODO
+export const ButtonWrapper = styled(({ isEditModeEnabled, ...rest }) => (
+  <Grid {...rest} />
+))`
+  display: flex;
+  position: relative;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  height: 45%;
+  && {
+    padding-bottom: 0;
+  }
+`
