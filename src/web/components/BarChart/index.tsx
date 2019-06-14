@@ -52,6 +52,7 @@ class BarChartComponent extends Component<IProps, IState> {
       xAxisVertical,
       bottomMargin,
       theme,
+      customAxisStyleObject
     } = this.props
 
     const { value } = this.state
@@ -150,7 +151,7 @@ class BarChartComponent extends Component<IProps, IState> {
               [
                 <YAxis
                   animation={animated && 'gentle'}
-                  style={...{
+                  style={{
                     ...axisStyleWithTheme,
                     ticks: {
                       ...axisStyleWithTheme.ticks,
@@ -162,17 +163,24 @@ class BarChartComponent extends Component<IProps, IState> {
                 <YAxis
                   title={'ZX'}
                   animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
+                  style={{
+                    ...axisStyleWithTheme,
+                    ticks: {
+                      ...axisStyleWithTheme.ticks,
+                      stroke: 'transperent'
+                    }
+                  }} 
                   orientation={'right'}
                   right={50}
                   key="yright"
+                  // tickValues={['10%', '20%', '10%', '10%', '30%']}
                 />,
-                <XAxis
-                  animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
-                  key="x"
-                  tickLabelAngle={xAxisVertical ? -90 : 0}
-                />,
+                // <XAxis
+                //   animation={animated && 'gentle'}
+                //   style={axisStyleWithTheme}
+                //   key="x"
+                //   tickLabelAngle={xAxisVertical ? -90 : 0}
+                // />,
                 <HorizontalBarSeries
                   animation={animated && 'gentle'}
                   key="chart"
