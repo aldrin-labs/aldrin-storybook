@@ -150,7 +150,13 @@ class BarChartComponent extends Component<IProps, IState> {
               [
                 <YAxis
                   animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
+                  style={...{
+                    ...axisStyleWithTheme,
+                    ticks: {
+                      ...axisStyleWithTheme.ticks,
+                      stroke: 'transperent'
+                    }
+                  }} 
                   key="y"
                 />,
                 <YAxis
@@ -172,6 +178,10 @@ class BarChartComponent extends Component<IProps, IState> {
                   key="chart"
                   data={mockedChangedXY}
                   color={"#fff"}
+                  style={{
+                    rx: 10,
+                    ry: 10,  
+                  }}
                 />
                 // ...Charts,
               ]
