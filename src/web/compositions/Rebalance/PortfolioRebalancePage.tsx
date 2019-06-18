@@ -105,6 +105,53 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       <>
         {children}
         <Content key={`content`} container spacing={16}>
+         
+          <ChartWrapper
+            key={`chart-container`}
+            item
+            md={5}
+            className="PortfolioDistributionChart"
+          >
+            <PortfolioRebalanceChart
+              dustFilter={dustFilter}
+              key={`PortfolioRebalanceChart`}
+              title={`Portfolio Distribution`}
+              background={theme.palette.background.default}
+              staticRows={staticRows}
+              rows={rows}
+              bottomMargin={5}
+              theme={theme}
+              hideDashForToolTip={true}
+              xAxisVertical={true}
+              alwaysShowLegend={true}
+              leftBar={leftBar}
+              rightBar={rightBar}
+            />
+          </ChartWrapper> 
+
+          <ChartWrapper
+            key={`chart-container`}
+            item
+            md={5}
+            className="PortfolioDistributionChart"
+          >
+            <PortfolioRebalanceChart
+              dustFilter={dustFilter}
+              key={`TargetRebalanceChart`}
+              title={`Target Distribution`}
+              background={theme.palette.background.default}
+              staticRows={staticRows}
+              rows={rows}
+              bottomMargin={5}
+              theme={theme}
+              hideDashForToolTip={true}
+              xAxisVertical={true}
+              alwaysShowLegend={true}
+              leftBar={leftBar}
+              rightBar={rightBar}
+            />
+          </ChartWrapper> 
+          
           <Container
             key={`table-container`}
             item
@@ -148,28 +195,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             />
           </Container>
 
-          <ChartWrapper
-            key={`chart-container`}
-            item
-            md={12}
-            className="PortfolioDistributionChart"
-          >
-            <PortfolioRebalanceChart
-              dustFilter={dustFilter}
-              key={`PortfolioRebalanceChart`}
-              title={`Portfolio Distribution`}
-              background={theme.palette.background.default}
-              staticRows={staticRows}
-              rows={rows}
-              bottomMargin={75}
-              theme={theme}
-              hideDashForToolTip={true}
-              xAxisVertical={true}
-              alwaysShowLegend={true}
-              leftBar={leftBar}
-              rightBar={rightBar}
-            />
-          </ChartWrapper>
 
           {/* end of a grid */}
 
