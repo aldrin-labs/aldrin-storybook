@@ -13,7 +13,7 @@ import { MainContainerWrapper, MainContainer, ArrowGrid, Arrow } from './styles'
 
 class Onboarding extends React.Component {
   render() {
-    const { step } = this.props
+    const { step, auth } = this.props
     return (
       <MainContainerWrapper>
         <MainContainer>
@@ -25,10 +25,10 @@ class Onboarding extends React.Component {
             {step === 'first' ? (
               <Register
                 changeStep={() => this.setState({ step: 'second' })}
-                auth={this.props.auth}
+                auth={auth}
               />
             ) : (
-              <RegisterCallback auth={this.props.auth} />
+              <RegisterCallback auth={auth} />
             )}
           </Grid>
         </MainContainer>
