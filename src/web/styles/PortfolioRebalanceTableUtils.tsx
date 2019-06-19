@@ -30,7 +30,7 @@ export const getArrayOfActionElements = ({
     ...(!isEditModeEnabled
       ? [
           {
-            id: 1,
+            id: 11,
             icon: (
               <TooltipCustom
                 title={`Rebalance portfolio`}
@@ -46,7 +46,7 @@ export const getArrayOfActionElements = ({
     ...(isEditModeEnabled
       ? [
           {
-            id: 2,
+            id: 22,
             icon: (
               <TooltipCustom
                 title={`Update snapshot`}
@@ -57,7 +57,7 @@ export const getArrayOfActionElements = ({
             style: { color: '#fff', marginRight: '7px' },
           },
           {
-            id: 3,
+            id: 33,
             icon: (
               <TooltipCustom
                 title={`Discard changes`}
@@ -68,7 +68,7 @@ export const getArrayOfActionElements = ({
             style: { color: red, marginRight: '7px' },
           },
           {
-            id: 4,
+            id: 44,
             icon: (
               <TooltipCustom
                 title={`Reset to initial portfolio`}
@@ -79,7 +79,7 @@ export const getArrayOfActionElements = ({
             style: { marginRight: '7px' },
           },
           {
-            id: 'random',
+            id: 55,
             icon: (
               <TooltipCustom
                 title={`Save changes`}
