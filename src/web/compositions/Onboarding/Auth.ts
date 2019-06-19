@@ -3,9 +3,6 @@ import auth0 from 'auth0-js'
 import { auth0Options } from '@core/config/authConfig'
 import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
 
-console.log('CALLBACK_URL_FOR_AUTH0', CALLBACK_URL_FOR_AUTH0);
-
-
 export default class Auth {
   auth0 = new auth0.WebAuth({
     domain:       'ccai.auth0.com',
