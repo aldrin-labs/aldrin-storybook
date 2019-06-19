@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { SyntheticEvent } from 'react'
 
 import { compose } from 'recompose'
 
