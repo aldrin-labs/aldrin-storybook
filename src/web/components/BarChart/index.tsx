@@ -4,7 +4,6 @@ import _ from 'lodash'
 import {
   FlexibleXYPlot,
   VerticalBarSeries,
-  HorizontalBarSeries,
   XAxis,
   YAxis,
   Hint,
@@ -56,7 +55,7 @@ class BarChartComponent extends Component<IProps, IState> {
 
     const { value } = this.state
 
-    const items: Items[] = charts.map((chart: IChart) => {
+    const items: Items[] = charts.map((chart: IChart, chartIndex: number) => {
       const { title, color } = chart
       return { title, color }
     })
@@ -94,22 +93,6 @@ class BarChartComponent extends Component<IProps, IState> {
       )
     })
 
-    const mockedDefault = [
-      { x: 'Q1', y: 10 },
-      { x: 'Q2', y: 5 },
-      { x: 'Q3', y: 15 },
-      { x: 'Q4', y: 25 },
-      { x: 'Q5', y: 20 },
-    ]
-
-    const mockedChangedXY = [
-      { x: 10, y: 'Q1' },
-      { x: 5,  y: 'Q2' },
-      { x: 15, y: 'Q3' },
-      { x: 25, y: 'Q4' },
-      { x: 20, y: 'Q5' },
-    ]
-
     return (
       <ScrollContainer height={height}>
         <Container height={height} minWidth={minWidth}>
@@ -118,10 +101,8 @@ class BarChartComponent extends Component<IProps, IState> {
           ) : (
           <FlexibleXYPlot
             onMouseLeave={this.onSeriesMouseOut}
-            // xType="ordinal"
-            yType="ordinal"
-            xDomain={[0, 100]}
-            margin={{ bottom: bottomMargin, right: 40 }}
+            xType="ordinal"
+            margin={{ bottom: bottomMargin }}
           >
             {alwaysShowLegend && (
               <LegendContainer transition={theme.transitions.duration.short}>
@@ -153,27 +134,13 @@ class BarChartComponent extends Component<IProps, IState> {
                   style={axisStyleWithTheme}
                   key="y"
                 />,
-                <YAxis
-                  title={'ZX'}
-                  animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
-                  orientation={'right'}
-                  right={50}
-                  key="yright"
-                />,
                 <XAxis
                   animation={animated && 'gentle'}
                   style={axisStyleWithTheme}
                   key="x"
                   tickLabelAngle={xAxisVertical ? -90 : 0}
                 />,
-                <HorizontalBarSeries
-                  animation={animated && 'gentle'}
-                  key="chart"
-                  data={mockedChangedXY}
-                  color={"#fff"}
-                />
-                // ...Charts,
+                ...Charts,
               ]
             )}
 
