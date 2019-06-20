@@ -52,8 +52,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
   render() {
     const {
-      selectedActive,
-      areAllActiveChecked,
       totalStaticRows,
       totalRows,
       isEditModeEnabled,
@@ -119,8 +117,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 staticRowsMap,
                 totalStaticRows,
                 rows,
-                selectedActive,
-                areAllActiveChecked,
                 totalRows,
                 totalPercents,
                 totalTableRows,
