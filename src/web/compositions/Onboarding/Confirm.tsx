@@ -10,7 +10,7 @@ import {
   StyledLaunchButton,
 } from './styles'
 
-const Inputs = (props) => {
+const Confirm = (props) => {
   if (props.wrongToken) {
     return <Redirect to="/" />
   }
@@ -27,7 +27,7 @@ const Inputs = (props) => {
         </ConfirmTextContainer>
         <ConfirmTextContainer>
           <ConfirmText>
-            You should have received a confirmation email to complete the rgistration process.
+            You should have received a confirmation email to complete the registration process.
           </ConfirmText>
         </ConfirmTextContainer>
         <StyledLaunchButton
@@ -41,4 +41,4 @@ const Inputs = (props) => {
   )
 }
 
-export default Inputs
+export default Confirm

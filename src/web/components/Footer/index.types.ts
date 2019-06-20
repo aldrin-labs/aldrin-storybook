@@ -7,4 +7,5 @@ export default interface IProps {
   }
   toggleThemeModeMutation: () => Promise<any>
   fullscreenMode: boolean
+  showFooter: boolean
 }

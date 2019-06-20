@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { SyntheticEvent } from 'react'
 
 import { compose } from 'recompose'
 
@@ -187,6 +187,7 @@ const formikEnhancer = withFormik({
       const errCode = registerResult.message.code
       if (errCode === 'user_exists') {
         setStatus({email: 'The user already exists.'})
+        props.unsetLoading()
       }
     }
     else {

@@ -1,13 +1,7 @@
 import auth0 from 'auth0-js'
 
 import { auth0Options } from '@core/config/authConfig'
-import { PRODUCTION, LOCAL_BUILD } from '@core/utils/config'
-
-const callBackUrl = LOCAL_BUILD
-  ? 'http://localhost:3000'
-  : PRODUCTION
-  ? 'https://beta.cryptocurrencies.ai'
-  : 'https://develop.beta.cryptocurrencies.ai'
+import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
 
 export default class Auth {
   auth0 = new auth0.WebAuth({
@@ -41,14 +35,14 @@ export default class Auth {
       email,
       password,
       realm: 'Username-Password-Authentication',
-      redirectUri: `${callBackUrl}/registration/confirm`
+      redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
     }, () => null)
   }
 
   googleSingup = () => {
     this.auth0.authorize({
       connection: 'google-oauth2',
-      redirectUri: `${callBackUrl}/registration/confirm`,
+      redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
     })
   }
 
