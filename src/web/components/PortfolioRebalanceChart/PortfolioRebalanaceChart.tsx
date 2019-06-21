@@ -12,7 +12,6 @@ const PortfolioRebalanceChartComponent = ({
 }: IProps) => (
   <ChartContainer>
     <CardHeader title={title} />
-
     <Chart background={theme.palette.background.default}>
       <BarChart theme={theme} charts={rebalanceChartsData} {...otherProps} />
     </Chart>
