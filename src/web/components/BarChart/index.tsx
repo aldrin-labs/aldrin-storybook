@@ -5,6 +5,7 @@ import {
   FlexibleXYPlot,
   VerticalBarSeries,
   HorizontalBarSeries,
+  XYPlot,
   XAxis,
   YAxis,
   Hint,
@@ -16,43 +17,30 @@ import { IProps, IState, Items, IValue, IChart } from './types'
 import { LegendContainer } from '../cssUtils'
 import { CentredContainer } from '@sb/styles/cssUtils'
 
+import {tickPercentageFormatter, tickLabelFormatter} from '../Utils/barChartUtils'
+
 import {
   Container,
   ChartTooltip,
   StyledDiscreteColorLegend,
   ScrollContainer,
   axisStyle,
+  barSeriesStyles,
+  flexibleXYPlotMargine
 } from './styles'
-
-
-
-
-
 
 class BarChartComponent extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
-    // minColumnWidth: 20,
-    // bottomMargin: 55,
+     minColumnWidth: 20,
+     bottomMargin: 55,
   }
 
   state = {
     value: { x: null, y: null },
-    //y_tick_values: ['0-17', '18-25', '25-30', '30-45']
   }
-
-    //   tickMapper(v) {
-    //     return(
-    //         <tspan>{this.state.y_tick_values[v]}</tspan>
-    //     );
-    // }
-
-
-
+  
   onValueMouseOver = (value: IValue) => this.setState({ value })
-
   onSeriesMouseOut = () => this.setState({ value: { x: null, y: null } })
-
-
 
   render() {
     const {
@@ -68,8 +56,15 @@ class BarChartComponent extends Component<IProps, IState> {
       theme,
       xAxisVertical,
       height,
-      customAxisStyleObject
+      customAxisStyleObject,
+      customBarSeriesStyles = {},
+      yType,
+      xDomain,
+      color
     } = this.props
+
+    console.log('barSeriesStyles', barSeriesStyles)
+    console.log('customBarSeriesStyles', customBarSeriesStyles)
 
     const { value } = this.state
     
@@ -79,28 +74,8 @@ class BarChartComponent extends Component<IProps, IState> {
       { x: 20, y: 'Portfolio' },
     ]
     const percentageValuesArray = ['50%', '30%','10%']
-    const labelValuesArray = ['Portfolio', 'Index','social']
+    const labelValuesArray = ['Portfolio', 'Index','Social']
 
-    function tickPercentageFormatter() {
-      return (<tspan>
-          {
-            percentageValuesArray.map((item) => {
-              return <tspan x="0" dy="50px">{item}</tspan>
-            })
-          }
-      </tspan>);
-    }
-
-
-    function tickLabelFormatter() {
-      return (<tspan>
-          {
-            labelValuesArray.map((item) => {
-              return <tspan x="0" dy="50px">{item}</tspan>
-            })
-          }
-      </tspan>);
-    }
 
     const items: Items[] = charts.map((chart: IChart) => {
       const { title, color } = chart
@@ -123,13 +98,18 @@ class BarChartComponent extends Component<IProps, IState> {
       fontFamily: theme.typography.fontFamily,
       textColor: theme.palette.secondary.main,
       fontSize: theme.typography.fontSize,
+      ticks: { stroke: 'transparent'},
+      line: { stroke: 'transparent' },
     })
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
-      const { color, data } = chart
+      const { color, data, isHorizontal = false } = chart
+      // 
+      const BarSeries = isHorizontal ? HorizontalBarSeries : VerticalBarSeries 
+
       return (
-        <VerticalBarSeries
-          style={{ cursor: 'pointer' }}
+        <BarSeries
+          style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
           onSeriesMouseOut={this.onSeriesMouseOut}
           onValueMouseOver={this.onValueMouseOver}
           key={chartIndex}
@@ -143,16 +123,16 @@ class BarChartComponent extends Component<IProps, IState> {
 
 
     return (
-      <ScrollContainer height={160}>
-        <Container height={160} minWidth={minWidth}>
+      <ScrollContainer height={200}>
+        <Container height={200} minWidth={minWidth}>
           {showCustomPlaceholder ? (
             placeholderElement
           ) : (
               <FlexibleXYPlot
                 onMouseLeave={this.onSeriesMouseOut}
-                yType="ordinal"
-                xDomain={[0, 100]}
-                margin={{ bottom: bottomMargin, right: 95, left: 95 }}
+                yType={yType}      
+                xDomain={xDomain}  
+                margin={{bottomMargin, ...flexibleXYPlotMargine}} 
               >
                 {alwaysShowLegend && (
                   <LegendContainer transition={theme.transitions.duration.short} style={{ display: 'none' }}>
@@ -179,53 +159,31 @@ class BarChartComponent extends Component<IProps, IState> {
                     [
                       <YAxis
                         animation={animated && 'gentle'}
-                        style={{  
-                          ...axisStyleWithTheme,
-                          ticks: {
-                            ...axisStyleWithTheme.ticks,
-                            stroke: 'transparent',
-                          },
-                          line: { stroke: 'transparent' },
-                          
-                        }}
+                        style={axisStyleWithTheme}
                         tickValues={[0, 1, 2]}
-                        tickFormat={tickLabelFormatter}
-
+                        tickFormat={() => tickLabelFormatter(labelValuesArray)}
                         top={-20}
-
                         key="y"
                       />,
 
                       <YAxis
-                      animation={animated && 'gentle'}
-                      style={{
-                          ...axisStyleWithTheme,
-                          ticks: {
-                            ...axisStyleWithTheme.ticks,
-                            stroke: 'transparent',
-                          },
-                          line: { stroke: 'transparent' }
-                        }}
+                        animation={animated && 'gentle'}
+                        style={axisStyleWithTheme}
                         orientation={'right'}
                         right={50}
                         key="yright"
                         top={-20}
-
-                        tickValues={[0, 1, 2,3,4]}
-                        tickFormat={tickPercentageFormatter}
+                        tickValues={[0, 1, 2, 3, 4]}
+                        tickFormat={()=>tickPercentageFormatter(percentageValuesArray)}
                       />,
                       <HorizontalBarSeries
                         animation={animated && 'gentle'}
                         key="chart"
                         data={mockedChangedXY}
-                        color={"#fff"}
-                        style={{
-                          rx: 10,
-                          ry: 10,
-                          height: 25,
-                        }}
+                        color={color}
+                        style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
                       />
-                      // ...Charts,
+                      //...Charts,
                     ]
                   )}
 
