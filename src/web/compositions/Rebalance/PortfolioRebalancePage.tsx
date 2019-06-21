@@ -97,8 +97,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const fontFamily = theme.typography.fontFamily
     const saveButtonColor = isPercentSumGood ? green : red
 
-    const tableDataHasData = !staticRows.length || !rows.length
-
     return (
       <>
         {children}
