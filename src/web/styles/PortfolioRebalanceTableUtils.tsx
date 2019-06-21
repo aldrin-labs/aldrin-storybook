@@ -18,11 +18,11 @@ export const getArrayOfActionElements = ({
   saveButtonColor,
 }: {
   isEditModeEnabled: boolean
-  onEditModeEnable: (event: SyntheticEvent<Element>) => void
+  onEditModeEnable: (event: SyntheticEvent<any>) => void
   onNewSnapshot: () => void
   onDiscardChanges: () => void
-  onSaveClick: (event: SyntheticEvent<Element>) => void
-  onReset: (event: SyntheticEvent<Element>) => void
+  onSaveClick: (event: SyntheticEvent<any>) => void
+  onReset: (event: SyntheticEvent<any>) => void
   red: string
   saveButtonColor: string
 }) => {
@@ -38,7 +38,6 @@ export const getArrayOfActionElements = ({
               />
             ),
             onClick: onEditModeEnable,
-            color: 'secondary',
             style: { color: saveButtonColor, marginRight: '7px' },
           },
         ]

@@ -36,7 +36,7 @@ export const LoaderInnerWrapper = styled.div`
   flex-direction: column;
 `
 
-export const ContentInner = styled(Card)`
+export const ContentInner = styled(({...props}) => <Card {...props} />)`
   height: 100%;
   display: flex;
 `
