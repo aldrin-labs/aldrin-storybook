@@ -63,8 +63,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
   render() {
     const {
-      selectedActive,
-      areAllActiveChecked,
       totalStaticRows,
       totalRows,
       isEditModeEnabled,
@@ -110,13 +108,51 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const fontFamily = theme.typography.fontFamily
     const saveButtonColor = isPercentSumGood ? green : red
 
-    const tableDataHasData = !staticRows.length || !rows.length
-
     return (
       <>
 
         {children}
-        <Content key={`content`} container spacing={16} style={{padding: '25px'}}>
+        <Content key={`content`} container spacing={16}>
+          <Container
+            key={`table-container`}
+            item
+            md={12}
+            isEditModeEnabled={isEditModeEnabled}
+          >
+            <PortfolioRebalanceTableContainer
+              key={`PortfolioRebalanceTableContainer`}
+              {...{
+                isEditModeEnabled,
+                staticRows,
+                staticRowsMap,
+                totalStaticRows,
+                rows,
+                totalRows,
+                totalPercents,
+                totalTableRows,
+                isPercentSumGood,
+                undistributedMoney,
+                isUSDCurrently,
+                addMoneyInputValue,
+                theme,
+                loading,
+                red,
+                saveButtonColor,
+                secondary,
+                fontFamily,
+                totalSnapshotRows,
+                timestampSnapshot,
+                onDiscardChanges,
+                onSaveClick,
+                onReset,
+                onEditModeEnable,
+                updateState,
+                onNewSnapshot,
+                dustFilter,
+                showWarning,
+              }}
+            />
+          </Container>
 
           {/* REBALANCE INFO PANEL STARTS */ }
           <RebalanceInfoPanel />

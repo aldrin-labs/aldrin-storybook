@@ -23,10 +23,18 @@ const Footer = ({
   fullscreenMode,
   getThemeModeQuery,
   toggleThemeModeMutation,
+  showFooter,
 }: Props) => {
-  const themeMode = getThemeModeQuery && getThemeModeQuery.app && getThemeModeQuery.app.themeMode
+  const themeMode =
+    getThemeModeQuery &&
+    getThemeModeQuery.app &&
+    getThemeModeQuery.app.themeMode
 
   const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
+
+  if (!showFooter) {
+    return null
+  }
 
   return (
     <Container

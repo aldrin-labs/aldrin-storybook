@@ -3,8 +3,6 @@ import styled from 'styled-components'
 
 import { withStyles } from '@material-ui/core/styles'
 
-import SvgIcon from '@sb/components/SvgIcon/'
-
 import {
   Grid,
   Typography,
@@ -52,6 +50,13 @@ export const LogoWrapper = styled.div`
   padding-top: 47px;
 `
 
+export const MainContainerWrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 export const MainContainer = styled.div`
   height: 646px;
   width: 1054px;
@@ -80,7 +85,7 @@ export const InputContainer = styled.div`
   padding-top: 69px;
 `
 
-const styles = {
+const styles = theme => ({
   input: {
     paddingBottom: '13px',
   },
@@ -108,12 +113,31 @@ const styles = {
     borderRadius: '24px',
     borderColor: '#EA3E32',
   },
-}
+  focused: {
+    color: `${theme.palette.secondary.main} !important`,
+  },
+  underline: {
+    '&:before': {
+      borderColor: `${theme.palette.secondary.main} !important`,
+    },
+    '&:after': {
+      borderColor: `${theme.palette.secondary.main} !important`,
+    },
+  },
+})
 
 export const InputTextField = withStyles(styles)(({classes, ...others}: {classes: any}) =>
   <TextField
     InputProps={{
-      className: classes.input,
+      classes: {
+        root: classes.input,
+        focused: classes.underline,
+      },
+    }}
+    InputLabelProps={{
+      classes: {
+        focused: classes.focused,
+      },
     }}
     {...others}
   />

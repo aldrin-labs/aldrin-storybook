@@ -29,10 +29,6 @@ const PortfolioRebalanceTable = ({
   onNewSnapshot,
   tableData,
 }: IProps) => {
-  const {
-    columnNames,
-    data: { body, footer },
-  } = tableData
 
   const Table = isEditModeEnabled ? ImTable : TableWithSort
 
@@ -50,9 +46,9 @@ const PortfolioRebalanceTable = ({
       )}
       <ContentInner>
         <Table
-          columnNames={columnNames}
+          columnNames={tableData.columnNames}
           id="PortfolioRebalanceTable"
-          data={{ body, footer }}
+          data={tableData.data}
           rowsWithHover={false}
           actionsColSpan={2}
           actions={getArrayOfActionElements({

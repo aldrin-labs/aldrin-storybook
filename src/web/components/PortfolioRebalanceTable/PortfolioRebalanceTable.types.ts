@@ -14,5 +14,5 @@ export interface IProps {
   saveButtonColor: string
   timestampSnapshot: moment.Moment | null
   onNewSnapshot: () => void
-  tableData: object
+  tableData: any
 }

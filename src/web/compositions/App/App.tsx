@@ -49,18 +49,21 @@ const AppRaw = ({
 
   const fullscreen: boolean =
     currentPage === '/chart' && chartPageView !== 'default'
+  const showFooter = currentPage !== '/registration'
+  // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
+
   return (
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
-        <AppGridLayout>
+        <AppGridLayout showFooter={showFooter}>
           {!pageIsRegistration && (
             <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
           )}
           {children}
         </AppGridLayout>
-        <Footer fullscreenMode={fullscreen} />
+        <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
         <ShowWarningOnMoblieDevice />
         <GlobalStyle />
       </ThemeWrapper>
