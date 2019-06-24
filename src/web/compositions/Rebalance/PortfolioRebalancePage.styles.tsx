@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card, Grid, CardContent } from '@material-ui/core'
+import { Card, Grid, CardContent, Typography } from '@material-ui/core'
 
 
 export const ChartWrapper = styled(({ isEditModeEnabled, ...rest }) => (
@@ -45,4 +45,11 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
   props.isEditModeEnabled ? 'space-between' : 'left'};
 
   max-height: 55%;
+`
+export const TypographyAccordionTitle = styled(Typography)`
+  width: 100%;
+  margin: 10px auto;
+  color: #ABBAD1;
+  text-align: center;
+  text-transform: uppercase;
 `

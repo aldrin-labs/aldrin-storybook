@@ -8,7 +8,7 @@ import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
 
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
-import { Container, ChartWrapper } from './PortfolioRebalancePage.styles'
+import { Container, ChartWrapper, TypographyAccordionTitle } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { graphql } from 'react-apollo'
@@ -18,7 +18,9 @@ import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 
-import  {Link} from '@material-ui/core'
+import  { Link } from '@material-ui/core'
+import SvgIcon from '../../components/SvgIcon'
+import { BtnCustom } from '../../components/BtnCustom/BtnCustom.styles'
 
 import { IState, IProps } from './PortfolioRebalancePage.types'
 
@@ -26,13 +28,16 @@ import { IState, IProps } from './PortfolioRebalancePage.types'
 // Rebalance Panel
 import RebalanceInfoPanel from '../../components/RebalanceInfoPanel/RebalanceInfoPanel'
 import RebalanceAccordionIndex from '../../components/RebalanceAccorionIndex/RebalanceAccordionIndex'
+import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
 // Rebalance Panel End
 
+import Stroke from '../../../icons/Stroke.svg'
 
 
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
+    open: false,
   }
 
   handleJoyrideCallback = async (data: any) => {
@@ -60,6 +65,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       this.setState({ key: oldKey + 1 })
     }
   }
+
 
   render() {
     const {
@@ -112,14 +118,15 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       <>
 
         {children}
-        <Content key={`content`} container spacing={16}>
+        <Content key={`content`} container spacing={16} style={{padding: '25px'}}>
           <Container
             key={`table-container`}
             item
             md={12}
             isEditModeEnabled={isEditModeEnabled}
           >
-            <PortfolioRebalanceTableContainer
+
+            {/* <PortfolioRebalanceTableContainer
               key={`PortfolioRebalanceTableContainer`}
               {...{
                 isEditModeEnabled,
@@ -151,7 +158,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 dustFilter,
                 showWarning,
               }}
-            />
+            /> */}
           </Container>
 
           {/* REBALANCE INFO PANEL STARTS */ }
@@ -189,16 +196,32 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               yType={"ordinal"}
               xDomain={[0, 100]}
               color={"#fff"}
+              chartcolor={'#fff'}
+              chartTitle={'title'}
+              sectionData = {[{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 50},{symbol: 'Source', portfolioPerc: 50}]}
+              showSectionData={true}
+              //coinData={staticRows}
             />
           </ChartWrapper> 
 
           <ChartWrapper
             key={`chart-container`}
             item
-            md={2}
+            md={12}
+            lg={2}
             className="PortfolioDistributionChart"
+            style={{background: `url(${Stroke})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}
           >
-                <Link href={'#'} style={{color: 'white'}} >
+
+
+
+          <RebalanceDialogTransaction />
+
+
+
+
+{/* 
+                <Link  style={{color: 'white'}} onClick={this.handleClickOpen}>
                   <svg width="96" height="210" viewBox="0 0 96 210" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M49 0L49 210" stroke="#E7ECF3" stroke-width="2"/>
                   <circle cx="48" cy="109" r="48" fill="#F9FBFD"/>
@@ -215,7 +238,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                   </radialGradient>
                   </defs>
                   </svg>
-                </Link>
+                </Link> */}
 
           </ChartWrapper>
 
@@ -250,19 +273,62 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               yType={"ordinal"}
               xDomain={[0, 100]}
               color={"#fff"}
+              chartcolor={'#fff'}
+              chartTitle={'title'}
+              sectionData = {[{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 50},{symbol: 'Source', portfolioPerc: 50}]}
+              showSectionData={true}
             />
           </ChartWrapper> 
 
 
 
           {/* Accordion Table Start */}
-          <RebalanceAccordionIndex />
+          <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
+
+          <RebalanceAccordionIndex 
+                isEditModeEnabled={isEditModeEnabled}
+                staticRows={staticRows}
+                staticRowsMap={staticRowsMap}
+                totalStaticRows={totalStaticRows}
+                rows={rows}
+                totalRows={totalRows}
+                totalPercents={totalPercents}
+                totalTableRows={totalTableRows}
+                isPercentSumGood={isPercentSumGood}
+                undistributedMoney={undistributedMoney}
+                isUSDCurrently={isUSDCurrently}
+                addMoneyInputValue={addMoneyInputValue}
+                theme={theme}
+                loading={loading}
+                red={red}
+                saveButtonColor={saveButtonColor}
+                secondary={secondary}
+                fontFamily={fontFamily}
+                totalSnapshotRows={totalSnapshotRows}
+                timestampSnapshot={timestampSnapshot}
+                onDiscardChanges={onDiscardChanges}
+                onSaveClick={onSaveClick}
+                onReset={onReset}
+                onEditModeEnable={onEditModeEnable}
+                updateState={updateState}
+                onNewSnapshot={onNewSnapshot}
+                dustFilter={dustFilter}
+                showWarning={showWarning}
+            />
+
+
+          <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
+          
+          <BtnCustom btnColor="#5085EC">add index</BtnCustom>
+
+          <TypographyAccordionTitle>following portfolios</TypographyAccordionTitle>
+
+
+          <BtnCustom btnColor="#5085EC">Add portfolio</BtnCustom>
+
+
+
           {/* Accordion Table End */}
-
-
-
-
-
 
           {/* end of a grid */}
 
