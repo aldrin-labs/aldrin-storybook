@@ -40,7 +40,11 @@ export default class ThemeWrapper extends Component<Props> {
     const theme = createMyTheme(
       themeMode === 'dark'
         ? {
-            typography: {
+            typography: {    
+              fontFamily: [
+                'Lato', 
+                'sans-serif',
+              ].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',
