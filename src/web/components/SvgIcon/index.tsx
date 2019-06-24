@@ -11,7 +11,7 @@ interface Props {
 
 export default class SvgIcon extends React.Component<Props, {}> {
   render() {
-    const { src, style, styledComponentsAdditionalStyle } = this.props
+    const { src, style, styledComponentsAdditionalStyle, animation } = this.props
     const width = this.props.width || 16
     const height = this.props.height || 16
 
@@ -27,6 +27,10 @@ export default class SvgIcon extends React.Component<Props, {}> {
 
 const WebIcon = styled.img`
   object-fit: contain;
+  &:hover {
+    transform: scale(1.1);
+    transition: all 0.5s ease-in-out;
+  }
   ${(props: { styledComponentsAdditionalStyle: string }) =>
     props.styledComponentsAdditionalStyle};
 `
