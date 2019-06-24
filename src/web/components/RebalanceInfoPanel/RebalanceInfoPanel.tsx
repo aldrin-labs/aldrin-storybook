@@ -1,22 +1,22 @@
 import React, { Component } from 'react'
 import { Grid  } from '@material-ui/core'
-import { StyledTypography, StyledSubTypography, StyledRebalanceInfoBtn, CustomLink } from './RebalanceInfoPanel.styles'
-
-
+import { StyledTypography, StyledSubTypography, CustomLink } from './RebalanceInfoPanel.styles'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import SelectElement from './SelectElement'
 
 
 export default class RebalanceInfoPanel extends Component {
   render() {
     return (
-      <Grid container style={{height: '100px', background: ''}}>
+      <Grid container justify="center">
         {/* Grid - 1st item md - 6 Starts */}
-        <Grid item md={5}>
-          <Grid container style={{height: '100px', background: ''}}>
-            <Grid container justify="space-between" style={{height: '100px', background: ''}}>
+        <Grid item md={12} lg={5}>
+          <Grid container>
+            <Grid container justify="space-between">
 
               <Grid item lg={4} justify="center">
                   <StyledTypography>Binance trade account</StyledTypography>
-                  <StyledSubTypography variant={'h6'} prymaryColor="#ffffff">$138, 000.50</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} primaryColor="#ffffff">$138, 000.50</StyledSubTypography>
               </Grid>
               
               <Grid item lg={4} >
@@ -33,22 +33,24 @@ export default class RebalanceInfoPanel extends Component {
           </Grid>{/* Grid - container end*/}
         </Grid> {/* Grid - 1st item md = 6 end */}
 
-        <Grid item md={2}></Grid>
+        <Grid item md={0} lg={2}></Grid>
           {/* Space */}
 
         {/* Grid - 2nd item md - 6 Starts */}
-        <Grid item md={5}>
+        <Grid item md={12} lg={5}>
           <Grid container>
-            <Grid container justify="center">
+            <Grid container justify="space-between">
 
               <Grid item lg={4} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <StyledRebalanceInfoBtn>coin chart</StyledRebalanceInfoBtn>
+                <BtnCustom btnColor="#5085EC" btnWidth="100px">coin chart</BtnCustom>
               </Grid>
 
-              <Grid item lg={4}  style={{display: 'flex', justifyContent: 'center'}}>
+              <Grid item lg={4}  style={{display: 'flex', justifyContent: 'center',alignItems: 'center'}}>
                 <CustomLink href={'#'} position="center" verticalPosition="center">rebalance </CustomLink>
-                <CustomLink href={'#'} position="center" verticalPosition="center" linkColor="#5085EC">weekly </CustomLink>
-              
+                {/* <CustomLink href={'#'} position="center" verticalPosition="center" linkColor="#5085EC">weekly </CustomLink> */}
+
+
+                <SelectElement />
               
               
               

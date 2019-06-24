@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Typography, Button, Link } from '@material-ui/core'
 
 export {
- StyledRebalanceInfoBtn,
+//  StyledRebalanceInfoBtn,
  StyledTypography,
  StyledSubTypography,
  CustomLink,
@@ -17,12 +17,12 @@ const CustomLink = styled(Link)`
   align-self: ${props => props.verticalPosition || 'none'};
 `
 
-const StyledRebalanceInfoBtn = styled(Button)`
-  border: 2px solid #5085EC;
-  border-radius: 23px;
-  color: #5085EC;
-  font-size: 11px;
-`
+// const StyledRebalanceInfoBtn = styled(Button)`
+//   border: 2px solid #5085EC;
+//   border-radius: 23px;
+//   color: #5085EC;
+//   font-size: 11px;
+// `
 
 const StyledTypography = styled(Typography)`
   /* font-family: 'Aguafina Script', cursive; */
@@ -41,6 +41,6 @@ const StyledSubTypography = styled(Typography)`
   line-height: 25px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: ${props => props.counterColor || props.secondaryColor || props.prymaryColor ||'#7284A0'};
+  color: ${props => props.counterColor || props.secondaryColor || props.primaryColor ||'#7284A0'};
   text-align: ${props => props.position || 'none'};
 `
