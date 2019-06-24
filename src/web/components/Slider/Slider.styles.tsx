@@ -27,5 +27,6 @@ export const StyledSlider = styled(
   & .thumb {
     background: ${(props: { thumbBackground: string }) =>
       props.thumbBackground};
+    // border: ${(props: {borderThumb: string}) => props.borderThumb};
   }
 `
