@@ -15,9 +15,7 @@ const GridItemHeadingCustom = styled(Grid)`
 `
 
 const StyledTypography = styled(Typography)`
-  /* font-family: 'Aguafina Script', cursive; */
   font-size: 65%;
-  /* font-size: 11px; */
   line-height: 25px;
   letter-spacing: 1px;
   text-transform: uppercase;

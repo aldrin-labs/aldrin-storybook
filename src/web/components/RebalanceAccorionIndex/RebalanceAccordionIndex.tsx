@@ -69,192 +69,100 @@ class RebalanceAccordionIndex extends React.Component {
       onNewSnapshot,
       dustFilter,
       showWarning,
+
+      accordionIndexPanelData
     } = this.props;
     const { expanded } = this.state;
 
+    let panelId = 1;
+    
     return (
       <div className={classes.root}>
-        <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Grid container justify="center">
-              <GridItemHeadingCustom borderColor="#F29C38" lg={3}>
-                <TypographyHeading>Free Assets</TypographyHeading>
-              </GridItemHeadingCustom>
-              <Grid item lg={3}>
-                <StyledTypography>Current value</StyledTypography>
-                <StyledSubTypography>$56,500.00</StyledSubTypography>
-              </Grid>
-              <Grid item lg={3}>
-                <Slider thumbBackground='blue' trackAfterBackground='red' trackBeforeBackground='green' />
-              </Grid>
-              <Grid item lg={2}>
-                <StyledTypography>Target value</StyledTypography>
-                <StyledSubTypography>$56,500.00</StyledSubTypography>
-              </Grid>
-              <Grid item lg={1}>
-                <Typography>...</Typography>
-              </Grid>
-            </Grid>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+      {
+        accordionIndexPanelData.map((item, i) => {
 
-            <PortfolioRebalanceTableContainer
-              key={`PortfolioRebalanceTableContainer`}
-            {...{
-              isEditModeEnabled,
-              staticRows,
-              staticRowsMap,
-              totalStaticRows,
-              rows,
-              totalRows,
-              totalPercents,
-              totalTableRows,
-              isPercentSumGood,
-              undistributedMoney,
-              isUSDCurrently,
-              addMoneyInputValue,
-              theme,
-              loading,
-              red,
-              saveButtonColor,
-              secondary,
-              fontFamily,
-              totalSnapshotRows,
-              timestampSnapshot,
-              onDiscardChanges,
-              onSaveClick,
-              onReset,
-              onEditModeEnable,
-              updateState,
-              onNewSnapshot,
-              dustFilter,
-              showWarning,
-              }}
-            />
+          const {         
+            accordionPanelHeadingBorderColor,
+            accordionPanelHeading,
+            secondColValue,
+            fourthColValue
+          } = item;
 
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        
-        <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Grid container justify="center">
-              <GridItemHeadingCustom borderColor="#DEDB8E" lg={3}>
-                <TypographyHeading>Free Assets</TypographyHeading>
-              </GridItemHeadingCustom>
-              <Grid item lg={3}>
-                <StyledTypography>Current value</StyledTypography>
-                <StyledSubTypography>$74,500.00</StyledSubTypography>
-              </Grid>
-              <Grid item lg={3}>
-                <Typography>POLZUNOK</Typography>
-              </Grid>
-              <Grid item lg={2}>
-                <StyledTypography>Target value</StyledTypography>
-                <StyledSubTypography>$90,500.00</StyledSubTypography>
-              </Grid>
-              <Grid item lg={1}>
-                <Typography>...</Typography>
-              </Grid>
-            </Grid>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          const panelId = `panel`+`${i}`;
 
-            <PortfolioRebalanceTableContainer
-              key={`PortfolioRebalanceTableContainer`}
-            {...{
-              isEditModeEnabled,
-              staticRows,
-              staticRowsMap,
-              totalStaticRows,
-              rows,
-              totalRows,
-              totalPercents,
-              totalTableRows,
-              isPercentSumGood,
-              undistributedMoney,
-              isUSDCurrently,
-              addMoneyInputValue,
-              theme,
-              loading,
-              red,
-              saveButtonColor,
-              secondary,
-              fontFamily,
-              totalSnapshotRows,
-              timestampSnapshot,
-              onDiscardChanges,
-              onSaveClick,
-              onReset,
-              onEditModeEnable,
-              updateState,
-              onNewSnapshot,
-              dustFilter,
-              showWarning,
-              }}
-            />
+          return(
+            <ExpansionPanel expanded={expanded === `${panelId}`} onChange={this.handleChange(`${panelId}`)}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Grid container justify="space-between">
+                  <GridItemHeadingCustom borderColor={accordionPanelHeadingBorderColor} lg={3}>
+                    <TypographyHeading>{accordionPanelHeading}</TypographyHeading>
+                  </GridItemHeadingCustom>
+                  <Grid item lg={3}>
+                    <StyledTypography>Current value</StyledTypography>
+                    <StyledSubTypography>{secondColValue}</StyledSubTypography>
+                  </Grid>
+                  <Grid item lg={3} style={{alignSelf: 'center'}}>
+                    <Slider 
+                      thumbWidth='30px' 
+                      thumbHeight='30px' 
+                      sliderWidth='200px'
+                      sliderHeight='20px' 
+                      borderRadius='18px' 
+                      thumbBackground='blue' 
+                      trackAfterBackground='orange' 
+                      trackBeforeBackground='#E7ECF3' />
+                  </Grid>
+                  <Grid item lg={2}>
+                    <StyledTypography>Target value</StyledTypography>
+                    <StyledSubTypography>{fourthColValue}</StyledSubTypography>
+                  </Grid>
+                  <Grid item lg={1}>
+                    <Typography>...</Typography>
+                  </Grid>
+                </Grid>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
 
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Grid container justify="center">
-              <GridItemHeadingCustom borderColor="#4152AF" lg={3}>
-                <TypographyHeading>Free Assets</TypographyHeading>
-              </GridItemHeadingCustom>
-              <Grid item lg={3}>
-                <StyledTypography>Current value</StyledTypography>
-                <StyledSubTypography>$65,500.00</StyledSubTypography>
-              </Grid>
-              <Grid item lg={3}>
-                <Typography>POLZUNOK</Typography>
-              </Grid>
-              <Grid item lg={2}>
-                <StyledTypography>Target value</StyledTypography>
-                <StyledSubTypography>$45,500.00</StyledSubTypography>
-              </Grid>
-              <Grid item lg={1}>
-                <Typography>...</Typography>
-              </Grid>
-            </Grid>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+                <PortfolioRebalanceTableContainer
+                  key={`PortfolioRebalanceTableContainer`}
+                {...{
+                  isEditModeEnabled,
+                  staticRows,
+                  staticRowsMap,
+                  totalStaticRows,
+                  rows,
+                  totalRows,
+                  totalPercents,
+                  totalTableRows,
+                  isPercentSumGood,
+                  undistributedMoney,
+                  isUSDCurrently,
+                  addMoneyInputValue,
+                  theme,
+                  loading,
+                  red,
+                  saveButtonColor,
+                  secondary,
+                  fontFamily,
+                  totalSnapshotRows,
+                  timestampSnapshot,
+                  onDiscardChanges,
+                  onSaveClick,
+                  onReset,
+                  onEditModeEnable,
+                  updateState,
+                  onNewSnapshot,
+                  dustFilter,
+                  showWarning,
+                  }}
+                />
 
-            <PortfolioRebalanceTableContainer
-              key={`PortfolioRebalanceTableContainer`}
-            {...{
-              isEditModeEnabled,
-              staticRows,
-              staticRowsMap,
-              totalStaticRows,
-              rows,
-              totalRows,
-              totalPercents,
-              totalTableRows,
-              isPercentSumGood,
-              undistributedMoney,
-              isUSDCurrently,
-              addMoneyInputValue,
-              theme,
-              loading,
-              red,
-              saveButtonColor,
-              secondary,
-              fontFamily,
-              totalSnapshotRows,
-              timestampSnapshot,
-              onDiscardChanges,
-              onSaveClick,
-              onReset,
-              onEditModeEnable,
-              updateState,
-              onNewSnapshot,
-              dustFilter,
-              showWarning,
-              }}
-            />
-
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          )
+          
+        })
+      }
       </div>
     );
   }
