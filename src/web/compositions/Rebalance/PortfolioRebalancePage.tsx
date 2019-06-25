@@ -17,9 +17,6 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
-
-import  { Link } from '@material-ui/core'
-import SvgIcon from '../../components/SvgIcon'
 import { BtnCustom } from '../../components/BtnCustom/BtnCustom.styles'
 
 import { IState, IProps } from './PortfolioRebalancePage.types'
@@ -117,28 +114,28 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     //TODO  Create not mock data
     const mockData = [
         {
-          converted:'0.01BTC => 6.234ETH',
-          sum: '68.5$',
-          fee: 'FEE: $0.01',
-          isSelected: false
+          convertedFrom:'0.01BTC',
+          convertedTo:'6.234ETH', 
+          sum: '$68.5',
+          isDone: false
         },
         {
-          converted:'0.01BTC => 6.234ETH',
-          sum: '68.5$',
-          fee: 'FEE: $0.01',
-          isSelected: true
+          convertedFrom:'0.01BTC',
+          convertedTo:'6.234ETH',                   
+          sum: '$68.5',
+          isDone: true
         },
         {
-          converted:'0.01BTC => 6.234ETH',
-          sum: '68.5$',
-          fee: 'FEE: $0.01',
-          isSelected: true
+          convertedFrom:'0.01BTC',
+          convertedTo:'6.234ETH',
+          sum: '$68.5',
+          isDone: true
         },
         {
-          converted:'0.01BTC => 6.234ETH',
-          sum: '68.5$',
-          fee: 'FEE: $0.01',
-          isSelected: false
+          convertedFrom:'0.01BTC',
+          convertedTo:'6.234ETH',
+          sum: '$68.5',
+          isDone: false
         }
       ];
 
@@ -170,7 +167,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       fourthColValue: '55:36:48',
     }
 
-    const rebalanceOption = ['Daily2', 'Weekly', 'Bi-Weekly', 'Monthly', 'Every ___ Days', 'STOP REBALANCE'];
+    const rebalanceOption = ['Daily', 'Weekly', 'Bi-Weekly', 'Monthly', 'Every ___ Days', 'STOP REBALANCE'];
 
 
     return (

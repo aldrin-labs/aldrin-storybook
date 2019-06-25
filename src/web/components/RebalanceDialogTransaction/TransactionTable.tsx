@@ -7,7 +7,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
+import DoneIcon from '../../../icons/DoneIcon.svg'
+import TradeIcon from '../../../icons/TradeIcon.svg'
+import ProgressBar from '../ProgressBar/ProgressBar'
+import SvgIcon from '../SvgIcon'
 
 const styles = theme => ({
   root: {
@@ -21,38 +24,41 @@ const styles = theme => ({
 });
 
 let id = 0;
-function createData(converted, sum, fee, isSelected) {
+function createData(convertedFrom, convertedTo, sum, isDone) {
   id += 1;
-  return { id, converted, sum, fee, isSelected };
+  return { id, convertedFrom, convertedTo, sum, isDone };
 }
 
 function TransactionTable(props) {
   const { classes, data } = props;
 
   const rows = data.map(item => {
-    const { converted, sum, fee, isSelected } = item;
-    return createData(converted, sum, fee, isSelected);
+    const { convertedFrom, convertedTo, sum, isDone } = item;
+    return createData(convertedFrom, convertedTo, sum, isDone);
   })
 
   return (
-    <Paper className={classes.root}>
+    // <Paper className={classes.root}>
+    <>
+      <ProgressBar />
       <Table className={classes.table}>
         <TableBody>
           {rows.map(row => (
             <TableRow key={row.id}>
               <TableCell component="th" scope="row"  style={{width: '250px', padding: '4px 15px 4px 24px'}}>
-                {row.converted}
+                {row.convertedFrom} {<SvgIcon  width='20' height='10'  src={TradeIcon} />} {row.convertedTo}
               </TableCell>
               <TableCell align="left" >{row.sum}</TableCell>
-              <TableCell align="right">{row.fee}</TableCell>
               <TableCell align="right">
-                <Checkbox checked={row.isSelected} />
+          
+                {(row.isDone) ? (<SvgIcon src={DoneIcon} />) : (``)}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </Paper>
+      </>
+    // </Paper>
   );
 }
 
