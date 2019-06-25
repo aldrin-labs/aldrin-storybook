@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const styles = theme => ({
   root: {
@@ -20,42 +21,33 @@ const styles = theme => ({
 });
 
 let id = 0;
-function createData(name, calories, fat, carbs) {
+function createData(converted, sum, fee, isSelected) {
   id += 1;
-  return { id, name, calories, fat, carbs };
+  return { id, converted, sum, fee, isSelected };
 }
 
-const rows = [
-  createData('0.01BTC', '6.234ETH', '68.5$', 'FEE: $0.01'),
-  createData('0.01BTC', '6.234ETH', '68.5$', 'FEE: $0.01'),
-  createData('0.01BTC', '6.234ETH', '68.5$', 'FEE: $0.01'),
-  createData('0.01BTC', '6.234ETH', '68.5$', 'FEE: $0.01'),
-];
-
 function TransactionTable(props) {
-  const { classes } = props;
+  const { classes, data } = props;
+
+  const rows = data.map(item => {
+    const { converted, sum, fee, isSelected } = item;
+    return createData(converted, sum, fee, isSelected);
+  })
 
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
-        {/* <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat (g)</TableCell>
-            <TableCell align="right">Carbs (g)</TableCell>
-            <TableCell align="right">Protein (g)</TableCell>
-          </TableRow>
-        </TableHead> */}
         <TableBody>
           {rows.map(row => (
             <TableRow key={row.id}>
-              <TableCell component="th" scope="row">
-                {row.name}
+              <TableCell component="th" scope="row"  style={{width: '250px', padding: '4px 15px 4px 24px'}}>
+                {row.converted}
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="left" >{row.sum}</TableCell>
+              <TableCell align="right">{row.fee}</TableCell>
+              <TableCell align="right">
+                <Checkbox checked={row.isSelected} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -9,14 +9,16 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 
-import { GridCustom, DialogWrapper, CancelBtn, GoBtn, DialogTitleCustom, DialogSubTitle, TypographyTopDescription, LinkCustom } from "./RebalanceDialogTransaction.styles";
+import { GridCustom, DialogWrapper, DialogTitleCustom, DialogSubTitle, TypographyTopDescription, LinkCustom } from "./RebalanceDialogTransaction.styles";
 import SvgIcon from '../../components/SvgIcon'
 import Stroke from '../../../icons/Stroke.svg'
 
 import TransactionTable from './TransactionTable'
 import { borderRadius } from 'react-select/lib/theme'
 
-//TODO chnage png => svg
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import AccordionTable from './AccordionTable'
+// TODO chnage png => svg 
 import Ellipse from '../../../icons/Ellipse.png'
 
 const DialogTitle = withStyles(theme => ({
@@ -76,7 +78,18 @@ class RebalanceDialogTransaction extends React.Component {
   };
 
   render() {
-    //const {} = this.props;
+    const {
+      dialogHedaing,
+      titleDescription,
+      subTitleDescription,
+      fee,
+      btnFirst,
+      btnSecond,
+      accordionTitle,
+      data
+    } = this.props;
+
+
     return (
       <div>
         <LinkCustom background={Stroke} onClick={this.handleClickOpen}>
@@ -90,39 +103,35 @@ class RebalanceDialogTransaction extends React.Component {
           open={this.state.open}
         >
           <DialogTitleCustom id="customized-dialog-title" onClose={this.handleClose}>
-              <Typography color="primary">ARE YOU SURE?</Typography>
+              <Typography color="primary">{dialogHedaing}</Typography>
           </DialogTitleCustom>
 
           <DialogContent justify="center">
             <TypographyTopDescription style={{textAlign: "center"}}>
-                Your portfolio will change. You can undo this changes on rebalance history page.
+                {titleDescription}
             </TypographyTopDescription>
 
             <TypographyTopDescription>
-                Fee will be $2,35
+                {subTitleDescription} {fee}
             </TypographyTopDescription>
 
-          <GridCustom container justify="center">
-            <CancelBtn onClick={this.handleClose} color="primary">
-              Cancel
-            </CancelBtn>
-            <GoBtn color="primary">
-              Go!
-            </GoBtn>
-          </GridCustom>
+            <GridCustom container justify="center">
+              <BtnCustom onClick={this.handleClose} btnColor="#D93B28">
+                { btnFirst }
+              </BtnCustom>
 
-          <DialogSubTitle id="customized-dialog-sub-title">
-              <Typography>Transactions</Typography>
-          </DialogSubTitle>
+              <BtnCustom btnColor="#5085EC" >
+                { btnSecond }
+              </BtnCustom>
+            </GridCustom>
 
-{/* 
-          <DialogActions>
-            <CancelBtn onClick={this.handleClose} color="primary">
-              Cancel
-            </CancelBtn>
-          </DialogActions> */}
-          
-            <TransactionTable />
+            {/* <DialogSubTitle id="customized-dialog-sub-title">
+                <Typography>{accordionTitle}</Typography>
+            </DialogSubTitle> */}
+
+            <AccordionTable accordionTitle={accordionTitle} data={data} accordionTitle={accordionTitle}/>
+
+            {/* <TransactionTable /> */}
 
           </DialogContent>
         </DialogWrapper>
