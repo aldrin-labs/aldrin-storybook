@@ -11,5 +11,5 @@ const BtnCustom = styled(Button)`
   border-radius: 23px;
   color: ${props => props.btnColor || '#333'}; 
   font-size: 11px;
-  margin: 10px auto;
+  margin: ${props => props.margin || '5px 10px'};
 `
