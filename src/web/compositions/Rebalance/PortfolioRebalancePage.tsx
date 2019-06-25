@@ -229,7 +229,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <ChartWrapper
             key={`chart-container`}
             item
-            md={12}
+            md={1}
             lg={2}
             className="PortfolioDistributionChart"
             style={{background: `url(${Stroke})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}

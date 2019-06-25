@@ -19,7 +19,7 @@ import { borderRadius } from 'react-select/lib/theme'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
 // TODO chnage png => svg 
-import Ellipse from '../../../icons/Ellipse.png'
+import Ellipse from '../../../icons/Ellipse.svg'
 
 const DialogTitle = withStyles(theme => ({
   root: {
