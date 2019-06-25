@@ -7,6 +7,10 @@ import SelectElement from './SelectElement'
 
 export default class RebalanceInfoPanel extends Component {
   render() {
+    const  {rebalanceInfoPanelData, rebalanceOption} = this.props;
+    //TODO: make not mock
+    const { firstColValue, secondColValue, thirdColValue, fourthColValue } = rebalanceInfoPanelData;
+
     return (
       <Grid container justify="center">
         {/* Grid - 1st item md - 6 Starts */}
@@ -16,17 +20,17 @@ export default class RebalanceInfoPanel extends Component {
 
               <Grid item lg={4} justify="center">
                   <StyledTypography>Binance trade account</StyledTypography>
-                  <StyledSubTypography variant={'h6'} primaryColor="#ffffff">$138, 000.50</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} primaryColor="#ffffff">{firstColValue}</StyledSubTypography>
               </Grid>
               
               <Grid item lg={4} >
                   <StyledTypography>Binance trade account</StyledTypography>
-                  <StyledSubTypography variant={'h6'} secondaryColor="#97C15C">$70, 500.00</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} secondaryColor="#97C15C">{secondColValue}</StyledSubTypography>
               </Grid>
               
               <Grid item lg={4} >
                   <StyledTypography>Available percentage</StyledTypography>
-                  <StyledSubTypography variant={'h6'} secondaryColor="#97C15C">75%</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} secondaryColor="#97C15C">{thirdColValue}</StyledSubTypography>
               </Grid>
 
             </Grid>{/* Grid - container justify center end*/}
@@ -50,50 +54,13 @@ export default class RebalanceInfoPanel extends Component {
                 {/* <CustomLink href={'#'} position="center" verticalPosition="center" linkColor="#5085EC">weekly </CustomLink> */}
 
 
-                <SelectElement />
-              
-              
-              
-
-
-
-
-               {/*
-               <form className={classes.root} autoComplete="off">
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="age-simple">Age</InputLabel>
-                      <Select
-                        value={this.state.age}
-                        onChange={this.handleChange}
-                        inputProps={{
-                          name: 'age',
-                          id: 'age-simple',
-                        }}
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                      </Select>
-                    </FormControl> 
-                  </form>
-                */}
-
-
-
-
-
-              
-              
-              
-              
+                <SelectElement rebalanceOption={rebalanceOption}/>
+     
               </Grid>
 
               <Grid item lg={4}>
                   <StyledTypography position="right">Next Rebalance in</StyledTypography>  
-                  <StyledSubTypography variant={'h5'} counterColor="#ED6337" position="right">55:36:48</StyledSubTypography> 
+                  <StyledSubTypography variant={'h5'} counterColor="#ED6337" position="right">{fourthColValue}</StyledSubTypography> 
               </Grid>
 
             </Grid>{/* Grid - container justify center end*/}

@@ -11,6 +11,7 @@ export const StyledSlider = styled(
     ...rest
   }) => <Slider {...rest} />
 )`
+  width: ${ (props: {sliderWidth: string}) => props.sliderWidth || '100px'};
   & .trackAfter {
     background: ${(props: { trackAfterBackground: string }) =>
       props.trackAfterBackground};
@@ -19,12 +20,16 @@ export const StyledSlider = styled(
   }
 
   & .trackBefore {
+    border-radius: ${(props: {borderRadius: string}) => props.borderRadius || 'none'};
+    height: ${(props: {sliderHeight: string}) => props.sliderHeight || '2px'};
     background: ${(props: { trackBeforeBackground: string }) =>
       props.trackBeforeBackground};
     opacity: 1;
   }
 
   & .thumb {
+    height: ${(props: {thumbHeight: string}) => props.thumbHeight || '12px'};
+    width: ${(props: {thumbWidth: string}) => props.thumbWidth || '12px'};
     background: ${(props: { thumbBackground: string }) =>
       props.thumbBackground};
     // border: ${(props: {borderThumb: string}) => props.borderThumb};
