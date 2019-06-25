@@ -89,6 +89,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       dustFilter,
       showWarning,
       getTooltipSettingsQuery: { getTooltipSettings },
+      sliderStep,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -138,6 +139,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot,
                 dustFilter,
                 showWarning,
+                sliderStep,
               }}
             />
           </Container>
