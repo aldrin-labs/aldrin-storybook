@@ -63,23 +63,16 @@ class BarChartComponent extends Component<IProps, IState> {
       color
     } = this.props
 
-    // console.log('barSeriesStyles', barSeriesStyles)
-    // console.log('customBarSeriesStyles', customBarSeriesStyles)
+    const { value } = this.state 
+     
+    const DataArr = charts[0].data;
+    const percentageValuesArray = [];
+    const labelValuesArray = [];
 
-    const { value } = this.state
-    
-    console.log(charts);
-
-    // const mockedChangedXY = [
-    //   { x: 55, y: 'Social' },
-    //   { x: 25, y: 'Index' },
-    //   { x: 20, y: 'Portfolio' },
-    // ]
-
-    //  const percentageValuesArray = ['50%', '30%','10%']
-    //  const labelValuesArray = ['Portfolio', 'Index','Social']
-
-    
+    for(let i = 0; i < DataArr.length; i++){
+      labelValuesArray.push( DataArr[i].y);
+      percentageValuesArray.push( DataArr[i].x);
+    }  
 
     const items: Items[] = charts.map((chart: IChart) => {
       const { title, color } = chart
@@ -117,7 +110,7 @@ class BarChartComponent extends Component<IProps, IState> {
           onSeriesMouseOut={this.onSeriesMouseOut}
           onValueMouseOver={this.onValueMouseOver}
           key={chartIndex}
-          data={data}
+          data={DataArr}
           color={color}
           animation={animated && 'wobbly'}
         />
@@ -164,8 +157,8 @@ class BarChartComponent extends Component<IProps, IState> {
                       <YAxis
                         animation={animated && 'gentle'}
                         style={axisStyleWithTheme}
-                       // tickValues={[0, 1, 2]}
-                       // tickFormat={() => tickLabelFormatter(labelValuesArray)}
+                        tickValues={[0, 1, 2]}
+                        tickFormat={() => tickLabelFormatter(labelValuesArray)}
                         top={-20}
                         key="y"
                       />,
@@ -177,17 +170,17 @@ class BarChartComponent extends Component<IProps, IState> {
                         right={50}
                         key="yright"
                         top={-20}
-                       // tickValues={[0, 1, 2, 3, 4]}
-                        // tickFormat={()=>tickPercentageFormatter(percentageValuesArray)}
+                        tickValues={[0, 1, 2, 3, 4]}
+                        tickFormat={()=>tickPercentageFormatter(percentageValuesArray)}
                       />,
-                      // <HorizontalBarSeries
-                      //   animation={animated && 'gentle'}
-                      //   key="chart"
-                      //   data={data}
-                      //   color={color}
-                      //   style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
-                      // />
-                     ...Charts,
+                      <HorizontalBarSeries
+                        animation={animated && 'gentle'}
+                        key="chart"
+                        data={DataArr}
+                        color={color}
+                        style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
+                      />,
+                     //...Charts,
                     ]
                   )}
 

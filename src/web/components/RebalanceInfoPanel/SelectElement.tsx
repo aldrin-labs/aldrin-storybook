@@ -29,7 +29,7 @@ const styles = theme => ({
 class SelectElement extends React.Component {
   state = {
     period: 'WEEKLY',
-    //name: 'hai',
+    Daily: 'Daily',
     labelWidth: 0,
   };
 

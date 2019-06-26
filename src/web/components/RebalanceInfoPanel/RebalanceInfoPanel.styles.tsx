@@ -2,27 +2,19 @@ import styled from 'styled-components'
 import { Typography, Button, Link } from '@material-ui/core'
 
 export {
-//  StyledRebalanceInfoBtn,
  StyledTypography,
  StyledSubTypography,
  CustomLink,
 }
 
 const CustomLink = styled(Link)`
-  font-size: 14px;
+  font-size: 12px;
   padding: 0 5px;
   text-transform: uppercase;
   color:${props => props.linkColor || 'white'};
   text-align: ${props => props.position || 'none'};
   align-self: ${props => props.verticalPosition || 'none'};
 `
-
-// const StyledRebalanceInfoBtn = styled(Button)`
-//   border: 2px solid #5085EC;
-//   border-radius: 23px;
-//   color: #5085EC;
-//   font-size: 11px;
-// `
 
 const StyledTypography = styled(Typography)`
   /* font-family: 'Aguafina Script', cursive; */

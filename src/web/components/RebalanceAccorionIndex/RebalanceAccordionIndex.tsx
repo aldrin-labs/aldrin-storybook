@@ -110,7 +110,8 @@ class RebalanceAccordionIndex extends React.Component {
                       borderRadius='18px' 
                       thumbBackground='blue' 
                       trackAfterBackground='orange' 
-                      trackBeforeBackground='#E7ECF3' />
+                      trackBeforeBackground='#E7ECF3' 
+                      />
                   </Grid>
                   <Grid item lg={2}>
                     <StyledTypography>Target value</StyledTypography>

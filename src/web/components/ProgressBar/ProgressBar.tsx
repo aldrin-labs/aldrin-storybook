@@ -1,52 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-const styles = theme => ({
+const styles = {
   root: {
     flexGrow: 1,
   },
-  progress: {
-    margin: theme.spacing.unit * 2,
-    color: '#00695c',
-  },
-  linearColorPrimary: {
-    backgroundColor: '#b2dfdb',
-  },
-  linearBarColorPrimary: {
-    backgroundColor: '#00695c',
-  },
-  // Reproduce the Facebook spinners.
-  facebook: {
-    margin: theme.spacing.unit * 2,
-    position: 'relative',
-  },
-  facebook1: {
-    color: '#eef3fd',
-  },
-  facebook2: {
-    color: '#6798e5',
-    animationDuration: '550ms',
-    position: 'absolute',
-    left: 0,
-  },
-});
+};
 
-function ProgressBar(props) {
-  const { classes } = props;
-  return (
-      <>
-        <LinearProgress
-            classes={{
-            colorPrimary: classes.linearColorPrimary,
-            barColorPrimary: classes.linearBarColorPrimary,
-            }}
-        />
-      </>
-  );
+class ProgressBar extends React.Component {
+  state = {
+    completed: 0,
+  };
+
+  componentDidMount() {
+    this.timer = setInterval(this.progress, 500);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  progress = () => {
+    const { completed } = this.state;
+    if (completed === 100) {
+      this.setState({ completed: 0 });
+    } else {
+      const diff = Math.random() * 10;
+      this.setState({ completed: Math.min(completed + diff, 100) });
+    }
+  };
+
+  render() {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <LinearProgress color="secondary" variant="determinate" value={this.state.completed} />
+      </div>
+    );
+  }
 }
 
 ProgressBar.propTypes = {

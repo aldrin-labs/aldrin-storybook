@@ -169,12 +169,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
     const rebalanceOption = ['Daily', 'Weekly', 'Bi-Weekly', 'Monthly', 'Every ___ Days', 'STOP REBALANCE'];
 
+    const sectionDataHardCode =  [{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 85},{symbol: 'Source', portfolioPerc: 60}];
 
     return (
       <>
 
         {children}
-        <Content key={`content`} container spacing={16} style={{padding: '25px'}}>
+        <Content key={`content`} container spacing={16} style={{padding: '25px'}} >
           <Container
             key={`table-container`}
             item
@@ -191,6 +192,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             key={`chart-container`}
             item
             md={5}
+            sm={5}
             className="PortfolioDistributionChart"
           >
             <PortfolioRebalanceChart
@@ -220,7 +222,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               color={"#fff"}
               chartcolor={'#fff'}
               chartTitle={'title'}
-              sectionData = {[{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 50},{symbol: 'Source', portfolioPerc: 50}]}
+              sectionData = {sectionDataHardCode}
               showSectionData={true}
               //coinData={staticRows}
             />
@@ -229,7 +231,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <ChartWrapper
             key={`chart-container`}
             item
-            md={1}
+            sm={2}
+            md={2}
             lg={2}
             className="PortfolioDistributionChart"
             style={{background: `url(${Stroke})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}
@@ -250,6 +253,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             key={`chart-container`}
             item
             md={5}
+            sm={5}
             className="PortfolioDistributionChart"
           >
             <PortfolioRebalanceChart
@@ -279,7 +283,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               color={"#fff"}
               chartcolor={'#fff'}
               chartTitle={'title'}
-              sectionData = {[{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 50},{symbol: 'Source', portfolioPerc: 50}]}
+              sectionData = {sectionDataHardCode}
               showSectionData={true}
             />
           </ChartWrapper> 
