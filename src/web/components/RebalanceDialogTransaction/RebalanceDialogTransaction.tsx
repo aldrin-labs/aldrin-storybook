@@ -81,8 +81,6 @@ class RebalanceDialogTransaction extends React.Component {
     const {
       dialogHedaing,
       titleDescription,
-      subTitleDescription,
-      fee,
       btnFirst,
       btnSecond,
       accordionTitle,
@@ -109,10 +107,6 @@ class RebalanceDialogTransaction extends React.Component {
           <DialogContent justify="center">
             <TypographyTopDescription style={{textAlign: "center"}}>
                 {titleDescription}
-            </TypographyTopDescription>
-
-            <TypographyTopDescription>
-                {subTitleDescription} {fee}
             </TypographyTopDescription>
 
             <GridCustom container justify="center">

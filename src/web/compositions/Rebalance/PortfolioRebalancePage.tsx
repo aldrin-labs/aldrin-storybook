@@ -239,9 +239,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           >
             <RebalanceDialogTransaction 
               dialogHedaing='ARE YOU SURE?'
-              titleDescription='Your portfolio will change. You can undo this changes on rebalance history page.'
-              subTitleDescription='Fee will be'
-              fee='$2,35'
+              titleDescription='Your portfolio will change.'
               btnFirst='Cancel'
               btnSecond='Go!'
               accordionTitle='TRANSACTIONS'
