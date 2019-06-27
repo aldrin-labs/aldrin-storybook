@@ -87,7 +87,6 @@ export const getArrayOfActionElements = ({
               />
             ),
             onClick: onSaveClick,
-            color: saveButtonColor,
             style: { color: saveButtonColor, marginRight: '7px' },
           },
         ]
