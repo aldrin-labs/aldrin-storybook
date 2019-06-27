@@ -29,7 +29,6 @@ class PortfolioTable extends Component<IProps, IState> {
     const {
       theme,
       dustFilter,
-      showTable = false,
       isUSDCurrently,
       baseCoin,
     } = this.props
