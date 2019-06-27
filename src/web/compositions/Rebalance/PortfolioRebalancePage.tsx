@@ -26,10 +26,9 @@ import { IState, IProps } from './PortfolioRebalancePage.types'
 import RebalanceInfoPanel from '../../components/RebalanceInfoPanel/RebalanceInfoPanel'
 import RebalanceAccordionIndex from '../../components/RebalanceAccorionIndex/RebalanceAccordionIndex'
 import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
-// Rebalance Panel End
-
 import Stroke from '../../../icons/Stroke.svg'
-
+import RebalanceDialogAdd from '../../components/RebalanceDialogAdd/RebalanceDialogAdd'
+import { dialogTransactionData, accordionIndexPanelData, rebalanceInfoPanelData, rebalanceOption, sectionDataHardCode, addFolioData, addIndexData } from './mockData'
 
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
@@ -111,66 +110,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const fontFamily = theme.typography.fontFamily
     const saveButtonColor = isPercentSumGood ? green : red
 
-    //TODO  Create not mock data
-    const mockData = [
-        {
-          convertedFrom:'0.01BTC',
-          convertedTo:'6.234ETH', 
-          sum: '$68.5',
-          isDone: false
-        },
-        {
-          convertedFrom:'0.01BTC',
-          convertedTo:'6.234ETH',                   
-          sum: '$68.5',
-          isDone: true
-        },
-        {
-          convertedFrom:'0.01BTC',
-          convertedTo:'6.234ETH',
-          sum: '$68.5',
-          isDone: true
-        },
-        {
-          convertedFrom:'0.01BTC',
-          convertedTo:'6.234ETH',
-          sum: '$68.5',
-          isDone: false
-        }
-      ];
-
-    const accordionIndexPanelData = [
-      {
-        accordionPanelHeadingBorderColor: '#F29C38',
-        accordionPanelHeading: 'Free Assets',
-        secondColValue: '$55,500.00',
-        fourthColValue: '$90,500.00'
-      },
-      {
-        accordionPanelHeadingBorderColor: '#DEDB8E',
-        accordionPanelHeading: 'Free Assets',
-        secondColValue: '$95,500.00',
-        fourthColValue: '$60,500.00'
-      },
-      {
-        accordionPanelHeadingBorderColor: '#4152AF',
-        accordionPanelHeading: 'Free Assets',
-        secondColValue: '$75,500.00',
-        fourthColValue: '$40,500.00'
-      }
-    ]
-
-    const rebalanceInfoPanelData = {
-      firstColValue: '$138,000.50',
-      secondColValue: '0$',
-      thirdColValue: '0%',
-      fourthColValue: '55:36:48',
-    }
-
-    const rebalanceOption = ['Daily', 'Weekly', 'Bi-Weekly', 'Monthly', 'Every ___ Days', 'STOP REBALANCE'];
-
-    const sectionDataHardCode =  [{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 85},{symbol: 'Source', portfolioPerc: 60}];
-
     return (
       <>
 
@@ -243,7 +182,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               btnFirst='Cancel'
               btnSecond='Go!'
               accordionTitle='TRANSACTIONS'
-              data={mockData}
+              data={dialogTransactionData}
             />
           </ChartWrapper>
 
@@ -327,13 +266,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
           
-          <BtnCustom btnColor="#5085EC" margin='auto'>add index</BtnCustom>
+          <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData}/>
 
-          <TypographyAccordionTitle>following portfolios</TypographyAccordionTitle>
+          <TypographyAccordionTitle>add portfolio</TypographyAccordionTitle>
 
-
-          <BtnCustom btnColor="#5085EC" margin='auto'>Add portfolio</BtnCustom>
-
+          <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData}/>
 
 
           {/* Accordion Table End */}
