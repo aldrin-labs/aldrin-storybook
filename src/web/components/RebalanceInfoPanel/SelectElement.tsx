@@ -9,9 +9,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-//import MenuItem from '@material-ui/core/MenuItem';
-import {InputLabelCustom, MenuItemCustom} from './SelectElement.styles.tsx';
-
+import MenuItem from '@material-ui/core/MenuItem';
+import {IState} from './SelectElement.types'
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -26,10 +25,9 @@ const styles = theme => ({
   },
 });
 
-class SelectElement extends React.Component {
-  state = {
+class SelectElement extends React.Component<IState> {
+  state : IState = {
     period: 'WEEKLY',
-    Daily: 'Daily',
     labelWidth: 0,
   };
 
@@ -61,18 +59,10 @@ class SelectElement extends React.Component {
 
             {
               rebalanceOption.map(option => {
-                return <MenuItemCustom value={option}>{option}</MenuItemCustom>
+                return <MenuItem value={option}>{option}</MenuItem>
               })
             }
            
-
-            {/* <MenuItemCustom value={'daily'}>Daily</MenuItemCustom>
-            <MenuItemCustom value={'weekly'}>Weekly</MenuItemCustom>
-            <MenuItemCustom value={'be-weekly'}>Bi-Weekly</MenuItemCustom>
-            <MenuItemCustom value={'monthly'}>Monthly</MenuItemCustom>
-            <MenuItemCustom value={'everyDays'}>Every ___ Days</MenuItemCustom>
-            <MenuItemCustom value={'stop'}>STOP REBALANCE</MenuItemCustom>
-             */}
           </Select>
         </FormControl>
        
@@ -80,9 +70,5 @@ class SelectElement extends React.Component {
     );
   }
 }
-
-SelectElement.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(SelectElement);

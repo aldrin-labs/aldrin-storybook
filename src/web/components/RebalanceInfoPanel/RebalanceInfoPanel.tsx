@@ -3,12 +3,11 @@ import { Grid  } from '@material-ui/core'
 import { StyledTypography, StyledSubTypography, CustomLink } from './RebalanceInfoPanel.styles'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import SelectElement from './SelectElement'
+import {IProps} from './RebalanceInfoPanel.types'
 
-
-export default class RebalanceInfoPanel extends Component {
+export default class RebalanceInfoPanel extends Component<IProps> {
   render() {
     const  {rebalanceInfoPanelData, rebalanceOption} = this.props;
-    //TODO: make not mock
     const { firstColValue, secondColValue, thirdColValue, fourthColValue } = rebalanceInfoPanelData;
 
     return (
