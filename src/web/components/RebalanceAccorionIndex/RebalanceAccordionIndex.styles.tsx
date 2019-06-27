@@ -2,19 +2,13 @@
 import styled from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 
-export {TypographyHeading, StyledTypography, StyledSubTypography, GridItemHeadingCustom }
-
-
-const TypographyHeading = styled(Typography)`
-`
-
-const GridItemHeadingCustom = styled(Grid)`
+export const GridItemHeadingCustom = styled(Grid)`
     border-left:3px solid ${props => props.borderColor || '#fff'};
     align-self: center;
     padding: 5px 0 5px 20px;
 `
 
-const StyledTypography = styled(Typography)`
+export const StyledTypography = styled(Typography)`
   font-size: 65%;
   line-height: 25px;
   letter-spacing: 1px;
@@ -23,7 +17,7 @@ const StyledTypography = styled(Typography)`
   text-align: ${props => props.position || 'none'};
 `
 
-const StyledSubTypography = styled(Typography)`
+export const StyledSubTypography = styled(Typography)`
   font-family: 'Avenir Next';
   font-size: 18px;
   line-height: 25px;

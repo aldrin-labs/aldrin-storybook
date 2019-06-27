@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -9,26 +8,95 @@ const styles = {
   },
 };
 
+//TODO: just mock data
+const dialogTransactionData = [
+      {
+        convertedFrom:'0.01BTC',
+        convertedTo:'6.234ETH', 
+        sum: '$68.5',
+        isDone: true
+      },
+      {
+        convertedFrom:'0.01BTC',
+        convertedTo:'6.234ETH',                   
+        sum: '$68.5',
+        isDone: true
+      },
+      {
+        convertedFrom:'0.01BTC',
+        convertedTo:'6.234ETH',
+        sum: '$68.5',
+        isDone: null
+      },
+      {
+        convertedFrom:'0.01BTC',
+        convertedTo:'6.234ETH',
+        sum: '$68.5',
+        isDone: null
+      }
+    ];
+
+    //TODO: just mock data end
+    
+
+  // Test variables
+  //let isError = false;
+  let  diff = 0;
+  let  totalParts = 0;
+  let  addParts = 1;
+  let successfulTransactionNumber = 0;
+  let prevTransactionNumber =  0;
+
 class ProgressBar extends React.Component {
   state = {
-    completed: 0,
+    completedProgress: 0,
+    isError: false,
+    addParts: 0,
+    //successfulTransactionNumber: 0
+    dialogTransactionData: []
   };
+  
+  // static getDerivedStateFromProps(props, state) {
+  //   if (props.successfulTransactionNumber !== state.successfulTransactionNumber) {
+  //     return {
+  //       completedProgress: props.completedProgress,
+  //       successfulTransactionNumber: props.successfulTransactionNumber
+  //     };
+  //   }
+  //   return null;
+  // }
 
-  componentDidMount() {
-    this.timer = setInterval(this.progress, 500);
+
+processProgress = () => {
+    const {data} = this.props;
+    this.setState({dialogTransactionData: data});
+    if (totalParts <= 0 ) totalParts = this.state.dialogTransactionData.length;
+
+    data.forEach(item => {
+      if(item.isDone == true) {
+        this.setState({
+          addParts: this.state.addParts + 1 
+        });
+      }
+      this.state.isError = true;
+    });
+
+    this.progress(totalParts, this.state.addParts)
+
+   // this.timer = setInterval(this.progress(totalParts, addParts), 1000);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
 
-  progress = () => {
-    const { completed } = this.state;
-    if (completed === 100) {
-      this.setState({ completed: 0 });
+ progress = (totalParts, addParts) => { // Diff - number of parts to load
+  
+    const { completedProgress } = this.state;
+    let diff = completedProgress;
+      
+    if (completedProgress === 100) { // Если дошли до 100% тогда обнуляем бар
+      this.setState({ completedProgress: 0 }); 
     } else {
-      const diff = Math.random() * 10;
-      this.setState({ completed: Math.min(completed + diff, 100) });
+      diff = diff + (totalParts/100)*addParts;
+      this.setState({ completedProgress: Math.min(completedProgress + diff, 100) });
     }
   };
 
@@ -36,14 +104,10 @@ class ProgressBar extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <LinearProgress color="secondary" variant="determinate" value={this.state.completed} />
+        <LinearProgress color="primary" variant={(this.state.isError) ? ("determinate") : ("primary")} value={this.state.completedProgress} />
       </div>
     );
   }
 }
-
-ProgressBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(ProgressBar);

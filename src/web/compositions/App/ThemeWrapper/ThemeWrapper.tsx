@@ -87,6 +87,9 @@ export default class ThemeWrapper extends Component<Props> {
               green: {
                 main: '#48DCC6',
               },
+              blue: {
+                main: '#5085EC'
+              }
             },
             palette: {
               divider: fade('#748AA1', 0.16),
@@ -94,6 +97,7 @@ export default class ThemeWrapper extends Component<Props> {
               text: { primary: '#DBD9E6' },
               red: {
                 main: '#FE425A',
+                custom: '#D93B28'
               },
               green: {
                 main: '#48DCC6',
@@ -102,6 +106,9 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#303037',
                 dark: '#1F1F24',
                 light: '#27272D',
+              },
+              blue: {
+                custom: '#5085EC'
               },
               secondary: {
                 main: '#48DCC6',
@@ -118,6 +125,10 @@ export default class ThemeWrapper extends Component<Props> {
         : // light theme
           {
             typography: {
+              fontFamily: [
+                'Lato', 
+                'sans-serif',
+              ].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',

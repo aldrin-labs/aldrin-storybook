@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -10,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
 import Slider from '../Slider/Slider';
-import {TypographyHeading, StyledTypography, StyledSubTypography, GridItemHeadingCustom} from './RebalanceAccorionIndex.styles' 
+import { StyledTypography, StyledSubTypography, GridItemHeadingCustom } from './RebalanceAccordionIndex.styles' 
 
 const styles = theme => ({
   root: {
@@ -69,7 +68,6 @@ class RebalanceAccordionIndex extends React.Component {
       onNewSnapshot,
       dustFilter,
       showWarning,
-
       accordionIndexPanelData
     } = this.props;
     const { expanded } = this.state;
@@ -95,7 +93,7 @@ class RebalanceAccordionIndex extends React.Component {
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 <Grid container justify="space-between">
                   <GridItemHeadingCustom borderColor={accordionPanelHeadingBorderColor} lg={3}>
-                    <TypographyHeading>{accordionPanelHeading}</TypographyHeading>
+                    <Typography>{accordionPanelHeading}</Typography>
                   </GridItemHeadingCustom>
                   <Grid item lg={3}>
                     <StyledTypography>Current value</StyledTypography>
@@ -168,9 +166,5 @@ class RebalanceAccordionIndex extends React.Component {
     );
   }
 }
-
-RebalanceAccordionIndex.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(RebalanceAccordionIndex);

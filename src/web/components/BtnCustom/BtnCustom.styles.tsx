@@ -1,11 +1,7 @@
 import styled from 'styled-components'
 import { Button } from '@material-ui/core'
 
-export {
-    BtnCustom,
-}
-
-const BtnCustom = styled(Button)`
+export const BtnCustom = styled(Button)`
   width: ${props => props.btnWidth || "150px"};
   border: 2px solid ${props => props.btnColor || '#333'};
   border-radius: 23px;
