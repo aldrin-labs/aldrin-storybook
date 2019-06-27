@@ -1,16 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import DoneIcon from '../../../icons/DoneIcon.svg'
+import Cross from '../../../icons/Cross.svg'
 import TradeIcon from '../../../icons/TradeIcon.svg'
 import ProgressBar from '../ProgressBar/ProgressBar'
 import SvgIcon from '../SvgIcon'
+import {IProps} from './TransactionTable.types'
 
 const styles = theme => ({
   root: {
@@ -23,24 +23,16 @@ const styles = theme => ({
   },
 });
 
-let id = 0;
-function createData(convertedFrom, convertedTo, sum, isDone) {
-  id += 1;
-  return { id, convertedFrom, convertedTo, sum, isDone };
-}
+function TransactionTable({ classes, data } : IProps) {
 
-function TransactionTable(props) {
-  const { classes, data } = props;
-
-  const rows = data.map(item => {
+  const rows = data.map((item, id) => {
     const { convertedFrom, convertedTo, sum, isDone } = item;
-    return createData(convertedFrom, convertedTo, sum, isDone);
+    return {id, convertedFrom, convertedTo, sum, isDone};
   })
 
   return (
-    // <Paper className={classes.root}>
     <>
-      <ProgressBar />
+      <ProgressBar data={data}/>
       <Table className={classes.table}>
         <TableBody>
           {rows.map(row => (
@@ -50,20 +42,14 @@ function TransactionTable(props) {
               </TableCell>
               <TableCell align="left" >{row.sum}</TableCell>
               <TableCell align="right">
-          
-                {(row.isDone) ? (<SvgIcon src={DoneIcon} />) : (``)}
+                {(row.isDone) ? (<SvgIcon src={DoneIcon} />) : (<SvgIcon src={Cross} />)}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       </>
-    // </Paper>
   );
 }
-
-TransactionTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(TransactionTable);

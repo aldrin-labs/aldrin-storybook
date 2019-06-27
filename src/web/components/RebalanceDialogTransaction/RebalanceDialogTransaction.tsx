@@ -1,7 +1,5 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
@@ -9,17 +7,17 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 
-import { GridCustom, DialogWrapper, DialogTitleCustom, DialogSubTitle, TypographyTopDescription, LinkCustom } from "./RebalanceDialogTransaction.styles";
+import { withTheme } from '@material-ui/styles'
+
+import { GridCustom, DialogWrapper, DialogTitleCustom, TypographyTopDescription, LinkCustom } from "./RebalanceDialogTransaction.styles";
 import SvgIcon from '../../components/SvgIcon'
 import Stroke from '../../../icons/Stroke.svg'
 
-import TransactionTable from './TransactionTable'
-import { borderRadius } from 'react-select/lib/theme'
-
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
-// TODO chnage png => svg 
 import Ellipse from '../../../icons/Ellipse.svg'
+
+import { IProps, IState } from './RebalanceDialogTransaction.types'
 
 const DialogTitle = withStyles(theme => ({
   root: {
@@ -62,8 +60,10 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-class RebalanceDialogTransaction extends React.Component {
-  state = {
+@withTheme()
+
+class RebalanceDialogTransaction extends React.Component<IProps, IState> {
+  state: IState = {
     open: false,
   };
 
@@ -84,7 +84,8 @@ class RebalanceDialogTransaction extends React.Component {
       btnFirst,
       btnSecond,
       accordionTitle,
-      data
+      data,
+      theme: {palette: {blue, red}},
     } = this.props;
 
 
@@ -110,23 +111,15 @@ class RebalanceDialogTransaction extends React.Component {
             </TypographyTopDescription>
 
             <GridCustom container justify="center">
-              <BtnCustom onClick={this.handleClose} btnColor="#D93B28">
+              <BtnCustom onClick={this.handleClose} btnColor={red.custom}>
                 { btnFirst }
               </BtnCustom>
 
-              <BtnCustom btnColor="#5085EC" >
+              <BtnCustom btnColor={blue.custom} >
                 { btnSecond }
               </BtnCustom>
             </GridCustom>
-
-            {/* <DialogSubTitle id="customized-dialog-sub-title">
-                <Typography>{accordionTitle}</Typography>
-            </DialogSubTitle> */}
-
             <AccordionTable accordionTitle={accordionTitle} data={data} accordionTitle={accordionTitle}/>
-
-            {/* <TransactionTable /> */}
-
           </DialogContent>
         </DialogWrapper>
       </div>

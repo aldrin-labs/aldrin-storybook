@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -7,8 +6,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { unstable_Box as Box } from '@material-ui/core/Box';
 import TransactionTable from './TransactionTable'
+import { IProps, IState } from './AccordionTable.types';
 
 
 const styles = theme => ({
@@ -26,7 +25,7 @@ const styles = theme => ({
   },
 });
 
-class AccordionTable extends React.Component {
+class AccordionTable extends React.Component<IProps, IState> {
   state = {
     expanded: null,
   };
@@ -57,9 +56,5 @@ class AccordionTable extends React.Component {
     );
   }
 }
-
-AccordionTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(AccordionTable);
