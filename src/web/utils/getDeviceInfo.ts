@@ -62,7 +62,7 @@ const getDeviceInfo = async (): DeviceType => {
         fcmToken: await getFcmToken(),
         macAddress: '',
         ipAddress: '',
-        lastLoginTime: Date.now(),
+        lastLoginTime: Math.round(new Date() / 1000),
         lastGeo: '',
     }
     return deviceInfo
