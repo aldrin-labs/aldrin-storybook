@@ -94,9 +94,13 @@ export default class ThemeWrapper extends Component<Props> {
               divider: fade('#748AA1', 0.16),
               type: themeMode,
               text: { primary: '#DBD9E6' },
+              black: {
+                custom: '#16253D',
+              },
               red: {
                 main: '#FE425A',
-                custom: '#D93B28'
+                custom: '#D93B28',
+                bright: '#ED6337'
               },
               blue: {
                 custom: '#5085EC',
@@ -187,9 +191,13 @@ export default class ThemeWrapper extends Component<Props> {
               divider: fade('#BCC2CF', 0.5),
               type: themeMode,
               text: { primary: fade('#41495E', 0.69) },
+              black: {
+                custom: '#16253D',
+              },
               red: {
                 main: '#FE425A',
-                custom: '#D93B28'
+                custom: '#D93B28',
+                bright: '#ED6337'
               },
               blue: {
                 custom: '#5085EC',
@@ -200,7 +208,8 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#48DCC6',
               },
               grey: {
-                custom: '#ABBAD1'
+                custom: '#ABBAD1',
+                dark: '#7284A0'
               },
               primary: {
                 main: '#FEFEFE',

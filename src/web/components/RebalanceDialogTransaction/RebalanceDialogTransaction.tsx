@@ -81,7 +81,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     return (
       <div>
         <LinkCustom background={Stroke} onClick={handleClickOpen}>
-          <SvgIcon width='90' height='90' src={Ellipse} />
+          <SvgIcon width='60' height='60' src={Ellipse} />
         </LinkCustom>
 
         <DialogWrapper

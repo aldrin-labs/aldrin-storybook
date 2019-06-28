@@ -31,8 +31,8 @@
     {
       accordionPanelHeadingBorderColor: '#F29C38',
       accordionPanelHeading: 'Free Assets',
-      secondColValue: '$55,500.00',
-      fourthColValue: '$90,500.00',
+      secondColValue: '55,500.00',
+      fourthColValue: '90,500.00',
       percentage: 25
     }
   ]
@@ -40,9 +40,9 @@
   export const accordionAddIndexPanelData = [
     {
       accordionPanelHeadingBorderColor: '#DEDB8E',
-      accordionPanelHeading: 'Free Assets',
-      secondColValue: '$95,500.00',
-      fourthColValue: '$60,500.00',
+      accordionPanelHeading: 'Top 10 coinmarketcup',
+      secondColValue: '95,500.00',
+      fourthColValue: '60,500.00',
       percentage: 63
     },
   
@@ -52,16 +52,16 @@
 
     {
       accordionPanelHeadingBorderColor: '#4152AF',
-      accordionPanelHeading: 'Free Assets',
-      secondColValue: '$75,500.00',
-      fourthColValue: '$40,500.00',
+      accordionPanelHeading: 'Top 25 10$ Buffet',
+      secondColValue: '75,500.00',
+      fourthColValue: '40,500.00',
       percentage: 89
     }
   ]
 
 
   export const rebalanceInfoPanelData = {
-    firstColValue: '$138,000.50',
+    firstColValue: '138,000.50',
     secondColValue: '0$',
     thirdColValue: '0%',
     fourthColValue: '55:36:48',

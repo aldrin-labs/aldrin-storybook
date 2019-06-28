@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import { withTheme } from '@material-ui/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -9,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
 import Slider from '../Slider/Slider';
-import { StyledTypography, StyledSubTypography, GridItemHeadingCustom } from './RebalanceAccordionIndex.styles' 
+import { TypographyCustom, ExpansionPanelWrapper, StyledTypography, StyledSubTypography, GridItemHeadingCustom, GridFlex } from './RebalanceAccordionIndex.styles' 
 
 const styles = theme => ({
   root: {
@@ -25,6 +26,8 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
 });
+
+@withTheme()
 
 class RebalanceAccordionIndex extends React.Component {
   state = {
@@ -68,7 +71,8 @@ class RebalanceAccordionIndex extends React.Component {
       onNewSnapshot,
       dustFilter,
       showWarning,
-      accordionData
+      accordionData,
+      theme: {palette: {black}}
     } = this.props;
     const { expanded } = this.state;
 
@@ -85,41 +89,41 @@ class RebalanceAccordionIndex extends React.Component {
               accordionPanelHeadingBorderColor,
               accordionPanelHeading,
               secondColValue,
-              fourthColValue
+              fourthColValue,
+              percentage
             } = item;
 
             const panelId = `panel`+`${i}`;
 
             return(
-              <ExpansionPanel expanded={expanded === `${panelId}`} onChange={this.handleChange(`${panelId}`)}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <ExpansionPanelWrapper expanded={expanded === `${panelId}`} onChange={this.handleChange(`${panelId}`)}>
+                <ExpansionPanelSummary style={{borderRadius: '50%'}} expandIcon={<ExpandMoreIcon />}>
                   <Grid container justify="space-between">
                     <GridItemHeadingCustom borderColor={accordionPanelHeadingBorderColor} lg={3}>
-                      <Typography>{accordionPanelHeading}</Typography>
+                      <TypographyCustom fontWeight={'bold'}>{accordionPanelHeading}</TypographyCustom>
                     </GridItemHeadingCustom>
                     <Grid item lg={2}>
                       <StyledTypography>Current value</StyledTypography>
-                      <StyledSubTypography>{secondColValue}</StyledSubTypography>
+                      <StyledSubTypography color={black.custom}>${secondColValue}</StyledSubTypography>
                     </Grid>
-                    <Grid item lg={3} justify="space-between" style={{alignSelf: 'center'}}>
+                    <GridFlex item lg={3} justify="space-around" alignItems="center">
                       <Slider 
-                        thumbWidth='30px' 
-                        thumbHeight='30px' 
-                        sliderWidth='170px'
-                        sliderHeight='20px' 
+                        thumbWidth='22px' 
+                        thumbHeight='22px' 
+                        sliderWidth='150px'
+                        sliderHeight='22px' 
                         borderRadius='18px' 
                         thumbBackground='blue' 
                         trackAfterBackground='orange' 
                         trackBeforeBackground='#E7ECF3' 
                         />
+                      <StyledTypography>{percentage}%</StyledTypography>
 
-                    </Grid>
-                    <Grid item lg={1}>
-                      <StyledTypography>25%</StyledTypography>
-                    </Grid>
+                    </GridFlex>
+         
                     <Grid item lg={2}>
                       <StyledTypography>Target value</StyledTypography>
-                      <StyledSubTypography>{fourthColValue}</StyledSubTypography>
+                      <StyledSubTypography color={black.custom}>${fourthColValue}</StyledSubTypography>
                     </Grid>
                     <Grid item lg={1}>
                       <Typography>...</Typography>
@@ -163,7 +167,7 @@ class RebalanceAccordionIndex extends React.Component {
                   />
 
                 </ExpansionPanelDetails>
-              </ExpansionPanel>
+              </ExpansionPanelWrapper>
             )
             
           })

@@ -1,13 +1,15 @@
 import styled from 'styled-components'
-import { Typography, Button, Link } from '@material-ui/core'
+import { Typography, Link, Grid } from '@material-ui/core'
 
-export {
- StyledTypography,
- StyledSubTypography,
- CustomLink,
-}
+export const GridFlex = styled(Grid)`
+  display: flex;
+`
 
-const CustomLink = styled(Link)`
+export const GridInfoPanelWrapper = styled(Grid)`
+  padding-bottom:1%;
+`
+
+export const CustomLink = styled(Link)`
   font-size: 12px;
   padding: 0 5px;
   text-transform: uppercase;
@@ -16,21 +18,19 @@ const CustomLink = styled(Link)`
   align-self: ${props => props.verticalPosition || 'none'};
 `
 
-const StyledTypography = styled(Typography)`
-  /* font-family: 'Aguafina Script', cursive; */
+export const StyledTypography = styled(Typography)`
   font-size: 65%;
-  /* font-size: 11px; */
   line-height: 25px;
+  font-weight: ${props => props.fontWeight || '400'};
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${props => props.counterColor || props.prymaryColor || props.secondaryColor ||'#7284A0'};
   text-align: ${props => props.position || 'none'};
 `
 
-const StyledSubTypography = styled(Typography)`
-  font-family: 'Avenir Next';
-  font-size: ${props => props.fontSize || `18px`};
-  font-weight: ${props => props.fontWeight || `0`}
+export const StyledSubTypography = styled(Typography)`
+  font-size: ${props => props.fontSize || `16px`};
+  font-weight: ${props => props.fontWeight || '400'};
   line-height: 25px;
   letter-spacing: 1px;
   text-transform: uppercase;
