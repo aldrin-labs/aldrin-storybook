@@ -1,7 +1,7 @@
 import React from 'react'
-import { Checkbox } from '@material-ui/core'
+import { Checkbox, Radio } from '@material-ui/core'
 
-import { IProps, keyItem } from './Accounts.types'
+import { IProps } from './Accounts.types'
 import {
   AccountsWalletsHeadingWrapper,
   Headline,
@@ -24,6 +24,8 @@ export default class Accounts extends React.PureComponent<IProps> {
       newKeys,
       onKeyToggle,
       login,
+      isRebalance,
+      onKeySelectOnlyOne,
     } = this.props
 
     return (
@@ -46,41 +48,47 @@ export default class Accounts extends React.PureComponent<IProps> {
           </CloseContainer>
         </AccountsWalletsHeadingWrapper>
 
-        <SelectAll>
-          <Checkbox
-            disabled={!login}
-            type="checkbox"
-            id="all"
-            checked={isCheckedAll}
-            onClick={login && onToggleAll}
-          />
+        {!isRebalance && (
+          <SelectAll>
+            <Checkbox
+              disabled={!login}
+              type="checkbox"
+              id="all"
+              checked={isCheckedAll}
+              onClick={login && onToggleAll}
+            />
 
-          <AccountName
-            variant="body1"
-            color={isCheckedAll ? 'secondary' : 'textSecondary'}
-          >
-            Select All
-          </AccountName>
-        </SelectAll>
-
+            <AccountName
+              variant="body1"
+              color={isCheckedAll ? 'secondary' : 'textSecondary'}
+            >
+              Select All
+            </AccountName>
+          </SelectAll>
+        )}
         <AccountsList id="AccountsList">
           {newKeys.map((keyName) => {
             if (!keyName) {
               return null
             }
+            const Component = isRebalance ? Radio : Checkbox
             const isChecked = keyName.selected
 
             return (
               <AccountsListItem key={keyName.name} color={color}>
-                <Checkbox
+                <Component
                   disabled={!login}
-                  type="checkbox"
+                  type={isRebalance ? 'radio' : 'checkbox'}
                   id={keyName.name}
                   checked={isChecked}
-                  onClick={() => (login && onKeyToggle(keyName._id))}
-
+                  onClick={() => {
+                    if (login && isRebalance) {
+                      onKeySelectOnlyOne(keyName._id)
+                    } else if (login && !isRebalance) {
+                      onKeyToggle(keyName._id)
+                    }
+                  }}
                 />
-
                 <AccountName
                   align="left"
                   variant="body1"

@@ -118,6 +118,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       dustFilter,
       showWarning,
       getTooltipSettingsQuery: { getTooltipSettings },
+      sliderStep,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -142,7 +143,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           {/* REBALANCE INFO PANEL STARTS */ }
           <RebalanceInfoPanel rebalanceInfoPanelData={rebalanceInfoPanelData} rebalanceOption={rebalanceOption} />
           {/* REBALANCE INFO PANEL ENDS */ }
-         
+
           <ChartWrapper
             key={`chart-container`}
             item
@@ -165,8 +166,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               leftBar={leftBar}
               rightBar={rightBar}
               height={160}
-              customBarSeriesStyles={   
-                {   
+              customBarSeriesStyles={
+                {
                   rx: 10,
                   ry: 10,
                   height: 25,
@@ -181,7 +182,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               showSectionData={true}
               //coinData={staticRows}
             />
-          </ChartWrapper> 
+          </ChartWrapper>
 
           <ChartWrapper
             key={`chart-container`}
@@ -192,7 +193,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             className="PortfolioDistributionChart"
             style={{background: `url(${Stroke})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}
           >
-            <RebalanceDialogTransaction 
+            <RebalanceDialogTransaction
               dialogHedaing='ARE YOU SURE?'
               titleDescription='Your portfolio will change.'
               btnFirst='Cancel'
@@ -227,8 +228,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               leftBar={leftBar}
               rightBar={rightBar}
               height={160}
-              customBarSeriesStyles={   
-                {   
+              customBarSeriesStyles={
+                {
                   rx: 10,
                   ry: 10,
                   height: 25,
@@ -242,14 +243,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               sectionData = {sectionDataHardCode}
               showSectionData={true}
             />
-          </ChartWrapper> 
+          </ChartWrapper>
 
 
 
           {/* Accordion Table Start */}
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
 
-          <RebalanceAccordionIndex 
+          <RebalanceAccordionIndex
                 isEditModeEnabled={isEditModeEnabled}
                 staticRows={staticRows}
                 staticRowsMap={staticRowsMap}
@@ -278,6 +279,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot={onNewSnapshot}
                 dustFilter={dustFilter}
                 showWarning={showWarning}
+                sliderStep={sliderStep}
 
                 accordionData={accordionPortfolioPanelData}
             />
@@ -285,7 +287,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
 
-                    <RebalanceAccordionIndex 
+                    <RebalanceAccordionIndex
                 isEditModeEnabled={isEditModeEnabled}
                 staticRows={staticRows}
                 staticRowsMap={staticRowsMap}
@@ -314,16 +316,16 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot={onNewSnapshot}
                 dustFilter={dustFilter}
                 showWarning={showWarning}
-
+                sliderStep={sliderStep}
                 accordionData={accordionAddIndexPanelData}
             />
-          
+
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData}/>
 
           <TypographyAccordionTitle>add portfolio</TypographyAccordionTitle>
 
 
-          <RebalanceAccordionIndex 
+          <RebalanceAccordionIndex
                 isEditModeEnabled={isEditModeEnabled}
                 staticRows={staticRows}
                 staticRowsMap={staticRowsMap}
@@ -352,7 +354,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot={onNewSnapshot}
                 dustFilter={dustFilter}
                 showWarning={showWarning}
-
+                sliderStep={sliderStep}
                 accordionData={accordionAddPortfolioPanelData}
             />
 
