@@ -28,7 +28,10 @@ import RebalanceAccordionIndex from '../../components/RebalanceAccorionIndex/Reb
 import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
 import Stroke from '../../../icons/Stroke.svg'
 import RebalanceDialogAdd from '../../components/RebalanceDialogAdd/RebalanceDialogAdd'
-import { dialogTransactionData, accordionIndexPanelData, rebalanceInfoPanelData, rebalanceOption, sectionDataHardCode, addFolioData, addIndexData } from './mockData'
+import { dialogTransactionData, accordionPortfolioPanelData, accordionAddPortfolioPanelData, accordionAddIndexPanelData, rebalanceInfoPanelData, rebalanceOption, sectionDataHardCode, addFolioData, addIndexData } from './mockData'
+
+
+@withTheme()
 
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
@@ -45,6 +48,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       const {
         updateTooltipSettingsMutation,
         getTooltipSettingsQuery: { getTooltipSettings },
+        theme: {palette: {blue, red, green}},
       } = this.props
 
       await updateTooltipSettingsMutation({
@@ -61,6 +65,18 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       this.setState({ key: oldKey + 1 })
     }
   }
+
+
+  handleClickOpen = () => {
+    this.setState({
+      open: true,
+    })
+  }
+
+  handleClose = () => {
+    this.setState({ open: false });
+  }
+
 
 
   render() {
@@ -183,7 +199,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               btnSecond='Go!'
               accordionTitle='TRANSACTIONS'
               data={dialogTransactionData}
-            />
+              open={this.state.open}
+              handleClickOpen={this.handleClickOpen}
+              handleClose={this.handleClose}/>
+
           </ChartWrapper>
 
           <ChartWrapper
@@ -260,15 +279,82 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 dustFilter={dustFilter}
                 showWarning={showWarning}
 
-                accordionIndexPanelData={accordionIndexPanelData}
+                accordionData={accordionPortfolioPanelData}
             />
 
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
+
+                    <RebalanceAccordionIndex 
+                isEditModeEnabled={isEditModeEnabled}
+                staticRows={staticRows}
+                staticRowsMap={staticRowsMap}
+                totalStaticRows={totalStaticRows}
+                rows={rows}
+                totalRows={totalRows}
+                totalPercents={totalPercents}
+                totalTableRows={totalTableRows}
+                isPercentSumGood={isPercentSumGood}
+                undistributedMoney={undistributedMoney}
+                isUSDCurrently={isUSDCurrently}
+                addMoneyInputValue={addMoneyInputValue}
+                theme={theme}
+                loading={loading}
+                red={red}
+                saveButtonColor={saveButtonColor}
+                secondary={secondary}
+                fontFamily={fontFamily}
+                totalSnapshotRows={totalSnapshotRows}
+                timestampSnapshot={timestampSnapshot}
+                onDiscardChanges={onDiscardChanges}
+                onSaveClick={onSaveClick}
+                onReset={onReset}
+                onEditModeEnable={onEditModeEnable}
+                updateState={updateState}
+                onNewSnapshot={onNewSnapshot}
+                dustFilter={dustFilter}
+                showWarning={showWarning}
+
+                accordionData={accordionAddIndexPanelData}
+            />
           
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData}/>
 
           <TypographyAccordionTitle>add portfolio</TypographyAccordionTitle>
+
+
+          <RebalanceAccordionIndex 
+                isEditModeEnabled={isEditModeEnabled}
+                staticRows={staticRows}
+                staticRowsMap={staticRowsMap}
+                totalStaticRows={totalStaticRows}
+                rows={rows}
+                totalRows={totalRows}
+                totalPercents={totalPercents}
+                totalTableRows={totalTableRows}
+                isPercentSumGood={isPercentSumGood}
+                undistributedMoney={undistributedMoney}
+                isUSDCurrently={isUSDCurrently}
+                addMoneyInputValue={addMoneyInputValue}
+                theme={theme}
+                loading={loading}
+                red={red}
+                saveButtonColor={saveButtonColor}
+                secondary={secondary}
+                fontFamily={fontFamily}
+                totalSnapshotRows={totalSnapshotRows}
+                timestampSnapshot={timestampSnapshot}
+                onDiscardChanges={onDiscardChanges}
+                onSaveClick={onSaveClick}
+                onReset={onReset}
+                onEditModeEnable={onEditModeEnable}
+                updateState={updateState}
+                onNewSnapshot={onNewSnapshot}
+                dustFilter={dustFilter}
+                showWarning={showWarning}
+
+                accordionData={accordionAddPortfolioPanelData}
+            />
 
           <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData}/>
 

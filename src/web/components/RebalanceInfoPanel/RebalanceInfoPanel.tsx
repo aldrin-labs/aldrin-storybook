@@ -4,10 +4,18 @@ import { StyledTypography, StyledSubTypography, CustomLink } from './RebalanceIn
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import SelectElement from './SelectElement'
 import {IProps} from './RebalanceInfoPanel.types'
+import { withTheme } from '@material-ui/styles'
+
+
+@withTheme()
 
 export default class RebalanceInfoPanel extends Component<IProps> {
   render() {
-    const  {rebalanceInfoPanelData, rebalanceOption} = this.props;
+    const  {
+      rebalanceInfoPanelData, 
+      rebalanceOption, 
+      theme: {palette: {blue, red, green}},
+    } = this.props;
     const { firstColValue, secondColValue, thirdColValue, fourthColValue } = rebalanceInfoPanelData;
 
     return (
@@ -19,17 +27,17 @@ export default class RebalanceInfoPanel extends Component<IProps> {
 
               <Grid item lg={4} justify="center">
                   <StyledTypography>Binance trade account</StyledTypography>
-                  <StyledSubTypography variant={'h6'} primaryColor="#ffffff">{firstColValue}</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} fontSize={'20px'} fontWeight={'600'} color={blue.light}>{firstColValue}</StyledSubTypography>
               </Grid>
               
               <Grid item lg={4} >
                   <StyledTypography position="right">Binance trade account</StyledTypography>
-                  <StyledSubTypography variant={'h6'} secondaryColor="#97C15C" position="right">{secondColValue}</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} fontSize={'20px'} fontWeight={'600'} color={green.custom} position="right">{secondColValue}</StyledSubTypography>
               </Grid>
               
               <Grid item lg={4} >
                   <StyledTypography position="right">Available percentage</StyledTypography>
-                  <StyledSubTypography variant={'h6'} secondaryColor="#97C15C" position="right">{thirdColValue}</StyledSubTypography>
+                  <StyledSubTypography variant={'h6'} fontSize={'20px'} fontWeight={'600'} color={green.custom} position="right">{thirdColValue}</StyledSubTypography>
               </Grid>
 
             </Grid>{/* Grid - container justify center end*/}
@@ -52,7 +60,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
               <Grid item lg={6} style={{display: 'flex', justifyContent: 'center',alignItems: 'center'}}>
                 {/* style={{display: 'flex', justifyContent: '',alignItems: 'center'}} */}
                 {/* verticalPosition="" */}
-                <CustomLink href={'#'} >rebalance </CustomLink>
+                <CustomLink href={'#'} linkColor={'#7284A0'}>rebalance </CustomLink>
                 <SelectElement rebalanceOption={rebalanceOption}/>
               </Grid>
 

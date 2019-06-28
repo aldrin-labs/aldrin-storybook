@@ -42,8 +42,7 @@ export default class ThemeWrapper extends Component<Props> {
         ? {
             typography: {    
               fontFamily: [
-                'Lato', 
-                'sans-serif',
+                'DM Sans'
               ].join(','),
               useNextVariants: true,
               body1: {
@@ -99,16 +98,21 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#FE425A',
                 custom: '#D93B28'
               },
+              blue: {
+                custom: '#5085EC',
+                light: '#165BE0'
+              },
               green: {
+                custom: '#97C15C',
                 main: '#48DCC6',
+              },
+              grey: {
+                custom: '#ABBAD1'
               },
               primary: {
                 main: '#303037',
                 dark: '#1F1F24',
                 light: '#27272D',
-              },
-              blue: {
-                custom: '#5085EC'
               },
               secondary: {
                 main: '#48DCC6',
@@ -126,8 +130,7 @@ export default class ThemeWrapper extends Component<Props> {
           {
             typography: {
               fontFamily: [
-                'Lato', 
-                'sans-serif',
+                'DM Sans'
               ].join(','),
               useNextVariants: true,
               body1: {
@@ -174,6 +177,7 @@ export default class ThemeWrapper extends Component<Props> {
             customPalette: {
               red: {
                 main: '#FE425A',
+                custom: '#D93B28'
               },
               green: {
                 main: '#3ED1BB',
@@ -185,9 +189,18 @@ export default class ThemeWrapper extends Component<Props> {
               text: { primary: fade('#41495E', 0.69) },
               red: {
                 main: '#FE425A',
+                custom: '#D93B28'
+              },
+              blue: {
+                custom: '#5085EC',
+                light: '#165BE0'
               },
               green: {
-                main: '#3ED1BB',
+                custom: '#97C15C',
+                main: '#48DCC6',
+              },
+              grey: {
+                custom: '#ABBAD1'
               },
               primary: {
                 main: '#FEFEFE',
@@ -201,7 +214,7 @@ export default class ThemeWrapper extends Component<Props> {
                 selected: 'rgba(255, 255, 255, 0.05)',
               },
               background: {
-                default: '#D9D9DC',
+                default: '#f9fbfd', //'#D9D9DC',
                 paper: '#FEFEFE',
               },
             },

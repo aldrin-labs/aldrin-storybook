@@ -29,10 +29,11 @@ const StyledTypography = styled(Typography)`
 
 const StyledSubTypography = styled(Typography)`
   font-family: 'Avenir Next';
-  font-size: 18px;
+  font-size: ${props => props.fontSize || `18px`};
+  font-weight: ${props => props.fontWeight || `0`}
   line-height: 25px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: ${props => props.counterColor || props.secondaryColor || props.primaryColor ||'#7284A0'};
+  color: ${props => props.color || props.counterColor || props.secondaryColor || props.primaryColor || '#7284A0'};
   text-align: ${props => props.position || 'none'};
 `

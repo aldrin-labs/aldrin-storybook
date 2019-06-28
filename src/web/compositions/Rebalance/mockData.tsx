@@ -5,7 +5,7 @@
         convertedFrom:'0.01BTC',
         convertedTo:'6.234ETH', 
         sum: '$68.5',
-        isDone: false
+        isDone: true
       },
       {
         convertedFrom:'0.01BTC',
@@ -17,29 +17,37 @@
         convertedFrom:'0.01BTC',
         convertedTo:'6.234ETH',
         sum: '$68.5',
-        isDone: true
+        isDone: null
       },
       {
         convertedFrom:'0.01BTC',
         convertedTo:'6.234ETH',
         sum: '$68.5',
-        isDone: false
+        isDone: null
       }
     ];
 
-  export const accordionIndexPanelData = [
+  export const accordionPortfolioPanelData = [
     {
       accordionPanelHeadingBorderColor: '#F29C38',
       accordionPanelHeading: 'Free Assets',
       secondColValue: '$55,500.00',
       fourthColValue: '$90,500.00'
-    },
+    }
+  ]
+
+  export const accordionAddIndexPanelData = [
     {
       accordionPanelHeadingBorderColor: '#DEDB8E',
       accordionPanelHeading: 'Free Assets',
       secondColValue: '$95,500.00',
       fourthColValue: '$60,500.00'
     },
+  
+  ]
+
+    export const accordionAddPortfolioPanelData = [
+
     {
       accordionPanelHeadingBorderColor: '#4152AF',
       accordionPanelHeading: 'Free Assets',
@@ -47,6 +55,7 @@
       fourthColValue: '$40,500.00'
     }
   ]
+
 
   export const rebalanceInfoPanelData = {
     firstColValue: '$138,000.50',

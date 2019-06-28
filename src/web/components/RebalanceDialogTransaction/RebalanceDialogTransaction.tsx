@@ -15,7 +15,7 @@ import Stroke from '../../../icons/Stroke.svg'
 
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
-import Ellipse from '../../../icons/Ellipse.svg'
+import Ellipse from '../../../icons/Ellipse.png'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
@@ -63,20 +63,6 @@ const DialogActions = withStyles(theme => ({
 @withTheme()
 
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
-  state: IState = {
-    open: false,
-  };
-
-  handleClickOpen = () => {
-    this.setState({
-      open: true,
-    });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
   render() {
     const {
       dialogHedaing,
@@ -86,22 +72,25 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       accordionTitle,
       data,
       theme: {palette: {blue, red}},
+      open,
+      handleClickOpen,
+      handleClose
     } = this.props;
 
 
     return (
       <div>
-        <LinkCustom background={Stroke} onClick={this.handleClickOpen}>
+        <LinkCustom background={Stroke} onClick={handleClickOpen}>
           <SvgIcon width='90' height='90' src={Ellipse} />
         </LinkCustom>
 
         <DialogWrapper
           style={{borderRadius: "50%"}}
-          onClose={this.handleClose}
+          onClose={handleClose}
           aria-labelledby="customized-dialog-title"
-          open={this.state.open}
+          open={open}
         >
-          <DialogTitleCustom id="customized-dialog-title" onClose={this.handleClose}>
+          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
               <Typography color="primary">{dialogHedaing}</Typography>
           </DialogTitleCustom>
 
@@ -111,7 +100,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             </TypographyTopDescription>
 
             <GridCustom container justify="center">
-              <BtnCustom onClick={this.handleClose} btnColor={red.custom}>
+              <BtnCustom onClick={handleClose} btnColor={red.custom}>
                 { btnFirst }
               </BtnCustom>
 

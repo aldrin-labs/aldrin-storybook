@@ -8,103 +8,64 @@ const styles = {
   },
 };
 
-//TODO: just mock data
-const dialogTransactionData = [
-      {
-        convertedFrom:'0.01BTC',
-        convertedTo:'6.234ETH', 
-        sum: '$68.5',
-        isDone: true
-      },
-      {
-        convertedFrom:'0.01BTC',
-        convertedTo:'6.234ETH',                   
-        sum: '$68.5',
-        isDone: true
-      },
-      {
-        convertedFrom:'0.01BTC',
-        convertedTo:'6.234ETH',
-        sum: '$68.5',
-        isDone: null
-      },
-      {
-        convertedFrom:'0.01BTC',
-        convertedTo:'6.234ETH',
-        sum: '$68.5',
-        isDone: null
-      }
-    ];
-
-    //TODO: just mock data end
-    
-
-  // Test variables
-  //let isError = false;
-  let  diff = 0;
-  let  totalParts = 0;
-  let  addParts = 1;
-  let successfulTransactionNumber = 0;
-  let prevTransactionNumber =  0;
-
 class ProgressBar extends React.Component {
   state = {
-    completedProgress: 0,
+    completed: 0,
     isError: false,
-    addParts: 0,
-    //successfulTransactionNumber: 0
-    dialogTransactionData: []
+    totalParts: 0,
+    dialogTransactionData: this.props.dialogTransactionData
   };
-  
-  // static getDerivedStateFromProps(props, state) {
-  //   if (props.successfulTransactionNumber !== state.successfulTransactionNumber) {
-  //     return {
-  //       completedProgress: props.completedProgress,
-  //       successfulTransactionNumber: props.successfulTransactionNumber
-  //     };
-  //   }
-  //   return null;
-  // }
 
+  static getDerivedStateFromProps(props, state) {
+    console.log(state.dialogTransactionData);
+    const { completed, dialogTransactionData } = state;
+    if (completed !== 100) {
+        if (props.dialogTransactionData !== dialogTransactionData) {
+          const isFailedTransaction = dialogTransactionData.some(el => el.isDone === false );
+          
+          if(isFailedTransaction) {
+            return {
+              completed: 100,
+              isError: isFailedTransaction,
+              dialogTransactionData: props.dialogTransactionData
+            }
+          }
 
-processProgress = () => {
-    const {data} = this.props;
-    this.setState({dialogTransactionData: data});
-    if (totalParts <= 0 ) totalParts = this.state.dialogTransactionData.length;
+          const successfulTransactionNumber = dialogTransactionData.reduce((acc, el) => {
+            if(el.isDone === true) {
+              return ++acc;
+            }
+            return acc;
+          })
 
-    data.forEach(item => {
-      if(item.isDone == true) {
-        this.setState({
-          addParts: this.state.addParts + 1 
-        });
-      }
-      this.state.isError = true;
-    });
+          let diff = 100 / dialogTransactionData.length;
 
-    this.progress(totalParts, this.state.addParts)
-
-   // this.timer = setInterval(this.progress(totalParts, addParts), 1000);
+          return {
+            completed: Math.min(completed + diff, 100),
+            isError: isFailedTransaction,
+            successfulTransactionNumber,
+            dialogTransactionData: props.dialogTransactionData
+          };
+        } // 2nd IF
+    } // 1st IF
+    return null;
   }
 
-
- progress = (totalParts, addParts) => { // Diff - number of parts to load
-  
-    const { completedProgress } = this.state;
-    let diff = completedProgress;
-      
-    if (completedProgress === 100) { // Если дошли до 100% тогда обнуляем бар
-      this.setState({ completedProgress: 0 }); 
-    } else {
-      diff = diff + (totalParts/100)*addParts;
-      this.setState({ completedProgress: Math.min(completedProgress + diff, 100) });
-    }
-  };
+  // progress = () => {
+  //   const { completed } = this.state;
+  //   if (completed === 100) {
+  //     this.setState({ completed: 0 });
+  //   } else {
+  //     const diff = Math.random() * 10;
+  //     this.setState({ completed: Math.min(completed + diff, 100) });
+  //   }
+  // };
 
   render() {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <LinearProgress color="primary" variant={(this.state.isError) ? ("determinate") : ("primary")} value={this.state.completedProgress} />
+        <LinearProgress color="primary" variant={(this.state.isError) ? ("determinate") : ("primary")} value={this.state.completed} />
       </div>
     );
   }
