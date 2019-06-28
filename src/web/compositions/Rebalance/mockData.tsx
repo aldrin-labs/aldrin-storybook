@@ -32,7 +32,8 @@
       accordionPanelHeadingBorderColor: '#F29C38',
       accordionPanelHeading: 'Free Assets',
       secondColValue: '$55,500.00',
-      fourthColValue: '$90,500.00'
+      fourthColValue: '$90,500.00',
+      percentage: 25
     }
   ]
 
@@ -41,7 +42,8 @@
       accordionPanelHeadingBorderColor: '#DEDB8E',
       accordionPanelHeading: 'Free Assets',
       secondColValue: '$95,500.00',
-      fourthColValue: '$60,500.00'
+      fourthColValue: '$60,500.00',
+      percentage: 63
     },
   
   ]
@@ -52,7 +54,8 @@
       accordionPanelHeadingBorderColor: '#4152AF',
       accordionPanelHeading: 'Free Assets',
       secondColValue: '$75,500.00',
-      fourthColValue: '$40,500.00'
+      fourthColValue: '$40,500.00',
+      percentage: 89
     }
   ]
 
