@@ -1,4 +1,5 @@
 import * as firebase from 'firebase';
+import { DeviceType } from '@core/types/DeviceTypes'
 
 const firebaseConfig = {
     apiKey: 'AIzaSyAStchdIpX5C_wOElXUtg0PGsPG9JHx5IM',
@@ -54,7 +55,7 @@ const getFcmToken = async () => {
     });
 }
 
-const getDeviceInfo = async () => {
+const getDeviceInfo = async (): DeviceType => {
     const deviceInfo = {
         name: navigator.sayswho,
         type: 'browser',
