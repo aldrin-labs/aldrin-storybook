@@ -1,9 +1,9 @@
 export interface IProps {
-    rebalanceInfoPanelData:  {
-      firstColValue: string,
-      secondColValue: string,
-      thirdColValue: string,
-      fourthColValue: string
-    }, 
-    rebalanceOption: string[]
+  rebalanceInfoPanelData: {
+    accountValue: string
+    availableValue: string
+    availablePercentage: string
+    fourthColValue: string
+  }
+  rebalanceOption: string[]
 }

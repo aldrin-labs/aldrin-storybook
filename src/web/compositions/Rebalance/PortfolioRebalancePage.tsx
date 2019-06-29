@@ -286,8 +286,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
-
-                    <RebalanceAccordionIndex
+            <RebalanceAccordionIndex
                 isEditModeEnabled={isEditModeEnabled}
                 staticRows={staticRows}
                 staticRowsMap={staticRowsMap}
