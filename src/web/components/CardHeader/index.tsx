@@ -16,11 +16,12 @@ const styles = (theme: Theme) =>
           : fade(theme.palette.primary.main, 0.5),
     },
     title: {
-      fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-      fontWeight: 500,
+      textTransform: 'uppercase',
+      fontWeight: 'bold',
       lineHeight: 1.5,
       letterSpacing: '0.02857em',
-      fontSize: '16px',
+      fontSize: '14px',
+      textAlign: 'center',
     },
     action: {
       display: 'flex',

@@ -1,11 +1,8 @@
-
 import styled from 'styled-components'
-import { InputLabel, MenuItem } from '@material-ui/core'
+import { NativeSelect } from '@material-ui/core'
 
-export const InputLabelCustom = styled(InputLabel)`
-  color: #5085EC;
-`
-
-export const MenuItemCustom = styled(MenuItem)`
-  /* color: #5085EC; */
+export const NativeSelectCustom = styled(NativeSelect)`
+  padding-left: 10px;
+  width: 70%;
+  color: '#5085EC';
 `

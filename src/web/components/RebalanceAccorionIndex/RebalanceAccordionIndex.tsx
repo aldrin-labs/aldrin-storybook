@@ -1,16 +1,22 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { withTheme } from '@material-ui/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Grid from '@material-ui/core/Grid';
-import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
+import React from 'react'
+import { withStyles } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/styles'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import Typography from '@material-ui/core/Typography'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Grid from '@material-ui/core/Grid'
 
-import Slider from '../Slider/Slider';
-import { TypographyCustom, ExpansionPanelWrapper, StyledTypography, StyledSubTypography, GridItemHeadingCustom, GridFlex } from './RebalanceAccordionIndex.styles' 
+import Slider from '../Slider/Slider'
+import {
+  TypographyCustom,
+  ExpansionPanelWrapper,
+  StyledTypography,
+  StyledSubTypography,
+  GridItemHeadingCustom,
+  GridFlex,
+} from './RebalanceAccordionIndex.styles'
 
 const styles = (theme) => ({
   root: {
@@ -28,7 +34,6 @@ const styles = (theme) => ({
 })
 
 @withTheme()
-
 class RebalanceAccordionIndex extends React.Component {
   state = {
     expanded: null,
@@ -43,136 +48,104 @@ class RebalanceAccordionIndex extends React.Component {
   render() {
     const {
       classes,
-      isEditModeEnabled,
-      staticRows,
-      staticRowsMap,
-      totalStaticRows,
-      rows,
-      totalRows,
-      totalPercents,
-      totalTableRows,
-      isPercentSumGood,
-      undistributedMoney,
-      isUSDCurrently,
-      addMoneyInputValue,
-      theme,
-      loading,
-      red,
-      saveButtonColor,
-      secondary,
-      fontFamily,
-      totalSnapshotRows,
-      timestampSnapshot,
-      onDiscardChanges,
-      onSaveClick,
-      onReset,
-      onEditModeEnable,
-      updateState,
-      onNewSnapshot,
-      dustFilter,
-      showWarning,
+      children,
       accordionData,
-      sliderStep,
-      theme: {palette: {black}}
-    } = this.props;
-    const { expanded } = this.state;
+      theme: {
+        palette: { black },
+      },
+    } = this.props
+    const { expanded } = this.state
 
     return (
       <div className={classes.root}>
-      {
+        {accordionData.map((item: any, i: any) => {
+          const {
+            accordionPanelHeadingBorderColor,
+            accordionPanelHeading,
+            secondColValue,
+            fourthColValue,
+            percentage,
+          } = item
 
-        accordionData.map((item: any, i: any) => {
-            const {
-                accordionPanelHeadingBorderColor,
-                accordionPanelHeading,
-                secondColValue,
-                fourthColValue,
-                percentage
-              } = item
+          const panelId = `panel` + `${i}`
 
-            const panelId = `panel`+`${i}`;
-
-            return (
-              <ExpansionPanelWrapper expanded={expanded === `${panelId}`} onChange={this.handleChange(`${panelId}`)}>
-                <ExpansionPanelSummary style={{borderRadius: '50%'}} expandIcon={<ExpandMoreIcon />}>
-                  <Grid container justify="space-between">
-                    <GridItemHeadingCustom borderColor={accordionPanelHeadingBorderColor} lg={3}>
-                      <TypographyCustom fontWeight={'bold'}>{accordionPanelHeading}</TypographyCustom>
-                    </GridItemHeadingCustom>
-                    <Grid item lg={2}>
-                      <StyledTypography>Current value</StyledTypography>
-                      <StyledSubTypography color={black.custom}>${secondColValue}</StyledSubTypography>
-                    </Grid>
-                    <GridFlex item lg={3} justify="flex-start" alignItems="center">
-                      <Slider 
-                        thumbWidth='22px' 
-                        thumbHeight='22px' 
-                        sliderWidth='150px'
-                        sliderHeight='22px' 
-                        borderRadius='18px' 
-                        thumbBackground='blue' 
-                        trackAfterBackground='orange' 
-                        trackBeforeBackground='#E7ECF3'
-                        value='50'
-                        />
-                      <StyledTypography marginLeft='15px'>{percentage}%</StyledTypography>
-                    </GridFlex>
-         
-                    <Grid item lg={2}>
-                      <StyledTypography>Target value</StyledTypography>
-                      <StyledSubTypography color={black.custom}>${fourthColValue}</StyledSubTypography>
-                    </Grid>
-
-                    <GridFlex item lg={1} justify="flex-start" alignItems="center">
-                      <Typography>...</Typography>
-                    </GridFlex>
+          return (
+            <ExpansionPanelWrapper
+              expanded={expanded === `${panelId}`}
+              onChange={this.handleChange(`${panelId}`)}
+            >
+              <ExpansionPanelSummary
+                style={{ borderRadius: '50%' }}
+                expandIcon={<ExpandMoreIcon />}
+              >
+                <Grid container justify="space-between">
+                  <GridItemHeadingCustom
+                    borderColor={accordionPanelHeadingBorderColor}
+                    lg={3}
+                  >
+                    <TypographyCustom fontWeight={'bold'}>
+                      {accordionPanelHeading}
+                    </TypographyCustom>
+                  </GridItemHeadingCustom>
+                  <Grid item lg={2}>
+                    <StyledTypography>Current value</StyledTypography>
+                    <StyledSubTypography color={black.custom}>
+                      ${secondColValue}
+                    </StyledSubTypography>
                   </Grid>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                  <GridFlex
+                    item
+                    lg={3}
+                    justify="flex-start"
+                    alignItems="center"
+                  >
+                    <Slider
+                      thumbWidth="22px"
+                      thumbHeight="22px"
+                      sliderWidth="150px"
+                      sliderHeight="22px"
+                      sliderHeightAfter="22px"
+                      borderRadius="30px"
+                      borderRadiusAfter="30px"
+                      thumbBackground="blue"
+                      borderThumb="2px solid white"
+                      trackAfterBackground="#b1b6bc"
+                      trackBeforeBackground="#DEDB8E"
+                      value="50"
+                    />
+                    <StyledTypography
+                      fontWeight="bold"
+                      fontSize="16px"
+                      marginLeft="15px"
+                    >
+                      {percentage}%
+                    </StyledTypography>
+                  </GridFlex>
 
-                  <PortfolioRebalanceTableContainer
-                    key={`PortfolioRebalanceTableContainer`}
-                  {...{
-                    isEditModeEnabled,
-                    staticRows,
-                    staticRowsMap,
-                    totalStaticRows,
-                    rows,
-                    totalRows,
-                    totalPercents,
-                    totalTableRows,
-                    isPercentSumGood,
-                    undistributedMoney,
-                    isUSDCurrently,
-                    addMoneyInputValue,
-                    theme,
-                    loading,
-                    red,
-                    saveButtonColor,
-                    secondary,
-                    fontFamily,
-                    totalSnapshotRows,
-                    timestampSnapshot,
-                    onDiscardChanges,
-                    onSaveClick,
-                    onReset,
-                    onEditModeEnable,
-                    updateState,
-                    onNewSnapshot,
-                    dustFilter,
-                    showWarning,
-                    sliderStep,
-                    }}
-                  />
+                  <Grid item lg={2}>
+                    <StyledTypography>Target value</StyledTypography>
+                    <StyledSubTypography color={black.custom}>
+                      ${fourthColValue}
+                    </StyledSubTypography>
+                  </Grid>
 
-                </ExpansionPanelDetails>
-              </ExpansionPanelWrapper>
-            )     
-          })      
-      }
+                  <GridFlex
+                    item
+                    lg={1}
+                    justify="flex-start"
+                    alignItems="center"
+                  >
+                    <Typography>...</Typography>
+                  </GridFlex>
+                </Grid>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
+            </ExpansionPanelWrapper>
+          )
+        })}
       </div>
     )
   }
 }
 
-export default withStyles(styles)(RebalanceAccordionIndex);
+export default withStyles(styles)(RebalanceAccordionIndex)

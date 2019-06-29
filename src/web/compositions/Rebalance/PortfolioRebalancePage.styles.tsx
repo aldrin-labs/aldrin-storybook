@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { Card, Grid, CardContent, Typography } from '@material-ui/core'
 
-
 export const ChartWrapper = styled(({ isEditModeEnabled, ...rest }) => (
   <Grid {...rest} />
 ))`
@@ -27,7 +26,7 @@ export const ChartContainer = styled(Card)`
 `
 
 //  minus card header height
-export const Chart = styled(({background, ...rest}) => (
+export const Chart = styled(({ background, ...rest }) => (
   <CardContent {...rest} />
 ))`
   background: ${(props: { background: string }) => props.background};
@@ -42,14 +41,22 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
   <Grid {...rest} />
 ))`
   justify-content: ${(props: { isEditModeEnabled: boolean }) =>
-  props.isEditModeEnabled ? 'space-between' : 'left'};
+    props.isEditModeEnabled ? 'space-between' : 'left'};
 
   max-height: 55%;
 `
 export const TypographyAccordionTitle = styled(Typography)`
   width: 100%;
   margin: 10px auto;
-  color: #ABBAD1;
+  color: #abbad1;
   text-align: center;
   text-transform: uppercase;
+`
+
+export const ChartWrapperCustom = styled(ChartWrapper)`
+  padding: 0px;
+  border: 0px;
+  box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.25);
 `

@@ -10,6 +10,7 @@ import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/Po
 import {
   Container,
   ChartWrapper,
+  ChartWrapperCustom,
   TypographyAccordionTitle,
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
@@ -28,6 +29,8 @@ import RebalanceAccordionIndex from '../../components/RebalanceAccorionIndex/Reb
 import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
 import Stroke from '../../../icons/Stroke.svg'
 import RebalanceDialogAdd from '../../components/RebalanceDialogAdd/RebalanceDialogAdd'
+import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
+
 import {
   dialogTransactionData,
   accordionPortfolioPanelData,
@@ -148,7 +151,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '25px' }}
+          style={{ padding: '15px 35px' }}
         >
           <Container
             key={`table-container`}
@@ -164,12 +167,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <ChartWrapper
+          <ChartWrapperCustom
             key={`chart-container`}
             item
             md={5}
             sm={5}
             className="PortfolioDistributionChart"
+            style={{ padding: '0px' }}
           >
             <PortfolioRebalanceChart
               dustFilter={dustFilter}
@@ -192,14 +196,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               }}
               yType={'ordinal'}
               xDomain={[0, 100]}
-              color={'#fff'}
-              chartcolor={'#fff'}
+              color={'#F29C38'}
+              chartcolor={'#F29C38'}
               chartTitle={'title'}
               sectionData={sectionDataHardCode}
               showSectionData={true}
               //coinData={staticRows}
             />
-          </ChartWrapper>
+          </ChartWrapperCustom>
 
           <ChartWrapper
             key={`chart-container`}
@@ -227,12 +231,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             />
           </ChartWrapper>
 
-          <ChartWrapper
+          <ChartWrapperCustom
             key={`chart-container`}
             item
             md={5}
             sm={5}
             className="PortfolioDistributionChart"
+            style={{ padding: '0' }}
           >
             <PortfolioRebalanceChart
               dustFilter={dustFilter}
@@ -254,49 +259,55 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               }}
               yType={'ordinal'}
               xDomain={[0, 100]}
-              color={'#fff'}
-              chartcolor={'#fff'}
+              color={'#F29C38'}
+              chartcolor={'#F29C38'}
               chartTitle={'title'}
               sectionData={sectionDataHardCode}
               showSectionData={true}
             />
-          </ChartWrapper>
+          </ChartWrapperCustom>
 
           {/* Accordion Table Start */}
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
 
           <RebalanceAccordionIndex
-            isEditModeEnabled={isEditModeEnabled}
-            staticRows={staticRows}
-            staticRowsMap={staticRowsMap}
-            totalStaticRows={totalStaticRows}
-            rows={rows}
-            totalRows={totalRows}
-            totalPercents={totalPercents}
-            totalTableRows={totalTableRows}
-            isPercentSumGood={isPercentSumGood}
-            undistributedMoney={undistributedMoney}
-            isUSDCurrently={isUSDCurrently}
-            addMoneyInputValue={addMoneyInputValue}
-            theme={theme}
-            loading={loading}
-            red={red}
-            saveButtonColor={saveButtonColor}
-            secondary={secondary}
-            fontFamily={fontFamily}
-            totalSnapshotRows={totalSnapshotRows}
-            timestampSnapshot={timestampSnapshot}
-            onDiscardChanges={onDiscardChanges}
-            onSaveClick={onSaveClick}
-            onReset={onReset}
-            onEditModeEnable={onEditModeEnable}
-            updateState={updateState}
-            onNewSnapshot={onNewSnapshot}
-            dustFilter={dustFilter}
-            showWarning={showWarning}
-            sliderStep={sliderStep}
             accordionData={accordionPortfolioPanelData}
-          />
+          >
+            <PortfolioRebalanceTableContainer
+              key={`PortfolioRebalanceTableContainer`}
+              {...{
+                isEditModeEnabled,
+                staticRows,
+                staticRowsMap,
+                totalStaticRows,
+                rows,
+                totalRows,
+                totalPercents,
+                totalTableRows,
+                isPercentSumGood,
+                undistributedMoney,
+                isUSDCurrently,
+                addMoneyInputValue,
+                theme,
+                loading,
+                red,
+                saveButtonColor,
+                secondary,
+                fontFamily,
+                totalSnapshotRows,
+                timestampSnapshot,
+                onDiscardChanges,
+                onSaveClick,
+                onReset,
+                onEditModeEnable,
+                updateState,
+                onNewSnapshot,
+                dustFilter,
+                showWarning,
+                sliderStep,
+              }}
+            />
+          </RebalanceAccordionIndex>
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
           <RebalanceAccordionIndex

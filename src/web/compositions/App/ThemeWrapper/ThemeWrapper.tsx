@@ -40,10 +40,8 @@ export default class ThemeWrapper extends Component<Props> {
     const theme = createMyTheme(
       themeMode === 'dark'
         ? {
-            typography: {    
-              fontFamily: [
-                'DM Sans'
-              ].join(','),
+            typography: {
+              fontFamily: ['DM Sans'].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',
@@ -85,11 +83,11 @@ export default class ThemeWrapper extends Component<Props> {
               },
               green: {
                 main: '#48DCC6',
-                custom: '##377E21'
+                custom: '##377E21',
               },
               blue: {
-                main: '#5085EC'
-              }
+                main: '#5085EC',
+              },
             },
             palette: {
               divider: fade('#748AA1', 0.16),
@@ -101,11 +99,11 @@ export default class ThemeWrapper extends Component<Props> {
               red: {
                 main: '#FE425A',
                 custom: '#D93B28',
-                bright: '#ED6337'
+                bright: '#ED6337',
               },
               blue: {
                 custom: '#5085EC',
-                light: '#165BE0'
+                light: '#165BE0',
               },
               green: {
                 dark: '#377E21',
@@ -113,7 +111,7 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#48DCC6',
               },
               grey: {
-                custom: '#ABBAD1'
+                custom: '#ABBAD1',
               },
               primary: {
                 main: '#303037',
@@ -135,9 +133,7 @@ export default class ThemeWrapper extends Component<Props> {
         : // light theme
           {
             typography: {
-              fontFamily: [
-                'DM Sans'
-              ].join(','),
+              fontFamily: ['DM Sans'].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',
@@ -183,7 +179,7 @@ export default class ThemeWrapper extends Component<Props> {
             customPalette: {
               red: {
                 main: '#FE425A',
-                custom: '#D93B28'
+                custom: '#D93B28',
               },
               green: {
                 main: '#3ED1BB',
@@ -199,11 +195,11 @@ export default class ThemeWrapper extends Component<Props> {
               red: {
                 main: '#FE425A',
                 custom: '#D93B28',
-                bright: '#ED6337'
+                bright: '#ED6337',
               },
               blue: {
                 custom: '#5085EC',
-                light: '#165BE0'
+                light: '#165BE0',
               },
               green: {
                 dark: '#377E21',
@@ -212,7 +208,7 @@ export default class ThemeWrapper extends Component<Props> {
               },
               grey: {
                 custom: '#ABBAD1',
-                dark: '#7284A0'
+                dark: '#7284A0',
               },
               primary: {
                 main: '#FEFEFE',

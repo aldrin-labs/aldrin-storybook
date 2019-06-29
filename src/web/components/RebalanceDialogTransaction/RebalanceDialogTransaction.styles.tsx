@@ -1,10 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Grid, Dialog, Button, DialogTitle, Typography, Link } from '@material-ui/core'
+import {
+  Grid,
+  Dialog,
+  Button,
+  DialogTitle,
+  Typography,
+  Link,
+} from '@material-ui/core'
 
 export const TypographyCustomHeading = styled(Typography)`
-  color: ${props => props.color || '#000'};
-  font-weight: ${props => props.fontWeight || `400`};
+  color: ${(props) => props.color || '#000'};
+  font-weight: ${(props) => props.fontWeight || `400`};
 `
 
 export const GridCustom = styled(Grid)`
@@ -14,8 +21,8 @@ export const GridCustom = styled(Grid)`
 `
 export const DialogTitleCustom = styled(DialogTitle)`
   text-align: center;
-  color: #16253D;
-  background: #F2F4F6;
+  color: #16253d;
+  background: #f2f4f6;
   border-radius: 32px 32px 0px 0px;
 `
 
@@ -25,7 +32,7 @@ export const DialogSubTitle = styled(DialogTitle)`
   text-align: center;
   text-transform: uppercase;
   padding: 15px 0 0 0;
-  border-top: 1px solid #E7ECF3;
+  border-top: 1px solid #e7ecf3;
   border-bottom: 5px solid #cacaca;
   padding-bottom: 15px;
 `
@@ -43,5 +50,5 @@ export const TypographyTopDescription = styled(Typography)`
 
 export const LinkCustom = styled(Link)`
   cursor: pointer;
-  background: ${props => props.background || 'none'};
+  background: ${(props) => props.background || 'none'};
 `

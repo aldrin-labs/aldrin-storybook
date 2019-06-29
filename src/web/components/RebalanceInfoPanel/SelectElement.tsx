@@ -1,74 +1,65 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FilledInput from '@material-ui/core/FilledInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import {IState} from './SelectElement.types'
-const styles = theme => ({
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { withStyles } from '@material-ui/core/styles'
+import Input from '@material-ui/core/Input'
+import OutlinedInput from '@material-ui/core/OutlinedInput'
+import FilledInput from '@material-ui/core/FilledInput'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import { NativeSelectCustom } from './SelectElement.styles'
+
+const styles = (theme) => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 80,
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
   },
-});
+})
 
-class SelectElement extends React.Component<IState> {
-  state : IState = {
-    period: 'WEEKLY',
+class SelectElement extends React.Component {
+  state = {
+    period: '',
+    name: 'hai',
     labelWidth: 0,
-  };
+  }
 
   componentDidMount() {
     this.setState({
-     period: 'DAY10'
-    });
+      labelWidth: 0,
+    })
   }
 
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+  handleChange = (name) => (event) => {
+    this.setState({ [name]: event.target.value })
+  }
 
   render() {
-    const { classes, rebalanceOption } = this.props;
-    return (
-      <form className={classes.root} autoComplete="off">
-        <FormControl className={classes.formControl}>
-          {/* <InputLabelCustom htmlFor="age-simple">Weekly</InputLabelCustom> */}
-          
-          <Select
-            value={this.state.period}
-            onChange={this.handleChange}
-            inputProps={{
-              name: 'period',
-             // id: 'age-simple',
-            }}
-          >
+    const { classes, rebalanceOption } = this.props
 
-            {
-              rebalanceOption.map(option => {
-                return <MenuItem value={option}>{option}</MenuItem>
-              })
-            }
-           
-          </Select>
+    return (
+      <div className={classes.root}>
+        <FormControl className={classes.formControl}>
+          <NativeSelectCustom
+            value={this.state.period}
+            onChange={this.handleChange('period')}
+            input={<Input name="period" id="period-native-label-placeholder" />}
+          >
+            {rebalanceOption.map((option) => {
+              return <option value={option}>{option}</option>
+            })}
+          </NativeSelectCustom>
         </FormControl>
-       
-      </form>
-    );
+      </div>
+    )
   }
 }
 
-export default withStyles(styles)(SelectElement);
+export default withStyles(styles)(SelectElement)
