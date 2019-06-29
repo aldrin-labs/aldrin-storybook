@@ -45,7 +45,7 @@ const rows = data.map((item, id) => {
               </TableCell>
               <TableCell align="right">
                 ...
-                <Radio checked={isSelected} onClick={() => handleRadioBtn(id)}/>
+                <Radio id={ Math.random() } checked={isSelected} onClick={() => handleRadioBtn(id)}/>
               </TableCell>
             </TableRow>
           ))}

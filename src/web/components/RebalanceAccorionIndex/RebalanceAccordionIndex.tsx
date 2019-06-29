@@ -112,7 +112,8 @@ class RebalanceAccordionIndex extends React.Component {
                         borderRadius='18px' 
                         thumbBackground='blue' 
                         trackAfterBackground='orange' 
-                        trackBeforeBackground='#E7ECF3' 
+                        trackBeforeBackground='#E7ECF3'
+                        value='50'
                         />
                       <StyledTypography marginLeft='15px'>{percentage}%</StyledTypography>
                     </GridFlex>

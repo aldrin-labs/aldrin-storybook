@@ -35,8 +35,8 @@ export const DialogSubTitle = styled(DialogTitle)`
 
 export const InputBaseCustom = styled(InputBase)`
     width: 100%;
-    background: #333; 
-    border: 1px solid #333;
+    background: #F2F4F6; 
+    /* border: 1px solid #333; */
     border-radius:50px;
     padding: 4px 10px;
 `
