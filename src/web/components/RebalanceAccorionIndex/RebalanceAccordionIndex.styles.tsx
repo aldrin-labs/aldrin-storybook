@@ -27,12 +27,13 @@ export const GridItemHeadingCustom = styled(Grid)`
 `
 
 export const StyledTypography = styled(Typography)`
-  font-size: 65%;
+  font-size: 70%;
   line-height: 25px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${props => props.primaryColor || props.color || '#7284A0'};
   text-align: ${props => props.position || 'none'};
+  margin-left: ${props => props.marginLeft};
 `
 
 export const StyledSubTypography = styled(Typography)`

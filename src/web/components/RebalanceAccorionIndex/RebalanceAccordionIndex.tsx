@@ -12,7 +12,7 @@ import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanc
 import Slider from '../Slider/Slider';
 import { TypographyCustom, ExpansionPanelWrapper, StyledTypography, StyledSubTypography, GridItemHeadingCustom, GridFlex } from './RebalanceAccordionIndex.styles' 
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: '100%',
   },
@@ -25,24 +25,24 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
-});
+})
 
 @withTheme()
 
 class RebalanceAccordionIndex extends React.Component {
   state = {
     expanded: null,
-  };
+  }
 
-  handleChange = panel => (event, expanded) => {
+  handleChange = (panel) => (event, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
-    });
-  };
+    })
+  }
 
   render() {
-    const { 
-      classes, 
+    const {
+      classes,
       isEditModeEnabled,
       staticRows,
       staticRowsMap,
@@ -56,7 +56,7 @@ class RebalanceAccordionIndex extends React.Component {
       isUSDCurrently,
       addMoneyInputValue,
       theme,
-      loading, 
+      loading,
       red,
       saveButtonColor,
       secondary,
@@ -72,30 +72,27 @@ class RebalanceAccordionIndex extends React.Component {
       dustFilter,
       showWarning,
       accordionData,
+      sliderStep,
       theme: {palette: {black}}
     } = this.props;
     const { expanded } = this.state;
 
-    let panelId = 1;
-    
     return (
       <div className={classes.root}>
-
       {
-        (accordionData && accordionData.length > 0) ? (
-          accordionData.map((item:any, i:any) => {
 
-            const {         
-              accordionPanelHeadingBorderColor,
-              accordionPanelHeading,
-              secondColValue,
-              fourthColValue,
-              percentage
-            } = item;
+        accordionData.map((item: any, i: any) => {
+            const {
+                accordionPanelHeadingBorderColor,
+                accordionPanelHeading,
+                secondColValue,
+                fourthColValue,
+                percentage
+              } = item
 
             const panelId = `panel`+`${i}`;
 
-            return(
+            return (
               <ExpansionPanelWrapper expanded={expanded === `${panelId}`} onChange={this.handleChange(`${panelId}`)}>
                 <ExpansionPanelSummary style={{borderRadius: '50%'}} expandIcon={<ExpandMoreIcon />}>
                   <Grid container justify="space-between">
@@ -106,7 +103,7 @@ class RebalanceAccordionIndex extends React.Component {
                       <StyledTypography>Current value</StyledTypography>
                       <StyledSubTypography color={black.custom}>${secondColValue}</StyledSubTypography>
                     </Grid>
-                    <GridFlex item lg={3} justify="space-around" alignItems="center">
+                    <GridFlex item lg={3} justify="flex-start" alignItems="center">
                       <Slider 
                         thumbWidth='22px' 
                         thumbHeight='22px' 
@@ -117,17 +114,17 @@ class RebalanceAccordionIndex extends React.Component {
                         trackAfterBackground='orange' 
                         trackBeforeBackground='#E7ECF3' 
                         />
-                      <StyledTypography>{percentage}%</StyledTypography>
-
+                      <StyledTypography marginLeft='15px'>{percentage}%</StyledTypography>
                     </GridFlex>
          
                     <Grid item lg={2}>
                       <StyledTypography>Target value</StyledTypography>
                       <StyledSubTypography color={black.custom}>${fourthColValue}</StyledSubTypography>
                     </Grid>
-                    <Grid item lg={1}>
+
+                    <GridFlex item lg={1} justify="flex-start" alignItems="center">
                       <Typography>...</Typography>
-                    </Grid>
+                    </GridFlex>
                   </Grid>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
@@ -163,18 +160,17 @@ class RebalanceAccordionIndex extends React.Component {
                     onNewSnapshot,
                     dustFilter,
                     showWarning,
+                    sliderStep,
                     }}
                   />
 
                 </ExpansionPanelDetails>
               </ExpansionPanelWrapper>
-            )
-            
-          })
-        ) : ('')
+            )     
+          })      
       }
       </div>
-    );
+    )
   }
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
 import AddIcon from '@material-ui/icons/Add'
@@ -30,6 +30,7 @@ const MyLinkToUserSettings = (props: any) => (
   </Link>
 )
 
+@withRouter
 class PortfolioSelector extends React.Component<IProps> {
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
@@ -43,7 +44,7 @@ class PortfolioSelector extends React.Component<IProps> {
     }
   }
 
-  onKeyToggle = (toggledKeyID: string) => {
+  onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId, newKeys } = this.props
 
     const objForQuery = {
@@ -53,10 +54,23 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery)
   }
 
-  onWalletToggle = (toggledWalletID: string) => {
+  onKeySelectOnlyOne = async (toggledKeyID: string) => {
+    const { portfolioId } = this.props
+
+    const objForQuery = {
+      settings: {
+        portfolioId,
+        selectedKeys: [toggledKeyID],
+      },
+    }
+
+    await this.updateSettings(objForQuery)
+  }
+
+  onWalletToggle = async (toggledWalletID: string) => {
     const { portfolioId, newWallets } = this.props
 
     const objForQuery = {
@@ -69,10 +83,10 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery)
   }
 
-  onToggleAll = () => {
+  onToggleAll = async () => {
     const {
       newKeys,
       activeKeys,
@@ -103,7 +117,7 @@ class PortfolioSelector extends React.Component<IProps> {
       }
     }
 
-    this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery)
   }
 
   onDustFilterChange = (
@@ -119,7 +133,7 @@ class PortfolioSelector extends React.Component<IProps> {
     this.updateSettings({
       settings: {
         portfolioId,
-        dustFilter: { ...{usd, percentage}, [dustFilterParam]: value },
+        dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value },
       },
     })
   }
@@ -133,7 +147,11 @@ class PortfolioSelector extends React.Component<IProps> {
       activeKeys,
       activeWallets,
       dustFilter,
+      location: { pathname },
     } = this.props
+
+    const isRebalance = pathname === '/portfolio/rebalance'
+
     const login = true
 
     const isCheckedAll =
@@ -162,8 +180,10 @@ class PortfolioSelector extends React.Component<IProps> {
               isSideNavOpen,
               isCheckedAll,
               newKeys,
+              isRebalance,
               onToggleAll: this.onToggleAll,
               onKeyToggle: this.onKeyToggle,
+              onKeySelectOnlyOne: this.onKeySelectOnlyOne,
             }}
           />
 
@@ -200,6 +220,7 @@ class PortfolioSelector extends React.Component<IProps> {
               </Button>
             </MyLinkToUserSettings>
           </AddAccountBlock>
+          {!isRebalance && (
             <>
               <Name color={color}>Dust</Name>
               <FilterContainer>
@@ -235,6 +256,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 </FilterValues>
               </FilterContainer>
             </>
+          )}
         </AccountsWalletsBlock>
       </Slide>
     )

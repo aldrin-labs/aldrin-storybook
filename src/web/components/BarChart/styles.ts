@@ -38,7 +38,14 @@ export const StyledDiscreteColorLegend = styled(DiscreteColorLegend)`
   }
 `
 
-export const axisStyle = ({ stroke, ticks, line, textColor, fontFamily, fontSize }) => ({
+export const axisStyle = ({
+  stroke,
+  ticks,
+  line,
+  textColor,
+  fontFamily,
+  fontSize,
+}) => ({
   ticks: {
     padding: '1rem',
     stroke: stroke,
@@ -53,10 +60,10 @@ export const axisStyle = ({ stroke, ticks, line, textColor, fontFamily, fontSize
 })
 
 export const barSeriesStyles = {
-  cursor: 'pointer', 
+  cursor: 'pointer',
 }
 
 export const flexibleXYPlotMargine = {
-  right: 95, 
-  left: 95 
+  right: 95,
+  left: 95,
 }
