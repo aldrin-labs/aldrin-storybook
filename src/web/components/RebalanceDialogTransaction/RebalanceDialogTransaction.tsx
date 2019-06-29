@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { withTheme } from '@material-ui/styles'
 
-import { GridCustom, DialogWrapper, DialogTitleCustom, TypographyTopDescription, LinkCustom } from "./RebalanceDialogTransaction.styles";
+import { TypographyCustomHeading, GridCustom, DialogWrapper, DialogTitleCustom, TypographyTopDescription, LinkCustom } from "./RebalanceDialogTransaction.styles";
 import SvgIcon from '../../components/SvgIcon'
 import Stroke from '../../../icons/Stroke.svg'
 
@@ -74,7 +74,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       theme: {palette: {blue, red}},
       open,
       handleClickOpen,
-      handleClose
+      handleClose,
+      theme: {palette: {black}}
     } = this.props;
 
 
@@ -91,20 +92,20 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           open={open}
         >
           <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
-              <Typography color="primary">{dialogHedaing}</Typography>
+              <TypographyCustomHeading fontWeight={'bold'} borderRadius={'10px'} color={black.custom}>{dialogHedaing}</TypographyCustomHeading>
           </DialogTitleCustom>
 
           <DialogContent justify="center">
-            <TypographyTopDescription style={{textAlign: "center"}}>
+            <TypographyTopDescription>
                 {titleDescription}
             </TypographyTopDescription>
 
             <GridCustom container justify="center">
-              <BtnCustom onClick={handleClose} btnColor={red.custom}>
+              <BtnCustom padding={'5px 0'} borderRadius={'10px'} btnWidth="130px" onClick={handleClose} color={red.custom}>
                 { btnFirst }
               </BtnCustom>
 
-              <BtnCustom btnColor={blue.custom} >
+              <BtnCustom padding={'5px 0'} borderRadius={'10px'} btnWidth="130px" color={blue.custom} >
                 { btnSecond }
               </BtnCustom>
             </GridCustom>

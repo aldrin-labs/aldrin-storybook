@@ -2,6 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid, Dialog, Button, DialogTitle, Typography, Link } from '@material-ui/core'
 
+export const TypographyCustomHeading = styled(Typography)`
+  color: ${props => props.color || '#000'};
+  font-weight: ${props => props.fontWeight || `400`};
+`
+
 export const GridCustom = styled(Grid)`
   display: flex;
   justify-content: center;
@@ -33,6 +38,7 @@ export const TypographyTopDescription = styled(Typography)`
   margin: auto;
   width: 90%;
   text-align: center;
+  margin-top: 20px;
 `
 
 export const LinkCustom = styled(Link)`

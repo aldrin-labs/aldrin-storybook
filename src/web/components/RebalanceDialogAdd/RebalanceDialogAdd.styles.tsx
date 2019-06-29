@@ -3,6 +3,11 @@ import styled from 'styled-components'
 import { Grid, Dialog, DialogTitle, Typography, Link } from '@material-ui/core'
 import InputBase from '@material-ui/core/InputBase'
 
+export const TypographyCustomHeading = styled(Typography)`
+  color: ${props => props.color || '#000'};
+  font-weight: ${props => props.fontWeight || `400`};
+`
+
 export const GridCustom = styled(Grid)`
     padding: 15px;
 `

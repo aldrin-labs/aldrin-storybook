@@ -1,12 +1,14 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { withStyles, withTheme } from '@material-ui/core/styles';
+import { LinearProgressCustom } from './ProgressBar.styles';
 
 const styles = {
   root: {
     flexGrow: 1,
   },
 };
+
+@withTheme()
 
 class ProgressBar extends React.Component {
   state = {
@@ -62,10 +64,14 @@ class ProgressBar extends React.Component {
   // };
 
   render() {
-    const { classes } = this.props;
+    const { 
+      classes,
+      theme: {palette: {green}}
+     } = this.props;
     return (
       <div className={classes.root}>
-        <LinearProgress color="primary" variant={(this.state.isError) ? ("determinate") : ("primary")} value={this.state.completed} />
+        {/* (this.state.isError) ?  */}
+        <LinearProgressCustom height='20px' color={green.dark} variant="determinate" value={this.state.completed} />
       </div>
     );
   }

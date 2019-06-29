@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { withTheme } from '@material-ui/styles'
 
-import { GridCustom, InputBaseCustom, DialogWrapper, DialogTitleCustom, GridSearchPanel, LinkCustom  } from "./RebalanceDialogAdd.styles";
+import { TypographyCustomHeading, GridCustom, InputBaseCustom, DialogWrapper, DialogTitleCustom, GridSearchPanel, LinkCustom  } from "./RebalanceDialogAdd.styles";
 
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import ContentList from './ContentList'
@@ -88,7 +88,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
     const {
         title,
         data,
-        theme: {palette: {blue}}
+        theme: {palette: {blue, black}}
     } = this.props;
 
     return (
@@ -101,8 +101,8 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
           open={this.state.open}
         >
         <DialogTitleCustom id="customized-dialog-title" onClose={this.handleClose}>
-            <Typography color="primary">{title}</Typography>
-        </DialogTitleCustom>          
+          <TypographyCustomHeading fontWeight={'bold'} borderRadius={'10px'} color={black.custom}>{title}</TypographyCustomHeading>
+        </DialogTitleCustom>
           <DialogContent justify="center">
             <GridSearchPanel>
                 {/* <SearchIcon /> */}
@@ -116,7 +116,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
 
             <GridCustom container justify="space-between" alignItems="center">
                 <LinkCustom href={'#'} color={blue.custom}>Go to index market</LinkCustom>
-                <BtnCustom btnColor={blue.custom}>ADD</BtnCustom>
+                <BtnCustom btnWidth={'110px'} borderRadius={'10px'} btnColor={blue.custom}>ADD</BtnCustom>
             </GridCustom>
 
           </DialogContent>
