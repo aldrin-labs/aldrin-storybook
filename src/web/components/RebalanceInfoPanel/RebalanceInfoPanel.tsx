@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import { withTheme } from '@material-ui/styles'
 import { Grid } from '@material-ui/core'
+import Timer from 'react-compound-timer'
 import {
   StyledTypography,
   StyledSubTypography,
@@ -8,24 +10,22 @@ import {
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import SelectElement from './SelectElement'
 import { IProps } from './RebalanceInfoPanel.types'
-import { withTheme } from '@material-ui/styles'
 
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps> {
   render() {
     const {
-      rebalanceInfoPanelData,
+      rebalanceInfoPanelData: {
+        accountValue,
+        availableValue,
+        availablePercentage,
+        rebalanceTime,
+      },
       rebalanceOption,
       theme: {
-        palette: { blue, red, green },
+        palette: { blue, green },
       },
     } = this.props
-    const {
-      accountValue,
-      availableValue,
-      availablePercentage,
-      fourthColValue,
-    } = rebalanceInfoPanelData
 
     return (
       <Grid container justify="space-between">
@@ -119,7 +119,19 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   counterColor="#ED6337"
                   position="right"
                 >
-                  {fourthColValue}
+                  <Timer
+                    initialTime={rebalanceTime}
+                    direction="backward"
+                    startImmediately={true}
+                  >
+                    {() => (
+                      <React.Fragment>
+                        <Timer.Hours />:
+                        <Timer.Minutes />:
+                        <Timer.Seconds />:
+                      </React.Fragment>
+                    )}
+                  </Timer>
                 </StyledSubTypography>
               </Grid>
             </Grid>

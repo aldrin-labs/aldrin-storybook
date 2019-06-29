@@ -3,7 +3,7 @@ export interface IProps {
     accountValue: string
     availableValue: string
     availablePercentage: string
-    fourthColValue: string
+    rebalanceTime: string
   }
   rebalanceOption: string[]
 }
