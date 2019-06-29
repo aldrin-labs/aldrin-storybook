@@ -3,13 +3,13 @@
   export const dialogTransactionData = [
       {
         convertedFrom:'0.01BTC',
-        convertedTo:'6.234ETH', 
+        convertedTo:'6.234ETH',
         sum: '$68.5',
         isDone: true
       },
       {
         convertedFrom:'0.01BTC',
-        convertedTo:'6.234ETH',                   
+        convertedTo:'6.234ETH',
         sum: '$68.5',
         isDone: true
       },
@@ -34,7 +34,7 @@
       secondColValue: '55,500.00',
       fourthColValue: '90,500.00',
       percentage: 25
-    }
+    },
   ]
 
   export const accordionAddIndexPanelData = [
@@ -45,7 +45,7 @@
       fourthColValue: '60,500.00',
       percentage: 63
     },
-  
+
   ]
 
     export const accordionAddPortfolioPanelData = [
@@ -69,7 +69,7 @@
 
   export const rebalanceOption = ['Daily', 'Weekly', 'Bi-Weekly', 'Monthly', 'Every ___ Days', 'STOP REBALANCE'];
 
-  export const sectionDataHardCode =  [{symbol: 'Portfolio', portfolioPerc: 50},{symbol: 'Index', portfolioPerc: 85},{symbol: 'Source', portfolioPerc: 60}];
+  export const sectionDataHardCode =  [{symbol: 'My portfolio', portfolioPerc: 100},{symbol: 'Index', portfolioPerc: 0},{symbol: 'Source', portfolioPerc: 0}];
 
 
   export const addFolioData = []
