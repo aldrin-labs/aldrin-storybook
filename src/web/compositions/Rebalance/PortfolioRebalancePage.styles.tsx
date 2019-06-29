@@ -13,7 +13,7 @@ export const ChartWrapper = styled(({ isEditModeEnabled, ...rest }) => (
   justify-content: center;
   align-items: center;
 
-  height: 45%;
+  height: 33%;
   && {
     padding-bottom: 0;
   }

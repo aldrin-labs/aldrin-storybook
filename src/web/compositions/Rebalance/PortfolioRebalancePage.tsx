@@ -185,7 +185,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               alwaysShowLegend={true}
               leftBar={leftBar}
               rightBar={rightBar}
-              height={160}
               customBarSeriesStyles={{
                 rx: 10,
                 ry: 10,
@@ -242,14 +241,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               background={theme.palette.background.default}
               staticRows={staticRows}
               rows={rows}
-              bottomMargin={5}
               theme={theme}
               hideDashForToolTip={true}
               xAxisVertical={true}
               alwaysShowLegend={true}
               leftBar={leftBar}
               rightBar={rightBar}
-              height={160}
               customBarSeriesStyles={{
                 rx: 10,
                 ry: 10,
