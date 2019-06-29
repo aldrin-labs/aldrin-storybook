@@ -138,6 +138,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       accountValue: totalSnapshotRows,
       availableValue: undistributedMoney,
       availablePercentage: 100 - +totalPercents,
+      // TODO: change after implement period for select
       rebalanceTime: 216000000,
     }
 
