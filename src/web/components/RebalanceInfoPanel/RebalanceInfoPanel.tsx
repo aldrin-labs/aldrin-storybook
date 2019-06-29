@@ -128,7 +128,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                       <React.Fragment>
                         <Timer.Hours />:
                         <Timer.Minutes />:
-                        <Timer.Seconds />:
+                        <Timer.Seconds />
                       </React.Fragment>
                     )}
                   </Timer>
