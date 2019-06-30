@@ -42,6 +42,7 @@ import {
   addFolioData,
   addIndexData,
 } from './mockData'
+import { roundAndFormatNumber } from '../../../../../core/src/utils/PortfolioTableUtils'
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -138,10 +139,39 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const saveButtonColor = isPercentSumGood ? green : red
 
     const rebalanceInfoPanelData = {
-      accountValue: totalSnapshotRows,
-      availableValue: undistributedMoney,
-      availablePercentage: 100 - +totalPercents,
+      accountValue: roundAndFormatNumber(
+        totalSnapshotRows,
+        3,
+        false
+      ),
+      availableValue: roundAndFormatNumber(
+        undistributedMoney,
+        3,
+        false
+      ),
+      availablePercentage: roundAndFormatNumber(
+        100 - +totalPercents,
+        3,
+        false
+      ),
+      // TODO: change after implement period for select
       rebalanceTime: 216000000,
+    }
+
+    const sectionPanelData = {
+        accordionPanelHeadingBorderColor: '#F29C38',
+        accordionPanelHeading: 'My portfolio',
+        secondColValue: roundAndFormatNumber(
+          totalSnapshotRows,
+          3,
+          false
+        ),
+        fourthColValue: roundAndFormatNumber(
+          totalTableRows,
+          3,
+          false
+        ),
+        percentage: 100,
     }
 
     return (
@@ -272,7 +302,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
 
           <RebalanceAccordionIndex
-            accordionData={accordionPortfolioPanelData}
+             accordionData={[sectionPanelData]}
           >
             <PortfolioRebalanceTableContainer
               key={`PortfolioRebalanceTableContainer`}
@@ -311,75 +341,75 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           </RebalanceAccordionIndex>
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
-          <RebalanceAccordionIndex
-            isEditModeEnabled={isEditModeEnabled}
-            staticRows={staticRows}
-            staticRowsMap={staticRowsMap}
-            totalStaticRows={totalStaticRows}
-            rows={rows}
-            totalRows={totalRows}
-            totalPercents={totalPercents}
-            totalTableRows={totalTableRows}
-            isPercentSumGood={isPercentSumGood}
-            undistributedMoney={undistributedMoney}
-            isUSDCurrently={isUSDCurrently}
-            addMoneyInputValue={addMoneyInputValue}
-            theme={theme}
-            loading={loading}
-            red={red}
-            saveButtonColor={saveButtonColor}
-            secondary={secondary}
-            fontFamily={fontFamily}
-            totalSnapshotRows={totalSnapshotRows}
-            timestampSnapshot={timestampSnapshot}
-            onDiscardChanges={onDiscardChanges}
-            onSaveClick={onSaveClick}
-            onReset={onReset}
-            onEditModeEnable={onEditModeEnable}
-            updateState={updateState}
-            onNewSnapshot={onNewSnapshot}
-            dustFilter={dustFilter}
-            showWarning={showWarning}
-            sliderStep={sliderStep}
-            accordionData={accordionAddIndexPanelData}
-          />
+          {/*<RebalanceAccordionIndex*/}
+            {/*isEditModeEnabled={isEditModeEnabled}*/}
+            {/*staticRows={staticRows}*/}
+            {/*staticRowsMap={staticRowsMap}*/}
+            {/*totalStaticRows={totalStaticRows}*/}
+            {/*rows={rows}*/}
+            {/*totalRows={totalRows}*/}
+            {/*totalPercents={totalPercents}*/}
+            {/*totalTableRows={totalTableRows}*/}
+            {/*isPercentSumGood={isPercentSumGood}*/}
+            {/*undistributedMoney={undistributedMoney}*/}
+            {/*isUSDCurrently={isUSDCurrently}*/}
+            {/*addMoneyInputValue={addMoneyInputValue}*/}
+            {/*theme={theme}*/}
+            {/*loading={loading}*/}
+            {/*red={red}*/}
+            {/*saveButtonColor={saveButtonColor}*/}
+            {/*secondary={secondary}*/}
+            {/*fontFamily={fontFamily}*/}
+            {/*totalSnapshotRows={totalSnapshotRows}*/}
+            {/*timestampSnapshot={timestampSnapshot}*/}
+            {/*onDiscardChanges={onDiscardChanges}*/}
+            {/*onSaveClick={onSaveClick}*/}
+            {/*onReset={onReset}*/}
+            {/*onEditModeEnable={onEditModeEnable}*/}
+            {/*updateState={updateState}*/}
+            {/*onNewSnapshot={onNewSnapshot}*/}
+            {/*dustFilter={dustFilter}*/}
+            {/*showWarning={showWarning}*/}
+            {/*sliderStep={sliderStep}*/}
+            {/*accordionData={accordionAddIndexPanelData}*/}
+          {/*/>*/}
 
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData} />
 
           <TypographyAccordionTitle>Following portfolios</TypographyAccordionTitle>
 
-          <RebalanceAccordionIndex
-            isEditModeEnabled={isEditModeEnabled}
-            staticRows={staticRows}
-            staticRowsMap={staticRowsMap}
-            totalStaticRows={totalStaticRows}
-            rows={rows}
-            totalRows={totalRows}
-            totalPercents={totalPercents}
-            totalTableRows={totalTableRows}
-            isPercentSumGood={isPercentSumGood}
-            undistributedMoney={undistributedMoney}
-            isUSDCurrently={isUSDCurrently}
-            addMoneyInputValue={addMoneyInputValue}
-            theme={theme}
-            loading={loading}
-            red={red}
-            saveButtonColor={saveButtonColor}
-            secondary={secondary}
-            fontFamily={fontFamily}
-            totalSnapshotRows={totalSnapshotRows}
-            timestampSnapshot={timestampSnapshot}
-            onDiscardChanges={onDiscardChanges}
-            onSaveClick={onSaveClick}
-            onReset={onReset}
-            onEditModeEnable={onEditModeEnable}
-            updateState={updateState}
-            onNewSnapshot={onNewSnapshot}
-            dustFilter={dustFilter}
-            showWarning={showWarning}
-            sliderStep={sliderStep}
-            accordionData={accordionAddPortfolioPanelData}
-          />
+          {/*<RebalanceAccordionIndex*/}
+            {/*isEditModeEnabled={isEditModeEnabled}*/}
+            {/*staticRows={staticRows}*/}
+            {/*staticRowsMap={staticRowsMap}*/}
+            {/*totalStaticRows={totalStaticRows}*/}
+            {/*rows={rows}*/}
+            {/*totalRows={totalRows}*/}
+            {/*totalPercents={totalPercents}*/}
+            {/*totalTableRows={totalTableRows}*/}
+            {/*isPercentSumGood={isPercentSumGood}*/}
+            {/*undistributedMoney={undistributedMoney}*/}
+            {/*isUSDCurrently={isUSDCurrently}*/}
+            {/*addMoneyInputValue={addMoneyInputValue}*/}
+            {/*theme={theme}*/}
+            {/*loading={loading}*/}
+            {/*red={red}*/}
+            {/*saveButtonColor={saveButtonColor}*/}
+            {/*secondary={secondary}*/}
+            {/*fontFamily={fontFamily}*/}
+            {/*totalSnapshotRows={totalSnapshotRows}*/}
+            {/*timestampSnapshot={timestampSnapshot}*/}
+            {/*onDiscardChanges={onDiscardChanges}*/}
+            {/*onSaveClick={onSaveClick}*/}
+            {/*onReset={onReset}*/}
+            {/*onEditModeEnable={onEditModeEnable}*/}
+            {/*updateState={updateState}*/}
+            {/*onNewSnapshot={onNewSnapshot}*/}
+            {/*dustFilter={dustFilter}*/}
+            {/*showWarning={showWarning}*/}
+            {/*sliderStep={sliderStep}*/}
+            {/*accordionData={accordionAddPortfolioPanelData}*/}
+          {/*/>*/}
 
           <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData} />
 
