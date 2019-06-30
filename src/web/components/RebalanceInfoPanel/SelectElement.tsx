@@ -38,7 +38,8 @@ class SelectElement extends React.Component {
   }
 
   handleChange = (name) => (event) => {
-    this.setState({ [name]: event.target.value })
+    this.props.setRebalanceTimer();
+    this.setState({ [name]: event.target.value });
   }
 
   render() {
@@ -47,10 +48,13 @@ class SelectElement extends React.Component {
     return (
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
+          {/* <button onClick={this.props.setRebalanceTimer}>555</button> */}
           <NativeSelectCustom
             value={this.state.period}
             onChange={this.handleChange('period')}
-            input={<Input name="period" id="period-native-label-placeholder" />}
+            input={
+              <Input name="period" id="period-native-label-placeholder" />
+            }
           >
             {rebalanceOption.map((option) => {
               return <option value={option}>{option}</option>

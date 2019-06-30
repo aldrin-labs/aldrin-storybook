@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
 
+import TooltipCustom from '../TooltipCustom/TooltipCustom'
+
 import Slider from '../Slider/Slider'
 import {
   TypographyCustom,
@@ -37,12 +39,17 @@ const styles = (theme) => ({
 class RebalanceAccordionIndex extends React.Component {
   state = {
     expanded: null,
+    value: 0,
   }
 
   handleChange = (panel) => (event, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
     })
+  }
+
+  handleSlideChange = (event, value) => {
+    this.setState({ value })
   }
 
   render() {
@@ -96,50 +103,50 @@ class RebalanceAccordionIndex extends React.Component {
                   <GridFlex
                     item
                     lg={3}
-                    justify="flex-start"
+                    justify="center"
                     alignItems="center"
+                    style={{border: '1px solide red'}}
                   >
                     <Slider
-                      thumbWidth="22px"
-                      thumbHeight="22px"
-                      sliderWidth="150px"
-                      sliderHeight="22px"
-                      sliderHeightAfter="22px"
+                      thumbWidth="25px"
+                      thumbHeight="25px"
+                      sliderWidth="125px"
+                      sliderHeight="17px"
+                      sliderHeightAfter="20px"
                       borderRadius="30px"
                       borderRadiusAfter="30px"
                       thumbBackground="blue"
                       borderThumb="2px solid white"
-                      trackAfterBackground="#b1b6bc"
-                      trackBeforeBackground="#DEDB8E"
-                      value="50"
+                      trackAfterBackground="#E7ECF3"
+                      trackBeforeBackground={
+                        accordionPanelHeadingBorderColor
+                      }
+                      value={this.state.value}
+                      onChange={this.handleSlideChange}
+                      style={{marginLeft: '-20px'}}
                     />
                     <StyledTypography
                       fontWeight="bold"
                       fontSize="16px"
                       marginLeft="15px"
                     >
-                      {percentage}%
+                      {/* {percentage} */}
+                      {this.state.value.toFixed(0)}%
                     </StyledTypography>
                   </GridFlex>
 
-                  <Grid item lg={2}>
+                  <Grid item lg={3}>
                     <StyledTypography>Target value</StyledTypography>
                     <StyledSubTypography color={black.custom}>
                       ${fourthColValue}
                     </StyledSubTypography>
                   </Grid>
-
-                  <GridFlex
-                    item
-                    lg={1}
-                    justify="flex-start"
-                    alignItems="center"
-                  >
-                    <Typography>...</Typography>
-                  </GridFlex>
+                  <GridFlex item lg={1} />
                 </Grid>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
+              <ExpansionPanelDetails>
+                {children}
+              </ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}

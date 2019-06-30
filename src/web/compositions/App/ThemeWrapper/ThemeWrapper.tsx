@@ -112,6 +112,8 @@ export default class ThemeWrapper extends Component<Props> {
               },
               grey: {
                 custom: '#ABBAD1',
+                dark: '#7284A0',
+                main: '#F2F4F6',
               },
               primary: {
                 main: '#303037',
@@ -209,6 +211,7 @@ export default class ThemeWrapper extends Component<Props> {
               grey: {
                 custom: '#ABBAD1',
                 dark: '#7284A0',
+                main: '#F2F4F6',
               },
               primary: {
                 main: '#FEFEFE',

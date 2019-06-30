@@ -15,8 +15,23 @@ import { IProps } from './RebalanceInfoPanel.types'
 
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps> {
+  setRebalanceTimer = () => {
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^')
+    // if (event.target.value === 'Daily') {
+    //   return (rebalanceTime = '0')
+    // }
+
+    // if (event.target.value === 'Weekly') {
+    //   return (rebalanceTime = '0')
+    // }
+
+    // if (event.target.value === 'Monthly') {
+    //   return (rebalanceTime = '0')
+    // }
+  }
+
   render() {
-    const {
+    let {
       rebalanceInfoPanelData: {
         accountValue,
         availableValue,
@@ -92,22 +107,15 @@ export default class RebalanceInfoPanel extends Component<IProps> {
               </GridFlex>
 
               {/* TODO: Grid item doesn't react on justify="center" aand alignItems */}
-              <Grid
-                item
-                lg={6}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                {/* style={{display: 'flex', justifyContent: '',alignItems: 'center'}} */}
-                {/* verticalPosition="" */}
+              <GridFlex item lg={6} justify="flex-end" alignItems="center">
                 <CustomLink href={'#'} linkColor={grey.dark}>
                   rebalance{' '}
                 </CustomLink>
-                <SelectElement rebalanceOption={rebalanceOption} />
-              </Grid>
+                <SelectElement
+                  rebalanceOption={rebalanceOption}
+                  setRebalanceTimer={this.setRebalanceTimer}
+                />
+              </GridFlex>
 
               <Grid item lg={3}>
                 <StyledTypography fontWeight={'bold'} position="right">

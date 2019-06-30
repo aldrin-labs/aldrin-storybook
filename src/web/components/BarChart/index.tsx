@@ -178,7 +178,7 @@ class BarChartComponent extends Component<IProps, IState> {
                         key="chart"
                         data={DataArr}
                         color={color}
-                        style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
+                        style={{ ...barSeriesStyles, ...customBarSeriesStyles, padding: '0px' }}
                       />,
                      //...Charts,
                     ]

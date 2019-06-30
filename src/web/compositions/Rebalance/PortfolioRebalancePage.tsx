@@ -192,7 +192,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               customBarSeriesStyles={{
                 rx: 10,
                 ry: 10,
-                height: 25,
+                height: 18,
               }}
               yType={'ordinal'}
               xDomain={[0, 100]}
@@ -213,6 +213,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             lg={2}
             className="PortfolioDistributionChart"
             style={{
+              height: '120px',
               background: `url(${Stroke})`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
@@ -255,7 +256,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               customBarSeriesStyles={{
                 rx: 10,
                 ry: 10,
-                height: 25,
+                height: 18,
               }}
               yType={'ordinal'}
               xDomain={[0, 100]}
@@ -345,7 +346,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData} />
 
-          <TypographyAccordionTitle>add portfolio</TypographyAccordionTitle>
+          <TypographyAccordionTitle>Following portfolios</TypographyAccordionTitle>
 
           <RebalanceAccordionIndex
             isEditModeEnabled={isEditModeEnabled}

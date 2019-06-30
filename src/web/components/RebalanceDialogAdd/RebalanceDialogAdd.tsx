@@ -108,7 +108,8 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
       <>
         <BtnCustom
           btnColor={blue.custom}
-          margin="auto"
+          margin="0px auto 12px auto"
+          padding="5px"
           onClick={this.handleClickOpen}
         >
           {title}
@@ -148,7 +149,11 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               )}
             </GridCustom>
 
-            <GridCustom container justify="space-between" alignItems="center">
+            <GridCustom
+              container
+              justify="space-between"
+              alignItems="center"
+            >
               <LinkCustom href={'#'} color={blue.custom}>
                 Go to index market
               </LinkCustom>

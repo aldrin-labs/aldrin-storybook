@@ -6,11 +6,11 @@ export const GridFlex = styled(Grid)`
 `
 
 export const GridInfoPanelWrapper = styled(Grid)`
-  padding-bottom: 2%;
+  padding-bottom: 20px;
 `
 
 export const CustomLink = styled(Link)`
-  font-size: 12px;
+  font-size: 10px;
   padding: 0 5px;
   text-transform: uppercase;
   color: ${(props) => props.linkColor || 'white'};
@@ -19,7 +19,7 @@ export const CustomLink = styled(Link)`
 `
 
 export const StyledTypography = styled(Typography)`
-  font-size: 65%;
+  font-size: 10px;
   line-height: 25px;
   font-weight: ${(props) => props.fontWeight || '400'};
   letter-spacing: 1px;

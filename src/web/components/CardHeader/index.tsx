@@ -13,14 +13,14 @@ const styles = (theme: Theme) =>
       backgroundColor:
         theme.palette.type === 'dark'
           ? theme.palette.primary.light
-          : fade(theme.palette.primary.main, 0.5),
+          : fade(theme.palette.grey.main, 0.5),
     },
     title: {
       textTransform: 'uppercase',
       fontWeight: 'bold',
       lineHeight: 1.5,
       letterSpacing: '0.02857em',
-      fontSize: '14px',
+      fontSize: '10px',
       textAlign: 'center',
     },
     action: {
