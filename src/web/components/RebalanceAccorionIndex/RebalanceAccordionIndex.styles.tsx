@@ -19,10 +19,10 @@ export const ExpansionPanelWrapper = styled(ExpansionPanel)`
          box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
 
          &&:first-child {
-           border-radius: 3%;
+           border-radius: 16px;
          }
          &&:last-child {
-           border-radius: 3%;
+           border-radius: 16px;
          }
        `
 

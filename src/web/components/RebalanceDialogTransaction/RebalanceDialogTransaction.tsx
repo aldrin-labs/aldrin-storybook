@@ -99,7 +99,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
         </LinkCustom>
 
         <DialogWrapper
-          style={{ borderRadius: '50%' }}
+          style={{ borderRadius: '32px' }}
           onClose={handleClose}
           aria-labelledby="customized-dialog-title"
           open={open}
@@ -126,6 +126,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 btnWidth="130px"
                 onClick={handleClose}
                 color={red.custom}
+                margin='0 5px'
               >
                 {btnFirst}
               </BtnCustom>
@@ -135,6 +136,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 borderRadius={'10px'}
                 btnWidth="130px"
                 color={blue.custom}
+                margin='0 5px'
               >
                 {btnSecond}
               </BtnCustom>

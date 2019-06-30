@@ -41,7 +41,7 @@ export default class ThemeWrapper extends Component<Props> {
       themeMode === 'dark'
         ? {
             typography: {
-              fontFamily: ['DM Sans'].join(','),
+              fontFamily: ['DM Sans', 'sans-serif'].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',
@@ -135,7 +135,7 @@ export default class ThemeWrapper extends Component<Props> {
         : // light theme
           {
             typography: {
-              fontFamily: ['DM Sans'].join(','),
+              fontFamily: ['DM Sans', 'sans-serif'].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',

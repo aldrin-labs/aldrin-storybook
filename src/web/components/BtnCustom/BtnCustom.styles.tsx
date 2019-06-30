@@ -8,6 +8,6 @@ export const BtnCustom = styled(Button)`
   color: ${(props) => props.btnColor || props.color || '#333'};
   font-size: 10px;
   font-weight: bold;
-  margin: ${(props) => props.margin || '5px 10px'};
+  margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};
 `

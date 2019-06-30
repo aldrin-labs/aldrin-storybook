@@ -54,6 +54,7 @@ export const TypographyAccordionTitle = styled(Typography)`
 `
 
 export const ChartWrapperCustom = styled(ChartWrapper)`
+  border-radius: 32px;
   font-size: 10px;
   height: 120px;
   padding: 0px;

@@ -155,7 +155,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
         false
       ),
       // TODO: change after implement period for select
-      rebalanceTime: 216000000,
+      rebalanceTime: 432000000,
     }
 
     const sectionPanelData = {
@@ -203,7 +203,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             md={5}
             sm={5}
             className="PortfolioDistributionChart"
-            style={{ padding: '0px' }}
+            style={{ padding: '0px'}}
           >
             <PortfolioRebalanceChart
               dustFilter={dustFilter}
@@ -341,7 +341,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           </RebalanceAccordionIndex>
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
-          {/*<RebalanceAccordionIndex*/}
+          {/* <RebalanceAccordionIndex*/}
             {/*isEditModeEnabled={isEditModeEnabled}*/}
             {/*staticRows={staticRows}*/}
             {/*staticRowsMap={staticRowsMap}*/}
@@ -372,7 +372,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             {/*showWarning={showWarning}*/}
             {/*sliderStep={sliderStep}*/}
             {/*accordionData={accordionAddIndexPanelData}*/}
-          {/*/>*/}
+          {/*/> */}
 
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData} />
 

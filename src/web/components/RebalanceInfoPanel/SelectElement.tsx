@@ -13,14 +13,17 @@ import { NativeSelectCustom } from './SelectElement.styles'
 const styles = (theme) => ({
   root: {
     display: 'flex',
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
+    width: '80px',
   },
   formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 80,
+    width: '80px',
+    //margin: theme.spacing.unit,
+    //minWidth: 10,
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
+    width: '80px',
+    //marginTop: theme.spacing.unit * 2,
   },
 })
 
@@ -47,7 +50,7 @@ class SelectElement extends React.Component {
 
     return (
       <div className={classes.root}>
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formControl} style={{width: '65%'}}>
           {/* <button onClick={this.props.setRebalanceTimer}>555</button> */}
           <NativeSelectCustom
             value={this.state.period}

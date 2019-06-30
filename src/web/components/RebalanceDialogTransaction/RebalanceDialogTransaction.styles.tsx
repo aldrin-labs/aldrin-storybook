@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core'
 
 export const TypographyCustomHeading = styled(Typography)`
+  font-size: 12px;
   color: ${(props) => props.color || '#000'};
   font-weight: ${(props) => props.fontWeight || `400`};
 `

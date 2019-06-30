@@ -32,7 +32,7 @@ import {
 class BarChartComponent extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
      minColumnWidth: 20,
-     bottomMargin: 55,
+     bottomMargin: 5,
   }
 
   state = {
@@ -93,10 +93,11 @@ class BarChartComponent extends Component<IProps, IState> {
     const axisStyleWithTheme = axisStyle({
       stroke: theme.palette.text.primary,
       fontFamily: theme.typography.fontFamily,
-      textColor: theme.palette.secondary.main,
-      fontSize: theme.typography.fontSize,
+      textColor: theme.palette.grey.dark,
       ticks: { stroke: 'transparent'},
       line: { stroke: 'transparent' },
+      fontSize: '12px', //theme.typography.fontSize,
+      textTransform: 'uppercase',
     })
 
     const Charts = charts.map((chart: IChart, chartIndex: number) => {
@@ -120,8 +121,8 @@ class BarChartComponent extends Component<IProps, IState> {
 
 
     return (
-      <ScrollContainer height={200}>
-        <Container height={200} minWidth={minWidth}>
+      <ScrollContainer height={130}>
+        <Container height={130} minWidth={minWidth}>
           {showCustomPlaceholder ? (
             placeholderElement
           ) : (
