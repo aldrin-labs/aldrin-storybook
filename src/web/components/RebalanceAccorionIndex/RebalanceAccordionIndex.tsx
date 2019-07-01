@@ -10,6 +10,8 @@ import Grid from '@material-ui/core/Grid'
 
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
 
+import Tooltip from '@material-ui/core/Tooltip'
+
 import Slider from '../Slider/Slider'
 import {
   TypographyCustom,
@@ -40,6 +42,12 @@ class RebalanceAccordionIndex extends React.Component {
   state = {
     expanded: null,
     value: 0,
+  }
+
+  componentDidMount() {
+    this.setState({
+      value: this.props.sliderValue,
+    })
   }
 
   handleChange = (panel) => (event, expanded) => {
@@ -89,12 +97,13 @@ class RebalanceAccordionIndex extends React.Component {
                   <GridItemHeadingCustom
                     borderColor={accordionPanelHeadingBorderColor}
                     lg={3}
+                    md={3}
                   >
                     <TypographyCustom fontWeight={'bold'}>
                       {accordionPanelHeading}
                     </TypographyCustom>
                   </GridItemHeadingCustom>
-                  <Grid item lg={2}>
+                  <Grid item lg={2} md={3}>
                     <StyledTypography>Current value</StyledTypography>
                     <StyledSubTypography color={black.custom}>
                       ${secondColValue}
@@ -103,9 +112,10 @@ class RebalanceAccordionIndex extends React.Component {
                   <GridFlex
                     item
                     lg={3}
+                    md={3}
                     justify="center"
                     alignItems="center"
-                    style={{border: '1px solide red'}}
+                    style={{ border: '1px solide red' }}
                   >
                     <Slider
                       thumbWidth="25px"
@@ -118,35 +128,43 @@ class RebalanceAccordionIndex extends React.Component {
                       thumbBackground="blue"
                       borderThumb="2px solid white"
                       trackAfterBackground="#E7ECF3"
-                      trackBeforeBackground={
-                        accordionPanelHeadingBorderColor
-                      }
+                      trackBeforeBackground={accordionPanelHeadingBorderColor}
                       value={this.state.value}
                       onChange={this.handleSlideChange}
-                      style={{marginLeft: '-20px'}}
+                      style={{ marginLeft: '-20px' }}
+
+                      disabled
                     />
-                    <StyledTypography
-                      fontWeight="bold"
-                      fontSize="16px"
-                      marginLeft="15px"
+                    <Tooltip
+                      title={`${this.state.value.toFixed(4)}%`}
+                      placement="bottom-end"
                     >
-                      {/* {percentage} */}
-                      {this.state.value.toFixed(0)}%
-                    </StyledTypography>
+                      <StyledTypography
+                        fontWeight="bold"
+                        fontSize="16px"
+                        marginLeft="15px"
+                      >
+                        {/* {percentage} */}
+                        {this.state.value.toFixed(0)}%
+                      </StyledTypography>
+                    </Tooltip>
                   </GridFlex>
 
-                  <Grid item lg={3}>
-                    <StyledTypography>Target value</StyledTypography>
-                    <StyledSubTypography color={black.custom}>
+                  <Grid item lg={3} md={3}>
+                    <StyledTypography style={{ marginLeft: '75px' }}>
+                      Target value
+                    </StyledTypography>
+                    <StyledSubTypography
+                      style={{ marginLeft: '75px' }}
+                      color={black.custom}
+                    >
                       ${fourthColValue}
                     </StyledSubTypography>
                   </Grid>
-                  <GridFlex item lg={1} />
+                  <GridFlex item lg={1} md={3} />
                 </Grid>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                {children}
-              </ExpansionPanelDetails>
+              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}

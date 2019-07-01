@@ -11,20 +11,20 @@ export const TypographyCustom = styled(Typography)`
 `
 
 export const ExpansionPanelWrapper = styled(ExpansionPanel)`
-         margin-bottom: 20px;
-         padding: 7px 0;
-         border-radius: 50%;
-         -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
-         -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
-         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
+  margin-bottom: 20px;
+  padding: 7px 0;
+  border-radius: 50%;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
 
-         &&:first-child {
-           border-radius: 16px;
-         }
-         &&:last-child {
-           border-radius: 16px;
-         }
-       `
+  &&:first-child {
+    border-radius: 16px;
+  }
+  &&:last-child {
+    border-radius: 16px;
+  }
+`
 
 export const GridItemHeadingCustom = styled(Grid)`
   font-size: ${(props) => props.fontSize || `12px`};

@@ -1,7 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Grid, Dialog, DialogTitle, Typography, Link } from '@material-ui/core'
-import InputBase from '@material-ui/core/InputBase'
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  Typography,
+  Link,
+  InputBase,
+} from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
 
 export const TypographyCustomHeading = styled(Typography)`
   color: ${(props) => props.color || '#000'};
@@ -13,7 +20,7 @@ export const GridCustom = styled(Grid)`
 `
 export const GridSearchPanel = styled(Grid)`
   padding: 0 0 20px 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #e7ecf3;
 `
 export const DialogTitleCustom = styled(DialogTitle)`
   text-align: center;
@@ -36,9 +43,8 @@ export const DialogSubTitle = styled(DialogTitle)`
 export const InputBaseCustom = styled(InputBase)`
   width: 100%;
   background: #f2f4f6;
-  /* border: 1px solid #333; */
   border-radius: 50px;
-  padding: 4px 10px;
+  padding: 4px 15px;
 `
 
 export const DialogWrapper = styled(Dialog)`
@@ -55,4 +61,11 @@ export const LinkCustom = styled(Link)`
   cursor: pointer;
   background: ${(props) => props.background || 'none'};
   color: ${(props) => props.color || 'none'};
+`
+export const SearchIconCustom = styled(SearchIcon)`
+  position: absolute;
+  margin-top: 7px;
+  right: 36px;
+  color: #c4c4c4;
+  width: 18px;
 `

@@ -32,7 +32,7 @@ import {
 class BarChartComponent extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
      minColumnWidth: 20,
-     bottomMargin: 5,
+     bottomMargin: 1,
   }
 
   state = {
@@ -179,7 +179,7 @@ class BarChartComponent extends Component<IProps, IState> {
                         key="chart"
                         data={DataArr}
                         color={color}
-                        style={{ ...barSeriesStyles, ...customBarSeriesStyles, padding: '0px' }}
+                        style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
                       />,
                      //...Charts,
                     ]

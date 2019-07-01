@@ -203,9 +203,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             md={5}
             sm={5}
             className="PortfolioDistributionChart"
-            style={{ padding: '0px'}}
+            style={{ padding: '0px' }}
           >
             <PortfolioRebalanceChart
+              style={{ margin: '50px' }}
               dustFilter={dustFilter}
               key={`PortfolioRebalanceChart`}
               title={`Portfolio Distribution`}
@@ -271,6 +272,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             style={{ padding: '0' }}
           >
             <PortfolioRebalanceChart
+              margin={{ left: 200 }}
               dustFilter={dustFilter}
               key={`TargetRebalanceChart`}
               title={`Target Distribution`}
@@ -302,7 +304,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
 
           <RebalanceAccordionIndex
-             accordionData={[sectionPanelData]}
+            sliderValue={100}
+            accordionData={[sectionPanelData]}
           >
             <PortfolioRebalanceTableContainer
               key={`PortfolioRebalanceTableContainer`}
@@ -342,73 +345,75 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
           {/* <RebalanceAccordionIndex*/}
-            {/*isEditModeEnabled={isEditModeEnabled}*/}
-            {/*staticRows={staticRows}*/}
-            {/*staticRowsMap={staticRowsMap}*/}
-            {/*totalStaticRows={totalStaticRows}*/}
-            {/*rows={rows}*/}
-            {/*totalRows={totalRows}*/}
-            {/*totalPercents={totalPercents}*/}
-            {/*totalTableRows={totalTableRows}*/}
-            {/*isPercentSumGood={isPercentSumGood}*/}
-            {/*undistributedMoney={undistributedMoney}*/}
-            {/*isUSDCurrently={isUSDCurrently}*/}
-            {/*addMoneyInputValue={addMoneyInputValue}*/}
-            {/*theme={theme}*/}
-            {/*loading={loading}*/}
-            {/*red={red}*/}
-            {/*saveButtonColor={saveButtonColor}*/}
-            {/*secondary={secondary}*/}
-            {/*fontFamily={fontFamily}*/}
-            {/*totalSnapshotRows={totalSnapshotRows}*/}
-            {/*timestampSnapshot={timestampSnapshot}*/}
-            {/*onDiscardChanges={onDiscardChanges}*/}
-            {/*onSaveClick={onSaveClick}*/}
-            {/*onReset={onReset}*/}
-            {/*onEditModeEnable={onEditModeEnable}*/}
-            {/*updateState={updateState}*/}
-            {/*onNewSnapshot={onNewSnapshot}*/}
-            {/*dustFilter={dustFilter}*/}
-            {/*showWarning={showWarning}*/}
-            {/*sliderStep={sliderStep}*/}
-            {/*accordionData={accordionAddIndexPanelData}*/}
+          {/*isEditModeEnabled={isEditModeEnabled}*/}
+          {/*staticRows={staticRows}*/}
+          {/*staticRowsMap={staticRowsMap}*/}
+          {/*totalStaticRows={totalStaticRows}*/}
+          {/*rows={rows}*/}
+          {/*totalRows={totalRows}*/}
+          {/*totalPercents={totalPercents}*/}
+          {/*totalTableRows={totalTableRows}*/}
+          {/*isPercentSumGood={isPercentSumGood}*/}
+          {/*undistributedMoney={undistributedMoney}*/}
+          {/*isUSDCurrently={isUSDCurrently}*/}
+          {/*addMoneyInputValue={addMoneyInputValue}*/}
+          {/*theme={theme}*/}
+          {/*loading={loading}*/}
+          {/*red={red}*/}
+          {/*saveButtonColor={saveButtonColor}*/}
+          {/*secondary={secondary}*/}
+          {/*fontFamily={fontFamily}*/}
+          {/*totalSnapshotRows={totalSnapshotRows}*/}
+          {/*timestampSnapshot={timestampSnapshot}*/}
+          {/*onDiscardChanges={onDiscardChanges}*/}
+          {/*onSaveClick={onSaveClick}*/}
+          {/*onReset={onReset}*/}
+          {/*onEditModeEnable={onEditModeEnable}*/}
+          {/*updateState={updateState}*/}
+          {/*onNewSnapshot={onNewSnapshot}*/}
+          {/*dustFilter={dustFilter}*/}
+          {/*showWarning={showWarning}*/}
+          {/*sliderStep={sliderStep}*/}
+          {/*accordionData={accordionAddIndexPanelData}*/}
           {/*/> */}
 
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData} />
 
-          <TypographyAccordionTitle>Following portfolios</TypographyAccordionTitle>
+          <TypographyAccordionTitle>
+            Following portfolios
+          </TypographyAccordionTitle>
 
           {/*<RebalanceAccordionIndex*/}
-            {/*isEditModeEnabled={isEditModeEnabled}*/}
-            {/*staticRows={staticRows}*/}
-            {/*staticRowsMap={staticRowsMap}*/}
-            {/*totalStaticRows={totalStaticRows}*/}
-            {/*rows={rows}*/}
-            {/*totalRows={totalRows}*/}
-            {/*totalPercents={totalPercents}*/}
-            {/*totalTableRows={totalTableRows}*/}
-            {/*isPercentSumGood={isPercentSumGood}*/}
-            {/*undistributedMoney={undistributedMoney}*/}
-            {/*isUSDCurrently={isUSDCurrently}*/}
-            {/*addMoneyInputValue={addMoneyInputValue}*/}
-            {/*theme={theme}*/}
-            {/*loading={loading}*/}
-            {/*red={red}*/}
-            {/*saveButtonColor={saveButtonColor}*/}
-            {/*secondary={secondary}*/}
-            {/*fontFamily={fontFamily}*/}
-            {/*totalSnapshotRows={totalSnapshotRows}*/}
-            {/*timestampSnapshot={timestampSnapshot}*/}
-            {/*onDiscardChanges={onDiscardChanges}*/}
-            {/*onSaveClick={onSaveClick}*/}
-            {/*onReset={onReset}*/}
-            {/*onEditModeEnable={onEditModeEnable}*/}
-            {/*updateState={updateState}*/}
-            {/*onNewSnapshot={onNewSnapshot}*/}
-            {/*dustFilter={dustFilter}*/}
-            {/*showWarning={showWarning}*/}
-            {/*sliderStep={sliderStep}*/}
-            {/*accordionData={accordionAddPortfolioPanelData}*/}
+          {/*isEditModeEnabled={isEditModeEnabled}*/}
+          {/*staticRows={staticRows}*/}
+          {/*staticRowsMap={staticRowsMap}*/}
+          {/*totalStaticRows={totalStaticRows}*/}
+          {/*rows={rows}*/}
+          {/*totalRows={totalRows}*/}
+          {/*totalPercents={totalPercents}*/}
+          {/*totalTableRows={totalTableRows}*/}
+          {/*isPercentSumGood={isPercentSumGood}*/}
+          {/*undistributedMoney={undistributedMoney}*/}
+          {/*isUSDCurrently={isUSDCurrently}*/}
+          {/*addMoneyInputValue={addMoneyInputValue}*/}
+          {/*theme={theme}*/}
+          {/*loading={loading}*/}
+          {/*red={red}*/}
+          {/*saveButtonColor={saveButtonColor}*/}
+          {/*secondary={secondary}*/}
+          {/*fontFamily={fontFamily}*/}
+          {/*totalSnapshotRows={totalSnapshotRows}*/}
+          {/*timestampSnapshot={timestampSnapshot}*/}
+          {/*onDiscardChanges={onDiscardChanges}*/}
+          {/*onSaveClick={onSaveClick}*/}
+          {/*onReset={onReset}*/}
+          {/*onEditModeEnable={onEditModeEnable}*/}
+          {/*updateState={updateState}*/}
+          {/*onNewSnapshot={onNewSnapshot}*/}
+          {/*dustFilter={dustFilter}*/}
+          {/*showWarning={showWarning}*/}
+          {/*sliderStep={sliderStep}*/}
+          {/*accordionData={accordionAddPortfolioPanelData}*/}
           {/*/>*/}
 
           <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData} />

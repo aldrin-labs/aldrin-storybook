@@ -33,7 +33,7 @@ export const Chart = styled(({ background, ...rest }) => (
   width: 100%;
   height: calc(100% - 68px);
   && {
-    padding: 0.5rem 0.5rem 0 0.5rem;
+    padding: 0 0.1rem 0 0.1rem;
   }
 `
 
@@ -47,7 +47,8 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
 `
 export const TypographyAccordionTitle = styled(Typography)`
   width: 100%;
-  margin: 10px auto;
+  height: 14px;
+  margin: 6px auto;
   color: #abbad1;
   text-align: center;
   text-transform: uppercase;
@@ -56,7 +57,7 @@ export const TypographyAccordionTitle = styled(Typography)`
 export const ChartWrapperCustom = styled(ChartWrapper)`
   border-radius: 32px;
   font-size: 10px;
-  height: 120px;
+  height: 140px;
   padding: 0px;
   border: 0px;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);

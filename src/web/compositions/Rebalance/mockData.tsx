@@ -73,9 +73,9 @@ export const rebalanceOption = [
 ]
 
 export const sectionDataHardCode = [
-  { symbol: 'Portfolio', portfolioPerc: 50 },
-  { symbol: 'Index', portfolioPerc: 85 },
-  { symbol: 'Source', portfolioPerc: 60 },
+  { symbol: 'PORTFOLIO', portfolioPerc: 50 },
+  { symbol: 'INDEX', portfolioPerc: 85 },
+  { symbol: 'SOURCE', portfolioPerc: 60 },
 ]
 
 export const addFolioData = []

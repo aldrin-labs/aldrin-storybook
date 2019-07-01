@@ -17,15 +17,13 @@ import {
   DialogTitleCustom,
   GridSearchPanel,
   LinkCustom,
+  SearchIconCustom,
 } from './RebalanceDialogAdd.styles'
 
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import ContentList from './ContentList'
 
 import { IProps, IState } from './RebalanceDialogAdd.types'
-
-import SearchBar from '../SearchBar/SearchBar'
-import SearchIcon from '@material-ui/icons/Search'
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -134,19 +132,17 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
           </DialogTitleCustom>
           <DialogContent justify="center">
             <GridSearchPanel>
-              {/* <SearchIcon /> */}
+              <SearchIconCustom />
               <InputBaseCustom placeholder="Search…" />
             </GridSearchPanel>
             <GridCustom>
-              {data && data.length > 0 ? (
+
                 <ContentList
                   handleRadioBtn={this.handleRadioBtn}
                   isSelected={this.state.isSelected}
                   data={data}
                 />
-              ) : (
-                <Typography>List is epmty</Typography>
-              )}
+         
             </GridCustom>
 
             <GridCustom

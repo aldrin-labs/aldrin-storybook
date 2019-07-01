@@ -3,6 +3,7 @@ import { Button } from '@material-ui/core'
 
 export const BtnCustom = styled(Button)`
   width: ${(props) => props.btnWidth || '215px'};
+  height: 26px;
   border: 1px solid ${(props) => props.btnColor || props.color || '#333'};
   border-radius: ${(props) => props.borderRadius || `18px`};
   color: ${(props) => props.btnColor || props.color || '#333'};

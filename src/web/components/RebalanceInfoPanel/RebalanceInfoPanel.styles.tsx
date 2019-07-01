@@ -12,6 +12,7 @@ export const GridInfoPanelWrapper = styled(Grid)`
 export const CustomLink = styled(Link)`
   font-size: 10px;
   padding: 0 5px;
+  margin-right: 3px;
   text-transform: uppercase;
   color: ${(props) => props.linkColor || 'white'};
   text-align: ${(props) => props.position || 'none'};
