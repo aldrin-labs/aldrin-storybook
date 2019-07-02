@@ -83,7 +83,7 @@ class ProgressBar extends React.Component {
           color="secondary"
           height="20px"
           variant="determinate"
-          value={this.state.completed}
+          value={20} //{this.state.completed}
         />
       </div>
     )

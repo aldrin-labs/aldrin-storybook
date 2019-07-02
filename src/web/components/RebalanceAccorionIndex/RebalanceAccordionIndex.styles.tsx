@@ -34,6 +34,7 @@ export const GridItemHeadingCustom = styled(Grid)`
 `
 
 export const StyledTypography = styled(Typography)`
+  text-align: center;
   font-size: ${(props) => props.fontSize || `10px`};
   font-weight: ${(props) => props.fontWeight || `500`};
   line-height: 25px;
@@ -45,10 +46,12 @@ export const StyledTypography = styled(Typography)`
 `
 
 export const StyledSubTypography = styled(Typography)`
+  text-align: center;
   font-size: 18px;
   line-height: 25px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: ${(props) => props.primaryColor || props.color || '#97c15c'};
+  color: ${(props) =>
+    props.primaryColor || props.color || '#97c15c'};
   text-align: ${(props) => props.position || 'none'};
 `

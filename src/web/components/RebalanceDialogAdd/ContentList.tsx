@@ -47,9 +47,8 @@ function ContentList({ classes, data, isSelected, handleRadioBtn }: IProps) {
               <TableCell align="right">
                 ...
                 <Radio
-                  id={Math.random()}
                   checked={isSelected}
-                  onClick={() => handleRadioBtn(id)}
+                  onClick={() => handleRadioBtn()}
                 />
               </TableCell>
             </TableRow>

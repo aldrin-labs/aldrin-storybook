@@ -50,7 +50,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <Grid item lg={4} justify="center">
+              <Grid item lg={4} md={3} justify="center">
                 <StyledTypography fontWeight={'bold'}>
                   Binance trade account
                 </StyledTypography>
@@ -59,7 +59,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 </StyledSubTypography>
               </Grid>
 
-              <Grid item lg={2}>
+              <Grid item lg={3} md={4} style={{ paddingRight: '17px' }}>
                 <StyledTypography fontWeight={'bold'} position="right">
                   aviable value
                 </StyledTypography>
@@ -72,7 +72,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 </StyledSubTypography>
               </Grid>
 
-              <Grid item lg={4}>
+              <Grid item lg={4} md={4}>
                 <StyledTypography fontWeight={'bold'} position="right">
                   Available percentage
                 </StyledTypography>
@@ -96,7 +96,12 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
+              <GridFlex
+                justify="flex-start"
+                alignItems="center"
+                item
+                lg={3}
+              >
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
@@ -107,7 +112,13 @@ export default class RebalanceInfoPanel extends Component<IProps> {
               </GridFlex>
 
               {/* TODO: Grid item doesn't react on justify="center" aand alignItems */}
-              <GridFlex item lg={6} justify="center" alignItems="center">
+              <GridFlex
+                item
+                lg={6}
+                justify="center"
+                alignItems="center"
+                style={{ paddingRight: '17px' }}
+              >
                 <CustomLink href={'#'} linkColor={grey.dark}>
                   rebalance{' '}
                 </CustomLink>

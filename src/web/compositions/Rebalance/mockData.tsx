@@ -64,10 +64,10 @@ export const rebalanceInfoPanelData = {
 }
 
 export const rebalanceOption = [
-  'Daily',
-  'Weekly',
-  'Bi-Weekly',
-  'Monthly',
+  'DAILY',
+  'WEEKLY',
+  'Bi-WEEKLY',
+  'MONTHLY',
   'Every ___ Days',
   'STOP REBALANCE',
 ]
@@ -81,7 +81,31 @@ export const sectionDataHardCode = [
 export const addFolioData = []
 
 export const addIndexData = [
-  { categoryName: 'Coinmarketcup top 100' },
-  { categoryName: 'Top 25 $10 buffet' },
-  { categoryName: 'Coinmarketcup top 10' },
+  { categoryName: 'Coinmarketcup top 100', isSelected: true },
+  { categoryName: 'Top 25 $10 buffet', isSelected: false },
+  { categoryName: 'Coinmarketcup top 10', isSelected: true },
 ]
+
+export const currentAllocation = [
+  { label: 'PORTFOLIO', percentage: 100, color: '#F29C38' },
+  { label: 'INDEX', percentage: 0, color: '#DEDB8E' },
+  { label: 'SOCIAL', percentage: 0, color: '#4152AF' },
+]
+
+export const targetAllocation = [
+         {
+           label: 'PORTFOLIO',
+           percentage: 100,
+           color: '#F29C38',
+         },
+         {
+           label: 'INDEX',
+           percentage: 0,
+           color: '#DEDB8E',
+         },
+         {
+           label: 'SOCIAL',
+           percentage: 0,
+           color: '#4152AF',
+         },
+       ]

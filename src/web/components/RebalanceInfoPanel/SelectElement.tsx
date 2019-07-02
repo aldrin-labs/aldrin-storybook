@@ -25,6 +25,22 @@ const styles = (theme) => ({
     width: '80px',
     //marginTop: theme.spacing.unit * 2,
   },
+  //TODO
+  select: {
+    color: '#165BE0',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontSize: '12px',
+    '&:before': {
+      borderColor: 'transparent',
+    },
+    '&:after': {
+      borderColor: 'transparent',
+    },
+  },
+  icon: {
+    fill: '#F29C38',
+  },
 })
 
 class SelectElement extends React.Component {
@@ -46,7 +62,7 @@ class SelectElement extends React.Component {
   }
 
   render() {
-    const { classes, rebalanceOption } = this.props
+    const { classes, rebalanceOption } = this.props;
 
     return (
       <div className={classes.root}>
@@ -55,6 +71,7 @@ class SelectElement extends React.Component {
           <NativeSelectCustom
             value={this.state.period}
             onChange={this.handleChange('period')}
+             className={classes.select}
             input={
               <Input name="period" id="period-native-label-placeholder" />
             }

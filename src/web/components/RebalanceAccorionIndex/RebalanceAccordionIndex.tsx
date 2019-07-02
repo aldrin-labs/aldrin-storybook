@@ -103,7 +103,7 @@ class RebalanceAccordionIndex extends React.Component {
                       {accordionPanelHeading}
                     </TypographyCustom>
                   </GridItemHeadingCustom>
-                  <Grid item lg={2} md={3}>
+                  <Grid item lg={2} md={3} style={{}}>
                     <StyledTypography>Current value</StyledTypography>
                     <StyledSubTypography color={black.custom}>
                       ${secondColValue}
@@ -115,7 +115,6 @@ class RebalanceAccordionIndex extends React.Component {
                     md={3}
                     justify="center"
                     alignItems="center"
-                    style={{ border: '1px solide red' }}
                   >
                     <Slider
                       thumbWidth="25px"
