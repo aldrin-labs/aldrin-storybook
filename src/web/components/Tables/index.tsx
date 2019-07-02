@@ -462,9 +462,21 @@ const CustomTable = (props: Props) => {
     rowsWithHover = true,
     emptyTableText = 'no data',
     tableStyles = {
-      heading: {},
+      heading: {
+        color: '#ABBAD1',
+        background: 'white',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        fontSize: '10px',
+      },
       title: {},
-      cell: {},
+      cell: {
+        width: '25%',
+        color: '#16253D',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        fontSize: '14px'
+      },
     },
   } = props
 

@@ -77,9 +77,10 @@ class ProgressBar extends React.Component {
       <div className={classes.root}>
         {/* (this.state.isError) ?  */}
         <LinearProgressCustom
+          color='secondary'
           height="20px"
           variant="determinate"
-          value={this.state.completed}
+          value={20} //{this.state.completed}
         />
       </div>
     )

@@ -54,6 +54,26 @@ export const TypographyAccordionTitle = styled(Typography)`
   text-transform: uppercase;
 `
 
+export const GridProgressTitle = styled(Grid)`
+  display: flex;
+  width: 100% ;
+  border-radius: 74px 74px 0 0; 
+  background: #F2F4F6;
+  margin-bottom: 13px;
+`
+
+export const TypographyProgress = styled(Typography)`
+  margin-top: 10px;
+  color: #16253D;
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  /* background: #e7ecf3; */
+  width: 100%;
+  text-align: center;
+  height: 24px;
+`
+
 export const ChartWrapperCustom = styled(ChartWrapper)`
   border-radius: 32px;
   font-size: 10px;

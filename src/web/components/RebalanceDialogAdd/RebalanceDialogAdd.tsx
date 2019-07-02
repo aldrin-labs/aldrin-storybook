@@ -74,7 +74,7 @@ const DialogActions = withStyles((theme) => ({
 class RebalanceDialogAdd extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
-    isSelected: false,
+    isSelected: true,
   }
 
   handleRadioBtn = () => {

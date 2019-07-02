@@ -12,8 +12,11 @@ import {
   ChartWrapper,
   ChartWrapperCustom,
   TypographyAccordionTitle,
+  TypographyProgress,
+  GridProgressTitle,
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
+import { Grid } from '@material-ui/core'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { graphql } from 'react-apollo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -41,8 +44,15 @@ import {
   sectionDataHardCode,
   addFolioData,
   addIndexData,
+  currentAllocation,
+  targetAllocation,
 } from './mockData'
 import { roundAndFormatNumber } from '../../../../../core/src/utils/PortfolioTableUtils'
+
+import  ProgressBarWrapper from '../../components/ProgressBarCustom/ProgressBarWrapper.tsx'
+import { Typography } from '@material-ui/core';
+
+import TableAccordion from '../../components/TableMock/TableAccordion'
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -203,37 +213,17 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             md={5}
             sm={5}
             className="PortfolioDistributionChart"
-            style={{ padding: '0px' }}
+            style={{
+              padding: '0px',
+              display: 'flex',
+              justifyContent: 'start',
+            }}
           >
-            <PortfolioRebalanceChart
-              style={{ margin: '50px' }}
-              dustFilter={dustFilter}
-              key={`PortfolioRebalanceChart`}
-              title={`Portfolio Distribution`}
-              background={theme.palette.background.default}
-              staticRows={staticRows}
-              rows={rows}
-              bottomMargin={5}
-              theme={theme}
-              hideDashForToolTip={true}
-              xAxisVertical={true}
-              alwaysShowLegend={true}
-              leftBar={leftBar}
-              rightBar={rightBar}
-              customBarSeriesStyles={{
-                rx: 10,
-                ry: 10,
-                height: 18,
-              }}
-              yType={'ordinal'}
-              xDomain={[0, 100]}
-              color={'#F29C38'}
-              chartcolor={'#F29C38'}
-              chartTitle={'title'}
-              sectionData={sectionDataHardCode}
-              showSectionData={true}
-              //coinData={staticRows}
-            />
+            <GridProgressTitle content alignItems="center">
+              <TypographyProgress>current allocation</TypographyProgress>
+            </GridProgressTitle>
+
+            <ProgressBarWrapper data={currentAllocation} />
           </ChartWrapperCustom>
 
           <ChartWrapper
@@ -244,7 +234,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             lg={2}
             className="PortfolioDistributionChart"
             style={{
-              height: '120px',
+              height: '130px',
               background: `url(${Stroke})`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
@@ -269,35 +259,17 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             md={5}
             sm={5}
             className="PortfolioDistributionChart"
-            style={{ padding: '0' }}
+            style={{
+              padding: '0px',
+              display: 'flex',
+              justifyContent: 'start',
+            }}
           >
-            <PortfolioRebalanceChart
-              margin={{ left: 200 }}
-              dustFilter={dustFilter}
-              key={`TargetRebalanceChart`}
-              title={`Target Distribution`}
-              background={theme.palette.background.default}
-              staticRows={staticRows}
-              rows={rows}
-              theme={theme}
-              hideDashForToolTip={true}
-              xAxisVertical={true}
-              alwaysShowLegend={true}
-              leftBar={leftBar}
-              rightBar={rightBar}
-              customBarSeriesStyles={{
-                rx: 10,
-                ry: 10,
-                height: 18,
-              }}
-              yType={'ordinal'}
-              xDomain={[0, 100]}
-              color={'#F29C38'}
-              chartcolor={'#F29C38'}
-              chartTitle={'title'}
-              sectionData={sectionDataHardCode}
-              showSectionData={true}
-            />
+            <GridProgressTitle content alignItems="center">
+              <TypographyProgress>target allocation</TypographyProgress>
+            </GridProgressTitle>
+
+            <ProgressBarWrapper data={targetAllocation} />
           </ChartWrapperCustom>
 
           {/* Accordion Table Start */}
@@ -307,40 +279,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             sliderValue={100}
             accordionData={[sectionPanelData]}
           >
-            <PortfolioRebalanceTableContainer
-              key={`PortfolioRebalanceTableContainer`}
-              {...{
-                isEditModeEnabled,
-                staticRows,
-                staticRowsMap,
-                totalStaticRows,
-                rows,
-                totalRows,
-                totalPercents,
-                totalTableRows,
-                isPercentSumGood,
-                undistributedMoney,
-                isUSDCurrently,
-                addMoneyInputValue,
-                theme,
-                loading,
-                red,
-                saveButtonColor,
-                secondary,
-                fontFamily,
-                totalSnapshotRows,
-                timestampSnapshot,
-                onDiscardChanges,
-                onSaveClick,
-                onReset,
-                onEditModeEnable,
-                updateState,
-                onNewSnapshot,
-                dustFilter,
-                showWarning,
-                sliderStep,
-              }}
-            />
+
+
+         
+
           </RebalanceAccordionIndex>
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
