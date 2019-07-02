@@ -47,16 +47,14 @@ import {
   currentAllocation,
   targetAllocation,
 } from './mockData'
-import {
-  roundAndFormatNumber,
-} from '@core/utils/PortfolioTableUtils'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import {
   getVariablesForOrders,
   transformOrderVariablesToTransactions,
 } from '@core/utils/RebalanceTableUtils'
 
-import  ProgressBarWrapper from '../../components/ProgressBarCustom/ProgressBarWrapper.tsx'
-import { Typography } from '@material-ui/core';
+import ProgressBarWrapper from '../../components/ProgressBarCustom/ProgressBarWrapper.tsx'
+import { Typography } from '@material-ui/core'
 
 import TableAccordion from '../../components/TableMock/TableAccordion'
 
@@ -109,12 +107,27 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
         open: true,
       },
       () => {
-        updateState({ transactions: transformOrderVariablesToTransactions({ sellOrders, buyOrders }) })
+        updateState({
+          transactions: transformOrderVariablesToTransactions({
+            sellOrders,
+            buyOrders,
+          }),
+        })
       }
     )
   }
 
   handleClose = () => {
+    const { transactions, updateState, rows, activeTradeKey } = this.props
+
+    const { sellOrders, buyOrders } = getVariablesForOrders(rows, activeTradeKey)
+
+    const allOrders = [...sellOrders, ...buyOrders]
+
+    updateState({
+      transactions: allOrders.map((el) => ({ ...el, isDone: true })),
+    })
+
     this.setState({ open: false })
   }
 
@@ -162,7 +175,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       transactions,
     } = this.props
 
-    console.log('transactions', transactions);
+    console.log('transactions', transactions)
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -248,7 +261,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               btnFirst="Cancel"
               btnSecond="Go!"
               accordionTitle="TRANSACTIONS"
-              data={transactions}
+              transactionsData={transactions}
               open={this.state.open}
               handleClickOpen={this.handleClickOpen}
               handleClose={this.handleClose}
@@ -282,8 +295,40 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             sliderValue={100}
             accordionData={[sectionPanelData]}
           >
-
-            
+            <PortfolioRebalanceTableContainer
+              key={`PortfolioRebalanceTableContainer`}
+              {...{
+                isEditModeEnabled,
+                staticRows,
+                staticRowsMap,
+                totalStaticRows,
+                rows,
+                totalRows,
+                totalPercents,
+                totalTableRows,
+                isPercentSumGood,
+                undistributedMoney,
+                isUSDCurrently,
+                addMoneyInputValue,
+                theme,
+                loading,
+                red,
+                saveButtonColor,
+                secondary,
+                fontFamily,
+                totalSnapshotRows,
+                timestampSnapshot,
+                onDiscardChanges,
+                onSaveClick,
+                onReset,
+                onEditModeEnable,
+                updateState,
+                onNewSnapshot,
+                dustFilter,
+                showWarning,
+                sliderStep,
+              }}
+            />
           </RebalanceAccordionIndex>
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>

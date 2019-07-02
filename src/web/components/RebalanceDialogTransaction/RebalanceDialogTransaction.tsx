@@ -80,7 +80,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       btnFirst,
       btnSecond,
       accordionTitle,
-      data,
+      transactionsData,
       theme: {
         palette: { blue, red },
       },
@@ -145,7 +145,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             </GridCustom>
             <AccordionTable
               accordionTitle={accordionTitle}
-              data={data}
+              transactionsData={transactionsData}
             />
           </DialogContent>
         </DialogWrapper>

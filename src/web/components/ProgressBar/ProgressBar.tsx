@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { PureComponent, memo } from 'react'
 import { withStyles, withTheme } from '@material-ui/core/styles'
+
 import { LinearProgressCustom } from './ProgressBar.styles'
+import { IProps, IState } from './ProgressBar.types'
 
 const styles = {
   root: {
@@ -9,62 +11,49 @@ const styles = {
 }
 
 @withTheme()
-class ProgressBar extends React.Component {
-  state = {
+class ProgressBar extends PureComponent<IProps> {
+  state: IState = {
     completed: 0,
     isError: false,
-    totalParts: 0,
-    dialogTransactionData: this.props.dialogTransactionData,
+    transactionsData: this.props.transactionsData,
   }
 
-  static getDerivedStateFromProps(props, state) {
-    console.log(state.dialogTransactionData)
-    const { completed, dialogTransactionData } = state
-    if (completed !== 100) {
-      if (props.dialogTransactionData !== dialogTransactionData) {
-        const isFailedTransaction = dialogTransactionData.some(
-          (el) => el.isDone === false
-        )
+  static getDerivedStateFromProps(props: IProps, state: IState) {
+    if (state.completed !== 100) {
+      const isFailedTransaction = props.transactionsData.some(
+        (el) => el.isDone === false
+      )
 
-        if (isFailedTransaction) {
-          return {
-            completed: 100,
-            isError: isFailedTransaction,
-            dialogTransactionData: props.dialogTransactionData,
-          }
-        }
-
-        const successfulTransactionNumber = dialogTransactionData.reduce(
-          (acc, el) => {
-            if (el.isDone === true) {
-              return ++acc
-            }
-            return acc
-          }
-        )
-
-        let diff = 100 / dialogTransactionData.length
-
+      if (isFailedTransaction) {
         return {
-          completed: Math.min(completed + diff, 100),
+          completed: 100,
           isError: isFailedTransaction,
-          successfulTransactionNumber,
-          dialogTransactionData: props.dialogTransactionData,
+          dialogTransactionData: props.transactionsData,
         }
-      } // 2nd IF
-    } // 1st IF
+      }
+
+      const successfulTransactionNumber = props.transactionsData.reduce(
+        (acc, el) => {
+          if (el.isDone === true) {
+            return acc + 1
+          }
+          return acc
+        },
+        0
+      )
+
+      const progressOfComplition =
+        (successfulTransactionNumber * 100) / props.transactionsData.length
+
+      return {
+        completed: state.completed + progressOfComplition,
+        isError: false,
+        dialogTransactionData: props.transactionsData,
+      }
+    }
+
     return null
   }
-
-  // progress = () => {
-  //   const { completed } = this.state;
-  //   if (completed === 100) {
-  //     this.setState({ completed: 0 });
-  //   } else {
-  //     const diff = Math.random() * 10;
-  //     this.setState({ completed: Math.min(completed + diff, 100) });
-  //   }
-  // };
 
   render() {
     const {
@@ -72,9 +61,10 @@ class ProgressBar extends React.Component {
       theme: {
         palette: { green },
       },
+      transactionsData,
     } = this.props
 
-    console.log('completed', this.state.completed);
+    const { completed } = this.state
 
     return (
       <div className={classes.root}>
@@ -83,7 +73,7 @@ class ProgressBar extends React.Component {
           color="secondary"
           height="20px"
           variant="determinate"
-          value={20} //{this.state.completed}
+          value={completed}
         />
       </div>
     )

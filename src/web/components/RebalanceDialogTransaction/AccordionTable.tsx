@@ -29,41 +29,9 @@ const styles = theme => ({
 
 
 class AccordionTable extends React.Component<IProps, IState> {
-  state = {
-    expanded: null,
-    dialogTransactionData: this.props.data
+  state: IState = {
+    expanded: false,
   };
-
-
-
-
-  //TODO
-  componentDidMount() {
-    console.log('1 --==========++++++++', this.props.data);
-    console.log('2 --==========++++++++', this.state.dialogTransactionData);
-    this.timer = setInterval(this.dataFlowGenerator(this.state.data), 5000);    
-  }
-
-  dataFlowGenerator = (dialogTransactionData: any) => {
-    let count = 0;
-    console.log('aaaaaaaaaaa    ', count);
-     
-    this.state.dialogTransactionData.forEach(item => {
-      if(count = 0) {
-        if(item.isDone === null) {
-          item.isDone = true;
-          count = 1;
-        }
-      }
-    });
-
-  }
-
-  // TODO END
-
-
-
-
 
   handleChange = panel => (event, expanded) => {
     this.setState({
@@ -72,7 +40,7 @@ class AccordionTable extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { classes, data, accordionTitle } = this.props;
+    const { classes, transactionsData, accordionTitle } = this.props;
     const { expanded } = this.state;
 
     return (
@@ -82,7 +50,7 @@ class AccordionTable extends React.Component<IProps, IState> {
             <Typography style={{ margin: 'auto' }}>{accordionTitle}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography><TransactionTable data={this.state.dialogTransactionData}/></Typography>
+            <Typography><TransactionTable transactionsData={transactionsData}/></Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>
