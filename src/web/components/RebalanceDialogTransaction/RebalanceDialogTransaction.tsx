@@ -90,6 +90,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       theme: {
         palette: { black },
       },
+      executeRebalanceHandler,
     } = this.props
 
     return (
@@ -137,6 +138,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 btnWidth="130px"
                 color={blue.custom}
                 margin='0 5px'
+                onClick={async () => await executeRebalanceHandler()}
               >
                 {btnSecond}
               </BtnCustom>
@@ -144,7 +146,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             <AccordionTable
               accordionTitle={accordionTitle}
               data={data}
-              accordionTitle={accordionTitle}
             />
           </DialogContent>
         </DialogWrapper>
