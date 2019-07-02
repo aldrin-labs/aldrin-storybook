@@ -22,7 +22,6 @@ import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 import { IState, IProps } from './PortfolioRebalancePage.types'
-import { Button } from '@material-ui/core'
 
 // Rebalance Panel
 import RebalanceInfoPanel from '../../components/RebalanceInfoPanel/RebalanceInfoPanel'
@@ -43,7 +42,13 @@ import {
   addFolioData,
   addIndexData,
 } from './mockData'
-import { roundAndFormatNumber } from '../../../../../core/src/utils/PortfolioTableUtils'
+import {
+  roundAndFormatNumber,
+} from '@core/utils/PortfolioTableUtils'
+import {
+  getVariablesForOrders,
+  transformOrderVariablesToTransactions,
+} from '@core/utils/RebalanceTableUtils'
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -82,9 +87,21 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   handleClickOpen = () => {
-    this.setState({
-      open: true,
-    })
+    const { rows, activeTradeKey, updateState } = this.props
+
+    const { sellOrders, buyOrders } = getVariablesForOrders(
+      rows,
+      activeTradeKey
+    )
+
+    this.setState(
+      {
+        open: true,
+      },
+      () => {
+        updateState({ transactions: transformOrderVariablesToTransactions({ sellOrders, buyOrders }) })
+      }
+    )
   }
 
   handleClose = () => {
@@ -132,7 +149,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       getTooltipSettingsQuery: { getTooltipSettings },
       sliderStep,
       executeRebalanceHandler,
+      transactions,
     } = this.props
+
+    console.log('transactions', transactions);
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -238,7 +258,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               btnFirst="Cancel"
               btnSecond="Go!"
               accordionTitle="TRANSACTIONS"
-              data={dialogTransactionData}
+              data={transactions}
               open={this.state.open}
               handleClickOpen={this.handleClickOpen}
               handleClose={this.handleClose}
