@@ -146,7 +146,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             <AccordionTable
               accordionTitle={accordionTitle}
               data={data}
-              accordionTitle={accordionTitle}
             />
           </DialogContent>
         </DialogWrapper>
