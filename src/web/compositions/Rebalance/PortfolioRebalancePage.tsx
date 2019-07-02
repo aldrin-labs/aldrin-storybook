@@ -280,9 +280,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             accordionData={[sectionPanelData]}
           >
 
-
-         
-
+            
           </RebalanceAccordionIndex>
 
           <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
