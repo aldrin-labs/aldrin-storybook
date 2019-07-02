@@ -22,6 +22,7 @@ import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 import { IState, IProps } from './PortfolioRebalancePage.types'
+import { Button } from '@material-ui/core'
 
 // Rebalance Panel
 import RebalanceInfoPanel from '../../components/RebalanceInfoPanel/RebalanceInfoPanel'
@@ -130,6 +131,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       showWarning,
       getTooltipSettingsQuery: { getTooltipSettings },
       sliderStep,
+      executeRebalanceHandler,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -139,39 +141,19 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const saveButtonColor = isPercentSumGood ? green : red
 
     const rebalanceInfoPanelData = {
-      accountValue: roundAndFormatNumber(
-        totalSnapshotRows,
-        3,
-        false
-      ),
-      availableValue: roundAndFormatNumber(
-        undistributedMoney,
-        3,
-        false
-      ),
-      availablePercentage: roundAndFormatNumber(
-        100 - +totalPercents,
-        3,
-        false
-      ),
+      accountValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
+      availableValue: roundAndFormatNumber(undistributedMoney, 3, false),
+      availablePercentage: roundAndFormatNumber(100 - +totalPercents, 3, false),
       // TODO: change after implement period for select
       rebalanceTime: 432000000,
     }
 
     const sectionPanelData = {
-        accordionPanelHeadingBorderColor: '#F29C38',
-        accordionPanelHeading: 'My portfolio',
-        secondColValue: roundAndFormatNumber(
-          totalSnapshotRows,
-          3,
-          false
-        ),
-        fourthColValue: roundAndFormatNumber(
-          totalTableRows,
-          3,
-          false
-        ),
-        percentage: 100,
+      accordionPanelHeadingBorderColor: '#F29C38',
+      accordionPanelHeading: 'My portfolio',
+      secondColValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
+      fourthColValue: roundAndFormatNumber(totalTableRows, 3, false),
+      percentage: 100,
     }
 
     return (
@@ -237,7 +219,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           </ChartWrapperCustom>
 
           <ChartWrapper
-            key={`chart-container`}
+            key={`chart-container-current`}
             item
             sm={2}
             md={2}
@@ -260,11 +242,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               open={this.state.open}
               handleClickOpen={this.handleClickOpen}
               handleClose={this.handleClose}
+              executeRebalanceHandler={executeRebalanceHandler}
             />
           </ChartWrapper>
 
           <ChartWrapperCustom
-            key={`chart-container`}
+            key={`chart-container-rebalanced`}
             item
             md={5}
             sm={5}
@@ -419,7 +402,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData} />
 
           {/* Accordion Table End */}
-
           {/* end of a grid */}
 
           <DialogComponent
