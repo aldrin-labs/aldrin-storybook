@@ -48,15 +48,8 @@ import {
   targetAllocation,
 } from './mockData'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-import {
-  getVariablesForOrders,
-  transformOrderVariablesToTransactions,
-} from '@core/utils/RebalanceTableUtils'
 
-import ProgressBarWrapper from '../../components/ProgressBarCustom/ProgressBarWrapper.tsx'
-import { Typography } from '@material-ui/core'
-
-import TableAccordion from '../../components/TableMock/TableAccordion'
+import ProgressBarWrapper from '@sb/components/ProgressBarCustom/ProgressBarWrapper.tsx'
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -95,39 +88,15 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   handleClickOpen = () => {
-    const { rows, activeTradeKey, updateState } = this.props
-
-    const { sellOrders, buyOrders } = getVariablesForOrders(
-      rows,
-      activeTradeKey
-    )
-
     this.setState(
       {
         open: true,
       },
-      () => {
-        updateState({
-          transactions: transformOrderVariablesToTransactions({
-            sellOrders,
-            buyOrders,
-          }),
-        })
-      }
+      () => {this.props.setTransactions()}
     )
   }
 
   handleClose = () => {
-    const { transactions, updateState, rows, activeTradeKey } = this.props
-
-    const { sellOrders, buyOrders } = getVariablesForOrders(rows, activeTradeKey)
-
-    const allOrders = [...sellOrders, ...buyOrders]
-
-    updateState({
-      transactions: allOrders.map((el) => ({ ...el, isDone: true })),
-    })
-
     this.setState({ open: false })
   }
 
