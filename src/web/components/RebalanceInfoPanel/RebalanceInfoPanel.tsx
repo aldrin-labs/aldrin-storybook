@@ -16,18 +16,7 @@ import { IProps } from './RebalanceInfoPanel.types'
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps> {
   setRebalanceTimer = () => {
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^')
-    // if (event.target.value === 'Daily') {
-    //   return (rebalanceTime = '0')
-    // }
-
-    // if (event.target.value === 'Weekly') {
-    //   return (rebalanceTime = '0')
-    // }
-
-    // if (event.target.value === 'Monthly') {
-    //   return (rebalanceTime = '0')
-    // }
+    console.log('TODO: set timer')
   }
 
   render() {

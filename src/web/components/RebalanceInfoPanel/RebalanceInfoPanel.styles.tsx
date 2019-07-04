@@ -10,14 +10,15 @@ export const GridInfoPanelWrapper = styled(Grid)`
 `
 
 export const CustomLink = styled(Link)`
-  font-size: 10px;
-  padding: 0 5px;
-  margin-right: 3px;
-  text-transform: uppercase;
-  color: ${(props) => props.linkColor || 'white'};
-  text-align: ${(props) => props.position || 'none'};
-  align-self: ${(props) => props.verticalPosition || 'none'};
-`
+         font-family: 'DM Sans', sans-serif;
+         font-size: 11px;
+         padding: 0 5px;
+         margin-right: 3px;
+         text-transform: uppercase;
+         color: ${(props) => props.linkColor || 'white'};
+         text-align: ${(props) => props.position || 'none'};
+         align-self: ${(props) => props.verticalPosition || 'none'};
+       `
 
 export const StyledTypography = styled(Typography)`
   font-size: 10px;
