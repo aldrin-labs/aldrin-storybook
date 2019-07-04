@@ -96,7 +96,7 @@ class BarChartComponent extends Component<IProps, IState> {
       textColor: theme.palette.grey.dark,
       ticks: { stroke: 'transparent'},
       line: { stroke: 'transparent' },
-      fontSize: '12px', //theme.typography.fontSize,
+      fontSize: theme.typography.fontSize,
       textTransform: 'uppercase',
     })
 
@@ -155,33 +155,33 @@ class BarChartComponent extends Component<IProps, IState> {
                   />
                 ) : (
                     [
-                      <YAxis
-                        animation={animated && 'gentle'}
-                        style={axisStyleWithTheme}
-                        tickValues={[0, 1, 2]}
-                        tickFormat={() => tickLabelFormatter(labelValuesArray)}
-                        top={-20}
-                        key="y"
-                      />,
+                      // <YAxis
+                      //   animation={animated && 'gentle'}
+                      //   style={axisStyleWithTheme}
+                      //   tickValues={[0, 1, 2]}
+                      //   tickFormat={() => tickLabelFormatter(labelValuesArray)}
+                      //   top={-20}
+                      //   key="y"
+                      // />,
 
-                      <YAxis
-                        animation={animated && 'gentle'}
-                        style={axisStyleWithTheme}
-                        orientation={'right'}
-                        right={50}
-                        key="yright"
-                        top={-20}
-                        tickValues={[0, 1, 2, 3, 4]}
-                        tickFormat={()=>tickPercentageFormatter(percentageValuesArray)}
-                      />,
-                      <HorizontalBarSeries
-                        animation={animated && 'gentle'}
-                        key="chart"
-                        data={DataArr}
-                        color={color}
-                        style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
-                      />,
-                     //...Charts,
+                      // <YAxis
+                      //   animation={animated && 'gentle'}
+                      //   style={axisStyleWithTheme}
+                      //   orientation={'right'}
+                      //   right={50}
+                      //   key="yright"
+                      //   top={-20}
+                      //   tickValues={[0, 1, 2, 3, 4]}
+                      //   tickFormat={()=>tickPercentageFormatter(percentageValuesArray)}
+                      // />,
+                      // <HorizontalBarSeries
+                      //   animation={animated && 'gentle'}
+                      //   key="chart"
+                      //   data={DataArr}
+                      //   color={color}
+                      //   style={{ ...barSeriesStyles, ...customBarSeriesStyles }}
+                      // />,
+                     ...Charts,
                     ]
                   )}
 
