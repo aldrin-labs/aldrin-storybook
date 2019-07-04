@@ -15,7 +15,7 @@ export const SButton = styled(({isActivePage, type, white, black, ...rest}) => <
     type: string
     white: string
     black: string
-  }) => (isActivePage ? '' : type ? fade(white, 0.5) : fade(black, 0.5))};
+  }) => (isActivePage ? '' : (type === 'dark' ? fade(white, 0.5) : ''))};
 `
 
 export const Marker = styled.span`
