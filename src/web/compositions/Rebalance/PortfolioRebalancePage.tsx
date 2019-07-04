@@ -215,7 +215,7 @@ console.log('color------------------', table);
           {/* REBALANCE INFO PANEL ENDS */}
 
           <ChartWrapperCustom
-            key={`chart-container`}
+            key={`chart-container-current-allocation`}
             item
             md={5}
             sm={5}
@@ -234,7 +234,7 @@ console.log('color------------------', table);
           </ChartWrapperCustom>
 
           <ChartWrapper
-            key={`chart-container`}
+            key={`chart-container-dialog`}
             item
             sm={2}
             md={2}
@@ -258,7 +258,7 @@ console.log('color------------------', table);
           </ChartWrapper>
 
           <ChartWrapperCustom
-            key={`chart-container`}
+            key={`chart-container-distribtion`}
             item
             md={5}
             sm={5}
