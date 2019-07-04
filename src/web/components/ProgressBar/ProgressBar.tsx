@@ -14,15 +14,15 @@ class ProgressBar extends React.Component {
     completed: 0,
     isError: false,
     totalParts: 0,
-    dialogTransactionData: this.props.dialogTransactionData,
+    dialogTransactionData: this.props.data,
   }
 
   static getDerivedStateFromProps(props, state) {
     console.log(state.dialogTransactionData)
     const { completed, dialogTransactionData } = state
     if (completed !== 100) {
-      if (props.dialogTransactionData !== dialogTransactionData) {
-        const isFailedTransaction = dialogTransactionData.some(
+      if (props.data !== dialogTransactionData) {
+        const isFailedTransaction = props.data.some(
           (el) => el.isDone === false
         )
 
@@ -30,7 +30,7 @@ class ProgressBar extends React.Component {
           return {
             completed: 100,
             isError: isFailedTransaction,
-            dialogTransactionData: props.dialogTransactionData,
+            dialogTransactionData: props.data,
           }
         }
 
