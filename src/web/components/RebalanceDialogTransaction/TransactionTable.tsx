@@ -44,9 +44,9 @@ const TransactionTable = ({ classes, transactionsData }: IProps) => {
               <TableCell align="right">
                 {row.isDone ? (
                   <SvgIcon src={DoneIcon} />
-                ) : (
+                ) : row.isDone === false ? (
                   <SvgIcon src={Cross} />
-                )}
+                ) : null}
               </TableCell>
             </TableRow>
           ))}

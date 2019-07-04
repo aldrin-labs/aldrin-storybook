@@ -58,19 +58,16 @@ class ProgressBar extends PureComponent<IProps> {
   render() {
     const {
       classes,
-      theme: {
-        palette: { green },
-      },
+      theme,
       transactionsData,
     } = this.props
 
-    const { completed } = this.state
+    const { completed, isError } = this.state
 
     return (
       <div className={classes.root}>
-        {/* (this.state.isError) ?  */}
         <LinearProgressCustom
-          color="secondary"
+          color={isError ? theme.customPalette.red.main : 'secondary'}
           height="20px"
           variant="determinate"
           value={completed}

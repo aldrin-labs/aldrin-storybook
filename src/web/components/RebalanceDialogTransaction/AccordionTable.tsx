@@ -1,16 +1,15 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import React from 'react'
+import { withStyles } from '@material-ui/core/styles'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import Typography from '@material-ui/core/Typography'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import TransactionTable from './TransactionTable'
-import { IProps, IState } from './AccordionTable.types';
+import { IProps, IState } from './AccordionTable.types'
 
-
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     width: '100%',
   },
@@ -23,39 +22,41 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
-});
-
-
-
+})
 
 class AccordionTable extends React.Component<IProps, IState> {
   state: IState = {
     expanded: false,
-  };
+  }
 
-  handleChange = panel => (event, expanded) => {
+  handleChange = (panel) => (event, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
-    });
-  };
+    })
+  }
 
   render() {
-    const { classes, transactionsData, accordionTitle } = this.props;
-    const { expanded } = this.state;
+    const { classes, transactionsData, accordionTitle } = this.props
+    const { expanded } = this.state
 
     return (
       <div className={classes.root}>
-        <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+        <ExpansionPanel
+          expanded={expanded === 'panel1'}
+          onChange={this.handleChange('panel1')}
+        >
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography style={{ margin: 'auto' }}>{accordionTitle}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography><TransactionTable transactionsData={transactionsData}/></Typography>
+            <Typography>
+              <TransactionTable transactionsData={transactionsData} />
+            </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>
-    );
+    )
   }
 }
 
-export default withStyles(styles)(AccordionTable);
+export default withStyles(styles)(AccordionTable)
