@@ -254,6 +254,7 @@ console.log('color------------------', table);
               open={this.state.open}
               handleClickOpen={this.handleClickOpen}
               handleClose={this.handleClose}
+              executeRebalanceHandler={executeRebalanceHandler}
             />
           </ChartWrapper>
 
