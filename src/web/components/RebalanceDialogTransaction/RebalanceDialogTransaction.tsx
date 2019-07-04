@@ -6,6 +6,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
+import Timer from 'react-compound-timer'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -91,10 +92,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
         palette: { black },
       },
       executeRebalanceHandler,
+      initialTime,
     } = this.props
 
+    //TODO
+    const isFinished = false;
     return (
-      <div>
+      <div style={{ borderRadius: '32px' }}>
         <LinkCustom background={Stroke} onClick={handleClickOpen}>
           <SvgIcon width="60" height="60" src={Ellipse} />
         </LinkCustom>
@@ -105,48 +109,88 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
+          <DialogTitleCustom
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
             <TypographyCustomHeading
               fontWeight={'bold'}
               borderRadius={'10px'}
               color={black.custom}
             >
-              {dialogHedaing}
+              {isFinished ? `REBALANCE SUCCESSFULL` : `ARE YOU SURE?`}
             </TypographyCustomHeading>
           </DialogTitleCustom>
 
           <DialogContent justify="center">
-            <TypographyTopDescription>
-              {titleDescription}
-            </TypographyTopDescription>
+            {isFinished ? (
+              <>
+                <GridCustom container>
+                  <TypographyTopDescription>
+                    Next rebalance will be at {` `}
+                    <span style={{ color: `${blue.custom}` }}>
+                      <Timer
+                        initialTime={initialTime}
+                        direction="backward"
+                        startImmediately={true}
+                      >
+                        {() => (
+                          <React.Fragment>
+                            <Timer.Hours />:
+                            <Timer.Minutes />:
+                            <Timer.Seconds />
+                          </React.Fragment>
+                        )}
+                      </Timer>
+                    </span>
+                  </TypographyTopDescription>
+                </GridCustom>
 
-            <GridCustom container justify="center">
-              <BtnCustom
-                padding={'5px 0'}
-                borderRadius={'10px'}
-                btnWidth="130px"
-                onClick={handleClose}
-                color={red.custom}
-                margin='0 5px'
-              >
-                {btnFirst}
-              </BtnCustom>
+                <GridCustom container justify="center">
+                  <BtnCustom
+                    padding={'5px 0'}
+                    borderRadius={'10px'}
+                    btnWidth="130px"
+                    color={blue.custom}
+                    margin="0 5px"
+                    onClick={handleClose}
+                  >
+                    Ok
+                  </BtnCustom>
+                </GridCustom>
+              </>
+            ) : (
+              <>
+                <TypographyTopDescription>
+                  Your portfolio will change.
+                </TypographyTopDescription>
+                <GridCustom container justify="center">
+                  <BtnCustom
+                    padding={'5px 0'}
+                    borderRadius={'10px'}
+                    btnWidth="130px"
+                    onClick={handleClose}
+                    color={red.custom}
+                    margin="0 5px"
+                  >
+                    Cancel
+                  </BtnCustom>
 
-              <BtnCustom
-                padding={'5px 0'}
-                borderRadius={'10px'}
-                btnWidth="130px"
-                color={blue.custom}
-                margin='0 5px'
-                onClick={async () => await executeRebalanceHandler()}
-              >
-                {btnSecond}
-              </BtnCustom>
-            </GridCustom>
-            <AccordionTable
-              accordionTitle={accordionTitle}
-              data={data}
-            />
+                  <BtnCustom
+                    padding={'5px 0'}
+                    borderRadius={'10px'}
+                    btnWidth="130px"
+                    color={blue.custom}
+                    margin="0 5px"
+                    onClick={async () => await executeRebalanceHandler()}
+                  >
+                    Go!
+                  </BtnCustom>
+                </GridCustom>
+              </>
+            )}
+
+            <AccordionTable accordionTitle={accordionTitle} data={data} />
           </DialogContent>
         </DialogWrapper>
       </div>
