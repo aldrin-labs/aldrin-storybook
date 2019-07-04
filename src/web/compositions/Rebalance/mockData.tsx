@@ -88,24 +88,24 @@ export const addIndexData = [
 
 export const currentAllocation = [
   { label: 'PORTFOLIO', percentage: 100, color: '#F29C38' },
-  { label: 'INDEX', percentage: 0, color: '#DEDB8E' },
-  { label: 'SOCIAL', percentage: 0, color: '#4152AF' },
+  { label: 'INDEX', percentage: 60, color: '#DEDB8E' },
+  { label: 'SOCIAL', percentage: 20, color: '#4152AF' },
 ]
 
 export const targetAllocation = [
-         {
-           label: 'PORTFOLIO',
-           percentage: 100,
-           color: '#F29C38',
-         },
-         {
-           label: 'INDEX',
-           percentage: 0,
-           color: '#DEDB8E',
-         },
-         {
-           label: 'SOCIAL',
-           percentage: 0,
-           color: '#4152AF',
-         },
-       ]
+  {
+    label: 'PORTFOLIO',
+    percentage: 100,
+    color: '#F29C38',
+  },
+  {
+    label: 'INDEX',
+    percentage: 50,
+    color: '#DEDB8E',
+  },
+  {
+    label: 'SOCIAL',
+    percentage: 20,
+    color: '#4152AF',
+  },
+]
