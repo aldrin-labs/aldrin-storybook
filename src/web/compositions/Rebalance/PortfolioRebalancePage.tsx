@@ -254,6 +254,7 @@ console.log('color------------------', table);
               open={this.state.open}
               handleClickOpen={this.handleClickOpen}
               handleClose={this.handleClose}
+              executeRebalanceHandler={executeRebalanceHandler}
             />
           </ChartWrapper>
 
@@ -285,39 +286,37 @@ console.log('color------------------', table);
           >
             <PortfolioRebalanceTableContainer
               key={`PortfolioRebalanceTableContainer`}
-              {
-                ...{
-                  isEditModeEnabled,
-                  staticRows,
-                  staticRowsMap,
-                  totalStaticRows,
-                  rows,
-                  totalRows,
-                  totalPercents,
-                  totalTableRows,
-                  isPercentSumGood,
-                  undistributedMoney,
-                  isUSDCurrently,
-                  addMoneyInputValue,
-                  theme,
-                  loading,
-                  red,
-                  saveButtonColor,
-                  secondary,
-                  fontFamily,
-                  totalSnapshotRows,
-                  timestampSnapshot,
-                  onDiscardChanges,
-                  onSaveClick,
-                  onReset,
-                  onEditModeEnable,
-                  updateState,
-                  onNewSnapshot,
-                  dustFilter,
-                  showWarning,
-                  sliderStep,
-                }
-              }
+              {...{
+                isEditModeEnabled,
+                staticRows,
+                staticRowsMap,
+                totalStaticRows,
+                rows,
+                totalRows,
+                totalPercents,
+                totalTableRows,
+                isPercentSumGood,
+                undistributedMoney,
+                isUSDCurrently,
+                addMoneyInputValue,
+                theme,
+                loading,
+                red,
+                saveButtonColor,
+                secondary,
+                fontFamily,
+                totalSnapshotRows,
+                timestampSnapshot,
+                onDiscardChanges,
+                onSaveClick,
+                onReset,
+                onEditModeEnable,
+                updateState,
+                onNewSnapshot,
+                dustFilter,
+                showWarning,
+                sliderStep,
+              }}
             />
           </RebalanceAccordionIndex>
 
