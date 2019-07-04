@@ -47,12 +47,9 @@ import {
   currentAllocation,
   targetAllocation,
 } from './mockData'
-import { roundAndFormatNumber } from '../../../../../core/src/utils/PortfolioTableUtils'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
-import  ProgressBarWrapper from '../../components/ProgressBarCustom/ProgressBarWrapper.tsx'
-import { Typography } from '@material-ui/core';
-
-import TableAccordion from '../../components/TableMock/TableAccordion'
+import ProgressBarWrapper from '@sb/components/ProgressBarCustom/ProgressBarWrapper.tsx'
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -91,9 +88,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   handleClickOpen = () => {
-    this.setState({
-      open: true,
-    })
+    this.setState(
+      {
+        open: true,
+      },
+      () => {this.props.setTransactions()}
+    )
   }
 
   handleClose = () => {
@@ -143,7 +143,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       theme: {
         palette: { blue, background:{table} },
       },
+      executeRebalanceHandler,
+      transactions,
     } = this.props
+
+    console.log('transactions', transactions)
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -246,7 +250,7 @@ console.log('color------------------', table);
             <RebalanceDialogTransaction
               initialTime={rebalanceInfoPanelData.rebalanceTime}
               accordionTitle="TRANSACTIONS"
-              data={dialogTransactionData}
+              transactionsData={transactions}
               open={this.state.open}
               handleClickOpen={this.handleClickOpen}
               handleClose={this.handleClose}
@@ -279,8 +283,6 @@ console.log('color------------------', table);
             sliderValue={100}
             accordionData={[sectionPanelData]}
           >
-            {/* <TableAccordion /> */}
-
             <PortfolioRebalanceTableContainer
               key={`PortfolioRebalanceTableContainer`}
               {
