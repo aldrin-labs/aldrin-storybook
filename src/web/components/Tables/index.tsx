@@ -94,7 +94,7 @@ const rowOffset = (i: number, n: number) => (n === 1 ? 0 : (n - i - 1) * 32 - 1)
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
+      border: '0px solid transparent',
       overflowX: 'auto',
       '&::-webkit-scrollbar': {
         width: '3px',
@@ -156,6 +156,7 @@ const styles = (theme: Theme) =>
       borderBottom: '0',
     },
     rowWithHover: {
+      borderRadius: '52px', //TODO border radius doesn't work
       '&:hover': {
         backgroundColor: theme.palette.action.hover,
       },
@@ -462,21 +463,9 @@ const CustomTable = (props: Props) => {
     rowsWithHover = true,
     emptyTableText = 'no data',
     tableStyles = {
-      heading: {
-        color: '#ABBAD1',
-        background: 'white',
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        fontSize: '10px',
-      },
+      heading: {},
       title: {},
-      cell: {
-        width: '25%',
-        color: '#16253D',
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        fontSize: '14px'
-      },
+      cell: {},
     },
   } = props
 
@@ -499,13 +488,21 @@ const CustomTable = (props: Props) => {
   const isOnTop = !title ? { top: 0 } : {}
 
   return (
-    <Paper className={classes.root} elevation={elevation}>
+    <Paper
+      elevation={elevation}
+      style={{ width: '100vw',border: ' 1px solid transparent', boxShadow: 'none' }}
+    >
       <Table
         padding={padding ? padding : 'default'}
         className={`${classes.table} ${props.className || ''}`}
         id={props.id}
+        style={{
+          width: '100%',
+          border: ' 1px solid transparent',
+          boxShadow: 'none',
+        }} //TODO
       >
-        <TableHead>
+        <TableHead style={{ width: '100%' }}>
           {title && (
             <TableRow className={classes.headRow}>
               <CustomTableCell
@@ -514,7 +511,11 @@ const CustomTable = (props: Props) => {
                 colSpan={howManyColumns - actionsColSpan}
               >
                 <Typography
-                  style={{ fontSize: 16, textTransform: 'none' }}
+                  style={{
+                    fontSize: 16,
+                    textTransform: 'none',
+                    display: 'none',
+                  }}
                   variant="button"
                   color="default"
                 >

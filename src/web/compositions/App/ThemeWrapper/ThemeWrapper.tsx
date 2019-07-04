@@ -129,6 +129,7 @@ export default class ThemeWrapper extends Component<Props> {
               background: {
                 default: themeMode === 'light' ? '#fafafa' : '#16161D',
                 paper: themeMode === 'light' ? '#fff' : '#16161D',
+                table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
             },
           }
@@ -152,7 +153,8 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 root: {
                   // Name of the rule
-                  border: `1px solid #DDE0E7`, // Some CSS
+                  border: `1px solid transparent`, //#DDE0E7`, //// Some CSS
+                  boxShadow: `none`,
                 },
               },
               MuiButton: {

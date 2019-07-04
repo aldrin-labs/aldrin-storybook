@@ -28,8 +28,8 @@ const PortfolioRebalanceTable = ({
   timestampSnapshot,
   onNewSnapshot,
   tableData,
+  tableColor,
 }: IProps) => {
-
   const Table = isEditModeEnabled ? ImTable : TableWithSort
 
   return (
@@ -46,10 +46,11 @@ const PortfolioRebalanceTable = ({
       )}
       <ContentInner>
         <Table
+          style={{ width: '100%' }}
           columnNames={tableData.columnNames}
           id="PortfolioRebalanceTable"
           data={tableData.data}
-          rowsWithHover={false}
+          rowsWithHover={true}
           actionsColSpan={2}
           actions={getArrayOfActionElements({
             isEditModeEnabled,
@@ -61,17 +62,35 @@ const PortfolioRebalanceTable = ({
             red,
             saveButtonColor,
           })}
-          title={
-            <TitleContainer>
-              <TitleItem>Rebalanced Portfolio</TitleItem>
-              <TitleItem>
-                {timestampSnapshot &&
-                  `Snapshot time: ${timestampSnapshot.format(
-                    'MM-DD-YYYY h:mm:ss A'
-                  )}`}
-              </TitleItem>
-            </TitleContainer>
-          }
+          tableStyles={{
+            heading: {
+              fontFamily: `DM Sans, sans-serif`,
+              color: '#ABBAD1',
+              background: `${tableColor}`, //TODO
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              fontSize: '10px',
+            },
+            title: {},
+            cell: {
+              color: '#7284A0',
+              textAlign: 'left',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              fontSize: '12px',
+            },
+          }}
+          // title={
+          //   <TitleContainer style={{}}>
+          //     <TitleItem>Rebalanced Portfolio</TitleItem>
+          //     <TitleItem>
+          //       {timestampSnapshot &&
+          //         `Snapshot time: ${timestampSnapshot.format(
+          //           'MM-DD-YYYY h:mm:ss A'
+          //         )}`}
+          //     </TitleItem>
+          //   </TitleContainer>
+          // }
           emptyTableText="No assets"
         />
       </ContentInner>

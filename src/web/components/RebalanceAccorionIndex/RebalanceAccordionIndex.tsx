@@ -66,7 +66,7 @@ class RebalanceAccordionIndex extends React.Component {
       children,
       accordionData,
       theme: {
-        palette: { black },
+        palette: { black, table },
       },
     } = this.props
     const { expanded } = this.state
@@ -90,7 +90,7 @@ class RebalanceAccordionIndex extends React.Component {
               onChange={this.handleChange(`${panelId}`)}
             >
               <ExpansionPanelSummary
-                style={{ borderRadius: '50%' }}
+                style={{ background: 'transparent' }}
                 expandIcon={<ExpandMoreIcon />}
               >
                 <Grid container justify="space-between">
@@ -127,11 +127,12 @@ class RebalanceAccordionIndex extends React.Component {
                       thumbBackground="blue"
                       borderThumb="2px solid white"
                       trackAfterBackground="#E7ECF3"
-                      trackBeforeBackground={accordionPanelHeadingBorderColor}
+                      trackBeforeBackground={
+                        accordionPanelHeadingBorderColor
+                      }
                       value={this.state.value}
                       onChange={this.handleSlideChange}
                       style={{ marginLeft: '-20px' }}
-
                       disabled
                     />
                     <Tooltip
@@ -163,7 +164,9 @@ class RebalanceAccordionIndex extends React.Component {
                   <GridFlex item lg={1} md={3} />
                 </Grid>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
+              <ExpansionPanelDetails>
+                {children}
+              </ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}
