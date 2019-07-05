@@ -25,6 +25,7 @@ class ProgressBar extends PureComponent<IProps> {
       )
 
       if (isFailedTransaction) {
+        props.getError(isFailedTransaction)
         return {
           completed: 100,
           isError: isFailedTransaction,
@@ -45,6 +46,7 @@ class ProgressBar extends PureComponent<IProps> {
       const progressOfComplition =
         (successfulTransactionNumber * 100) / props.transactionsData.length
 
+      if (progressOfComplition === 100) props.isCompleted(progressOfComplition)
       return {
         completed: state.completed + progressOfComplition,
         isError: false,
@@ -56,11 +58,7 @@ class ProgressBar extends PureComponent<IProps> {
   }
 
   render() {
-    const {
-      classes,
-      theme,
-      transactionsData,
-    } = this.props
+    const { classes, theme, transactionsData } = this.props
 
     const { completed, isError } = this.state
 

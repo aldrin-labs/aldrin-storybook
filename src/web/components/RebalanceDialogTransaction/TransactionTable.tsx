@@ -23,10 +23,19 @@ const styles = (theme) => ({
   },
 })
 
-const TransactionTable = ({ classes, transactionsData }: IProps) => {
+const TransactionTable = ({
+  classes,
+  transactionsData,
+  getError,
+  isCompleted,
+}: IProps) => {
   return (
     <>
-      <ProgressBar transactionsData={transactionsData} />
+      <ProgressBar
+        isCompleted={isCompleted}
+        getError={getError}
+        transactionsData={transactionsData}
+      />
       <Table className={classes.table}>
         <TableBody>
           {transactionsData.map((row, index) => (

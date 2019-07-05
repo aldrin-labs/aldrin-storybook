@@ -13,6 +13,7 @@ export const TypographyCustomHeading = styled(Typography)`
   font-size: 12px;
   color: ${(props) => props.color || '#000'};
   font-weight: ${(props) => props.fontWeight || `400`};
+  text-transform: uppercase;
 `
 
 export const GridCustom = styled(Grid)`

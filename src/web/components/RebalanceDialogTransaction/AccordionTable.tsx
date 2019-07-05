@@ -36,7 +36,14 @@ class AccordionTable extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { classes, transactionsData, accordionTitle } = this.props
+    const {
+      classes,
+      transactionsData,
+      accordionTitle,
+      getError,
+      isCompleted,
+    } = this.props
+    
     const { expanded } = this.state
 
     return (
@@ -45,12 +52,19 @@ class AccordionTable extends React.Component<IProps, IState> {
           expanded={expanded === 'panel1'}
           onChange={this.handleChange('panel1')}
         >
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <ExpansionPanelSummary
+            getError={getError}
+            expandIcon={<ExpandMoreIcon />}
+          >
             <Typography style={{ margin: 'auto' }}>{accordionTitle}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Typography>
-              <TransactionTable transactionsData={transactionsData} />
+              <TransactionTable
+                isCompleted={isCompleted}
+                getError={getError}
+                transactionsData={transactionsData}
+              />
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>

@@ -26,6 +26,7 @@ import AccordionTable from './AccordionTable'
 import Ellipse from '../../../icons/Ellipse.png'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
+import { graphQLResultHasError } from 'apollo-utilities'
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -74,6 +75,19 @@ const DialogActions = withStyles((theme) => ({
 
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
+  state = {
+    isFinished : false,
+    isError : false
+  }
+
+  getError = (error) => {
+    this.setState({isError: error})
+  }
+
+  isCompleted = (progressOfComplition) => {
+    this.setState({isFinished: true})
+  }
+
   render() {
     const {
       dialogHedaing,
@@ -96,7 +110,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.props
 
     //TODO
-    const isFinished = false;
+    const {isFinished, isError} = this.state
+
     return (
       <div style={{ borderRadius: '32px' }}>
         <LinkCustom background={Stroke} onClick={handleClickOpen}>
@@ -109,21 +124,43 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <DialogTitleCustom
-            id="customized-dialog-title"
-            onClose={handleClose}
-          >
+          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
             <TypographyCustomHeading
               fontWeight={'bold'}
               borderRadius={'10px'}
               color={black.custom}
             >
-              {isFinished ? `REBALANCE SUCCESSFULL` : `ARE YOU SURE?`}
+              {isError
+                ? `rebalance unsuccessful`
+                : isFinished
+                ? `REBALANCE SUCCESSFULL`
+                : `ARE YOU SURE?`}
             </TypographyCustomHeading>
           </DialogTitleCustom>
 
           <DialogContent justify="center">
-            {isFinished ? (
+            {isError ? (
+              <>
+                <GridCustom container>
+                  <TypographyTopDescription>
+                    Rebalance unsuccessful so sorry
+                  </TypographyTopDescription>
+                </GridCustom>
+
+                <GridCustom container justify="center">
+                  <BtnCustom
+                    padding={'5px 0'}
+                    borderRadius={'10px'}
+                    btnWidth="130px"
+                    color={blue.custom}
+                    margin="0 5px"
+                    onClick={handleClose}
+                  >
+                    Ok
+                  </BtnCustom>
+                </GridCustom>
+              </>
+            ) : isFinished ? (
               <>
                 <GridCustom container>
                   <TypographyTopDescription>
@@ -190,9 +227,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               </>
             )}
 
-            <AccordionTable               
+            <AccordionTable
               accordionTitle={accordionTitle}
-              transactionsData={transactionsData} />
+              transactionsData={transactionsData}
+              getError={this.getError}
+              isCompleted={this.isCompleted}
+            />
           </DialogContent>
         </DialogWrapper>
       </div>
