@@ -57,7 +57,7 @@ export const TypographyAccordionTitle = styled(Typography)`
 export const GridProgressTitle = styled(Grid)`
   display: flex;
   width: 100% ;
-  border-radius: 74px 74px 0 0; 
+  border-radius: 20px 20px 0 0; 
   background: #F2F4F6;
   margin-bottom: 13px;
 `
@@ -75,7 +75,7 @@ export const TypographyProgress = styled(Typography)`
 `
 
 export const ChartWrapperCustom = styled(ChartWrapper)`
-  border-radius: 32px;
+  border-radius: 20px;
   font-size: 10px;
   height: 140px;
   padding: 0px;

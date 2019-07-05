@@ -1,13 +1,20 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import TransactionTable from './TransactionTable'
 import { IProps, IState } from './AccordionTable.types'
+import { withTheme } from '@material-ui/styles'
+
+import {
+  ExpansionPanelCustom,
+  ExpansionPanelSummaryCustom,
+  TypographyCustom,
+} from './AccordionTable.styles'
 
 const styles = (theme) => ({
   root: {
@@ -24,6 +31,7 @@ const styles = (theme) => ({
   },
 })
 
+@withTheme()
 class AccordionTable extends React.Component<IProps, IState> {
   state: IState = {
     expanded: false,
@@ -42,22 +50,25 @@ class AccordionTable extends React.Component<IProps, IState> {
       accordionTitle,
       getError,
       isCompleted,
+      theme: {
+        palette: { grey },
+      },
     } = this.props
-    
+
     const { expanded } = this.state
 
     return (
       <div className={classes.root}>
-        <ExpansionPanel
+        <ExpansionPanelCustom
           expanded={expanded === 'panel1'}
           onChange={this.handleChange('panel1')}
         >
-          <ExpansionPanelSummary
-            getError={getError}
+          <ExpansionPanelSummaryCustom
+            border={`1px solid ${grey.light}`}
             expandIcon={<ExpandMoreIcon />}
           >
-            <Typography style={{ margin: 'auto' }}>{accordionTitle}</Typography>
-          </ExpansionPanelSummary>
+            <TypographyCustom>{accordionTitle}</TypographyCustom>
+          </ExpansionPanelSummaryCustom>
           <ExpansionPanelDetails>
             <Typography>
               <TransactionTable
@@ -67,7 +78,7 @@ class AccordionTable extends React.Component<IProps, IState> {
               />
             </Typography>
           </ExpansionPanelDetails>
-        </ExpansionPanel>
+        </ExpansionPanelCustom>
       </div>
     )
   }

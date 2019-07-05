@@ -76,16 +76,16 @@ const DialogActions = withStyles((theme) => ({
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   state = {
-    isFinished : false,
-    isError : false
+    isFinished: false,
+    isError: false,
   }
 
   getError = (error) => {
-    this.setState({isError: error})
+    this.setState({ isError: error })
   }
 
   isCompleted = (progressOfComplition) => {
-    this.setState({isFinished: true})
+    this.setState({ isFinished: true })
   }
 
   render() {
@@ -110,10 +110,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.props
 
     //TODO
-    const {isFinished, isError} = this.state
+    const { isFinished, isError } = this.state
 
     return (
-      <div style={{ borderRadius: '32px' }}>
+      <div>
         <LinkCustom background={Stroke} onClick={handleClickOpen}>
           <SvgIcon width="60" height="60" src={Ellipse} />
         </LinkCustom>
@@ -124,7 +124,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
+          <DialogTitleCustom
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
             <TypographyCustomHeading
               fontWeight={'bold'}
               borderRadius={'10px'}
@@ -138,20 +141,20 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             </TypographyCustomHeading>
           </DialogTitleCustom>
 
-          <DialogContent justify="center">
+          <DialogContent justify="center" style={{borderRadius: '20px'}}>
             {isError ? (
               <>
                 <GridCustom container>
-                  <TypographyTopDescription>
+                  <TypographyTopDescription margin="-10px 0 0 0">
                     Rebalance unsuccessful so sorry
                   </TypographyTopDescription>
                 </GridCustom>
 
                 <GridCustom container justify="center">
                   <BtnCustom
-                    padding={'5px 0'}
+                    height="34px"
                     borderRadius={'10px'}
-                    btnWidth="130px"
+                    btnWidth="120px"
                     color={blue.custom}
                     margin="0 5px"
                     onClick={handleClose}
@@ -163,7 +166,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             ) : isFinished ? (
               <>
                 <GridCustom container>
-                  <TypographyTopDescription>
+                  <TypographyTopDescription margin="-12px 0 25px 0">
                     Next rebalance will be at {` `}
                     <span style={{ color: `${blue.custom}` }}>
                       <Timer
@@ -185,9 +188,9 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
                 <GridCustom container justify="center">
                   <BtnCustom
-                    padding={'5px 0'}
+                    height="34px"
                     borderRadius={'10px'}
-                    btnWidth="130px"
+                    btnWidth="120px"
                     color={blue.custom}
                     margin="0 5px"
                     onClick={handleClose}
@@ -198,14 +201,14 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               </>
             ) : (
               <>
-                <TypographyTopDescription>
+                <TypographyTopDescription margin="20px auto 32px auto">
                   Your portfolio will change.
                 </TypographyTopDescription>
                 <GridCustom container justify="center">
                   <BtnCustom
-                    padding={'5px 0'}
+                    height="34px"
                     borderRadius={'10px'}
-                    btnWidth="130px"
+                    btnWidth="120px"
                     onClick={handleClose}
                     color={red.custom}
                     margin="0 5px"
@@ -214,9 +217,9 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   </BtnCustom>
 
                   <BtnCustom
-                    padding={'5px 0'}
+                    height="34px"
                     borderRadius={'10px'}
-                    btnWidth="130px"
+                    btnWidth="120px"
                     color={blue.custom}
                     margin="0 5px"
                     onClick={async () => await executeRebalanceHandler()}

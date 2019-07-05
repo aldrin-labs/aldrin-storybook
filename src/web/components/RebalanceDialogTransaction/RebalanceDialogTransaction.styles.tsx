@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import {
   Grid,
@@ -25,7 +24,7 @@ export const DialogTitleCustom = styled(DialogTitle)`
   text-align: center;
   color: #16253d;
   background: #f2f4f6;
-  border-radius: 32px 32px 0px 0px;
+  border-radius: 20px 20px 0px 0px;
 `
 
 export const DialogSubTitle = styled(DialogTitle)`
@@ -44,10 +43,9 @@ export const DialogWrapper = styled(Dialog)`
 `
 
 export const TypographyTopDescription = styled(Typography)`
-  margin: auto;
+  margin: ${props => props.margin || '20px auto 32px auto'};
   width: 90%;
   text-align: center;
-  margin-top: 20px;
 `
 
 export const LinkCustom = styled(Link)`

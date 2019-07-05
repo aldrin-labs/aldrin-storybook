@@ -65,7 +65,7 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 rounded: {
                   // Name of the rule
-                  borderRadius: '6px', // Some CSS
+                  borderRadius: '20px', // Some CSS
                 },
               },
               MuiIconButton: {
@@ -107,6 +107,7 @@ export default class ThemeWrapper extends Component<Props> {
               },
               green: {
                 dark: '#377E21',
+                light: '#E7ECF3',
                 custom: '#97C15C',
                 main: '#48DCC6',
               },
@@ -168,7 +169,7 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 rounded: {
                   // Name of the rule
-                  borderRadius: '6px', // Some CSS
+                  borderRadius: '20px', // Some CSS
                 },
               },
               MuiIconButton: {
@@ -213,6 +214,7 @@ export default class ThemeWrapper extends Component<Props> {
               grey: {
                 custom: '#ABBAD1',
                 dark: '#7284A0',
+                light: '#E7ECF3',
                 main: '#F2F4F6',
               },
               primary: {
