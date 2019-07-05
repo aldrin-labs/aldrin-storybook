@@ -28,6 +28,7 @@ const TransactionTable = ({
   transactionsData,
   getError,
   isCompleted,
+  isFinished,
 }: IProps) => {
   return (
     <>
@@ -35,6 +36,7 @@ const TransactionTable = ({
         isCompleted={isCompleted}
         getError={getError}
         transactionsData={transactionsData}
+        isFinished={isFinished}
       />
       <Table className={classes.table}>
         <TableBody>

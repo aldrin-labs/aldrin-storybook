@@ -80,12 +80,17 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     isError: false,
   }
 
-  getError = (error) => {
-    this.setState({ isError: error })
+  getError = (errorState) => {
+    this.setState({ isError: errorState })
   }
 
   isCompleted = (progressOfComplition) => {
     this.setState({ isFinished: true })
+  }
+
+  defaultStateForTransaaction = (handleClickOpen) => {
+    this.setState({ isFinished: false, isError: false })
+    handleClickOpen();
   }
 
   render() {
@@ -114,7 +119,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
     return (
       <div>
-        <LinkCustom background={Stroke} onClick={handleClickOpen}>
+        <LinkCustom
+          background={Stroke}
+          onClick={() => this.defaultStateForTransaaction(handleClickOpen)}
+        >
           <SvgIcon width="60" height="60" src={Ellipse} />
         </LinkCustom>
 
@@ -141,7 +149,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             </TypographyCustomHeading>
           </DialogTitleCustom>
 
-          <DialogContent justify="center" style={{borderRadius: '20px'}}>
+          <DialogContent justify="center" style={{ borderRadius: '20px' }}>
             {isError ? (
               <>
                 <GridCustom container>
@@ -235,6 +243,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               transactionsData={transactionsData}
               getError={this.getError}
               isCompleted={this.isCompleted}
+              isFinished={isFinished}
             />
           </DialogContent>
         </DialogWrapper>
