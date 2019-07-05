@@ -46,7 +46,9 @@ class ProgressBar extends PureComponent<IProps> {
       const progressOfComplition =
         (successfulTransactionNumber * 100) / props.transactionsData.length
 
-      if (progressOfComplition === 100) props.isCompleted(progressOfComplition)
+      if (progressOfComplition === 100 && props.isFinished === false) {
+        props.isCompleted(progressOfComplition)
+      }
       return {
         completed: state.completed + progressOfComplition,
         isError: false,
