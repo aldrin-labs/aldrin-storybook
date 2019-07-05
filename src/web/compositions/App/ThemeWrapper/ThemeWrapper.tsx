@@ -231,6 +231,7 @@ export default class ThemeWrapper extends Component<Props> {
               background: {
                 default: '#f9fbfd', //'#D9D9DC',
                 paper: '#FEFEFE',
+                table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
             },
           }

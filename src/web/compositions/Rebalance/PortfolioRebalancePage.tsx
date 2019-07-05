@@ -92,7 +92,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       {
         open: true,
       },
-      () => {this.props.setTransactions()}
+      () => {
+        this.props.setTransactions()
+      }
     )
   }
 
@@ -141,13 +143,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       getTooltipSettingsQuery: { getTooltipSettings },
       sliderStep,
       theme: {
-        palette: { blue, background:{table} },
+        palette: {
+          blue,
+          background: { table },
+        },
       },
       executeRebalanceHandler,
       transactions,
     } = this.props
-
-    console.log('transactions', transactions)
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -156,41 +159,21 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const saveButtonColor = isPercentSumGood ? green : red
 
     const rebalanceInfoPanelData = {
-      accountValue: roundAndFormatNumber(
-        totalSnapshotRows,
-        3,
-        false
-      ),
-      availableValue: roundAndFormatNumber(
-        undistributedMoney,
-        3,
-        false
-      ),
-      availablePercentage: roundAndFormatNumber(
-        100 - +totalPercents,
-        3,
-        false
-      ),
+      accountValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
+      availableValue: roundAndFormatNumber(undistributedMoney, 3, false),
+      availablePercentage: roundAndFormatNumber(100 - +totalPercents, 3, false),
       // TODO: change after implement period for select
       rebalanceTime: 432000000,
     }
 
     const sectionPanelData = {
-        accordionPanelHeadingBorderColor: '#F29C38',
-        accordionPanelHeading: 'My portfolio',
-        secondColValue: roundAndFormatNumber(
-          totalSnapshotRows,
-          3,
-          false
-        ),
-        fourthColValue: roundAndFormatNumber(
-          totalTableRows,
-          3,
-          false
-        ),
-        percentage: 100,
+      accordionPanelHeadingBorderColor: '#F29C38',
+      accordionPanelHeading: 'My portfolio',
+      secondColValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
+      fourthColValue: roundAndFormatNumber(totalTableRows, 3, false),
+      percentage: 100,
     }
-console.log('color------------------', table);
+
     return (
       <>
         {children}

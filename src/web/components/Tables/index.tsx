@@ -702,7 +702,7 @@ const CustomTable = (props: Props) => {
                           row.options && row.options.static
                             ? 'static'
                             : 'sticky',
-                        bottom: stickyOffset || 0,
+                        bottom:  stickyOffset || 0,
                         background:
                           row.options && row.options.variant === 'body'
                             ? theme!.palette.background.paper

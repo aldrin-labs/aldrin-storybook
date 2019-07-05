@@ -93,17 +93,23 @@ class RebalanceAccordionIndex extends React.Component {
                 style={{ background: 'transparent' }}
                 expandIcon={<ExpandMoreIcon />}
               >
-                <Grid container justify="space-between">
+                <Grid container justify="">
                   <GridItemHeadingCustom
                     borderColor={accordionPanelHeadingBorderColor}
-                    lg={3}
-                    md={3}
+                    // lg={3}
+                    // md={3}
+                    style={{ minWidth: '9vw' }} //TODO minWidth
                   >
                     <TypographyCustom fontWeight={'bold'}>
                       {accordionPanelHeading}
                     </TypographyCustom>
                   </GridItemHeadingCustom>
-                  <Grid item lg={2} md={3} style={{}}>
+                  <Grid
+                    item
+                    // lg={2}
+                    // md={3}
+                    style={{ minWidth: '30vw' }} //TODO minWidth
+                  >
                     <StyledTypography>Current value</StyledTypography>
                     <StyledSubTypography color={black.custom}>
                       ${secondColValue}
@@ -111,9 +117,10 @@ class RebalanceAccordionIndex extends React.Component {
                   </Grid>
                   <GridFlex
                     item
-                    lg={3}
-                    md={3}
-                    justify="center"
+                    // lg={3}
+                    // md={3}
+                    style={{minWidth: "11vw"}}
+                    //justify="center"
                     alignItems="center"
                   >
                     <Slider
@@ -127,9 +134,7 @@ class RebalanceAccordionIndex extends React.Component {
                       thumbBackground="blue"
                       borderThumb="2px solid white"
                       trackAfterBackground="#E7ECF3"
-                      trackBeforeBackground={
-                        accordionPanelHeadingBorderColor
-                      }
+                      trackBeforeBackground={accordionPanelHeadingBorderColor}
                       value={this.state.value}
                       onChange={this.handleSlideChange}
                       style={{ marginLeft: '-20px' }}
@@ -164,9 +169,7 @@ class RebalanceAccordionIndex extends React.Component {
                   <GridFlex item lg={1} md={3} />
                 </Grid>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                {children}
-              </ExpansionPanelDetails>
+              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}

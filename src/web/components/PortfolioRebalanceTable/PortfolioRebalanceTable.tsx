@@ -28,10 +28,8 @@ const PortfolioRebalanceTable = ({
   timestampSnapshot,
   onNewSnapshot,
   tableData,
-  tableColor,
 }: IProps) => {
   const Table = isEditModeEnabled ? ImTable : TableWithSort
-
   return (
     <>
       {loading && (
@@ -66,7 +64,7 @@ const PortfolioRebalanceTable = ({
             heading: {
               fontFamily: `DM Sans, sans-serif`,
               color: '#ABBAD1',
-              background: `${tableColor}`, //TODO
+              background: `#fff`, //TODO theme.palette.background.taable
               textTransform: 'uppercase',
               fontWeight: 'bold',
               fontSize: '10px',
