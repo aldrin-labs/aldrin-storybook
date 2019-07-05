@@ -19,6 +19,16 @@ export default class RebalanceInfoPanel extends Component<IProps> {
     console.log('TODO: set timer')
   }
 
+  slicePrice = (availableValue) => {
+    let result = ''
+    !availableValue.indexOf('-')
+      ? result =`0`
+      : availableValue !== '0'
+      ? (result = availableValue.substring(0, availableValue.indexOf('.')))
+      : (result = availableValue)
+      return result;
+  }
+
   render() {
     let {
       rebalanceInfoPanelData: {
@@ -44,7 +54,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   Binance trade account
                 </StyledTypography>
                 <StyledSubTypography fontWeight={'bold'} color={blue.light}>
-                  ${accountValue}
+                  ${accountValue.substring(0, accountValue.indexOf('.'))}
                 </StyledSubTypography>
               </Grid>
 
@@ -57,7 +67,12 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   color={green.custom}
                   position="right"
                 >
-                  ${availableValue}
+                  $ {this.slicePrice(availableValue)}
+                  {/* {!availableValue.indexOf('-')
+                    ? `0`
+                    : availableValue !== '0'
+                    ? availableValue.substring(0, availableValue.indexOf('.'))
+                    : availableValue} */}
                 </StyledSubTypography>
               </Grid>
 
@@ -70,7 +85,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   color={green.custom}
                   position="right"
                 >
-                  {availablePercentage}%
+                  {this.slicePrice(availablePercentage)}%
                 </StyledSubTypography>
               </Grid>
             </Grid>
