@@ -13,6 +13,8 @@ import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import SelectElement from './SelectElement'
 import { IProps } from './RebalanceInfoPanel.types'
 
+import SingleSelect from '../Select/SingleSelect'
+
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps> {
   setRebalanceTimer = () => {
@@ -42,7 +44,8 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         palette: { blue, red, green, grey },
       },
     } = this.props
-
+    
+    console.log('availableValue: ', typeof(availableValue))
     return (
       <GridInfoPanelWrapper container justify="space-between">
         {/* Grid - 1st item md - 6 Starts */}
@@ -67,7 +70,10 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   color={green.custom}
                   position="right"
                 >
-                  $ {this.slicePrice(availableValue)}
+                  ${' '}
+                  {availableValue != '0'
+                    ? this.slicePrice(availableValue)
+                    : `0`}
                   {/* {!availableValue.indexOf('-')
                     ? `0`
                     : availableValue !== '0'
@@ -126,10 +132,12 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 <CustomLink href={'#'} linkColor={grey.dark}>
                   rebalance{' '}
                 </CustomLink>
-                <SelectElement
+                
+                {/* <SelectElement
                   rebalanceOption={rebalanceOption}
                   setRebalanceTimer={this.setRebalanceTimer}
-                />
+                /> */}
+                <SingleSelect />
               </GridFlex>
 
               <Grid item lg={3}>
