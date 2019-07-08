@@ -168,7 +168,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
     const sectionPanelData = {
       accordionPanelHeadingBorderColor: '#F29C38',
-      accordionPanelHeading: 'My portfolio',
+      accordionPanelHeading: 'free assets',
       secondColValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
       fourthColValue: roundAndFormatNumber(totalTableRows, 3, false),
       percentage: 100,

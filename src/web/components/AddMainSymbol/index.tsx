@@ -4,7 +4,8 @@ import { Icon } from '../cssUtils'
 
 export const getMainSymbol = (isUSDCurrently: boolean) =>
   isUSDCurrently ? (
-    <Icon className="fa fa-usd" />
+    // <Icon className="fa fa-usd" />
+    <Icon>$</Icon>
   ) : (
     <Icon className="fa fa-btc" />
   )
