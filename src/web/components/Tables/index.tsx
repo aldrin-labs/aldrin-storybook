@@ -156,9 +156,17 @@ const styles = (theme: Theme) =>
       borderBottom: '0',
     },
     rowWithHover: {
-      borderRadius: '52px', //TODO border radius doesn't work
       '&:hover': {
-        backgroundColor: theme.palette.action.hover,
+        borderRadius: '32px', //TODO border radius doesn't work
+        backgroundColor: '#E7ECF3', //TODO theme.palette.action.hover,
+      },
+    },
+    rowWithHoverBorderRadius: {
+      '& td:first-child': {
+        borderRadius: '12px 0 0 12px', //TODO border radius doesn't work
+      },
+      '& td:last-child': {
+        borderRadius: '0 12px 12px 0', //TODO border radius doesn't work
       },
     },
     actionButton: {
@@ -461,6 +469,7 @@ const CustomTable = (props: Props) => {
     actionsColSpan = 1,
     borderBottom = false,
     rowsWithHover = true,
+    rowWithHoverBorderRadius = true, //TODO false,
     emptyTableText = 'no data',
     tableStyles = {
       heading: {},
@@ -490,7 +499,11 @@ const CustomTable = (props: Props) => {
   return (
     <Paper
       elevation={elevation}
-      style={{ width: '100vw',border: ' 1px solid transparent', boxShadow: 'none' }}
+      style={{
+        width: '100vw',
+        border: ' 1px solid transparent',
+        boxShadow: 'none',
+      }}
     >
       <Table
         padding={padding ? padding : 'default'}
@@ -604,8 +617,20 @@ const CustomTable = (props: Props) => {
                   ? `${classes.row} + ${classes.rowSelected}`
                   : classes.row
                 const rowHoverClassName = rowsWithHover
-                  ? `${rowClassName} + ${classes.rowWithHover}`
+                  ? rowWithHoverBorderRadius
+                    ? `${rowClassName} + ${classes.rowWithHover} + ${
+                        classes.rowWithHoverBorderRadius
+                      }`
+                    : `${classes.rowWithHover}`
                   : rowClassName
+
+                  console.log(
+                    'rowHoverClassName',
+                    rowHoverClassName
+                  )
+                // const rowHoverBorderRadiusClassName = rowWithHoverBorderRadius
+                //   ? `${rowClassName} + ${classes.rowWithHoverBorderRadius}`
+                //   : rowClassName
                 const expandable = row.expandableContent
                 const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
                   ? 'check'
@@ -702,7 +727,7 @@ const CustomTable = (props: Props) => {
                           row.options && row.options.static
                             ? 'static'
                             : 'sticky',
-                        bottom:  stickyOffset || 0,
+                        bottom: stickyOffset || 0,
                         background:
                           row.options && row.options.variant === 'body'
                             ? theme!.palette.background.paper

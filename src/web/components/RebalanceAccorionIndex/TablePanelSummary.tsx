@@ -83,12 +83,13 @@ function TablePanelSummary(props) {
           </TableCell>
           <TableCell
             style={{
-              padding: '0 0 0 3px',
+              //padding: '0 0 0 3px',
               display: 'flex',
               justifyContent: 'flex-start',
-              alignContent: 'left',
+              alignText: 'left',
               marginTop: '15px',
               //width: '13vw',
+              padding: '0',
               border: 'none',
             }}
           >
@@ -112,18 +113,17 @@ function TablePanelSummary(props) {
             <Tooltip title={`${value.toFixed(4)}%`} placement="bottom-end">
               <StyledTypography
                 fontWeight="bold"
-                fontSize="16px"
+                color="#16253D"
+                fontSize="12px"
                 marginLeft="15px"
               >
                 {value.toFixed(0)}%
               </StyledTypography>
             </Tooltip>
           </TableCell>
-          <TableCell
-            align="left"
-            style={{ border: 'none', padding: '0px 61px 0px 0px' }}
-          >
-            <StyledTypography style={{}}>Target value</StyledTypography>
+             {/* //TODO padding for all screens */}
+          <TableCell align="left" style={{ border: 'none', padding: '0 120px 0 0' }}>
+            <StyledTypography>Target value</StyledTypography>
             <StyledSubTypography
               color="#16253D" //{black.custom}
             >
