@@ -14,9 +14,16 @@ import SelectElement from './SelectElement'
 import { IProps } from './RebalanceInfoPanel.types'
 
 import SingleSelect from '../Select/SingleSelect'
+import SelectCustom from '../ReactSelectComponent'
+
+import Input from '@material-ui/core/Input'
 
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps> {
+  state = {
+    isHiddenRebalanceDaysInput: 'hidden',
+  }
+
   setRebalanceTimer = () => {
     console.log('TODO: set timer')
   }
@@ -24,11 +31,11 @@ export default class RebalanceInfoPanel extends Component<IProps> {
   slicePrice = (availableValue) => {
     let result = ''
     !availableValue.indexOf('-')
-      ? result =`0`
+      ? (result = `0`)
       : availableValue !== '0'
       ? (result = availableValue.substring(0, availableValue.indexOf('.')))
       : (result = availableValue)
-      return result;
+    return result
   }
 
   render() {
@@ -44,8 +51,8 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         palette: { blue, red, green, grey },
       },
     } = this.props
-    
-    console.log('availableValue: ', typeof(availableValue))
+
+    console.log('availableValue: ', typeof availableValue)
     return (
       <GridInfoPanelWrapper container justify="space-between">
         {/* Grid - 1st item md - 6 Starts */}
@@ -106,12 +113,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex
-                justify="flex-start"
-                alignItems="center"
-                item
-                lg={3}
-              >
+              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
@@ -132,12 +134,55 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 <CustomLink href={'#'} linkColor={grey.dark}>
                   rebalance{' '}
                 </CustomLink>
-                
+                <StyledTypography
+                  style={{
+                    visibility: this.state.isHiddenRebalanceDaysInput,
+                  }}
+                >
+                  Every{' '}
+                </StyledTypography>
+
                 {/* <SelectElement
                   rebalanceOption={rebalanceOption}
                   setRebalanceTimer={this.setRebalanceTimer}
                 /> */}
+
                 <SingleSelect />
+
+                {/* <SelectCustom
+                  options={[
+                    {
+                      value: 'daily',
+                      label: 'daily',
+                      color: '#165BE0',
+                      isFixed: true,
+                    },
+                    { value: 'weekly', label: 'Weekly', color: '#165BE0' },
+                    {
+                      value: 'bi-weekly',
+                      label: 'Bi-Weekly',
+                      color: '#165BE0',
+                    },
+                    {
+                      value: 'monthly',
+                      label: 'Monthly',
+                      color: '#165BE0',
+                    },
+                    // { value: 'Checkbox', label: <Checkbox/>, color: '#D93B28' },
+                    {
+                      value: 'stop-rebalance',
+                      label: 'Stop Rebalance',
+                      color: '#D93B28',
+                    },
+                  ]}
+                /> */}
+
+                <Input
+                  placeholder="days"
+                  style={{
+                    visibility: this.state.isHiddenRebalanceDaysInput,
+                  }}
+                />
               </GridFlex>
 
               <Grid item lg={3}>

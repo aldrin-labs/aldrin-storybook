@@ -10,6 +10,7 @@ export const SelectCustom = styled(Select)`
   font-weight: bold;
   letter-spacing: 1px;
   background: transparent;
+  
 `
 
 export const CustomOption = styled.div`
