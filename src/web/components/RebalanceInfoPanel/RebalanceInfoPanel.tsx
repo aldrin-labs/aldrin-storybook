@@ -52,7 +52,6 @@ export default class RebalanceInfoPanel extends Component<IProps> {
       },
     } = this.props
 
-    console.log('availableValue: ', typeof availableValue)
     return (
       <GridInfoPanelWrapper container justify="space-between">
         {/* Grid - 1st item md - 6 Starts */}
