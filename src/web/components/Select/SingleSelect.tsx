@@ -1,7 +1,4 @@
-import React, { Component, Fragment } from 'react'
-
-import Select from 'react-select'
-// import { rebalanceOptions } from '../data';
+import React, { Component } from 'react'
 import { SelectCustom, CustomOption } from './SingleSelect.styles'
 
 // const Checkbox = (props) => (
@@ -22,50 +19,50 @@ const rebalanceOptions = [
 ]
 // 'Every ___ Days',
 
-
 Option = ({ label }) => <CustomOption>{label}</CustomOption>
 
 const customStyles = {
-  singleValue: (base) => ({ ...base, color: '#165BE0', fontSize: '11px', padding: '0' }),
-  indicatorSeparator: (base) => ({ ...base, color: 'orange', background: 'transparent' }),
-  control: (base) => ({
+  singleValue: (base) => ({
+    ...base,
+    color: '#165BE0',
+    fontSize: '11px',
+    padding: '0',
+  }),
+  indicatorSeparator: (base) => ({
+    ...base,
+    color: 'orange',
+    background: 'transparent',
+  }),
+
+  control: (base, state) => ({
     ...base,
     background: 'transparent',
     border: 'none',
     width: 100,
-    // :focus{
-    //     border: '0 solid transparent',
-    // }
+    border: state.isFocused ? 0 : 0,
+    // This line disable the blue border
+    boxShadow: state.isFocused ? 0 : 0,
+    '&:hover': {
+      border: state.isFocused ? 0 : 0,
+    },
   }),
   menu: (provided) => ({
     ...provided,
     width: 120,
     padding: '5px 8px',
     borderRadius: '14px',
-    //background: 'transparent',
-    //border: '1px solid green',
-    //color: '#165BE0', //state.isSelected ? 'red' : 'blue',
   }),
   container: (base) => ({
     ...base,
     background: 'transparent',
     padding: 0,
     color: '#165BE0',
-    // :focus{
-    //     border: '0 solid transparent',
-    // }
+    '&:focus': {
+      border: '0 solid transparent',
+      borderColor: 'transparent',
+      boxShadow: '0 0 0 1px transparent',
+    },
   }),
-
-  // control: () => ({
-  //   // none of react-select's styles are passed to <Control />
-  //   width: 200,
-  // }),
-  // singleValue: (provided, state) => {
-  //   const opacity = state.isDisabled ? 0.5 : 1
-  //   const transition = 'opacity 300ms'
-
-  //   return { ...provided, opacity, transition }
-  // },
 }
 
 type State = {
@@ -114,28 +111,8 @@ export default class SingleSelect extends Component<State> {
         isSearchable={isSearchable}
         name="rebalance"
         options={rebalanceOptions}
-        // theme={(theme) => ({
-        //   ...theme,
-        //   border: 0,
-        //   colors: {
-        //     ...theme.colors,
-        //     primary25: 'E7ECF3',
-        //     primary: '#E7ECF3',
-        //   },
-        //   color: 'orange',
-        // })}
         components={{ Option }}
         styles={customStyles}
-        // customStyle={{
-        //   borderRadius: 4,
-        //   color: 'red',
-        //   background: 'red',
-        //   fontSize: 13,
-        //   marginBottom: '1em',
-        //   marginTop: '1em',
-        //   overflowX: 'auto',
-        // }}
-        // style={{ border: '1px solid transparent' }}
       />
     )
   }
