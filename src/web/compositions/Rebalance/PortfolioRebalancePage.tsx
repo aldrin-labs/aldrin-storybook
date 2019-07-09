@@ -114,7 +114,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       totalSnapshotRows,
       rows,
       staticRows,
-      addMoneyInputValue,
       leftBar,
       rightBar,
       loading,
@@ -281,7 +280,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 isPercentSumGood,
                 undistributedMoney,
                 isUSDCurrently,
-                addMoneyInputValue,
                 theme,
                 loading,
                 red,
@@ -316,7 +314,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           {/*isPercentSumGood={isPercentSumGood}*/}
           {/*undistributedMoney={undistributedMoney}*/}
           {/*isUSDCurrently={isUSDCurrently}*/}
-          {/*addMoneyInputValue={addMoneyInputValue}*/}
           {/*theme={theme}*/}
           {/*loading={loading}*/}
           {/*red={red}*/}
@@ -355,7 +352,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           {/*isPercentSumGood={isPercentSumGood}*/}
           {/*undistributedMoney={undistributedMoney}*/}
           {/*isUSDCurrently={isUSDCurrently}*/}
-          {/*addMoneyInputValue={addMoneyInputValue}*/}
           {/*theme={theme}*/}
           {/*loading={loading}*/}
           {/*red={red}*/}
