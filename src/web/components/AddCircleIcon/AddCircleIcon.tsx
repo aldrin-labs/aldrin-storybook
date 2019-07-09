@@ -13,7 +13,6 @@ export const getCircleSymbol = (
 ) => (
   <>
     {/* {console.log('88888: ', sortedData(data)[index].symbol)} */}
-    {console.log('INDEX: ', index)}
     <IconCircle
       className="fa fa-circle"
       style={{
