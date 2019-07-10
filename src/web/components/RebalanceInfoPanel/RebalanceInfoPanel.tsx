@@ -47,12 +47,13 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         rebalanceTime,
       },
       rebalanceOption,
+      toggleSectionCoinChart,
+      isSectionChart,
       theme: {
         palette: { blue, red, green, grey },
       },
     } = this.props
 
-    console.log('availableValue: ', typeof availableValue)
     return (
       <GridInfoPanelWrapper container justify="space-between">
         {/* Grid - 1st item md - 6 Starts */}
@@ -113,13 +114,19 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
+              <GridFlex
+                justify="flex-start"
+                alignItems="center"
+                item
+                lg={3}
+              >
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
                   btnWidth="100px"
+                  onClick={toggleSectionCoinChart}
                 >
-                  coin chart
+                  {isSectionChart? `section chart`: `coin chart`}
                 </BtnCustom>
               </GridFlex>
 

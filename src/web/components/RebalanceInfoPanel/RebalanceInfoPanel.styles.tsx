@@ -6,19 +6,30 @@ export const GridFlex = styled(Grid)`
 `
 
 export const GridInfoPanelWrapper = styled(Grid)`
-  padding-bottom: 20px;
+  margin-bottom: 10px;
+  /* position: fixed; */  /*TODO STICKY MENU*/
+  /* background-color: #f9fbfd;
+  padding: 10px 0 7px 0;
+  top: 50px;
+  z-index: 1000; 
+  border-top: 2px solid #e7ecf3;
+  border-bottom: 2px solid #e7ecf3;
+  */
 `
 
 export const CustomLink = styled(Link)`
-         font-family: 'DM Sans', sans-serif;
-         font-size: 11px;
-         padding: 0 5px;
-         margin-right: 3px;
-         text-transform: uppercase;
-         color: ${(props) => props.linkColor || 'white'};
-         text-align: ${(props) => props.position || 'none'};
-         align-self: ${(props) => props.verticalPosition || 'none'};
-       `
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  padding: 0 5px;
+  margin-right: 3px;
+  text-transform: uppercase;
+  color: ${(props) => props.linkColor || 'white'};
+  text-align: ${(props) => props.position || 'none'};
+  align-self: ${(props) => props.verticalPosition || 'none'};
+  &:hover {
+    text-decoration: none;
+  }
+`
 
 export const StyledTypography = styled(Typography)`
   font-size: 10px;
