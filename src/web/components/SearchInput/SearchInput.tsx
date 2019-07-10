@@ -5,11 +5,11 @@ export default function SearchInput(props) {
   const { height, width, placeholder, fontSize } = props
   return (
     <>
-      
+      {/* <SearchIconCustom /> */}
       <InputBaseCustom
         height={height}
         width={width}
-        placeholder={<SearchIconCustom />}
+        placeholder={`Search by ticker`}
         fontSize={fontSize}
       />
     </>
