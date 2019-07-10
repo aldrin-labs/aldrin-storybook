@@ -48,6 +48,7 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
 export const TypographyAccordionTitle = styled(Typography)`
   width: 100%;
   height: 14px;
+  letter-spacing: 1.5px;
   margin: 6px auto;
   color: #abbad1;
   text-align: center;
@@ -56,19 +57,19 @@ export const TypographyAccordionTitle = styled(Typography)`
 
 export const GridProgressTitle = styled(Grid)`
   display: flex;
-  width: 100% ;
-  border-radius: 20px 20px 0 0; 
-  background: #F2F4F6;
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+  background: #f2f4f6;
   margin-bottom: 13px;
 `
 
 export const TypographyProgress = styled(Typography)`
   margin-top: 10px;
-  color: #16253D;
+  color: #16253d;
   font-size: 10px;
   text-transform: uppercase;
-  font-weight: bold;
-  /* background: #e7ecf3; */
+  letter-spacing: 1.5px;
+  font-weight: 700;
   width: 100%;
   text-align: center;
   height: 24px;
@@ -77,7 +78,26 @@ export const TypographyProgress = styled(Typography)`
 export const ChartWrapperCustom = styled(ChartWrapper)`
   border-radius: 20px;
   font-size: 10px;
-  /* min-height: 100px; */
+  padding: 0px;
+  border: 0px;
+  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+`
+
+export const ChartWrapperCustomLeft = styled(ChartWrapper)`
+  border-radius: 20px;
+  font-size: 10px;
+  padding: 0px;
+  border: 0px;
+  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+`
+
+export const ChartWrapperCustomRight = styled(ChartWrapper)`
+  border-radius: 20px;
+  font-size: 10px;
   padding: 0px;
   border: 0px;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);

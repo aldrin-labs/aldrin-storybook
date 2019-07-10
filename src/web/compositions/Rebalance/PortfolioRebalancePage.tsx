@@ -11,6 +11,8 @@ import {
   Container,
   ChartWrapper,
   ChartWrapperCustom,
+  ChartWrapperCustomLeft,
+  ChartWrapperCustomRight,
   TypographyAccordionTitle,
   TypographyProgress,
   GridProgressTitle,
@@ -187,7 +189,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '15px 5px' }}
+          style={{ padding: '25px' }}
         >
           <Container
             key={`table-container`}
@@ -210,7 +212,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <ChartWrapperCustom
+          <ChartWrapperCustomLeft
             key={`chart-container-current-allocation`}
             item
             md={5}
@@ -233,7 +235,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               sectionDataProgress={targetAllocation}
             />
             {/* <ProgressBarWrapper coinData={staticRows} /> */}
-          </ChartWrapperCustom>
+          </ChartWrapperCustomLeft>
 
           <ChartWrapper
             key={`chart-container-dialog`}
@@ -260,7 +262,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             />
           </ChartWrapper>
 
-          <ChartWrapperCustom
+          <ChartWrapperCustomRight
             key={`chart-container-distribtion`}
             item
             md={5}
@@ -280,7 +282,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               isSectionChart={this.state.isSectionChart}
               sectionDataProgress={targetAllocation}
             />
-          </ChartWrapperCustom>
+          </ChartWrapperCustomRight>
 
           {/* Accordion Table Start */}
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
