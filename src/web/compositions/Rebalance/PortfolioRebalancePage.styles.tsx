@@ -12,7 +12,7 @@ export const ChartWrapper = styled(({ isEditModeEnabled, ...rest }) => (
   justify-content: center;
   align-items: center;
 
-  height: 33%;
+  min-height: 3%;
   && {
     padding-bottom: 0;
   }
@@ -77,7 +77,7 @@ export const TypographyProgress = styled(Typography)`
 export const ChartWrapperCustom = styled(ChartWrapper)`
   border-radius: 20px;
   font-size: 10px;
-  height: 140px;
+  /* min-height: 100px; */
   padding: 0px;
   border: 0px;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);

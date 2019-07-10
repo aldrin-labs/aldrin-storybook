@@ -56,6 +56,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
     open: false,
+    isSectionChart: false,
+  }
+
+  toggleSectionCoinChart = () => {
+    this.setState({
+      isSectionChart: !this.state.isSectionChart,
+    })
   }
 
   handleJoyrideCallback = async (data: any) => {
@@ -181,7 +188,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '15px 35px' }}
+          style={{ padding: '15px 5px' }}
         >
           <Container
             key={`table-container`}
@@ -192,8 +199,15 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           {/* REBALANCE INFO PANEL STARTS */}
           <RebalanceInfoPanel
+            toggleSectionCoinChart={() => this.toggleSectionCoinChart()}
+            isSectionChart={this.state.isSectionChart}
             rebalanceInfoPanelData={rebalanceInfoPanelData}
             rebalanceOption={rebalanceOption}
+            style={{
+              // paddingBottom: '10px',
+              // position: 'fixed',
+              zIndex: '100',
+            }}
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
@@ -207,13 +221,19 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               padding: '0px',
               display: 'flex',
               justifyContent: 'start',
+              //minHeight: '10%'
             }}
           >
             <GridProgressTitle content alignItems="center">
               <TypographyProgress>current allocation</TypographyProgress>
             </GridProgressTitle>
 
-            <ProgressBarWrapper data={currentAllocation} />
+            <PortfolioRebalanceChart
+              coinData={staticRows}
+              isSectionChart={this.state.isSectionChart}
+              sectionDataProgress={targetAllocation}
+            />
+            {/* <ProgressBarWrapper coinData={staticRows} /> */}
           </ChartWrapperCustom>
 
           <ChartWrapper
@@ -256,8 +276,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             <GridProgressTitle content alignItems="center">
               <TypographyProgress>target allocation</TypographyProgress>
             </GridProgressTitle>
-
-            <ProgressBarWrapper data={targetAllocation} />
+            <PortfolioRebalanceChart
+              coinData={staticRows}
+              isSectionChart={this.state.isSectionChart}
+              sectionDataProgress={targetAllocation}
+            />
           </ChartWrapperCustom>
 
           {/* Accordion Table Start */}
