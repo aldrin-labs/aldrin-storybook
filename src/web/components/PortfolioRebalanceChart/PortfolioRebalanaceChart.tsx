@@ -7,7 +7,7 @@ import { IProps } from './PortfolioRebalanceChart.types'
 import ProgressBarWrapper from '@sb/components/ProgressBarCustom/ProgressBarWrapper.tsx'
 
 const PortfolioRebalanceChartComponent = ({
-  // theme, //TODO: Я ЗАКОММЕНТИЛ
+  // theme, //TODO: Я ЗАКОММЕНТИЛ Потому что не юзаю
   // title,
   // rebalanceChartsData,
   // ...otherProps

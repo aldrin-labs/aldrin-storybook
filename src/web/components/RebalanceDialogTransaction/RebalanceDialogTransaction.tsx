@@ -76,7 +76,6 @@ const DialogActions = withStyles((theme) => ({
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   state = {
-    status: null, //success | fail | loading | null
     isFinished: false,
     isError: false,
   }
@@ -116,7 +115,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.props
 
     //TODO
-    const { isFinished, isError, status } = this.state
+    const { isFinished, isError } = this.state
 
     return (
       <div>
@@ -245,7 +244,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               getError={this.getError}
               isCompleted={this.isCompleted}
               isFinished={isFinished}
-              status={status}
             />
           </DialogContent>
         </DialogWrapper>

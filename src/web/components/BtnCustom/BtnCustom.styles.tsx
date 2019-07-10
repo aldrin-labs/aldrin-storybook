@@ -11,4 +11,5 @@ export const BtnCustom = styled(Button)`
   font-weight: bold;
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};
+  letter-spacing: 1.5px;
 `

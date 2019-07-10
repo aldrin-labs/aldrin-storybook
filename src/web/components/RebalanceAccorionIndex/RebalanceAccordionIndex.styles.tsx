@@ -38,20 +38,34 @@ export const StyledTypography = styled(Typography)`
   font-size: ${(props) => props.fontSize || `10px`};
   font-weight: ${(props) => props.fontWeight || `500`};
   line-height: 25px;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.primaryColor || props.color || '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
   margin-left: ${(props) => props.marginLeft};
 `
 
+export const StyledTypographyAccordionHeader = styled(Typography)`
+  text-align: center;
+  font-weight: ${(props) => props.fontWeight || `500`};
+  line-height: 25px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.primaryColor || props.color || '#7284A0'};
+  margin-left: ${(props) => props.marginLeft};
+  text-align: left;
+  font-size: 14px;
+  border-left: 5px solid orange;
+  border-radius: 3px 0 3px 0;
+  padding-left: 24px;
+`
+
 export const StyledSubTypography = styled(Typography)`
   text-align: center;
   font-size: 18px;
   line-height: 25px;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: ${(props) =>
-    props.primaryColor || props.color || '#97c15c'};
+  color: ${(props) => props.primaryColor || props.color || '#97c15c'};
   text-align: ${(props) => props.position || 'none'};
 `

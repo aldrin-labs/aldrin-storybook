@@ -220,8 +220,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             className="PortfolioDistributionChart"
             style={{
               padding: '0px',
-              display: 'flex',
-              justifyContent: 'start',
+              // display: 'flex',
+              // justifyContent: 'start',
               //minHeight: '10%'
             }}
           >
@@ -270,8 +270,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             className="PortfolioDistributionChart"
             style={{
               padding: '0px',
-              display: 'flex',
-              justifyContent: 'start',
+              // display: 'flex',
+              // justifyContent: 'start',
             }}
           >
             <GridProgressTitle content alignItems="center">

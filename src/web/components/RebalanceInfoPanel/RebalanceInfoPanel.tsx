@@ -6,6 +6,7 @@ import {
   StyledTypography,
   StyledSubTypography,
   CustomLink,
+  ReactSelectCustom,
 } from './RebalanceInfoPanel.styles'
 import { withTheme } from '@material-ui/styles'
 import Timer from 'react-compound-timer'
@@ -14,7 +15,6 @@ import SelectElement from './SelectElement'
 import { IProps } from './RebalanceInfoPanel.types'
 
 import SingleSelect from '../Select/SingleSelect'
-import SelectCustom from '../ReactSelectComponent'
 
 import Input from '@material-ui/core/Input'
 
@@ -82,11 +82,6 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   {availableValue != '0'
                     ? this.slicePrice(availableValue)
                     : `0`}
-                  {/* {!availableValue.indexOf('-')
-                    ? `0`
-                    : availableValue !== '0'
-                    ? availableValue.substring(0, availableValue.indexOf('.'))
-                    : availableValue} */}
                 </StyledSubTypography>
               </Grid>
 
@@ -114,19 +109,14 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex
-                justify="flex-start"
-                alignItems="center"
-                item
-                lg={3}
-              >
+              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
                   btnWidth="100px"
                   onClick={toggleSectionCoinChart}
                 >
-                  {isSectionChart? `section chart`: `coin chart`}
+                  {isSectionChart ? `section chart` : `coin chart`}
                 </BtnCustom>
               </GridFlex>
 
@@ -154,9 +144,9 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   setRebalanceTimer={this.setRebalanceTimer}
                 /> */}
 
-                <SingleSelect />
+                {/* <SingleSelect /> */}
 
-                {/* <SelectCustom
+                <ReactSelectCustom
                   options={[
                     {
                       value: 'daily',
@@ -182,7 +172,41 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                       color: '#D93B28',
                     },
                   ]}
-                /> */}
+                  singleValueStyles={{
+                    color: '#165BE0',
+                    fontSize: '11px',
+                    padding: '0',
+                  }}
+                  indicatorSeparator={{
+                    color: 'orange',
+                    background: 'transparent',
+                  }}
+                  control={{
+                    background: 'transparent',
+                    border: 'none',
+                    width: 100,
+                    // border: state.isFocused ? 0 : 0,
+                    // boxShadow: state.isFocused ? 0 : 0,
+                    // '&:hover': {
+                    //   border: state.isFocused ? 0 : 0,
+                    // },
+                  }}
+                  menu={{
+                    width: 120,
+                    padding: '5px 8px',
+                    borderRadius: '14px',
+                  }}
+                  container={{
+                    background: 'transparent',
+                    padding: 0,
+                    color: '#165BE0',
+                    '&:focus': {
+                      border: '0 solid transparent',
+                      borderColor: 'transparent',
+                      boxShadow: '0 0 0 1px transparent',
+                    },
+                  }}
+                />
 
                 <Input
                   placeholder="days"

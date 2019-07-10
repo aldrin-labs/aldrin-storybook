@@ -14,6 +14,7 @@ import {
   ExpansionPanelWrapper,
   StyledTypography,
   StyledSubTypography,
+  StyledTypographyAccordionHeader,
   GridItemHeadingCustom,
   GridFlex,
 } from './RebalanceAccordionIndex.styles'
@@ -50,29 +51,15 @@ function TablePanelSummary(props) {
           <TableCell
             style={{ padding: '0px', width: '12vw', border: 'none' }}
           >
-            <StyledTypography
-              style={{
-                textAlign: 'left',
-                fontSize: '14px',
-                borderLeft: '5px solid orange',
-                borderRadius: '3px 0 3px 0',
-                paddingLeft: '24px',
-              }}
-            >
+            <StyledTypographyAccordionHeader>
               {accordionPanelHeading}
-            </StyledTypography>
+            </StyledTypographyAccordionHeader>
           </TableCell>
           <TableCell
             align="left"
             style={{ padding: '0px', width: '26vw', border: 'none' }}
           >
-            <StyledTypography
-              style={
-                {
-                  /*marginLeft: '75px'*/
-                }
-              }
-            >
+            <StyledTypography>
               Current value
             </StyledTypography>
             <StyledSubTypography

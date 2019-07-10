@@ -30,7 +30,6 @@ const TransactionTable = ({
   getError,
   isCompleted,
   isFinished,
-  status,
 }: IProps) => {
   return (
     <>
@@ -55,11 +54,11 @@ const TransactionTable = ({
               </TableCell>
               <TableCell align="left">{row.sum}</TableCell>
               <TableCell align="right">
-                {status === 'success' ? (
+                {row.isDone === 'success' ? (
                   <SvgIcon src={DoneIcon} />
-                ) : status === 'fail' ? (
+                ) : row.isDone === 'fail' ? (
                   <SvgIcon src={Cross} />
-                ) : status === 'loading' ? (
+                ) : row.isDone === 'loading' ? (
                   <SvgIcon width="35px" height="35px" src={Spinner} />
                 ) : null}
               </TableCell>

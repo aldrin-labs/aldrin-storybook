@@ -18,6 +18,7 @@ import {
   LinearProgressCustom,
   IconCircle,
   TypographyCustom,
+  ExpansionPanelSummaryCustom,
 } from './ProgressAccordion.styles'
 
 const styles = (theme) => ({
@@ -82,7 +83,7 @@ function ProgressAccordion(props) {
           padding: '0',
         }}
       >
-        <ExpansionPanelSummary
+        <ExpansionPanelSummaryCustom
           className={classes.progressbarPanel}
           style={{
             padding: '1px',
@@ -92,7 +93,7 @@ function ProgressAccordion(props) {
           //expandIcon={<ExpandMoreIcon />}
         >
           {children}
-        </ExpansionPanelSummary>
+        </ExpansionPanelSummaryCustom>
         <ExpansionPanelDetails
           className={classes.details}
           style={{ display: 'block' }}

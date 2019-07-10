@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  ExpansionPanelSummary,
 } from '@material-ui/core'
 
 export const LinearProgressCustom = styled(LinearProgress)`
@@ -16,7 +17,7 @@ export const LinearProgressCustom = styled(LinearProgress)`
 `
 export const GridFlex = styled(Grid)`
   display: flex;
-  
+
   padding: ${(props) => props.padding};
 `
 
@@ -31,4 +32,10 @@ export const TypographyCustom = styled(Typography)`
   font-weight: 700;
   margin: auto;
   text-transform: uppercase;
+`
+
+export const ExpansionPanelSummaryCustom = styled(ExpansionPanelSummary)`
+  '&:last-child': {
+    padding-right: 0px;
+  }
 `

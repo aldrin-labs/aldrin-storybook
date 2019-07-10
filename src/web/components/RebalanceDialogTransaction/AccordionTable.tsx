@@ -51,7 +51,6 @@ class AccordionTable extends React.Component<IProps, IState> {
       getError,
       isCompleted,
       isFinished,
-      status,
       theme: {
         palette: { grey },
       },
@@ -78,7 +77,6 @@ class AccordionTable extends React.Component<IProps, IState> {
                 getError={getError}
                 transactionsData={transactionsData}
                 isFinished={isFinished}
-                status={status}
               />
             </Typography>
           </ExpansionPanelDetails>
