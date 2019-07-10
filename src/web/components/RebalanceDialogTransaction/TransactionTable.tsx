@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import DoneIcon from '../../../icons/DoneIcon.svg'
 import Cross from '../../../icons/Cross.svg'
+import Spinner from '../../../icons/Spinner.svg'
 import TradeIcon from '../../../icons/TradeIcon.svg'
 import ProgressBar from '../ProgressBar/ProgressBar'
 import SvgIcon from '../SvgIcon'
@@ -29,6 +30,7 @@ const TransactionTable = ({
   getError,
   isCompleted,
   isFinished,
+  status,
 }: IProps) => {
   return (
     <>
@@ -53,12 +55,21 @@ const TransactionTable = ({
               </TableCell>
               <TableCell align="left">{row.sum}</TableCell>
               <TableCell align="right">
+                {status === 'success' ? (
+                  <SvgIcon src={DoneIcon} />
+                ) : status === 'fail' ? (
+                  <SvgIcon src={Cross} />
+                ) : status === 'loading' ? (
+                  <SvgIcon width="35px" height="35px" src={Spinner} />
+                ) : null}
+              </TableCell>
+              {/* <TableCell align="right"> //TODO Запас, в случае работы верхнего компонента, удалить
                 {row.isDone ? (
                   <SvgIcon src={DoneIcon} />
                 ) : row.isDone === false ? (
                   <SvgIcon src={Cross} />
                 ) : null}
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
