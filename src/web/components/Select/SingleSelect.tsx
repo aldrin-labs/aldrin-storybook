@@ -22,7 +22,7 @@ const rebalanceOptions = [
 Option = ({ label }) => <CustomOption>{label}</CustomOption>
 
 const customStyles = {
-  singleValue: (base) => ({
+  singleValueStyles: (base) => ({
     ...base,
     color: '#165BE0',
     fontSize: '11px',
