@@ -623,11 +623,6 @@ const CustomTable = (props: Props) => {
                       }`
                     : `${classes.rowWithHover}`
                   : rowClassName
-
-                  console.log(
-                    'rowHoverClassName',
-                    rowHoverClassName
-                  )
                 // const rowHoverBorderRadiusClassName = rowWithHoverBorderRadius
                 //   ? `${rowClassName} + ${classes.rowWithHoverBorderRadius}`
                 //   : rowClassName
