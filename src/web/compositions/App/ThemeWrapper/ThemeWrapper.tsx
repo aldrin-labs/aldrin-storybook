@@ -166,6 +166,12 @@ export default class ThemeWrapper extends Component<Props> {
                 },
               },
               MuiPaper: {
+                elevation1: {
+                  boxShadow: `none`,
+                },
+                root: {
+                  //  boxShadow: `none`,
+                },
                 // Name of the component ⚛️ / style sheet
                 rounded: {
                   // Name of the rule
@@ -218,7 +224,7 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#F2F4F6',
               },
               primary: {
-                main: '#FEFEFE',
+                main: '#FEFEFE', //'#f9fbfd',
                 dark: '#F3F3F3',
                 light: '#FFF',
               },
