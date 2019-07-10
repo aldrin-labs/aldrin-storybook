@@ -135,6 +135,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               <SearchIconCustom />
               <InputBaseCustom placeholder="Search…" />
             </GridSearchPanel>
+            
             <GridCustom>
 
                 <ContentList

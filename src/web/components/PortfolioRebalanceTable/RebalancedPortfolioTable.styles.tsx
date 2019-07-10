@@ -23,7 +23,7 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   background: ${(props: { background: string }) => props.background};
 
-  z-index: 1000;
+  z-index: 10000;
 
   & > div {
     z-index: 1;

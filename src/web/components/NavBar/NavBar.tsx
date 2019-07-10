@@ -42,8 +42,9 @@ const NavBarRaw: SFC<Props> = ({
       variant={{ hide: $hide, background: primary.main }}
       color="default"
       className="Navbar"
+      style={{ background:'#f9fbfd', position: 'fixed' }}
     >
-      <Toolbar variant="dense" style={{ height: '48px' }}>
+      <Toolbar variant="dense" style={{ height: '48px'}}>
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={4}>

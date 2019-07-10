@@ -623,9 +623,6 @@ const CustomTable = (props: Props) => {
                       }`
                     : `${classes.rowWithHover}`
                   : rowClassName
-                // const rowHoverBorderRadiusClassName = rowWithHoverBorderRadius
-                //   ? `${rowClassName} + ${classes.rowWithHoverBorderRadius}`
-                //   : rowClassName
                 const expandable = row.expandableContent
                 const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
                   ? 'check'
