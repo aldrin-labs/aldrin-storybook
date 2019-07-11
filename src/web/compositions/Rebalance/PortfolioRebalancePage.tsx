@@ -162,8 +162,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       transactions,
     } = this.props
 
-    // console.log('???????: ', rows)
-
     const secondary = palette.secondary.main
     const red = customPalette.red.main
     const green = customPalette.green.main
@@ -208,31 +206,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             isSectionChart={this.state.isSectionChart}
             rebalanceInfoPanelData={rebalanceInfoPanelData}
             rebalanceOption={rebalanceOption}
-            style={{
-              // paddingBottom: '10px',
-              // position: 'fixed',
-              zIndex: '100',
-            }}
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          {/* <ChartWrapperCustomLeft
-            key={`chart-container-current-allocation`}
-            item
-            md={5}
-            sm={5}
-            className="PortfolioDistributionChart"
-            style={{
-              padding: '0px',
-              // display: 'flex',
-              // justifyContent: 'start',
-              //minHeight: '10%'
-            }}
-          > */}
-          <Grid item lg={5} md={5} style={{ minHeight: '100px' }}>
+          <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
             <Grid
               style={{
-                minHeight: '140px',
+                minHeight: '132px',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
               }}
@@ -242,7 +222,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               </GridProgressTitle>
 
               <PortfolioRebalanceChart
-                coinData={rows}
+                coinData={staticRows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}
               />
@@ -271,12 +251,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             lg={5}
             md={5}
             style={{
-              minHeight: '100px',
+              minHeight: '100px', padding: '0'
             }}
           >
             <Grid
               style={{
-                minHeight: '140px',
+                minHeight: '132px',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
               }}
@@ -285,61 +265,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 <TypographyProgress>target allocation</TypographyProgress>
               </GridProgressTitle>
               <PortfolioRebalanceChart
-                coinData={staticRows}
+                coinData={rows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}
               />
             </Grid>
           </Grid>
-
-          {/* </ChartWrapperCustomLeft> */}
-
-          {/* <ChartWrapper
-            key={`chart-container-dialog`}
-            item
-            sm={2}
-            md={2}
-            lg={2}
-            className="PortfolioDistributionChart"
-            style={{
-              height: '130px',
-              background: `url(${Stroke})`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-            }}
-          > */}
-          {/* <RebalanceDialogTransaction
-            initialTime={rebalanceInfoPanelData.rebalanceTime}
-            accordionTitle="TRANSACTIONS"
-            transactionsData={transactions}
-            open={this.state.open}
-            handleClickOpen={this.handleClickOpen}
-            handleClose={this.handleClose}
-            executeRebalanceHandler={executeRebalanceHandler}
-          /> */}
-          {/* </ChartWrapper> */}
-
-          {/* <ChartWrapperCustomRight
-            key={`chart-container-distribtion`}
-            item
-            md={5}
-            sm={5}
-            className="PortfolioDistributionChart"
-            style={{
-              padding: '0px',
-              // display: 'flex',
-              // justifyContent: 'start',
-            }}
-          >
-            <GridProgressTitle content alignItems="center">
-              <TypographyProgress>target allocation</TypographyProgress>
-            </GridProgressTitle>
-            <PortfolioRebalanceChart
-              coinData={staticRows}
-              isSectionChart={this.state.isSectionChart}
-              sectionDataProgress={targetAllocation}
-            />
-          </ChartWrapperCustomRight> */}
 
           {/* Accordion Table Start */}
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>

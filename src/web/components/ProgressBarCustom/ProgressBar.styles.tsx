@@ -21,10 +21,10 @@ export const GridFlex = styled(Grid)`
 `
 
 export const TypographyCustom = styled(Typography)`
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 1.5px;
-  margin: auto;
+  margin: auto 0;
   text-transform: uppercase;
 `
 

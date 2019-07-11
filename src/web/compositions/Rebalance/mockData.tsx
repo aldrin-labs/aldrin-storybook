@@ -73,9 +73,9 @@ export const rebalanceOption = [
 ]
 
 export const sectionDataHardCode = [
-  { symbol: 'PORTFOLIO', portfolioPerc: 50 },
-  { symbol: 'INDEX', portfolioPerc: 85 },
-  { symbol: 'SOURCE', portfolioPerc: 60 },
+  { symbol: 'PORTFOLIO', portfolioPerc: 100 },
+  { symbol: 'INDEX', portfolioPerc: 0 },
+  { symbol: 'SOURCE', portfolioPerc: 0 },
 ]
 
 export const addFolioData = []
@@ -88,8 +88,8 @@ export const addIndexData = [
 
 export const currentAllocation = [
   { label: 'PORTFOLIO', percentage: 100, color: '#F29C38' },
-  { label: 'INDEX', percentage: 60, color: '#DEDB8E' },
-  { label: 'SOCIAL', percentage: 20, color: '#4152AF' },
+  { label: 'INDEX', percentage: 0, color: '#DEDB8E' },
+  { label: 'SOCIAL', percentage: 0, color: '#4152AF' },
 ]
 
 export const targetAllocation = [
@@ -100,12 +100,12 @@ export const targetAllocation = [
   },
   {
     label: 'INDEX',
-    percentage: 50,
+    percentage: 0,
     color: '#DEDB8E',
   },
   {
     label: 'SOCIAL',
-    percentage: 20,
+    percentage: 0,
     color: '#4152AF',
   },
 ]

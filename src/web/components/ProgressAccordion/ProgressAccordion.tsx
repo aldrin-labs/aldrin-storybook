@@ -94,22 +94,26 @@ function ProgressAccordion(props) {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails
           className={classes.details}
-          style={{ display: 'block', marginBottom: '20px' }}
+          style={{ display: 'block', marginBottom: '10px' , padding: '0'}}
         >
           {otherCoinData.map((datum, index) => {
             return (
-              <Grid container style={{ marginBottom: '8px' }} lg={12}>
+              <Grid
+                container
+                style={{ marginBottom: '8px' }}
+                lg={12}
+              >
                 <GridFlex item lg={3} md={3} padding="0">
                   <IconCircle
                     className="fa fa-circle"
                     style={{
                       // justifySelf: 'flex-start',
                       fontSize: '10px',
-                      margin: 'auto 3px auto 14px',
+                      margin: 'auto 11px auto 14px',
                       color: '#97C15C',
                     }}
                   />
-                  <TypographyCustom style={{ marginLeft: '14px' }}>
+                  <TypographyCustom style={{ marginLeft: '1px' }}>
                     {datum.symbol}
                   </TypographyCustom>
                 </GridFlex>

@@ -37,19 +37,47 @@ function ProgressBarWrapper(props) {
     classes,
   } = props
 
-  // const sectionData = false
 
-  // return null
-  // return coinData.map(coin => {
-  //   <TypographyCustom>{coin.id}</TypographyCustom>
-  // })
+  // TODO get rid of data after checking
+  // const coinData = [
+  //   {
+  //     coinValue: 9,
+  //     coinValueSnapshot: 13.24,
+  //     deltaPrice: -4.24,
+  //     exchange: 'Binance',
+  //     id: 3,
+  //     isCustomAsset: false,
+  //     minimalPercentageValue: undefined,
+  //     percentSnapshot: '50.00000000',
+  //     portfolioPerc: '17.97033041',
+  //     price: 29.0362,
+  //     symbol: 'BNB',
+  //     _id: '5c3ef4a29f3b7e3ed7w03de0demo',
+  //   },
+  //   {
+  //     coinValue: 10,
+  //     coinValueSnapshot: 13.24,
+  //     deltaPrice: -4.24,
+  //     exchange: 'Binance',
+  //     id: 8,
+  //     isCustomAsset: false,
+  //     minimalPercentageValue: undefined,
+  //     percentSnapshot: '10',
+  //     portfolioPerc: '67.97033041',
+  //     price: 29.0362,
+  //     symbol: 'BTB',
+  //     _id: '5c3ef4a39f3b7e3ed7503de0demo',
+  //   },
+  // ]
 
   return isSectionChart ? (
     sectionDataProgress.map((datum) => {
       return (
         <Grid container style={{ marginBottom: '8px' }}>
-          <GridFlex item lg={3} md={3} padding="0 0 0 20px">
-            <TypographyCustom>{datum.label}</TypographyCustom>
+          <GridFlex item lg={3} md={3} padding="0">
+            <TypographyCustom style={{ marginLeft: '12px' }}>
+              {datum.label}
+            </TypographyCustom>
           </GridFlex>
           <Grid
             item
@@ -62,10 +90,10 @@ function ProgressBarWrapper(props) {
               height="20px"
               width={`${datum.percentage}%`}
               variant="determinate"
-              value={20}
+              value={`${datum.percentage}`}
             />
           </Grid>
-          <GridFlex item lg={3} md={3} justify="center">
+          <GridFlex item lg={3} md={3} style={{ paddingLeft: '57px' }}>
             <TypographyCustom>{datum.percentage}%</TypographyCustom>
           </GridFlex>
         </Grid>
@@ -75,15 +103,14 @@ function ProgressBarWrapper(props) {
     <>
       {coinData.map((datum, index) => {
         return (
-          <Grid container style={{ marginBottom: '8px' }}>
-            <GridFlex item lg={3} md={3} padding="0 0 0 20px">
-              {/*<TypographyCustom> {getCircleSymbol(datum.coin, data)} </TypographyCustom> */}
+          <Grid container style={{ marginBottom: '4px' }}>
+            <GridFlex item lg={3} md={3} padding="0">
               <IconCircle
                 className="fa fa-circle"
                 style={{
                   justifySelf: 'flex-start',
-                  fontSize: '10px',
-                  margin: 'auto 3px auto 12px',
+                  fontSize: '0.625rem',
+                  margin: 'auto 10px auto 12px',
                   color: `${
                     index === 0
                       ? '#F29C38'
@@ -95,7 +122,9 @@ function ProgressBarWrapper(props) {
                   }`,
                 }}
               />
-              <TypographyCustom style={{marginLeft: '14px'}}>{datum.symbol}</TypographyCustom>
+              <TypographyCustom style={{ marginLeft: '1px' }}>
+                {datum.symbol}
+              </TypographyCustom>
             </GridFlex>
             <Grid
               item
@@ -126,11 +155,12 @@ function ProgressBarWrapper(props) {
               />
             </Grid>
 
-            <GridFlex item lg={3} md={3} justify="center">
-              <TypographyCustom>
-              {  datum.portfolioPerc !== '0' ?
-                Math.floor(datum.portfolioPerc) : '0'
-              } %
+            <GridFlex item lg={3} md={3}>
+              <TypographyCustom style={{ paddingLeft: '57px' }}>
+                {datum.portfolioPerc !== '0'
+                  ? Math.floor(datum.portfolioPerc)
+                  : '0'}{' '}
+                %
               </TypographyCustom>
             </GridFlex>
           </Grid>
@@ -140,16 +170,16 @@ function ProgressBarWrapper(props) {
         <ProgressAccordion otherCoinData={otherCoinData}>
           <Grid
             container
-            style={{ marginBottom: '8px', marginTop: '-26px', padding: '0' }}
+            style={{ marginBottom: '4px', marginTop: '-26px', padding: '0' }}
           >
-            <GridFlex item lg={3} md={3} padding="0 0 0 20px">
+            <GridFlex item lg={3} md={3} padding="0">
               <IconCircle
                 className="fa fa-circle"
                 style={{
                   justifySelf: 'flex-start',
                   color: `#97C15C`,
                   fontSize: '10px',
-                  margin: 'auto 3px auto 12px',
+                  margin: 'auto 10px auto 12px',
                 }}
               />
               <TypographyCustom> other </TypographyCustom>
@@ -177,13 +207,13 @@ function ProgressBarWrapper(props) {
                 color="#97C15C"
                 height="12px"
                 marginTop="2px"
-                width={`${20}%`} //{`${otherCoinsPercentage}%`}
+                width={`${otherCoinsPercentage}%`}
                 variant="determinate"
                 value={20}
               />
             </Grid>
 
-            <GridFlex item lg={3} md={3} justify="center">
+            <GridFlex item lg={3} md={3} style={{ paddingLeft: '57px' }}>
               <TypographyCustom>{otherCoinsPercentage}%</TypographyCustom>
             </GridFlex>
           </Grid>

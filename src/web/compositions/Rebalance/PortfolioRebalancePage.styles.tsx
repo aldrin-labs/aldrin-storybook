@@ -61,13 +61,13 @@ export const GridProgressTitle = styled(Grid)`
   width: 100%;
   border-radius: 20px 20px 0 0;
   background: #f2f4f6;
-  margin-bottom: 13px;
+  margin-bottom: 8px;
 `
 
 export const TypographyProgress = styled(Typography)`
   margin-top: 10px;
   color: #16253d;
-  font-size: 10px;
+  font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
@@ -76,50 +76,10 @@ export const TypographyProgress = styled(Typography)`
   height: 24px;
 `
 
-export const ChartWrapperCustom = styled(ChartWrapper)`
-  border-radius: 20px;
-  font-size: 10px;
-  padding: 0px;
-  border: 0px;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-`
-
-export const ChartWrapperCustomLeft = styled(ChartWrapper)`
-  border-radius: 20px;
-  font-size: 10px;
-  padding: 0px;
-  border: 0px;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-`
-
-export const ChartWrapperCustomRight = styled(ChartWrapper)`
-  /* border-radius: 20px;
-  font-size: 10px;
-  padding: 0px;
-  border: 0px;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2); */
-`
-export const GridSectionChart = styled(Grid)`
-  border-radius: 20px;
-  font-size: 10px;
-  padding: 0px;
-  border: 0px;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-`
-
 export const GridTransactionBtn = styled(Grid)`
   display: flex;
   justify-content: center;
   align-items: center;
-
   background-image: url(${Stroke});
   background-repeat: no-repeat;
   background-position: center;

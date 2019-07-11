@@ -51,7 +51,7 @@ function TablePanelSummary(props) {
           <TableCell
             style={{ padding: '0px', width: '12vw', border: 'none' }}
           >
-            <StyledTypographyAccordionHeader>
+            <StyledTypographyAccordionHeader fontWeight="700">
               {accordionPanelHeading}
             </StyledTypographyAccordionHeader>
           </TableCell>
@@ -59,7 +59,7 @@ function TablePanelSummary(props) {
             align="left"
             style={{ padding: '0px', width: '26vw', border: 'none' }}
           >
-            <StyledTypography>
+            <StyledTypography fontWeight="700">
               Current value
             </StyledTypography>
             <StyledSubTypography
@@ -108,9 +108,12 @@ function TablePanelSummary(props) {
               </StyledTypography>
             </Tooltip>
           </TableCell>
-             {/* //TODO padding for all screens */}
-          <TableCell align="left" style={{ border: 'none', padding: '0 120px 0 0' }}>
-            <StyledTypography>Target value</StyledTypography>
+          {/* //TODO padding for all screens */}
+          <TableCell
+            align="left"
+            style={{ border: 'none', padding: '0 120px 0 0' }}
+          >
+            <StyledTypography fontWeight="700">Target value</StyledTypography>
             <StyledSubTypography
               color="#16253D" //{black.custom}
             >
