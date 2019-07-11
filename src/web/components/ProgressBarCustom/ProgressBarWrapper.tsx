@@ -93,7 +93,7 @@ function ProgressBarWrapper(props) {
               value={`${datum.percentage}`}
             />
           </Grid>
-          <GridFlex item lg={3} md={3} style={{ paddingLeft: '57px' }}>
+          <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
             <TypographyCustom>{datum.percentage}%</TypographyCustom>
           </GridFlex>
         </Grid>
@@ -156,7 +156,7 @@ function ProgressBarWrapper(props) {
             </Grid>
 
             <GridFlex item lg={3} md={3}>
-              <TypographyCustom style={{ paddingLeft: '57px' }}>
+              <TypographyCustom style={{ paddingLeft: '43px' }}>
                 {datum.portfolioPerc !== '0'
                   ? Math.floor(datum.portfolioPerc)
                   : '0'}{' '}
@@ -213,7 +213,7 @@ function ProgressBarWrapper(props) {
               />
             </Grid>
 
-            <GridFlex item lg={3} md={3} style={{ paddingLeft: '57px' }}>
+            <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
               <TypographyCustom>{otherCoinsPercentage}%</TypographyCustom>
             </GridFlex>
           </Grid>
