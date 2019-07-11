@@ -2,14 +2,13 @@ import styled from 'styled-components'
 import { Typography, Link, Grid } from '@material-ui/core'
 import ReactSelect from '../ReactSelectComponent'
 
-
 export const GridFlex = styled(Grid)`
   display: flex;
 `
 
 export const GridInfoPanelWrapper = styled(Grid)`
   margin-bottom: 10px;
-  /* position: fixed; */  /*TODO STICKY MENU*/
+  /* position: fixed; */ /*TODO STICKY MENU*/
   /* background-color: #f9fbfd;
   padding: 10px 0 7px 0;
   top: 50px;
@@ -21,6 +20,7 @@ export const GridInfoPanelWrapper = styled(Grid)`
 
 export const CustomLink = styled(Link)`
   font-family: 'DM Sans', sans-serif;
+  letter-spacing: 1px;
   font-size: 11px;
   padding: 0 5px;
   margin-right: 3px;
@@ -63,12 +63,12 @@ export const StyledSubTypography = styled(Typography)`
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
-         font-family: 'DM Sans', sans-serif;
-         width: 100px;
-         font-size: 12px;
-         text-transform: uppercase;
-         border: 1px solid transparent;
-         font-weight: bold;
-         letter-spacing: 1px;
-         background: transparent;
-       `
+  font-family: 'DM Sans', sans-serif;
+  width: 100px;
+  font-size: 12px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  font-weight: bold;
+  letter-spacing: 1px;
+  background: transparent;
+`

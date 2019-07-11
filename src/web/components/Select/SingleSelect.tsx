@@ -99,8 +99,11 @@ export default class SingleSelect extends Component<State> {
       isLoading,
       isRtl,
     } = this.state
+
+    const { setRebalanceTimer } = this.props
     return (
       <SelectCustom
+        onChange={this.setRebalanceTimer}
         className="basic-single"
         classNamePrefix="select"
         defaultValue={rebalanceOptions[0]}

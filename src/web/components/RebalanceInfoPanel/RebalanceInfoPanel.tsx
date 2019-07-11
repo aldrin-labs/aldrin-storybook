@@ -24,9 +24,10 @@ export default class RebalanceInfoPanel extends Component<IProps> {
     isHiddenRebalanceDaysInput: 'hidden',
   }
 
-  setRebalanceTimer = () => {
-    console.log('TODO: set timer')
+  setRebalanceTimer = (e) => {
+    console.log('TODO: set timer', e.target.value)
   }
+
 
   slicePrice = (availableValue) => {
     let result = ''
@@ -37,6 +38,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
       : (result = availableValue)
     return result
   }
+
 
   render() {
     let {
@@ -109,11 +111,17 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
+              <GridFlex
+                justify="flex-start"
+                alignItems="center"
+                item
+                lg={3}
+              >
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
-                  btnWidth="100px"
+                  btnWidth="118px"
+                  height="24px"
                   onClick={toggleSectionCoinChart}
                 >
                   {isSectionChart ? `section chart` : `coin chart`}
