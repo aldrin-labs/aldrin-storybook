@@ -24,11 +24,6 @@ export default class RebalanceInfoPanel extends Component<IProps> {
     isHiddenRebalanceDaysInput: 'hidden',
   }
 
-  setRebalanceTimer = (e) => {
-    console.log('TODO: set timer', e.target.value)
-  }
-
-
   slicePrice = (availableValue) => {
     let result = ''
     !availableValue.indexOf('-')
@@ -63,20 +58,20 @@ export default class RebalanceInfoPanel extends Component<IProps> {
           <Grid container>
             <Grid container justify="space-between">
               <Grid item lg={4} md={3} justify="center">
-                <StyledTypography fontWeight={'bold'}>
+                <StyledTypography fontWeight={'700'}>
                   Binance trade account
                 </StyledTypography>
-                <StyledSubTypography fontWeight={'bold'} color={blue.light}>
+                <StyledSubTypography fontWeight={'700'} color={blue.light}>
                   ${accountValue.substring(0, accountValue.indexOf('.'))}
                 </StyledSubTypography>
               </Grid>
 
               <Grid item lg={3} md={4} style={{ paddingRight: '17px' }}>
-                <StyledTypography fontWeight={'bold'} position="right">
+                <StyledTypography fontWeight={'700'} position="right">
                   aviable value
                 </StyledTypography>
                 <StyledSubTypography
-                  fontWeight={'bold'}
+                  fontWeight={'700'}
                   color={green.custom}
                   position="right"
                 >
@@ -88,11 +83,11 @@ export default class RebalanceInfoPanel extends Component<IProps> {
               </Grid>
 
               <Grid item lg={4} md={4}>
-                <StyledTypography fontWeight={'bold'} position="right">
+                <StyledTypography fontWeight={'700'} position="right">
                   Available percentage
                 </StyledTypography>
                 <StyledSubTypography
-                  fontWeight={'bold'}
+                  fontWeight={'700'}
                   color={green.custom}
                   position="right"
                 >
@@ -226,12 +221,12 @@ export default class RebalanceInfoPanel extends Component<IProps> {
               </GridFlex>
 
               <Grid item lg={3}>
-                <StyledTypography fontWeight={'bold'} position="right">
+                <StyledTypography fontWeight={'700'} position="right">
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
                   color={red.bright}
-                  fontWeight={'bold'}
+                  fontWeight={'700'}
                   position="right"
                 >
                   <Timer
