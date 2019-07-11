@@ -7,15 +7,14 @@ export const GridFlex = styled(Grid)`
 `
 
 export const GridInfoPanelWrapper = styled(Grid)`
-  margin-bottom: 10px;
-  /* position: fixed; */ /*TODO STICKY MENU*/
-  /* background-color: #f9fbfd;
-  padding: 10px 0 7px 0;
-  top: 50px;
-  z-index: 1000; 
+  position: sticky;
+  top: 0;
   border-top: 2px solid #e7ecf3;
   border-bottom: 2px solid #e7ecf3;
-  */
+  background-color: white;
+  padding: 16px;
+  z-index: 500;
+  margin-bottom: 10px;
 `
 
 export const CustomLink = styled(Link)`
