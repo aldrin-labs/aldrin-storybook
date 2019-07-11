@@ -197,7 +197,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                     width: 100,
                   }}
                   menuStyles={{
-                    width: 120,
+                    width: 140,
                     padding: '5px 8px',
                     borderRadius: '14px',
                     textAlign: 'center',
