@@ -160,6 +160,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       },
       executeRebalanceHandler,
       transactions,
+      rebalanceTimerValue,
+      onRebalanceTimerChange,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -173,7 +175,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       availableValue: roundAndFormatNumber(undistributedMoney, 3, false),
       availablePercentage: roundAndFormatNumber(100 - +totalPercents, 3, false),
       // TODO: change after implement period for select
-      rebalanceTime: 432000000,
     }
 
     const sectionPanelData = {
@@ -202,6 +203,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           {/* REBALANCE INFO PANEL STARTS */}
           <RebalanceInfoPanel
+            rebalanceTimerValue={rebalanceTimerValue}
+            onRebalanceTimerChange={onRebalanceTimerChange}
             toggleSectionCoinChart={() => this.toggleSectionCoinChart()}
             isSectionChart={this.state.isSectionChart}
             rebalanceInfoPanelData={rebalanceInfoPanelData}
@@ -212,7 +215,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
             <Grid
               style={{
-                minHeight: '132px',
+                minHeight: '130px',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
               }}
@@ -256,7 +259,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           >
             <Grid
               style={{
-                minHeight: '132px',
+                minHeight: '130px',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
               }}
