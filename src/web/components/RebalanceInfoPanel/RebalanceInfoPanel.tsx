@@ -9,14 +9,32 @@ import {
   ReactSelectCustom,
 } from './RebalanceInfoPanel.styles'
 import { withTheme } from '@material-ui/styles'
-import Timer from 'react-compound-timer'
+import Timer, { useTimer } from 'react-compound-timer'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-import SelectElement from './SelectElement'
 import { IProps } from './RebalanceInfoPanel.types'
 
-import SingleSelect from '../Select/SingleSelect'
-
 import Input from '@material-ui/core/Input'
+
+const rebalanceSelectTimeOptions = [
+  {
+    label: 'daily',
+    value: 86400000,
+  },
+  { label: 'Weekly', value: 604800000 },
+  {
+    label: 'Bi-Weekly',
+    value: 1210000000,
+  },
+  {
+    label: 'Monthly',
+    value: 2628000000,
+  },
+  { label: 'Every', value: 0 },
+  {
+    label: 'Stop Rebalance',
+    value: -1,
+  },
+]
 
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps> {
@@ -24,10 +42,23 @@ export default class RebalanceInfoPanel extends Component<IProps> {
     isHiddenRebalanceDaysInput: 'hidden',
   }
 
-  setRebalanceTimer = (e) => {
-    console.log('TODO: set timer', e.target.value)
-  }
+  timerRef = React.createRef()
 
+  componentDidUpdate(prevProps) {
+    // update timer
+    if (
+      this.props.rebalanceTimerValue.value !==
+      prevProps.rebalanceTimerValue.value
+    ) {
+      this.timerRef.current.setTime(this.props.rebalanceTimerValue.value)
+      if (
+        prevProps.rebalanceTimerValue.value === 0 ||
+        prevProps.rebalanceTimerValue.value === -1
+      ) {
+        this.timerRef.current.start()
+      }
+    }
+  }
 
   slicePrice = (availableValue) => {
     let result = ''
@@ -38,7 +69,6 @@ export default class RebalanceInfoPanel extends Component<IProps> {
       : (result = availableValue)
     return result
   }
-
 
   render() {
     let {
@@ -54,7 +84,12 @@ export default class RebalanceInfoPanel extends Component<IProps> {
       theme: {
         palette: { blue, red, green, grey },
       },
+      rebalanceTimerValue,
+      onRebalanceTimerChange,
     } = this.props
+
+    const showEveryTimeInput =
+      rebalanceTimerValue && rebalanceTimerValue.label === 'Every'
 
     return (
       <GridInfoPanelWrapper container justify="space-between">
@@ -81,7 +116,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   position="right"
                 >
                   ${' '}
-                  {availableValue != '0'
+                  {availableValue !== '0'
                     ? this.slicePrice(availableValue)
                     : `0`}
                 </StyledSubTypography>
@@ -111,12 +146,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex
-                justify="flex-start"
-                alignItems="center"
-                item
-                lg={3}
-              >
+              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
@@ -139,72 +169,37 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 <CustomLink href={'#'} linkColor={grey.dark}>
                   rebalance{' '}
                 </CustomLink>
-                <StyledTypography
-                  style={{
-                    visibility: this.state.isHiddenRebalanceDaysInput,
-                  }}
-                >
-                  Every{' '}
-                </StyledTypography>
-
-                {/* <SelectElement
-                  rebalanceOption={rebalanceOption}
-                  setRebalanceTimer={this.setRebalanceTimer}
-                /> */}
-
-                {/* <SingleSelect /> */}
 
                 <ReactSelectCustom
-                  options={[
-                    {
-                      value: 'daily',
-                      label: 'daily',
-                      color: '#165BE0',
-                      isFixed: true,
-                    },
-                    { value: 'weekly', label: 'Weekly', color: '#165BE0' },
-                    {
-                      value: 'bi-weekly',
-                      label: 'Bi-Weekly',
-                      color: '#165BE0',
-                    },
-                    {
-                      value: 'monthly',
-                      label: 'Monthly',
-                      color: '#165BE0',
-                    },
-                    // { value: 'Checkbox', label: <Checkbox/>, color: '#D93B28' },
-                    {
-                      value: 'stop-rebalance',
-                      label: 'Stop Rebalance',
-                      color: '#D93B28',
-                    },
-                  ]}
+                  value={[rebalanceTimerValue]}
+                  onChange={(
+                    optionSelected: {
+                      label: string
+                      value: string
+                    } | null
+                  ) => onRebalanceTimerChange(optionSelected)}
+                  isSearchable={false}
+                  options={rebalanceSelectTimeOptions}
                   singleValueStyles={{
                     color: '#165BE0',
                     fontSize: '11px',
                     padding: '0',
                   }}
-                  indicatorSeparator={{
+                  indicatorSeparatorStyles={{
                     color: 'orange',
                     background: 'transparent',
                   }}
-                  control={{
+                  controlStyles={{
                     background: 'transparent',
                     border: 'none',
                     width: 100,
-                    // border: state.isFocused ? 0 : 0,
-                    // boxShadow: state.isFocused ? 0 : 0,
-                    // '&:hover': {
-                    //   border: state.isFocused ? 0 : 0,
-                    // },
                   }}
-                  menu={{
+                  menuStyles={{
                     width: 120,
                     padding: '5px 8px',
                     borderRadius: '14px',
                   }}
-                  container={{
+                  containerStyles={{
                     background: 'transparent',
                     padding: 0,
                     color: '#165BE0',
@@ -215,13 +210,21 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                     },
                   }}
                 />
-
-                <Input
-                  placeholder="days"
-                  style={{
-                    visibility: this.state.isHiddenRebalanceDaysInput,
-                  }}
-                />
+                {showEveryTimeInput && (
+                  <Input
+                    placeholder="days"
+                    type="number"
+                    onChange={(event) =>
+                      onRebalanceTimerChange({
+                        label: 'Every',
+                        value:
+                          (event.target.value &&
+                            event.target.value * 86400000) ||
+                          0,
+                      })
+                    }
+                  />
+                )}
               </GridFlex>
 
               <Grid item lg={3}>
@@ -234,18 +237,21 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                   position="right"
                 >
                   <Timer
-                    initialTime={rebalanceTime}
+                    ref={this.timerRef}
+                    initialTime={+rebalanceTimerValue.value}
                     direction="backward"
                     startImmediately={true}
                   >
                     {() => (
                       <React.Fragment>
+                        <Timer.Days />:
                         <Timer.Hours />:
                         <Timer.Minutes />:
                         <Timer.Seconds />
                       </React.Fragment>
                     )}
                   </Timer>
+                  {/*<TimerOnHooks />*/}
                 </StyledSubTypography>
               </Grid>
             </Grid>

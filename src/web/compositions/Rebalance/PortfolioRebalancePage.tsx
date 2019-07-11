@@ -159,6 +159,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       },
       executeRebalanceHandler,
       transactions,
+      rebalanceTimerValue,
+      onRebalanceTimerChange,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -172,7 +174,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       availableValue: roundAndFormatNumber(undistributedMoney, 3, false),
       availablePercentage: roundAndFormatNumber(100 - +totalPercents, 3, false),
       // TODO: change after implement period for select
-      rebalanceTime: 432000000,
     }
 
     const sectionPanelData = {
@@ -201,6 +202,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           {/* REBALANCE INFO PANEL STARTS */}
           <RebalanceInfoPanel
+            rebalanceTimerValue={rebalanceTimerValue}
+            onRebalanceTimerChange={onRebalanceTimerChange}
             toggleSectionCoinChart={() => this.toggleSectionCoinChart()}
             isSectionChart={this.state.isSectionChart}
             rebalanceInfoPanelData={rebalanceInfoPanelData}
