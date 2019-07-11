@@ -13,6 +13,7 @@ export const LinearProgressCustom = styled(LinearProgress)`
   background-color: ${(props) => props.color || '#E7ECF3'};
   border-radius: 10px;
   height: ${(props) => props.height};
+  padding: 0;
 `
 export const GridFlex = styled(Grid)`
   display: flex;

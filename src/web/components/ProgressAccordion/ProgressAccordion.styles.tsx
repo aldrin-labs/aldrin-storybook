@@ -33,9 +33,3 @@ export const TypographyCustom = styled(Typography)`
   margin: auto;
   text-transform: uppercase;
 `
-
-export const ExpansionPanelSummaryCustom = styled(ExpansionPanelSummary)`
-  '&:last-child': {
-    padding-right: 0px;
-  }
-`

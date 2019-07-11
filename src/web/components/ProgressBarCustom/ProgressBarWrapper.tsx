@@ -142,7 +142,10 @@ function ProgressBarWrapper(props) {
       })}
       {otherCoinData ? (
         <ProgressAccordion otherCoinData={otherCoinData}>
-          <Grid container style={{ marginBottom: '8px' }}>
+          <Grid
+            container
+            style={{ marginBottom: '8px', marginTop: '-26px', padding: '0' }}
+          >
             <GridFlex item lg={3} md={3} padding="0 0 0 20px">
               <IconCircle
                 className="fa fa-circle"
@@ -154,7 +157,14 @@ function ProgressBarWrapper(props) {
                 }}
               />
               <TypographyCustom> other </TypographyCustom>
-              <ExpandMoreIcon style={{}} />
+              <ExpandMoreIcon
+                style={{
+                  color: '#ABBAD1',
+                  padding: '0',
+                  width: '20px',
+                  height: '20px',
+                }}
+              />
             </GridFlex>
             <Grid
               item

@@ -18,7 +18,6 @@ import {
   LinearProgressCustom,
   IconCircle,
   TypographyCustom,
-  ExpansionPanelSummaryCustom,
 } from './ProgressAccordion.styles'
 
 const styles = (theme) => ({
@@ -83,20 +82,19 @@ function ProgressAccordion(props) {
           padding: '0',
         }}
       >
-        <ExpansionPanelSummaryCustom
+        <ExpansionPanelSummary
           className={classes.progressbarPanel}
           style={{
-            padding: '1px',
             background: 'transparent',
             border: 'none',
           }}
           //expandIcon={<ExpandMoreIcon />}
         >
           {children}
-        </ExpansionPanelSummaryCustom>
+        </ExpansionPanelSummary>
         <ExpansionPanelDetails
           className={classes.details}
-          style={{ display: 'block' }}
+          style={{ display: 'block', marginBottom: '20px' }}
         >
           {otherCoinData.map((datum, index) => {
             return (

@@ -16,6 +16,7 @@ import {
   TypographyAccordionTitle,
   TypographyProgress,
   GridProgressTitle,
+  GridTransactionBtn,
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid } from '@material-ui/core'
@@ -212,7 +213,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <ChartWrapperCustomLeft
+          {/* <ChartWrapperCustomLeft
             key={`chart-container-current-allocation`}
             item
             md={5}
@@ -224,20 +225,73 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               // justifyContent: 'start',
               //minHeight: '10%'
             }}
+          > */}
+          <Grid item lg={5} md={5} style={{ minHeight: '100px' }}>
+            <Grid
+              style={{
+                minHeight: '100px',
+                boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
+                borderRadius: '20px',
+              }}
+            >
+              <GridProgressTitle content alignItems="center">
+                <TypographyProgress>current allocation</TypographyProgress>
+              </GridProgressTitle>
+
+              <PortfolioRebalanceChart
+                coinData={staticRows}
+                isSectionChart={this.state.isSectionChart}
+                sectionDataProgress={targetAllocation}
+              />
+            </Grid>
+          </Grid>
+
+          <GridTransactionBtn
+            lg={2}
+            md={2}
+            style={{ height: '195px' }}
+            justify="center"
           >
-            <GridProgressTitle content alignItems="center">
-              <TypographyProgress>current allocation</TypographyProgress>
-            </GridProgressTitle>
-
-            <PortfolioRebalanceChart
-              coinData={staticRows}
-              isSectionChart={this.state.isSectionChart}
-              sectionDataProgress={targetAllocation}
+            <RebalanceDialogTransaction
+              initialTime={rebalanceInfoPanelData.rebalanceTime}
+              accordionTitle="TRANSACTIONS"
+              transactionsData={transactions}
+              open={this.state.open}
+              handleClickOpen={this.handleClickOpen}
+              handleClose={this.handleClose}
+              executeRebalanceHandler={executeRebalanceHandler}
             />
-            {/* <ProgressBarWrapper coinData={staticRows} /> */}
-          </ChartWrapperCustomLeft>
+          </GridTransactionBtn>
 
-          <ChartWrapper
+          <Grid
+            item
+            lg={5}
+            md={5}
+            style={{
+              minHeight: '100px',
+            }}
+          >
+            <Grid
+              style={{
+                minHeight: '100px',
+                boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
+                borderRadius: '20px',
+              }}
+            >
+              <GridProgressTitle content alignItems="center">
+                <TypographyProgress>target allocation</TypographyProgress>
+              </GridProgressTitle>
+              <PortfolioRebalanceChart
+                coinData={staticRows}
+                isSectionChart={this.state.isSectionChart}
+                sectionDataProgress={targetAllocation}
+              />
+            </Grid>
+          </Grid>
+
+          {/* </ChartWrapperCustomLeft> */}
+
+          {/* <ChartWrapper
             key={`chart-container-dialog`}
             item
             sm={2}
@@ -250,19 +304,19 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
             }}
-          >
-            <RebalanceDialogTransaction
-              initialTime={rebalanceInfoPanelData.rebalanceTime}
-              accordionTitle="TRANSACTIONS"
-              transactionsData={transactions}
-              open={this.state.open}
-              handleClickOpen={this.handleClickOpen}
-              handleClose={this.handleClose}
-              executeRebalanceHandler={executeRebalanceHandler}
-            />
-          </ChartWrapper>
+          > */}
+          {/* <RebalanceDialogTransaction
+            initialTime={rebalanceInfoPanelData.rebalanceTime}
+            accordionTitle="TRANSACTIONS"
+            transactionsData={transactions}
+            open={this.state.open}
+            handleClickOpen={this.handleClickOpen}
+            handleClose={this.handleClose}
+            executeRebalanceHandler={executeRebalanceHandler}
+          /> */}
+          {/* </ChartWrapper> */}
 
-          <ChartWrapperCustomRight
+          {/* <ChartWrapperCustomRight
             key={`chart-container-distribtion`}
             item
             md={5}
@@ -282,7 +336,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               isSectionChart={this.state.isSectionChart}
               sectionDataProgress={targetAllocation}
             />
-          </ChartWrapperCustomRight>
+          </ChartWrapperCustomRight> */}
 
           {/* Accordion Table Start */}
           <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>

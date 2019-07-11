@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, Grid, CardContent, Typography } from '@material-ui/core'
+import Stroke from '../../../icons/Stroke.svg'
 
 export const ChartWrapper = styled(({ isEditModeEnabled, ...rest }) => (
   <Grid {...rest} />
@@ -96,6 +97,15 @@ export const ChartWrapperCustomLeft = styled(ChartWrapper)`
 `
 
 export const ChartWrapperCustomRight = styled(ChartWrapper)`
+  /* border-radius: 20px;
+  font-size: 10px;
+  padding: 0px;
+  border: 0px;
+  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2); */
+`
+export const GridSectionChart = styled(Grid)`
   border-radius: 20px;
   font-size: 10px;
   padding: 0px;
@@ -103,4 +113,14 @@ export const ChartWrapperCustomRight = styled(ChartWrapper)`
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   -webkit-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   -moz-box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+`
+
+export const GridTransactionBtn = styled(Grid)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url(${Stroke});
+  background-repeat: no-repeat;
+  background-position: center;
 `

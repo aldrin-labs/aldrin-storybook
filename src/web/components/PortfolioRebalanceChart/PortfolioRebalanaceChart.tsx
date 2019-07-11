@@ -17,7 +17,7 @@ const PortfolioRebalanceChartComponent = ({
   isSectionChart,
   sectionDataProgress,
 }: IProps) => (
-  <ChartContainer>
+  <>
     <ProgressBarWrapper
       sectionDataProgress={sectionDataProgress}
       coinData={coinData}
@@ -25,7 +25,7 @@ const PortfolioRebalanceChartComponent = ({
       otherCoinsPercentage={otherCoinsPercentage}
       isSectionChart={isSectionChart}
     />
-  </ChartContainer>
+  </>
 )
 
 export default PortfolioRebalanceChartComponent
