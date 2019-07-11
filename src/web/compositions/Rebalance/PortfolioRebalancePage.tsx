@@ -50,6 +50,7 @@ import {
   currentAllocation,
   targetAllocation,
 } from './mockData'
+
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import ProgressBarWrapper from '@sb/components/ProgressBarCustom/ProgressBarWrapper.tsx'
@@ -163,6 +164,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       onRebalanceTimerChange,
     } = this.props
 
+    // console.log('???????: ', rows)
+
     const secondary = palette.secondary.main
     const red = customPalette.red.main
     const green = customPalette.green.main
@@ -232,7 +235,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <Grid item lg={5} md={5} style={{ minHeight: '100px' }}>
             <Grid
               style={{
-                minHeight: '100px',
+                minHeight: '140px',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
               }}
@@ -242,7 +245,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               </GridProgressTitle>
 
               <PortfolioRebalanceChart
-                coinData={staticRows}
+                coinData={rows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}
               />
@@ -276,7 +279,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           >
             <Grid
               style={{
-                minHeight: '100px',
+                minHeight: '140px',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
               }}

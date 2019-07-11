@@ -59,9 +59,9 @@ const styles = (theme) => ({
     },
   },
   progressbarPanel: {
-    padding: '1px',
+    padding: '0px',
     '&:last-child': {
-      paddingRight: '2px',
+      paddingRight: '0px',
     },
   },
 })
@@ -109,7 +109,9 @@ function ProgressAccordion(props) {
                       color: '#97C15C',
                     }}
                   />
-                  <TypographyCustom>{datum.symbol}</TypographyCustom>
+                  <TypographyCustom style={{ marginLeft: '14px' }}>
+                    {datum.symbol}
+                  </TypographyCustom>
                 </GridFlex>
                 <Grid
                   item
@@ -140,15 +142,16 @@ function ProgressAccordion(props) {
                   />
                 </Grid>
 
-                <GridFlex item lg={3} md={3} justify="center">
+                <GridFlex item lg={3} md={3} justify="flex-end">
                   <TypographyCustom>
-                    {datum.portfolioPerc !== '0'
+                    {/* // TODO PERCENTAGE ROUND */}
+                    {/* {datum.portfolioPerc !== '0'
                       ? datum.portfolioPerc.substr(
                           0,
                           datum.portfolioPerc.indexOf('.')
                         )
-                      : '0'}
-                    %
+                      : '0'} */}
+                    {datum.portfolioPerc} %
                   </TypographyCustom>
                 </GridFlex>
               </Grid>

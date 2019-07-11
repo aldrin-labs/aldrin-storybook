@@ -5,7 +5,7 @@ import {
   GridInfoPanelWrapper,
   StyledTypography,
   StyledSubTypography,
-  CustomLink,
+  TypographyRebalance,
   ReactSelectCustom,
 } from './RebalanceInfoPanel.styles'
 import { withTheme } from '@material-ui/styles'
@@ -166,9 +166,9 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 alignItems="center"
                 style={{ paddingRight: '17px' }}
               >
-                <CustomLink href={'#'} linkColor={grey.dark}>
-                  rebalance{' '}
-                </CustomLink>
+                <TypographyRebalance href={'#'} linkColor={grey.dark}>
+                  rebalance
+                </TypographyRebalance>
 
                 <ReactSelectCustom
                   value={[rebalanceTimerValue]}

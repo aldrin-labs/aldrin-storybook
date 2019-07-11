@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { Typography, Link, Grid } from '@material-ui/core'
 import ReactSelect from '../ReactSelectComponent'
+import { Typography, Link, Grid } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`
   display: flex;
@@ -17,7 +17,7 @@ export const GridInfoPanelWrapper = styled(Grid)`
   margin-bottom: 10px;
 `
 
-export const CustomLink = styled(Link)`
+export const TypographyRebalance = styled(Typography)`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
   font-size: 11px;
@@ -27,15 +27,13 @@ export const CustomLink = styled(Link)`
   color: ${(props) => props.linkColor || 'white'};
   text-align: ${(props) => props.position || 'none'};
   align-self: ${(props) => props.verticalPosition || 'none'};
-  &:hover {
-    text-decoration: none;
-  }
 `
 
 export const StyledTypography = styled(Typography)`
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 1px;
   font-size: 10px;
   line-height: 23px;
-  letter-spacing: 1px;
   font-weight: ${(props) => props.fontWeight || '400'};
   text-transform: uppercase;
   color: ${(props) =>

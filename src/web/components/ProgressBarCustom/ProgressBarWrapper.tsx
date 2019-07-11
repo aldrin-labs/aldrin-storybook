@@ -95,7 +95,7 @@ function ProgressBarWrapper(props) {
                   }`,
                 }}
               />
-              <TypographyCustom>{datum.symbol}</TypographyCustom>
+              <TypographyCustom style={{marginLeft: '14px'}}>{datum.symbol}</TypographyCustom>
             </GridFlex>
             <Grid
               item
@@ -128,13 +128,9 @@ function ProgressBarWrapper(props) {
 
             <GridFlex item lg={3} md={3} justify="center">
               <TypographyCustom>
-                {datum.portfolioPerc !== '0'
-                  ? datum.portfolioPerc.substr(
-                      0,
-                      datum.portfolioPerc.indexOf('.')
-                    )
-                  : '0'}
-                %
+              {  datum.portfolioPerc !== '0' ?
+                Math.floor(datum.portfolioPerc) : '0'
+              } %
               </TypographyCustom>
             </GridFlex>
           </Grid>
