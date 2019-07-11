@@ -193,7 +193,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '25px' }}
+          style={{ padding: '0 25px 25px 25px' }}
         >
           <Container
             key={`table-container`}

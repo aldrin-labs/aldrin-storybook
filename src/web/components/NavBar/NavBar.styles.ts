@@ -15,4 +15,8 @@ export const Nav = styled(AppBar)`
     position: absolute;
     z-index: -100;`
       : ''};
+
+  && {
+    box-shadow: none;
+  }
 `
