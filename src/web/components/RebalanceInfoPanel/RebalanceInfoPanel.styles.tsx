@@ -12,12 +12,12 @@ export const GridInfoPanelWrapper = styled(Grid)`
   border-top: 2px solid #e7ecf3;
   border-bottom: 2px solid #e7ecf3;
   background-color: #f9fbfd;
-  padding: 16px 2px 5px 2px;
+  padding: 16px 2px 0px 2px;
   z-index: 500;
   margin-bottom: 10px;
 `
 
-export const TypographyRebalance = styled(Typography)`
+export const TypographyRebalance = styled(Typography)` 
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
   font-size: 0.6875rem;

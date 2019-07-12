@@ -7,7 +7,7 @@ export const BtnCustom = styled(Button)`
   border: 1px solid ${(props) => props.btnColor || props.color || '#333'};
   border-radius: ${(props) => props.borderRadius || `18px`};
   color: ${(props) => props.btnColor || props.color || '#333'};
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: bold;
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};

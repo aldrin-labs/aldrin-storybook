@@ -16,7 +16,11 @@ import blue from '@material-ui/core/colors/blue'
 
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import { ReactSelectCustom } from './DialogAddCoin.styles'
+import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
+
+
+const emails = ['username@gmail.com', 'user02@gmail.com']
 const styles = {
   avatar: {
     backgroundColor: blue[100],
@@ -24,75 +28,112 @@ const styles = {
   },
 }
 
+
 class SimpleDialog extends React.Component {
   handleClose = () => {
     this.props.onClose(this.props.selectedValue)
   }
 
   handleListItemClick = (value) => {
+    console.log("$$$$$",value.target.value)
     this.props.onClose(value)
   }
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props
+    const { children, classes, onClose, selectedValue, ...other } = this.props
 
     return (
       <Dialog
+        // style={{width: '300px'}}
         onClose={this.handleClose}
         aria-labelledby="simple-dialog-title"
         {...other}
       >
-        <ReactSelectCustom
-          style={{ width: '300px', height: '300px' }}
-          options={[
-            {
-              value: 'daily',
-              label: 'daily',
-              color: '#165BE0',
-              isFixed: true,
-            },
-            // { value: 'Checkbox', label: <Checkbox/>, color: '#D93B28' },
-            {
-              value: 'stop-rebalance',
-              label: 'Stop Rebalance',
-              color: '#D93B28',
-            },
-          ]}
-          // singleValueStyles={{
-          //   color: '#165BE0',
-          //   fontSize: '11px',
-          //   padding: '0',
-          // }}
-          // indicatorSeparator={{
-          //   color: 'orange',
-          //   background: 'transparent',
-          // }}
-          // control={{
-          //   background: 'transparent',
-          //   border: 'none',
-          //   width: 100,
-          //   // border: state.isFocused ? 0 : 0,
-          //   // boxShadow: state.isFocused ? 0 : 0,
-          //   // '&:hover': {
-          //   //   border: state.isFocused ? 0 : 0,
-          //   // },
-          // }}
-          // menu={{
-          //   width: 120,
-          //   padding: '5px 8px',
-          //   borderRadius: '14px',
-          // }}
-          // container={{
-          //   background: 'transparent',
-          //   padding: 0,
-          //   color: '#165BE0',
-          //   '&:focus': {
-          //     border: '0 solid transparent',
-          //     borderColor: 'transparent',
-          //     boxShadow: '0 0 0 1px transparent',
-          //   },
-          // }}
-        />
+        <div>
+          <SelectCoinList
+            value={
+              // shouldWeShowPlaceholderForCoin
+              //   ? null
+              //   : [
+              //       {
+              //         value: row.symbol,
+              //         label: row.sym bol,
+              //       },
+              //     ]
+              'btc'
+            }
+            //ref={handleRef}
+            key={`inputCoinSymbol${'index'}`}
+            classNamePrefix="custom-select-box"
+            isClearable={true}
+            isSearchable={true}
+            openMenuOnClick={false}
+            menuPortalTarget={document.body}
+            menuPortalStyles={{
+              zIndex: 111,
+            }}
+            menuStyles={{
+              fontSize: '12px',
+              minWidth: '150px',
+              height: '200px',
+            }}
+            menuListStyles={{
+              height: '200px',
+            }}
+            optionStyles={{
+              fontSize: '12px',
+            }}
+            clearIndicatorStyles={{
+              padding: '2px',
+            }}
+            valueContainerStyles={{
+              minWidth: '35px',
+              maxWidth: '55px',
+              overflow: 'hidden',
+            }}
+            inputStyles={{
+              marginLeft: '0',
+            }}
+            dropdownIndicatorStyles={{
+              display: 'none',
+            }}
+            noOptionsMessage={() => `No such coin in our DB found`}
+            // onChange={(
+            //   optionSelected: {
+            //     label: string
+            //     value: string
+            //   } | null
+            // ) => handleSelectChange('index', 'symbol', optionSelected)}
+          />
+
+          {/* <List>
+            {emails.map((email) => (
+              <ListItem
+                button
+                onClick={this.handleListItemClick}
+                key={email}
+              >
+                <ListItemAvatar>
+                  <Avatar className={classes.avatar}>
+                    <PersonIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={'email'} />
+              </ListItem>
+            ))}
+            <ListItem
+              button
+              onClick={() => this.handleListItemClick('addAccount')}
+            >
+              <ListItemAvatar>
+                <Avatar>
+                  <AddIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary="add account" />
+            </ListItem>
+            </List>*/}
+        </div>
       </Dialog>
     )
   }
