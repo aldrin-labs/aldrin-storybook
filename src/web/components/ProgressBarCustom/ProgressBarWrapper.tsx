@@ -213,7 +213,7 @@ function ProgressBarWrapper(props) {
               />
             </Grid>
 
-            <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
+            <GridFlex item lg={3} md={3}  style={{ paddingLeft: '43px' }}>
               <TypographyCustom>{otherCoinsPercentage}%</TypographyCustom>
             </GridFlex>
           </Grid>
