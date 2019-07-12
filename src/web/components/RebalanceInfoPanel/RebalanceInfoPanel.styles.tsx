@@ -12,7 +12,7 @@ export const GridInfoPanelWrapper = styled(Grid)`
   border-top: 2px solid #e7ecf3;
   border-bottom: 2px solid #e7ecf3;
   background-color: #f9fbfd;
-  padding: 16px 2px 0px 2px;
+  padding: 16px 2px 5px 2px;
   z-index: 500;
   margin-bottom: 10px;
 `
