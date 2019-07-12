@@ -220,7 +220,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                 />
                 {showEveryTimeInput && (
                   <Input
-                    style={{ width: '45px' }}
+                    style={{ width: '65px' }}
                     placeholder="days"
                     type="number"
                     onChange={(event) =>

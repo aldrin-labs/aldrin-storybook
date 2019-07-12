@@ -1,7 +1,6 @@
 import React from 'react'
-import ProgressBar from './ProgressBar'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import {
   GridFlex,
   LinearProgressCustom,
@@ -12,7 +11,6 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import ProgressAccordion from '../ProgressAccordion/ProgressAccordion'
-import { getCircleSymbol } from '../AddCircleIcon/AddCircleIcon'
 
 const styles = (theme) => ({
   root: {
@@ -39,7 +37,7 @@ function ProgressBarWrapper(props) {
 
 
   // TODO get rid of data after checking
-  // const coinData = [
+  // let coinData = [
   //   {
   //     coinValue: 9,
   //     coinValueSnapshot: 13.24,
@@ -69,6 +67,9 @@ function ProgressBarWrapper(props) {
   //     _id: '5c3ef4a39f3b7e3ed7503de0demo',
   //   },
   // ]
+
+  // console.log('1 - isSectionChart - ', isSectionChart)
+  // console.log('2 - coinData - ', coinData)
 
   return isSectionChart ? (
     sectionDataProgress.map((datum) => {

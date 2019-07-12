@@ -96,7 +96,7 @@ class DialogAddCoin extends React.Component {
                 display: 'none',
               }}
               noOptionsMessage={() => `No such coin in our DB found`}
-              // TODO  menuIsOpen=
+              menuIsOpen={true}
               // onChange={(
               //   optionSelected: {
               //     label: string
