@@ -62,13 +62,6 @@ const TransactionTable = ({
                   <SvgIcon width="35px" height="35px" src={Spinner} />
                 ) : null}
               </TableCell>
-              {/* <TableCell align="right"> //TODO Запас, в случае работы верхнего компонента, удалить
-                {row.isDone ? (
-                  <SvgIcon src={DoneIcon} />
-                ) : row.isDone === false ? (
-                  <SvgIcon src={Cross} />
-                ) : null}
-              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
