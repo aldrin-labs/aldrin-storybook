@@ -123,7 +123,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
             onClose={this.handleClose}
           >
             <TypographyCustomHeading
-              fontWeight={'bold'}
+              fontWeight={'700'}
               borderRadius={'10px'}
               color={black.custom}
             >
@@ -135,22 +135,16 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               <SearchIconCustom />
               <InputBaseCustom placeholder="Search…" />
             </GridSearchPanel>
-            
-            <GridCustom>
 
-                <ContentList
-                  handleRadioBtn={this.handleRadioBtn}
-                  isSelected={this.state.isSelected}
-                  data={data}
-                />
-         
+            <GridCustom>
+              <ContentList
+                handleRadioBtn={this.handleRadioBtn}
+                isSelected={this.state.isSelected}
+                data={data}
+              />
             </GridCustom>
 
-            <GridCustom
-              container
-              justify="space-between"
-              alignItems="center"
-            >
+            <GridCustom container justify="space-between" alignItems="center">
               <LinkCustom href={'#'} color={blue.custom}>
                 Go to index market
               </LinkCustom>

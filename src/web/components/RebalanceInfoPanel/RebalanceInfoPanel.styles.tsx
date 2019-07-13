@@ -17,7 +17,7 @@ export const GridInfoPanelWrapper = styled(Grid)`
   margin-bottom: 10px;
 `
 
-export const TypographyRebalance = styled(Typography)`
+export const TypographyRebalance = styled(Typography)` 
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
   font-size: 0.6875rem;

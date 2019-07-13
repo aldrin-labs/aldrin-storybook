@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -94,15 +93,11 @@ function ProgressAccordion(props) {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails
           className={classes.details}
-          style={{ display: 'block', marginBottom: '10px' , padding: '0'}}
+          style={{ display: 'block', marginBottom: '10px', padding: '0' }}
         >
           {otherCoinData.map((datum, index) => {
             return (
-              <Grid
-                container
-                style={{ marginBottom: '8px' }}
-                lg={12}
-              >
+              <Grid container style={{ marginBottom: '8px' }} lg={12}>
                 <GridFlex item lg={3} md={3} padding="0">
                   <IconCircle
                     className="fa fa-circle"
@@ -146,16 +141,12 @@ function ProgressAccordion(props) {
                   />
                 </Grid>
 
-                <GridFlex item lg={3} md={3} justify="flex-end">
+                <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
                   <TypographyCustom>
-                    {/* // TODO PERCENTAGE ROUND */}
-                    {/* {datum.portfolioPerc !== '0'
-                      ? datum.portfolioPerc.substr(
-                          0,
-                          datum.portfolioPerc.indexOf('.')
-                        )
-                      : '0'} */}
-                    {datum.portfolioPerc} %
+                    {datum.portfolioPerc !== '0'
+                      ? Math.floor(datum.portfolioPerc)
+                      : '0'}{' '}
+                    %
                   </TypographyCustom>
                 </GridFlex>
               </Grid>

@@ -188,12 +188,20 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     return (
       <>
         {children}
-        <Content
+        {/* <Grid 
+          style={{
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0 25px 25px 25px',
+          }}
+        > */}
+          <Content
           key={`content`}
           container
           spacing={16}
           style={{ padding: '0 25px 25px 25px' }}
-        >
+          >
           <Container
             key={`table-container`}
             item
@@ -212,7 +220,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
+          <Grid
+            item
+            lg={5}
+            md={5}
+            style={{ minHeight: '100px', padding: '0' }}
+          >
             <Grid
               style={{
                 minHeight: '130px',
@@ -235,7 +248,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <GridTransactionBtn
             lg={2}
             md={2}
-            style={{ height: '195px' }}
+            style={{ height: '142px' }}
             justify="center"
           >
             <RebalanceDialogTransaction
@@ -254,7 +267,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             lg={5}
             md={5}
             style={{
-              minHeight: '100px', padding: '0'
+              minHeight: '100px',
+              padding: '0',
             }}
           >
             <Grid
@@ -409,7 +423,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               createNewSnapshot,
             }}
           />
-        </Content>
+          </Content>   
+        {/* </Grid> */}
 
         <Joyride
           continuous={true}

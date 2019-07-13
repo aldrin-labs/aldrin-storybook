@@ -30,6 +30,6 @@ export const IconCircle = styled.i`
 export const TypographyCustom = styled(Typography)`
   font-size: 12px;
   font-weight: 700;
-  margin: auto;
+  margin: auto 0;
   text-transform: uppercase;
 `

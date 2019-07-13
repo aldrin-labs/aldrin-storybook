@@ -1,5 +1,6 @@
 export interface IProps {
   transactionsData: any
+  isFinished: boolean
 }
 
 export interface IState {

@@ -146,7 +146,12 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
+              <GridFlex
+                justify="flex-start"
+                alignItems="center"
+                item
+                lg={3}
+              >
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}
@@ -185,33 +190,37 @@ export default class RebalanceInfoPanel extends Component<IProps> {
                     fontSize: '11px',
                     padding: '0',
                   }}
-                  indicatorSeparatorStyles={{
-                    color: 'orange',
-                    background: 'transparent',
-                  }}
+                  indicatorSeparatorStyles={{}}
                   controlStyles={{
                     background: 'transparent',
                     border: 'none',
                     width: 100,
                   }}
                   menuStyles={{
-                    width: 120,
+                    width: 140,
                     padding: '5px 8px',
                     borderRadius: '14px',
+                    textAlign: 'center',
                   }}
-                  containerStyles={{
+                  optionStyles={{
+                    color: '#7284A0',
                     background: 'transparent',
-                    padding: 0,
-                    color: '#165BE0',
-                    '&:focus': {
-                      border: '0 solid transparent',
-                      borderColor: 'transparent',
-                      boxShadow: '0 0 0 1px transparent',
+                    textAlign: 'center',
+                    fontSize: '0.62rem',
+                    '&:hover': {
+                      borderRadius: '14px',
+                      color: '#16253D',
+                      background: '#E7ECF3',
+                    },
+                    '&:last-child': {
+                      borderTop: '1px solid #E7ECF3',
+                      color: '#D93B28',
                     },
                   }}
                 />
                 {showEveryTimeInput && (
                   <Input
+                    style={{ width: '65px' }}
                     placeholder="days"
                     type="number"
                     onChange={(event) =>
