@@ -75,7 +75,7 @@ const DialogActions = withStyles((theme) => ({
 
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
-  state = {
+  state : IState = {
     isFinished: false,
     isError: false,
   }
@@ -95,10 +95,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
   render() {
     const {
-      dialogHedaing,
-      titleDescription,
-      btnFirst,
-      btnSecond,
       accordionTitle,
       transactionsData,
       theme: {
@@ -114,7 +110,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       initialTime,
     } = this.props
 
-    //TODO
+    
     const { isFinished, isError } = this.state
 
     return (

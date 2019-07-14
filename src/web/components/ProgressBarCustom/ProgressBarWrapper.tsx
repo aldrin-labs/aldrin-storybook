@@ -1,4 +1,5 @@
 import React from 'react'
+import { IProps } from './ProgressBarWrapper..types'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 import {
@@ -25,7 +26,7 @@ const styles = (theme) => ({
   },
 })
 
-function ProgressBarWrapper(props) {
+function ProgressBarWrapper(props : IProps) {
   const {
     sectionDataProgress,
     coinData,
@@ -68,9 +69,12 @@ function ProgressBarWrapper(props) {
   //   },
   // ]
 
-  // console.log('1 - isSectionChart - ', isSectionChart)
   // console.log('2 - coinData - ', coinData)
-
+  // console.log('1 - isSectionChart - ', isSectionChart)
+//  return ( <TypographyCustom>
+//             1
+//           </TypographyCustom>
+// )
   return isSectionChart ? (
     sectionDataProgress.map((datum) => {
       return (
@@ -91,7 +95,7 @@ function ProgressBarWrapper(props) {
               height="20px"
               width={`${datum.percentage}%`}
               variant="determinate"
-              value={`${datum.percentage}`}
+              value={0}
             />
           </Grid>
           <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
@@ -102,7 +106,12 @@ function ProgressBarWrapper(props) {
     })
   ) : (
     <>
+        {/* return <TypographyCustom>
+           5
+            {datum.portfolioPerc}
+          </TypographyCustom> */}
       {coinData.map((datum, index) => {
+
         return (
           <Grid container style={{ marginBottom: '4px' }}>
             <GridFlex item lg={3} md={3} padding="0">
@@ -143,7 +152,7 @@ function ProgressBarWrapper(props) {
                 marginTop="2px"
                 width={`${datum.portfolioPerc}%`}
                 variant="determinate"
-                value={20}
+                value={0}
                 color={
                   index === 0
                     ? '#F29C38'
@@ -210,7 +219,7 @@ function ProgressBarWrapper(props) {
                 marginTop="2px"
                 width={`${otherCoinsPercentage}%`}
                 variant="determinate"
-                value={20}
+                value={0}
               />
             </Grid>
 

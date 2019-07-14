@@ -19,7 +19,7 @@ import {
   GridTransactionBtn,
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
-import { Grid } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { graphql } from 'react-apollo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
