@@ -10,7 +10,7 @@ import {
 } from './RebalanceInfoPanel.styles'
 import { withTheme } from '@material-ui/styles'
 import Timer, { useTimer } from 'react-compound-timer'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './RebalanceInfoPanel.types'
 
 import Input from '@material-ui/core/Input'

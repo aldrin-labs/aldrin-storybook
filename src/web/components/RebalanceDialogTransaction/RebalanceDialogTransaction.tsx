@@ -21,7 +21,7 @@ import {
 import SvgIcon from '../../components/SvgIcon'
 import Stroke from '../../../icons/Stroke.svg'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
 import Ellipse from '../../../icons/Ellipse.png'
 

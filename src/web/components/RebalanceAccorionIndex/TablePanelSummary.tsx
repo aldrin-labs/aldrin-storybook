@@ -1,22 +1,16 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Slider from '../Slider/Slider'
+import Slider from '@sb/components/Slider/Slider'
 import Tooltip from '@material-ui/core/Tooltip'
-import TooltipCustom from '../TooltipCustom/TooltipCustom'
 
 import {
-  TypographyCustom,
-  ExpansionPanelWrapper,
   StyledTypography,
   StyledSubTypography,
   StyledTypographyAccordionHeader,
-  GridItemHeadingCustom,
-  GridFlex,
 } from './RebalanceAccordionIndex.styles'
 
 import Paper from '@material-ui/core/Paper'

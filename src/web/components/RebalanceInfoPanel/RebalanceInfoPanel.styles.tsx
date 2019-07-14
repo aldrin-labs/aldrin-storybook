@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import ReactSelect from '../ReactSelectComponent'
+import ReactSelect from '@sb/components/ReactSelectComponent'
 import { Typography, Grid } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`

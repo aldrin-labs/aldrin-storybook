@@ -1,7 +1,8 @@
 import React from 'react'
-import { IProps } from './ProgressBarWrapper..types'
+import { IProps } from './ProgressBarWrapper.types'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
   GridFlex,
   LinearProgressCustom,
@@ -9,9 +10,8 @@ import {
   IconCircle,
 } from './ProgressBar.styles'
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
 
-import ProgressAccordion from '../ProgressAccordion/ProgressAccordion'
 
 const styles = (theme) => ({
   root: {
@@ -36,45 +36,6 @@ function ProgressBarWrapper(props : IProps) {
     classes,
   } = props
 
-
-  // TODO get rid of data after checking
-  // let coinData = [
-  //   {
-  //     coinValue: 9,
-  //     coinValueSnapshot: 13.24,
-  //     deltaPrice: -4.24,
-  //     exchange: 'Binance',
-  //     id: 3,
-  //     isCustomAsset: false,
-  //     minimalPercentageValue: undefined,
-  //     percentSnapshot: '50.00000000',
-  //     portfolioPerc: '17.97033041',
-  //     price: 29.0362,
-  //     symbol: 'BNB',
-  //     _id: '5c3ef4a29f3b7e3ed7w03de0demo',
-  //   },
-  //   {
-  //     coinValue: 10,
-  //     coinValueSnapshot: 13.24,
-  //     deltaPrice: -4.24,
-  //     exchange: 'Binance',
-  //     id: 8,
-  //     isCustomAsset: false,
-  //     minimalPercentageValue: undefined,
-  //     percentSnapshot: '10',
-  //     portfolioPerc: '67.97033041',
-  //     price: 29.0362,
-  //     symbol: 'BTB',
-  //     _id: '5c3ef4a39f3b7e3ed7503de0demo',
-  //   },
-  // ]
-
-  // console.log('2 - coinData - ', coinData)
-  // console.log('1 - isSectionChart - ', isSectionChart)
-//  return ( <TypographyCustom>
-//             1
-//           </TypographyCustom>
-// )
   return isSectionChart ? (
     sectionDataProgress.map((datum) => {
       return (

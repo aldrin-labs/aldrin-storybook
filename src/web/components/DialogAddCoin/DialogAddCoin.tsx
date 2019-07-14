@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { ReactSelectCustom } from './DialogAddCoin.styles'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
@@ -56,7 +56,7 @@ class DialogAddCoin extends React.Component {
                 //         label: row.symbol,
                 //       },
                 //     ]
-                'bc'
+                'bct'
               }
               //ref={handleRef}
               key={`inputCoinSymbol${'index'}`}
