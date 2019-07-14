@@ -9,11 +9,13 @@ export const ExpansionPanelCustom = styled(ExpansionPanel)`
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
 `
 
-export const ExpansionPanelSummaryCustom = styled(ExpansionPanelSummary)`
-  border-top: ${props => props.border};
-  `
+export const ExpansionPanelSummaryCustom = styled((border, ...rest) => (
+  <ExpansionPanelSummary {...rest} />
+))`
+  border-top: ${(props) => props.border};
+`
 
 export const TypographyCustom = styled(Typography)`
-    margin: auto;
-    padding: 0;
+  margin: auto;
+  padding: 0;
 `

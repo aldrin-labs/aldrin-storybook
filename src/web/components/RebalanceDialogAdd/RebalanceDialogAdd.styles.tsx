@@ -9,7 +9,9 @@ import {
 } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 
-export const TypographyCustomHeading = styled(Typography)`
+export const TypographyCustomHeading = styled(
+  ({ color, fontWeight, ...rest }) => <Typography {...rest} />
+)`
   color: ${(props) => props.color || '#000'};
   font-weight: ${(props) => props.fontWeight || `400`};
 `
@@ -56,7 +58,9 @@ export const TypographyTopDescription = styled(Typography)`
   text-align: center;
 `
 
-export const LinkCustom = styled(Link)`
+export const LinkCustom = styled((background, color, ...rest) => (
+  <Link {...rest} />
+))`
   cursor: pointer;
   background: ${(props) => props.background || 'none'};
   color: ${(props) => props.color || 'none'};

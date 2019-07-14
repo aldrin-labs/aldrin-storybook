@@ -1,6 +1,7 @@
+import React from 'react'
 import styled from 'styled-components'
 import ReactSelect from '../ReactSelectComponent'
-import { Typography, Link, Grid } from '@material-ui/core'
+import { Typography, Grid } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`
   display: flex;
@@ -17,7 +18,11 @@ export const GridInfoPanelWrapper = styled(Grid)`
   margin-bottom: 10px;
 `
 
-export const TypographyRebalance = styled(Typography)` 
+export const TypographyRebalance = styled(
+  ({ linkColor, position, verticalPosition, ...rest }) => (
+    <Typography {...rest} />
+  )
+)`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
   font-size: 0.6875rem;
@@ -29,7 +34,16 @@ export const TypographyRebalance = styled(Typography)`
   align-self: ${(props) => props.verticalPosition || 'none'};
 `
 
-export const StyledTypography = styled(Typography)`
+export const StyledTypography = styled(
+  ({
+    fontWeight,
+    counterColor,
+    prymaryColor,
+    secondaryColor,
+    position,
+    ...rest
+  }) => <Typography {...rest} />
+)`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
   font-size: 0.625rem;
@@ -44,7 +58,18 @@ export const StyledTypography = styled(Typography)`
   text-align: ${(props) => props.position || 'none'};
 `
 
-export const StyledSubTypography = styled(Typography)`
+export const StyledSubTypography = styled(
+  ({
+    fontSize,
+    fontWeight,
+    color,
+    counterColor,
+    position,
+    secondaryColor,
+    primaryColor,
+    ...rest
+  }) => <Typography {...rest} />
+)`
   font-size: ${(props) => props.fontSize || `1rem`};
   font-weight: ${(props) => props.fontWeight || '400'};
   line-height: 23px;

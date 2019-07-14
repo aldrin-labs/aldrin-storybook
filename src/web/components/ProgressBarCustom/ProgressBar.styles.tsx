@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import {
@@ -8,14 +9,16 @@ import {
   CardHeader,
 } from '@material-ui/core'
 
-export const LinearProgressCustom = styled(LinearProgress)`
+export const LinearProgressCustom = styled(
+  ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
+)`
   width: ${(props) => props.width || `100%`};
   background-color: ${(props) => props.color || '#E7ECF3'};
   border-radius: 10px;
   height: ${(props) => props.height};
   padding: 0;
 `
-export const GridFlex = styled(Grid)`
+export const GridFlex = styled(({ padding, ...rest }) => <Grid {...rest} />)`
   display: flex;
   padding: ${(props) => props.padding};
 `

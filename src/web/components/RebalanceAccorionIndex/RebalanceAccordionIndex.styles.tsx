@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
 
@@ -5,7 +6,9 @@ export const GridFlex = styled(Grid)`
   display: flex;
 `
 
-export const TypographyCustom = styled(Typography)`
+export const TypographyCustom = styled(({ fontWeight, ...rest }) => (
+  <Typography {...rest} />
+))`
   font-weight: ${(props) => props.fontWeight || '500'};
   text-transform: uppercase;
 `
@@ -26,14 +29,26 @@ export const ExpansionPanelWrapper = styled(ExpansionPanel)`
   }
 `
 
-export const GridItemHeadingCustom = styled(Grid)`
+export const GridItemHeadingCustom = styled(
+  ({ fontSize, borderColor, ...rest }) => <Grid {...rest} />
+)`
   font-size: ${(props) => props.fontSize || `12px`};
   border-left: 3px solid ${(props) => props.borderColor || '#fff'};
   align-self: center;
   padding: 5px 0 5px 20px;
 `
 
-export const StyledTypography = styled(Typography)`
+export const StyledTypography = styled(
+  ({
+    fontSize,
+    fontWeight,
+    primaryColor,
+    color,
+    position,
+    marginLeft,
+    ...rest
+  }) => <Typography {...rest} />
+)`
   text-align: center;
   font-size: ${(props) => props.fontSize || `10px`};
   font-weight: ${(props) => props.fontWeight || `500`};
@@ -45,7 +60,11 @@ export const StyledTypography = styled(Typography)`
   margin-left: ${(props) => props.marginLeft};
 `
 
-export const StyledTypographyAccordionHeader = styled(Typography)`
+export const StyledTypographyAccordionHeader = styled(
+  ({ fontWeight, primaryColor, color, marginLeft, ...rest }) => (
+    <Typography {...rest} />
+  )
+)`
   text-align: center;
   font-weight: ${(props) => props.fontWeight || `500`};
   line-height: 25px;
@@ -60,7 +79,9 @@ export const StyledTypographyAccordionHeader = styled(Typography)`
   padding-left: 24px;
 `
 
-export const StyledSubTypography = styled(Typography)`
+export const StyledSubTypography = styled(
+  ({ color, primaryColor, position, ...rest }) => <Typography {...rest} />
+)`
   text-align: center;
   font-size: 18px;
   line-height: 25px;

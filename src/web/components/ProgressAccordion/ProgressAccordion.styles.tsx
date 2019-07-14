@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import {
@@ -9,18 +10,18 @@ import {
   ExpansionPanelSummary,
 } from '@material-ui/core'
 
-export const LinearProgressCustom = styled(LinearProgress)`
-  width: ${(props) => props.width || `100%`};
-  background-color: ${(props) => props.color || '#E7ECF3'};
+export const LinearProgressCustom = styled(
+  ({ width, height, color, ...rest }) => <LinearProgress {...rest} />
+)`
+  width: ${(props: { width: string }) => props.width || `100%`};
+  background-color: ${(props: { color: string }) => props.color || '#E7ECF3'};
   border-radius: 10px;
-  height: ${(props) => props.height};
+  height: ${(props: { height: string }) => props.height};
 `
-export const GridFlex = styled(Grid)`
+export const GridFlex = styled(({ padding, ...rest }) => <Grid {...rest} />)`
   display: flex;
-
-  padding: ${(props) => props.padding};
+  padding: ${(props: { padding: string }) => props.padding};
 `
-
 export const IconCircle = styled.i`
   font-family: 11px;
   padding-right: 5px;
