@@ -48,13 +48,13 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
   componentDidUpdate(prevProps) {
     // update timer
     if (
-      this.props.rebalanceTimerValue.value !==
-      prevProps.rebalanceTimerValue.value
+      this.props.rebalanceTimePeriod.value !==
+      prevProps.rebalanceTimePeriod.value
     ) {
-      this.timerRef.current.setTime(this.props.rebalanceTimerValue.value)
+      this.timerRef.current.setTime(this.props.rebalanceTimePeriod.value)
       if (
-        prevProps.rebalanceTimerValue.value === 0 ||
-        prevProps.rebalanceTimerValue.value === -1
+        prevProps.rebalanceTimePeriod.value === 0 ||
+        prevProps.rebalanceTimePeriod.value === -1
       ) {
         this.timerRef.current.start()
       }
@@ -85,12 +85,12 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
       theme: {
         palette: { blue, red, green, grey },
       },
-      rebalanceTimerValue,
+      rebalanceTimePeriod,
       onRebalanceTimerChange,
     } = this.props
 
     const showEveryTimeInput =
-      rebalanceTimerValue && rebalanceTimerValue.label === 'Every'
+      rebalanceTimePeriod && rebalanceTimePeriod.label === 'Every'
 
     return (
       <GridInfoPanelWrapper container justify="space-between">
@@ -172,7 +172,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                 </TypographyRebalance>
 
                 <ReactSelectCustom
-                  value={[rebalanceTimerValue]}
+                  value={[rebalanceTimePeriod]}
                   onChange={(
                     optionSelected: {
                       label: string
@@ -243,7 +243,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                 >
                   <Timer
                     ref={this.timerRef}
-                    initialTime={+rebalanceTimerValue.value}
+                    initialTime={+rebalanceTimePeriod.value}
                     direction="backward"
                     startImmediately={true}
                   >

@@ -160,7 +160,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       },
       executeRebalanceHandler,
       transactions,
-      rebalanceTimerValue,
+      rebalanceTimePeriod,
       onRebalanceTimerChange,
     } = this.props
 
@@ -211,7 +211,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           {/* REBALANCE INFO PANEL STARTS */}
           <RebalanceInfoPanel
-            rebalanceTimerValue={rebalanceTimerValue}
+            rebalanceTimePeriod={rebalanceTimePeriod}
             onRebalanceTimerChange={onRebalanceTimerChange}
             toggleSectionCoinChart={() => this.toggleSectionCoinChart()}
             isSectionChart={this.state.isSectionChart}
