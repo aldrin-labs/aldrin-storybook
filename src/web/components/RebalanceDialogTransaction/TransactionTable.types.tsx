@@ -6,4 +6,7 @@ export interface IProps {
     sum: number
     isDone: boolean
   }
+  getError: () => void
+  isCompleted: boolean
+  isFinished: boolean
 }

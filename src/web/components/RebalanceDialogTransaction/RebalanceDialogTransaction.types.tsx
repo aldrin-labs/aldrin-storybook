@@ -1,17 +1,17 @@
 export interface IProps {
-    dialogHedaing: string,
-    titleDescription: string,
-    btnFirst: string,
-    btnSecond: string,
-    accordionTitle: string,
-    data: {
-        convertedFrom: string,
-        convertedTo: string, 
-        sum: number,
-        isDone: boolean
-    }
+  accordionTitle: string
+  transactionsData: any
+  open: boolean
+  handleClickOpen: () => void
+  handleClose: () => void
+  theme: {
+    palette: { black: any; blue: any }
+  }
+  executeRebalanceHandler: any
+  initialTime: any
 }
 
 export interface IState {
-  open: boolean
+  isFinished: boolean
+  isError: boolean
 }
