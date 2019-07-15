@@ -18,45 +18,55 @@ import {
   TypographyTopDescription,
   LinkCustom,
 } from './RebalanceDialogTransaction.styles'
-import SvgIcon from '../../components/SvgIcon'
-import Stroke from '../../../icons/Stroke.svg'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import Stroke from '../../../icons/Stroke.svg'
 import Ellipse from '../../../icons/Ellipse.png'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 import { graphQLResultHasError } from 'apollo-utilities'
 
-const DialogTitle = withStyles((theme) => ({
-  root: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing.unit,
-    top: theme.spacing.unit,
-    color: theme.palette.grey[500],
-  },
-}))((props) => {
-  const { children, classes, onClose } = props
-  return (
-    <MuiDialogTitle disableTypography className={classes.root}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="Close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  )
-})
+// TODO: it seems, that we can delete it
+// const DialogTitle = withStyles((theme) => ({
+//   root: {
+//     borderBottom: `1px solid ${theme.palette.divider}`,
+//     margin: 0,
+//     padding: theme.spacing.unit * 2,
+//   },
+//   closeButton: {
+//     position: 'absolute',
+//     right: theme.spacing.unit,
+//     top: theme.spacing.unit,
+//     color: theme.palette.grey[500],
+//   },
+// }))((props) => {
+//   const { children, classes, onClose } = props
+//   return (
+//     <MuiDialogTitle disableTypography className={classes.root}>
+//       <Typography variant="h6">{children}</Typography>
+//       {onClose ? (
+//         <IconButton
+//           aria-label="Close"
+//           className={classes.closeButton}
+//           onClick={onClose}
+//         >
+//           <CloseIcon />
+//         </IconButton>
+//       ) : null}
+//     </MuiDialogTitle>
+//   )
+// })
+
+// const DialogActions = withStyles((theme) => ({
+//   root: {
+//     borderTop: `1px solid ${theme.palette.divider}`,
+//     margin: 0,
+//     padding: theme.spacing.unit,
+//   },
+// }))(MuiDialogActions)
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -65,13 +75,6 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent)
 
-const DialogActions = withStyles((theme) => ({
-  root: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing.unit,
-  },
-}))(MuiDialogActions)
 
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
@@ -84,7 +87,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     this.setState({ isError: errorState })
   }
 
-  isCompleted = (progressOfComplition) => {
+  isCompleted = () => {
     this.setState({ isFinished: true })
   }
 

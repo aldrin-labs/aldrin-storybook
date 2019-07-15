@@ -5,12 +5,13 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import ProgressBar from '@sb/components/ProgressBar/ProgressBar'
+import SvgIcon from '../SvgIcon'
+import { IProps } from './TransactionTable.types'
+
 import DoneIcon from '../../../icons/DoneIcon.svg'
 import Cross from '../../../icons/Cross.svg'
 import Spinner from '../../../icons/Spinner.svg'
 import TradeIcon from '../../../icons/TradeIcon.svg'
-import SvgIcon from '../SvgIcon'
-import { IProps } from './TransactionTable.types'
 
 const styles = (theme) => ({
   root: {
