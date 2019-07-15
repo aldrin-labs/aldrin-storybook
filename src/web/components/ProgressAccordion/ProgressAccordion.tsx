@@ -122,7 +122,7 @@ function ProgressAccordion(props) {
                     marginTop="2px"
                     width={`${datum.portfolioPerc}%`}
                     variant="determinate"
-                    value={`${datum.portfolioPerc}`}
+                    value={0}
                     color={
                       index === 0
                         ? '#F29C38'

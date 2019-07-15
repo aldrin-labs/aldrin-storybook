@@ -1,13 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import {
-  Grid,
-  Typography,
-  Card,
-  CardContent,
-  CardHeader,
-} from '@material-ui/core'
+import { Grid, Typography, Card } from '@material-ui/core'
 
 export const LinearProgressCustom = styled(
   ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
