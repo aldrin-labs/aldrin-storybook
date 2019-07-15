@@ -32,10 +32,6 @@ export default class SvgIcon extends React.Component<Props, {}> {
 
 const WebIcon = styled.img`
   object-fit: contain;
-  &:hover {
-    transform: scale(1.1);
-    transition: all 0.5s ease-in-out;
-  }
   ${(props: { styledComponentsAdditionalStyle: string }) =>
     props.styledComponentsAdditionalStyle};
 `

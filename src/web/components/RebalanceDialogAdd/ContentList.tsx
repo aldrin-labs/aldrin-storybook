@@ -26,17 +26,17 @@ const styles = (theme) => ({
 
 function ContentList({ classes, data, isSelected, handleRadioBtn }: IProps) {
   //const isSelected = true;
-  const rows = data.map((item, id) => {
+  const rows = data.map((item) => {
     const { categoryName } = item
-    return { id, categoryName }
+    return { categoryName }
   })
 
   return (
     <>
       <Table className={classes.table}>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
+          {rows.map((row, index) => (
+            <TableRow key={index}>
               <TableCell
                 component="th"
                 scope="row"
@@ -46,10 +46,7 @@ function ContentList({ classes, data, isSelected, handleRadioBtn }: IProps) {
               </TableCell>
               <TableCell align="right">
                 ...
-                <Radio
-                  checked={isSelected}
-                  onClick={() => handleRadioBtn()}
-                />
+                <Radio checked={isSelected} onClick={() => handleRadioBtn()} />
               </TableCell>
             </TableRow>
           ))}
