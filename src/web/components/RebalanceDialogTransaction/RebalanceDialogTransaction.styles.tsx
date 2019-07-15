@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import {
   Grid,
@@ -8,7 +9,9 @@ import {
   Link,
 } from '@material-ui/core'
 
-export const TypographyCustomHeading = styled(Typography)`
+export const TypographyCustomHeading = styled(
+  ({ color, fontWeight, ...rest }) => (<Typography {...rest} />)
+)`
   font-size: 12px;
   color: ${(props) => props.color || '#000'};
   font-weight: ${(props) => props.fontWeight || `400`};
@@ -42,13 +45,17 @@ export const DialogWrapper = styled(Dialog)`
   border-radius: 100px;
 `
 
-export const TypographyTopDescription = styled(Typography)`
-  margin: ${props => props.margin || '20px auto 32px auto'};
+export const TypographyTopDescription = styled(({ margin, ...rest }) => (
+  <Typography {...rest} />
+))`
+  margin: ${(props) => props.margin || '20px auto 32px auto'};
   width: 90%;
   text-align: center;
 `
 
-export const LinkCustom = styled(Link)`
+export const LinkCustom = styled(({ background, ...rest }) => (
+  <Link {...rest} />
+))`
   cursor: pointer;
   background: ${(props) => props.background || 'none'};
 `

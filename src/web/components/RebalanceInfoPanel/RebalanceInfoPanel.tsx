@@ -10,10 +10,11 @@ import {
 } from './RebalanceInfoPanel.styles'
 import { withTheme } from '@material-ui/styles'
 import Timer, { useTimer } from 'react-compound-timer'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-import { IProps } from './RebalanceInfoPanel.types'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { IProps, IState } from './RebalanceInfoPanel.types'
 
 import Input from '@material-ui/core/Input'
+//import { IState } from '@sb/compositions/Chart/Inputs/AutoSuggestSelect/AutoSuggestSeletec.types';
 
 const rebalanceSelectTimeOptions = [
   {
@@ -37,8 +38,8 @@ const rebalanceSelectTimeOptions = [
 ]
 
 @withTheme()
-export default class RebalanceInfoPanel extends Component<IProps> {
-  state = {
+export default class RebalanceInfoPanel extends Component<IProps, IState> {
+  state: IState = {
     isHiddenRebalanceDaysInput: 'hidden',
   }
 
@@ -146,12 +147,7 @@ export default class RebalanceInfoPanel extends Component<IProps> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex
-                justify="flex-start"
-                alignItems="center"
-                item
-                lg={3}
-              >
+              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}

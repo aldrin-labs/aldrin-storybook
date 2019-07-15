@@ -21,7 +21,7 @@ import {
 import SvgIcon from '../../components/SvgIcon'
 import Stroke from '../../../icons/Stroke.svg'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
 import Ellipse from '../../../icons/Ellipse.png'
 
@@ -75,7 +75,7 @@ const DialogActions = withStyles((theme) => ({
 
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
-  state = {
+  state : IState = {
     isFinished: false,
     isError: false,
   }
@@ -95,10 +95,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
   render() {
     const {
-      dialogHedaing,
-      titleDescription,
-      btnFirst,
-      btnSecond,
       accordionTitle,
       transactionsData,
       theme: {
@@ -114,7 +110,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       initialTime,
     } = this.props
 
-    //TODO
+    
     const { isFinished, isError } = this.state
 
     return (

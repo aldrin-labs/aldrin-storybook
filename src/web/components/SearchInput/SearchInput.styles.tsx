@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { InputBase } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
@@ -12,7 +13,11 @@ export const SearchIconCustom = styled(SearchIcon)`
   align-items: 'center';
   justify-content: 'center';
 `
-export const InputBaseCustom = styled(InputBase)`
+export const InputBaseCustom = styled(
+  ({ width, height, fontSize, borderRadius, ...rest }) => (
+    <InputBase {...rest} />
+  )
+)`
   border-radius: 20px;
   margin-left: 12px;
   width: ${(props) => props.width || `100%`};

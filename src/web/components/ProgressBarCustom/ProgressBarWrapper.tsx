@@ -1,6 +1,8 @@
 import React from 'react'
+import { IProps } from './ProgressBarWrapper.types'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
   GridFlex,
   LinearProgressCustom,
@@ -8,9 +10,8 @@ import {
   IconCircle,
 } from './ProgressBar.styles'
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
 
-import ProgressAccordion from '../ProgressAccordion/ProgressAccordion'
 
 const styles = (theme) => ({
   root: {
@@ -25,7 +26,7 @@ const styles = (theme) => ({
   },
 })
 
-function ProgressBarWrapper(props) {
+function ProgressBarWrapper(props : IProps) {
   const {
     sectionDataProgress,
     coinData,
@@ -34,42 +35,6 @@ function ProgressBarWrapper(props) {
     isSectionChart,
     classes,
   } = props
-
-
-  // TODO get rid of data after checking
-  // let coinData = [
-  //   {
-  //     coinValue: 9,
-  //     coinValueSnapshot: 13.24,
-  //     deltaPrice: -4.24,
-  //     exchange: 'Binance',
-  //     id: 3,
-  //     isCustomAsset: false,
-  //     minimalPercentageValue: undefined,
-  //     percentSnapshot: '50.00000000',
-  //     portfolioPerc: '17.97033041',
-  //     price: 29.0362,
-  //     symbol: 'BNB',
-  //     _id: '5c3ef4a29f3b7e3ed7w03de0demo',
-  //   },
-  //   {
-  //     coinValue: 10,
-  //     coinValueSnapshot: 13.24,
-  //     deltaPrice: -4.24,
-  //     exchange: 'Binance',
-  //     id: 8,
-  //     isCustomAsset: false,
-  //     minimalPercentageValue: undefined,
-  //     percentSnapshot: '10',
-  //     portfolioPerc: '67.97033041',
-  //     price: 29.0362,
-  //     symbol: 'BTB',
-  //     _id: '5c3ef4a39f3b7e3ed7503de0demo',
-  //   },
-  // ]
-
-  // console.log('1 - isSectionChart - ', isSectionChart)
-  // console.log('2 - coinData - ', coinData)
 
   return isSectionChart ? (
     sectionDataProgress.map((datum) => {
@@ -91,7 +56,7 @@ function ProgressBarWrapper(props) {
               height="20px"
               width={`${datum.percentage}%`}
               variant="determinate"
-              value={`${datum.percentage}`}
+              value={0}
             />
           </Grid>
           <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
@@ -102,7 +67,12 @@ function ProgressBarWrapper(props) {
     })
   ) : (
     <>
+        {/* return <TypographyCustom>
+           5
+            {datum.portfolioPerc}
+          </TypographyCustom> */}
       {coinData.map((datum, index) => {
+
         return (
           <Grid container style={{ marginBottom: '4px' }}>
             <GridFlex item lg={3} md={3} padding="0">
@@ -143,7 +113,7 @@ function ProgressBarWrapper(props) {
                 marginTop="2px"
                 width={`${datum.portfolioPerc}%`}
                 variant="determinate"
-                value={20}
+                value={0}
                 color={
                   index === 0
                     ? '#F29C38'
@@ -210,7 +180,7 @@ function ProgressBarWrapper(props) {
                 marginTop="2px"
                 width={`${otherCoinsPercentage}%`}
                 variant="determinate"
-                value={20}
+                value={0}
               />
             </Grid>
 

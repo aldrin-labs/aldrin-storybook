@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { ReactSelectCustom } from './DialogAddCoin.styles'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
@@ -21,6 +21,10 @@ class DialogAddCoin extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false })
+  }
+
+  handleSelectChange = (index, symbol, optionSelected) => {
+    console.log(optionSelected)
   }
 
   render() {
@@ -41,13 +45,7 @@ class DialogAddCoin extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle
-            id="alert-dialog-title"
-            style={{ minWidth: '400px' }}
-          >
-            {/* {"Use Google's location service?"} */}
-          </DialogTitle>
-          <DialogContent>
+          <DialogContent style={{ minWidth: '400px', height: '220px' }}>
             <SelectCoinList
               value={
                 // shouldWeShowPlaceholderForCoin
@@ -55,10 +53,10 @@ class DialogAddCoin extends React.Component {
                 //   : [
                 //       {
                 //         value: row.symbol,
-                //         label: row.sym bol,
+                //         label: row.symbol,
                 //       },
                 //     ]
-                'btc'
+                'bct'
               }
               //ref={handleRef}
               key={`inputCoinSymbol${'index'}`}
@@ -73,13 +71,29 @@ class DialogAddCoin extends React.Component {
               menuStyles={{
                 fontSize: '12px',
                 minWidth: '150px',
-                height: '200px',
+                height: '140px',
+                width: '350px',
+                padding: '5px 8px',
+                borderRadius: '14px',
+                textAlign: 'center',
+                border: '1px solid transparent',
+                boxShadow: '0 0 0 1px transparent',
+                background: 'white',
               }}
               menuListStyles={{
-                height: '200px',
+                height: '140px',
               }}
               optionStyles={{
+                color: '#7284A0',
+                background: 'transparent',
+                textAlign: 'left',
                 fontSize: '12px',
+
+                '&:hover': {
+                  borderRadius: '10px',
+                  color: '#16253D',
+                  background: '#E7ECF3',
+                },
               }}
               clearIndicatorStyles={{
                 padding: '2px',
@@ -96,13 +110,23 @@ class DialogAddCoin extends React.Component {
                 display: 'none',
               }}
               noOptionsMessage={() => `No such coin in our DB found`}
+              // inputStyles={{ color: 'red' }}
+              valueContainerStyles={{
+                border: '2px solid #E7ECF3',
+                borderRadius: '54px',
+                background: '#F2F4F6',
+                paddingLeft: '15px',
+              }}
+              //singleValueStyles={{ background: 'green' }}
+              // menuPortalStyles={{ background: 'green' }}
               menuIsOpen={true}
-              // onChange={(
-              //   optionSelected: {
-              //     label: string
-              //     value: string
-              //   } | null
-              // ) => handleSelectChange('index', 'symbol', optionSelected)}
+
+              onChange={(
+                optionSelected: {
+                  label: string
+                  value: string
+                } | null
+              ) => this.handleSelectChange('index', 'symbol', optionSelected)}
             />
           </DialogContent>
         </Dialog>

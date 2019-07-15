@@ -19,7 +19,7 @@ import {
   GridTransactionBtn,
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
-import { Grid } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { graphql } from 'react-apollo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -30,11 +30,10 @@ import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import { IState, IProps } from './PortfolioRebalancePage.types'
 
 // Rebalance Panel
-import RebalanceInfoPanel from '../../components/RebalanceInfoPanel/RebalanceInfoPanel'
-import RebalanceAccordionIndex from '../../components/RebalanceAccorionIndex/RebalanceAccordionIndex'
+import RebalanceInfoPanel from '@sb/components/RebalanceInfoPanel/RebalanceInfoPanel'
+import RebalanceAccordionIndex from '@sb/components/RebalanceAccorionIndex/RebalanceAccordionIndex'
 import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
-import Stroke from '../../../icons/Stroke.svg'
-import RebalanceDialogAdd from '../../components/RebalanceDialogAdd/RebalanceDialogAdd'
+import RebalanceDialogAdd from '@sb/components/RebalanceDialogAdd/RebalanceDialogAdd'
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
 import {

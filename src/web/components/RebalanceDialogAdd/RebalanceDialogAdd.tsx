@@ -20,7 +20,7 @@ import {
   SearchIconCustom,
 } from './RebalanceDialogAdd.styles'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import ContentList from './ContentList'
 
 import { IProps, IState } from './RebalanceDialogAdd.types'

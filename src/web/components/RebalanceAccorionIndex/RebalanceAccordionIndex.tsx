@@ -1,27 +1,14 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Grid from '@material-ui/core/Grid'
 
-import TooltipCustom from '../TooltipCustom/TooltipCustom'
-
-import Tooltip from '@material-ui/core/Tooltip'
-
-import Slider from '../Slider/Slider'
 import TablePanelSummary from './TablePanelSummary'
 
 import {
-  TypographyCustom,
   ExpansionPanelWrapper,
-  StyledTypography,
-  StyledSubTypography,
-  GridItemHeadingCustom,
-  GridFlex,
 } from './RebalanceAccordionIndex.styles'
 
 const styles = (theme) => ({
@@ -43,13 +30,7 @@ const styles = (theme) => ({
 class RebalanceAccordionIndex extends React.Component {
   state = {
     expanded: null,
-    value: 0,
-  }
-
-  componentDidMount() {
-    this.setState({
-      value: this.props.sliderValue,
-    })
+    value: this.props.sliderValue,
   }
 
   handleChange = (panel) => (event, expanded) => {
@@ -107,9 +88,7 @@ class RebalanceAccordionIndex extends React.Component {
                   handleSlideChange={() => handleSlideChange()}
                 />
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                {children}
-              </ExpansionPanelDetails>
+              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}

@@ -7,3 +7,7 @@ export interface IProps {
   }
   rebalanceOption: string[]
 }
+
+export interface IState {
+  isHiddenRebalanceDaysInput: string
+}
