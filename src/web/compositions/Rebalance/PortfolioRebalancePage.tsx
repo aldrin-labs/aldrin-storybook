@@ -9,10 +9,6 @@ import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
 import {
   Container,
-  ChartWrapper,
-  ChartWrapperCustom,
-  ChartWrapperCustomLeft,
-  ChartWrapperCustomRight,
   TypographyAccordionTitle,
   TypographyProgress,
   GridProgressTitle,
@@ -37,22 +33,16 @@ import RebalanceDialogAdd from '@sb/components/RebalanceDialogAdd/RebalanceDialo
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
 import {
-  dialogTransactionData,
-  accordionPortfolioPanelData,
-  accordionAddPortfolioPanelData,
-  accordionAddIndexPanelData,
-  rebalanceInfoPanelData,
+  accordionAddPortfolioPanelData, // This data will be used in the future
+  accordionAddIndexPanelData, // This data will be used in the future
+  rebalanceInfoPanelData, // TODO: Delete?
   rebalanceOption,
-  sectionDataHardCode,
   addFolioData,
   addIndexData,
-  currentAllocation,
   targetAllocation,
 } from './mockData'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-
-import ProgressBarWrapper from '@sb/components/ProgressBarCustom/ProgressBarWrapper.tsx'
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -97,11 +87,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     }
   }
 
-  handleClickOpen = () => {
+  handleOpenTransactionWindow = () => {
     this.setState(
       {
         open: true,
       },
+      // set to default state, if you open again and cancel all previous actions
       () => {
         this.props.setTransactions()
       }
@@ -195,12 +186,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             padding: '0 25px 25px 25px',
           }}
         > */}
-          <Content
+        <Content
           key={`content`}
           container
           spacing={16}
           style={{ padding: '0 25px 25px 25px' }}
-          >
+        >
           <Container
             key={`table-container`}
             item
@@ -219,12 +210,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <Grid
-            item
-            lg={5}
-            md={5}
-            style={{ minHeight: '100px', padding: '0' }}
-          >
+          <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
             <Grid
               style={{
                 minHeight: '130px',
@@ -255,7 +241,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               accordionTitle="TRANSACTIONS"
               transactionsData={transactions}
               open={this.state.open}
-              handleClickOpen={this.handleClickOpen}
+              handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleClose}
               executeRebalanceHandler={executeRebalanceHandler}
             />
@@ -398,8 +384,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           {/*dustFilter={dustFilter}*/}
           {/*showWarning={showWarning}*/}
           {/*sliderStep={sliderStep}*/}
-          {/*accordionData={accordionAddPortfolioPanelData}*/}
           {/*/>*/}
+          {/*accordionData={accordionAddPortfolioPanelData}*/}
 
           <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData} />
 
@@ -422,7 +408,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               createNewSnapshot,
             }}
           />
-          </Content>   
+        </Content>
         {/* </Grid> */}
 
         <Joyride
