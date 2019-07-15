@@ -11,7 +11,7 @@ import PortfolioMain from '@core/compositions/PortfolioMain'
 const PortfolioTableIndustries = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@core/compositions/PortfolioIndustry')
 )
-import { Rebalance } from '@core/compositions/PortfolioRebalance'
+import Rebalance from '@core/compositions/PortfolioRebalance'
 const Optimization = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Optimization/Optimization')
 )
@@ -23,7 +23,7 @@ import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTable
 @withRouter
 class PortfolioTable extends Component<IProps, IState> {
   render() {
-    const { theme, dustFilter, isUSDCurrently, baseCoin } = this.props
+    const { theme, dustFilter, isUSDCurrently, baseCoin, portfolioId, activeKeys } = this.props
 
     return (
       <Mutation mutation={TOGGLE_BASE_COIN}>
@@ -76,6 +76,8 @@ class PortfolioTable extends Component<IProps, IState> {
                       baseCoin={`USDT`}
                       isUSDCurrently={true}
                       dustFilter={dustFilter}
+                      portfolioId={portfolioId}
+                      activeKeys={activeKeys}
                       {...rest}
                     />
                   )}
