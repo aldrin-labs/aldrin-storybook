@@ -116,4 +116,4 @@ class PortfolioTable extends Component<IProps, IState> {
   }
 }
 
-export default withTheme()(PortfolioTable)
+export default PortfolioTable

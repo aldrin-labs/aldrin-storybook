@@ -178,14 +178,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     return (
       <>
         {children}
-        {/* <Grid 
-          style={{
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0 25px 25px 25px',
-          }}
-        > */}
         <Content
           key={`content`}
           container
@@ -409,7 +401,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             }}
           />
         </Content>
-        {/* </Grid> */}
 
         <Joyride
           continuous={true}
