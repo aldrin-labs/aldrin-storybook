@@ -64,12 +64,10 @@ function TablePanelSummary(props) {
           </TableCell>
           <TableCell
             style={{
-              //padding: '0 0 0 3px',
               display: 'flex',
               justifyContent: 'flex-start',
               alignText: 'left',
               marginTop: '15px',
-              //width: '13vw',
               padding: '0',
               border: 'none',
             }}
@@ -95,7 +93,7 @@ function TablePanelSummary(props) {
               <StyledTypography
                 fontWeight="bold"
                 color="#16253D"
-                fontSize="12px"
+                fontSize="12px" 
                 marginLeft="15px"
               >
                 {value.toFixed(0)}%

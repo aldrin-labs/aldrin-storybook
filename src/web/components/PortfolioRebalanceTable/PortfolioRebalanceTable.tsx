@@ -4,6 +4,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 
 import { Table as ImTable, TableWithSort, Loading } from '@sb/components'
 import { getArrayOfActionElements } from '@sb/styles/PortfolioRebalanceTableUtils'
+import { withStyles } from '@material-ui/core/styles'
 
 import {
   LoaderWrapper,
@@ -12,6 +13,12 @@ import {
 } from './RebalancedPortfolioTable.styles'
 
 import { IProps } from './PortfolioRebalanceTable.types'
+
+// const styles = (theme) => ({
+//   heading: {
+//     background: theme.palette.background.taable
+//   },
+// })
 
 const PortfolioRebalanceTable = ({
   isEditModeEnabled,
@@ -82,4 +89,5 @@ const PortfolioRebalanceTable = ({
   )
 }
 
+//export default PortfolioRebalanceTable
 export default PortfolioRebalanceTable

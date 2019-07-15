@@ -25,6 +25,7 @@ class DialogAddCoin extends React.Component {
 
   handleSelectChange = (index, symbol, optionSelected) => {
     console.log(optionSelected)
+    this.handleClose()
   }
 
   render() {

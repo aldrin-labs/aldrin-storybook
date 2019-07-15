@@ -157,16 +157,16 @@ const styles = (theme: Theme) =>
     },
     rowWithHover: {
       '&:hover': {
-        borderRadius: '32px', //TODO border radius doesn't work
+        borderRadius: '32px',
         backgroundColor: '#E7ECF3', //TODO theme.palette.action.hover,
       },
     },
     rowWithHoverBorderRadius: {
       '& td:first-child': {
-        borderRadius: '12px 0 0 12px', //TODO border radius doesn't work
+        borderRadius: '12px 0 0 12px',
       },
       '& td:last-child': {
-        borderRadius: '0 12px 12px 0', //TODO border radius doesn't work
+        borderRadius: '0 12px 12px 0',
       },
     },
     actionButton: {
