@@ -16,26 +16,7 @@ import { IProps, IState } from './RebalanceInfoPanel.types'
 import Input from '@material-ui/core/Input'
 //import { IState } from '@sb/compositions/Chart/Inputs/AutoSuggestSelect/AutoSuggestSeletec.types';
 
-const rebalanceSelectTimeOptions = [
-  {
-    label: 'daily',
-    value: 86400000,
-  },
-  { label: 'Weekly', value: 604800000 },
-  {
-    label: 'Bi-Weekly',
-    value: 1210000000,
-  },
-  {
-    label: 'Monthly',
-    value: 2628000000,
-  },
-  { label: 'Every', value: 0 },
-  {
-    label: 'Stop Rebalance',
-    value: -1,
-  },
-]
+import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps, IState> {
@@ -45,21 +26,21 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
 
   timerRef = React.createRef()
 
-  componentDidUpdate(prevProps) {
-    // update timer
-    if (
-      this.props.rebalanceTimePeriod.value !==
-      prevProps.rebalanceTimePeriod.value
-    ) {
-      this.timerRef.current.setTime(this.props.rebalanceTimePeriod.value)
-      if (
-        prevProps.rebalanceTimePeriod.value === 0 ||
-        prevProps.rebalanceTimePeriod.value === -1
-      ) {
-        this.timerRef.current.start()
-      }
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   // update timer
+  //   if (
+  //     this.props.rebalanceTimePeriod.value !==
+  //     prevProps.rebalanceTimePeriod.value
+  //   ) {
+  //     this.timerRef.current.setTime(this.props.rebalanceTimePeriod.value)
+  //     if (
+  //       prevProps.rebalanceTimePeriod.value === 0 ||
+  //       prevProps.rebalanceTimePeriod.value === -1
+  //     ) {
+  //       this.timerRef.current.start()
+  //     }
+  //   }
+  // }
 
   slicePrice = (availableValue) => {
     let result = ''
@@ -77,9 +58,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
         accountValue,
         availableValue,
         availablePercentage,
-        rebalanceTime,
       },
-      rebalanceOption,
       toggleSectionCoinChart,
       isSectionChart,
       theme: {
@@ -88,6 +67,8 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
       rebalanceTimePeriod,
       onRebalanceTimerChange,
     } = this.props
+
+    rebalanceTimePeriod = { label: 'Weekly', value: 604800000 } // TODO delete it later
 
     const showEveryTimeInput =
       rebalanceTimePeriod && rebalanceTimePeriod.label === 'Every'
@@ -159,7 +140,6 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                 </BtnCustom>
               </GridFlex>
 
-              {/* TODO: Grid item doesn't react on justify="center" aand alignItems */}
               <GridFlex
                 item
                 lg={6}
@@ -249,10 +229,14 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   >
                     {() => (
                       <React.Fragment>
-                        <Timer.Days />:
-                        <Timer.Hours />:
-                        <Timer.Minutes />:
+                        <Timer.Days />
+                        {' D '}
+                        <Timer.Hours />
+                        {' H '}
+                        <Timer.Minutes />
+                        {' M '}
                         <Timer.Seconds />
+                        {' S '}
                       </React.Fragment>
                     )}
                   </Timer>

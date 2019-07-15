@@ -1,3 +1,5 @@
+import { Theme } from '@material-ui/core'
+
 export interface IProps {
   rebalanceInfoPanelData: {
     accountValue: string
@@ -6,6 +8,12 @@ export interface IProps {
     rebalanceTime: string
   }
   rebalanceOption: string[]
+  theme: Theme
+
+  toggleSectionCoinChart: () => void
+  isSectionChart: boolean
+  rebalanceTimePeriod: any
+  onRebalanceTimerChange: any
 }
 
 export interface IState {
