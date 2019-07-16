@@ -48,7 +48,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
-    open: false,
+    openDialogTransaction: false,
     isSectionChart: false,
   }
 
@@ -90,7 +90,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   handleOpenTransactionWindow = () => {
     this.setState(
       {
-        open: true,
+        openDialogTransaction: true,
       },
       // set to default state, if you open again and cancel all previous actions
       () => {
@@ -99,8 +99,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     )
   }
 
-  handleClose = () => {
-    this.setState({ open: false })
+  handleCloseTransactionWindow = () => {
+    this.setState({ openDialogTransaction: false })
   }
 
   render() {
@@ -239,9 +239,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               initialTime={rebalanceInfoPanelData.rebalanceTime}
               accordionTitle="TRANSACTIONS"
               transactionsData={transactions}
-              open={this.state.open}
+              open={this.state.openDialogTransaction}
               handleClickOpen={this.handleOpenTransactionWindow}
-              handleClose={this.handleClose}
+              handleClose={this.handleCloseTransactionWindow}
               executeRebalanceHandler={executeRebalanceHandler}
             />
           </GridTransactionBtn>

@@ -215,7 +215,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
-                  fontSize={'0.88rem'}
+                  fontSize={'0.72rem'}
                   color={red.bright}
                   fontWeight={'700'}
                   position="right"

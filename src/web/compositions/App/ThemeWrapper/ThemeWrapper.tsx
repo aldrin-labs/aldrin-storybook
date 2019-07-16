@@ -154,7 +154,7 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 root: {
                   // Name of the rule
-                  border: `1px solid transparent`, //#DDE0E7`, //// Some CSS
+                  border: `1px solid transparent`,
                   boxShadow: `none`,
                 },
               },

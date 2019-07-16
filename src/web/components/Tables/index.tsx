@@ -469,7 +469,7 @@ const CustomTable = (props: Props) => {
     actionsColSpan = 1,
     borderBottom = false,
     rowsWithHover = true,
-    rowWithHoverBorderRadius = true, //TODO false,
+    rowWithHoverBorderRadius = true, //TODO false rowWithHoverBorderRadius ,
     emptyTableText = 'no data',
     tableStyles = {
       heading: {},
