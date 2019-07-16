@@ -13,8 +13,6 @@ import {
   StyledTypographyAccordionHeader,
 } from './RebalanceAccordionIndex.styles'
 
-import Paper from '@material-ui/core/Paper'
-
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -26,25 +24,21 @@ const styles = (theme) => ({
   },
 })
 
-function TablePanelSummary(props) {
-  const {
-    classes,
-    accordionPanelHeadingBorderColor,
-    accordionPanelHeading,
-    secondColValue,
-    fourthColValue,
-    percentage,
-    value,
-    handleSlideChange,
-  } = props
-
+function TablePanelSummary({
+  classes,
+  accordionPanelHeadingBorderColor,
+  accordionPanelHeading,
+  secondColValue,
+  fourthColValue,
+  value,
+  handleSlideChange,
+  theme,
+}) {
   return (
     <Table className={classes.table}>
       <TableHead>
         <TableRow>
-          <TableCell
-            style={{ padding: '0px', width: '12vw', border: 'none' }}
-          >
+          <TableCell style={{ padding: '0px', width: '12vw', border: 'none' }}>
             <StyledTypographyAccordionHeader fontWeight="700">
               {accordionPanelHeading}
             </StyledTypographyAccordionHeader>
@@ -53,12 +47,8 @@ function TablePanelSummary(props) {
             align="left"
             style={{ padding: '0px', width: '26vw', border: 'none' }}
           >
-            <StyledTypography fontWeight="700">
-              Current value
-            </StyledTypography>
-            <StyledSubTypography
-              color="#16253D" //{black.custom}
-            >
+            <StyledTypography fontWeight="700">Current value</StyledTypography>
+            <StyledSubTypography color="#16253D">
               ${secondColValue}
             </StyledSubTypography>
           </TableCell>
@@ -93,7 +83,7 @@ function TablePanelSummary(props) {
               <StyledTypography
                 fontWeight="bold"
                 color="#16253D"
-                fontSize="12px" 
+                fontSize="12px"
                 marginLeft="15px"
               >
                 {value.toFixed(0)}%
