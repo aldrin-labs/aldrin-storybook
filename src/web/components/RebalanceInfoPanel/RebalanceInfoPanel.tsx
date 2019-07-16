@@ -215,6 +215,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
+                  fontSize={'0.88rem'}
                   color={red.bright}
                   fontWeight={'700'}
                   position="right"
@@ -227,7 +228,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   >
                     {() => (
                       <React.Fragment>
-                        <Timer.Days /> 
+                        <Timer.Days />
                         {' D '}
                         <Timer.Hours />
                         {' H '}
