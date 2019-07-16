@@ -224,7 +224,7 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#F2F4F6',
               },
               primary: {
-                main: '#FEFEFE', //'#f9fbfd',
+                main: '#FEFEFE',
                 dark: '#F3F3F3',
                 light: '#FFF',
               },
@@ -235,7 +235,7 @@ export default class ThemeWrapper extends Component<Props> {
                 selected: 'rgba(255, 255, 255, 0.05)',
               },
               background: {
-                default: '#f9fbfd', //'#D9D9DC',
+                default: '#f9fbfd',
                 paper: '#FEFEFE',
                 table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
