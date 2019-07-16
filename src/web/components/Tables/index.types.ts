@@ -123,6 +123,7 @@ export interface Props {
   actionsColSpan?: number
   borderBottom?: boolean
   rowsWithHover?: boolean
+  rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
   tableStyles?: TableStyles
 }

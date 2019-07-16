@@ -94,6 +94,7 @@ const rowOffset = (i: number, n: number) => (n === 1 ? 0 : (n - i - 1) * 32 - 1)
 const styles = (theme: Theme) =>
   createStyles({
     root: {
+      width: '100%',
       border: '0px solid transparent',
       overflowX: 'auto',
       '&::-webkit-scrollbar': {
@@ -500,9 +501,7 @@ const CustomTable = (props: Props) => {
     <Paper
       elevation={elevation}
       style={{
-        width: '100vw',
-        border: ' 1px solid transparent',
-        boxShadow: 'none',
+        width: '100%',
       }}
     >
       <Table
@@ -511,11 +510,9 @@ const CustomTable = (props: Props) => {
         id={props.id}
         style={{
           width: '100%',
-          border: ' 1px solid transparent',
-          boxShadow: 'none',
         }} //TODO
       >
-        <TableHead style={{ width: '100%' }}>
+        <TableHead>
           {title && (
             <TableRow className={classes.headRow}>
               <CustomTableCell
@@ -527,7 +524,6 @@ const CustomTable = (props: Props) => {
                   style={{
                     fontSize: 16,
                     textTransform: 'none',
-                    display: 'none',
                   }}
                   variant="button"
                   color="default"
