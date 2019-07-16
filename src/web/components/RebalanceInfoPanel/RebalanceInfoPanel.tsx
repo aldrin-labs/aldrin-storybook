@@ -18,6 +18,8 @@ import Input from '@material-ui/core/Input'
 
 import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
+import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
+
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps, IState> {
   state: IState = {
@@ -40,16 +42,6 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
         this.timerRef.current.start()
       }
     }
-  }
-
-  slicePrice = (availableValue) => {
-    let result = ''
-    !availableValue.indexOf('-')
-      ? (result = `0`)
-      : availableValue !== '0'
-      ? (result = availableValue.substring(0, availableValue.indexOf('.')))
-      : (result = availableValue)
-    return result
   }
 
   render() {
@@ -95,10 +87,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   color={green.custom}
                   position="right"
                 >
-                  ${' '}
-                  {availableValue !== '0'
-                    ? this.slicePrice(availableValue)
-                    : `0`}
+                  $ {availableValue !== '0' ? slicePrice(availableValue) : `0`}
                 </StyledSubTypography>
               </Grid>
 
@@ -111,7 +100,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   color={green.custom}
                   position="right"
                 >
-                  {this.slicePrice(availablePercentage)}%
+                  {slicePrice(availablePercentage)}%
                 </StyledSubTypography>
               </Grid>
             </Grid>

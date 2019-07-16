@@ -20,7 +20,9 @@ import { IProps } from './PortfolioRebalanceTable.types'
 //   },
 // })
 
-const PortfolioRebalanceTable: React.FunctionComponent<ConsistentWith<{theme: Theme}, WithTheme<{}>>> = ({
+const PortfolioRebalanceTable: React.FunctionComponent<
+  ConsistentWith<{ theme: Theme }, WithTheme<{}>>
+> = ({
   isEditModeEnabled,
   theme,
   loading,
