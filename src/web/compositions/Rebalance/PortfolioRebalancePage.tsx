@@ -152,6 +152,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       transactions,
       rebalanceTimePeriod,
       onRebalanceTimerChange,
+      // search,
+      // searchCoinInTable,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -202,7 +204,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
+          <Grid
+            item
+            lg={5}
+            md={5}
+            style={{ minHeight: '100px', padding: '0' }}
+          >
             <Grid
               style={{
                 minHeight: '130px',
@@ -305,6 +312,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 showWarning,
                 sliderStep,
               }}
+              // search={search}
+              // searchCoinInTable={searchCoinInTable}
             />
           </RebalanceAccordionIndex>
 
