@@ -26,21 +26,21 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
 
   timerRef = React.createRef()
 
-  // componentDidUpdate(prevProps) {
-  //   // update timer
-  //   if (
-  //     this.props.rebalanceTimePeriod.value !==
-  //     prevProps.rebalanceTimePeriod.value
-  //   ) {
-  //     this.timerRef.current.setTime(this.props.rebalanceTimePeriod.value)
-  //     if (
-  //       prevProps.rebalanceTimePeriod.value === 0 ||
-  //       prevProps.rebalanceTimePeriod.value === -1
-  //     ) {
-  //       this.timerRef.current.start()
-  //     }
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    // update timer
+    if (
+      this.props.rebalanceTimePeriod.value !==
+      prevProps.rebalanceTimePeriod.value
+    ) {
+      this.timerRef.current.setTime(this.props.rebalanceTimePeriod.value)
+      if (
+        prevProps.rebalanceTimePeriod.value === 0 ||
+        prevProps.rebalanceTimePeriod.value === -1
+      ) {
+        this.timerRef.current.start()
+      }
+    }
+  }
 
   slicePrice = (availableValue) => {
     let result = ''
@@ -67,8 +67,6 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
       rebalanceTimePeriod,
       onRebalanceTimerChange,
     } = this.props
-
-    rebalanceTimePeriod = { label: 'Weekly', value: 604800000 } // TODO delete it later
 
     const showEveryTimeInput =
       rebalanceTimePeriod && rebalanceTimePeriod.label === 'Every'
@@ -217,6 +215,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
+                  fontSize={'0.88rem'}
                   color={red.bright}
                   fontWeight={'700'}
                   position="right"
