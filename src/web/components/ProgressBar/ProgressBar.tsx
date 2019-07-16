@@ -62,6 +62,9 @@ class ProgressBar extends PureComponent<IProps> {
   render() {
     const { classes, theme, isFinished } = this.props
 
+    console.log('transactionsData', this.props.transactionsData);
+
+
     const { completed, isError } = this.state
 
     return (
