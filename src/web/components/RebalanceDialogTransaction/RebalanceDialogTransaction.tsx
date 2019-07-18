@@ -68,27 +68,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
     const { isFinished, isError } = this.state
 
-    // transactionsData = [
-    //   {
-    //     convertedFrom: 'BTC',
-    //     convertedTo: 'USDT',
-    //     sum: '0.00108819900196 BTC',
-    //     isDone: 'success',
-    //   },
-    //   {
-    //     convertedFrom: 'BTC',
-    //     convertedTo: 'ETH',
-    //     sum: '0.05108819900196 BTC',
-    //     isDone: 'success',
-    //   },
-    // ]
-
     return (
       <div>
         <LinkCustom
           background={Stroke}
-          //onClick={handleClickOpen}
-          //! TODO
           onClick={() => this.defaultStateForTransaaction(handleClickOpen)}
         >
           <SvgIcon width="60" height="60" src={Ellipse} />
