@@ -31,7 +31,7 @@ const DialogContent = withStyles((theme) => ({
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   state: IState = {
-    isFinished: true,
+    isFinished: false,
     isError: false,
   }
 
@@ -49,7 +49,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   render() {
-    const {
+    let {
       accordionTitle,
       transactionsData,
       theme: {
@@ -66,6 +66,21 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.props
 
     const { isFinished, isError } = this.state
+
+    // transactionsData = [
+    //   {
+    //     convertedFrom: 'BTC',
+    //     convertedTo: 'USDT',
+    //     sum: '0.00108819900196 BTC',
+    //     isDone: 'success',
+    //   },
+    //   {
+    //     convertedFrom: 'BTC',
+    //     convertedTo: 'ETH',
+    //     sum: '0.05108819900196 BTC',
+    //     isDone: 'success',
+    //   },
+    // ]
 
     return (
       <div>

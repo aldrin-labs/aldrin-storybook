@@ -44,7 +44,7 @@ class AccordionTable extends React.Component<IProps, IState> {
   }
 
   render() {
-    const {
+    let {
       classes,
       transactionsData,
       accordionTitle,
