@@ -5,4 +5,5 @@ export interface IProps {
   otherCoinData: string []
   otherCoinsPercentage: string []
   isSectionChart: boolean
+  isTargetChart: boolean
 }

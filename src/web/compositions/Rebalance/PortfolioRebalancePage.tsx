@@ -217,6 +217,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               </GridProgressTitle>
 
               <PortfolioRebalanceChart
+                key={`current-chart`}
+                isTargetChart={false}
                 coinData={staticRows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}
@@ -237,6 +239,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               open={this.state.openDialogTransaction}
               handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleCloseTransactionWindow}
+              onNewSnapshot={onNewSnapshot}
               executeRebalanceHandler={executeRebalanceHandler}
             />
           </GridTransactionBtn>
@@ -261,6 +264,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 <TypographyProgress>target allocation</TypographyProgress>
               </GridProgressTitle>
               <PortfolioRebalanceChart
+                key={`target-chart`}
+                isTargetChart={true}
                 coinData={rows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}

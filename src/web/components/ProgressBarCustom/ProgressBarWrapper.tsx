@@ -34,17 +34,19 @@ function ProgressBarWrapper(props: IProps) {
     otherCoinData,
     otherCoinsPercentage,
     isSectionChart,
-    classes,
+    isTargetChart,
   } = props
 
+
+  // TODO: Make it better
   return isSectionChart ? (
-    sectionDataProgress.map((datum) => {
-      return <ProgressBarSection datum={datum} />
+    sectionDataProgress.map((datum, index) => {
+      return <ProgressBarSection key={index} datum={datum} />
     })
   ) : (
     <>
       {coinData.map((datum, index) => {
-        return <ProgressBarCoins datum={datum} index={index} />
+        return <ProgressBarCoins key={index} datum={datum} index={index} />
       })}
       {otherCoinData ? (
         <ProgressOtherCoins

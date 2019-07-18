@@ -63,6 +63,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       },
       executeRebalanceHandler,
       initialTime,
+      onNewSnapshot,
     } = this.props
 
     const { isFinished, isError } = this.state
@@ -112,7 +113,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     btnWidth="120px"
                     color={blue.custom}
                     margin="0 5px"
-                    onClick={handleClose}
+                    onClick={() => {
+                      onNewSnapshot()
+                      handleClose()
+                    }}
                   >
                     Ok
                   </BtnCustom>
