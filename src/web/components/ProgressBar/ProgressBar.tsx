@@ -60,7 +60,7 @@ class ProgressBar extends PureComponent<IProps> {
   }
 
   render() {
-    const { classes, theme, isFinished } = this.props
+    const { classes, theme } = this.props
 
     const { completed, isError } = this.state
 
@@ -70,9 +70,9 @@ class ProgressBar extends PureComponent<IProps> {
           color={
             isError
               ? theme.customPalette.red.main
-              : isFinished === false
-              ? '#E7ECF3'
-              : 'secondary'
+              : completed > 0
+              ? 'secondary'
+              : '#E7ECF3'
           }
           height="20px"
           variant="determinate"
