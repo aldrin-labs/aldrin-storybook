@@ -52,7 +52,7 @@ const TransactionTable = ({
                 {<SvgIcon width="20" height="10" src={TradeIcon} />}{' '}
                 {row.convertedTo}
               </TableCell>
-              <TableCell align="left">{row.sum}</TableCell>
+              <TableCell align="left">{`!** `}{row.sum}</TableCell>
               <TableCell align="right">
                 {row.isDone === 'success' ? (
                   <SvgIcon src={DoneIcon} />

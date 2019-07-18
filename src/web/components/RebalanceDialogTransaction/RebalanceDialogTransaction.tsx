@@ -86,6 +86,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       <div>
         <LinkCustom
           background={Stroke}
+          //onClick={handleClickOpen}
+          //! TODO
           onClick={() => this.defaultStateForTransaaction(handleClickOpen)}
         >
           <SvgIcon width="60" height="60" src={Ellipse} />
@@ -97,7 +99,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
+          <DialogTitleCustom
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
             <TypographyCustomHeading
               fontWeight={'bold'}
               borderRadius={'10px'}

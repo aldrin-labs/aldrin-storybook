@@ -49,8 +49,9 @@ class ProgressBar extends PureComponent<IProps> {
       if (progressOfComplition === 100 && props.isFinished === false) {
         props.isCompleted(progressOfComplition)
       }
+
       return {
-        completed: state.completed + progressOfComplition,
+        completed: progressOfComplition,
         isError: false,
         dialogTransactionData: props.transactionsData,
       }
@@ -60,10 +61,7 @@ class ProgressBar extends PureComponent<IProps> {
   }
 
   render() {
-    const { classes, theme } = this.props
-
-    console.log('transactionsData', this.props.transactionsData);
-
+    const { classes, theme, isFinished } = this.props
 
     const { completed, isError } = this.state
 
@@ -73,7 +71,9 @@ class ProgressBar extends PureComponent<IProps> {
           color={
             isError
               ? theme.customPalette.red.main
-              : completed > 0
+              : completed > 0 && isFinished === false
+              ? 'secondary'
+              : isFinished === true
               ? 'secondary'
               : '#E7ECF3'
           }
