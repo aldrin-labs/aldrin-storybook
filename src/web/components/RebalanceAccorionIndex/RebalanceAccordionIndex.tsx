@@ -7,9 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import TablePanelSummary from './TablePanelSummary'
 
-import {
-  ExpansionPanelWrapper,
-} from './RebalanceAccordionIndex.styles'
+import { ExpansionPanelWrapper } from './RebalanceAccordionIndex.styles'
 
 const styles = (theme) => ({
   root: {

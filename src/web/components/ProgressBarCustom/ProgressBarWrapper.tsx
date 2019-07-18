@@ -47,7 +47,10 @@ function ProgressBarWrapper(props: IProps) {
         return <ProgressBarCoins datum={datum} index={index} />
       })}
       {otherCoinData ? (
-        <ProgressOtherCoins otherCoinData={otherCoinData} otherCoinsPercentage={otherCoinsPercentage} />
+        <ProgressOtherCoins
+          otherCoinData={otherCoinData}
+          otherCoinsPercentage={otherCoinsPercentage}
+        />
       ) : (
         ' '
       )}

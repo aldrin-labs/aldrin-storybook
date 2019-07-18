@@ -20,7 +20,6 @@ import Stroke from '../../../icons/Stroke.svg'
 import Ellipse from '../../../icons/Ellipse.png'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
-import { graphQLResultHasError } from 'apollo-utilities'
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -29,19 +28,18 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent)
 
-
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
-  state : IState = {
+  state: IState = {
     isFinished: true,
     isError: false,
   }
 
-  getError = (errorState) => {
+  getErrorForTransaction = (errorState) => {
     this.setState({ isError: errorState })
   }
 
-  isCompleted = () => {
+  isCompletedTransaction = () => {
     this.setState({ isFinished: true })
   }
 
@@ -67,7 +65,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       initialTime,
     } = this.props
 
-    
     const { isFinished, isError } = this.state
 
     return (
@@ -85,10 +82,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <DialogTitleCustom
-            id="customized-dialog-title"
-            onClose={handleClose}
-          >
+          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
             <TypographyCustomHeading
               fontWeight={'bold'}
               borderRadius={'10px'}
@@ -194,8 +188,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             <AccordionTable
               accordionTitle={accordionTitle}
               transactionsData={transactionsData}
-              getError={this.getError}
-              isCompleted={this.isCompleted}
+              getError={this.getErrorForTransaction}
+              isCompleted={this.isCompletedTransaction}
               isFinished={isFinished}
             />
           </DialogContent>

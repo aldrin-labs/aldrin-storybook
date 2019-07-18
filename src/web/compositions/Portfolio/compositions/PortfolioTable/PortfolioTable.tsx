@@ -23,7 +23,14 @@ import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTable
 @withRouter
 class PortfolioTable extends Component<IProps, IState> {
   render() {
-    const { theme, dustFilter, isUSDCurrently, baseCoin, portfolioId, activeKeys } = this.props
+    const {
+      theme,
+      dustFilter,
+      isUSDCurrently,
+      baseCoin,
+      portfolioId,
+      activeKeys,
+    } = this.props
 
     return (
       <Mutation mutation={TOGGLE_BASE_COIN}>

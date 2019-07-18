@@ -30,7 +30,7 @@ class DialogAddCoin extends React.Component {
 
   render() {
     const { handleSelectChange, onAddRowButtonClick } = this.props
-    
+
     return (
       <div>
         <BtnCustom
@@ -59,10 +59,12 @@ class DialogAddCoin extends React.Component {
                 //         label: row.symbol,
                 //       },
                 //     ]
-                      [{
-                        value: 'BRD',
-                        label: 'BRD',
-                      }]
+                [
+                  {
+                    value: 'BRD',
+                    label: 'BRD',
+                  },
+                ]
               }
               //ref={handleRef}
               key={`inputCoinSymbol${'index'}`}
@@ -116,24 +118,19 @@ class DialogAddCoin extends React.Component {
                 display: 'none',
               }}
               noOptionsMessage={() => `No such coin in our DB found`}
-              // inputStyles={{ color: 'red' }}
               valueContainerStyles={{
                 border: '2px solid #E7ECF3',
                 borderRadius: '54px',
                 background: '#F2F4F6',
                 paddingLeft: '15px',
               }}
-              //singleValueStyles={{ background: 'green' }}
-              // menuPortalStyles={{ background: 'green' }}
               menuIsOpen={true}
               onChange={(
                 optionSelected: {
                   label: string
                   value: string
                 } | null
-              ) =>
-                handleSelectChange('33', 'BRD', optionSelected)
-              }
+              ) => handleSelectChange('33', 'BRD', optionSelected)}
             />
           </DialogContent>
         </Dialog>

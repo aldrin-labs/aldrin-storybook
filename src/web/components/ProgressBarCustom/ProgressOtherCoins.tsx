@@ -10,7 +10,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
 
-export default function ProgressOtherCoins({otherCoinData, otherCoinsPercentage}) {
+export default function ProgressOtherCoins({
+  otherCoinData,
+  otherCoinsPercentage,
+}) {
   return (
     <ProgressAccordion otherCoinData={otherCoinData}>
       <Grid

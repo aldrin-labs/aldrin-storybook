@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import AppBar from '@material-ui/core/AppBar'
 
-
 export const Nav = styled(AppBar)`
   z-index: 1;
   overflow: hidden;
