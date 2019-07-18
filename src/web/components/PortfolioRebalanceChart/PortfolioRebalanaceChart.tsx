@@ -8,9 +8,11 @@ const PortfolioRebalanceChartComponent = ({
   otherCoinsPercentage,
   isSectionChart,
   sectionDataProgress,
+  isTargetChart,
 }: IProps) => (
   <>
     <ProgressBarWrapper
+      isTargetChart={isTargetChart}
       sectionDataProgress={sectionDataProgress}
       coinData={coinData}
       otherCoinData={otherCoinData}

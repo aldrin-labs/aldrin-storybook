@@ -4,6 +4,7 @@ export interface IProps {
   open: boolean
   handleClickOpen: () => void
   handleClose: () => void
+  onNewSnapshot: () => void
   theme: {
     palette: { black: any; blue: any }
   }
