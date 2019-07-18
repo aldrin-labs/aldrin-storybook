@@ -501,7 +501,7 @@ const CustomTable = (props: Props) => {
     <Paper
       elevation={elevation}
       style={{
-        width: '100%',
+        width: '100vw',
       }}
     >
       <Table
@@ -510,7 +510,7 @@ const CustomTable = (props: Props) => {
         id={props.id}
         style={{
           width: '100%',
-        }} //TODO
+        }}
       >
         <TableHead>
           {title && (
