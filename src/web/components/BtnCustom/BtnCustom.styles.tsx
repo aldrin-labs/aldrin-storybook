@@ -11,15 +11,16 @@ export const BtnCustom = styled(
     color,
     margin,
     padding,
+    fontSize,
     ...rest
   }) => <Button {...rest} />
 )`
   width: ${(props) => props.btnWidth || '218px'};
   height: ${(props) => props.height || `28px`};
   border: 1px solid ${(props) => props.btnColor || props.color || '#333'};
-  border-radius: ${(props) => props.borderRadius || `18px`};
+  border-radius: 8px;
   color: ${(props) => props.btnColor || props.color || '#333'};
-  font-size: 0.625rem;
+  font-size: ${(props) => props.fontSize || '0.625rem'};
   font-weight: 700;
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};
