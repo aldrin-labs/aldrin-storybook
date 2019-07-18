@@ -4,8 +4,8 @@ export interface IProps {
   classes: any
   transactionsData: any
   accordionTitle: string
-  getError: () => void
-  isCompleted: boolean
+  // getError: () => void
+  // isCompleted: () => void
   isFinished: boolean
   theme: Theme
 }
