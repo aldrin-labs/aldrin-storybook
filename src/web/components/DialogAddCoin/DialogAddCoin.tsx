@@ -130,7 +130,8 @@ class DialogAddCoin extends React.Component {
                   label: string
                   value: string
                 } | null
-              ) => handleSelectChange('33', 'BRD', optionSelected)}
+              ) => onAddRowButtonClick(optionSelected.label)}
+              //handleSelectChange('33', 'BRD', optionSelected)}
             />
           </DialogContent>
         </Dialog>
