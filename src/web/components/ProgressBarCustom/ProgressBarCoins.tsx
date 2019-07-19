@@ -7,6 +7,8 @@ import {
   IconCircle,
 } from './ProgressBar.styles'
 
+import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
+
 export default function ProgressBarCoins({ datum, index }) {
   return (
     <Grid
@@ -76,8 +78,9 @@ export default function ProgressBarCoins({ datum, index }) {
             paddingLeft: '43px',
           }}
         >
-          {datum.portfolioPerc !== '0' ? Math.floor(datum.portfolioPerc) : '0'}{' '}
-          %
+          {datum.portfolioPerc !== '0'
+            ? UTILS.preparePercentage(+datum.portfolioPerc)
+            : '0 %'}
         </TypographyCustom>
       </GridFlex>
     </Grid>

@@ -5,6 +5,8 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 
+import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
+
 import { Grid } from '@material-ui/core'
 import {
   GridFlex,
@@ -91,7 +93,11 @@ function ProgressAccordion(props) {
         >
           {otherCoinData.map((datum, index) => {
             return (
-              <Grid container style={{ marginBottom: '8px' }} lg={12}>
+              <Grid
+                container
+                style={{ marginBottom: '8px' }}
+                lg={12}
+              >
                 <GridFlex item lg={3} md={3} padding="0">
                   <IconCircle
                     className="fa fa-circle"
@@ -135,12 +141,16 @@ function ProgressAccordion(props) {
                   />
                 </Grid>
 
-                <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
+                <GridFlex
+                  item
+                  lg={3}
+                  md={3}
+                  style={{ paddingLeft: '43px' }}
+                >
                   <TypographyCustom>
                     {datum.portfolioPerc !== '0'
-                      ? Math.floor(datum.portfolioPerc)
-                      : '0'}{' '}
-                    %
+                      ? UTILS.preparePercentage(datum.portfolioPerc)
+                      : '0 %'}
                   </TypographyCustom>
                 </GridFlex>
               </Grid>

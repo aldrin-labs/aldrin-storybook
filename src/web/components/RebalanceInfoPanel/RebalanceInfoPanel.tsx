@@ -13,6 +13,10 @@ import Timer, { useTimer } from 'react-compound-timer'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './RebalanceInfoPanel.types'
 
+import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+
+
 import Input from '@material-ui/core/Input'
 //import { IState } from '@sb/compositions/Chart/Inputs/AutoSuggestSelect/AutoSuggestSeletec.types';
 
@@ -74,7 +78,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   Binance trade account
                 </StyledTypography>
                 <StyledSubTypography fontWeight={'700'} color={blue.light}>
-                  ${accountValue.substring(0, accountValue.indexOf('.'))}
+                   { roundAndFormatNumber(+accountValue,3, false)} 
                 </StyledSubTypography>
               </Grid>
 
@@ -87,7 +91,10 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   color={green.custom}
                   position="right"
                 >
-                  $ {availableValue !== '0' ? slicePrice(availableValue) : `0`}
+                  ${' '}
+                  {availableValue !== '0'
+                    ? slicePrice(availableValue)
+                    : `0`}
                 </StyledSubTypography>
               </Grid>
 
@@ -115,7 +122,12 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
         <Grid item md={5} lg={5}>
           <Grid container>
             <Grid container justify="space-between">
-              <GridFlex justify="flex-start" alignItems="center" item lg={3}>
+              <GridFlex
+                justify="flex-start"
+                alignItems="center"
+                item
+                lg={3}
+              >
                 <BtnCustom
                   borderRadius={'10px'}
                   btnColor={blue.custom}

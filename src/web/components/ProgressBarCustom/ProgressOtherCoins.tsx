@@ -9,6 +9,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
+import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
 export default function ProgressOtherCoins({
   otherCoinData,
@@ -66,7 +67,9 @@ export default function ProgressOtherCoins({
         </Grid>
 
         <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
-          <TypographyCustom>{otherCoinsPercentage.toFixed(0)}%</TypographyCustom>
+          <TypographyCustom>
+            {UTILS.preparePercentage(+otherCoinsPercentage)}
+          </TypographyCustom>
         </GridFlex>
       </Grid>
     </ProgressAccordion>
