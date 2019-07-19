@@ -77,7 +77,8 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   Binance trade account
                 </StyledTypography>
                 <StyledSubTypography fontWeight={'700'} color={blue.light}>
-                  {'$'}{roundAndFormatNumber(+accountValue, 3, false)}
+                  {'$'}
+                  {roundAndFormatNumber(+accountValue, 3, false)}
                 </StyledSubTypography>
               </Grid>
 
@@ -126,7 +127,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   height="24px"
                   onClick={toggleSectionCoinChart}
                 >
-                  {isSectionChart ? `section chart` : `coin chart`}
+                  {isSectionChart ? `coin chart` : `section chart`}
                 </BtnCustom>
               </GridFlex>
 

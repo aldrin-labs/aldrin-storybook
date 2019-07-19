@@ -67,7 +67,9 @@ class RebalanceAccordionIndex extends React.Component {
 
           return (
             <ExpansionPanelWrapper
-              expanded={expanded === `${panelId}`}
+              expanded={true}
+              //TODO: change on in the future version 
+              //expanded={expanded === `${panelId}`}
               onChange={this.handleChange(`${panelId}`)}
             >
               <ExpansionPanelSummary
@@ -86,7 +88,9 @@ class RebalanceAccordionIndex extends React.Component {
                   handleSlideChange={() => handleSlideChange()}
                 />
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
+              <ExpansionPanelDetails>
+                {children}
+              </ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}

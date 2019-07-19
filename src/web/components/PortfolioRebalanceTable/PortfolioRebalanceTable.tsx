@@ -82,6 +82,8 @@ const PortfolioRebalanceTable: React.FunctionComponent<
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
               fontSize: '12px',
+              height: '48px',
+              borderBottom: '1px solid #E0E5EC',
             },
           }}
           emptyTableText="No assets"
