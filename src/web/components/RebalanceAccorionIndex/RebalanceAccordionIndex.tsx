@@ -74,7 +74,7 @@ class RebalanceAccordionIndex extends React.Component {
             >
               <ExpansionPanelSummary
                 style={{ background: 'transparent' }}
-                expandIcon={<ExpandMoreIcon />}
+               //TODO ICON expandIcon={<ExpandMoreIcon />}
               >
                 <TablePanelSummary
                   accordionPanelHeadingBorderColor={

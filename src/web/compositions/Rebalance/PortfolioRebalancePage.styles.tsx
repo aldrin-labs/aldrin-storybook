@@ -48,7 +48,7 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
 `
 export const TypographyAccordionTitle = styled(Typography)`
   width: 100%;
-  height: 14px;
+  min-height: 28px;
   letter-spacing: 1.5px;
   margin: 6px auto;
   color: #abbad1;
