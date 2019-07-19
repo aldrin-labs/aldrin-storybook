@@ -6,10 +6,16 @@ import { Container as Content } from '@sb/styles/cssUtils'
 import { portfolioRebalanceSteps } from '@sb/config/joyrideSteps'
 import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
 
-import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
-import { Container, ChartWrapper } from './PortfolioRebalancePage.styles'
+import {
+  Container,
+  TypographyAccordionTitle,
+  TypographyProgress,
+  GridProgressTitle,
+  GridTransactionBtn,
+} from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
+import { Grid, Typography } from '@material-ui/core'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { graphql } from 'react-apollo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -19,9 +25,37 @@ import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 import { IState, IProps } from './PortfolioRebalancePage.types'
 
+// Rebalance Panel
+import RebalanceInfoPanel from '@sb/components/RebalanceInfoPanel/RebalanceInfoPanel'
+import RebalanceAccordionIndex from '@sb/components/RebalanceAccorionIndex/RebalanceAccordionIndex'
+import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
+import RebalanceDialogAdd from '@sb/components/RebalanceDialogAdd/RebalanceDialogAdd'
+import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
+
+import {
+  accordionAddPortfolioPanelData, // This data will be used in the future
+  accordionAddIndexPanelData, // This data will be used in the future
+  rebalanceInfoPanelData, // TODO: Delete?
+  rebalanceOption,
+  addFolioData,
+  addIndexData,
+  targetAllocation,
+} from './mockData'
+
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+
+@withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
+    openDialogTransaction: false,
+    isSectionChart: false,
+  }
+
+  toggleSectionCoinChart = () => {
+    this.setState({
+      isSectionChart: !this.state.isSectionChart,
+    })
   }
 
   handleJoyrideCallback = async (data: any) => {
@@ -33,6 +67,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       const {
         updateTooltipSettingsMutation,
         getTooltipSettingsQuery: { getTooltipSettings },
+        theme: {
+          palette: { blue, red, green },
+        },
       } = this.props
 
       await updateTooltipSettingsMutation({
@@ -50,6 +87,22 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     }
   }
 
+  handleOpenTransactionWindow = () => {
+    this.setState(
+      {
+        openDialogTransaction: true,
+      },
+      // set to default state, if you open again and cancel all previous actions
+      () => {
+        this.props.setTransactions()
+      }
+    )
+  }
+
+  handleCloseTransactionWindow = () => {
+    this.setState({ openDialogTransaction: false })
+  }
+
   render() {
     const {
       totalStaticRows,
@@ -62,7 +115,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       totalSnapshotRows,
       rows,
       staticRows,
-      addMoneyInputValue,
       leftBar,
       rightBar,
       loading,
@@ -89,6 +141,19 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       dustFilter,
       showWarning,
       getTooltipSettingsQuery: { getTooltipSettings },
+      sliderStep,
+      theme: {
+        palette: {
+          blue,
+          background: { table },
+        },
+      },
+      executeRebalanceHandler,
+      transactions,
+      rebalanceTimePeriod,
+      onRebalanceTimerChange,
+      // search,
+      // searchCoinInTable,
     } = this.props
 
     const secondary = palette.secondary.main
@@ -97,17 +162,123 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     const fontFamily = theme.typography.fontFamily
     const saveButtonColor = isPercentSumGood ? green : red
 
-    const tableDataHasData = !staticRows.length || !rows.length
+    const rebalanceInfoPanelData = {
+      accountValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
+      availableValue: roundAndFormatNumber(undistributedMoney, 3, false),
+      availablePercentage: roundAndFormatNumber(100 - +totalPercents, 3, false),
+      // TODO: change after implement period for select
+    }
+
+    const sectionPanelData = {
+      accordionPanelHeadingBorderColor: '#F29C38',
+      accordionPanelHeading: 'free assets',
+      secondColValue: roundAndFormatNumber(totalSnapshotRows, 3, false),
+      fourthColValue: roundAndFormatNumber(totalTableRows, 3, false),
+      percentage: 100,
+    }
 
     return (
       <>
         {children}
-        <Content key={`content`} container spacing={16}>
+        <Content
+          key={`content`}
+          container
+          spacing={16}
+          style={{ padding: '0 25px 25px 25px' }}
+        >
           <Container
             key={`table-container`}
             item
             md={12}
             isEditModeEnabled={isEditModeEnabled}
+          />
+
+          {/* REBALANCE INFO PANEL STARTS */}
+          <RebalanceInfoPanel
+            rebalanceTimePeriod={rebalanceTimePeriod}
+            onRebalanceTimerChange={onRebalanceTimerChange}
+            toggleSectionCoinChart={() => this.toggleSectionCoinChart()}
+            isSectionChart={this.state.isSectionChart}
+            rebalanceInfoPanelData={rebalanceInfoPanelData}
+            rebalanceOption={rebalanceOption}
+          />
+          {/* REBALANCE INFO PANEL ENDS */}
+
+          <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
+            <Grid
+              style={{
+                minHeight: '130px',
+                boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
+                borderRadius: '20px',
+              }}
+            >
+              <GridProgressTitle content alignItems="center">
+                <TypographyProgress>current allocation</TypographyProgress>
+              </GridProgressTitle>
+
+              <PortfolioRebalanceChart
+                key={`current-chart`}
+                isTargetChart={false}
+                coinData={staticRows}
+                isSectionChart={this.state.isSectionChart}
+                sectionDataProgress={targetAllocation}
+              />
+            </Grid>
+          </Grid>
+
+          <GridTransactionBtn
+            lg={2}
+            md={2}
+            style={{ height: '142px' }}
+            justify="center"
+          >
+            <RebalanceDialogTransaction
+              initialTime={rebalanceInfoPanelData.rebalanceTime}
+              accordionTitle="TRANSACTIONS"
+              transactionsData={transactions}
+              open={this.state.openDialogTransaction}
+              handleClickOpen={this.handleOpenTransactionWindow}
+              handleClose={this.handleCloseTransactionWindow}
+              onNewSnapshot={onNewSnapshot}
+              executeRebalanceHandler={executeRebalanceHandler}
+            />
+          </GridTransactionBtn>
+
+          <Grid
+            item
+            lg={5}
+            md={5}
+            style={{
+              minHeight: '100px',
+              padding: '0',
+            }}
+          >
+            <Grid
+              style={{
+                minHeight: '130px',
+                boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
+                borderRadius: '20px',
+              }}
+            >
+              <GridProgressTitle content alignItems="center">
+                <TypographyProgress>target allocation</TypographyProgress>
+              </GridProgressTitle>
+              <PortfolioRebalanceChart
+                key={`target-chart`}
+                isTargetChart={true}
+                coinData={rows}
+                isSectionChart={this.state.isSectionChart}
+                sectionDataProgress={targetAllocation}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Accordion Table Start */}
+          <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
+
+          <RebalanceAccordionIndex
+            sliderValue={100}
+            accordionData={[sectionPanelData]}
           >
             <PortfolioRebalanceTableContainer
               key={`PortfolioRebalanceTableContainer`}
@@ -123,7 +294,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 isPercentSumGood,
                 undistributedMoney,
                 isUSDCurrently,
-                addMoneyInputValue,
                 theme,
                 loading,
                 red,
@@ -140,32 +310,87 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot,
                 dustFilter,
                 showWarning,
+                sliderStep,
               }}
+              // search={search}
+              // searchCoinInTable={searchCoinInTable}
             />
-          </Container>
+          </RebalanceAccordionIndex>
 
-          <ChartWrapper
-            key={`chart-container`}
-            item
-            md={12}
-            className="PortfolioDistributionChart"
-          >
-            <PortfolioRebalanceChart
-              dustFilter={dustFilter}
-              key={`PortfolioRebalanceChart`}
-              title={`Portfolio Distribution`}
-              background={theme.palette.background.default}
-              staticRows={staticRows}
-              rows={rows}
-              bottomMargin={75}
-              theme={theme}
-              hideDashForToolTip={true}
-              xAxisVertical={true}
-              alwaysShowLegend={true}
-              leftBar={leftBar}
-              rightBar={rightBar}
-            />
-          </ChartWrapper>
+          <TypographyAccordionTitle>indexes</TypographyAccordionTitle>
+          {/* <RebalanceAccordionIndex*/}
+          {/*isEditModeEnabled={isEditModeEnabled}*/}
+          {/*staticRows={staticRows}*/}
+          {/*staticRowsMap={staticRowsMap}*/}
+          {/*totalStaticRows={totalStaticRows}*/}
+          {/*rows={rows}*/}
+          {/*totalRows={totalRows}*/}
+          {/*totalPercents={totalPercents}*/}
+          {/*totalTableRows={totalTableRows}*/}
+          {/*isPercentSumGood={isPercentSumGood}*/}
+          {/*undistributedMoney={undistributedMoney}*/}
+          {/*isUSDCurrently={isUSDCurrently}*/}
+          {/*theme={theme}*/}
+          {/*loading={loading}*/}
+          {/*red={red}*/}
+          {/*saveButtonColor={saveButtonColor}*/}
+          {/*secondary={secondary}*/}
+          {/*fontFamily={fontFamily}*/}
+          {/*totalSnapshotRows={totalSnapshotRows}*/}
+          {/*timestampSnapshot={timestampSnapshot}*/}
+          {/*onDiscardChanges={onDiscardChanges}*/}
+          {/*onSaveClick={onSaveClick}*/}
+          {/*onReset={onReset}*/}
+          {/*onEditModeEnable={onEditModeEnable}*/}
+          {/*updateState={updateState}*/}
+          {/*onNewSnapshot={onNewSnapshot}*/}
+          {/*dustFilter={dustFilter}*/}
+          {/*showWarning={showWarning}*/}
+          {/*sliderStep={sliderStep}*/}
+          {/*accordionData={accordionAddIndexPanelData}*/}
+          {/*/> */}
+
+          <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData} />
+
+          <TypographyAccordionTitle>
+            Following portfolios
+          </TypographyAccordionTitle>
+
+          {/*<RebalanceAccordionIndex*/}
+          {/*isEditModeEnabled={isEditModeEnabled}*/}
+          {/*staticRows={staticRows}*/}
+          {/*staticRowsMap={staticRowsMap}*/}
+          {/*totalStaticRows={totalStaticRows}*/}
+          {/*rows={rows}*/}
+          {/*totalRows={totalRows}*/}
+          {/*totalPercents={totalPercents}*/}
+          {/*totalTableRows={totalTableRows}*/}
+          {/*isPercentSumGood={isPercentSumGood}*/}
+          {/*undistributedMoney={undistributedMoney}*/}
+          {/*isUSDCurrently={isUSDCurrently}*/}
+          {/*theme={theme}*/}
+          {/*loading={loading}*/}
+          {/*red={red}*/}
+          {/*saveButtonColor={saveButtonColor}*/}
+          {/*secondary={secondary}*/}
+          {/*fontFamily={fontFamily}*/}
+          {/*totalSnapshotRows={totalSnapshotRows}*/}
+          {/*timestampSnapshot={timestampSnapshot}*/}
+          {/*onDiscardChanges={onDiscardChanges}*/}
+          {/*onSaveClick={onSaveClick}*/}
+          {/*onReset={onReset}*/}
+          {/*onEditModeEnable={onEditModeEnable}*/}
+          {/*updateState={updateState}*/}
+          {/*onNewSnapshot={onNewSnapshot}*/}
+          {/*dustFilter={dustFilter}*/}
+          {/*showWarning={showWarning}*/}
+          {/*sliderStep={sliderStep}*/}
+          {/*/>*/}
+          {/*accordionData={accordionAddPortfolioPanelData}*/}
+
+          <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData} />
+
+          {/* Accordion Table End */}
 
           {/* end of a grid */}
 
