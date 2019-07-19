@@ -66,7 +66,7 @@ export default function ProgressOtherCoins({
           />
         </Grid>
 
-        <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
+        <GridFlex item lg={3} md={3} padding={'0 0 0 45px'}>
           <TypographyCustom>
             {UTILS.preparePercentage(+otherCoinsPercentage)}
           </TypographyCustom>
