@@ -204,7 +204,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           />
           {/* REBALANCE INFO PANEL ENDS */}
 
-          <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
+          <Grid
+            item
+            lg={5}
+            md={5}
+            style={{ minHeight: '100px', padding: '0' }}
+          >
             <Grid
               style={{
                 minHeight: '130px',
@@ -233,7 +238,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             justify="center"
           >
             <RebalanceDialogTransaction
-              initialTime={rebalanceInfoPanelData.rebalanceTime}
+              initialTime={+rebalanceTimePeriod.value}
               accordionTitle="TRANSACTIONS"
               transactionsData={transactions}
               open={this.state.openDialogTransaction}
