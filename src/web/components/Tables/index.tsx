@@ -95,6 +95,7 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      border: '0px solid transparent',
       overflowX: 'auto',
       '&::-webkit-scrollbar': {
         width: '3px',
@@ -157,7 +158,16 @@ const styles = (theme: Theme) =>
     },
     rowWithHover: {
       '&:hover': {
-        backgroundColor: theme.palette.action.hover,
+        borderRadius: '32px',
+        backgroundColor: '#E7ECF3', //TODO theme.palette.action.hover,
+      },
+    },
+    rowWithHoverBorderRadius: {
+      '& td:first-child': {
+        borderRadius: '12px 0 0 12px',
+      },
+      '& td:last-child': {
+        borderRadius: '0 12px 12px 0',
       },
     },
     actionButton: {
@@ -460,6 +470,7 @@ const CustomTable = (props: Props) => {
     actionsColSpan = 1,
     borderBottom = false,
     rowsWithHover = true,
+    rowWithHoverBorderRadius = true, //TODO false rowWithHoverBorderRadius ,
     emptyTableText = 'no data',
     tableStyles = {
       heading: {},
@@ -487,11 +498,19 @@ const CustomTable = (props: Props) => {
   const isOnTop = !title ? { top: 0 } : {}
 
   return (
-    <Paper className={classes.root} elevation={elevation}>
+    <Paper
+      elevation={elevation}
+      style={{
+        width: '100vw',
+      }}
+    >
       <Table
         padding={padding ? padding : 'default'}
         className={`${classes.table} ${props.className || ''}`}
         id={props.id}
+        style={{
+          width: '100%',
+        }}
       >
         <TableHead>
           {title && (
@@ -502,7 +521,10 @@ const CustomTable = (props: Props) => {
                 colSpan={howManyColumns - actionsColSpan}
               >
                 <Typography
-                  style={{ fontSize: 16, textTransform: 'none' }}
+                  style={{
+                    fontSize: 16,
+                    textTransform: 'none',
+                  }}
                   variant="button"
                   color="default"
                 >
@@ -591,7 +613,11 @@ const CustomTable = (props: Props) => {
                   ? `${classes.row} + ${classes.rowSelected}`
                   : classes.row
                 const rowHoverClassName = rowsWithHover
-                  ? `${rowClassName} + ${classes.rowWithHover}`
+                  ? rowWithHoverBorderRadius
+                    ? `${rowClassName} + ${classes.rowWithHover} + ${
+                        classes.rowWithHoverBorderRadius
+                      }`
+                    : `${classes.rowWithHover}`
                   : rowClassName
                 const expandable = row.expandableContent
                 const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes

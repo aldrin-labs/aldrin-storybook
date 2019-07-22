@@ -17,7 +17,6 @@ export interface IProps extends TooltipQueryType, TooltipMutationType {
   getMyProfile: IGetMyProfile
   getCharts: IGetCharts
   addChartMutation: (queryObject: any) => Promise<any>
-  hideToolTip: (tab: string) => any
   getSelectedKeyQuery: {
     chart: {
       selectedKey: Key

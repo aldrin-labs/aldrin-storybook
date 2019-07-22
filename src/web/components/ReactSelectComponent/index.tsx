@@ -209,7 +209,7 @@ class ReactSelectComponent extends Component<IProps> {
         className="custom-select-box"
         classNamePrefix="custom-select-box"
         styles={customStyles}
-        components={{ DropdownIndicator }}
+        // components={{ DropdownIndicator }}
         {...otherProps}
       />
     )

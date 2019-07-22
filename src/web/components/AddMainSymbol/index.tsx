@@ -1,7 +1,6 @@
 import React from 'react'
 import { Icon } from '../cssUtils'
 
-
 export const getMainSymbol = (isUSDCurrently: boolean) =>
   isUSDCurrently ? (
     <Icon className="fa fa-usd" />

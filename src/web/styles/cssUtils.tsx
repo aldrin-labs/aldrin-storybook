@@ -119,7 +119,6 @@ export const chooseGreen = (theme: Theme) =>
     ? theme.palette.green.main
     : theme.palette.green.dark
 
-
 export const CentredContainer = styled.div`
   position: absolute;
   top: 50%;
@@ -141,7 +140,8 @@ export const ChartSelectStyles = css`
 
 export const StyledWrapperForDateRangePicker = styled.div`
   width: 206px;
-  padding: ${(props: { dateRangePadding: string }) => props.dateRangePadding || '6px 0'};
+  padding: ${(props: { dateRangePadding: string }) =>
+    props.dateRangePadding || '6px 0'};
 
   & .DateInput {
     width: 95px;
@@ -153,25 +153,31 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateInput_input {
-    padding: ${(props: { dateInputPadding: string }) => props.dateInputPadding || '5px'};
+    padding: ${(props: { dateInputPadding: string }) =>
+      props.dateInputPadding || '5px'};
     font-size: 0.875rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
-    font-size: ${(props: { fontSize?: string }) => props.fontSize ? props.fontSize : ''};
+    font-size: ${(props: { fontSize?: string }) =>
+      props.fontSize ? props.fontSize : ''};
     font-weight: 400;
-    height: ${(props: { dateInputHeight?: string }) => props.dateInputHeight || '36px'};
+    height: ${(props: { dateInputHeight?: string }) =>
+      props.dateInputHeight || '36px'};
     color: ${(props: { color: string }) => props.color};
-    background: ${(props: { background?: string }) => props.background || 'transparent'};
+    background: ${(props: { background?: string }) =>
+      props.background || 'transparent'};
   }
 
   & .DateRangePicker_picker {
-    font-size: ${(props: { fontSize?: string }) => props.fontSize ? props.fontSize : ''};
+    font-size: ${(props: { fontSize?: string }) =>
+      props.fontSize ? props.fontSize : ''};
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     z-index: ${(props: { zIndexPicker: number }) => props.zIndexPicker || 10};
   }
 
   & .DateRangePickerInput {
     border: 0;
-    background: ${(props: { background: string }) => props.background || 'transparent'};
+    background: ${(props: { background: string }) =>
+      props.background || 'transparent'};
     border-bottom: 1px solid #c1c1c1;
   }
 

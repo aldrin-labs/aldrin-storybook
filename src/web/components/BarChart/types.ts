@@ -15,6 +15,8 @@ export interface IChart {
   data: IValue[]
 }
 
+
+
 export interface IProps {
   charts: IChart[]
   showPlaceholder?: boolean

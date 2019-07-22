@@ -23,7 +23,7 @@ export const LoaderWrapper = styled.div`
   align-items: center;
   background: ${(props: { background: string }) => props.background};
 
-  z-index: 1000;
+  z-index: 10000;
 
   & > div {
     z-index: 1;
@@ -36,7 +36,7 @@ export const LoaderInnerWrapper = styled.div`
   flex-direction: column;
 `
 
-export const ContentInner = styled(Card)`
+export const ContentInner = styled(({...props}) => <Card {...props} />)`
   height: 100%;
   display: flex;
 `

@@ -41,6 +41,7 @@ export default class ThemeWrapper extends Component<Props> {
       themeMode === 'dark'
         ? {
             typography: {
+              fontFamily: ['DM Sans', 'sans-serif'].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',
@@ -64,7 +65,7 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 rounded: {
                   // Name of the rule
-                  borderRadius: '6px', // Some CSS
+                  borderRadius: '20px', // Some CSS
                 },
               },
               MuiIconButton: {
@@ -82,17 +83,38 @@ export default class ThemeWrapper extends Component<Props> {
               },
               green: {
                 main: '#48DCC6',
+                custom: '#377E21',
+              },
+              blue: {
+                main: '#5085EC',
               },
             },
             palette: {
               divider: fade('#748AA1', 0.16),
               type: themeMode,
               text: { primary: '#DBD9E6' },
+              black: {
+                custom: '#16253D',
+              },
               red: {
                 main: '#FE425A',
+                custom: '#D93B28',
+                bright: '#ED6337',
+              },
+              blue: {
+                custom: '#5085EC',
+                light: '#165BE0',
               },
               green: {
+                dark: '#377E21',
+                light: '#E7ECF3',
+                custom: '#97C15C',
                 main: '#48DCC6',
+              },
+              grey: {
+                custom: '#ABBAD1',
+                dark: '#7284A0',
+                main: '#F2F4F6',
               },
               primary: {
                 main: '#303037',
@@ -108,12 +130,14 @@ export default class ThemeWrapper extends Component<Props> {
               background: {
                 default: themeMode === 'light' ? '#fafafa' : '#16161D',
                 paper: themeMode === 'light' ? '#fff' : '#16161D',
+                table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
             },
           }
         : // light theme
           {
             typography: {
+              fontFamily: ['DM Sans', 'sans-serif'].join(','),
               useNextVariants: true,
               body1: {
                 fontSize: '0.875rem',
@@ -130,7 +154,8 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 root: {
                   // Name of the rule
-                  border: `1px solid #DDE0E7`, // Some CSS
+                  border: `1px solid transparent`,
+                  boxShadow: `none`,
                 },
               },
               MuiButton: {
@@ -141,10 +166,16 @@ export default class ThemeWrapper extends Component<Props> {
                 },
               },
               MuiPaper: {
+                elevation1: {
+                  boxShadow: `none`,
+                },
+                root: {
+                  //  boxShadow: `none`,
+                },
                 // Name of the component ⚛️ / style sheet
                 rounded: {
                   // Name of the rule
-                  borderRadius: '6px', // Some CSS
+                  borderRadius: '20px', // Some CSS
                 },
               },
               MuiIconButton: {
@@ -159,6 +190,7 @@ export default class ThemeWrapper extends Component<Props> {
             customPalette: {
               red: {
                 main: '#FE425A',
+                custom: '#D93B28',
               },
               green: {
                 main: '#3ED1BB',
@@ -168,11 +200,28 @@ export default class ThemeWrapper extends Component<Props> {
               divider: fade('#BCC2CF', 0.5),
               type: themeMode,
               text: { primary: fade('#41495E', 0.69) },
+              black: {
+                custom: '#16253D',
+              },
               red: {
                 main: '#FE425A',
+                custom: '#D93B28',
+                bright: '#ED6337',
+              },
+              blue: {
+                custom: '#5085EC',
+                light: '#165BE0',
               },
               green: {
-                main: '#3ED1BB',
+                dark: '#377E21',
+                custom: '#97C15C',
+                main: '#48DCC6',
+              },
+              grey: {
+                custom: '#ABBAD1',
+                dark: '#7284A0',
+                light: '#E7ECF3',
+                main: '#F2F4F6',
               },
               primary: {
                 main: '#FEFEFE',
@@ -186,8 +235,9 @@ export default class ThemeWrapper extends Component<Props> {
                 selected: 'rgba(255, 255, 255, 0.05)',
               },
               background: {
-                default: '#D9D9DC',
+                default: '#f9fbfd',
                 paper: '#FEFEFE',
+                table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
             },
           }

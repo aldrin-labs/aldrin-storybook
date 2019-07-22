@@ -85,7 +85,7 @@ export type action = {
   readonly onClick: (event: React.MouseEvent<HTMLElement>) => void
   readonly id: string
   readonly style: object
-  readonly icon: React.ComponentType<SvgIconProps>
+  readonly icon: React.ReactElement<any>
   readonly color?: PropTypes.Color
   readonly withoutHover?: boolean
 }
@@ -123,6 +123,7 @@ export interface Props {
   actionsColSpan?: number
   borderBottom?: boolean
   rowsWithHover?: boolean
+  rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
   tableStyles?: TableStyles
 }
