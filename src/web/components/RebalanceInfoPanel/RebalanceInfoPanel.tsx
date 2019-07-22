@@ -78,7 +78,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                 </StyledTypography>
                 <StyledSubTypography fontWeight={'700'} color={blue.light}>
                   {'$'}
-                  {roundAndFormatNumber(+accountValue, 3, false)}
+                  {roundAndFormatNumber(+accountValue, 2, false)}
                 </StyledSubTypography>
               </Grid>
 
