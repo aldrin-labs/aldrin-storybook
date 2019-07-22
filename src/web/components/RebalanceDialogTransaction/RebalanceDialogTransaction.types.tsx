@@ -15,4 +15,5 @@ export interface IProps {
 export interface IState {
   isFinished: boolean
   isError: boolean
+  isDisableBtns: boolean
 }

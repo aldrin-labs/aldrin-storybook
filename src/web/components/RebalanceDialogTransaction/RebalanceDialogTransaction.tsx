@@ -33,6 +33,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   state: IState = {
     isFinished: false,
     isError: false,
+    isDisableBtns: false,
   }
 
   getErrorForTransaction = (errorState) => {
@@ -43,8 +44,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     this.setState({ isFinished: true })
   }
 
-  defaultStateForTransaaction = (handleClickOpen) => {
-    this.setState({ isFinished: false, isError: false })
+  activateGoBtn = async () => {
+    await this.props.executeRebalanceHandler()
+    this.setState({ isDisableBtns: true })
+  }
+
+  defaultStateForTransaction = (handleClickOpen) => {
+    this.setState({ isFinished: false, isError: false, isDisableBtns: false })
     handleClickOpen()
   }
 
@@ -66,13 +72,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       onNewSnapshot,
     } = this.props
 
-    const { isFinished, isError } = this.state
+    const { isFinished, isError, isDisableBtns } = this.state
 
     return (
       <div>
         <LinkCustom
           background={Stroke}
-          onClick={() => this.defaultStateForTransaaction(handleClickOpen)}
+          onClick={() => this.defaultStateForTransaction(handleClickOpen)}
         >
           <SvgIcon width="60" height="60" src={Ellipse} />
         </LinkCustom>
@@ -83,10 +89,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={open}
         >
-          <DialogTitleCustom
-            id="customized-dialog-title"
-            onClose={handleClose}
-          >
+          <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
             <TypographyCustomHeading
               fontWeight={'bold'}
               borderRadius={'10px'}
@@ -167,27 +170,54 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   Your portfolio will change.
                 </TypographyTopDescription>
                 <GridCustom container justify="center">
-                  <BtnCustom
-                    height="34px"
-                    borderRadius={'10px'}
-                    btnWidth="120px"
-                    onClick={handleClose}
-                    color={red.custom}
-                    margin="0 5px"
-                  >
-                    Cancel
-                  </BtnCustom>
-
-                  <BtnCustom
-                    height="34px"
-                    borderRadius={'10px'}
-                    btnWidth="120px"
-                    color={blue.custom}
-                    margin="0 5px"
-                    onClick={async () => await executeRebalanceHandler()}
-                  >
-                    Go!
-                  </BtnCustom>
+                  {isDisableBtns ? (
+                    <>
+                      <BtnCustom
+                        height="34px"
+                        borderRadius={'10px'}
+                        btnWidth="120px"
+                        onClick={handleClose}
+                        color={'#9f9f9f'}
+                        margin="0 5px"
+                      >
+                        Cancel
+                      </BtnCustom>
+                      <BtnCustom
+                        height="34px"
+                        borderRadius={'10px'}
+                        btnWidth="120px"
+                        color={'#9f9f9f'}
+                        margin="0 5px"
+                        onClick={this.activateGoBtn}
+                        disabled
+                      >
+                        Go!
+                      </BtnCustom>
+                    </>
+                  ) : (
+                    <>
+                      <BtnCustom
+                        height="34px"
+                        borderRadius={'10px'}
+                        btnWidth="120px"
+                        onClick={handleClose}
+                        color={red.custom}
+                        margin="0 5px"
+                      >
+                        Cancel
+                      </BtnCustom>
+                      <BtnCustom
+                        height="34px"
+                        borderRadius={'10px'}
+                        btnWidth="120px"
+                        color={blue.custom}
+                        margin="0 5px"
+                        onClick={this.activateGoBtn}
+                      >
+                        Go!
+                      </BtnCustom>
+                    </>
+                  )}
                 </GridCustom>
               </>
             )}

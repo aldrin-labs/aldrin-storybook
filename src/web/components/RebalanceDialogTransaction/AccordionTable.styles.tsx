@@ -18,4 +18,7 @@ export const ExpansionPanelSummaryCustom = styled(ExpansionPanelSummary)`
 export const TypographyCustom = styled(Typography)`
   margin: auto;
   padding: 0;
+  &:last-child {
+    padding: 0;
+  }
 `
