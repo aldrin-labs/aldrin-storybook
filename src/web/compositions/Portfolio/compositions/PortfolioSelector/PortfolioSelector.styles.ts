@@ -1,5 +1,8 @@
+import React from 'react'
 import styled from 'styled-components'
 import FaFilter from '@material-ui/icons/FilterList'
+import { Grid, Typography } from '@material-ui/core'
+import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const Name = styled.h1`
   width: 100%;
@@ -63,4 +66,50 @@ export const AddAccountBlock = styled.div`
   justify-content: center;
   align-items: center;
   margin: 2rem 0;
+`
+
+// export const TypographyTitle = styled(({ fontSize, ...rest }) => (
+//   <Typography {...rest}/>
+// ))`
+export const TypographyTitle = styled(Typography)`
+  font-family: DM Sans;
+  font-size: ${(props) => props.fontSize || `0.75rem`};
+  line-height: ${(props) => props.lineHeight || '35px'};
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.textColor || '#ABBAD1'};
+  margin-left: 12px;
+`
+
+export const GridRow = styled(Grid)``
+export const GridCell = styled(Grid)``
+
+export const SliderContainer = styled(Grid)`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 35px;
+  padding: 0 15px;
+`
+export const GridSection = styled(Grid)`
+  border-bottom: 1px solid #e7ecf3;
+  padding: 25px 0;
+`
+
+export const GridSectionDust = styled(Grid)`
+  border-bottom: 1px solid #e7ecf3;
+  padding: 25px 0;
+  position: absolute;
+  bottom: 0;
+`
+
+export const ReactSelectCustom = styled(ReactSelect)`
+  font-family: 'DM Sans', sans-serif;
+  width: 100px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: transparent;
+  margin-left: 10px;
 `

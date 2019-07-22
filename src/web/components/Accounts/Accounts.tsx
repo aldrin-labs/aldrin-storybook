@@ -11,8 +11,13 @@ import {
   AccountName,
   AccountsList,
   AccountsListItem,
+  TypographyTitle,
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
+
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 export default class Accounts extends React.PureComponent<IProps> {
   render() {
@@ -33,18 +38,19 @@ export default class Accounts extends React.PureComponent<IProps> {
         <AccountsWalletsHeadingWrapper>
           <TypographyFullWidth
             gutterBottom={true}
-            align="center"
+            align="left"
             color="secondary"
             variant="h6"
           >
-            🔑 Api keys
+            {/* 🔑 Api keys */}
+            Accounts
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>
             settings
           </Headline>
           <CloseContainer>
-            <StyledIcon isSideNavOpen={isSideNavOpen} color={color} />
+            {/* <StyledIcon isSideNavOpen={isSideNavOpen} color={color} /> */}
           </CloseContainer>
         </AccountsWalletsHeadingWrapper>
 
@@ -76,9 +82,21 @@ export default class Accounts extends React.PureComponent<IProps> {
 
             return (
               <AccountsListItem key={keyName.name} color={color}>
+                <AccountName
+                  align="left"
+                  variant="body1"
+                  //color={isChecked ? 'secondary' : 'textSecondary'}
+                  lineHeight={'20px'}
+                  fontSize={'0.94rem'}
+                  textColor={'#7284A0'}
+                >
+                  {keyName.name}
+                  <TypographyTitle>$500,000.00</TypographyTitle>
+                </AccountName>
                 <Component
                   disabled={!login}
                   type={isRebalance ? 'radio' : 'checkbox'}
+                  color="secondary"
                   id={keyName.name}
                   checked={isChecked}
                   onClick={() => {
@@ -89,16 +107,11 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                 />
-                <AccountName
-                  align="left"
-                  variant="body1"
-                  color={isChecked ? 'secondary' : 'textSecondary'}
-                >
-                  {keyName.name}
-                </AccountName>
               </AccountsListItem>
             )
           })}
+
+          <AddAccountDialog />
         </AccountsList>
       </>
     )

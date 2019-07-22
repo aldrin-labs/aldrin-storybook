@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import Arrow from '@material-ui/icons/ChevronRight'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
+import { Typography } from '@material-ui/core'
 
 export const AccountsListItem = styled.li`
   display: flex;
@@ -9,6 +10,7 @@ export const AccountsListItem = styled.li`
   font-weight: 500;
   text-align: left;
   color: ${(props: { color: string }) => props.color};
+  padding: 0;
 `
 
 export const AccountsList = styled.ul`
@@ -48,8 +50,16 @@ export const SelectAll = styled.div`
 `
 
 export const AccountName = styled(TypographyFullWidth)`
+  font-weight: 700;
   height: 50%;
   margin: auto;
+  font-family: DM Sans;
+  font-size: ${(props) => props.fontSize || `0.75rem`};
+  line-height: ${(props) => props.lineHeight || '35px'};
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.textColor || '#ABBAD1'};
+  padding: 0;
 `
 
 export const Headline = styled.div`
@@ -68,4 +78,13 @@ export const Headline = styled.div`
     font-size: 1rem;
     right: 10.8rem;
   }
+`
+
+export const TypographyTitle = styled(Typography)`
+  font-family: DM Sans;
+  font-size: ${(props) => props.fontSize || `0.75rem`};
+  line-height: ${(props) => props.lineHeight || '35px'};
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.textColor || '#ABBAD1'};
 `
