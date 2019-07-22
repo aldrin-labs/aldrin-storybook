@@ -49,6 +49,7 @@ export const StyledTypography = styled(
     ...rest
   }) => <Typography {...rest} />
 )`
+  font-family: 'DM Sans';
   text-align: center;
   font-size: ${(props) => props.fontSize || `10px`};
   font-weight: ${(props) => props.fontWeight || `500`};
@@ -82,8 +83,10 @@ export const StyledTypographyAccordionHeader = styled(
 export const StyledSubTypography = styled(
   ({ color, primaryColor, position, ...rest }) => <Typography {...rest} />
 )`
+  font-family: 'DM Sans';
   text-align: center;
-  font-size: 18px;
+  font-size: 15px;
+  font-weight: 700;
   line-height: 25px;
   letter-spacing: 1.5px;
   text-transform: uppercase;

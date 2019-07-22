@@ -13,6 +13,8 @@ import {
   StyledTypographyAccordionHeader,
 } from './RebalanceAccordionIndex.styles'
 
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -49,7 +51,7 @@ function TablePanelSummary({
           >
             <StyledTypography fontWeight="700">Current value</StyledTypography>
             <StyledSubTypography color="#16253D">
-              ${secondColValue}
+              ${roundAndFormatNumber(+secondColValue, 2, false)}
             </StyledSubTypography>
           </TableCell>
           <TableCell
@@ -70,7 +72,7 @@ function TablePanelSummary({
               sliderHeightAfter="20px"
               borderRadius="30px"
               borderRadiusAfter="30px"
-              thumbBackground="blue"
+              thumbBackground="#165BE0"
               borderThumb="2px solid white"
               trackAfterBackground="#E7ECF3"
               trackBeforeBackground={accordionPanelHeadingBorderColor}
@@ -99,7 +101,7 @@ function TablePanelSummary({
             <StyledSubTypography
               color="#16253D" //{black.custom}
             >
-              ${fourthColValue}
+              ${roundAndFormatNumber(+fourthColValue, 2, false)}
             </StyledSubTypography>
           </TableCell>
           <TableCell align="right" />
