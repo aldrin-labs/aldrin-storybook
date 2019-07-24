@@ -25,6 +25,9 @@ import {
   GridSection,
   ReactSelectCustom,
   GridSectionDust,
+  GridSymbolContainer,
+  GridSymbolValue,
+  TypographySpan,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -57,6 +60,8 @@ class PortfolioSelector extends React.Component<IProps> {
   state = {
     valueSliderPercentage: 0,
     valueSliderPercentageContainer: 0,
+    valueSliderUsd: 0,
+    valueSliderUsdContainer: 0,
   }
 
   componentDidMount() {
@@ -76,12 +81,14 @@ class PortfolioSelector extends React.Component<IProps> {
     this.setState({
       valueSliderPercentage: value,
       valueSliderPercentageContainer: this.props.dustFilter.percentage,
+      valueSliderUsd: this.props.dustFilter.usd,
+      valueSliderUsdContainer: this.props.dustFilter.usd,
     })
   }
 
-  handleChange = (event, value) => {
-    this.setState({ valueSliderPercentage: value })
+  handleChangePercentage = (event, value) => {
     this.setState({
+      valueSliderPercentage: value,
       valueSliderPercentageContainer:
         value === 0
           ? 0
@@ -96,6 +103,14 @@ class PortfolioSelector extends React.Component<IProps> {
           : 10,
     })
     this.onDustFilterChange(value, 'percentage')
+  }
+
+  handleChangeUsd = (event, value) => {
+    console.log('slider change: ', value)
+    this.setState({
+      valueSliderUsd: value,
+    })
+    this.onDustFilterChange(value, 'usd')
   }
 
   updateSettings = async (objectForMutation) => {
@@ -186,29 +201,31 @@ class PortfolioSelector extends React.Component<IProps> {
     await this.updateSettings(objForQuery)
   }
 
-  onDustFilterChange = (
-    value: number,
-    dustFilterParam: string
-  ) => {
+  onDustFilterChange = (value: number, dustFilterParam: string) => {
     const { portfolioId, dustFilter } = this.props
     const { usd, percentage } = dustFilter
+    console.log('dustFilterParam: ', dustFilterParam)
+    const dustFilterParamValue =
+      dustFilterParam === 'percentage'
+        ? value === 0
+          ? '0'
+          : value === 20
+          ? '0.1'
+          : value === 40
+          ? '0.3'
+          : value === 60
+          ? '0.5'
+          : value === 80
+          ? '1'
+          : '10'
+        : value
+
     this.updateSettings({
       settings: {
         portfolioId,
         dustFilter: {
           ...{ usd, percentage },
-          [dustFilterParam]:
-            value === 0
-              ? 0
-              : value === 20
-              ? 0.1
-              : value === 40
-              ? 0.3
-              : value === 60
-              ? 0.5
-              : value === 80
-              ? 1
-              : 10,
+          [dustFilterParam]: dustFilterParamValue,
         }, //TODO
         // dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value }, //TODO
       },
@@ -259,74 +276,15 @@ class PortfolioSelector extends React.Component<IProps> {
         mountOnEnter={true}
         unmountOnExit={true}
       >
-        {/* Portfolio Section */}
-
         <AccountsWalletsBlock
           isSideNavOpen={true}
           background={theme.palette.background.paper}
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          {/* <GridSection>
-            <TypographyTitle>Portfolio</TypographyTitle>
-            <CreatePortfolio />
-          </GridSection>
-          <GridSection>
-            <TypographyTitle>Accounts</TypographyTitle>
-            <GridRow
-              container
-              lg={12}
-            >
-              <GridCell item lg={10}>
-                <TypographyTitle
-                  lineHeight={'20px'}
-                  fontSize={'0.94rem'}
-                  textColor={'#7284A0'}
-                >
-                  Binance Trade Account
-                </TypographyTitle>
-                <TypographyTitle>$500,000.00</TypographyTitle>
-              </GridCell>
-              <GridCell item lg={1} justify="right">
-                <Radio />
-              </GridCell>
-              <GridCell item lg={1} justify="right">
-                ...
-              </GridCell>
-            </GridRow>
-            <AddAccountDialog />
-          </GridSection>
-          <GridSection>
-            <TypographyTitle>Dust Filter</TypographyTitle>
-
-            <SliderContainer>
-              <Grid>%</Grid>
-              <Slider
-                thumbWidth="25px"
-                thumbHeight="25px"
-                sliderWidth="290px"
-                sliderHeight="17px"
-                sliderHeightAfter="20px"
-                borderRadius="30px"
-                borderRadiusAfter="30px"
-                thumbBackground="blue"
-                borderThumb="2px solid white"
-                trackAfterBackground="#E7ECF3"
-                trackBeforeBackground={'blue'}
-                value={'25'}
-                //onChange={handleSlideChange}
-                style={{ margin: 'auto 0' }}
-                disabled
-              />
-              <Grid>{'< 0.4%'}</Grid>
-            </SliderContainer>
-
-          </GridSection> */}
-
           <GridSection>
             <TypographyTitle>Portfolio</TypographyTitle>
             <ReactSelectCustom
-              //value={'55'}
               value={MyPortfoliosOptions[0]}
               // onChange={(
               //   optionSelected: {
@@ -366,20 +324,6 @@ class PortfolioSelector extends React.Component<IProps> {
               }}
             />
             <CreatePortfolio />
-            {/*
-            <BtnCustom
-              btnWidth={'160px'}
-              height={'24px'}
-              btnColor={'#165BE0'}
-              borderRadius={'10px'}
-              color={'#165BE0'}
-              margin={'8px'}
-              padding={'0px'}
-              fontSize={'0.65rem'}
-            >
-              + create portfolio
-            </BtnCustom> */}
-            {/* <CreatePortfolio /> */}
           </GridSection>
 
           <GridSection>
@@ -416,11 +360,68 @@ class PortfolioSelector extends React.Component<IProps> {
               Login to add <br /> or edit accounts
             </Typography>
           )} */}
+          </GridSection>
+          <GridSectionDust>
+            <TypographyTitle>Dust Filter</TypographyTitle>
 
-            {!isRebalance && (
+            {!isRebalance ? (
               <>
-                <Name color={color}>Dust</Name>
-                <FilterContainer>
+                <SliderContainer>
+                  <GridSymbolContainer>%</GridSymbolContainer>
+                  <Slider
+                    step={20}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="230px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    // value={dustFilter.percentage}
+                    value={this.state.valueSliderPercentage}
+                    //onChange={handleSlideChange}
+                    onChange={this.handleChangePercentage} //TODO onDragEnd
+                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
+                    style={{ margin: 'auto 0' }}
+                    //disabled
+                  />
+                  <GridSymbolValue>
+                    {this.state.valueSliderPercentageContainer === 0 ||
+                    this.state.valueSliderPercentageContainer === null
+                      ? `No % Filter`
+                      : `< ${this.state.valueSliderPercentageContainer} %`}
+                  </GridSymbolValue>
+                </SliderContainer>
+
+                <SliderContainer>
+                  <GridSymbolContainer>$</GridSymbolContainer>
+                  <Slider
+                    step={1}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="230px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    // value={dustFilter.percentage}
+                    value={this.state.valueSliderUsd}
+                    onChange={this.handleChangeUsd} //TODO onDragEnd
+                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
+                    style={{ margin: 'auto 0' }}
+                    //disabled
+                  />
+                  <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
+                </SliderContainer>
+                {/* <FilterContainer>
                   <FilterValues>
                     <FilterIcon
                       color={theme.palette.getContrastText(
@@ -451,66 +452,69 @@ class PortfolioSelector extends React.Component<IProps> {
                       options={usdDustFilterOptions}
                     />
                   </FilterValues>
-                </FilterContainer>
+                </FilterContainer> */}
+              </>
+            ) : (
+              <>
+                <SliderContainer>
+                  <GridSymbolContainer>%</GridSymbolContainer>
+                  <Slider
+                    step={20}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="230px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    // value={dustFilter.percentage}
+                    value={this.state.valueSliderPercentage}
+                    //onChange={handleSlideChange}
+                    onChange={this.handleChangePercentage} //TODO onDragEnd
+                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
+                    style={{ margin: 'auto 0' }}
+                    disabled
+                  />
+                  <GridSymbolValue>
+                    {this.state.valueSliderPercentageContainer === 0 ||
+                    this.state.valueSliderPercentageContainer === null
+                      ? `No % Filter`
+                      : `< ${this.state.valueSliderPercentageContainer} %`}
+                  </GridSymbolValue>
+                </SliderContainer>
+
+                <SliderContainer>
+                  <GridSymbolContainer>$</GridSymbolContainer>
+                  <Slider
+                    step={1}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="230px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    // value={dustFilter.percentage}
+                    value={this.state.valueSliderUsd}
+                    onChange={this.handleChangeUsd} //TODO onDragEnd
+                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
+                    style={{ margin: 'auto 0' }}
+                    disabled
+                  />
+                  <GridSymbolValue>
+                    {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan> {`$`}
+                  </GridSymbolValue>
+                </SliderContainer>
               </>
             )}
-          </GridSection>
-          <GridSectionDust>
-            <TypographyTitle>Dust Filter</TypographyTitle>
-
-            <SliderContainer>
-              <Grid>%</Grid>
-              <Slider
-                step={20}
-                thumbWidth="25px"
-                thumbHeight="25px"
-                sliderWidth="250px"
-                sliderHeight="17px"
-                sliderHeightAfter="20px"
-                borderRadius="30px"
-                borderRadiusAfter="30px"
-                thumbBackground="blue"
-                borderThumb="2px solid white"
-                trackAfterBackground="#E7ECF3"
-                trackBeforeBackground={'blue'}
-                // value={dustFilter.percentage}
-                value={this.state.valueSliderPercentage}
-                //onChange={handleSlideChange}
-                onChange={this.handleChange} //TODO onDragEnd
-                //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
-                style={{ margin: 'auto 0' }}
-                //disabled
-              />
-              <Grid>
-                {this.state.valueSliderPercentageContainer === 0 ||
-                this.state.valueSliderPercentageContainer === null
-                  ? `No % Filter`
-                  : `< ${this.state.valueSliderPercentageContainer} %`}
-              </Grid>
-            </SliderContainer>
-
-            <SliderContainer>
-              <Grid>$</Grid>
-              <Slider
-                thumbWidth="25px"
-                thumbHeight="25px"
-                sliderWidth="250px"
-                sliderHeight="17px"
-                sliderHeightAfter="20px"
-                borderRadius="30px"
-                borderRadiusAfter="30px"
-                thumbBackground="blue"
-                borderThumb="2px solid white"
-                trackAfterBackground="#E7ECF3"
-                trackBeforeBackground={'blue'}
-                value={dustFilter.usd}
-                //onChange={handleSlideChange}
-                handleChange={(e) => this.onDustFilterChange(e, 'usd')}
-                style={{ margin: 'auto 0' }}
-                //disabled
-              />
-              <Grid>{`< ${dustFilter.usd} $`}</Grid>
-            </SliderContainer>
           </GridSectionDust>
         </AccountsWalletsBlock>
       </Slide>
@@ -525,18 +529,3 @@ export default compose(
   }),
   withTheme()
 )(PortfolioSelector)
-
-/*
-
-
-export default withTheme()(PortfolioSelector)
-*/
-
-/*
-
-.react-calendar-heatmap .color-scale-1 { fill: #E0E5EC; }
-.react-calendar-heatmap .color-scale-2 { fill: #B3C8EE; }
-.react-calendar-heatmap .color-scale-3 { fill: #7EA3EA; }
-.react-calendar-heatmap .color-scale-4 { fill: #165BE0; }
-
-*/

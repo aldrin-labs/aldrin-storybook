@@ -86,7 +86,7 @@ export const GridCell = styled(Grid)``
 
 export const SliderContainer = styled(Grid)`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 35px;
   padding: 0 15px;
 `
@@ -112,4 +112,20 @@ export const ReactSelectCustom = styled(ReactSelect)`
   letter-spacing: 1px;
   background: transparent;
   margin-left: 10px;
+`
+
+export const GridSymbolContainer = styled(Grid)`
+  color: #7284a0;
+  font-size: 0.75rem;
+  padding: 0 15px 0 0;
+`
+export const GridSymbolValue = styled(Grid)`
+  color: #7284a0;
+  font-size: 0.75rem;
+  padding: 0 0 0 15px;
+`
+
+export const TypographySpan = styled(Typography)`
+  font-size: 0.75rem;
+  color: #165be0 !important;
 `
