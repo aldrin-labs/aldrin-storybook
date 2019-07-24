@@ -10,7 +10,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       <TableWithSort
         id="PortfolioActionsTable"
         padding="dense"
-        title="Portfolio Actions"
+        title="TRANSACTIONS"
         data={{ body: rows.body }}
         columnNames={rows.head}
         emptyTableText="No history"
