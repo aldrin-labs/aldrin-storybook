@@ -207,7 +207,7 @@ class PortfolioSelector extends React.Component<IProps> {
     console.log('dustFilterParam: ', dustFilterParam)
     const dustFilterParamValue =
       dustFilterParam === 'percentage'
-        ? value === 0
+      ? value === 0
           ? '0'
           : value === 20
           ? '0.1'
@@ -218,9 +218,9 @@ class PortfolioSelector extends React.Component<IProps> {
           : value === 80
           ? '1'
           : '10'
-        : value
-
-    this.updateSettings({
+          : value
+          
+          this.updateSettings({
       settings: {
         portfolioId,
         dustFilter: {
@@ -231,7 +231,7 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     })
   }
-
+  
   render() {
     const {
       isSideNavOpen,
@@ -247,7 +247,9 @@ class PortfolioSelector extends React.Component<IProps> {
       },
       getMyPortfoliosQuery,
     } = this.props
-
+    
+    console.log('DUST: ', this.props.dustFilter)
+    
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
       (item: { _id: string; name: string }) => {
         return {

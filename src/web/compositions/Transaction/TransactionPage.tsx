@@ -254,14 +254,19 @@ class TransactionPage extends Component {
           </Grid>
         </GridItemContainer>
 
-        <GridItemContainer item lg={7} md={7} >
-          <GridItemContainer item lg={12} md={12}> 
+        <GridItemContainer item lg={7} md={7}>
+          <GridItemContainer item lg={12} md={12}>
             {/* <Table tableStyles={tableStyles} /> */}
             {PortfolioActions}
             {/* <HeatMapChart data={mockHeatData} width={10} height={10} /> */}
           </GridItemContainer>
 
           <GridItemContainer item lg={12} md={12}>
+            {/* <GridProgressTitle content alignItems="center">
+              <TypographyContatinerTitle>
+                Transactions
+              </TypographyContatinerTitle>
+            </GridProgressTitle> */}
             {/* {children} */}
             {Chart}
             {/* <LineChart
