@@ -53,7 +53,7 @@ export default class Accounts extends React.PureComponent<IProps> {
             {/* <StyledIcon isSideNavOpen={isSideNavOpen} color={color} /> */}
           </CloseContainer>
         </AccountsWalletsHeadingWrapper>
-
+{/* 
         {!isRebalance && (
           <SelectAll>
             <Checkbox
@@ -71,7 +71,7 @@ export default class Accounts extends React.PureComponent<IProps> {
               Select All
             </AccountName>
           </SelectAll>
-        )}
+        )} */}
         <AccountsList id="AccountsList">
           {newKeys.map((keyName) => {
             if (!keyName) {
