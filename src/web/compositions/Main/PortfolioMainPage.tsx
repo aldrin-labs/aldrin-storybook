@@ -65,58 +65,11 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
     return (
       <Grid>
-        {/* <Grid
-        style={{
-          // width: '100%',
-          // height: '100%',
-          // overflowY: 'auto',
-          // overflowX: 'hidden',
-          // transform: 'rotate(-90deg)',
-          // transformOrigin: 'right top',
-          display: 'flex',
-          justifyContent: 'center'
-        }}
-      >
-        <Grid
-          style={{
-            width: '1400px',
-            height: '1000px',
-            border: '1px solid red',
-            // transform: 'rotate(90deg) translateY(-100px)',
-            transformOrigin: 'right top',
-            background: 'blue'
-          }}
-        >
-          5555
-        </Grid>
-        <Grid
-          style={{
-            width: '1400px',
-            height: '1000px',
-            border: '1px solid red',
-            // transform: 'rotate(90deg) translateY(-100px)',
-            transformOrigin: 'right top',
-            background: 'blue'
-          }}
-        >
-          5555
-        </Grid> */}
-
         <Template
           PortfolioMainTable={
             <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
           }
           PortfolioActions={<TradeOrderHistory />}
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-                minHeight: '10vh',
-              }}
-              marginTopHr="10px"
-            />
-          }
         />
         <Joyride
           continuous={true}
@@ -141,8 +94,20 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           }}
         />
 
-        <TransactionPage>
-          <PortfolioMainChart
+        <TransactionPage
+          Chart={
+            <PortfolioMainChart
+              title="Portfolio Value | Coming Soon | In development"
+              style={{
+                marginLeft: 0,
+                //minHeight: '10vh',
+              }}
+              marginTopHr="10px"
+            />
+          }
+          PortfolioActions={<TradeOrderHistory />}
+        />
+        {/* <PortfolioMainChart
             // title="Portfolio Value | Coming Soon | In development"
             style={{
               marginLeft: 0,
@@ -150,7 +115,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             }}
             marginTopHr="10px"
           />
-        </TransactionPage>
+        </TransactionPage> */}
       </Grid>
     )
   }
