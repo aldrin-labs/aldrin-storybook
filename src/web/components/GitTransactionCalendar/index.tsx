@@ -6,7 +6,12 @@ import { withStyles } from '@material-ui/core/styles'
 const styles = (theme) => ({
   root: {
     //width: '100%',
-    fontSize: '12px',
+    fontSize: '0.5625rem',
+    fontFamily: 'DM Sans',
+    lineHeight: '23px',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    //padding: '0 0 10px 40px'
   },
   githubZero: { fill: '#EEE' },
   githubOne: { fill: '#E0E5EC' },
@@ -39,9 +44,12 @@ class GitTransactionCalendar extends Component {
       }
     })
 
+    console.log('Date: ', today)
     return (
-      <CalendarHeatmap
+      <CalendarHeatmap 
         className={this.props.classes.root}
+        // startDate={'Wed Jul 24 2018 12:25:22 GMT+0500'}
+        // endDate={'Wed Jul 24 2019 12:25:22 GMT+0500'}
         startDate={shiftDate(today, -200)}
         endDate={today}
         values={
@@ -67,9 +75,9 @@ class GitTransactionCalendar extends Component {
         }}
         tooltipDataAttrs={(value) => {
           return {
-            'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${
-              value.count
-            }`,
+            'data-tip': `${value.date
+              .toISOString()
+              .slice(0, 10)} has count: ${value.count}`,
           }
         }}
         showWeekdayLabels={true}
@@ -79,19 +87,24 @@ class GitTransactionCalendar extends Component {
         horizontal={false}
         // gutterSize={255}
         monthLabels={[
-          'January',
-          'February',
-          'March',
-          'April',
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
           'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
         ]}
+        // showOutOfRangeDays={true}
+        titleForValue={(value) => `Date is ${value.date}`}
+        tooltipDataAttrs={(value) => {
+          return { 'data-tooltip': 'Tooltip: ' + value.date }
+        }}
       />
     )
   }
