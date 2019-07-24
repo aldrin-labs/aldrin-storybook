@@ -1,6 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
+import ReactSelect from '@sb/components/ReactSelectComponent'
+
+export const ReactSelectCustom = styled(ReactSelect)`
+  font-family: 'DM Sans', sans-serif;
+  width: 100px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: transparent;
+  margin-left: 10px;
+`
 
 export const GridProgressTitle = styled(Grid)`
   display: flex;

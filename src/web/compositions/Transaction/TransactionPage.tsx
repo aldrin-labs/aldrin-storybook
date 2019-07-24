@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
+
 import Accounts from '@sb/components/Accounts/Accounts'
 import LineChart from '@sb/components/LineChart'
 import Table from '@sb/components/Tables/index'
+import HeatMapChart from '@sb/components/HeatMapChart'
 
 import { Grid, Typography } from '@material-ui/core'
 import {
@@ -11,7 +13,12 @@ import {
   GridItemContainer,
   TypographyAccountTitle,
   ContentGrid,
+  ReactSelectCustom,
 } from './TransactionPage.styles'
+
+//TODO
+import ShowHideData from './ShowHideData/ShowHideData'
+import { LineSeries, XYPlot } from 'react-vis'
 
 class TransactionPage extends Component {
   render() {
@@ -101,7 +108,37 @@ class TransactionPage extends Component {
         y: 9.435929834047807,
       },
     ]
-    const { children } = this.props
+
+    const mockHeatData = [
+      {
+        x: 1,
+        y: 1,
+        color: 'red',
+      },
+      {
+        x: 2,
+        y: 1,
+        color: 'red',
+      },
+      {
+        x: 2,
+        y: 2,
+        color: 'red',
+      },
+      {
+        x: 3,
+        y: 4,
+        color: 'red',
+      },
+    ]
+
+    const tableStyles = {
+      heading: {},
+      title: {},
+      cell: {},
+    }
+
+    const { children, Chart, PortfolioActions } = this.props
     return (
       <Grid container justify="space-between">
         {/* Accounts */}
@@ -111,45 +148,45 @@ class TransactionPage extends Component {
           </GridProgressTitle>
           <ContentGrid>
             <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
-            {/* <ReactSelectCustom
-                value={MyPortfoliosOptions[0]}
-                // onChange={(
-                //   optionSelected: {
-                //     label: string
-                //     value: string
-                //   } | null
-                // ) => onRebalanceTimerChange(optionSelected)}
-                isSearchable={false}
-                options={MyPortfoliosOptions}
-                singleValueStyles={{
-                  color: '#165BE0',
-                  fontSize: '11px',
-                  padding: '0',
-                }}
-                indicatorSeparatorStyles={{}}
-                controlStyles={{
-                  background: 'transparent',
-                  border: 'none',
-                  width: 200,
-                }}
-                menuStyles={{
-                  width: 235,
-                  padding: '5px 8px',
+            <ReactSelectCustom
+              value={'MyPortfoliosOptions[0]'}
+              // onChange={(
+              //   optionSelected: {
+              //     label: string
+              //     value: string
+              //   } | null
+              // ) => onRebalanceTimerChange(optionSelected)}
+              isSearchable={false}
+              options={['MyPortfoliosOptions', 'MyPortfoliosOptions']}
+              singleValueStyles={{
+                color: '#165BE0',
+                fontSize: '11px',
+                padding: '0',
+              }}
+              indicatorSeparatorStyles={{}}
+              controlStyles={{
+                background: 'transparent',
+                border: 'none',
+                width: 200,
+              }}
+              menuStyles={{
+                width: 235,
+                padding: '5px 8px',
+                borderRadius: '14px',
+                textAlign: 'center',
+              }}
+              optionStyles={{
+                color: '#7284A0',
+                background: 'transparent',
+                textAlign: 'center',
+                fontSize: '0.62rem',
+                '&:hover': {
                   borderRadius: '14px',
-                  textAlign: 'center',
-                }}
-                optionStyles={{
-                  color: '#7284A0',
-                  background: 'transparent',
-                  textAlign: 'center',
-                  fontSize: '0.62rem',
-                  '&:hover': {
-                    borderRadius: '14px',
-                    color: '#16253D',
-                    background: '#E7ECF3',
-                  },
-                }}
-              /> */}
+                  color: '#16253D',
+                  background: '#E7ECF3',
+                },
+              }}
+            />
 
             {/* <Grid>
               <Accounts
@@ -166,6 +203,8 @@ class TransactionPage extends Component {
                 }}
               />
             </Grid> */}
+
+            <ShowHideData />
           </ContentGrid>
         </GridItemContainer>
 
@@ -175,17 +214,24 @@ class TransactionPage extends Component {
           <GridProgressTitle content alignItems="center">
             <TypographyContatinerTitle>calendar</TypographyContatinerTitle>
           </GridProgressTitle>
-          <ContentGrid>
-            <GitTransactionCalendar />
-
-            <Grid container>
+          <Grid style={{ padding: '0 0 20px 0' }}>
+            <Grid style={{ padding: '0 0 10px 45px' }}>
+              <GitTransactionCalendar />
+            </Grid>
+            <Grid container justify="center" style={{ margineTop: '15px' }}>
               <Grid lg={2}>
-                <Typography style={{ padding: '0 10px', textAlign: 'right' }}>
+                <Typography
+                  style={{
+                    padding: '0 10px',
+                    textAlign: 'right',
+                    fontSize: '0.5625rem',
+                  }}
+                >
                   Less
                 </Typography>
               </Grid>
 
-              <Grid lg={7}>
+              <Grid lg={8}>
                 <Grid
                   style={{
                     marginTop: '5px',
@@ -198,19 +244,26 @@ class TransactionPage extends Component {
                 />
               </Grid>
               <Grid lg={2}>
-                <Typography style={{ padding: '0 10px' }}>More</Typography>
+                <Typography
+                  style={{ padding: '0 10px', fontSize: '0.5625rem' }}
+                >
+                  More
+                </Typography>
               </Grid>
             </Grid>
-          </ContentGrid>
+          </Grid>
         </GridItemContainer>
 
-        <GridItemContainer item lg={7} md={7}>
-          <GridItemContainer item lg={12} md={12} style={{height: "65%"}}>
-            <Table />
+        <GridItemContainer item lg={7} md={7} >
+          <GridItemContainer item lg={12} md={12}> 
+            {/* <Table tableStyles={tableStyles} /> */}
+            {PortfolioActions}
+            {/* <HeatMapChart data={mockHeatData} width={10} height={10} /> */}
           </GridItemContainer>
 
-          <GridItemContainer item lg={12} md={12} style={{ height: '30%' }}>
-            {children}
+          <GridItemContainer item lg={12} md={12}>
+            {/* {children} */}
+            {Chart}
             {/* <LineChart
             data={mockLineData} //: Serie[][] | undefined
             activeLine={1} //: number | null
