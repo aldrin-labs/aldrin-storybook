@@ -31,6 +31,7 @@ export const GridItemContainer = styled(Grid)`
 
 export const ContentGrid = styled(Grid)`
   padding: 0 15px;
+  margin-top: 25px;
 `
 
 export const TypographyContatinerTitle = styled(Typography)`
@@ -73,4 +74,17 @@ export const GridShowHideDataContainer = styled(Grid)`
   padding: 20px 0;
   display: flex;
   justify-content: center;
+`
+
+export const TypographyCalendarLegend = styled(Typography)`
+  padding: '0 10px';
+  font-size: '0.5625rem';
+  text-align: ${(props) => props.textAlign};
+`
+
+export const GridAccountContainer = styled(Grid)`
+  min-height: 130px;
+  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  border-radius: 20px;
+  position: relative;
 `

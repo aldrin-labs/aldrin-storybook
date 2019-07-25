@@ -10,16 +10,13 @@ import {
   ContentGrid,
   TypographyTitle,
   GridShowHideDataContainer,
+  GridAccountContainer,
+  TypographyCalendarLegend,
 } from './TransactionPage.styles'
 
-//TODO
-// import LineChart from '@sb/components/LineChart'
-// import Table from '@sb/components/Tables/index'
-// import HeatMapChart from '@sb/components/HeatMapChart'
 import Accounts from '@sb/components/Accounts/Accounts'
 import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
 import ShowHideData from './ShowHideData/ShowHideData'
-import { LineSeries, XYPlot } from 'react-vis'
 import { withTheme } from '@material-ui/styles'
 
 @withTheme()
@@ -123,11 +120,11 @@ class TransactionPage extends Component {
     return (
       <Grid container justify="space-between">
         {/* Accounts */}
-        <GridItemContainer item lg={2} md={2} style={{ position: 'relative' }}>
+        <GridAccountContainer item lg={2} md={2}>
           <GridContainerTitle content alignItems="center">
             <TypographyContatinerTitle>accounts</TypographyContatinerTitle>
           </GridContainerTitle>
-          <ContentGrid style={{ marginTop: '25px' }}>
+          <ContentGrid>
             <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
 
             <PortfolioSelector />
@@ -153,7 +150,7 @@ class TransactionPage extends Component {
           <GridShowHideDataContainer>
             <ShowHideData />
           </GridShowHideDataContainer>
-        </GridItemContainer>
+        </GridAccountContainer>
 
         {/* Calendar */}
         <GridItemContainer item lg={2} md={2}>
@@ -166,15 +163,9 @@ class TransactionPage extends Component {
             </Grid>
             <Grid container justify="center" style={{ margineTop: '15px' }}>
               <Grid lg={2}>
-                <Typography
-                  style={{
-                    padding: '0 10px',
-                    textAlign: 'right',
-                    fontSize: '0.5625rem',
-                  }}
-                >
+                <TypographyCalendarLegend textAlign={'right'}>
                   Less
-                </Typography>
+                </TypographyCalendarLegend>
               </Grid>
 
               <Grid lg={8}>
@@ -190,11 +181,7 @@ class TransactionPage extends Component {
                 />
               </Grid>
               <Grid lg={2}>
-                <Typography
-                  style={{ padding: '0 10px', fontSize: '0.5625rem' }}
-                >
-                  More
-                </Typography>
+                <TypographyCalendarLegend>More</TypographyCalendarLegend>
               </Grid>
             </Grid>
           </Grid>
