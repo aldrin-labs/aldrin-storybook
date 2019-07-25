@@ -15,7 +15,7 @@ export const ReactSelectCustom = styled(ReactSelect)`
   margin-left: 10px;
 `
 
-export const GridProgressTitle = styled(Grid)`
+export const GridContainerTitle = styled(Grid)`
   display: flex;
   width: 100%;
   border-radius: 20px 20px 0 0;
@@ -42,8 +42,27 @@ export const TypographyContatinerTitle = styled(Typography)`
   letter-spacing: 1.5px;
   font-weight: 700;
   width: 100%;
-  text-align: center;
+  text-align: ${(props) => props.textAlign || 'center'};
   height: 24px;
+  padding: ${(props) => props.textPadding};
 `
 
-export const TypographyAccountTitle = styled(Typography)``
+export const TypographyAccountTitle = styled(Typography)`
+  font-family: DM Sans;
+  font-size: ${(props) => props.fontSize || `0.75rem`};
+  line-height: ${(props) => props.lineHeight || '35px'};
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.textColor || '#7284A0'};
+  margin-left: 10px;
+`
+
+export const TypographyTitle = styled(Typography)`
+  font-family: DM Sans;
+  font-size: ${(props) => props.fontSize || `0.75rem`};
+  line-height: ${(props) => props.lineHeight || '35px'};
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.textColor || '#ABBAD1'};
+  margin-left: 12px;
+`

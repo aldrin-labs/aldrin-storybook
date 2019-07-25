@@ -65,7 +65,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
     return (
       <Grid>
-        <Template
+        {/* <Template
           PortfolioMainTable={
             <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
           }
@@ -92,7 +92,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               fontSize: theme.typography.fontSize,
             },
           }}
-        />
+        /> */}
 
         <TransactionPage
           Chart={

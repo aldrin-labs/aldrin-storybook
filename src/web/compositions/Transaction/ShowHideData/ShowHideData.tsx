@@ -10,6 +10,10 @@ import { Typography, Grid } from '@material-ui/core'
 
 const styles = (theme) => ({
   root: {
+    minWidth: '200px',
+    // position: 'absolute',
+    // bottom: '0',
+    // alignSelf: 'flex-end',
     //display: 'flex',
   },
   formControl: {
@@ -38,14 +42,17 @@ class CheckboxesGroup extends React.Component {
         <FormControl component="fieldset" className={classes.formControl}>
           <Grid
             container
-            justify="left"
+            //justify="space-between"
             style={{
+              margin: '0 10px',
+              borderTop: '1px solid #E0E5EC',
               display: 'flex',
-              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '20px 0',
             }}
           >
             <Typography style={{ fontSize: '0.75rem' }}>
-              Show Deposit / Withdrawal{' '}
+              Show Deposit / Withdrawal
               <Checkbox
                 style={{ padding: '0' }}
                 checked={ShowDepositWithdrawal}
@@ -54,7 +61,7 @@ class CheckboxesGroup extends React.Component {
               />
             </Typography>
             <Typography style={{ fontSize: '0.75rem' }}>
-              Show Trades{' '}
+              Show Trades
               <Checkbox
                 style={{ padding: '0' }}
                 checked={ShowTrades}

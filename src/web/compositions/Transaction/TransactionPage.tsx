@@ -1,25 +1,27 @@
 import React, { Component } from 'react'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
-import Accounts from '@sb/components/Accounts/Accounts'
-import LineChart from '@sb/components/LineChart'
-import Table from '@sb/components/Tables/index'
-import HeatMapChart from '@sb/components/HeatMapChart'
-
 import { Grid, Typography } from '@material-ui/core'
 import {
-  GridProgressTitle,
+  GridContainerTitle,
   TypographyContatinerTitle,
   GridItemContainer,
   TypographyAccountTitle,
   ContentGrid,
-  ReactSelectCustom,
+  TypographyTitle,
 } from './TransactionPage.styles'
 
 //TODO
+// import LineChart from '@sb/components/LineChart'
+// import Table from '@sb/components/Tables/index'
+// import HeatMapChart from '@sb/components/HeatMapChart'
+import Accounts from '@sb/components/Accounts/Accounts'
+import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
 import ShowHideData from './ShowHideData/ShowHideData'
 import { LineSeries, XYPlot } from 'react-vis'
+import { withTheme } from '@material-ui/styles'
 
+@withTheme()
 class TransactionPage extends Component {
   render() {
     const mockLineData = [
@@ -132,63 +134,123 @@ class TransactionPage extends Component {
       },
     ]
 
-    const tableStyles = {
-      heading: {},
-      title: {},
-      cell: {},
-    }
+    const { children, Chart, PortfolioActions, theme } = this.props
+    const color = theme.palette.secondary.main
+    const login = true
+    const isSideNavOpen = true
+    const newKeys = [
+      //TODO hardcode for test
+      {
+        _id: '5be06b72d125a67cc2ccc03c',
+        name: 'test',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd96a13a01067001a8dbc93',
+        name: 'corpacc',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd43d75cc816b001b5bd224',
+        name: 'dontKnowKey',
+        selected: true,
+        __typename: 'entitySettings',
+      },
+    ]
 
-    const { children, Chart, PortfolioActions } = this.props
+    const activeKeys = [
+      //TODO hardcode for test
+      {
+        _id: '5be06b72d125a67cc2ccc03c',
+        name: 'test',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd96a13a01067001a8dbc93',
+        name: 'corpacc',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd43d75cc816b001b5bd224',
+        name: 'dontKnowKey',
+        selected: true,
+        __typename: 'entitySettings',
+      },
+    ]
+
+    const activeWallets = [
+      //TODO hardcode for test
+      {
+        _id: '5be06b72d125a67cc2ccc03c',
+        name: 'test',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd96a13a01067001a8dbc93',
+        name: 'corpacc',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd43d75cc816b001b5bd224',
+        name: 'dontKnowKey',
+        selected: true,
+        __typename: 'entitySettings',
+      },
+    ]
+
+    const newWallets = [
+      //TODO hardcode for test
+      {
+        _id: '5be06b72d125a67cc2ccc03c',
+        name: 'test',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd96a13a01067001a8dbc93',
+        name: 'corpacc',
+        selected: false,
+        __typename: 'entitySettings',
+      },
+      {
+        _id: '5cd43d75cc816b001b5bd224',
+        name: 'dontKnowKey',
+        selected: true,
+        __typename: 'entitySettings',
+      },
+    ]
+    const isCheckedAll =
+      activeKeys.length + activeWallets.length ===
+      newKeys.length + newWallets.length
+    const isRebalance = false
     return (
       <Grid container justify="space-between">
         {/* Accounts */}
-        <GridItemContainer item lg={2} md={2}>
-          <GridProgressTitle content alignItems="center">
+        <GridItemContainer
+          item
+          lg={2}
+          md={2}
+          style={{ position: 'relative' }}
+        >
+          <GridContainerTitle content alignItems="center">
             <TypographyContatinerTitle>accounts</TypographyContatinerTitle>
-          </GridProgressTitle>
-          <ContentGrid>
+          </GridContainerTitle>
+          <ContentGrid style={{ marginTop: '25px' }}>
             <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
-            <ReactSelectCustom
-              value={'MyPortfoliosOptions[0]'}
-              // onChange={(
-              //   optionSelected: {
-              //     label: string
-              //     value: string
-              //   } | null
-              // ) => onRebalanceTimerChange(optionSelected)}
-              isSearchable={false}
-              options={['MyPortfoliosOptions', 'MyPortfoliosOptions']}
-              singleValueStyles={{
-                color: '#165BE0',
-                fontSize: '11px',
-                padding: '0',
-              }}
-              indicatorSeparatorStyles={{}}
-              controlStyles={{
-                background: 'transparent',
-                border: 'none',
-                width: 200,
-              }}
-              menuStyles={{
-                width: 235,
-                padding: '5px 8px',
-                borderRadius: '14px',
-                textAlign: 'center',
-              }}
-              optionStyles={{
-                color: '#7284A0',
-                background: 'transparent',
-                textAlign: 'center',
-                fontSize: '0.62rem',
-                '&:hover': {
-                  borderRadius: '14px',
-                  color: '#16253D',
-                  background: '#E7ECF3',
-                },
-              }}
-            />
 
-            {/* <Grid>
+            <PortfolioSelector />
+
+            <TypographyTitle lineHeight={'22px'}>
+              $500,000.00
+            </TypographyTitle>
+
+            <Grid style={{ marginTop: '25px' }}>
               <Accounts
                 {...{
                   color,
@@ -202,18 +264,26 @@ class TransactionPage extends Component {
                   onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 }}
               />
-            </Grid> */}
-
-            <ShowHideData />
+            </Grid>
           </ContentGrid>
+          <Grid
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              minWidth: '180px',
+              //paddingLeft: '15px',
+            }}
+          >
+            <ShowHideData />
+          </Grid>
         </GridItemContainer>
 
         {/* Calendar */}
         <GridItemContainer item lg={2} md={2}>
           {/* git  */}
-          <GridProgressTitle content alignItems="center">
+          <GridContainerTitle content alignItems="center">
             <TypographyContatinerTitle>calendar</TypographyContatinerTitle>
-          </GridProgressTitle>
+          </GridContainerTitle>
           <Grid style={{ padding: '0 0 20px 0' }}>
             <Grid style={{ padding: '0 0 10px 45px' }}>
               <GitTransactionCalendar />
@@ -254,19 +324,39 @@ class TransactionPage extends Component {
           </Grid>
         </GridItemContainer>
 
-        <GridItemContainer item lg={7} md={7}>
+        <GridItemContainer
+          item
+          lg={7}
+          md={7}
+          style={{ boxShadow: 'none', border: 'none' }}
+        >
           <GridItemContainer item lg={12} md={12}>
             {/* <Table tableStyles={tableStyles} /> */}
-            {PortfolioActions}
-            {/* <HeatMapChart data={mockHeatData} width={10} height={10} /> */}
+            <GridContainerTitle content alignItems="center">
+              <Grid
+                style={{
+                  display: 'flex',
+                  width: '70%',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <TypographyContatinerTitle textAlign={'left'} textPadding={'0 0 0 35px'}>
+                  Transactions
+                </TypographyContatinerTitle>
+                <TypographyContatinerTitle>
+                  Jan, 25 - feb, 8, 2019
+                </TypographyContatinerTitle>
+              </Grid>
+            </GridContainerTitle>
+            <Grid style={{ padding: '0 25px' }}>{PortfolioActions}</Grid>
           </GridItemContainer>
 
-          <GridItemContainer item lg={12} md={12}>
-            {/* <GridProgressTitle content alignItems="center">
-              <TypographyContatinerTitle>
-                Transactions
-              </TypographyContatinerTitle>
-            </GridProgressTitle> */}
+          <GridItemContainer
+            item
+            lg={12}
+            md={12}
+            style={{ height: '32%', marginTop: '2%' }}
+          >
             {/* {children} */}
             {Chart}
             {/* <LineChart
