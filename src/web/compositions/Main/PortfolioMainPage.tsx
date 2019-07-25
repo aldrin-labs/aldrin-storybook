@@ -100,22 +100,12 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               title="Portfolio Value | Coming Soon | In development"
               style={{
                 marginLeft: 0,
-                //minHeight: '10vh',
               }}
               marginTopHr="10px"
             />
           }
           PortfolioActions={<TradeOrderHistory />}
         />
-        {/* <PortfolioMainChart
-            // title="Portfolio Value | Coming Soon | In development"
-            style={{
-              marginLeft: 0,
-              minHeight: '10vh',
-            }}
-            marginTopHr="10px"
-          />
-        </TransactionPage> */}
       </Grid>
     )
   }
