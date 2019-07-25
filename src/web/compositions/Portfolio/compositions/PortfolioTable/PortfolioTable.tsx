@@ -29,7 +29,9 @@ class PortfolioTable extends Component<IProps, IState> {
       isUSDCurrently,
       baseCoin,
       portfolioId,
+      portfolioName,
       activeKeys,
+      keys,
     } = this.props
 
     return (
@@ -52,6 +54,9 @@ class PortfolioTable extends Component<IProps, IState> {
                   path="/portfolio/main"
                   render={(...rest) => (
                     <PortfolioMain
+                      portfolioKeys={keys}
+                      portfolioId={portfolioId}
+                      portfolioName={portfolioName}
                       isUSDCurrently={isUSDCurrently}
                       theme={theme}
                       variables={{ baseCoin }}
