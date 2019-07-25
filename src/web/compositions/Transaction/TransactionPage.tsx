@@ -25,117 +25,7 @@ import { withTheme } from '@material-ui/styles'
 @withTheme()
 class TransactionPage extends Component {
   render() {
-    const mockLineData = [
-      {
-        x: 0,
-        y: 10,
-      },
-      {
-        x: 1,
-        y: 9.711949294780151,
-      },
-      {
-        x: 2,
-        y: 9.435362988707922,
-      },
-      {
-        x: 3,
-        y: 8.567833354235509,
-      },
-      {
-        x: 4,
-        y: 8.952000250954315,
-      },
-      {
-        x: 5,
-        y: 9.100140301097348,
-      },
-      {
-        x: 6,
-        y: 9.527500935032938,
-      },
-      {
-        x: 7,
-        y: 8.879424566545511,
-      },
-      {
-        x: 8,
-        y: 9.37592745035338,
-      },
-      {
-        x: 9,
-        y: 9.404755572687424,
-      },
-      {
-        x: 10,
-        y: 9.09422755036006,
-      },
-      {
-        x: 11,
-        y: 8.988221921504515,
-      },
-      {
-        x: 12,
-        y: 8.902258916655752,
-      },
-      {
-        x: 13,
-        y: 8.35330837446755,
-      },
-      {
-        x: 14,
-        y: 8.774051054408813,
-      },
-      {
-        x: 15,
-        y: 9.386415319337225,
-      },
-      {
-        x: 16,
-        y: 9.750396957422925,
-      },
-      {
-        x: 17,
-        y: 9.570285976590263,
-      },
-      {
-        x: 18,
-        y: 9.573916410282573,
-      },
-      {
-        x: 19,
-        y: 9.93453830562116,
-      },
-      {
-        x: 20,
-        y: 9.435929834047807,
-      },
-    ]
-
-    const mockHeatData = [
-      {
-        x: 1,
-        y: 1,
-        color: 'red',
-      },
-      {
-        x: 2,
-        y: 1,
-        color: 'red',
-      },
-      {
-        x: 2,
-        y: 2,
-        color: 'red',
-      },
-      {
-        x: 3,
-        y: 4,
-        color: 'red',
-      },
-    ]
-
-    const { children, Chart, PortfolioActions, theme } = this.props
+    const { Chart, PortfolioActions, theme } = this.props
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
@@ -346,15 +236,7 @@ class TransactionPage extends Component {
             md={12}
             style={{ height: '32%', marginTop: '2%' }}
           >
-            {/* {children} */}
             {Chart}
-            {/* <LineChart
-            data={mockLineData} //: Serie[][] | undefined
-            activeLine={1} //: number | null
-            showCustomPlaceholder={false} //: boolean
-            // placeholderElement={} //: any
-            // onChangeData={} //?: Function
-          /> */}
           </GridItemContainer>
         </GridItemContainer>
       </Grid>
