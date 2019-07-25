@@ -1,25 +1,10 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import FormLabel from '@material-ui/core/FormLabel'
-import FormControl from '@material-ui/core/FormControl'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Checkbox from '@material-ui/core/Checkbox'
-import { Typography, Grid } from '@material-ui/core'
-
-const styles = (theme) => ({
-  root: {
-    minWidth: '200px',
-    // position: 'absolute',
-    // bottom: '0',
-    // alignSelf: 'flex-end',
-    //display: 'flex',
-  },
-  formControl: {
-    //margin: theme.spacing.unit * 3,
-  },
-})
+import { Grid } from '@material-ui/core'
+import {
+  TypographyShowHide,
+  CheckboxShowHide,
+  FormControlCustom,
+} from './ShowHideData.style'
 
 class CheckboxesGroup extends React.Component {
   state = {
@@ -27,64 +12,38 @@ class CheckboxesGroup extends React.Component {
     ShowTrades: false,
   }
 
-  handleChange = (name) => (event) => {
-    this.setState({ [name]: event.target.checked })
+  handleChange = (option) => (event) => {
+    this.setState({ [option]: event.target.checked })
   }
 
   render() {
-    const { classes } = this.props
     const { ShowDepositWithdrawal, ShowTrades } = this.state
     const error =
       [ShowDepositWithdrawal, ShowTrades].filter((v) => v).length !== 2
 
     return (
-      <div className={classes.root}>
-        <FormControl component="fieldset" className={classes.formControl}>
-          <Grid
-            container
-            //justify="space-between"
-            style={{
-              margin: '0 10px',
-              borderTop: '1px solid #E0E5EC',
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '20px 0',
-            }}
-          >
-            <Typography style={{ fontSize: '0.75rem' }}>
-              Show Deposit / Withdrawal
-              <Checkbox
-                style={{ padding: '0' }}
-                checked={ShowDepositWithdrawal}
-                onChange={this.handleChange('ShowDepositWithdrawal')}
-                value="ShowDepositWithdrawal"
-              />
-            </Typography>
-            <Typography style={{ fontSize: '0.75rem' }}>
-              Show Trades
-              <Checkbox
-                style={{ padding: '0' }}
-                checked={ShowTrades}
-                onChange={this.handleChange('ShowTrades')}
-                value="ShowTrades"
-              />
-            </Typography>
+      <>
+        <FormControlCustom component="fieldset">
+          <Grid container justify="space-between">
+            <TypographyShowHide>Show Deposit / Withdrawal</TypographyShowHide>
+            <CheckboxShowHide
+              checked={ShowDepositWithdrawal}
+              onChange={this.handleChange('ShowDepositWithdrawal')}
+              value="ShowDepositWithdrawal"
+            />
           </Grid>
-          {/* 
-          <FormControlLabel
-            label="Show Deposit / Withdrawal"
-            control={
-              <Checkbox
-                checked={ShowDepositWithdrawal}
-                onChange={this.handleChange('ShowDepositWithdrawal')}
-                value="ShowDepositWithdrawal"
-              />
-            }
-          /> */}
-        </FormControl>
-      </div>
+          <Grid container justify="space-between">
+            <TypographyShowHide>Show Trades</TypographyShowHide>
+            <CheckboxShowHide
+              checked={ShowTrades}
+              onChange={this.handleChange('ShowTrades')}
+              value="ShowTrades"
+            />
+          </Grid>
+        </FormControlCustom>
+      </>
     )
   }
 }
 
-export default withStyles(styles)(CheckboxesGroup)
+export default CheckboxesGroup

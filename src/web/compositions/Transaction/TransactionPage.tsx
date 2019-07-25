@@ -9,6 +9,7 @@ import {
   TypographyAccountTitle,
   ContentGrid,
   TypographyTitle,
+  GridShowHideDataContainer,
 } from './TransactionPage.styles'
 
 //TODO
@@ -232,12 +233,7 @@ class TransactionPage extends Component {
     return (
       <Grid container justify="space-between">
         {/* Accounts */}
-        <GridItemContainer
-          item
-          lg={2}
-          md={2}
-          style={{ position: 'relative' }}
-        >
+        <GridItemContainer item lg={2} md={2} style={{ position: 'relative' }}>
           <GridContainerTitle content alignItems="center">
             <TypographyContatinerTitle>accounts</TypographyContatinerTitle>
           </GridContainerTitle>
@@ -246,9 +242,7 @@ class TransactionPage extends Component {
 
             <PortfolioSelector />
 
-            <TypographyTitle lineHeight={'22px'}>
-              $500,000.00
-            </TypographyTitle>
+            <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
 
             <Grid style={{ marginTop: '25px' }}>
               <Accounts
@@ -266,21 +260,13 @@ class TransactionPage extends Component {
               />
             </Grid>
           </ContentGrid>
-          <Grid
-            style={{
-              position: 'absolute',
-              bottom: '0',
-              minWidth: '180px',
-              //paddingLeft: '15px',
-            }}
-          >
+          <GridShowHideDataContainer>
             <ShowHideData />
-          </Grid>
+          </GridShowHideDataContainer>
         </GridItemContainer>
 
         {/* Calendar */}
         <GridItemContainer item lg={2} md={2}>
-          {/* git  */}
           <GridContainerTitle content alignItems="center">
             <TypographyContatinerTitle>calendar</TypographyContatinerTitle>
           </GridContainerTitle>
@@ -340,7 +326,10 @@ class TransactionPage extends Component {
                   justifyContent: 'space-between',
                 }}
               >
-                <TypographyContatinerTitle textAlign={'left'} textPadding={'0 0 0 35px'}>
+                <TypographyContatinerTitle
+                  textAlign={'left'}
+                  textPadding={'0 0 0 35px'}
+                >
                   Transactions
                 </TypographyContatinerTitle>
                 <TypographyContatinerTitle>

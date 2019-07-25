@@ -32,7 +32,6 @@ export const GridItemContainer = styled(Grid)`
 export const ContentGrid = styled(Grid)`
   padding: 0 15px;
 `
-// minHeight: '100px', padding: '0'
 
 export const TypographyContatinerTitle = styled(Typography)`
   margin-top: 10px;
@@ -65,4 +64,13 @@ export const TypographyTitle = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   margin-left: 12px;
+`
+
+export const GridShowHideDataContainer = styled(Grid)`
+  position: absolute;
+  bottom: 0;
+  min-width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
 `
