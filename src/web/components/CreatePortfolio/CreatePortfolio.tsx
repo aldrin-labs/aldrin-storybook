@@ -95,11 +95,11 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       <>
         <BtnCustom
           btnWidth={'160px'}
-          height={'24px'}
+          height={'28px'}
           btnColor={'#165BE0'}
           borderRadius={'10px'}
           color={'#165BE0'}
-          margin={'8px'}
+          margin={'20px 0 0 8px'}
           padding={'0px'}
           fontSize={'0.65rem'}
           onClick={this.handleClickOpen}

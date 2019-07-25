@@ -23,8 +23,9 @@ import {
   GridCell,
   SliderContainer,
   GridSection,
-  ReactSelectCustom,
+  GridSectionAccounts,
   GridSectionDust,
+  ReactSelectCustom,
   GridSymbolContainer,
   GridSymbolValue,
   TypographySpan,
@@ -207,7 +208,7 @@ class PortfolioSelector extends React.Component<IProps> {
     console.log('dustFilterParam: ', dustFilterParam)
     const dustFilterParamValue =
       dustFilterParam === 'percentage'
-      ? value === 0
+        ? value === 0
           ? '0'
           : value === 20
           ? '0.1'
@@ -218,9 +219,9 @@ class PortfolioSelector extends React.Component<IProps> {
           : value === 80
           ? '1'
           : '10'
-          : value
-          
-          this.updateSettings({
+        : value
+
+    this.updateSettings({
       settings: {
         portfolioId,
         dustFilter: {
@@ -231,7 +232,7 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     })
   }
-  
+
   render() {
     const {
       isSideNavOpen,
@@ -247,9 +248,9 @@ class PortfolioSelector extends React.Component<IProps> {
       },
       getMyPortfoliosQuery,
     } = this.props
-    
-    console.log('DUST: ', this.props.dustFilter)
-    
+
+    console.log('Gooo: ', newKeys)
+
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
       (item: { _id: string; name: string }) => {
         return {
@@ -297,15 +298,15 @@ class PortfolioSelector extends React.Component<IProps> {
               isSearchable={false}
               options={MyPortfoliosOptions}
               singleValueStyles={{
-                color: '#165BE0',
-                fontSize: '11px',
+                color: '#16253D', // default value
+                fontSize: '0.93rem',
                 padding: '0',
               }}
               indicatorSeparatorStyles={{}}
               controlStyles={{
                 background: 'transparent',
                 border: 'none',
-                width: 200,
+                width: 150,
               }}
               menuStyles={{
                 width: 235,
@@ -325,10 +326,11 @@ class PortfolioSelector extends React.Component<IProps> {
                 },
               }}
             />
+            <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
             <CreatePortfolio />
           </GridSection>
 
-          <GridSection>
+          <GridSectionAccounts>
             <Accounts
               {...{
                 color,
@@ -341,29 +343,10 @@ class PortfolioSelector extends React.Component<IProps> {
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
               }}
+              isSidebar={true}
             />
-            {/* //TODO: delete this
-          <Wallets
-            {...{
-              color,
-              login,
-              isSideNavOpen,
-              newWallets,
-              onWalletToggle: this.onWalletToggle,
-            }}
-          />
-          TODO: delete this
-          {!login && (
-            <Typography
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              Login to add <br /> or edit accounts
-            </Typography>
-          )} */}
-          </GridSection>
-          <GridSectionDust>
+          </GridSectionAccounts>
+          <GridSectionDust lg={12}>
             <TypographyTitle>Dust Filter</TypographyTitle>
 
             {!isRebalance ? (
@@ -374,7 +357,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     step={20}
                     thumbWidth="25px"
                     thumbHeight="25px"
-                    sliderWidth="230px"
+                    sliderWidth="250px"
                     sliderHeight="17px"
                     sliderHeightAfter="20px"
                     borderRadius="30px"
@@ -405,7 +388,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     step={1}
                     thumbWidth="25px"
                     thumbHeight="25px"
-                    sliderWidth="230px"
+                    sliderWidth="250px"
                     sliderHeight="17px"
                     sliderHeightAfter="20px"
                     borderRadius="30px"
@@ -421,7 +404,9 @@ class PortfolioSelector extends React.Component<IProps> {
                     style={{ margin: 'auto 0' }}
                     //disabled
                   />
-                  <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
+                  <GridSymbolValue>{`< ${
+                    dustFilter.usd
+                  } $`}</GridSymbolValue>
                 </SliderContainer>
                 {/* <FilterContainer>
                   <FilterValues>
@@ -464,7 +449,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     step={20}
                     thumbWidth="25px"
                     thumbHeight="25px"
-                    sliderWidth="230px"
+                    sliderWidth="250px"
                     sliderHeight="17px"
                     sliderHeightAfter="20px"
                     borderRadius="30px"
@@ -495,7 +480,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     step={1}
                     thumbWidth="25px"
                     thumbHeight="25px"
-                    sliderWidth="230px"
+                    sliderWidth="250px"
                     sliderHeight="17px"
                     sliderHeightAfter="20px"
                     borderRadius="30px"
@@ -512,7 +497,8 @@ class PortfolioSelector extends React.Component<IProps> {
                     disabled
                   />
                   <GridSymbolValue>
-                    {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan> {`$`}
+                    {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan>{' '}
+                    {`$`}
                   </GridSymbolValue>
                 </SliderContainer>
               </>

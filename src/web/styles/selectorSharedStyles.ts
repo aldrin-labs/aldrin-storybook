@@ -60,6 +60,8 @@ export const AccountName = styled(TypographyFullWidth)`
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: 0;
+  border-bottom: '1px solid #E0E5EC';
+  padding-top: '10px';
 `
 
 export const Headline = styled.div`
@@ -87,4 +89,5 @@ export const TypographyTitle = styled(Typography)`
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
+  padding: ${(props) => props.textPadding || 0};
 `

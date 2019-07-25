@@ -94,9 +94,13 @@ export const GridSection = styled(Grid)`
   border-bottom: 1px solid #e7ecf3;
   padding: 25px 0;
 `
+export const GridSectionAccounts = styled(Grid)`
+  padding: 25px 0;
+`
 
 export const GridSectionDust = styled(Grid)`
-  border-bottom: 1px solid #e7ecf3;
+  min-width: 380px;
+  border-top: 1px solid #e7ecf3;
   padding: 25px 0;
   position: absolute;
   bottom: 0;
@@ -113,13 +117,14 @@ export const ReactSelectCustom = styled(ReactSelect)`
   background: transparent;
   margin-left: 10px;
 `
-
 export const GridSymbolContainer = styled(Grid)`
+  min-width: 30px;
   color: #7284a0;
   font-size: 0.75rem;
   padding: 0 15px 0 0;
 `
 export const GridSymbolValue = styled(Grid)`
+  min-width: 75px;
   color: #7284a0;
   font-size: 0.75rem;
   padding: 0 0 0 15px;
