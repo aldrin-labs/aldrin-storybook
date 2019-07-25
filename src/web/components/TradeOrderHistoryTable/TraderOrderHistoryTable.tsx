@@ -47,7 +47,6 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         background: 'transparent',
         borderBottom: '1px solid #E0E5EC',
         height: '48px',
-        //margin: '0 15px',
         paddingLeft: '10px',
         '&:first-child': {
           color: 'green',
@@ -59,7 +58,6 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       <TableWithSort
         id="PortfolioActionsTable"
         padding="dense"
-        // title="TRANSACTIONS"
         data={{ body: rows.body }}
         columnNames={rows.head}
         emptyTableText="No history"
@@ -67,8 +65,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         pagination={{
           enabled: true,
           page: this.state.page,
-          rowsPerPage: 6, // this.state.rowsPerPage,
-          // rowsPerPageOptions: [20, 50, 100, 200],
+          rowsPerPage: 6,
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           handleChangePage: this.handleChangePage,
         }}
