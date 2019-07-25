@@ -3,6 +3,11 @@ import styled from 'styled-components'
 import FaFilter from '@material-ui/icons/FilterList'
 import { Grid, Typography } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
+import Slider from '@sb/components/Slider/Slider'
+
+export const SliderDustFilter = styled(Slider)`
+  margin: 'auto 0';
+`
 
 export const Name = styled.h1`
   width: 100%;

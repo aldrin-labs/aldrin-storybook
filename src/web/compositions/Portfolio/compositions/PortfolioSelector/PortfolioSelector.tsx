@@ -29,6 +29,7 @@ import {
   GridSymbolContainer,
   GridSymbolValue,
   TypographySpan,
+  SliderDustFilter,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -41,8 +42,6 @@ import { Grid } from '@material-ui/core'
 
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
-
-import Slider from '@sb/components/Slider/Slider'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { RadioGroup, Radio } from '@material-ui/core'
@@ -326,7 +325,9 @@ class PortfolioSelector extends React.Component<IProps> {
                 },
               }}
             />
-            <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
+            <TypographyTitle lineHeight={'22px'}>
+              $500,000.00
+            </TypographyTitle>
             <CreatePortfolio />
           </GridSection>
 
@@ -353,7 +354,7 @@ class PortfolioSelector extends React.Component<IProps> {
               <>
                 <SliderContainer>
                   <GridSymbolContainer>%</GridSymbolContainer>
-                  <Slider
+                  <SliderDustFilter
                     step={20}
                     thumbWidth="25px"
                     thumbHeight="25px"
@@ -366,13 +367,8 @@ class PortfolioSelector extends React.Component<IProps> {
                     borderThumb="2px solid white"
                     trackAfterBackground="#E7ECF3"
                     trackBeforeBackground={'#165BE0'}
-                    // value={dustFilter.percentage}
                     value={this.state.valueSliderPercentage}
-                    //onChange={handleSlideChange}
                     onChange={this.handleChangePercentage} //TODO onDragEnd
-                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
-                    style={{ margin: 'auto 0' }}
-                    //disabled
                   />
                   <GridSymbolValue>
                     {this.state.valueSliderPercentageContainer === 0 ||
@@ -384,7 +380,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
                 <SliderContainer>
                   <GridSymbolContainer>$</GridSymbolContainer>
-                  <Slider
+                  <SliderDustFilter
                     step={1}
                     thumbWidth="25px"
                     thumbHeight="25px"
@@ -397,12 +393,8 @@ class PortfolioSelector extends React.Component<IProps> {
                     borderThumb="2px solid white"
                     trackAfterBackground="#E7ECF3"
                     trackBeforeBackground={'#165BE0'}
-                    // value={dustFilter.percentage}
                     value={this.state.valueSliderUsd}
                     onChange={this.handleChangeUsd} //TODO onDragEnd
-                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
-                    style={{ margin: 'auto 0' }}
-                    //disabled
                   />
                   <GridSymbolValue>{`< ${
                     dustFilter.usd
@@ -445,7 +437,7 @@ class PortfolioSelector extends React.Component<IProps> {
               <>
                 <SliderContainer>
                   <GridSymbolContainer>%</GridSymbolContainer>
-                  <Slider
+                  <SliderDustFilter
                     step={20}
                     thumbWidth="25px"
                     thumbHeight="25px"
@@ -458,12 +450,8 @@ class PortfolioSelector extends React.Component<IProps> {
                     borderThumb="2px solid white"
                     trackAfterBackground="#E7ECF3"
                     trackBeforeBackground={'#165BE0'}
-                    // value={dustFilter.percentage}
                     value={this.state.valueSliderPercentage}
-                    //onChange={handleSlideChange}
                     onChange={this.handleChangePercentage} //TODO onDragEnd
-                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
-                    style={{ margin: 'auto 0' }}
                     disabled
                   />
                   <GridSymbolValue>
@@ -476,7 +464,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
                 <SliderContainer>
                   <GridSymbolContainer>$</GridSymbolContainer>
-                  <Slider
+                  <SliderDustFilter
                     step={1}
                     thumbWidth="25px"
                     thumbHeight="25px"
@@ -489,11 +477,8 @@ class PortfolioSelector extends React.Component<IProps> {
                     borderThumb="2px solid white"
                     trackAfterBackground="#E7ECF3"
                     trackBeforeBackground={'#165BE0'}
-                    // value={dustFilter.percentage}
                     value={this.state.valueSliderUsd}
                     onChange={this.handleChangeUsd} //TODO onDragEnd
-                    //handleChange={(e) => this.onDustFilterChange(e, 'percentage')}
-                    style={{ margin: 'auto 0' }}
                     disabled
                   />
                   <GridSymbolValue>
