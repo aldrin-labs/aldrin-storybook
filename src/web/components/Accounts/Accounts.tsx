@@ -11,8 +11,14 @@ import {
   AccountName,
   AccountsList,
   AccountsListItem,
+  TypographyTitle,
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
+
+import { Typography } from '@material-ui/core'
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 export default class Accounts extends React.PureComponent<IProps> {
   render() {
@@ -26,6 +32,7 @@ export default class Accounts extends React.PureComponent<IProps> {
       login,
       isRebalance,
       onKeySelectOnlyOne,
+      isSidebar,
     } = this.props
 
     return (
@@ -33,21 +40,24 @@ export default class Accounts extends React.PureComponent<IProps> {
         <AccountsWalletsHeadingWrapper>
           <TypographyFullWidth
             gutterBottom={true}
-            align="center"
+            align="left"
             color="secondary"
             variant="h6"
+            style={{ display: 'flex', justifyContent: 'space-between' }}
           >
-            🔑 Api keys
+            {/* 🔑 Api keys */}
+            <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
+            <TypographyTitle textColor={'#7284A0'}>Select All</TypographyTitle>
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>
             settings
           </Headline>
           <CloseContainer>
-            <StyledIcon isSideNavOpen={isSideNavOpen} color={color} />
+            {/* <StyledIcon isSideNavOpen={isSideNavOpen} color={color} /> */}
           </CloseContainer>
         </AccountsWalletsHeadingWrapper>
-
+        {/* 
         {!isRebalance && (
           <SelectAll>
             <Checkbox
@@ -65,7 +75,7 @@ export default class Accounts extends React.PureComponent<IProps> {
               Select All
             </AccountName>
           </SelectAll>
-        )}
+        )} */}
         <AccountsList id="AccountsList">
           {newKeys.map((keyName) => {
             if (!keyName) {
@@ -75,10 +85,31 @@ export default class Accounts extends React.PureComponent<IProps> {
             const isChecked = keyName.selected
 
             return (
-              <AccountsListItem key={keyName.name} color={color}>
+              <AccountsListItem
+                key={keyName.name}
+                color={color}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  borderBottom: '1px solid #E0E5EC',
+                  padding: '5px 0',
+                }}
+              >
+                <AccountName
+                  align="left"
+                  variant="body1"
+                  //color={isChecked ? 'secondary' : 'textSecondary'}
+                  lineHeight={'20px'}
+                  fontSize={'0.74rem'}
+                  textColor={'#7284A0'}
+                >
+                  {keyName.name}
+                  {/* <TypographyTitle>$500,000.00</TypographyTitle> */}
+                </AccountName>
                 <Component
                   disabled={!login}
                   type={isRebalance ? 'radio' : 'checkbox'}
+                  color="secondary"
                   id={keyName.name}
                   checked={isChecked}
                   onClick={() => {
@@ -89,17 +120,11 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                 />
-                <AccountName
-                  align="left"
-                  variant="body1"
-                  color={isChecked ? 'secondary' : 'textSecondary'}
-                >
-                  {keyName.name}
-                </AccountName>
               </AccountsListItem>
             )
           })}
         </AccountsList>
+        {isSidebar && <AddAccountDialog />}
       </>
     )
   }

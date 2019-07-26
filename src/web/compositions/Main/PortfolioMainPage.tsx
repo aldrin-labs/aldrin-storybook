@@ -21,6 +21,10 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
+//TODO NEW
+import { Grid } from '@material-ui/core'
+import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
@@ -81,8 +85,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     const { openSharePortfolioPopUp } = this.state
 
     return (
-      <>
-        <Template
+      <Grid>
+        {/* <Template
           PortfolioMainTable={
             <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
           }
@@ -92,7 +96,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               title="Portfolio Value | Coming Soon | In development"
               style={{
                 marginLeft: 0,
-                minHeight: '10vh',
               }}
               marginTopHr="10px"
             />
@@ -129,8 +132,21 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               fontSize: theme.typography.fontSize,
             },
           }}
+        /> */}
+        
+        <TransactionPage
+          Chart={
+            <PortfolioMainChart
+              title="Portfolio Value | Coming Soon | In development"
+              style={{
+                marginLeft: 0,
+              }}
+              marginTopHr="10px"
+            />
+          }
+          PortfolioActions={<TradeOrderHistory />}
         />
-      </>
+      </Grid>
     )
   }
 }

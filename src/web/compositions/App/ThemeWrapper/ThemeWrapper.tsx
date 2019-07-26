@@ -229,7 +229,7 @@ export default class ThemeWrapper extends Component<Props> {
                 light: '#FFF',
               },
               secondary: {
-                main: '#48DCC6',
+                main: '#165BE0', // '#48DCC6',
               },
               action: {
                 selected: 'rgba(255, 255, 255, 0.05)',
