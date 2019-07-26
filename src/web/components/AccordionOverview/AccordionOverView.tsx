@@ -104,7 +104,7 @@ function DetailedExpansionPanel(props) {
   const { classes } = props
   return (
     <div className={classes.root}>
-      <ExpansionPanel defaultExpanded>
+      <ExpansionPanel>
         <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
           <div className={classes.column}>
             <TypographyHeading>overview</TypographyHeading>
