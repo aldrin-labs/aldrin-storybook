@@ -167,7 +167,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 width={chartWidth || DEFAULT_CHART_SIZE.width}
                 height={chartHeight || DEFAULT_CHART_SIZE.height}
                 valueVariant={chartValueVariant}
-                removeValueContainer={!removeLabels}
+                removeValueContainer={removeLabels}
               />
             ) : (
               <FlexibleChart
@@ -182,7 +182,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 width={chartWidth || DEFAULT_CHART_SIZE.width}
                 height={chartHeight || DEFAULT_CHART_SIZE.height}
                 valueVariant={chartValueVariant}
-                removeValueContainer={!removeLabels}
+                removeValueContainer={removeLabels}
               />
             )}
           </ChartContainer>
