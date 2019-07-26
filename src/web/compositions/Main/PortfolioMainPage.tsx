@@ -97,18 +97,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
             }
           />
-          <TransactionPage
-            Chart={
-              <PortfolioMainChart
-                title="Portfolio Value | Coming Soon | In development"
-                style={{
-                  marginLeft: 0,
-                }}
-                marginTopHr="10px"
-              />
-            }
-            PortfolioActions={<TradeOrderHistory />}
-          />
 
           <Joyride
             continuous={true}

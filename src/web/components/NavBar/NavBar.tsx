@@ -78,7 +78,7 @@ const NavBarRaw: SFC<Props> = ({
               </NavLinkButton>*/}
               <Dropdown id="portfolio-menu" buttonText="Portfolio" items={[
                 { text: 'P&L', icon: <MainIcon fontSize="small"/>, to: '/portfolio/main' },
-                { text: 'Transactions', icon: <IndustryIcon fontSize="small"/>, to: '/transactions' },
+                { text: 'Transactions', icon: <IndustryIcon fontSize="small"/>, to: '/portfolio/transactions' },
                 { text: 'Rebalance', icon: <RebalanceIcon fontSize="small"/>, to: '/portfolio/rebalance' },
                 { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small"/>, to: '/portfolio/optimization' }
               ]}/>
