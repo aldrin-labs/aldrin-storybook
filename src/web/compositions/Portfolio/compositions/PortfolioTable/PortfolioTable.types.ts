@@ -13,5 +13,6 @@ export interface IProps {
   theme: Theme
   toggleWallets: () => void
   portfolioId: string
+  portfolioName: string
   activeKeys: any
 }

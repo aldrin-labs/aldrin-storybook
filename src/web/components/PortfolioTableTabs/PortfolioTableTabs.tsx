@@ -166,3 +166,4 @@ const BarTab = (props: {
 }
 
 export default PortfolioTableTabs
+

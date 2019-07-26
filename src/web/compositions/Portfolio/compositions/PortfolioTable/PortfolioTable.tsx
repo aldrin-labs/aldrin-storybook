@@ -20,6 +20,14 @@ const Correlation = React.lazy(() =>
 )
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
+const Social = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Social/SocialPage')
+)
+
+const Transaction = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Transaction/TransactionPage')
+)
+
 @withRouter
 class PortfolioTable extends Component<IProps, IState> {
   render() {
@@ -29,7 +37,9 @@ class PortfolioTable extends Component<IProps, IState> {
       isUSDCurrently,
       baseCoin,
       portfolioId,
+      portfolioName,
       activeKeys,
+      keys,
     } = this.props
 
     return (
@@ -52,6 +62,9 @@ class PortfolioTable extends Component<IProps, IState> {
                   path="/portfolio/main"
                   render={(...rest) => (
                     <PortfolioMain
+                      portfolioKeys={keys}
+                      portfolioId={portfolioId}
+                      portfolioName={portfolioName}
                       isUSDCurrently={isUSDCurrently}
                       theme={theme}
                       variables={{ baseCoin }}
@@ -112,6 +125,20 @@ class PortfolioTable extends Component<IProps, IState> {
                       dustFilter={dustFilter}
                       {...rest}
                     />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/social"
+                  render={(...rest) => (
+                    <Social dustFilter={dustFilter} {...rest} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/transactions"
+                  render={(...rest) => (
+                    <Transaction {...rest} />
                   )}
                 />
               </Switch>
