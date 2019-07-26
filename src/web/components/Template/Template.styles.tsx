@@ -8,10 +8,9 @@ import { Container } from '@sb/styles/cssUtils'
 export const GridContainer = styled(Container as React.SFC<GridProps>)`
   position: relative;
   flex-wrap: nowrap;
-  flex-direction: column;
+  flex-direction: row;
   @media (max-width: 960px) {
     flex-wrap: wrap;
-    flex-direction: row;
   }
   && {
     margin: 0;
