@@ -24,6 +24,9 @@ const Social = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Social/SocialPage')
 )
 
+const Transaction = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Transaction/TransactionPage')
+)
 
 @withRouter
 class PortfolioTable extends Component<IProps, IState> {
@@ -128,10 +131,14 @@ class PortfolioTable extends Component<IProps, IState> {
                   exact
                   path="/portfolio/social"
                   render={(...rest) => (
-                    <Social
-                      dustFilter={dustFilter}
-                      {...rest}
-                    />
+                    <Social dustFilter={dustFilter} {...rest} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/transactions"
+                  render={(...rest) => (
+                    <Transaction {...rest} />
                   )}
                 />
               </Switch>

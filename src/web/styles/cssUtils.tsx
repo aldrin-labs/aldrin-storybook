@@ -26,7 +26,7 @@ export const customAquaScrollBar = css`
 export const TypographyFullWidth = styled(TypographyWithCustomColor)`
   width: 100%;
   flex-grow: 1;
-  font-family: DM Sans;
+  font-family: 'DM Sans', sans-serif;
   font-size: ${(props) => props.fontSize || `0.75rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;

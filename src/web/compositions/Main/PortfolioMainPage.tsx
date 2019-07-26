@@ -10,6 +10,7 @@ import { IProps, IState } from './PortfolioMainPage.types'
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
+import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import Template from '@sb/components/Template/Template'
@@ -101,18 +102,9 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
             }
-          />
-          <TransactionPage
             Chart={
-              <PortfolioMainChart
-                // title="Portfolio Value | Coming Soon | In development"
-                style={{
-                  marginLeft: 0,
-                }}
-                marginTopHr="10px"
-              />
+              <PortfolioMainAllocation />
             }
-            PortfolioActions={<TradeOrderHistory />}
           />
 
           <Joyride

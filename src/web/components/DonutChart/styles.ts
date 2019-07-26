@@ -4,7 +4,7 @@ import { customAquaScrollBar } from '../cssUtils'
 
 export const ChartWithLegend = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${props => props.vertical ? 'column-reverse' : 'row'};
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -14,7 +14,7 @@ export const ChartWithLegend = styled.div`
 export const ChartContainer = styled.div`
   text-align: center;
   z-index: 2;
-  width: 100%;
+  width: fit-content;
   height: 100%;
   marigin: 0px;
 `

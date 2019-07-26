@@ -24,7 +24,7 @@ export const GridContainerTitle = styled(Grid)`
 `
 
 export const GridItemContainer = styled(Grid)`
-  min-height: 130px;
+  //min-height: 200px;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
 `

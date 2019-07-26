@@ -15,6 +15,9 @@ import {
   LessMoreContainer,
 } from './TransactionPage.styles'
 
+import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
+import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
+
 import Accounts from '@sb/components/Accounts/Accounts'
 import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
 import ShowHideData from './ShowHideData/ShowHideData'
@@ -23,7 +26,7 @@ import { withTheme } from '@material-ui/styles'
 @withTheme()
 class TransactionPage extends Component {
   render() {
-    const { Chart, PortfolioActions, theme } = this.props
+    const { theme } = this.props
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
@@ -206,16 +209,9 @@ class TransactionPage extends Component {
                 </TypographyContatinerTitle>
               </Grid>
             </GridContainerTitle>
-            <Grid style={{ padding: '0 25px' }}>{PortfolioActions}</Grid>
-          </GridItemContainer>
-
-          <GridItemContainer
-            item
-            lg={12}
-            md={12}
-            style={{ height: '32%', marginTop: '2%' }}
-          >
-            {Chart}
+            <Grid style={{ padding: '0 25px' }}>
+              <TradeOrderHistory />
+            </Grid>
           </GridItemContainer>
         </GridItemContainer>
       </Grid>
