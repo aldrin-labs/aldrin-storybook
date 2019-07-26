@@ -5,7 +5,13 @@ export interface Props {
   thicknessCoefficient: number
   isEmpty: boolean
   onValueMouseOver: (v: DonutPiece) => any
-  onSeriesMouseOut: () => any
+  onSeriesMouseOut: () => any,
+
+  width: number,
+  height: number,
+  valueVariant: string,
+
+  removeValueContainer: boolean
 }
 
 export interface InputRecord {

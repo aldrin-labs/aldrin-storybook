@@ -9,6 +9,7 @@ import { IProps, IState } from './PortfolioMainPage.types'
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
+import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -74,6 +75,9 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+            }
+            Chart={
+              <PortfolioMainAllocation />
             }
           />
           <Joyride
