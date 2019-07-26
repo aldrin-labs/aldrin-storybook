@@ -12,8 +12,8 @@ import {
   TextField,
 } from '@material-ui/core'
 
-import SearchUserEmails from '@core/components/SearchUserEmails/SearchUserEmails'
 import { IProps, IState } from './SharePortfolioDialog.types'
+import { withTheme } from '@material-ui/styles'
 
 const tradingPortfolioTypes = [
   'Bull trading',
@@ -55,6 +55,7 @@ const RadioElement = ({
   </Grid>
 )
 
+@withTheme()
 export default class SharePortfolioDialog extends React.Component<
   IProps,
   IState
@@ -64,15 +65,8 @@ export default class SharePortfolioDialog extends React.Component<
     selectedUserEmail: null,
   }
 
-  onChangeUserEmail = (
-    optionSelected: { label: string; value: string } | null
-  ) => {
-    const selectedUserEmail =
-      optionSelected && !Array.isArray(optionSelected)
-        ? { label: optionSelected.label, value: optionSelected.value }
-        : null
-
-    this.setState({ selectedUserEmail })
+  onChangeUserEmail = (e) => {
+    this.setState({ selectedUserEmail: e.target.value })
   }
 
   toggleSharingTab = () => {
@@ -111,6 +105,7 @@ export default class SharePortfolioDialog extends React.Component<
       openSharePortfolioPopUp,
       handleCloseSharePortfolio,
       portfolioKeys,
+      theme,
     } = this.props
 
     const { selectedUserEmail, shareWithSomeoneTab } = this.state
@@ -124,7 +119,7 @@ export default class SharePortfolioDialog extends React.Component<
       >
         <DialogTitle
           id="responsive-dialog-title"
-          style={{ backgroundColor: 'gray' }}
+          style={{ backgroundColor: theme.palette.grey.main }}
         >
           {sharePortfolioTitle}
         </DialogTitle>
@@ -186,18 +181,8 @@ export default class SharePortfolioDialog extends React.Component<
                 </Grid>
                 <Grid container justify="space-between">
                   <Grid item style={{ minWidth: '300px' }}>
-                    <SearchUserEmails
-                      isClearable={true}
-                      value={
-                        selectedUserEmail
-                          ? [
-                              {
-                                label: selectedUserEmail.label,
-                                value: selectedUserEmail.value,
-                              },
-                            ]
-                          : null
-                      }
+                    <Input
+                      value={selectedUserEmail}
                       onChange={this.onChangeUserEmail}
                     />
                   </Grid>

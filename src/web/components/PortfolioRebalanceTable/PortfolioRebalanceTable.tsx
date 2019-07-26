@@ -39,16 +39,16 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   const Table = isEditModeEnabled ? ImTable : TableWithSort
   return (
     <>
-      {loading && (
-        <LoaderWrapper background={fade(theme.palette.common.black, 0.7)}>
-          <LoaderInnerWrapper>
-            <Loading size={94} margin={'0 0 2rem 0'} />{' '}
-            <Typography color="secondary" variant="h4">
-              Saving rebalanced portfolio...
-            </Typography>{' '}
-          </LoaderInnerWrapper>{' '}
-        </LoaderWrapper>
-      )}
+      {/*{loading && (*/}
+        {/*<LoaderWrapper background={fade(theme.palette.common.black, 0.7)}>*/}
+          {/*<LoaderInnerWrapper>*/}
+            {/*<Loading size={94} margin={'0 0 2rem 0'} />{' '}*/}
+            {/*<Typography color="secondary" variant="h4">*/}
+              {/*Saving rebalanced portfolio...*/}
+            {/*</Typography>{' '}*/}
+          {/*</LoaderInnerWrapper>{' '}*/}
+        {/*</LoaderWrapper>*/}
+      {/*)}*/}
       <ContentInner>
         <Table
           style={{ width: '100%' }}
