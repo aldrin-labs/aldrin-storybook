@@ -90,59 +90,58 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     const { openSharePortfolioPopUp } = this.state
 
     return (
-      <>
-        <Joyride
-          continuous={true}
-          showProgress={true}
-          showSkipButton={true}
-          steps={portfolioMainSteps}
-          run={getTooltipSettings.portfolioMain}
-          callback={this.handleJoyrideCallback}
-          key={this.state.key}
-          styles={{
-            options: {
-              backgroundColor: theme.palette.getContrastText(
-                theme.palette.primary.main
-              ),
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.primary.main,
-            },
-            tooltip: {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-            },
-          }}
-        />
-        <SharePortfolioDialog
-          portfolioKeys={portfolioKeys}
-          portfolioId={portfolioId}
-          sharePortfolioTitle={`SHARE ${portfolioName}`}
-          openSharePortfolioPopUp={openSharePortfolioPopUp}
-          sharePortfolioMutation={sharePortfolioMutation}
-          handleCloseSharePortfolio={this.handleCloseSharePortfolio}
-        />
-        <LayoutClearfixWrapper>
-          <Grid>
-            <Template
-              PortfolioMainTable={
-                <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
-              }
-            />
-            <TransactionPage
-              Chart={
-                <PortfolioMainChart
-                  title="Portfolio Value | Coming Soon | In development"
-                  style={{
-                    marginLeft: 0,
-                  }}
-                  marginTopHr="10px"
-                />
-              }
-              PortfolioActions={<TradeOrderHistory />}
-            />
-          </Grid>
-        </LayoutClearfixWrapper>
-      </>
+      <LayoutClearfixWrapper>
+        <Grid>
+          <Template
+            PortfolioMainTable={
+              <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+            }
+          />
+          <TransactionPage
+            Chart={
+              <PortfolioMainChart
+                title="Portfolio Value | Coming Soon | In development"
+                style={{
+                  marginLeft: 0,
+                }}
+                marginTopHr="10px"
+              />
+            }
+            PortfolioActions={<TradeOrderHistory />}
+          />
+
+          <Joyride
+            continuous={true}
+            showProgress={true}
+            showSkipButton={true}
+            steps={portfolioMainSteps}
+            run={getTooltipSettings.portfolioMain}
+            callback={this.handleJoyrideCallback}
+            key={this.state.key}
+            styles={{
+              options: {
+                backgroundColor: theme.palette.getContrastText(
+                  theme.palette.primary.main
+                ),
+                primaryColor: theme.palette.secondary.main,
+                textColor: theme.palette.primary.main,
+              },
+              tooltip: {
+                fontFamily: theme.typography.fontFamily,
+                fontSize: theme.typography.fontSize,
+              },
+            }}
+          />
+          <SharePortfolioDialog
+            portfolioKeys={portfolioKeys}
+            portfolioId={portfolioId}
+            sharePortfolioTitle={`SHARE ${portfolioName}`}
+            openSharePortfolioPopUp={openSharePortfolioPopUp}
+            sharePortfolioMutation={sharePortfolioMutation}
+            handleCloseSharePortfolio={this.handleCloseSharePortfolio}
+          />
+        </Grid>
+      </LayoutClearfixWrapper>
     )
   }
 }
