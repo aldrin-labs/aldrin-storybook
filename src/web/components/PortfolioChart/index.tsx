@@ -78,7 +78,7 @@ export default class PortfolioChart extends Component<Props> {
     } = this.state
     return (
       <SProfileChart style={{ ...style, height }}>
-        <CardHeader
+        {/* <CardHeader // ! HEADER TITLE
           title={title}
           action={
             <>
@@ -100,44 +100,42 @@ export default class PortfolioChart extends Component<Props> {
                 ))}
             </>
           }
-        />
+        /> */}
         {/* minus cardHeader Height */}
-        <Chart height={`calc(100% - 68px)`}>
-            <FlexibleXYPlot
-              margin={{ left: 50 }}
-              animation={true}
-              onMouseLeave={this._onMouseLeave}
-              xDomain={
-                lastDrawLocation && [
-                  lastDrawLocation.left,
-                  lastDrawLocation.right,
-                ]
+        <Chart height={`calc(100% - 38px)`}>
+          <FlexibleXYPlot
+            margin={{ top: 45, left: 45, right: 45 }}
+            animation={true}
+            onMouseLeave={this._onMouseLeave}
+            xDomain={
+              lastDrawLocation && [
+                lastDrawLocation.left,
+                lastDrawLocation.right,
+              ]
+            }
+          >
+            <VerticalGridLines
+              style={verticalGridLinesStyle}
+              tickTotal={12}
+              tickFormat={(v: number) => '`$${v}`'}
+              tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
+              labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
+            />
+            <HorizontalGridLines style={horizontalGridLinesStyle} />
+            <XAxis
+              style={axisStyle}
+              tickFormat={(v: number) =>
+                new Date(v * 1000).toUTCString().substring(5, 11)
               }
-            >
-              <VerticalGridLines
-                style={verticalGridLinesStyle}
-                tickTotal={12}
-                tickFormat={(v: number) => '`$${v}`'}
-                tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
-                labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
-              />
-              <HorizontalGridLines style={horizontalGridLinesStyle} />
-              <XAxis
+            />
+            {/* hiding Axis for a while */}
+            {false && (
+              <YAxis
                 style={axisStyle}
-                tickFormat={(v: number) =>
-                  new Date(v * 1000).toUTCString().substring(5, 11)
-                }
+                tickFormat={(value: any) => `$${abbrNum(+value.toFixed(2), 2)}`}
               />
-              {/* hiding Axis for a while */}
-              {false && (
-                <YAxis
-                  style={axisStyle}
-                  tickFormat={(value: any) =>
-                    `$${abbrNum(+value.toFixed(2), 2)}`
-                  }
-                />
-              )}
-              <GradientDefs>
+            )}
+            {/* <GradientDefs> //TODO GRADIENT ELIMINATED
                 <linearGradient id="CoolGradient" x1="0" x2="0" y1="0" y2="1">
                   <stop
                     offset="0%"
@@ -150,34 +148,34 @@ export default class PortfolioChart extends Component<Props> {
                     stopOpacity={0}
                   />
                 </linearGradient>
-              </GradientDefs>
-              <AreaSeries
-                color={'url(#CoolGradient)'}
-                onNearestX={this._onNearestX}
-                data={data}
-                style={areaSeriesStyle}
-              />
+              </GradientDefs> */}
+            <AreaSeries
+              color={'url(#CoolGradient)'}
+              onNearestX={this._onNearestX}
+              data={data}
+              style={areaSeriesStyle}
+            />
 
-              <Crosshair values={crosshairValues}>
-                <div style={crosshairStyle}>
-                  <p>
-                    {crosshairValues &&
-                      crosshairValues
-                        .map((v) => new Date(v.x * 1000).toDateString())
-                        .join(' ')}
-                    :{' '}
-                    {crosshairValues &&
-                      crosshairValues
-                        .map((v) => `$${Number(v.y).toFixed(2)}`)
-                        .join(' ')}
-                  </p>
-                </div>
-              </Crosshair>
+            <Crosshair values={crosshairValues}>
+              <div style={crosshairStyle}>
+                <p>
+                  {crosshairValues &&
+                    crosshairValues
+                      .map((v) => new Date(v.x * 1000).toDateString())
+                      .join(' ')}
+                  :{' '}
+                  {crosshairValues &&
+                    crosshairValues
+                      .map((v) => `$${Number(v.y).toFixed(2)}`)
+                      .join(' ')}
+                </p>
+              </div>
+            </Crosshair>
 
-              {this.props.isShownMocks ? null : (
-                <Highlight onBrushEnd={this._onBrushEnd} />
-              )}
-            </FlexibleXYPlot>
+            {this.props.isShownMocks ? null : (
+              <Highlight onBrushEnd={this._onBrushEnd} />
+            )}
+          </FlexibleXYPlot>
         </Chart>
       </SProfileChart>
     )
