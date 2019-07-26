@@ -26,16 +26,7 @@ const Template = ({
             {PortfolioMainTable}
           </TableWrapper>
         </GridTableContainer>
-        <GridTableContainer item={true} xs={12} md={4}>
-          <TableWrapper className="PortfolioTradeOrderHistoryTable">
-            {PortfolioActions}
-          </TableWrapper>
-        </GridTableContainer>
       </TablesWrapper>
-
-      <ChartContainer item={true} xs={12} md={12}>
-        {Chart}
-      </ChartContainer>
     </GridContainer>
   )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { withTheme } from '@material-ui/styles'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 import { graphql } from 'react-apollo'
@@ -24,6 +25,10 @@ import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 //TODO NEW
 import { Grid } from '@material-ui/core'
 import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+
+const LayoutClearfixWrapper = styled.div`
+  margin-left: -5%;
+`
 
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
@@ -85,23 +90,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     const { openSharePortfolioPopUp } = this.state
 
     return (
-      <Grid>
-        {/* <Template
-          PortfolioMainTable={
-            <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
-          }
-          PortfolioActions={<TradeOrderHistory />}
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-              }}
-              marginTopHr="10px"
-            />
-          }
-        />
-
+      <>
         <Joyride
           continuous={true}
           showProgress={true}
@@ -123,8 +112,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               fontSize: theme.typography.fontSize,
             },
           }}
-        /> */}
-
+        />
         <SharePortfolioDialog
           portfolioKeys={portfolioKeys}
           portfolioId={portfolioId}
@@ -133,20 +121,28 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           sharePortfolioMutation={sharePortfolioMutation}
           handleCloseSharePortfolio={this.handleCloseSharePortfolio}
         />
-
-        <TransactionPage
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-              }}
-              marginTopHr="10px"
+        <LayoutClearfixWrapper>
+          <Grid>
+            <Template
+              PortfolioMainTable={
+                <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+              }
             />
-          }
-          PortfolioActions={<TradeOrderHistory />}
-        />
-      </Grid>
+            <TransactionPage
+              Chart={
+                <PortfolioMainChart
+                  title="Portfolio Value | Coming Soon | In development"
+                  style={{
+                    marginLeft: 0,
+                  }}
+                  marginTopHr="10px"
+                />
+              }
+              PortfolioActions={<TradeOrderHistory />}
+            />
+          </Grid>
+        </LayoutClearfixWrapper>
+      </>
     )
   }
 }
