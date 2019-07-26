@@ -102,15 +102,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           }
         />
 
-        <SharePortfolioDialog
-          portfolioKeys={portfolioKeys}
-          portfolioId={portfolioId}
-          sharePortfolioTitle={`SHARE ${portfolioName}`}
-          openSharePortfolioPopUp={openSharePortfolioPopUp}
-          sharePortfolioMutation={sharePortfolioMutation}
-          handleCloseSharePortfolio={this.handleCloseSharePortfolio}
-        />
-
         <Joyride
           continuous={true}
           showProgress={true}
@@ -133,7 +124,16 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             },
           }}
         /> */}
-        
+
+        <SharePortfolioDialog
+          portfolioKeys={portfolioKeys}
+          portfolioId={portfolioId}
+          sharePortfolioTitle={`SHARE ${portfolioName}`}
+          openSharePortfolioPopUp={openSharePortfolioPopUp}
+          sharePortfolioMutation={sharePortfolioMutation}
+          handleCloseSharePortfolio={this.handleCloseSharePortfolio}
+        />
+
         <TransactionPage
           Chart={
             <PortfolioMainChart
