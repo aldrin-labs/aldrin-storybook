@@ -1,22 +1,25 @@
 import React from 'react'
-
-import { BarChart, CardHeader } from '@sb/components/index'
-import { ChartContainer, Chart } from './PortfolioRebalanceChart.styles'
 import { IProps } from './PortfolioRebalanceChart.types'
+import ProgressBarWrapper from '@sb/components/ProgressBarCustom/ProgressBarWrapper.tsx'
 
 const PortfolioRebalanceChartComponent = ({
-  theme,
-  title,
-  rebalanceChartsData,
-  ...otherProps
+  coinData,
+  otherCoinData,
+  otherCoinsPercentage,
+  isSectionChart,
+  sectionDataProgress,
+  isTargetChart,
 }: IProps) => (
-  <ChartContainer>
-    <CardHeader title={title} />
-
-    <Chart background={theme.palette.background.default}>
-      <BarChart theme={theme} charts={rebalanceChartsData} {...otherProps} />
-    </Chart>
-  </ChartContainer>
+  <>
+    <ProgressBarWrapper
+      isTargetChart={isTargetChart}
+      sectionDataProgress={sectionDataProgress}
+      coinData={coinData}
+      otherCoinData={otherCoinData}
+      otherCoinsPercentage={otherCoinsPercentage}
+      isSectionChart={isSectionChart}
+    />
+  </>
 )
 
 export default PortfolioRebalanceChartComponent

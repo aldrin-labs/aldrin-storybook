@@ -12,4 +12,6 @@ export interface IProps {
   onToggleUSDBTC: () => void
   theme: Theme
   toggleWallets: () => void
+  portfolioId: string
+  activeKeys: any
 }

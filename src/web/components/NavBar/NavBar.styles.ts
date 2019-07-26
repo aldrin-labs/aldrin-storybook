@@ -9,7 +9,11 @@ export const Nav = styled(AppBar)`
   ) =>
     props.variant.hide
       ? `opacity: 0;
-    position: absolute;
-    z-index: -100;`
+      position: absolute;
+      z-index: -100;`
       : ''};
+
+  && {
+    box-shadow: none;
+  }
 `

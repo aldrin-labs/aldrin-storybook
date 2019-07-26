@@ -4,11 +4,10 @@ import QueryRenderer from '@core/components/QueryRenderer'
 import { SelectR } from '@sb/styles/cssUtils'
 
 const SelectExchangeList = ({ data, ...otherPropsForSelect }) => {
-  // console.log(otherPropsForSelect)
-
   const exchangeOptions =
     data.exchangePagination &&
     data.exchangePagination.items
+      .filter(el => !!el.name)
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
       // TODO: hardcode it for now, because we currently support only Binance

@@ -3,17 +3,72 @@ import { TableWithSort } from '@sb/components/index'
 import { IProps } from './TraderOrderHistoryTable.types'
 
 class TradeOrderHistoryTable extends React.Component<IProps> {
+  state = {
+    activeSortArg: null,
+    page: 0,
+    rowsPerPage: 6,
+  }
+
+  handleChangePage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    page: number
+  ) => {
+    this.setState({ page })
+  }
+
+  handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ rowsPerPage: event.target.value })
+  }
+
   render() {
     const { rows } = this.props
+
+    const tableStyles = {
+      heading: {
+        background: 'transparent',
+        color: '#ABBAD1',
+        fontFamily: `DM Sans`,
+        textTransform: 'uppercase',
+        fontWeight: '700',
+        fontSize: '0.75rem',
+        borderBottom: '1px solid #E0E5EC',
+        padding: '0 0 10px 10px',
+      },
+      title: {},
+      cell: {
+        letterSpacing: '1.5px',
+        textTransform: 'uppercase',
+        color: '#16253D',
+        fontFamily: 'DM Sans',
+        fontStyle: 'normal',
+        fontWeight: '700',
+        fontSize: '0.75rem',
+        lineHeight: '31px',
+        background: 'transparent',
+        borderBottom: '1px solid #E0E5EC',
+        height: '48px',
+        paddingLeft: '10px',
+        '&:first-child': {
+          color: 'green',
+        },
+      },
+    }
 
     return (
       <TableWithSort
         id="PortfolioActionsTable"
         padding="dense"
-        title="Portfolio Actions"
         data={{ body: rows.body }}
         columnNames={rows.head}
         emptyTableText="No history"
+        tableStyles={tableStyles}
+        pagination={{
+          enabled: true,
+          page: this.state.page,
+          rowsPerPage: 6,
+          handleChangeRowsPerPage: this.handleChangeRowsPerPage,
+          handleChangePage: this.handleChangePage,
+        }}
       />
     )
   }

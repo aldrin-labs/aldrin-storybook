@@ -10,7 +10,6 @@ import {
 } from 'react-vis'
 import { Typography } from '@material-ui/core'
 
-
 import { formatDate } from '@core/utils/dateUtils'
 import { Props, State } from './LineChart.types'
 import {
@@ -19,6 +18,7 @@ import {
 } from './LineChart.styles'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { LegendContainer, CentredContainer } from '@sb/styles/cssUtils'
+import { withTheme } from '@material-ui/styles'
 
 const axisStyle = {
   ticks: {
@@ -30,7 +30,7 @@ const axisStyle = {
   },
   text: { stroke: 'none', fill: '#4ed8da', fontWeight: 600, opacity: 1 },
 }
-
+@withTheme()
 export default class LineChart extends React.Component<Props, State> {
   state: State = {
     crosshairValues: [],
@@ -72,11 +72,8 @@ export default class LineChart extends React.Component<Props, State> {
     )
     const fontFamily = theme.typography.fontFamily
 
-
     if (showCustomPlaceholder) {
-      return (
-        placeholderElement
-      )
+      return placeholderElement
     }
 
     if (!data) {

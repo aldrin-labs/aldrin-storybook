@@ -7,7 +7,6 @@ import { Loading } from '@sb/components/index'
 import { TOGGLE_BASE_COIN } from '@core/graphql/mutations/portfolio/toggleBaseCoin'
 import { IProps, IState } from './PortfolioTable.types'
 
-
 import PortfolioMain from '@core/compositions/PortfolioMain'
 const PortfolioTableIndustries = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@core/compositions/PortfolioIndustry')
@@ -21,17 +20,16 @@ const Correlation = React.lazy(() =>
 )
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
-
 @withRouter
 class PortfolioTable extends Component<IProps, IState> {
-
   render() {
     const {
       theme,
       dustFilter,
-      showTable = false,
       isUSDCurrently,
       baseCoin,
+      portfolioId,
+      activeKeys,
     } = this.props
 
     return (
@@ -85,6 +83,8 @@ class PortfolioTable extends Component<IProps, IState> {
                       baseCoin={`USDT`}
                       isUSDCurrently={true}
                       dustFilter={dustFilter}
+                      portfolioId={portfolioId}
+                      activeKeys={activeKeys}
                       {...rest}
                     />
                   )}
@@ -123,4 +123,4 @@ class PortfolioTable extends Component<IProps, IState> {
   }
 }
 
-export default withTheme()(PortfolioTable)
+export default PortfolioTable

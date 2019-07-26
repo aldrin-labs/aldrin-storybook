@@ -16,7 +16,6 @@ import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
 
 @withTheme()
-
 class CorrelationMatrixComponent extends PureComponent<IProps> {
   state = {
     isFullscreenEnabled: false,
@@ -37,7 +36,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
 
   changeScreenMode = () => {
     this.setState((prevstate) => ({
-      isFullscreenEnabled: !prevstate.isFullscreenEnabled
+      isFullscreenEnabled: !prevstate.isFullscreenEnabled,
     }))
   }
 
@@ -58,9 +57,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       updateCorrelationPeriodMutation,
     } = this.props
 
-    const {
-      isFullscreenEnabled,
-    } = this.state
+    const { isFullscreenEnabled } = this.state
 
     const colors = CustomColors || [
       palette.red.main,
@@ -99,24 +96,26 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             className="full-screenable-node"
           >
             {isFullscreenEnabled ? null : (
-                <ButtonsWrapper id="ButtonsWrapper">
-                  <Typography noWrap align="center" variant="h6">
-                    Time Range
-                  </Typography>
-                  <SelectTimeRange
-                    style={{
-                      height: 'auto',
-                      maxWidth: '10rem',
-                      margin: '2rem 0',
-                    }}
-                    updateCorrelationPeriodMutation={updateCorrelationPeriodMutation}
-                    period={period}
-                  />
-                  <Typography noWrap={true} align="center" variant="body1">
-                    {formatDate(startDate, 'MM/DD/YYYY')}-
-                    {formatDate(endDate, 'MM/DD/YYYY')}
-                  </Typography>
-                </ButtonsWrapper>
+              <ButtonsWrapper id="ButtonsWrapper">
+                <Typography noWrap align="center" variant="h6">
+                  Time Range
+                </Typography>
+                <SelectTimeRange
+                  style={{
+                    height: 'auto',
+                    maxWidth: '10rem',
+                    margin: '2rem 0',
+                  }}
+                  updateCorrelationPeriodMutation={
+                    updateCorrelationPeriodMutation
+                  }
+                  period={period}
+                />
+                <Typography noWrap={true} align="center" variant="body1">
+                  {formatDate(startDate, 'MM/DD/YYYY')}-
+                  {formatDate(endDate, 'MM/DD/YYYY')}
+                </Typography>
+              </ButtonsWrapper>
             )}
 
             {data.error ? (
@@ -148,20 +147,22 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                 <FullScreenIcon />
               </StyledFullscreenButton>
             )}
-            {
-              isFullscreenEnabled ? null : (
-                <Typography noWrap={true} align="center" variant="body1" style={{gridColumn: '1 / span 3', gridRowStart: 4}}>
-                  Correlation between returns of your assets
-                </Typography>
-              )
-            }
+            {isFullscreenEnabled ? null : (
+              <Typography
+                noWrap={true}
+                align="center"
+                variant="body1"
+                style={{ gridColumn: '1 / span 3', gridRowStart: 4 }}
+              >
+                Correlation between returns of your assets
+              </Typography>
+            )}
           </FullscreenNode>
         </FullScreen>
       </ScrolledWrapper>
     )
   }
 }
-
 
 export default CorrelationMatrixComponent
 

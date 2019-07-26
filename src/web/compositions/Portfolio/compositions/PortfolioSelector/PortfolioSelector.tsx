@@ -1,8 +1,11 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import { withTheme } from '@material-ui/styles'
-import AddIcon from '@material-ui/icons/Add'
 import { Slide, Typography, Button } from '@material-ui/core'
 
 import Dropdown from '@sb/components/SimpleDropDownSelector'
@@ -13,8 +16,20 @@ import {
   FilterIcon,
   FilterValues,
   Name,
-  AddAccountBlock,
   FilterContainer,
+  TypographyTitle,
+  AddAccountBlock,
+  GridRow,
+  GridCell,
+  SliderContainer,
+  GridSection,
+  GridSectionAccounts,
+  GridSectionDust,
+  ReactSelectCustom,
+  GridSymbolContainer,
+  GridSymbolValue,
+  TypographySpan,
+  SliderDustFilter,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -23,6 +38,15 @@ import {
   percentageDustFilterOptions,
   usdDustFilterOptions,
 } from './PortfolioSelector.options'
+import { Grid } from '@material-ui/core'
+
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { RadioGroup, Radio } from '@material-ui/core'
+
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 
 const MyLinkToUserSettings = (props: any) => (
   <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
@@ -30,7 +54,65 @@ const MyLinkToUserSettings = (props: any) => (
   </Link>
 )
 
+@withRouter
+@withTheme()
 class PortfolioSelector extends React.Component<IProps> {
+  state = {
+    valueSliderPercentage: 0,
+    valueSliderPercentageContainer: 0,
+    valueSliderUsd: 0,
+    valueSliderUsdContainer: 0,
+  }
+
+  componentDidMount() {
+    const value =
+      this.props.dustFilter.percentage === 0.1
+        ? 20
+        : this.props.dustFilter.percentage === 0.3
+        ? 40
+        : this.props.dustFilter.percentage === 0.5
+        ? 60
+        : this.props.dustFilter.percentage === 1
+        ? 80
+        : this.props.dustFilter.percentage === 10
+        ? 100
+        : 0
+
+    this.setState({
+      valueSliderPercentage: value,
+      valueSliderPercentageContainer: this.props.dustFilter.percentage,
+      valueSliderUsd: this.props.dustFilter.usd,
+      valueSliderUsdContainer: this.props.dustFilter.usd,
+    })
+  }
+
+  handleChangePercentage = (event, value) => {
+    this.setState({
+      valueSliderPercentage: value,
+      valueSliderPercentageContainer:
+        value === 0
+          ? 0
+          : value === 20
+          ? 0.1
+          : value === 40
+          ? 0.3
+          : value === 60
+          ? 0.5
+          : value === 80
+          ? 1
+          : 10,
+    })
+    this.onDustFilterChange(value, 'percentage')
+  }
+
+  handleChangeUsd = (event, value) => {
+    console.log('slider change: ', value)
+    this.setState({
+      valueSliderUsd: value,
+    })
+    this.onDustFilterChange(value, 'usd')
+  }
+
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
 
@@ -43,7 +125,7 @@ class PortfolioSelector extends React.Component<IProps> {
     }
   }
 
-  onKeyToggle = (toggledKeyID: string) => {
+  onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId, newKeys } = this.props
 
     const objForQuery = {
@@ -53,10 +135,23 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery)
   }
 
-  onWalletToggle = (toggledWalletID: string) => {
+  onKeySelectOnlyOne = async (toggledKeyID: string) => {
+    const { portfolioId } = this.props
+
+    const objForQuery = {
+      settings: {
+        portfolioId,
+        selectedKeys: [toggledKeyID],
+      },
+    }
+
+    await this.updateSettings(objForQuery)
+  }
+
+  onWalletToggle = async (toggledWalletID: string) => {
     const { portfolioId, newWallets } = this.props
 
     const objForQuery = {
@@ -69,10 +164,10 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery)
   }
 
-  onToggleAll = () => {
+  onToggleAll = async () => {
     const {
       newKeys,
       activeKeys,
@@ -103,23 +198,36 @@ class PortfolioSelector extends React.Component<IProps> {
       }
     }
 
-    this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery)
   }
 
-  onDustFilterChange = (
-    {
-      target: { value },
-    }: {
-      target: { value: number }
-    },
-    dustFilterParam: string
-  ) => {
+  onDustFilterChange = (value: number, dustFilterParam: string) => {
     const { portfolioId, dustFilter } = this.props
     const { usd, percentage } = dustFilter
+    console.log('dustFilterParam: ', dustFilterParam)
+    const dustFilterParamValue =
+      dustFilterParam === 'percentage'
+        ? value === 0
+          ? '0'
+          : value === 20
+          ? '0.1'
+          : value === 40
+          ? '0.3'
+          : value === 60
+          ? '0.5'
+          : value === 80
+          ? '1'
+          : '10'
+        : value
+
     this.updateSettings({
       settings: {
         portfolioId,
-        dustFilter: { ...{usd, percentage}, [dustFilterParam]: value },
+        dustFilter: {
+          ...{ usd, percentage },
+          [dustFilterParam]: dustFilterParamValue,
+        }, //TODO
+        // dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value }, //TODO
       },
     })
   }
@@ -133,7 +241,26 @@ class PortfolioSelector extends React.Component<IProps> {
       activeKeys,
       activeWallets,
       dustFilter,
+      location: { pathname },
+      theme: {
+        palette: { blue },
+      },
+      getMyPortfoliosQuery,
     } = this.props
+
+    console.log('Gooo: ', newKeys)
+
+    const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
+      (item: { _id: string; name: string }) => {
+        return {
+          label: item.name,
+          value: item._id,
+        }
+      }
+    )
+
+    const isRebalance = pathname === '/portfolio/rebalance'
+
     const login = true
 
     const isCheckedAll =
@@ -142,8 +269,10 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
 
+    const relations = ['first', 'second']
     return (
       <Slide
+        style={{ width: '410px' }}
         in={isSideNavOpen}
         direction="right"
         mountOnEnter={true}
@@ -155,90 +284,221 @@ class PortfolioSelector extends React.Component<IProps> {
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          <Accounts
-            {...{
-              color,
-              login,
-              isSideNavOpen,
-              isCheckedAll,
-              newKeys,
-              onToggleAll: this.onToggleAll,
-              onKeyToggle: this.onKeyToggle,
-            }}
-          />
-
-          <Wallets
-            {...{
-              color,
-              login,
-              isSideNavOpen,
-              newWallets,
-              onWalletToggle: this.onWalletToggle,
-            }}
-          />
-          {!login && (
-            <Typography
-              style={{
+          <GridSection>
+            <TypographyTitle>Portfolio</TypographyTitle>
+            <ReactSelectCustom
+              value={MyPortfoliosOptions[0]}
+              // onChange={(
+              //   optionSelected: {
+              //     label: string
+              //     value: string
+              //   } | null
+              // ) => onRebalanceTimerChange(optionSelected)}
+              isSearchable={false}
+              options={MyPortfoliosOptions}
+              singleValueStyles={{
+                color: '#16253D', // default value
+                fontSize: '0.93rem',
+                padding: '0',
+              }}
+              indicatorSeparatorStyles={{}}
+              controlStyles={{
+                background: 'transparent',
+                border: 'none',
+                width: 150,
+              }}
+              menuStyles={{
+                width: 235,
+                padding: '5px 8px',
+                borderRadius: '14px',
                 textAlign: 'center',
               }}
-            >
-              Login to add <br /> or edit accounts
-            </Typography>
-          )}
-          <AddAccountBlock>
-            <MyLinkToUserSettings>
-              <Button
-                size="small"
-                style={{
-                  height: 36,
-                }}
-                variant="extendedFab"
-                color="secondary"
-              >
-                <AddIcon fontSize={`small`} />
-                Add account
-              </Button>
-            </MyLinkToUserSettings>
-          </AddAccountBlock>
-            <>
-              <Name color={color}>Dust</Name>
-              <FilterContainer>
-                <FilterValues>
-                  <FilterIcon
-                    color={theme.palette.getContrastText(
-                      theme.palette.background.paper
-                    )}
+              optionStyles={{
+                color: '#7284A0',
+                background: 'transparent',
+                textAlign: 'center',
+                fontSize: '0.62rem',
+                '&:hover': {
+                  borderRadius: '14px',
+                  color: '#16253D',
+                  background: '#E7ECF3',
+                },
+              }}
+            />
+            <TypographyTitle lineHeight={'22px'}>
+              $500,000.00
+            </TypographyTitle>
+            <CreatePortfolio />
+          </GridSection>
+
+          <GridSectionAccounts>
+            <Accounts
+              {...{
+                color,
+                login,
+                isSideNavOpen,
+                isCheckedAll,
+                newKeys,
+                isRebalance,
+                onToggleAll: this.onToggleAll,
+                onKeyToggle: this.onKeyToggle,
+                onKeySelectOnlyOne: this.onKeySelectOnlyOne,
+              }}
+              isSidebar={true}
+            />
+          </GridSectionAccounts>
+          <GridSectionDust lg={12}>
+            <TypographyTitle>Dust Filter</TypographyTitle>
+
+            {!isRebalance ? (
+              <>
+                <SliderContainer>
+                  <GridSymbolContainer>%</GridSymbolContainer>
+                  <SliderDustFilter
+                    step={20}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="250px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    value={this.state.valueSliderPercentage}
+                    onChange={this.handleChangePercentage} //TODO onDragEnd
                   />
-                  <Dropdown
-                    style={{ width: '100%' }}
-                    value={dustFilter.percentage}
-                    handleChange={(e) =>
-                      this.onDustFilterChange(e, 'percentage')
-                    }
-                    name="filterValuesInMain"
-                    options={percentageDustFilterOptions}
+                  <GridSymbolValue>
+                    {this.state.valueSliderPercentageContainer === 0 ||
+                    this.state.valueSliderPercentageContainer === null
+                      ? `No % Filter`
+                      : `< ${this.state.valueSliderPercentageContainer} %`}
+                  </GridSymbolValue>
+                </SliderContainer>
+
+                <SliderContainer>
+                  <GridSymbolContainer>$</GridSymbolContainer>
+                  <SliderDustFilter
+                    step={1}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="250px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    value={this.state.valueSliderUsd}
+                    onChange={this.handleChangeUsd} //TODO onDragEnd
                   />
-                </FilterValues>
-                <FilterValues>
-                  <FilterIcon
-                    color={theme.palette.getContrastText(
-                      theme.palette.background.paper
-                    )}
+                  <GridSymbolValue>{`< ${
+                    dustFilter.usd
+                  } $`}</GridSymbolValue>
+                </SliderContainer>
+                {/* <FilterContainer>
+                  <FilterValues>
+                    <FilterIcon
+                      color={theme.palette.getContrastText(
+                        theme.palette.background.paper
+                      )}
+                    />
+                    <Dropdown
+                      style={{ width: '100%' }}
+                      value={dustFilter.percentage}
+                      handleChange={(e) =>
+                        this.onDustFilterChange(e, 'percentage')
+                      }
+                      name="filterValuesInMain"
+                      options={percentageDustFilterOptions}
+                    />
+                  </FilterValues>
+                  <FilterValues>
+                    <FilterIcon
+                      color={theme.palette.getContrastText(
+                        theme.palette.background.paper
+                      )}
+                    />
+                    <Dropdown
+                      style={{ width: '100%' }}
+                      value={dustFilter.usd}
+                      handleChange={(e) => this.onDustFilterChange(e, 'usd')}
+                      name="filterValuesInMain"
+                      options={usdDustFilterOptions}
+                    />
+                  </FilterValues>
+                </FilterContainer> */}
+              </>
+            ) : (
+              <>
+                <SliderContainer>
+                  <GridSymbolContainer>%</GridSymbolContainer>
+                  <SliderDustFilter
+                    step={20}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="250px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    value={this.state.valueSliderPercentage}
+                    onChange={this.handleChangePercentage} //TODO onDragEnd
+                    disabled
                   />
-                  <Dropdown
-                    style={{ width: '100%' }}
-                    value={dustFilter.usd}
-                    handleChange={(e) => this.onDustFilterChange(e, 'usd')}
-                    name="filterValuesInMain"
-                    options={usdDustFilterOptions}
+                  <GridSymbolValue>
+                    {this.state.valueSliderPercentageContainer === 0 ||
+                    this.state.valueSliderPercentageContainer === null
+                      ? `No % Filter`
+                      : `< ${this.state.valueSliderPercentageContainer} %`}
+                  </GridSymbolValue>
+                </SliderContainer>
+
+                <SliderContainer>
+                  <GridSymbolContainer>$</GridSymbolContainer>
+                  <SliderDustFilter
+                    step={1}
+                    thumbWidth="25px"
+                    thumbHeight="25px"
+                    sliderWidth="250px"
+                    sliderHeight="17px"
+                    sliderHeightAfter="20px"
+                    borderRadius="30px"
+                    borderRadiusAfter="30px"
+                    thumbBackground="#165BE0"
+                    borderThumb="2px solid white"
+                    trackAfterBackground="#E7ECF3"
+                    trackBeforeBackground={'#165BE0'}
+                    value={this.state.valueSliderUsd}
+                    onChange={this.handleChangeUsd} //TODO onDragEnd
+                    disabled
                   />
-                </FilterValues>
-              </FilterContainer>
-            </>
+                  <GridSymbolValue>
+                    {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan>{' '}
+                    {`$`}
+                  </GridSymbolValue>
+                </SliderContainer>
+              </>
+            )}
+          </GridSectionDust>
         </AccountsWalletsBlock>
       </Slide>
     )
   }
 }
 
-export default withTheme()(PortfolioSelector)
+export default compose(
+  queryRendererHoc({
+    query: getMyPortfoliosQuery,
+    name: 'getMyPortfoliosQuery',
+  }),
+  withTheme()
+)(PortfolioSelector)

@@ -45,8 +45,6 @@ export {
   default as IconButtonWithHover,
 } from './IconButtonWithHover/IconButtonWithHover'
 export {
-  default as PortfolioRebalanceTable
+  default as PortfolioRebalanceTable,
 } from './PortfolioRebalanceTable/PortfolioRebalanceTable'
-export {
-  default as SwitchButtons
-} from './SwitchButtons/SwitchButtons'
+export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
