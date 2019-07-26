@@ -104,7 +104,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           }}
         /> */}
 
-        <SharePortfolioPanel />
+        {/* <SharePortfolioPanel /> */}
         <AccordionOverview />
 
         <TransactionPage
