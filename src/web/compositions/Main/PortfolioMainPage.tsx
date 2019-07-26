@@ -18,10 +18,11 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
-
+import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
 //TODO NEW
 import { Grid } from '@material-ui/core'
 import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+import SharePortfolioPanel from '@sb/components/SharePortfolioPanel/SharePortfolioPanel'
 
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
@@ -102,7 +103,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             },
           }}
         /> */}
-        
+
+        <SharePortfolioPanel />
+        <AccordionOverview />
+
         <TransactionPage
           Chart={
             <PortfolioMainChart
