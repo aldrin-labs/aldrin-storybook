@@ -42,7 +42,7 @@ function TablePanelSummary({
         <TableRow>
           <TableCell style={{ padding: '0px', width: '12vw', border: 'none' }}>
             <StyledTypographyAccordionHeader fontWeight="700">
-              {accordionPanelHeading}
+              Portfolio
             </StyledTypographyAccordionHeader>
           </TableCell>
           <TableCell
