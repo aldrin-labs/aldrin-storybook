@@ -106,7 +106,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
         <TransactionPage
           Chart={
             <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
+              //title="Portfolio Value | Coming Soon | In development"
               style={{
                 marginLeft: 0,
               }}

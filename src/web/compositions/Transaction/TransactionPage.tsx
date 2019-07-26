@@ -12,6 +12,7 @@ import {
   GridShowHideDataContainer,
   GridAccountContainer,
   TypographyCalendarLegend,
+  LessMoreContainer,
 } from './TransactionPage.styles'
 
 import Accounts from '@sb/components/Accounts/Accounts'
@@ -168,17 +169,8 @@ class TransactionPage extends Component {
                 </TypographyCalendarLegend>
               </Grid>
 
-              <Grid lg={8}>
-                <Grid
-                  style={{
-                    marginTop: '5px',
-                    backgroundImage:
-                      'linear-gradient(90deg, #E7ECF3 0%, #165BE0 100%)',
-                    height: '12px',
-                    width: '100%',
-                    borderRadius: '32px',
-                  }}
-                />
+              <Grid container justify="center" lg={8}>
+                <LessMoreContainer />
               </Grid>
               <Grid lg={2}>
                 <TypographyCalendarLegend>More</TypographyCalendarLegend>
