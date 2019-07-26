@@ -182,6 +182,7 @@ const CorrelationWrapper = (props: IProps) => {
 
 const PTWrapper = styled(PTWrapperRaw)`
   width: 98%;
+  margin-left: -4%;
 `
 
 export default compose(

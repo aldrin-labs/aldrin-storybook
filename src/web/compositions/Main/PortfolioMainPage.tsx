@@ -1,5 +1,6 @@
 import React from 'react'
 import { withTheme } from '@material-ui/styles'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 
@@ -22,6 +23,10 @@ import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 //TODO NEW
 import { Grid } from '@material-ui/core'
 import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+
+const LayoutClearfixWrapper = styled.div`
+  margin-left: -5%;
+`
 
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
@@ -64,58 +69,50 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     } = this.props
 
     return (
-      <Grid>
-        {/* <Template
-          PortfolioMainTable={
-            <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
-          }
-          PortfolioActions={<TradeOrderHistory />}
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-              }}
-              marginTopHr="10px"
-            />
-          }
-        />
-        <Joyride
-          continuous={true}
-          showProgress={true}
-          showSkipButton={true}
-          steps={portfolioMainSteps}
-          run={getTooltipSettings.portfolioMain}
-          callback={this.handleJoyrideCallback}
-          key={this.state.key}
-          styles={{
-            options: {
-              backgroundColor: theme.palette.getContrastText(
-                theme.palette.primary.main
-              ),
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.primary.main,
-            },
-            tooltip: {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-            },
-          }}
-        /> */}
-        
-        <TransactionPage
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-              }}
-              marginTopHr="10px"
-            />
-          }
-          PortfolioActions={<TradeOrderHistory />}
-        />
-      </Grid>
+      <LayoutClearfixWrapper>
+        <Grid>
+          <Template
+            PortfolioMainTable={
+              <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+            }
+          />
+          <Joyride
+            continuous={true}
+            showProgress={true}
+            showSkipButton={true}
+            steps={portfolioMainSteps}
+            run={getTooltipSettings.portfolioMain}
+            callback={this.handleJoyrideCallback}
+            key={this.state.key}
+            styles={{
+              options: {
+                backgroundColor: theme.palette.getContrastText(
+                  theme.palette.primary.main
+                ),
+                primaryColor: theme.palette.secondary.main,
+                textColor: theme.palette.primary.main,
+              },
+              tooltip: {
+                fontFamily: theme.typography.fontFamily,
+                fontSize: theme.typography.fontSize,
+              },
+            }}
+          />
+
+          <TransactionPage
+            Chart={
+              <PortfolioMainChart
+                title="Portfolio Value | Coming Soon | In development"
+                style={{
+                  marginLeft: 0,
+                }}
+                marginTopHr="10px"
+              />
+            }
+            PortfolioActions={<TradeOrderHistory />}
+          />
+        </Grid>
+      </LayoutClearfixWrapper>
     )
   }
 }

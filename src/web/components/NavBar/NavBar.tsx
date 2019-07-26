@@ -2,7 +2,7 @@ import React, { SFC } from 'react'
 import { Login } from '@core/containers/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
-import { Toolbar, Button, Grid } from '@material-ui/core'
+import { Toolbar, Grid } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
@@ -11,6 +11,13 @@ import { Nav } from './NavBar.styles'
 import Feedback from '@sb/components/Feedback'
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import Dropdown from '@sb/components/Dropdown'
+
+import MainIcon from '@material-ui/icons/LineStyle'
+import IndustryIcon from '@material-ui/icons/DonutLarge'
+import RebalanceIcon from '@material-ui/icons/SwapHoriz'
+import CorrelationIcon from '@material-ui/icons/ViewModule'
+import OptimizationIcon from '@material-ui/icons/Assessment'
 
 export interface Props extends WithTheme {
   $hide?: boolean
@@ -35,7 +42,7 @@ const NavBarRaw: SFC<Props> = ({
   pathname,
   $hide = false,
 }) => {
-
+  console.log(MainIcon, IndustryIcon, RebalanceIcon)
   return (
     <Nav
       position="static"
@@ -46,13 +53,13 @@ const NavBarRaw: SFC<Props> = ({
       <Toolbar variant="dense" style={{ height: '48px' }}>
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
-            <Grid item={true} md={4}>
+            <Grid item={true} md={2}>
               <Grid container={true}>
                 <Logo />
               </Grid>
             </Grid>
           </Hidden>
-          <Grid item={true} md={3} sm={5}>
+          <Grid item={true} md={6} sm={5}>
             <Grid
               justify="flex-end"
               container={true}
@@ -62,31 +69,59 @@ const NavBarRaw: SFC<Props> = ({
                 flexWrap: 'nowrap',
               }}
             >
-              <NavLinkButton
+              {/*<NavLinkButton
                 page={`portfolio`}
                 component={Portfolio}
                 pathname={pathname}
               >
                 Portfolio
-              </NavLinkButton>
-              <NavLinkButton
-                page={`chart`}
-                component={Chart}
-                pathname={pathname}
-              >
-                Chart
-              </NavLinkButton>
+              </NavLinkButton>*/}
+              <Dropdown id="portfolio-menu" buttonText="Portfolio" items={[
+                { text: 'P&L', icon: <MainIcon fontSize="small"/>, to: '/portfolio/main' },
+                { text: 'Transactions', icon: <IndustryIcon fontSize="small"/>, to: '/transactions' },
+                { text: 'Rebalance', icon: <RebalanceIcon fontSize="small"/>, to: '/portfolio/rebalance' },
+                { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small"/>, to: '/portfolio/optimization' }
+              ]}/>
+              
+              <Dropdown id="explore-menu" buttonText="Explore" items={[
+                { text: 'Industry', icon: <MainIcon fontSize="small"/>, to: '/portfolio/industry' },
+                { text: 'Correlation', icon: <CorrelationIcon fontSize="small"/>, to: '/portfolio/correlation' },
+                { text: 'Index', icon: <RebalanceIcon fontSize="small"/>, to: '/' },
+                { text: 'Social Portfolio', icon: <OptimizationIcon fontSize="small"/>, to: '/' }
+              ]}/>
+
+              <Dropdown id="chart-menu" buttonText="Chart" items={[
+                { text: 'Simple Terminal', icon: null, to: '/' },
+                { text: 'Advanced Terminal', icon: null, to: '/' }
+              ]}/>
+
               <NavLinkButton
                 page={`market`}
                 component={Market}
                 pathname={pathname}
               >
-                Market
+                Marketcap
+              </NavLinkButton>
+
+              <NavLinkButton
+                page={`market`}
+                component={Market}
+                pathname={pathname}
+              >
+                Strategy
+              </NavLinkButton>
+
+              <NavLinkButton
+                page={`market`}
+                component={Market}
+                pathname={pathname}
+              >
+                Signals
               </NavLinkButton>
             </Grid>
           </Grid>
 
-          <Grid item={true} md={5} sm={7}>
+          <Grid item={true} md={4} sm={7}>
             <Grid
               justify="flex-end"
               wrap="nowrap"
