@@ -77,7 +77,7 @@ export const AddAccountBlock = styled.div`
 //   <Typography {...rest}/>
 // ))`
 export const TypographyTitle = styled(Typography)`
-  font-family: DM Sans;
+  font-family: 'DM Sans', sans-serif;
   font-size: ${(props) => props.fontSize || `0.75rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;

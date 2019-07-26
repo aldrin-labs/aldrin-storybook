@@ -6,7 +6,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   state = {
     activeSortArg: null,
     page: 0,
-    rowsPerPage: 6,
+    rowsPerPage: 12,
   }
 
   handleChangePage = (
@@ -65,7 +65,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         pagination={{
           enabled: true,
           page: this.state.page,
-          rowsPerPage: 6,
+          rowsPerPage: 12,
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           handleChangePage: this.handleChangePage,
         }}
