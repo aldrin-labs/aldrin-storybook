@@ -221,21 +221,6 @@ class TransactionPage extends Component {
               <TradeOrderHistory />
             </Grid>
           </GridItemContainer>
-
-          <GridItemContainer
-            item
-            lg={12}
-            md={12}
-            style={{ height: '32%', marginTop: '2%' }}
-          >
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-              }}
-              marginTopHr="10px"
-            />
-          </GridItemContainer>
         </GridItemContainer>
       </Grid>
     )
