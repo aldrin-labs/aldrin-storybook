@@ -3,7 +3,13 @@ import styled, { css } from 'styled-components'
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import Divider from '@material-ui/core/Divider'
+import Button from '@material-ui/core/Button'
+
 import { NavLink } from 'react-router-dom'
+
+export const StyledButton = styled(Button)`
+  transform: rotate(180deg);
+`
 
 export const DividerWithMargin = styled(Divider)`
   margin: 0.5rem auto;
@@ -20,7 +26,7 @@ export const Container = styled(Paper)`
   min-height: 100vh;
   z-index: 0;
   
-  visibility: hidden;
+  //visibility: hidden;
 
   && {
     background: ${(props: { background: string }) => props.background};

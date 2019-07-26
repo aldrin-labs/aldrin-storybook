@@ -18,11 +18,11 @@ import {
   DividerWithMargin,
   Marker,
   Tab,
+  StyledButton,
 } from './PortfolioTableTabs.styles'
 
 @withRouter
 class PortfolioTableTabs extends React.Component<IProps> {
-
   onToggleUSDBTC = () => {
     const { onToggleUSDBTC } = this.props
     if (onToggleUSDBTC) {
@@ -48,88 +48,39 @@ class PortfolioTableTabs extends React.Component<IProps> {
     const backgroundColor = type === 'dark' ? primary.light : primary[100]
 
     return (
-      <Container background={backgroundColor} elevation={0}>
-        <BarTab
-          id="main_tab_button"
-          to="/portfolio/main"
-          thisTabName="Main"
-          mainColor={main}
-          pathname={pathname}
-        >
-          <Main />
-        </BarTab>
-        <BarTab
-          id="industry_tab_button"
-          to="/portfolio/industry"
-          thisTabName="Industry"
-          mainColor={main}
-          pathname={pathname}
-        >
-          <Industry />
-        </BarTab>
-        <BarTab
-          id="rebalance_tab_button"
-          to="/portfolio/rebalance"
-          thisTabName="Rebalance"
-          mainColor={main}
-          pathname={pathname}
-        >
-          <Rebalance />
-        </BarTab>
-        <BarTab
-          id="correlation_tab_button"
-          to="/portfolio/correlation"
-          thisTabName="Correlation"
-          mainColor={main}
-          pathname={pathname}
-        >
-          <Correlation />
-        </BarTab>
-        <BarTab
-          id="optimization_tab_button"
-          to="/portfolio/optimization"
-          thisTabName="Optimization"
-          mainColor={main}
-          pathname={pathname}
-        >
-          <Optimization />
-        </BarTab>
-        <DividerWithMargin />
-        <BarContainer
-          onClick={() => {
-            toggleWallets()
+      <Container
+        background={backgroundColor}
+        elevation={0}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          position: 'relative',
+        }}
+      >
+        <StyledButton
+          onClick={() => toggleWallets()}
+          style={{
+            transform: 'rotate(-90deg)',
+            position: 'absolute',
+            left: '-25px',
+            color: 'blue',
           }}
         >
-          <Tab color="primary">
-            <Settings className="settingsIcon" />
-          </Tab>
-          <Typography align="center" variant="caption" color="textSecondary">
-            Accounts
-          </Typography>
-        </BarContainer>
-        <DividerWithMargin />
-        <Fade in={switchUSDBTC} mountOnEnter unmountOnExit>
-          <>
-            <BarContainer onClick={this.onToggleUSDBTC}>
-              <Button
-                data-e2e="toggleCurrency"
-                color="default"
-                className="SwitchButton"
-              >
-                {' '}
-                {isUSDCurrently ? 'BTC' : 'USD'}
-              </Button>
-              <Typography
-                align="center"
-                variant="caption"
-                color="textSecondary"
-              >
-                Switch currency
-              </Typography>
-            </BarContainer>
-            <DividerWithMargin />
-          </>
-        </Fade>
+          Accounts
+        </StyledButton>
+
+        {/*<BarContainer*/}
+        {/*onClick={() => {*/}
+        {/*toggleWallets()*/}
+        {/*}}*/}
+        {/*>*/}
+        {/*<Tab color="primary">*/}
+        {/*<Settings className="settingsIcon" />*/}
+        {/*</Tab>*/}
+        {/*<Typography align="center" variant="caption" color="textSecondary">*/}
+        {/*Accounts*/}
+        {/*</Typography>*/}
+        {/*</BarContainer>*/}
       </Container>
     )
   }
@@ -166,4 +117,3 @@ const BarTab = (props: {
 }
 
 export default PortfolioTableTabs
-
