@@ -29,6 +29,18 @@ import {
 import { withTheme } from '@material-ui/styles'
 import { isObject, zip } from 'lodash-es'
 
+
+
+const getOwner = (str: string) => {
+  if (!str) {
+    return 'public'
+  }
+
+  const b = str.match(/(?<=\').*(?=')/gm)
+
+  return (b && b[0]) || 'public'
+}
+
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
   <Paper style={{ padding: '10px', marginBottom: '20px' }} elevation={isSelected ? 10 : 2}>
     <Grid container onClick={onClick}>
@@ -38,7 +50,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
       <Grid container alignItems="center" justify="space-between">
         <Typography>Owner: </Typography>{' '}
         <Typography>
-          {el.isPrivate ? JSON.parse(el.ownerId).email : `Public portfolio`}
+          {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
         </Typography>{' '}
       </Grid>
       <Grid container alignItems="center" justify="space-between">
