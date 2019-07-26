@@ -11,6 +11,7 @@ export const DividerWithMargin = styled(Divider)`
   width: 70%;
 `
 
+/* TODO: Fix visibility trouble later */
 export const Container = styled(Paper)`
   display: flex;
   flex-direction: column;
@@ -18,6 +19,9 @@ export const Container = styled(Paper)`
   height: 100%;
   min-height: 100vh;
   z-index: 0;
+  
+  visibility: hidden;
+
   && {
     background: ${(props: { background: string }) => props.background};
     border-radius: 0;

@@ -1,5 +1,6 @@
 import React from 'react'
 import { withTheme } from '@material-ui/styles'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 
@@ -18,6 +19,10 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
+
+const LayoutClearfixWrapper = styled.div`
+  margin-left: -5%;
+`
 
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
@@ -60,21 +65,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     } = this.props
 
     return (
-      <>
+      <LayoutClearfixWrapper>
         <Template
           PortfolioMainTable={
             <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
-          }
-          PortfolioActions={<TradeOrderHistory />}
-          Chart={
-            <PortfolioMainChart
-              title="Portfolio Value | Coming Soon | In development"
-              style={{
-                marginLeft: 0,
-                minHeight: '10vh',
-              }}
-              marginTopHr="10px"
-            />
           }
         />
         <Joyride
@@ -99,7 +93,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             },
           }}
         />
-      </>
+      </LayoutClearfixWrapper>
     )
   }
 }

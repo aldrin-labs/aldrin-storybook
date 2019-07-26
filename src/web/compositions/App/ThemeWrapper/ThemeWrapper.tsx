@@ -167,7 +167,7 @@ export default class ThemeWrapper extends Component<Props> {
             palette: {
               divider: fade('#BCC2CF', 0.5),
               type: themeMode,
-              text: { primary: fade('#41495E', 0.69) },
+              text: { primary: fade('#41495E', 0.69), dark: '#7284A0', blue: '#165BE0' },
               red: {
                 main: '#FE425A',
               },
@@ -188,6 +188,7 @@ export default class ThemeWrapper extends Component<Props> {
               background: {
                 default: '#D9D9DC',
                 paper: '#FEFEFE',
+                smoke: '#E0E5EC'
               },
             },
           }

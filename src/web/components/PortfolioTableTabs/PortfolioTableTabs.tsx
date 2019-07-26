@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { withRouter, NavLink } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'

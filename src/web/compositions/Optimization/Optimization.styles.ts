@@ -49,6 +49,7 @@ export const PTWrapper = styled.div`
   position: relative;
   height: calc(100vh - 48px);
   background: ${(props: { background: string }) => props.background};
+  margin-left: -6.5%;
 
   ${customAquaScrollBar};
 `

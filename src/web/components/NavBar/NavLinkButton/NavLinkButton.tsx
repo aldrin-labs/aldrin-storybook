@@ -2,7 +2,7 @@ import React from 'react'
 import { withTheme } from '@material-ui/core'
 import { Theme } from '@material-ui/core/styles'
 
-import { Marker, SButton } from './NavLinkButton.styles'
+import { SButton } from './NavLinkButton.styles'
 
 const NavLinkButton = ({
   component,
@@ -30,7 +30,6 @@ const NavLinkButton = ({
       color="default"
       variant="text"
     >
-      {isActivePage && <Marker color={palette.secondary.main} />}
       {children}
     </SButton>
   )
