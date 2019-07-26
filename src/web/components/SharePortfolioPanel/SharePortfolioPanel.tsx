@@ -7,7 +7,6 @@ export default class SharePortfolioPanel extends Component {
     return (
       <Grid container justify="flex-start">
         <TypographyHeading>Trading Portfolio #1</TypographyHeading>
-
       </Grid>
     )
   }
