@@ -23,9 +23,10 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
-//TODO NEW
 import { Grid } from '@material-ui/core'
 import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+import SharePortfolioPanel from '@sb/components/SharePortfolioPanel/SharePortfolioPanel'
+import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
 
 const LayoutClearfixWrapper = styled.div`
   margin-left: -5%;
@@ -35,7 +36,7 @@ const LayoutClearfixWrapper = styled.div`
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
-    openSharePortfolioPopUp: true,
+    openSharePortfolioPopUp: false,
   }
 
   handleOpenSharePortfolio = () => {
@@ -93,6 +94,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     return (
       <LayoutClearfixWrapper>
         <Grid>
+          <SharePortfolioPanel
+            handleOpenSharePortfolio={this.handleOpenSharePortfolio}
+          />
+          {/* <AccordionOverview /> */}
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />

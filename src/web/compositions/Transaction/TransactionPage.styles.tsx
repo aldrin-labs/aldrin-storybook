@@ -88,3 +88,11 @@ export const GridAccountContainer = styled(Grid)`
   border-radius: 20px;
   position: relative;
 `
+
+export const LessMoreContainer = styled(Grid)`
+  margin-top: 5px;
+  background-image: linear-gradient(90deg, #e7ecf3 0%, #165be0 100%);
+  height: 12px;
+  width: 90%;
+  border-radius: 32px;
+`
