@@ -97,7 +97,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <SharePortfolioPanel
             handleOpenSharePortfolio={this.handleOpenSharePortfolio}
           />
-          <AccordionOverview />
+          {/* <AccordionOverview /> */}
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
