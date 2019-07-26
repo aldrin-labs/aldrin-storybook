@@ -3,6 +3,7 @@ import { withTheme } from '@material-ui/styles'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
+import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
 
@@ -11,10 +12,11 @@ import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHist
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import Template from '@sb/components/Template/Template'
+import SharePortfolioDialog from '@sb/components/SharePortfolioDialog/SharePortfolioDialog'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { graphql } from 'react-apollo'
+import { sharePortfolio } from '@core/graphql/mutations/portfolio/sharePortfolio'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
@@ -32,6 +34,19 @@ const LayoutClearfixWrapper = styled.div`
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
+    openSharePortfolioPopUp: true,
+  }
+
+  handleOpenSharePortfolio = () => {
+    this.setState({
+      openSharePortfolioPopUp: true,
+    })
+  }
+
+  handleCloseSharePortfolio = () => {
+    this.setState({
+      openSharePortfolioPopUp: false,
+    })
   }
 
   handleJoyrideCallback = async (data: any) => {
@@ -66,7 +81,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       theme,
       dustFilter,
       getTooltipSettingsQuery: { getTooltipSettings },
+      sharePortfolioMutation,
+      portfolioId,
+      portfolioName,
+      portfolioKeys,
     } = this.props
+
+    const { openSharePortfolioPopUp } = this.state
 
     return (
       <LayoutClearfixWrapper>
@@ -76,6 +97,19 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
             }
           />
+          <TransactionPage
+            Chart={
+              <PortfolioMainChart
+                title="Portfolio Value | Coming Soon | In development"
+                style={{
+                  marginLeft: 0,
+                }}
+                marginTopHr="10px"
+              />
+            }
+            PortfolioActions={<TradeOrderHistory />}
+          />
+
           <Joyride
             continuous={true}
             showProgress={true}
@@ -98,18 +132,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               },
             }}
           />
-
-          <TransactionPage
-            Chart={
-              <PortfolioMainChart
-                title="Portfolio Value | Coming Soon | In development"
-                style={{
-                  marginLeft: 0,
-                }}
-                marginTopHr="10px"
-              />
-            }
-            PortfolioActions={<TradeOrderHistory />}
+          <SharePortfolioDialog
+            portfolioKeys={portfolioKeys}
+            portfolioId={portfolioId}
+            sharePortfolioTitle={`SHARE ${portfolioName}`}
+            openSharePortfolioPopUp={openSharePortfolioPopUp}
+            sharePortfolioMutation={sharePortfolioMutation}
+            handleCloseSharePortfolio={this.handleCloseSharePortfolio}
           />
         </Grid>
       </LayoutClearfixWrapper>
@@ -127,6 +156,9 @@ export default compose(
     options: {
       update: updateTooltipMutation,
     },
+  }),
+  graphql(sharePortfolio, {
+    name: 'sharePortfolioMutation',
   }),
   withErrorFallback
 )(PortfolioMainPage)
