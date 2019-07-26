@@ -91,7 +91,7 @@ const NavBarRaw: SFC<Props> = ({
               ]}/>
 
               <Dropdown id="chart-menu" buttonText="Chart" items={[
-                { text: 'Simple Terminal', icon: null, to: '/' },
+                { text: 'Simple Terminal', icon: null, to: '/chart' },
                 { text: 'Advanced Terminal', icon: null, to: '/' }
               ]}/>
 

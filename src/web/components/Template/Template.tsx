@@ -19,8 +19,12 @@ const Template = ({
 }) => {
   return (
     <GridContainer container={true} spacing={16}>
-      <TablesWrapper spacing={16} container={true} item={true} xs={12}>
-        <GridTableContainer item={true} xs={12} md={8}>
+      <ChartContainer item={true} xs={2} md={2}>
+        {Chart}
+      </ChartContainer>
+
+      <TablesWrapper spacing={16} container={true} item={true} xs={10}>
+        <GridTableContainer item={true} xs={12} md={12}>
           <TableWrapper className="PortfolioMainTable">
             {/* refactor to pass this via Apollo  */}
             {PortfolioMainTable}

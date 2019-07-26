@@ -9,7 +9,7 @@ import { darken } from '@material-ui/core/styles/colorManipulator'
 
 const Chart = makeVisFlexible(RadialChart)
 
-import { Props, State, DonutPiece, InputRecord } from './types'
+import { Props, State, DonutPiece } from './types'
 import {
 
   ChartWrapper,
@@ -67,6 +67,12 @@ export class FlexibleChart extends Component<Props, State>{
       isEmpty,
       onValueMouseOver,
       onSeriesMouseOut,
+
+      width,
+      height,
+      valueVariant,
+
+      removeValueContainer
     } = this.props
 
     return (
@@ -81,18 +87,21 @@ export class FlexibleChart extends Component<Props, State>{
         onValueMouseOver={(v: DonutPiece) => onValueMouseOver(v)}
         onSeriesMouseOut={() => onSeriesMouseOut()}
         style={{
-          strokeWidth: 0,
+          strokeWidth: 0
         }}
+
+        width={width}
+        height={height}
         >
-        <ValueContainer isOpacity={value !== undefined}>
-          <Typography variant="h3">
-            {
-              isEmpty
-              ? 'Empty'
-              : value ? `${value.realValue}%` : '\u2063'
-            }
-          </Typography>
-        </ValueContainer>
+          {!removeValueContainer && <ValueContainer isOpacity={value !== undefined}>
+            <Typography variant={valueVariant ? valueVariant : 'h3'}>
+              {
+                isEmpty
+                ? 'Empty'
+                : value ? `${value.realValue}%` : '\u2063'
+              }
+            </Typography>
+          </ValueContainer>}
         <GradientDefs>
           {colorsWithRandom.map((color: string, index: number) => (
             <linearGradient

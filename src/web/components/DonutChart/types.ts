@@ -22,7 +22,14 @@ export interface Props {
   theme: Theme
   colorLegend: boolean
   colorLegendWhidh: number
-  thicknessCoefficient: number
+  thicknessCoefficient: number,
+
+  chartWidth: number,
+  chartHeight: number,
+  vertical: boolean,
+  chartValueVariant: string,
+  
+  removeLabels: boolean
 }
 
 export interface State {
