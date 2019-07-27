@@ -28,8 +28,13 @@ import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
 import SharePortfolioPanel from '@sb/components/SharePortfolioPanel/SharePortfolioPanel'
 import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
 
+// Padding based on navbar padding (3rem on sides)
+// TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
 const LayoutClearfixWrapper = styled.div`
-  margin-left: -5%;
+  @media only screen and (min-width: 600px) {
+    margin-left: -2.5%;
+    padding-right: calc(2.5% + 3rem);
+  }
 `
 
 @withTheme()
@@ -97,7 +102,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <SharePortfolioPanel
             handleOpenSharePortfolio={this.handleOpenSharePortfolio}
           />
-          {/* <AccordionOverview /> */}
+          <AccordionOverview />
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
