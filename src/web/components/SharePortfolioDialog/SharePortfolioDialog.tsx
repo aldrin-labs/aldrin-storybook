@@ -15,6 +15,14 @@ import {
 import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
 
+import {
+  ButtonShare,
+  TypographySectionTitle,
+  TypographySubTitle,
+} from './SharePortfolioDialog.styles'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+
 const tradingPortfolioTypes = [
   'Bull trading',
   'Bear trading',
@@ -32,7 +40,7 @@ const KeyElement = ({ name, checked }: { name: string; checked: boolean }) => (
     alignItems="center"
     style={{ width: 'auto' }}
   >
-    <Typography>{name}</Typography>
+    <TypographySubTitle>{name}</TypographySubTitle>
     <Checkbox checked={checked} disabled={true} />
   </Grid>
 )
@@ -119,7 +127,13 @@ export default class SharePortfolioDialog extends React.Component<
       >
         <DialogTitle
           id="responsive-dialog-title"
-          style={{ backgroundColor: theme.palette.grey.main }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: theme.palette.grey.main,
+            height: '40px',
+            fontSize: '12px',
+          }}
         >
           {sharePortfolioTitle}
         </DialogTitle>
@@ -130,8 +144,12 @@ export default class SharePortfolioDialog extends React.Component<
             justify="space-between"
             style={{ paddingBottom: '20px' }}
           >
-            <Button onClick={this.toggleSharingTab}>SHARE WITH SOMEONE</Button>
-            <Button onClick={this.toggleSharingTab}>SHARE VIA MARKET</Button>
+            <ButtonShare onClick={this.toggleSharingTab}>
+              SHARE WITH SOMEONE
+            </ButtonShare>
+            <ButtonShare onClick={this.toggleSharingTab}>
+              SHARE VIA MARKET
+            </ButtonShare>
           </Grid>
           <Grid
             container
@@ -144,7 +162,9 @@ export default class SharePortfolioDialog extends React.Component<
           {shareWithSomeoneTab && (
             <>
               <Grid style={{ paddingBottom: '20px' }}>
-                <Typography>Select accounts to share</Typography>
+                <TypographySectionTitle>
+                  Select accounts to share
+                </TypographySectionTitle>
                 <Grid container alignItems="center">
                   {portfolioKeys.map((el) => (
                     <KeyElement key={el._id} name={el.name} checked={true} />
@@ -152,7 +172,9 @@ export default class SharePortfolioDialog extends React.Component<
                 </Grid>
               </Grid>
               <Grid container style={{ paddingBottom: '20px' }}>
-                <Typography>How to display my portfolio</Typography>
+                <TypographySectionTitle>
+                  How to display my portfolio
+                </TypographySectionTitle>
                 <Grid container justify="space-between">
                   <Grid
                     container
@@ -160,7 +182,9 @@ export default class SharePortfolioDialog extends React.Component<
                     alignItems="center"
                     style={{ width: 'auto' }}
                   >
-                    <Typography>Show my portfolio value</Typography>
+                    <TypographySubTitle>
+                      Show my portfolio value
+                    </TypographySubTitle>
                     <Radio checked={true} disabled={true} />
                   </Grid>
                   <Grid
@@ -169,15 +193,29 @@ export default class SharePortfolioDialog extends React.Component<
                     alignItems="center"
                     style={{ width: 'auto' }}
                   >
-                    <Typography>Show only % allocation</Typography>
+                    <TypographySubTitle>
+                      Show only % allocation
+                    </TypographySubTitle>
                     <Radio disabled={true} />
                   </Grid>
                 </Grid>
               </Grid>
               <Grid container style={{ paddingBottom: '20px' }}>
                 <Grid container justify="space-between">
-                  <Typography>Share with anyone by the link</Typography>
-                  <Button disabled={true}>Copy link</Button>
+                  <TypographySubTitle>
+                    Share with anyone by the link
+                  </TypographySubTitle>
+                  <BtnCustom
+                    btnWidth={'100px'}
+                    height={'32px'}
+                    btnColor={'#165BE0'}
+                    borderRadius={'8px'}
+                    fontSize={'0.75rem'}
+                    color={'#165BE0'}
+                    disabled={true}
+                  >
+                    Copy link
+                  </BtnCustom>
                 </Grid>
                 <Grid container justify="space-between">
                   <Grid item style={{ minWidth: '300px' }}>
@@ -186,12 +224,18 @@ export default class SharePortfolioDialog extends React.Component<
                       onChange={this.onChangeUserEmail}
                     />
                   </Grid>
-                  <Button
+                  <BtnCustom
+                    btnWidth={'100px'}
+                    height={'32px'}
+                    btnColor={'#165BE0'}
+                    borderRadius={'8px'}
+                    fontSize={'0.75rem'}
+                    color={'#165BE0'}
                     disabled={!selectedUserEmail}
                     onClick={() => this.sharePortfolioHandler(false)}
                   >
                     Invite
-                  </Button>
+                  </BtnCustom>
                 </Grid>
               </Grid>
             </>
