@@ -23,7 +23,7 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
-import { Grid } from '@material-ui/core'
+import { Grid, Divider } from '@material-ui/core'
 import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
 import SharePortfolioPanel from '@sb/components/SharePortfolioPanel/SharePortfolioPanel'
 import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
@@ -101,17 +101,16 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
         <Grid>
           <SharePortfolioPanel
             handleOpenSharePortfolio={this.handleOpenSharePortfolio}
+            portfolioName={portfolioName}
           />
+          {/* TODO: Recomment if needed <Divider /> */}
           <AccordionOverview />
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
             }
-            Chart={
-              <PortfolioMainAllocation />
-            }
+            Chart={<PortfolioMainAllocation />}
           />
-
           <Joyride
             continuous={true}
             showProgress={true}

@@ -51,6 +51,8 @@ class PortfolioTableTabs extends React.Component<IProps> {
         background={'transparent'}
         elevation={0}
         style={{
+          width: '0px',
+          background: 'red',
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
