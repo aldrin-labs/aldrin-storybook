@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { TableWithSort } from '@sb/components/index'
 import { IProps } from './TraderOrderHistoryTable.types'
+import { withTheme } from '@material-ui/styles'
 
+@withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
   state = {
     activeSortArg: null,
@@ -21,7 +23,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   }
 
   render() {
-    const { rows } = this.props
+    const { rows, theme } = this.props
 
     const tableStyles = {
       heading: {
@@ -38,7 +40,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       cell: {
         letterSpacing: '1.5px',
         textTransform: 'uppercase',
-        color: '#16253D',
+        color: theme.palette.text.subPrimary,
         fontFamily: 'DM Sans',
         fontStyle: 'normal',
         fontWeight: '700',

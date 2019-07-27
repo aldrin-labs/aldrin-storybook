@@ -159,7 +159,7 @@ const styles = (theme: Theme) =>
     rowWithHover: {
       '&:hover': {
         borderRadius: '32px',
-        backgroundColor: '#E7ECF3', //TODO theme.palette.action.hover,
+        backgroundColor: theme.palette.hover[theme.palette.type], //TODO theme.palette.action.hover,
       },
     },
     rowWithHoverBorderRadius: {

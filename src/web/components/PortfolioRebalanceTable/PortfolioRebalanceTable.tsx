@@ -19,7 +19,6 @@ import { IProps } from './PortfolioRebalanceTable.types'
 //     background: theme.palette.background.taable
 //   },
 // })
-
 const PortfolioRebalanceTable: React.FunctionComponent<
   ConsistentWith<{ theme: Theme }, WithTheme<{}>>
 > = ({
@@ -40,14 +39,14 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   return (
     <>
       {/*{loading && (*/}
-        {/*<LoaderWrapper background={fade(theme.palette.common.black, 0.7)}>*/}
-          {/*<LoaderInnerWrapper>*/}
-            {/*<Loading size={94} margin={'0 0 2rem 0'} />{' '}*/}
-            {/*<Typography color="secondary" variant="h4">*/}
-              {/*Saving rebalanced portfolio...*/}
-            {/*</Typography>{' '}*/}
-          {/*</LoaderInnerWrapper>{' '}*/}
-        {/*</LoaderWrapper>*/}
+      {/*<LoaderWrapper background={fade(theme.palette.common.black, 0.7)}>*/}
+      {/*<LoaderInnerWrapper>*/}
+      {/*<Loading size={94} margin={'0 0 2rem 0'} />{' '}*/}
+      {/*<Typography color="secondary" variant="h4">*/}
+      {/*Saving rebalanced portfolio...*/}
+      {/*</Typography>{' '}*/}
+      {/*</LoaderInnerWrapper>{' '}*/}
+      {/*</LoaderWrapper>*/}
       {/*)}*/}
       <ContentInner>
         <Table
@@ -70,7 +69,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
           tableStyles={{
             heading: {
               fontFamily: `DM Sans, sans-serif`,
-              color: '#ABBAD1',
+              color: theme.palette.text.primary,
               background: theme.palette.background.table,
               textTransform: 'uppercase',
               fontWeight: 'bold',
@@ -83,7 +82,9 @@ const PortfolioRebalanceTable: React.FunctionComponent<
               letterSpacing: '0.5px',
               fontSize: '12px',
               height: '48px',
-              borderBottom: '1px solid #E0E5EC',
+              borderBottom: `1px solid ${
+                theme.palette.grey[theme.palette.type]
+              }`,
             },
           }}
           emptyTableText="No assets"
