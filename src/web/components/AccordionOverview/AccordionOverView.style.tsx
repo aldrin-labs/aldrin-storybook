@@ -44,7 +44,7 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
 ))`
   font-family: DM Sans;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.9375rem;
   line-height: 39px;
   text-align: center;

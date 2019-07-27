@@ -45,11 +45,10 @@ class PortfolioTableTabs extends React.Component<IProps> {
       location: { pathname },
     } = this.props
     const switchUSDBTC = pathname === '/portfolio/main'
-    const backgroundColor = type === 'dark' ? primary.light : primary[100]
 
     return (
       <Container
-        background={backgroundColor}
+        background={'transparent'}
         elevation={0}
         style={{
           width: '0px',
@@ -59,21 +58,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
           position: 'relative',
         }}
       >
-        <StyledButton
-          onClick={() => toggleWallets()}
-          style={{
-            width: '125px',
-            background: '#5C8CEA',
-            transform: 'rotate(-90deg)',
-            position: 'absolute',
-            left: '-48px',
-            color: 'white',
-            borderRadius: '0 0 12px 12px ',
-            '&:hover': {
-              color: 'red',
-            },
-          }}
-        >
+        <StyledButton onClick={() => toggleWallets()}>
           Accounts
         </StyledButton>
 

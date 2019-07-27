@@ -8,13 +8,17 @@ import Button from '@material-ui/core/Button'
 import { NavLink } from 'react-router-dom'
 
 export const StyledButton = styled(Button)`
-  /* background: '#5C8CEA';
-  transform: 'rotate(-90deg)';
-  position: 'absolute';
-  left: '-28px';
-  color: 'white'; */
+  transform: rotate(-90deg);
+  position: absolute;
+  left: -3.9rem;
+  color: white;
+  background-color: #5C8CEA;
+  padding: .25rem 3rem;
+  border-radius: 0 0 24px 24px;
+  text-transform: none;
+
   &:hover {
-    color: 'red';
+    background-color: #5c8cea;
   }
 `
 

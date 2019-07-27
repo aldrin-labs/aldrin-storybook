@@ -13,6 +13,7 @@ export const GridContainer = styled(Container as React.SFC<GridProps>)`
     flex-wrap: wrap;
   }
   && {
+    height: auto;
     margin: 0;
   }
 `
