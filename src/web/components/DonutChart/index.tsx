@@ -12,6 +12,7 @@ import {
   SDiscreteColorLegend,
   ChartWithLegend,
   ColorLegendContainer,
+  ColorLegendPercentContainer
 } from './styles'
 import { defaultColors, emptyColor } from './colors'
 import { FlexibleChart } from './FlexibleChart'
@@ -147,7 +148,10 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             <ColorLegendContainer width={colorLegendWhidh}>
               <SDiscreteColorLegend
                 width={colorLegendWhidh}
-                items={data.map((d) => `${d.label} - ${d.realValue.toFixed(1)}%`)}
+                items={data.map((d) => <ColorLegendPercentContainer>
+                  <span>{d.label}</span>
+                  <span>{d.realValue.toFixed(1)}%</span>
+                </ColorLegendPercentContainer>)}
                 colors={data.map((d, index) => colorsWithRandom[index])}
                 textColor={theme.typography.body1.color}
               />
