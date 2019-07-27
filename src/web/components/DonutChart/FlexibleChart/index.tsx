@@ -87,7 +87,7 @@ export class FlexibleChart extends Component<Props, State>{
         onValueMouseOver={(v: DonutPiece) => onValueMouseOver(v)}
         onSeriesMouseOut={() => onSeriesMouseOut()}
         style={{
-          strokeWidth: 0
+          strokeWidth: 10
         }}
 
         width={width}
