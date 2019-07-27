@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { withTheme } from '@material-ui/styles'
 
 import { ReactSelectCustom } from '../TransactionPage.styles'
 
+@withTheme()
 class PortfolioSelector extends Component {
   render() {
-    const { getMyPortfoliosQuery } = this.props
+    const { getMyPortfoliosQuery, theme } = this.props
 
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
       (item: { _id: string; name: string }) => {
@@ -29,7 +31,7 @@ class PortfolioSelector extends Component {
         isSearchable={false}
         options={MyPortfoliosOptions}
         singleValueStyles={{
-          color: '#16253D',
+          color: theme.palette.text.subPrimary,
           fontSize: '0.84rem',
           padding: '0',
         }}
@@ -46,14 +48,14 @@ class PortfolioSelector extends Component {
           textAlign: 'center',
         }}
         optionStyles={{
-          color: '#7284A0',
+          color: theme.palette.text.primary, //'#7284A0',
           background: 'transparent',
           textAlign: 'center',
           fontSize: '0.62rem',
           '&:hover': {
             borderRadius: '14px',
-            color: '#16253D',
-            background: '#E7ECF3',
+            color: theme.palette.text.subPrimary,
+            background: theme.palette.hover[theme.palette.type],
           },
         }}
       />

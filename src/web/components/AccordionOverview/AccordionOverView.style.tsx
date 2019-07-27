@@ -3,6 +3,23 @@ import styled from 'styled-components'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
 
+export const GridColumn = styled(Grid)`
+  flex-basis: 16.66%;
+  display: flex;
+  align-items: center;
+`
+export const GridRow = styled(Grid)`
+  min-width: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-left: 15px;
+  &&:nth-child(2n-1) {
+    background: ${(props) => props.hoverColor || '#e0e5ec'};
+    border-radius: 20px;
+  }
+`
+
 export const TypographyHeading = styled(Typography)`
   border-left: 3px solid #165be0;
   border-radius: 4px 0px 0px 4px;
@@ -14,7 +31,7 @@ export const TypographyHeading = styled(Typography)`
   font-size: 0.875rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #7284a0;
+  color: ${(props) => props.textColor};
 `
 
 export const TypographySubHeading = styled(Typography)`
@@ -37,7 +54,7 @@ export const TypographyTitleCell = styled(Typography)`
   text-align: center;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #7284a0;
+  color: ${(props) => props.textColor};
 `
 export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   <Typography {...rest} />

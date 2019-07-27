@@ -61,18 +61,9 @@ class PortfolioTableTabs extends React.Component<IProps> {
       >
         <StyledButton
           onClick={() => toggleWallets()}
-          style={{
-            width: '125px',
-            background: '#5C8CEA',
-            transform: 'rotate(-90deg)',
-            position: 'absolute',
-            left: '-48px',
-            color: 'white',
-            borderRadius: '0 0 12px 12px ',
-            '&:hover': {
-              color: 'red',
-            },
-          }}
+          // style={{
+
+          // }}
         >
           Accounts
         </StyledButton>
