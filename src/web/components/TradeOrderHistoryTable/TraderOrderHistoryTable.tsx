@@ -6,7 +6,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   state = {
     activeSortArg: null,
     page: 0,
-    rowsPerPage: 12,
+    rowsPerPage: 14,
   }
 
   handleChangePage = (
@@ -48,9 +48,6 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         borderBottom: '1px solid #E0E5EC',
         height: '48px',
         paddingLeft: '10px',
-        '&:first-child': {
-          color: 'green',
-        },
       },
     }
 
@@ -63,9 +60,10 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         emptyTableText="No history"
         tableStyles={tableStyles}
         pagination={{
-          enabled: true,
+          enabled: true, // toogle page nav panel in the footer
           page: this.state.page,
-          rowsPerPage: 12,
+          rowsPerPage: this.state.rowsPerPage,
+          rowsPerPageOptions: [20, 50, 100, 200],
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           handleChangePage: this.handleChangePage,
         }}

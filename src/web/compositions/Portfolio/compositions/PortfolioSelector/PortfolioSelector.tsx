@@ -325,9 +325,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 },
               }}
             />
-            <TypographyTitle lineHeight={'22px'}>
-              $500,000.00
-            </TypographyTitle>
+            <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
             <CreatePortfolio />
           </GridSection>
 
@@ -396,9 +394,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     value={this.state.valueSliderUsd}
                     onChange={this.handleChangeUsd} //TODO onDragEnd
                   />
-                  <GridSymbolValue>{`< ${
-                    dustFilter.usd
-                  } $`}</GridSymbolValue>
+                  <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
                 </SliderContainer>
                 {/* <FilterContainer>
                   <FilterValues>
@@ -482,8 +478,9 @@ class PortfolioSelector extends React.Component<IProps> {
                     disabled
                   />
                   <GridSymbolValue>
-                    {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan>{' '}
-                    {`$`}
+                    {/* {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan>{' '} */}
+                    {`<`}
+                    {dustFilter.usd} {`$`}
                   </GridSymbolValue>
                 </SliderContainer>
               </>

@@ -8,7 +8,14 @@ import Button from '@material-ui/core/Button'
 import { NavLink } from 'react-router-dom'
 
 export const StyledButton = styled(Button)`
-  transform: rotate(180deg);
+  /* background: '#5C8CEA';
+  transform: 'rotate(-90deg)';
+  position: 'absolute';
+  left: '-28px';
+  color: 'white'; */
+  &:hover {
+    color: 'red';
+  }
 `
 
 export const DividerWithMargin = styled(Divider)`
@@ -25,7 +32,7 @@ export const Container = styled(Paper)`
   height: 100%;
   min-height: 100vh;
   z-index: 0;
-  
+
   //visibility: hidden;
 
   && {
