@@ -19,6 +19,7 @@ import {
   ButtonShare,
   TypographySectionTitle,
   TypographySubTitle,
+  DialogFooter,
 } from './SharePortfolioDialog.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -120,6 +121,7 @@ export default class SharePortfolioDialog extends React.Component<
 
     return (
       <Dialog
+        style={{ width: '750px', margin: 'auto' }}
         fullScreen={false}
         onClose={handleCloseSharePortfolio}
         open={openSharePortfolioPopUp}
@@ -345,6 +347,15 @@ export default class SharePortfolioDialog extends React.Component<
             </>
           )}
         </DialogContent>
+        <DialogFooter id="customized-dialog-title">
+          <Typography
+            // fontWeight={'bold'}
+            // borderRadius={'10px'}
+            // color={black.custom}
+          >
+            Go to Social portfolio manager
+          </Typography>
+        </DialogFooter>
       </Dialog>
     )
   }

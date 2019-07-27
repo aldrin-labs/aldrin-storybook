@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Grid, Typography, Button } from '@material-ui/core'
+import { Grid, Typography, Button, DialogTitle } from '@material-ui/core'
 
 export const ButtonShare = styled(Button)`
   width: 200px;
@@ -29,4 +29,11 @@ export const TypographySubTitle = styled(Typography)`
   font-size: 0.75rem;
   line-height: 31px;
   color: #7284a0;
+`
+
+export const DialogFooter = styled(DialogTitle)`
+  text-align: center;
+  color: #fff;
+  background: #2f7619;
+  border-radius: 0px 0px 20px 20px;
 `
