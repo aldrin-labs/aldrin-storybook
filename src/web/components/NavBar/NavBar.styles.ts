@@ -15,5 +15,9 @@ export const Nav = styled(AppBar)`
 
   && {
     box-shadow: none;
+    
+    @media only screen and (min-width: 600px) {
+      padding: 0 3rem;
+    }
   }
 `
