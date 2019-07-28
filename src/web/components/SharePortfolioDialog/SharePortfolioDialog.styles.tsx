@@ -1,8 +1,36 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Grid, Typography, Button, DialogTitle } from '@material-ui/core'
+import { Typography, Button,  DialogTitle } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+
+
+const styles = theme => ({
+  button: {
+    fontSize: '12px',
+    borderRadius: '32px',
+  },
+  selected: {
+    color: theme.palette.text.light,
+    backgroundColor: theme.palette.blue.light,
+    '&:hover': {
+      backgroundColor: theme.palette.blue.light,
+    },
+  },
+})
+
+export const TabButton = withStyles(styles)(({classes, children, isSelected, ...others}: {isSelected: boolean, children: any, classes: any}) =>
+  <Button
+    className={isSelected ? `${classes.selected} ${classes.button}` : classes.button}
+    variant={isSelected ? 'contained' : 'outlined'}
+    size="large"
+    {...others}
+  >
+    {children}
+  </Button>
+)
 
 export const ButtonShare = styled(Button)`
+  font-size: 12px;
   width: 200px;
   height: 48px;
   background: #165be0;
@@ -13,7 +41,6 @@ export const ButtonShare = styled(Button)`
 `
 
 export const TypographySectionTitle = styled(Typography)`
-  font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
   font-size: 0.5625rem;
@@ -23,7 +50,6 @@ export const TypographySectionTitle = styled(Typography)`
   color: #16253d;
 `
 export const TypographySubTitle = styled(Typography)`
-  font-family: DM Sans;
   font-style: normal;
   font-weight: 500;
   font-size: 0.75rem;

@@ -16,5 +16,5 @@ export interface IProps {
 
 export interface IState {
   shareWithSomeoneTab: boolean
-  selectedUserEmail: any
+  selectedUsername: any
 }

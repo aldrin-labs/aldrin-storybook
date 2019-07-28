@@ -16,6 +16,7 @@ import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
 
 import {
+  TabButton,
   ButtonShare,
   TypographySectionTitle,
   TypographySubTitle,
@@ -23,6 +24,7 @@ import {
 } from './SharePortfolioDialog.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 
 const tradingPortfolioTypes = [
   'Bull trading',
@@ -71,11 +73,18 @@ export default class SharePortfolioDialog extends React.Component<
 > {
   state: IState = {
     shareWithSomeoneTab: true,
-    selectedUserEmail: null,
+    selectedUsername: null,
   }
 
-  onChangeUserEmail = (e) => {
-    this.setState({ selectedUserEmail: e.target.value })
+  onChangeUsername = (
+    optionSelected: { label: string; value: string } | null
+  ) => {
+    const selectedUsername =
+      optionSelected && !Array.isArray(optionSelected)
+        ? { label: optionSelected.label, value: optionSelected.value }
+        : null
+
+    this.setState({ selectedUsername })
   }
 
   toggleSharingTab = () => {
@@ -86,14 +95,14 @@ export default class SharePortfolioDialog extends React.Component<
 
   sharePortfolioHandler = async (forAll?: boolean) => {
     const { sharePortfolioMutation, portfolioId } = this.props
-    const { selectedUserEmail } = this.state
+    const { selectedUsername } = this.state
 
     const variables = {
       inputPortfolio: {
         id: portfolioId,
       },
       optionsPortfolio: {
-        ...(forAll ? {} : { userId: selectedUserEmail.value }),
+        ...(forAll ? {} : { userId: selectedUsername.value }),
         ...(forAll ? { forAll: true } : { forAll: false }),
         accessLevel: 2,
       },
@@ -117,7 +126,7 @@ export default class SharePortfolioDialog extends React.Component<
       theme,
     } = this.props
 
-    const { selectedUserEmail, shareWithSomeoneTab } = this.state
+    const { selectedUsername, shareWithSomeoneTab } = this.state
 
     return (
       <Dialog
@@ -144,14 +153,14 @@ export default class SharePortfolioDialog extends React.Component<
             container
             alignItems="center"
             justify="space-between"
-            style={{ paddingBottom: '20px' }}
+            style={{ padding: '20px 0' }}
           >
-            <ButtonShare onClick={this.toggleSharingTab}>
+            <TabButton isSelected={shareWithSomeoneTab} onClick={this.toggleSharingTab}>
               SHARE WITH SOMEONE
-            </ButtonShare>
-            <ButtonShare onClick={this.toggleSharingTab}>
+            </TabButton>
+            <TabButton isSelected={!shareWithSomeoneTab} onClick={this.toggleSharingTab}>
               SHARE VIA MARKET
-            </ButtonShare>
+            </TabButton>
           </Grid>
           <Grid
             container
@@ -203,7 +212,7 @@ export default class SharePortfolioDialog extends React.Component<
                 </Grid>
               </Grid>
               <Grid container style={{ paddingBottom: '20px' }}>
-                <Grid container justify="space-between">
+                <Grid container justify="space-between" style={{ paddingBottom: '20px' }}>
                   <TypographySubTitle>
                     Share with anyone by the link
                   </TypographySubTitle>
@@ -220,10 +229,20 @@ export default class SharePortfolioDialog extends React.Component<
                   </BtnCustom>
                 </Grid>
                 <Grid container justify="space-between">
-                  <Grid item style={{ minWidth: '300px' }}>
-                    <Input
-                      value={selectedUserEmail}
-                      onChange={this.onChangeUserEmail}
+                  <Grid item style={{ minWidth: '300px', paddingBottom: '20px' }} >
+                    <SearchUsername
+                      isClearable={true}
+                      value={
+                        selectedUsername
+                          ? [
+                            {
+                              label: selectedUsername.label,
+                              value: selectedUsername.value,
+                            },
+                          ]
+                          : null
+                      }
+                      onChange={this.onChangeUsername}
                     />
                   </Grid>
                   <BtnCustom
@@ -233,7 +252,7 @@ export default class SharePortfolioDialog extends React.Component<
                     borderRadius={'8px'}
                     fontSize={'0.75rem'}
                     color={'#165BE0'}
-                    disabled={!selectedUserEmail}
+                    disabled={!selectedUsername}
                     onClick={() => this.sharePortfolioHandler(false)}
                   >
                     Invite
@@ -349,9 +368,6 @@ export default class SharePortfolioDialog extends React.Component<
         </DialogContent>
         <DialogFooter id="customized-dialog-title">
           <Typography
-            // fontWeight={'bold'}
-            // borderRadius={'10px'}
-            // color={black.custom}
           >
             Go to Social portfolio manager
           </Typography>

@@ -92,7 +92,7 @@ export default class ThemeWrapper extends Component<Props> {
             palette: {
               divider: fade('#748AA1', 0.16),
               type: themeMode,
-              text: { primary: '#DBD9E6', subPrimary: 'white' },
+              text: { primary: '#DBD9E6', subPrimary: 'white', light: '#fff' },
               black: {
                 custom: '#16253D',
               },
@@ -169,7 +169,7 @@ export default class ThemeWrapper extends Component<Props> {
                 // Name of the component ⚛️ / style sheet
                 textPrimary: {
                   // Name of the rule
-                  color: '#4F4F5D', // Some CSS
+                  color: '#7284A0', // Some CSS
                 },
               },
               MuiPaper: {
@@ -207,10 +207,12 @@ export default class ThemeWrapper extends Component<Props> {
               divider: fade('#BCC2CF', 0.5),
               type: themeMode,
               text: {
-                primary: fade('#41495E', 0.69),
+                primary: '#7284A0',
+                // primary: fade('#41495E', 0.69),
                 dark: '#7284A0',
                 blue: '#165BE0',
                 subPrimary: '#16253D',
+                light: '#fff',
               },
               black: {
                 custom: '#16253D',
