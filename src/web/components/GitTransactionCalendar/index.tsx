@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 const styles = (theme) => ({
   root: {
     //width: '100%',
-    fontSize: '0.5625rem',
+    fontSize: '0.9rem',
     fontFamily: 'DM Sans',
     lineHeight: '23px',
     letterSpacing: '1px',
@@ -46,7 +46,7 @@ class GitTransactionCalendar extends Component {
 
     console.log('Date: ', today)
     return (
-      <CalendarHeatmap 
+      <CalendarHeatmap
         className={this.props.classes.root}
         // startDate={'Wed Jul 24 2018 12:25:22 GMT+0500'}
         // endDate={'Wed Jul 24 2019 12:25:22 GMT+0500'}

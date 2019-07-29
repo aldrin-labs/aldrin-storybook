@@ -17,6 +17,6 @@ export const Chart = styled(({ background, ...rest }) => (
   width: 100%;
   height: calc(100% - 68px);
   && {
-    padding: 0.5rem 0.5rem 0 0.5rem;
+    padding: 0.8rem 0.8rem 0 0.8rem;
   }
 `

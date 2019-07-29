@@ -212,7 +212,7 @@ export default class SharePortfolioDialog extends React.Component<
                     height={'32px'}
                     btnColor={'#165BE0'}
                     borderRadius={'8px'}
-                    fontSize={'0.75rem'}
+                    fontSize={'1.2rem'}
                     color={'#165BE0'}
                     disabled={true}
                   >
@@ -231,7 +231,7 @@ export default class SharePortfolioDialog extends React.Component<
                     height={'32px'}
                     btnColor={'#165BE0'}
                     borderRadius={'8px'}
-                    fontSize={'0.75rem'}
+                    fontSize={'1.2rem'}
                     color={'#165BE0'}
                     disabled={!selectedUserEmail}
                     onClick={() => this.sharePortfolioHandler(false)}

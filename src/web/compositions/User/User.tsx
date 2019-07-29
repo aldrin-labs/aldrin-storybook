@@ -109,7 +109,7 @@ class UserContainer extends React.Component<IProps, IState> {
 }
 
 const AdminCP = styled(Card)`
-  margin: 1rem;
+  margin: 1.6rem;
   width: 10em;
   display: flex;
   flex-direction: column;

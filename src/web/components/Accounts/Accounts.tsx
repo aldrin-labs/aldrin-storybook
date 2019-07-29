@@ -57,7 +57,7 @@ export default class Accounts extends React.PureComponent<IProps> {
             {/* <StyledIcon isSideNavOpen={isSideNavOpen} color={color} /> */}
           </CloseContainer>
         </AccountsWalletsHeadingWrapper>
-        {/* 
+        {/*
         {!isRebalance && (
           <SelectAll>
             <Checkbox
@@ -100,7 +100,7 @@ export default class Accounts extends React.PureComponent<IProps> {
                   variant="body1"
                   //color={isChecked ? 'secondary' : 'textSecondary'}
                   lineHeight={'20px'}
-                  fontSize={'0.74rem'}
+                  fontSize={'1.184rem'}
                   textColor={'#7284A0'}
                 >
                   {keyName.name}

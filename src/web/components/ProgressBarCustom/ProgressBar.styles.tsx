@@ -18,7 +18,7 @@ export const GridFlex = styled(({ padding, ...rest }) => <Grid {...rest} />)`
 `
 
 export const TypographyCustom = styled(Typography)`
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: 1.5px;
   margin: auto 0;

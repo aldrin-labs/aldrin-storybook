@@ -28,7 +28,7 @@ export const TypographyHeading = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1.4rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
@@ -38,7 +38,7 @@ export const TypographySubHeading = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   line-height: 31px;
@@ -49,7 +49,7 @@ export const TypographyTitleCell = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.5625rem;
+  font-size: 0.8992rem;
   line-height: 23px;
   text-align: center;
   letter-spacing: 1px;
@@ -62,7 +62,7 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   font-family: DM Sans;
   font-style: normal;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 1.5rem;
   line-height: 39px;
   text-align: center;
   text-transform: uppercase;

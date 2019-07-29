@@ -109,7 +109,7 @@ const Wrapper = styled(Paper)`
 
 const StyledTypography = styled(TypographyWithCustomColor)`
   margin-right: auto;
-  margin-left: 0.25rem;
+  margin-left: 0.4rem;
 `
 
 const DepthChartStyledWrapper = styled.div`

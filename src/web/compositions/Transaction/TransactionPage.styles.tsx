@@ -6,7 +6,7 @@ import ReactSelect from '@sb/components/ReactSelectComponent'
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;
   width: 100px;
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   border: 1px solid transparent;
   font-weight: 700;
@@ -39,7 +39,7 @@ export const TypographyContatinerTitle = styled(Typography)`
   background: ${(props) => props.bgColor};
   margin-top: 10px;
   color: ${(props) => props.textColor};
-  font-size: 0.625rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
@@ -51,7 +51,7 @@ export const TypographyContatinerTitle = styled(Typography)`
 
 export const TypographyAccountTitle = styled(Typography)`
   font-family: DM Sans;
-  font-size: ${(props) => props.fontSize || `0.75rem`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -61,7 +61,7 @@ export const TypographyAccountTitle = styled(Typography)`
 
 export const TypographyTitle = styled(Typography)`
   font-family: DM Sans;
-  font-size: ${(props) => props.fontSize || `0.75rem`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -80,7 +80,7 @@ export const GridShowHideDataContainer = styled(Grid)`
 
 export const TypographyCalendarLegend = styled(Typography)`
   padding: '0 10px';
-  font-size: '0.5625rem';
+  font-size: '0.9rem';
   text-align: ${(props) => props.textAlign};
 `
 

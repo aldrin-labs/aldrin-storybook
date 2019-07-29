@@ -95,7 +95,7 @@ class BitcoinPriceChart extends Component {
               display: 'flex',
               justifyContent: 'center',
               position: 'relative',
-              left: '-1rem ',
+              left: '-1.6rem ',
               minWidth: '100%',
             }}
           />
@@ -106,7 +106,7 @@ class BitcoinPriceChart extends Component {
             <div>
               <SideContainerData>
                 {' '}
-                <span style={{ padding: '0 1rem' }}>
+                <span style={{ padding: '0 1.6rem' }}>
                   <SvgIcon src={diez} width={24} />
                 </span>
                 120.495
@@ -122,7 +122,7 @@ class BitcoinPriceChart extends Component {
             <div>
               <SideContainerData>
                 {' '}
-                <span style={{ padding: '0 1rem' }}>
+                <span style={{ padding: '0 1.6rem' }}>
                   <SvgIcon src={bounce} width={24} />
                 </span>12.5%
               </SideContainerData>
@@ -137,7 +137,7 @@ class BitcoinPriceChart extends Component {
             <div>
               <SideContainerData>
                 {' '}
-                <span style={{ padding: '0 1rem' }}>
+                <span style={{ padding: '0 1.6rem' }}>
                   <SvgIcon src={time} width={24} />
                 </span>8.33 Minutes
               </SideContainerData>
@@ -173,9 +173,9 @@ const MainContainer = styled.div`
 `
 const SideContainer = styled.div`
   position: absolute;
-  right: -1.2rem;
+  right: -1.92rem;
   z-index: 0;
-  top: -3.1rem;
+  top: -4.96rem;
   width: 30%;
   height: calc(100% + 33px + 32px);
   border-radius: 0px 3px 3px 0px;
@@ -191,7 +191,7 @@ const SideContainer = styled.div`
 
 const SideContainerDataBox = styled.div`
   height: calc(100% - 16px);
-  margin-top: 1rem;
+  margin-top: 1.6rem;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -209,7 +209,7 @@ const SideContainerData = styled.div`
 `
 
 const SideContainerDataDetail = styled.div`
-  padding-left: 3.5rem;
+  padding-left: 5.6rem;
   opacity: 0.5;
   font-family: Roboto, sans-serif;
   font-size: 12px;
@@ -232,7 +232,7 @@ const Btn = styled(Link)`
   font-weight: 500;
   text-align: center;
   padding: 10px 0;
-  margin: -2rem auto 0 auto;
+  margin: -3.2rem auto 0 auto;
   cursor: pointer;
   text-transform: uppercase;
   text-decoration: none;
@@ -240,8 +240,8 @@ const Btn = styled(Link)`
 `
 
 const Hr = styled.div`
-  margin-left: 1rem;
-  margin-top: -2rem;
+  margin-left: 1.6rem;
+  margin-top: -3.2rem;
   width: 80%;
   height: 1px;
   max-height: 1px;
@@ -251,7 +251,7 @@ const Hr = styled.div`
 const PricesContainer = styled.div`
   width: 100%;
   height: 30%;
-  margin-top: 2rem;
+  margin-top: 3.2rem;
   padding-bottom: 5px;
   display: flex;
   justify-content: space-between;
@@ -267,7 +267,7 @@ const PricesColumn = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding-bottom: 1rem;
+  padding-bottom: 1.6rem;
 `
 const Value = styled.div`
   margin: 0 auto;

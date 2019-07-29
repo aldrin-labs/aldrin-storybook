@@ -74,7 +74,7 @@ export const Cell = styled.div`
   position: relative;
   overflow: hidden;
   list-style: none;
-  padding: 0rem 0.4rem;
+  padding: 0rem 0.64rem;
   font-weight: 600;
   font-size: ${CSS_CONFIG.chart.bodyCell.fontSize};
   flex-basis: ${(props: { width: string }) => props.width};

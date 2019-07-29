@@ -11,7 +11,7 @@ export const TypographyHeading = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1.4rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};

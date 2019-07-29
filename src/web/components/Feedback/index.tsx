@@ -59,7 +59,7 @@ export default class Feedback extends Component<Props> {
 
 export const Wrapper = styled.div`
   display: flex;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.6rem;
   border: ${(props: { borderColor: string }) =>
     `1px solid ${props.borderColor}`};
 `

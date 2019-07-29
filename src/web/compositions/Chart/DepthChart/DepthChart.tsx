@@ -178,7 +178,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     const { palette } = theme
     const axisStyle = {
       ticks: {
-        padding: '1rem',
+        padding: '1.6rem',
         stroke: theme.palette.text.primary,
         opacity: 0.5,
         fontFamily: theme.typography.fontFamily,
@@ -372,26 +372,26 @@ const CrosshairContent = styled.div`
     props.background};
   color: ${(props: { textColor?: string; background?: string }) =>
     props.textColor};
-  padding: 0.5rem;
-  font-size: 1rem;
+  padding: 0.8rem;
+  font-size: 1.6rem;
   border-radius: 5px;
-  min-width: 15rem;
+  min-width: 24rem;
   z-index: 1;
 `
 
 const Br = styled(Divider)`
   && {
     width: 10%;
-    margin-top: -0.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: -0.8rem;
+    margin-bottom: 0.8rem;
   }
 `
 
 const RotatedBr = styled(Br)`
   && {
     transform: rotate(90deg);
-    margin-top: 1rem;
-    margin-left: -1rem;
+    margin-top: 1.6rem;
+    margin-left: -1.6rem;
   }
 `
 
@@ -400,13 +400,13 @@ const CrosshairBottomWrapper = styled.div`
   flex-wrap: nowrap;
   color: gray;
   font-weight: 300;
-  font-size: 0.75rem;
+  font-size: 1.2rem;
 `
 
 const ScaleWrapper = styled.div`
   position: absolute;
   width: 100%;
-  top: 1rem;
+  top: 1.6rem;
 `
 
 const MidPriceContainer = styled.div`
@@ -415,14 +415,14 @@ const MidPriceContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 11rem;
+  width: 17.6rem;
   position: relative;
   margin: 0 auto;
 `
 
 const MidPriceColumnWrapper = styled.div`
   display: flex;
-  padding: 0.5rem;
+  padding: 0.8rem;
   align-items: center;
   justify-content: center;
   flex-direction: column;
