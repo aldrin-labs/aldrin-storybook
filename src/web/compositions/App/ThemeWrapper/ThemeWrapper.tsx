@@ -113,7 +113,7 @@ export default class ThemeWrapper extends Component<Props> {
               },
               grey: {
                 custom: '#ABBAD1',
-                dark: '#7284A0',
+                dark: '#2c2c34', //'#1F1F24',
                 main: '#F2F4F6',
               },
               primary: {
@@ -231,13 +231,13 @@ export default class ThemeWrapper extends Component<Props> {
               },
               grey: {
                 custom: '#ABBAD1',
-                dark: '#7284A0',
+                dark: '#8f9092', //'#7284A0',
                 light: '#E7ECF3',
                 main: '#F2F4F6',
               },
               primary: {
                 main: '#FEFEFE',
-                dark: '#F3F3F3',
+                dark: '#f2f4f6',
                 light: '#FFF',
               },
               secondary: {
