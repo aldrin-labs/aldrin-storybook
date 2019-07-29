@@ -19,14 +19,15 @@ export const GridContainerTitle = styled(Grid)`
   display: flex;
   width: 100%;
   border-radius: 20px 20px 0 0;
-  background: #f2f4f6;
+  background: ${(props) => props.bgColor};
   margin-bottom: 8px;
 `
 
 export const GridItemContainer = styled(Grid)`
-  //min-height: 200px;
+  min-height: 200px;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
+  border: ${(props) => props.borderColor};
 `
 
 export const ContentGrid = styled(Grid)`
@@ -35,8 +36,9 @@ export const ContentGrid = styled(Grid)`
 `
 
 export const TypographyContatinerTitle = styled(Typography)`
+  background: ${(props) => props.bgColor};
   margin-top: 10px;
-  color: #16253d;
+  color: ${(props) => props.textColor};
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -87,6 +89,7 @@ export const GridAccountContainer = styled(Grid)`
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
   position: relative;
+  border: ${(props) => props.borderColor};
 `
 
 export const LessMoreContainer = styled(Grid)`

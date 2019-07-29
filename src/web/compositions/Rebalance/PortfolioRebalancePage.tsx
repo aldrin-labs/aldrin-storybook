@@ -213,8 +213,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 border: `1px solid ${theme.palette.grey[theme.palette.type]}`,
               }}
             >
-              <GridProgressTitle content alignItems="center">
-                <TypographyProgress>current allocation</TypographyProgress>
+              <GridProgressTitle
+                bgColor={theme.palette.primary.dark}
+                content
+                alignItems="center"
+              >
+                <TypographyProgress textColor={theme.palette.text.subPrimary}>
+                  current allocation
+                </TypographyProgress>
               </GridProgressTitle>
 
               <PortfolioRebalanceChart
@@ -262,8 +268,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 border: `1px solid ${theme.palette.grey[theme.palette.type]}`,
               }}
             >
-              <GridProgressTitle content alignItems="center">
-                <TypographyProgress>target allocation</TypographyProgress>
+              <GridProgressTitle
+                bgColor={theme.palette.primary.dark}
+                content
+                alignItems="center"
+              >
+                <TypographyProgress textColor={theme.palette.text.subPrimary}>
+                  target allocation
+                </TypographyProgress>
               </GridProgressTitle>
               <PortfolioRebalanceChart
                 key={`target-chart`}
