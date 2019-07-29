@@ -1,11 +1,11 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 
-import { Button } from '@material-ui/core'
+import { Fab } from '@material-ui/core'
 
-const ButtonStyled = withStyles((theme) => ({
+const FabStyled = withStyles((theme) => ({
   root: {
-    marginLeft: '0.7rem',
+    marginLeft: '1.12rem',
     height: 38,
     background: 'transparent',
     border: `1px solid ${theme.palette.divider}`,
@@ -15,7 +15,7 @@ const ButtonStyled = withStyles((theme) => ({
       background: theme.palette.primary.dark,
     },
   },
-}))(Button)
+}))(Fab)
 
 export default ({
   onClick,
@@ -26,13 +26,13 @@ export default ({
   children: React.ReactChildren | string
   className?: string
 }) => (
-  <ButtonStyled
+  <FabStyled
     data-e2e="mainChart__typeOfChartSwitcher"
     size="small"
     onClick={onClick}
-    variant="extendedFab"
+    variant="extended"
     className={className}
   >
     {children}
-  </ButtonStyled>
+  </FabStyled>
 )

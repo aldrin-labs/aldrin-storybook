@@ -25,13 +25,8 @@ module.exports = {
           },
         ],
         '@babel/plugin-syntax-dynamic-import',
-        '@babel/plugin-proposal-class-properties',
-        [
-          '@babel/plugin-proposal-decorators',
-          {
-            decoratorsBeforeExport: true,
-          },
-        ],
+        ["@babel/plugin-proposal-decorators", { "legacy": true}],
+        ["@babel/plugin-proposal-class-properties", { "loose": true}],
         '@babel/plugin-proposal-export-default-from',
         '@babel/plugin-proposal-export-namespace-from',
         '@babel/plugin-proposal-function-sent',
@@ -73,13 +68,8 @@ module.exports = {
           },
         ],
         '@babel/plugin-syntax-dynamic-import',
-        '@babel/plugin-proposal-class-properties',
-        [
-          '@babel/plugin-proposal-decorators',
-          {
-            decoratorsBeforeExport: true,
-          },
-        ],
+        ["@babel/plugin-proposal-decorators", { "legacy": true}],
+        ["@babel/plugin-proposal-class-properties", { "loose": true}],
         '@babel/plugin-proposal-export-default-from',
         '@babel/plugin-proposal-export-namespace-from',
         '@babel/plugin-proposal-function-sent',
@@ -110,7 +100,6 @@ module.exports = {
       ],
       plugins: [
         'react-hot-loader/babel',
-
         'babel-plugin-styled-components',
         'graphql-tag',
         [
@@ -121,13 +110,8 @@ module.exports = {
           },
         ],
         '@babel/plugin-syntax-dynamic-import',
-        '@babel/plugin-proposal-class-properties',
-        [
-          '@babel/plugin-proposal-decorators',
-          {
-            decoratorsBeforeExport: true,
-          },
-        ],
+        ["@babel/plugin-proposal-decorators", { "legacy": true}],
+        ["@babel/plugin-proposal-class-properties", { "loose": true}],
         '@babel/plugin-proposal-export-default-from',
         '@babel/plugin-proposal-export-namespace-from',
         '@babel/plugin-proposal-function-sent',

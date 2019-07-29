@@ -1,46 +1,111 @@
 import React, { Component } from 'react'
+import { compose } from 'recompose'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
 import { Slide } from '@material-ui/core'
 import Joyride from 'react-joyride'
-
-import * as actions from '@core/redux/chart/actions'
 import WarningMessageSnack from '@sb/components/WarningMessageSnack/WarningMessageSnack'
 import IndividualChart from './IndividualChart/IndividualChart'
-import * as userActions from '@core/redux/user/actions'
 
 import { IProps, IChart } from './OnlyCharts.types'
 import { multiChartsSteps } from '@sb/config/joyrideSteps'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
+import { graphql } from 'react-apollo'
+
+import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { REMOVE_CHART } from '@core/graphql/mutations/chart/removeChart'
+import { GET_LAYOUTS } from '@core/graphql/queries/chart/getLayouts'
+import { ACTIVE_LAYOUT } from '@core/graphql/queries/chart/activeLayout'
+import { SAVE_LAYOUT } from '@core/graphql/mutations/chart/saveLayout'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { GET_WARNING_MESSAGE } from '@core/graphql/queries/chart/getWarningMessage'
+import { TOGGLE_WARNING_MESSAGE } from '@core/graphql/mutations/chart/toggleWarningMessage'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
+
 class OnlyCharts extends Component<IProps> {
   componentDidMount() {
-    const { charts, addChart, mainPair } = this.props
+    const { mainPair, getCharts, addChartMutation } = this.props
+    const {
+      multichart: { charts },
+    } = getCharts
     if (charts.length === 0) {
-      addChart(mainPair)
+      addChartMutation({
+        variables: {
+          chart: mainPair,
+        },
+      })
     }
   }
 
-  handleJoyrideCallback = (data) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
-    )
-      this.props.hideToolTip('multiChartPage')
+    ) {
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            multiChartPage: false,
+          },
+        },
+      })
+    }
+  }
+
+  removeChart = async (index) => {
+    await this.props.removeChartMutation({
+      variables: {
+        index: index,
+      },
+    })
+  }
+
+  saveLayout = (name: String) => {
+    const {
+      getCharts: {
+        multichart: { charts },
+      },
+      saveLayoutMutation,
+    } = this.props
+
+    saveLayoutMutation({
+      variables: {
+        name,
+        charts: charts,
+      },
+    })
   }
 
   render() {
     const {
-      charts,
-      removeChart,
-      openedWarning,
-      removeWarningMessage,
+      getWarningMessageQuery: {
+        chart: { warningMessageOpened },
+      },
+      toggleWarningMessageMutation,
       theme,
       view,
-      demoMode,
+      getCharts: {
+        multichart: { charts },
+      },
+      activeLayout: {
+        multichart: { activeLayout },
+      },
+      userId,
+      themeMode,
+      getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
-
     return (
       <>
         <Joyride
@@ -48,7 +113,7 @@ class OnlyCharts extends Component<IProps> {
           showSkipButton={true}
           continuous={true}
           steps={multiChartsSteps}
-          run={demoMode.multiChartPage}
+          run={getTooltipSettings.multiChartPage}
           callback={this.handleJoyrideCallback}
           styles={{
             options: {
@@ -77,20 +142,24 @@ class OnlyCharts extends Component<IProps> {
             chartsCount={charts.length || 1}
           >
             {charts
-              .filter((chart) => chart.id && chart.pair)
+              .filter((chart) => chart)
               .map((chart: IChart, i: number) => (
                 <IndividualChart
-                  key={chart.id}
+                  key={chart}
                   theme={theme}
-                  removeChart={removeChart}
+                  removeChart={this.removeChart}
                   index={i}
                   chartsCount={charts.length}
-                  currencyPair={chart.pair}
+                  currencyPair={chart}
+                  userId={userId}
+                  themeMode={themeMode}
                 />
               ))}
             <WarningMessageSnack
-              open={openedWarning}
-              onCloseClick={removeWarningMessage}
+              open={warningMessageOpened}
+              onCloseClick={async () => {
+                await toggleWarningMessageMutation({})
+              }}
               messageText={'You can create up to 8 charts.'}
             />
           </ChartContainer>
@@ -143,24 +212,37 @@ const ChartContainer = styled.div`
   );
 `
 
-const mapStateToProps = (store: any) => ({
-  charts: store.chart.charts,
-  currencyPair: store.chart.currencyPair,
-  isShownMocks: store.user.isShownMocks,
-  openedWarning: store.chart.warningMessageOpened,
-  demoMode: store.user.toolTip,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  removeChart: (i: number) => dispatch(actions.removeChart(i)),
-  addChart: (baseQuote: string) => dispatch(actions.addChart(baseQuote)),
-  removeWarningMessage: () => dispatch(actions.removeWarningMessage()),
-  hideToolTip: (tab: string) => dispatch(userActions.hideToolTip(tab)),
-})
-
-export default withErrorFallback(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OnlyCharts)
-)
+export default compose(
+  queryRendererHoc({
+    query: GET_WARNING_MESSAGE,
+    name: 'getWarningMessageQuery',
+  }),
+  queryRendererHoc({
+    query: ACTIVE_LAYOUT,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'activeLayout',
+  }),
+  queryRendererHoc({
+    query: GET_CHARTS,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'getCharts',
+  }),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  graphql(TOGGLE_WARNING_MESSAGE, { name: 'toggleWarningMessageMutation' }),
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
+  graphql(REMOVE_CHART, { name: 'removeChartMutation' }),
+  graphql(SAVE_LAYOUT, { name: 'saveLayoutMutation' }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  }),
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
+  withErrorFallback
+)(OnlyCharts)

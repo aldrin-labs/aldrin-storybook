@@ -13,6 +13,7 @@ import { withTheme } from '@material-ui/styles'
 import { IProps, IState, Items, IValue, IChart } from './types'
 
 import { LegendContainer } from '../cssUtils'
+import { CentredContainer } from '@sb/styles/cssUtils'
 
 import {
   Container,
@@ -39,6 +40,8 @@ class BarChartComponent extends Component<IProps, IState> {
   render() {
     const {
       showPlaceholder,
+      showCustomPlaceholder,
+      placeholderElement,
       charts,
       height,
       alwaysShowLegend,
@@ -49,6 +52,7 @@ class BarChartComponent extends Component<IProps, IState> {
       bottomMargin,
       theme,
     } = this.props
+
     const { value } = this.state
 
     const items: Items[] = charts.map((chart: IChart, chartIndex: number) => {
@@ -92,61 +96,65 @@ class BarChartComponent extends Component<IProps, IState> {
     return (
       <ScrollContainer height={height}>
         <Container height={height} minWidth={minWidth}>
-          <FlexibleXYPlot
-            onMouseLeave={this.onSeriesMouseOut}
-            xType="ordinal"
-            margin={{ bottom: bottomMargin }}
-          >
-            {alwaysShowLegend && (
-              <LegendContainer transition={theme.transitions.duration.short}>
-                <StyledDiscreteColorLegend
-                  orientation="horizontal"
-                  fontFamily={theme.typography.fontFamily}
-                  textColor={theme.palette.text.primary}
-                  items={items}
+          {showCustomPlaceholder ? (
+            placeholderElement
+          ) : (
+            <FlexibleXYPlot
+              onMouseLeave={this.onSeriesMouseOut}
+              xType="ordinal"
+              margin={{ bottom: bottomMargin }}
+            >
+              {alwaysShowLegend && (
+                <LegendContainer transition={theme.transitions.duration.short}>
+                  <StyledDiscreteColorLegend
+                    orientation="horizontal"
+                    fontFamily={theme.typography.fontFamily}
+                    textColor={theme.palette.text.primary}
+                    items={items}
+                  />
+                </LegendContainer>
+              )}
+              {showPlaceholder ? (
+                <VerticalBarSeries
+                  animation={animated && 'gentle'}
+                  key="chart"
+                  data={[
+                    { x: 'Q1', y: 10 },
+                    { x: 'Q2', y: 5 },
+                    { x: 'Q3', y: 15 },
+                    { x: 'Q4', y: 25 },
+                    { x: 'Q5', y: 20 },
+                  ]}
+                  color={theme.palette.action.disabledBackground}
                 />
-              </LegendContainer>
-            )}
-            {showPlaceholder ? (
-              <VerticalBarSeries
-                animation={animated && 'gentle'}
-                key="chart"
-                data={[
-                  { x: 'Q1', y: 10 },
-                  { x: 'Q2', y: 5 },
-                  { x: 'Q3', y: 15 },
-                  { x: 'Q4', y: 25 },
-                  { x: 'Q5', y: 20 },
-                ]}
-                color={theme.palette.action.disabledBackground}
-              />
-            ) : (
-              [
-                <YAxis
-                  animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
-                  key="y"
-                />,
-                <XAxis
-                  animation={animated && 'gentle'}
-                  style={axisStyleWithTheme}
-                  key="x"
-                  tickLabelAngle={xAxisVertical ? -90 : 0}
-                />,
-                ...Charts,
-              ]
-            )}
+              ) : (
+                [
+                  <YAxis
+                    animation={animated && 'gentle'}
+                    style={axisStyleWithTheme}
+                    key="y"
+                  />,
+                  <XAxis
+                    animation={animated && 'gentle'}
+                    style={axisStyleWithTheme}
+                    key="x"
+                    tickLabelAngle={xAxisVertical ? -90 : 0}
+                  />,
+                  ...Charts,
+                ]
+              )}
 
-            {value.x === null || value.y === null ? null : (
-              <Hint value={value}>
-                <ChartTooltip>
-                  <Typography variant="h5">{`${value.x} ${
-                    hideDashForToolTip ? '' : '-'
-                  } ${value.y}%`}</Typography>
-                </ChartTooltip>
-              </Hint>
-            )}
-          </FlexibleXYPlot>
+              {value.x === null || value.y === null ? null : (
+                <Hint value={value}>
+                  <ChartTooltip>
+                    <Typography variant="h5">{`${value.x} ${
+                      hideDashForToolTip ? '' : '-'
+                    } ${value.y}%`}</Typography>
+                  </ChartTooltip>
+                </Hint>
+              )}
+            </FlexibleXYPlot>
+          )}
         </Container>
       </ScrollContainer>
     )

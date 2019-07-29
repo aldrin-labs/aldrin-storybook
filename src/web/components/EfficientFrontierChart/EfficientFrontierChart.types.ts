@@ -11,6 +11,8 @@ export interface IState {
 export type Data = { x: number; y: number }
 
 export interface IProps {
+  showCustomPlaceholder: boolean
+  placeholderElement: any
   theme: Theme
   showBlurOnSections?: boolean
   data: {

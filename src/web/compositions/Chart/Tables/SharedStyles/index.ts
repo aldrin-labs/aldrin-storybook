@@ -24,14 +24,14 @@ export const RowWithVolumeChart = styled.div`
 
   background-color: ${(props: { isHead?: boolean; background: string }) =>
     props.background};
-  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '2rem')};
+  height: ${(props: { isHead?: boolean }) => (props.isHead ? '100%' : '21px')};
 
   &:before {
     position: absolute;
     z-index: 1;
     top: 0;
     left: 0;
-    width: ${(props: { colored?: string }) => Number(props.colored)}%;
+    width: ${(props: { colored?: string }) => (+props.colored)}%;
     height: 100%;
     content: '';
     background: ${(props: { volumeColor?: string; colored?: string }) =>

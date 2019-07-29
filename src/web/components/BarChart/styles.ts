@@ -13,6 +13,7 @@ export const ScrollContainer = styled.div`
 `
 
 export const Container = styled.div`
+  position: relative;
   height: ${(props: { height: number; minWidth: number }) =>
     props.height ? `${props.height}px` : `100%`};
   min-width: ${(props: { height: number; minWidth: number }) =>
@@ -39,7 +40,7 @@ export const StyledDiscreteColorLegend = styled(DiscreteColorLegend)`
 
 export const axisStyle = ({ stroke, textColor, fontFamily, fontSize }) => ({
   ticks: {
-    padding: '1rem',
+    padding: '1.6rem',
     stroke: stroke,
     fontFamily: fontFamily,
     opacity: 0.75,

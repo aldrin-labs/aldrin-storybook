@@ -1,5 +1,5 @@
-import { WithStyles, Theme, PropTypes } from '@material-ui/core'
-import React from 'react'
+import { Theme, PropTypes } from '@material-ui/core'
+import React, { CSSProperties } from 'react'
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
 import { Classes } from 'jss'
@@ -10,6 +10,7 @@ export type renderCellType = {
   numeric: boolean
   padding?: Padding
   variant?: 'body' | 'footer' | 'head'
+  tableStyles?: TableStyles
 }
 
 export type T = string | number
@@ -64,6 +65,11 @@ export type sortTypes = {
   sortHandler: (id: string) => void
 }
 
+export type defaultSortTypes = {
+  sortColumn: string
+  sortDirection: 'asc' | 'desc'
+}
+
 export type Head = {
   // id should be equal to shape of body element  to enable sorting by default
   id: string
@@ -72,14 +78,22 @@ export type Head = {
   label: string
   style?: object
   sortBy?: 'default' | (() => number)
+  isSortable: boolean
 }
 
 export type action = {
   readonly onClick: (event: React.MouseEvent<HTMLElement>) => void
   readonly id: string
   readonly style: object
-  readonly icon: React.ComponentType<SvgIconProps>
+  readonly icon: React.ReactElement<any>
   readonly color?: PropTypes.Color
+  readonly withoutHover?: boolean
+}
+
+export type TableStyles = {
+  heading?: CSSProperties
+  title?: CSSProperties
+  cell?: CSSProperties
 }
 
 export interface Props {
@@ -96,22 +110,26 @@ export interface Props {
   columnNames?: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
   expandedRows?: ReadonlyArray<string>
-  title?: string | number
+  title?: string | number | React.ReactElement<any>
   onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
   // Shadow depth, corresponds to dp in the spec. It's accepting values between 0 and 24 inclusive.
   elevation?: number
   sort?: sortTypes | undefined
+  defaultSort?: defaultSortTypes | undefined
   pagination?: Pagination
   actions?: ReadonlyArray<action>
   // how long will be cell with actions
   actionsColSpan?: number
   borderBottom?: boolean
   rowsWithHover?: boolean
-
+  rowWithHoverBorderRadius?: boolean
+  emptyTableText?: string
+  tableStyles?: TableStyles
 }
 
 export type Pagination = {
+  enabled: boolean
   handleChangeRowsPerPage: () => void
   handleChangePage: () => void
   rowsPerPageOptions: number[]

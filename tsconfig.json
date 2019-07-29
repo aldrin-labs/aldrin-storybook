@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "rootDir": "src",
     "baseUrl": ".",
     "outDir": "./dist/",
@@ -11,6 +12,7 @@
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
     "alwaysStrict": false,
@@ -20,7 +22,7 @@
     "typeRoots": ["./node_modules/@types", "./typings"],
     "paths": {
       "@core/*": ["src/core/src/*"],
-      "@sb/*": ["src/web/sb/*"],
+      "@sb/*": ["src/web/*"],
       "@components/*": ["src/web/components/*"],
       "@compositions/*": ["src/web/compositions/*"],
       "@styles/*": ["src/web/styles/*"],

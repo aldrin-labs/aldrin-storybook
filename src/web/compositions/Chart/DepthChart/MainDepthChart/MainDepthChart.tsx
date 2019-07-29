@@ -1,12 +1,21 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import DepthChart from '../DepthChart'
+import { GET_ORDERS } from '@core/graphql/queries/chart/getOrders'
 
-const MainDepthChart = (props: any) => <DepthChart {...props} />
+const MainDepthChart = (props: any) => {
+  const {
+    getOrdersQuery: {
+      orderbook: {
+        orders: { asks, bids },
+      },
+    },
+  } = props
 
-const mapStateToProps = (store: any) => ({
-  asks: store.chart.asks,
-  bids: store.chart.bids,
-})
+  return <DepthChart asks={asks} bids={bids} {...props} />
+}
 
-export default connect(mapStateToProps)(MainDepthChart)
+export default queryRendererHoc({
+  query: GET_ORDERS,
+  name: 'getOrdersQuery',
+})(MainDepthChart)

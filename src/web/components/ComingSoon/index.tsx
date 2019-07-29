@@ -29,5 +29,5 @@ const Container = styled.div`
   place-content: center;
   place-items: center;
   position: absolute;
-  z-index: 1;
+  z-index: 999;
 `

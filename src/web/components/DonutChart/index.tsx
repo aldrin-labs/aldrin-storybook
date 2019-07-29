@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
 
 import { getRandomColor } from './utils'
@@ -11,6 +12,7 @@ import {
   SDiscreteColorLegend,
   ChartWithLegend,
   ColorLegendContainer,
+  ColorLegendPercentContainer
 } from './styles'
 import { defaultColors, emptyColor } from './colors'
 import { FlexibleChart } from './FlexibleChart'
@@ -34,6 +36,13 @@ const getColorsWithRandom = (colors: string[], dataLengh: number) => {
     ...range(dataLengh - colors.length).map(() => getRandomColor()),
   ]
 }
+
+const DEFAULT_CHART_SIZE = {
+  width: 300,
+  height: 300
+}
+
+@withTheme()
 
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
@@ -105,6 +114,13 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       theme,
       thicknessCoefficient,
       colorLegendWhidh,
+
+      chartWidth,
+      chartHeight,
+      vertical,
+      chartValueVariant,
+
+      removeLabels
     } = this.props
 
     // show chart withoutData UI
@@ -120,17 +136,22 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
     return (
       <ChartWithTitle key={sizeKey}>
-        <LabelContainer>
-          <Typography variant="h4">
-            {value ? value.label : labelPlaceholder || ''}
-          </Typography>
-        </LabelContainer>
-        <ChartWithLegend>
+        {!removeLabels && <LabelContainer>
+            <Typography variant="h4">
+              {value ? value.label : labelPlaceholder || ''}
+            </Typography>
+          </LabelContainer>
+        }
+
+        <ChartWithLegend vertical={vertical}>
           {colorLegend && !isEmpty && (
             <ColorLegendContainer width={colorLegendWhidh}>
               <SDiscreteColorLegend
                 width={colorLegendWhidh}
-                items={data.map((d) => d.label)}
+                items={data.map((d) => <ColorLegendPercentContainer>
+                  <span>{d.label}</span>
+                  <span>{d.realValue.toFixed(1)}%</span>
+                </ColorLegendPercentContainer>)}
                 colors={data.map((d, index) => colorsWithRandom[index])}
                 textColor={theme.typography.body1.color}
               />
@@ -146,6 +167,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 colorsWithRandom={colorsWithRandom}
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
+
+                width={chartWidth || DEFAULT_CHART_SIZE.width}
+                height={chartHeight || DEFAULT_CHART_SIZE.height}
+                valueVariant={chartValueVariant}
+                removeValueContainer={removeLabels}
               />
             ) : (
               <FlexibleChart
@@ -156,6 +182,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 colorsWithRandom={[emptyColor]}
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
+
+                width={chartWidth || DEFAULT_CHART_SIZE.width}
+                height={chartHeight || DEFAULT_CHART_SIZE.height}
+                valueVariant={chartValueVariant}
+                removeValueContainer={removeLabels}
               />
             )}
           </ChartContainer>

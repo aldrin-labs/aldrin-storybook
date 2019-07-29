@@ -4,7 +4,7 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const GridContainer = styled(Grid)`
   && {
-    padding: 0.5rem;
+    padding: 0.8rem;
     justify-content: center;
     min-height: 600px;
     height: 100%;
@@ -14,7 +14,7 @@ export const GridContainer = styled(Grid)`
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
+  height: calc(100vh - ${CSS_CONFIG.navBarHeight * 2}px);
   z-index: 0;
   margin-left: auto;
   margin-right: auto;
@@ -34,6 +34,7 @@ export const DonutChatWrapper = styled(TableWrapper)`
 export const TableContainer = styled(Grid)`
   && {
     max-height: 100%;
+    padding: 8px 8px 0;
   }
 `
 
@@ -54,3 +55,14 @@ export const CalculatorWrapper = styled.div`
   margin-right: auto;
 `
 
+export const CoinSymbolContainer = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+export const CoinMarketCapLink = styled.div`
+  ${(props: { isSupported: boolean }) =>
+    props.isSupported
+      ? 'font-weight: bold; text-decoration: underline; color: #69c; cursor: pointer'
+      : 'font-weight: bold; color: #69c;'}
+`

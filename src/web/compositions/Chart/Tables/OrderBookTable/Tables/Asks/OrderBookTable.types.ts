@@ -10,6 +10,6 @@ export interface IProps {
   data: IOrder[]
   theme: Theme
   tableExpanded: boolean
-  activeExchange: { exchange: IExchange; index: number }
+  activeExchange: IExchange
   currencyPair: string
 }

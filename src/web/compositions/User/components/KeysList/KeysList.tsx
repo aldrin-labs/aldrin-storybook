@@ -98,6 +98,7 @@ class KeysListComponent extends React.Component {
 }
 
 const KeyTableCell = styled(TableCell)`
+  padding: 0;
   overflow: hidden;
   text-align: center;
   text-overflow: ellipsis;
@@ -115,5 +116,11 @@ const KeysTable = styled(Table)`
 `
 
 export default (props) => (
-  <QueryRenderer component={KeysListComponent} query={getKeysQuery} {...props} />
+  <QueryRenderer
+  component={KeysListComponent}
+  query={getKeysQuery}
+  fetchPolicy="network-only"
+  withOutSpinner={true}
+  {...props}
+  />
 )

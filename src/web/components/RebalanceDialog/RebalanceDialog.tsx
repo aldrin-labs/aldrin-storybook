@@ -15,6 +15,7 @@ const DialogComponent = ({
   isSaveError,
   isSystemError,
   isCurrentAssetsChangedError,
+  isDustFilterError,
   hideWarning,
   onSaveClick,
   onReset,
@@ -45,7 +46,7 @@ const DialogComponent = ({
               onSaveClick(true)
             }}
             size="small"
-            style={{ margin: '0.5rem 1rem' }}
+            style={{ margin: '0.8rem 1.6rem' }}
           >
             Delete empty and save
           </Button>
@@ -61,7 +62,7 @@ const DialogComponent = ({
               openLink(config.bugLink, hideWarning)
             }}
             size="small"
-            style={{ margin: '0.5rem 1rem' }}
+            style={{ margin: '0.8rem 1.6rem' }}
           >
             Report bug
           </Button>
@@ -79,6 +80,18 @@ const DialogComponent = ({
           autoFocus={true}
         >
           Reset my rebalanced portfolio and update snapshot
+        </Button>
+      )}
+      {isDustFilterError && (
+        <Button
+          id="resetRebalancedPortfolioButton"
+          onClick={() => {
+            hideWarning()
+          }}
+          color="secondary"
+          autoFocus={true}
+        >
+          Ok
         </Button>
       )}
     </DialogActions>

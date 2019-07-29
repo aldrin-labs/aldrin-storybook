@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
-import { connect } from 'react-redux'
 import Joyride from 'react-joyride'
 import { Grow, Switch } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 
-import * as Useractions from '@core/redux/user/actions'
-import * as actions from '@core/redux/portfolio/actions'
 import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import { GET_OPTIMIZATION_COUNT_OF_RUNS } from '@core/graphql/queries/portfolio/getOptimizationCountOfRuns'
 import { UPDATE_OPTIMIZATION_COUNT_OF_RUNS } from '@core/graphql/mutations/portfolio/updateOptimizationCountOfRuns'
@@ -15,18 +13,12 @@ import {
   calcAllSumOfPortfolioAsset,
   percentagesOfCoinInPortfolio,
   roundPercentage,
+  filterDust,
 } from '@core/utils/PortfolioTableUtils'
 
-import {
-  IState,
-  IProps,
-  RawOptimizedData,
-} from './Optimization.types'
+import { IState, IProps, RawOptimizedData } from './Optimization.types'
 import { IData } from '@core/types/PortfolioTypes'
-import {
-  InnerChartContainer,
-  ChartContainer,
-} from './shared.styles.tsx'
+import { InnerChartContainer, ChartContainer } from './shared.styles.tsx'
 import {
   ChartsContainer,
   Chart,
@@ -37,6 +29,7 @@ import {
   StyledCardHeader,
 } from './Optimization.styles'
 
+import { ChartPlaceholder } from './ChartPlaceholder/ChartPlaceholder'
 import Import from './Import/Import'
 import LoaderWrapperComponent from './LoaderWrapper/LoaderWrapper'
 import ErrorDialog from './Dialog/Dialog'
@@ -49,11 +42,16 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import config from '@core/utils/linkConfig'
 import { sumSame } from '@core/utils/PortfolioOptimizationUtils'
-
-
+import { DustFilterType } from '@core/types/PortfolioTypes'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { GET_MOCKS_MODE } from '@core/graphql/queries/app/getMocksMode'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 class Optimization extends Component<IProps, IState> {
   state: IState = {
+    optimizationData: [],
     loading: false,
     activeButton: 2,
     rawOptimizedData: [],
@@ -63,6 +61,12 @@ class Optimization extends Component<IProps, IState> {
     isSystemError: false,
     run: true,
     key: 0,
+  }
+
+  updateData = (updatedData: any): void => {
+    this.setState({
+      optimizationData: updatedData,
+    })
   }
 
   optimizedToState = (data: RawOptimizedData) => {
@@ -84,8 +88,8 @@ class Optimization extends Component<IProps, IState> {
       return accMap
     }, new Map())
 
-    this.props.updateData(
-      [...this.props.storeData].map((el) => ({
+    this.updateData(
+      [...this.state.optimizationData].map((el) => ({
         ...el,
         optimizedPercentageArray: optimizedCoinsWeightsMap.get(el.coin),
       }))
@@ -94,7 +98,10 @@ class Optimization extends Component<IProps, IState> {
     this.setState({ rawOptimizedData: data })
   }
 
-  transformData = (assets: any[]): IData[] => {
+  transformData = (
+    assets: any[],
+    dustFilter: DustFilterType
+  ): [IData[], number] => {
     const allSum = calcAllSumOfPortfolioAsset(assets)
     // TODO: Avoid mutations in array of objects
     const newAssets = assets.map((asset: IData) => ({
@@ -102,6 +109,7 @@ class Optimization extends Component<IProps, IState> {
       percentage: +roundPercentage(
         percentagesOfCoinInPortfolio(asset, allSum, true)
       ),
+      price: asset.price * asset.quantity,
     }))
     const summedAssetsWithoutDuplicates = sumSame(
       newAssets,
@@ -109,7 +117,14 @@ class Optimization extends Component<IProps, IState> {
       'percentage'
     )
 
-    return [summedAssetsWithoutDuplicates, allSum]
+    const filtredDustOptimizationAssets = filterDust(
+      summedAssetsWithoutDuplicates,
+      dustFilter,
+      { usdKey: 'price', percentageKey: 'percentage' },
+      { disableFilteringKey: 'disableFiltering' }
+    )
+
+    return [filtredDustOptimizationAssets, allSum]
   }
 
   onNewBtnClick = (index: number) => {
@@ -117,7 +132,7 @@ class Optimization extends Component<IProps, IState> {
   }
 
   showWarning = (message: string | JSX.Element, isSystemError = false) => {
-    this.setState({isSystemError, openWarning: true, warningMessage: message })
+    this.setState({ isSystemError, openWarning: true, warningMessage: message })
   }
 
   hideWarning = () => {
@@ -142,20 +157,23 @@ class Optimization extends Component<IProps, IState> {
 
   renderInput = (
     showBlurOnSections: boolean,
-    optimizationCountOfRuns: number
+    optimizationCountOfRuns: number,
+    showCustomPlaceholder: boolean,
+    placeholderElement: string
   ) => {
     // importing stuff from backend or manually bu user
-    const { activeButton, rawOptimizedData } = this.state
+    const { activeButton, rawOptimizedData, optimizationData } = this.state
     const {
-      isShownMocks,
-      updateData,
-      storeData,
-      filterValueSmallerThenPercentage,
       baseCoin,
       theme,
       tab,
       updateOptimizationCountOfRuns,
+      dustFilter,
+      getMocksModeQuery: {
+        app: { mocksEnabled },
+      },
     } = this.props
+    const { updateData } = this
 
     return (
       <QueryRenderer
@@ -163,14 +181,13 @@ class Optimization extends Component<IProps, IState> {
         fetchPolicy="cache-and-network"
         query={getCoinsForOptimization}
         variables={{ baseCoin }}
-        filterValueSmallerThenPercentage={filterValueSmallerThenPercentage}
         showWarning={this.showWarning}
         toggleLoading={this.toggleLoading}
         setActiveButtonToDefault={this.setActiveButtonToDefault}
         rawOptimizedData={rawOptimizedData}
         transformData={this.transformData}
-        storeData={storeData}
-        isShownMocks={isShownMocks}
+        storeData={optimizationData}
+        isShownMocks={mocksEnabled}
         updateData={updateData}
         optimizedToState={this.optimizedToState}
         // buttons props
@@ -181,15 +198,27 @@ class Optimization extends Component<IProps, IState> {
         showBlurOnSections={showBlurOnSections}
         updateOptimizationCountOfRuns={updateOptimizationCountOfRuns}
         optimizationCountOfRuns={optimizationCountOfRuns}
+        showCustomPlaceholder={showCustomPlaceholder}
+        placeholderElement={placeholderElement}
+        dustFilter={dustFilter}
       />
     )
   }
 
-  renderCharts = (showBlurOnSections: boolean) => {
-    const { activeButton, rawOptimizedData, showAllLineChartData } = this.state
-    const { storeData, theme } = this.props
+  renderCharts = (
+    showBlurOnSections: boolean,
+    showCustomPlaceholder: boolean,
+    placeholderElement: any
+  ) => {
+    const {
+      activeButton,
+      rawOptimizedData,
+      showAllLineChartData,
+      optimizationData,
+    } = this.state
+    const { theme } = this.props
 
-    if (!storeData) return
+    if (!optimizationData) return
 
     const arrayOfReturnedValues =
       rawOptimizedData && rawOptimizedData.map((el) => el.return_value)
@@ -259,6 +288,8 @@ class Optimization extends Component<IProps, IState> {
           <InnerChartContainer>
             <Chart background={theme.palette.background.default}>
               <LineChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 theme={theme}
                 additionalInfoInPopup={true}
                 alwaysShowLegend={showAllLineChartData}
@@ -282,6 +313,8 @@ class Optimization extends Component<IProps, IState> {
           <InnerChartContainer>
             <Chart background={theme.palette.background.default}>
               <EfficientFrontierChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 data={efficientFrontierData}
                 theme={theme}
               />
@@ -292,13 +325,27 @@ class Optimization extends Component<IProps, IState> {
     )
   }
 
-  handleJoyrideCallback = (data) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
-    )
-      this.props.hideToolTip('Optimization')
+    ) {
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            portfolioOptimization: false,
+          },
+        },
+      })
+    }
+
     if (data.status === 'finished') {
       const oldKey = this.state.key
       this.setState({ key: oldKey + 1 })
@@ -310,26 +357,64 @@ class Optimization extends Component<IProps, IState> {
       children,
       theme,
       theme: { palette },
-      toolTip,
-      tab,
       data: { portfolioOptimization: { optimizationCountOfRuns } } = {
         portfolioOptimization: { optimizationCountOfRuns: 1 },
       },
+      getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
 
-    const showBlurOnSections = optimizationCountOfRuns <= 0
-    const textColor: string = palette.getContrastText(palette.background.paper)
+    const {
+      loading,
+      openWarning,
+      warningMessage,
+      isSystemError,
+      rawOptimizedData,
+    } = this.state
 
-    const { loading, openWarning, warningMessage, isSystemError } = this.state
+    const showBlurOnSections = false
+    const showCustomPlaceholder = !rawOptimizedData.length
+    const placeholderElement = <ChartPlaceholder />
+    const textColor: string = palette.getContrastText(palette.background.paper)
 
     return (
       <PTWrapper background={palette.background.default}>
+        <Content>
+          {children}
+          <LoaderWrapperComponent textColor={textColor} open={loading} />
+          <ContentInner loading={loading}>
+            {this.renderInput(
+              showBlurOnSections,
+              optimizationCountOfRuns,
+              showCustomPlaceholder,
+              placeholderElement
+            )}
+
+            <MainArea background={palette.background.paper}>
+              {this.renderCharts(
+                showBlurOnSections,
+                showCustomPlaceholder,
+                placeholderElement
+              )}
+            </MainArea>
+          </ContentInner>
+
+          <ErrorDialog
+            onReportButton={() => {
+              this.openLink(config.bugLink)
+            }}
+            open={openWarning}
+            isSystemError={isSystemError}
+            warningMessage={warningMessage}
+            onConfirmButton={this.hideWarning}
+          />
+        </Content>
+
         <Joyride
           continuous={true}
           showProgress={true}
           showSkipButton={true}
           steps={portfolioOptimizationSteps}
-          run={toolTip.portfolioOptimization && tab === 'optimization'}
+          run={getTooltipSettings.portfolioOptimization}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -344,59 +429,31 @@ class Optimization extends Component<IProps, IState> {
             },
           }}
         />
-        <Content>
-          {children}
-          <LoaderWrapperComponent textColor={textColor} open={loading} />
-          <ContentInner loading={loading}>
-            {this.renderInput(showBlurOnSections, optimizationCountOfRuns)}
-
-            <MainArea background={palette.background.paper}>
-              <Grow
-                timeout={0}
-                in={tab === 'optimization'}
-                mountOnEnter
-                unmountOnExit
-              >
-                {this.renderCharts(showBlurOnSections)}
-              </Grow>
-            </MainArea>
-          </ContentInner>
-
-          <ErrorDialog
-            onReportButton={() => {
-              this.openLink(config.bugLink)
-            }}
-            open={openWarning}
-            isSystemError={isSystemError}
-            warningMessage={warningMessage}
-            onConfirmButton={this.hideWarning}
-          />
-        </Content>
       </PTWrapper>
     )
   }
 }
 
-const mapStateToProps = (store: any) => ({
-  isShownMocks: store.user.isShownMocks,
-  storeData: store.portfolio.optimizationData,
-  toolTip: store.user.toolTip,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  updateData: (data: any) => dispatch(actions.updateDataForOptimization(data)),
-  hideToolTip: (tab: string) => dispatch(Useractions.hideToolTip(tab)),
-})
-const storeComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Optimization)
-
 export default compose(
+  withTheme(),
   queryRendererHoc({
     query: GET_OPTIMIZATION_COUNT_OF_RUNS,
   }),
   graphql(UPDATE_OPTIMIZATION_COUNT_OF_RUNS, {
     name: 'updateOptimizationCountOfRuns',
+  }),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  queryRendererHoc({
+    query: GET_MOCKS_MODE,
+    name: 'getMocksModeQuery',
+  }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
   })
-)(storeComponent)
+)(Optimization)

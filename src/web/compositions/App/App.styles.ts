@@ -5,5 +5,5 @@ import styled from 'styled-components'
 // on whole page
 export const AppGridLayout = styled.div`
   overflow-x: hidden;
-  min-height: calc(100vh - 50px);
+  min-height: ${props => props.showFooter ? 'calc(100vh - 50px)' : '100vh'};
 `

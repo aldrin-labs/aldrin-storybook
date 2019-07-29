@@ -1,68 +1,91 @@
-import * as React from 'react'
+import React, { useState } from 'react'
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
 import styled from 'styled-components'
 import { withTheme } from '@material-ui/styles'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import Switch from '@material-ui/core/Switch'
-import { compose } from 'recompose'
-import { connect } from 'react-redux'
 import Telegram from '@material-ui/icons/NearMeSharp'
-
 import {
-  changeThemeMode,
-  togglePrivacyPolicy as togglePrivacyPolicyAction,
-} from '@core/redux/app/actions'
-import Props from './index.types'
-import { AppBar, IconButton } from '@material-ui/core'
+  AppBar,
+  IconButton,
+  Switch,
+  Typography,
+  Button,
+} from '@material-ui/core'
+
 import { PrivacyPolicy } from '@sb/components/index'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
+import Props from './index.types'
+
 const Footer = ({
-  changeModeTheme,
-  themeMode,
   fullscreenMode,
-  togglePrivacyPolicy,
-  openPrivacyPolicy,
-  theme: {
-    palette: { secondary },
-  },
-}: Props) => (
-  <Container position="static" color="default" fullscreenMode={fullscreenMode}>
-    <Block>
-      <Typography variant="caption" color="default">
-        Cryptocurrencies Ai, 2018{' '}
-      </Typography>
+  getThemeModeQuery,
+  toggleThemeModeMutation,
+  showFooter,
+}: Props) => {
+  const themeMode =
+    getThemeModeQuery &&
+    getThemeModeQuery.app &&
+    getThemeModeQuery.app.themeMode
 
-      <Typography variant="h6" color="secondary">
-        •
-      </Typography>
+  const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
 
-      <Button size="small" onClick={togglePrivacyPolicy} color="default">
-        Privacy Policy
-      </Button>
-    </Block>
+  if (!showFooter) {
+    return null
+  }
 
-    <Block>
-      <IconButton href={'https://t.me/CryptocurrenciesAi'}>
-        <Telegram color="secondary" width={32} height={32} />
-      </IconButton>
-    </Block>
+  return (
+    <Container
+      position="static"
+      color="default"
+      fullscreenMode={fullscreenMode}
+    >
+      <Block>
+        <Typography variant="caption" color="default">
+          Cryptocurrencies Ai, 2018{' '}
+        </Typography>
 
-    <Block>
-      <Typography variant="body1" color="textPrimary">
-        NIGHT MODE
-      </Typography>
-      <Switch
-        checked={themeMode === 'dark'}
-        onChange={() => {
-          changeModeTheme()
-        }}
-        value="theme"
-        color="default"
+        <Typography variant="h6" color="secondary">
+          •
+        </Typography>
+
+        <Button
+          size="small"
+          onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
+          color="default"
+        >
+          Privacy Policy
+        </Button>
+      </Block>
+
+      <Block>
+        <IconButton href={'https://t.me/CryptocurrenciesAi'}>
+          <Telegram color="secondary" width={32} height={32} />
+        </IconButton>
+      </Block>
+
+      <Block>
+        <Typography variant="body1" color="textPrimary">
+          NIGHT MODE
+        </Typography>
+        <Switch
+          checked={themeMode === 'dark'}
+          onChange={async () => {
+            await toggleThemeModeMutation()
+          }}
+          value="theme"
+          color="default"
+        />
+      </Block>
+      <PrivacyPolicy
+        open={showPrivacyPolicy}
+        onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
       />
-    </Block>
-    <PrivacyPolicy open={openPrivacyPolicy} onClick={togglePrivacyPolicy} />
-  </Container>
-)
+    </Container>
+  )
+}
 
 const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
   flex-wrap: nowrap;
@@ -90,20 +113,13 @@ const Block = styled.div`
   }
 `
 
-const mapStateToProps = (store: any) => ({
-  themeMode: store.ui.theme,
-  openPrivacyPolicy: store.ui.showPrivacyPolicy,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  changeModeTheme: () => dispatch(changeThemeMode()),
-  togglePrivacyPolicy: () => dispatch(togglePrivacyPolicyAction()),
-})
-
 export default compose(
   withTheme(),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  queryRendererHoc({
+    query: GET_THEME_MODE,
+    name: 'getThemeModeQuery',
+  }),
+  graphql(TOGGLE_THEME_MODE, {
+    name: 'toggleThemeModeMutation',
+  })
 )(Footer)

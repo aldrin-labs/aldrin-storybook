@@ -6,13 +6,14 @@ import { CardProps } from '@material-ui/core/Card'
 import { Container } from '@sb/styles/cssUtils'
 
 export const GridContainer = styled(Container as React.SFC<GridProps>)`
+  position: relative;
   flex-wrap: nowrap;
-  flex-direction: column;
+  flex-direction: row;
   @media (max-width: 960px) {
     flex-wrap: wrap;
-    flex-direction: row;
   }
   && {
+    height: auto;
     margin: 0;
   }
 `
@@ -45,4 +46,9 @@ export const TablesWrapper = styled(Grid as React.SFC<GridProps>)`
   @media (max-width: 960px) {
     max-height: inherit;
   }
+`
+
+export const GridTableContainer = styled(Grid as React.SFC<GridProps>)`
+  position: relative;
+  max-height: 100%;
 `

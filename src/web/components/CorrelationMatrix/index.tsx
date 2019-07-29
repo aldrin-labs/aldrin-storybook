@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
+import { withTheme } from '@material-ui/styles'
 import FullScreen from 'react-fullscreen-crossbrowser'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
@@ -14,9 +15,10 @@ import { IProps } from './types'
 import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
 
+@withTheme()
 class CorrelationMatrixComponent extends PureComponent<IProps> {
-  constructor(props: IProps) {
-    super(props)
+  state = {
+    isFullscreenEnabled: false,
   }
 
   renderPlaceholder = () => (
@@ -32,21 +34,30 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
     </StyledCard>
   )
 
+  changeScreenMode = () => {
+    this.setState((prevstate) => ({
+      isFullscreenEnabled: !prevstate.isFullscreenEnabled,
+    }))
+  }
+
   renderError = (error: string) => <ErrorFallback>{error}</ErrorFallback>
 
   render() {
     const {
-      isFullscreenEnabled,
+      // isFullscreenEnabled,
       data,
-      fullScreenChangeHandler,
-      setCorrelationPeriod,
+      // fullScreenChangeHandler,
+      // setCorrelationPeriod,
       period,
       CustomColors,
       oneColor,
       dates: { startDate, endDate },
       theme: { palette },
       theme,
+      updateCorrelationPeriodMutation,
     } = this.props
+
+    const { isFullscreenEnabled } = this.state
 
     const colors = CustomColors || [
       palette.red.main,
@@ -59,7 +70,7 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
       <ScrolledWrapper>
         <FullScreen
           onClose={() => {
-            fullScreenChangeHandler(isFullscreenEnabled)
+            this.changeScreenMode(isFullscreenEnabled)
           }}
           style={{ height: '100%' }}
           enabled={isFullscreenEnabled}
@@ -85,24 +96,26 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
             className="full-screenable-node"
           >
             {isFullscreenEnabled ? null : (
-                <ButtonsWrapper id="ButtonsWrapper" style={{ gridRowStart: 1 }}>
-                  <Typography noWrap align="center" variant="h6">
-                    Time Range
-                  </Typography>
-                  <SelectTimeRange
-                    style={{
-                      height: 'auto',
-                      maxWidth: '10rem',
-                      margin: '2rem 0',
-                    }}
-                    setPeriodToStore={setCorrelationPeriod}
-                    period={period}
-                  />
-                  <Typography noWrap={true} align="center" variant="body1">
-                    {formatDate(startDate, 'MM/DD/YYYY')}-
-                    {formatDate(endDate, 'MM/DD/YYYY')}
-                  </Typography>
-                </ButtonsWrapper>
+              <ButtonsWrapper id="ButtonsWrapper">
+                <Typography noWrap align="center" variant="h6">
+                  Time Range
+                </Typography>
+                <SelectTimeRange
+                  style={{
+                    height: 'auto',
+                    maxWidth: '16rem',
+                    margin: '3.2rem 0',
+                  }}
+                  updateCorrelationPeriodMutation={
+                    updateCorrelationPeriodMutation
+                  }
+                  period={period}
+                />
+                <Typography noWrap={true} align="center" variant="body1">
+                  {formatDate(startDate, 'MM/DD/YYYY')}-
+                  {formatDate(endDate, 'MM/DD/YYYY')}
+                </Typography>
+              </ButtonsWrapper>
             )}
 
             {data.error ? (
@@ -128,19 +141,22 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                 color="primary"
                 variant="contained"
                 onClick={() => {
-                  this.props.fullScreenChangeHandler()
+                  this.changeScreenMode()
                 }}
               >
                 <FullScreenIcon />
               </StyledFullscreenButton>
             )}
-            {
-              isFullscreenEnabled ? null : (
-                <Typography noWrap={true} align="center" variant="body1" style={{gridColumn: '1 / span 3', gridRowStart: 4}}>
-                  Correlation between returns of your assets
-                </Typography>
-              )
-            }
+            {isFullscreenEnabled ? null : (
+              <Typography
+                noWrap={true}
+                align="center"
+                variant="body1"
+                style={{ gridColumn: '1 / span 3', gridRowStart: 4 }}
+              >
+                Correlation between returns of your assets
+              </Typography>
+            )}
           </FullscreenNode>
         </FullScreen>
       </ScrolledWrapper>
@@ -148,13 +164,12 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
   }
 }
 
-export const CorrelationMatrix = CorrelationMatrixComponent
-
-export default CorrelationMatrix
+export default CorrelationMatrixComponent
 
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  grid-row-start: 2;
 `
 
 const StyledFullscreenButton = styled(Button)`
@@ -175,7 +190,7 @@ const FullscreenNode = styled.div`
 `
 
 const StyledCard = styled(Card)`
-  width: 15rem;
+  width: 24rem;
   && {
     margin: auto;
   }

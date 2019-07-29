@@ -1,19 +1,16 @@
 import { Theme } from '@material-ui/core'
+import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
+import { DustFilterType, SharePortfolioMutationType } from '@core/types/PortfolioTypes'
 
 export interface IState {
   key: number
+  openSharePortfolioPopUp: boolean
 }
 
-export interface IProps {
-  tab: string
+export interface IProps extends TooltipMutationType, TooltipQueryType {
   theme: Theme
-  isShownMocks: boolean
-  toolTip: {
-    portfolioMain: boolean
-    portfolioIndustry: boolean
-    portfolioRebalance: boolean
-    portfolioCorrelation: boolean
-    portfolioOptimization: boolean
-  }
-  hideToolTip: (tab: string) => void
+  dustFilter: DustFilterType
+  sharePortfolioMutation: SharePortfolioMutationType
+  portfolioId: string
+  portfolioName: string
 }

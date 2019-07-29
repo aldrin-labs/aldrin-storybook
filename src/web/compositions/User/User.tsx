@@ -1,24 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
-import { Redirect } from 'react-router'
-import { connect } from 'react-redux'
 import { graphql } from 'react-apollo'
-
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
-import { MASTER_BUILD } from '@core/utils/config'
-import { updateBinanceWarning, toggleMocks } from '@core/redux/user/actions'
-
-import ComingSoon from '@sb/components/ComingSoon'
-import { CardHeader } from '@sb/components/index'
-
-import {
-  KeysList,
-  AddExchangeKey,
-  CryptoWalletsList,
-  AddCryptoWallet,
-} from './components'
 
 import {
   Switch,
@@ -29,31 +12,48 @@ import {
   Card,
 } from '@material-ui/core'
 
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { MASTER_BUILD } from '@core/utils/config'
+import withAuth from '@core/hoc/withAuth'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-class UserContainer extends React.Component {
-  store: any
+import ComingSoon from '@sb/components/ComingSoon'
+import { CardHeader } from '@sb/components/index'
+import {
+  KeysList,
+  AddExchangeKey,
+  CryptoWalletsList,
+  AddCryptoWallet,
+} from './components'
+import { IProps, IState } from './User.types'
+import { GET_MOCKS_MODE } from '@core/graphql/queries/app/getMocksMode'
+import { TOGGLE_MOCKS } from '@core/graphql/mutations/app/toggleMocks'
 
-  toggleMocks = () => {
-    const { toggleMocks: toggleMockups } = this.props
-
-    toggleMockups()
+class UserContainer extends React.Component<IProps, IState> {
+  state: IState = {
+    showBinanceWarning: true,
   }
 
   forceUpdateUserContainer = () => {
     this.forceUpdate()
   }
 
+  updateBinanceWarning = () => {
+    this.setState((prevState) => ({
+      showBinanceWarning: !prevState,
+    }))
+  }
+
   render() {
-  //TODO: Made it with react-apollo-hooks
+    const { showBinanceWarning } = this.state
+
     const {
-      loginDataQuery: { login: { loginStatus } } = {
-        login: { loginStatus: null },
+      getMocksModeQuery: {
+        app: { mocksEnabled },
       },
+      toggleMocksMutation,
     } = this.props
 
-    if (!loginStatus) {
-      return <Redirect to="/portfolio" />
-    }
     return (
       <>
         <UserWrap>
@@ -77,15 +77,15 @@ class UserContainer extends React.Component {
           <AdminCP>
             <CardHeader title="Show mocks" />
             <Switch
-              onChange={this.toggleMocks}
-              checked={this.props.isShownMocks}
+              onChange={async () => toggleMocksMutation()}
+              checked={mocksEnabled}
             />
           </AdminCP>
         )}
         <Dialog
           id="UserPageWarning"
           fullScreen={false}
-          open={this.props.showBinanceWarning}
+          open={showBinanceWarning}
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">
@@ -95,7 +95,7 @@ class UserContainer extends React.Component {
           </DialogTitle>
           <DialogActions>
             <Button
-              onClick={() => this.props.updateBinanceWarning(false)}
+              onClick={() => this.updateBinanceWarning()}
               color="secondary"
               autoFocus={true}
             >
@@ -109,7 +109,7 @@ class UserContainer extends React.Component {
 }
 
 const AdminCP = styled(Card)`
-  margin: 1rem;
+  margin: 1.6rem;
   width: 10em;
   display: flex;
   flex-direction: column;
@@ -121,24 +121,14 @@ const UserWrap = styled.div`
   margin: 10px;
 `
 
-const mapStateToProps = (store) => ({
-  isShownMocks: store.user.isShownMocks,
-  // loginStatus: store.login.loginStatus,
-  showBinanceWarning: store.user.showBinanceWarning,
-})
-
-const mapDispatchToProps = (dispatch: any) => ({
-  toggleMocks: () => dispatch(toggleMocks()),
-  updateBinanceWarning: (payload: boolean) =>
-    dispatch(updateBinanceWarning(payload)),
-})
-
-const storeComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserContainer)
-
 export const User = compose(
-  withErrorFallback,
-  graphql(GET_LOGIN_DATA, { name: 'loginDataQuery' }),
-)(storeComponent)
+  graphql(TOGGLE_MOCKS, {
+    name: 'toggleMocksMutation',
+  }),
+  queryRendererHoc({
+    query: GET_MOCKS_MODE,
+    name: 'getMocksModeQuery',
+  }),
+  withAuth,
+  withErrorFallback
+)(UserContainer)

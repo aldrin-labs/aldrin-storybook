@@ -140,19 +140,7 @@ export const portfolioOptimizationSteps = [
   },
 ]
 
-export const singleChartSteps: T[] = [
-  {
-    disableBeacon: true,
-    target: '.ExchangesTable',
-    content: 'Select the exchange.',
-    placement: 'bottom',
-  },
-  {
-    target: '.AutoSuggestSelect',
-    content: 'Select the pair.',
-    placement: 'auto',
-  },
-]
+export const singleChartSteps: T[] = []
 
 export const multiChartsSteps: T[] = [
   {

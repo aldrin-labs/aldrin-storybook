@@ -24,12 +24,10 @@ export {
 const AddStyled = withStyles((theme: Theme) => ({
   root: {
     color: theme.palette.text.primary,
-    fontSize: '2rem',
+    fontSize: '3.2rem',
     cursor: 'pointer',
   },
 }))(AddIcon)
-
-
 
 const StyledCard = styled(Card)`
   height: 190px;
@@ -63,9 +61,9 @@ const Item = styled.div`
   position: relative;
   color: white;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 0.8rem;
   font-family: Roboto, sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.92rem;
   font-weight: normal;
   text-align: center;
   display: flex;
@@ -78,7 +76,15 @@ const Item = styled.div`
   min-width: 0px;
   white-space: nowrap;
   background: ${(props: { background: string }) => props.background};
-  
+
+  && .custom-async-select-box {
+    width: 100%;
+    border-bottom: 2px solid ${(props: { color?: string }) => props.color};
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      border-bottom: 2px solid ${(props: { secondary?: string }) => props.secondary};
+    }
   }
 `
 
@@ -94,14 +100,14 @@ const Head = styled.div`
   width: 95%;
   flex-direction: row;
   justify-content: center;
-  max-width: 50rem;
-  margin: 0.5rem;
+  max-width: 80rem;
+  margin: 0.8rem;
   border-bottom: 1px solid
     ${(props: { bottomCollor: string }) => props.bottomCollor};
 `
 
 const TableInput = styled.div`
-  margin-left: 0.5rem;
+  margin-left: 0.8rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -117,7 +123,7 @@ const StyledTable = styled.div`
 
 const StyledTableWithoutInput = styled(StyledTable)`
   width: 212px;
-  min-height: 10rem;
+  min-height: 16rem;
 `
 
 const Col = styled.div`
@@ -136,10 +142,10 @@ const Body = styled.div`
   width: 98%;
   border-radius: 2px;
   display: flex;
-  font-size: 0.8rem;
-  margin: 0.5rem;
+  font-size: 1.28rem;
+  margin: 0.8rem;
   line-height: 1.5;
-  max-width: 50rem;
+  max-width: 80rem;
   overflow: auto;
 
   ${customAquaScrollBar};
@@ -150,8 +156,8 @@ const StyledDeleteIcon = styled(DeleteIcon)`
   opacity: 0;
   cursor: pointer;
   position: absolute;
-  right: 0.5rem;
-  font-size: 1.5rem;
+  right: 0.8rem;
+  font-size: 2.4rem;
   transition: opacity 0.3s ease-in;
 
   ${Body}:hover & {

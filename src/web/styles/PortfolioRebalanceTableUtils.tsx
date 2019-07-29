@@ -18,11 +18,11 @@ export const getArrayOfActionElements = ({
   saveButtonColor,
 }: {
   isEditModeEnabled: boolean
-  onEditModeEnable: (event: SyntheticEvent<Element>) => void
+  onEditModeEnable: (event: SyntheticEvent<any>) => void
   onNewSnapshot: () => void
   onDiscardChanges: () => void
-  onSaveClick: (event: SyntheticEvent<Element>) => void
-  onReset: (event: SyntheticEvent<Element>) => void
+  onSaveClick: (event: SyntheticEvent<any>) => void
+  onReset: (event: SyntheticEvent<any>) => void
   red: string
   saveButtonColor: string
 }) => {
@@ -30,7 +30,7 @@ export const getArrayOfActionElements = ({
     ...(!isEditModeEnabled
       ? [
           {
-            id: 1,
+            id: '11',
             icon: (
               <TooltipCustom
                 title={`Rebalance portfolio`}
@@ -38,7 +38,6 @@ export const getArrayOfActionElements = ({
               />
             ),
             onClick: onEditModeEnable,
-            color: 'secondary',
             style: { color: saveButtonColor, marginRight: '7px' },
           },
         ]
@@ -46,7 +45,7 @@ export const getArrayOfActionElements = ({
     ...(isEditModeEnabled
       ? [
           {
-            id: 2,
+            id: '22',
             icon: (
               <TooltipCustom
                 title={`Update snapshot`}
@@ -57,7 +56,7 @@ export const getArrayOfActionElements = ({
             style: { color: '#fff', marginRight: '7px' },
           },
           {
-            id: 3,
+            id: '33',
             icon: (
               <TooltipCustom
                 title={`Discard changes`}
@@ -68,7 +67,7 @@ export const getArrayOfActionElements = ({
             style: { color: red, marginRight: '7px' },
           },
           {
-            id: 4,
+            id: '44',
             icon: (
               <TooltipCustom
                 title={`Reset to initial portfolio`}
@@ -79,7 +78,7 @@ export const getArrayOfActionElements = ({
             style: { marginRight: '7px' },
           },
           {
-            id: 'random',
+            id: '55',
             icon: (
               <TooltipCustom
                 title={`Save changes`}
@@ -87,7 +86,6 @@ export const getArrayOfActionElements = ({
               />
             ),
             onClick: onSaveClick,
-            color: saveButtonColor,
             style: { color: saveButtonColor, marginRight: '7px' },
           },
         ]

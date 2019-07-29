@@ -4,6 +4,7 @@ export interface IProps {
   isSaveError: boolean
   isSystemError: boolean
   isCurrentAssetsChangedError: boolean
+  isDustFilterError: boolean
   hideWarning: (event?: MouseEvent<HTMLElement>) => void
   onSaveClick: Function,
   onReset: Function,

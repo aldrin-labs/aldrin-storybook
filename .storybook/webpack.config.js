@@ -5,7 +5,7 @@ const webpack = require('webpack')
 
 module.exports = (baseConfig, env, ...rest) => {
 
-  const platform = process.env.PLATFORM
+  const platform = process.env.PLATFORM || 'web'
 
   const config = {
     devtool: 'eval-cheap-module-source-map',
@@ -22,6 +22,7 @@ module.exports = (baseConfig, env, ...rest) => {
 
         '@icons': path.join(__dirname, '..', 'src', 'icons'),
         '@utils': path.join(__dirname, '..', 'src', 'utils'),
+        '@nodemodules': path.resolve(__dirname, '..', 'node_modules'),
       },
     },
     module: {

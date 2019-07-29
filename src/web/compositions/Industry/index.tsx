@@ -1,30 +1,48 @@
 import * as React from 'react'
-import { Fade } from '@material-ui/core'
+import { compose } from 'recompose'
+import { withTheme } from '@material-ui/styles'
 import Joyride from 'react-joyride'
-import { connect } from 'react-redux'
+import { graphql } from 'react-apollo'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { withErrorFallback } from '@sb/components/hoc/withErrorFallback/withErrorFallback'
-import * as actions from '@core/redux/user/actions'
-
 import { IProps, IState } from './types'
 import { portfolioIndustrySteps } from '@sb/config/joyrideSteps'
 import Template from './Template'
-import IndustryTable from '@core/components/IndustryTable'
-import IndustryChart from '@core/components/IndustryChart'
+import IndustryTable from '@core/containers/IndustryTable'
+import IndustryChart from '@core/containers/IndustryChart'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
+@withTheme()
 class PortfolioTableIndustries extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
   }
 
-  handleJoyrideCallback = (data) => {
+  handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
       data.status === 'finished'
     ) {
-      this.props.hideToolTip('Industry')
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
+
+      await updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            portfolioIndustry: false,
+          },
+        },
+      })
     }
+
     if (data.status === 'finished') {
       const oldKey = this.state.key
       this.setState({ key: oldKey + 1 })
@@ -32,26 +50,21 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, tab } = this.props
+    const {
+      theme,
+      dustFilter,
+      getTooltipSettingsQuery: { getTooltipSettings },
+    } = this.props
 
     return (
       <>
         <Template
-          Table={<IndustryTable />}
-          Chart={
-            <Fade
-              timeout={0}
-              in={tab === 'industry'}
-              mountOnEnter
-              unmountOnExit
-            >
-              <IndustryChart />
-            </Fade>
-          }
+          Table={<IndustryTable dustFilter={dustFilter} />}
+          Chart={<IndustryChart />}
         />
         <Joyride
           steps={portfolioIndustrySteps}
-          run={this.props.toolTip.portfolioIndustry && tab === 'industry'}
+          run={getTooltipSettings.portfolioIndustry}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
@@ -73,15 +86,16 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  hideToolTip: (tab: string) => dispatch(actions.hideToolTip(tab)),
-})
-
-const mapStateToProps = (store) => ({
-  toolTip: store.user.toolTip,
-})
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withErrorFallback(PortfolioTableIndustries))
+export default compose(
+  withErrorFallback,
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+  }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+    options: {
+      update: updateTooltipMutation,
+    },
+  })
+)(PortfolioTableIndustries)

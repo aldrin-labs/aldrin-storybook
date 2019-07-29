@@ -41,7 +41,7 @@ const Aggregation = (props: IProps) => {
                   onClick={onButtonClick}
                   style={{
                     color: palette.primary['light'],
-                    fontSize: '0.75rem',
+                    fontSize: '1.2rem',
                     cursor: 'pointer',
                     position: 'relative',
                   }}

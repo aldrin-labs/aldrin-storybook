@@ -1,13 +1,10 @@
 import { Theme } from '@material-ui/core'
+import { DustFilterType } from '@core/types/PortfolioTypes'
+import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 
-export interface IProps {
+export interface IProps extends TooltipMutationType, TooltipQueryType {
+  dustFilter: DustFilterType
   theme: Theme
-  tab: string
-  run: boolean
-  hideToolTip: (tab: string) => void
-  toolTip: {
-    portfolioIndustry: string
-  }
 }
 
 export interface IState {

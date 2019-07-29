@@ -19,7 +19,15 @@ export default class Charts extends Component<IChartProps, IChartState> {
   }
 
   render() {
-    const { currencyPair, removeChart, index, theme } = this.props
+    const {
+      currencyPair,
+      removeChart,
+      index,
+      theme,
+      userId,
+      themeMode,
+      activeLayout
+    } = this.props
     const { palette } = theme
     const { primary } = palette
     const { activeChart, show } = this.state
@@ -62,17 +70,20 @@ export default class Charts extends Component<IChartProps, IChartState> {
             <Button
               className="deleteChart"
               onClick={() => {
-                this.setState({ show: false })
                 setTimeout(() => {
                   removeChart(index)
-                }, 200)
+                }, 100)
               }}
             >
               <MdClear />
             </Button>
           </ChartsSwitcher>
           {activeChart === 'candle' ? (
-            <SingleChart additionalUrl={`/?symbol=${base}/${quote}`} />
+            <SingleChart
+              additionalUrl={
+                `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`}
+              name={`name${index}`}
+            />
           ) : (
             <DepthChartStyledWrapper>
               <DepthChartContainer
@@ -98,7 +109,7 @@ const Wrapper = styled(Paper)`
 
 const StyledTypography = styled(TypographyWithCustomColor)`
   margin-right: auto;
-  margin-left: 0.25rem;
+  margin-left: 0.4rem;
 `
 
 const DepthChartStyledWrapper = styled.div`

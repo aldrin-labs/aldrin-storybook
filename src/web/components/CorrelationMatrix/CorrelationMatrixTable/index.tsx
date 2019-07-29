@@ -41,7 +41,7 @@ const MemoizedRow = memo(
         return (
           <Cell
             fontFamily={theme.typography.fontFamily}
-            cols={cols[0].length}
+            cols={cols.length}
             isFullscreenEnabled={isFullscreenEnabled}
             textColor={textColor}
             onMouseOver={() => {
@@ -118,7 +118,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
           <HeadCell
             background={theme.palette.background.paper}
             fontFamily={theme.typography.fontFamily}
-            cols={cols[0].length}
+            cols={cols.length}
             style={{ top: 0 }}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
@@ -141,7 +141,7 @@ export class CorrelationMatrixTable extends PureComponent<IProps, IState> {
           <HeadCell
             background={theme.palette.background.paper}
             fontFamily={theme.typography.fontFamily}
-            cols={cols[0].length}
+            cols={cols.length}
             isFullscreenEnabled={isFullscreenEnabled}
             sticky={!isFullscreenEnabled}
             textColor={
@@ -243,7 +243,7 @@ const CellContent = styled.div`
 
     return 'transparent'
   }};
-  padding: 0.25rem;
+  padding: 0.4rem;
   width: ${(props: ICellContentProps) => (props.active ? '100%' : '97%')};
   height: ${(props: ICellContentProps) => (props.active ? '100%' : '97%')};
   border: ${(props: ICellContentProps) =>
@@ -255,38 +255,38 @@ const CellContent = styled.div`
 /* tslint:disable */
 const Cell = styled.div`
   z-index: 100;
-  min-width: 2rem;
-  min-height: 2rem;
+  min-width: 3.2rem;
+  min-height: 3.2rem;
 
   font-family: ${({ fontFamily }: ICellProps) => fontFamily};
   font-size: ${(props: ICellProps) => {
     const { isFullscreenEnabled, cols } = props
 
     if (!isFullscreenEnabled && cols > 1 && cols < 5) {
-      return '2rem'
+      return '3.2rem'
     }
     if (!isFullscreenEnabled && cols >= 5 && cols < 10) {
-      return '1.5rem'
+      return '2.4rem'
     }
-    if (!isFullscreenEnabled && cols >= 10 && cols < 16) {
-      return '0.7rem'
+    if (!isFullscreenEnabled && cols >= 10 && cols < 20) {
+      return '1.12rem'
     }
     if (!isFullscreenEnabled) {
-      return '0.4rem'
+      return '0.64rem'
     }
 
     if (isFullscreenEnabled && cols > 1 && cols <= 10) {
-      return '2rem'
+      return '3.2rem'
     }
     if (isFullscreenEnabled && cols > 10 && cols <= 20) {
-      return '1rem'
+      return '1.6rem'
     }
 
     if (isFullscreenEnabled && cols > 20) {
-      return '0.5rem'
+      return '0.8rem'
     }
 
-    return '1rem'
+    return '1.6rem'
   }};
   color: ${(props: ICellProps) => props.textColor};
   font-weight: 500;
@@ -294,7 +294,7 @@ const Cell = styled.div`
   place-content: center;
   place-items: center;
   text-align: center;
-  line-height: 3rem;
+  line-height: 4.8rem;
   overflow: hidden;
   white-space: nowrap;
   transition: color 0.25s ease-out;

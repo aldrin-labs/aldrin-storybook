@@ -1,7 +1,7 @@
 import React from 'react'
-import { Checkbox } from '@material-ui/core'
+import { Checkbox, Radio } from '@material-ui/core'
 
-import { IProps, keyItem } from './Accounts.types'
+import { IProps } from './Accounts.types'
 import {
   AccountsWalletsHeadingWrapper,
   Headline,
@@ -11,8 +11,14 @@ import {
   AccountName,
   AccountsList,
   AccountsListItem,
+  TypographyTitle,
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
+
+import { Typography } from '@material-ui/core'
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 export default class Accounts extends React.PureComponent<IProps> {
   render() {
@@ -24,6 +30,9 @@ export default class Accounts extends React.PureComponent<IProps> {
       newKeys,
       onKeyToggle,
       login,
+      isRebalance,
+      onKeySelectOnlyOne,
+      isSidebar,
     } = this.props
 
     return (
@@ -31,67 +40,91 @@ export default class Accounts extends React.PureComponent<IProps> {
         <AccountsWalletsHeadingWrapper>
           <TypographyFullWidth
             gutterBottom={true}
-            align="center"
+            align="left"
             color="secondary"
             variant="h6"
+            style={{ display: 'flex', justifyContent: 'space-between' }}
           >
-            🔑 Api keys
+            {/* 🔑 Api keys */}
+            <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
+            <TypographyTitle textColor={'#7284A0'}>Select All</TypographyTitle>
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>
             settings
           </Headline>
           <CloseContainer>
-            <StyledIcon isSideNavOpen={isSideNavOpen} color={color} />
+            {/* <StyledIcon isSideNavOpen={isSideNavOpen} color={color} /> */}
           </CloseContainer>
         </AccountsWalletsHeadingWrapper>
+        {/*
+        {!isRebalance && (
+          <SelectAll>
+            <Checkbox
+              disabled={!login}
+              type="checkbox"
+              id="all"
+              checked={isCheckedAll}
+              onClick={login && onToggleAll}
+            />
 
-        <SelectAll>
-          <Checkbox
-            disabled={!login}
-            type="checkbox"
-            id="all"
-            checked={isCheckedAll}
-            onClick={login && onToggleAll}
-          />
-
-          <AccountName
-            variant="body1"
-            color={isCheckedAll ? 'secondary' : 'textSecondary'}
-          >
-            Select All
-          </AccountName>
-        </SelectAll>
-
+            <AccountName
+              variant="body1"
+              color={isCheckedAll ? 'secondary' : 'textSecondary'}
+            >
+              Select All
+            </AccountName>
+          </SelectAll>
+        )} */}
         <AccountsList id="AccountsList">
           {newKeys.map((keyName) => {
             if (!keyName) {
               return null
             }
+            const Component = isRebalance ? Radio : Checkbox
             const isChecked = keyName.selected
 
             return (
-              <AccountsListItem key={keyName.name} color={color}>
-                <Checkbox
-                  disabled={!login}
-                  type="checkbox"
-                  id={keyName.name}
-                  checked={isChecked}
-                  onClick={() => (login && onKeyToggle(keyName._id))}
-
-                />
-
+              <AccountsListItem
+                key={keyName.name}
+                color={color}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  borderBottom: '1px solid #E0E5EC',
+                  padding: '5px 0',
+                }}
+              >
                 <AccountName
                   align="left"
                   variant="body1"
-                  color={isChecked ? 'secondary' : 'textSecondary'}
+                  //color={isChecked ? 'secondary' : 'textSecondary'}
+                  lineHeight={'20px'}
+                  fontSize={'1.184rem'}
+                  textColor={'#7284A0'}
                 >
                   {keyName.name}
+                  {/* <TypographyTitle>$500,000.00</TypographyTitle> */}
                 </AccountName>
+                <Component
+                  disabled={!login}
+                  type={isRebalance ? 'radio' : 'checkbox'}
+                  color="secondary"
+                  id={keyName.name}
+                  checked={isChecked}
+                  onClick={() => {
+                    if (login && isRebalance) {
+                      onKeySelectOnlyOne(keyName._id)
+                    } else if (login && !isRebalance) {
+                      onKeyToggle(keyName._id)
+                    }
+                  }}
+                />
               </AccountsListItem>
             )
           })}
         </AccountsList>
+        {isSidebar && <AddAccountDialog />}
       </>
     )
   }

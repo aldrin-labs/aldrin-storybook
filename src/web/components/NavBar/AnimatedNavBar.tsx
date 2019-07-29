@@ -14,8 +14,8 @@ const AnimatedContainer = styled(
     hidden: { bottom: 100, opacity: 0.25 },
   })
 )`
-  position: relative;
-  z-index: 1;
+  position: sticky;
+  z-index: 999;
 `
 
 export default class AnimatedNavBar extends Component<Props> {

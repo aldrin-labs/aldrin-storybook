@@ -1,10 +1,13 @@
 import React, { Component, lazy, Suspense, memo } from 'react'
+import { Mutation } from 'react-apollo'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 
-import { IState, IProps } from './PortfolioTable.types'
+import { Loading } from '@sb/components/index'
+import { TOGGLE_BASE_COIN } from '@core/graphql/mutations/portfolio/toggleBaseCoin'
+import { IProps, IState } from './PortfolioTable.types'
 
 import PortfolioMain from '@core/compositions/PortfolioMain'
-
 const PortfolioTableIndustries = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@core/compositions/PortfolioIndustry')
 )
@@ -15,37 +18,28 @@ const Optimization = React.lazy(() =>
 const Correlation = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Correlation/Correlation')
 )
-
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
-import { Loading } from '@sb/components/index'
-import { Mutation } from 'react-apollo'
-import { TOGGLE_BASE_COIN } from '@core/graphql/mutations/portfolio/toggleBaseCoin'
-
-const MemoizedTab = memo(
-  (props: any) => <>{props.children}</>,
-  (prevProps: any, nextProps: any) => nextProps.tab === prevProps.tab
+const Social = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Social/SocialPage')
 )
+
+const Transaction = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Transaction/TransactionPage')
+)
+
+@withRouter
 class PortfolioTable extends Component<IProps, IState> {
-  state: IState = {
-    isShownChart: true,
-    tab: 'main',
-  }
-
-  onChangeTab = (
-    kind: 'main' | 'industry' | 'rebalance' | 'correlation' | 'optimization'
-  ) => {
-    this.setState({ tab: kind })
-  }
-
   render() {
-    const { isShownChart, tab } = this.state
     const {
       theme,
       dustFilter,
-      showTable = false,
       isUSDCurrently,
       baseCoin,
+      portfolioId,
+      portfolioName,
+      activeKeys,
+      keys,
     } = this.props
 
     return (
@@ -55,78 +49,99 @@ class PortfolioTable extends Component<IProps, IState> {
             <PortfolioTableTabs
               theme={theme}
               toggleWallets={this.props.toggleWallets}
-              tab={tab}
               isUSDCurrently={isUSDCurrently}
-              onChangeTab={this.onChangeTab}
               onToggleUSDBTC={() => {
                 this.props.onToggleUSDBTC()
                 toggleBaseCoin()
               }}
             />
             <Suspense fallback={<Loading centerAligned />}>
-              {showTable && (
-                <>
-                  <div id="main_tab" hidden={tab !== 'main'}>
-                    <MemoizedTab tab={tab}>
-                      <PortfolioMain
-                        isShownChart={isShownChart}
-                        isUSDCurrently={isUSDCurrently}
-                        tab={this.state.tab}
-                        theme={theme}
-                        variables={{ baseCoin }}
-                        baseCoin={baseCoin}
-                        filterValueSmallerThenPercentage={dustFilter}
-                      />
-                    </MemoizedTab>
-                  </div>
-                  <div id="industry_tab" hidden={tab !== 'industry'}>
-                    <MemoizedTab tab={tab}>
-                      <PortfolioTableIndustries
-                        isUSDCurrently={isUSDCurrently}
-                        theme={theme}
-                        tab={this.state.tab}
-                        variables={{ baseCoin: 'USDT' }}
-                        baseCoin="USDT"
-                        filterValueSmallerThenPercentage={dustFilter}
-                      />
-                    </MemoizedTab>
-                  </div>
-                  {tab === 'rebalance' && (
-                    <div id="rebalance_tab">
-                      <MemoizedTab tab={tab}>
-                        <Rebalance
-                          baseCoin={`USDT`}
-                          tab={this.state.tab}
-                          isUSDCurrently={true}
-                          filterValueSmallerThenPercentage={dustFilter}
-                        />
-                      </MemoizedTab>
-                    </div>
+              <Switch>
+                <Route
+                  exact
+                  path="/portfolio/main"
+                  render={(...rest) => (
+                    <PortfolioMain
+                      portfolioKeys={keys}
+                      portfolioId={portfolioId}
+                      portfolioName={portfolioName}
+                      isUSDCurrently={isUSDCurrently}
+                      theme={theme}
+                      variables={{ baseCoin }}
+                      baseCoin={baseCoin}
+                      dustFilter={dustFilter}
+                      {...rest}
+                    />
                   )}
-                  <div id="correlation_tab" hidden={tab !== 'correlation'}>
-                    <MemoizedTab tab={tab}>
-                      <Correlation
-                        baseCoin="USDT"
-                        tab={this.state.tab}
-                        theme={theme}
-                        filterValueSmallerThenPercentage={dustFilter}
-                      />
-                    </MemoizedTab>
-                  </div>
-
-                  <div id="optimization_tab" hidden={tab !== 'optimization'}>
-                    <MemoizedTab tab={tab}>
-                      <Optimization
-                        theme={theme}
-                        tab={this.state.tab}
-                        isUSDCurrently={isUSDCurrently}
-                        baseCoin="USDT"
-                        filterValueSmallerThenPercentage={dustFilter}
-                      />
-                    </MemoizedTab>
-                  </div>
-                </>
-              )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/industry"
+                  render={(...rest) => (
+                    <PortfolioTableIndustries
+                      isUSDCurrently={isUSDCurrently}
+                      theme={theme}
+                      variables={{ baseCoin: 'USDT' }}
+                      baseCoin="USDT"
+                      dustFilter={dustFilter}
+                      {...rest}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/rebalance"
+                  render={(...rest) => (
+                    <Rebalance
+                      baseCoin={`USDT`}
+                      isUSDCurrently={true}
+                      dustFilter={dustFilter}
+                      portfolioId={portfolioId}
+                      activeKeys={activeKeys}
+                      {...rest}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/correlation"
+                  render={(...rest) => (
+                    <Correlation
+                      baseCoin="USDT"
+                      theme={theme}
+                      dustFilter={dustFilter}
+                      {...rest}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/optimization"
+                  render={(...rest) => (
+                    <Optimization
+                      theme={theme}
+                      isUSDCurrently={isUSDCurrently}
+                      baseCoin="USDT"
+                      dustFilter={dustFilter}
+                      {...rest}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/social"
+                  render={(...rest) => (
+                    <Social dustFilter={dustFilter} {...rest} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/portfolio/transactions"
+                  render={(...rest) => (
+                    <Transaction {...rest} />
+                  )}
+                />
+              </Switch>
             </Suspense>
           </>
         )}
@@ -135,4 +150,4 @@ class PortfolioTable extends Component<IProps, IState> {
   }
 }
 
-export default withTheme()(PortfolioTable)
+export default PortfolioTable

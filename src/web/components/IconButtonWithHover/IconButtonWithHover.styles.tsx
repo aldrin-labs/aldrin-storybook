@@ -12,6 +12,6 @@ export const IconButtonWithHover = styled(({ hoverColor, ...rest }) => (
   }
 
   && {
-    padding: 0.25rem;
+    padding: 0.4rem;
   }
 `

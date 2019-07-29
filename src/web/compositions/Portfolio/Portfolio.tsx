@@ -21,8 +21,10 @@ import withAuth from '@core/hoc/withAuth'
 
 const safePortfolioDestruction = (
   portfolio = {
+    _id: '',
+    name: '',
     userSettings: {
-      portfolioId: null,
+      portfolioId: '',
       dustFilter: null,
       keys: [],
       wallets: [],
@@ -88,6 +90,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
           const {
             userSettings: { portfolioId, dustFilter },
+            name: portfolioName,
           } = safePortfolioDestruction(data.myPortfolios[0])
 
           // TODO: hotfix, should be fixed on backend
@@ -105,6 +108,10 @@ class PortfolioComponent extends React.Component<IProps, IState> {
           const hasKeysOrWallets = keys.length + wallets.length > 0
           const hasActiveKeysOrWallets =
             activeKeys.length + activeWallets.length > 0
+
+
+          console.log('portfolioName', portfolioName);
+
 
           return (
             <Mutation
@@ -154,9 +161,13 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
                     {hasKeysOrWallets && hasActiveKeysOrWallets && (
                       <PortfolioTable
+                        keys={keys}
                         key={activeKeys.length + activeWallets.length}
                         showTable={hasActiveKeysOrWallets}
-                        dustFilter={dustFilter || -100}
+                        dustFilter={dustFilter}
+                        activeKeys={activeKeys}
+                        portfolioId={portfolioId}
+                        portfolioName={portfolioName}
                         theme={theme}
                         baseCoin={baseCoin}
                         onToggleUSDBTC={this.onToggleUSDBTC}

@@ -4,18 +4,24 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 
 import { Table as ImTable, TableWithSort, Loading } from '@sb/components'
 import { getArrayOfActionElements } from '@sb/styles/PortfolioRebalanceTableUtils'
+import { withStyles, withTheme, WithTheme } from '@material-ui/core/styles'
 
 import {
   LoaderWrapper,
   LoaderInnerWrapper,
   ContentInner,
-  TitleContainer,
-  TitleItem,
 } from './RebalancedPortfolioTable.styles'
 
 import { IProps } from './PortfolioRebalanceTable.types'
 
-const PortfolioRebalanceTable = ({
+// const styles = (theme) => ({
+//   heading: {
+//     background: theme.palette.background.taable
+//   },
+// })
+const PortfolioRebalanceTable: React.FunctionComponent<
+  ConsistentWith<{ theme: Theme }, WithTheme<{}>>
+> = ({
   isEditModeEnabled,
   theme,
   loading,
@@ -29,31 +35,26 @@ const PortfolioRebalanceTable = ({
   onNewSnapshot,
   tableData,
 }: IProps) => {
-  const {
-    columnNames,
-    data: { body, footer },
-  } = tableData
-
   const Table = isEditModeEnabled ? ImTable : TableWithSort
-
   return (
     <>
-      {loading && (
-        <LoaderWrapper background={fade(theme.palette.common.black, 0.7)}>
-          <LoaderInnerWrapper>
-            <Loading size={94} margin={'0 0 2rem 0'} />{' '}
-            <Typography color="secondary" variant="h4">
-              Saving rebalanced portfolio...
-            </Typography>{' '}
-          </LoaderInnerWrapper>{' '}
-        </LoaderWrapper>
-      )}
+      {/*{loading && (*/}
+      {/*<LoaderWrapper background={fade(theme.palette.common.black, 0.7)}>*/}
+      {/*<LoaderInnerWrapper>*/}
+      {/*<Loading size={94} margin={'0 0 2rem 0'} />{' '}*/}
+      {/*<Typography color="secondary" variant="h4">*/}
+      {/*Saving rebalanced portfolio...*/}
+      {/*</Typography>{' '}*/}
+      {/*</LoaderInnerWrapper>{' '}*/}
+      {/*</LoaderWrapper>*/}
+      {/*)}*/}
       <ContentInner>
         <Table
-          columnNames={columnNames}
+          style={{ width: '100%' }}
+          columnNames={tableData.columnNames}
           id="PortfolioRebalanceTable"
-          data={{ body, footer }}
-          rowsWithHover={false}
+          data={tableData.data}
+          rowsWithHover={true}
           actionsColSpan={2}
           actions={getArrayOfActionElements({
             isEditModeEnabled,
@@ -65,21 +66,33 @@ const PortfolioRebalanceTable = ({
             red,
             saveButtonColor,
           })}
-          title={
-            <TitleContainer>
-              <TitleItem>Rebalanced Portfolio</TitleItem>
-              <TitleItem>
-                {timestampSnapshot &&
-                  `Snapshot time: ${timestampSnapshot.format(
-                    'MM-DD-YYYY h:mm:ss A'
-                  )}`}
-              </TitleItem>
-            </TitleContainer>
-          }
+          tableStyles={{
+            heading: {
+              fontFamily: `DM Sans, sans-serif`,
+              color: theme.palette.text.primary,
+              background: theme.palette.background.table,
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              fontSize: '10px',
+            },
+            title: {},
+            cell: {
+              padding: '0px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              fontSize: '12px',
+              height: '48px',
+              borderBottom: `1px solid ${
+                theme.palette.grey[theme.palette.type]
+              }`,
+            },
+          }}
+          emptyTableText="No assets"
         />
       </ContentInner>
     </>
   )
 }
 
-export default PortfolioRebalanceTable
+//export default PortfolioRebalanceTable
+export default withTheme()(PortfolioRebalanceTable)

@@ -5,21 +5,17 @@ import { ApolloConsumer } from 'react-apollo'
 import MdReplay from '@material-ui/icons/Replay'
 import { Fab, Button as ButtonMUI, Typography, Grow } from '@material-ui/core'
 import Tooltip from '@material-ui/core/Tooltip'
-import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
 
 import { RebalancePeriod } from './config'
 import { OPTIMIZE_PORTFOLIO } from '@core/graphql/queries/portfolio/optimization/optimizePortfolio'
 import { sliceCoinName } from '@core/utils/PortfolioTableUtils'
-import { systemError } from '@core/utils/errorsConfig'
+import { systemError, dustFilterEnabled } from '@core/utils/errorsConfig'
 import Table from '../Table/Table'
 import { BarChart, SwitchButtons } from '@sb/components/index'
 import { IProps, IData } from './Import.types'
-import {
-  InnerChartContainer,
-  ChartContainer,
-} from '../shared.styles.tsx'
+import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
+import { InnerChartContainer, ChartContainer } from '../shared.styles.tsx'
 import {
   SwitchButtonsWrapper,
   InputContainer,
@@ -33,7 +29,6 @@ import {
   STextField,
   StyledInputLabel,
   StyledSwitch,
-  StyledWrapperForDateRangePicker,
   TableSelectsContaienr,
 } from './Import.styles'
 import { StyledCardHeader } from '../Optimization.styles'
@@ -59,7 +54,7 @@ export default class Import extends PureComponent<IProps> {
     const assets =
       this.props.data &&
       this.props.data.myPortfolios[0] &&
-      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets)
+      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets, this.props.dustFilter)
 
     this.props.updateData(assets[0])
     const isUSDTInInitialPortfolioExists = assets[0].some(
@@ -81,6 +76,11 @@ export default class Import extends PureComponent<IProps> {
     startDate: object,
     endDate: object
   ) => {
+    window.gtag && window.gtag('event', 'Optimization run', {
+      event_category: 'App - Optimization',
+      event_label: 'Optimization run',
+    })
+
     const { totalPriceOfAllAssets, isUSDTInInitialPortfolioExists } = this.state
     const {
       showWarning,
@@ -212,25 +212,27 @@ export default class Import extends PureComponent<IProps> {
     const optimizedData = backendResultParsed.returns
 
     if (isRiskFreeAssetEnabled) {
-      this.addRow('USDT', 0)
+      this.addRow('USDT', 0, true)
     }
 
     optimizedToState(optimizedData)
   }
 
-  addRow = (name: string, value: number) => {
+  addRow = (name: string, value: number, disableFiltering = false) => {
     if (this.props.storeData.some((el) => el.coin === name)) {
       return
     }
 
-    if (this.props.filterValueSmallerThenPercentage >= 0) {
-      this.props.showWarning('Disable Dust filter first to see added coins')
+    if ((this.props.dustFilter.usd >= 0 || this.props.dustFilter.percentage >= 0) && !disableFiltering) {
+      this.props.showWarning(dustFilterEnabled)
+
+      return
     }
 
     if (name) {
       this.props.updateData([
         ...this.props.storeData,
-        { coin: name, percentage: value },
+        { disableFiltering, coin: name, percentage: value },
       ])
     }
   }
@@ -250,8 +252,9 @@ export default class Import extends PureComponent<IProps> {
       activeButton,
       theme,
       rawOptimizedData,
-      tab,
       showBlurOnSections,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
 
     if (!storeData) {
@@ -291,20 +294,16 @@ export default class Import extends PureComponent<IProps> {
       <ChartContainer
         hide={showBlurOnSections}
         minHeight={'400px'}
-        margin={'0 0 0 2rem'}
+        margin={'0 0 0 3.2rem'}
         id="PortfolioDistribution"
         className="PortfolioDistributionChart"
       >
         <StyledCardHeader title="Portfolio Distribution" />
         <InnerChartContainer>
           <Chart background={theme.palette.background.default}>
-            <Grow
-              timeout={0}
-              in={tab === 'optimization'}
-              mountOnEnter
-              unmountOnExit
-            >
               <BarChart
+                showCustomPlaceholder={showCustomPlaceholder}
+                placeholderElement={placeholderElement}
                 bottomMargin={75}
                 theme={theme}
                 height={340}
@@ -314,7 +313,6 @@ export default class Import extends PureComponent<IProps> {
                 hideDashForToolTip={true}
                 xAxisVertical={true}
               />
-            </Grow>
           </Chart>
         </InnerChartContainer>
       </ChartContainer>
@@ -363,12 +361,13 @@ export default class Import extends PureComponent<IProps> {
 
   render() {
     const {
-      storeData, // data from redux (data from portfolio and mannualy added)
+      storeData,
       onNewBtnClick,
-      filterValueSmallerThenPercentage,
       activeButton,
       theme,
       showBlurOnSections,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
 
     const {
@@ -388,9 +387,7 @@ export default class Import extends PureComponent<IProps> {
       )
     }
 
-    const textColor: string = this.props.theme.palette.getContrastText(
-      this.props.theme.palette.background.paper
-    )
+    const textColor: string = this.props.theme.palette.text.primary
 
     const fontFamily = theme.typography.fontFamily
 
@@ -407,7 +404,7 @@ export default class Import extends PureComponent<IProps> {
           <ImportData>
             <TableSelectsContaienr>
               <InputContainer
-                showHighlightShadows={showBlurOnSections}
+                showHighlightShadows={true}
                 id="Back-test"
                 className="OptimizationInput"
               >
@@ -432,13 +429,13 @@ export default class Import extends PureComponent<IProps> {
                       options={RebalancePeriod}
                       isClearable={true}
                       singleValueStyles={{
-                        fontSize: '0.875rem',
+                        fontSize: '1.4rem',
                       }}
                       placeholderStyles={{
-                        fontSize: '0.875rem',
+                        fontSize: '1.4rem',
                       }}
                       optionStyles={{
-                        fontSize: '0.875rem',
+                        fontSize: '1.4rem',
                       }}
                       onChange={(
                         optionSelected: { label: string; value: string } | null
@@ -551,9 +548,6 @@ export default class Import extends PureComponent<IProps> {
                   activeButton={activeButton}
                   withInput={true}
                   onClickDeleteIcon={this.deleteRow}
-                  filterValueSmallerThenPercentage={
-                    filterValueSmallerThenPercentage
-                  }
                   theme={this.props.theme}
                 />
               </TableContainer>

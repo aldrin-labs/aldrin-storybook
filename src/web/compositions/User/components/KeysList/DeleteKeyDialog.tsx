@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography'
 
 import { deleteExchangeKeyMutation } from '@core/graphql/mutations/user/deleteExchangeKeyMutation'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
+import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 
 const DeleteKeyDialogComponent = ({
@@ -139,6 +140,8 @@ export const DeleteKeyDialog = compose(
         'getPortfolio',
         'portfolios',
         { query: portfolioKeyAndWalletsQuery },
+        { query: getKeysQuery },
+        { query: keysNames },
       ],
     },
   }),

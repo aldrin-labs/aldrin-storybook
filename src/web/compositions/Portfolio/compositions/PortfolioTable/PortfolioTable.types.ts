@@ -1,8 +1,6 @@
 import { Theme } from '@material-ui/core'
 
 export interface IState {
-  isShownChart: boolean
-  tab: 'main' | 'industry' | 'rebalance' | 'correlation' | 'optimization'
 }
 
 export interface IProps {
@@ -14,4 +12,7 @@ export interface IProps {
   onToggleUSDBTC: () => void
   theme: Theme
   toggleWallets: () => void
+  portfolioId: string
+  portfolioName: string
+  activeKeys: any
 }

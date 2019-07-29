@@ -1,6 +1,4 @@
 import * as React from 'react'
-import Typography from '@material-ui/core/Typography'
-
 import {
   FlexibleXYPlot,
   XAxis,
@@ -10,6 +8,7 @@ import {
   Crosshair,
   LineMarkSeries,
 } from 'react-vis'
+import { Typography } from '@material-ui/core'
 
 import { formatDate } from '@core/utils/dateUtils'
 import { Props, State } from './LineChart.types'
@@ -18,7 +17,8 @@ import {
   StyledDiscreteColorLegend,
 } from './LineChart.styles'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { LegendContainer } from '@sb/styles/cssUtils'
+import { LegendContainer, CentredContainer } from '@sb/styles/cssUtils'
+import { withTheme } from '@material-ui/styles'
 
 const axisStyle = {
   ticks: {
@@ -30,7 +30,7 @@ const axisStyle = {
   },
   text: { stroke: 'none', fill: '#4ed8da', fontWeight: 600, opacity: 1 },
 }
-
+@withTheme()
 export default class LineChart extends React.Component<Props, State> {
   state: State = {
     crosshairValues: [],
@@ -61,14 +61,20 @@ export default class LineChart extends React.Component<Props, State> {
       itemsForChartLegend,
       additionalInfoInPopup,
       theme,
+      showCustomPlaceholder,
+      placeholderElement,
     } = this.props
+
+    const { crosshairValues } = this.state
 
     const textColor = theme.palette.getContrastText(
       theme.palette.background.paper
     )
     const fontFamily = theme.typography.fontFamily
 
-    const { crosshairValues } = this.state
+    if (showCustomPlaceholder) {
+      return placeholderElement
+    }
 
     if (!data) {
       return (
@@ -148,7 +154,7 @@ export default class LineChart extends React.Component<Props, State> {
         {crosshairValues && (
           <Crosshair values={crosshairValues}>
             <ContainerForCrossHairValues>
-              <Typography variant="subtitle1" style={{ marginBottom: '1rem' }}>
+              <Typography variant="subtitle1" style={{ marginBottom: '1.6rem' }}>
                 {dateDataFormatted}
               </Typography>
 
@@ -168,7 +174,7 @@ export default class LineChart extends React.Component<Props, State> {
               {additionalInfoInPopup && (
                 <Typography
                   variant="body2"
-                  style={{ marginTop: '1rem', fontStyle: 'italic' }}
+                  style={{ marginTop: '1.6rem', fontStyle: 'italic' }}
                 >
                   Note: we simulate the starting balance of $1,000 for
                   optimization
