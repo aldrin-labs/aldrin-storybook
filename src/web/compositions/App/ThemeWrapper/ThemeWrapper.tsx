@@ -99,6 +99,11 @@ export default class ThemeWrapper extends Component<Props> {
                   fontSize: '1.4rem',
                 },
               },
+              MuiInputBase: {
+                root: {
+                  fontSize: '1.4rem',
+                },
+              },
             },
             customPalette: {
               red: {
@@ -228,6 +233,11 @@ export default class ThemeWrapper extends Component<Props> {
                 },
               },
               MuiFab: {
+                root: {
+                  fontSize: '1.4rem',
+                },
+              },
+              MuiInputBase: {
                 root: {
                   fontSize: '1.4rem',
                 },

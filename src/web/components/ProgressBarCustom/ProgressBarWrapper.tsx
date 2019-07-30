@@ -7,7 +7,6 @@ import {
   GridFlex,
   LinearProgressCustom,
   TypographyCustom,
-  IconCircle,
 } from './ProgressBar.styles'
 
 import ProgressBarSection from './ProgressBarSection'

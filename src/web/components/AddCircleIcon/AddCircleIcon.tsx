@@ -1,11 +1,7 @@
 import React from 'react'
-import { IconCircle } from './AddCircleIcon.styles'
+import { IconCircle } from '@sb/styles/cssUtils'
 
-
-export const getCircleSymbol = (
-  coin: string,
-  data
-) => (
+export const getCircleSymbol = (coin: string, data) => (
   <>
     <IconCircle
       className="fa fa-circle"
@@ -20,7 +16,6 @@ export const getCircleSymbol = (
             ? '#DEDB8E'
             : '#97C15C'
         }`,
-        fontSize: '10px',
         margin: 'auto 3px auto 12px',
       }}
     />

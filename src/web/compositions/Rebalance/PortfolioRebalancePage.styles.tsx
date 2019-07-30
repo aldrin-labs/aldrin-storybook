@@ -54,6 +54,10 @@ export const TypographyAccordionTitle = styled(Typography)`
   color: #abbad1;
   text-align: center;
   text-transform: uppercase;
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 2.4rem;
+  }
 `
 
 export const GridProgressTitle = styled(Grid)`
@@ -66,7 +70,7 @@ export const GridProgressTitle = styled(Grid)`
 
 export const TypographyProgress = styled(Typography)`
   margin-top: 10px;
-  color: ${props => props.textColor || '#16253d'};
+  color: ${(props) => props.textColor || '#16253d'};
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -74,6 +78,14 @@ export const TypographyProgress = styled(Typography)`
   width: 100%;
   text-align: center;
   height: 24px;
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 57px;
+    font-size: 2.4rem;
+  }
 `
 
 export const GridTransactionBtn = styled(Grid)`
@@ -83,4 +95,8 @@ export const GridTransactionBtn = styled(Grid)`
   background-image: url(${Stroke});
   background-repeat: no-repeat;
   background-position: center;
+
+  & img {
+    width: 4vw;
+  }
 `
