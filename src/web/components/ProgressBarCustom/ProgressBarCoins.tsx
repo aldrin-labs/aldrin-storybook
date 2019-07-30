@@ -22,7 +22,7 @@ export default function ProgressBarCoins({ datum, index }) {
           className="fa fa-circle"
           style={{
             justifySelf: 'flex-start',
-            fontSize: '0.625rem',
+            fontSize: '1rem',
             margin: 'auto 10px auto 12px',
             color: `${
               index === 0

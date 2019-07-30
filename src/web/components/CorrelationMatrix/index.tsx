@@ -103,8 +103,8 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                 <SelectTimeRange
                   style={{
                     height: 'auto',
-                    maxWidth: '10rem',
-                    margin: '2rem 0',
+                    maxWidth: '16rem',
+                    margin: '3.2rem 0',
                   }}
                   updateCorrelationPeriodMutation={
                     updateCorrelationPeriodMutation
@@ -190,7 +190,7 @@ const FullscreenNode = styled.div`
 `
 
 const StyledCard = styled(Card)`
-  width: 15rem;
+  width: 24rem;
   && {
     margin: auto;
   }

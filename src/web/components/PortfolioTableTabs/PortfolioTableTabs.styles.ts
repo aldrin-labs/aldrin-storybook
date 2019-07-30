@@ -23,7 +23,7 @@ export const StyledButton = styled(Button)`
 `
 
 export const DividerWithMargin = styled(Divider)`
-  margin: 0.5rem auto;
+  margin: 0.8rem auto;
   margin-bottom: 0px;
   width: 70%;
 `
@@ -49,7 +49,7 @@ export const Marker = styled.span`
   left: -32px;
   border-radius: 23px;
   height: 40px;
-  width: 1rem;
+  width: 1.6rem;
   background: ${(props: { color: string }) => props.color};
   position: absolute;
 `
@@ -57,14 +57,14 @@ export const BlurForMarker = styled.span`
   left: -32px;
   border-radius: 23px;
   height: 40px;
-  width: 1rem;
-  filter: blur(1rem);
+  width: 1.6rem;
+  filter: blur(1.6rem);
   background: ${(props: { color: string }) => props.color};
   position: absolute;
 `
 
 export const Tab = styled(IconButton)`
-  margin: 0.6rem auto;
+  margin: 0.96rem auto;
   margin-bottom: 0px;
 `
 

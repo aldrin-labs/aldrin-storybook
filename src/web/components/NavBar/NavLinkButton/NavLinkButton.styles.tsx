@@ -3,7 +3,7 @@ import { Button } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const SButton = styled(({isActivePage, type, white, black, ...rest}) => <Button {...rest} />)`
-  margin: .25rem 1rem;
+  margin: .4rem 1.6rem;
 `
 
 export const Marker = styled.span`

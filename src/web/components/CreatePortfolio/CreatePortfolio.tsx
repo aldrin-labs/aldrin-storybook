@@ -101,7 +101,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
           color={'#165BE0'}
           margin={'20px 0 0 8px'}
           padding={'0px'}
-          fontSize={'0.65rem'}
+          fontSize={'1.04rem'}
           onClick={this.handleClickOpen}
         >
           {/* <AddIcon fontSize={`small`} /> */}+ create portfolio

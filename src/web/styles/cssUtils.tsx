@@ -27,7 +27,7 @@ export const TypographyFullWidth = styled(TypographyWithCustomColor)`
   width: 100%;
   flex-grow: 1;
   font-family: 'DM Sans', sans-serif;
-  font-size: ${(props) => props.fontSize || `0.75rem`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -38,21 +38,21 @@ export const TypographyFullWidth = styled(TypographyWithCustomColor)`
 export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
   grid-column: 2;
   width: ${(props: { tableData?: boolean }) =>
-    props.tableData ? 'calc(100% - 2rem)' : '100%'};
+    props.tableData ? 'calc(100% - 3.2rem)' : '100%'};
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: 1.5rem auto;
-  padding: 1rem 0;
+  margin: 2.4rem auto;
+  padding: 1.6rem 0;
   height: calc(100vh - 130px);
   overflow-y: auto;
   @media (max-width: 840px) {
-    margin: 1.5rem auto;
+    margin: 2.4rem auto;
   }
 
   @media (max-width: 550px) {
     width: calc(100% - 90px);
-    margin: 0.625rem auto;
+    margin: 1rem auto;
   }
 
   @media (max-width: 425px) {
@@ -82,6 +82,11 @@ export const LegendContainer = styled.div`
 `
 
 export const GlobalStyle = createGlobalStyle`
+ 
+ html {
+  font-size: 10px;
+ }
+ 
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
       scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
@@ -134,7 +139,7 @@ export const CentredContainer = styled.div`
 `
 
 export const ChartSelectStyles = css`
-  margin-left: 0.7rem;
+  margin-left: 1.12rem;
   border-radius: 24px;
   border: 2px solid ${(props: { border: string }) => props.border};
   padding: 0 16px;
@@ -162,7 +167,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
   & .DateInput_input {
     padding: ${(props: { dateInputPadding: string }) =>
       props.dateInputPadding || '5px'};
-    font-size: 0.875rem;
+    font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>
       props.fontSize ? props.fontSize : ''};

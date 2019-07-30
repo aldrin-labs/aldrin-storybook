@@ -3,21 +3,21 @@ export const CSS_CONFIG = {
   colors: ['#00C853', '#ceabff', '#0091EA', '#FF9833', '#EF5D28'],
   chart: {
     title: {
-      fontSize: '0.875rem',
+      fontSize: '1.4rem',
     },
     actionCell: {
-      fontSize: '0.8125rem',
+      fontSize: '1.3rem',
     },
     headCell: {
-      fontSize: '0.75rem',
+      fontSize: '1.2rem',
       top: '82px',
       customTop: '38px',
     },
     bodyCell: {
-      fontSize: '0.75rem',
+      fontSize: '1.2rem',
     },
     content: {
-      fontSize: '0.75rem',
+      fontSize: '1.2rem',
     },
   }
 }

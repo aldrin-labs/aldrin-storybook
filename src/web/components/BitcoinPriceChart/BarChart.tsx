@@ -26,7 +26,7 @@ class BarChart extends Component {
 
 const Container = styled.div`
   position: relative;
-  left: -1rem;
+  left: -1.6rem;
   max-width: 205px;
 `
 

@@ -33,7 +33,7 @@ import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverVie
 const LayoutClearfixWrapper = styled.div`
   @media only screen and (min-width: 600px) {
     margin-left: -2.5%;
-    padding-right: calc(2.5% + 3rem);
+    padding-right: calc(2.5% + 4.8rem);
   }
 `
 

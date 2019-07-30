@@ -16,7 +16,7 @@ export const TypographySectionTitle = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.5625rem;
+  font-size: 0.9rem;
   line-height: 23px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -26,7 +26,7 @@ export const TypographySubTitle = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   line-height: 31px;
   color: #7284a0;
 `

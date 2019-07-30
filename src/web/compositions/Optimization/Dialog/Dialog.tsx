@@ -37,7 +37,7 @@ const ErrorDialog = ({
           <Button
             onClick={onReportButton}
             size="small"
-            style={{ margin: '0.5rem 1rem' }}
+            style={{ margin: '0.8rem 1.6rem' }}
           >
             Report bug
           </Button>

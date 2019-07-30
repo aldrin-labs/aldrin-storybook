@@ -25,20 +25,20 @@ export const ColorLegendContainer = styled.div`
   overflow-x: hidden;
   transform: scaleX(-1);
   min-width: ${(props: {width: number}) => props.width + 3}px;
-  margin-top: .75rem;
+  margin-top: 1.2rem;
   ${customAquaScrollBar}
 `
 
 export const ColorLegendPercentContainer = styled.div`
   font-weight: 500;
-  font-size: .8rem;
+  font-size: 1.28rem;
 
   span {
     display: inline-block;
 
     &:first-child {
       color: #7284A0;
-      width: 3.5rem;
+      width: 5.6rem;
     }
     &:last-child {
       color: #16253D;

@@ -21,12 +21,12 @@ import {
 const OptimizedRow = memo(
   ({ ticker, background, numbersAfterDecimalForPrice, red, green }) => (
     <Row background={background.default}>
-      <Cell style={{ padding: '0 0.2rem' }} width={'30%'}>
+      <Cell style={{ padding: '0 0.32rem' }} width={'30%'}>
         <TypographyFullWidth noWrap={true} variant="caption" align="right">
           {(+ticker.size).toFixed(4)}
         </TypographyFullWidth>
       </Cell>
-      <Cell width={'40%'} style={{ padding: '0 0.2rem', display: 'flex' }}>
+      <Cell width={'40%'} style={{ padding: '0 0.32rem', display: 'flex' }}>
         <StyledArrow
           fontSize="small"
           color={ticker.fall ? red.main : green.main}
@@ -41,7 +41,7 @@ const OptimizedRow = memo(
           {(+ticker.price).toFixed(numbersAfterDecimalForPrice)}
         </StyledTypography>
       </Cell>
-      <Cell style={{ padding: '0 0.2rem' }} width={'30%'}>
+      <Cell style={{ padding: '0 0.32rem' }} width={'30%'}>
         <TypographyFullWidth
           color="textSecondary"
           noWrap={true}
@@ -91,7 +91,7 @@ const MemoizedHead = memo(
           </HeadCell>
           <HeadCell
             color="#9ca2aa"
-            style={{ padding: '0 0.2rem' }}
+            style={{ padding: '0 0.32rem' }}
             width={'40%'}
           >
             <TypographyFullWidth
@@ -106,7 +106,7 @@ const MemoizedHead = memo(
           <HeadCell
             style={{
               lineHeight: '32px',
-              padding: '0 0.2rem',
+              padding: '0 0.32rem',
             }}
             width={'30%'}
           >

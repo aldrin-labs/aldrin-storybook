@@ -294,7 +294,7 @@ export default class Import extends PureComponent<IProps> {
       <ChartContainer
         hide={showBlurOnSections}
         minHeight={'400px'}
-        margin={'0 0 0 2rem'}
+        margin={'0 0 0 3.2rem'}
         id="PortfolioDistribution"
         className="PortfolioDistributionChart"
       >
@@ -429,13 +429,13 @@ export default class Import extends PureComponent<IProps> {
                       options={RebalancePeriod}
                       isClearable={true}
                       singleValueStyles={{
-                        fontSize: '0.875rem',
+                        fontSize: '1.4rem',
                       }}
                       placeholderStyles={{
-                        fontSize: '0.875rem',
+                        fontSize: '1.4rem',
                       }}
                       optionStyles={{
-                        fontSize: '0.875rem',
+                        fontSize: '1.4rem',
                       }}
                       onChange={(
                         optionSelected: { label: string; value: string } | null

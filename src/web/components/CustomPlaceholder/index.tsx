@@ -15,7 +15,7 @@ export default ({ show = true, text, containerHeight = '' }) => (
 const Container = styled.div`
   height: ${({ containerHeight }: { containerHeight: string }) =>
     containerHeight};
-  padding: 2rem;
+  padding: 3.2rem;
   opacity: 0.5;
   width: 100%;
   display: flex;

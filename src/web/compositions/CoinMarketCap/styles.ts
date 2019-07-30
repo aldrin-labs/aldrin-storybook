@@ -4,7 +4,7 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const GridContainer = styled(Grid)`
   && {
-    padding: 0.5rem;
+    padding: 0.8rem;
     justify-content: center;
     min-height: 600px;
     height: 100%;

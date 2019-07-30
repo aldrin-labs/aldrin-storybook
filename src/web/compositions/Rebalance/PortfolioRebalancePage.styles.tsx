@@ -34,7 +34,7 @@ export const Chart = styled(({ background, ...rest }) => (
   width: 100%;
   height: calc(100% - 68px);
   && {
-    padding: 0 0.1rem 0 0.1rem;
+    padding: 0 0.16rem 0 0.16rem;
   }
 `
 
@@ -67,7 +67,7 @@ export const GridProgressTitle = styled(Grid)`
 export const TypographyProgress = styled(Typography)`
   margin-top: 10px;
   color: ${props => props.textColor || '#16253d'};
-  font-size: 0.625rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;

@@ -32,7 +32,7 @@ const BtnsContainer = styled.div`
   flex-wrap: nowrap;
   width: 80%;
   overflow: hidden;
-  margin: 1rem 0 1rem 0;
+  margin: 1.6rem 0 1.6rem 0;
   position: relative;
   top: ${(props: { show: boolean }) => (props.show ? '0' : '-100px')};
   z-index: ${(props: { show: boolean }) => (props.show ? '1' : '-10')};
@@ -49,7 +49,7 @@ const Btn = styled.button`
   border: none;
   outline: none;
   font-family: Roboto, sans-serif;
-  font-size: 1rem;
+  font-size: 1.6rem;
   font-weight: 500;
   color: ${(props: { active: boolean }) =>
     props.active ? '#4c5055' : '#4ed8da'};

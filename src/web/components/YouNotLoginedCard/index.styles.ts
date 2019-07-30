@@ -16,7 +16,7 @@ export const StyledDialog = styled.div`
 
 export const StyledCard = styled(Card)`
   height: auto;
-  width: 25rem;
+  width: 40rem;
   grid-column: 2;
   margin: auto;
 `

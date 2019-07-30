@@ -4,7 +4,7 @@ import { customAquaScrollBar } from '@sb/styles/cssUtils'
 import { CardHeader } from '@sb/components/index'
 
 export const Loader = styled(LinearProgress)`
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 `
 
 export const ChartsContainer = styled.div`
@@ -18,11 +18,11 @@ export const ChartsContainer = styled.div`
 `
 export const Chart = styled.div`
   position: relative;
-  padding: 0.5rem;
+  padding: 0.8rem;
   flex-grow: 1;
   min-width: 0;
   height: 300px;
-  border-radius: 1rem;
+  border-radius: 1.6rem;
   background: ${(props: { background: string }) => props.background};
 
   @media (max-width: 1080px) {
@@ -32,7 +32,7 @@ export const Chart = styled.div`
 `
 
 export const MainArea = styled.div`
-  margin: 2rem;
+  margin: 3.2rem;
   color: white;
   border-radius: 3px;
   flex-direction: column;

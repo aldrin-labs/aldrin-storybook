@@ -179,7 +179,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                     color: '#7284A0',
                     background: 'transparent',
                     textAlign: 'center',
-                    fontSize: '0.62rem',
+                    fontSize: '0.992rem',
                     '&:hover': {
                       borderRadius: '14px',
                       color: '#16253D',
@@ -214,7 +214,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
-                  fontSize={'0.72rem'}
+                  fontSize={'1.152rem'}
                   color={red.bright}
                   fontWeight={'700'}
                   position="right"

@@ -18,12 +18,12 @@ const LoaderWrapperComponent = ({
     <Fade in={open} mountOnEnter unmountOnExit>
       <LoaderWrapper>
         <LoaderInnerWrapper>
-          <Loading size={94} margin={'0 0 2rem 0'} />{' '}
+          <Loading size={94} margin={'0 0 3.2rem 0'} />{' '}
           <TypographyWithCustomColor textColor={textColor} variant="h6">
             Optimizing portfolio...
           </TypographyWithCustomColor>
           <TypographyWithCustomColor
-            style={{ marginTop: '2rem' }}
+            style={{ marginTop: '3.2rem' }}
             textColor={textColor}
             variant="h6"
           >

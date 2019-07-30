@@ -27,7 +27,7 @@ export const StyledLink = styled(NavLink)`
 export const StyledDropdown = styled.div`
     position: relative;
     display: inherit;
-    margin: .25rem;
+    margin: .4rem;
     padding: 6px 8px;
 `
 
@@ -54,5 +54,5 @@ export const StyledMenuItem = withStyles({
 
 export const StyledMenuItemText = styled.span`
     display: inline-block;
-    margin-left: .25rem;
+    margin-left: .4rem;
 `
