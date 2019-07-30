@@ -99,6 +99,12 @@ export const GlobalStyle = createGlobalStyle`
   .DateRangePicker_picker.DateRangePicker_picker__portal {
     z-index: 200;
   }
+
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 26px;
+    }
+  }
 `
 
 export const SelectR = styled(ReactSelectComponent)`

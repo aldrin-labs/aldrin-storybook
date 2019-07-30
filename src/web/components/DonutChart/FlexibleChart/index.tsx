@@ -16,6 +16,8 @@ import {
   ValueContainer
 } from './styles'
 
+const DEFAULT_CHART_STROKE_WIDTH = 10
+
 export class FlexibleChart extends Component<Props, State>{
 
   state: State = {
@@ -70,6 +72,7 @@ export class FlexibleChart extends Component<Props, State>{
 
       width,
       height,
+      strokeWidth,
       valueVariant,
 
       removeValueContainer
@@ -87,7 +90,7 @@ export class FlexibleChart extends Component<Props, State>{
         onValueMouseOver={(v: DonutPiece) => onValueMouseOver(v)}
         onSeriesMouseOut={() => onSeriesMouseOut()}
         style={{
-          strokeWidth: 10
+          strokeWidth: strokeWidth ? strokeWidth : DEFAULT_CHART_STROKE_WIDTH
         }}
 
         width={width}

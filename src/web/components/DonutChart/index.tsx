@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Typography } from '@material-ui/core'
+import { Typography, withWidth } from '@material-ui/core'
+import { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
 
@@ -38,12 +39,12 @@ const getColorsWithRandom = (colors: string[], dataLengh: number) => {
 }
 
 const DEFAULT_CHART_SIZE = {
-  width: 300,
-  height: 300
+  width: 200,
+  height: 200,
+  strokeWidth: 10
 }
 
 @withTheme()
-
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
@@ -120,7 +121,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       vertical,
       chartValueVariant,
 
-      removeLabels
+      removeLabels,
+      width
     } = this.props
 
     // show chart withoutData UI
@@ -132,6 +134,24 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       label: '1',
       realValue: 1,
       colorIndex: 0,
+    }
+
+    let donutSize = chartWidth && chartHeight ? {
+      width: chartWidth,
+      height: chartHeight
+    } : DEFAULT_CHART_SIZE
+    if (isWidthUp('xl', width)) {
+      donutSize = {
+        width: 300,
+        height: 300,
+        strokeWidth: 15
+      }
+    } else if (isWidthDown('md', width)) {
+      donutSize = {
+        width: 125,
+        height: 125,
+        strokeWidth: 8
+      }
     }
 
     return (
@@ -168,8 +188,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
 
-                width={chartWidth || DEFAULT_CHART_SIZE.width}
-                height={chartHeight || DEFAULT_CHART_SIZE.height}
+                {...donutSize}
                 valueVariant={chartValueVariant}
                 removeValueContainer={removeLabels}
               />
@@ -183,8 +202,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
 
-                width={chartWidth || DEFAULT_CHART_SIZE.width}
-                height={chartHeight || DEFAULT_CHART_SIZE.height}
+                {...donutSize}
                 valueVariant={chartValueVariant}
                 removeValueContainer={removeLabels}
               />
@@ -196,6 +214,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 }
 
-export const DonutChart = DonutChartWitoutTheme
+const wrappedDonutChart = withWidth()(DonutChartWitoutTheme)
 
-export default DonutChart
+export const DonutChart = wrappedDonutChart
+
+export default wrappedDonutChart

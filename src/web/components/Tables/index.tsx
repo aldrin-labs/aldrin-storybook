@@ -144,17 +144,17 @@ const styles = (theme: Theme) =>
       },
     },
     headRow: {
-      height: theme.spacing.unit * 4,
+      height: '2rem',
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
     },
     row: {
-      height: theme.spacing.unit * 4,
+      height: '2rem',
       transition: `background-color ${theme.transitions.duration.short}ms  ${
         theme.transitions.easing.easeOut
       }`,
-      borderBottom: '0',
+      borderBottom: '0'
     },
     rowWithHover: {
       '&:hover': {

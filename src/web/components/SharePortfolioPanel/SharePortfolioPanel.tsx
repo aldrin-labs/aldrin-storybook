@@ -18,20 +18,20 @@ export default class SharePortfolioPanel extends Component<IProps> {
         }}
       >
         <Grid item>
-          <Grid container justify="flex-start">
+          <Grid container justify="flex-start" alignItems="center">
             <Grid item style={{ marginRight: '15px' }}>
               <TypographyHeading>{portfolioName}</TypographyHeading>
             </Grid>
             <Grid item>
               <BtnCustom
-                btnWidth={'150px'}
-                height={'24px'}
-                btnColor={'blue'}
+                btnWidth={'auto'}
+                height="auto"
+                btnColor={'#165BE0'}
                 margin="auto"
-                padding="2px"
+                padding=".4rem .8rem"
                 onClick={handleOpenSharePortfolio}
               >
-                share portfolio
+                Share portfolio
               </BtnCustom>
             </Grid>
           </Grid>
