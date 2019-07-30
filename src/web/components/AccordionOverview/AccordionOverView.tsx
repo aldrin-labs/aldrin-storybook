@@ -21,6 +21,9 @@ import {
 } from './AccordionOverView.style'
 
 import { withTheme } from '@material-ui/styles'
+import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { GET_PORTFOLIO_KEY_ASSETS } from '@core/graphql/queries/portfolio/main/getPortfolioKeysAssets'
 
 const dataOverview = [
   {
@@ -57,138 +60,172 @@ const dataOverview = [
   },
 ]
 
-function DetailedExpansionPanel(props) {
-  const { classes } = props
-  return (
-    <Grid style={{ width: '100%' }}>
-      <ExpansionPanel>
-        <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
-          <GridColumn>
-            <TypographyHeading textColor={theme.palette.text.primary}>
-              overview
-            </TypographyHeading>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                Value
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                $100,000
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                assets
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                12
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                realized P{`&`}L
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={'#2F7619'}>
-                $24500
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                Unrealized P{`&`}L
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={'#B93B2B'}>
-                -$120300
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                Total P{`&`}L
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={'#B93B2B'}>
-                -$120300
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-        </ExpansionPanelSummaryCustom>
+@withTheme()
 
-        <ExpansionPanelDetails>
-          <Grid container justify="center">
-            {dataOverview.map((dataRow) => {
-              return (
-                <GridRow
-                  item
-                  hoverColor={theme.palette.hover[theme.palette.type]}
-                >
-                  <GridColumn>
-                    <TypographySubHeading>
-                      Binance trade account
-                    </TypographySubHeading>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>Value</TypographyTitleCell>
-                      <TypographyValueCell
-                        textColor={theme.palette.text.subPrimary}
-                      >
-                        $100,000
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>assets</TypographyTitleCell>
-                      <TypographyValueCell
-                        textColor={theme.palette.text.subPrimary}
-                      >
-                        12
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>
-                        realized P{`&`}L
-                      </TypographyTitleCell>
-                      <TypographyValueCell textColor={'#2F7619'}>
-                        $24500
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>
-                        Unrealized P{`&`}L
-                      </TypographyTitleCell>
-                      <TypographyValueCell textColor={'#B93B2B'}>
-                        -$120300
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>Total P{`&`}L</TypographyTitleCell>
-                      <TypographyValueCell textColor={'#B93B2B'}>
-                        -$120300
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                </GridRow>
-              )
-            })}
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </Grid>
-  )
+class DetailedExpansionPanel extends React.Component {
+  render() {
+    const { classes, theme, getPortfolioKeyAssetsQuery } = this.props
+
+    console.log('this.props', this.props);
+    console.log('getPortfolioKeyAssetsQuery', getPortfolioKeyAssetsQuery);
+
+    const totalKeyAssetsData = getPortfolioKeyAssetsQuery.portfolioKeys.keys.reduce((acc, el) => {
+      acc.portfolioKeyAssetsValue += el.portfolioKeyAssetsValue
+      acc.portfolioKeyAssetsCount += el.portfolioKeyAssetsCount
+      acc.realizedPnl += el.realizedPnl
+      acc.unrealizedPnl += el.unrealizedPnl
+      acc.totalPnl += el.totalPnl
+
+      return acc
+    }, {
+      portfolioKeyAssetsValue: 0,
+      portfolioKeyAssetsCount: 0,
+      realizedPnl: 0,
+      unrealizedPnl: 0,
+      totalPnl: 0,
+    })
+
+
+    return (
+      <Grid style={{ width: '100%' }}>
+        <ExpansionPanel>
+          <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
+            <GridColumn>
+              <TypographyHeading textColor={theme.palette.text.primary}>
+                overview
+              </TypographyHeading>
+            </GridColumn>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Value
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={theme.palette.text.subPrimary}>
+                  {totalKeyAssetsData.portfolioKeyAssetsValue}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  assets
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={theme.palette.text.subPrimary}>
+                  {totalKeyAssetsData.portfolioKeyAssetsCount}
+
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  realized P{`&`}L
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={'#2F7619'}>
+                  {totalKeyAssetsData.realizedPnl}
+
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Unrealized P{`&`}L
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={'#B93B2B'}>
+                  {totalKeyAssetsData.unrealizedPnl}
+
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Total P{`&`}L
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={'#B93B2B'}>
+                  {totalKeyAssetsData.totalPnl}
+
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+          </ExpansionPanelSummaryCustom>
+
+          <ExpansionPanelDetails>
+            <Grid container justify="center">
+              {getPortfolioKeyAssetsQuery.portfolioKeys.keys.map((el) => {
+                return (
+                  <GridRow
+                    item
+                    hoverColor={theme.palette.hover[theme.palette.type]}
+                  >
+                    <GridColumn>
+                      <TypographySubHeading>
+                        {el.name}
+                      </TypographySubHeading>
+                    </GridColumn>
+                    <GridColumn>
+                      <div>
+                        <TypographyTitleCell>Value</TypographyTitleCell>
+                        <TypographyValueCell
+                          textColor={theme.palette.text.subPrimary}
+                        >
+                          {el.portfolioKeyAssetsValue}
+                        </TypographyValueCell>
+                      </div>
+                    </GridColumn>
+                    <GridColumn>
+                      <div>
+                        <TypographyTitleCell>assets</TypographyTitleCell>
+                        <TypographyValueCell
+                          textColor={theme.palette.text.subPrimary}
+                        >
+                          {el.portfolioKeyAssetsCount}
+                        </TypographyValueCell>
+                      </div>
+                    </GridColumn>
+                    <GridColumn>
+                      <div>
+                        <TypographyTitleCell>
+                          realized P{`&`}L
+                        </TypographyTitleCell>
+                        <TypographyValueCell textColor={'#2F7619'}>
+                          {el.realizedPnl}
+                        </TypographyValueCell>
+                      </div>
+                    </GridColumn>
+                    <GridColumn>
+                      <div>
+                        <TypographyTitleCell>
+                          Unrealized P{`&`}L
+                        </TypographyTitleCell>
+                        <TypographyValueCell textColor={'#B93B2B'}>
+                          {el.unrealizedPnl}
+                        </TypographyValueCell>
+                      </div>
+                    </GridColumn>
+                    <GridColumn>
+                      <div>
+                        <TypographyTitleCell>Total P{`&`}L</TypographyTitleCell>
+                        <TypographyValueCell textColor={'#B93B2B'}>
+                          {el.totalPnl}
+                        </TypographyValueCell>
+                      </div>
+                    </GridColumn>
+                  </GridRow>
+                )
+              })}
+            </Grid>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </Grid>
+    )
+  }
 }
 
-export default withTheme()(DetailedExpansionPanel)
+export default compose(
+  queryRendererHoc({
+    query: GET_PORTFOLIO_KEY_ASSETS,
+    name: 'getPortfolioKeyAssetsQuery',
+  }),
+)(DetailedExpansionPanel)
