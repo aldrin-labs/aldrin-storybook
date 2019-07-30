@@ -33,9 +33,14 @@ export const ChartContainer = styled(Grid as React.SFC<GridProps>)`
 export const TableWrapper = styled(Card as React.SFC<
   CardProps & { className?: string }
 >)`
-  max-height: 100%;
+  max-height: 27.5rem;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
+
+  @media only screen and (min-width: 2560px) {
+    max-height: 37rem;
+  }
 `
 
 export const TablesWrapper = styled(Grid as React.SFC<GridProps>)`

@@ -92,7 +92,7 @@ export default class ThemeWrapper extends Component<Props> {
             palette: {
               divider: fade('#748AA1', 0.16),
               type: themeMode,
-              text: { primary: '#DBD9E6' },
+              text: { primary: '#DBD9E6', subPrimary: 'white' },
               black: {
                 custom: '#16253D',
               },
@@ -113,7 +113,7 @@ export default class ThemeWrapper extends Component<Props> {
               },
               grey: {
                 custom: '#ABBAD1',
-                dark: '#7284A0',
+                dark: '#2c2c34', //'#1F1F24',
                 main: '#F2F4F6',
               },
               primary: {
@@ -127,11 +127,18 @@ export default class ThemeWrapper extends Component<Props> {
               action: {
                 selected: 'rgba(255, 255, 255, 0.05)',
               },
+              hover: {
+                dark: '#383a3d',
+                light: '#E0E5EC',
+              },
               background: {
                 default: themeMode === 'light' ? '#fafafa' : '#16161D',
                 paper: themeMode === 'light' ? '#fff' : '#16161D',
                 table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
+              // boxShadow: {
+              //   main: '0px 0px 15px 0px rgba(30, 30, 30, 0.2)'
+              // }
             },
           }
         : // light theme
@@ -199,7 +206,12 @@ export default class ThemeWrapper extends Component<Props> {
             palette: {
               divider: fade('#BCC2CF', 0.5),
               type: themeMode,
-              text: { primary: fade('#41495E', 0.69), dark: '#7284A0', blue: '#165BE0' },
+              text: {
+                primary: fade('#41495E', 0.69),
+                dark: '#7284A0',
+                blue: '#165BE0',
+                subPrimary: '#16253D',
+              },
               black: {
                 custom: '#16253D',
               },
@@ -219,13 +231,13 @@ export default class ThemeWrapper extends Component<Props> {
               },
               grey: {
                 custom: '#ABBAD1',
-                dark: '#7284A0',
+                dark: '#8f9092', //'#7284A0',
                 light: '#E7ECF3',
                 main: '#F2F4F6',
               },
               primary: {
                 main: '#FEFEFE',
-                dark: '#F3F3F3',
+                dark: '#f2f4f6',
                 light: '#FFF',
               },
               secondary: {
@@ -233,6 +245,10 @@ export default class ThemeWrapper extends Component<Props> {
               },
               action: {
                 selected: 'rgba(255, 255, 255, 0.05)',
+              },
+              hover: {
+                dark: '#383a3d',
+                light: '#E0E5EC',
               },
               background: {
                 default: '#f9fbfd',

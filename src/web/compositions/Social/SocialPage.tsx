@@ -29,7 +29,16 @@ import {
 import { withTheme } from '@material-ui/styles'
 import { isObject, zip } from 'lodash-es'
 
+import SocialPortfolioInfoPanel from '@sb/components/SocialPortfolioInfoPanel/SocialPortfolioInfoPanel'
+import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
+import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 
+import {
+  PortfolioName,
+  TypographyTitle,
+  TypographyPercentage,
+  FolioValuesCell,
+} from './SocialPage.styles'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -42,20 +51,34 @@ const getOwner = (str: string) => {
 }
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
-  <Paper style={{ padding: '10px', marginBottom: '20px' }} elevation={isSelected ? 10 : 2}>
-    <Grid container onClick={onClick}>
+  <Paper
+    style={{ padding: '10px', marginBottom: '20px' }}
+    elevation={isSelected ? 10 : 2}
+  >
+    <Grid container onClick={onClick} style={{ height: '120px' }}>
       <Grid container alignItems="center" justify="space-between">
-        <Typography>Portfolio: </Typography> <Typography>{el.name}</Typography>{' '}
+        <PortfolioName textColor={'#16253D'} style={{ padding: '0' }}>
+          {el.name}
+          <TypographyTitle style={{ padding: '0', margin: '0' }}>
+            {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
+          </TypographyTitle>
+        </PortfolioName>
       </Grid>
       <Grid container alignItems="center" justify="space-between">
-        <Typography>Owner: </Typography>{' '}
-        <Typography>
-          {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
-        </Typography>{' '}
-      </Grid>
-      <Grid container alignItems="center" justify="space-between">
-        <Typography>Assets length: </Typography>{' '}
-        <Typography>{el.portfolioAssets.length}</Typography>
+        <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
+          <TypographyTitle>Assets</TypographyTitle>
+          <TypographyTitle>{el.portfolioAssets.length}</TypographyTitle>
+        </FolioValuesCell>
+        <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
+          <TypographyTitle>Month perform</TypographyTitle>
+          <TypographyTitle fontSize={'0.75rem'} textColor={'#97C15C'}>
+            {el.portfolioAssets.length}
+          </TypographyTitle>
+        </FolioValuesCell>
+        <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
+          <TypographyTitle>Exchanges</TypographyTitle>
+          <TypographyTitle>{el.portfolioAssets.length}</TypographyTitle>
+        </FolioValuesCell>
       </Grid>
     </Grid>
   </Paper>
@@ -218,19 +241,25 @@ class SocialPage extends React.Component {
     ))
 
     return (
-      <Grid container xs={10} spacing={8}>
+      <Grid container xs={12} spacing={8}>
         <Grid item xs={3} style={{ padding: '15px' }}>
-          {sharedPortfoliosList}
+          <SocialTabs>{sharedPortfoliosList}</SocialTabs>
+          {/* {sharedPortfoliosList} */}
         </Grid>
-        <Grid item xs={7} spacing={24} style={{ padding: '15px' }}>
-          <TableWithSort
-            id="PortfolioSocialTable"
-            title="Portfolio"
-            columnNames={head}
-            data={{ body, footer }}
-            padding="dense"
-            emptyTableText="No assets"
-          />
+        <Grid lg={9}>
+          <SocialPortfolioInfoPanel />
+          <SocialBalancePanel />
+
+          <Grid item xs={7} spacing={24} style={{ padding: '15px' }}>
+            <TableWithSort
+              id="PortfolioSocialTable"
+              title="Portfolio"
+              columnNames={head}
+              data={{ body, footer }}
+              padding="dense"
+              emptyTableText="No assets"
+            />
+          </Grid>
         </Grid>
       </Grid>
     )

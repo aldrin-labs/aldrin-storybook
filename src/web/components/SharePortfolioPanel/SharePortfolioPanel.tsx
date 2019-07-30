@@ -18,9 +18,11 @@ export default class SharePortfolioPanel extends Component<IProps> {
         }}
       >
         <Grid item>
-          <Grid container justify="flex-start">
-            <Grid item style={{ marginRight: '15px' }}>
-              <TypographyHeading>{portfolioName}</TypographyHeading>
+          <Grid container justify="flex-start" alignItems="center">
+            <Grid item style={{ marginRight: '1rem' }}>
+              <TypographyHeading textColor={theme.palette.text.primary}>
+                {portfolioName}
+              </TypographyHeading>
             </Grid>
             <Grid item>
               <StyledButton

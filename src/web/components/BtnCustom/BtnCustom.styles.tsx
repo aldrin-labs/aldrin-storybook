@@ -19,6 +19,7 @@ export const BtnCustom = styled(
   height: ${(props) => props.height || `28px`};
   border: 1px solid ${(props) => props.btnColor || props.color || '#333'};
   border-radius: ${(props) => props.borderRadius || '8px'};
+  border-width: ${(props) => props.borderWidth || '1px'};
   color: ${(props) => props.btnColor || props.color || '#333'};
   font-size: ${(props) => props.fontSize || '0.625rem'};
   font-weight: 700;

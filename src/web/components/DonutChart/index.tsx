@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Typography } from '@material-ui/core'
+import { Typography, withWidth } from '@material-ui/core'
+import { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
 
@@ -38,19 +39,20 @@ const getColorsWithRandom = (colors: string[], dataLengh: number) => {
 }
 
 const DEFAULT_CHART_SIZE = {
-  width: 300,
-  height: 300
+  width: 200,
+  height: 200,
+  strokeWidth: 10
 }
+const DEFAULT_COLOR_LEGEND_WIDTH = 150
 
 @withTheme()
-
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
     data: [],
     thicknessCoefficient: 10,
     colors: defaultColors,
-    colorLegendWhidh: 150,
+    colorLegendWidth: DEFAULT_COLOR_LEGEND_WIDTH,
   }
   state: State = {
     data: [],
@@ -113,14 +115,15 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       colorLegend,
       theme,
       thicknessCoefficient,
-      colorLegendWhidh,
+      colorLegendWidth,
 
       chartWidth,
       chartHeight,
       vertical,
       chartValueVariant,
 
-      removeLabels
+      removeLabels,
+      width
     } = this.props
 
     // show chart withoutData UI
@@ -134,6 +137,29 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       colorIndex: 0,
     }
 
+    let donutSize = chartWidth && chartHeight ? {
+      width: chartWidth,
+      height: chartHeight
+    } : DEFAULT_CHART_SIZE
+    if (isWidthUp('xl', width)) {
+      donutSize = {
+        width: 300,
+        height: 300,
+        strokeWidth: 15
+      }
+    } else if (isWidthDown('md', width)) {
+      donutSize = {
+        width: 125,
+        height: 125,
+        strokeWidth: 8
+      }
+    }
+  
+    let responsiveLegendWidth = colorLegendWidth
+    if (responsiveLegendWidth === DEFAULT_COLOR_LEGEND_WIDTH && isWidthUp('xl', width)) {
+      responsiveLegendWidth = 250
+    }
+
     return (
       <ChartWithTitle key={sizeKey}>
         {!removeLabels && <LabelContainer>
@@ -145,9 +171,9 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
         <ChartWithLegend vertical={vertical}>
           {colorLegend && !isEmpty && (
-            <ColorLegendContainer width={colorLegendWhidh}>
+            <ColorLegendContainer width={responsiveLegendWidth}>
               <SDiscreteColorLegend
-                width={colorLegendWhidh}
+                width={responsiveLegendWidth}
                 items={data.map((d) => <ColorLegendPercentContainer>
                   <span>{d.label}</span>
                   <span>{d.realValue.toFixed(1)}%</span>
@@ -168,8 +194,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
 
-                width={chartWidth || DEFAULT_CHART_SIZE.width}
-                height={chartHeight || DEFAULT_CHART_SIZE.height}
+                {...donutSize}
                 valueVariant={chartValueVariant}
                 removeValueContainer={removeLabels}
               />
@@ -183,8 +208,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
 
-                width={chartWidth || DEFAULT_CHART_SIZE.width}
-                height={chartHeight || DEFAULT_CHART_SIZE.height}
+                {...donutSize}
                 valueVariant={chartValueVariant}
                 removeValueContainer={removeLabels}
               />
@@ -196,6 +220,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 }
 
-export const DonutChart = DonutChartWitoutTheme
+const wrappedDonutChart = withWidth()(DonutChartWitoutTheme)
 
-export default DonutChart
+export const DonutChart = wrappedDonutChart
+
+export default wrappedDonutChart

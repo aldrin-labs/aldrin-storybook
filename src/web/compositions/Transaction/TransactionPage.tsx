@@ -122,11 +122,23 @@ class TransactionPage extends Component {
       newKeys.length + newWallets.length
     const isRebalance = false
     return (
-      <Grid container justify="space-between">
+      <Grid
+        container
+        justify="space-between"
+        borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+      >
         {/* Accounts */}
-        <GridAccountContainer item lg={2} md={2}>
-          <GridContainerTitle content alignItems="center">
-            <TypographyContatinerTitle>accounts</TypographyContatinerTitle>
+        <GridAccountContainer item lg={2} md={2} borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}>
+          <GridContainerTitle
+            bgColor={theme.palette.primary.dark}
+            content
+            alignItems="center"
+          >
+            <TypographyContatinerTitle
+              textColor={theme.palette.text.subPrimary}
+            >
+              accounts
+            </TypographyContatinerTitle>
           </GridContainerTitle>
           <ContentGrid>
             <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
@@ -157,9 +169,22 @@ class TransactionPage extends Component {
         </GridAccountContainer>
 
         {/* Calendar */}
-        <GridItemContainer item lg={2} md={2}>
-          <GridContainerTitle content alignItems="center">
-            <TypographyContatinerTitle>calendar</TypographyContatinerTitle>
+        <GridItemContainer
+          item
+          lg={2}
+          md={2}
+          borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+        >
+          <GridContainerTitle
+            bgColor={theme.palette.primary.dark}
+            content
+            alignItems="center"
+          >
+            <TypographyContatinerTitle
+              textColor={theme.palette.text.subPrimary}
+            >
+              calendar
+            </TypographyContatinerTitle>
           </GridContainerTitle>
           <Grid style={{ padding: '0 0 20px 0' }}>
             <Grid style={{ padding: '0 0 10px 45px' }}>
@@ -188,9 +213,18 @@ class TransactionPage extends Component {
           md={7}
           style={{ boxShadow: 'none', border: 'none' }}
         >
-          <GridItemContainer item lg={12} md={12}>
+          <GridItemContainer
+            item
+            lg={12}
+            md={12}
+            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+          >
             {/* <Table tableStyles={tableStyles} /> */}
-            <GridContainerTitle content alignItems="center">
+            <GridContainerTitle
+              content
+              alignItems="center"
+              bgColor={theme.palette.primary.dark}
+            >
               <Grid
                 style={{
                   display: 'flex',

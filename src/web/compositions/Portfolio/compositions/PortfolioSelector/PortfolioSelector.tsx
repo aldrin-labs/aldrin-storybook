@@ -297,7 +297,7 @@ class PortfolioSelector extends React.Component<IProps> {
               isSearchable={false}
               options={MyPortfoliosOptions}
               singleValueStyles={{
-                color: '#16253D', // default value
+                color: theme.palette.text.subPrimary,
                 fontSize: '0.93rem',
                 padding: '0',
               }}
@@ -314,14 +314,14 @@ class PortfolioSelector extends React.Component<IProps> {
                 textAlign: 'center',
               }}
               optionStyles={{
-                color: '#7284A0',
+                color: theme.palette.text.primary, //'#7284A0',
                 background: 'transparent',
                 textAlign: 'center',
                 fontSize: '0.62rem',
                 '&:hover': {
                   borderRadius: '14px',
-                  color: '#16253D',
-                  background: '#E7ECF3',
+                  color: theme.palette.text.subPrimary,
+                  background: theme.palette.hover[theme.palette.type],
                 },
               }}
             />

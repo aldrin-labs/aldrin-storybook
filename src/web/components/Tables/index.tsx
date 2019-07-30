@@ -144,22 +144,22 @@ const styles = (theme: Theme) =>
       },
     },
     headRow: {
-      height: theme.spacing.unit * 4,
+      height: '2rem'
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
     },
     row: {
-      height: theme.spacing.unit * 4,
+      height: '2rem',
       transition: `background-color ${theme.transitions.duration.short}ms  ${
         theme.transitions.easing.easeOut
         }`,
-      borderBottom: '0',
+      borderBottom: '0'
     },
     rowWithHover: {
       '&:hover': {
         borderRadius: '32px',
-        backgroundColor: '#E7ECF3', //TODO theme.palette.action.hover,
+        backgroundColor: theme.palette.hover[theme.palette.type], //TODO theme.palette.action.hover,
       },
     },
     rowWithHoverBorderRadius: {

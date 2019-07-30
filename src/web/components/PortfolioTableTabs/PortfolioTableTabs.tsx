@@ -58,9 +58,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
           position: 'relative',
         }}
       >
-        <StyledButton onClick={() => toggleWallets()}>
-          Accounts
-        </StyledButton>
+        <StyledButton onClick={() => toggleWallets()}>Accounts</StyledButton>
 
         {/*<BarContainer*/}
         {/*onClick={() => {*/}

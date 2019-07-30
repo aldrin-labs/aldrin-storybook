@@ -8,17 +8,20 @@ import Button from '@material-ui/core/Button'
 import { NavLink } from 'react-router-dom'
 
 export const StyledButton = styled(Button)`
+  width: 8rem;
+  background: #5c8cea;
   transform: rotate(-90deg);
   position: absolute;
-  left: -3.9rem;
+  left: -3rem;
   color: white;
-  background-color: #5C8CEA;
-  padding: .25rem 3rem;
-  border-radius: 0 0 24px 24px;
-  text-transform: none;
+  border-radius: 0 0 .5rem .5rem;
 
+  font-size: 1rem;
+
+  transition: all ease-in-out 0.2s;
   &:hover {
-    background-color: #5c8cea;
+    background: #165be0;
+    left: -3.25rem;
   }
 `
 
@@ -34,7 +37,7 @@ export const Container = styled(Paper)`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  min-height: 100vh;
+  min-height: auto;
   z-index: 0;
 
   //visibility: hidden;

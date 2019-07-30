@@ -1,6 +1,8 @@
 import React, { Component, MouseEvent } from 'react'
 import styled from 'styled-components'
+
 import { Button } from '@material-ui/core'
+import { BoldButton } from './Feedback.styles'
 
 import config from '@core/utils/linkConfig'
 

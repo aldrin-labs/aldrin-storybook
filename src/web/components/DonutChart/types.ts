@@ -21,7 +21,7 @@ export interface Props {
   colors: string[]
   theme: Theme
   colorLegend: boolean
-  colorLegendWhidh: number
+  colorLegendWidth: number
   thicknessCoefficient: number,
 
   chartWidth: number,
