@@ -14,5 +14,5 @@ export const TypographyHeading = styled(Typography)`
   font-size: 0.875rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #16253d;
+  color: ${(props) => props.textColor};
 `

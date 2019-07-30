@@ -60,13 +60,13 @@ export const GridProgressTitle = styled(Grid)`
   display: flex;
   width: 100%;
   border-radius: 20px 20px 0 0;
-  background: #f2f4f6;
+  background: ${(props) => props.bgColor || '#f2f4f6'};
   margin-bottom: 8px;
 `
 
 export const TypographyProgress = styled(Typography)`
   margin-top: 10px;
-  color: #16253d;
+  color: ${props => props.textColor || '#16253d'};
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;

@@ -10,9 +10,9 @@ export const GridFlex = styled(Grid)`
 export const GridInfoPanelWrapper = styled(Grid)`
   position: sticky;
   top: 0;
-  border-top: 2px solid #e7ecf3;
-  border-bottom: 2px solid #e7ecf3;
-  background-color: #f9fbfd;
+  border-top: ${(props) => `2px solid ${props.borderColor}`};
+  border-bottom: ${(props) => `2px solid ${props.borderColor}`};
+  background-color: ${(props) => props.bgColor};
   padding: 16px 2px 0px 2px;
   z-index: 500;
   margin-bottom: 10px;

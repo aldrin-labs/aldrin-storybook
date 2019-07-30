@@ -22,6 +22,7 @@ import Input from '@material-ui/core/Input'
 import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
+import { ThemeConsumer } from 'styled-components'
 
 @withTheme()
 export default class RebalanceInfoPanel extends Component<IProps, IState> {
@@ -67,7 +68,12 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
       rebalanceTimePeriod && rebalanceTimePeriod.label === 'Every'
 
     return (
-      <GridInfoPanelWrapper container justify="space-between">
+      <GridInfoPanelWrapper
+        borderColor={theme.palette.grey[theme.palette.type]}
+        bgColor={theme.palette.background.default}
+        container
+        justify="space-between"
+      >
         {/* Grid - 1st item md - 6 Starts */}
         <Grid item md={5} lg={5}>
           <Grid container>
