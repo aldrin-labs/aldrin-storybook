@@ -13,7 +13,6 @@ export const GridRow = styled(Grid)`
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-left: 15px;
   &&:nth-child(2n-1) {
     background: ${(props) => props.hoverColor || '#e0e5ec'};
     border-radius: 20px;
@@ -74,3 +73,7 @@ export const ExpansionPanelSummaryCustom = styled(ExpansionPanelSummary)`
   display: flex;
   align-items: center;
 `
+
+export const Title = styled('div')`
+  padding-left: 15px;
+`;

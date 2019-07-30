@@ -1,5 +1,5 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, withTheme } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -18,56 +18,8 @@ import {
   TypographySubHeading,
   GridColumn,
   GridRow,
+  Title,
 } from './AccordionOverView.style'
-
-const styles = (theme) => ({
-  root: {
-    width: '100%',
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
-  icon: {
-    verticalAlign: 'bottom',
-    height: 20,
-    width: 20,
-  },
-  details: {
-    alignItems: 'center',
-  },
-  title: {
-    paddingLeft: '15px',
-  },
-  column: {
-    flexBasis: '16.66%',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  innerRow: {
-    minWidth: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    '&:nth-child(2n-1)': {
-      background: '#E0E5EC',
-      borderRadius: '20px',
-    },
-  },
-  helper: {
-    borderLeft: `1px solid ${theme.palette.divider}`,
-    paddingLeft: `${theme.spacing.unit * 2}px`,
-  },
-  link: {
-    color: theme.palette.primary.main,
-    textDecoration: 'none',
-    '&:hover': {
-      textDecoration: 'underline',
-    },
-  },
-})
 
 const dataOverview = [
   {
@@ -175,11 +127,13 @@ function DetailedExpansionPanel(props: any) {
                   item
                   hoverColor={theme.palette.hover[theme.palette.type]}
                 >
-                  <div className={classNames(classes.column, classes.title)}>
-                    <TypographySubHeading>
-                      Binance trade account
-                    </TypographySubHeading>
-                  </div>
+                  <GridColumn>
+                    <Title>
+                      <TypographySubHeading>
+                        Binance trade account
+                      </TypographySubHeading>
+                    </Title>
+                  </GridColumn>
                   <GridColumn>
                     <div>
                       <TypographyTitleCell>Value</TypographyTitleCell>
