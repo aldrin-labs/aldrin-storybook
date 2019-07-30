@@ -37,6 +37,9 @@ const styles = (theme) => ({
   details: {
     alignItems: 'center',
   },
+  title: {
+    paddingLeft: '15px',
+  },
   column: {
     flexBasis: '16.66%',
     display: 'flex',
@@ -46,7 +49,6 @@ const styles = (theme) => ({
     minWidth: '100%',
     display: 'flex',
     justifyContent: 'center',
-    paddingLeft: '15px',
     '&:nth-child(2n-1)': {
       background: '#E0E5EC',
       borderRadius: '20px',
@@ -100,7 +102,7 @@ const dataOverview = [
   },
 ]
 
-function DetailedExpansionPanel(props) {
+function DetailedExpansionPanel(props: any) {
   const { classes } = props
   return (
     <div className={classes.root}>
@@ -160,7 +162,7 @@ function DetailedExpansionPanel(props) {
                   }}
                   className={classes.innerRow}
                 >
-                  <div className={classes.column}>
+                  <div className={classNames(classes.column, classes.title)}>
                     <TypographySubHeading>
                       Binance trade account
                     </TypographySubHeading>

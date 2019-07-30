@@ -1,68 +1,82 @@
 import * as React from 'react'
 import { withRouter } from 'react-router-dom'
+import { ClickAwayListener, MenuList } from '@material-ui/core'
 import {
-    Button,
-    ClickAwayListener,
-    MenuList
-} from '@material-ui/core'
-import { StyledDropdown, StyledPaper, StyledMenuItem, StyledMenuItemText, StyledLink } from './Dropdown.styles'
+  StyledDropdown,
+  StyledPaper,
+  StyledMenuItem,
+  StyledMenuItemText,
+  StyledLink,
+  StyledButton,
+} from './Dropdown.styles'
 
 import { IProps } from './types'
 
 @withRouter
 export default class Dropdown extends React.Component<IProps> {
-    static defaultProps = {
-        items: []
-    }
+  static defaultProps = {
+    items: [],
+  }
 
-    state = {
-        open: false
-    }
+  state = {
+    open: false,
+  }
 
-    constructor(props: IProps) {
-        super(props)
+  constructor(props: IProps) {
+    super(props)
 
-        this.handleToggle = this.handleToggle.bind(this)
-        this.handleClose = this.handleClose.bind(this)
-    }
+    this.handleToggle = this.handleToggle.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+  }
 
-    render() {
-        return (
-            <StyledDropdown>
-                <Button
-                    aria-controls={this.props.id}
-                    aria-haspopup="true"
-                    onClick={this.handleToggle}
+  render() {
+    const { selectedMenu, id } = this.props;
+
+    return (
+      <StyledDropdown
+        onMouseEnter={this.handleToggle}
+        onMouseLeave={this.handleClose}
+      >
+        <StyledButton
+          aria-controls={this.props.id}
+          aria-haspopup="true"
+          onClick={this.handleToggle}
+        >
+          {this.props.buttonText}
+        </StyledButton>
+
+        <StyledPaper
+          id={this.props.id}
+          style={{ display: selectedMenu === id ? 'block' : 'none' }}
+        >
+          <ClickAwayListener onClickAway={this.handleClose}>
+            <MenuList>
+              {this.props.items.map(({ icon, text, to }) => (
+                <StyledMenuItem
+                  disableGutters={true}
                 >
-                    {this.props.buttonText}
-                </Button>
+                  <StyledLink to={to} onClick={this.handleClose}>
+                    {icon}
+                    <StyledMenuItemText>{text}</StyledMenuItemText>
+                  </StyledLink>
+                </StyledMenuItem>
+              ))}
+            </MenuList>
+          </ClickAwayListener>
+        </StyledPaper>
+      </StyledDropdown>
+    )
+  }
 
-                <StyledPaper id={this.props.id} style={{ display: this.state.open ? 'block' : 'none' }}>
-                    <ClickAwayListener onClickAway={this.handleClose}>
-                        <MenuList>
-                            {this.props.items.map(({ icon, text, to }) =>
-                                <StyledMenuItem disableGutters={true}>
-                                    <StyledLink to={to} onClick={this.handleClose}>
-                                        {icon}
-                                        <StyledMenuItemText>{text}</StyledMenuItemText>
-                                    </StyledLink>
-                                </StyledMenuItem>
-                            )}
-                        </MenuList>
-                    </ClickAwayListener>
-                </StyledPaper>
-            </StyledDropdown>
-        );
-    }
+  handleToggle = () => {
+    const { selectedMenu, selectActiveMenu, id } = this.props;
 
-    handleToggle() {
-        this.setState({
-            open: true
-        })
+    if (selectedMenu !== id) {
+      selectActiveMenu(id);
     }
-    handleClose() {
-        this.setState({
-            open: false
-        })
-    }
+  }
+  handleClose = () => {
+    const { selectActiveMenu } = this.props;
+    selectActiveMenu('');
+  }
 }

@@ -31,35 +31,41 @@ export default class Feedback extends Component<Props> {
     return (
       <>
         <Wrapper borderColor={borderColor}>
-          <Button
+          <StyledButton
             onClick={() => {
               this.openLink(config.feedbackLink)
             }}
             color="secondary"
             variant="text"
-            size="small"
           >
             Feedback
-          </Button>
+          </StyledButton>
         </Wrapper>
         <Wrapper borderColor={borderColor}>
-          <Button
+          <StyledButton
             onClick={() => {
               this.openLink(config.bugLink)
             }}
-            size="small"
           >
             Report bug
-          </Button>
+          </StyledButton>
         </Wrapper>
       </>
     )
   }
 }
 
+export const StyledButton = styled(Button)`
+  font-size: .835em;
+`;
+
 export const Wrapper = styled.div`
   display: flex;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 1rem;
   border: ${(props: { borderColor: string }) =>
     `1px solid ${props.borderColor}`};
+
+  @media(min-width: 2560px) {
+    padding: 0rem 0.5rem;
+  }
 `

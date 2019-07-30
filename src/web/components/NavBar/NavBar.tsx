@@ -1,4 +1,4 @@
-import React, { SFC } from 'react'
+import React, { SFC, useState } from 'react'
 import { Login } from '@core/containers/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
@@ -42,6 +42,7 @@ const NavBarRaw: SFC<Props> = ({
   pathname,
   $hide = false,
 }) => {
+  const [selectedMenu, selectMenu] = useState<string | undefined>(undefined);
   console.log(MainIcon, IndustryIcon, RebalanceIcon)
   return (
     <Nav
@@ -76,24 +77,29 @@ const NavBarRaw: SFC<Props> = ({
               >
                 Portfolio
               </NavLinkButton>*/}
-              <Dropdown id="portfolio-menu" buttonText="Portfolio" items={[
-                { text: 'P&L', icon: <MainIcon fontSize="small"/>, to: '/portfolio/main' },
-                { text: 'Transactions', icon: <IndustryIcon fontSize="small"/>, to: '/portfolio/transactions' },
-                { text: 'Rebalance', icon: <RebalanceIcon fontSize="small"/>, to: '/portfolio/rebalance' },
-                { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small"/>, to: '/portfolio/optimization' }
-              ]}/>
+              <Dropdown id="portfolio-menu" buttonText="Portfolio"
+                selectedMenu={selectedMenu} selectActiveMenu={selectMenu} items={[
+                  { text: 'P&L', icon: <MainIcon fontSize="small" />, to: '/portfolio/main' },
+                  { text: 'Transactions', icon: <IndustryIcon fontSize="small" />, to: '/portfolio/transactions' },
+                  { text: 'Rebalance', icon: <RebalanceIcon fontSize="small" />, to: '/portfolio/rebalance' },
+                  { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small" />, to: '/portfolio/optimization' }
+                ]} />
 
-              <Dropdown id="explore-menu" buttonText="Explore" items={[
-                { text: 'Industry', icon: <MainIcon fontSize="small"/>, to: '/portfolio/industry' },
-                { text: 'Correlation', icon: <CorrelationIcon fontSize="small"/>, to: '/portfolio/correlation' },
-                { text: 'Index', icon: <RebalanceIcon fontSize="small"/>, to: '/' },
-                { text: 'Social Portfolio', icon: <OptimizationIcon fontSize="small"/>, to: '/portfolio/social' }
-              ]}/>
+              <Dropdown
+                id="explore-menu" buttonText="Explore"
+                selectedMenu={selectedMenu} selectActiveMenu={selectMenu} items={[
+                  { text: 'Industry', icon: <MainIcon fontSize="small" />, to: '/portfolio/industry' },
+                  { text: 'Correlation', icon: <CorrelationIcon fontSize="small" />, to: '/portfolio/correlation' },
+                  { text: 'Index', icon: <RebalanceIcon fontSize="small" />, to: '/' },
+                  { text: 'Social Portfolio', icon: <OptimizationIcon fontSize="small" />, to: '/portfolio/social' }
+                ]} />
 
-              <Dropdown id="chart-menu" buttonText="Chart" items={[
-                { text: 'Simple Terminal', icon: null, to: '/chart' },
-                { text: 'Advanced Terminal', icon: null, to: '/chart' },
-              ]}/>
+              <Dropdown
+                id="chart-menu" buttonText="Chart"
+                selectedMenu={selectedMenu} selectActiveMenu={selectMenu} items={[
+                  { text: 'Simple Terminal', icon: null, to: '/chart' },
+                  { text: 'Advanced Terminal', icon: null, to: '/chart' },
+                ]} />
 
               <NavLinkButton
                 page={`market`}

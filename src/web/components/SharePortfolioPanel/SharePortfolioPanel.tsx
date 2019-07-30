@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
-import { TypographyHeading } from './SharePortfolioPanel.style'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
+import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod';
 import { IProps } from './SharePortfolio.types'
 
 export default class SharePortfolioPanel extends Component<IProps> {
@@ -23,35 +23,35 @@ export default class SharePortfolioPanel extends Component<IProps> {
               <TypographyHeading>{portfolioName}</TypographyHeading>
             </Grid>
             <Grid item>
-              <BtnCustom
-                btnWidth={'150px'}
-                height={'24px'}
-                btnColor={'blue'}
-                margin="auto"
-                padding="2px"
+              <StyledButton
+                padding="7px 25px 6px 25px"
+                borderRadius={'12px'}
                 onClick={handleOpenSharePortfolio}
               >
                 share portfolio
-              </BtnCustom>
+              </StyledButton>
             </Grid>
           </Grid>
         </Grid>
 
         <Grid item>
-          <BtnCustom
-            // onClick={() => {
-            //   this.props.onToggleUSDBTC()
-            //   toggleBaseCoin()
-            // }}
-            borderRadius={'32px'}
-            btnWidth={'100%'}
-            height={'24px'}
-            btnColor={'blue'}
-            margin="auto"
-            padding="2px"
-          >
-            Btc
-          </BtnCustom>
+          <Grid container justify="flex-start">
+            <Grid item>
+              <SelectPortfolioPeriod />
+            </Grid>
+            <Grid item>
+              <StyledButton
+                // onClick={() => {
+                //   this.props.onToggleUSDBTC()
+                //   toggleBaseCoin()
+                // }}
+                padding="6px 25px 5px 25px"
+                borderRadius={'28px'}
+              >
+                Btc
+              </StyledButton>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     )

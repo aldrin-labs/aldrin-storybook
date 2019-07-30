@@ -2,7 +2,11 @@ import React from 'react'
 import { Button } from '@material-ui/core'
 import styled from 'styled-components'
 
-export const SButton = styled(({isActivePage, type, white, black, ...rest}) => <Button {...rest} />)`
+const StyledButton = styled(Button)`
+font-size: .835rem;
+`
+
+export const SButton = styled(({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />)`
   margin: .25rem 1rem;
 `
 
