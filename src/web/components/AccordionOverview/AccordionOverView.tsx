@@ -179,7 +179,7 @@ function DetailedExpansionPanel(props: any) {
                     <TypographySubHeading>
                       Binance trade account
                     </TypographySubHeading>
-                  </GridColumn>
+                  </div>
                   <GridColumn>
                     <div>
                       <TypographyTitleCell>Value</TypographyTitleCell>
