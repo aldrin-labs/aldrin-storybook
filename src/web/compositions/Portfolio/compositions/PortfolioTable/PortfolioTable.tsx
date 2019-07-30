@@ -21,7 +21,7 @@ const Correlation = React.lazy(() =>
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
 const Social = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Social/SocialPage')
+  import(/* webpackPrefetch: true */ '@core/containers/Social/Social')
 )
 
 const Transaction = React.lazy(() =>
