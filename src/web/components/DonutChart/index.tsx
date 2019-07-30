@@ -43,6 +43,7 @@ const DEFAULT_CHART_SIZE = {
   height: 200,
   strokeWidth: 10
 }
+const DEFAULT_COLOR_LEGEND_WIDTH = 150
 
 @withTheme()
 class DonutChartWitoutTheme extends Component<Props, State> {
@@ -51,7 +52,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     data: [],
     thicknessCoefficient: 10,
     colors: defaultColors,
-    colorLegendWhidh: 150,
+    colorLegendWidth: DEFAULT_COLOR_LEGEND_WIDTH,
   }
   state: State = {
     data: [],
@@ -114,7 +115,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       colorLegend,
       theme,
       thicknessCoefficient,
-      colorLegendWhidh,
+      colorLegendWidth,
 
       chartWidth,
       chartHeight,
@@ -153,6 +154,11 @@ class DonutChartWitoutTheme extends Component<Props, State> {
         strokeWidth: 8
       }
     }
+  
+    let responsiveLegendWidth = colorLegendWidth
+    if (responsiveLegendWidth === DEFAULT_COLOR_LEGEND_WIDTH && isWidthUp('xl', width)) {
+      responsiveLegendWidth = 250
+    }
 
     return (
       <ChartWithTitle key={sizeKey}>
@@ -165,9 +171,9 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
         <ChartWithLegend vertical={vertical}>
           {colorLegend && !isEmpty && (
-            <ColorLegendContainer width={colorLegendWhidh}>
+            <ColorLegendContainer width={responsiveLegendWidth}>
               <SDiscreteColorLegend
-                width={colorLegendWhidh}
+                width={responsiveLegendWidth}
                 items={data.map((d) => <ColorLegendPercentContainer>
                   <span>{d.label}</span>
                   <span>{d.realValue.toFixed(1)}%</span>

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import {
     Paper,
     MenuItem,
+    Button,
 
     withStyles
 } from '@material-ui/core'
@@ -23,6 +24,12 @@ export const StyledLink = styled(NavLink)`
         color: #165BE0;
     }
 `
+
+export const StyledButton = withStyles({
+    root: {
+        fontWeight: 600
+    }
+})(Button)
 
 export const StyledDropdown = styled.div`
     position: relative;

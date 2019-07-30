@@ -1,6 +1,8 @@
 import React, { Component, MouseEvent } from 'react'
 import styled from 'styled-components'
+
 import { Button } from '@material-ui/core'
+import { BoldButton } from './Feedback.styles'
 
 import config from '@core/utils/linkConfig'
 
@@ -43,14 +45,14 @@ export default class Feedback extends Component<Props> {
           </Button>
         </Wrapper>
         <Wrapper borderColor={borderColor}>
-          <Button
+          <BoldButton
             onClick={() => {
               this.openLink(config.bugLink)
             }}
             size="small"
           >
             Report bug
-          </Button>
+          </BoldButton>
         </Wrapper>
       </>
     )

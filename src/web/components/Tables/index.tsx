@@ -144,7 +144,7 @@ const styles = (theme: Theme) =>
       },
     },
     headRow: {
-      height: '2rem',
+      height: '2rem'
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,

@@ -58,14 +58,19 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
     color: ${(props: { textColor: string }) => props.textColor};
   }
   & .rv-discrete-color-legend-item__color {
-    height: 1rem;
-    width: 1rem;
+    height: .6rem;
+    width: .6rem;
     border-radius: 50%;
   }
   & .rv-discrete-color-legend-item__title {
     text-align: left;
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
+    
+    & > div {
+      display: flex;
+      align-items: center;
+    }
   }
 `
 

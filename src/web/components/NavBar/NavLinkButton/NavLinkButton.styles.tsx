@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 export const SButton = styled(({isActivePage, type, white, black, ...rest}) => <Button {...rest} />)`
   margin: .25rem 1rem;
+  font-weight: 600;
 `
 
 export const Marker = styled.span`
