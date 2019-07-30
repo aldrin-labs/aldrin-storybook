@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import StarRatingComponent from 'react-star-rating-component'
 import {
   TypographyHeader,
   ButtonCustom,
@@ -10,7 +11,16 @@ import { withTheme } from '@material-ui/core'
 
 @withTheme()
 class SocialPortfolioInfoPanel extends Component {
+  state = {
+    rating: 0,
+  }
+
+  onStarClick(nextValue, prevValue, name) {
+    this.setState({ rating: nextValue })
+  }
+
   render() {
+    const { rating } = this.state
     const { theme } = this.props
     return (
       <Grid
@@ -43,6 +53,14 @@ class SocialPortfolioInfoPanel extends Component {
               item
               lg={3}
             >
+              <StarRatingComponent
+                name="rate1"
+                starCount={5}
+                value={rating}
+                starColor={'#DEDB8E'}
+                emptyStarColor={'#E0E5EC'}
+                onStarClick={this.onStarClick.bind(this)}
+              />
               <Typography>4324 votes</Typography>
             </GridCell>
             <GridCell
@@ -59,16 +77,14 @@ class SocialPortfolioInfoPanel extends Component {
               item
               lg={3}
             >
-              <TypographyTariff textColor={'#2F7619'}>
-                Free
-              </TypographyTariff>
+              <TypographyTariff textColor={'#2F7619'}>Free</TypographyTariff>
             </GridCell>
           </Grid>
         </Grid>
 
         <Grid item lg={3} alignItems="flex-end">
           <ButtonCustom
-          btnMargin={'auto 2px'}
+            btnMargin={'auto 2px'}
             btnWidth={'100px'}
             btnHeight={'26px'}
             btnBorderColor={'#165BE0'}
@@ -82,7 +98,7 @@ class SocialPortfolioInfoPanel extends Component {
             to rebalance
           </ButtonCustom>
           <ButtonCustom
-          btnMargin={'auto 2px'}
+            btnMargin={'auto 2px'}
             btnWidth={'100px'}
             btnHeight={'26px'}
             btnBorderColor={'#165BE0'}

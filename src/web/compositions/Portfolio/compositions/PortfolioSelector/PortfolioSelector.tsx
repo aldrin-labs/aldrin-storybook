@@ -248,8 +248,6 @@ class PortfolioSelector extends React.Component<IProps> {
       getMyPortfoliosQuery,
     } = this.props
 
-    console.log('Gooo: ', newKeys)
-
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
       (item: { _id: string; name: string }) => {
         return {

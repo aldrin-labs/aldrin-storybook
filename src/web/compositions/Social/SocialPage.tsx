@@ -1,19 +1,13 @@
 import React from 'react'
 import { compose } from 'recompose'
 
+import { Input, Grid, Paper } from '@material-ui/core'
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-  Grid,
-  Typography,
-  Checkbox,
-  Radio,
-  Input,
-  TextField,
-  Paper,
-} from '@material-ui/core'
+  PortfolioName,
+  TypographyTitle,
+  TypographyPercentage,
+  FolioValuesCell,
+} from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
@@ -32,13 +26,7 @@ import { isObject, zip } from 'lodash-es'
 import SocialPortfolioInfoPanel from '@sb/components/SocialPortfolioInfoPanel/SocialPortfolioInfoPanel'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
-
-import {
-  PortfolioName,
-  TypographyTitle,
-  TypographyPercentage,
-  FolioValuesCell,
-} from './SocialPage.styles'
+import SearchInput from '@sb/components/SearchInput/SearchInput'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -52,7 +40,7 @@ const getOwner = (str: string) => {
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
   <Paper
-    style={{ padding: '10px', marginBottom: '20px' }}
+    style={{ padding: '10px', margin: '20px' }}
     elevation={isSelected ? 10 : 2}
   >
     <Grid container onClick={onClick} style={{ height: '120px' }}>
@@ -88,7 +76,35 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
 class SocialPage extends React.Component {
   state = {
     selectedPortfolio: 0,
+    search: '',
+    //filteredPortfolio: [],
   }
+
+  handleSearchInput = (e) => {
+    console.log(e.target.value)
+    this.setState({ search: e.target.value })
+  }
+
+  // componentDidMount() {
+  //   this.setState({
+  //     filteredPortfolio: this.props.getFollowingPortfoliosQuery
+  //       .getFollowingPortfolios,
+  //   })
+  // }
+
+  // searchPortfolio = () => {
+  //   this.props.getFollowingPortfoliosQuery.getFollowingPortfolios.filter(
+  //     (folio) => {
+  //       return folio.name.toLowerCase().indexOf(this.state.search) !== -1
+  //     }
+  //   )
+  // }
+
+  // filteredData = this.props.getFollowingPortfoliosQuery.getFollowingPortfolios.filter(
+  //   (folio) => {
+  //     return folio.name.toLowerCase().indexOf('ne') !== -1
+  //   }
+  // )
 
   transformData = (data: any[] = [], red: string = '', green: string = '') => {
     const { numberOfDigitsAfterPoint: round = 2 } = this.state
@@ -182,6 +198,7 @@ class SocialPage extends React.Component {
       red = 'red',
       green = 'green',
     } = this.state
+
     if (tableData.length === 0) {
       return { head: [], body: [], footer: null }
     }
@@ -219,7 +236,7 @@ class SocialPage extends React.Component {
       getFollowingPortfoliosQuery: { getFollowingPortfolios },
     } = this.props
 
-    console.log('getFollowingPortfolios', getFollowingPortfolios)
+    //console.log('getFollowingPortfolios', getFollowingPortfolios)
 
     const { selectedPortfolio = 0 } = this.state
     const { body, head, footer = [] } = this.putDataInTable(
@@ -229,7 +246,17 @@ class SocialPage extends React.Component {
         true
       )
     )
-    const sharedPortfoliosList = getFollowingPortfolios.map((el, index) => (
+    //getFollowingPortfolios
+
+    let filteredData = this.props.getFollowingPortfoliosQuery.getFollowingPortfolios.filter(
+      (folio) => {
+        return (
+          folio.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !==
+          -1
+        )
+      }
+    )
+    const sharedPortfoliosList = filteredData.map((el, index) => (
       <PortfolioListItem
         key={index}
         isSelected={index === selectedPortfolio}
@@ -242,11 +269,28 @@ class SocialPage extends React.Component {
 
     return (
       <Grid container xs={12} spacing={8}>
-        <Grid item xs={3} style={{ padding: '15px' }}>
-          <SocialTabs>{sharedPortfoliosList}</SocialTabs>
+        <Grid item xs={4} style={{ padding: '15px' }}>
+          <SocialTabs style={{ width: '80%', margin: 'auto' }}>
+            {/* <Input
+              placeholder={``}
+              fontSize={`12px`}
+              style={{
+                height: '32px',
+                width: '100%',
+                display: 'flex',
+                alignSelf: 'flex-start',
+                margin: '0 auto 10px auto',
+                padding: '5px',
+                borderRadius: '0px',
+                border: '2px solid #E7ECF3',
+              }}
+              onChange={this.handleSearchInput}
+            /> */}
+            {sharedPortfoliosList}
+          </SocialTabs>
           {/* {sharedPortfoliosList} */}
         </Grid>
-        <Grid lg={9}>
+        <Grid lg={8}>
           <SocialPortfolioInfoPanel />
           <SocialBalancePanel />
 
