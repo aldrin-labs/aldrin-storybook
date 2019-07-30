@@ -4,14 +4,16 @@ import {
   GridColumn,
   TypographyTitleCell,
   TypographyValueCell,
+  GridMainContainer,
 } from './SocialBalancePanel.styles'
+import { compose } from 'recompose'
 
 @withTheme()
 class SocialBalancePanel extends Component {
   render() {
     const { theme } = this.props
     return (
-      <Grid container justify="space-between">
+      <GridMainContainer container justify="space-between">
         <GridColumn>
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
@@ -22,7 +24,7 @@ class SocialBalancePanel extends Component {
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="center">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               assets
@@ -32,7 +34,7 @@ class SocialBalancePanel extends Component {
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="center">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               realized P{`&`}L
@@ -42,7 +44,7 @@ class SocialBalancePanel extends Component {
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="center">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Unrealized P{`&`}L
@@ -52,7 +54,7 @@ class SocialBalancePanel extends Component {
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="flex-end">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Total P{`&`}L
@@ -82,9 +84,15 @@ class SocialBalancePanel extends Component {
             <TypographyTitle>Value</TypographyTitle>
             <TypographyValue>$100,000</TypographyValue>
           </Grid> */}
-      </Grid>
+      </GridMainContainer>
     )
   }
 }
 
 export default SocialBalancePanel
+// export default compose(
+//   queryRendererHoc({
+//     query: GET_TOOLTIP_SETTINGS,
+//     name: 'getTooltipSettingsQuery',
+//   })
+// )(SocialBalancePanel)

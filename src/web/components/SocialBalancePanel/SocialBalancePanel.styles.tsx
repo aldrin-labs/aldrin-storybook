@@ -2,6 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 
+export const GridMainContainer = styled(Grid)`
+  padding: 15px;
+`
+
 export const GridColumn = styled(Grid)`
   flex-basis: 16.66%;
   display: flex;
@@ -11,7 +15,7 @@ export const TypographyTitleCell = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.5625rem;
+  font-size: 0.9rem;
   line-height: 23px;
   text-align: center;
   letter-spacing: 1px;
@@ -24,7 +28,7 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   font-family: DM Sans;
   font-style: normal;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 1.5rem;
   line-height: 39px;
   text-align: center;
   text-transform: uppercase;

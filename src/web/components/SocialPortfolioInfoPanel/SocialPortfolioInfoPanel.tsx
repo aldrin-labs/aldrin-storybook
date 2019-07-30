@@ -5,6 +5,9 @@ import {
   ButtonCustom,
   TypographyTariff,
   GridCell,
+  TypographyTitle,
+  GridMainContainer,
+  SpanCell,
 } from './SocialPortfolioInfoPanel.styles'
 import { Grid, Typography } from '@material-ui/core'
 import { withTheme } from '@material-ui/core'
@@ -23,20 +26,17 @@ class SocialPortfolioInfoPanel extends Component {
     const { rating } = this.state
     const { theme } = this.props
     return (
-      <Grid
+      <GridMainContainer
         container
         justify="space-between"
         alignItems="center"
-        style={{ marginTop: '50px' }}
       >
-        <Grid item lg={3}>
-          <TypographyHeader>
-            {/* <TypographyHeader textColor={theme.palette.primary.dark}> */}
-            George soros portfolio
-          </TypographyHeader>
+        <Grid item lg={2} justify="center">
+          <TypographyHeader>George soros</TypographyHeader>
+          <TypographyHeader>portfolio</TypographyHeader>
         </Grid>
 
-        <Grid item lg={6}>
+        <Grid item lg={7}>
           <Grid container justify="center" alignItems="center">
             <GridCell
               item
@@ -44,8 +44,30 @@ class SocialPortfolioInfoPanel extends Component {
               item
               lg={3}
             >
-              <Typography>By</Typography>
-              <Typography>G.Soros</Typography>
+              <TypographyTitle>
+                By <SpanCell>G.Soros</SpanCell>
+              </TypographyTitle>
+            </GridCell>
+            <GridCell
+              item
+              border={`1px solid ${theme.palette.divider}`}
+              item
+              lg={4}
+              style={{ display: 'flex', justifyContent: 'center' }}
+            >
+              <Grid>
+                <StarRatingComponent
+                  name="rate1"
+                  starCount={5}
+                  value={rating}
+                  starColor={'#DEDB8E'}
+                  emptyStarColor={'#E0E5EC'}
+                  onStarClick={this.onStarClick.bind(this)}
+                />
+              </Grid>
+              <TypographyTitle style={{ padding: '0 0 0 5px' }}>
+                4324 votes
+              </TypographyTitle>
             </GridCell>
             <GridCell
               item
@@ -53,36 +75,23 @@ class SocialPortfolioInfoPanel extends Component {
               item
               lg={3}
             >
-              <StarRatingComponent
-                name="rate1"
-                starCount={5}
-                value={rating}
-                starColor={'#DEDB8E'}
-                emptyStarColor={'#E0E5EC'}
-                onStarClick={this.onStarClick.bind(this)}
-              />
-              <Typography>4324 votes</Typography>
+              <TypographyTitle>8500 Subscribers</TypographyTitle>
             </GridCell>
             <GridCell
               item
               border={`1px solid ${theme.palette.divider}`}
+              style={{ width: '100%' }}
               item
-              lg={3}
+              lg={1}
             >
-              <Typography>8500 Subscribers</Typography>
-            </GridCell>
-            <GridCell
-              item
-              border={`1px solid ${theme.palette.divider}`}
-              item
-              lg={3}
-            >
-              <TypographyTariff textColor={'#2F7619'}>Free</TypographyTariff>
+              <TypographyTariff textColor={'#2F7619'}>
+                Free
+              </TypographyTariff>
             </GridCell>
           </Grid>
         </Grid>
 
-        <Grid item lg={3} alignItems="flex-end">
+        <Grid container lg={3} alignItems="flex-end" justify="flex-end">
           <ButtonCustom
             btnMargin={'auto 2px'}
             btnWidth={'100px'}
@@ -93,7 +102,8 @@ class SocialPortfolioInfoPanel extends Component {
             btnHoverColor={'#165BE0'}
             btnHoverTextColor={'#fff'}
             btnRadius={'10px'}
-            btnFontSize={'0.5625rem'}
+            btnFontSize={'0.75rem'}
+            borderColor={'#165BE0'}
           >
             to rebalance
           </ButtonCustom>
@@ -107,12 +117,12 @@ class SocialPortfolioInfoPanel extends Component {
             btnHoverColor={'#B93B2B'}
             btnHoverTextColor={'#fff'}
             btnRadius={'10px'}
-            btnFontSize={'0.5625rem'}
+            btnFontSize={'0.75rem'}
           >
             following
           </ButtonCustom>
         </Grid>
-      </Grid>
+      </GridMainContainer>
     )
   }
 }

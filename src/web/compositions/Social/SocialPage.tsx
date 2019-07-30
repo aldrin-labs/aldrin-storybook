@@ -7,6 +7,12 @@ import {
   TypographyTitle,
   TypographyPercentage,
   FolioValuesCell,
+  TypographySearchOption,
+  ReactSelectCustom,
+  GridSortOption,
+  GridTableContainer,
+  FolioCard,
+  GridPageContainer,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -26,7 +32,6 @@ import { isObject, zip } from 'lodash-es'
 import SocialPortfolioInfoPanel from '@sb/components/SocialPortfolioInfoPanel/SocialPortfolioInfoPanel'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
-import SearchInput from '@sb/components/SearchInput/SearchInput'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -39,37 +44,69 @@ const getOwner = (str: string) => {
 }
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
-  <Paper
-    style={{ padding: '10px', margin: '20px' }}
-    elevation={isSelected ? 10 : 2}
+  // <Paper
+  // style={{
+  //   padding: '10px',
+  //   margin: '12px',
+  //   background: `${isSelected ? '#fff' : 'transparent'}`,
+  //   border: `${!isSelected && 'none'}`,
+  //   borderBottom: '1px solid #E0E5EC',
+  //   boxShadow: `${!isSelected && 'none'}`,
+  //   borderRadius: `${!isSelected && 'none'}`,
+  // }}
+  // elevation={isSelected ? 10 : 2}
+  // >
+  <FolioCard
+    container
+    onClick={onClick}
+    style={{
+      width: '93%',
+      margin: '10px auto 15px auto',
+      padding: '10px 12px',
+      background: '#fff',
+      border: `${!isSelected ? 'none' : '1px solid #E0E5EC'}`,
+      borderBottom: '1px solid #E0E5EC',
+      borderRadius: `${!isSelected ? '22px 22px 0 0 ' : '22px'}`,
+      boxShadow: `${
+        !isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.5)'
+      }`,
+    }}
   >
-    <Grid container onClick={onClick} style={{ height: '120px' }}>
-      <Grid container alignItems="center" justify="space-between">
-        <PortfolioName textColor={'#16253D'} style={{ padding: '0' }}>
-          {el.name}
-          <TypographyTitle style={{ padding: '0', margin: '0' }}>
-            {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
-          </TypographyTitle>
-        </PortfolioName>
-      </Grid>
-      <Grid container alignItems="center" justify="space-between">
-        <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
+    <Grid>
+      <Grid
+        style={{
+          width: 'auto',
+        }}
+      />
+      <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+      <TypographyTitle paddingText={'0'} marginText={'0'}>
+        {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
+      </TypographyTitle>
+    </Grid>
+    <Grid container alignItems="center" justify="space-between">
+      <FolioValuesCell item>
+        <div>
           <TypographyTitle>Assets</TypographyTitle>
           <TypographyTitle>{el.portfolioAssets.length}</TypographyTitle>
-        </FolioValuesCell>
-        <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
+        </div>
+      </FolioValuesCell>
+      <FolioValuesCell item>
+        <div>
           <TypographyTitle>Month perform</TypographyTitle>
-          <TypographyTitle fontSize={'0.75rem'} textColor={'#97C15C'}>
+          <TypographyTitle fontSize={'1.2rem'} textColor={'#97C15C'}>
             {el.portfolioAssets.length}
           </TypographyTitle>
-        </FolioValuesCell>
-        <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
+        </div>
+      </FolioValuesCell>
+      <FolioValuesCell item>
+        <div>
           <TypographyTitle>Exchanges</TypographyTitle>
           <TypographyTitle>{el.portfolioAssets.length}</TypographyTitle>
-        </FolioValuesCell>
-      </Grid>
+        </div>
+      </FolioValuesCell>
     </Grid>
-  </Paper>
+  </FolioCard>
+  // </Paper>
 )
 
 @withTheme()
@@ -77,7 +114,6 @@ class SocialPage extends React.Component {
   state = {
     selectedPortfolio: 0,
     search: '',
-    //filteredPortfolio: [],
   }
 
   handleSearchInput = (e) => {
@@ -85,48 +121,27 @@ class SocialPage extends React.Component {
     this.setState({ search: e.target.value })
   }
 
-  // componentDidMount() {
-  //   this.setState({
-  //     filteredPortfolio: this.props.getFollowingPortfoliosQuery
-  //       .getFollowingPortfolios,
-  //   })
-  // }
-
-  // searchPortfolio = () => {
-  //   this.props.getFollowingPortfoliosQuery.getFollowingPortfolios.filter(
-  //     (folio) => {
-  //       return folio.name.toLowerCase().indexOf(this.state.search) !== -1
-  //     }
-  //   )
-  // }
-
-  // filteredData = this.props.getFollowingPortfoliosQuery.getFollowingPortfolios.filter(
-  //   (folio) => {
-  //     return folio.name.toLowerCase().indexOf('ne') !== -1
-  //   }
-  // )
-
   transformData = (data: any[] = [], red: string = '', green: string = '') => {
     const { numberOfDigitsAfterPoint: round = 2 } = this.state
     const isUSDCurrently = true
 
     return data.map((row) => ({
-      // exchange + coin always uniq
+      //  exchange + coin always uniq
       //  change in future
+      //  name: row.name,
+      // portfolio: {
+      //   // not formatted value for counting total in footer
+      //   contentToSort: row.portfolioPercentage,
+      //   contentToCSV: roundPercentage(row.portfolioPercentage) || 0,
+      //   render: `${roundPercentage(row.portfolioPercentage) || 0}%`,
+      //   isNumber: true,
+      // },
       id: row.id,
-      name: row.name,
       coin: {
         contentToSort: row.coin,
         contentToCSV: row.coin,
         render: row.coin,
         style: { fontWeight: 700 },
-      },
-      portfolio: {
-        // not formatted value for counting total in footer
-        contentToSort: row.portfolioPercentage,
-        contentToCSV: roundPercentage(row.portfolioPercentage) || 0,
-        render: `${roundPercentage(row.portfolioPercentage) || 0}%`,
-        isNumber: true,
       },
       price: {
         contentToSort: row.price,
@@ -205,9 +220,9 @@ class SocialPage extends React.Component {
 
     return {
       head: [
-        { id: 'name', label: 'Account', isNumber: false },
+        // { id: 'name', label: 'Account', isNumber: false },
+        //{ id: 'portfolio', label: 'portfolio', isNumber: true },
         { id: 'coin', label: 'coin', isNumber: false },
-        { id: 'portfolio', label: 'portfolio', isNumber: true },
         { id: 'price', label: 'price', isNumber: true },
         { id: 'quantity', label: 'quantity', isNumber: true },
         { id: 'usd', label: isUSDCurrently ? 'usd' : 'BTC', isNumber: true },
@@ -267,13 +282,88 @@ class SocialPage extends React.Component {
       />
     ))
 
+    const sortBy = [
+      {
+        label: 'popularity',
+        value: '1',
+      },
+      {
+        label: 'author',
+        value: '1',
+      },
+      {
+        label: 'date',
+        value: '1',
+      },
+    ]
+
     return (
-      <Grid container xs={12} spacing={8}>
-        <Grid item xs={4} style={{ padding: '15px' }}>
-          <SocialTabs style={{ width: '80%', margin: 'auto' }}>
-            {/* <Input
+      <GridPageContainer container xs={12}>
+        <Grid item xs={3}>
+          <SocialTabs>
+            <GridSortOption
+              container
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <TypographySearchOption textColor={'#165BE0'}>
+                  compare Index Chart
+                </TypographySearchOption>
+              </Grid>
+
+              <Grid item>
+                <Grid container justify="space-between" alignItems="center">
+                  <TypographySearchOption textColor={'#16253D'}>
+                    Sort by
+                  </TypographySearchOption>
+
+                  <ReactSelectCustom
+                    // onChange={(
+                    //   optionSelected: {
+                    //     label: string
+                    //     value: string
+                    //   } | null
+                    // ) => onRebalanceTimerChange(optionSelected)}
+                    value={[sortBy[0]]}
+                    options={sortBy}
+                    isSearchable={false}
+                    singleValueStyles={{
+                      color: '#165BE0',
+                      fontSize: '11px',
+                      padding: '0',
+                    }}
+                    indicatorSeparatorStyles={{}}
+                    controlStyles={{
+                      background: 'transparent',
+                      border: 'none',
+                      width: 104,
+                    }}
+                    menuStyles={{
+                      width: 120,
+                      padding: '5px 8px',
+                      borderRadius: '14px',
+                      textAlign: 'center',
+                      marginLeft: '-15px',
+                    }}
+                    optionStyles={{
+                      color: '#7284A0',
+                      background: 'transparent',
+                      textAlign: 'center',
+                      fontSize: '0.9rem',
+                      '&:hover': {
+                        borderRadius: '14px',
+                        color: '#16253D',
+                        background: '#E7ECF3',
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </GridSortOption>
+            <Input
               placeholder={``}
-              fontSize={`12px`}
+              fontSize={`1.2rem`}
               style={{
                 height: '32px',
                 width: '100%',
@@ -282,30 +372,107 @@ class SocialPage extends React.Component {
                 margin: '0 auto 10px auto',
                 padding: '5px',
                 borderRadius: '0px',
-                border: '2px solid #E7ECF3',
+                background: '#F9FBFD',
+                border: '1px solid #E0E5EC',
               }}
               onChange={this.handleSearchInput}
-            /> */}
+            />
             {sharedPortfoliosList}
           </SocialTabs>
-          {/* {sharedPortfoliosList} */}
         </Grid>
-        <Grid lg={8}>
-          <SocialPortfolioInfoPanel />
-          <SocialBalancePanel />
+        {/* <Grid lg={8}> */}
 
-          <Grid item xs={7} spacing={24} style={{ padding: '15px' }}>
+        <GridTableContainer container justify="center" xs={9}>
+          <Grid continer lg={12} style={{ padding: '0 0 0 15px' }}>
+            <SocialPortfolioInfoPanel />
+            <SocialBalancePanel />
+            {/* <GridItemContainer item lg={2} md={2}>
+              <GridContainerTitle content alignItems="center">
+                <TypographyContatinerTitle>
+                  calendar
+                </TypographyContatinerTitle>
+              </GridContainerTitle>
+              <Grid style={{ padding: '0 0 20px 0' }}>
+                <Grid style={{ padding: '0 0 10px 45px' }}>
+                  <GitTransactionCalendar />
+                </Grid>
+                <Grid
+                  container
+                  justify="center"
+                  style={{ margineTop: '15px' }}
+                >
+                  <Grid lg={2}>
+                    <TypographyCalendarLegend textAlign={'right'}>
+                      Less
+                    </TypographyCalendarLegend>
+                  </Grid>
+
+                  <Grid container justify="center" lg={8}>
+                    <LessMoreContainer />
+                  </Grid>
+                  <Grid lg={2}>
+                    <TypographyCalendarLegend>
+                      More
+                    </TypographyCalendarLegend>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </GridItemContainer> */}
             <TableWithSort
+              style={{
+                border: '3px solid red',
+                borderRadius: '22px 22px 0 0',
+              }}
               id="PortfolioSocialTable"
-              title="Portfolio"
+              //title="Portfolio"
               columnNames={head}
               data={{ body, footer }}
               padding="dense"
               emptyTableText="No assets"
+              tableStyles={{
+                heading: {
+                  background: '#F2F4F6',
+                  padding: '10px 16px',
+                  fontFamily: "'DM Sans'",
+                  fontSize: '1.2rem',
+                  color: '#7284A0',
+                  lineHeight: '31px',
+                  letterSpacing: '1.5px',
+                  '&&:first-child': {
+                    borderRadius: '22px 0 0 0',
+                  },
+                  '&&:last-child': {
+                    borderRadius: '0 22px  0 0',
+                  },
+                },
+
+                cell: {
+                  //color: '#7284A0',
+                  fontFamily: 'DM Sans',
+                  fontStyle: 'normal',
+                  fontWeight: '500',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  fontSize: '1.4rem',
+                  padding: '10px 16px',
+                  '&&:first-child': { color: 'red' },
+                  '&:before': {
+                    content: '',
+                    display: 'block',
+                    width: 5,
+                    height: 5,
+                    backgroundColor: 'red',
+                    position: 'relative',
+                    top: 0,
+                    left: 0,
+                  },
+                },
+              }}
             />
           </Grid>
-        </Grid>
-      </Grid>
+        </GridTableContainer>
+        {/* </Grid> */}
+      </GridPageContainer>
     )
   }
 }
