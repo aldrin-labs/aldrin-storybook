@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, Input, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   GridInfoPanelWrapper,
@@ -12,20 +12,14 @@ import { withTheme } from '@material-ui/styles'
 import Timer, { useTimer } from 'react-compound-timer'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './RebalanceInfoPanel.types'
-
-import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-
-import Input from '@material-ui/core/Input'
-//import { IState } from '@sb/compositions/Chart/Inputs/AutoSuggestSelect/AutoSuggestSeletec.types';
 
 import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
-import { ThemeConsumer } from 'styled-components'
 
 @withTheme()
-export default class RebalanceInfoPanel extends Component<IProps, IState> {
+class RebalanceInfoPanel extends Component<IProps, IState> {
   state: IState = {
     isHiddenRebalanceDaysInput: 'hidden',
   }
@@ -62,6 +56,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
       },
       rebalanceTimePeriod,
       onRebalanceTimerChange,
+      width,
     } = this.props
 
     const showEveryTimeInput =
@@ -130,7 +125,8 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   borderRadius={'10px'}
                   btnColor={blue.custom}
                   btnWidth="118px"
-                  height="24px"
+                  // height="24px"
+                  size={width === 'xl' ? 'large' : ''}
                   onClick={toggleSectionCoinChart}
                 >
                   {isSectionChart ? `coin chart` : `section chart`}
@@ -160,7 +156,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   options={rebalanceSelectTimeOptions}
                   singleValueStyles={{
                     color: '#165BE0',
-                    fontSize: '11px',
+                    fontSize: `${width === 'xl' ? '1.8rem' : '11px'}`,
                     padding: '0',
                   }}
                   indicatorSeparatorStyles={{}}
@@ -179,7 +175,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                     color: '#7284A0',
                     background: 'transparent',
                     textAlign: 'center',
-                    fontSize: '0.992rem',
+                    fontSize: `${width === 'xl' ? '1.8rem' : '11px'}`,
                     '&:hover': {
                       borderRadius: '14px',
                       color: '#16253D',
@@ -252,3 +248,5 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
     )
   }
 }
+
+export default withWidth()(RebalanceInfoPanel)

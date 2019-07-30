@@ -25,4 +25,11 @@ export const BtnCustom = styled(
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};
   letter-spacing: 1.5px;
+  
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0.5rem 1rem;
+    width: auto;
+    font-size: 1.8rem;
+    height: auto;
+  }
 `

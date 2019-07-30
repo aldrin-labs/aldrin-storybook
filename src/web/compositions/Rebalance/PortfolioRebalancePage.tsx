@@ -236,7 +236,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <GridTransactionBtn
             lg={2}
             md={2}
-            style={{ height: '142px' }}
             justify="center"
           >
             <RebalanceDialogTransaction

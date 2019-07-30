@@ -1,20 +1,21 @@
 import React from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   LinearProgressCustom,
   TypographyCustom,
-  IconCircle,
 } from './ProgressBar.styles'
+
+import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
-export default function ProgressBarCoins({ datum, index }) {
+function ProgressBarCoins({ datum, index }) {
   return (
     <Grid
       container
       style={{
-        marginBottom: '4px',
+        marginBottom: '1vh',
       }}
     >
       <GridFlex item lg={3} md={3} padding="0">
@@ -22,7 +23,6 @@ export default function ProgressBarCoins({ datum, index }) {
           className="fa fa-circle"
           style={{
             justifySelf: 'flex-start',
-            fontSize: '1rem',
             margin: 'auto 10px auto 12px',
             color: `${
               index === 0
@@ -43,19 +43,17 @@ export default function ProgressBarCoins({ datum, index }) {
           {datum.symbol}
         </TypographyCustom>
       </GridFlex>
-      <Grid
+      <GridProgressBarContainer
         item
         lg={6}
         md={6}
         style={{
           background: '#E7ECF3',
           borderRadius: '35px',
-          height: '12px',
           marginTop: '2px',
         }}
       >
         <LinearProgressCustom
-          height="12px"
           marginTop="2px"
           width={`${datum.portfolioPerc}%`}
           variant="determinate"
@@ -70,7 +68,7 @@ export default function ProgressBarCoins({ datum, index }) {
               : '#97C15C'
           }
         />
-      </Grid>
+      </GridProgressBarContainer>
 
       <GridFlex item lg={3} md={3}>
         <TypographyCustom
@@ -86,3 +84,5 @@ export default function ProgressBarCoins({ datum, index }) {
     </Grid>
   )
 }
+
+export default ProgressBarCoins

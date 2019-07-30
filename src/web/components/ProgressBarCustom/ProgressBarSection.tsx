@@ -4,13 +4,12 @@ import {
   GridFlex,
   LinearProgressCustom,
   TypographyCustom,
-  IconCircle,
 } from './ProgressBar.styles'
 
 export default function ProgressBarSection(props) {
   const { datum } = props
   return (
-    <Grid container style={{ marginBottom: '8px' }}>
+    <Grid container style={{ marginBottom: '1.5vh' }}>
       <GridFlex item lg={3} md={3} padding="0">
         <TypographyCustom style={{ marginLeft: '12px' }}>
           {datum.label}
@@ -27,7 +26,6 @@ export default function ProgressBarSection(props) {
       >
         <LinearProgressCustom
           color={datum.color}
-          height="20px"
           width={`${datum.percentage}%`}
           variant="determinate"
           value={0}
