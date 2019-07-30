@@ -20,16 +20,10 @@ import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFol
 
 import { IProps, IState } from './Social.types'
 
-import { addMainSymbol, TableWithSort } from '@sb/components'
-import {
-  roundPercentage,
-  roundAndFormatNumber,
-  combineTableData,
-} from '@core/utils/PortfolioTableUtils'
+import { TableWithSort } from '@sb/components'
+
 import { withTheme } from '@material-ui/styles'
-import { isObject, zip } from 'lodash-es'
-
-
+import { transformData } from '@core/utils/SocialUtils'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -42,7 +36,10 @@ const getOwner = (str: string) => {
 }
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
-  <Paper style={{ padding: '10px', marginBottom: '20px' }} elevation={isSelected ? 10 : 2}>
+  <Paper
+    style={{ padding: '10px', marginBottom: '20px' }}
+    elevation={isSelected ? 10 : 2}
+  >
     <Grid container onClick={onClick}>
       <Grid container alignItems="center" justify="space-between">
         <Typography>Portfolio: </Typography> <Typography>{el.name}</Typography>{' '}
@@ -63,93 +60,6 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
 
 @withTheme()
 class SocialPage extends React.Component {
-  state = {
-    selectedPortfolio: 0,
-  }
-
-  transformData = (data: any[] = [], red: string = '', green: string = '') => {
-    const { numberOfDigitsAfterPoint: round = 2 } = this.state
-    const isUSDCurrently = true
-
-    return data.map((row) => ({
-      // exchange + coin always uniq
-      //  change in future
-      id: row.id,
-      name: row.name,
-      coin: {
-        contentToSort: row.coin,
-        contentToCSV: row.coin,
-        render: row.coin,
-        style: { fontWeight: 700 },
-      },
-      portfolio: {
-        // not formatted value for counting total in footer
-        contentToSort: row.portfolioPercentage,
-        contentToCSV: roundPercentage(row.portfolioPercentage) || 0,
-        render: `${roundPercentage(row.portfolioPercentage) || 0}%`,
-        isNumber: true,
-      },
-      price: {
-        contentToSort: row.price,
-        contentToCSV: roundAndFormatNumber(row.price, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.price, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.priceChange > 0 ? green : row.priceChange < 0 ? red : '',
-      },
-      quantity: {
-        contentToSort: row.quantity,
-        render: roundAndFormatNumber(row.quantity, round, true),
-        isNumber: true,
-      },
-      usd: {
-        contentToSort: row.price * row.quantity,
-        contentToCSV: roundAndFormatNumber(
-          row.price * row.quantity,
-          round,
-          true
-        ),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.price * row.quantity, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-      },
-      realizedPL: {
-        contentToSort: row.realizedPL,
-        contentToCSV: roundAndFormatNumber(row.realizedPL, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.realizedPL, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.realizedPL > 0 ? green : row.realizedPL < 0 ? red : '',
-      },
-      unrealizedPL: {
-        contentToSort: row.unrealizedPL,
-        contentToCSV: roundAndFormatNumber(row.unrealizedPL, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.unrealizedPL, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.unrealizedPL > 0 ? green : row.unrealizedPL < 0 ? red : '',
-      },
-      totalPL: {
-        contentToSort: row.totalPL,
-        contentToCSV: roundAndFormatNumber(row.totalPL, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.totalPL, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.totalPL > 0 ? green : row.totalPL < 0 ? red : '',
-      },
-    }))
-  }
-
   putDataInTable = (tableData) => {
     const { theme, isUSDCurrently = true, baseCoin = 'USDT' } = this.props
     const {
@@ -158,7 +68,7 @@ class SocialPage extends React.Component {
       numberOfDigitsAfterPoint: round,
       red = 'red',
       green = 'green',
-    } = this.state
+    } = {}
     if (tableData.length === 0) {
       return { head: [], body: [], footer: null }
     }
@@ -175,7 +85,7 @@ class SocialPage extends React.Component {
         { id: 'unrealizedPL', label: 'Unrealized P&L', isNumber: true },
         { id: 'totalPL', label: 'Total P&L', isNumber: true },
       ],
-      body: this.transformData(
+      body: transformData(
         tableData,
         theme.palette.red.main,
         theme.palette.green.main
@@ -193,26 +103,21 @@ class SocialPage extends React.Component {
 
   render() {
     const {
-      getFollowingPortfoliosQuery: { getFollowingPortfolios },
+      selectedPortfolio,
+      getFollowingPortfolios,
+      tableData,
+      setSelectedPortfolio,
     } = this.props
 
-    console.log('getFollowingPortfolios', getFollowingPortfolios)
+    const { head, body, footer = [] } = this.putDataInTable(tableData)
 
-    const { selectedPortfolio = 0 } = this.state
-    const { body, head, footer = [] } = this.putDataInTable(
-      combineTableData(
-        getFollowingPortfolios[selectedPortfolio].portfolioAssets,
-        { usd: -100, percentage: -100 },
-        true
-      )
-    )
     const sharedPortfoliosList = getFollowingPortfolios.map((el, index) => (
       <PortfolioListItem
         key={index}
         isSelected={index === selectedPortfolio}
         el={el}
         onClick={() => {
-          this.setState({ selectedPortfolio: index })
+          setSelectedPortfolio(index)
         }}
       />
     ))
