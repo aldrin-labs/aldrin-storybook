@@ -34,6 +34,8 @@ function ProgressBarWrapper(props: IProps) {
     otherCoinsPercentage,
     isSectionChart,
     isTargetChart,
+    isPanelExpanded,
+    onChangeExpandedPanel,
   } = props
 
 
@@ -51,6 +53,8 @@ function ProgressBarWrapper(props: IProps) {
         <ProgressOtherCoins
           otherCoinData={otherCoinData}
           otherCoinsPercentage={otherCoinsPercentage}
+          isPanelExpanded={isPanelExpanded}
+          onChangeExpandedPanel={onChangeExpandedPanel}
         />
       ) : (
         ' '

@@ -14,6 +14,7 @@ import {
   StyledTypography,
   StyledSubTypography,
   StyledTypographyAccordionHeader,
+  TableCellLast,
 } from './RebalanceAccordionIndex.styles'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
@@ -58,6 +59,7 @@ class TablePanelSummary extends React.Component {
               style={{
                 display: 'flex',
                 justifyContent: 'flex-start',
+                alignItems: 'center',
                 alignText: 'left',
                 marginTop: '15px',
                 padding: '0',
@@ -78,7 +80,7 @@ class TablePanelSummary extends React.Component {
                 trackBeforeBackground={accordionPanelHeadingBorderColor}
                 value={value}
                 onChange={handleSlideChange}
-                style={{ margin: 'auto 0' }}
+                // style={{ margin: 'auto 0' }}
                 disabled
               />
               <Tooltip title={`${value.toFixed(4)}%`} placement="bottom-end">
@@ -93,15 +95,15 @@ class TablePanelSummary extends React.Component {
               </Tooltip>
             </TableCell>
             {/* //TODO padding for all screens */}
-            <TableCell
+            <TableCellLast
               align="left"
-              style={{ border: 'none', padding: '0 120px 0 0' }}
+              // style={{ border: 'none', padding: '0 120px 0 0' }}
             >
               <StyledTypography fontWeight="700">Target value</StyledTypography>
               <StyledSubTypography color={theme.palette.text.subPrimary}>
                 ${roundAndFormatNumber(+fourthColValue, 2, false)}
               </StyledSubTypography>
-            </TableCell>
+            </TableCellLast>
             <TableCell align="right"/>
           </TableRow>
         </TableHead>

@@ -3,7 +3,8 @@ import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   LinearProgressCustom,
-  TypographyCustom } from './ProgressBar.styles'
+  TypographyCustom,
+} from './ProgressBar.styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
@@ -13,10 +14,16 @@ import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
 function ProgressOtherCoins({
   otherCoinData,
   otherCoinsPercentage,
+  isPanelExpanded,
+  onChangeExpandedPanel,
   width,
 }) {
   return (
-    <ProgressAccordion otherCoinData={otherCoinData}>
+    <ProgressAccordion
+      otherCoinData={otherCoinData}
+      isPanelExpanded={isPanelExpanded}
+      onChangeExpandedPanel={onChangeExpandedPanel}
+    >
       <Grid
         container
         style={{

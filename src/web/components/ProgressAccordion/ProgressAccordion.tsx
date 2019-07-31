@@ -64,7 +64,7 @@ const styles = (theme) => ({
 })
 
 function ProgressAccordion(props) {
-  const { classes, children, otherCoinData, width } = props
+  const { classes, children, otherCoinData, width, isPanelExpanded, onChangeExpandedPanel } = props
 
   // if (otherCoinData) {
   //     return null
@@ -73,6 +73,8 @@ function ProgressAccordion(props) {
   return (
     <div className={classes.root}>
       <ExpansionPanel
+        expanded={isPanelExpanded}
+        onChange={onChangeExpandedPanel}
         style={{
           background: 'transparent',
           border: 'none',

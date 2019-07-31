@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
+import { Grid, ExpansionPanel, Typography, TableCell } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`
   display: flex;
@@ -104,5 +104,22 @@ export const StyledSubTypography = styled(
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     font-size: 3.2rem;
+  }
+`
+
+export const TableCellLast = styled(TableCell)`
+  border: none;
+  padding: 0 9.5vw 0 0;
+  
+  @media screen and (min-device-width: 1520px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 10.5vw 0 0;
+  }
+  
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 11.5vw 0 0;
+  }
+  
+  @media screen and (min-device-width: 2500px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 12.3vw 0 0;
   }
 `

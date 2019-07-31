@@ -50,6 +50,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     key: 0,
     openDialogTransaction: false,
     isSectionChart: false,
+    isPanelExpanded: false,
+  }
+
+  onChangeExpandedPanel = () => {
+    this.setState((prevstate)=> ({
+      isPanelExpanded: !prevstate.isPanelExpanded
+    }))
   }
 
   toggleSectionCoinChart = () => {
@@ -229,6 +236,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 coinData={staticRows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}
+                isPanelExpanded={this.state.isPanelExpanded}
+                onChangeExpandedPanel={this.onChangeExpandedPanel}
               />
             </Grid>
           </Grid>
@@ -282,6 +291,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 coinData={rows}
                 isSectionChart={this.state.isSectionChart}
                 sectionDataProgress={targetAllocation}
+                isPanelExpanded={this.state.isPanelExpanded}
+                onChangeExpandedPanel={this.onChangeExpandedPanel}
               />
             </Grid>
           </Grid>
