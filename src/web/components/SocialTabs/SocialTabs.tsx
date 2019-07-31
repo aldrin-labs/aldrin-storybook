@@ -17,7 +17,7 @@ function TabContainer({ children, dir }) {
 
 const styles = (theme) => ({
   root: {
-    backgroundColor: 'transparent',//theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
     borderLeft: '1px solid #E0E5EC',
     borderRight: '1px solid #E0E5EC',
     borderBottom: '1px solid #E0E5EC',
