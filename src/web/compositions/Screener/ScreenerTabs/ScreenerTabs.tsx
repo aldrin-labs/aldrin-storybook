@@ -78,13 +78,13 @@ const Tab = styled.button`
 
   @media (max-width: 1080px) {
     display: none;
-    width: 8rem;
-    padding: 0.5rem;
+    width: 12.8rem;
+    padding: 0.8rem;
   }
 
   @media (max-width: 615px) {
-    width: 5.5rem;
-    padding: 0.5rem;
+    width: 8.8rem;
+    padding: 0.8rem;
   }
 `
 

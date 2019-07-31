@@ -14,7 +14,7 @@ export const SProfileChart = styled(Card)`
 `
 export const axisStyle = {
   ticks: {
-    padding: '1rem',
+    padding: '1.6rem',
     stroke: '#3E3E4A',
     opacity: 0.75,
     fontWeight: 100,

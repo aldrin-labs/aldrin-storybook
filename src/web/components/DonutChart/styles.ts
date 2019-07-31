@@ -25,20 +25,20 @@ export const ColorLegendContainer = styled.div`
   overflow-x: hidden;
   transform: scaleX(-1);
   min-width: ${(props: {width: number}) => props.width + 3}px;
-  margin-top: .75rem;
+  margin-top: 1.2rem;
   ${customAquaScrollBar}
 `
 
 export const ColorLegendPercentContainer = styled.div`
   font-weight: 500;
-  font-size: .8rem;
+  font-size: 1.28rem;
 
   span {
     display: inline-block;
 
     &:first-child {
       color: #8B9AB1;
-      width: 4.25rem;
+      width: 6.8rem;
     }
     &:last-child {
       color: #16253D;
@@ -56,17 +56,17 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
     align-items: center;
     margin-left: 5px;
     color: ${(props: { textColor: string }) => props.textColor};
-    padding: .4rem 0;
+    padding: .64rem 0;
   }
   & .rv-discrete-color-legend-item__color {
-    height: .4rem;
-    width: .4rem;
+    height: .64rem;
+    width: .64rem;
     border-radius: 50%;
   }
   & .rv-discrete-color-legend-item__title {
     text-align: left;
     font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
+    font-size: 1.6rem;
     letter-spacing: 1px;
     
     & > div {

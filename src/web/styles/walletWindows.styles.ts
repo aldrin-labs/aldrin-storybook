@@ -7,7 +7,7 @@ import { PTWrapper as PTWrapperRaw } from '@sb/styles/cssUtils'
 export { PTextBox, STypography, STypographyButtonText, SButton, SAddIcon }
 
 export const PTWrapper = styled(PTWrapperRaw)`
-  width: calc(100% - 1rem);
+  width: calc(100% - 1.6rem);
 
   grid-column-start: 2;
   grid-column-end: 3;
@@ -15,12 +15,12 @@ export const PTWrapper = styled(PTWrapperRaw)`
   flex-direction: column;
 
   @media (max-width: 840px) {
-    margin: 1.5rem auto;
+    margin: 2.4rem auto;
   }
 
   @media (max-width: 550px) {
     width: calc(100% - 90px);
-    margin: 0.625rem auto;
+    margin: 1rem auto;
   }
 
   @media (max-width: 425px) {
@@ -34,7 +34,7 @@ const PTextBox = styled.div`
   height: 50%;
   min-width: 400px;
   min-height: 350px;
-  padding: 0.5rem;
+  padding: 0.8rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -45,7 +45,7 @@ const PTextBox = styled.div`
 
 const STypography = styled(Typography)`
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4.8rem;
 `
 
 const STypographyButtonText = styled(Typography)`

@@ -25,14 +25,14 @@ export const StyledLink = styled(NavLink)`
 `
 
 export const StyledButton = styled(Button)`
-    font-size: .835rem;
+    font-size: 1.175rem;
 `
 
 export const StyledDropdown = styled.div`
     position: relative;
     display: inherit;
-    margin: .25rem;
-    padding: 6px 8px;
+    margin: .4rem;
+    padding: .375rem .5rem;
 `
 
 export const StyledPaper = withStyles({
@@ -58,5 +58,5 @@ export const StyledMenuItem = withStyles({
 
 export const StyledMenuItemText = styled.span`
     display: inline-block;
-    margin-left: .25rem;
+    margin-left: .4rem;
 `

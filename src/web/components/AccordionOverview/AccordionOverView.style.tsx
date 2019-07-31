@@ -12,7 +12,7 @@ import {
 export const GridColumn = styled(Grid)`
   flex-basis: 16.66%;
   display: flex;
-  padding: .475rem 0;
+  padding: .76rem 0;
   align-items: center;
 `
 export const GridRow = styled(Grid)`
@@ -34,7 +34,7 @@ export const TypographyHeading = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1.4rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
@@ -44,8 +44,8 @@ export const TypographySubHeading = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 500;
-  font-size: 0.75rem;
-  letter-spacing: 1.5px;
+  font-size: 1.2rem;
+  letter-spacing: .1rem;
   text-transform: uppercase;
   line-height: 31px;
   color: #7284a0;
@@ -55,9 +55,9 @@ export const TypographyTitleCell = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.625rem;
-  line-height: 1.5rem;
-  margin-bottom: -.33rem;
+  font-size: 1rem;
+  line-height: 2.4rem;
+  margin-bottom: -.528rem;
   text-align: center;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -73,8 +73,8 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   font-family: DM Sans;
   font-style: normal;
   font-weight: 600;
-  letter-spacing: 1px;
-  font-size: .95rem;
+  letter-spacing: .1rem;
+  font-size: 1.52rem;
   line-height: 39px;
   text-align: center;
   text-transform: uppercase;

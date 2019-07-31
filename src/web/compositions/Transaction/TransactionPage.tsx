@@ -125,10 +125,16 @@ class TransactionPage extends Component {
       <Grid
         container
         justify="space-between"
-        borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+        style={{ height: '90vh', padding: '30px 0' }}
+        // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
         {/* Accounts */}
-        <GridAccountContainer item lg={2} md={2} borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}>
+        <GridAccountContainer
+          item
+          lg={2}
+          md={2}
+          borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+        >
           <GridContainerTitle
             bgColor={theme.palette.primary.dark}
             content

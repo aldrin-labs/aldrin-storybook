@@ -53,24 +53,24 @@ const CustomTableCell = withStyles((theme) => ({
     border: 0,
     whiteSpace: 'nowrap',
     zIndex: 100,
-    padding: '0.125rem 1rem 0.125rem  0.375rem',
+    padding: '0.2rem 1.6rem 0.2rem  0.6rem',
   },
   body: {
     color: theme.palette.text.primary,
     borderBottom: 'none',
     fontSize: 14,
-    padding: '0.125rem 1rem 0.125rem  0.375rem',
+    padding: '0.2rem 1.6rem 0.2rem 0.6rem',
   },
   footer: {
     fontSize: 14,
     zIndex: 100,
     backgroundColor: theme.palette.primary.dark,
-    padding: '0.125rem 1rem 0.125rem  0.375rem',
+    padding: '0.2rem 1.6rem 0.2rem  0.6rem',
   },
   paddingDense: {
-    padding: '1px 0.25rem 1px 0.25rem',
+    padding: '1px 0.4rem 1px 0.4rem',
     '&:last-child': {
-      padding: '1px 0.5rem 1px 0.25rem',
+      padding: '1px 0.8rem 1px 0.4rem',
     },
   },
   paddingNone: {

@@ -3,11 +3,11 @@ import { Button } from '@material-ui/core'
 import styled from 'styled-components'
 
 const StyledButton = styled(Button)`
-font-size: .835rem;
+font-size: 1.175rem;
 `
 
 export const SButton = styled(({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />)`
-  margin: .25rem 1rem;
+  margin: .4rem 1.6rem;
   font-weight: 500;
 `
 

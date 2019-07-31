@@ -14,7 +14,7 @@ import Sort from '../../components/Tables/WithSort'
 storiesOf('Components/TablesWithCheckbox', module)
   .addDecorator(backgrounds)
   .add('Table', () => (
-    <Grid container style={{ height: '25rem' }}>
+    <Grid container style={{ height: '40rem' }}>
       <Grid item xs={12}>
         <Paper
           style={{

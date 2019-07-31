@@ -4,7 +4,7 @@ import { Button } from '@material-ui/core'
 
 export const Wrapper = styled.div`
   & > span:last-child {
-    margin: 0 3rem 0 0;
+    margin: 0 4.8rem 0 0;
   }
 `;
 
@@ -13,11 +13,11 @@ export const StyledButton = styled(({
 }) => <Button size="small" {...rest} />)`
   margin: auto;
   font-family: DM Sans;
-  font-size: .825rem;
+  font-size: 1.32rem;
   font-style: normal;
   font-weight: bold;
-  font-size: 0.675rem;
-  letter-spacing: 1.5px;
+  font-size: 1.08rem;
+  letter-spacing: .1rem;
   color: #7284A0;
   text-transform: uppercase;
 `;
@@ -37,12 +37,12 @@ export const Period = styled((
   margin: ${props => props.margin || '5px'};
   color: ${props => props.color};
   cursor: pointer;
-  padding: 0 .4rem;
+  padding: 0 .64rem;
   font-family: DM Sans;
-  font-size: .675rem;
+  font-size: 1.08rem;
   font-style: normal;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: .1rem;
   text-transform: uppercase;
 `;
 

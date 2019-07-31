@@ -12,7 +12,7 @@ import {
 } from '../shared.styles'
 
 export const SwitchButtonsWrapper = styled.div`
-  padding: 0 0.5rem;
+  padding: 0 0.8rem;
   display: flex;
   justify-content: space-between;
 `
@@ -21,7 +21,7 @@ export const InputContainer = styled(({ showHighlightShadows, ...other }) => (
   <Card {...other} />
 ))`
   min-height: 400px;
-  margin-right: 2rem;
+  margin-right: 3.2rem;
   && {
     overflow: visible;
   }
@@ -40,9 +40,9 @@ export const TableContainer = styled(({ hide, ...otherProps }) => (
   display: flex;
   flex-direction: column;
   width: 30%;
-  max-width: 50rem;
+  max-width: 80rem;
   @media (max-width: 600px) {
-    margin-top: 1rem;
+    margin-top: 1.6rem;
   }
 
   ${(props: { hide: boolean }) => (props.hide ? HidingStyles : '')};
@@ -51,7 +51,7 @@ export const TableContainer = styled(({ hide, ...otherProps }) => (
 export const Chart = styled.div`
   height: 354px;
   flex-grow: 1;
-  border-radius: 1rem;
+  border-radius: 1.6rem;
   background: ${(props: { background: string }) => props.background};
 
   @media (max-width: 1080px) {
@@ -64,7 +64,7 @@ export const ImportData = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin: 0.5rem 2rem 0rem 2rem;
+  margin: 0.8rem 3.2rem 0rem 3.2rem;
 `
 
 export const FlexWrapper = styled.div`
@@ -87,7 +87,7 @@ export const SelectOptimization = styled(ReactSelectComponent)`
 
 export const StyledInputLabel = styled(InputLabel)`
   color: ${(props: { color: string }) => props.color};
-  font-size: 0.875rem;
+  font-size: 1.4rem;
 `
 
 export const InputElementWrapper = styled.div`
@@ -109,7 +109,7 @@ export const STextField = withStyles((theme) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
     '&& > div': {
-      fontSize: '0.875rem',
+      fontSize: '1.4rem',
     },
   },
 }))(TextField)

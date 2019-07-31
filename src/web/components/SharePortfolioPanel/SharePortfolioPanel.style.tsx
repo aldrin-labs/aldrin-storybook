@@ -10,7 +10,7 @@ export const TypographyHeading = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1.4rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
@@ -28,6 +28,6 @@ export const StyledButton = styled(({
   margin: 'auto';
   color: #165BE0;
   border: 1.5px solid #165BE0;
-  font-size: .675rem;
+  font-size: 1.08rem;
   font-weight: 600;
 `;

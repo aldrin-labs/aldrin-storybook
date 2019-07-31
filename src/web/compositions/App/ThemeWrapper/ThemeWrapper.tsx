@@ -44,13 +44,13 @@ export default class ThemeWrapper extends Component<Props> {
               fontFamily: ['DM Sans', 'sans-serif'].join(','),
               useNextVariants: true,
               body1: {
-                fontSize: '0.875rem',
+                fontSize: '1.4rem',
               },
               title: {
-                fontSize: '0.875rem',
+                fontSize: '1.4rem',
               },
               body2: {
-                fontSize: '0.875rem',
+                fontSize: '1.4rem',
               },
             },
             overrides: {
@@ -74,6 +74,34 @@ export default class ThemeWrapper extends Component<Props> {
                 },
                 colorPrimary: {
                   color: '#575A64',
+                },
+              },
+              MuiButton: {
+                root: {
+                  fontSize: '1.4rem',
+                },
+                sizeSmall: {
+                  fontSize: '1.3rem',
+                },
+              },
+              MuiButtonBase: {
+                root: {
+                  fontSize: '1.4rem',
+                },
+              },
+              MuiTableCell: {
+                body: {
+                  fontSize: '1.3rem',
+                },
+              },
+              MuiFab: {
+                root: {
+                  fontSize: '1.4rem',
+                },
+              },
+              MuiInputBase: {
+                root: {
+                  fontSize: '1.4rem',
                 },
               },
             },
@@ -147,13 +175,13 @@ export default class ThemeWrapper extends Component<Props> {
               fontFamily: ['DM Sans', 'sans-serif'].join(','),
               useNextVariants: true,
               body1: {
-                fontSize: '0.875rem',
+                fontSize: '1.4rem',
               },
               title: {
-                fontSize: '0.875rem',
+                fontSize: '1.4rem',
               },
               body2: {
-                fontSize: '0.875rem',
+                fontSize: '1.4rem',
               },
             },
             overrides: {
@@ -167,6 +195,12 @@ export default class ThemeWrapper extends Component<Props> {
               },
               MuiButton: {
                 // Name of the component ⚛️ / style sheet
+                root: {
+                  fontSize: '1.4rem',
+                },
+                sizeSmall: {
+                  fontSize: '1.3rem',
+                },
                 textPrimary: {
                   // Name of the rule
                   color: '#4F4F5D', // Some CSS
@@ -191,6 +225,21 @@ export default class ThemeWrapper extends Component<Props> {
                 },
                 colorPrimary: {
                   color: '#BCC2CF',
+                },
+              },
+              MuiTableCell: {
+                body: {
+                  fontSize: '1.3rem',
+                },
+              },
+              MuiFab: {
+                root: {
+                  fontSize: '1.4rem',
+                },
+              },
+              MuiInputBase: {
+                root: {
+                  fontSize: '1.4rem',
                 },
               },
             },

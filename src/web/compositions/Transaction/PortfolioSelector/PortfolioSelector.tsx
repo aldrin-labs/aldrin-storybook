@@ -32,7 +32,7 @@ class PortfolioSelector extends Component {
         options={MyPortfoliosOptions}
         singleValueStyles={{
           color: theme.palette.text.subPrimary,
-          fontSize: '0.84rem',
+          fontSize: '1.344rem',
           padding: '0',
         }}
         indicatorSeparatorStyles={{}}
@@ -51,7 +51,7 @@ class PortfolioSelector extends Component {
           color: theme.palette.text.primary, //'#7284A0',
           background: 'transparent',
           textAlign: 'center',
-          fontSize: '0.62rem',
+          fontSize: '0.992rem',
           '&:hover': {
             borderRadius: '14px',
             color: theme.palette.text.subPrimary,

@@ -1,26 +1,33 @@
 import React from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   LinearProgressCustom,
   TypographyCustom,
-  IconCircle,
 } from './ProgressBar.styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
+import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
 
-export default function ProgressOtherCoins({
+function ProgressOtherCoins({
   otherCoinData,
   otherCoinsPercentage,
+  isPanelExpanded,
+  onChangeExpandedPanel,
+  width,
 }) {
   return (
-    <ProgressAccordion otherCoinData={otherCoinData}>
+    <ProgressAccordion
+      otherCoinData={otherCoinData}
+      isPanelExpanded={isPanelExpanded}
+      onChangeExpandedPanel={onChangeExpandedPanel}
+    >
       <Grid
         container
         style={{
-          marginBottom: '4px',
+          marginBottom: '1vh',
           marginTop: '-26px',
           padding: '0',
         }}
@@ -31,7 +38,6 @@ export default function ProgressOtherCoins({
             style={{
               justifySelf: 'flex-start',
               color: `#97C15C`,
-              fontSize: '10px',
               margin: 'auto 10px auto 12px',
             }}
           />
@@ -45,26 +51,24 @@ export default function ProgressOtherCoins({
             }}
           />
         </GridFlex>
-        <Grid
+        <GridProgressBarContainer
           item
           lg={6}
           md={6}
           style={{
             background: '#E7ECF3',
             borderRadius: '35px',
-            height: '12px',
             marginTop: '2px',
           }}
         >
           <LinearProgressCustom
             color="#97C15C"
-            height="12px"
             marginTop="2px"
             width={`${otherCoinsPercentage}%`}
             variant="determinate"
             value={0}
           />
-        </Grid>
+        </GridProgressBarContainer>
 
         <GridFlex item lg={3} md={3} padding={'0 0 0 45px'}>
           <TypographyCustom>
@@ -75,3 +79,5 @@ export default function ProgressOtherCoins({
     </ProgressAccordion>
   )
 }
+
+export default withWidth()(ProgressOtherCoins)

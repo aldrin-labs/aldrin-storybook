@@ -7,6 +7,6 @@ export const ExchangeListContainer = styled.div`
   & > div {
     display: flex;
     width: 100%;
-    font-size: 0.8rem;
+    font-size: 1.28rem;
   }
 `

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography } from '@material-ui/core'
+import { Typography, withWidth } from '@material-ui/core'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
 import { Table as ImTable, TableWithSort, Loading } from '@sb/components'
@@ -13,6 +13,7 @@ import {
 } from './RebalancedPortfolioTable.styles'
 
 import { IProps } from './PortfolioRebalanceTable.types'
+import { compose } from 'recompose'
 
 // const styles = (theme) => ({
 //   heading: {
@@ -34,6 +35,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   timestampSnapshot,
   onNewSnapshot,
   tableData,
+  width,
 }: IProps) => {
   const Table = isEditModeEnabled ? ImTable : TableWithSort
   return (
@@ -72,16 +74,16 @@ const PortfolioRebalanceTable: React.FunctionComponent<
               color: theme.palette.text.primary,
               background: theme.palette.background.table,
               textTransform: 'uppercase',
-              fontWeight: 'bold',
-              fontSize: '10px',
+              fontWeight: 'normal',
+              fontSize: '1.2rem',
             },
             title: {},
             cell: {
               padding: '0px',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
-              fontSize: '12px',
-              height: '48px',
+              fontSize: '1.4rem',
+              height: width === 'xl' ? '96px' : '48px',
               borderBottom: `1px solid ${
                 theme.palette.grey[theme.palette.type]
               }`,
@@ -94,5 +96,4 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   )
 }
 
-//export default PortfolioRebalanceTable
-export default withTheme()(PortfolioRebalanceTable)
+export default compose(withWidth(), withTheme())(PortfolioRebalanceTable)

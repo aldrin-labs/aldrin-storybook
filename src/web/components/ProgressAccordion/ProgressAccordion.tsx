@@ -1,4 +1,5 @@
 import React from 'react'
+import { compose } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -7,13 +8,14 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
-import { Grid } from '@material-ui/core'
+import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   LinearProgressCustom,
-  IconCircle,
   TypographyCustom,
 } from './ProgressAccordion.styles'
+import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
+
 
 const styles = (theme) => ({
   root: {
@@ -62,7 +64,7 @@ const styles = (theme) => ({
 })
 
 function ProgressAccordion(props) {
-  const { classes, children, otherCoinData } = props
+  const { classes, children, otherCoinData, width, isPanelExpanded, onChangeExpandedPanel } = props
 
   // if (otherCoinData) {
   //     return null
@@ -71,10 +73,13 @@ function ProgressAccordion(props) {
   return (
     <div className={classes.root}>
       <ExpansionPanel
+        expanded={isPanelExpanded}
+        onChange={onChangeExpandedPanel}
         style={{
           background: 'transparent',
           border: 'none',
           padding: '0',
+          marginTop: width === 'xl' ? '2.5vh' : ''
         }}
       >
         <ExpansionPanelSummary
@@ -83,7 +88,6 @@ function ProgressAccordion(props) {
             background: 'transparent',
             border: 'none',
           }}
-          //expandIcon={<ExpandMoreIcon />}
         >
           {children}
         </ExpansionPanelSummary>
@@ -94,6 +98,7 @@ function ProgressAccordion(props) {
           {otherCoinData.map((datum, index) => {
             return (
               <Grid
+                key={index}
                 container
                 style={{ marginBottom: '8px' }}
                 lg={12}
@@ -102,8 +107,6 @@ function ProgressAccordion(props) {
                   <IconCircle
                     className="fa fa-circle"
                     style={{
-                      // justifySelf: 'flex-start',
-                      fontSize: '10px',
                       margin: 'auto 11px auto 14px',
                       color: '#97C15C',
                     }}
@@ -112,19 +115,17 @@ function ProgressAccordion(props) {
                     {datum.symbol}
                   </TypographyCustom>
                 </GridFlex>
-                <Grid
+                <GridProgressBarContainer
                   item
                   lg={6}
                   md={6}
                   style={{
                     background: '#E7ECF3',
                     borderRadius: '35px',
-                    height: '12px',
                     marginTop: '2px',
                   }}
                 >
                   <LinearProgressCustom
-                    height="12px"
                     marginTop="2px"
                     width={`${datum.portfolioPerc}%`}
                     variant="determinate"
@@ -139,7 +140,7 @@ function ProgressAccordion(props) {
                         : '#97C15C'
                     }
                   />
-                </Grid>
+                </GridProgressBarContainer>
 
                 <GridFlex
                   item
@@ -163,4 +164,4 @@ function ProgressAccordion(props) {
   )
 }
 
-export default withStyles(styles)(ProgressAccordion)
+export default compose(withStyles(styles), withWidth())(ProgressAccordion)

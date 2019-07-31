@@ -43,7 +43,7 @@ export const TradeHistoryTableCollapsible = styled(CollapsibleTable)`
   max-height: 100%;
 
   @media (max-width: 1080px) {
-    bottom: 0.5rem;
+    bottom: 0.8rem;
   }
 `
 

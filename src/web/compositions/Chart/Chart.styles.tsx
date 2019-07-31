@@ -101,13 +101,13 @@ export const TradingTabelContainer = styled(TablesContainer)`
 
 export const TogglerContainer = styled(Grid)`
   align-items: center;
-  height: 4rem;
+  height: 6.4rem;
   width: 100%;
 `
 
 export const Toggler = styled.div`
   && {
-    margin-left: 0.7rem;
+    margin-left: 1.12rem;
   }
 `
 
