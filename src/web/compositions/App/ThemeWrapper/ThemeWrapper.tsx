@@ -214,6 +214,7 @@ export default class ThemeWrapper extends Component<Props> {
               },
               black: {
                 custom: '#16253D',
+                registration: '#000000'
               },
               red: {
                 main: '#FE425A',

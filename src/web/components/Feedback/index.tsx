@@ -64,11 +64,20 @@ export const StyledButton = styled(Button)`
 export const Wrapper = styled.div`
   display: flex;
   padding: 0.3rem 1rem;
-  border: ${(props: { borderColor: string }) =>
+  border-left: ${(props: { borderColor: string }) =>
     `1px solid ${props.borderColor}`};
 
+<<<<<<< HEAD
   border-bottom: 0px;
 
+||||||| merged common ancestors
+=======
+  &:not(:first-child) {
+    border-right: ${(props: { borderColor: string }) =>
+    `1px solid ${props.borderColor}`};
+  }
+
+>>>>>>> 5abd75b1a629d2c447c160885331de987d214f99
   @media(min-width: 2560px) {
     padding: 0rem 0.5rem;
   }

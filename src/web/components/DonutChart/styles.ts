@@ -37,8 +37,8 @@ export const ColorLegendPercentContainer = styled.div`
     display: inline-block;
 
     &:first-child {
-      color: #7284A0;
-      width: 3.5rem;
+      color: #8B9AB1;
+      width: 4.25rem;
     }
     &:last-child {
       color: #16253D;
@@ -56,20 +56,26 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
     align-items: center;
     margin-left: 5px;
     color: ${(props: { textColor: string }) => props.textColor};
+    padding: .4rem 0;
   }
   & .rv-discrete-color-legend-item__color {
-    height: .6rem;
-    width: .6rem;
+    height: .4rem;
+    width: .4rem;
     border-radius: 50%;
   }
   & .rv-discrete-color-legend-item__title {
     text-align: left;
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
+    letter-spacing: 1px;
     
     & > div {
       display: flex;
       align-items: center;
+
+      span:last-child {
+        font-weight: 600;
+      }
     }
   }
 `

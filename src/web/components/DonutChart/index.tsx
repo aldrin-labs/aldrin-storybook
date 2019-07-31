@@ -39,9 +39,9 @@ const getColorsWithRandom = (colors: string[], dataLengh: number) => {
 }
 
 const DEFAULT_CHART_SIZE = {
-  width: 200,
-  height: 200,
-  strokeWidth: 10
+  width: 150,
+  height: 150,
+  strokeWidth: 13
 }
 const DEFAULT_COLOR_LEGEND_WIDTH = 150
 
@@ -63,6 +63,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+    console.log(nextProps.colors)
     const newData = getDataFromImput(nextProps.data)
     if (!isEqual(prevState.data, newData)) {
       return {
@@ -123,7 +124,8 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       chartValueVariant,
 
       removeLabels,
-      width
+      width,
+      strokeWidth
     } = this.props
 
     // show chart withoutData UI
@@ -139,18 +141,19 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
     let donutSize = chartWidth && chartHeight ? {
       width: chartWidth,
-      height: chartHeight
+      height: chartHeight,
+      strokeWidth
     } : DEFAULT_CHART_SIZE
     if (isWidthUp('xl', width)) {
       donutSize = {
         width: 300,
         height: 300,
-        strokeWidth: 15
+        strokeWidth: 30
       }
     } else if (isWidthDown('md', width)) {
       donutSize = {
-        width: 125,
-        height: 125,
+        width: 100,
+        height: 100,
         strokeWidth: 8
       }
     }

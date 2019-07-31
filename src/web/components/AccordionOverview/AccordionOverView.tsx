@@ -1,13 +1,7 @@
 import React from 'react'
-import { withStyles, withTheme } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import classNames from 'classnames'
-// import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
-// import Chip from '@material-ui/core/Chip'
-// import Button from '@material-ui/core/Button'
-// import Divider from '@material-ui/core/Divider'
 
 import { Grid } from '@material-ui/core'
 import {
@@ -19,6 +13,7 @@ import {
   GridColumn,
   GridRow,
   Title,
+  ExpansionPanelDetailsCustom
 } from './AccordionOverView.style'
 
 const dataOverview = [
@@ -64,7 +59,7 @@ function DetailedExpansionPanel(props: any) {
         <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
           <GridColumn>
             <TypographyHeading textColor={theme.palette.text.primary}>
-              overview
+              Overview
             </TypographyHeading>
           </GridColumn>
           <GridColumn>
@@ -119,7 +114,7 @@ function DetailedExpansionPanel(props: any) {
           </GridColumn>
         </ExpansionPanelSummaryCustom>
 
-        <ExpansionPanelDetails>
+        <ExpansionPanelDetailsCustom>
           <Grid container justify="center">
             {dataOverview.map((dataRow) => {
               return (
@@ -186,7 +181,7 @@ function DetailedExpansionPanel(props: any) {
               )
             })}
           </Grid>
-        </ExpansionPanelDetails>
+        </ExpansionPanelDetailsCustom>
       </ExpansionPanel>
     </Grid>
   )

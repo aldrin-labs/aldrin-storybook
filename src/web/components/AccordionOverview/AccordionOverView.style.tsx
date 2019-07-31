@@ -1,7 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
+import {
+  Grid,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  Typography,
+
+  withStyles
+} from '@material-ui/core'
 
 export const GridColumn = styled(Grid)`
   flex-basis: 16.66%;
@@ -51,10 +57,15 @@ export const TypographyTitleCell = styled(Typography)`
   font-weight: 700;
   font-size: 0.625rem;
   line-height: 1.5rem;
+  margin-bottom: -.33rem;
   text-align: center;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
+
+  @media only screen and (min-width: 2560px) {
+    margin-bottom: 0;
+  }
 `
 export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   <Typography {...rest} />
@@ -62,18 +73,33 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   font-family: DM Sans;
   font-style: normal;
   font-weight: 600;
-  font-size: 0.9rem;
+  letter-spacing: 1px;
+  font-size: .95rem;
   line-height: 39px;
   text-align: center;
   text-transform: uppercase;
   background: transparent;
   color: ${(props) => props.textColor || `#16253d`};
 `
-export const ExpansionPanelSummaryCustom = styled(ExpansionPanelSummary)`
-  background: transparent;
-  display: flex;
-  align-items: center;
-`
+
+export const ExpansionPanelSummaryCustom = withStyles({
+  root: {
+    background: '#F9FBFD',
+    display: 'flex',
+    alignItems: 'center',
+    borderTop: '1px solid #E0E5EC'
+  },
+
+  content: {
+    margin: '12px 0 0 0'
+  }
+})(ExpansionPanelSummary)
+
+export const ExpansionPanelDetailsCustom = withStyles({
+  root: {
+    background: '#F9FBFD'
+  }
+})(ExpansionPanelDetails)
 
 export const Title = styled('div')`
   padding-left: 15px;
