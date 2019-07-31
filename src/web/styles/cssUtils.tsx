@@ -10,7 +10,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+    scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -89,7 +89,7 @@ export const GlobalStyle = createGlobalStyle`
  
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+    scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -103,6 +103,12 @@ export const GlobalStyle = createGlobalStyle`
   
   .DateRangePicker_picker.DateRangePicker_picker__portal {
     z-index: 200;
+  }
+
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 20px;
+    }
   }
 `
 
@@ -119,7 +125,7 @@ export const SelectR = styled(ReactSelectComponent)`
 `
 
 export const Icon = styled.i`
-  padding-right: 5px;
+  margin-right: -1px;
 `
 
 export const chooseRed = (theme: Theme) =>
@@ -170,18 +176,18 @@ export const StyledWrapperForDateRangePicker = styled.div`
     font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>
-      props.fontSize ? props.fontSize : ''};
+    props.fontSize ? props.fontSize : ''};
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) =>
-      props.dateInputHeight || '36px'};
+    props.dateInputHeight || '36px'};
     color: ${(props: { color: string }) => props.color};
     background: ${(props: { background?: string }) =>
-      props.background || 'transparent'};
+    props.background || 'transparent'};
   }
 
   & .DateRangePicker_picker {
     font-size: ${(props: { fontSize?: string }) =>
-      props.fontSize ? props.fontSize : ''};
+    props.fontSize ? props.fontSize : ''};
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     z-index: ${(props: { zIndexPicker: number }) => props.zIndexPicker || 10};
   }
@@ -189,7 +195,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
   & .DateRangePickerInput {
     border: 0;
     background: ${(props: { background: string }) =>
-      props.background || 'transparent'};
+    props.background || 'transparent'};
     border-bottom: 1px solid #c1c1c1;
   }
 

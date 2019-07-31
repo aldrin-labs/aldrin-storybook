@@ -21,7 +21,7 @@ export interface Props {
   colors: string[]
   theme: Theme
   colorLegend: boolean
-  colorLegendWhidh: number
+  colorLegendWidth: number
   thicknessCoefficient: number,
 
   chartWidth: number,
@@ -29,7 +29,9 @@ export interface Props {
   vertical: boolean,
   chartValueVariant: string,
   
-  removeLabels: boolean
+  removeLabels: boolean,
+  width: number,
+  strokeWidth: number
 }
 
 export interface State {

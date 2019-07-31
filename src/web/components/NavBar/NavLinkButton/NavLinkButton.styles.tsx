@@ -2,8 +2,13 @@ import React from 'react'
 import { Button } from '@material-ui/core'
 import styled from 'styled-components'
 
-export const SButton = styled(({isActivePage, type, white, black, ...rest}) => <Button {...rest} />)`
+const StyledButton = styled(Button)`
+font-size: 1.175rem;
+`
+
+export const SButton = styled(({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />)`
   margin: .4rem 1.6rem;
+  font-weight: 500;
 `
 
 export const Marker = styled.span`

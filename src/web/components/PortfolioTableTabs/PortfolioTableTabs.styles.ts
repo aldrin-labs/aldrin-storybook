@@ -8,22 +8,43 @@ import Button from '@material-ui/core/Button'
 import { NavLink } from 'react-router-dom'
 
 export const StyledButton = styled(Button)`
-  width: 125px;
-  background: #5c8cea;
-  transform: rotate(-90deg);
   position: absolute;
-  left: -50px;
+  width: 10.8rem;
+  background: #5c8cea;
   color: white;
-  border-radius: 0 0 12px 12px;
+  font-size: 1.2rem;
+  text-transform: capitalize;
   transition: all ease-in-out 0.2s;
+
   &:hover {
     background: #165be0;
-    left: -44px;
+  }
+`
+
+export const StyledAccountsButton = styled(StyledButton)`
+  transform: rotate(-90deg);
+  left: -5.75rem;
+  border-radius: 0 0 1rem 1rem;
+
+  &:hover {
+    left: -6.43rem;
+  }
+`
+
+export const StyledTransactionsButton = styled(StyledButton)`
+  position: relative;
+  transform: rotate(90deg);
+  left: calc(100vw - 8.4rem);
+  top: 0px;
+  border-radius: 0 0 1rem 1rem;
+
+  &:hover {
+    left: calc(100vw - 7.76rem);
   }
 `
 
 export const DividerWithMargin = styled(Divider)`
-  margin: 0.8rem auto;
+  margin: .8rem auto;
   margin-bottom: 0px;
   width: 70%;
 `
@@ -34,7 +55,7 @@ export const Container = styled(Paper)`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  min-height: 100vh;
+  min-height: auto;
   z-index: 0;
 
   //visibility: hidden;

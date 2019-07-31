@@ -18,7 +18,8 @@ import {
   DividerWithMargin,
   Marker,
   Tab,
-  StyledButton,
+  StyledAccountsButton,
+  StyledTransactionsButton,
 } from './PortfolioTableTabs.styles'
 
 @withRouter
@@ -58,7 +59,10 @@ class PortfolioTableTabs extends React.Component<IProps> {
           position: 'relative',
         }}
       >
-        <StyledButton onClick={() => toggleWallets()}>Accounts</StyledButton>
+        <StyledAccountsButton onClick={() => toggleWallets()}>Accounts</StyledAccountsButton>
+        <StyledTransactionsButton onClick={() => console.log('transaction button')}>
+          Transactions
+        </StyledTransactionsButton>
 
         {/*<BarContainer*/}
         {/*onClick={() => {*/}

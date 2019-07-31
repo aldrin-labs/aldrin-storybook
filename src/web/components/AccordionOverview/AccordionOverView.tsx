@@ -1,13 +1,7 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import classNames from 'classnames'
-// import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
-// import Chip from '@material-ui/core/Chip'
-// import Button from '@material-ui/core/Button'
-// import Divider from '@material-ui/core/Divider'
 
 import { Grid } from '@material-ui/core'
 import {
@@ -18,9 +12,10 @@ import {
   TypographySubHeading,
   GridColumn,
   GridRow,
+  Title,
+  ExpansionPanelDetailsCustom
 } from './AccordionOverView.style'
 
-import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_PORTFOLIO_KEY_ASSETS } from '@core/graphql/queries/portfolio/main/getPortfolioKeysAssets'
@@ -151,7 +146,7 @@ class DetailedExpansionPanel extends React.Component {
             </GridColumn>
           </ExpansionPanelSummaryCustom>
 
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetailsCustom>
             <Grid container justify="center">
               {getPortfolioKeyAssetsQuery.portfolioKeys.keys.map((el) => {
                 return (
@@ -216,7 +211,7 @@ class DetailedExpansionPanel extends React.Component {
                 )
               })}
             </Grid>
-          </ExpansionPanelDetails>
+          </ExpansionPanelDetailsCustom>
         </ExpansionPanel>
       </Grid>
     )

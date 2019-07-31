@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import {
     Paper,
     MenuItem,
-
+    Button,
     withStyles
 } from '@material-ui/core'
 
@@ -24,17 +24,21 @@ export const StyledLink = styled(NavLink)`
     }
 `
 
+export const StyledButton = styled(Button)`
+    font-size: 1.175rem;
+`
+
 export const StyledDropdown = styled.div`
     position: relative;
     display: inherit;
     margin: .4rem;
-    padding: 6px 8px;
+    padding: .375rem .5rem;
 `
 
 export const StyledPaper = withStyles({
     root: {
         position: 'absolute',
-        top: '50px',
+        top: '49px',
         left: '50%',
         transform: 'translateX(-50%)',
         borderTopLeftRadius: 0,

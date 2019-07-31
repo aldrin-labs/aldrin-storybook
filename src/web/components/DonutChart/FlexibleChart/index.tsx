@@ -16,6 +16,8 @@ import {
   ValueContainer
 } from './styles'
 
+const DEFAULT_CHART_STROKE_WIDTH = 10
+
 export class FlexibleChart extends Component<Props, State>{
 
   state: State = {
@@ -70,6 +72,7 @@ export class FlexibleChart extends Component<Props, State>{
 
       width,
       height,
+      strokeWidth,
       valueVariant,
 
       removeValueContainer
@@ -87,7 +90,7 @@ export class FlexibleChart extends Component<Props, State>{
         onValueMouseOver={(v: DonutPiece) => onValueMouseOver(v)}
         onSeriesMouseOut={() => onSeriesMouseOut()}
         style={{
-          strokeWidth: 10
+          strokeWidth: strokeWidth ? strokeWidth : DEFAULT_CHART_STROKE_WIDTH
         }}
 
         width={width}
@@ -112,8 +115,8 @@ export class FlexibleChart extends Component<Props, State>{
               y1="0"
               y2="1"
             >
-              <stop offset="0%" stopColor={color} opacity={0.6} />
-              <stop offset="100%" stopColor={darken(color, 0.3)} opacity={0.6} />
+              <stop offset="0%" stopColor={color} opacity={1} />
+              <stop offset="100%" stopColor={color} opacity={1} />
             </linearGradient>
           ))}
         </GradientDefs>

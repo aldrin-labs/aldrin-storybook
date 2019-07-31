@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Grid, Card } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 import { CardProps } from '@material-ui/core/Card'
-import { Container } from '@sb/styles/cssUtils'
+import { Container, customAquaScrollBar } from '@sb/styles/cssUtils'
 
 export const GridContainer = styled(Container as React.SFC<GridProps>)`
   position: relative;
@@ -33,9 +33,15 @@ export const ChartContainer = styled(Grid as React.SFC<GridProps>)`
 export const TableWrapper = styled(Card as React.SFC<
   CardProps & { className?: string }
 >)`
-  max-height: 100%;
+  height: 46rem;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
+  border: 1px solid #E0E5EC;
+  
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+
+  ${customAquaScrollBar};
 `
 
 export const TablesWrapper = styled(Grid as React.SFC<GridProps>)`

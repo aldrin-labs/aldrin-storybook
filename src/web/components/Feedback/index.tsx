@@ -1,6 +1,8 @@
 import React, { Component, MouseEvent } from 'react'
 import styled from 'styled-components'
+
 import { Button } from '@material-ui/core'
+import { BoldButton } from './Feedback.styles'
 
 import config from '@core/utils/linkConfig'
 
@@ -31,35 +33,52 @@ export default class Feedback extends Component<Props> {
     return (
       <>
         <Wrapper borderColor={borderColor}>
-          <Button
+          <StyledButton
             onClick={() => {
               this.openLink(config.feedbackLink)
             }}
             color="secondary"
             variant="text"
-            size="small"
           >
             Feedback
-          </Button>
+          </StyledButton>
         </Wrapper>
         <Wrapper borderColor={borderColor}>
-          <Button
+          <StyledButton
             onClick={() => {
               this.openLink(config.bugLink)
             }}
-            size="small"
           >
             Report bug
-          </Button>
+          </StyledButton>
         </Wrapper>
       </>
     )
   }
 }
 
+export const StyledButton = styled(Button)`
+  font-size: 1.175rem;
+`;
+
 export const Wrapper = styled.div`
   display: flex;
-  padding: 0.8rem 1.6rem;
-  border: ${(props: { borderColor: string }) =>
+  padding: 0.48rem 1.6rem;
+  border-left: ${(props: { borderColor: string }) =>
     `1px solid ${props.borderColor}`};
+
+<<<<<<< HEAD
+  border-bottom: 0px;
+
+||||||| merged common ancestors
+=======
+  &:not(:first-child) {
+    border-right: ${(props: { borderColor: string }) =>
+    `1px solid ${props.borderColor}`};
+  }
+
+>>>>>>> 5abd75b1a629d2c447c160885331de987d214f99
+  @media(min-width: 2560px) {
+    padding: 0 0.8rem;
+  }
 `
