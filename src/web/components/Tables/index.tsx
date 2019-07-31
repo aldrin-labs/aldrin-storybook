@@ -40,6 +40,7 @@ import withPagination from './withPagination/withPagination'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
 
+
 const CustomTableCell = withStyles((theme) => ({
   head: {
     position: 'sticky',
@@ -144,7 +145,10 @@ const styles = (theme: Theme) =>
       },
     },
     headRow: {
-      height: '2rem'
+      height: '2rem',
+      '& th:first-child': {
+        padding: '.75rem 1rem .75rem .75rem !important' // TODO delete important and inline styles in cells
+      },
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
@@ -153,7 +157,10 @@ const styles = (theme: Theme) =>
       height: '2rem',
       transition: `background-color ${theme.transitions.duration.short}ms  ${
         theme.transitions.easing.easeOut
-        }`,
+      }`,
+      '& td:first-child': {
+        padding: '.75rem 1rem .75rem .75rem !important'// TODO delete important and inline styles in cells
+      },
       borderBottom: '0'
     },
     rowWithHover: {

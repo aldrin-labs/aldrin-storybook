@@ -6,6 +6,7 @@ import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
 export const GridColumn = styled(Grid)`
   flex-basis: 16.66%;
   display: flex;
+  padding: .475rem 0;
   align-items: center;
 `
 export const GridRow = styled(Grid)`
@@ -48,8 +49,8 @@ export const TypographyTitleCell = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 0.5625rem;
-  line-height: 23px;
+  font-size: 0.625rem;
+  line-height: 1.5rem;
   text-align: center;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -61,7 +62,7 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   font-family: DM Sans;
   font-style: normal;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   line-height: 39px;
   text-align: center;
   text-transform: uppercase;

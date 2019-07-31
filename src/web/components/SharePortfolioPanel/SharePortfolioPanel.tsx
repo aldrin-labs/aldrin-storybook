@@ -13,8 +13,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
         justify="space-between"
         alignItems="center"
         style={{
-          height: '85px',
-          padding: '0 24px',
+          padding: '1rem 24px',
         }}
       >
         <Grid item>
@@ -26,7 +25,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
             </Grid>
             <Grid item>
               <StyledButton
-                padding="7px 25px 6px 25px"
+                padding="0.4rem 1rem 0.35rem 1rem"
                 borderRadius={'12px'}
                 onClick={handleOpenSharePortfolio}
               >
@@ -37,7 +36,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
         </Grid>
 
         <Grid item>
-          <Grid container justify="flex-start">
+          <Grid container justify="flex-start" alignItems="center">
             <Grid item>
               <SelectPortfolioPeriod />
             </Grid>
@@ -47,7 +46,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
                 //   this.props.onToggleUSDBTC()
                 //   toggleBaseCoin()
                 // }}
-                padding="6px 25px 5px 25px"
+                padding="0.2rem .75rem 0.15rem .75rem"
                 borderRadius={'28px'}
               >
                 Btc

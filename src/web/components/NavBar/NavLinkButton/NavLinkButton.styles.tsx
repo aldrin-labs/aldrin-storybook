@@ -8,7 +8,7 @@ font-size: .835rem;
 
 export const SButton = styled(({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />)`
   margin: .25rem 1rem;
-  font-weight: 600;
+  font-weight: 500;
 `
 
 export const Marker = styled.span`

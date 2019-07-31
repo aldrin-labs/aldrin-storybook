@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyledButton, StyledArrow, Period } from './SelectPortfolioPeriod.style'
+import { Wrapper, StyledButton, StyledArrow, Period } from './SelectPortfolioPeriod.style'
 
 export default function SelectProtfolioPeriod() {
 
@@ -25,7 +25,7 @@ export default function SelectProtfolioPeriod() {
   }
 
   return (
-    <>
+    <Wrapper>
       <StyledButton disabled={isOpen ? true : false} onClick={openPeriods}>
         show p&l for
         <StyledArrow color={isOpen ? '#16253D' : '#165BE0'} />
@@ -41,10 +41,9 @@ export default function SelectProtfolioPeriod() {
         : (
           <Period
             color={'#165BE0'}
-            margin={'0 70px 0px 0px'}
             onClick={openPeriods}
           >{activePeriod}</Period>
         )}
-    </>
+    </Wrapper>
   );
 }

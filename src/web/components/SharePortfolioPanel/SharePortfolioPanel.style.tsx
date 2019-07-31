@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 // import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import { Typography, Button } from '@material-ui/core'
+import { Typography, Button, Grid } from '@material-ui/core'
 
 export const TypographyHeading = styled(Typography)`
   border-left: 3px solid #165be0;
@@ -18,15 +18,16 @@ export const TypographyHeading = styled(Typography)`
 
 export const StyledButton = styled(({
   padding,
+  margin,
   borderRadius,
   ...rest
 }) =>
   <Button {...rest} />)`
-  margin: auto;
-  padding: ${props => props.padding};
+  padding: ${props => props.padding || 'auto'};
   border-radius: ${props => props.borderRadius};
+  margin: 'auto';
   color: #165BE0;
   border: 1.5px solid #165BE0;
-  font-size: .825rem;
+  font-size: .675rem;
   font-weight: 600;
 `;
