@@ -10,22 +10,28 @@ import {
   Radio,
   Input,
   TextField,
+  FormControlLabel
 } from '@material-ui/core'
+
+import Clear from '@material-ui/icons/Clear'
 
 import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
 
 import {
+  StyledButton,
   ButtonShare,
   TypographySectionTitle,
   TypographySubTitle,
   DialogFooter,
   ClearButton,
   TypographyTitle,
-  Line
+  TypographyFooter,
+  Line,
+  SLink,
+  FormInputTemplate,
+  StyledTextField
 } from './SharePortfolioDialog.styles'
-
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const tradingPortfolioTypes = [
   'Bull trading',
@@ -37,34 +43,32 @@ const tradingPortfolioTypes = [
 
 const tradeFrequency = ['Irregularly', 'By Minute', 'Daily', 'Weekly', 'Hourly']
 
-const KeyElement = ({ name, checked }: { name: string; checked: boolean }) => (
-  <Grid
-    container
-    justify="space-between"
-    alignItems="center"
-    style={{ width: 'auto', flexBasis: "45%" }}
-  >
-    <TypographySubTitle>{name}</TypographySubTitle>
-    <Checkbox checked={checked} />
-  </Grid>
-)
 
-const RadioElement = ({
+
+const KeyElement = ({
   name,
   checked,
+  handleChange
 }: {
-  name: string
+  name: string;
   checked: boolean
+  handleChange(): void;
 }) => (
-    <Grid
-      container
-      justify="space-between"
-      alignItems="center"
-      style={{ width: 'auto', flexBasis: "45%" }}
+    <FormControlLabel
+      value={name}
+      onChange={handleChange}
+      control={<Checkbox checked={checked} />}
+      label={name}
+      labelPlacement="start"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: 'auto',
+        flexBasis: "45%"
+      }}
     >
-      <Typography>{name}</Typography>
-      <Radio checked={checked} />
-    </Grid>
+    </FormControlLabel>
   )
 
 @withTheme()
@@ -83,12 +87,21 @@ IState
     this.setState({ selectedUserEmail: e.target.value })
   }
 
-  changeShowPortfolioValue = (bool) => {
+  changeShowPortfolioValue = (bool: boolean) => {
     this.setState({ showPortfolioValue: bool });
   }
 
-  toggleAccount = (e) => {
+  toggleAccount = (name: string) => {
+    const { selectedAccounts } = this.state;
+    const isAccountChecked = selectedAccounts.includes(name);
 
+    const newSelectedAccounts = isAccountChecked
+      ? selectedAccounts.filter(acc => acc !== name)
+      : selectedAccounts.concat(name);
+
+    this.setState({
+      selectedAccounts: newSelectedAccounts,
+    });
   }
 
   toggleSharingTab = () => {
@@ -132,9 +145,12 @@ IState
 
     console.log('portfolioKeys', portfolioKeys);
 
-    const { selectedUserEmail, shareWithSomeoneTab, showPortfolioValue } = this.state;
-
-
+    const {
+      selectedUserEmail,
+      shareWithSomeoneTab,
+      showPortfolioValue,
+      selectedAccounts
+    } = this.state;
 
     return (
       <Dialog
@@ -158,7 +174,9 @@ IState
           }}
         >
           <TypographyTitle>{sharePortfolioTitle}</TypographyTitle>
-          <ClearButton handleClick={handleCloseSharePortfolio} />
+          <ClearButton>
+            <Clear fontSize="default" color="inherit" onClick={handleCloseSharePortfolio} />
+          </ClearButton>
         </DialogTitle>
         <DialogContent>
           <Grid
@@ -173,6 +191,7 @@ IState
             > SHARE WITH SOMEONE</ButtonShare>
             <ButtonShare
               active={!shareWithSomeoneTab}
+              padding={'1rem 4rem'}
               onClick={this.toggleSharingTab}
             > SHARE VIA MARKET </ButtonShare>
           </Grid>
@@ -186,7 +205,7 @@ IState
           </Grid>
           {shareWithSomeoneTab && (
             <>
-              <Grid style={{ paddingBottom: '20px' }}>
+              <Grid>
                 <Grid container alignItems="center" wrap="nowrap">
                   <TypographySectionTitle>
                     Select accounts to share
@@ -194,12 +213,22 @@ IState
                   <Line />
                 </Grid>
                 <Grid container alignItems="center">
-                  {portfolioKeys.map((el) => (
-                    <KeyElement key={el._id} name={el.name} checked={false} />
-                  ))}
+                  {portfolioKeys.map((el) => {
+                    const checked = selectedAccounts.includes(el.name);
+
+                    return (
+                      <FormInputTemplate
+                        key={el._id}
+                        name={el.name}
+                        handleChange={() => this.toggleAccount(el.name)}
+                      >
+                        <Checkbox checked={checked} />
+                      </FormInputTemplate>
+                    )
+                  })}
                 </Grid>
               </Grid>
-              <Grid container style={{ paddingBottom: '20px' }}>
+              <Grid container style={{ padding: '.5rem 0', borderBottom: '1px solid #E0E5EC' }}>
                 <Grid container alignItems="center" wrap="nowrap">
                   <TypographySectionTitle>
                     How to display my portfolio
@@ -207,65 +236,49 @@ IState
                   <Line />
                 </Grid>
                 <Grid container justify="space-between">
-                  <Grid
-                    container
-                    justify="space-between"
-                    alignItems="center"
-                    style={{ width: 'auto', flexBasis: '45%' }}
+                  <FormInputTemplate
+                    name={'Show my portfolio value'}
+                    handleChange={() => this.changeShowPortfolioValue(true)}
                   >
-                    <TypographySubTitle>
-                      Show my portfolio value
-                      </TypographySubTitle>
-                    <Radio checked={showPortfolioValue} onChange={() => this.changeShowPortfolioValue(true)} />
-                  </Grid>
-                  <Grid
-                    container
-                    justify="space-between"
-                    alignItems="center"
-                    style={{ width: 'auto', flexBasis: '45%' }}
+                    <Radio checked={showPortfolioValue} />
+                  </FormInputTemplate>
+
+                  <FormInputTemplate
+                    name={'Show only % allocation'}
+                    handleChange={() => this.changeShowPortfolioValue(false)}
                   >
-                    <TypographySubTitle>
-                      Show only % allocation
-                      </TypographySubTitle>
-                    <Radio checked={!showPortfolioValue} onChange={() => this.changeShowPortfolioValue(false)} />
-                  </Grid>
+                    <Radio checked={!showPortfolioValue} />
+                  </FormInputTemplate>
                 </Grid>
               </Grid>
-              <Grid container style={{ paddingBottom: '20px' }}>
-                <Grid container justify="space-between">
+              <Grid container>
+                <Grid
+                  container
+                  alignItems="center"
+                  justify="space-between"
+                  style={{ padding: '.5rem 0' }}
+                >
                   <TypographySubTitle>
-                    Share with anyone by the link
+                    Share with anyone by the
+                    <SLink to="/portfolio/main"> link</SLink>
                   </TypographySubTitle>
-                  <BtnCustom
-                    btnWidth={'100px'}
-                    height={'32px'}
-                    btnColor={'#165BE0'}
-                    borderRadius={'8px'}
-                    fontSize={'0.75rem'}
-                    color={'#165BE0'}
-                  >
+                  <StyledButton>
                     Copy link
-                  </BtnCustom>
+                  </StyledButton>
                 </Grid>
                 <Grid container justify="space-between">
-                  <Grid item style={{ minWidth: '300px' }}>
-                    <Input
-                      value={selectedUserEmail}
-                      onChange={this.onChangeUserEmail}
-                    />
-                  </Grid>
-                  <BtnCustom
-                    btnWidth={'100px'}
-                    height={'32px'}
-                    btnColor={'#165BE0'}
-                    borderRadius={'8px'}
-                    fontSize={'0.75rem'}
-                    color={'#165BE0'}
-                    disabled={!selectedUserEmail}
+                  <StyledTextField
+                    type="text"
+                    value={selectedUserEmail}
+                    placeholder="Share with someone by email"
+                    onChange={this.onChangeUserEmail}
+                  />
+                  <StyledButton
+                    padding=".5rem 1.85rem"
                     onClick={() => this.sharePortfolioHandler(false)}
                   >
                     Invite
-                  </BtnCustom>
+                  </StyledButton>
                 </Grid>
               </Grid>
             </>
@@ -376,13 +389,9 @@ IState
           )}
         </DialogContent>
         <DialogFooter id="customized-dialog-title">
-          <Typography
-          // fontWeight={'bold'}
-          // borderRadius={'10px'}
-          // color={black.custom}
-          >
+          <TypographyFooter>
             Go to Social portfolio manager
-          </Typography>
+          </TypographyFooter>
         </DialogFooter>
       </Dialog>
     )

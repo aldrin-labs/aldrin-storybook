@@ -17,4 +17,6 @@ export interface IProps {
 export interface IState {
   shareWithSomeoneTab: boolean
   selectedUserEmail: any
+  selectedAccounts: string[]
+  showPortfolioValue: boolean
 }
