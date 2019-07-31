@@ -82,6 +82,9 @@ export const LegendContainer = styled.div`
 `
 
 export const GlobalStyle = createGlobalStyle`
+  html {
+    font-size: 10px;
+  }
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
     scrollBarWidth ? `${scrollBarWidth}px` : '3px'};

@@ -9,10 +9,10 @@ import { NavLink } from 'react-router-dom'
 
 export const StyledButton = styled(Button)`
   position: absolute;
-  width: 8rem;
+  width: 10.8rem;
   background: #5c8cea;
   color: white;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-transform: capitalize;
   transition: all ease-in-out 0.2s;
 
@@ -23,28 +23,28 @@ export const StyledButton = styled(Button)`
 
 export const StyledAccountsButton = styled(StyledButton)`
   transform: rotate(-90deg);
-  left: -3rem;
-  border-radius: 0 0 .5rem .5rem;
+  left: -4.4rem;
+  border-radius: 0 0 1rem 1rem;
 
   &:hover {
-    left: -3.25rem;
+    left: -4.8rem;
   }
 `
 
 export const StyledTransactionsButton = styled(StyledButton)`
   position: relative;
   transform: rotate(90deg);
-  left: calc(100vw - 5rem);
+  left: calc(100vw - 6.4rem);
   top: 0px;
-  border-radius: 0 0 .5rem .5rem;
+  border-radius: 0 0 1rem 1rem;
 
   &:hover {
-    left: calc(100vw - 4.5rem);
+    left: calc(100vw - 6rem);
   }
 `
 
 export const DividerWithMargin = styled(Divider)`
-  margin: 0.5rem auto;
+  margin: .8rem auto;
   margin-bottom: 0px;
   width: 70%;
 `
@@ -70,7 +70,7 @@ export const Marker = styled.span`
   left: -32px;
   border-radius: 23px;
   height: 40px;
-  width: 1rem;
+  width: 1.6rem;
   background: ${(props: { color: string }) => props.color};
   position: absolute;
 `
@@ -78,14 +78,14 @@ export const BlurForMarker = styled.span`
   left: -32px;
   border-radius: 23px;
   height: 40px;
-  width: 1rem;
-  filter: blur(1rem);
+  width: 1.6rem;
+  filter: blur(1.6rem);
   background: ${(props: { color: string }) => props.color};
   position: absolute;
 `
 
 export const Tab = styled(IconButton)`
-  margin: 0.6rem auto;
+  margin: 0.96rem auto;
   margin-bottom: 0px;
 `
 

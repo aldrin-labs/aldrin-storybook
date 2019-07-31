@@ -33,7 +33,7 @@ export const ChartContainer = styled(Grid as React.SFC<GridProps>)`
 export const TableWrapper = styled(Card as React.SFC<
   CardProps & { className?: string }
 >)`
-  height: 28.5rem;
+  height: 46rem;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;

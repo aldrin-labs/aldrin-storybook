@@ -32,7 +32,6 @@ import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverVie
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
 const LayoutClearfixWrapper = styled.div`
   @media only screen and (min-width: 600px) {
-    margin-left: -2.5%;
     padding-right: calc(2.5% + 3rem);
   }
 `

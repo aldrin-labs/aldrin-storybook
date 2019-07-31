@@ -58,12 +58,12 @@ export default class Feedback extends Component<Props> {
 }
 
 export const StyledButton = styled(Button)`
-  font-size: .835em;
+  font-size: 1.336rem;
 `;
 
 export const Wrapper = styled.div`
   display: flex;
-  padding: 0.3rem 1rem;
+  padding: 0.48rem 1.6rem;
   border-left: ${(props: { borderColor: string }) =>
     `1px solid ${props.borderColor}`};
 
@@ -73,6 +73,6 @@ export const Wrapper = styled.div`
   }
 
   @media(min-width: 2560px) {
-    padding: 0rem 0.5rem;
+    padding: 0 0.8rem;
   }
 `
