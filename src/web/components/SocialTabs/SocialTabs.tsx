@@ -1,10 +1,10 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import SwipeableViews from 'react-swipeable-views'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { Typography, Input, Grid, Paper } from '@material-ui/core'
+import { Typography, Grid } from '@material-ui/core'
+import { SwipeableViewsCustom } from './SocialTabs.styles'
 
 function TabContainer({ children, dir }) {
   return (
@@ -84,7 +84,13 @@ class SocialTabs extends React.Component {
             />
           </Tabs>
         </AppBar>
-        <SwipeableViews
+        <SwipeableViewsCustom
+          // style={{
+          //   width: '100%',
+          //   height: '100vh',
+          //   // boxSizing: 'content-box',
+          //   overflow: 'hidden',
+          // }}
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
@@ -92,18 +98,16 @@ class SocialTabs extends React.Component {
           <TabContainer
             dir={theme.direction}
             style={{
-              background: 'black',
               boxShadow: 'none',
               borderLeft: '1px solid #E0E5EC',
               borderRight: '1px solid #E0E5EC',
               borderBottom: '1px solid #E0E5EC',
-              overflow: 'scroll'
             }}
           >
             {children}
           </TabContainer>
           <TabContainer dir={theme.direction}>Item Two</TabContainer>
-        </SwipeableViews>
+        </SwipeableViewsCustom>
       </div>
     )
   }

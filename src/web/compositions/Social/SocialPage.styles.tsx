@@ -76,11 +76,20 @@ export const GridSortOption = styled(Grid)`
 
 export const GridTableContainer = styled(Grid)``
 export const FolioCard = styled(Grid)`
-  height: 120px;
+  height: 140px;
 `
 
 export const GridPortfolioContainer = styled(Grid)`
   /* display: flex;
   justify-content: center;
   padding: 15px; */
+`
+
+export const GridFolioScroll = styled(Grid)`
+  padding: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `

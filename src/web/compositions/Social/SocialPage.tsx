@@ -13,6 +13,7 @@ import {
   GridTableContainer,
   FolioCard,
   GridPageContainer,
+  GridFolioScroll,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -26,12 +27,14 @@ import {
   roundAndFormatNumber,
   combineTableData,
 } from '@core/utils/PortfolioTableUtils'
-import { withTheme } from '@material-ui/styles'
 import { isObject, zip } from 'lodash-es'
 
 import SocialPortfolioInfoPanel from '@sb/components/SocialPortfolioInfoPanel/SocialPortfolioInfoPanel'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
+
+import { withTheme } from '@material-ui/styles'
+import { transformData } from '@core/utils/SocialUtils'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -56,6 +59,9 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
   // }}
   // elevation={isSelected ? 10 : 2}
   // >
+
+  // { isSelected && this.setState({el: el}))}
+
   <FolioCard
     container
     onClick={onClick}
@@ -112,96 +118,11 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
 @withTheme()
 class SocialPage extends React.Component {
   state = {
-    selectedPortfolio: 0,
     search: '',
   }
 
   handleSearchInput = (e) => {
-    console.log(e.target.value)
     this.setState({ search: e.target.value })
-  }
-
-  transformData = (data: any[] = [], red: string = '', green: string = '') => {
-    const { numberOfDigitsAfterPoint: round = 2 } = this.state
-    const isUSDCurrently = true
-
-    return data.map((row) => ({
-      //  exchange + coin always uniq
-      //  change in future
-      //  name: row.name,
-      // portfolio: {
-      //   // not formatted value for counting total in footer
-      //   contentToSort: row.portfolioPercentage,
-      //   contentToCSV: roundPercentage(row.portfolioPercentage) || 0,
-      //   render: `${roundPercentage(row.portfolioPercentage) || 0}%`,
-      //   isNumber: true,
-      // },
-      id: row.id,
-      coin: {
-        contentToSort: row.coin,
-        contentToCSV: row.coin,
-        render: row.coin,
-        style: { fontWeight: 700 },
-      },
-      price: {
-        contentToSort: row.price,
-        contentToCSV: roundAndFormatNumber(row.price, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.price, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.priceChange > 0 ? green : row.priceChange < 0 ? red : '',
-      },
-      quantity: {
-        contentToSort: row.quantity,
-        render: roundAndFormatNumber(row.quantity, round, true),
-        isNumber: true,
-      },
-      usd: {
-        contentToSort: row.price * row.quantity,
-        contentToCSV: roundAndFormatNumber(
-          row.price * row.quantity,
-          round,
-          true
-        ),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.price * row.quantity, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-      },
-      realizedPL: {
-        contentToSort: row.realizedPL,
-        contentToCSV: roundAndFormatNumber(row.realizedPL, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.realizedPL, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.realizedPL > 0 ? green : row.realizedPL < 0 ? red : '',
-      },
-      unrealizedPL: {
-        contentToSort: row.unrealizedPL,
-        contentToCSV: roundAndFormatNumber(row.unrealizedPL, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.unrealizedPL, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.unrealizedPL > 0 ? green : row.unrealizedPL < 0 ? red : '',
-      },
-      totalPL: {
-        contentToSort: row.totalPL,
-        contentToCSV: roundAndFormatNumber(row.totalPL, round, true),
-        render: addMainSymbol(
-          roundAndFormatNumber(row.totalPL, round, true),
-          isUSDCurrently
-        ),
-        isNumber: true,
-        color: row.totalPL > 0 ? green : row.totalPL < 0 ? red : '',
-      },
-    }))
   }
 
   putDataInTable = (tableData) => {
@@ -212,8 +133,7 @@ class SocialPage extends React.Component {
       numberOfDigitsAfterPoint: round,
       red = 'red',
       green = 'green',
-    } = this.state
-
+    } = {}
     if (tableData.length === 0) {
       return { head: [], body: [], footer: null }
     }
@@ -230,7 +150,7 @@ class SocialPage extends React.Component {
         { id: 'unrealizedPL', label: 'Unrealized P&L', isNumber: true },
         { id: 'totalPL', label: 'Total P&L', isNumber: true },
       ],
-      body: this.transformData(
+      body: transformData(
         tableData,
         theme.palette.red.main,
         theme.palette.green.main
@@ -248,36 +168,48 @@ class SocialPage extends React.Component {
 
   render() {
     const {
-      getFollowingPortfoliosQuery: { getFollowingPortfolios },
+      selectedPortfolio,
+      getFollowingPortfolios,
+      tableData,
+      setSelectedPortfolio,
     } = this.props
 
-    //console.log('getFollowingPortfolios', getFollowingPortfolios)
+    // const totalKeyAssetsData = getFollowingPortfolios.portfolioKeys.keys.reduce(
+    //   (acc, el) => {
+    //     acc.portfolioKeyAssetsValue += el.portfolioKeyAssetsValue
+    //     acc.portfolioKeyAssetsCount += el.portfolioKeyAssetsCount
+    //     acc.realizedPnl += el.realizedPnl
+    //     acc.unrealizedPnl += el.unrealizedPnl
+    //     acc.totalPnl += el.totalPnl
 
-    const { selectedPortfolio = 0 } = this.state
-    const { body, head, footer = [] } = this.putDataInTable(
-      combineTableData(
-        getFollowingPortfolios[selectedPortfolio].portfolioAssets,
-        { usd: -100, percentage: -100 },
-        true
+    //     return acc
+    //   },
+    //   {
+    //     portfolioKeyAssetsValue: 0,
+    //     portfolioKeyAssetsCount: 0,
+    //     realizedPnl: 0,
+    //     unrealizedPnl: 0,
+    //     totalPnl: 0,
+    //   }
+    // )
+
+    console.log('SELECTED FOLIO:', selectedPortfolio)
+    console.log('FOLIOS:', getFollowingPortfolios)
+
+    const { head, body, footer = [] } = this.putDataInTable(tableData)
+    let filteredData = getFollowingPortfolios.filter((folio) => {
+      return (
+        folio.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1
       )
-    )
-    //getFollowingPortfolios
+    })
 
-    let filteredData = this.props.getFollowingPortfoliosQuery.getFollowingPortfolios.filter(
-      (folio) => {
-        return (
-          folio.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !==
-          -1
-        )
-      }
-    )
     const sharedPortfoliosList = filteredData.map((el, index) => (
       <PortfolioListItem
         key={index}
         isSelected={index === selectedPortfolio}
         el={el}
         onClick={() => {
-          this.setState({ selectedPortfolio: index })
+          setSelectedPortfolio(index)
         }}
       />
     ))
@@ -362,6 +294,7 @@ class SocialPage extends React.Component {
               </Grid>
             </GridSortOption>
             <Input
+              disableUnderline={true}
               placeholder={``}
               fontSize={`1.2rem`}
               style={{
@@ -377,7 +310,7 @@ class SocialPage extends React.Component {
               }}
               onChange={this.handleSearchInput}
             />
-            {sharedPortfoliosList}
+            <GridFolioScroll>{sharedPortfoliosList}</GridFolioScroll>
           </SocialTabs>
         </Grid>
         {/* <Grid lg={8}> */}
