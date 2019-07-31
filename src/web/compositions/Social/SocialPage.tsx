@@ -14,6 +14,7 @@ import {
   GridPageContainer,
   GridFolioScroll,
   InputCustom,
+  TableContainer,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -378,55 +379,67 @@ class SocialPage extends React.Component {
               <Grid item xs={3}>
                 <PortfolioMainAllocation />
               </Grid>
-              <Grid item xs={9} style={{padding: '0 0 0  15px'}}>
-                <TableWithSort
-                  id="PortfolioSocialTable"
-                  //title="Portfolio"
+              <Grid
+                item
+                xs={9}
+                style={{
+                  padding: '0 0 0  15px',
+                  borderRadius: '50px  50px 50px 50px',
+                }}
+              >
+                <TableContainer
+                  style={{ borderRadius: '50px  50px 50px 50px' }}
+                >
+                  <TableWithSort
+                    style={{ borderRadius: '50px  50px 50px 50px' }}
+                    id="PortfolioSocialTable"
+                    //title="Portfolio"
 
-                  columnNames={head}
-                  data={{ body, footer }}
-                  padding="dense"
-                  emptyTableText="No assets"
-                  tableStyles={{
-                    heading: {
-                      background: '#F2F4F6',
-                      padding: '10px 16px',
-                      fontFamily: "'DM Sans'",
-                      fontSize: '1.2rem',
-                      color: '#7284A0',
-                      lineHeight: '31px',
-                      letterSpacing: '1.5px',
-                      '&&:first-child': {
-                        borderRadius: '22px 0 0 0',
+                    columnNames={head}
+                    data={{ body, footer }}
+                    padding="dense"
+                    emptyTableText="No assets"
+                    tableStyles={{
+                      heading: {
+                        background: '#F2F4F6',
+                        padding: '10px 16px',
+                        fontFamily: "'DM Sans'",
+                        fontSize: '1.2rem',
+                        color: '#7284A0',
+                        lineHeight: '31px',
+                        letterSpacing: '1.5px',
+                        '&&:first-child': {
+                          borderRadius: '22px 0 0 0',
+                        },
+                        '&&:last-child': {
+                          borderRadius: '0 22px  0 0',
+                        },
                       },
-                      '&&:last-child': {
-                        borderRadius: '0 22px  0 0',
-                      },
-                    },
 
-                    cell: {
-                      //color: '#7284A0',
-                      fontFamily: 'DM Sans',
-                      fontStyle: 'normal',
-                      fontWeight: '500',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      fontSize: '1.4rem',
-                      padding: '10px 16px',
-                      '&&:first-child': { color: 'red' },
-                      '&:before': {
-                        content: '',
-                        display: 'block',
-                        width: 5,
-                        height: 5,
-                        backgroundColor: 'red',
-                        position: 'relative',
-                        top: 0,
-                        left: 0,
+                      cell: {
+                        //color: '#7284A0',
+                        fontFamily: 'DM Sans',
+                        fontStyle: 'normal',
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        fontSize: '1.4rem',
+                        padding: '10px 16px',
+                        '&&:first-child': { color: 'red' },
+                        '&:before': {
+                          content: '',
+                          display: 'block',
+                          width: 5,
+                          height: 5,
+                          backgroundColor: 'red',
+                          position: 'relative',
+                          top: 0,
+                          left: 0,
+                        },
                       },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </TableContainer>
                 {/* chart */}
                 <PortfolioMainChart
                   title="Portfolio Value | Coming Soon | In development"

@@ -15,10 +15,10 @@ export const InputCustom = styled(Input)`
 `
 
 export const GridPageContainer = styled(Grid)`
-         padding-top: 15px;
-         width: 100%;
-         height: 100vh;
-       `
+  padding-top: 15px;
+  width: 100%;
+  height: 100vh;
+`
 
 export const TypographySearchOption = styled(Typography)`
   font-family: DM Sans;
@@ -108,4 +108,12 @@ export const GridFolioScroll = styled(Grid)`
   ::-webkit-scrollbar {
     display: none;
   }
+`
+
+export const TableContainer = styled(Grid)`
+  background: red;
+  width: 100%;
+  height: 50vh;
+  overflow-y: scroll;
+  border-radius: '22px';
 `
