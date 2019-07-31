@@ -15,9 +15,10 @@ export const InputCustom = styled(Input)`
 `
 
 export const GridPageContainer = styled(Grid)`
-  padding-top: 15px;
-  width: 100%;
-`
+         padding-top: 15px;
+         width: 100%;
+         height: 100vh;
+       `
 
 export const TypographySearchOption = styled(Typography)`
   font-family: DM Sans;

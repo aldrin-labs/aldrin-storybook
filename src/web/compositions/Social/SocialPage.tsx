@@ -256,7 +256,8 @@ class SocialPage extends React.Component {
           item
           xs={3}
           style={{
-            background: '#f9fbfd',
+            maxHeight: '100vh', // TODO CHECK IT
+            //background: '#f9fbfd',
             boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
           }}
         >
@@ -424,14 +425,14 @@ class SocialPage extends React.Component {
           </Grid>
 
           {/* chart */}
-          <PortfolioMainChart
+          {/* <PortfolioMainChart
             title="Portfolio Value | Coming Soon | In development"
             style={{
               marginLeft: 0,
               minHeight: '10vh',
             }}
             marginTopHr="10px"
-          />
+          /> */}
         </GridTableContainer>
         {/* </Grid> */}
       </GridPageContainer>
