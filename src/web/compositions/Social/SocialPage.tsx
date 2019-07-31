@@ -372,12 +372,9 @@ class SocialPage extends React.Component {
               </Grid>
             </GridItemContainer> */}
             <TableWithSort
-              // style={{
-              //   border: '3px solid red',
-              //   borderRadius: '22px 22px 0 0',
-              // }}
               id="PortfolioSocialTable"
               //title="Portfolio"
+              
               columnNames={head}
               data={{ body, footer }}
               padding="dense"
@@ -425,14 +422,14 @@ class SocialPage extends React.Component {
           </Grid>
 
           {/* chart */}
-          {/* <PortfolioMainChart
+          <PortfolioMainChart
             title="Portfolio Value | Coming Soon | In development"
             style={{
               marginLeft: 0,
               minHeight: '10vh',
             }}
             marginTopHr="10px"
-          /> */}
+          />
         </GridTableContainer>
         {/* </Grid> */}
       </GridPageContainer>

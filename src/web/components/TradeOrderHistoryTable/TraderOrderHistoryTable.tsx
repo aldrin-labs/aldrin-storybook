@@ -8,7 +8,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   state = {
     activeSortArg: null,
     page: 0,
-    rowsPerPage: 14,
+    rowsPerPage: 11,
   }
 
   handleChangePage = (
