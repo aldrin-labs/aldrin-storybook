@@ -258,7 +258,7 @@ class SocialPage extends React.Component {
           item
           xs={3}
           style={{
-            maxHeight: '100vh', // TODO CHECK IT
+            //maxHeight: '100vh', // TODO CHECK IT
             //background: '#f9fbfd',
             boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
           }}
@@ -401,6 +401,7 @@ class SocialPage extends React.Component {
                     emptyTableText="No assets"
                     tableStyles={{
                       heading: {
+                        width: '10px',
                         background: '#F2F4F6',
                         padding: '10px 16px',
                         fontFamily: "'DM Sans'",
@@ -441,14 +442,16 @@ class SocialPage extends React.Component {
                   />
                 </TableContainer>
                 {/* chart */}
-                <PortfolioMainChart
-                  title="Portfolio Value | Coming Soon | In development"
-                  style={{
-                    marginLeft: 0,
-                    maxHeight: '10vh',
-                  }}
-                  marginTopHr="10px"
-                />
+                <Grid item style={{ paddingTop: '25px', height: '100%' }}>
+                  <PortfolioMainChart
+                    title="Portfolio performance"
+                    style={{
+                      marginLeft: 0,
+                      maxHeight: '235px',
+                    }}
+                    marginTopHr="10px"
+                  />
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
