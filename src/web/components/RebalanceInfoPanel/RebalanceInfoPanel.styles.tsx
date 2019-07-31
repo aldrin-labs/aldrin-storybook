@@ -39,7 +39,7 @@ export const TypographyRebalance = styled(
   align-self: ${(props) => props.verticalPosition || 'none'};
   
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    font-size: 1.8rem;
+    //font-size: 1.8rem;
   }
 `
 
@@ -67,7 +67,7 @@ export const StyledTypography = styled(
   text-align: ${(props) => props.position || 'none'};
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    font-size: 1.8rem;
+    //font-size: 1.8rem;
     padding-bottom: 1rem;
   }
 `
@@ -98,7 +98,7 @@ export const StyledSubTypography = styled(
   text-align: ${(props) => props.position || 'none'};
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    font-size: 2.8rem;
+    //font-size: 2.8rem;
   }
 `
 
