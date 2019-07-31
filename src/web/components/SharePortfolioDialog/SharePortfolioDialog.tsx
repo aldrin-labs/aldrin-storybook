@@ -20,6 +20,9 @@ import {
   TypographySectionTitle,
   TypographySubTitle,
   DialogFooter,
+  ClearButton,
+  TypographyTitle,
+  Line
 } from './SharePortfolioDialog.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -37,12 +40,12 @@ const tradeFrequency = ['Irregularly', 'By Minute', 'Daily', 'Weekly', 'Hourly']
 const KeyElement = ({ name, checked }: { name: string; checked: boolean }) => (
   <Grid
     container
-    justify="center"
+    justify="space-between"
     alignItems="center"
-    style={{ width: 'auto' }}
+    style={{ width: 'auto', flexBasis: "45%" }}
   >
     <TypographySubTitle>{name}</TypographySubTitle>
-    <Checkbox checked={checked} disabled={true} />
+    <Checkbox checked={checked} />
   </Grid>
 )
 
@@ -53,29 +56,39 @@ const RadioElement = ({
   name: string
   checked: boolean
 }) => (
-  <Grid
-    container
-    justify="center"
-    alignItems="center"
-    style={{ width: 'auto' }}
-  >
-    <Typography>{name}</Typography>
-    <Radio disabled={true} checked={checked} />
-  </Grid>
-)
+    <Grid
+      container
+      justify="space-between"
+      alignItems="center"
+      style={{ width: 'auto', flexBasis: "45%" }}
+    >
+      <Typography>{name}</Typography>
+      <Radio checked={checked} />
+    </Grid>
+  )
 
 @withTheme()
 export default class SharePortfolioDialog extends React.Component<
-  IProps,
-  IState
+IProps,
+IState
 > {
   state: IState = {
     shareWithSomeoneTab: true,
     selectedUserEmail: null,
+    showPortfolioValue: true,
+    selectedAccounts: [],
   }
 
   onChangeUserEmail = (e) => {
     this.setState({ selectedUserEmail: e.target.value })
+  }
+
+  changeShowPortfolioValue = (bool) => {
+    this.setState({ showPortfolioValue: bool });
+  }
+
+  toggleAccount = (e) => {
+
   }
 
   toggleSharingTab = () => {
@@ -117,7 +130,11 @@ export default class SharePortfolioDialog extends React.Component<
       theme,
     } = this.props
 
-    const { selectedUserEmail, shareWithSomeoneTab } = this.state
+    console.log('portfolioKeys', portfolioKeys);
+
+    const { selectedUserEmail, shareWithSomeoneTab, showPortfolioValue } = this.state;
+
+
 
     return (
       <Dialog
@@ -128,30 +145,36 @@ export default class SharePortfolioDialog extends React.Component<
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle
+          disableTypography
           id="responsive-dialog-title"
           style={{
             display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
+            borderBottom: '2px solid #E0E5EC',
             backgroundColor: theme.palette.grey.main,
             height: '40px',
             fontSize: '12px',
           }}
         >
-          {sharePortfolioTitle}
+          <TypographyTitle>{sharePortfolioTitle}</TypographyTitle>
+          <ClearButton handleClick={handleCloseSharePortfolio} />
         </DialogTitle>
         <DialogContent>
           <Grid
             container
             alignItems="center"
             justify="space-between"
-            style={{ paddingBottom: '20px' }}
+            style={{ padding: '20px 0' }}
           >
-            <ButtonShare onClick={this.toggleSharingTab}>
-              SHARE WITH SOMEONE
-            </ButtonShare>
-            <ButtonShare onClick={this.toggleSharingTab}>
-              SHARE VIA MARKET
-            </ButtonShare>
+            <ButtonShare
+              active={shareWithSomeoneTab}
+              onClick={this.toggleSharingTab}
+            > SHARE WITH SOMEONE</ButtonShare>
+            <ButtonShare
+              active={!shareWithSomeoneTab}
+              onClick={this.toggleSharingTab}
+            > SHARE VIA MARKET </ButtonShare>
           </Grid>
           <Grid
             container
@@ -159,46 +182,52 @@ export default class SharePortfolioDialog extends React.Component<
             justify="center"
             style={{ paddingBottom: '20px' }}
           >
-            <Typography>Settings</Typography>
+            <TypographyTitle>Settings</TypographyTitle>
           </Grid>
           {shareWithSomeoneTab && (
             <>
               <Grid style={{ paddingBottom: '20px' }}>
-                <TypographySectionTitle>
-                  Select accounts to share
-                </TypographySectionTitle>
+                <Grid container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Select accounts to share
+                  </TypographySectionTitle>
+                  <Line />
+                </Grid>
                 <Grid container alignItems="center">
                   {portfolioKeys.map((el) => (
-                    <KeyElement key={el._id} name={el.name} checked={true} />
+                    <KeyElement key={el._id} name={el.name} checked={false} />
                   ))}
                 </Grid>
               </Grid>
               <Grid container style={{ paddingBottom: '20px' }}>
-                <TypographySectionTitle>
-                  How to display my portfolio
-                </TypographySectionTitle>
+                <Grid container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    How to display my portfolio
+                  </TypographySectionTitle>
+                  <Line />
+                </Grid>
                 <Grid container justify="space-between">
                   <Grid
                     container
-                    justify="center"
+                    justify="space-between"
                     alignItems="center"
-                    style={{ width: 'auto' }}
+                    style={{ width: 'auto', flexBasis: '45%' }}
                   >
                     <TypographySubTitle>
                       Show my portfolio value
-                    </TypographySubTitle>
-                    <Radio checked={true} disabled={true} />
+                      </TypographySubTitle>
+                    <Radio checked={showPortfolioValue} onChange={() => this.changeShowPortfolioValue(true)} />
                   </Grid>
                   <Grid
                     container
-                    justify="center"
+                    justify="space-between"
                     alignItems="center"
-                    style={{ width: 'auto' }}
+                    style={{ width: 'auto', flexBasis: '45%' }}
                   >
                     <TypographySubTitle>
                       Show only % allocation
-                    </TypographySubTitle>
-                    <Radio disabled={true} />
+                      </TypographySubTitle>
+                    <Radio checked={!showPortfolioValue} onChange={() => this.changeShowPortfolioValue(false)} />
                   </Grid>
                 </Grid>
               </Grid>
@@ -214,7 +243,6 @@ export default class SharePortfolioDialog extends React.Component<
                     borderRadius={'8px'}
                     fontSize={'0.75rem'}
                     color={'#165BE0'}
-                    disabled={true}
                   >
                     Copy link
                   </BtnCustom>
@@ -247,7 +275,7 @@ export default class SharePortfolioDialog extends React.Component<
               <Grid style={{ paddingBottom: '20px' }}>
                 <Typography>Set portfolio marketname</Typography>
                 <Grid container alignItems="center">
-                  <Input disabled={true} />
+                  <Input />
                 </Grid>
               </Grid>
 
@@ -270,7 +298,7 @@ export default class SharePortfolioDialog extends React.Component<
                     style={{ width: 'auto' }}
                   >
                     <Typography>Show my portfolio value</Typography>
-                    <Radio checked={true} disabled={true} />
+                    <Radio checked={true} />
                   </Grid>
                   <Grid
                     container
@@ -279,7 +307,7 @@ export default class SharePortfolioDialog extends React.Component<
                     style={{ width: 'auto' }}
                   >
                     <Typography>Show only % allocation</Typography>
-                    <Radio disabled={true} />
+                    <Radio />
                   </Grid>
                 </Grid>
               </Grid>
@@ -321,7 +349,7 @@ export default class SharePortfolioDialog extends React.Component<
                     style={{ width: 'auto' }}
                   >
                     <Typography>Free</Typography>
-                    <Radio checked={true} disabled={true} />
+                    <Radio checked={true} />
                   </Grid>
                   <Grid
                     container
@@ -330,8 +358,8 @@ export default class SharePortfolioDialog extends React.Component<
                     style={{ width: 'auto' }}
                   >
                     <Typography>Paid</Typography>
-                    <TextField disabled={true} />
-                    <Radio checked={false} disabled={true} />
+                    <TextField />
+                    <Radio checked={false} />
                   </Grid>
                 </Grid>
               </Grid>
@@ -349,9 +377,9 @@ export default class SharePortfolioDialog extends React.Component<
         </DialogContent>
         <DialogFooter id="customized-dialog-title">
           <Typography
-            // fontWeight={'bold'}
-            // borderRadius={'10px'}
-            // color={black.custom}
+          // fontWeight={'bold'}
+          // borderRadius={'10px'}
+          // color={black.custom}
           >
             Go to Social portfolio manager
           </Typography>

@@ -38,7 +38,7 @@ export const StyledDropdown = styled.div`
 export const StyledPaper = withStyles({
     root: {
         position: 'absolute',
-        top: '48px',
+        top: '49px',
         left: '50%',
         transform: 'translateX(-50%)',
         borderTopLeftRadius: 0,

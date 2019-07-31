@@ -67,6 +67,8 @@ export const Wrapper = styled.div`
   border: ${(props: { borderColor: string }) =>
     `1px solid ${props.borderColor}`};
 
+  border-bottom: 0px;
+
   @media(min-width: 2560px) {
     padding: 0rem 0.5rem;
   }
