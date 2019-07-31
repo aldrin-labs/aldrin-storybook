@@ -46,3 +46,25 @@ export const getCircleSymbolSocial = (coin: string, data) => (
   </>
 )
 
+export const getCircleSymbolPnl = (coin: string, data) => (
+  <>
+    <IconCircle
+      className="fa fa-circle"
+      style={{
+        justifySelf: 'flex-start',
+        color: `${
+          coin === data[0].coin
+            ? '#F29C38'
+            : coin === data[1].coin
+            ? '#4152AF'
+            : coin === data[2].coin
+            ? '#DEDB8E'
+            : '#ABBAD1'
+        }`,
+        fontSize: '10px',
+        margin: 'auto 3px auto 12px',
+      }}
+    />
+    {coin}
+  </>
+)
