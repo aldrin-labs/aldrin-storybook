@@ -14,12 +14,13 @@ export default class SharePortfolioPanel extends Component<IProps> {
         alignItems="center"
         style={{
           padding: '1rem 24px',
+          borderTop: '1px solid #E0E5EC'
         }}
       >
         <Grid item>
           <Grid container justify="flex-start" alignItems="center">
             <Grid item style={{ marginRight: '1rem' }}>
-              <TypographyHeading textColor={theme.palette.text.primary}>
+              <TypographyHeading textColor={theme.palette.black.registration}>
                 {portfolioName}
               </TypographyHeading>
             </Grid>
@@ -46,7 +47,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
                 //   this.props.onToggleUSDBTC()
                 //   toggleBaseCoin()
                 // }}
-                padding="0.2rem .75rem 0.15rem .75rem"
+                padding="0.25rem 1rem 0.25rem 1rem"
                 borderRadius={'28px'}
               >
                 Btc

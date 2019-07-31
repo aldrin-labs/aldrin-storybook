@@ -96,7 +96,6 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      border: '0px solid transparent',
       overflowX: 'auto',
       '&::-webkit-scrollbar': {
         width: '3px',

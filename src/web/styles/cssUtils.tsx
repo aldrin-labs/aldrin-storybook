@@ -120,7 +120,7 @@ export const SelectR = styled(ReactSelectComponent)`
 `
 
 export const Icon = styled.i`
-  padding-right: 5px;
+  margin-right: -1px;
 `
 
 export const chooseRed = (theme: Theme) =>

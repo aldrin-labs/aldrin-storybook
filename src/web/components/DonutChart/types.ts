@@ -29,7 +29,9 @@ export interface Props {
   vertical: boolean,
   chartValueVariant: string,
   
-  removeLabels: boolean
+  removeLabels: boolean,
+  width: number,
+  strokeWidth: number
 }
 
 export interface State {

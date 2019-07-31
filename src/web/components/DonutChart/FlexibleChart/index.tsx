@@ -115,8 +115,8 @@ export class FlexibleChart extends Component<Props, State>{
               y1="0"
               y2="1"
             >
-              <stop offset="0%" stopColor={color} opacity={0.6} />
-              <stop offset="100%" stopColor={darken(color, 0.3)} opacity={0.6} />
+              <stop offset="0%" stopColor={color} opacity={1} />
+              <stop offset="100%" stopColor={color} opacity={1} />
             </linearGradient>
           ))}
         </GradientDefs>

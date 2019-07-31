@@ -33,7 +33,7 @@ export const hexToRgbAWithOpacity = (hex, opacity) => {
 }
 
 export const Icon = styled.i`
-  padding-right: 5px;
+  margin-right: -1px;
 `
 
 export const LegendContainer = styled.div`
