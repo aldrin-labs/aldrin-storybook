@@ -4,11 +4,12 @@ import SwipeableViews from 'react-swipeable-views'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Typography from '@material-ui/core/Typography'
+import { Typography } from '@material-ui/core'
+import { TabContainerCustom } from './SocialTabs.styles'
 
 function TabContainer({ children, dir }) {
   return (
-    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+    <Typography component="div" dir={dir}>
       {children}
     </Typography>
   )
@@ -17,13 +18,19 @@ function TabContainer({ children, dir }) {
 const styles = (theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    minWidth: 100,
+    borderLeft: '1px solid #E0E5EC',
+    borderRight: '1px solid #E0E5EC',
+    borderBottom: '1px solid #E0E5EC',
+    borderRadius: '22px 22px 22px 22px',
+    margin: 'auto',
+    width: '100%',
   },
 })
 
 class SocialTabs extends React.Component {
   state = {
     value: 0,
+    selectedPortfolio: 0,
   }
 
   handleChange = (event, value) => {
@@ -39,16 +46,42 @@ class SocialTabs extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default">
+        <AppBar
+          position="static"
+          color="default"
+          style={{ background: 'transparent', boxShadow: 'none' }}
+        >
           <Tabs
+            style={{ background: 'transparent', boxShadow: 'none' }}
             value={this.state.value}
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            variant="fullWidth"
           >
-            <Tab label="Item One" style={{color: 'black'}}/>
-            <Tab label="Item Two" style={{color: 'black'}}/>
+            <Tab
+              label="following"
+              style={{
+                fontSize: '1.2rem',
+                color: 'black',
+                borderTop: '1px solid #E0E5EC',
+                borderLeft: '1px solid #E0E5EC',
+                borderRight: '1px solid #E0E5EC',
+                borderRadius: '22px 22px 0 0',
+                width: '50%',
+              }}
+            />
+            <Tab
+              label="My"
+              style={{
+                fontSize: '1.2rem',
+                color: 'black',
+                borderTop: '1px solid #E0E5EC',
+                borderLeft: '1px solid #E0E5EC',
+                borderRight: '1px solid #E0E5EC',
+                borderRadius: '22px 22px 0 0',
+                width: '50%',
+              }}
+            />
           </Tabs>
         </AppBar>
         <SwipeableViews
@@ -56,8 +89,28 @@ class SocialTabs extends React.Component {
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
         >
-          <TabContainer dir={theme.direction}>{children}</TabContainer>
-          <TabContainer dir={theme.direction}>Item Two</TabContainer>
+          <TabContainer
+            style={{
+              boxShadow: 'none',
+              borderLeft: '1px solid #e0e5ec',
+              borderRight: '1px solid #e0e5ec',
+              borderBottom: '1px solid #e0e5ec',
+            }}
+            dir={theme.direction}
+          >
+            {children}
+          </TabContainer>
+          <TabContainer
+            style={{
+              boxShadow: 'none',
+              borderLeft: '1px solid #e0e5ec',
+              borderRight: '1px solid #e0e5ec',
+              borderBottom: '1px solid #e0e5ec',
+            }}
+            dir={theme.direction}
+          >
+            {children}
+          </TabContainer>
         </SwipeableViews>
       </div>
     )

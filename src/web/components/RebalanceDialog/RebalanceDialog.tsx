@@ -46,7 +46,7 @@ const DialogComponent = ({
               onSaveClick(true)
             }}
             size="small"
-            style={{ margin: '0.5rem 1rem' }}
+            style={{ margin: '0.8rem 1.6rem' }}
           >
             Delete empty and save
           </Button>
@@ -62,7 +62,7 @@ const DialogComponent = ({
               openLink(config.bugLink, hideWarning)
             }}
             size="small"
-            style={{ margin: '0.5rem 1rem' }}
+            style={{ margin: '0.8rem 1.6rem' }}
           >
             Report bug
           </Button>

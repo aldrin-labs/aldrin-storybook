@@ -25,7 +25,7 @@ export const StyledLink = styled(NavLink)`
 `
 
 export const StyledButton = styled(Button)`
-    font-size: 1.336rem;
+    font-size: 1.175rem;
 `
 
 export const StyledDropdown = styled.div`

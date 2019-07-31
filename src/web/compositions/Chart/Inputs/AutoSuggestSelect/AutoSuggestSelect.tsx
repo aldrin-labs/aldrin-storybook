@@ -116,7 +116,7 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
     }
     return (
       <ExchangePair
-        style={{ width: '9rem' }}
+        style={{ width: '14.4rem' }}
         border={divider}
       >
         <SelectR

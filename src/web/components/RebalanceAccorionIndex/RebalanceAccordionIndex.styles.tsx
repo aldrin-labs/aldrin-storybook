@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
+import { Grid, ExpansionPanel, Typography, TableCell } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`
   display: flex;
@@ -59,6 +59,11 @@ export const StyledTypography = styled(
   color: ${(props) => props.primaryColor || props.color || '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
   margin-left: ${(props) => props.marginLeft};
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 2.4rem;
+    margin-bottom: 1.5rem;
+  }
 `
 
 export const StyledTypographyAccordionHeader = styled(
@@ -78,6 +83,10 @@ export const StyledTypographyAccordionHeader = styled(
   border-left: 5px solid orange;
   border-radius: 3px 0 3px 0;
   padding-left: 24px;
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 2.8rem;
+  }
 `
 
 export const StyledSubTypography = styled(
@@ -92,4 +101,25 @@ export const StyledSubTypography = styled(
   text-transform: uppercase;
   color: ${(props) => props.primaryColor || props.color || '#97c15c'};
   text-align: ${(props) => props.position || 'none'};
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 3.2rem;
+  }
+`
+
+export const TableCellLast = styled(TableCell)`
+  border: none;
+  padding: 0 9.5vw 0 0;
+  
+  @media screen and (min-device-width: 1520px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 10.5vw 0 0;
+  }
+  
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 11.5vw 0 0;
+  }
+  
+  @media screen and (min-device-width: 2500px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 12.3vw 0 0;
+  }
 `

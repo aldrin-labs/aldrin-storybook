@@ -248,8 +248,6 @@ class PortfolioSelector extends React.Component<IProps> {
       getMyPortfoliosQuery,
     } = this.props
 
-    console.log('Gooo: ', newKeys)
-
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
       (item: { _id: string; name: string }) => {
         return {
@@ -298,7 +296,7 @@ class PortfolioSelector extends React.Component<IProps> {
               options={MyPortfoliosOptions}
               singleValueStyles={{
                 color: theme.palette.text.subPrimary,
-                fontSize: '0.93rem',
+                fontSize: '1.488rem',
                 padding: '0',
               }}
               indicatorSeparatorStyles={{}}
@@ -317,7 +315,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 color: theme.palette.text.primary, //'#7284A0',
                 background: 'transparent',
                 textAlign: 'center',
-                fontSize: '0.62rem',
+                fontSize: '0.992rem',
                 '&:hover': {
                   borderRadius: '14px',
                   color: theme.palette.text.subPrimary,

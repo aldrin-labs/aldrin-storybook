@@ -7,7 +7,6 @@ import {
   GridFlex,
   LinearProgressCustom,
   TypographyCustom,
-  IconCircle,
 } from './ProgressBar.styles'
 
 import ProgressBarSection from './ProgressBarSection'
@@ -35,6 +34,8 @@ function ProgressBarWrapper(props: IProps) {
     otherCoinsPercentage,
     isSectionChart,
     isTargetChart,
+    isPanelExpanded,
+    onChangeExpandedPanel,
   } = props
 
 
@@ -52,6 +53,8 @@ function ProgressBarWrapper(props: IProps) {
         <ProgressOtherCoins
           otherCoinData={otherCoinData}
           otherCoinsPercentage={otherCoinsPercentage}
+          isPanelExpanded={isPanelExpanded}
+          onChangeExpandedPanel={onChangeExpandedPanel}
         />
       ) : (
         ' '

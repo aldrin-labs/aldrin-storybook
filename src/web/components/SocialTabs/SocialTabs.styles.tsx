@@ -1,25 +1,41 @@
-import React from 'react'
 import styled from 'styled-components'
-import { Grid, Typography } from '@material-ui/core'
+import { AppBar, Tabs, Tab } from '@material-ui/core'
 
-export const TypographyHeader = styled(Typography)`
-  font-family: DM Sans;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 0.875rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: ${(props) => props.textColor || '#16253d'};
+export const MainContainer = styled.div`
+  background-color: ${(props) => props.bgColor};
+  border-left: 1px solid #e0e5ec;
+  border-right: 1px solid #e0e5ec;
+  border-bottom: 1px solid #e0e5ec;
+  border-radius: 22px 22px 22px 22px;
+  margin: auto;
+  width: 100%;
 `
-export const TypographyTitle = styled(Typography)`
-  font-family: DM Sans;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 0.5625rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: ${(props) => props.textColor || '#7284a0'};
+
+export const TabContainerCustom = styled.div`
+  box-shadow: none;
+  border-left: 1px solid #e0e5ec;
+  border-right: 1px solid #e0e5ec;
+  border-bottom: 1px solid #e0e5ec;
 `
-export const TypographyPercentage = styled(Typography)`
-  color: ${(props) => props.textColor || '#7284a0'};
+
+export const AppBarCustom = styled(AppBar)`
+  background: transparent;
+  box-shadow: none;
+`
+
+export const TabsCustom = styled(Tabs)`
+  background: transparent;
+  box-shadow: none;
+`
+export const TabCustom = styled(Tab)`
+  font-size: 1.2rem;
+  color: black;
+  border-top: 1px solid #e0e5ec;
+  border-left: 1px solid #e0e5ec;
+  border-right: 1px solid #e0e5ec;
+  border-radius: 22px 22px 0 0;
+  width: 60px;
+  :visited {
+    color: red;
+  }
 `

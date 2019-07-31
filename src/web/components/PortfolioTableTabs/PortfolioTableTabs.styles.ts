@@ -23,23 +23,23 @@ export const StyledButton = styled(Button)`
 
 export const StyledAccountsButton = styled(StyledButton)`
   transform: rotate(-90deg);
-  left: -4.4rem;
+  left: -5.75rem;
   border-radius: 0 0 1rem 1rem;
 
   &:hover {
-    left: -4.8rem;
+    left: -6.43rem;
   }
 `
 
 export const StyledTransactionsButton = styled(StyledButton)`
   position: relative;
   transform: rotate(90deg);
-  left: calc(100vw - 6.4rem);
+  left: calc(100vw - 8.4rem);
   top: 0px;
   border-radius: 0 0 1rem 1rem;
 
   &:hover {
-    left: calc(100vw - 6rem);
+    left: calc(100vw - 7.76rem);
   }
 `
 

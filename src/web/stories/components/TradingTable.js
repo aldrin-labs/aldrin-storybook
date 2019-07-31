@@ -11,7 +11,7 @@ import TradingTable from '@sb/components/TradingTable/TradingTable'
 storiesOf('Components/TradingTable', module)
   .addDecorator(backgrounds)
   .add('Table', () => (
-    <Grid container style={{ height: '25rem' }}>
+    <Grid container style={{ height: '40rem' }}>
       <Grid item xs={12}>
         <Paper
           style={{

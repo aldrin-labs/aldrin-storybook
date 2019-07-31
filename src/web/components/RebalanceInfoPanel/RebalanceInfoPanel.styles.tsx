@@ -16,6 +16,11 @@ export const GridInfoPanelWrapper = styled(Grid)`
   padding: 16px 2px 0px 2px;
   z-index: 500;
   margin-bottom: 10px;
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 136px;
+    align-items: center;
+  }
 `
 
 export const TypographyRebalance = styled(
@@ -25,13 +30,17 @@ export const TypographyRebalance = styled(
 )`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
-  font-size: 0.6875rem;
+  font-size: 1.1rem;
   padding: 0 5px;
   margin-right: 3px;
   text-transform: uppercase;
   color: ${(props) => props.linkColor || 'white'};
   text-align: ${(props) => props.position || 'none'};
   align-self: ${(props) => props.verticalPosition || 'none'};
+  
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 1.8rem;
+  }
 `
 
 export const StyledTypography = styled(
@@ -46,7 +55,7 @@ export const StyledTypography = styled(
 )`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
-  font-size: 0.625rem;
+  font-size: 1rem;
   line-height: 23px;
   font-weight: ${(props) => props.fontWeight || '400'};
   text-transform: uppercase;
@@ -56,6 +65,11 @@ export const StyledTypography = styled(
     props.secondaryColor ||
     '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 1.8rem;
+    padding-bottom: 1rem;
+  }
 `
 
 export const StyledSubTypography = styled(
@@ -70,7 +84,7 @@ export const StyledSubTypography = styled(
     ...rest
   }) => <Typography {...rest} />
 )`
-  font-size: ${(props) => props.fontSize || `1rem`};
+  font-size: ${(props) => props.fontSize || `1.6rem`};
   font-weight: ${(props) => props.fontWeight || '400'};
   line-height: 23px;
   letter-spacing: 1px;
@@ -82,12 +96,16 @@ export const StyledSubTypography = styled(
     props.primaryColor ||
     '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    font-size: 2.8rem;
+  }
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;
   width: 100px;
-  font-size: 0.75rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   border: 1px solid transparent;
   font-weight: 700;

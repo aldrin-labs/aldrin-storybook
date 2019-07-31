@@ -12,6 +12,12 @@ export const StyledSlider = styled(
   }) => <Slider {...rest} />
 )`
   width: ${(props: { sliderWidth: string }) => props.sliderWidth || '100px'};
+  
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    margin-top: 32px;
+    margin-right: 20px;
+  }
+  
   & .trackAfter {
     border-radius: ${(props: { borderRadiusAfter: string }) =>
       props.borderRadiusAfter || '50px'};
@@ -23,6 +29,10 @@ export const StyledSlider = styled(
       props.sliderHeightAfter || '2px'};
   }
 
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 34px;
+  }
+
   & .trackBefore {
     border-radius: ${(props: { borderRadius: string }) =>
       props.borderRadius || '50px'};
@@ -30,6 +40,10 @@ export const StyledSlider = styled(
     background: ${(props: { trackBeforeBackground: string }) =>
       props.trackBeforeBackground};
     opacity: 1;
+    
+   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 34px;
+    }
   }
 
   & .thumb {
@@ -39,5 +53,10 @@ export const StyledSlider = styled(
       props.thumbBackground};
     border: ${(props: { borderThumb: string }) =>
       props.borderThumb || '0px solid white'};
+
+    @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+      width: 48px;
+      height: 48px;
+    }
   }
 `

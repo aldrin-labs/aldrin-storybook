@@ -8,7 +8,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   state = {
     activeSortArg: null,
     page: 0,
-    rowsPerPage: 14,
+    rowsPerPage: 11,
   }
 
   handleChangePage = (
@@ -32,7 +32,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         fontFamily: `DM Sans`,
         textTransform: 'uppercase',
         fontWeight: '700',
-        fontSize: '0.75rem',
+        fontSize: '1.2rem',
         borderBottom: '1px solid #E0E5EC',
         padding: '0 0 10px 10px',
       },
@@ -44,7 +44,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         fontFamily: 'DM Sans',
         fontStyle: 'normal',
         fontWeight: '700',
-        fontSize: '0.75rem',
+        fontSize: '1.2rem',
         lineHeight: '31px',
         background: 'transparent',
         borderBottom: '1px solid #E0E5EC',

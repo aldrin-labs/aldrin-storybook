@@ -8,7 +8,7 @@ export const ContainerForCrossHairValues = styled.div`
   padding: 5px;
   margin: 5px;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 1.6rem;
   box-shadow: 0 2px 6px 0 #0006;
 `
 

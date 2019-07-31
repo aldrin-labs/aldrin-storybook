@@ -93,7 +93,7 @@ export default class PortfolioChart extends Component<Props> {
                     data-e2e={`${chartBtn}`}
                     variant={chartBtn !== activeChart ? 'text' : 'contained'}
                     key={chartBtn}
-                    style={{ margin: '0 1rem' }}
+                    style={{ margin: '0 1.6rem' }}
                   >
                     {chartBtn}
                   </Button>
