@@ -70,7 +70,7 @@ function ProgressBarCoins({ datum, index }) {
         />
       </GridProgressBarContainer>
 
-      <GridFlex item lg={3} md={3}>
+      <GridFlex item lg={3} md={3} style={{ justifyContent: 'center' }}>
         <TypographyCustom
           style={{
             paddingLeft: '43px',

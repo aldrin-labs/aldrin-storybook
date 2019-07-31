@@ -31,7 +31,7 @@ export default function ProgressBarSection(props) {
           value={0}
         />
       </Grid>
-      <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
+      <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px', justifyContent: 'center' }}>
         <TypographyCustom>{datum.percentage}%</TypographyCustom>
       </GridFlex>
     </Grid>

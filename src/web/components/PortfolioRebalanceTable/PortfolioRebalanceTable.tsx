@@ -82,7 +82,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
               padding: '0px',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
-              fontSize: '1.4rem',
+              fontSize: '1.44rem',
               height: width === 'xl' ? '96px' : '48px',
               borderBottom: `1px solid ${
                 theme.palette.grey[theme.palette.type]
