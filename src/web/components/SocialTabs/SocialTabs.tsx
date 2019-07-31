@@ -1,10 +1,11 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
+import SwipeableViews from 'react-swipeable-views'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { Typography, Grid } from '@material-ui/core'
-import { SwipeableViewsCustom } from './SocialTabs.styles'
+import { Typography } from '@material-ui/core'
+import { TabContainerCustom } from './SocialTabs.styles'
 
 function TabContainer({ children, dir }) {
   return (
@@ -16,7 +17,7 @@ function TabContainer({ children, dir }) {
 
 const styles = (theme) => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'transparent',//theme.palette.background.paper,
     borderLeft: '1px solid #E0E5EC',
     borderRight: '1px solid #E0E5EC',
     borderBottom: '1px solid #E0E5EC',
@@ -51,12 +52,11 @@ class SocialTabs extends React.Component {
           style={{ background: 'transparent', boxShadow: 'none' }}
         >
           <Tabs
+            style={{ background: 'transparent', boxShadow: 'none' }}
             value={this.state.value}
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            variant="fullWidth"
-            style={{ background: 'transparent', boxShadow: 'none' }}
           >
             <Tab
               label="following"
@@ -67,7 +67,7 @@ class SocialTabs extends React.Component {
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',
                 borderRadius: '22px 22px 0 0',
-                width: '60px',
+                width: '50%',
               }}
             />
             <Tab
@@ -79,35 +79,39 @@ class SocialTabs extends React.Component {
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',
                 borderRadius: '22px 22px 0 0',
-                width: '60px',
+                width: '50%',
               }}
             />
           </Tabs>
         </AppBar>
-        <SwipeableViewsCustom
-          // style={{
-          //   width: '100%',
-          //   height: '100vh',
-          //   // boxSizing: 'content-box',
-          //   overflow: 'hidden',
-          // }}
+        <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
         >
           <TabContainer
-            dir={theme.direction}
             style={{
               boxShadow: 'none',
-              borderLeft: '1px solid #E0E5EC',
-              borderRight: '1px solid #E0E5EC',
-              borderBottom: '1px solid #E0E5EC',
+              borderLeft: '1px solid #e0e5ec',
+              borderRight: '1px solid #e0e5ec',
+              borderBottom: '1px solid #e0e5ec',
             }}
+            dir={theme.direction}
           >
             {children}
           </TabContainer>
-          <TabContainer dir={theme.direction}>Item Two</TabContainer>
-        </SwipeableViewsCustom>
+          <TabContainer
+            style={{
+              boxShadow: 'none',
+              borderLeft: '1px solid #e0e5ec',
+              borderRight: '1px solid #e0e5ec',
+              borderBottom: '1px solid #e0e5ec',
+            }}
+            dir={theme.direction}
+          >
+            {children}
+          </TabContainer>
+        </SwipeableViews>
       </div>
     )
   }

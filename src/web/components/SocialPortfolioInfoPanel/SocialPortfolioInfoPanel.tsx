@@ -24,7 +24,7 @@ class SocialPortfolioInfoPanel extends Component {
 
   render() {
     const { rating } = this.state
-    const { theme } = this.props
+    const { theme, folioData } = this.props
     return (
       <GridMainContainer
         container
@@ -32,7 +32,8 @@ class SocialPortfolioInfoPanel extends Component {
         alignItems="center"
       >
         <Grid item lg={2} justify="center">
-          <TypographyHeader>George soros</TypographyHeader>
+          <TypographyHeader>{folioData.name}</TypographyHeader>
+          {/* <TypographyHeader>George soros</TypographyHeader> */}
           <TypographyHeader>portfolio</TypographyHeader>
         </Grid>
 
@@ -45,7 +46,10 @@ class SocialPortfolioInfoPanel extends Component {
               lg={3}
             >
               <TypographyTitle>
-                By <SpanCell>G.Soros</SpanCell>
+                {folioData.isPrivate
+                  ? folioData.ownerId.email
+                  : `Public portfolio`}
+                {/* By <SpanCell>G.Soros</SpanCell> */}
               </TypographyTitle>
             </GridCell>
             <GridCell
@@ -53,7 +57,6 @@ class SocialPortfolioInfoPanel extends Component {
               border={`1px solid ${theme.palette.divider}`}
               item
               lg={4}
-              style={{ display: 'flex', justifyContent: 'center' }}
             >
               <Grid>
                 <StarRatingComponent
@@ -65,7 +68,7 @@ class SocialPortfolioInfoPanel extends Component {
                   onStarClick={this.onStarClick.bind(this)}
                 />
               </Grid>
-              <TypographyTitle style={{ padding: '0 0 0 5px' }}>
+              <TypographyTitle padding={'0 0 0 5px'}>
                 4324 votes
               </TypographyTitle>
             </GridCell>
@@ -80,7 +83,7 @@ class SocialPortfolioInfoPanel extends Component {
             <GridCell
               item
               border={`1px solid ${theme.palette.divider}`}
-              style={{ width: '100%' }}
+              widthCell={'100%'}
               item
               lg={1}
             >

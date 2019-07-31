@@ -13,6 +13,9 @@ export const GridMainContainer = styled(Grid)`
 `
 
 export const GridCell = styled(Grid)`
+  display: flex;
+  justify-content: center;
+  width: ${(props) => props.widthCell};
   border-left: ${(props) => props.border};
   text-align: center;
   font-size: 1.2rem;
@@ -77,4 +80,5 @@ export const ButtonCustom = styled(
 
 export const TypographyTitle = styled(Typography)`
   font-size: 1.2rem;
+  padding: ${(props) => props.padding};
 `

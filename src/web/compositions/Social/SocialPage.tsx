@@ -5,7 +5,6 @@ import { Input, Grid, Paper } from '@material-ui/core'
 import {
   PortfolioName,
   TypographyTitle,
-  TypographyPercentage,
   FolioValuesCell,
   TypographySearchOption,
   ReactSelectCustom,
@@ -14,6 +13,7 @@ import {
   FolioCard,
   GridPageContainer,
   GridFolioScroll,
+  InputCustom,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -35,6 +35,8 @@ import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 
 import { withTheme } from '@material-ui/styles'
 import { transformData } from '@core/utils/SocialUtils'
+
+import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -65,27 +67,18 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
   <FolioCard
     container
     onClick={onClick}
-    style={{
-      width: '93%',
-      margin: '10px auto 15px auto',
-      padding: '10px 12px',
-      background: '#fff',
-      border: `${!isSelected ? 'none' : '1px solid #E0E5EC'}`,
-      borderBottom: '1px solid #E0E5EC',
-      borderRadius: `${!isSelected ? '22px 22px 0 0 ' : '22px'}`,
-      boxShadow: `${
-        !isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.5)'
-      }`,
-    }}
+    border={isSelected ? '22px' : '22px 22px 0 0 '}
+    boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
+    borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
   >
     <Grid>
-      <Grid
-        style={{
-          width: 'auto',
-        }}
-      />
       <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
-      <TypographyTitle paddingText={'0'} marginText={'0'}>
+      <TypographyTitle
+        fontSize={'0.9rem'}
+        textColor={'#7284A0'}
+        paddingText={'0'}
+        marginText={'0'}
+      >
         {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
       </TypographyTitle>
     </Grid>
@@ -93,21 +86,28 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
       <FolioValuesCell item>
         <div>
           <TypographyTitle>Assets</TypographyTitle>
-          <TypographyTitle>{el.portfolioAssets.length}</TypographyTitle>
-        </div>
-      </FolioValuesCell>
-      <FolioValuesCell item>
-        <div>
-          <TypographyTitle>Month perform</TypographyTitle>
-          <TypographyTitle fontSize={'1.2rem'} textColor={'#97C15C'}>
+          <TypographyTitle fontSize={'1.2rem'} textColor={'#16253D'}>
             {el.portfolioAssets.length}
           </TypographyTitle>
         </div>
       </FolioValuesCell>
       <FolioValuesCell item>
         <div>
+          <TypographyTitle>Month performance</TypographyTitle>
+          <TypographyTitle
+            fontSize={'1.2rem'}
+            textColor={isSelected ? '#97C15C' : '#2F7619'}
+          >
+            + {el.portfolioAssets.length} %
+          </TypographyTitle>
+        </div>
+      </FolioValuesCell>
+      <FolioValuesCell item>
+        <div>
           <TypographyTitle>Exchanges</TypographyTitle>
-          <TypographyTitle>{el.portfolioAssets.length}</TypographyTitle>
+          <TypographyTitle fontSize={'1.2rem'} textColor={'#16253D'}>
+            {el.portfolioAssets.length}
+          </TypographyTitle>
         </div>
       </FolioValuesCell>
     </Grid>
@@ -143,6 +143,7 @@ class SocialPage extends React.Component {
         // { id: 'name', label: 'Account', isNumber: false },
         //{ id: 'portfolio', label: 'portfolio', isNumber: true },
         { id: 'coin', label: 'coin', isNumber: false },
+        { id: 'exchange', label: 'exchange', isNumber: false },
         { id: 'price', label: 'price', isNumber: true },
         { id: 'quantity', label: 'quantity', isNumber: true },
         { id: 'usd', label: isUSDCurrently ? 'usd' : 'BTC', isNumber: true },
@@ -193,6 +194,26 @@ class SocialPage extends React.Component {
     //   }
     // )
 
+    const totalFolioAssetsData = getFollowingPortfolios[
+      selectedPortfolio
+    ].portfolioAssets.reduce(
+      (acc, el) => {
+        acc.assets++
+        acc.realized += el.realized
+        acc.unrealized += el.unrealized
+        acc.totalPL = el.totalPL
+        return acc
+      },
+      {
+        assets: 0,
+        realized: 0,
+        unrealized: 0,
+        totalPL: 0,
+      }
+    )
+
+    console.log('____: ', getFollowingPortfolios[selectedPortfolio])
+    console.log('custom acc: ', totalFolioAssetsData)
     console.log('SELECTED FOLIO:', selectedPortfolio)
     console.log('FOLIOS:', getFollowingPortfolios)
 
@@ -231,7 +252,14 @@ class SocialPage extends React.Component {
 
     return (
       <GridPageContainer container xs={12}>
-        <Grid item xs={3}>
+        <Grid
+          item
+          xs={3}
+          style={{
+            background: '#f9fbfd',
+            boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
+          }}
+        >
           <SocialTabs>
             <GridSortOption
               container
@@ -293,21 +321,10 @@ class SocialPage extends React.Component {
                 </Grid>
               </Grid>
             </GridSortOption>
-            <Input
+            <InputCustom
               disableUnderline={true}
               placeholder={``}
               fontSize={`1.2rem`}
-              style={{
-                height: '32px',
-                width: '100%',
-                display: 'flex',
-                alignSelf: 'flex-start',
-                margin: '0 auto 10px auto',
-                padding: '5px',
-                borderRadius: '0px',
-                background: '#F9FBFD',
-                border: '1px solid #E0E5EC',
-              }}
               onChange={this.handleSearchInput}
             />
             <GridFolioScroll>{sharedPortfoliosList}</GridFolioScroll>
@@ -316,9 +333,11 @@ class SocialPage extends React.Component {
         {/* <Grid lg={8}> */}
 
         <GridTableContainer container justify="center" xs={9}>
-          <Grid continer lg={12} style={{ padding: '0 0 0 15px' }}>
-            <SocialPortfolioInfoPanel />
-            <SocialBalancePanel />
+          <Grid continer lg={12}>
+            <SocialPortfolioInfoPanel
+              folioData={getFollowingPortfolios[selectedPortfolio]}
+            />
+            <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
             {/* <GridItemContainer item lg={2} md={2}>
               <GridContainerTitle content alignItems="center">
                 <TypographyContatinerTitle>
@@ -352,10 +371,10 @@ class SocialPage extends React.Component {
               </Grid>
             </GridItemContainer> */}
             <TableWithSort
-              style={{
-                border: '3px solid red',
-                borderRadius: '22px 22px 0 0',
-              }}
+              // style={{
+              //   border: '3px solid red',
+              //   borderRadius: '22px 22px 0 0',
+              // }}
               id="PortfolioSocialTable"
               //title="Portfolio"
               columnNames={head}
@@ -403,6 +422,16 @@ class SocialPage extends React.Component {
               }}
             />
           </Grid>
+
+          {/* chart */}
+          <PortfolioMainChart
+            title="Portfolio Value | Coming Soon | In development"
+            style={{
+              marginLeft: 0,
+              minHeight: '10vh',
+            }}
+            marginTopHr="10px"
+          />
         </GridTableContainer>
         {/* </Grid> */}
       </GridPageContainer>

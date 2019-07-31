@@ -7,11 +7,15 @@ import {
   GridMainContainer,
 } from './SocialBalancePanel.styles'
 import { compose } from 'recompose'
+import {
+  roundAndFormatNumber,
+  roundPercentage,
+} from '@core/utils/PortfolioTableUtils'
 
 @withTheme()
 class SocialBalancePanel extends Component {
   render() {
-    const { theme } = this.props
+    const { theme, totalFolioAssetsData } = this.props
     return (
       <GridMainContainer container justify="space-between">
         <GridColumn>
@@ -30,7 +34,7 @@ class SocialBalancePanel extends Component {
               assets
             </TypographyTitleCell>
             <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-              12
+              {totalFolioAssetsData.assets}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -40,7 +44,8 @@ class SocialBalancePanel extends Component {
               realized P{`&`}L
             </TypographyTitleCell>
             <TypographyValueCell textColor={'#2F7619'}>
-              $24500
+              $
+              {roundAndFormatNumber(totalFolioAssetsData.realized, 4, true)}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -50,7 +55,12 @@ class SocialBalancePanel extends Component {
               Unrealized P{`&`}L
             </TypographyTitleCell>
             <TypographyValueCell textColor={'#B93B2B'}>
-              -$120300
+              -$
+              {roundAndFormatNumber(
+                totalFolioAssetsData.unrealized,
+                4,
+                true
+              )}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -60,7 +70,11 @@ class SocialBalancePanel extends Component {
               Total P{`&`}L
             </TypographyTitleCell>
             <TypographyValueCell textColor={'#B93B2B'}>
-              -$120300
+             $ {roundAndFormatNumber(
+                totalFolioAssetsData.totalPL,
+                4,
+                true
+              )}
             </TypographyValueCell>
           </div>
         </GridColumn>
