@@ -12,7 +12,7 @@ import {
 export const TypographyCustomHeading = styled(
   ({ color, fontWeight, ...rest }) => (<Typography {...rest} />)
 )`
-  font-size: 12px;
+  font-size: 1.2rem;
   color: ${(props) => props.color || '#000'};
   font-weight: ${(props) => props.fontWeight || `400`};
   text-transform: uppercase;

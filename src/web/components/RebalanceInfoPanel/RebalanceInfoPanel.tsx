@@ -156,7 +156,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   options={rebalanceSelectTimeOptions}
                   singleValueStyles={{
                     color: '#165BE0',
-                    fontSize: `${width === 'xl' ? '1.8rem' : '11px'}`,
+                    fontSize: `1.1rem`,
                     padding: '0',
                   }}
                   indicatorSeparatorStyles={{}}
@@ -175,7 +175,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                     color: '#7284A0',
                     background: 'transparent',
                     textAlign: 'center',
-                    fontSize: `${width === 'xl' ? '1.8rem' : '11px'}`,
+                    fontSize: `1.1rem`,
                     '&:hover': {
                       borderRadius: '14px',
                       color: '#16253D',

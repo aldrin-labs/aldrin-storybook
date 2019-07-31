@@ -15,6 +15,7 @@ import {
   StyledSubTypography,
   StyledTypographyAccordionHeader,
   TableCellLast,
+  SliderTypography,
 } from './RebalanceAccordionIndex.styles'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
@@ -84,14 +85,14 @@ class TablePanelSummary extends React.Component {
                 disabled
               />
               <Tooltip title={`${value.toFixed(4)}%`} placement="bottom-end">
-                <StyledTypography
+                <SliderTypography
                   fontWeight="bold"
                   color={theme.palette.text.subPrimary}
-                  fontSize={`${width === 'xl' ? '2.4rem' : '1.2rem'}`}
+                  fontSize={`1.2rem`}
                   marginLeft="15px"
                 >
                   {value.toFixed(0)}%
-                </StyledTypography>
+                </SliderTypography>
               </Tooltip>
             </TableCell>
             {/* //TODO padding for all screens */}

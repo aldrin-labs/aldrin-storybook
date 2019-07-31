@@ -30,7 +30,7 @@ export const BtnCustom = styled(
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     padding: 0.5rem 1rem;
     width: auto;
-    font-size: 1.8rem;
+    //font-size: 1.8rem;
     height: auto;
   }
 `

@@ -56,7 +56,7 @@ export const TypographyAccordionTitle = styled(Typography)`
   text-transform: uppercase;
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    font-size: 2.4rem;
+    //font-size: 2.4rem;
   }
 `
 
@@ -71,7 +71,7 @@ export const GridProgressTitle = styled(Grid)`
 export const TypographyProgress = styled(Typography)`
   margin-top: 10px;
   color: ${(props) => props.textColor || '#16253d'};
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
@@ -84,7 +84,7 @@ export const TypographyProgress = styled(Typography)`
     align-items: center;
     justify-content: center;
     height: 57px;
-    font-size: 2.4rem;
+    //font-size: 2.4rem;
   }
 `
 
