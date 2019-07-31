@@ -1,10 +1,22 @@
-import React from 'react'
 import styled from 'styled-components'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Typography, Input } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
+
+export const InputCustom = styled(Input)`
+  height: 32px;
+  width: 100%;
+  display: flex;
+  align-self: flex-start;
+  margin: 0 auto 10px auto;
+  padding: 5px;
+  border-radius: 0px;
+  background: #f9fbfd;
+  border: 1px solid #e0e5ec;
+`
 
 export const GridPageContainer = styled(Grid)`
   padding-top: 15px;
+  width: 100%;
 `
 
 export const TypographySearchOption = styled(Typography)`
@@ -74,17 +86,20 @@ export const GridSortOption = styled(Grid)`
   border-right: 1px solid #e0e5ec;
 `
 
-export const GridTableContainer = styled(Grid)``
+export const GridTableContainer = styled(Grid)`
+  padding: 0 0 0 15px;
+`
 export const FolioCard = styled(Grid)`
   height: 140px;
+  width: 93%;
+  margin: 10px auto 15px auto;
+  padding: 10px 12px;
+  background: #fff;
+  border: ${(props) => props.border};
+  border-bottom: 1px solid #e0e5ec;
+  box-shadow: ${(props) => props.boxShadow};
+  border-radius: ${(props) => props.borderRadius};
 `
-
-export const GridPortfolioContainer = styled(Grid)`
-  /* display: flex;
-  justify-content: center;
-  padding: 15px; */
-`
-
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
   height: 100vh;
