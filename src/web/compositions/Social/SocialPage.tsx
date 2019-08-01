@@ -150,6 +150,7 @@ class SocialPage extends React.Component {
       head: [
         // { id: 'name', label: 'Account', isNumber: false },
         //{ id: 'portfolio', label: 'portfolio', isNumber: true },
+        // { id: 'coin', label: '', isNumber: false },
         { id: 'coin', label: 'coin', isNumber: false },
         { id: 'exchange', label: 'exchange', isNumber: false },
         { id: 'price', label: 'price', isNumber: true },
@@ -394,10 +395,10 @@ class SocialPage extends React.Component {
                     emptyTableText="No assets"
                     tableStyles={{
                       heading: {
+                        padding: '0 0 0 18px',
                         textAlign: 'left',
                         maxWidth: '14px',
                         background: '#F2F4F6',
-                        padding: '0 0 0 8px',
                         fontFamily: "'DM Sans'",
                         fontSize: '0.9rem',
                         color: '#7284A0',
