@@ -5,13 +5,13 @@ import { Grid } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
 } from './ProgressBar.styles'
 
 import ProgressBarSection from './ProgressBarSection'
 import ProgressBarCoins from './ProgressBarCoins'
 import ProgressOtherCoins from './ProgressOtherCoins'
+import { LinearProgressCustom } from '@sb/styles/cssUtils'
 
 const styles = (theme) => ({
   root: {

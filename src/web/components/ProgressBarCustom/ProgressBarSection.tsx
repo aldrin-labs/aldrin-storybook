@@ -2,9 +2,10 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
 } from './ProgressBar.styles'
+
+import { LinearProgressCustom } from '@sb/styles/cssUtils'
 
 export default function ProgressBarSection(props) {
   const { datum } = props

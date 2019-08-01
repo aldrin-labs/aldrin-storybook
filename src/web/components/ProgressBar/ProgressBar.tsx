@@ -77,7 +77,6 @@ class ProgressBar extends PureComponent<IProps> {
               ? 'secondary'
               : '#E7ECF3'
           }
-          height="20px"
           variant="determinate"
           value={completed}
         />
