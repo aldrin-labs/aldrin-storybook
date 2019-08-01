@@ -37,7 +37,7 @@ export const StyledTransactionsButton = styled(StyledButton)`
   left: calc(100vw - 8.4rem);
   top: 0px;
   border-radius: 0 0 1rem 1rem;
-
+  text-decoration: none;
   &:hover {
     left: calc(100vw - 7.76rem);
   }
