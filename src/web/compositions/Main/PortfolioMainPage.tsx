@@ -135,7 +135,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <SharePortfolioDialog
             portfolioKeys={portfolioKeys}
             portfolioId={portfolioId}
-            sharePortfolioTitle={`SHARE ${portfolioName}`}
+            sharePortfolioTitle={portfolioName}
             openSharePortfolioPopUp={openSharePortfolioPopUp}
             sharePortfolioMutation={sharePortfolioMutation}
             handleCloseSharePortfolio={this.handleCloseSharePortfolio}

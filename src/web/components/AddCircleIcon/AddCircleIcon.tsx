@@ -63,6 +63,11 @@ export const getCircleSymbolPnl = (coin: string, data) => (
         }`,
         fontSize: '10px',
         margin: 'auto 3px auto 12px',
+
+        '@media only screen and (min-width: 2560px)': {
+          position: 'relative',
+          top: '-3px'
+        }
       }}
     />
     {coin}

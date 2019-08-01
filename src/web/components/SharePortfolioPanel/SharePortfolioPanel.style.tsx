@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import { Typography, Button, Grid } from '@material-ui/core'
 
 export const TypographyHeading = styled(Typography)`
-  border-left: 3px solid #165be0;
-  border-radius: 4px 0px 0px 4px;
-  padding: 8px 15px;
+  border-left: .3rem solid #165be0;
+  border-radius: .4rem 0px 0px .4rem;
+  padding: .5rem 1.2rem .5rem 1rem;
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;

@@ -17,4 +17,12 @@ export interface IProps {
 export interface IState {
   shareWithSomeoneTab: boolean
   selectedUserEmail: any
+  selectedAccounts: string[]
+  showPortfolioValue: boolean
+  selectedPortfolioTypes: string[]
+  tradeFrequency: string
+  isPortfolioFree: boolean
+  portfolioPrice: string
+  marketName: string
+  portfolioDescription: string
 }

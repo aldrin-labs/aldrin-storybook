@@ -27,9 +27,9 @@ export const GridRow = styled(Grid)`
 `
 
 export const TypographyHeading = styled(Typography)`
-  border-left: 3px solid #165be0;
-  border-radius: 4px 0px 0px 4px;
-  padding-left: 15px;
+  border-left: .3rem solid #165be0;
+  border-radius: .4rem 0px 0px .4rem;
+  padding: .5rem 0 .5rem 1rem;
 
   font-family: DM Sans;
   font-style: normal;

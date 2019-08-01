@@ -20,6 +20,8 @@ import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_PORTFOLIO_KEY_ASSETS } from '@core/graphql/queries/portfolio/main/getPortfolioKeysAssets'
 
+const addCommasToMoneyNumber = (number: number) => number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
 const dataOverview = [
   {
     exchange: 'Binance trade account',
@@ -96,7 +98,7 @@ class DetailedExpansionPanel extends React.Component {
                   Value
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                  {totalKeyAssetsData.portfolioKeyAssetsValue}
+                  ${addCommasToMoneyNumber(totalKeyAssetsData.portfolioKeyAssetsValue)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -117,8 +119,7 @@ class DetailedExpansionPanel extends React.Component {
                   realized P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={'#2F7619'}>
-                  {totalKeyAssetsData.realizedPnl}
-
+                  ${addCommasToMoneyNumber(totalKeyAssetsData.realizedPnl)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -128,8 +129,7 @@ class DetailedExpansionPanel extends React.Component {
                   Unrealized P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={'#B93B2B'}>
-                  {totalKeyAssetsData.unrealizedPnl}
-
+                  ${addCommasToMoneyNumber(totalKeyAssetsData.unrealizedPnl)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -139,8 +139,7 @@ class DetailedExpansionPanel extends React.Component {
                   Total P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={'#B93B2B'}>
-                  {totalKeyAssetsData.totalPnl}
-
+                  ${addCommasToMoneyNumber(totalKeyAssetsData.totalPnl)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
