@@ -37,7 +37,7 @@ export const TableWrapper = styled(Card as React.SFC<
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  border: 1px solid #E0E5EC;
+  border: 2px solid #E0E5EC;
   
   box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
 
