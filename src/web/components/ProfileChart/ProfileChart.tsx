@@ -173,7 +173,7 @@ export default class ProfileChart extends React.Component<IProfileChartProps, IP
               data={yearData}
               style={{
                 fill: 'rgba(133, 237, 238, 0.35)',
-                stroke: 'rgb(78, 216, 218)',
+                stroke: '#165BE0', //'rgb(78, 216, 218)',
                 strokeWidth: '3px',
               }}
             />
