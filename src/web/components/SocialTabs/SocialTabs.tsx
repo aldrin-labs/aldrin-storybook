@@ -5,7 +5,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { Typography } from '@material-ui/core'
-import { TabContainerCustom } from './SocialTabs.styles'
+import { TabCustom } from './SocialTabs.styles'
 
 function TabContainer({ children, dir }) {
   return (
@@ -31,10 +31,12 @@ class SocialTabs extends React.Component {
   state = {
     value: 0,
     selectedPortfolio: 0,
+    //isTabSelected: true,
   }
 
   handleChange = (event, value) => {
     this.setState({ value })
+    //, isTabSelected: !this.state.isTabSelected
   }
 
   handleChangeIndex = (index) => {
@@ -67,7 +69,8 @@ class SocialTabs extends React.Component {
               label="following"
               style={{
                 fontSize: '1.2rem',
-                color: 'black',
+                color: '#7284A0',
+                background: this.state.value === 0 ? 'white' : '#eef0f3',
                 borderTop: '1px solid #E0E5EC',
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',
@@ -79,7 +82,8 @@ class SocialTabs extends React.Component {
               label="My"
               style={{
                 fontSize: '1.2rem',
-                color: 'black',
+                color: '#7284A0',
+                background: this.state.value === 1 ? 'white' : '#eef0f3',
                 borderTop: '1px solid #E0E5EC',
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',

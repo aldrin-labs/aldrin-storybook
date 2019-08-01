@@ -395,7 +395,7 @@ class SocialPage extends React.Component {
                     emptyTableText="No assets"
                     tableStyles={{
                       heading: {
-                        padding: '0 0 0 18px',
+                        padding: '0', //'0 0 0 18px',
                         textAlign: 'left',
                         maxWidth: '14px',
                         background: '#F2F4F6',
