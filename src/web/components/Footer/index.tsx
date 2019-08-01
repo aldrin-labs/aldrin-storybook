@@ -8,9 +8,10 @@ import {
   AppBar,
   IconButton,
   Switch,
-  Typography,
-  Button,
+  Typography
 } from '@material-ui/core'
+
+import { StyledButton, StyledTypography } from './index.styles'
 
 import { PrivacyPolicy } from '@sb/components/index'
 
@@ -43,21 +44,21 @@ const Footer = ({
       fullscreenMode={fullscreenMode}
     >
       <Block>
-        <Typography variant="caption" color="default">
+        <StyledTypography color="default">
           Cryptocurrencies Ai, 2018{' '}
-        </Typography>
+        </StyledTypography>
 
         <Typography variant="h6" color="secondary">
           •
         </Typography>
 
-        <Button
+        <StyledButton
           size="small"
           onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
           color="default"
         >
           Privacy Policy
-        </Button>
+        </StyledButton>
       </Block>
 
       <Block>
@@ -67,9 +68,9 @@ const Footer = ({
       </Block>
 
       <Block>
-        <Typography variant="body1" color="textPrimary">
+        <StyledTypography color="textPrimary">
           NIGHT MODE
-        </Typography>
+        </StyledTypography>
         <Switch
           checked={themeMode === 'dark'}
           onChange={async () => {

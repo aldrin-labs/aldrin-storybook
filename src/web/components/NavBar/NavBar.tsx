@@ -27,6 +27,7 @@ export interface Props extends WithTheme {
 const Portfolio = (props: any) => <Link to="/portfolio" {...props} />
 const Chart = (props: any) => <Link to="/chart" {...props} />
 const Market = (props: any) => <Link to="/market" {...props} />
+const Signals = (props: any) => <Link to="/signals" {...props} />
 
 const NavBarRaw: SFC<Props> = ({
   theme: {
@@ -118,8 +119,8 @@ const NavBarRaw: SFC<Props> = ({
               </NavLinkButton>
 
               <NavLinkButton
-                page={`market`}
-                component={Market}
+                page={`signals`}
+                component={Signals}
                 pathname={pathname}
               >
                 Signals

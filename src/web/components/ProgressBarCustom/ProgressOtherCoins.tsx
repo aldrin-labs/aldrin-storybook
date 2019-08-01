@@ -70,7 +70,7 @@ function ProgressOtherCoins({
           />
         </GridProgressBarContainer>
 
-        <GridFlex item lg={3} md={3} padding={'0 0 0 45px'}>
+        <GridFlex item lg={3} md={3} padding={'0 0 0 45px'} style={{ justifyContent: 'center' }} >
           <TypographyCustom>
             {UTILS.preparePercentage(+otherCoinsPercentage)}
           </TypographyCustom>
