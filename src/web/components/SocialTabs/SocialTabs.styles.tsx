@@ -28,14 +28,18 @@ export const TabsCustom = styled(Tabs)`
   box-shadow: none;
 `
 export const TabCustom = styled(Tab)`
-  font-size: 1.2rem;
-  color: black;
-  border-top: 1px solid #e0e5ec;
-  border-left: 1px solid #e0e5ec;
-  border-right: 1px solid #e0e5ec;
-  border-radius: 22px 22px 0 0;
-  width: 60px;
-  :visited {
-    color: red;
-  }
-`
+         /* &&& {
+           color: red;
+         } */
+         /* 
+         font-size: 1.2rem;
+         color: green;
+         border-top: 1px solid #e0e5ec;
+         border-left: 1px solid #e0e5ec;
+         border-right: 1px solid #e0e5ec;
+         border-radius: 22px 22px 0 0;
+         width: 60px;
+         :visited {
+           color: red;
+         } */
+       `
