@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 
-export const PortfolioName = styled(Typography)`
+export const SignalName = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
@@ -31,5 +31,5 @@ export const FolioValuesCell = styled(Grid)`
   padding: 10px;
   background: ${(props) => props.bgColor || '#F9FBFD'};
   border: ${(props) => props.borderCell || '1px solid #E0E5EC'};
-  border-radius: ${props => props.borderRadius || '12px' };
+  border-radius: ${props => props.borderRadius || '12px'};
 `

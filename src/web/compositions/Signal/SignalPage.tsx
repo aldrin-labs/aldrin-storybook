@@ -25,11 +25,10 @@ import {
     roundPercentage,
     roundAndFormatNumber,
     combineTableData,
-} from '@core/utils/SignalTableUtils'
+} from '@core/utils/PortfolioTableUtils'
 import { withTheme } from '@material-ui/styles'
 import { isObject, zip } from 'lodash-es'
 
-import SocialSignalInfoPanel from '@sb/components/SocialSignalInfoPanel/SocialSignalInfoPanel'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 
@@ -247,7 +246,6 @@ class SocialPage extends React.Component {
                     {/* {sharedSignalsList} */}
                 </Grid>
                 <Grid lg={9}>
-                    <SocialSignalInfoPanel />
 
                     <Grid item xs={7} spacing={24} style={{ padding: '15px' }}>
                         <TableWithSort
