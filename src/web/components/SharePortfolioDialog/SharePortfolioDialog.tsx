@@ -32,6 +32,7 @@ import {
   StyledInput,
   StyledTextArea
 } from './SharePortfolioDialog.styles'
+import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 
 const tradingPortfolioTypes = [
   'Bull trading',
@@ -49,8 +50,8 @@ IProps,
 IState
 > {
   state: IState = {
+    selectedUsername: null,
     shareWithSomeoneTab: true,
-    selectedUserEmail: null,
     showPortfolioValue: true,
     isPortfolioFree: true,
     portfolioPrice: '',
@@ -61,9 +62,20 @@ IState
     selectedPortfolioTypes: ['Bull trading'],
   }
 
-  onChangeUserEmail = (e) => {
-    this.setState({ selectedUserEmail: e.target.value })
+  onChangeUsername = (
+    optionSelected: { label: string; value: string } | null
+  ) => {
+    const selectedUsername =
+      optionSelected && !Array.isArray(optionSelected)
+        ? { label: optionSelected.label, value: optionSelected.value }
+        : null
+
+    this.setState({ selectedUsername })
   }
+
+  // onChangeUserEmail = (e) => {
+  //   this.setState({ selectedUsername: e.target.value })
+  // }
 
   changeShowPortfolioValue = (bool: boolean) => {
     this.setState({ showPortfolioValue: bool });
@@ -130,14 +142,14 @@ IState
 
   sharePortfolioHandler = async (forAll?: boolean) => {
     const { sharePortfolioMutation, portfolioId } = this.props
-    const { selectedUserEmail } = this.state
+    const { selectedUsername } = this.state
 
     const variables = {
       inputPortfolio: {
         id: portfolioId,
       },
       optionsPortfolio: {
-        ...(forAll ? {} : { userId: selectedUserEmail.value }),
+        ...(forAll ? {} : { userId: selectedUsername.value }),
         ...(forAll ? { forAll: true } : { forAll: false }),
         accessLevel: 2,
       },
@@ -162,7 +174,7 @@ IState
     } = this.props
 
     const {
-      selectedUserEmail,
+      selectedUsername,
       shareWithSomeoneTab,
       showPortfolioValue,
       selectedAccounts,
@@ -296,13 +308,22 @@ IState
                   </StyledButton>
                 </Grid>
                 <Grid container justify="space-between">
-                  <StyledInput
-                    type="text"
-                    width="80"
-                    value={selectedUserEmail}
-                    placeholder="Share with someone by email"
-                    onChange={this.onChangeUserEmail}
-                  />
+                  <Grid item style={{ minWidth: '300px', fontSize: '1.6rem'}} >
+                    <SearchUsername
+                      isClearable={true}
+                      value={
+                        selectedUsername
+                          ? [
+                            {
+                              label: selectedUsername.label,
+                              value: selectedUsername.value,
+                            },
+                          ]
+                          : null
+                      }
+                      onChange={this.onChangeUsername}
+                    />
+                  </Grid>
                   <StyledButton
                     padding=".8rem 3rem"
                     onClick={() => this.sharePortfolioHandler(false)}

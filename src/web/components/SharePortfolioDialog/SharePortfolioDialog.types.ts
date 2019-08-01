@@ -15,6 +15,7 @@ export interface IProps {
 }
 
 export interface IState {
+  selectedUsername: null | { label: string, value: string }
   shareWithSomeoneTab: boolean
   selectedUserEmail: any
   selectedAccounts: string[]
