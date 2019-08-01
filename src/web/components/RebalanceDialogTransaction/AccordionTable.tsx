@@ -19,6 +19,9 @@ import {
 const styles = (theme) => ({
   root: {
     width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -70,15 +73,13 @@ class AccordionTable extends React.Component<IProps, IState> {
           >
             <TypographyCustom>{accordionTitle}</TypographyCustom>
           </ExpansionPanelSummaryCustom>
-          <ExpansionPanelDetails>
-            <Typography>
-              <TransactionTable
-                isCompleted={isCompleted}
-                getError={getError}
-                transactionsData={transactionsData}
-                isFinished={isFinished}
-              />
-            </Typography>
+          <ExpansionPanelDetails style={{ padding: '0.1rem 0 2rem 0', display: 'block' }}>
+            <TransactionTable
+              isCompleted={isCompleted}
+              getError={getError}
+              transactionsData={transactionsData}
+              isFinished={isFinished}
+            />
           </ExpansionPanelDetails>
         </ExpansionPanelCustom>
       </div>

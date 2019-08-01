@@ -7,6 +7,7 @@ import { IProps, IState } from './ProgressBar.types'
 const styles = {
   root: {
     flexGrow: 1,
+    padding: '2rem 0',
   },
 }
 
