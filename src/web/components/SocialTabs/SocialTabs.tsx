@@ -52,7 +52,12 @@ class SocialTabs extends React.Component {
           style={{ background: 'transparent', boxShadow: 'none' }}
         >
           <Tabs
-            style={{ background: 'transparent', boxShadow: 'none' }}
+            style={{
+              background: 'transparent',
+              boxShadow: 'none',
+              // display: 'flex',
+              // justifyContent: 'space-between',
+            }}
             value={this.state.value}
             onChange={this.handleChange}
             indicatorColor="primary"
@@ -66,7 +71,7 @@ class SocialTabs extends React.Component {
                 borderTop: '1px solid #E0E5EC',
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',
-                borderRadius: '22px 22px 0 0',
+                borderRadius: '22px 0 0 0',
                 width: '50%',
               }}
             />
@@ -78,7 +83,7 @@ class SocialTabs extends React.Component {
                 borderTop: '1px solid #E0E5EC',
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',
-                borderRadius: '22px 22px 0 0',
+                borderRadius: '0 22px 0 0',
                 width: '50%',
               }}
             />

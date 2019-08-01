@@ -24,7 +24,7 @@ class SocialBalancePanel extends Component {
               Value
             </TypographyTitleCell>
             <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-              $100,000
+              ${roundAndFormatNumber(totalFolioAssetsData.total, 3, true)}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -43,9 +43,21 @@ class SocialBalancePanel extends Component {
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               realized P{`&`}L
             </TypographyTitleCell>
-            <TypographyValueCell textColor={'#2F7619'}>
-              $
-              {roundAndFormatNumber(totalFolioAssetsData.realized, 4, true)}
+            <TypographyValueCell
+              textColor={
+                Math.sign(totalFolioAssetsData.realized) === 1
+                  ? '#2F7619'
+                  : '#B93B2B'
+              }
+            >
+              {Math.sign(totalFolioAssetsData.realized) === 1 ? '' : '-'}$
+              {Math.sign(
+                roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
+              ) === 1
+                ? roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
+                : Math.abs(
+                    roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
+                  )}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -54,13 +66,25 @@ class SocialBalancePanel extends Component {
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Unrealized P{`&`}L
             </TypographyTitleCell>
-            <TypographyValueCell textColor={'#B93B2B'}>
-              -$
-              {roundAndFormatNumber(
-                totalFolioAssetsData.unrealized,
-                4,
-                true
-              )}
+            <TypographyValueCell
+              textColor={
+                Math.sign(totalFolioAssetsData.unrealized) === 1
+                  ? '#2F7619'
+                  : '#B93B2B'
+              }
+            >
+              {Math.sign(totalFolioAssetsData.unrealized) === 1 ? '' : '-'}$
+              {Math.sign(
+                roundAndFormatNumber(totalFolioAssetsData.unrealized, 3, true)
+              ) === 1
+                ? roundAndFormatNumber(totalFolioAssetsData.unrealized, 3, true)
+                : Math.abs(
+                    roundAndFormatNumber(
+                      totalFolioAssetsData.unrealized,
+                      3,
+                      true
+                    )
+                  )}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -69,12 +93,44 @@ class SocialBalancePanel extends Component {
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Total P{`&`}L
             </TypographyTitleCell>
-            <TypographyValueCell textColor={'#B93B2B'}>
-             $ {roundAndFormatNumber(
-                totalFolioAssetsData.totalPL,
-                4,
-                true
-              )}
+            <TypographyValueCell
+              textColor={
+                Math.sign(
+                  totalFolioAssetsData.realized +
+                    totalFolioAssetsData.unrealized
+                ) === 1
+                  ? '#2F7619'
+                  : '#B93B2B'
+              }
+            >
+              {Math.sign(
+                totalFolioAssetsData.realized + totalFolioAssetsData.unrealized
+              ) === 1
+                ? ''
+                : '-'}
+              $
+              {Math.sign(
+                roundAndFormatNumber(
+                  totalFolioAssetsData.realized +
+                    totalFolioAssetsData.unrealized,
+                  3,
+                  true
+                )
+              ) === 1
+                ? roundAndFormatNumber(
+                    totalFolioAssetsData.realized +
+                      totalFolioAssetsData.unrealized,
+                    3,
+                    true
+                  )
+                : Math.abs(
+                    roundAndFormatNumber(
+                      totalFolioAssetsData.realized +
+                        totalFolioAssetsData.unrealized,
+                      3,
+                      true
+                    )
+                  )}
             </TypographyValueCell>
           </div>
         </GridColumn>

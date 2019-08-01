@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose } from 'recompose'
 
-import { Input, Grid, Paper } from '@material-ui/core'
+import { Typography, Input, Grid, Paper } from '@material-ui/core'
 import {
   PortfolioName,
   TypographyTitle,
@@ -40,6 +40,9 @@ import { transformData } from '@core/utils/SocialUtils'
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 
+import SvgIcon from '@sb/components/SvgIcon'
+import LineGraph from '@icons/LineGraph.svg'
+
 const getOwner = (str: string) => {
   if (!str) {
     return 'public'
@@ -73,31 +76,34 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
     boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
     borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
   >
-    <Grid>
-      <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
-      <TypographyTitle
-        fontSize={'0.9rem'}
-        textColor={'#7284A0'}
-        paddingText={'0'}
-        marginText={'0'}
-      >
-        {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
-      </TypographyTitle>
+    <Grid container justify="space-between">
+      <Grid item>
+        <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+        <TypographyTitle
+          fontSize={'0.9rem'}
+          textColor={'#7284A0'}
+          paddingText={'0'}
+          marginText={'0'}
+        >
+          {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
+        </TypographyTitle>
+      </Grid>
+      <SvgIcon width="10" height="10" src={LineGraph} />
     </Grid>
     <Grid container alignItems="center" justify="space-between">
       <FolioValuesCell item>
         <div>
           <TypographyTitle>Assets</TypographyTitle>
-          <TypographyTitle fontSize={'1.2rem'} textColor={'#16253D'}>
+          <TypographyTitle fontSize={'1rem'} textColor={'#16253D'}>
             {el.portfolioAssets.length}
           </TypographyTitle>
         </div>
       </FolioValuesCell>
       <FolioValuesCell item>
         <div>
-          <TypographyTitle>Month performance</TypographyTitle>
+          <TypographyTitle>Month perform</TypographyTitle>
           <TypographyTitle
-            fontSize={'1.2rem'}
+            fontSize={'1rem'}
             textColor={isSelected ? '#97C15C' : '#2F7619'}
           >
             + {el.portfolioAssets.length} %
@@ -107,7 +113,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
       <FolioValuesCell item>
         <div>
           <TypographyTitle>Exchanges</TypographyTitle>
-          <TypographyTitle fontSize={'1.2rem'} textColor={'#16253D'}>
+          <TypographyTitle fontSize={'1rem'} textColor={'#16253D'}>
             {el.portfolioAssets.length}
           </TypographyTitle>
         </div>
@@ -177,40 +183,21 @@ class SocialPage extends React.Component {
       setSelectedPortfolio,
     } = this.props
 
-    // const totalKeyAssetsData = getFollowingPortfolios.portfolioKeys.keys.reduce(
-    //   (acc, el) => {
-    //     acc.portfolioKeyAssetsValue += el.portfolioKeyAssetsValue
-    //     acc.portfolioKeyAssetsCount += el.portfolioKeyAssetsCount
-    //     acc.realizedPnl += el.realizedPnl
-    //     acc.unrealizedPnl += el.unrealizedPnl
-    //     acc.totalPnl += el.totalPnl
-
-    //     return acc
-    //   },
-    //   {
-    //     portfolioKeyAssetsValue: 0,
-    //     portfolioKeyAssetsCount: 0,
-    //     realizedPnl: 0,
-    //     unrealizedPnl: 0,
-    //     totalPnl: 0,
-    //   }
-    // )
-
     const totalFolioAssetsData = getFollowingPortfolios[
       selectedPortfolio
     ].portfolioAssets.reduce(
       (acc, el) => {
+        acc.total += el.quantity * el.price
         acc.assets++
         acc.realized += el.realized
         acc.unrealized += el.unrealized
-        acc.totalPL = el.totalPL
         return acc
       },
       {
+        total: 0,
         assets: 0,
         realized: 0,
         unrealized: 0,
-        totalPL: 0,
       }
     )
 
@@ -253,13 +240,16 @@ class SocialPage extends React.Component {
     ]
 
     return (
-      <GridPageContainer container xs={12}>
+      <GridPageContainer
+        container
+        xs={12}
+        style={{ paddingRight: '4%', height: '85vh', overflow: 'hidden' }}
+      >
         <Grid
           item
           xs={3}
           style={{
-            //maxHeight: '100vh', // TODO CHECK IT
-            //background: '#f9fbfd',
+            height: '50vh',
             boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
           }}
         >
@@ -330,7 +320,13 @@ class SocialPage extends React.Component {
               fontSize={`1.2rem`}
               onChange={this.handleSearchInput}
             />
-            <GridFolioScroll>{sharedPortfoliosList}</GridFolioScroll>
+            <GridFolioScroll>
+              {sharedPortfoliosList.length === 0 ? (
+                <Typography>Portfolio hasn't been found in the list</Typography>
+              ) : (
+                sharedPortfoliosList
+              )}
+            </GridFolioScroll>
           </SocialTabs>
         </Grid>
         {/* <Grid lg={8}> */}
@@ -376,41 +372,41 @@ class SocialPage extends React.Component {
 
             {/* pie chart */}
             <Grid container justify="space-between">
-              <Grid item xs={3}>
-                <PortfolioMainAllocation />
-              </Grid>
               <Grid
                 item
-                xs={9}
+                xs={3}
                 style={{
-                  padding: '0 0 0  15px',
-                  borderRadius: '50px  50px 50px 50px',
+                  padding: '0 15px 0 0',
                 }}
               >
+                <PortfolioMainAllocation />
+              </Grid>
+              <Grid item xs={9}>
                 <TableContainer
-                  style={{ borderRadius: '50px  50px 50px 50px' }}
+                  style={{ borderRadius: '14px  14px 14px 14px' }}
                 >
                   <TableWithSort
-                    style={{ borderRadius: '50px  50px 50px 50px' }}
                     id="PortfolioSocialTable"
                     //title="Portfolio"
-
                     columnNames={head}
                     data={{ body, footer }}
                     padding="dense"
                     emptyTableText="No assets"
                     tableStyles={{
                       heading: {
-                        width: '10px',
+                        textAlign: 'left',
+                        maxWidth: '14px',
                         background: '#F2F4F6',
-                        padding: '10px 16px',
+                        padding: '0 0 0 8px',
                         fontFamily: "'DM Sans'",
-                        fontSize: '1.2rem',
+                        fontSize: '0.9rem',
                         color: '#7284A0',
                         lineHeight: '31px',
                         letterSpacing: '1.5px',
                         '&&:first-child': {
+                          // Does'n work
                           borderRadius: '22px 0 0 0',
+                          background: 'red',
                         },
                         '&&:last-child': {
                           borderRadius: '0 22px  0 0',
@@ -418,15 +414,20 @@ class SocialPage extends React.Component {
                       },
 
                       cell: {
-                        //color: '#7284A0',
+                        textAlign: 'left',
+                        maxWidth: '14px',
                         fontFamily: 'DM Sans',
                         fontStyle: 'normal',
                         fontWeight: '500',
                         textTransform: 'uppercase',
                         letterSpacing: '0.5px',
-                        fontSize: '1.4rem',
-                        padding: '10px 16px',
-                        '&&:first-child': { color: 'red' },
+                        fontSize: '1rem',
+                        padding: '0 0 0 8px',
+                        '&&:first-child': {
+                          // Does'n work
+                          color: 'red',
+                          background: 'red',
+                        },
                         '&:before': {
                           content: '',
                           display: 'block',
@@ -448,6 +449,7 @@ class SocialPage extends React.Component {
                     style={{
                       marginLeft: 0,
                       maxHeight: '235px',
+                      boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
                     }}
                     marginTopHr="10px"
                   />
