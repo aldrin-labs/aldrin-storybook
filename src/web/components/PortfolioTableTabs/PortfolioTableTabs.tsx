@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'
@@ -61,9 +61,8 @@ class PortfolioTableTabs extends React.Component<IProps> {
       >
         <StyledAccountsButton onClick={() => toggleWallets()}>Accounts</StyledAccountsButton>
         {pathname === '/portfolio/main'
-          ? <StyledTransactionsButton
-            onClick={() => console.log('transaction button')}
-          > Transactions </StyledTransactionsButton>
+          ? <Link to="/portfolio/transactions"><StyledTransactionsButton
+          > Transactions </StyledTransactionsButton></Link>
           : null
         }
         {/*<BarContainer*/}
