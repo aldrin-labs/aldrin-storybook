@@ -25,7 +25,10 @@ const safePortfolioDestruction = (
     name: '',
     userSettings: {
       portfolioId: '',
-      dustFilter: null,
+      dustFilter: {
+        usd: 0,
+        percentage: 0,
+      },
       keys: [],
       wallets: [],
     },
