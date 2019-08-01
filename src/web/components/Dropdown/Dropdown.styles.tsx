@@ -31,22 +31,36 @@ export const StyledButton = styled(Button)`
 export const StyledDropdown = styled.div`
     position: relative;
     display: inherit;
-    margin: .4rem;
-    padding: .375rem .5rem;
+    margin: 0 .4rem;
+    padding: 1rem .5rem;
+
+    @media(min-width: 1921px) {
+        padding: 1.15rem .5rem;
+    }
+
+    @media(min-width: 2560px) {
+        padding: 1.25rem .5rem;
+    }
 `
 
-export const StyledPaper = withStyles({
-    root: {
-        position: 'absolute',
-        top: '49px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        paddingLeft: '8px',
-        paddingRight: '8px'
+export const StyledPaper = styled(Paper)`
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    @media(min-width: 1921px) {
+        top: 63px;
     }
-})(Paper)
+
+    @media(min-width: 2560px) {
+        top: 80px;
+    }
+`
 
 export const StyledMenuItem = withStyles({
     root: {

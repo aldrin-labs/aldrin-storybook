@@ -98,11 +98,17 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgb(39, 39, 45);
+    background: #165BE0;
   }
   
   .DateRangePicker_picker.DateRangePicker_picker__portal {
     z-index: 200;
+  }
+
+  @media only screen and (min-width: 1921px) {
+    html {
+      font-size: 15px;
+    }
   }
 
   @media only screen and (min-width: 2560px) {
@@ -172,7 +178,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
 
   & .DateInput_input {
     padding: ${(props: { dateInputPadding: string }) =>
-      props.dateInputPadding || '5px'};
+    props.dateInputPadding || '5px'};
     font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>

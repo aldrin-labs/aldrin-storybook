@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { withRouter } from 'react-router-dom'
-import { ClickAwayListener, MenuList } from '@material-ui/core'
+import { MenuList } from '@material-ui/core'
 import {
   StyledDropdown,
   StyledPaper,
@@ -49,20 +49,18 @@ export default class Dropdown extends React.Component<IProps> {
           id={this.props.id}
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
-          <ClickAwayListener onClickAway={this.handleClose}>
-            <MenuList>
-              {this.props.items.map(({ icon, text, to }) => (
-                <StyledMenuItem
-                  disableGutters={true}
-                >
-                  <StyledLink to={to} onClick={this.handleClose}>
-                    {icon}
-                    <StyledMenuItemText>{text}</StyledMenuItemText>
-                  </StyledLink>
-                </StyledMenuItem>
-              ))}
-            </MenuList>
-          </ClickAwayListener>
+          <MenuList>
+            {this.props.items.map(({ icon, text, to }) => (
+              <StyledMenuItem
+                disableGutters={true}
+              >
+                <StyledLink to={to} onClick={this.handleClose}>
+                  {icon}
+                  <StyledMenuItemText>{text}</StyledMenuItemText>
+                </StyledLink>
+              </StyledMenuItem>
+            ))}
+          </MenuList>
         </StyledPaper>
       </StyledDropdown>
     )
