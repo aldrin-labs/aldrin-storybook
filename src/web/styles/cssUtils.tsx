@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { createGlobalStyle, css } from 'styled-components'
-import { Grid, Card, Theme } from '@material-ui/core'
+import { Grid, Card, Theme, LinearProgress } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -10,7 +10,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-    scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -89,7 +89,7 @@ export const GlobalStyle = createGlobalStyle`
  
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-    scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -103,6 +103,12 @@ export const GlobalStyle = createGlobalStyle`
   
   .DateRangePicker_picker.DateRangePicker_picker__portal {
     z-index: 200;
+  }
+  
+  @media only screen and (min-width: 1921px) {
+    html {
+      font-size: 15px;
+    }
   }
 
   @media only screen and (min-width: 2560px) {
@@ -176,18 +182,18 @@ export const StyledWrapperForDateRangePicker = styled.div`
     font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>
-    props.fontSize ? props.fontSize : ''};
+      props.fontSize ? props.fontSize : ''};
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) =>
-    props.dateInputHeight || '36px'};
+      props.dateInputHeight || '36px'};
     color: ${(props: { color: string }) => props.color};
     background: ${(props: { background?: string }) =>
-    props.background || 'transparent'};
+      props.background || 'transparent'};
   }
 
   & .DateRangePicker_picker {
     font-size: ${(props: { fontSize?: string }) =>
-    props.fontSize ? props.fontSize : ''};
+      props.fontSize ? props.fontSize : ''};
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     z-index: ${(props: { zIndexPicker: number }) => props.zIndexPicker || 10};
   }
@@ -195,7 +201,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
   & .DateRangePickerInput {
     border: 0;
     background: ${(props: { background: string }) =>
-    props.background || 'transparent'};
+      props.background || 'transparent'};
     border-bottom: 1px solid #c1c1c1;
   }
 
@@ -211,11 +217,33 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 `
 
+export const LinearProgressCustom = styled(
+  ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
+)`
+  width: ${(props) => props.width || `100%`};
+  background-color: ${(props) => props.color || '#E7ECF3'};
+  border-radius: 10px;
+  height: 12px;
+  padding: 0;
+
+  @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 20px;
+  }
+
+  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 27px;
+  }
+`
+
 export const GridProgressBarContainer = styled(Grid)`
   height: 12px;
 
-  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 36px;
+  @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 20px;
+  }
+
+  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 27px;
   }
 `
 

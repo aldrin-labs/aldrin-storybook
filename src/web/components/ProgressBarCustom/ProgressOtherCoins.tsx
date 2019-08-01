@@ -2,14 +2,13 @@ import React from 'react'
 import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
 } from './ProgressBar.styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import ProgressAccordion from '@sb/components/ProgressAccordion/ProgressAccordion'
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
-import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
+import { GridProgressBarContainer, IconCircle, LinearProgressCustom} from '@sb/styles/cssUtils'
 
 function ProgressOtherCoins({
   otherCoinData,

@@ -75,15 +75,15 @@ const PortfolioRebalanceTable: React.FunctionComponent<
               background: theme.palette.background.table,
               textTransform: 'uppercase',
               fontWeight: 'normal',
-              fontSize: '1.2rem',
+              fontSize: '1.15rem',
             },
             title: {},
             cell: {
               padding: '0px',
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
-              fontSize: '1.44rem',
-              height: width === 'xl' ? '96px' : '48px',
+              fontSize: '1.35rem',
+              height: '48px',
               borderBottom: `1px solid ${
                 theme.palette.grey[theme.palette.type]
               }`,
