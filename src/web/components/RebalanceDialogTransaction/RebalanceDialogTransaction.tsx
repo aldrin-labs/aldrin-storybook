@@ -3,13 +3,14 @@ import { withStyles } from '@material-ui/core/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import Timer from 'react-compound-timer'
 import { withTheme } from '@material-ui/styles'
+import { Dialog, Grid } from '@material-ui/core'
 import {
   TypographyCustomHeading,
   GridCustom,
-  DialogWrapper,
   DialogTitleCustom,
   TypographyTopDescription,
   LinkCustom,
+  StyledPaper,
 } from './RebalanceDialogTransaction.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -83,8 +84,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           <SvgIcon width="60" height="60" src={Ellipse} />
         </LinkCustom>
 
-        <DialogWrapper
-          style={{ borderRadius: '32px' }}
+        <Dialog
+          PaperComponent={StyledPaper}
           onClose={handleClose}
           aria-labelledby="customized-dialog-title"
           open={open}
@@ -102,7 +103,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 : `ARE YOU SURE?`}
             </TypographyCustomHeading>
           </DialogTitleCustom>
-
           <DialogContent justify="center" style={{ borderRadius: '20px' }}>
             {isError ? (
               <>
@@ -230,7 +230,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               isFinished={isFinished}
             />
           </DialogContent>
-        </DialogWrapper>
+        </Dialog>
       </div>
     )
   }
