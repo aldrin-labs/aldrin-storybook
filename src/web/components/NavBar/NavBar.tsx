@@ -2,7 +2,7 @@ import React, { SFC, useState } from 'react'
 import { Login } from '@core/containers/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
-import { Toolbar, Grid } from '@material-ui/core'
+import { Toolbar, Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
@@ -45,6 +45,12 @@ const NavBarRaw: SFC<Props> = ({
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined);
   console.log(MainIcon, IndustryIcon, RebalanceIcon)
+  console.log('pathname', pathname);
+
+  const pathnamePage = pathname.split('/')
+  const page = pathnamePage[pathnamePage.length - 1]
+
+
   return (
     <Nav
       position="static"
@@ -56,8 +62,11 @@ const NavBarRaw: SFC<Props> = ({
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={2}>
-              <Grid container={true}>
+              <Grid container={true} alignItems={'center'}>
                 <Logo />
+                <Grid style={{ marginLeft: '5%' }}>
+                <Typography style={{ textTransform: 'capitalize', borderLeft: '1px solid #7284A0', paddingLeft: '5%' }}>{page}</Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Hidden>
