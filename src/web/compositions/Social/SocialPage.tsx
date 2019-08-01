@@ -243,7 +243,7 @@ class SocialPage extends React.Component {
       <GridPageContainer
         container
         xs={12}
-        style={{ paddingRight: '4%', height: '30vh' }}
+        style={{ paddingRight: '4%', height: '85vh', overflow: 'hidden' }}
       >
         <Grid
           item
@@ -449,6 +449,7 @@ class SocialPage extends React.Component {
                     style={{
                       marginLeft: 0,
                       maxHeight: '235px',
+                      boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
                     }}
                     marginTopHr="10px"
                   />

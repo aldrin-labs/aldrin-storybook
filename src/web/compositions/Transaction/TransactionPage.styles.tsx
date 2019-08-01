@@ -24,7 +24,8 @@ export const GridContainerTitle = styled(Grid)`
 `
 
 export const GridItemContainer = styled(Grid)`
-  min-height: 200px;
+  /* min-height: 200px; */
+  height: 85vh;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
   border: ${(props) => props.borderColor};
@@ -85,7 +86,7 @@ export const TypographyCalendarLegend = styled(Typography)`
 `
 
 export const GridAccountContainer = styled(Grid)`
-  min-height: 130px;
+  height: 85vh; /* min-height: 130px; */
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
   position: relative;

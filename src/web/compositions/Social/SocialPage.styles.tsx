@@ -103,7 +103,7 @@ export const FolioCard = styled(Grid)`
 `
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
-  height: 65vh; /*TODO : Left Panel Hight*/
+  height: 66vh; /*TODO : Left Panel Hight*/
   overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;
@@ -112,7 +112,8 @@ export const GridFolioScroll = styled(Grid)`
 
 export const TableContainer = styled(Grid)`
   width: 100%;
-  height: 60vh; /*TODO remove*/
+  height: 26vh; /* 60vh /*TODO : Left Panel Hight*/
+  box-shadow: 0px 0px 34px -20px rgba(0, 0, 0, 0.85);
   overflow-y: scroll;
   border-radius: '22px';
   ::-webkit-scrollbar {
