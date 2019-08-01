@@ -15,6 +15,7 @@ import {
   GridFolioScroll,
   InputCustom,
   TableContainer,
+  StyledSvgIcon
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -88,7 +89,12 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
           {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
         </TypographyTitle>
       </Grid>
-      <SvgIcon width="10" height="10" src={LineGraph} />
+      <SvgIcon width="10" height="10" src={LineGraph} 
+        styledComponentsAdditionalStyle="@media(min-width: 2560px) { 
+          width: 4.5rem; 
+          margin: .5rem .5rem 2rem 0;
+        }" 
+      />
     </Grid>
     <Grid container alignItems="center" justify="space-between">
       <FolioValuesCell item>
@@ -101,7 +107,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
       </FolioValuesCell>
       <FolioValuesCell item>
         <div>
-          <TypographyTitle>Month perform</TypographyTitle>
+          <TypographyTitle>perform</TypographyTitle>
           <TypographyTitle
             fontSize={'1rem'}
             textColor={isSelected ? '#97C15C' : '#2F7619'}
@@ -284,7 +290,7 @@ class SocialPage extends React.Component {
                     isSearchable={false}
                     singleValueStyles={{
                       color: '#165BE0',
-                      fontSize: '11px',
+                      fontSize: '.8rem',
                       padding: '0',
                     }}
                     indicatorSeparatorStyles={{}}
@@ -304,7 +310,7 @@ class SocialPage extends React.Component {
                       color: '#7284A0',
                       background: 'transparent',
                       textAlign: 'center',
-                      fontSize: '0.9rem',
+                      fontSize: '0.8rem',
                       '&:hover': {
                         borderRadius: '14px',
                         color: '#16253D',
@@ -325,8 +331,8 @@ class SocialPage extends React.Component {
               {sharedPortfoliosList.length === 0 ? (
                 <Typography>Portfolio hasn't been found in the list</Typography>
               ) : (
-                sharedPortfoliosList
-              )}
+                  sharedPortfoliosList
+                )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
@@ -404,12 +410,12 @@ class SocialPage extends React.Component {
                         color: '#7284A0',
                         lineHeight: '31px',
                         letterSpacing: '1.5px',
-                        '&&:first-child': {
+                        '&:first-child': {
                           // Does'n work
                           borderRadius: '22px 0 0 0',
                           background: 'red',
                         },
-                        '&&:last-child': {
+                        '&:last-child': {
                           borderRadius: '0 22px  0 0',
                         },
                       },
@@ -424,7 +430,7 @@ class SocialPage extends React.Component {
                         letterSpacing: '0.5px',
                         fontSize: '1rem',
                         padding: '0 0 0 8px',
-                        '&&:first-child': {
+                        '&:first-child': {
                           // Does'n work
                           color: 'red',
                           background: 'red',

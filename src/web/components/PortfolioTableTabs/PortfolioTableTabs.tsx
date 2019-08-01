@@ -60,7 +60,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
         }}
       >
         <StyledAccountsButton onClick={() => toggleWallets()}>Accounts</StyledAccountsButton>
-        {pathname === '/portfolio/main'
+        {switchUSDBTC
           ? <StyledTransactionsButton
             onClick={() => console.log('transaction button')}
           > Transactions </StyledTransactionsButton>
