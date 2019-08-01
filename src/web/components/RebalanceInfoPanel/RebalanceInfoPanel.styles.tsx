@@ -13,7 +13,7 @@ export const GridInfoPanelWrapper = styled(Grid)`
   border-top: ${(props) => `2px solid ${props.borderColor}`};
   border-bottom: ${(props) => `2px solid ${props.borderColor}`};
   background-color: ${(props) => props.bgColor};
-  padding: 16px 2px 0px 2px;
+  padding: 16px 2px 16px 2px;
   z-index: 500;
   margin-bottom: 10px;
 
