@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { Button } from '@material-ui/core'
 
 export const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+
   & > span:last-child {
     margin: 0 4.8rem 0 0;
   }
@@ -23,9 +26,9 @@ export const StyledButton = styled(({
 `;
 
 export const StyledArrow = styled('div')`
-  width: 10px;
-  height: 10px;
-  margin-left: 15px;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 1rem;
   border-top: 1.5px solid ${props => props.color};
   border-right: 1.5px solid ${props => props.color};
   transform: rotate(45deg);

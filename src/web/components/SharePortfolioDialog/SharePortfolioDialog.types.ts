@@ -19,4 +19,10 @@ export interface IState {
   selectedUserEmail: any
   selectedAccounts: string[]
   showPortfolioValue: boolean
+  selectedPortfolioTypes: string[]
+  tradeFrequency: string
+  isPortfolioFree: boolean
+  portfolioPrice: string
+  marketName: string
+  portfolioDescription: string
 }

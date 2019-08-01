@@ -13,7 +13,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
         justify="space-between"
         alignItems="center"
         style={{
-          padding: '1rem 24px',
+          padding: '1.6rem 24px',
           borderTop: '1px solid #E0E5EC'
         }}
       >

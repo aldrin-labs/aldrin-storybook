@@ -43,7 +43,7 @@ const NavBarRaw: SFC<Props> = ({
   $hide = false,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined);
-  console.log(MainIcon, IndustryIcon, RebalanceIcon)
+
   return (
     <Nav
       position="static"
@@ -51,7 +51,7 @@ const NavBarRaw: SFC<Props> = ({
       color="default"
       className="Navbar"
     >
-      <Toolbar variant="dense" style={{ height: '3rem', borderBottom: '2px solid #E0E5EC' }}>
+      <Toolbar variant="dense" style={{ height: '3rem', borderBottom: '1px solid #E0E5EC' }}>
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={2}>

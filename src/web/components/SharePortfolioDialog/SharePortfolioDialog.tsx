@@ -2,15 +2,8 @@ import React from 'react'
 import {
   Dialog,
   DialogTitle,
-  DialogContent,
-  Button,
   Grid,
-  Typography,
-  Checkbox,
-  Radio,
-  Input,
-  TextField,
-  FormControlLabel
+  FormControl
 } from '@material-ui/core'
 
 import Clear from '@material-ui/icons/Clear'
@@ -19,18 +12,25 @@ import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
 
 import {
+  StyledDialogContent,
   StyledButton,
   ButtonShare,
   TypographySectionTitle,
   TypographySubTitle,
   DialogFooter,
   ClearButton,
+  ShareButton,
   TypographyTitle,
   TypographyFooter,
   Line,
   SLink,
+  SRadio,
+  SCheckbox,
+  StyledPaper,
   FormInputTemplate,
-  StyledTextField
+  StyledInputTemplate,
+  StyledInput,
+  StyledTextArea
 } from './SharePortfolioDialog.styles'
 
 const tradingPortfolioTypes = [
@@ -41,35 +41,7 @@ const tradingPortfolioTypes = [
   'Mid Term Investing',
 ]
 
-const tradeFrequency = ['Irregularly', 'By Minute', 'Daily', 'Weekly', 'Hourly']
-
-
-
-const KeyElement = ({
-  name,
-  checked,
-  handleChange
-}: {
-  name: string;
-  checked: boolean
-  handleChange(): void;
-}) => (
-    <FormControlLabel
-      value={name}
-      onChange={handleChange}
-      control={<Checkbox checked={checked} />}
-      label={name}
-      labelPlacement="start"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: 'auto',
-        flexBasis: "45%"
-      }}
-    >
-    </FormControlLabel>
-  )
+const tradeFrequencies = ['Irregularly', 'By Minute', 'Daily', 'Weekly', 'Hourly']
 
 @withTheme()
 export default class SharePortfolioDialog extends React.Component<
@@ -80,7 +52,13 @@ IState
     shareWithSomeoneTab: true,
     selectedUserEmail: null,
     showPortfolioValue: true,
+    isPortfolioFree: true,
+    portfolioPrice: '',
+    tradeFrequency: 'Irregularly',
+    marketName: '',
+    portfolioDescription: '',
     selectedAccounts: [],
+    selectedPortfolioTypes: ['Bull trading'],
   }
 
   onChangeUserEmail = (e) => {
@@ -91,23 +69,63 @@ IState
     this.setState({ showPortfolioValue: bool });
   }
 
-  toggleAccount = (name: string) => {
-    const { selectedAccounts } = this.state;
-    const isAccountChecked = selectedAccounts.includes(name);
+  toggleCheckboxArray = (arr: string[], name: string) => {
+    const isChecked = arr.includes(name);
 
-    const newSelectedAccounts = isAccountChecked
-      ? selectedAccounts.filter(acc => acc !== name)
-      : selectedAccounts.concat(name);
+    const newSelectedArr = isChecked
+      ? arr.filter(item => item !== name)
+      : arr.concat(name);
 
-    this.setState({
-      selectedAccounts: newSelectedAccounts,
-    });
+    return newSelectedArr;
   }
+
+  changeAccountsToShare = (name) => {
+    const { selectedAccounts } = this.state;
+    const newSelectedAccounts = this.toggleCheckboxArray(selectedAccounts, name);
+
+    this.setState({ selectedAccounts: newSelectedAccounts });
+  }
+
+  changePortfolioTypes = (name) => {
+    const { selectedPortfolioTypes } = this.state;
+    const newSelectedTypes = this.toggleCheckboxArray(selectedPortfolioTypes, name);
+
+    this.setState({ selectedPortfolioTypes: newSelectedTypes });
+  }
+
 
   toggleSharingTab = () => {
     this.setState((prevState) => ({
       shareWithSomeoneTab: !prevState.shareWithSomeoneTab,
     }))
+  }
+
+  changePortfolioDescription = (e) => {
+    this.setState({
+      portfolioDescription: e.target.value
+    })
+  }
+
+  changeTradeFrequency = (frequency) => {
+    this.setState({
+      tradeFrequency: frequency,
+    });
+  }
+
+  changeMarketName = (e) => {
+    this.setState({
+      marketName: e.target.value,
+    });
+  }
+
+  // type string || event
+  changePortfolioPrice = (e) => {
+    const newPrice = e.target.value;
+
+    this.setState({
+      portfolioPrice: newPrice,
+      isPortfolioFree: false
+    })
   }
 
   sharePortfolioHandler = async (forAll?: boolean) => {
@@ -143,20 +161,28 @@ IState
       theme,
     } = this.props
 
-    console.log('portfolioKeys', portfolioKeys);
-
     const {
       selectedUserEmail,
       shareWithSomeoneTab,
       showPortfolioValue,
-      selectedAccounts
+      selectedAccounts,
+      selectedPortfolioTypes,
+      tradeFrequency,
+      isPortfolioFree,
+      portfolioPrice,
+      marketName,
+      portfolioDescription
     } = this.state;
+
+    console.log('price', portfolioPrice);
 
     return (
       <Dialog
-        style={{ width: '750px', margin: 'auto' }}
+        PaperComponent={StyledPaper}
+        style={{ width: '75rem', margin: 'auto' }}
         fullScreen={false}
         onClose={handleCloseSharePortfolio}
+        maxWidth={'md'}
         open={openSharePortfolioPopUp}
         aria-labelledby="responsive-dialog-title"
       >
@@ -169,21 +195,20 @@ IState
             alignItems: 'center',
             borderBottom: '2px solid #E0E5EC',
             backgroundColor: theme.palette.grey.main,
-            height: '40px',
-            fontSize: '12px',
+            height: '4rem',
           }}
         >
-          <TypographyTitle>{sharePortfolioTitle}</TypographyTitle>
+          <TypographyTitle>{`SHARE ${sharePortfolioTitle}`}</TypographyTitle>
           <ClearButton>
-            <Clear fontSize="default" color="inherit" onClick={handleCloseSharePortfolio} />
+            <Clear style={{ fontSize: '2rem' }} color="inherit" onClick={handleCloseSharePortfolio} />
           </ClearButton>
         </DialogTitle>
-        <DialogContent>
+        <StyledDialogContent>
           <Grid
             container
             alignItems="center"
             justify="space-between"
-            style={{ padding: '20px 0' }}
+            style={{ padding: '3rem 0' }}
           >
             <ButtonShare
               active={shareWithSomeoneTab}
@@ -191,42 +216,44 @@ IState
             > SHARE WITH SOMEONE</ButtonShare>
             <ButtonShare
               active={!shareWithSomeoneTab}
-              padding={'1rem 4rem'}
+              padding={'1.6rem 6.4rem'}
               onClick={this.toggleSharingTab}
             > SHARE VIA MARKET </ButtonShare>
           </Grid>
-          <Grid
-            container
-            alignItems="center"
-            justify="center"
-            style={{ paddingBottom: '20px' }}
-          >
-            <TypographyTitle>Settings</TypographyTitle>
-          </Grid>
           {shareWithSomeoneTab && (
             <>
-              <Grid>
-                <Grid container alignItems="center" wrap="nowrap">
+              <Grid
+                container
+                alignItems="center"
+                justify="center"
+                style={{ paddingBottom: '1rem' }}
+              >
+                <TypographyTitle>Settings</TypographyTitle>
+              </Grid>
+              <Grid style={{ padding: '.5rem 0' }}>
+                <Grid style={{ padding: '.8rem 0' }} container alignItems="center" wrap="nowrap">
                   <TypographySectionTitle>
                     Select accounts to share
                   </TypographySectionTitle>
                   <Line />
                 </Grid>
-                <Grid container alignItems="center">
-                  {portfolioKeys.map((el) => {
-                    const checked = selectedAccounts.includes(el.name);
+                <FormControl fullWidth required>
+                  <Grid container alignItems="center">
+                    {portfolioKeys.map((el) => {
+                      const checked = selectedAccounts.includes(el.name);
 
-                    return (
-                      <FormInputTemplate
-                        key={el._id}
-                        name={el.name}
-                        handleChange={() => this.toggleAccount(el.name)}
-                      >
-                        <Checkbox checked={checked} />
-                      </FormInputTemplate>
-                    )
-                  })}
-                </Grid>
+                      return (
+                        <FormInputTemplate
+                          key={el._id}
+                          name={el.name}
+                          handleChange={() => this.changeAccountsToShare(el.name)}
+                        >
+                          <SCheckbox checked={checked} />
+                        </FormInputTemplate>
+                      )
+                    })}
+                  </Grid>
+                </FormControl>
               </Grid>
               <Grid container style={{ padding: '.5rem 0', borderBottom: '1px solid #E0E5EC' }}>
                 <Grid container alignItems="center" wrap="nowrap">
@@ -235,28 +262,30 @@ IState
                   </TypographySectionTitle>
                   <Line />
                 </Grid>
-                <Grid container justify="space-between">
-                  <FormInputTemplate
-                    name={'Show my portfolio value'}
-                    handleChange={() => this.changeShowPortfolioValue(true)}
-                  >
-                    <Radio checked={showPortfolioValue} />
-                  </FormInputTemplate>
+                <FormControl fullWidth required>
+                  <Grid container justify="space-between">
+                    <FormInputTemplate
+                      name={'Show my portfolio value'}
+                      handleChange={() => this.changeShowPortfolioValue(true)}
+                    >
+                      <SRadio checked={showPortfolioValue} />
+                    </FormInputTemplate>
 
-                  <FormInputTemplate
-                    name={'Show only % allocation'}
-                    handleChange={() => this.changeShowPortfolioValue(false)}
-                  >
-                    <Radio checked={!showPortfolioValue} />
-                  </FormInputTemplate>
-                </Grid>
+                    <FormInputTemplate
+                      name={'Show only % allocation'}
+                      handleChange={() => this.changeShowPortfolioValue(false)}
+                    >
+                      <SRadio checked={!showPortfolioValue} />
+                    </FormInputTemplate>
+                  </Grid>
+                </FormControl>
               </Grid>
               <Grid container>
                 <Grid
                   container
                   alignItems="center"
                   justify="space-between"
-                  style={{ padding: '.5rem 0' }}
+                  style={{ padding: '1.5rem 0' }}
                 >
                   <TypographySubTitle>
                     Share with anyone by the
@@ -267,14 +296,15 @@ IState
                   </StyledButton>
                 </Grid>
                 <Grid container justify="space-between">
-                  <StyledTextField
+                  <StyledInput
                     type="text"
+                    width="80"
                     value={selectedUserEmail}
                     placeholder="Share with someone by email"
                     onChange={this.onChangeUserEmail}
                   />
                   <StyledButton
-                    padding=".5rem 1.85rem"
+                    padding=".8rem 3rem"
                     onClick={() => this.sharePortfolioHandler(false)}
                   >
                     Invite
@@ -285,111 +315,220 @@ IState
           )}
           {!shareWithSomeoneTab && (
             <>
-              <Grid style={{ paddingBottom: '20px' }}>
-                <Typography>Set portfolio marketname</Typography>
-                <Grid container alignItems="center">
-                  <Input />
-                </Grid>
+              <Grid
+                container
+                alignItems="center"
+                justify="center"
+                style={{ paddingBottom: '1rem', borderBottom: '2px solid #E0E5EC' }}
+              >
+                <TypographyTitle>Settings</TypographyTitle>
               </Grid>
-
-              <Grid style={{ paddingBottom: '20px' }}>
-                <Typography>Select accounts to share</Typography>
-                <Grid container alignItems="center">
-                  {portfolioKeys.map((el, i) => (
-                    <KeyElement key={el._id} name={el.name} checked={true} />
-                  ))}
+              <Grid style={{ paddingBottom: '1.5rem' }}>
+                <Grid style={{ padding: '1rem' }} container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Set portfolio marketname
+                  </TypographySectionTitle>
+                  <Line />
                 </Grid>
-              </Grid>
-
-              <Grid container style={{ paddingBottom: '20px' }}>
-                <Typography>How to display my portfolio</Typography>
-                <Grid container justify="space-between">
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    style={{ width: 'auto' }}
-                  >
-                    <Typography>Show my portfolio value</Typography>
-                    <Radio checked={true} />
+                <FormControl fullWidth required>
+                  <Grid container alignItems="center">
+                    <StyledInput
+                      type="text"
+                      width="100"
+                      value={marketName}
+                      onChange={(e) => this.changeMarketName(e)}
+                      placeholder="Type name..."
+                      style={{ marginLeft: '0rem' }}
+                    />
                   </Grid>
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    style={{ width: 'auto' }}
-                  >
-                    <Typography>Show only % allocation</Typography>
-                    <Radio />
+                </FormControl>
+              </Grid>
+
+              <Grid style={{ paddingBottom: '1.5rem' }}>
+                <Grid style={{ padding: '1rem 0' }} container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Select accounts to share
+                    </TypographySectionTitle>
+                  <Line />
+                </Grid>
+                <FormControl fullWidth required>
+                  <Grid container alignItems="center">
+                    {portfolioKeys.map((el) => {
+                      const checked = selectedAccounts.includes(el.name);
+
+                      return (
+                        <FormInputTemplate
+                          key={el._id}
+                          name={el.name}
+                          handleChange={() => this.changeAccountsToShare(el.name)}
+                        >
+                          <SCheckbox checked={checked} />
+                        </FormInputTemplate>
+                      )
+                    })}
                   </Grid>
-                </Grid>
+                </FormControl>
               </Grid>
 
-              <Grid container style={{ paddingBottom: '20px' }}>
-                <Typography>Set type of your portfolio</Typography>
-                <Grid container justify="space-between">
-                  {tradingPortfolioTypes.map((el, i) => (
-                    <RadioElement key={i} name={el} checked={i === 0} />
-                  ))}
+              <Grid container style={{ padding: '.5rem 0' }}>
+                <Grid container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    How to display my portfolio
+                  </TypographySectionTitle>
+                  <Line />
                 </Grid>
-              </Grid>
+                <FormControl fullWidth required>
+                  <Grid container justify="space-between">
+                    <FormInputTemplate
+                      name={'Show my portfolio value'}
+                      handleChange={() => this.changeShowPortfolioValue(true)}
+                    >
+                      <SRadio checked={showPortfolioValue} />
+                    </FormInputTemplate>
 
-              <Grid container style={{ paddingBottom: '20px' }}>
-                <Typography>Set your trading frequency</Typography>
-                <Grid container justify="space-between">
-                  {tradeFrequency.map((el, i) => (
-                    <RadioElement key={i} name={el} checked={i === 0} />
-                  ))}
-                </Grid>
-              </Grid>
-
-              <Grid container style={{ paddingBottom: '20px' }}>
-                <Typography>
-                  Write short description of your portfolio
-                </Typography>
-                <Grid container justify="space-between">
-                  <TextField />
-                </Grid>
-              </Grid>
-
-              <Grid container style={{ paddingBottom: '20px' }}>
-                <Typography>Set price of your portfolio</Typography>
-                <Grid container justify="space-between">
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    style={{ width: 'auto' }}
-                  >
-                    <Typography>Free</Typography>
-                    <Radio checked={true} />
+                    <FormInputTemplate
+                      name={'Show only % allocation'}
+                      handleChange={() => this.changeShowPortfolioValue(false)}
+                    >
+                      <SRadio checked={!showPortfolioValue} />
+                    </FormInputTemplate>
                   </Grid>
-                  <Grid
-                    container
-                    justify="center"
-                    alignItems="center"
-                    style={{ width: 'auto' }}
-                  >
-                    <Typography>Paid</Typography>
-                    <TextField />
-                    <Radio checked={false} />
-                  </Grid>
-                </Grid>
+                </FormControl>
               </Grid>
 
-              <Grid justify="center" alignItems="center">
-                <Button
-                  disabled={false}
-                  onClick={() => this.sharePortfolioHandler(true)}
-                >
-                  Send to market
-                </Button>
+              <Grid container style={{ paddingBottom: '1.5rem' }}>
+                <Grid container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Set type of your portfolio
+                    </TypographySectionTitle>
+                  <Line />
+                </Grid>
+                <FormControl fullWidth required>
+                  <Grid container justify="space-between">
+                    {tradingPortfolioTypes.map((type) => {
+                      const checked = selectedPortfolioTypes.includes(type);
+
+                      return (
+                        <FormInputTemplate
+                          key={type}
+                          name={type}
+                          handleChange={() => this.changePortfolioTypes(type)}
+                        >
+                          <SCheckbox checked={checked} />
+                        </FormInputTemplate>
+                      )
+                    })}
+                  </Grid>
+                </FormControl>
+              </Grid>
+
+              <Grid container style={{ paddingBottom: '1.5rem' }}>
+                <Grid container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Set your trading frequency
+                  </TypographySectionTitle>
+                  <Line />
+                </Grid>
+                <FormControl fullWidth required>
+                  <Grid container justify="space-between">
+                    {tradeFrequencies.map((el) => (
+                      <FormInputTemplate
+                        key={el}
+                        name={el}
+                        handleChange={() => this.changeTradeFrequency(el)}
+                      >
+                        <SRadio checked={tradeFrequency === el} />
+                      </FormInputTemplate>
+                    ))}
+                  </Grid>
+                </FormControl>
+              </Grid>
+
+              <Grid container style={{ paddingBottom: '1.5rem' }}>
+                <Grid style={{ paddingBottom: '.5rem' }} container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Write short description of your portfolio
+                  </TypographySectionTitle>
+                  <Line />
+                </Grid>
+                <FormControl fullWidth required>
+                  <Grid container justify="space-between">
+                    <StyledTextArea
+                      placeholder="Type something here"
+                      value={portfolioDescription}
+                      onChange={(e) => this.changePortfolioDescription(e)}
+                    />
+                  </Grid>
+                </FormControl>
+              </Grid>
+
+              <Grid container style={{ paddingBottom: '1.5rem' }}>
+                <Grid container alignItems="center" wrap="nowrap">
+                  <TypographySectionTitle>
+                    Set price of your portfolio
+                  </TypographySectionTitle>
+                  <Line />
+                </Grid>
+                <FormControl fullWidth required>
+                  <Grid
+                    style={{ paddingBottom: '1.5rem', borderBottom: '2px solid #E0E5EC' }}
+                    container
+                    justify="space-between"
+                    wrap="nowrap"
+                  >
+                    <StyledInputTemplate
+                      value={'Free'}
+                      label={'Free'}
+                      labelPlacement="start"
+                      control={<SRadio checked={isPortfolioFree} />}
+                      onChange={() => this.setState({ isPortfolioFree: true })}
+                      style={{ justifyContent: 'flex-end' }}
+                    />
+                    <Grid
+                      container
+                      justify="flex-end"
+                      alignItems="center"
+                      style={{ width: 'auto', flexDirection: 'row' }}
+                    >
+                      <TypographySubTitle
+                        style={{ paddingRight: '2rem' }}
+                      >
+                        Paid
+                      </TypographySubTitle>
+                      <StyledInput
+                        type="number"
+                        width="30"
+                        value={portfolioPrice}
+                        onChange={(e) => this.changePortfolioPrice(e)}
+                        style={{ marginLeft: '0rem' }}
+                      />
+                      <StyledInputTemplate
+                        value={'/ Mo'}
+                        label={'/ Mo'}
+                        labelPlacement="start"
+                        control={<SRadio checked={!isPortfolioFree} />}
+                        onChange={() => this.setState({ isPortfolioFree: false })}
+                        style={{ justifyContent: 'flex-end', marginLeft: '1.5rem' }}
+                      />
+                    </Grid>
+                  </Grid>
+                </FormControl>
+                <Grid container justify="center" alignItems="center">
+                  <ShareButton
+                    padding=""
+                    onClick={() => this.sharePortfolioHandler(true)}
+                  >
+                    Send to market
+                  </ShareButton>
+                </Grid>
               </Grid>
             </>
           )}
-        </DialogContent>
+        </StyledDialogContent>
         <DialogFooter id="customized-dialog-title">
-          <TypographyFooter>
+          <TypographyFooter
+            to={'/portfolio/social'}
+          >
             Go to Social portfolio manager
           </TypographyFooter>
         </DialogFooter>
