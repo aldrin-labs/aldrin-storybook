@@ -17,6 +17,9 @@ import {
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
+import { GET_SIGNAL_EVENTS_QUERY } from '@core/graphql/queries/signals/getSignalEvents'
+
+import QueryRenderer from '@core/components/QueryRenderer'
 
 import { IProps, IState } from './SignalPage.types'
 
@@ -48,6 +51,85 @@ const getOwner = (str: string) => {
 
     return (b && b[0]) || 'public'
 }
+const putDataInTable = (tableData, theme, state) => {
+    const {
+        checkedRows = [],
+        // tableData,
+        numberOfDigitsAfterPoint: round,
+        red = 'red',
+        green = 'green',
+    } = state
+    if (!tableData || tableData.length === 0) {
+        return { head: [], body: [], footer: null }
+    }
+
+    return {
+        head: [
+            { id: 't', label: 'Timestamp', isNumber: false },
+            { id: 'pair', label: 'Pair', isNumber: false },
+            { id: 'exchangeA', label: 'Exchange A', isNumber: false },
+            { id: 'exchangeB', label: 'Exchange B', isNumber: false },
+            { id: 'amount', label: 'amount', isNumber: false },
+            { id: 'spread', label: 'spread', isNumber: false },
+            { id: 'priceA', label: 'priceA', isNumber: false },
+            { id: 'priceB', label: 'priceB', isNumber: false },
+            { id: 'status', label: 'Status', isNumber: false },
+        ],
+        body: transformData(
+            tableData,
+            theme.palette.red.main,
+            theme.palette.green.main,
+            state
+        ),
+        // footer: this.calculateTotal({
+        //   checkedRows,
+        //   tableData,
+        //   baseCoin,
+        //   red,
+        //   green,
+        //   numberOfDigitsAfterPoint: round,
+        // }),
+    }
+}
+
+const transformData = (data: any[] = [], red: string = '', green: string = '', state) => {
+
+    return data.map((row) => {
+        delete row._id
+        delete row.sId
+        delete row.__typename
+        const keys = Object.keys(row)
+        const resp = {}
+        keys.map(k => {
+            resp[k] = {
+                contentToSort: row[k],
+                contentToCSV: row[k],
+                render: row[k],
+            }
+        })
+
+        return resp
+    })
+}
+
+const SignalEventList = (props) => {
+    const { body, head, footer = [] } = putDataInTable(
+        props.data.getSignalEvents.events,
+        props.theme,
+        props.state
+    )
+
+    return (
+        <TableWithSort
+            id="SignalSocialTable"
+            title="Signal"
+            columnNames={head}
+            data={{ body, footer }}
+            padding="dense"
+            emptyTableText="No assets"
+        />
+    )
+}
 
 const SignalListItem = ({ el, onClick, isSelected }) => (
     <Paper
@@ -59,7 +141,7 @@ const SignalListItem = ({ el, onClick, isSelected }) => (
                 <SignalName textColor={'#16253D'} style={{ padding: '0' }}>
                     {el.name}
                     <TypographyTitle style={{ padding: '0', margin: '0' }}>
-                        {el.isPrivate ? getOwner(el.owner) : `Public signal`}
+                        {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
                     </TypographyTitle>
                 </SignalName>
             </Grid>
@@ -76,7 +158,7 @@ const SignalListItem = ({ el, onClick, isSelected }) => (
                 </FolioValuesCell>
                 <FolioValuesCell item justify="center" style={{ textAlign: 'center' }}>
                     <TypographyTitle>Last update</TypographyTitle>
-                    <TypographyTitle>{new Date(el.lastUpdate)}</TypographyTitle>
+                    <TypographyTitle>{el.lastUpdate}</TypographyTitle>
                 </FolioValuesCell>
             </Grid>
         </Grid>
@@ -89,145 +171,12 @@ class SocialPage extends React.Component {
         selectedSignal: 0,
     }
 
-    transformData = (data: any[] = [], red: string = '', green: string = '') => {
-        const { numberOfDigitsAfterPoint: round = 2 } = this.state
-        const isUSDCurrently = true
-
-        return data.map((row) => ({
-            // exchange + coin always uniq
-            //  change in future
-            id: row.id,
-            name: row.name,
-            coin: {
-                contentToSort: row.coin,
-                contentToCSV: row.coin,
-                render: row.coin,
-                style: { fontWeight: 700 },
-            },
-            signal: {
-                // not formatted value for counting total in footer
-                contentToSort: row.signalPercentage,
-                contentToCSV: roundPercentage(row.signalPercentage) || 0,
-                render: `${roundPercentage(row.signalPercentage) || 0}%`,
-                isNumber: true,
-            },
-            price: {
-                contentToSort: row.price,
-                contentToCSV: roundAndFormatNumber(row.price, round, true),
-                render: addMainSymbol(
-                    roundAndFormatNumber(row.price, round, true),
-                    isUSDCurrently
-                ),
-                isNumber: true,
-                color: row.priceChange > 0 ? green : row.priceChange < 0 ? red : '',
-            },
-            quantity: {
-                contentToSort: row.quantity,
-                render: roundAndFormatNumber(row.quantity, round, true),
-                isNumber: true,
-            },
-            usd: {
-                contentToSort: row.price * row.quantity,
-                contentToCSV: roundAndFormatNumber(
-                    row.price * row.quantity,
-                    round,
-                    true
-                ),
-                render: addMainSymbol(
-                    roundAndFormatNumber(row.price * row.quantity, round, true),
-                    isUSDCurrently
-                ),
-                isNumber: true,
-            },
-            realizedPL: {
-                contentToSort: row.realizedPL,
-                contentToCSV: roundAndFormatNumber(row.realizedPL, round, true),
-                render: addMainSymbol(
-                    roundAndFormatNumber(row.realizedPL, round, true),
-                    isUSDCurrently
-                ),
-                isNumber: true,
-                color: row.realizedPL > 0 ? green : row.realizedPL < 0 ? red : '',
-            },
-            unrealizedPL: {
-                contentToSort: row.unrealizedPL,
-                contentToCSV: roundAndFormatNumber(row.unrealizedPL, round, true),
-                render: addMainSymbol(
-                    roundAndFormatNumber(row.unrealizedPL, round, true),
-                    isUSDCurrently
-                ),
-                isNumber: true,
-                color: row.unrealizedPL > 0 ? green : row.unrealizedPL < 0 ? red : '',
-            },
-            totalPL: {
-                contentToSort: row.totalPL,
-                contentToCSV: roundAndFormatNumber(row.totalPL, round, true),
-                render: addMainSymbol(
-                    roundAndFormatNumber(row.totalPL, round, true),
-                    isUSDCurrently
-                ),
-                isNumber: true,
-                color: row.totalPL > 0 ? green : row.totalPL < 0 ? red : '',
-            },
-        }))
-    }
-
-    putDataInTable = (tableData) => {
-        const { theme, isUSDCurrently = true, baseCoin = 'USDT' } = this.props
-        const {
-            checkedRows = [],
-            // tableData,
-            numberOfDigitsAfterPoint: round,
-            red = 'red',
-            green = 'green',
-        } = this.state
-        if (tableData.length === 0) {
-            return { head: [], body: [], footer: null }
-        }
-
-        return {
-            head: [
-                { id: 'name', label: 'Account', isNumber: false },
-                { id: 'coin', label: 'coin', isNumber: false },
-                { id: 'signal', label: 'signal', isNumber: true },
-                { id: 'price', label: 'price', isNumber: true },
-                { id: 'quantity', label: 'quantity', isNumber: true },
-                { id: 'usd', label: isUSDCurrently ? 'usd' : 'BTC', isNumber: true },
-                { id: 'realizedPL', label: 'realized P&L', isNumber: true },
-                { id: 'unrealizedPL', label: 'Unrealized P&L', isNumber: true },
-                { id: 'totalPL', label: 'Total P&L', isNumber: true },
-            ],
-            body: this.transformData(
-                tableData,
-                theme.palette.red.main,
-                theme.palette.green.main
-            ),
-            // footer: this.calculateTotal({
-            //   checkedRows,
-            //   tableData,
-            //   baseCoin,
-            //   red,
-            //   green,
-            //   numberOfDigitsAfterPoint: round,
-            // }),
-        }
-    }
-
     render() {
         const {
             getFollowingSignalsQuery: { getFollowingSignals },
         } = this.props
 
-        console.log('getFollowingSignals', getFollowingSignals)
-
         const { selectedSignal = 0 } = this.state
-        const { body, head, footer = [] } = this.putDataInTable(
-            combineTableData(
-                getFollowingSignals[selectedSignal].signalAssets,
-                { usd: -100, percentage: -100 },
-                true
-            )
-        )
         const sharedSignalsList = getFollowingSignals.map((el, index) => (
             <SignalListItem
                 key={index}
@@ -246,16 +195,22 @@ class SocialPage extends React.Component {
                     {/* {sharedSignalsList} */}
                 </Grid>
                 <Grid lg={9}>
-
                     <Grid item xs={7} spacing={24} style={{ padding: '15px' }}>
-                        <TableWithSort
-                            id="SignalSocialTable"
-                            title="Signal"
-                            columnNames={head}
-                            data={{ body, footer }}
-                            padding="dense"
-                            emptyTableText="No assets"
-                        />
+                        {
+                            getFollowingSignals.length > 0 && getFollowingSignals[this.state.selectedSignal] ?
+                                <QueryRenderer
+                                    fetchPolicy="network-only"
+                                    component={SignalEventList}
+                                    query={GET_SIGNAL_EVENTS_QUERY}
+                                    variables={{
+                                        signalId: getFollowingSignals[this.state.selectedSignal]._id,
+                                        page: 0,
+                                        perPage: 30,
+                                    }}
+                                    state={this.state}
+                                    {...this.props}
+                                /> : null
+                        }
                     </Grid>
                 </Grid>
             </Grid>
@@ -266,8 +221,7 @@ class SocialPage extends React.Component {
 export default compose(
     queryRendererHoc({
         query: GET_FOLLOWING_SIGNALS_QUERY,
-        withOutSpinner: false,
-        withTableLoader: false,
         name: 'getFollowingSignalsQuery',
+        fetchPolicy: 'network-only',
     })
 )(SocialPage)
