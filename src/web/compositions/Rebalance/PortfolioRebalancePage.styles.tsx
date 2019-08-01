@@ -97,6 +97,6 @@ export const GridTransactionBtn = styled(Grid)`
   background-position: center;
 
   & img {
-    width: 4vw;
+    width: 3.5vw;
   }
 `
