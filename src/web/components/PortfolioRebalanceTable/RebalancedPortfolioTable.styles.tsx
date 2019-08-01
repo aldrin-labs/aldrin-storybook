@@ -5,8 +5,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { Card } from '@material-ui/core'
 import Slider from '@material-ui/lab/Slider'
 
-
-export const SDeleteIcon = styled(({hoverColor, ...rest}) => <DeleteIcon {...rest}/>)`
+export const SDeleteIcon = styled(({ hoverColor, ...rest }) => (
+  <DeleteIcon {...rest} />
+))`
   &:hover {
     color: ${(props: { hoverColor: string }) => props.hoverColor};
   }
@@ -36,9 +37,23 @@ export const LoaderInnerWrapper = styled.div`
   flex-direction: column;
 `
 
-export const ContentInner = styled(({...props}) => <Card {...props} />)`
+export const ContentInner = styled(({ ...props }) => <Card {...props} />)`
   height: 100%;
   display: flex;
+
+  & td {
+    @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
+      height: 56px !important;
+    }
+    
+    @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
+      height: 72px !important;
+    }
+    
+    @media screen and (min-device-width: 3221px) and (min-device-height: 1781px) and (-webkit-min-device-pixel-ratio: 1) {
+      height: 96px !important;
+    }
+  }
 `
 
 export const TitleContainer = styled.div`
@@ -47,19 +62,31 @@ export const TitleContainer = styled.div`
   justify-content: space-between;
 `
 
-export const StyledSlider = styled(({trackAfterBackground, trackBeforeBackground, trackAfterOpacity, thumbBackground, ...rest}) => <Slider {...rest} />)`
+export const StyledSlider = styled(
+  ({
+    trackAfterBackground,
+    trackBeforeBackground,
+    trackAfterOpacity,
+    thumbBackground,
+    ...rest
+  }) => <Slider {...rest} />
+)`
   & .trackAfter {
-    background: ${(props: { trackAfterBackground: string }) => props.trackAfterBackground};
-    opacity: ${(props: { trackAfterOpacity: string }) => props.trackAfterOpacity};
+    background: ${(props: { trackAfterBackground: string }) =>
+      props.trackAfterBackground};
+    opacity: ${(props: { trackAfterOpacity: string }) =>
+      props.trackAfterOpacity};
   }
-  
+
   & .trackBefore {
-    background: ${(props: { trackBeforeBackground: string }) => props.trackBeforeBackground};
+    background: ${(props: { trackBeforeBackground: string }) =>
+      props.trackBeforeBackground};
     opacity: 1;
   }
-  
+
   & .thumb {
-    background: ${(props: { thumbBackground: string }) => props.thumbBackground};;
+    background: ${(props: { thumbBackground: string }) =>
+      props.thumbBackground};
   }
 `
 export const TitleItem = styled.div``

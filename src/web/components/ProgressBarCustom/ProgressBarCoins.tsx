@@ -2,11 +2,10 @@ import React from 'react'
 import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
 } from './ProgressBar.styles'
 
-import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
+import { GridProgressBarContainer, IconCircle, LinearProgressCustom } from '@sb/styles/cssUtils'
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
@@ -70,7 +69,7 @@ function ProgressBarCoins({ datum, index }) {
         />
       </GridProgressBarContainer>
 
-      <GridFlex item lg={3} md={3}>
+      <GridFlex item lg={3} md={3} style={{ justifyContent: 'center' }}>
         <TypographyCustom
           style={{
             paddingLeft: '43px',

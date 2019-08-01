@@ -125,94 +125,95 @@ class TransactionPage extends Component {
       <Grid
         container
         justify="space-between"
-        style={{ height: '90vh', padding: '30px 0' }}
+        style={{
+          height: '90vh',
+          padding: '30px 5% 30px 5px',
+          overflow: 'hidden',
+        }}
         // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
         {/* Accounts */}
-        <GridAccountContainer
-          item
-          lg={2}
-          md={2}
-          borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
-        >
-          <GridContainerTitle
-            bgColor={theme.palette.primary.dark}
-            content
-            alignItems="center"
+        <Grid item lg={2} md={2}>
+          <GridAccountContainer
+            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
           >
-            <TypographyContatinerTitle
-              textColor={theme.palette.text.subPrimary}
+            <GridContainerTitle
+              bgColor={theme.palette.primary.dark}
+              content
+              alignItems="center"
             >
-              accounts
-            </TypographyContatinerTitle>
-          </GridContainerTitle>
-          <ContentGrid>
-            <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
+              <TypographyContatinerTitle
+                textColor={theme.palette.text.subPrimary}
+              >
+                accounts
+              </TypographyContatinerTitle>
+            </GridContainerTitle>
+            <ContentGrid>
+              <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
 
-            <PortfolioSelector />
+              <PortfolioSelector />
 
-            <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
+              <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
 
-            <Grid style={{ marginTop: '25px' }}>
-              <Accounts
-                {...{
-                  color,
-                  login,
-                  isSideNavOpen,
-                  isCheckedAll,
-                  newKeys,
-                  isRebalance,
-                  onToggleAll: this.onToggleAll,
-                  onKeyToggle: this.onKeyToggle,
-                  onKeySelectOnlyOne: this.onKeySelectOnlyOne,
-                }}
-              />
-            </Grid>
-          </ContentGrid>
-          <GridShowHideDataContainer>
-            <ShowHideData />
-          </GridShowHideDataContainer>
-        </GridAccountContainer>
+              <Grid style={{ marginTop: '25px' }}>
+                <Accounts
+                  {...{
+                    color,
+                    login,
+                    isSideNavOpen,
+                    isCheckedAll,
+                    newKeys,
+                    isRebalance,
+                    onToggleAll: this.onToggleAll,
+                    onKeyToggle: this.onKeyToggle,
+                    onKeySelectOnlyOne: this.onKeySelectOnlyOne,
+                  }}
+                />
+              </Grid>
+            </ContentGrid>
+            <GridShowHideDataContainer>
+              <ShowHideData />
+            </GridShowHideDataContainer>
+          </GridAccountContainer>
+        </Grid>
 
         {/* Calendar */}
-        <GridItemContainer
-          item
-          lg={2}
-          md={2}
-          borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
-        >
-          <GridContainerTitle
-            bgColor={theme.palette.primary.dark}
-            content
-            alignItems="center"
+        <Grid item lg={2} md={2}>
+          <GridItemContainer
+            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
           >
-            <TypographyContatinerTitle
-              textColor={theme.palette.text.subPrimary}
+            <GridContainerTitle
+              bgColor={theme.palette.primary.dark}
+              content
+              alignItems="center"
             >
-              calendar
-            </TypographyContatinerTitle>
-          </GridContainerTitle>
-          <Grid style={{ padding: '0 0 20px 0' }}>
-            <Grid style={{ padding: '0 0 10px 45px' }}>
-              <GitTransactionCalendar />
-            </Grid>
-            <Grid container justify="center" style={{ margineTop: '15px' }}>
-              <Grid lg={2}>
-                <TypographyCalendarLegend textAlign={'right'}>
-                  Less
-                </TypographyCalendarLegend>
+              <TypographyContatinerTitle
+                textColor={theme.palette.text.subPrimary}
+              >
+                calendar
+              </TypographyContatinerTitle>
+            </GridContainerTitle>
+            <Grid style={{ padding: '0 0 20px 0' }}>
+              <Grid style={{ padding: '0 0 10px 45px' }}>
+                <GitTransactionCalendar />
               </Grid>
+              <Grid container justify="center" style={{ margineTop: '15px' }}>
+                <Grid lg={2}>
+                  <TypographyCalendarLegend textAlign={'right'}>
+                    Less
+                  </TypographyCalendarLegend>
+                </Grid>
 
-              <Grid container justify="center" lg={8}>
-                <LessMoreContainer />
-              </Grid>
-              <Grid lg={2}>
-                <TypographyCalendarLegend>More</TypographyCalendarLegend>
+                <Grid container justify="center" lg={8}>
+                  <LessMoreContainer />
+                </Grid>
+                <Grid lg={2}>
+                  <TypographyCalendarLegend>More</TypographyCalendarLegend>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </GridItemContainer>
-
+          </GridItemContainer>
+        </Grid>
         <GridItemContainer
           item
           lg={7}
@@ -249,7 +250,7 @@ class TransactionPage extends Component {
                 </TypographyContatinerTitle>
               </Grid>
             </GridContainerTitle>
-            <Grid style={{ padding: '0 25px' }}>
+            <Grid style={{ padding: '0 25px', overflow: 'hidden' }}>
               <TradeOrderHistory />
             </Grid>
           </GridItemContainer>

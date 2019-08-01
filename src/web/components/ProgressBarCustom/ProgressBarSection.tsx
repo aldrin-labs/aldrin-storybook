@@ -2,9 +2,10 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
 } from './ProgressBar.styles'
+
+import { LinearProgressCustom, GridProgressBarContainer } from '@sb/styles/cssUtils'
 
 export default function ProgressBarSection(props) {
   const { datum } = props
@@ -15,7 +16,7 @@ export default function ProgressBarSection(props) {
           {datum.label}
         </TypographyCustom>
       </GridFlex>
-      <Grid
+      <GridProgressBarContainer
         item
         lg={6}
         md={6}
@@ -30,8 +31,8 @@ export default function ProgressBarSection(props) {
           variant="determinate"
           value={0}
         />
-      </Grid>
-      <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px' }}>
+      </GridProgressBarContainer>
+      <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px', justifyContent: 'center' }}>
         <TypographyCustom>{datum.percentage}%</TypographyCustom>
       </GridFlex>
     </Grid>

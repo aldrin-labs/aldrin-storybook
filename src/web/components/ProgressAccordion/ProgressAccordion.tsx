@@ -11,10 +11,9 @@ import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
 } from './ProgressAccordion.styles'
-import { GridProgressBarContainer, IconCircle } from '@sb/styles/cssUtils'
+import { GridProgressBarContainer, IconCircle, LinearProgressCustom } from '@sb/styles/cssUtils'
 
 
 const styles = (theme) => ({
@@ -146,7 +145,7 @@ function ProgressAccordion(props) {
                   item
                   lg={3}
                   md={3}
-                  style={{ paddingLeft: '43px' }}
+                  style={{ paddingLeft: '43px', justifyContent: 'center' }}
                 >
                   <TypographyCustom>
                     {datum.portfolioPerc !== '0'

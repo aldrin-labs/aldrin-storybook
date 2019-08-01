@@ -6,7 +6,7 @@ import {
   Button,
   DialogTitle,
   Typography,
-  Link,
+  Link, Paper,
 } from '@material-ui/core'
 
 export const TypographyCustomHeading = styled(
@@ -41,10 +41,6 @@ export const DialogSubTitle = styled(DialogTitle)`
   padding-bottom: 15px;
 `
 
-export const DialogWrapper = styled(Dialog)`
-  border-radius: 100px;
-`
-
 export const TypographyTopDescription = styled(({ margin, ...rest }) => (
   <Typography {...rest} />
 ))`
@@ -58,4 +54,26 @@ export const LinkCustom = styled(({ background, ...rest }) => (
 ))`
   cursor: pointer;
   background: ${(props) => props.background || 'none'};
+`
+
+
+export const StyledPaper = styled(Paper)`
+
+  &::-webkit-scrollbar-thumb {
+    background: #165BE0;
+  }
+
+  border-radius: 2rem;
+
+  @media(min-width: 1440px) {
+    min-width: 600px;
+  }
+
+  @media(min-width: 1921px) {
+    min-width: 680px;
+  }
+
+  @media(min-width: 2500px) {
+    min-width: 900px;
+  }
 `

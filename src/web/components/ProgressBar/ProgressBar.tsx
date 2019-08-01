@@ -7,6 +7,7 @@ import { IProps, IState } from './ProgressBar.types'
 const styles = {
   root: {
     flexGrow: 1,
+    padding: '2rem 0',
   },
 }
 
@@ -77,7 +78,6 @@ class ProgressBar extends PureComponent<IProps> {
               ? 'secondary'
               : '#E7ECF3'
           }
-          height="20px"
           variant="determinate"
           value={completed}
         />

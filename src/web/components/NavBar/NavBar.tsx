@@ -2,7 +2,7 @@ import React, { SFC, useState } from 'react'
 import { Login } from '@core/containers/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
-import { Toolbar, Grid } from '@material-ui/core'
+import { Toolbar, Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
@@ -27,6 +27,7 @@ export interface Props extends WithTheme {
 const Portfolio = (props: any) => <Link to="/portfolio" {...props} />
 const Chart = (props: any) => <Link to="/chart" {...props} />
 const Market = (props: any) => <Link to="/market" {...props} />
+const Signals = (props: any) => <Link to="/signals" {...props} />
 
 const NavBarRaw: SFC<Props> = ({
   theme: {
@@ -43,6 +44,12 @@ const NavBarRaw: SFC<Props> = ({
   $hide = false,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined);
+  console.log(MainIcon, IndustryIcon, RebalanceIcon)
+  console.log('pathname', pathname);
+
+  const pathnamePage = pathname.split('/')
+  const page = pathnamePage[pathnamePage.length - 1]
+
 
   return (
     <Nav
@@ -55,8 +62,11 @@ const NavBarRaw: SFC<Props> = ({
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={2}>
-              <Grid container={true}>
+              <Grid container={true} alignItems={'center'}>
                 <Logo />
+                <Grid style={{ marginLeft: '5%' }}>
+                <Typography style={{ textTransform: 'capitalize', borderLeft: '1px solid #7284A0', paddingLeft: '5%' }}>{page}</Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Hidden>
@@ -118,8 +128,8 @@ const NavBarRaw: SFC<Props> = ({
               </NavLinkButton>
 
               <NavLinkButton
-                page={`market`}
-                component={Market}
+                page={`signals`}
+                component={Signals}
                 pathname={pathname}
               >
                 Signals

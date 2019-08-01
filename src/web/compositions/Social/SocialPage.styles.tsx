@@ -17,7 +17,7 @@ export const InputCustom = styled(Input)`
 export const GridPageContainer = styled(Grid)`
   padding-top: 15px;
   width: 100%;
-  max-height: 100%;
+  /*max-height: 100vh;*/
 `
 
 export const TypographySearchOption = styled(Typography)`
@@ -59,7 +59,7 @@ export const TypographyPercentage = styled(Typography)`
 
 export const FolioValuesCell = styled(Grid)`
   height: 48px;
-  width: 92px;
+  width: 95px;
   text-align: center;
   background: ${(props) => props.bgColor || '#F9FBFD'};
   border: ${(props) => props.borderCell || '1px solid #E0E5EC'};
@@ -103,7 +103,7 @@ export const FolioCard = styled(Grid)`
 `
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
-  height: 100vh;
+  height: 66vh; /*TODO : Left Panel Hight*/
   overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;
@@ -112,7 +112,8 @@ export const GridFolioScroll = styled(Grid)`
 
 export const TableContainer = styled(Grid)`
   width: 100%;
-  height: 50vh; /*TODO remove*/
+  height: 26vh; /* 60vh /*TODO : Left Panel Hight*/
+  box-shadow: 0px 0px 34px -20px rgba(0, 0, 0, 0.85);
   overflow-y: scroll;
   border-radius: '22px';
   ::-webkit-scrollbar {

@@ -62,7 +62,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         emptyTableText="No history"
         tableStyles={tableStyles}
         pagination={{
-          enabled: true, // toogle page nav panel in the footer
+          enabled: false, // toogle page nav panel in the footer
           page: this.state.page,
           rowsPerPage: this.state.rowsPerPage,
           rowsPerPageOptions: [20, 50, 100, 200],
