@@ -631,7 +631,7 @@ export default class SharePortfolioDialog extends React.Component<
 
         <MiniSuccessPopup
           isOpen={openInvitePopup}
-          text={`Invite link sended to ${
+          text={`Invite link sent to ${
             selectedUsername ? selectedUsername.label : 'unchoosen user'
           }`}
         />
