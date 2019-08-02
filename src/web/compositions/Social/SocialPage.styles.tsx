@@ -30,9 +30,9 @@ export const TypographySearchOption = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media(min-width: 2560px) {
-    font-size: .8rem;
-    padding: .5rem 1rem;
+  @media (min-width: 2560px) {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
   }
 `
 
@@ -74,10 +74,10 @@ export const FolioValuesCell = styled(Grid)`
   justify-content: center;
   align-items: center;
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     width: 31%;
     height: auto;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 1.5rem;
   }
 `
@@ -92,8 +92,8 @@ export const ReactSelectCustom = styled(ReactSelect)`
   letter-spacing: 1px;
   background: transparent;
 
-  @media(min-width: 2560px) {
-    font-size: .8rem;
+  @media (min-width: 2560px) {
+    font-size: 0.8rem;
   }
 `
 export const GridSortOption = styled(Grid)`
@@ -102,7 +102,7 @@ export const GridSortOption = styled(Grid)`
   border-left: 1px solid #e0e5ec;
   border-right: 1px solid #e0e5ec;
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     height: auto;
   }
 `
@@ -121,7 +121,7 @@ export const FolioCard = styled(Grid)`
   box-shadow: ${(props) => props.boxShadow};
   border-radius: ${(props) => props.borderRadius};
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     height: auto;
   }
 `
@@ -146,11 +146,15 @@ export const TableContainer = styled(Grid)`
     ::-webkit-scrollbar {
       display: none;
     }
+
+    @media (min-width: 2560px) {
+      height: 45vh; /* 60vh /*TODO : Left Panel Hight*/
+    }
   }
 `
 
 export const StyledSvgIcon = styled(SvgIcon)`
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     width: 2.5rem;
   }
 `
@@ -160,3 +164,12 @@ export const TypographyEmptyFolioPanel = styled(Typography)`
   font-weight: 700;
   text-transform: uppercase;
 `
+export const GridFolioConteiner = styled(Grid)`
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+  border: 1px solid #e0e5ec;
+  border-radius: 23px;
+`
+/*
+            height: 50vh,
+
+*/

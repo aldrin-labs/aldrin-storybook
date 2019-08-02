@@ -39,7 +39,6 @@ class PortfolioSelector extends Component {
         controlStyles={{
           background: 'transparent',
           border: 'none',
-          width: 150,
         }}
         menuStyles={{
           width: 235,

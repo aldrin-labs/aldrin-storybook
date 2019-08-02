@@ -2,6 +2,7 @@ import React from 'react'
 import { withStyles, CardHeader, createStyles, Theme } from '@material-ui/core'
 import { CardHeaderProps } from '@material-ui/core/CardHeader'
 import { fade } from '@material-ui/core/styles/colorManipulator'
+import { CardHeaderCustom } from './CardHeader.styles.tsx'
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -30,12 +31,12 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-     // alignSelf: 'center',
+      // alignSelf: 'center',
     },
   })
 
 const Header = (props: CardHeaderProps) => (
-  <CardHeader
+  <CardHeaderCustom
     style={props.style}
     titleTypographyProps={{ variant: 'body1', color: 'default' }}
     classes={{

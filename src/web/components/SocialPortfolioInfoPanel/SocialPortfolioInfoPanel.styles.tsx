@@ -43,6 +43,15 @@ export const Link = styled(
     color: ${(props) => props.btnHoverTextColor};
     border: 1px solid ${(props) => props.borderColor};
   }
+
+  @media (min-width: 2560px) {
+    font-size: 0.6rem;
+    border-radius: 0.5rem;
+    width: auto;
+    height: auto;
+    padding: 0.6rem 2rem;
+    margin: 0.2rem 0.5rem;
+  }
 `
 
 export const SpanCell = styled.span`
@@ -54,6 +63,10 @@ export const GridMainContainer = styled(Grid)`
   border: 1px solid #e0e5ec;
   padding: 15px;
   border-radius: 24px;
+
+  @media (min-width: 2560px) {
+    padding: 0;
+  }
 `
 
 export const GridCell = styled(Grid)`
@@ -76,10 +89,10 @@ export const TypographyHeader = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1rem;
-    padding: 0 .75rem;
-    color: #7284A0;
+    padding: 0 0.75rem;
+    color: #7284a0;
   }
 `
 export const TypographyTariff = styled(Typography)`
@@ -90,6 +103,11 @@ export const TypographyTariff = styled(Typography)`
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
+
+  @media (min-width: 2560px) {
+    margin-left: 2.5rem;
+    padding-left: 2rem;
+  }
 `
 
 export const ButtonCustom = styled(
@@ -127,13 +145,13 @@ export const ButtonCustom = styled(
     border: 1px solid ${(props) => props.borderColor};
   }
 
-  @media(min-width: 2560px) {
-    font-size: .6rem;
-    border-radius: .5rem;
+  @media (min-width: 2560px) {
+    font-size: 0.6rem;
+    border-radius: 0.5rem;
     width: auto;
     height: auto;
-    padding: .5rem 2rem;
-    margin: .2rem .5rem;
+    padding: 0.5rem 2rem;
+    margin: 0.2rem 0.5rem;
   }
 `
 
@@ -141,7 +159,7 @@ export const TypographyTitle = styled(Typography)`
   font-size: 1.2rem;
   padding: ${(props) => props.padding};
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1rem;
   }
 `

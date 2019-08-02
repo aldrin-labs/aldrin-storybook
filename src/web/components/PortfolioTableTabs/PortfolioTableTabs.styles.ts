@@ -15,13 +15,18 @@ export const StyledButton = styled(Button)`
   font-size: 1.2rem;
   text-transform: capitalize;
   transition: all ease-in-out 0.2s;
+  
+  a {
+    text-decoration: none;
+    color: white;
+  }
 
   &:hover {
     background: #165be0;
   }
 `
 
-export const StyledAccountsButton = styled(StyledButton)`
+export const StyledLeftButton = styled(StyledButton)`
   transform: rotate(-90deg);
   left: -6.2rem;
   border-radius: 0 0 1rem 1rem;
@@ -31,7 +36,7 @@ export const StyledAccountsButton = styled(StyledButton)`
   }
 `
 
-export const StyledTransactionsButton = styled(StyledButton)`
+export const StyledRightButton = styled(StyledButton)`
   position: relative;
   transform: rotate(90deg);
   left: calc(100vw - 8rem);

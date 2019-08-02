@@ -14,6 +14,7 @@ import {
   TypographyCalendarLegend,
   LessMoreContainer,
   GridTableContainer,
+  CalendarGrid
 } from './TransactionPage.styles'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
@@ -122,6 +123,9 @@ class TransactionPage extends Component {
       activeKeys.length + activeWallets.length ===
       newKeys.length + newWallets.length
     const isRebalance = false
+
+    // TODO: Account block, less more pointers, table fonts, titles
+
     return (
       <Grid
         container
@@ -131,7 +135,7 @@ class TransactionPage extends Component {
           padding: '30px 5% 30px 5px',
           overflow: 'hidden',
         }}
-        // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+      // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
         {/* Accounts */}
         <Grid item lg={2} md={2}>
@@ -178,49 +182,11 @@ class TransactionPage extends Component {
           </GridAccountContainer>
         </Grid>
 
-        {/* Calendar */}
-        <Grid item lg={2} md={2}>
-          <GridItemContainer
-            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
-          >
-            <GridContainerTitle
-              bgColor={theme.palette.primary.dark}
-              content
-              alignItems="center"
-            >
-              <TypographyContatinerTitle
-                textColor={theme.palette.text.subPrimary}
-              >
-                calendar
-              </TypographyContatinerTitle>
-            </GridContainerTitle>
-            <Grid style={{ padding: '0 0 20px 0' }}>
-              <Grid style={{ padding: '0 0 10px 45px' }}>
-                <GitTransactionCalendar />
-              </Grid>
-              <Grid container justify="center" style={{ margineTop: '15px' }}>
-                <Grid lg={2}>
-                  <TypographyCalendarLegend textAlign={'right'}>
-                    Less
-                  </TypographyCalendarLegend>
-                </Grid>
-
-                <Grid container justify="center" lg={8}>
-                  <LessMoreContainer />
-                </Grid>
-                <Grid lg={2}>
-                  <TypographyCalendarLegend>More</TypographyCalendarLegend>
-                </Grid>
-              </Grid>
-            </Grid>
-          </GridItemContainer>
-        </Grid>
-
         <GridItemContainer
           item
-          lg={7}
-          md={7}
-          style={{ boxShadow: 'none', border: 'none' }}
+          lg={8}
+          md={8}
+          style={{ boxShadow: 'none', border: 'none', padding: '0 2.5rem' }}
         >
           <Grid item style={{ height: '100%' }}>
             <GridTableContainer
@@ -229,7 +195,7 @@ class TransactionPage extends Component {
               md={12}
               borderColor={`1px solid ${
                 theme.palette.grey[theme.palette.type]
-              }`}
+                }`}
             >
               {/* <Table tableStyles={tableStyles} /> */}
               <GridContainerTitle
@@ -271,6 +237,44 @@ class TransactionPage extends Component {
             />
           </Grid>
         </GridItemContainer>
+
+        {/* Calendar */}
+        <Grid item lg={2} md={2}>
+          <GridItemContainer
+            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+          >
+            <GridContainerTitle
+              bgColor={theme.palette.primary.dark}
+              content
+              alignItems="center"
+            >
+              <TypographyContatinerTitle
+                textColor={theme.palette.text.subPrimary}
+              >
+                calendar
+              </TypographyContatinerTitle>
+            </GridContainerTitle>
+            <Grid style={{ padding: '0 0 20px 0' }}>
+              <Grid style={{ padding: '0 0 10px 45px' }}>
+                <GitTransactionCalendar />
+              </Grid>
+              <Grid container justify="center" style={{ margineTop: '15px' }}>
+                <Grid lg={2}>
+                  <TypographyCalendarLegend textAlign={'right'}>
+                    Less
+                  </TypographyCalendarLegend>
+                </Grid>
+
+                <Grid container justify="center" lg={8}>
+                  <LessMoreContainer />
+                </Grid>
+                <Grid lg={2}>
+                  <TypographyCalendarLegend>More</TypographyCalendarLegend>
+                </Grid>
+              </Grid>
+            </Grid>
+          </GridItemContainer>
+        </Grid>
       </Grid>
     )
   }

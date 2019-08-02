@@ -16,7 +16,8 @@ import {
   InputCustom,
   TableContainer,
   StyledSvgIcon,
-  TypographyEmptyFolioPanel
+  GridFolioConteiner,
+  TypographyEmptyFolioPanel,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -90,11 +91,14 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
           {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
         </TypographyTitle>
       </Grid>
-      <SvgIcon width="10" height="10" src={LineGraph} 
-        styledComponentsAdditionalStyle="@media(min-width: 2560px) { 
-          width: 4.5rem; 
+      <SvgIcon
+        width="10"
+        height="10"
+        src={LineGraph}
+        styledComponentsAdditionalStyle="@media(min-width: 2560px) {
+          width: 4.5rem;
           margin: .5rem .5rem 2rem 0;
-        }" 
+        }"
       />
     </Grid>
     <Grid container alignItems="center" justify="space-between">
@@ -158,14 +162,14 @@ class SocialPage extends React.Component {
         // { id: 'name', label: 'Account', isNumber: false },
         //{ id: 'portfolio', label: 'portfolio', isNumber: true },
         // { id: 'coin', label: '', isNumber: false },
-        { id: 'coin', label: 'coin', isNumber: false },
+        { id: 'coin', label: 'coin', isNumber: true },
         { id: 'exchange', label: 'exchange', isNumber: false },
-        { id: 'price', label: 'price', isNumber: true },
-        { id: 'quantity', label: 'quantity', isNumber: true },
+        { id: 'price', label: 'price', isNumber: false },
+        { id: 'quantity', label: 'quantity', isNumber: false },
         { id: 'usd', label: isUSDCurrently ? 'usd' : 'BTC', isNumber: true },
-        { id: 'realizedPL', label: 'realized P&L', isNumber: true },
-        { id: 'unrealizedPL', label: 'Unrealized P&L', isNumber: true },
-        { id: 'totalPL', label: 'Total P&L', isNumber: true },
+        { id: 'realizedPL', label: 'realized P&L', isNumber: false },
+        { id: 'unrealizedPL', label: 'Unrealized P&L', isNumber: false },
+        { id: 'totalPL', label: 'Total P&L', isNumber: false },
       ],
       body: transformData(
         tableData,
@@ -262,15 +266,9 @@ class SocialPage extends React.Component {
         xs={12}
         style={{ paddingRight: '4%', height: '85vh', overflow: 'hidden' }}
       >
-        <Grid
+        <GridFolioConteiner
           item
           xs={3}
-          style={{
-            height: '50vh',
-            boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
-            border: '1px solid #e0e5ec',
-            borderRadius: '23px',
-          }}
         >
           <SocialTabs>
             <GridSortOption
@@ -279,12 +277,12 @@ class SocialPage extends React.Component {
               alignItems="center"
             >
               <Grid item>
-                <TypographySearchOption
+                {/* <TypographySearchOption
                   textColor={'#165BE0'}
                   style={{ visible: 'hidden' }}
                 >
                   compare Index Chart
-                </TypographySearchOption>
+                </TypographySearchOption> */}
               </Grid>
 
               <Grid item>
@@ -353,11 +351,11 @@ class SocialPage extends React.Component {
                   Portfolio has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                  sharedPortfoliosList
-                )}
+                sharedPortfoliosList
+              )}
             </GridFolioScroll>
           </SocialTabs>
-        </Grid>
+        </GridFolioConteiner>
         {/* <Grid lg={8}> */}
 
         <GridTableContainer container justify="center" xs={9}>
@@ -366,10 +364,12 @@ class SocialPage extends React.Component {
               folioData={
                 getFollowingPortfolios.length
                   ? getFollowingPortfolios[selectedPortfolio]
-                  : { name: '', isPrivate: true, ownerId: { email: '' } }
+                  : { name: '', isPrivate: true, ownerId: '' }
               }
             />
-            <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
+            <SocialBalancePanel
+              totalFolioAssetsData={totalFolioAssetsData}
+            />
             {/* <GridItemContainer item lg={2} md={2}>
               <GridContainerTitle content alignItems="center">
                 <TypographyContatinerTitle>
@@ -427,7 +427,7 @@ class SocialPage extends React.Component {
                     emptyTableText="No assets"
                     tableStyles={{
                       heading: {
-                        padding: '0', //'0 0 0 18px',
+                        padding: '0 0 0 48px !important',
                         textAlign: 'left',
                         maxWidth: '14px',
                         background: '#F2F4F6',
@@ -436,14 +436,14 @@ class SocialPage extends React.Component {
                         color: '#7284A0',
                         lineHeight: '31px',
                         letterSpacing: '1.5px',
-                        '&:first-child': {
-                          // Does'n work
-                          borderRadius: '22px 0 0 0',
-                          background: 'red !importand',
-                        },
-                        '&:last-child': {
-                          borderRadius: '0 22px  0 0',
-                        },
+                        // '&th:first-child': {
+                        //   // Does'n work
+                        //   borderRadius: '22px 0 0 0',
+                        //   background: 'red',
+                        // },
+                        // '&:last-child': {
+                        //   borderRadius: '0 22px  0 0',
+                        // },
                       },
 
                       cell: {
