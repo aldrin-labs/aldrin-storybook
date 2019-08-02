@@ -266,7 +266,7 @@ class SocialPage extends React.Component {
         xs={12}
         style={{ paddingRight: '4%', height: '85vh', overflow: 'hidden' }}
       >
-        <GridFolioConteiner
+        <Grid
           item
           xs={3}
         >
@@ -355,7 +355,7 @@ class SocialPage extends React.Component {
               )}
             </GridFolioScroll>
           </SocialTabs>
-        </GridFolioConteiner>
+        </Grid>
         {/* <Grid lg={8}> */}
 
         <GridTableContainer container justify="center" xs={9}>

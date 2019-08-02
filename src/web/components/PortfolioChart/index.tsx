@@ -132,6 +132,7 @@ export default class PortfolioChart extends Component<Props> {
         {/* style={{ paddingRight: '540px' }} */}
         <Chart height={`calc(100% - 68px)`}>
           <FlexibleXYPlot
+            tickLabelAngle={45}
             margin={{ right: 50 }}
             animation={true}
             onMouseLeave={this._onMouseLeave}
