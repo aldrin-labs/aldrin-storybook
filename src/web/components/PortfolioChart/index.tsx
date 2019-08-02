@@ -59,9 +59,9 @@ export default class PortfolioChart extends Component<Props> {
     this.setState({ crosshairValues: [] })
   }
 
-  _formatDate = (date) => { }
+  _formatDate = (date) => {}
 
-  _onBrushStart = (data) => { }
+  _onBrushStart = (data) => {}
 
   _onBrushEnd = (area) => {
     this.props.onChangeDateRange(area)
@@ -103,20 +103,20 @@ export default class PortfolioChart extends Component<Props> {
                         chartBtn === activeChart
                           ? `1px solid ${theme.palette.secondary.main}`
                           : `1px solid ${
-                          theme.palette.btnChartBorderNotActive.main
-                          }`
-                        }`,
+                              theme.palette.btnChartBorderNotActive.main
+                            }`
+                      }`,
                       margin: '0.5rem 1.6rem',
                       background: `${
                         chartBtn === activeChart
                           ? theme.palette.secondary.main
                           : 'transparent'
-                        }`,
+                      }`,
                       color: `${
                         chartBtn === activeChart
                           ? 'white'
                           : theme.palette.text.dark
-                        }`,
+                      }`,
                       borderRadius: '25px',
                       fontSize: '0.8rem',
                     }}
@@ -169,7 +169,7 @@ export default class PortfolioChart extends Component<Props> {
                   offset="0%"
                   stopColor={theme && theme.palette.secondary.main}
                   stopOpacity={0}
-                // stopOpacity={0.3}   GRADIENT
+                  // stopOpacity={0.3}   GRADIENT
                 />
                 <stop
                   offset="60%"
