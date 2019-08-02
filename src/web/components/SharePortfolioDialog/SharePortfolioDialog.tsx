@@ -82,7 +82,10 @@ IState
   }
 
   openInvitePopup = () => {
-    this.setState({ openInvitePopup: true });
+    // TODO handling with returning result from back
+    const isInvited = this.sharePortfolioHandler(false);
+
+    this.setState({ openInvitePopup: isInvited });
     setTimeout(() => this.setState({ openInvitePopup: false }), 2000);
   }
 
@@ -175,6 +178,8 @@ IState
     })
 
     console.log('result', result)
+
+    return result;
   }
 
   render() {

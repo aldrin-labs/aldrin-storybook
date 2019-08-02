@@ -68,10 +68,10 @@ class GitTransactionCalendar extends Component {
           return value.count === 1
             ? this.props.classes.githubOne
             : value.count === 2
-            ? this.props.classes.githubTwo
-            : value.count === 3
-            ? this.props.classes.githubThree
-            : this.props.classes.githubThree
+              ? this.props.classes.githubTwo
+              : value.count === 3
+                ? this.props.classes.githubThree
+                : this.props.classes.githubThree
         }}
         tooltipDataAttrs={(value) => {
           return {

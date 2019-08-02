@@ -13,6 +13,7 @@ import {
   GridAccountContainer,
   TypographyCalendarLegend,
   LessMoreContainer,
+  CalendarGrid
 } from './TransactionPage.styles'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
@@ -130,7 +131,7 @@ class TransactionPage extends Component {
           padding: '30px 5% 30px 5px',
           overflow: 'hidden',
         }}
-        // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+      // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
         {/* Accounts */}
         <Grid item lg={2} md={2}>
@@ -194,9 +195,9 @@ class TransactionPage extends Component {
               </TypographyContatinerTitle>
             </GridContainerTitle>
             <Grid style={{ padding: '0 0 20px 0' }}>
-              <Grid style={{ padding: '0 0 10px 45px' }}>
+              <CalendarGrid>
                 <GitTransactionCalendar />
-              </Grid>
+              </CalendarGrid>
               <Grid container justify="center" style={{ margineTop: '15px' }}>
                 <Grid lg={2}>
                   <TypographyCalendarLegend textAlign={'right'}>

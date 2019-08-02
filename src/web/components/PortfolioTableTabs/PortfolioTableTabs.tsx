@@ -18,8 +18,8 @@ import {
   DividerWithMargin,
   Marker,
   Tab,
-  StyledAccountsButton,
-  StyledTransactionsButton,
+  StyledLeftButton,
+  StyledRightButton,
 } from './PortfolioTableTabs.styles'
 
 @withRouter
@@ -45,7 +45,10 @@ class PortfolioTableTabs extends React.Component<IProps> {
       },
       location: { pathname },
     } = this.props
+
     const switchUSDBTC = pathname === '/portfolio/main'
+    const isMainPage = pathname === '/portfolio/main';
+    const isTransactionsPage = pathname === '/portfolio/transactions';
 
     return (
       <Container
@@ -59,13 +62,24 @@ class PortfolioTableTabs extends React.Component<IProps> {
           position: 'relative',
         }}
       >
-        <StyledAccountsButton onClick={() => toggleWallets()}>Accounts</StyledAccountsButton>
-        {switchUSDBTC
-          ? <StyledTransactionsButton
-            onClick={() => console.log('transaction button')}
-          > Transactions </StyledTransactionsButton>
-          : null
+        {
+          isMainPage
+            ? (
+              <>
+                <StyledLeftButton onClick={() => toggleWallets()}>Accounts</StyledLeftButton>
+                <StyledRightButton><Link to="/portfolio/transactions">Transactions</Link></StyledRightButton>
+              </>
+            )
+            : null
         }
+
+        {
+          isTransactionsPage
+            ? <StyledLeftButton><Link to="/portfolio/main">P&L</Link></StyledLeftButton>
+            : null
+        }
+
+
         {/*<BarContainer*/}
         {/*onClick={() => {*/}
         {/*toggleWallets()*/}

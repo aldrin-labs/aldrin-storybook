@@ -5,14 +5,27 @@ import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;
-  width: 100px;
+  width: 100%;
   font-size: 1.2rem;
   text-transform: uppercase;
   border: 1px solid transparent;
   font-weight: 700;
   letter-spacing: 1px;
   background: transparent;
-  margin-left: 10px;
+  margin-left: 1rem;
+
+  @media(min-width: 2560px) {
+
+    .custom-select-box__indicator {
+      width: auto;
+      padding-right: 1rem;
+    }
+
+    svg {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
 `
 
 export const GridContainerTitle = styled(Grid)`
@@ -21,6 +34,10 @@ export const GridContainerTitle = styled(Grid)`
   border-radius: 20px 20px 0 0;
   background: ${(props) => props.bgColor};
   margin-bottom: 8px;
+
+  @media(min-width: 2560px) {
+    
+  }
 `
 
 export const GridItemContainer = styled(Grid)`
@@ -48,6 +65,11 @@ export const TypographyContatinerTitle = styled(Typography)`
   text-align: ${(props) => props.textAlign || 'center'};
   height: 24px;
   padding: ${(props) => props.textPadding};
+
+  @media(min-width: 2560px) {
+    padding: .4rem 0 1rem 0;
+    height: auto;
+  }
 `
 
 export const TypographyAccountTitle = styled(Typography)`
@@ -68,6 +90,20 @@ export const TypographyTitle = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   margin-left: 12px;
+
+  @media(min-width: 2560px) {
+    font-size: 1.1rem;
+    margin-left: 1rem;
+  }
+`
+
+export const CalendarGrid = styled(Grid)`
+
+  padding: 0 0 10px 45px;
+
+  @media(min-width: 2560px) {
+    padding: 0 0 10px 80px;
+  }
 `
 
 export const GridShowHideDataContainer = styled(Grid)`
@@ -80,8 +116,8 @@ export const GridShowHideDataContainer = styled(Grid)`
 `
 
 export const TypographyCalendarLegend = styled(Typography)`
-  padding: '0 10px';
-  font-size: '0.9rem';
+  padding: 0 10px;
+  font-size: 0.9rem;
   text-align: ${(props) => props.textAlign};
 `
 
