@@ -8,6 +8,9 @@ import {
   TypographyTitle,
   GridMainContainer,
   SpanCell,
+  Link,
+  ButtonCustomFollow,
+  ButtonCustomUnfollow,
 } from './SocialPortfolioInfoPanel.styles'
 import { Grid, Typography } from '@material-ui/core'
 import { withTheme } from '@material-ui/core'
@@ -16,6 +19,11 @@ import { withTheme } from '@material-ui/core'
 class SocialPortfolioInfoPanel extends Component {
   state = {
     rating: 0,
+    isFollow: false,
+  }
+
+  handleToggleFollowBtn() {
+    this.setState({ isFollow: !this.state.isFollow })
   }
 
   onStarClick(nextValue, prevValue, name) {
@@ -95,7 +103,8 @@ class SocialPortfolioInfoPanel extends Component {
         </Grid>
 
         <Grid container lg={3} alignItems="flex-end" justify="flex-end">
-          <ButtonCustom
+          <Link
+            to="/portfolio/rebalance"
             btnMargin={'auto 2px'}
             btnWidth={'100px'}
             btnHeight={'26px'}
@@ -108,22 +117,46 @@ class SocialPortfolioInfoPanel extends Component {
             btnFontSize={'0.75rem'}
             borderColor={'#165BE0'}
           >
-            to rebalance
-          </ButtonCustom>
-          <ButtonCustom
+            Rebalance
+          </Link>
+          <ButtonCustomFollow
+            // btnVisibility={'hidden'}
             btnMargin={'auto 2px'}
             btnWidth={'100px'}
             btnHeight={'26px'}
-            btnBorderColor={'#165BE0'}
+            btnBorderColor={`${
+              this.state.isFollow ? '#165BE0' : '#B93B2B'
+            }`}
             btnTextColor={'#fff'}
-            btnBgColor={'#165BE0'}
-            btnHoverColor={'#B93B2B'}
+            btnBgColor={`${this.state.isFollow ? '#B93B2B' : '#165BE0'}`}
+            btnHoverColor={`${this.state.isFollow ? '#B93B2B' : '#165BE0'}`}
             btnHoverTextColor={'#fff'}
             btnRadius={'10px'}
             btnFontSize={'0.75rem'}
+            onClick={this.handleToggleFollowBtn.bind(this)}
           >
-            following
-          </ButtonCustom>
+            {this.state.isFollow ? 'unfollow' : 'follow'}
+          </ButtonCustomFollow>
+          {/* <ButtonCustomUnfollow
+            btnVisibility={'visible'}
+            btnMargin={'auto 2px'}
+            btnWidth={'100px'}
+            btnHeight={'26px'}
+            btnBorderColor={`${
+              !this.state.isFollow ? '#165BE0' : '#B93B2B'
+            }`}
+            btnTextColor={'#fff'}
+            btnBgColor={`${!this.state.isFollow ? '#B93B2B' : '#165BE0'}`}
+            btnHoverColor={`${
+              !this.state.isFollow ? '#B93B2B' : '#165BE0'
+            }`}
+            btnHoverTextColor={'#fff'}
+            btnRadius={'10px'}
+            btnFontSize={'0.75rem'}
+            onClick={this.handleToggleFollowBtn.bind(this)}
+          >
+            {!this.state.isFollow ? 'unfollow' : 'follow'}
+          </ButtonCustomUnfollow> */}
         </Grid>
       </GridMainContainer>
     )

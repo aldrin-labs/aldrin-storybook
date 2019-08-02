@@ -13,6 +13,7 @@ import {
   GridAccountContainer,
   TypographyCalendarLegend,
   LessMoreContainer,
+  GridTableContainer,
 } from './TransactionPage.styles'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
@@ -214,46 +215,61 @@ class TransactionPage extends Component {
             </Grid>
           </GridItemContainer>
         </Grid>
+
         <GridItemContainer
           item
           lg={7}
           md={7}
           style={{ boxShadow: 'none', border: 'none' }}
         >
-          <GridItemContainer
-            item
-            lg={12}
-            md={12}
-            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
-          >
-            {/* <Table tableStyles={tableStyles} /> */}
-            <GridContainerTitle
-              content
-              alignItems="center"
-              bgColor={theme.palette.primary.dark}
+          <Grid item style={{ height: '100%' }}>
+            <GridTableContainer
+              item
+              lg={12}
+              md={12}
+              borderColor={`1px solid ${
+                theme.palette.grey[theme.palette.type]
+              }`}
             >
-              <Grid
-                style={{
-                  display: 'flex',
-                  width: '70%',
-                  justifyContent: 'space-between',
-                }}
+              {/* <Table tableStyles={tableStyles} /> */}
+              <GridContainerTitle
+                content
+                alignItems="center"
+                bgColor={theme.palette.primary.dark}
               >
-                <TypographyContatinerTitle
-                  textAlign={'left'}
-                  textPadding={'0 0 0 35px'}
+                <Grid
+                  style={{
+                    display: 'flex',
+                    width: '70%',
+                    justifyContent: 'space-between',
+                  }}
                 >
-                  Transactions
-                </TypographyContatinerTitle>
-                <TypographyContatinerTitle>
-                  Jan, 25 - feb, 8, 2019
-                </TypographyContatinerTitle>
+                  <TypographyContatinerTitle
+                    textAlign={'left'}
+                    textPadding={'0 0 0 35px'}
+                  >
+                    Transactions
+                  </TypographyContatinerTitle>
+                  <TypographyContatinerTitle>
+                    Jan, 25 - feb, 8, 2019
+                  </TypographyContatinerTitle>
+                </Grid>
+              </GridContainerTitle>
+              <Grid style={{ padding: '0 25px', overflow: 'hidden' }}>
+                <TradeOrderHistory style={{ overflow: 'scroll' }} />
               </Grid>
-            </GridContainerTitle>
-            <Grid style={{ padding: '0 25px', overflow: 'hidden' }}>
-              <TradeOrderHistory />
-            </Grid>
-          </GridItemContainer>
+            </GridTableContainer>
+            <PortfolioMainChart
+              title="Portfolio performance"
+              style={{
+                marginTop: '3%',
+                marginLeft: 0,
+                maxHeight: '235px',
+                boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+              }}
+              marginTopHr="10px"
+            />
+          </Grid>
         </GridItemContainer>
       </Grid>
     )
