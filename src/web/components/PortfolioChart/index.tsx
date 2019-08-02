@@ -122,7 +122,7 @@ export default class PortfolioChart extends Component<Props> {
                     }}
                   >
                     {chartBtn}
-                  </Button>
+                  </SButton>
                 ))}
             </>
           }
