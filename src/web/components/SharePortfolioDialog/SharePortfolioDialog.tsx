@@ -45,8 +45,6 @@ const tradingPortfolioTypes = [
 
 const tradeFrequencies = ['Irregularly', 'By Minute', 'Daily', 'Weekly', 'Hourly']
 
-// TODO: Mini-Popup, fix < 1920 and > 2560, link also works like button
-
 @withTheme()
 export default class SharePortfolioDialog extends React.Component<
 IProps,
@@ -203,8 +201,6 @@ IState
       openLinkPopup
     } = this.state;
 
-    console.log('price', portfolioPrice);
-
     return (
       <Dialog
         PaperComponent={StyledPaper}
@@ -344,7 +340,8 @@ IState
                   />
                   <StyledButton
                     padding=".8rem 3rem"
-                    onClick={() => this.sharePortfolioHandler(false)}
+                    onClick={this.openInvitePopup}
+                    disabled={!selectedUsername}
                   >
                     Invite
                   </StyledButton>
@@ -571,9 +568,15 @@ IState
             Go to Social portfolio manager
           </TypographyFooter>
         </DialogFooter>
+
         <MiniSuccessPopup
           isOpen={openLinkPopup}
           text="Link copied to clipboard"
+        />
+
+        <MiniSuccessPopup
+          isOpen={openInvitePopup}
+          text={`Invite link sended to ${selectedUsername ? selectedUsername.label : 'unchoosen user'}`}
         />
       </Dialog>
     )

@@ -23,6 +23,7 @@ const MiniSuccessPopup = ({
       <DialogTitle
         disableTypography
         id="responsive-dialog-title"
+        style={{ background: '#16253D', padding: '0' }}
       ><TypographyTitle>{text}</TypographyTitle></DialogTitle>
     </Dialog>
   );
