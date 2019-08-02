@@ -14,6 +14,7 @@ import {
   TypographyCalendarLegend,
   LessMoreContainer,
   GridTableContainer,
+  CalendarGrid
 } from './TransactionPage.styles'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
@@ -131,7 +132,7 @@ class TransactionPage extends Component {
           padding: '30px 5% 30px 5px',
           overflow: 'hidden',
         }}
-        // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
+      // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
         {/* Accounts */}
         <Grid item lg={2} md={2}>
@@ -191,7 +192,7 @@ class TransactionPage extends Component {
               md={12}
               borderColor={`1px solid ${
                 theme.palette.grey[theme.palette.type]
-              }`}
+                }`}
             >
               {/* <Table tableStyles={tableStyles} /> */}
               <GridContainerTitle

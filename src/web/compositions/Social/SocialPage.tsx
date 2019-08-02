@@ -90,11 +90,11 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
           {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
         </TypographyTitle>
       </Grid>
-      <SvgIcon width="10" height="10" src={LineGraph} 
-        styledComponentsAdditionalStyle="@media(min-width: 2560px) { 
-          width: 4.5rem; 
+      <SvgIcon width="10" height="10" src={LineGraph}
+        styledComponentsAdditionalStyle="@media(min-width: 2560px) {
+          width: 4.5rem;
           margin: .5rem .5rem 2rem 0;
-        }" 
+        }"
       />
     </Grid>
     <Grid container alignItems="center" justify="space-between">
@@ -366,7 +366,7 @@ class SocialPage extends React.Component {
               folioData={
                 getFollowingPortfolios.length
                   ? getFollowingPortfolios[selectedPortfolio]
-                  : { name: '', isPrivate: true, ownerId: { email: '' } }
+                  : { name: '', isPrivate: true, ownerId: '' }
               }
             />
             <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />

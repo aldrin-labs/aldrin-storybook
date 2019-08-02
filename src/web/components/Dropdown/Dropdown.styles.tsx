@@ -27,6 +27,10 @@ export const StyledLink = styled(NavLink)`
 export const StyledButton = styled(Button)`
     font-size: 1.375rem;
     transition: .35s all; 
+
+    @media(min-width: 2560px) {
+        font-size: 1rem;
+    }
 `
 
 export const StyledDropdown = styled.div`
