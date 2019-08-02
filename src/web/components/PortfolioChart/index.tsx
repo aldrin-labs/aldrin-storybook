@@ -86,7 +86,8 @@ export default class PortfolioChart extends Component<Props> {
             <>
               {chartBtns &&
                 chartBtns.map((chartBtn) => (
-                  <Button
+                  <SButton
+                    //color="secondary"
                     size="small"
                     onClick={() => {
                       this.onChangeActiveChart(chartBtn)
@@ -102,20 +103,20 @@ export default class PortfolioChart extends Component<Props> {
                         chartBtn === activeChart
                           ? `1px solid ${theme.palette.secondary.main}`
                           : `1px solid ${
-                              theme.palette.btnChartBorderNotActive.main
-                            }`
-                      }`,
+                          theme.palette.btnChartBorderNotActive.main
+                          }`
+                        }`,
                       margin: '0.5rem 1.6rem',
                       background: `${
                         chartBtn === activeChart
                           ? theme.palette.secondary.main
                           : 'transparent'
-                      }`,
+                        }`,
                       color: `${
                         chartBtn === activeChart
                           ? 'white'
                           : theme.palette.text.dark
-                      }`,
+                        }`,
                       borderRadius: '25px',
                       fontSize: '0.8rem',
                     }}

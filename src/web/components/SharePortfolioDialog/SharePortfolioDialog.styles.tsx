@@ -78,6 +78,11 @@ export const ButtonShare = styled(Button)`
     padding: ${props => props.padding ? '1.2rem 3.2rem' : '1.2rem 2.5rem'};
   }
 
+  @media(min-width: 1820px) {
+    font-size: 1.7rem;
+    padding: ${props => props.padding ? '1.2rem 3.5rem' : '1.2rem 2.8rem'};
+  }
+
   @media(min-width: 1921px) {
     font-size: 1.4rem;
     padding: ${props => props.padding ? '1.2rem 3rem' : '1.2rem 2.2rem'};
@@ -163,7 +168,7 @@ export const SRadio = styled(Radio)`
 
   @media(min-width: 1440px) {
     svg {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
   }
 
@@ -173,7 +178,7 @@ export const SRadio = styled(Radio)`
     }
   }
 
-  @media(min-width: 1720px) {
+  @media(min-width: 2560px) {
     svg {
       font-size: 2rem;
     }
@@ -183,7 +188,7 @@ export const SRadio = styled(Radio)`
 export const SCheckbox = styled(Checkbox)`
   @media(min-width: 1440px) {
     svg {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
   }
 
@@ -193,7 +198,7 @@ export const SCheckbox = styled(Checkbox)`
     }
   }
 
-  @media(min-width: 1720px) {
+  @media(min-width: 2560px) {
     svg {
       font-size: 2rem;
     }
@@ -325,7 +330,7 @@ export const StyledInputTemplate = styled(FormControlLabel)`
     }
   }
 
-  @media(min-width: 1720px) {
+  @media(min-width: 1921px) {
     & > span {
       font-size: 1.2rem;
     }
