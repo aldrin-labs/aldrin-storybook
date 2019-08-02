@@ -26,7 +26,9 @@ import {
   crosshairStyle,
 } from './styles'
 import CardHeader from '../CardHeader'
+import { withTheme } from '@material-ui/styles'
 
+@withTheme()
 export default class PortfolioChart extends Component<Props> {
   state: Partial<Props> = {
     activeChart: '1Y',
@@ -80,13 +82,12 @@ export default class PortfolioChart extends Component<Props> {
     return (
       <SProfileChart style={{ ...style, height }}>
         <CardHeader
-          title={title}
           action={
             <>
               {chartBtns &&
                 chartBtns.map((chartBtn) => (
                   <SButton
-                    color="secondary"
+                    //color="secondary"
                     size="small"
                     onClick={() => {
                       this.onChangeActiveChart(chartBtn)
@@ -94,17 +95,42 @@ export default class PortfolioChart extends Component<Props> {
                     data-e2e={`${chartBtn}`}
                     variant={chartBtn !== activeChart ? 'text' : 'contained'}
                     key={chartBtn}
-                    style={{ margin: '0 1.6rem' }}
+                    style={{
+                      width: '4.3rem',
+                      lineHeight: '1.5rem',
+                      padding: '0',
+                      border: `${
+                        chartBtn === activeChart
+                          ? `1px solid ${theme.palette.secondary.main}`
+                          : `1px solid ${
+                          theme.palette.btnChartBorderNotActive.main
+                          }`
+                        }`,
+                      margin: '0.5rem 1.6rem',
+                      background: `${
+                        chartBtn === activeChart
+                          ? theme.palette.secondary.main
+                          : 'transparent'
+                        }`,
+                      color: `${
+                        chartBtn === activeChart
+                          ? 'white'
+                          : theme.palette.text.dark
+                        }`,
+                      borderRadius: '25px',
+                      fontSize: '0.8rem',
+                    }}
                   >
                     {chartBtn}
                   </SButton>
                 ))}
             </>
           }
+          title={title}
         />
         {/* minus cardHeader Height */}
         {/* style={{ paddingRight: '540px' }} */}
-        <Chart height={`calc(100% - 68px)`} >
+        <Chart height={`calc(100% - 68px)`}>
           <FlexibleXYPlot
             margin={{ right: 50 }}
             animation={true}

@@ -136,3 +136,14 @@ export const LessMoreContainer = styled(Grid)`
   width: 90%;
   border-radius: 32px;
 `
+
+export const GridTableContainer = styled(Grid)`
+         height: 50vh;
+         overflow: hidden;
+         box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+         border-radius: 20px;
+         border: ${(props) => props.borderColor};
+         ::-webkit-scrollbar {
+           display: none;
+         }
+       `

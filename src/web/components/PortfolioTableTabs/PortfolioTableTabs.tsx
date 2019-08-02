@@ -60,6 +60,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
+          minHeight: '95vh'
         }}
       >
         {

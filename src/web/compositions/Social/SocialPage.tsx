@@ -15,7 +15,8 @@ import {
   GridFolioScroll,
   InputCustom,
   TableContainer,
-  StyledSvgIcon
+  StyledSvgIcon,
+  TypographyEmptyFolioPanel
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -74,7 +75,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
     container
     onClick={onClick}
     border={isSelected ? '22px' : '22px 22px 0 0 '}
-    boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
+    boxShadow={!isSelected ? 'none' : '0px 0px 8px rgba(10, 19, 43, 0.1)'}
     borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
   >
     <Grid container justify="space-between">
@@ -112,7 +113,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
             fontSize={'1rem'}
             textColor={isSelected ? '#97C15C' : '#2F7619'}
           >
-            + {el.portfolioAssets.length} %
+            {/* TODO IMPORTANT plus sign */}+ {el.portfolioAssets.length} %
           </TypographyTitle>
         </div>
       </FolioValuesCell>
@@ -190,35 +191,44 @@ class SocialPage extends React.Component {
       setSelectedPortfolio,
     } = this.props
 
-    const totalFolioAssetsData = getFollowingPortfolios[
-      selectedPortfolio
-    ].portfolioAssets.reduce(
-      (acc, el) => {
-        acc.total += el.quantity * el.price
-        acc.assets++
-        acc.realized += el.realized
-        acc.unrealized += el.unrealized
-        return acc
-      },
-      {
-        total: 0,
-        assets: 0,
-        realized: 0,
-        unrealized: 0,
-      }
-    )
+    const totalFolioAssetsData = getFollowingPortfolios.length
+      ? getFollowingPortfolios[selectedPortfolio].portfolioAssets.reduce(
+          (acc, el) => {
+            acc.total += el.quantity * el.price
+            acc.assets++
+            acc.realized += el.realized
+            acc.unrealized += el.unrealized
+            return acc
+          },
+          {
+            total: 0,
+            assets: 0,
+            realized: 0,
+            unrealized: 0,
+          }
+        )
+      : {
+          total: 0,
+          assets: 0,
+          realized: 0,
+          unrealized: 0,
+        }
 
-    console.log('____: ', getFollowingPortfolios[selectedPortfolio])
-    console.log('custom acc: ', totalFolioAssetsData)
-    console.log('SELECTED FOLIO:', selectedPortfolio)
-    console.log('FOLIOS:', getFollowingPortfolios)
+    console.log('FolioData: ', getFollowingPortfolios[selectedPortfolio])
+    // console.log('custom acc: ', totalFolioAssetsData)
+    // console.log('SELECTED FOLIO:', selectedPortfolio)
+    // console.log('FOLIOS:', getFollowingPortfolios)
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
-    let filteredData = getFollowingPortfolios.filter((folio) => {
-      return (
-        folio.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1
-      )
-    })
+    let filteredData = getFollowingPortfolios.length
+      ? getFollowingPortfolios.filter((folio) => {
+          return (
+            folio.name
+              .toLowerCase()
+              .indexOf(this.state.search.toLowerCase()) !== -1
+          )
+        })
+      : []
 
     const sharedPortfoliosList = filteredData.map((el, index) => (
       <PortfolioListItem
@@ -257,7 +267,9 @@ class SocialPage extends React.Component {
           xs={3}
           style={{
             height: '50vh',
-            boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
+            boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+            border: '1px solid #e0e5ec',
+            borderRadius: '23px',
           }}
         >
           <SocialTabs>
@@ -267,7 +279,10 @@ class SocialPage extends React.Component {
               alignItems="center"
             >
               <Grid item>
-                <TypographySearchOption textColor={'#165BE0'}>
+                <TypographySearchOption
+                  textColor={'#165BE0'}
+                  style={{ visible: 'hidden' }}
+                >
                   compare Index Chart
                 </TypographySearchOption>
               </Grid>
@@ -326,10 +341,17 @@ class SocialPage extends React.Component {
               placeholder={``}
               fontSize={`1.2rem`}
               onChange={this.handleSearchInput}
+              // style={{
+              //   background:`${theme.palette.type === 'dark'
+              //       ? theme.palette.primary.light
+              //       : theme.palette.grey.main }`
+              // }}
             />
             <GridFolioScroll>
               {sharedPortfoliosList.length === 0 ? (
-                <Typography>Portfolio hasn't been found in the list</Typography>
+                <TypographyEmptyFolioPanel>
+                  Portfolio has not been found in the list
+                </TypographyEmptyFolioPanel>
               ) : (
                   sharedPortfoliosList
                 )}
@@ -341,7 +363,11 @@ class SocialPage extends React.Component {
         <GridTableContainer container justify="center" xs={9}>
           <Grid continer lg={12}>
             <SocialPortfolioInfoPanel
-              folioData={getFollowingPortfolios[selectedPortfolio]}
+              folioData={
+                getFollowingPortfolios.length
+                  ? getFollowingPortfolios[selectedPortfolio]
+                  : { name: '', isPrivate: true, ownerId: { email: '' } }
+              }
             />
             <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
             {/* <GridItemContainer item lg={2} md={2}>
@@ -413,7 +439,7 @@ class SocialPage extends React.Component {
                         '&:first-child': {
                           // Does'n work
                           borderRadius: '22px 0 0 0',
-                          background: 'red',
+                          background: 'red !importand',
                         },
                         '&:last-child': {
                           borderRadius: '0 22px  0 0',
@@ -450,13 +476,14 @@ class SocialPage extends React.Component {
                   />
                 </TableContainer>
                 {/* chart */}
-                <Grid item style={{ paddingTop: '25px', height: '100%' }}>
+                <Grid item style={{ paddingTop: '15px', height: '100%' }}>
                   <PortfolioMainChart
                     title="Portfolio performance"
                     style={{
                       marginLeft: 0,
-                      maxHeight: '235px',
-                      boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
+                      maxHeight: '222px',
+                      boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+                      border: '1px solid #e0e5ec',
                     }}
                     marginTopHr="10px"
                   />
@@ -471,11 +498,4 @@ class SocialPage extends React.Component {
   }
 }
 
-export default compose(
-  queryRendererHoc({
-    query: GET_FOLLOWING_PORTFOLIOS,
-    withOutSpinner: false,
-    withTableLoader: false,
-    name: 'getFollowingPortfoliosQuery',
-  })
-)(SocialPage)
+export default SocialPage
