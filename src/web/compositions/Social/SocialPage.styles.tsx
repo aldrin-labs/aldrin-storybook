@@ -135,13 +135,17 @@ export const GridFolioScroll = styled(Grid)`
 `
 
 export const TableContainer = styled(Grid)`
-  width: 100%;
-  height: 26vh; /* 60vh /*TODO : Left Panel Hight*/
-  box-shadow: 0px 0px 34px -20px rgba(0, 0, 0, 0.85);
-  overflow-y: scroll;
-  border-radius: '22px';
-  ::-webkit-scrollbar {
-    display: none;
+  &&& {
+    position: relative;
+    width: 100%;
+    height: 29vh; /* 60vh /*TODO : Left Panel Hight*/
+    border: 1px solid #e0e5ec;
+    box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+    overflow-y: scroll;
+    /* border-radius: '14px !important'; */
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 `
 
@@ -149,4 +153,10 @@ export const StyledSvgIcon = styled(SvgIcon)`
   @media(min-width: 2560px) {
     width: 2.5rem;
   }
+`
+export const TypographyEmptyFolioPanel = styled(Typography)`
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
 `

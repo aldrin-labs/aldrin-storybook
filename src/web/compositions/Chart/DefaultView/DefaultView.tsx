@@ -69,7 +69,7 @@ export const DefaultView = (props) => {
         )}
       </ChartsContainer>
       <TradingTabelContainer item sm={10}>
-        {MASTER_BUILD && <ComingSoon />}
+        {/*{MASTER_BUILD && <ComingSoon />}*/}
         <TradingTable
           showCancelResult={showCancelResult}
         />
@@ -78,7 +78,7 @@ export const DefaultView = (props) => {
       {renderTables()}
 
       <TradingTerminalContainer item sm={4}>
-        {MASTER_BUILD && <ComingSoon />}
+        {/*{MASTER_BUILD && <ComingSoon />}*/}
         <TradingComponent
           selectedKey={selectedKey}
           activeExchange={activeExchange}

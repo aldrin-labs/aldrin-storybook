@@ -146,7 +146,7 @@ const styles = (theme: Theme) =>
     headRow: {
       height: '2rem',
       '& th:first-child': {
-        padding: '.75rem 1rem .75rem 2rem !important' // TODO delete important and inline styles in cells
+        padding: '.75rem 1rem .75rem .75rem !important' // TODO delete important and inline styles in cells
       },
     },
     rowSelected: {

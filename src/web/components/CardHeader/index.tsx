@@ -6,6 +6,8 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 const styles = (theme: Theme) =>
   createStyles({
     root: {
+      display: 'flex',
+      alignItems: 'center',
       borderBottom: `1px solid ${theme.palette.divider}`,
       height: '34px',
       padding: '6px',
@@ -24,9 +26,11 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
     },
     action: {
+      margin: 'auto',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+     // alignSelf: 'center',
     },
   })
 
