@@ -70,7 +70,12 @@ class SocialTabs extends React.Component {
               style={{
                 fontSize: '1.2rem',
                 color: '#7284A0',
-                background: this.state.value === 0 ? 'white' : '#eef0f3',
+                background:
+                  this.state.value === 0
+                    ? 'white'
+                    : theme.palette.type === 'dark'
+                    ? theme.palette.primary.light
+                    : theme.palette.grey.main, //'#eef0f3',
                 borderTop: '1px solid #E0E5EC',
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',
@@ -83,7 +88,12 @@ class SocialTabs extends React.Component {
               style={{
                 fontSize: '1.2rem',
                 color: '#7284A0',
-                background: this.state.value === 1 ? 'white' : '#eef0f3',
+                background:
+                  this.state.value === 1
+                    ? 'white'
+                    : theme.palette.type === 'dark'
+                    ? theme.palette.primary.light
+                    : theme.palette.grey.main, //'#eef0f3',
                 borderTop: '1px solid #E0E5EC',
                 borderLeft: '1px solid #E0E5EC',
                 borderRight: '1px solid #E0E5EC',

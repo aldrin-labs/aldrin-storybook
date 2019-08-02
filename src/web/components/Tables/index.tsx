@@ -605,11 +605,11 @@ const CustomTable = (props: Props) => {
           </TableRow>
         </TableHead>
 
-        <TableBody>
-          {data.body.length === 0 ? (
-            <CustomPlaceholder text={emptyTableText} />
-          ) : (
-            addPagination(
+        {data.body.length === 0 ? (
+          <CustomPlaceholder text={emptyTableText} /> //
+        ) : (
+          <TableBody style={{width: '100%', display: 'block'}}>
+            {addPagination(
               data.body.filter(Boolean).map((row) => {
                 const selected = checkedRows.indexOf(row.id) !== -1
 
@@ -697,9 +697,9 @@ const CustomTable = (props: Props) => {
                 )
               }),
               pagination
-            )
-          )}
-        </TableBody>
+            )}
+          </TableBody>
+        )}
         {/* {Array.isArray(data.footer) && (
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {

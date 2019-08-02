@@ -92,9 +92,7 @@ export default class PortfolioChart extends Component<Props> {
                       this.onChangeActiveChart(chartBtn)
                     }}
                     data-e2e={`${chartBtn}`}
-                    variant={
-                      chartBtn !== activeChart ? 'text' : 'contained'
-                    }
+                    variant={chartBtn !== activeChart ? 'text' : 'contained'}
                     key={chartBtn}
                     style={{
                       width: '4.3rem',
@@ -103,7 +101,9 @@ export default class PortfolioChart extends Component<Props> {
                       border: `${
                         chartBtn === activeChart
                           ? `1px solid ${theme.palette.secondary.main}`
-                          : `1px solid fade(${theme.palette.text.primary}, 0,5)`
+                          : `1px solid ${
+                              theme.palette.btnChartBorderNotActive.main
+                            }`
                       }`,
                       margin: '0.5rem 1.6rem',
                       background: `${
@@ -114,7 +114,7 @@ export default class PortfolioChart extends Component<Props> {
                       color: `${
                         chartBtn === activeChart
                           ? 'white'
-                          : theme.palette.text.subPrimary
+                          : theme.palette.text.dark
                       }`,
                       borderRadius: '25px',
                       fontSize: '0.8rem',
@@ -159,9 +159,7 @@ export default class PortfolioChart extends Component<Props> {
             {false && (
               <YAxis
                 style={axisStyle}
-                tickFormat={(value: any) =>
-                  `$${abbrNum(+value.toFixed(2), 2)}`
-                }
+                tickFormat={(value: any) => `$${abbrNum(+value.toFixed(2), 2)}`}
               />
             )}
             <GradientDefs>

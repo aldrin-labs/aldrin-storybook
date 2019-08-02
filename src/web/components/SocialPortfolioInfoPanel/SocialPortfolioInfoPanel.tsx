@@ -38,6 +38,7 @@ class SocialPortfolioInfoPanel extends Component {
         container
         justify="space-between"
         alignItems="center"
+        style={{height: '70px'}}
       >
         <Grid item lg={2} justify="center">
           <TypographyHeader>{folioData.name}</TypographyHeader>

@@ -15,6 +15,7 @@ import {
   GridFolioScroll,
   InputCustom,
   TableContainer,
+  TypographyEmptyFolioPanel,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -331,10 +332,17 @@ class SocialPage extends React.Component {
               placeholder={``}
               fontSize={`1.2rem`}
               onChange={this.handleSearchInput}
+              // style={{
+              //   background:`${theme.palette.type === 'dark'
+              //       ? theme.palette.primary.light
+              //       : theme.palette.grey.main }`
+              // }}
             />
             <GridFolioScroll>
               {sharedPortfoliosList.length === 0 ? (
-                <Typography>Portfolio hasn't been found in the list</Typography>
+                <TypographyEmptyFolioPanel>
+                  Portfolio has not been found in the list
+                </TypographyEmptyFolioPanel>
               ) : (
                 sharedPortfoliosList
               )}
@@ -352,7 +360,9 @@ class SocialPage extends React.Component {
                   : { name: '', isPrivate: true, ownerId: { email: '' } }
               }
             />
-            <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
+            <SocialBalancePanel
+              totalFolioAssetsData={totalFolioAssetsData}
+            />
             {/* <GridItemContainer item lg={2} md={2}>
               <GridContainerTitle content alignItems="center">
                 <TypographyContatinerTitle>
