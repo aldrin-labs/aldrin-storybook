@@ -38,6 +38,7 @@ class SocialPortfolioInfoPanel extends Component {
         container
         justify="space-between"
         alignItems="center"
+        style={{height: '70px'}}
       >
         <Grid item lg={2} justify="center">
           <TypographyHeader>{folioData.name}</TypographyHeader>
@@ -117,7 +118,7 @@ class SocialPortfolioInfoPanel extends Component {
             btnFontSize={'0.75rem'}
             borderColor={'#165BE0'}
           >
-            Rebalance
+           To Rebalance
           </Link>
           <ButtonCustomFollow
             // btnVisibility={'hidden'}
@@ -135,7 +136,7 @@ class SocialPortfolioInfoPanel extends Component {
             btnFontSize={'0.75rem'}
             onClick={this.handleToggleFollowBtn.bind(this)}
           >
-            {this.state.isFollow ? 'unfollow' : 'follow'}
+            {this.state.isFollow ? 'unfollow' : 'following'}
           </ButtonCustomFollow>
           {/* <ButtonCustomUnfollow
             btnVisibility={'visible'}

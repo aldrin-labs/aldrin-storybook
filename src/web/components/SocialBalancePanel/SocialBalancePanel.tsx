@@ -45,12 +45,14 @@ class SocialBalancePanel extends Component {
             </TypographyTitleCell>
             <TypographyValueCell
               textColor={
-                Math.sign(totalFolioAssetsData.realized) === 1
-                  ? '#2F7619'
-                  : '#B93B2B'
+                totalFolioAssetsData.realized > 0
+                  ? theme.palette.price.increase
+                  : totalFolioAssetsData.realized < 0
+                  ? theme.palette.price.decrease
+                  : theme.palette.text.subPrimary
               }
             >
-              {Math.sign(totalFolioAssetsData.realized) === 1 ? '' : '-'}$
+              {totalFolioAssetsData.realized < 0 ? '-' : ''}$
               {Math.sign(
                 roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
               ) === 1
@@ -68,12 +70,14 @@ class SocialBalancePanel extends Component {
             </TypographyTitleCell>
             <TypographyValueCell
               textColor={
-                Math.sign(totalFolioAssetsData.unrealized) === 1
-                  ? '#2F7619'
-                  : '#B93B2B'
+                totalFolioAssetsData.unrealized > 0
+                  ? theme.palette.price.increase
+                  : totalFolioAssetsData.unrealized < 0
+                  ? theme.palette.price.decrease
+                  : theme.palette.text.subPrimary
               }
             >
-              {Math.sign(totalFolioAssetsData.unrealized) === 1 ? '' : '-'}$
+              {totalFolioAssetsData.unrealized < 0 ? '-' : ''}$
               {Math.sign(
                 roundAndFormatNumber(totalFolioAssetsData.unrealized, 3, true)
               ) === 1
@@ -95,42 +99,30 @@ class SocialBalancePanel extends Component {
             </TypographyTitleCell>
             <TypographyValueCell
               textColor={
-                Math.sign(
-                  totalFolioAssetsData.realized +
-                    totalFolioAssetsData.unrealized
-                ) === 1
-                  ? '#2F7619'
-                  : '#B93B2B'
+                totalFolioAssetsData.realized +
+                  totalFolioAssetsData.unrealized >
+                0
+                  ? theme.palette.price.increase
+                  : totalFolioAssetsData.realized +
+                      totalFolioAssetsData.unrealized <
+                    0
+                  ? theme.palette.price.decrease
+                  : theme.palette.text.subPrimary
               }
             >
-              {Math.sign(
-                totalFolioAssetsData.realized + totalFolioAssetsData.unrealized
-              ) === 1
-                ? ''
-                : '-'}
+              {totalFolioAssetsData.realized + totalFolioAssetsData.unrealized <
+              0
+                ? '-'
+                : ''}
               $
-              {Math.sign(
+              {Math.abs(
                 roundAndFormatNumber(
                   totalFolioAssetsData.realized +
                     totalFolioAssetsData.unrealized,
                   3,
                   true
                 )
-              ) === 1
-                ? roundAndFormatNumber(
-                    totalFolioAssetsData.realized +
-                      totalFolioAssetsData.unrealized,
-                    3,
-                    true
-                  )
-                : Math.abs(
-                    roundAndFormatNumber(
-                      totalFolioAssetsData.realized +
-                        totalFolioAssetsData.unrealized,
-                      3,
-                      true
-                    )
-                  )}
+              )}
             </TypographyValueCell>
           </div>
         </GridColumn>
