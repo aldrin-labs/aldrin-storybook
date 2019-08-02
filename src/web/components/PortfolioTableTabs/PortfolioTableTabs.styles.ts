@@ -28,23 +28,23 @@ export const StyledButton = styled(Button)`
 
 export const StyledLeftButton = styled(StyledButton)`
   transform: rotate(-90deg);
-  left: -5.75rem;
+  left: -6.2rem;
   border-radius: 0 0 1rem 1rem;
 
   &:hover {
-    padding-top: 2rem;
+    left: -5.5rem;
   }
 `
 
 export const StyledRightButton = styled(StyledButton)`
   position: relative;
   transform: rotate(90deg);
-  left: calc(100vw - 8.4rem);
+  left: calc(100vw - 8rem);
   top: 0px;
   border-radius: 0 0 1rem 1rem;
   text-decoration: none;
   &:hover {
-    padding-top: 2rem;
+    left: calc(100vw - 8.7rem);
   }
 `
 

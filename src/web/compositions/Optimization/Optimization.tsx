@@ -420,8 +420,8 @@ class Optimization extends Component<IProps, IState> {
           styles={{
             options: {
               backgroundColor: theme.palette.common.white,
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.primary.main,
+              primaryColor: theme.palette.black.custom,
+              textColor: theme.palette.black.custom,
             },
             tooltip: {
               fontFamily: theme.typography.fontFamily,

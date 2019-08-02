@@ -38,6 +38,7 @@ export default class Dropdown extends React.Component<IProps> {
         onMouseLeave={this.handleClose}
       >
         <StyledButton
+          disableRipple={false}
           aria-controls={this.props.id}
           aria-haspopup="true"
           onClick={this.handleToggle}

@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { NavLink } from 'react-router-dom'
 import { Grid, Typography, Button } from '@material-ui/core'
 
@@ -18,17 +18,15 @@ export const Link = styled(
     ...rest
   }) => <NavLink {...rest} />
 )`
-  // width: fit-content;
+  width: fit-content;
   // margin: 2rem auto 0;
-  // padding: 0.52rem 1.2rem;
+  padding: 0.52rem 1.2rem;
 
   display: flex;
   justify-content: center;
   align-items: center;
   text-decoration: none;
   margin: ${(props) => props.btnMargin};
-  width: ${(props) => props.btnWidth};
-  height: ${(props) => props.btnHeight};
   background: ${(props) => props.btnBgColor};
   border-radius: ${(props) => props.btnRadius};
   font-family: DM Sans;
