@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 
+import { keyFrameExampleOne } from './KeyFrames'
+
 export const GridMainContainer = styled(Grid)`
   padding: 15px;
 `
@@ -22,8 +24,8 @@ export const TypographyTitleCell = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media(min-width: 2560px) {
-    font-size: .8rem;
+  @media (min-width: 2560px) {
+    font-size: 0.8rem;
   }
 `
 export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
@@ -38,9 +40,10 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   text-transform: uppercase;
   background: transparent;
   color: ${(props) => props.textColor || `#16253d`};
+  animation: ${keyFrameExampleOne} 1s ease-in-out 0s;
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1rem;
-    padding: .3rem;
+    padding: 0.3rem;
   }
 `

@@ -2,13 +2,7 @@ import React from 'react'
 import { withStyles, CardHeader, createStyles, Theme } from '@material-ui/core'
 import { CardHeaderProps } from '@material-ui/core/CardHeader'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import styled from 'styled-components'
-
-const StyledCardHeader = styled(CardHeader)`
-  @media (min-width: 2560px) {
-    height: auto;
-  }
-`
+import { CardHeaderCustom } from './CardHeader.styles.tsx'
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -42,7 +36,7 @@ const styles = (theme: Theme) =>
   })
 
 const Header = (props: CardHeaderProps) => (
-  <StyledCardHeader
+  <CardHeaderCustom
     style={props.style}
     titleTypographyProps={{ variant: 'body1', color: 'default' }}
     classes={{
