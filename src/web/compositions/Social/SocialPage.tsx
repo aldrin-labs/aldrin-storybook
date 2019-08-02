@@ -208,7 +208,7 @@ class SocialPage extends React.Component {
           unrealized: 0,
         }
 
-    // console.log('____: ', getFollowingPortfolios[selectedPortfolio])
+    console.log('FolioData: ', getFollowingPortfolios[selectedPortfolio])
     // console.log('custom acc: ', totalFolioAssetsData)
     // console.log('SELECTED FOLIO:', selectedPortfolio)
     // console.log('FOLIOS:', getFollowingPortfolios)
@@ -273,7 +273,10 @@ class SocialPage extends React.Component {
               alignItems="center"
             >
               <Grid item>
-                <TypographySearchOption textColor={'#165BE0'} style={{visible: 'hidden'}}>
+                <TypographySearchOption
+                  textColor={'#165BE0'}
+                  style={{ visible: 'hidden' }}
+                >
                   compare Index Chart
                 </TypographySearchOption>
               </Grid>
@@ -360,9 +363,7 @@ class SocialPage extends React.Component {
                   : { name: '', isPrivate: true, ownerId: { email: '' } }
               }
             />
-            <SocialBalancePanel
-              totalFolioAssetsData={totalFolioAssetsData}
-            />
+            <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
             {/* <GridItemContainer item lg={2} md={2}>
               <GridContainerTitle content alignItems="center">
                 <TypographyContatinerTitle>
