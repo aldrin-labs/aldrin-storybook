@@ -22,6 +22,7 @@ const styles = (theme) => ({
     borderRight: '1px solid #E0E5EC',
     borderBottom: '1px solid #E0E5EC',
     borderRadius: '22px 22px 22px 22px',
+    boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
     margin: 'auto',
     width: '100%',
   },
