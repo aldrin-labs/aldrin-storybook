@@ -73,7 +73,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
     container
     onClick={onClick}
     border={isSelected ? '22px' : '22px 22px 0 0 '}
-    boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
+    boxShadow={!isSelected ? 'none' : '0px 0px 8px rgba(10, 19, 43, 0.1)'}
     borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
   >
     <Grid container justify="space-between">
@@ -106,7 +106,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
             fontSize={'1rem'}
             textColor={isSelected ? '#97C15C' : '#2F7619'}
           >
-            + {el.portfolioAssets.length} %
+            {/* TODO IMPORTANT plus sign */}+ {el.portfolioAssets.length} %
           </TypographyTitle>
         </div>
       </FolioValuesCell>
@@ -251,7 +251,9 @@ class SocialPage extends React.Component {
           xs={3}
           style={{
             height: '50vh',
-            boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
+            boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+            border: '1px solid #e0e5ec',
+            borderRadius: '23px',
           }}
         >
           <SocialTabs>
@@ -407,7 +409,7 @@ class SocialPage extends React.Component {
                         '&&:first-child': {
                           // Does'n work
                           borderRadius: '22px 0 0 0',
-                          background: 'red',
+                          background: 'red !importand',
                         },
                         '&&:last-child': {
                           borderRadius: '0 22px  0 0',
@@ -444,13 +446,14 @@ class SocialPage extends React.Component {
                   />
                 </TableContainer>
                 {/* chart */}
-                <Grid item style={{ paddingTop: '25px', height: '100%' }}>
+                <Grid item style={{ paddingTop: '15px', height: '100%' }}>
                   <PortfolioMainChart
                     title="Portfolio performance"
                     style={{
                       marginLeft: 0,
-                      maxHeight: '235px',
-                      boxShadow: '0px 0px 34px -25px rgba(0, 0, 0, 0.85)',
+                      maxHeight: '222px',
+                      boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+                      border: '1px solid #e0e5ec',
                     }}
                     marginTopHr="10px"
                   />

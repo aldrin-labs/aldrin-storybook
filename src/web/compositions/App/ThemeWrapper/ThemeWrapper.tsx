@@ -81,7 +81,9 @@ export default class ThemeWrapper extends Component<Props> {
                   fontSize: '1.4rem',
                 },
                 sizeSmall: {
+                  borderRadius: '25px',
                   fontSize: '1.3rem',
+                  // fontSize: '1.3rem',
                 },
               },
               MuiButtonBase: {
@@ -263,7 +265,7 @@ export default class ThemeWrapper extends Component<Props> {
               },
               black: {
                 custom: '#16253D',
-                registration: '#000000'
+                registration: '#000000',
               },
               red: {
                 main: '#FE425A',
