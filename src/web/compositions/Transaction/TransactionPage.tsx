@@ -123,6 +123,9 @@ class TransactionPage extends Component {
       activeKeys.length + activeWallets.length ===
       newKeys.length + newWallets.length
     const isRebalance = false
+
+    // TODO: Account block, less more pointers, table fonts, titles
+
     return (
       <Grid
         container

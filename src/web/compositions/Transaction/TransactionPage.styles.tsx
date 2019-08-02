@@ -14,8 +14,7 @@ export const ReactSelectCustom = styled(ReactSelect)`
   background: transparent;
   margin-left: 1rem;
 
-  @media(min-width: 2560px) {
-
+  @media (min-width: 2560px) {
     .custom-select-box__indicator {
       width: auto;
       padding-right: 1rem;
@@ -35,8 +34,7 @@ export const GridContainerTitle = styled(Grid)`
   background: ${(props) => props.bgColor};
   margin-bottom: 8px;
 
-  @media(min-width: 2560px) {
-    
+  @media (min-width: 2560px) {
   }
 `
 
@@ -65,9 +63,12 @@ export const TypographyContatinerTitle = styled(Typography)`
   text-align: ${(props) => props.textAlign || 'center'};
   height: 24px;
   padding: ${(props) => props.textPadding};
+  padding: 1rem 0;
+  color: #7284a0;
 
-  @media(min-width: 2560px) {
-    padding: .4rem 0 1rem 0;
+  @media (min-width: 2560px) {
+    color: #7284a0;
+    padding: 0.4rem 0 1rem 0;
     height: auto;
   }
 `
@@ -78,8 +79,11 @@ export const TypographyAccountTitle = styled(Typography)`
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: ${(props) => props.textColor || '#7284A0'};
+  color: #7284a0;
   margin-left: 10px;
+
+  @media (min-width: 2560px) {
+  }
 `
 
 export const TypographyTitle = styled(Typography)`
@@ -91,17 +95,16 @@ export const TypographyTitle = styled(Typography)`
   color: ${(props) => props.textColor || '#ABBAD1'};
   margin-left: 12px;
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     font-size: 1.1rem;
     margin-left: 1rem;
   }
 `
 
 export const CalendarGrid = styled(Grid)`
-
   padding: 0 0 10px 45px;
 
-  @media(min-width: 2560px) {
+  @media (min-width: 2560px) {
     padding: 0 0 10px 80px;
   }
 `
@@ -138,12 +141,12 @@ export const LessMoreContainer = styled(Grid)`
 `
 
 export const GridTableContainer = styled(Grid)`
-         height: 50vh;
-         overflow: hidden;
-         box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
-         border-radius: 20px;
-         border: ${(props) => props.borderColor};
-         ::-webkit-scrollbar {
-           display: none;
-         }
-       `
+  height: 50vh;
+  overflow: hidden;
+  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  border-radius: 20px;
+  border: ${(props) => props.borderColor};
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`
