@@ -66,8 +66,7 @@ export const StyledTypography = styled(
     '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
 
-  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    //font-size: 1.8rem;
+  @media only screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     padding-bottom: 1rem;
   }
 `
@@ -96,10 +95,6 @@ export const StyledSubTypography = styled(
     props.primaryColor ||
     '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
-
-  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    //font-size: 2.8rem;
-  }
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`

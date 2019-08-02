@@ -343,10 +343,9 @@ class PortfolioSelector extends React.Component<IProps> {
               isSidebar={true}
             />
           </GridSectionAccounts>
-          <GridSectionDust lg={12}>
-            <TypographyTitle>Dust Filter</TypographyTitle>
-
-            {!isRebalance ? (
+          {!isRebalance && (
+            <GridSectionDust lg={12}>
+              <TypographyTitle>Dust Filter</TypographyTitle>
               <>
                 <SliderContainer>
                   <GridSymbolContainer>%</GridSymbolContainer>
@@ -394,96 +393,9 @@ class PortfolioSelector extends React.Component<IProps> {
                   />
                   <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
                 </SliderContainer>
-                {/* <FilterContainer>
-                  <FilterValues>
-                    <FilterIcon
-                      color={theme.palette.getContrastText(
-                        theme.palette.background.paper
-                      )}
-                    />
-                    <Dropdown
-                      style={{ width: '100%' }}
-                      value={dustFilter.percentage}
-                      handleChange={(e) =>
-                        this.onDustFilterChange(e, 'percentage')
-                      }
-                      name="filterValuesInMain"
-                      options={percentageDustFilterOptions}
-                    />
-                  </FilterValues>
-                  <FilterValues>
-                    <FilterIcon
-                      color={theme.palette.getContrastText(
-                        theme.palette.background.paper
-                      )}
-                    />
-                    <Dropdown
-                      style={{ width: '100%' }}
-                      value={dustFilter.usd}
-                      handleChange={(e) => this.onDustFilterChange(e, 'usd')}
-                      name="filterValuesInMain"
-                      options={usdDustFilterOptions}
-                    />
-                  </FilterValues>
-                </FilterContainer> */}
               </>
-            ) : (
-              <>
-                <SliderContainer>
-                  <GridSymbolContainer>%</GridSymbolContainer>
-                  <SliderDustFilter
-                    step={20}
-                    thumbWidth="25px"
-                    thumbHeight="25px"
-                    sliderWidth="250px"
-                    sliderHeight="17px"
-                    sliderHeightAfter="20px"
-                    borderRadius="30px"
-                    borderRadiusAfter="30px"
-                    thumbBackground="#165BE0"
-                    borderThumb="2px solid white"
-                    trackAfterBackground="#E7ECF3"
-                    trackBeforeBackground={'#165BE0'}
-                    value={this.state.valueSliderPercentage}
-                    onChange={this.handleChangePercentage} //TODO onDragEnd
-                    disabled
-                  />
-                  <GridSymbolValue>
-                    {this.state.valueSliderPercentageContainer === 0 ||
-                    this.state.valueSliderPercentageContainer === null
-                      ? `No % Filter`
-                      : `< ${this.state.valueSliderPercentageContainer} %`}
-                  </GridSymbolValue>
-                </SliderContainer>
-
-                <SliderContainer>
-                  <GridSymbolContainer>$</GridSymbolContainer>
-                  <SliderDustFilter
-                    step={1}
-                    thumbWidth="25px"
-                    thumbHeight="25px"
-                    sliderWidth="250px"
-                    sliderHeight="17px"
-                    sliderHeightAfter="20px"
-                    borderRadius="30px"
-                    borderRadiusAfter="30px"
-                    thumbBackground="#165BE0"
-                    borderThumb="2px solid white"
-                    trackAfterBackground="#E7ECF3"
-                    trackBeforeBackground={'#165BE0'}
-                    value={this.state.valueSliderUsd}
-                    onChange={this.handleChangeUsd} //TODO onDragEnd
-                    disabled
-                  />
-                  <GridSymbolValue>
-                    {/* {`<`} <TypographySpan>{dustFilter.usd}</TypographySpan>{' '} */}
-                    {`<`}
-                    {dustFilter.usd} {`$`}
-                  </GridSymbolValue>
-                </SliderContainer>
-              </>
-            )}
-          </GridSectionDust>
+            </GridSectionDust>
+          )}
         </AccountsWalletsBlock>
       </Slide>
     )

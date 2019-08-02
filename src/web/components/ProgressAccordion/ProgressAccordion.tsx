@@ -80,6 +80,9 @@ function ProgressAccordion(props) {
           padding: '0',
           marginTop: width === 'xl' ? '2.5vh' : ''
         }}
+        CollapseProps={{
+          timeout: 500
+        }}
       >
         <ExpansionPanelSummary
           className={classes.progressbarPanel}

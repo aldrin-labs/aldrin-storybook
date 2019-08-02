@@ -21,6 +21,10 @@ export const TypographyTitleCell = styled(Typography)`
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
+
+  @media(min-width: 2560px) {
+    font-size: .8rem;
+  }
 `
 export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   <Typography {...rest} />
@@ -34,4 +38,9 @@ export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
   text-transform: uppercase;
   background: transparent;
   color: ${(props) => props.textColor || `#16253d`};
+
+  @media(min-width: 2560px) {
+    font-size: 1rem;
+    padding: .3rem;
+  }
 `

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Grid, Typography, Input } from '@material-ui/core'
+import { Grid, Typography, Input, SvgIcon } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const InputCustom = styled(Input)`
@@ -29,6 +29,11 @@ export const TypographySearchOption = styled(Typography)`
   padding-right: 3px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
+
+  @media(min-width: 2560px) {
+    font-size: .8rem;
+    padding: .5rem 1rem;
+  }
 `
 
 export const PortfolioName = styled(Typography)`
@@ -68,6 +73,13 @@ export const FolioValuesCell = styled(Grid)`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media(min-width: 2560px) {
+    width: 31%;
+    height: auto;
+    padding: .5rem 1rem;
+    border-radius: 1.5rem;
+  }
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
@@ -79,12 +91,20 @@ export const ReactSelectCustom = styled(ReactSelect)`
   font-weight: 700;
   letter-spacing: 1px;
   background: transparent;
+
+  @media(min-width: 2560px) {
+    font-size: .8rem;
+  }
 `
 export const GridSortOption = styled(Grid)`
   height: 33px;
   padding: 0 12px;
   border-left: 1px solid #e0e5ec;
   border-right: 1px solid #e0e5ec;
+
+  @media(min-width: 2560px) {
+    height: auto;
+  }
 `
 
 export const GridTableContainer = styled(Grid)`
@@ -100,6 +120,10 @@ export const FolioCard = styled(Grid)`
   border-bottom: 1px solid #e0e5ec;
   box-shadow: ${(props) => props.boxShadow};
   border-radius: ${(props) => props.borderRadius};
+
+  @media(min-width: 2560px) {
+    height: auto;
+  }
 `
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
@@ -112,6 +136,7 @@ export const GridFolioScroll = styled(Grid)`
 
 export const TableContainer = styled(Grid)`
   &&& {
+    position: relative;
     width: 100%;
     height: 29vh; /* 60vh /*TODO : Left Panel Hight*/
     border: 1px solid #e0e5ec;
@@ -124,6 +149,11 @@ export const TableContainer = styled(Grid)`
   }
 `
 
+export const StyledSvgIcon = styled(SvgIcon)`
+  @media(min-width: 2560px) {
+    width: 2.5rem;
+  }
+`
 export const TypographyEmptyFolioPanel = styled(Typography)`
   font-size: 1.1rem;
   text-align: center;

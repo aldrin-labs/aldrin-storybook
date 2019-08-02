@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Card } from '@material-ui/core'
+import { Card, Button } from '@material-ui/core'
 
 export const Chart = styled.div`
   width: 100%;
@@ -12,6 +12,13 @@ export const SProfileChart = styled(Card)`
   height: 100%;
   width: 100%;
 `
+
+export const SButton = styled(Button)`
+  @media(min-width: 2560px) {
+    font-size: .8rem;
+  }
+`
+
 export const axisStyle = {
   ticks: {
     padding: '1.6rem',

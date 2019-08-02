@@ -61,6 +61,7 @@ export const GridMainContainer = styled(Grid)`
 export const GridCell = styled(Grid)`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: ${(props) => props.widthCell};
   border-left: ${(props) => props.border};
   text-align: center;
@@ -76,6 +77,12 @@ export const TypographyHeader = styled(Typography)`
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
+
+  @media(min-width: 2560px) {
+    font-size: 1rem;
+    padding: 0 .75rem;
+    color: #7284A0;
+  }
 `
 export const TypographyTariff = styled(Typography)`
   font-family: DM Sans;
@@ -121,9 +128,22 @@ export const ButtonCustom = styled(
     color: ${(props) => props.btnHoverTextColor};
     border: 1px solid ${(props) => props.borderColor};
   }
+
+  @media(min-width: 2560px) {
+    font-size: .6rem;
+    border-radius: .5rem;
+    width: auto;
+    height: auto;
+    padding: .5rem 2rem;
+    margin: .2rem .5rem;
+  }
 `
 
 export const TypographyTitle = styled(Typography)`
   font-size: 1.2rem;
   padding: ${(props) => props.padding};
+
+  @media(min-width: 2560px) {
+    font-size: 1rem;
+  }
 `
