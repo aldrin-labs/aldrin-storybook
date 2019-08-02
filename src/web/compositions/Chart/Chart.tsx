@@ -43,6 +43,7 @@ import SelectExchange from './Inputs/SelectExchange/SelectExchange'
 import ComingSoon from '@sb/components/ComingSoon'
 
 import {
+  ChartMediaQueryForLg,
   Container,
   ChartsContainer,
   DepthChartContainer,
@@ -456,6 +457,7 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
+        <ChartMediaQueryForLg/>
         {view === 'onlyCharts' && (
           <TogglerContainer container>
             <Grid

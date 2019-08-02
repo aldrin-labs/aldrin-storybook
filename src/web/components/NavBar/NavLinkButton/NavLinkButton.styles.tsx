@@ -3,7 +3,11 @@ import { Button } from '@material-ui/core'
 import styled from 'styled-components'
 
 const StyledButton = styled(Button)`
-  font-size: 1.375rem;
+  font-size: 14px;
+
+  @media only screen and (min-width: 2560px) {
+    font-size: 20px;
+  }
 `
 
 export const SButton = styled(({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />)`

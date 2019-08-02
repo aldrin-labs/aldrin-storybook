@@ -1,7 +1,15 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { Card, Grid } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
+
+export const ChartMediaQueryForLg = createGlobalStyle`
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 12px;
+    }
+  }
+`
 
 export const MainContainer = styled.div`
   ${(props: { fullscreen: boolean }) => props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
