@@ -52,6 +52,19 @@ export const ContentGrid = styled(Grid)`
 `
 
 export const TypographyContatinerTitle = styled(Typography)`
+/* background: ${(props) => props.bgColor};
+     margin-top: 10px;
+     color: ${(props) => props.textColor};
+     font-size: 1rem;
+     text-transform: uppercase;
+     letter-spacing: 1.5px;
+     font-weight: 700;
+     width: 100%;
+     text-align: ${(props) => props.textAlign || 'center'};
+     height: 24px;
+     padding: ${(props) => props.textPadding};
+     padding: 1rem 0;
+     color: #7284a0; */
   background: ${(props) => props.bgColor};
   margin-top: 10px;
   color: ${(props) => props.textColor};
@@ -63,12 +76,10 @@ export const TypographyContatinerTitle = styled(Typography)`
   text-align: ${(props) => props.textAlign || 'center'};
   height: 24px;
   padding: ${(props) => props.textPadding};
-  padding: 1rem 0;
-  color: #7284a0;
 
   @media (min-width: 2560px) {
     color: #7284a0;
-    padding: 0.4rem 0 1rem 0;
+    padding: 0.4rem 0 1rem 0.8rem;
     height: auto;
   }
 `
