@@ -61,9 +61,10 @@ class PortfolioTableTabs extends React.Component<IProps> {
         }}
       >
         <StyledAccountsButton onClick={() => toggleWallets()}>Accounts</StyledAccountsButton>
-        {pathname === '/portfolio/main'
-          ? <Link to="/portfolio/transactions"><StyledTransactionsButton
-          > Transactions </StyledTransactionsButton></Link>
+        {switchUSDBTC
+          ? <StyledTransactionsButton
+            onClick={() => console.log('transaction button')}
+          > Transactions </StyledTransactionsButton>
           : null
         }
         {/*<BarContainer*/}

@@ -18,6 +18,7 @@ import { Props } from './types'
 import {
   Chart,
   SProfileChart,
+  SButton,
   axisStyle,
   horizontalGridLinesStyle,
   verticalGridLinesStyle,
@@ -56,9 +57,9 @@ export default class PortfolioChart extends Component<Props> {
     this.setState({ crosshairValues: [] })
   }
 
-  _formatDate = (date) => {}
+  _formatDate = (date) => { }
 
-  _onBrushStart = (data) => {}
+  _onBrushStart = (data) => { }
 
   _onBrushEnd = (area) => {
     this.props.onChangeDateRange(area)
@@ -84,7 +85,7 @@ export default class PortfolioChart extends Component<Props> {
             <>
               {chartBtns &&
                 chartBtns.map((chartBtn) => (
-                  <Button
+                  <SButton
                     color="secondary"
                     size="small"
                     onClick={() => {
@@ -96,7 +97,7 @@ export default class PortfolioChart extends Component<Props> {
                     style={{ margin: '0 1.6rem' }}
                   >
                     {chartBtn}
-                  </Button>
+                  </SButton>
                 ))}
             </>
           }
@@ -105,7 +106,7 @@ export default class PortfolioChart extends Component<Props> {
         {/* style={{ paddingRight: '540px' }} */}
         <Chart height={`calc(100% - 68px)`} >
           <FlexibleXYPlot
-           margin={{ right: 50 }}
+            margin={{ right: 50 }}
             animation={true}
             onMouseLeave={this._onMouseLeave}
             xDomain={
@@ -142,7 +143,7 @@ export default class PortfolioChart extends Component<Props> {
                   offset="0%"
                   stopColor={theme && theme.palette.secondary.main}
                   stopOpacity={0}
-                  // stopOpacity={0.3}   GRADIENT
+                // stopOpacity={0.3}   GRADIENT
                 />
                 <stop
                   offset="60%"

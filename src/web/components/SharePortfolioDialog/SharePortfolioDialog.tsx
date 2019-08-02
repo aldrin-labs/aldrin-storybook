@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core'
 
 import Clear from '@material-ui/icons/Clear'
+import MiniSuccessPopup from '@sb/components/MiniSuccessPopup'
 
 import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
@@ -23,14 +24,15 @@ import {
   TypographyTitle,
   TypographyFooter,
   Line,
-  SLink,
+  SButton,
   SRadio,
   SCheckbox,
   StyledPaper,
   FormInputTemplate,
   StyledInputTemplate,
   StyledInput,
-  StyledTextArea
+  StyledTextArea,
+  StyledSearch
 } from './SharePortfolioDialog.styles'
 
 const tradingPortfolioTypes = [
@@ -49,10 +51,12 @@ IProps,
 IState
 > {
   state: IState = {
+    selectedUsername: null,
     shareWithSomeoneTab: true,
-    selectedUserEmail: null,
     showPortfolioValue: true,
     isPortfolioFree: true,
+    openLinkPopup: false,
+    openInvitePopup: false,
     portfolioPrice: '',
     tradeFrequency: 'Irregularly',
     marketName: '',
@@ -61,9 +65,30 @@ IState
     selectedPortfolioTypes: ['Bull trading'],
   }
 
-  onChangeUserEmail = (e) => {
-    this.setState({ selectedUserEmail: e.target.value })
+  onChangeUsername = (
+    optionSelected: { label: string; value: string } | null
+  ) => {
+    const selectedUsername =
+      optionSelected && !Array.isArray(optionSelected)
+        ? { label: optionSelected.label, value: optionSelected.value }
+        : null
+
+    this.setState({ selectedUsername })
   }
+
+  openLinkPopup = () => {
+    this.setState({ openLinkPopup: true });
+    setTimeout(() => this.setState({ openLinkPopup: false }), 2000);
+  }
+
+  openInvitePopup = () => {
+    this.setState({ openInvitePopup: true });
+    setTimeout(() => this.setState({ openInvitePopup: false }), 2000);
+  }
+
+  // onChangeUserEmail = (e) => {
+  //   this.setState({ selectedUsername: e.target.value })
+  // }
 
   changeShowPortfolioValue = (bool: boolean) => {
     this.setState({ showPortfolioValue: bool });
@@ -130,14 +155,14 @@ IState
 
   sharePortfolioHandler = async (forAll?: boolean) => {
     const { sharePortfolioMutation, portfolioId } = this.props
-    const { selectedUserEmail } = this.state
+    const { selectedUsername } = this.state
 
     const variables = {
       inputPortfolio: {
         id: portfolioId,
       },
       optionsPortfolio: {
-        ...(forAll ? {} : { userId: selectedUserEmail.value }),
+        ...(forAll ? {} : { userId: selectedUsername.value }),
         ...(forAll ? { forAll: true } : { forAll: false }),
         accessLevel: 2,
       },
@@ -162,7 +187,7 @@ IState
     } = this.props
 
     const {
-      selectedUserEmail,
+      selectedUsername,
       shareWithSomeoneTab,
       showPortfolioValue,
       selectedAccounts,
@@ -171,10 +196,10 @@ IState
       isPortfolioFree,
       portfolioPrice,
       marketName,
-      portfolioDescription
+      portfolioDescription,
+      openInvitePopup,
+      openLinkPopup
     } = this.state;
-
-    console.log('price', portfolioPrice);
 
     return (
       <Dialog
@@ -238,7 +263,7 @@ IState
                   <Line />
                 </Grid>
                 <FormControl fullWidth required>
-                  <Grid container alignItems="center">
+                  <Grid container alignItems="center" justify="space-between">
                     {portfolioKeys.map((el) => {
                       const checked = selectedAccounts.includes(el.name);
 
@@ -289,23 +314,34 @@ IState
                 >
                   <TypographySubTitle>
                     Share with anyone by the
-                    <SLink to="/portfolio/main"> link</SLink>
+                    <SButton onClick={this.openLinkPopup}> link</SButton>
                   </TypographySubTitle>
-                  <StyledButton>
+                  <StyledButton
+                    onClick={this.openLinkPopup}
+                  >
                     Copy link
                   </StyledButton>
                 </Grid>
                 <Grid container justify="space-between">
-                  <StyledInput
-                    type="text"
+                  <StyledSearch
                     width="80"
-                    value={selectedUserEmail}
-                    placeholder="Share with someone by email"
-                    onChange={this.onChangeUserEmail}
+                    isClearable={true}
+                    value={
+                      selectedUsername
+                        ? [
+                          {
+                            label: selectedUsername.label,
+                            value: selectedUsername.value,
+                          },
+                        ]
+                        : null
+                    }
+                    onChange={this.onChangeUsername}
                   />
                   <StyledButton
                     padding=".8rem 3rem"
-                    onClick={() => this.sharePortfolioHandler(false)}
+                    onClick={this.openInvitePopup}
+                    disabled={!selectedUsername}
                   >
                     Invite
                   </StyledButton>
@@ -532,6 +568,16 @@ IState
             Go to Social portfolio manager
           </TypographyFooter>
         </DialogFooter>
+
+        <MiniSuccessPopup
+          isOpen={openLinkPopup}
+          text="Link copied to clipboard"
+        />
+
+        <MiniSuccessPopup
+          isOpen={openInvitePopup}
+          text={`Invite link sended to ${selectedUsername ? selectedUsername.label : 'unchoosen user'}`}
+        />
       </Dialog>
     )
   }

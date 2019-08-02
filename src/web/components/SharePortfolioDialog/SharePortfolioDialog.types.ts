@@ -15,6 +15,7 @@ export interface IProps {
 }
 
 export interface IState {
+  selectedUsername: null | { label: string, value: string }
   shareWithSomeoneTab: boolean
   selectedUserEmail: any
   selectedAccounts: string[]
@@ -25,4 +26,6 @@ export interface IState {
   portfolioPrice: string
   marketName: string
   portfolioDescription: string
+  openLinkPopup: boolean
+  openInvitePopup: boolean
 }
