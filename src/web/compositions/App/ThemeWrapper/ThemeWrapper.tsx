@@ -122,7 +122,11 @@ export default class ThemeWrapper extends Component<Props> {
             palette: {
               divider: fade('#748AA1', 0.16),
               type: themeMode,
-              text: { primary: '#DBD9E6', subPrimary: 'white' },
+              text: {
+                primary: '#DBD9E6',
+                dark: '#7284A0',
+                subPrimary: 'white',
+              },
               black: {
                 custom: '#16253D',
               },
@@ -152,7 +156,7 @@ export default class ThemeWrapper extends Component<Props> {
                 light: '#27272D',
               },
               secondary: {
-                main: '#48DCC6',
+                main:'#165BE0', //'#48DCC6',
               },
               action: {
                 selected: 'rgba(255, 255, 255, 0.05)',
@@ -160,6 +164,14 @@ export default class ThemeWrapper extends Component<Props> {
               hover: {
                 dark: '#383a3d',
                 light: '#E0E5EC',
+              },
+              btnChartBorderNotActive: {
+                main: '#E0E5EC',
+              },
+              price: {
+                increase: '#2F7619',
+                decrease: '#B93B2B',
+                normalBlack: '#DBD9E6',
               },
               background: {
                 default: themeMode === 'light' ? '#fafafa' : '#16161D',
@@ -301,6 +313,14 @@ export default class ThemeWrapper extends Component<Props> {
               hover: {
                 dark: '#383a3d',
                 light: '#E0E5EC',
+              },
+              btnChartBorderNotActive: {
+                main: '#E0E5EC',
+              },
+              price: {
+                increase: '#2F7619',
+                decrease: '#B93B2B',
+                normalBlack: '#16253D',
               },
               background: {
                 default: '#f9fbfd',

@@ -123,3 +123,10 @@ export const TableContainer = styled(Grid)`
     }
   }
 `
+
+export const TypographyEmptyFolioPanel = styled(Typography)`
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+`
