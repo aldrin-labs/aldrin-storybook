@@ -12,6 +12,8 @@ import {
   DialogContent
 } from '@material-ui/core'
 
+import SearchUsername from '@core/components/SearchUsername/SearchUsername'
+
 import { Link } from 'react-router-dom';
 
 export const StyledDialogContent = styled(DialogContent)`
@@ -127,9 +129,10 @@ export const Line = styled.div`
   }
 `;
 
-export const SLink = styled(Link)`
+export const SButton = styled.span`
   text-decoration: none;
   color: #165BE0;
+  cursor: pointer;
 `;
 
 export const SRadio = styled(Radio)`
@@ -225,8 +228,6 @@ export const DialogFooter = styled(DialogTitle)`
   background: #2f7619;
   border-radius: 0px 0px 2rem 2rem;
 `
-// TODO: replace inline to styled components
-// styled components just doesnt effect
 
 export const FormInputTemplate = ({
   name,
@@ -301,7 +302,6 @@ export const StyledInput = styled.input`
   }
 
   @media(min-width: 2500px) {
-    width: ${props => props.width === '100' ? props.width : props.width - 4}%;
     font-size: 1.2rem;
     padding: 1rem;
 
@@ -345,5 +345,39 @@ export const StyledTextArea = styled.textarea`
     &::placeholder {
       font-size: 1.2rem;
     }
+  }
+`
+
+export const StyledSearch = styled(SearchUsername)`
+  width: ${props => props.width}%;
+  padding: .5rem 0 .5rem 1rem;
+  margin-left: -1.2rem;
+  border-radius: 1.2rem;
+  box-shadow: inset 0px 0px .5rem rgba(10,19,43,0.1);
+  border: 1px solid #EAECEE;
+  color: #7284A0;
+  font-size: 1.6rem;
+
+  .custom-async-select-box {
+    &__menu {
+      margin-left: -.8rem;
+    }
+
+    &__single-value {
+      color: #7284a0;
+    }
+
+    &__placeholder {
+      color: #ABBAD1;
+    }
+  }
+
+  @media(min-width: 1921px) {
+    width: ${props => props.width - 4}%;
+    font-size: 1.25rem;
+  }
+
+  @media(min-width: 2500px) {
+    font-size: 1.2rem;
   }
 `

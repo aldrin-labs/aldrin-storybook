@@ -26,4 +26,6 @@ export interface IState {
   portfolioPrice: string
   marketName: string
   portfolioDescription: string
+  openLinkPopup: boolean
+  openInvitePopup: boolean
 }
