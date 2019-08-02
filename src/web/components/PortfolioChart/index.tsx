@@ -18,6 +18,7 @@ import { Props } from './types'
 import {
   Chart,
   SProfileChart,
+  SButton,
   axisStyle,
   horizontalGridLinesStyle,
   verticalGridLinesStyle,
@@ -58,9 +59,9 @@ export default class PortfolioChart extends Component<Props> {
     this.setState({ crosshairValues: [] })
   }
 
-  _formatDate = (date) => {}
+  _formatDate = (date) => { }
 
-  _onBrushStart = (data) => {}
+  _onBrushStart = (data) => { }
 
   _onBrushEnd = (area) => {
     this.props.onChangeDateRange(area)
@@ -121,7 +122,7 @@ export default class PortfolioChart extends Component<Props> {
                     }}
                   >
                     {chartBtn}
-                  </Button>
+                  </SButton>
                 ))}
             </>
           }
@@ -168,7 +169,7 @@ export default class PortfolioChart extends Component<Props> {
                   offset="0%"
                   stopColor={theme && theme.palette.secondary.main}
                   stopOpacity={0}
-                  // stopOpacity={0.3}   GRADIENT
+                // stopOpacity={0.3}   GRADIENT
                 />
                 <stop
                   offset="60%"

@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core'
 
 import Clear from '@material-ui/icons/Clear'
+import MiniSuccessPopup from '@sb/components/MiniSuccessPopup'
 
 import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
@@ -23,16 +24,16 @@ import {
   TypographyTitle,
   TypographyFooter,
   Line,
-  SLink,
+  SButton,
   SRadio,
   SCheckbox,
   StyledPaper,
   FormInputTemplate,
   StyledInputTemplate,
   StyledInput,
-  StyledTextArea
+  StyledTextArea,
+  StyledSearch
 } from './SharePortfolioDialog.styles'
-import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 
 const tradingPortfolioTypes = [
   'Bull trading',
@@ -54,6 +55,8 @@ IState
     shareWithSomeoneTab: true,
     showPortfolioValue: true,
     isPortfolioFree: true,
+    openLinkPopup: false,
+    openInvitePopup: false,
     portfolioPrice: '',
     tradeFrequency: 'Irregularly',
     marketName: '',
@@ -71,6 +74,16 @@ IState
         : null
 
     this.setState({ selectedUsername })
+  }
+
+  openLinkPopup = () => {
+    this.setState({ openLinkPopup: true });
+    setTimeout(() => this.setState({ openLinkPopup: false }), 2000);
+  }
+
+  openInvitePopup = () => {
+    this.setState({ openInvitePopup: true });
+    setTimeout(() => this.setState({ openInvitePopup: false }), 2000);
   }
 
   // onChangeUserEmail = (e) => {
@@ -183,10 +196,10 @@ IState
       isPortfolioFree,
       portfolioPrice,
       marketName,
-      portfolioDescription
+      portfolioDescription,
+      openInvitePopup,
+      openLinkPopup
     } = this.state;
-
-    console.log('price', portfolioPrice);
 
     return (
       <Dialog
@@ -250,7 +263,7 @@ IState
                   <Line />
                 </Grid>
                 <FormControl fullWidth required>
-                  <Grid container alignItems="center">
+                  <Grid container alignItems="center" justify="space-between">
                     {portfolioKeys.map((el) => {
                       const checked = selectedAccounts.includes(el.name);
 
@@ -301,32 +314,34 @@ IState
                 >
                   <TypographySubTitle>
                     Share with anyone by the
-                    <SLink to="/portfolio/main"> link</SLink>
+                    <SButton onClick={this.openLinkPopup}> link</SButton>
                   </TypographySubTitle>
-                  <StyledButton>
+                  <StyledButton
+                    onClick={this.openLinkPopup}
+                  >
                     Copy link
                   </StyledButton>
                 </Grid>
                 <Grid container justify="space-between">
-                  <Grid item style={{ minWidth: '300px', fontSize: '1.6rem'}} >
-                    <SearchUsername
-                      isClearable={true}
-                      value={
-                        selectedUsername
-                          ? [
-                            {
-                              label: selectedUsername.label,
-                              value: selectedUsername.value,
-                            },
-                          ]
-                          : null
-                      }
-                      onChange={this.onChangeUsername}
-                    />
-                  </Grid>
+                  <StyledSearch
+                    width="80"
+                    isClearable={true}
+                    value={
+                      selectedUsername
+                        ? [
+                          {
+                            label: selectedUsername.label,
+                            value: selectedUsername.value,
+                          },
+                        ]
+                        : null
+                    }
+                    onChange={this.onChangeUsername}
+                  />
                   <StyledButton
                     padding=".8rem 3rem"
-                    onClick={() => this.sharePortfolioHandler(false)}
+                    onClick={this.openInvitePopup}
+                    disabled={!selectedUsername}
                   >
                     Invite
                   </StyledButton>
@@ -553,6 +568,16 @@ IState
             Go to Social portfolio manager
           </TypographyFooter>
         </DialogFooter>
+
+        <MiniSuccessPopup
+          isOpen={openLinkPopup}
+          text="Link copied to clipboard"
+        />
+
+        <MiniSuccessPopup
+          isOpen={openInvitePopup}
+          text={`Invite link sended to ${selectedUsername ? selectedUsername.label : 'unchoosen user'}`}
+        />
       </Dialog>
     )
   }

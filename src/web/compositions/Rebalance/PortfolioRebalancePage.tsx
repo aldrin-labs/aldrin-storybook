@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 
+import { createGlobalStyle } from 'styled-components'
+
 import { Container as Content } from '@sb/styles/cssUtils'
 import { portfolioRebalanceSteps } from '@sb/config/joyrideSteps'
 import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
@@ -43,6 +45,14 @@ import {
 } from './mockData'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+
+const RebalanceMediaQuery = createGlobalStyle`
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 15px;
+    }
+  }
+`
 
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
@@ -186,6 +196,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
     return (
       <>
+        <RebalanceMediaQuery/>
+
         {children}
         <Content
           key={`content`}
