@@ -5,13 +5,11 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = (theme) => ({
   root: {
-    //width: '100%',
     fontSize: '0.9rem',
     fontFamily: 'DM Sans',
     lineHeight: '23px',
     letterSpacing: '1px',
     textTransform: 'uppercase',
-    //padding: '0 0 10px 40px'
   },
   githubZero: { fill: '#EEE' },
   githubOne: { fill: '#E0E5EC' },
@@ -44,7 +42,6 @@ class GitTransactionCalendar extends Component {
       }
     })
 
-    console.log('Date: ', today)
     return (
       <CalendarHeatmap
         className={this.props.classes.root}
@@ -68,21 +65,22 @@ class GitTransactionCalendar extends Component {
           return value.count === 1
             ? this.props.classes.githubOne
             : value.count === 2
-              ? this.props.classes.githubTwo
-              : value.count === 3
-                ? this.props.classes.githubThree
-                : this.props.classes.githubThree
+            ? this.props.classes.githubTwo
+            : value.count === 3
+            ? this.props.classes.githubThree
+            : this.props.classes.githubThree
         }}
         tooltipDataAttrs={(value) => {
           return {
-            'data-tip': `${value.date
-              .toISOString()
-              .slice(0, 10)} has count: ${value.count}`,
+            'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${
+              value.count
+            }`,
           }
         }}
         showWeekdayLabels={true}
-        onClick={(value) =>
-          alert(`Clicked on value with count: ${value.count}`)
+        onClick={
+          (value) => {}
+          //alert(`Clicked on value with count: ${value.count}`)
         }
         horizontal={false}
         // gutterSize={255}
