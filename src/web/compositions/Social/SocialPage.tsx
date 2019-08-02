@@ -273,7 +273,7 @@ class SocialPage extends React.Component {
               alignItems="center"
             >
               <Grid item>
-                <TypographySearchOption textColor={'#165BE0'}>
+                <TypographySearchOption textColor={'#165BE0'} style={{visible: 'hidden'}}>
                   compare Index Chart
                 </TypographySearchOption>
               </Grid>
