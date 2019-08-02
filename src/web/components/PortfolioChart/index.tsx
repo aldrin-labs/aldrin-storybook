@@ -86,8 +86,8 @@ export default class PortfolioChart extends Component<Props> {
             <>
               {chartBtns &&
                 chartBtns.map((chartBtn) => (
-                  <Button
-                    //color="secondary"
+                  <SButton
+                    color="secondary"
                     size="small"
                     onClick={() => {
                       this.onChangeActiveChart(chartBtn)
