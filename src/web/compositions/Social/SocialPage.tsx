@@ -184,35 +184,44 @@ class SocialPage extends React.Component {
       setSelectedPortfolio,
     } = this.props
 
-    const totalFolioAssetsData = getFollowingPortfolios[
-      selectedPortfolio
-    ].portfolioAssets.reduce(
-      (acc, el) => {
-        acc.total += el.quantity * el.price
-        acc.assets++
-        acc.realized += el.realized
-        acc.unrealized += el.unrealized
-        return acc
-      },
-      {
-        total: 0,
-        assets: 0,
-        realized: 0,
-        unrealized: 0,
-      }
-    )
+    const totalFolioAssetsData = getFollowingPortfolios.length
+      ? getFollowingPortfolios[selectedPortfolio].portfolioAssets.reduce(
+          (acc, el) => {
+            acc.total += el.quantity * el.price
+            acc.assets++
+            acc.realized += el.realized
+            acc.unrealized += el.unrealized
+            return acc
+          },
+          {
+            total: 0,
+            assets: 0,
+            realized: 0,
+            unrealized: 0,
+          }
+        )
+      : {
+          total: 0,
+          assets: 0,
+          realized: 0,
+          unrealized: 0,
+        }
 
-    console.log('____: ', getFollowingPortfolios[selectedPortfolio])
-    console.log('custom acc: ', totalFolioAssetsData)
-    console.log('SELECTED FOLIO:', selectedPortfolio)
-    console.log('FOLIOS:', getFollowingPortfolios)
+    // console.log('____: ', getFollowingPortfolios[selectedPortfolio])
+    // console.log('custom acc: ', totalFolioAssetsData)
+    // console.log('SELECTED FOLIO:', selectedPortfolio)
+    // console.log('FOLIOS:', getFollowingPortfolios)
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
-    let filteredData = getFollowingPortfolios.filter((folio) => {
-      return (
-        folio.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1
-      )
-    })
+    let filteredData = getFollowingPortfolios.length
+      ? getFollowingPortfolios.filter((folio) => {
+          return (
+            folio.name
+              .toLowerCase()
+              .indexOf(this.state.search.toLowerCase()) !== -1
+          )
+        })
+      : []
 
     const sharedPortfoliosList = filteredData.map((el, index) => (
       <PortfolioListItem
@@ -337,7 +346,11 @@ class SocialPage extends React.Component {
         <GridTableContainer container justify="center" xs={9}>
           <Grid continer lg={12}>
             <SocialPortfolioInfoPanel
-              folioData={getFollowingPortfolios[selectedPortfolio]}
+              folioData={
+                getFollowingPortfolios.length
+                  ? getFollowingPortfolios[selectedPortfolio]
+                  : { name: '', isPrivate: true, ownerId: { email: '' } }
+              }
             />
             <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
             {/* <GridItemContainer item lg={2} md={2}>
@@ -468,11 +481,4 @@ class SocialPage extends React.Component {
   }
 }
 
-export default compose(
-  queryRendererHoc({
-    query: GET_FOLLOWING_PORTFOLIOS,
-    withOutSpinner: false,
-    withTableLoader: false,
-    name: 'getFollowingPortfoliosQuery',
-  })
-)(SocialPage)
+export default SocialPage
