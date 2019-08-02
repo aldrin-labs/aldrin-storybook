@@ -112,6 +112,7 @@ export const GridFolioScroll = styled(Grid)`
 
 export const TableContainer = styled(Grid)`
   &&& {
+    position: relative;
     width: 100%;
     height: 29vh; /* 60vh /*TODO : Left Panel Hight*/
     border: 1px solid #e0e5ec;
