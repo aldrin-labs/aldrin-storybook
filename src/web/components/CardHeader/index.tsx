@@ -31,7 +31,7 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-     // alignSelf: 'center',
+      // alignSelf: 'center',
     },
   })
 
