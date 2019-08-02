@@ -142,11 +142,11 @@ class SocialPortfolioInfoPanel extends Component {
             btnMargin={'auto 2px'}
             btnWidth={'100px'}
             btnHeight={'26px'}
-            btnBorderColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
             btnTextColor={'#fff'}
+            btnBorderColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
             btnBgColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
-            btnHoverColor={!this.state.isFollowEnter ? '#B93B2B' : '#165BE0'}
-            btnHoverTextColor={'#fff'}
+            btnHoverColor={this.state.isFollowEnter ? '#B93B2B' : '#165BE0'}
+            btnHoverTextColor={'white'}
             btnRadius={'10px'}
             btnFontSize={'0.75rem'}
             onClick={this.handleToggleFollowBtn.bind(this)}
