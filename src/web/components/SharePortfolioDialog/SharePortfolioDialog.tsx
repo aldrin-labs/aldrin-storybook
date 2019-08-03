@@ -58,12 +58,11 @@ export default class SharePortfolioDialog extends React.Component<
     isPortfolioFree: true,
     openLinkPopup: false,
     openInvitePopup: false,
-    isEnableToInvite: false,
     portfolioPrice: '',
     tradeFrequency: 'Irregularly',
     marketName: '',
     portfolioDescription: '',
-    selectedAccounts: [],
+    selectedAccounts: [...this.props.portfolioKeys.map((el) => el.name)],
     selectedPortfolioTypes: ['Bull trading'],
   }
 
@@ -432,7 +431,7 @@ export default class SharePortfolioDialog extends React.Component<
                   <Line />
                 </Grid>
                 <FormControl fullWidth required>
-                  <Grid container alignItems="center">
+                  <Grid container alignItems="center" justify="space-between">
                     {portfolioKeys.map((el) => {
                       const checked = selectedAccounts.includes(el.name)
 

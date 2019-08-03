@@ -5,7 +5,13 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { Typography } from '@material-ui/core'
-import { TabCustom } from './SocialTabs.styles'
+import {
+  TabCustom,
+  StyledTab,
+  StyledTabs,
+  StyledMyTab,
+  StyledFollowingTab,
+} from './SocialTabs.styles'
 
 function TabContainer({ children, dir }) {
   return (
@@ -53,7 +59,7 @@ class SocialTabs extends React.Component {
           color="default"
           style={{ background: 'transparent', boxShadow: 'none' }}
         >
-          <Tabs
+          <StyledTabs
             style={{
               background: 'transparent',
               boxShadow: 'none',
@@ -65,7 +71,7 @@ class SocialTabs extends React.Component {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab
+            <StyledFollowingTab
               label="following"
               style={{
                 fontSize: '1.2rem',
@@ -83,7 +89,7 @@ class SocialTabs extends React.Component {
                 width: '50%',
               }}
             />
-            <Tab
+            <StyledMyTab
               label="My"
               style={{
                 fontSize: '1.2rem',
@@ -101,7 +107,7 @@ class SocialTabs extends React.Component {
                 width: '50%',
               }}
             />
-          </Tabs>
+          </StyledTabs>
         </AppBar>
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}

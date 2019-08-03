@@ -264,12 +264,9 @@ class SocialPage extends React.Component {
       <GridPageContainer
         container
         xs={12}
-        style={{ paddingRight: '4%', height: '85vh', overflow: 'hidden' }}
+        style={{ paddingRight: '4%', overflow: 'hidden' }}
       >
-        <GridFolioConteiner
-          item
-          xs={3}
-        >
+        <GridFolioConteiner item xs={3}>
           <SocialTabs>
             <GridSortOption
               container
@@ -367,9 +364,7 @@ class SocialPage extends React.Component {
                   : { name: '', isPrivate: true, ownerId: '' }
               }
             />
-            <SocialBalancePanel
-              totalFolioAssetsData={totalFolioAssetsData}
-            />
+            <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
             {/* <GridItemContainer item lg={2} md={2}>
               <GridContainerTitle content alignItems="center">
                 <TypographyContatinerTitle>

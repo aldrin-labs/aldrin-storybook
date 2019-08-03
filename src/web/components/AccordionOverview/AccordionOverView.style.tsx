@@ -9,12 +9,17 @@ import {
 } from '@material-ui/core'
 
 export const GridColumn = styled(Grid)`
-padding: ${props => props.paddingCell};
+  position: relative;
+  padding: ${(props) => props.paddingCell};
   flex-basis: 16.66%;
   display: flex;
-  padding: 0.76rem 0;
+  padding: 0.76rem 0 !important;
   align-items: center;
+  justify-content: center;
+
+  ${(props) => (props.gridBorder ? props.gridBorder : '')}
 `
+
 export const GridRow = styled(Grid)`
   min-width: 10%;
   width: 100%;
@@ -63,7 +68,7 @@ export const TypographyTitleCell = styled(Typography)`
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
-  padding: ${props => props.paddingCell};
+  padding: ${(props) => props.paddingCell};
 
   @media only screen and (min-width: 2560px) {
     margin-bottom: 0;
