@@ -168,7 +168,7 @@ export const GridTableContainer = styled(Grid)`
     display: none;
   }
 
-  @media(min-width: 2560px) {
-    height: 67vh'
+  @media (min-width: 2560px) {
+    height: 67vh;
   }
 `

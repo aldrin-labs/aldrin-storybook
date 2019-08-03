@@ -14,6 +14,7 @@ import {
   TypographyCalendarLegend,
   LessMoreContainer,
   GridTableContainer,
+  TransactionsTitle,
   CalendarGrid,
 } from './TransactionPage.styles'
 
@@ -210,9 +211,9 @@ class TransactionPage extends Component {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <TypographyContatinerTitle textAlign={'left'}>
+                  <TransactionsTitle textAlign={'left'}>
                     Transactions
-                  </TypographyContatinerTitle>
+                  </TransactionsTitle>
                   <TypographyContatinerTitle>
                     Jan, 25 - feb, 8, 2019
                   </TypographyContatinerTitle>

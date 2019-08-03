@@ -266,7 +266,7 @@ class SocialPage extends React.Component {
         xs={12}
         style={{ paddingRight: '4%', overflow: 'hidden' }}
       >
-        <GridFolioConteiner item xs={3}>
+        <Grid item xs={3}>
           <SocialTabs>
             <GridSortOption
               container
