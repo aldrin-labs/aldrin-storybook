@@ -35,6 +35,7 @@ export const GridContainerTitle = styled(Grid)`
   margin-bottom: 8px;
 
   @media (min-width: 2560px) {
+    height: auto;
   }
 `
 
@@ -81,6 +82,12 @@ export const TypographyContatinerTitle = styled(Typography)`
     color: #7284a0;
     padding: 0.4rem 0 1rem 0.8rem;
     height: auto;
+  }
+`
+
+export const TransactionsTitle = styled(TypographyContatinerTitle)`
+  media(min-width: 2560px) {
+    padding: 0.4rem 0 1rem 1rem;
   }
 `
 
@@ -159,5 +166,9 @@ export const GridTableContainer = styled(Grid)`
   border: ${(props) => props.borderColor};
   ::-webkit-scrollbar {
     display: none;
+  }
+
+  @media (min-width: 2560px) {
+    height: 67vh;
   }
 `

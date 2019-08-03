@@ -17,6 +17,7 @@ export const InputCustom = styled(Input)`
 export const GridPageContainer = styled(Grid)`
   padding-top: 15px;
   width: 100%;
+  height: 85vh;
   /*max-height: 100vh;*/
 `
 
@@ -132,6 +133,10 @@ export const GridFolioScroll = styled(Grid)`
   ::-webkit-scrollbar {
     display: none;
   }
+
+  @media (min-width: 2560px) {
+    height: 60.3vh;
+  }
 `
 
 export const TableContainer = styled(Grid)`
@@ -167,7 +172,11 @@ export const TypographyEmptyFolioPanel = styled(Typography)`
 export const GridFolioConteiner = styled(Grid)`
   /* box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border: 1px solid #e0e5ec;
-  border-radius: 23px; */
+  border-radius: 23px;
+
+  @media (min-width: 2560px) {
+    height: 73vh;
+  }
 `
 /*
             height: 50vh,
