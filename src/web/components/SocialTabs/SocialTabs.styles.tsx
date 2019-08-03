@@ -3,6 +3,7 @@ import { AppBar, Tabs, Tab } from '@material-ui/core'
 
 export const MainContainer = styled.div`
   background-color: ${(props) => props.bgColor};
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border-left: 1px solid #e0e5ec;
   border-right: 1px solid #e0e5ec;
   border-bottom: 1px solid #e0e5ec;
@@ -12,6 +13,7 @@ export const MainContainer = styled.div`
 `
 
 export const TabContainerCustom = styled.div`
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   box-shadow: none;
   border-left: 1px solid #e0e5ec;
   border-right: 1px solid #e0e5ec;

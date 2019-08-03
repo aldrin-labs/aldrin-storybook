@@ -352,7 +352,7 @@ class SocialPage extends React.Component {
               )}
             </GridFolioScroll>
           </SocialTabs>
-        </GridFolioConteiner>
+        </Grid>
         {/* <Grid lg={8}> */}
 
         <GridTableContainer container justify="center" xs={9}>

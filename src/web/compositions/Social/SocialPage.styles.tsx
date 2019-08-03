@@ -170,7 +170,7 @@ export const TypographyEmptyFolioPanel = styled(Typography)`
   text-transform: uppercase;
 `
 export const GridFolioConteiner = styled(Grid)`
-  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+  /* box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border: 1px solid #e0e5ec;
   border-radius: 23px;
 

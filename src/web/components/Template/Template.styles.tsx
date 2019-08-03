@@ -39,7 +39,7 @@ export const TableWrapper = styled(Card as React.SFC<
   flex-direction: column;
   border: 2px solid #E0E5EC;
   
-  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+  box-shadow: 0px 0px 12px rgba(10, 19, 43, 0.1);
 
   ${customAquaScrollBar};
 `
