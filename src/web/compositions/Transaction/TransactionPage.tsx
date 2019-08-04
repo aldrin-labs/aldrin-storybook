@@ -219,7 +219,7 @@ class TransactionPage extends Component {
                   </TypographyContatinerTitle>
                 </Grid>
               </GridContainerTitle>
-              <Grid style={{ padding: '0 25px', overflow: 'hidden' }}>
+              <Grid>
                 <TradeOrderHistory style={{ overflow: 'scroll' }} />
               </Grid>
             </GridTableContainer>

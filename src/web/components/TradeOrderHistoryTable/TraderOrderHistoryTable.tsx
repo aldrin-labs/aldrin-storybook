@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TableWithSort } from '@sb/components/index'
+import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
 import { withTheme } from '@material-ui/styles'
 
@@ -25,45 +25,16 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   render() {
     const { rows, theme } = this.props
 
-    const tableStyles = {
-      heading: {
-        background: 'transparent',
-        color: '#ABBAD1',
-        fontFamily: `DM Sans`,
-        textTransform: 'uppercase',
-        fontWeight: '700',
-        fontSize: '1.2rem',
-        borderBottom: '1px solid #E0E5EC',
-        padding: '0 0 10px 10px',
-      },
-      title: {},
-      cell: {
-        letterSpacing: '1.5px',
-        textTransform: 'uppercase',
-        color: theme.palette.text.subPrimary,
-        fontFamily: 'DM Sans',
-        fontStyle: 'normal',
-        fontWeight: '700',
-        fontSize: '1.2rem',
-        lineHeight: '31px',
-        background: 'transparent',
-        borderBottom: '1px solid #E0E5EC',
-        height: '48px',
-        paddingLeft: '10px',
-      },
-    }
-
     return (
-      <TableWithSort
+      <StyledTable
         style={{ height: '10vh', overflow: 'scroll' }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
         columnNames={rows.head}
         emptyTableText="No history"
-        tableStyles={tableStyles}
         pagination={{
-          enabled: false, // toogle page nav panel in the footer
+          // enabled: false, // toogle page nav panel in the footer
           page: this.state.page,
           rowsPerPage: this.state.rowsPerPage,
           rowsPerPageOptions: [20, 50, 100, 200],
