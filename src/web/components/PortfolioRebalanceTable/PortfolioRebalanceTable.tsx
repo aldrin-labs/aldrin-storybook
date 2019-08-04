@@ -10,7 +10,7 @@ import {
   LoaderWrapper,
   LoaderInnerWrapper,
   ContentInner,
-} from './RebalancedPortfolioTable.styles'
+} from './PortfolioRebalanceTable.styles'
 
 import { IProps } from './PortfolioRebalanceTable.types'
 import { compose } from 'recompose'
@@ -68,27 +68,6 @@ const PortfolioRebalanceTable: React.FunctionComponent<
             red,
             saveButtonColor,
           })}
-          tableStyles={{
-            heading: {
-              fontFamily: `DM Sans, sans-serif`,
-              color: theme.palette.text.primary,
-              background: theme.palette.background.table,
-              textTransform: 'uppercase',
-              fontWeight: 'normal',
-              fontSize: '1.15rem',
-            },
-            title: {},
-            cell: {
-              padding: '0px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              fontSize: '1.35rem',
-              height: '48px',
-              borderBottom: `1px solid ${
-                theme.palette.grey[theme.palette.type]
-              }`,
-            },
-          }}
           emptyTableText="No assets"
         />
       </ContentInner>
@@ -96,4 +75,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   )
 }
 
-export default compose(withWidth(), withTheme())(PortfolioRebalanceTable)
+export default compose(
+  withWidth(),
+  withTheme()
+)(PortfolioRebalanceTable)

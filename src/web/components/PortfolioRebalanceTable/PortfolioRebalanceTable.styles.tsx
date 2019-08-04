@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 
 import DeleteIcon from '@material-ui/icons/Delete'
-import { Card } from '@material-ui/core'
+import { Card, Table } from '@material-ui/core'
 import Slider from '@material-ui/lab/Slider'
+import { TableWithSort } from '@sb/components'
 
 export const SDeleteIcon = styled(({ hoverColor, ...rest }) => (
   <DeleteIcon {...rest} />
@@ -42,16 +43,38 @@ export const ContentInner = styled(({ ...props }) => <Card {...props} />)`
   display: flex;
 
   & td {
+    font-family: DM Sans, sans-serif;
+    color: #16253d;
+    background: #ffffff;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: 1.35rem;
+    padding: 0px;
+    letter-spacing: 0.5px;
+    height: 48px;
+    border-bottom: 1px solid #ebeef4;
+  }
+
+  & th {
+    font-family: DM Sans, sans-serif;
+    color: #7284a0;
+    background: #ffffff;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: 1.15rem;
+  }
+
+  & td {
     @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
-      height: 56px !important;
+      height: 56px;
     }
-    
+
     @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-      height: 72px !important;
+      height: 72px;
     }
-    
+
     @media screen and (min-device-width: 3221px) and (min-device-height: 1781px) and (-webkit-min-device-pixel-ratio: 1) {
-      height: 96px !important;
+      height: 96px;
     }
   }
 `
