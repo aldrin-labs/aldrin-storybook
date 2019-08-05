@@ -65,10 +65,10 @@ class PortfolioTable extends Component<IProps, IState> {
                       portfolioKeys={keys}
                       portfolioId={portfolioId}
                       portfolioName={portfolioName}
-                      isUSDCurrently={isUSDCurrently}
+                      isUSDCurrently={false}
                       theme={theme}
-                      variables={{ baseCoin }}
-                      baseCoin={baseCoin}
+                      variables={{ baseCoin: 'BTC' }}
+                      baseCoin={'BTC'}
                       dustFilter={dustFilter}
                       {...rest}
                     />
@@ -137,9 +137,7 @@ class PortfolioTable extends Component<IProps, IState> {
                 <Route
                   exact
                   path="/portfolio/transactions"
-                  render={(...rest) => (
-                    <Transaction {...rest} />
-                  )}
+                  render={(...rest) => <Transaction {...rest} />}
                 />
               </Switch>
             </Suspense>
