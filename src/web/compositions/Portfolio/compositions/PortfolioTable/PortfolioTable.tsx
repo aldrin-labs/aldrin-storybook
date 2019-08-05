@@ -65,10 +65,10 @@ class PortfolioTable extends Component<IProps, IState> {
                       portfolioKeys={keys}
                       portfolioId={portfolioId}
                       portfolioName={portfolioName}
-                      isUSDCurrently={false}
+                      isUSDCurrently={isUSDCurrently}
                       theme={theme}
-                      variables={{ baseCoin: 'BTC' }}
-                      baseCoin={'BTC'}
+                      variables={{ baseCoin }}
+                      baseCoin={baseCoin}
                       dustFilter={dustFilter}
                       {...rest}
                     />
