@@ -137,9 +137,7 @@ class PortfolioTable extends Component<IProps, IState> {
                 <Route
                   exact
                   path="/portfolio/transactions"
-                  render={(...rest) => (
-                    <Transaction {...rest} />
-                  )}
+                  render={(...rest) => <Transaction {...rest} />}
                 />
               </Switch>
             </Suspense>

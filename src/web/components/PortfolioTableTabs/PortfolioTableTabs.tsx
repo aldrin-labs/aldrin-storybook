@@ -47,8 +47,9 @@ class PortfolioTableTabs extends React.Component<IProps> {
     } = this.props
 
     const switchUSDBTC = pathname === '/portfolio/main'
-    const isMainPage = pathname === '/portfolio/main';
-    const isTransactionsPage = pathname === '/portfolio/transactions';
+    const isMainPage = pathname === '/portfolio/main'
+    const isTransactionsPage = pathname === '/portfolio/transactions'
+    const isRebalancePage = pathname === '/portfolio/rebalance'
 
     return (
       <Container
@@ -60,26 +61,33 @@ class PortfolioTableTabs extends React.Component<IProps> {
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
-          minHeight: '95vh'
+          minHeight: '95vh',
         }}
       >
-        {
-          isMainPage
-            ? (
-              <>
-                <StyledLeftButton onClick={() => toggleWallets()}>Accounts</StyledLeftButton>
-                <StyledRightButton><Link to="/portfolio/transactions">Transactions</Link></StyledRightButton>
-              </>
-            )
-            : null
-        }
+        {isMainPage ? (
+          <>
+            <StyledLeftButton onClick={() => toggleWallets()}>
+              Accounts
+            </StyledLeftButton>
+            <StyledRightButton>
+              <Link to="/portfolio/transactions">Transactions</Link>
+            </StyledRightButton>
+          </>
+        ) : null}
 
-        {
-          isTransactionsPage
-            ? <StyledLeftButton><Link to="/portfolio/main">P&L</Link></StyledLeftButton>
-            : null
-        }
+        {isRebalancePage ? (
+          <>
+            <StyledLeftButton onClick={() => toggleWallets()}>
+              Accounts
+            </StyledLeftButton>
+          </>
+        ) : null}
 
+        {isTransactionsPage ? (
+          <StyledLeftButton>
+            <Link to="/portfolio/main">P&L</Link>
+          </StyledLeftButton>
+        ) : null}
 
         {/*<BarContainer*/}
         {/*onClick={() => {*/}
