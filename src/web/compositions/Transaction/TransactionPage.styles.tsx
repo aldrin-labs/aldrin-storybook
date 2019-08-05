@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
+import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;
@@ -32,7 +33,6 @@ export const GridContainerTitle = styled(Grid)`
   width: 100%;
   border-radius: 20px 20px 0 0;
   background: ${(props) => props.bgColor};
-  margin-bottom: 8px;
 
   @media (min-width: 2560px) {
     height: auto;
@@ -42,7 +42,7 @@ export const GridContainerTitle = styled(Grid)`
 export const GridItemContainer = styled(Grid)`
   /* min-height: 200px; */
   height: 85vh;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border-radius: 20px;
   border: ${(props) => props.borderColor};
 `
@@ -65,11 +65,12 @@ export const TypographyContatinerTitle = styled(Typography)`
      height: 24px;
      padding: ${(props) => props.textPadding};
      padding: 1rem 0;
-     color: #7284a0; */
+     */
+  color: ${(props) => props.textColor}; 
   background: ${(props) => props.bgColor};
-  margin-top: 10px;
+  margin-top: 6px;
   color: ${(props) => props.textColor};
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
@@ -79,15 +80,16 @@ export const TypographyContatinerTitle = styled(Typography)`
   padding: ${(props) => props.textPadding};
 
   @media (min-width: 2560px) {
-    color: #7284a0;
     padding: 0.4rem 0 1rem 0.8rem;
     height: auto;
   }
 `
 
 export const TransactionsTitle = styled(TypographyContatinerTitle)`
-  media(min-width: 2560px) {
-    padding: 0.4rem 0 1rem 1rem;
+  padding: 0rem 0 1rem 2rem;
+
+  @media (min-width: 2560px) {
+    padding: 0.4rem 0 1rem 2rem;
   }
 `
 
@@ -144,10 +146,11 @@ export const TypographyCalendarLegend = styled(Typography)`
 
 export const GridAccountContainer = styled(Grid)`
   height: 85vh; /* min-height: 130px; */
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
   position: relative;
   border: ${(props) => props.borderColor};
+  background: #fff;
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
 `
 
 export const LessMoreContainer = styled(Grid)`
@@ -159,9 +162,9 @@ export const LessMoreContainer = styled(Grid)`
 `
 
 export const GridTableContainer = styled(Grid)`
-  height: 50vh;
-  overflow: hidden;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  height: 51vh;
+  overflow: scroll;
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border-radius: 20px;
   border: ${(props) => props.borderColor};
   ::-webkit-scrollbar {
@@ -171,4 +174,13 @@ export const GridTableContainer = styled(Grid)`
   @media (min-width: 2560px) {
     height: 67vh;
   }
+`
+
+export const PortfolioMainChartStyled = styled(PortfolioMainChart)`
+  /* &&& {
+    margin-top: 2%;
+    margin-left: 0;
+    max-height: 235px;
+    box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+  } */
 `

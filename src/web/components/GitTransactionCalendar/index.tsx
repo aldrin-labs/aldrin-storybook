@@ -3,6 +3,8 @@ import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
 import { withStyles } from '@material-ui/core/styles'
 
+import { formatCalendarDate } from '@core/utils/dateUtils'
+
 const styles = (theme) => ({
   root: {
     fontSize: '0.9rem',
@@ -98,8 +100,6 @@ class GitTransactionCalendar extends Component {
           'Nov',
           'Dec',
         ]}
-        // showOutOfRangeDays={true}
-        titleForValue={(value) => `Date is ${value.date}`}
         tooltipDataAttrs={(value) => {
           return { 'data-tooltip': 'Tooltip: ' + value.date }
         }}

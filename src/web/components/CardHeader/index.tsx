@@ -11,7 +11,7 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
       borderBottom: `1px solid ${theme.palette.divider}`,
       height: '34px',
-      padding: '6px',
+      padding: '0px',
       width: '100%',
       backgroundColor:
         theme.palette.type === 'dark'

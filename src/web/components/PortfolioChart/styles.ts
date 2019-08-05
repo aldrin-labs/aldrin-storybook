@@ -14,8 +14,8 @@ export const SProfileChart = styled(Card)`
 `
 
 export const SButton = styled(Button)`
-  @media(min-width: 2560px) {
-    font-size: .8rem;
+  @media (min-width: 2560px) {
+    font-size: 0.8rem;
   }
 `
 
@@ -28,11 +28,11 @@ export const axisStyle = {
   },
   text: {
     stroke: 'none',
-    fill: '#7284A0', //'#777777',
-    fontWeight: 600,
+    fill: '#7284A0',
+    fontWeight: 700,
     opacity: 1,
-    fontFamily: 'Roboto',
-    fontSize: '14px',
+    fontFamily: 'DM Sans',
+    fontSize: '1.4rem',
   },
 }
 

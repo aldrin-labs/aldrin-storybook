@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import {
   GridContainerTitle,
   TypographyContatinerTitle,
@@ -15,7 +15,6 @@ import {
   LessMoreContainer,
   GridTableContainer,
   TransactionsTitle,
-  CalendarGrid,
 } from './TransactionPage.styles'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
@@ -187,7 +186,7 @@ class TransactionPage extends Component {
           item
           lg={8}
           md={8}
-          style={{ boxShadow: 'none', border: 'none', padding: '0 2.5rem' }}
+          style={{ boxShadow: 'none', border: 'none', padding: '0 1.8rem' }}
         >
           <Grid item style={{ height: '100%' }}>
             <GridTableContainer
@@ -211,23 +210,27 @@ class TransactionPage extends Component {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <TransactionsTitle textAlign={'left'}>
+                  <TransactionsTitle
+                    textColor={theme.palette.text.subPrimary}
+                    textAlign={'left'}
+                  >
                     Transactions
                   </TransactionsTitle>
-                  <TypographyContatinerTitle>
+                  <TypographyContatinerTitle
+                    textColor={theme.palette.text.subPrimary}
+                  >
                     Jan, 25 - feb, 8, 2019
                   </TypographyContatinerTitle>
                 </Grid>
               </GridContainerTitle>
               <Grid>
-                <TradeOrderHistory style={{ overflow: 'scroll' }} />
+                <TradeOrderHistory style={{ overflow: 'hidden' }} />
               </Grid>
             </GridTableContainer>
             <PortfolioMainChart
-              title="Portfolio performance"
               style={{
-                marginTop: '3%',
-                marginLeft: 0,
+                marginTop: '2%',
+                marginLeft: '0',
                 maxHeight: '235px',
                 boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
               }}

@@ -1,7 +1,6 @@
 import React from 'react'
-import { compose } from 'recompose'
 
-import { Typography, Input, Grid, Paper } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import {
   PortfolioName,
   TypographyTitle,
@@ -15,23 +14,12 @@ import {
   GridFolioScroll,
   InputCustom,
   TableContainer,
-  StyledSvgIcon,
-  GridFolioConteiner,
   TypographyEmptyFolioPanel,
 } from './SocialPage.styles'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
-
 import { IProps, IState } from './Social.types'
 
-import { addMainSymbol, TableWithSort } from '@sb/components'
-import {
-  roundPercentage,
-  roundAndFormatNumber,
-  combineTableData,
-} from '@core/utils/PortfolioTableUtils'
-import { isObject, zip } from 'lodash-es'
+import { TableWithSort } from '@sb/components'
 
 import SocialPortfolioInfoPanel from '@sb/components/SocialPortfolioInfoPanel/SocialPortfolioInfoPanel'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
@@ -45,33 +33,9 @@ import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMai
 
 import SvgIcon from '@sb/components/SvgIcon'
 import LineGraph from '@icons/LineGraph.svg'
-
-const getOwner = (str: string) => {
-  if (!str) {
-    return 'public'
-  }
-
-  const b = str.match(/(?<=\').*(?=')/gm)
-
-  return (b && b[0]) || 'public'
-}
+import getOwner from '@sb/components/Utils/PortfolioUtils/getOwner'
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
-  // <Paper
-  // style={{
-  //   padding: '10px',
-  //   margin: '12px',
-  //   background: `${isSelected ? '#fff' : 'transparent'}`,
-  //   border: `${!isSelected && 'none'}`,
-  //   borderBottom: '1px solid #E0E5EC',
-  //   boxShadow: `${!isSelected && 'none'}`,
-  //   borderRadius: `${!isSelected && 'none'}`,
-  // }}
-  // elevation={isSelected ? 10 : 2}
-  // >
-
-  // { isSelected && this.setState({el: el}))}
-
   <FolioCard
     container
     onClick={onClick}
@@ -131,11 +95,10 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
       </FolioValuesCell>
     </Grid>
   </FolioCard>
-  // </Paper>
 )
 
 @withTheme()
-class SocialPage extends React.Component {
+class SocialPage extends React.Component<IState> {
   state = {
     search: '',
   }
@@ -148,7 +111,6 @@ class SocialPage extends React.Component {
     const { theme, isUSDCurrently = true, baseCoin = 'USDT' } = this.props
     const {
       checkedRows = [],
-      // tableData,
       numberOfDigitsAfterPoint: round,
       red = 'red',
       green = 'green',
@@ -159,9 +121,6 @@ class SocialPage extends React.Component {
 
     return {
       head: [
-        // { id: 'name', label: 'Account', isNumber: false },
-        //{ id: 'portfolio', label: 'portfolio', isNumber: true },
-        // { id: 'coin', label: '', isNumber: false },
         { id: 'coin', label: 'coin', isNumber: true },
         { id: 'exchange', label: 'exchange', isNumber: false },
         { id: 'price', label: 'price', isNumber: false },
@@ -218,21 +177,12 @@ class SocialPage extends React.Component {
           unrealized: 0,
         }
 
-    console.log('FolioData: ', getFollowingPortfolios[selectedPortfolio])
-    // console.log('custom acc: ', totalFolioAssetsData)
-    // console.log('SELECTED FOLIO:', selectedPortfolio)
-    // console.log('FOLIOS:', getFollowingPortfolios)
-
     const { head, body, footer = [] } = this.putDataInTable(tableData)
-    let filteredData = getFollowingPortfolios.length
-      ? getFollowingPortfolios.filter((folio) => {
-          return (
-            folio.name
-              .toLowerCase()
-              .indexOf(this.state.search.toLowerCase()) !== -1
-          )
-        })
-      : []
+    let filteredData = getFollowingPortfolios.filter((folio) => {
+      return (
+        folio.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1
+      )
+    })
 
     const sharedPortfoliosList = filteredData.map((el, index) => (
       <PortfolioListItem
@@ -307,7 +257,7 @@ class SocialPage extends React.Component {
                     controlStyles={{
                       background: 'transparent',
                       border: 'none',
-                      width: 104,
+                      width: 84,
                     }}
                     menuStyles={{
                       width: 120,
@@ -336,11 +286,6 @@ class SocialPage extends React.Component {
               placeholder={``}
               fontSize={`1.2rem`}
               onChange={this.handleSearchInput}
-              // style={{
-              //   background:`${theme.palette.type === 'dark'
-              //       ? theme.palette.primary.light
-              //       : theme.palette.grey.main }`
-              // }}
             />
             <GridFolioScroll>
               {sharedPortfoliosList.length === 0 ? (
@@ -353,7 +298,6 @@ class SocialPage extends React.Component {
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
-        {/* <Grid lg={8}> */}
 
         <GridTableContainer container justify="center" xs={9}>
           <Grid continer lg={12}>
@@ -365,39 +309,6 @@ class SocialPage extends React.Component {
               }
             />
             <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
-            {/* <GridItemContainer item lg={2} md={2}>
-              <GridContainerTitle content alignItems="center">
-                <TypographyContatinerTitle>
-                  calendar
-                </TypographyContatinerTitle>
-              </GridContainerTitle>
-              <Grid style={{ padding: '0 0 20px 0' }}>
-                <Grid style={{ padding: '0 0 10px 45px' }}>
-                  <GitTransactionCalendar />
-                </Grid>
-                <Grid
-                  container
-                  justify="center"
-                  style={{ margineTop: '15px' }}
-                >
-                  <Grid lg={2}>
-                    <TypographyCalendarLegend textAlign={'right'}>
-                      Less
-                    </TypographyCalendarLegend>
-                  </Grid>
-
-                  <Grid container justify="center" lg={8}>
-                    <LessMoreContainer />
-                  </Grid>
-                  <Grid lg={2}>
-                    <TypographyCalendarLegend>
-                      More
-                    </TypographyCalendarLegend>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </GridItemContainer> */}
-
             {/* pie chart */}
             <Grid container justify="space-between">
               <Grid
@@ -431,14 +342,6 @@ class SocialPage extends React.Component {
                         color: '#7284A0',
                         lineHeight: '31px',
                         letterSpacing: '1.5px',
-                        // '&th:first-child': {
-                        //   // Does'n work
-                        //   borderRadius: '22px 0 0 0',
-                        //   background: 'red',
-                        // },
-                        // '&:last-child': {
-                        //   borderRadius: '0 22px  0 0',
-                        // },
                       },
 
                       cell: {
@@ -451,11 +354,6 @@ class SocialPage extends React.Component {
                         letterSpacing: '0.5px',
                         fontSize: '1rem',
                         padding: '0 0 0 8px',
-                        '&:first-child': {
-                          // Does'n work
-                          color: 'red',
-                          background: 'red',
-                        },
                         '&:before': {
                           content: '',
                           display: 'block',
@@ -487,7 +385,6 @@ class SocialPage extends React.Component {
             </Grid>
           </Grid>
         </GridTableContainer>
-        {/* </Grid> */}
       </GridPageContainer>
     )
   }

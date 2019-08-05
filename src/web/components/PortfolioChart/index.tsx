@@ -87,7 +87,6 @@ export default class PortfolioChart extends Component<Props> {
               {chartBtns &&
                 chartBtns.map((chartBtn) => (
                   <SButton
-                    //color="secondary"
                     size="small"
                     onClick={() => {
                       this.onChangeActiveChart(chartBtn)
@@ -129,7 +128,6 @@ export default class PortfolioChart extends Component<Props> {
           title={title}
         />
         {/* minus cardHeader Height */}
-        {/* style={{ paddingRight: '540px' }} */}
         <Chart height={`calc(100% - 68px)`}>
           <FlexibleXYPlot
             tickLabelAngle={45}
@@ -156,6 +154,7 @@ export default class PortfolioChart extends Component<Props> {
               tickFormat={(v: number) =>
                 new Date(v * 1000).toUTCString().substring(5, 11)
               }
+              //tickLabelAngle={-30}
             />
             {/* hiding Axis for a while */}
             {false && (

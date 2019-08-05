@@ -7,23 +7,12 @@ import {
   GridCell,
   TypographyTitle,
   GridMainContainer,
-  SpanCell,
   Link,
-  ButtonCustomFollow,
-  ButtonCustomUnfollow,
 } from './SocialPortfolioInfoPanel.styles'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/core'
 
-const getOwner = (str: string) => {
-  if (!str) {
-    return 'public'
-  }
-
-  const b = str.match(/(?<=\').*(?=')/gm)
-
-  return (b && b[0]) || 'public'
-}
+import getOwner from '@sb/components/Utils/PortfolioUtils/getOwner'
 
 @withTheme()
 class SocialPortfolioInfoPanel extends Component {
@@ -62,7 +51,6 @@ class SocialPortfolioInfoPanel extends Component {
       >
         <Grid item lg={2} justify="center">
           <TypographyHeader>{folioData.name}</TypographyHeader>
-          {/* <TypographyHeader>George soros</TypographyHeader> */}
           <TypographyHeader>portfolio</TypographyHeader>
         </Grid>
 
@@ -78,7 +66,6 @@ class SocialPortfolioInfoPanel extends Component {
                 {folioData.isPrivate
                   ? getOwner(folioData.ownerId)
                   : `Public portfolio`}
-                {/* By <SpanCell>G.Soros</SpanCell> */}
               </TypographyTitle>
             </GridCell>
             <GridCell
@@ -154,28 +141,7 @@ class SocialPortfolioInfoPanel extends Component {
             onMouseLeave={this.onMouseLeaveFollow.bind(this)}
           >
             {this.state.isFollowEnter ? 'unfollow' : 'following'}
-            {/* {this.state.isFollow ? 'unfollow' : 'following'} */}
           </ButtonCustom>
-          {/* <ButtonCustomUnfollow
-            btnVisibility={'visible'}
-            btnMargin={'auto 2px'}
-            btnWidth={'100px'}
-            btnHeight={'26px'}
-            btnBorderColor={`${
-              !this.state.isFollow ? '#165BE0' : '#B93B2B'
-            }`}
-            btnTextColor={'#fff'}
-            btnBgColor={`${!this.state.isFollow ? '#B93B2B' : '#165BE0'}`}
-            btnHoverColor={`${
-              !this.state.isFollow ? '#B93B2B' : '#165BE0'
-            }`}
-            btnHoverTextColor={'#fff'}
-            btnRadius={'10px'}
-            btnFontSize={'0.75rem'}
-            onClick={this.handleToggleFollowBtn.bind(this)}
-          >
-            {!this.state.isFollow ? 'unfollow' : 'follow'}
-          </ButtonCustomUnfollow> */}
         </Grid>
       </GridMainContainer>
     )

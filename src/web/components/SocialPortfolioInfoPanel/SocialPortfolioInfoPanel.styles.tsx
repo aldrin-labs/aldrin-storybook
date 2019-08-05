@@ -15,11 +15,11 @@ export const Link = styled(
     btnFontSize,
     btnHoverTextColor,
     borderColor,
+    btnMargin,
     ...rest
   }) => <NavLink {...rest} />
 )`
   width: fit-content;
-  // margin: 2rem auto 0;
   padding: 0.52rem 1.2rem;
 
   display: flex;

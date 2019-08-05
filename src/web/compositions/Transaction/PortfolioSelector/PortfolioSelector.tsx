@@ -3,7 +3,6 @@ import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { withTheme } from '@material-ui/styles'
-
 import { ReactSelectCustom } from '../TransactionPage.styles'
 
 @withTheme()
