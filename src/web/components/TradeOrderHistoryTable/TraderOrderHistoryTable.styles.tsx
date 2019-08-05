@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { TableWithSort } from '@sb/components/index'
+import TableWithSort from '@sb/components/Tables/WithSort'
 
 export const StyledTable = styled(TableWithSort)`
   th,
