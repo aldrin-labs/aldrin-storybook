@@ -43,14 +43,12 @@ export default class SharePortfolioPanel extends Component<IProps> {
             </Grid>
             <Grid item>
               <StyledButton
-                // onClick={() => {
-                //   this.props.onToggleUSDBTC()
-                //   toggleBaseCoin()
-                // }}
+                onClick={this.props.handleTogglingBaseCoin}
                 padding="0.25rem 1rem 0.25rem 1rem"
                 borderRadius={'28px'}
+                textTransform={`uppercase`}
               >
-                Btc
+                {this.props.baseCoin}
               </StyledButton>
             </Grid>
           </Grid>
