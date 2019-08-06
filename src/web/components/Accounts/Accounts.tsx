@@ -19,6 +19,9 @@ import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions';
+
+import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 
 export default class Accounts extends React.PureComponent<IProps> {
   render() {
@@ -32,7 +35,7 @@ export default class Accounts extends React.PureComponent<IProps> {
       login,
       isRebalance,
       onKeySelectOnlyOne,
-      isSidebar,
+      isSidebar
     } = this.props
 
     return (
@@ -47,7 +50,7 @@ export default class Accounts extends React.PureComponent<IProps> {
           >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
-            <TypographyTitle textColor={'#7284A0'}>Select All</TypographyTitle>
+            <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>Select All</TypographyTitle>
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>
@@ -120,6 +123,7 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                 />
+                {isSidebar && <PortfolioSelectorPopup accountName={keyName.name} forceUpdateAccountContainer={() => this.forceUpdate()}/>}
               </AccountsListItem>
             )
           })}

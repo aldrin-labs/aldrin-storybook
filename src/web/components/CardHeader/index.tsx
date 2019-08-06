@@ -23,7 +23,7 @@ const styles = (theme: Theme) =>
       fontWeight: 'bold',
       lineHeight: 1.5,
       letterSpacing: '0.02857em',
-      fontSize: '1rem',
+      fontSize: '1.2rem',
       textAlign: 'center',
     },
     action: {

@@ -62,7 +62,7 @@ export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
 
 export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
   && {
-    overflow-y: auto;
+    overflow: hidden auto;
     height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
     margin: 0;
     width: 100%;

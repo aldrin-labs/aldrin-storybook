@@ -3,9 +3,8 @@ import { FormattedDate } from 'react-intl'
 import styled from 'styled-components'
 
 import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import { Loading } from '@sb/components/Loading'
@@ -14,6 +13,8 @@ import { getCryptoWalletsQuery } from '@core/graphql/queries/user/getCryptoWalle
 
 import { DeleteCryptoWalletDialog } from './DeleteCryptoWalletDialog'
 import QueryRenderer from '@core/components/QueryRenderer'
+
+import { StyledTableCell } from './../styles.tsx'
 
 class CryptoWalletsListComponent extends React.Component {
   state = {
@@ -91,7 +92,7 @@ class CryptoWalletsListComponent extends React.Component {
   }
 }
 
-const CryptoWalletTableCell = styled(TableCell)`
+const CryptoWalletTableCell = styled(StyledTableCell)`
   overflow: hidden;
   text-align: center;
   text-overflow: ellipsis;
