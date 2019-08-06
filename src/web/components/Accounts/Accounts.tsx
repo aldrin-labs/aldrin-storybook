@@ -35,7 +35,7 @@ export default class Accounts extends React.PureComponent<IProps> {
       login,
       isRebalance,
       onKeySelectOnlyOne,
-      isSidebar,
+      isSidebar
     } = this.props
 
     return (
@@ -123,7 +123,7 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                 />
-                <PortfolioSelectorPopup accountName={keyName.name} forceUpdateAccountContainer={() => this.forceUpdate()}/>
+                {isSidebar && <PortfolioSelectorPopup accountName={keyName.name} forceUpdateAccountContainer={() => this.forceUpdate()}/>}
               </AccountsListItem>
             )
           })}
