@@ -168,7 +168,6 @@ export const LessMoreContainer = styled(Grid)`
 
 export const GridTableContainer = styled(Grid)`
   height: 50vh;
-  padding: 0 1.5rem;
   overflow: hidden;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
