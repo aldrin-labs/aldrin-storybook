@@ -91,8 +91,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       portfolioId,
       portfolioName,
       portfolioKeys,
-      handleTogglingBaseCoin,
-      baseCoin,
     } = this.props
 
     const { openSharePortfolioPopUp } = this.state
@@ -101,10 +99,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       <LayoutClearfixWrapper>
         <Grid>
           <SharePortfolioPanel
-            handleTogglingBaseCoin={handleTogglingBaseCoin}
             handleOpenSharePortfolio={this.handleOpenSharePortfolio}
             portfolioName={portfolioName}
-            baseCoin={baseCoin}
           />
           {/* TODO: Recomment if needed <Divider /> */}
           <AccordionOverview />

@@ -20,7 +20,6 @@ export const StyledButton = styled(({
   padding,
   margin,
   borderRadius,
-  textTransform = '',
   ...rest
 }) =>
   <Button {...rest} />)`
@@ -31,5 +30,4 @@ export const StyledButton = styled(({
   border: 1.5px solid #165BE0;
   font-size: 1.08rem;
   font-weight: 600;
-  text-transform: ${props => props.textTransform};
 `;
