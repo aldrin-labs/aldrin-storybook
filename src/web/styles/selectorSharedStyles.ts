@@ -11,6 +11,7 @@ export const AccountsListItem = styled.li`
   text-align: left;
   color: ${(props: { color: string }) => props.color};
   padding: 0;
+  min-height: 7vh;
 `
 
 export const AccountsList = styled.ul`
@@ -19,6 +20,8 @@ export const AccountsList = styled.ul`
   flex-direction: column;
   padding-left: 8px;
   margin: 0;
+  overflow-y: scroll;
+  max-height: 30vh;
 `
 
 export const AccountsWalletsHeadingWrapper = styled.div`

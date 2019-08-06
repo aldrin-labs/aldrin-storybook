@@ -21,10 +21,19 @@ export const GridColumn = styled(Grid)`
 `
 
 export const GridRow = styled(Grid)`
-  min-width: 10%;
-  width: 100%;
   display: flex;
   justify-content: center;
+
+  padding: 0 14px;
+
+  @media (min-width: 1921px) {
+    padding: 0 24px;
+  }
+`
+
+export const GridRowWrapper = styled(Grid)`
+  min-width: 10%;
+  width: 100%;
   &&:nth-child(2n-1) {
     background: ${(props) => props.hoverColor || '#e0e5ec'};
     border-radius: 20px;
@@ -102,11 +111,12 @@ export const ExpansionPanelSummaryCustom = withStyles({
   },
 })(ExpansionPanelSummary)
 
-export const ExpansionPanelDetailsCustom = withStyles({
-  root: {
-    background: '#F9FBFD',
-  },
-})(ExpansionPanelDetails)
+export const ExpansionPanelDetailsCustom = styled(ExpansionPanelDetails)`
+  background: #f9fbfd;
+  padding: 8px 8px 24px 8px;
+`
+
+export const GridColumnWrapper = styled(Grid)``
 
 export const Title = styled('div')`
   padding-left: 15px;

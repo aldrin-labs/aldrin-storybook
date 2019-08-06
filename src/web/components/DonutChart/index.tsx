@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Typography, withWidth } from '@material-ui/core'
-import { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
+import { isWidthUp, isWidthDown } from '@material-ui/core/withWidth'
 import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
 
@@ -13,7 +13,7 @@ import {
   SDiscreteColorLegend,
   ChartWithLegend,
   ColorLegendContainer,
-  ColorLegendPercentContainer
+  ColorLegendPercentContainer,
 } from './styles'
 import { defaultColors, emptyColor } from './colors'
 import { FlexibleChart } from './FlexibleChart'
@@ -41,7 +41,7 @@ const getColorsWithRandom = (colors: string[], dataLengh: number) => {
 const DEFAULT_CHART_SIZE = {
   width: 150,
   height: 150,
-  strokeWidth: 13
+  strokeWidth: 13,
 }
 const DEFAULT_COLOR_LEGEND_WIDTH = 150
 
@@ -125,7 +125,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
 
       removeLabels,
       width,
-      strokeWidth
+      strokeWidth,
     } = this.props
 
     // show chart withoutData UI
@@ -139,48 +139,64 @@ class DonutChartWitoutTheme extends Component<Props, State> {
       colorIndex: 0,
     }
 
-    let donutSize = chartWidth && chartHeight ? {
-      width: chartWidth,
-      height: chartHeight,
-      strokeWidth
-    } : DEFAULT_CHART_SIZE
-    if (isWidthUp('xl', width)) {
+    let donutSize =
+      chartWidth && chartHeight
+        ? {
+            width: chartWidth,
+            height: chartHeight,
+            strokeWidth,
+          }
+        : DEFAULT_CHART_SIZE
+
+    if (window.outerWidth > 2244) {
       donutSize = {
         width: 300,
         height: 300,
-        strokeWidth: 30
+        strokeWidth: 30,
+      }
+    } else if (window.outerWidth > 1920) {
+      donutSize = {
+        width: 200,
+        height: 200,
+        strokeWidth: 16,
       }
     } else if (isWidthDown('md', width)) {
       donutSize = {
         width: 100,
         height: 100,
-        strokeWidth: 8
+        strokeWidth: 8,
       }
     }
-  
+
     let responsiveLegendWidth = colorLegendWidth
-    if (responsiveLegendWidth === DEFAULT_COLOR_LEGEND_WIDTH && isWidthUp('xl', width)) {
+    if (
+      responsiveLegendWidth === DEFAULT_COLOR_LEGEND_WIDTH &&
+      isWidthUp('xl', width)
+    ) {
       responsiveLegendWidth = 250
     }
 
     return (
       <ChartWithTitle key={sizeKey}>
-        {!removeLabels && <LabelContainer>
+        {!removeLabels && (
+          <LabelContainer>
             <Typography variant="h4">
               {value ? value.label : labelPlaceholder || ''}
             </Typography>
           </LabelContainer>
-        }
+        )}
 
         <ChartWithLegend vertical={vertical}>
           {colorLegend && !isEmpty && (
             <ColorLegendContainer width={responsiveLegendWidth}>
               <SDiscreteColorLegend
                 width={responsiveLegendWidth}
-                items={data.map((d) => <ColorLegendPercentContainer>
-                  <span>{d.label}</span>
-                  <span>{d.realValue.toFixed(1)}%</span>
-                </ColorLegendPercentContainer>)}
+                items={data.map((d) => (
+                  <ColorLegendPercentContainer>
+                    <span>{d.label}</span>
+                    <span>{d.realValue.toFixed(1)}%</span>
+                  </ColorLegendPercentContainer>
+                ))}
                 colors={data.map((d, index) => colorsWithRandom[index])}
                 textColor={theme.typography.body1.color}
               />
@@ -196,7 +212,6 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 colorsWithRandom={colorsWithRandom}
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
-
                 {...donutSize}
                 valueVariant={chartValueVariant}
                 removeValueContainer={removeLabels}
@@ -210,7 +225,6 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 colorsWithRandom={[emptyColor]}
                 thicknessCoefficient={thicknessCoefficient}
                 isEmpty={isEmpty}
-
                 {...donutSize}
                 valueVariant={chartValueVariant}
                 removeValueContainer={removeLabels}

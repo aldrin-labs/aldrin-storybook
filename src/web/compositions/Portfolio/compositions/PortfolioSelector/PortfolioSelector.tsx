@@ -121,7 +121,7 @@ class PortfolioSelector extends React.Component<IProps> {
         variables: objectForMutation,
       })
     } catch (error) {
-      console.log(error)
+      console.log('error', error)
     }
   }
 
@@ -270,7 +270,7 @@ class PortfolioSelector extends React.Component<IProps> {
     const relations = ['first', 'second']
     return (
       <Slide
-        style={{ width: '410px' }}
+        style={{ width: '41rem' }}
         in={isSideNavOpen}
         direction="right"
         mountOnEnter={true}
