@@ -50,7 +50,7 @@ export default class Accounts extends React.PureComponent<IProps> {
           >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
-            <TypographyTitle textColor={'#7284A0'}>Select All</TypographyTitle>
+            <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>Select All</TypographyTitle>
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Table } from '@material-ui/core'
+import { Table, TableSortLabel, withStyles } from '@material-ui/core'
 
 export const StyledTable = styled(Table)`
   td:first-child {
@@ -10,3 +10,14 @@ export const StyledTable = styled(Table)`
     padding: 0.75rem 1rem 0.75rem 0.75rem;
   }
 `
+
+export const StyledTableSortLabel = withStyles({
+  icon: {
+    display: 'none',
+  },
+  active: {
+      '& $icon': {
+          display: 'inline',
+      },
+  }
+})(TableSortLabel)

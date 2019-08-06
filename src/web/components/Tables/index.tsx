@@ -12,7 +12,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
-import { StyledTable } from './Table.styles'
+import { StyledTable, StyledTableSortLabel } from './Table.styles'
 
 import {
   Props,
@@ -33,7 +33,6 @@ import {
   Typography,
   IconButton,
   Grow,
-  TableSortLabel,
   TablePagination,
 } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
@@ -326,13 +325,13 @@ const renderHeadCell = ({
   sort: sortTypes | undefined
 }) =>
   isSortable ? (
-    <TableSortLabel
+    <StyledTableSortLabel
       active={sort!.sortColumn === cell.id}
       direction={sort!.sortDirection}
       onClick={() => sort!.sortHandler(cell.id)}
     >
       {cell.label}
-    </TableSortLabel>
+    </StyledTableSortLabel>
   ) : (
     cell.label
   )

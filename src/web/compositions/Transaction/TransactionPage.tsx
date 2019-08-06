@@ -135,6 +135,7 @@ class TransactionPage extends Component {
           height: '90vh',
           padding: '30px 5% 30px 5px',
           overflow: 'hidden',
+          flexWrap: 'nowrap'
         }}
         // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
@@ -183,61 +184,8 @@ class TransactionPage extends Component {
           </GridAccountContainer>
         </Grid>
 
-        <GridItemContainer
-          item
-          lg={8}
-          md={8}
-          style={{ boxShadow: 'none', border: 'none', padding: '0 2.5rem' }}
-        >
-          <Grid item style={{ height: '100%' }}>
-            <GridTableContainer
-              item
-              lg={12}
-              md={12}
-              borderColor={`1px solid ${
-                theme.palette.grey[theme.palette.type]
-              }`}
-            >
-              {/* <Table tableStyles={tableStyles} /> */}
-              <GridContainerTitle
-                content
-                alignItems="center"
-                bgColor={theme.palette.primary.dark}
-              >
-                <Grid
-                  style={{
-                    display: 'flex',
-                    width: '70%',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <TransactionsTitle textAlign={'left'}>
-                    Transactions
-                  </TransactionsTitle>
-                  <TypographyContatinerTitle>
-                    Jan, 25 - feb, 8, 2019
-                  </TypographyContatinerTitle>
-                </Grid>
-              </GridContainerTitle>
-              <Grid>
-                <TradeOrderHistory style={{ overflow: 'scroll' }} />
-              </Grid>
-            </GridTableContainer>
-            <PortfolioMainChart
-              title="Portfolio performance"
-              style={{
-                marginTop: '3%',
-                marginLeft: 0,
-                maxHeight: '235px',
-                boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
-              }}
-              marginTopHr="10px"
-            />
-          </Grid>
-        </GridItemContainer>
-
         {/* Calendar */}
-        <Grid item lg={2} md={2}>
+        <Grid item lg={2} md={2} style={{ marginLeft: '1.5rem' }}>
           <GridItemContainer
             borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
           >
@@ -273,6 +221,60 @@ class TransactionPage extends Component {
             </Grid>
           </GridItemContainer>
         </Grid>
+
+        <GridItemContainer
+          item
+          lg={8}
+          md={8}
+          style={{ boxShadow: 'none', border: 'none', paddingLeft: '1.5rem' }}
+        >
+          <Grid item style={{ height: '100%' }}>
+            <GridTableContainer
+              item
+              lg={12}
+              md={12}
+              borderColor={`1px solid ${
+                theme.palette.grey[theme.palette.type]
+              }`}
+            >
+              {/* <Table tableStyles={tableStyles} /> */}
+              <GridContainerTitle
+                content
+                alignItems="center"
+                bgColor={theme.palette.primary.dark}
+              >
+                <Grid
+                  style={{
+                    display: 'flex',
+                    width: '70%',
+                    justifyContent: 'space-between',
+                    padding: '.25rem 1.5rem .5rem'
+                  }}
+                >
+                  <TransactionsTitle textAlign={'left'} textColor={theme.palette.text.subPrimary}>
+                    Transactions
+                  </TransactionsTitle>
+                  <TypographyContatinerTitle textColor={theme.palette.text.subPrimary}>
+                    Jan, 25 - feb, 8, 2019
+                  </TypographyContatinerTitle>
+                </Grid>
+              </GridContainerTitle>
+              <Grid>
+                <TradeOrderHistory style={{ overflow: 'scroll' }} />
+              </Grid>
+            </GridTableContainer>
+            <PortfolioMainChart
+              title="Portfolio performance"
+              style={{
+                marginTop: '3%',
+                marginLeft: 0,
+                maxHeight: '235px',
+                boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+              }}
+              marginTopHr="10px"
+            />
+          </Grid>
+        </GridItemContainer>
       </Grid>
     )
   }

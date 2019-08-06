@@ -118,7 +118,7 @@ export default class PortfolioChart extends Component<Props> {
                           : theme.palette.text.dark
                       }`,
                       borderRadius: '25px',
-                      fontSize: '0.8rem',
+                      fontSize: '1.2rem',
                     }}
                   >
                     {chartBtn}
