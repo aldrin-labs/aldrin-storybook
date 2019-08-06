@@ -267,6 +267,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
 
+    console.log(activeKeys)
     const relations = ['first', 'second']
     return (
       <Slide
