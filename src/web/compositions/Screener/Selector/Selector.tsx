@@ -1,7 +1,7 @@
 import React, { SyntheticEvent } from 'react'
 import styled from 'styled-components'
-import { Range } from 'rc-slider'
-import 'rc-slider/assets/index.css'
+// import { Range } from 'rc-slider'
+// import 'rc-slider/assets/index.css'
 
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
@@ -749,15 +749,15 @@ const RangeSliderWrapper = styled.div`
   }
 `
 
-const RangeSlider = styled(Range)`
-  & ${`.rc-slider-track`} {
-    background-color: rgb(78, 216, 218);
-  }
-
-  & ${`.rc-slider-handle`} {
-    border-color: #fff;
-  }
-`
+// const RangeSlider = styled(Range)`
+//   & ${`.rc-slider-track`} {
+//     background-color: rgb(78, 216, 218);
+//   }
+//
+//   & ${`.rc-slider-handle`} {
+//     border-color: #fff;
+//   }
+// `
 
 const SliderContainer = styled.div`
   display: flex;
