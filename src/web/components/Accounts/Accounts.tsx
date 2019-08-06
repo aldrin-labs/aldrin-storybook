@@ -19,6 +19,9 @@ import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions';
+
+import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 
 export default class Accounts extends React.PureComponent<IProps> {
   render() {
@@ -120,6 +123,7 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                 />
+                <PortfolioSelectorPopup accountName={keyName.name} forceUpdateAccountContainer={() => this.forceUpdate()}/>
               </AccountsListItem>
             )
           })}

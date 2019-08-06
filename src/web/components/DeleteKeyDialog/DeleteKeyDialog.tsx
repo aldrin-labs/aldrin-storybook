@@ -28,9 +28,10 @@ const DeleteKeyDialogComponent = ({
   values,
   handleSubmit,
   errors,
+  customHandler
 }) => (
   <div>
-    <Button onClick={handleClickOpen}>Delete</Button>
+    {customHandler ? customHandler(handleClickOpen) : <Button onClick={handleClickOpen}>Delete</Button>}
     <Dialog
       open={open}
       onClose={handleClose}

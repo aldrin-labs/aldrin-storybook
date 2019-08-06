@@ -5,15 +5,16 @@ import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
 import { Loading } from '@sb/components/Loading'
 
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
-import { DeleteKeyDialog } from './DeleteKeyDialog'
+import { DeleteKeyDialog } from '@sb/components/DeleteKeyDialog/DeleteKeyDialog'
 import QueryRenderer from '@core/components/QueryRenderer'
+
+import { StyledTableCell } from './../styles.tsx'
 
 class KeysListComponent extends React.Component {
   state = {
@@ -97,7 +98,7 @@ class KeysListComponent extends React.Component {
   }
 }
 
-const KeyTableCell = styled(TableCell)`
+const KeyTableCell = styled(StyledTableCell)`
   padding: 0;
   overflow: hidden;
   text-align: center;
