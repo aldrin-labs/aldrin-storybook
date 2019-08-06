@@ -12,7 +12,8 @@ import { PortfolioTable, PortfolioSelector } from './compositions'
 import { CustomError } from '@sb/components/'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 
-import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
+// TODO: Fix it Nikita please
+// import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
 import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
@@ -119,7 +120,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             <Mutation
               onCompleted={() => refetch()}
               mutation={updatePortfolioSettingsMutation}
-              update={updateSettingsMutation}
+              // TODO: Fix it Nikita please
+              // update={updateSettingsMutation}
               refetchQueries={[
                 // no need to refetch main
                 { query: getPortfolioQuery, variables: { baseCoin } },
