@@ -47,7 +47,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             fontSize: '1.2rem',
             fontWeight: 600,
             letterSpacing: 1,
-            borderBottom: '1px solid #e0e5ec',
+            borderBottom: '2px solid #e0e5ec',
             color: '#7284A0',
             whiteSpace: 'nowrap'
           },
