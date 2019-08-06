@@ -11,6 +11,7 @@ import {
   ExpansionPanelSummaryCustom,
   TypographySubHeading,
   GridColumn,
+  GridRowWrapper,
   GridRow,
   ExpansionPanelDetailsCustom,
 } from './AccordionOverView.style'
@@ -54,41 +55,6 @@ const formatMoney = function(number, c: number, d: string, t: string) {
 const format = (number) => {
   return formatMoney(number, 2, '.', ',')
 }
-
-const dataOverview = [
-  {
-    exchange: 'Binance trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-  {
-    exchange: 'Bittrex trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-  {
-    exchange: 'Huobi trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-  {
-    exchange: 'Kraken trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-]
 
 const gridBorder = `
 &::after {
@@ -194,65 +160,69 @@ class DetailedExpansionPanel extends React.Component {
             <Grid container justify="center">
               {getPortfolioKeyAssetsQuery.portfolioKeys.keys.map((el, i) => {
                 return (
-                  <GridRow
+                  <GridRowWrapper
                     item
                     hoverColor={theme.palette.hover[theme.palette.type]}
                   >
-                    <GridColumn>
-                      <TypographySubHeading>{el.name}</TypographySubHeading>
-                    </GridColumn>
-                    <GridColumn
-                      paddingCell={'0 1rem !important'}
-                      gridBorder={i % 2 !== 0 ? gridBorder : ''}
-                    >
-                      <div>
-                        <TypographyTitleCell>Value</TypographyTitleCell>
-                        <TypographyValueCell
-                          textColor={theme.palette.text.subPrimary}
-                        >
-                          ${format(el.portfolioKeyAssetsValue)}
-                        </TypographyValueCell>
-                      </div>
-                    </GridColumn>
-                    <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
-                      <div>
-                        <TypographyTitleCell>assets</TypographyTitleCell>
-                        <TypographyValueCell
-                          textColor={theme.palette.text.subPrimary}
-                        >
-                          {el.portfolioKeyAssetsCount}
-                        </TypographyValueCell>
-                      </div>
-                    </GridColumn>
-                    <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
-                      <div>
-                        <TypographyTitleCell>
-                          realized P{`&`}L
-                        </TypographyTitleCell>
-                        <TypographyValueCell textColor={'#2F7619'}>
-                          ${format(el.realizedPnl)}
-                        </TypographyValueCell>
-                      </div>
-                    </GridColumn>
-                    <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
-                      <div>
-                        <TypographyTitleCell>
-                          Unrealized P{`&`}L
-                        </TypographyTitleCell>
-                        <TypographyValueCell textColor={'#B93B2B'}>
-                          ${format(el.unrealizedPnl)}
-                        </TypographyValueCell>
-                      </div>
-                    </GridColumn>
-                    <GridColumn>
-                      <div>
-                        <TypographyTitleCell>Total P{`&`}L</TypographyTitleCell>
-                        <TypographyValueCell textColor={'#B93B2B'}>
-                          ${format(el.totalPnl)}
-                        </TypographyValueCell>
-                      </div>
-                    </GridColumn>
-                  </GridRow>
+                    <GridRow>
+                      <GridColumn>
+                        <TypographySubHeading>{el.name}</TypographySubHeading>
+                      </GridColumn>
+                      <GridColumn
+                        paddingCell={'0 1rem !important'}
+                        gridBorder={i % 2 !== 0 ? gridBorder : ''}
+                      >
+                        <div>
+                          <TypographyTitleCell>Value</TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={theme.palette.text.subPrimary}
+                          >
+                            ${format(el.portfolioKeyAssetsValue)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
+                        <div>
+                          <TypographyTitleCell>assets</TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={theme.palette.text.subPrimary}
+                          >
+                            {el.portfolioKeyAssetsCount}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
+                        <div>
+                          <TypographyTitleCell>
+                            realized P{`&`}L
+                          </TypographyTitleCell>
+                          <TypographyValueCell textColor={'#2F7619'}>
+                            ${format(el.realizedPnl)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
+                        <div>
+                          <TypographyTitleCell>
+                            Unrealized P{`&`}L
+                          </TypographyTitleCell>
+                          <TypographyValueCell textColor={'#B93B2B'}>
+                            ${format(el.unrealizedPnl)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn>
+                        <div>
+                          <TypographyTitleCell>
+                            Total P{`&`}L
+                          </TypographyTitleCell>
+                          <TypographyValueCell textColor={'#B93B2B'}>
+                            ${format(el.totalPnl)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                    </GridRow>
+                  </GridRowWrapper>
                 )
               })}
             </Grid>

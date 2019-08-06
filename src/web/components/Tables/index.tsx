@@ -666,7 +666,8 @@ const CustomTable = (props: Props) => {
                       )}
                       {renderCells({ row, padding, tableStyles })}
                     </TableRow>
-                    {expandable && // rendering content of expanded row if it is expandable
+                    {expandable &&
+                    row!.expandableContent!.length > 1 && // rendering content of expanded row if it is expandable
                       (row!.expandableContent! as ReadonlyArray<
                         NotExpandableRow
                       >).map((collapsedRows: Row, i: number) => {
