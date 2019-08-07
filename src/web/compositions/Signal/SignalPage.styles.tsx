@@ -66,7 +66,7 @@ export const TypographySearchOption = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.8rem;
     padding: 0.5rem 1rem;
   }
@@ -96,7 +96,7 @@ export const TypographyTitle = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.color};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.9rem;
   }
 `
@@ -112,11 +112,11 @@ export const TypographySubTitle = styled(Typography)`
 
   @media (min-width: 1921px) {
     font-size: 1.2rem;
+    padding: 0 0 0.5rem 0.3rem;
   }
 
   @media (min-width: 2560px) {
     font-size: 1.1rem;
-    padding: 0 0 0.5rem 0.3rem;
   }
 `
 
@@ -158,6 +158,10 @@ export const FolioValuesCell = styled(Grid)`
 
   @media (max-width: 1540px) {
     width: ${(props) => (props.center ? '120px' : '85px')};
+  }
+
+  @media (min-width: 1921px) {
+    width: ${(props) => (props.center ? '160px' : '125px')};
   }
 
   @media (min-width: 2560px) {
@@ -207,7 +211,7 @@ export const FolioCard = styled(Grid)`
   box-shadow: ${(props) => props.boxShadow};
   border-radius: ${(props) => props.borderRadius};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     height: auto;
   }
 `

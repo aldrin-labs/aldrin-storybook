@@ -30,6 +30,7 @@ export const StyledPaper = styled(Paper)`
   }
 
   border-radius: 2rem;
+  width: 100%;
 
   @media (min-width: 1440px) {
     max-width: 450px;
