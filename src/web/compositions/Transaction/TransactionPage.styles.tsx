@@ -56,7 +56,7 @@ export const TypographyContatinerTitle = styled(Typography)`
 /* background: ${(props) => props.bgColor};
      margin-top: 10px;
      color: ${(props) => props.textColor};
-     font-size: 1rem;
+     font-size: 1.2rem;
      text-transform: uppercase;
      letter-spacing: 1.5px;
      font-weight: 700;
@@ -69,7 +69,7 @@ export const TypographyContatinerTitle = styled(Typography)`
   background: ${(props) => props.bgColor};
   margin-top: 10px;
   color: ${(props) => props.textColor};
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
@@ -86,6 +86,8 @@ export const TypographyContatinerTitle = styled(Typography)`
 `
 
 export const TransactionsTitle = styled(TypographyContatinerTitle)`
+  color: ${props => props.textColor || '#16253d'};
+  font-size: 1.2rem;
   media(min-width: 2560px) {
     padding: 0.4rem 0 1rem 1rem;
   }
@@ -137,8 +139,14 @@ export const GridShowHideDataContainer = styled(Grid)`
 `
 
 export const TypographyCalendarLegend = styled(Typography)`
-  padding: 0 10px;
-  font-size: 0.9rem;
+  padding: 0 5px;
+  position: relative;
+  top: .5rem;
+  left: 0;
+  letter-spacing: 1px;
+  font-size: .9rem;
+  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
   text-align: ${(props) => props.textAlign};
 `
 

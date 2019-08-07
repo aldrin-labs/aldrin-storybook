@@ -41,6 +41,20 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           handleChangePage: this.handleChangePage,
         }}
+        tableStyles={{
+          heading: {
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: '1.2rem',
+            fontWeight: 600,
+            letterSpacing: 1,
+            borderBottom: '2px solid #e0e5ec',
+            color: '#7284A0',
+            whiteSpace: 'nowrap'
+          },
+          cell: {
+            width: '9.5rem'
+          }
+        }}
       />
     )
   }

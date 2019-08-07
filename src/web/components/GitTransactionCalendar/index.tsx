@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import CalendarHeatmap from 'react-calendar-heatmap'
+import styled from 'styled-components'
 import 'react-calendar-heatmap/dist/styles.css'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -17,6 +18,21 @@ const styles = (theme) => ({
   githubThree: { fill: '#7EA3EA' },
   githubFourth: { fill: '#165BE0' },
 })
+
+
+const HeatmapWrapper = styled.div`
+  .react-calendar-heatmap-month-label,
+  .react-calendar-heatmap .react-calendar-heatmap-small-text {
+    font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase;
+    fill: #7284A0;
+    font-size: .75rem;
+  }
+
+  .react-calendar-heatmap .react-calendar-heatmap-small-text {
+    font-size: .575rem;
+  }
+`
 
 class GitTransactionCalendar extends Component {
   render() {
@@ -41,22 +57,17 @@ class GitTransactionCalendar extends Component {
         count: getRandomInt(1, 3),
       }
     })
+    console.log(randomValues)
 
     return (
+      <HeatmapWrapper>
       <CalendarHeatmap
         className={this.props.classes.root}
         // startDate={'Wed Jul 24 2018 12:25:22 GMT+0500'}
         // endDate={'Wed Jul 24 2019 12:25:22 GMT+0500'}
         startDate={shiftDate(today, -200)}
         endDate={today}
-        values={
-          randomValues
-          // [
-          //   { date: '2016-01-01' },
-          //   { date: '2016-01-22' },
-          //   { date: '2016-01-30' },
-          // ]
-        }
+        values={randomValues}
         classForValue={(value) => {
           if (!value) {
             return 'color-empty'
@@ -70,11 +81,9 @@ class GitTransactionCalendar extends Component {
             ? this.props.classes.githubThree
             : this.props.classes.githubThree
         }}
-        tooltipDataAttrs={(value) => {
+        tooltipDataAttrs={value => {
           return {
-            'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${
-              value.count
-            }`,
+            'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${value.count}`
           }
         }}
         showWeekdayLabels={true}
@@ -83,7 +92,6 @@ class GitTransactionCalendar extends Component {
           //alert(`Clicked on value with count: ${value.count}`)
         }
         horizontal={false}
-        // gutterSize={255}
         monthLabels={[
           'Jan',
           'Feb',
@@ -98,12 +106,13 @@ class GitTransactionCalendar extends Component {
           'Nov',
           'Dec',
         ]}
-        // showOutOfRangeDays={true}
-        titleForValue={(value) => `Date is ${value.date}`}
-        tooltipDataAttrs={(value) => {
+        titleForValue={value => `Date is ${value.date}`}
+        tooltipDataAttrs={value => {
           return { 'data-tooltip': 'Tooltip: ' + value.date }
         }}
+        // showOutOfRangeDays={true}
       />
+      </HeatmapWrapper>
     )
   }
 }
