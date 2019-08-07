@@ -5,7 +5,7 @@ export const StyledLogo = styled.img`
   position: relative;
   margin: auto 0;
   
-  width: 6rem;
+  width: 10rem;
   min-width: 80px;
-  height 4rem;
+  height auto;
 `

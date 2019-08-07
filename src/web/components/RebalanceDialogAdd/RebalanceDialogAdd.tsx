@@ -98,16 +98,19 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
       title,
       data,
       theme: {
-        palette: { blue, black },
+        palette: { blue, black, secondary },
       },
     } = this.props
 
     return (
       <>
         <BtnCustom
-          btnColor={blue.custom}
+          btnColor={secondary.main}
+          fontSize="1.2rem"
+          letterSpacing="1px"
           margin="0px auto 12px auto"
-          padding="5px"
+          padding="3px"
+          borderRadius="16px"
           onClick={this.handleClickOpen}
         >
           {title}
@@ -124,7 +127,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
           >
             <TypographyCustomHeading
               fontWeight={'700'}
-              borderRadius={'10px'}
+              borderRadius={'1rem'}
               color={black.custom}
             >
               {title}
@@ -150,7 +153,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               </LinkCustom>
               <BtnCustom
                 btnWidth={'110px'}
-                borderRadius={'10px'}
+                borderRadius={'1rem'}
                 btnColor={blue.custom}
               >
                 ADD

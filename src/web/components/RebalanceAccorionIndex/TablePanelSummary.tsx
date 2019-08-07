@@ -51,7 +51,7 @@ class TablePanelSummary extends React.Component {
               align="left"
               style={{ padding: '0px', width: '26vw', border: 'none' }}
             >
-              <StyledTypography fontWeight="700">Current value</StyledTypography>
+              <StyledTypography fontWeight="700" fontSize="1.2rem">Current value</StyledTypography>
               <StyledSubTypography color={theme.palette.text.subPrimary}>
                 ${roundAndFormatNumber(+secondColValue, 2, false)}
               </StyledSubTypography>
@@ -100,7 +100,7 @@ class TablePanelSummary extends React.Component {
               align="left"
               // style={{ border: 'none', padding: '0 120px 0 0' }}
             >
-              <StyledTypography fontWeight="700">Target value</StyledTypography>
+              <StyledTypography fontWeight="700" fontSize="1.2rem">Target value</StyledTypography>
               <StyledSubTypography color={theme.palette.text.subPrimary}>
                 ${roundAndFormatNumber(+fourthColValue, 2, false)}
               </StyledSubTypography>

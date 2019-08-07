@@ -20,7 +20,6 @@ export const AccountsList = styled.ul`
   flex-direction: column;
   padding-left: 8px;
   margin: 0;
-  overflow-y: scroll;
   max-height: 30vh;
 `
 

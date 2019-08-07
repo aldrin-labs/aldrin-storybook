@@ -15,6 +15,12 @@ class PortfolioSelectorPopup extends Component {
         isPopupOpen: false
     }
 
+    constructor(props) {
+        super(props)
+
+        this.popupRef = React.createRef()
+    }
+
     render() {
         const {
             theme,
@@ -31,7 +37,7 @@ class PortfolioSelectorPopup extends Component {
                             color: theme.palette.text.dark
                         }}/>
                     </span>
-                    <PortfolioSelectorPopupMain visible={this.state.isPopupOpen} theme={theme}>
+                    <PortfolioSelectorPopupMain className="popup" theme={theme} ref={this.popupRef}>
                         <div className="renameAccount-toggler">Rename</div>
                         <DeleteKeyDialog
                             keyName={accountName}
@@ -51,11 +57,18 @@ class PortfolioSelectorPopup extends Component {
     }
 
     openPopup() {
+        const popups = Array.from(document.getElementsByClassName('popup'))
+        popups.forEach(popup => {
+            popup.classList.remove('popup-visible')
+        })
+
+        this.popupRef.current.classList.add('popup-visible')
         this.setState({
             isPopupOpen: true
         })
     }
     closePopup() {
+        this.popupRef.current.classList.remove('popup-visible')
         this.setState({
             isPopupOpen: false
         })

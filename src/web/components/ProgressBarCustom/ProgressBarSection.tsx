@@ -10,7 +10,7 @@ import { LinearProgressCustom, GridProgressBarContainer } from '@sb/styles/cssUt
 export default function ProgressBarSection(props) {
   const { datum } = props
   return (
-    <Grid container style={{ marginBottom: '1.5vh' }}>
+    <Grid container style={{ marginBottom: '.75rem' }}>
       <GridFlex item lg={3} md={3} padding="0">
         <TypographyCustom style={{ marginLeft: '12px' }}>
           {datum.label}
@@ -33,7 +33,7 @@ export default function ProgressBarSection(props) {
         />
       </GridProgressBarContainer>
       <GridFlex item lg={3} md={3} style={{ paddingLeft: '43px', justifyContent: 'center' }}>
-        <TypographyCustom>{datum.percentage}%</TypographyCustom>
+        <TypographyCustom style={{ width: '3.6rem', textAlign: 'right' }}>{datum.percentage}%</TypographyCustom>
       </GridFlex>
     </Grid>
   )

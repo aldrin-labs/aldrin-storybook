@@ -52,7 +52,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
       toggleSectionCoinChart,
       isSectionChart,
       theme: {
-        palette: { blue, red, green, grey },
+        palette: { blue, red, green, grey, secondary },
       },
       rebalanceTimePeriod,
       onRebalanceTimerChange,
@@ -77,7 +77,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 <StyledTypography fontWeight={'700'}>
                   Binance trade account
                 </StyledTypography>
-                <StyledSubTypography fontWeight={'700'} color={blue.light}>
+                <StyledSubTypography fontWeight={'700'} letterSpacing="2px" color={theme.palette.secondary.main}>
                   {'$'}
                   {roundAndFormatNumber(+accountValue, 2, false)}
                 </StyledSubTypography>
@@ -91,6 +91,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   fontWeight={'700'}
                   color={green.custom}
                   position="right"
+                  letterSpacing="2px"
                 >
                   $ {availableValue !== '0' ? slicePrice(availableValue) : `0`}
                 </StyledSubTypography>
@@ -104,6 +105,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   fontWeight={'700'}
                   color={green.custom}
                   position="right"
+                  letterSpacing="2px"
                 >
                   {slicePrice(availablePercentage)}%
                 </StyledSubTypography>
@@ -122,9 +124,12 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
             <Grid container justify="space-between">
               <GridFlex justify="flex-start" alignItems="center" item lg={3}>
                 <BtnCustom
-                  borderRadius={'10px'}
-                  btnColor={blue.custom}
-                  btnWidth="118px"
+                  borderRadius={'1rem'}
+                  letterSpacing="1px"
+                  fontSize=".925rem"
+                  padding=".4rem 0 .3rem"
+                  btnColor={secondary.main}
+                  btnWidth="12.5rem"
                   // height="24px"
                   size={width === 'xl' ? 'large' : ''}
                   onClick={toggleSectionCoinChart}
@@ -156,7 +161,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   options={rebalanceSelectTimeOptions}
                   singleValueStyles={{
                     color: '#165BE0',
-                    fontSize: `1.1rem`,
+                    fontSize: `.95rem`,
                     padding: '0',
                   }}
                   indicatorSeparatorStyles={{}}
@@ -206,13 +211,14 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
               </GridFlex>
 
               <Grid item lg={3}>
-                <StyledTypography fontWeight={'700'} position="right">
+                <StyledTypography fontWeight={'700'} position="right" fontSize="1rem">
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
-                  fontSize={'1.152rem'}
+                  fontSize={'1.25rem'}
+                  lineHeight="2rem"
                   color={red.bright}
-                  fontWeight={'700'}
+                  fontWeight={700}
                   position="right"
                 >
                   <Timer

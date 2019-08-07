@@ -94,10 +94,10 @@ class CreatePortfolio extends React.Component<IProps, IState> {
     return (
       <>
         <BtnCustom
-          btnWidth={'160px'}
-          height={'28px'}
+          btnWidth={'17rem'}
+          height={'3rem'}
           btnColor={'#165BE0'}
-          borderRadius={'10px'}
+          borderRadius={'1rem'}
           color={'#165BE0'}
           margin={'20px 0 0 8px'}
           padding={'0px'}
@@ -118,7 +118,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
           >
             <TypographyCustomHeading
               fontWeight={'700'}
-              borderRadius={'10px'}
+              borderRadius={'1rem'}
               color={black.custom}
             >
               Create Portfolio

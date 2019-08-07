@@ -9,12 +9,23 @@ import { NavLink } from 'react-router-dom'
 
 export const StyledButton = styled(Button)`
   position: absolute;
-  width: 10.8rem;
+  width: 14.8rem;
+  height: 4.5rem;
+  display: flex;
+  align-content: flex-end;
+  justify-content: center;
   background: #5c8cea;
   color: white;
   font-size: 1.2rem;
   text-transform: capitalize;
   transition: all ease-in-out 0.2s;
+  padding-bottom: 0;
+
+  span:first-child {
+    position: relative;
+    top: .5rem;
+    left: 0;
+  }
   
   a {
     text-decoration: none;
@@ -28,23 +39,23 @@ export const StyledButton = styled(Button)`
 
 export const StyledLeftButton = styled(StyledButton)`
   transform: rotate(-90deg);
-  left: -6.2rem;
-  border-radius: 0 0 1rem 1rem;
+  left: -8.4rem;
+  border-radius: 0 0 1.25rem 1.25rem;
 
   &:hover {
-    left: -5.5rem;
+    left: -7.6rem;
   }
 `
 
 export const StyledRightButton = styled(StyledButton)`
   position: relative;
   transform: rotate(90deg);
-  left: calc(100vw - 8rem);
+  left: calc(100vw - 9.6rem);
   top: 0px;
-  border-radius: 0 0 1rem 1rem;
+  border-radius: 0 0 1.25rem 1.25rem;
   text-decoration: none;
   &:hover {
-    left: calc(100vw - 8.7rem);
+    left: calc(100vw - 10.4rem);
   }
 `
 

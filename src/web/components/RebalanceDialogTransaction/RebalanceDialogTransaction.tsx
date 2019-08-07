@@ -93,7 +93,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
             <TypographyCustomHeading
               fontWeight={'bold'}
-              borderRadius={'10px'}
+              borderRadius={'1rem'}
               color={black.custom}
             >
               {isError
@@ -115,7 +115,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="34px"
-                    borderRadius={'10px'}
+                    borderRadius={'1rem'}
                     btnWidth="120px"
                     color={blue.custom}
                     margin="0 5px"
@@ -154,7 +154,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="34px"
-                    borderRadius={'10px'}
+                    borderRadius={'1rem'}
                     btnWidth="120px"
                     color={blue.custom}
                     margin="0 5px"
@@ -174,7 +174,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     <>
                       <BtnCustom
                         height="34px"
-                        borderRadius={'10px'}
+                        borderRadius={'1rem'}
                         btnWidth="120px"
                         onClick={handleClose}
                         color={'#9f9f9f'}
@@ -184,7 +184,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                       </BtnCustom>
                       <BtnCustom
                         height="34px"
-                        borderRadius={'10px'}
+                        borderRadius={'1rem'}
                         btnWidth="120px"
                         color={'#9f9f9f'}
                         margin="0 5px"
@@ -198,7 +198,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     <>
                       <BtnCustom
                         height="34px"
-                        borderRadius={'10px'}
+                        borderRadius={'1rem'}
                         btnWidth="120px"
                         onClick={handleClose}
                         color={red.custom}
@@ -208,7 +208,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                       </BtnCustom>
                       <BtnCustom
                         height="34px"
-                        borderRadius={'10px'}
+                        borderRadius={'1rem'}
                         btnWidth="120px"
                         color={blue.custom}
                         margin="0 5px"
