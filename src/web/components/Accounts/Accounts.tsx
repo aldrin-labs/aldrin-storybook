@@ -123,7 +123,11 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                 />
-                {isSidebar && <PortfolioSelectorPopup accountName={keyName.name} forceUpdateAccountContainer={() => this.forceUpdate()}/>}
+                {isSidebar && <PortfolioSelectorPopup
+                    accountName={keyName.name}
+                    forceUpdateAccountContainer={() => this.forceUpdate()}
+                  />
+                }
               </AccountsListItem>
             )
           })}

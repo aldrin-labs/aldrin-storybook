@@ -98,7 +98,7 @@ class DialogAddCoin extends React.Component {
                 fontSize: '12px',
 
                 '&:hover': {
-                  borderRadius: '10px',
+                  borderRadius: '1rem',
                   color: '#16253D',
                   background: '#E7ECF3',
                 },

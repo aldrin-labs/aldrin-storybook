@@ -53,6 +53,8 @@ const tphtphystylescss = css`
 
 export const SliderTypography = styled(Typography)`
   ${tphtphystylescss}
+  line-height: 2rem;
+  border-bottom: 1px solid #7284A0;
 `
 
 export const StyledTypography = styled(

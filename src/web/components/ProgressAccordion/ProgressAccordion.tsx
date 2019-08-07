@@ -78,7 +78,7 @@ function ProgressAccordion(props) {
           background: 'transparent',
           border: 'none',
           padding: '0',
-          marginTop: width === 'xl' ? '2.5vh' : ''
+          marginTop: width === 'xl' ? '1.5rem' : ''
         }}
         CollapseProps={{
           timeout: 500

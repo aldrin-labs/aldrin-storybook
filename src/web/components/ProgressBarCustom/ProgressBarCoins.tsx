@@ -14,7 +14,7 @@ function ProgressBarCoins({ datum, index }) {
     <Grid
       container
       style={{
-        marginBottom: '1vh',
+        marginBottom: '.75rem',
       }}
     >
       <GridFlex item lg={3} md={3} padding="0">

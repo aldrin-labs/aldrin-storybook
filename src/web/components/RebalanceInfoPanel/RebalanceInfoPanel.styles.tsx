@@ -13,12 +13,11 @@ export const GridInfoPanelWrapper = styled(Grid)`
   border-top: ${(props) => `2px solid ${props.borderColor}`};
   border-bottom: ${(props) => `2px solid ${props.borderColor}`};
   background-color: ${(props) => props.bgColor};
-  padding: 16px 2px 16px 2px;
+  padding: 1.6rem 1.6rem .4rem;
   z-index: 500;
   margin-bottom: 10px;
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 136px;
     align-items: center;
   }
 `
@@ -30,13 +29,15 @@ export const TypographyRebalance = styled(
 )`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
-  font-size: 1.1rem;
+  font-size: .95rem;
+  font-weight: 700;
   padding: 0 5px;
-  margin-right: 3px;
+  margin-right: 5px;
   text-transform: uppercase;
   color: ${(props) => props.linkColor || 'white'};
   text-align: ${(props) => props.position || 'none'};
   align-self: ${(props) => props.verticalPosition || 'none'};
+  border-right: 1px solid #E0E5EC;
   
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     //font-size: 1.8rem;
@@ -55,7 +56,7 @@ export const StyledTypography = styled(
 )`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
-  font-size: 1rem;
+  font-size: ${props => props.fontSize || '1rem'};
   line-height: 23px;
   font-weight: ${(props) => props.fontWeight || '400'};
   text-transform: uppercase;
@@ -83,10 +84,11 @@ export const StyledSubTypography = styled(
     ...rest
   }) => <Typography {...rest} />
 )`
-  font-size: ${(props) => props.fontSize || `1.6rem`};
+  font-size: ${(props) => props.fontSize || `1.4rem`};
   font-weight: ${(props) => props.fontWeight || '400'};
-  line-height: 23px;
-  letter-spacing: 1px;
+  line-height: ${props => props.lineHeight || '23px'};
+  letter-spacing: ${props => props.letterSpacing || '1px'};
+  margin: ${props => props.margin || '.25rem 0 0 0'};
   text-transform: uppercase;
   color: ${(props) =>
     props.color ||
@@ -100,10 +102,16 @@ export const StyledSubTypography = styled(
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;
   width: 100px;
-  font-size: 1.2rem;
+  font-size: .95rem;
   text-transform: uppercase;
   border: 1px solid transparent;
   font-weight: 700;
   letter-spacing: 1px;
   background: transparent;
+
+  .custom-select-box__indicator {
+    position: relative;
+    top: 0;
+    left: -3.5rem;
+  }
 `

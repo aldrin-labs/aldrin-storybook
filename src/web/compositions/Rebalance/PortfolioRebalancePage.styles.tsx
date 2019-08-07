@@ -48,11 +48,11 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
 `
 export const TypographyAccordionTitle = styled(Typography)`
   width: 100%;
-  min-height: 28px;
   letter-spacing: 1.5px;
-  margin: 6px auto;
+  margin: ${props => props.margin || '0 auto 1rem'};
   color: #abbad1;
   text-align: center;
+  font-size: 1.2rem;
   text-transform: uppercase;
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
@@ -66,6 +66,7 @@ export const GridProgressTitle = styled(Grid)`
   border-radius: 20px 20px 0 0;
   background: ${(props) => props.bgColor || '#f2f4f6'};
   margin-bottom: 8px;
+  border-bottom: 1.5px solid #E0E5EC;
 `
 
 export const TypographyProgress = styled(Typography)`

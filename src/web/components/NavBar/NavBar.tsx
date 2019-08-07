@@ -66,13 +66,15 @@ const NavBarRaw: SFC<Props> = ({
             <Grid item={true} md={2}>
               <Grid container={true} alignItems={'center'}>
                 <Logo />
-                <Grid style={{ marginLeft: '5%' }}>
+                <Grid style={{ marginLeft: '5%', marginBottom: '4px' }}>
                   <Typography
                     style={{
                       textTransform: 'capitalize',
                       borderLeft: '1px solid #7284A0',
                       paddingLeft: '.75rem',
                       fontSize: '1.25rem',
+                      lineHeight: '2.5rem',
+                      textTransform: 'uppercase'
                     }}
                   >
                     {page}

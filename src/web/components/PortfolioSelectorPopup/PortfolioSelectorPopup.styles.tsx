@@ -13,7 +13,6 @@ export const PortfolioSelectorPopupWrapper = styled.div`
 `
 
 export const PortfolioSelectorPopupMain = styled.div`
-    display: ${props => props.visible ? 'block' : 'none'};
     position: absolute;
     top: 35px;
     left: 50%;
@@ -24,6 +23,11 @@ export const PortfolioSelectorPopupMain = styled.div`
     background-color: #fff;
     z-index: 1010;
     color: ${props => props.theme.palette.text.dark};
+    display: none;
+    
+    &.popup-visible {
+        display: block;
+    }
 
     .renameAccount-toggler, .deleteAccountDialog-toggler {
         padding: 1rem 10rem;
