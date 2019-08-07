@@ -35,7 +35,7 @@
 // `
 
 import styled from 'styled-components'
-import { Grid, Typography, Input } from '@material-ui/core'
+import { Grid, Typography, Input, Button } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const InputCustom = styled(Input)`
@@ -83,7 +83,7 @@ export const PortfolioName = styled(Typography)`
   color: ${(props) => props.textColor};
 
   @media (min-width: 2560px) {
-    padding: 0.3rem 0 0.3rem 0.5rem;
+    padding: 0.3rem 0 0 0.5rem;
   }
 `
 
@@ -117,6 +117,25 @@ export const TypographySubTitle = styled(Typography)`
   @media (min-width: 2560px) {
     font-size: 1.1rem;
     padding: 0 0 0.5rem 0.3rem;
+  }
+`
+
+export const TypographyEditButton = styled(Button)`
+  margin: 0;
+  height: 70%;
+  text-align: center;
+  color: #7284a0;
+  font-size: 1.3rem;
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: 700;
+  color: #165be0;
+  text-transform: uppercase;
+
+  @media (min-width: 2560px) {
+    height: 50%;
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0 0;
   }
 `
 
@@ -201,7 +220,7 @@ export const GridFolioScroll = styled(Grid)`
   }
 
   @media (min-width: 2560px) {
-    height: 60.3vh;
+    height: 69.5vh;
   }
 `
 
