@@ -14,7 +14,7 @@ export const StyledLink = styled(NavLink)`
     display: flex;
     align-items: center;
     transition: all .5s ease-in-out;
-    border-radius: 10px;
+    border-radius: 1rem;
     text-decoration: none;
     width: 100%;
 

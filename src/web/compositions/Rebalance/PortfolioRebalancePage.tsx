@@ -203,14 +203,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '0 25px 25px 25px' }}
+          style={{ padding: '0 25px 25px 25px', marginLeft: '-3rem', alignContent: 'flex-start' }}
         >
-          <Container
+          {/*<Container
             key={`table-container`}
             item
             md={12}
             isEditModeEnabled={isEditModeEnabled}
-          />
+          />*/}
 
           {/* REBALANCE INFO PANEL STARTS */}
           <RebalanceInfoPanel
@@ -226,7 +226,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           <Grid item lg={5} md={5} style={{ minHeight: '100px', padding: '0' }}>
             <Grid
               style={{
-                minHeight: '130px',
+                paddingBottom: '.5rem',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
                 border: `1px solid ${theme.palette.grey[theme.palette.type]}`,
@@ -282,7 +282,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           >
             <Grid
               style={{
-                minHeight: '130px',
+                paddingBottom: '.5rem',
                 boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
                 borderRadius: '20px',
                 border: `1px solid ${theme.palette.grey[theme.palette.type]}`,
@@ -388,7 +388,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
           <RebalanceDialogAdd title={'ADD INDEX'} data={addIndexData} />
 
-          <TypographyAccordionTitle>
+          <TypographyAccordionTitle margin="1rem auto">
             Following portfolios
           </TypographyAccordionTitle>
 

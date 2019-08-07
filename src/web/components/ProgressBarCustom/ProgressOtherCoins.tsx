@@ -26,7 +26,7 @@ function ProgressOtherCoins({
       <Grid
         container
         style={{
-          marginBottom: '1vh',
+          marginBottom: '.75rem',
           marginTop: '-26px',
           padding: '0',
         }}

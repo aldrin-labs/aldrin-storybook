@@ -197,6 +197,14 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       </Query>
     )
   }
+
+  componentDidMount() {
+    if (window.location.pathname.includes('rebalance')) {
+      this.setState({
+        isSideNavOpen: true
+      })
+    }
+  }
 }
 
 export default withAuth(withTheme()(PortfolioComponent))

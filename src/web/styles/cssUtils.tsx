@@ -228,29 +228,13 @@ export const LinearProgressCustom = styled(
 )`
   width: ${(props) => props.width || `100%`};
   background-color: ${(props) => props.color || '#E7ECF3'};
-  border-radius: 10px;
-  height: 12px;
+  border-radius: 1rem;
+  height: 1.75rem;
   padding: 0;
-
-  @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 20px;
-  }
-
-  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 27px;
-  }
 `
 
 export const GridProgressBarContainer = styled(Grid)`
-  height: 12px;
-
-  @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 20px;
-  }
-
-  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 27px;
-  }
+  height: 1.75rem;
 `
 
 export const IconCircle = styled.i`
