@@ -36,6 +36,7 @@ import { isObject, zip } from 'lodash-es'
 
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
+import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
 
 import { DonutChart as Chart, Legends } from '@sb/components/index'
 
@@ -49,7 +50,6 @@ import {
   GridTableContainer,
   ReactSelectCustom,
   TableContainer,
-  SignalName,
   TypographyTitle,
   PortfolioName,
   FolioValuesCell,
@@ -59,6 +59,7 @@ import {
   TypographySubTitle,
   TypographyEmptyFolioPanel,
   ContainerGrid,
+  TypographyEditButton,
 } from './SignalPage.styles'
 
 const getOwner = (str: string) => {
@@ -205,7 +206,7 @@ const SignalEventList = (props) => {
   )
 }
 
-function SignalListItem({ el, onClick, isSelected }) {
+const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
   return (
     <FolioCard
       container
@@ -221,7 +222,7 @@ function SignalListItem({ el, onClick, isSelected }) {
             {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
           </TypographySubTitle>
         </Grid>
-        {/* <SvgIcon width="10" height="10" src={LineGraph} /> */}
+        <TypographyEditButton onClick={openDialog}>edit</TypographyEditButton>
       </Grid>
       <Grid
         container
@@ -273,6 +274,15 @@ const sortBy = [
 class SocialPage extends React.Component {
   state = {
     selectedSignal: 0,
+    isDialogOpen: false,
+  }
+
+  openDialog = () => {
+    this.setState({ isDialogOpen: true })
+  }
+
+  closeDialog = () => {
+    this.setState({ isDialogOpen: false })
   }
 
   render() {
@@ -289,6 +299,7 @@ class SocialPage extends React.Component {
         onClick={() => {
           this.setState({ selectedSignal: index })
         }}
+        openDialog={this.openDialog}
       />
     ))
 
@@ -403,6 +414,10 @@ class SocialPage extends React.Component {
           />
           {/* <PortfolioMainAllocation /> */}
         </Grid>
+        <SignalPreferencesDialog
+          isDialogOpen={this.state.isDialogOpen}
+          closeDialog={this.closeDialog}
+        />
       </Grid>
     )
   }
