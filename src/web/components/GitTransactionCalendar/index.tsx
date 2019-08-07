@@ -31,6 +31,13 @@ const HeatmapWrapper = styled.div`
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
     font-size: 0.575rem;
   }
+
+  @media only screen and (min-width: 2560px) {
+    .react-calendar-heatmap-month-label,
+    .react-calendar-heatmap .react-calendar-heatmap-small-text {
+      font-size: .45rem;
+    }
+  }
 `
 
 class GitTransactionCalendar extends Component {
