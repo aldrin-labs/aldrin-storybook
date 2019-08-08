@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
@@ -12,6 +11,7 @@ import { Grid, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   TypographyCustom,
+  ProgressExpansionPanelSummary
 } from './ProgressAccordion.styles'
 import { GridProgressBarContainer, IconCircle, LinearProgressCustom } from '@sb/styles/cssUtils'
 
@@ -84,15 +84,16 @@ function ProgressAccordion(props) {
           timeout: 500
         }}
       >
-        <ExpansionPanelSummary
+        <ProgressExpansionPanelSummary
           className={classes.progressbarPanel}
           style={{
             background: 'transparent',
             border: 'none',
+            minHeight: 'auto'
           }}
         >
           {children}
-        </ExpansionPanelSummary>
+        </ProgressExpansionPanelSummary>
         <ExpansionPanelDetails
           className={classes.details}
           style={{ display: 'block', marginBottom: '10px', padding: '0' }}

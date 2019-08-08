@@ -52,7 +52,6 @@ class SocialPortfolioInfoPanel extends Component {
   render() {
     const { rating } = this.state
     const { theme, folioData } = this.props
-    console.log('FolioData2: ', folioData)
     return (
       <GridMainContainer
         container

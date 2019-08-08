@@ -203,7 +203,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '0 25px 25px 25px', marginLeft: '-3rem', alignContent: 'flex-start' }}
+          style={{ padding: '0 25px 25px 25px', marginLeft: '-3rem', alignContent: 'flex-start', alignItems: 'flex-start' }}
         >
           {/*<Container
             key={`table-container`}
@@ -258,6 +258,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             lg={2}
             md={2}
             justify="center"
+            style={{
+              marginTop: '5rem'
+            }}
           >
             <RebalanceDialogTransaction
               initialTime={+rebalanceTimePeriod.value}

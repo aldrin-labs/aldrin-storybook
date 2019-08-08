@@ -20,6 +20,7 @@ import {
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 @withTheme()
 
@@ -35,6 +36,7 @@ class TablePanelSummary extends React.Component {
       handleSlideChange,
       theme,
       width,
+      expanded
     } = this.props
 
 
@@ -105,7 +107,11 @@ class TablePanelSummary extends React.Component {
                 ${roundAndFormatNumber(+fourthColValue, 2, false)}
               </StyledSubTypography>
             </TableCellLast>
-            <TableCell align="right"/>
+            <TableCell align="right">
+              <ExpandMoreIcon style={{
+                transform: `rotate(${expanded ? '180deg' : '0'})`
+              }}/>
+            </TableCell>
           </TableRow>
         </TableHead>
       </Table>
