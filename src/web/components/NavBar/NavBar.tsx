@@ -1,4 +1,8 @@
 import React, { SFC, useState } from 'react'
+import { withApollo } from 'react-apollo'
+import { compose } from 'recompose'
+
+import { client } from '@core/graphql/apolloClient'
 import { Login } from '@core/containers/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
@@ -18,6 +22,8 @@ import IndustryIcon from '@material-ui/icons/DonutLarge'
 import RebalanceIcon from '@material-ui/icons/SwapHoriz'
 import CorrelationIcon from '@material-ui/icons/ViewModule'
 import OptimizationIcon from '@material-ui/icons/Assessment'
+import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 
 export interface Props extends WithTheme {
   $hide?: boolean
@@ -44,9 +50,6 @@ const NavBarRaw: SFC<Props> = ({
   $hide = false,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
-  console.log(MainIcon, IndustryIcon, RebalanceIcon)
-  console.log('pathname', pathname)
-
   const pathnamePage = pathname.split('/')
   const page = pathnamePage[pathnamePage.length - 1]
 
@@ -143,6 +146,11 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Social Portfolio',
                     icon: <OptimizationIcon fontSize="small" />,
                     to: '/portfolio/social',
+                    onMouseOver: () => {
+                      client.query({
+                        query: GET_FOLLOWING_PORTFOLIOS,
+                      })
+                    },
                   },
                 ]}
               />
@@ -205,4 +213,4 @@ const NavBarRaw: SFC<Props> = ({
   )
 }
 
-export const NavBar = withTheme()(NavBarRaw)
+export const NavBar = compose(withTheme())(NavBarRaw)

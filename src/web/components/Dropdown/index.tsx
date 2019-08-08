@@ -51,11 +51,11 @@ export default class Dropdown extends React.Component<IProps> {
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
           <MenuList>
-            {this.props.items.map(({ icon, text, to }) => (
+            {this.props.items.map(({ icon, text, to, onMouseOver }) => (
               <StyledMenuItem
                 disableGutters={true}
               >
-                <StyledLink to={to} onClick={this.handleClose}>
+                <StyledLink to={to} onClick={this.handleClose} onMouseOver={onMouseOver ? onMouseOver : () => {}}>
                   {icon}
                   <StyledMenuItemText>{text}</StyledMenuItemText>
                 </StyledLink>
