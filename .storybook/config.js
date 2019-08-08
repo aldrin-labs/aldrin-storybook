@@ -41,6 +41,5 @@ addDecorator(
 )
 
 autoLogin(storage).then(() => {
-  console.log('aaaaa')
   configure(loadStories, module)
 })
