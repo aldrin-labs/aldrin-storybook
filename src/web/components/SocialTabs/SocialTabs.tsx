@@ -51,7 +51,7 @@ class SocialTabs extends React.Component {
   }
 
   render() {
-    const { classes, theme, children } = this.props
+    const { classes, theme, children, changeTab } = this.props
 
     return (
       <div className={classes.root}>
@@ -89,6 +89,7 @@ class SocialTabs extends React.Component {
                 borderRadius: '22px 0 0 0',
                 width: '50%',
               }}
+              onClick={() => (changeTab ? changeTab(true) : null)}
             />
             <StyledMyTab
               label="My"
@@ -107,6 +108,7 @@ class SocialTabs extends React.Component {
                 borderRadius: '0 22px 0 0',
                 width: '50%',
               }}
+              onClick={() => (changeTab ? changeTab(false) : null)}
             />
           </StyledTabs>
         </AppBar>

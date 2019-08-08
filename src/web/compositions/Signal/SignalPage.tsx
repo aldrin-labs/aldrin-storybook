@@ -116,7 +116,7 @@ const transformData = (
     const resp = {}
     keys.map((k) => {
       if (k === 't') {
-        const timeStamp = String(row[k]).substring(0, 11) + '...'
+        const timeStamp = String(row[k]).substring(0, 10) + '...'
 
         resp[k] = {
           contentToSort: row[k],
@@ -301,7 +301,7 @@ class SocialPage extends React.Component {
         style={{ maxHeight: '100vh', overflow: 'hidden' }}
       >
         <Grid item xs={3} style={{ padding: '15px' }}>
-          <SocialTabs>
+          <SocialTabs style={{ height: '100%' }}>
             <GridSortOption container justify="flex-end" alignItems="center">
               <Grid item>
                 <Grid container justify="space-between" alignItems="center">

@@ -44,13 +44,17 @@ export const Link = styled(
     border: 1px solid ${(props) => props.borderColor};
   }
 
-  @media (min-width: 2560px) {
-    font-size: 0.6rem;
+  @media (min-width: 1921px) {
+    font-size: 0.7rem;
     border-radius: 0.5rem;
     width: auto;
     height: auto;
     padding: 0.6rem 2rem;
     margin: 0.2rem 0.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 0.6rem;
   }
 `
 
@@ -64,8 +68,8 @@ export const GridMainContainer = styled(Grid)`
   padding: 15px;
   border-radius: 24px;
 
-  @media (min-width: 2560px) {
-    padding: 0;
+  @media (min-width: 1921px) {
+    padding: 0 15px;
   }
 `
 
@@ -89,7 +93,7 @@ export const TypographyHeader = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 1rem;
     padding: 0 0.75rem;
     color: #7284a0;
@@ -103,6 +107,19 @@ export const TypographyTariff = styled(Typography)`
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor};
+
+  @media (min-width: 1921px) {
+    margin-left: 0.5rem;
+    padding-left: 2rem;
+  }
+
+  @media (min-width: 2100px) {
+    margin-left: 3.5rem;
+  }
+
+  @media (min-width: 2300px) {
+    padding-left: 4rem;
+  }
 
   @media (min-width: 2560px) {
     margin-left: 2.5rem;
@@ -145,13 +162,17 @@ export const ButtonCustom = styled(
     border: 1px solid ${(props) => props.borderColor};
   }
 
-  @media (min-width: 2560px) {
-    font-size: 0.6rem;
+  @media (min-width: 1921px) {
+    font-size: 0.7rem;
     border-radius: 0.5rem;
     width: auto;
     height: auto;
     padding: 0.5rem 2rem;
     margin: 0.2rem 0.5rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 0.6rem;
   }
 `
 

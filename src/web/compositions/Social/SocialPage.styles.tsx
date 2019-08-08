@@ -31,7 +31,7 @@ export const TypographySearchOption = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.8rem;
     padding: 0.5rem 1rem;
   }
@@ -75,11 +75,15 @@ export const FolioValuesCell = styled(Grid)`
   justify-content: center;
   align-items: center;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     width: 31%;
     height: auto;
     padding: 0.5rem 1rem;
     border-radius: 1.5rem;
+  }
+
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    width: 31%;
   }
 `
 

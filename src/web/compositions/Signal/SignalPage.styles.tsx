@@ -217,14 +217,10 @@ export const FolioCard = styled(Grid)`
 `
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
-  height: 66vh; /*TODO : Left Panel Hight*/
+  height: 70vh; /*TODO : Left Panel Hight*/
   overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  @media (min-width: 2560px) {
-    height: 69.5vh;
   }
 `
 
