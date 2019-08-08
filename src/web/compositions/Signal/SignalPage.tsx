@@ -7,12 +7,6 @@ import {
   DialogContent,
   Button,
   Grid,
-  Typography,
-  Checkbox,
-  Radio,
-  Input,
-  TextField,
-  Paper,
 } from '@material-ui/core'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -23,7 +17,6 @@ import QueryRenderer from '@core/components/QueryRenderer'
 
 import { IProps, IState } from './SignalPage.types'
 
-import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 import { addMainSymbol, TableWithSort } from '@sb/components'
 import {
   roundPercentage,
@@ -36,29 +29,22 @@ import { isObject, zip } from 'lodash-es'
 
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
-
-import { DonutChart as Chart, Legends } from '@sb/components/index'
+import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
 
 import {
   GridFolioScroll,
   InputCustom,
-  TypographyPercentage,
   TypographySearchOption,
-  GridPageContainer,
   GridSortOption,
-  GridTableContainer,
   ReactSelectCustom,
-  TableContainer,
-  SignalName,
   TypographyTitle,
   PortfolioName,
   FolioValuesCell,
   FolioCard,
-  GridContainerTitle,
-  TypographyContatinerTitle,
   TypographySubTitle,
   TypographyEmptyFolioPanel,
   ContainerGrid,
+  TypographyEditButton,
 } from './SignalPage.styles'
 
 const getOwner = (str: string) => {
@@ -71,20 +57,25 @@ const getOwner = (str: string) => {
   return (b && b[0]) || 'public'
 }
 const putDataInTable = (tableData, theme, state) => {
-  const {
-    checkedRows = [],
-    // tableData,
-    numberOfDigitsAfterPoint: round,
-    red = 'red',
-    green = 'green',
-  } = state
+  // const {
+  //   checkedRows = [],
+  //   // tableData,
+  //   numberOfDigitsAfterPoint: round,
+  //   red = 'red',
+  //   green = 'green',
+  // } = state
+
   if (!tableData || tableData.length === 0) {
     return { head: [], body: [], footer: null }
   }
 
   return {
     head: [
-      { id: 't', label: 'Timestamp', isNumber: false },
+      {
+        id: 't',
+        label: 'Timestamp',
+        isNumber: false,
+      },
       { id: 'pair', label: 'Pair', isNumber: false },
       { id: 'exchangeA', label: 'Exchange A', isNumber: false },
       { id: 'exchangeB', label: 'Exchange B', isNumber: false },
@@ -124,10 +115,20 @@ const transformData = (
     const keys = Object.keys(row)
     const resp = {}
     keys.map((k) => {
-      resp[k] = {
-        contentToSort: row[k],
-        contentToCSV: row[k],
-        render: row[k],
+      if (k === 't') {
+        const timeStamp = String(row[k]).substring(0, 10) + '...'
+
+        resp[k] = {
+          contentToSort: row[k],
+          contentToCSV: row[k],
+          render: timeStamp,
+        }
+      } else {
+        resp[k] = {
+          contentToSort: row[k],
+          contentToCSV: row[k],
+          render: row[k],
+        }
       }
     })
 
@@ -155,7 +156,7 @@ const SignalEventList = (props) => {
         tableStyles={{
           heading: {
             margin: '0',
-            padding: '0 0 0 1rem', //'0 0 0 18px',
+            padding: '0 0 0 1rem',
             textAlign: 'left',
             maxWidth: '14px',
             background: '#F2F4F6',
@@ -164,14 +165,6 @@ const SignalEventList = (props) => {
             color: '#7284A0',
             lineHeight: '31px',
             letterSpacing: '1.5px',
-            // '&&:first-child': {
-            //   // Does'n work
-            //   borderRadius: '22px 0 0 0',
-            //   background: 'red',
-            // },
-            // '&&:last-child': {
-            //   borderRadius: '0 22px  0 0',
-            // },
           },
           cell: {
             textAlign: 'left',
@@ -183,11 +176,6 @@ const SignalEventList = (props) => {
             letterSpacing: '0.5px',
             fontSize: '1rem',
             padding: '0 0 0 .3rem',
-            //   // Does'n work
-            // '&&:first-child': {
-            //   color: 'red',
-            //   background: 'red',
-            // },
             '&:before': {
               content: '',
               display: 'block',
@@ -205,7 +193,7 @@ const SignalEventList = (props) => {
   )
 }
 
-function SignalListItem({ el, onClick, isSelected }) {
+const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
   return (
     <FolioCard
       container
@@ -221,7 +209,9 @@ function SignalListItem({ el, onClick, isSelected }) {
             {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
           </TypographySubTitle>
         </Grid>
-        {/* <SvgIcon width="10" height="10" src={LineGraph} /> */}
+        <TypographyEditButton onClick={() => openDialog(el._id)}>
+          edit
+        </TypographyEditButton>
       </Grid>
       <Grid
         container
@@ -273,6 +263,16 @@ const sortBy = [
 class SocialPage extends React.Component {
   state = {
     selectedSignal: 0,
+    isDialogOpen: false,
+    currentSignalId: null,
+  }
+
+  openDialog = (signalId) => {
+    this.setState({ isDialogOpen: true, currentSignalId: signalId })
+  }
+
+  closeDialog = () => {
+    this.setState({ isDialogOpen: false, currentSignalId: null })
   }
 
   render() {
@@ -289,6 +289,7 @@ class SocialPage extends React.Component {
         onClick={() => {
           this.setState({ selectedSignal: index })
         }}
+        openDialog={this.openDialog}
       />
     ))
 
@@ -300,7 +301,7 @@ class SocialPage extends React.Component {
         style={{ maxHeight: '100vh', overflow: 'hidden' }}
       >
         <Grid item xs={3} style={{ padding: '15px' }}>
-          <SocialTabs>
+          <SocialTabs style={{ height: '100%' }}>
             <GridSortOption container justify="flex-end" alignItems="center">
               <Grid item>
                 <Grid container justify="space-between" alignItems="center">
@@ -309,12 +310,6 @@ class SocialPage extends React.Component {
                   </TypographySearchOption>
 
                   <ReactSelectCustom
-                    // onChange={(
-                    //   optionSelected: {
-                    //     label: string
-                    //     value: string
-                    //   } | null
-                    // ) => onRebalanceTimerChange(optionSelected)}
                     value={[sortBy[2]]}
                     options={sortBy}
                     isSearchable={false}
@@ -356,16 +351,11 @@ class SocialPage extends React.Component {
               placeholder={``}
               fontSize={`1.2rem`}
               onChange={this.handleSearchInput}
-              // style={{
-              //   background:`${theme.palette.type === 'dark'
-              //       ? theme.palette.primary.light
-              //       : theme.palette.grey.main }`
-              // }}
             />
             <GridFolioScroll>
               {sharedSignalsList.length === 0 ? (
                 <TypographyEmptyFolioPanel>
-                  Portfolio has not been found in the list
+                  Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
                 sharedSignalsList
@@ -373,7 +363,7 @@ class SocialPage extends React.Component {
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
-        <Grid lg={6} xs={6}>
+        <Grid lg={9} xs={9}>
           <Grid item xs={12} spacing={24} style={{ padding: '15px' }}>
             {getFollowingSignals.length > 0 &&
             getFollowingSignals[this.state.selectedSignal] ? (
@@ -392,17 +382,11 @@ class SocialPage extends React.Component {
             ) : null}
           </Grid>
         </Grid>
-        <Grid xs={3} style={{ padding: '15px' }}>
-          <Chart
-            colorLegend={true}
-            chartWidth={160}
-            chartHeight={160}
-            strokeWidth={10}
-            vertical
-            removeLabels
-          />
-          {/* <PortfolioMainAllocation /> */}
-        </Grid>
+        <SignalPreferencesDialog
+          isDialogOpen={this.state.isDialogOpen}
+          closeDialog={this.closeDialog}
+          signalId={this.state.currentSignalId}
+        />
       </Grid>
     )
   }
@@ -415,3 +399,9 @@ export default compose(
     fetchPolicy: 'network-only',
   })
 )(SocialPage)
+
+/*
+TODO:
+  mutation with data
+  workable iconButtom reset to initial
+*/

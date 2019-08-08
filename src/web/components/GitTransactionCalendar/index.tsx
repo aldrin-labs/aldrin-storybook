@@ -19,18 +19,17 @@ const styles = (theme) => ({
   githubFourth: { fill: '#165BE0' },
 })
 
-
 const HeatmapWrapper = styled.div`
   .react-calendar-heatmap-month-label,
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
     font-family: 'DM Sans', sans-serif;
     text-transform: uppercase;
-    fill: #7284A0;
-    font-size: .75rem;
+    fill: #7284a0;
+    font-size: 0.75rem;
   }
 
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
-    font-size: .575rem;
+    font-size: 0.575rem;
   }
 
   @media only screen and (min-width: 2560px) {
@@ -68,57 +67,59 @@ class GitTransactionCalendar extends Component {
 
     return (
       <HeatmapWrapper>
-      <CalendarHeatmap
-        className={this.props.classes.root}
-        // startDate={'Wed Jul 24 2018 12:25:22 GMT+0500'}
-        // endDate={'Wed Jul 24 2019 12:25:22 GMT+0500'}
-        startDate={shiftDate(today, -200)}
-        endDate={today}
-        values={randomValues}
-        classForValue={(value) => {
-          if (!value) {
-            return 'color-empty'
+        <CalendarHeatmap
+          className={this.props.classes.root}
+          // startDate={'Wed Jul 24 2018 12:25:22 GMT+0500'}
+          // endDate={'Wed Jul 24 2019 12:25:22 GMT+0500'}
+          startDate={shiftDate(today, -200)}
+          endDate={today}
+          values={randomValues}
+          classForValue={(value) => {
+            if (!value) {
+              return 'color-empty'
+            }
+            // return `color-github-${value.count}`
+            return value.count === 1
+              ? this.props.classes.githubOne
+              : value.count === 2
+              ? this.props.classes.githubTwo
+              : value.count === 3
+              ? this.props.classes.githubThree
+              : this.props.classes.githubThree
+          }}
+          tooltipDataAttrs={(value) => {
+            return {
+              'data-tip': `${value.date
+                .toISOString()
+                .slice(0, 10)} has count: ${value.count}`,
+            }
+          }}
+          showWeekdayLabels={true}
+          onClick={
+            (value) => {}
+            //alert(`Clicked on value with count: ${value.count}`)
           }
-          // return `color-github-${value.count}`
-          return value.count === 1
-            ? this.props.classes.githubOne
-            : value.count === 2
-            ? this.props.classes.githubTwo
-            : value.count === 3
-            ? this.props.classes.githubThree
-            : this.props.classes.githubThree
-        }}
-        tooltipDataAttrs={value => {
-          return {
-            'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${value.count}`
-          }
-        }}
-        showWeekdayLabels={true}
-        onClick={
-          (value) => {}
-          //alert(`Clicked on value with count: ${value.count}`)
-        }
-        horizontal={false}
-        monthLabels={[
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec',
-        ]}
-        titleForValue={value => `Date is ${value.date}`}
-        tooltipDataAttrs={value => {
-          return { 'data-tooltip': 'Tooltip: ' + value.date }
-        }}
-        // showOutOfRangeDays={true}
-      />
+          horizontal={false}
+          monthLabels={[
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ]}
+          //titleForValue={value => `Date is ${value.date}`}
+          tooltipDataAttrs={(value) => {
+            return { 'data-tooltip': 'Tooltip: ' + value.date }
+          }}
+          // showOutOfRangeDays={true}
+        />
       </HeatmapWrapper>
     )
   }

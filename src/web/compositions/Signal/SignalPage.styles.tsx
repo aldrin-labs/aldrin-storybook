@@ -35,7 +35,7 @@
 // `
 
 import styled from 'styled-components'
-import { Grid, Typography, Input } from '@material-ui/core'
+import { Grid, Typography, Input, Button } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const InputCustom = styled(Input)`
@@ -66,7 +66,7 @@ export const TypographySearchOption = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.8rem;
     padding: 0.5rem 1rem;
   }
@@ -83,7 +83,7 @@ export const PortfolioName = styled(Typography)`
   color: ${(props) => props.textColor};
 
   @media (min-width: 2560px) {
-    padding: 0.3rem 0 0.3rem 0.5rem;
+    padding: 0.3rem 0 0 0.5rem;
   }
 `
 
@@ -96,7 +96,7 @@ export const TypographyTitle = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.color};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.9rem;
   }
 `
@@ -112,11 +112,30 @@ export const TypographySubTitle = styled(Typography)`
 
   @media (min-width: 1921px) {
     font-size: 1.2rem;
+    padding: 0 0 0.5rem 0.3rem;
   }
 
   @media (min-width: 2560px) {
     font-size: 1.1rem;
-    padding: 0 0 0.5rem 0.3rem;
+  }
+`
+
+export const TypographyEditButton = styled(Button)`
+  margin: 0;
+  height: 70%;
+  text-align: center;
+  color: #7284a0;
+  font-size: 1.3rem;
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: 700;
+  color: #165be0;
+  text-transform: uppercase;
+
+  @media (min-width: 2560px) {
+    height: 50%;
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0 0;
   }
 `
 
@@ -139,6 +158,10 @@ export const FolioValuesCell = styled(Grid)`
 
   @media (max-width: 1540px) {
     width: ${(props) => (props.center ? '120px' : '85px')};
+  }
+
+  @media (min-width: 1921px) {
+    width: ${(props) => (props.center ? '160px' : '125px')};
   }
 
   @media (min-width: 2560px) {
@@ -188,20 +211,16 @@ export const FolioCard = styled(Grid)`
   box-shadow: ${(props) => props.boxShadow};
   border-radius: ${(props) => props.borderRadius};
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     height: auto;
   }
 `
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
-  height: 66vh; /*TODO : Left Panel Hight*/
+  height: 70vh; /*TODO : Left Panel Hight*/
   overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  @media (min-width: 2560px) {
-    height: 60.3vh;
   }
 `
 
