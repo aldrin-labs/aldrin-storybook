@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
 
+import withAuth from '@core/hoc/withAuth'
 import {
   Dialog,
   DialogTitle,
@@ -368,6 +369,7 @@ class SocialPage extends React.Component {
 }
 
 export default compose(
+  withAuth,
   queryRendererHoc({
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
