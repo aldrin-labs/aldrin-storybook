@@ -113,8 +113,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
           const hasActiveKeysOrWallets =
             activeKeys.length + activeWallets.length > 0
 
-          console.log('data', data)
-
           return (
             <Mutation
               onCompleted={() => refetch()}

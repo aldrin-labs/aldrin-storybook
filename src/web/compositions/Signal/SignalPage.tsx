@@ -265,6 +265,19 @@ class SocialPage extends React.Component {
     selectedSignal: 0,
     isDialogOpen: false,
     currentSignalId: null,
+    invervalId: null,
+  }
+
+  componentDidMount() {
+    const invervalId = setInterval(() => {
+      this.props.refetch()
+    }, 30000)
+
+    this.setState({ invervalId })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.invervalId)
   }
 
   openDialog = (signalId) => {
@@ -396,7 +409,7 @@ export default compose(
   queryRendererHoc({
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
-    fetchPolicy: 'network-only',
+    // fetchPolicy: 'network-only',
   })
 )(SocialPage)
 
