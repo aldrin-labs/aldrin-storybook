@@ -53,10 +53,7 @@ class AccordionTable extends React.Component<IProps, IState> {
       accordionTitle,
       getError,
       isCompleted,
-      isFinished,
-      theme: {
-        palette: { grey },
-      },
+      isFinished
     } = this.props
 
     const { expanded } = this.state
@@ -68,7 +65,6 @@ class AccordionTable extends React.Component<IProps, IState> {
           onChange={this.handleChange('panel1')}
         >
           <ExpansionPanelSummaryCustom
-            border={`1px solid ${grey.light}`}
             expandIcon={<ExpandMoreIcon />}
           >
             <TypographyCustom>{accordionTitle}</TypographyCustom>
