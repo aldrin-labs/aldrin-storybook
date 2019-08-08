@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { createGlobalStyle } from 'styled-components'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
 import { Grid, Typography } from '@material-ui/core'
@@ -25,6 +26,14 @@ import Accounts from '@sb/components/Accounts/Accounts'
 import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
 import ShowHideData from './ShowHideData/ShowHideData'
 import { withTheme } from '@material-ui/styles'
+
+const TransactionPageMediaQuery = createGlobalStyle`
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 15px;
+    }
+  }
+`
 
 @withTheme()
 class TransactionPage extends Component {
@@ -128,6 +137,8 @@ class TransactionPage extends Component {
     // TODO: Account block, less more pointers, table fonts, titles
 
     return (
+      <>
+      <TransactionPageMediaQuery/>
       <Grid
         container
         justify="space-between"
@@ -276,6 +287,7 @@ class TransactionPage extends Component {
           </Grid>
         </GridItemContainer>
       </Grid>
+      </>
     )
   }
 }
