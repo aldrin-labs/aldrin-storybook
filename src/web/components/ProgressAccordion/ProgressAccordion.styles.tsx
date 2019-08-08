@@ -4,10 +4,9 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import {
   Grid,
   Typography,
-  Card,
-  CardContent,
-  CardHeader,
   ExpansionPanelSummary,
+
+  withStyles
 } from '@material-ui/core'
 
 export const GridFlex = styled(({ padding, ...rest }) => <Grid {...rest} />)`
@@ -25,3 +24,12 @@ export const TypographyCustom = styled(Typography)`
     //font-size: 2.4rem;
   }
 `
+
+export const ProgressExpansionPanelSummary = withStyles({
+  content: {
+    margin: 0
+  },
+  expanded: {
+    margin: '0 !important'
+  }
+})(ExpansionPanelSummary)
