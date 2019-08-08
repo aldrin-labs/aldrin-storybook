@@ -264,8 +264,9 @@ class PortfolioSelector extends React.Component<IProps> {
       newKeys.length + newWallets.length
 
     const color = theme.palette.secondary.main
-
     const relations = ['first', 'second']
+
+
     return (
       <Slide
         style={{ width: '41rem' }}

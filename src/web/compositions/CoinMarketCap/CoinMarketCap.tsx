@@ -74,6 +74,18 @@ export class CoinMarket extends React.Component<Props, State> {
     rowsPerPage: 20,
   }
 
+  componentDidMount() {
+    const invervalId = setInterval(() => {
+      this.props.refetch()
+    }, 30000)
+
+    this.setState({ invervalId })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.invervalId)
+  }
+
   handleChangePage = (
     event: React.ChangeEvent<HTMLInputElement>,
     page: number
@@ -402,8 +414,8 @@ export const MyCoinMarket = withAuth(
     }),
     queryRendererHoc({
       query: marketsQuery,
-      pollInterval: 30 * 1000,
-      fetchPolicy: 'network-only',
+      // pollInterval: 30 * 1000,
+      // fetchPolicy: 'network-only',
       variables: options(location),
     })
   )(queryRender)

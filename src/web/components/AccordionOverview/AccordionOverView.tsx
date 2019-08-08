@@ -73,9 +73,6 @@ class DetailedExpansionPanel extends React.Component {
   render() {
     const { classes, theme, getPortfolioKeyAssetsQuery } = this.props
 
-    console.log('this.props', this.props)
-    console.log('getPortfolioKeyAssetsQuery', getPortfolioKeyAssetsQuery)
-
     const totalKeyAssetsData = getPortfolioKeyAssetsQuery.portfolioKeys.keys.reduce(
       (acc, el) => {
         acc.portfolioKeyAssetsValue += el.portfolioKeyAssetsValue
