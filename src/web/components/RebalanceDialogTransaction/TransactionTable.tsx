@@ -38,6 +38,9 @@ const TransactionTable = ({
         getError={getError}
         transactionsData={transactionsData}
         isFinished={isFinished}
+        style={{
+          padding: 0
+        }}
       />
       <Table className={classes.table}>
         <TableBody>
@@ -49,7 +52,7 @@ const TransactionTable = ({
                 style={{ width: '250px', padding: '4px 15px 4px 24px' }}
               >
                 {row.convertedFrom}
-                {<SvgIcon width="20" height="10" src={TradeIcon} />}{' '}
+                {<SvgIcon width="20" height="10" src={TradeIcon} />}
                 {row.convertedTo}
               </TableCell>
               <TableCell align="left">{row.sum.substring(0, 9) + '  ' + row.convertedTo}</TableCell>

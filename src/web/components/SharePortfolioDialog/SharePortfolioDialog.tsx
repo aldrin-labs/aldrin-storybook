@@ -173,13 +173,9 @@ export default class SharePortfolioDialog extends React.Component<
       },
     }
 
-    console.log('variables', variables)
-
     const result = await sharePortfolioMutation({
       variables,
     })
-
-    console.log('result', result)
 
     return result
   }

@@ -37,8 +37,7 @@ class RebalanceAccordionIndex extends React.Component {
     })
   }
 
-  handleSlideChange = (event, value) => {
-    console.log('change')
+  handleSlideChange (event, value) {
     this.setState({ value })
   }
 
@@ -91,6 +90,7 @@ class RebalanceAccordionIndex extends React.Component {
                   percentage={percentage}
                   value={this.state.value}
                   handleSlideChange={() => this.handleSlideChange()}
+                  expanded={expanded === `${panelId}`}
                 />
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
