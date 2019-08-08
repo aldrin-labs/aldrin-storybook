@@ -138,6 +138,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
 class SocialPage extends React.Component {
   state = {
     search: '',
+    isFollowingTab: true,
   }
 
   handleSearchInput = (e) => {
@@ -187,6 +188,10 @@ class SocialPage extends React.Component {
     }
   }
 
+  changeTab = (isFollowingTab: boolean) => {
+    this.setState({ isFollowingTab })
+  }
+
   render() {
     const {
       selectedPortfolio,
@@ -194,6 +199,8 @@ class SocialPage extends React.Component {
       tableData,
       setSelectedPortfolio,
     } = this.props
+
+    const { isFollowingTab } = this.state
 
     const totalFolioAssetsData = getFollowingPortfolios.length
       ? getFollowingPortfolios[selectedPortfolio].portfolioAssets.reduce(
@@ -217,11 +224,6 @@ class SocialPage extends React.Component {
           realized: 0,
           unrealized: 0,
         }
-
-    console.log('FolioData: ', getFollowingPortfolios[selectedPortfolio])
-    // console.log('custom acc: ', totalFolioAssetsData)
-    // console.log('SELECTED FOLIO:', selectedPortfolio)
-    // console.log('FOLIOS:', getFollowingPortfolios)
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
     let filteredData = getFollowingPortfolios.length
@@ -267,7 +269,10 @@ class SocialPage extends React.Component {
         style={{ paddingRight: '4%', overflow: 'hidden' }}
       >
         <Grid item xs={3}>
-          <SocialTabs>
+          <SocialTabs
+            isFollowingTab={isFollowingTab}
+            changeTab={this.changeTab}
+          >
             <GridSortOption
               container
               justify="space-between"
@@ -364,127 +369,109 @@ class SocialPage extends React.Component {
                   : { name: '', isPrivate: true, ownerId: '' }
               }
             />
-            <SocialBalancePanel totalFolioAssetsData={totalFolioAssetsData} />
-            {/* <GridItemContainer item lg={2} md={2}>
-              <GridContainerTitle content alignItems="center">
-                <TypographyContatinerTitle>
-                  calendar
-                </TypographyContatinerTitle>
-              </GridContainerTitle>
-              <Grid style={{ padding: '0 0 20px 0' }}>
-                <Grid style={{ padding: '0 0 10px 45px' }}>
-                  <GitTransactionCalendar />
-                </Grid>
-                <Grid
-                  container
-                  justify="center"
-                  style={{ margineTop: '15px' }}
-                >
-                  <Grid lg={2}>
-                    <TypographyCalendarLegend textAlign={'right'}>
-                      Less
-                    </TypographyCalendarLegend>
-                  </Grid>
-
-                  <Grid container justify="center" lg={8}>
-                    <LessMoreContainer />
-                  </Grid>
-                  <Grid lg={2}>
-                    <TypographyCalendarLegend>
-                      More
-                    </TypographyCalendarLegend>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </GridItemContainer> */}
-
-            {/* pie chart */}
-            <Grid container justify="space-between">
-              <Grid
-                item
-                xs={3}
-                style={{
-                  padding: '0 15px 0 0',
-                }}
-              >
-                <PortfolioMainAllocation />
-              </Grid>
-              <Grid item xs={9}>
-                <TableContainer
-                  style={{ borderRadius: '14px  14px 14px 14px' }}
-                >
-                  <TableWithSort
-                    id="PortfolioSocialTable"
-                    //title="Portfolio"
-                    columnNames={head}
-                    data={{ body, footer }}
-                    padding="dense"
-                    emptyTableText="No assets"
-                    tableStyles={{
-                      heading: {
-                        padding: '0 0 0 48px !important',
-                        textAlign: 'left',
-                        maxWidth: '14px',
-                        background: '#F2F4F6',
-                        fontFamily: "'DM Sans'",
-                        fontSize: '0.9rem',
-                        color: '#7284A0',
-                        lineHeight: '31px',
-                        letterSpacing: '1.5px',
-                        // '&th:first-child': {
-                        //   // Does'n work
-                        //   borderRadius: '22px 0 0 0',
-                        //   background: 'red',
-                        // },
-                        // '&:last-child': {
-                        //   borderRadius: '0 22px  0 0',
-                        // },
-                      },
-
-                      cell: {
-                        textAlign: 'left',
-                        maxWidth: '14px',
-                        fontFamily: 'DM Sans',
-                        fontStyle: 'normal',
-                        fontWeight: '500',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        fontSize: '1rem',
-                        padding: '0 0 0 8px',
-                        '&:first-child': {
-                          // Does'n work
-                          color: 'red',
-                          background: 'red',
-                        },
-                        '&:before': {
-                          content: '',
-                          display: 'block',
-                          width: 5,
-                          height: 5,
-                          backgroundColor: 'red',
-                          position: 'relative',
-                          top: 0,
-                          left: 0,
-                        },
-                      },
-                    }}
-                  />
-                </TableContainer>
-                {/* chart */}
-                <Grid item style={{ paddingTop: '15px', height: '100%' }}>
-                  <PortfolioMainChart
-                    title="Portfolio performance"
+            {isFollowingTab ? (
+              <>
+                <SocialBalancePanel
+                  totalFolioAssetsData={totalFolioAssetsData}
+                />
+                <Grid container justify="space-between">
+                  <Grid
+                    item
+                    xs={3}
                     style={{
-                      marginLeft: 0,
-                      maxHeight: '222px',
-                      boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
-                      border: '1px solid #e0e5ec',
+                      padding: '0 15px 0 0',
                     }}
-                    marginTopHr="10px"
-                  />
+                  >
+                    <PortfolioMainAllocation
+                      portfolioData={getFollowingPortfolios[selectedPortfolio]}
+                    />
+                  </Grid>
+                  <Grid item xs={9}>
+                    <TableContainer
+                      style={{ borderRadius: '14px  14px 14px 14px' }}
+                    >
+                      <TableWithSort
+                        id="PortfolioSocialTable"
+                        //title="Portfolio"
+                        columnNames={head}
+                        data={{ body, footer }}
+                        padding="dense"
+                        emptyTableText="No assets"
+                        tableStyles={{
+                          heading: {
+                            padding: '0 0 0 48px !important',
+                            textAlign: 'left',
+                            maxWidth: '14px',
+                            background: '#F2F4F6',
+                            fontFamily: "'DM Sans'",
+                            fontSize: '0.9rem',
+                            color: '#7284A0',
+                            lineHeight: '31px',
+                            letterSpacing: '1.5px',
+                            // '&th:first-child': {
+                            //   // Does'n work
+                            //   borderRadius: '22px 0 0 0',
+                            //   background: 'red',
+                            // },
+                            // '&:last-child': {
+                            //   borderRadius: '0 22px  0 0',
+                            // },
+                          },
+
+                          cell: {
+                            textAlign: 'left',
+                            maxWidth: '14px',
+                            fontFamily: 'DM Sans',
+                            fontStyle: 'normal',
+                            fontWeight: '500',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            fontSize: '1rem',
+                            padding: '0 0 0 8px',
+                            '&:first-child': {
+                              // Does'n work
+                              color: 'red',
+                              background: 'red',
+                            },
+                            '&:before': {
+                              content: '',
+                              display: 'block',
+                              width: 5,
+                              height: 5,
+                              backgroundColor: 'red',
+                              position: 'relative',
+                              top: 0,
+                              left: 0,
+                            },
+                          },
+                        }}
+                      />
+                    </TableContainer>
+                    <Grid item style={{ paddingTop: '15px', height: '100%' }}>
+                      <PortfolioMainChart
+                        title="Portfolio performance"
+                        style={{
+                          marginLeft: 0,
+                          maxHeight: '222px',
+                          boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
+                          border: '1px solid #e0e5ec',
+                        }}
+                        marginTopHr="10px"
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </>
+            ) : (
+              <Grid container xs={12}>
+                <Grid item xs={4}>
+                  data in panels
+                </Grid>
+                <Grid item xs={8}>
+                  data in perform chart
                 </Grid>
               </Grid>
-            </Grid>
+            )}
           </Grid>
         </GridTableContainer>
         {/* </Grid> */}

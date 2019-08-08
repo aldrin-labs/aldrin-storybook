@@ -98,7 +98,6 @@ export default class PortfolioChart extends Component<Props> {
                     style={{
                       width: '4.3rem',
                       lineHeight: '1.5rem',
-                      padding: '0',
                       border: `${
                         chartBtn === activeChart
                           ? `1px solid ${theme.palette.secondary.main}`
@@ -106,7 +105,6 @@ export default class PortfolioChart extends Component<Props> {
                               theme.palette.btnChartBorderNotActive.main
                             }`
                       }`,
-                      margin: '0.5rem 1.6rem',
                       background: `${
                         chartBtn === activeChart
                           ? theme.palette.secondary.main
@@ -118,7 +116,6 @@ export default class PortfolioChart extends Component<Props> {
                           : theme.palette.text.dark
                       }`,
                       borderRadius: '25px',
-                      fontSize: '1.2rem',
                     }}
                   >
                     {chartBtn}

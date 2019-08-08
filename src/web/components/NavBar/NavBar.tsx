@@ -74,7 +74,7 @@ const NavBarRaw: SFC<Props> = ({
                       paddingLeft: '.75rem',
                       fontSize: '1.25rem',
                       lineHeight: '2.5rem',
-                      textTransform: 'uppercase'
+                      textTransform: 'uppercase',
                     }}
                   >
                     {page}
@@ -174,13 +174,13 @@ const NavBarRaw: SFC<Props> = ({
               {/*Strategy*/}
               {/*</NavLinkButton>*/}
 
-              {/*<NavLinkButton*/}
-              {/*page={`signals`}*/}
-              {/*component={Signals}*/}
-              {/*pathname={pathname}*/}
-              {/*>*/}
-              {/*Signals*/}
-              {/*</NavLinkButton>*/}
+              <NavLinkButton
+                page={`signals`}
+                component={Signals}
+                pathname={pathname}
+              >
+                Signals
+              </NavLinkButton>
             </Grid>
           </Grid>
 

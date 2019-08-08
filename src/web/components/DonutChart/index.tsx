@@ -63,7 +63,6 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 
   static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    console.log(nextProps.colors)
     const newData = getDataFromImput(nextProps.data)
     if (!isEqual(prevState.data, newData)) {
       return {

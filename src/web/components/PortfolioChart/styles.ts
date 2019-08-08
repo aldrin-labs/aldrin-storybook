@@ -14,8 +14,14 @@ export const SProfileChart = styled(Card)`
 `
 
 export const SButton = styled(Button)`
-  @media(min-width: 2560px) {
-    font-size: .8rem;
+  font-size: 1.2rem;
+  margin: 0.5rem 1.6rem;
+  padding: 0;
+
+  @media (min-width: 1921px) {
+    padding-top: 1px;
+    margin-top: 0;
+    font-size: 1rem;
   }
 `
 
