@@ -47,24 +47,8 @@ import {
   TypographyEditButton,
 } from './SignalPage.styles'
 
-const getOwner = (str: string) => {
-  if (!str) {
-    return 'public'
-  }
 
-  const b = str.match(/(?<=\').*(?=')/gm)
-
-  return (b && b[0]) || 'public'
-}
 const putDataInTable = (tableData, theme, state) => {
-  // const {
-  //   checkedRows = [],
-  //   // tableData,
-  //   numberOfDigitsAfterPoint: round,
-  //   red = 'red',
-  //   green = 'green',
-  // } = state
-
   if (!tableData || tableData.length === 0) {
     return { head: [], body: [], footer: null }
   }
@@ -72,7 +56,7 @@ const putDataInTable = (tableData, theme, state) => {
   return {
     head: [
       {
-        id: 't',
+        id: 'timeStamp',
         label: 'Timestamp',
         isNumber: false,
       },
@@ -85,55 +69,46 @@ const putDataInTable = (tableData, theme, state) => {
       { id: 'priceB', label: 'priceB', isNumber: false },
       { id: 'status', label: 'Status', isNumber: false },
     ],
-    body: transformData(
-      tableData,
-      theme.palette.red.main,
-      theme.palette.green.main,
-      state
-    ),
-    // footer: this.calculateTotal({
-    //   checkedRows,
-    //   tableData,
-    //   baseCoin,
-    //   red,
-    //   green,
-    //   numberOfDigitsAfterPoint: round,
-    // }),
+    body: transformData(tableData),
   }
 }
 
-const transformData = (
-  data: any[] = [],
-  red: string = '',
-  green: string = '',
-  state
-) => {
-  return data.map((row) => {
-    delete row._id
-    delete row.sId
-    delete row.__typename
-    const keys = Object.keys(row)
-    const resp = {}
-    keys.map((k) => {
-      if (k === 't') {
-        const timeStamp = String(row[k]).substring(0, 10) + '...'
 
-        resp[k] = {
-          contentToSort: row[k],
-          contentToCSV: row[k],
-          render: timeStamp,
-        }
-      } else {
-        resp[k] = {
-          contentToSort: row[k],
-          contentToCSV: row[k],
-          render: row[k],
-        }
-      }
-    })
+const transformData = (data: any[]) => {
+  const transformedData = data.map((row) => ({
+    id: row._id,
+    timestamp: {
+      contentToSort: row.t,
+      contentToCSV: row.t,
+      render: Math.floor(row.t / 1e9) || '-',
+    },
+    pair: row.pair || '-',
+    exchangeA: row.exchangea || '-',
+    exchangeB: row.exchangeb || '-',
+    amount: {
+      contentToSort: row.amount,
+      contentToCSV: roundAndFormatNumber(row.amount, 2, true),
+      render: row.amount ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true) : '-',
+    },
+    spread: {
+      contentToSort: row.spread,
+      contentToCSV: roundAndFormatNumber(row.spread, 2, false),
+      render: row.spread ? `${roundAndFormatNumber(row.spread, 2, false)} %` : '-',
+    },
+    priceA: {
+      contentToSort: row.priceA,
+      contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
+      render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
+    },
+    priceB: {
+      contentToSort: row.priceB,
+      contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
+      render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
+    },
+    status: row.status || '-',
+  }))
 
-    return resp
-  })
+  return transformedData
 }
 
 const SignalEventList = (props) => {
