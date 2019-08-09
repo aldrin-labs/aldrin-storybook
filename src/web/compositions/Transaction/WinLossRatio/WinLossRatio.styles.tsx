@@ -11,6 +11,7 @@ export const WinLossRatioWrapper = styled(Grid)`
     background: white;
     border: 2px solid #E0E5EC;
     box-shadow: 0px 0px 1.6rem rgba(10, 19, 43, 0.1);
+    margin-top: 1.2rem;
 `
 
 export const WinLossRatioNumber = styled(TransactionActionsNumber)`

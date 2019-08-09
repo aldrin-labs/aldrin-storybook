@@ -1,18 +1,16 @@
 import React, { memo } from 'react'
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell, { Padding } from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import TableFooter from '@material-ui/core/TableFooter'
 import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
-import { StyledTable, StyledTableSortLabel } from './Table.styles'
+import { StyledTable, StyledTableSortLabel, StyledTablePagination } from './Table.styles'
 
 import {
   Props,
@@ -33,7 +31,6 @@ import {
   Typography,
   IconButton,
   Grow,
-  TablePagination,
 } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
@@ -746,7 +743,7 @@ const CustomTable = (props: Props) => {
         unmountOnExit
       >
         <>
-          <TablePagination
+          <StyledTablePagination
             component="div"
             count={data.body.length}
             rowsPerPage={pagination.rowsPerPage}

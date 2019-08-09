@@ -12,6 +12,11 @@ export const AccountsListItem = styled.li`
   color: ${(props: { color: string }) => props.color};
   padding: 0;
   min-height: 7vh;
+
+  svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 `
 
 export const AccountsList = styled.ul`

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Table, TableSortLabel, withStyles } from '@material-ui/core'
+import { Table, TableSortLabel, TablePagination, withStyles } from '@material-ui/core'
 
 export const StyledTable = styled(Table)`
   td:first-child {
@@ -21,3 +21,9 @@ export const StyledTableSortLabel = withStyles({
       },
   }
 })(TableSortLabel)
+
+export const StyledTablePagination = withStyles({
+  caption: {
+    fontSize: '1.175rem'
+  }
+})(TablePagination)

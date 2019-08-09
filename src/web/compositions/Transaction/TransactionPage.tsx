@@ -141,6 +141,10 @@ class TransactionPage extends Component {
       newKeys.length + newWallets.length
     const isRebalance = false
 
+    const onKeyToggle = this.onKeyToggle
+    const onToggleAll = this.onToggleAll
+    const onKeySelectOnlyOne = this.onKeySelectOnlyOne
+
     // TODO: Account block, less more pointers, table fonts, titles
 
     return (
@@ -150,8 +154,7 @@ class TransactionPage extends Component {
         container
         justify="space-between"
         style={{
-          height: '90vh',
-          padding: '30px 5% 30px 5px',
+          padding: '3rem 5% 8rem 5px',
           overflow: 'hidden',
           flexWrap: 'nowrap'
         }}
@@ -193,9 +196,9 @@ class TransactionPage extends Component {
                     isCheckedAll,
                     newKeys,
                     isRebalance,
-                    onToggleAll: this.onToggleAll,
-                    onKeyToggle: this.onKeyToggle,
-                    onKeySelectOnlyOne: this.onKeySelectOnlyOne,
+                    onToggleAll,
+                    onKeyToggle,
+                    onKeySelectOnlyOne
                   }}
                 />
               </Grid>
@@ -224,6 +227,8 @@ class TransactionPage extends Component {
             >
               <TradeOrderHistory style={{ overflow: 'scroll' }} />
             </GridTableContainer>
+
+            {/*
             <PortfolioMainChart
               title="Portfolio performance"
               style={{
@@ -234,6 +239,7 @@ class TransactionPage extends Component {
               }}
               marginTopHr="10px"
             />
+            */}
           </Grid>
         </GridItemContainer>
 
@@ -249,6 +255,18 @@ class TransactionPage extends Component {
       </Grid>
       </>
     )
+  }
+
+  onKeyToggle() {
+
+  }
+
+  onToggleAll() {
+
+  }
+
+  onKeySelectOnlyOne() {
+
   }
 }
 

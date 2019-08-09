@@ -165,17 +165,12 @@ export const LessMoreContainer = styled(Grid)`
 `
 
 export const GridTableContainer = styled(Grid)`
-  height: 50vh;
   overflow: hidden;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
   border: ${(props) => props.borderColor};
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  @media (min-width: 2560px) {
-    height: 67vh;
   }
 `
 
@@ -184,4 +179,8 @@ export const PortfolioSelectorWrapper = styled(Grid)`
   padding: .75rem .5rem;
   overflow: hidden;
   min-height: 13.5rem;
+
+  @media only screen and (min-device-width: 2256px) {
+    min-height: 15rem;
+  }
 `
