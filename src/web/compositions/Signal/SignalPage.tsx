@@ -124,9 +124,9 @@ const SignalEventList = (props) => {
   )
 
   return (
-    <ContainerGrid container>
+    <ContainerGrid container style={{ position: 'relative' }}>
       <TableWithSort
-        style={{ height: '100%', overflowY: 'scroll' }}
+        style={{ height: '100%', overflowY: 'scroll'}}
         id="SignalSocialTable"
         //title="Signal"
         columnNames={head}
