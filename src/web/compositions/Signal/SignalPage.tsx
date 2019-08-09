@@ -13,6 +13,7 @@ import {
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { GET_SIGNAL_EVENTS_QUERY } from '@core/graphql/queries/signals/getSignalEvents'
+import { updateSignal } from '@core/graphql/mutations/signals/updateSignal'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 
@@ -47,6 +48,7 @@ import {
   ContainerGrid,
   TypographyEditButton,
 } from './SignalPage.styles'
+import { graphql } from 'react-apollo'
 
 const putDataInTable = (tableData, theme, state) => {
   if (!tableData || tableData.length === 0) {
@@ -171,53 +173,71 @@ const SignalEventList = (props) => {
   )
 }
 
-const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
-  return (
-    <FolioCard
-      container
-      onClick={onClick}
-      border={isSelected ? '22px' : '22px 22px 0 0 '}
-      boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
-      borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
-    >
-      <Grid container justify="space-between">
-        <Grid item>
-          <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
-          <TypographySubTitle>
-            {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
-          </TypographySubTitle>
-        </Grid>
-        <TypographyEditButton onClick={() => openDialog(el._id)}>
-          edit
-        </TypographyEditButton>
-      </Grid>
-      <Grid
+class SignalListItem extends React.Component {
+  render() {
+    const {
+      el,
+      isSelected,
+      openDialog,
+      toggleEnableSignal,
+      index,
+      _id,
+      enabled,
+      updateSignalMutation,
+    } = this.props
+
+    return (
+      <FolioCard
         container
-        alignItems="center"
-        alignContent="center"
-        justify="space-between"
+        border={isSelected ? '22px' : '22px 22px 0 0 '}
+        boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
+        borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
       >
-        <FolioValuesCell item>
-          <TypographyTitle>Last update</TypographyTitle>
-          <TypographyTitle color={'#16253D'}>
-            {el.lastUpdate || 'today'}
-          </TypographyTitle>
-        </FolioValuesCell>
-        <FolioValuesCell item center={true}>
-          <div>
-            <TypographyTitle>Signals generated</TypographyTitle>
-            <TypographyTitle
-              fontSize={'1rem'}
-              color={isSelected ? '#97C15C' : '#2F7619'}
-            >
-              {el.signalsCount || '24'}
+        <Grid container justify="space-between">
+          <Grid item>
+            <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+            <TypographySubTitle>
+              {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
+            </TypographySubTitle>
+          </Grid>
+          <TypographyEditButton onClick={() => openDialog(el._id)}>
+            edit
+          </TypographyEditButton>
+        </Grid>
+        <Grid
+          container
+          alignItems="center"
+          alignContent="center"
+          justify="space-between"
+        >
+          <FolioValuesCell item>
+            <TypographyTitle>Last update</TypographyTitle>
+            <TypographyTitle color={'#16253D'}>
+              {el.lastUpdate || 'today'}
             </TypographyTitle>
-          </div>
-        </FolioValuesCell>
-        <SwitchOnOff enabled={el.enabled} id={el._id} />
-      </Grid>
-    </FolioCard>
-  )
+          </FolioValuesCell>
+          <FolioValuesCell item center={true}>
+            <div>
+              <TypographyTitle>Signals generated</TypographyTitle>
+              <TypographyTitle
+                fontSize={'1rem'}
+                color={isSelected ? '#97C15C' : '#2F7619'}
+              >
+                {el.signalsCount || '24'}
+              </TypographyTitle>
+            </div>
+          </FolioValuesCell>
+          <SwitchOnOff
+            enabled={enabled}
+            _id={_id}
+            onChange={() =>
+              toggleEnableSignal(index, _id, enabled, updateSignalMutation)
+            }
+          />
+        </Grid>
+      </FolioCard>
+    )
+  }
 }
 
 const sortBy = [
@@ -244,22 +264,6 @@ class SocialPage extends React.Component {
     invervalId: null,
   }
 
-  componentDidMount() {
-    const {
-      getFollowingSignalsQuery: { getFollowingSignals },
-    } = this.props
-
-    const invervalId = setInterval(() => {
-      this.props.refetch()
-    }, 30000)
-
-    this.setState({ invervalId })
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.invervalId)
-  }
-
   openDialog = (signalId) => {
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
   }
@@ -268,21 +272,36 @@ class SocialPage extends React.Component {
     this.setState({ isDialogOpen: false, currentSignalId: null })
   }
 
+  toggleEnableSignal = (arg, arg2, arg3, updateSignalMutation) => {
+    // console.log('arg', arg)
+    // console.log('arg2', arg2)
+
+    updateSignalMutation({
+      variables: {
+        signalId: arg2,
+        conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
+      },
+    })
+  }
+
   render() {
     const {
       getFollowingSignalsQuery: { getFollowingSignals },
+      updateSignalMutation,
     } = this.props
 
     const { selectedSignal = 0, currentSignalId } = this.state
 
     const sharedSignalsList = getFollowingSignals.map((el, index) => (
       <SignalListItem
+        index={index}
         key={index}
         isSelected={index === selectedSignal}
         el={el}
-        onClick={() => {
-          this.setState({ selectedSignal: index })
-        }}
+        _id={el._id}
+        enabled={el.enabled}
+        toggleEnableSignal={this.toggleEnableSignal}
+        updateSignalMutation={updateSignalMutation}
         openDialog={this.openDialog}
       />
     ))
@@ -393,8 +412,14 @@ export default compose(
   queryRendererHoc({
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
-    pollInterval: 5000,
+    // pollInterval: 5000,
     fetchPolicy: 'network-only',
+  }),
+  graphql(updateSignal, {
+    name: 'updateSignalMutation',
+    options: {
+      refetchQueries: [{ query: GET_FOLLOWING_SIGNALS_QUERY }],
+    },
   })
 )(SocialPage)
 
