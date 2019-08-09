@@ -21,11 +21,15 @@ import {
   RefreshButton,
 } from './SignalPreferencesDialog.styles'
 
-import { Query, Mutation } from 'react-apollo'
+import { Query } from 'react-apollo'
 import { GET_SIGNAL_PROPERTIES } from '@core/graphql/queries/signals/getSignalProperties'
-import { UPDATE_SIGNAL_PROPERTIES } from '@core/graphql/mutations/signals/updateSignalProperties'
 
-const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
+const SignalPreferencesDialog = ({
+  isDialogOpen,
+  closeDialog,
+  signalId,
+  updateSignalMutation,
+}) => {
   const [propertiesState, updateProperties] = useState({})
 
   const handleChange = (name, type, e) => {
@@ -67,12 +71,17 @@ const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
   }
 
   return (
-    <Query query={GET_SIGNAL_PROPERTIES} variables={{ signalId }}>
+    <Query
+      query={GET_SIGNAL_PROPERTIES}
+      variables={{ signalId }}
+      fetchPolicy="network-only"
+    >
       {({ data, loading, error }) => {
         let { getSignalInputs } = data
-        const properties = JSON.parse(getSignalInputs)
-        console.log(propertiesState, 'properties')
 
+        if (!getSignalInputs) return null
+        const properties = JSON.parse(getSignalInputs)
+        console.log(properties, signalId)
         return (
           <Dialog
             PaperComponent={StyledPaper}
@@ -104,87 +113,76 @@ const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
                 />
               </ClearButton>
             </DialogTitle>
-            <form>
-              <StyledDialogContent>
-                <Grid
-                  style={{ padding: '.8rem 0' }}
-                  container
-                  alignItems="center"
-                  wrap="nowrap"
-                >
-                  <SectionTitle>signal properties</SectionTitle>
-                  <Line />
-                </Grid>
-                {properties.map((property) => {
-                  const [name, type, value] = property
-                  let step
-                  let inputType = 'number'
-
-                  if (type === 'int') step = 1
-                  else if (type === 'float') step = 'any'
-                  else {
-                    step = false
-                    inputType = 'string'
-                  }
-
-                  return (
-                    <SignalPropertyGrid>
-                      <PropertyName>{name}</PropertyName>
-                      <PropertyInput
-                        width="60"
-                        placeholder={value}
-                        type={inputType}
-                        step={step}
-                        value={
-                          propertiesState[name]
-                            ? propertiesState[name].value
-                            : updateProperties({
-                                ...propertiesState,
-                                [name]: { value, type },
-                              })
-                        }
-                        onChange={(e) => handleChange(name, type, e)}
-                      />
-                      <RefreshButton
-                        onClick={() => resetValue(name, type, value)}
-                      >
-                        <Refresh color="inherit" style={{ margin: '0 auto' }} />
-                      </RefreshButton>
-                    </SignalPropertyGrid>
-                  )
-                })}
-              </StyledDialogContent>
-              <Mutation
-                mutation={UPDATE_SIGNAL_PROPERTIES}
-                variables={{ signalId, conditions: createUpdatedData() }}
-                onCompleted={() => updateProperties({})}
+            <StyledDialogContent>
+              <Grid
+                style={{ padding: '.8rem 0' }}
+                container
+                alignItems="center"
+                wrap="nowrap"
               >
-                {(updateSignalProperties) => {
-                  return (
-                    <Grid
-                      item
-                      container
-                      justify="center"
-                      style={{ paddingBottom: '2rem' }}
+                <SectionTitle>signal properties</SectionTitle>
+                <Line />
+              </Grid>
+              {properties.map((property) => {
+                const [name, type, value] = property
+                let step
+                let inputType = 'number'
+
+                if (type === 'int') step = 1
+                else if (type === 'float') step = 'any'
+                else {
+                  step = false
+                  inputType = 'string'
+                }
+
+                return (
+                  <SignalPropertyGrid>
+                    <PropertyName>{name}</PropertyName>
+                    <PropertyInput
+                      width="60"
+                      placeholder={value}
+                      type={inputType}
+                      step={step}
+                      value={
+                        propertiesState[name]
+                          ? propertiesState[name].value
+                          : updateProperties({
+                              ...propertiesState,
+                              [name]: { value, type },
+                            })
+                      }
+                      onChange={(e) => handleChange(name, type, e)}
+                    />
+                    <RefreshButton
+                      onClick={() => resetValue(name, type, value)}
                     >
-                      <SaveButton
-                        padding=""
-                        onClick={() =>
-                          updateSignalProperties({
-                            variables: {
-                              signalId,
-                              updatedData: createUpdatedData(),
-                            },
-                          })
-                        }
-                      >
-                        Save
-                      </SaveButton>
-                    </Grid>
-                  )
+                      <Refresh color="inherit" style={{ margin: '0 auto' }} />
+                    </RefreshButton>
+                  </SignalPropertyGrid>
+                )
+              })}
+            </StyledDialogContent>
+            <Grid
+              item
+              container
+              justify="center"
+              style={{ paddingBottom: '2rem' }}
+            >
+              <SaveButton
+                padding=""
+                onClick={() => {
+                  console.log(signalId, createUpdatedData())
+                  updateSignalMutation({
+                    variables: {
+                      signalId,
+                      conditions: createUpdatedData(),
+                    },
+                  })
                 }}
-              </Mutation>
-            </form>
+              >
+                Save
+              </SaveButton>
+            </Grid>
           </Dialog>
         )
       }}

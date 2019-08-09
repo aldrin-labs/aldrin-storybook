@@ -13,6 +13,7 @@ import {
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { GET_SIGNAL_EVENTS_QUERY } from '@core/graphql/queries/signals/getSignalEvents'
+import { updateSignal } from '@core/graphql/mutations/signals/updateSignal'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 
@@ -27,7 +28,7 @@ import {
 import { withTheme } from '@material-ui/styles'
 import SwitchOnOff from '@sb/components/SwitchOnOff'
 import { isObject, zip } from 'lodash-es'
-
+import { graphql } from 'react-apollo'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
@@ -171,11 +172,22 @@ const SignalEventList = (props) => {
   )
 }
 
-const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
+const SignalListItem = ({
+  el,
+  // onClick,
+  id,
+  isSelected,
+  openDialog,
+  onChange,
+  setCurrentSignal,
+}) => {
+  console.log('el', el)
+
   return (
     <FolioCard
+      // key={el._id}
       container
-      onClick={onClick}
+      // onClick={onClick}
       border={isSelected ? '22px' : '22px 22px 0 0 '}
       boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
       borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
@@ -187,7 +199,11 @@ const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
             {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
           </TypographySubTitle>
         </Grid>
-        <TypographyEditButton onClick={() => openDialog(el._id)}>
+        <TypographyEditButton
+          onClick={() => {
+            openDialog(el._id)
+          }}
+        >
           edit
         </TypographyEditButton>
       </Grid>
@@ -214,7 +230,12 @@ const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
             </TypographyTitle>
           </div>
         </FolioValuesCell>
-        <SwitchOnOff enabled={el.enabled} id={el._id} />
+        <SwitchOnOff
+          // key={el._id}
+          enabled={el.enabled}
+          id={id}
+          onChange={onChange}
+        />
       </Grid>
     </FolioCard>
   )
@@ -242,6 +263,8 @@ class SocialPage extends React.Component {
     isDialogOpen: false,
     currentSignalId: null,
     invervalId: null,
+    ids: [],
+    followingSignalsList: [],
   }
 
   componentDidMount() {
@@ -249,41 +272,86 @@ class SocialPage extends React.Component {
       getFollowingSignalsQuery: { getFollowingSignals },
     } = this.props
 
-    const invervalId = setInterval(() => {
-      this.props.refetch()
-    }, 30000)
-
-    this.setState({ invervalId })
+    this.setState({
+      followingSignalsList: JSON.parse(JSON.stringify(getFollowingSignals)),
+      ids: getFollowingSignals.map((el) => el._id),
+    })
   }
 
-  componentWillUnmount() {
-    clearInterval(this.state.invervalId)
-  }
+  // componentDidMount() {
+  //   const {
+  //     getFollowingSignalsQuery: { getFollowingSignals },
+  //   } = this.props
+
+  //   const invervalId = setInterval(() => {
+  //     this.props.refetch()
+  //   }, 30000)
+
+  //   this.setState({ invervalId })
+  // }
+
+  // componentWillUnmount() {
+  //   clearInterval(this.state.invervalId)
+  // }
 
   openDialog = (signalId) => {
+    console.log('signalId open dialog', signalId)
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
+  }
+
+  setCurrentSignal = (id) => {
+    this.setState({ currentSignalId: id })
   }
 
   closeDialog = () => {
     this.setState({ isDialogOpen: false, currentSignalId: null })
   }
 
+  onChangeSignalCheckbox = async (updateSignalMutation, variables) => {
+    console.log('variablesInside', variables)
+
+    await updateSignalMutation({ variables })
+  }
+
+  getIds = (getFollowingSignals) => {
+    const ids = getFollowingSignals.map((el) => {
+      return el._id
+    })
+
+    this.setState({ ids })
+  }
+
   render() {
     const {
       getFollowingSignalsQuery: { getFollowingSignals },
+      updateSignalMutation,
     } = this.props
+
+    const { followingSignalsList, ids } = this.state
+
+    // this.getIds(getFollowingSignals)
+
+    console.log('getfollow', getFollowingSignals)
 
     const { selectedSignal = 0, currentSignalId } = this.state
 
-    const sharedSignalsList = getFollowingSignals.map((el, index) => (
+    const sharedSignalsList = followingSignalsList.map((el, index) => (
       <SignalListItem
-        key={index}
+        key={`${index}${el._id}`}
         isSelected={index === selectedSignal}
         el={el}
-        onClick={() => {
-          this.setState({ selectedSignal: index })
+        onChange={() => {
+          this.onChangeSignalCheckbox(updateSignalMutation, {
+            signalId: ids[index],
+            conditions: JSON.stringify([['enabled', 'boolean', false]]),
+          })
         }}
+        // onClick={() => {
+        //   this.setState({ selectedSignal: index })
+        // }}
+        id={ids[index]}
         openDialog={this.openDialog}
+        setCurrentSignal={this.setCurrentSignal}
       />
     ))
 
@@ -381,6 +449,7 @@ class SocialPage extends React.Component {
             isDialogOpen={this.state.isDialogOpen}
             closeDialog={this.closeDialog}
             signalId={currentSignalId}
+            updateSignalMutation={updateSignalMutation}
           />
         ) : null}
       </Grid>
@@ -393,8 +462,11 @@ export default compose(
   queryRendererHoc({
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
-    pollInterval: 5000,
+    // pollInterval: 5000,
     fetchPolicy: 'network-only',
+  }),
+  graphql(updateSignal, {
+    name: 'updateSignalMutation',
   })
 )(SocialPage)
 
