@@ -30,8 +30,6 @@ export class Page extends React.Component {
       SendResults,
     } = this.props
 
-    console.log(SendResults)
-
     const multi = answers && answers.length > 3
 
     return(

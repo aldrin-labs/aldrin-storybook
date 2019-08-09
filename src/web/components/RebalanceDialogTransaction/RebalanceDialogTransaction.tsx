@@ -17,8 +17,8 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import Stroke from '../../../icons/Stroke.svg'
-import Ellipse from '../../../icons/Ellipse.png'
+import Stroke from '@icons/Stroke.svg'
+import Ellipse from '@icons/Ellipse.png'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
@@ -46,8 +46,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   activateGoBtn = async () => {
-    await this.props.executeRebalanceHandler()
     this.setState({ isDisableBtns: true })
+    await this.props.executeRebalanceHandler()
   }
 
   defaultStateForTransaction = (handleClickOpen) => {
@@ -170,54 +170,28 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   Your portfolio will change.
                 </TypographyTopDescription>
                 <GridCustom container justify="center">
-                  {isDisableBtns ? (
-                    <>
-                      <BtnCustom
-                        height="34px"
-                        borderRadius={'1rem'}
-                        btnWidth="120px"
-                        onClick={handleClose}
-                        color={'#9f9f9f'}
-                        margin="0 5px"
-                      >
-                        Cancel
-                      </BtnCustom>
-                      <BtnCustom
-                        height="34px"
-                        borderRadius={'1rem'}
-                        btnWidth="120px"
-                        color={'#9f9f9f'}
-                        margin="0 5px"
-                        onClick={this.activateGoBtn}
-                        disabled
-                      >
-                        Go!
-                      </BtnCustom>
-                    </>
-                  ) : (
-                    <>
-                      <BtnCustom
-                        height="34px"
-                        borderRadius={'1rem'}
-                        btnWidth="120px"
-                        onClick={handleClose}
-                        color={red.custom}
-                        margin="0 5px"
-                      >
-                        Cancel
-                      </BtnCustom>
-                      <BtnCustom
-                        height="34px"
-                        borderRadius={'1rem'}
-                        btnWidth="120px"
-                        color={blue.custom}
-                        margin="0 5px"
-                        onClick={this.activateGoBtn}
-                      >
-                        Go!
-                      </BtnCustom>
-                    </>
-                  )}
+                  <BtnCustom
+                          height="34px"
+                          borderRadius={'1rem'}
+                          btnWidth="120px"
+                          onClick={handleClose}
+                          color={'#9f9f9f'}
+                          margin="0 5px"
+                          disabled={isDisableBtns}
+                        >
+                          Cancel
+                        </BtnCustom>
+                        <BtnCustom
+                          height="34px"
+                          borderRadius={'1rem'}
+                          btnWidth="120px"
+                          color={isDisableBtns ? '#9f9f9f' : '#165be0'}
+                          margin="0 5px"
+                          onClick={this.activateGoBtn}
+                          disabled={isDisableBtns}
+                        >
+                          Go!
+                  </BtnCustom>
                 </GridCustom>
               </>
             )}

@@ -141,9 +141,9 @@ const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
                           propertiesState[name]
                             ? propertiesState[name].value
                             : updateProperties({
-                                ...propertiesState,
-                                [name]: { value, type },
-                              })
+                              ...propertiesState,
+                              [name]: { value, type },
+                            })
                         }
                         onChange={(e) => handleChange(name, type, e)}
                       />
@@ -158,7 +158,7 @@ const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
               </StyledDialogContent>
               <Mutation
                 mutation={UPDATE_SIGNAL_PROPERTIES}
-                variables={{ signalId, updatedData: createUpdatedData() }}
+                variables={{ signalId, conditions: createUpdatedData() }}
                 onCompleted={() => updateProperties({})}
               >
                 {(updateSignalProperties) => {

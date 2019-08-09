@@ -27,7 +27,6 @@ function ProgressOtherCoins({
         container
         style={{
           marginBottom: '.75rem',
-          marginTop: '-26px',
           padding: '0',
         }}
       >
@@ -47,6 +46,7 @@ function ProgressOtherCoins({
               padding: '0',
               width: '20px',
               height: '20px',
+              transform: `rotate(${isPanelExpanded ? '180deg' : '0'})`
             }}
           />
         </GridFlex>

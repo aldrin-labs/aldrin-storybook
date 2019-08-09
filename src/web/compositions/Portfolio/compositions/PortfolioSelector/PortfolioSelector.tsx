@@ -106,7 +106,6 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   handleChangeUsd = (event, value) => {
-    console.log('slider change: ', value)
     this.setState({
       valueSliderUsd: value,
     })
@@ -204,7 +203,6 @@ class PortfolioSelector extends React.Component<IProps> {
   onDustFilterChange = (value: number, dustFilterParam: string) => {
     const { portfolioId, dustFilter } = this.props
     const { usd, percentage } = dustFilter
-    console.log('dustFilterParam: ', dustFilterParam)
     const dustFilterParamValue =
       dustFilterParam === 'percentage'
         ? value === 0
@@ -266,9 +264,9 @@ class PortfolioSelector extends React.Component<IProps> {
       newKeys.length + newWallets.length
 
     const color = theme.palette.secondary.main
-
-    console.log(activeKeys)
     const relations = ['first', 'second']
+
+
     return (
       <Slide
         style={{ width: '41rem' }}

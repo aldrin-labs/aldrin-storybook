@@ -72,7 +72,6 @@ export default class Welcome extends React.Component {
 
   addExchange = () => {
     this.setState({ selected: -1 })
-    console.log('aaaa')
   }
 
   render() {

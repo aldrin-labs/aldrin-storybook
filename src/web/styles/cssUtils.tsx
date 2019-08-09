@@ -105,12 +105,11 @@ export const GlobalStyle = createGlobalStyle`
     z-index: 200;
   }
   
-  @media only screen and (min-width: 1921px) {
+  @media only screen and (max-width: 1400px) {
     html {
-      font-size: 15px;
+      font-size: 8px;
     }
   }
-
   @media only screen and (min-width: 1921px) {
     html {
       font-size: 15px;

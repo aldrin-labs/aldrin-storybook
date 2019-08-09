@@ -456,16 +456,16 @@ class SocialPage extends React.Component {
                       />
                     </TableContainer>
                     <Grid item style={{ paddingTop: '15px', height: '100%' }}>
-                      <PortfolioMainChart
-                        title="Portfolio performance"
-                        style={{
-                          marginLeft: 0,
-                          maxHeight: '222px',
-                          boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
-                          border: '1px solid #e0e5ec',
-                        }}
-                        marginTopHr="10px"
-                      />
+                      {/*TODO: Pass real values to this component*/}
+                      {/*<PortfolioMainChart*/}
+                      {/*title="Portfolio performance"*/}
+                      {/*style={{*/}
+                      {/*marginLeft: 0,*/}
+                      {/*maxHeight: '222px',*/}
+                      {/*boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',*/}
+                      {/*border: '1px solid #e0e5ec',*/}
+                      {/*}}*/}
+                      {/*marginTopHr="10px"*/}
                     </Grid>
                   </Grid>
                 </Grid>
