@@ -67,13 +67,11 @@ const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
   }
 
   return (
-    <Query query={GET_SIGNAL_PROPERTIES} variables={signalId}>
+    <Query query={GET_SIGNAL_PROPERTIES} variables={{ signalId }}>
       {({ data, loading, error }) => {
-        let {
-          signalProperties: { data: properties },
-        } = data
-
-        properties = JSON.parse(properties)
+        let { getSignalInputs } = data
+        const properties = JSON.parse(getSignalInputs)
+        console.log(propertiesState, 'properties')
 
         return (
           <Dialog
@@ -141,9 +139,9 @@ const SignalPreferencesDialog = ({ isDialogOpen, closeDialog, signalId }) => {
                           propertiesState[name]
                             ? propertiesState[name].value
                             : updateProperties({
-                              ...propertiesState,
-                              [name]: { value, type },
-                            })
+                                ...propertiesState,
+                                [name]: { value, type },
+                              })
                         }
                         onChange={(e) => handleChange(name, type, e)}
                       />

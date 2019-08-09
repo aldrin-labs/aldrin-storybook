@@ -199,7 +199,7 @@ class SocialPage extends React.Component {
   render() {
     const {
       selectedPortfolio,
-      myPortfolios,
+      myPortfolios: { myPortfolios },
       getFollowingPortfolios,
       tableData,
       setSelectedPortfolio,
@@ -231,11 +231,12 @@ class SocialPage extends React.Component {
         }
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
+    console.log(myPortfolios)
 
-    console.log('myportfolios', myPortfolios)
+    const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
 
-    let filteredData = getFollowingPortfolios.length
-      ? getFollowingPortfolios.filter((folio) => {
+    let filteredData = dataToFilter.length
+      ? dataToFilter.filter((folio) => {
           return (
             folio.name
               .toLowerCase()
