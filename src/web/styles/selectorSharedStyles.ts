@@ -18,7 +18,7 @@ export const AccountsList = styled.ul`
   list-style: none;
   display: flex;
   flex-direction: column;
-  padding-left: 8px;
+  padding-left: 2rem;
   margin: 0;
   max-height: 30vh;
 `
@@ -52,7 +52,6 @@ export const SelectAll = styled.div`
 `
 
 export const AccountName = styled(TypographyFullWidth)`
-  font-weight: 700;
   height: 50%;
   margin: auto;
   font-family: DM Sans;

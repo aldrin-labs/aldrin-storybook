@@ -12,20 +12,27 @@ import {
   TypographyTitle,
   GridShowHideDataContainer,
   GridAccountContainer,
-  TypographyCalendarLegend,
-  LessMoreContainer,
   GridTableContainer,
   TransactionsTitle,
-  CalendarGrid,
+  PortfolioSelectorWrapper
 } from './TransactionPage.styles'
 
 import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 
+import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
 import Accounts from '@sb/components/Accounts/Accounts'
-import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
+// import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
+import AccountsSlick from './AccountsSlick/AccountsSlick'
 import ShowHideData from './ShowHideData/ShowHideData'
+
+import TransactionsActionsStatistic from './TransactionsActionsStatistic/TransactionsActionsStatistic'
+import WinLossRatio from './WinLossRatio/WinLossRatio'
+
 import { withTheme } from '@material-ui/styles'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 
 const TransactionPageMediaQuery = createGlobalStyle`
   @media only screen and (min-width: 2560px) {
@@ -167,13 +174,17 @@ class TransactionPage extends Component {
               </TypographyContatinerTitle>
             </GridContainerTitle>
             <ContentGrid>
-              <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
+              <PortfolioSelectorWrapper>
+                <SvgIcon src={TransactionsAccountsBackground} style={{
+                  position: 'absolute',
+                  top: '-4rem',
+                  left: 0
+                }} width="100%" height="20rem"/>
+                <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
+                <AccountsSlick/>
+              </PortfolioSelectorWrapper>
 
-              <PortfolioSelector />
-
-              <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
-
-              <Grid style={{ marginTop: '25px' }}>
+              <Grid>
                 <Accounts
                   {...{
                     color,
@@ -195,44 +206,6 @@ class TransactionPage extends Component {
           </GridAccountContainer>
         </Grid>
 
-        {/* Calendar */}
-        <Grid item lg={2} md={2} style={{ marginLeft: '1.5rem' }}>
-          <GridItemContainer
-            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
-          >
-            <GridContainerTitle
-              bgColor={theme.palette.primary.dark}
-              content
-              alignItems="center"
-            >
-              <TypographyContatinerTitle
-                textColor={theme.palette.text.subPrimary}
-              >
-                calendar
-              </TypographyContatinerTitle>
-            </GridContainerTitle>
-            <Grid style={{ padding: '0 0 20px 0' }}>
-              <Grid style={{ padding: '0 0 10px 45px' }}>
-                <GitTransactionCalendar />
-              </Grid>
-              <Grid container justify="center" style={{ margineTop: '15px' }}>
-                <Grid lg={2}>
-                  <TypographyCalendarLegend textAlign={'right'}>
-                    Less
-                  </TypographyCalendarLegend>
-                </Grid>
-
-                <Grid container justify="center" lg={8}>
-                  <LessMoreContainer />
-                </Grid>
-                <Grid lg={2}>
-                  <TypographyCalendarLegend>More</TypographyCalendarLegend>
-                </Grid>
-              </Grid>
-            </Grid>
-          </GridItemContainer>
-        </Grid>
-
         <GridItemContainer
           item
           lg={8}
@@ -240,6 +213,7 @@ class TransactionPage extends Component {
           style={{ boxShadow: 'none', border: 'none', paddingLeft: '1.5rem' }}
         >
           <Grid item style={{ height: '100%' }}>
+            <ChoosePeriod/>
             <GridTableContainer
               item
               lg={12}
@@ -248,31 +222,7 @@ class TransactionPage extends Component {
                 theme.palette.grey[theme.palette.type]
               }`}
             >
-              {/* <Table tableStyles={tableStyles} /> */}
-              <GridContainerTitle
-                content
-                alignItems="center"
-                bgColor={theme.palette.primary.dark}
-              >
-                <Grid
-                  style={{
-                    display: 'flex',
-                    width: '70%',
-                    justifyContent: 'space-between',
-                    padding: '.25rem 1.5rem .5rem'
-                  }}
-                >
-                  <TransactionsTitle textAlign={'left'} textColor={theme.palette.text.subPrimary}>
-                    Transactions
-                  </TransactionsTitle>
-                  <TypographyContatinerTitle textColor={theme.palette.text.subPrimary}>
-                    Jan, 25 - feb, 8, 2019
-                  </TypographyContatinerTitle>
-                </Grid>
-              </GridContainerTitle>
-              <Grid>
-                <TradeOrderHistory style={{ overflow: 'scroll' }} />
-              </Grid>
+              <TradeOrderHistory style={{ overflow: 'scroll' }} />
             </GridTableContainer>
             <PortfolioMainChart
               title="Portfolio performance"
@@ -285,6 +235,16 @@ class TransactionPage extends Component {
               marginTopHr="10px"
             />
           </Grid>
+        </GridItemContainer>
+
+        <GridItemContainer
+          item
+          lg={2}
+          md={2}
+          style={{ boxShadow: 'none', border: 'none', paddingLeft: '1.5rem' }}
+        >
+          <TransactionsActionsStatistic/>
+          <WinLossRatio/>
         </GridItemContainer>
       </Grid>
       </>

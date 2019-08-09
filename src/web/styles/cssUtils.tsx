@@ -32,7 +32,7 @@ export const TypographyFullWidth = styled(TypographyWithCustomColor)`
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
-  padding-left: 9px;
+  padding: 0 1rem;
 `
 
 export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
