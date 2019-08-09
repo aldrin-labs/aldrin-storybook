@@ -80,57 +80,24 @@ const SwitchBall = styled.span`
   transition: all 0.3s;
 `
 
-const update = (mutation, data) => {
-  mutation(data)
-}
-
-const onChangeSignalCheckbox = async (updateSignalMutation, variables) => {
-  console.log('variablesInside', variables)
-
-  await updateSignalMutation({ variables })
-}
-
-class SwitchOnOff extends React.Component {
-  // const [isEnabled, updateEnabled] = useState(enabled)
-  // const [signalId, updateId] = useState(id)
-
-  // const createString = (bool: boolean) => {
-  //   return JSON.stringify([['enabled', 'boolean', bool]])
-  // }
-
-  render() {
-    const { enabled, id, updateSignalMutation, onChange } = this.props
-
-    const variables = {
-      signalId: id,
-      conditions: JSON.stringify([['enabled', 'boolean', !enabled]]),
-    }
-
-    const id_2 = '5d4d6e01439e8c2343631fd0'
-    console.log('variables', variables)
-    console.log('id', id)
-
-    return (
-      <SwitchWrapper key={id}>
-        <Checkbox
-          type="checkbox"
-          name="onoffswitch"
-          class="onoffswitch-checkbox"
-          id="myonoffswitch"
-          checked={enabled}
-          // onChange={async () => {
-          //   console.log(variables)
-          //   await onChangeSignalCheckbox(updateSignalMutation, variables)
-          // }}
-          onChange={() => console.log(id)}
-        />
-        <Label for="myonoffswitch">
-          <SwitchInner className="label--switch__inner" />
-          <SwitchBall className="label--switch__ball" />
-        </Label>
-      </SwitchWrapper>
-    )
-  }
+const SwitchOnOff = ({ enabled, id, _id, onChange, onClick }) => {
+  return (
+    <SwitchWrapper key={_id}>
+      <Checkbox
+        key={_id}
+        type="checkbox"
+        name={`onoffswitch-${_id}`}
+        class="onoffswitch-checkbox"
+        id={`myonoffswitch-${_id}`}
+        checked={enabled}
+        onChange={onChange}
+      />
+      <Label for={`myonoffswitch-${_id}`}>
+        <SwitchInner className="label--switch__inner" />
+        <SwitchBall className="label--switch__ball" />
+      </Label>
+    </SwitchWrapper>
+  )
 }
 
 export default SwitchOnOff

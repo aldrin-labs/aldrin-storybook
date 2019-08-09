@@ -231,7 +231,6 @@ class SocialPage extends React.Component {
         }
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
-    console.log(myPortfolios)
 
     const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
 

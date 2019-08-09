@@ -23,6 +23,7 @@ import {
 
 import { Query } from 'react-apollo'
 import { GET_SIGNAL_PROPERTIES } from '@core/graphql/queries/signals/getSignalProperties'
+import SwitchOnOff from '@sb/components/SwitchOnOff'
 
 const SignalPreferencesDialog = ({
   isDialogOpen,
@@ -37,11 +38,15 @@ const SignalPreferencesDialog = ({
 
     if (e.target.value === '') {
       value = ''
-    } else if (type === 'float') {
-      value = Number(Math.round(e.target.value * 1000) / 1000)
-    } else if (type === 'int') {
-      value = Number(parseInt(e.target.value, 10).toFixed(0))
-    } else value = e.target.value
+    } else if (type === 'number') {
+      value = Number(e.target.value)
+    } else if (type === 'object') {
+      try {
+        value = JSON.parse(e.target.value)
+      } catch (e) {
+        //console.log(e)
+      }
+    }
 
     updateProperties({
       ...propertiesState,
@@ -49,11 +54,16 @@ const SignalPreferencesDialog = ({
     })
   }
 
+  const handleBoolean = (name, type, bool) => {
+    updateProperties({
+      ...propertiesState,
+      [name]: { value: !bool, type },
+    })
+  }
+
   const resetValue = (name, type, value) => {
-    if (type === 'float') {
-      value = Number(Math.round(value * 1000) / 1000)
-    } else if (type === 'int') {
-      value = parseInt(value, 10).toFixed(0)
+    if (type === 'number') {
+      value = Number(value)
     }
 
     updateProperties({
@@ -81,7 +91,7 @@ const SignalPreferencesDialog = ({
 
         if (!getSignalInputs) return null
         const properties = JSON.parse(getSignalInputs)
-        console.log(properties, signalId)
+        console.log(propertiesState)
         return (
           <Dialog
             PaperComponent={StyledPaper}
@@ -125,39 +135,49 @@ const SignalPreferencesDialog = ({
               </Grid>
               {properties.map((property) => {
                 const [name, type, value] = property
-                let step
-                let inputType = 'number'
-
-                if (type === 'int') step = 1
-                else if (type === 'float') step = 'any'
-                else {
-                  step = false
-                  inputType = 'string'
-                }
 
                 return (
                   <SignalPropertyGrid>
                     <PropertyName>{name}</PropertyName>
-                    <PropertyInput
-                      width="60"
-                      placeholder={value}
-                      type={inputType}
-                      step={step}
-                      value={
-                        propertiesState[name]
-                          ? propertiesState[name].value
-                          : updateProperties({
-                              ...propertiesState,
-                              [name]: { value, type },
-                            })
-                      }
-                      onChange={(e) => handleChange(name, type, e)}
-                    />
-                    <RefreshButton
-                      onClick={() => resetValue(name, type, value)}
-                    >
-                      <Refresh color="inherit" style={{ margin: '0 auto' }} />
-                    </RefreshButton>
+                    {type !== 'boolean' ? (
+                      <>
+                        <PropertyInput
+                          width="60"
+                          placeholder={value}
+                          type={type}
+                          value={
+                            propertiesState[name]
+                              ? propertiesState[name].value
+                              : updateProperties({
+                                  ...propertiesState,
+                                  [name]: { value, type },
+                                })
+                          }
+                          onChange={(e) => handleChange(name, type, e)}
+                        />
+                        <RefreshButton
+                          onClick={() => resetValue(name, type, value)}
+                        >
+                          <Refresh
+                            color="inherit"
+                            style={{ margin: '0 auto' }}
+                          />
+                        </RefreshButton>
+                      </>
+                    ) : (
+                      <SwitchOnOff
+                        enabled={
+                          propertiesState[name]
+                            ? propertiesState[name].value
+                            : updateProperties({
+                                ...propertiesState,
+                                [name]: { value, type },
+                              })
+                        }
+                        _id={name}
+                        onChange={() => handleBoolean(name, type, value)}
+                      />
+                    )}
                   </SignalPropertyGrid>
                 )
               })}
@@ -171,7 +191,6 @@ const SignalPreferencesDialog = ({
               <SaveButton
                 padding=""
                 onClick={() => {
-                  console.log(signalId, createUpdatedData())
                   updateSignalMutation({
                     variables: {
                       signalId,

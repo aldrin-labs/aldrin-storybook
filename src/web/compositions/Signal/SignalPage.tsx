@@ -123,7 +123,7 @@ const SignalEventList = (props) => {
   )
 
   return (
-    <ContainerGrid container>
+    <ContainerGrid container style={{ position: 'relative' }}>
       <TableWithSort
         style={{ height: '100%', overflowY: 'scroll' }}
         id="SignalSocialTable"
@@ -172,73 +172,71 @@ const SignalEventList = (props) => {
   )
 }
 
-const SignalListItem = ({
-  el,
-  // onClick,
-  id,
-  isSelected,
-  openDialog,
-  onChange,
-  setCurrentSignal,
-}) => {
-  console.log('el', el)
+class SignalListItem extends React.Component {
+  render() {
+    const {
+      el,
+      isSelected,
+      openDialog,
+      toggleEnableSignal,
+      index,
+      _id,
+      enabled,
+      updateSignalMutation,
+    } = this.props
 
-  return (
-    <FolioCard
-      // key={el._id}
-      container
-      // onClick={onClick}
-      border={isSelected ? '22px' : '22px 22px 0 0 '}
-      boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
-      borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
-    >
-      <Grid container justify="space-between">
-        <Grid item>
-          <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
-          <TypographySubTitle>
-            {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
-          </TypographySubTitle>
-        </Grid>
-        <TypographyEditButton
-          onClick={() => {
-            openDialog(el._id)
-          }}
-        >
-          edit
-        </TypographyEditButton>
-      </Grid>
-      <Grid
+    return (
+      <FolioCard
         container
-        alignItems="center"
-        alignContent="center"
-        justify="space-between"
+        border={isSelected ? '22px' : '22px 22px 0 0 '}
+        boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
+        borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
       >
-        <FolioValuesCell item>
-          <TypographyTitle>Last update</TypographyTitle>
-          <TypographyTitle color={'#16253D'}>
-            {el.lastUpdate || 'today'}
-          </TypographyTitle>
-        </FolioValuesCell>
-        <FolioValuesCell item center={true}>
-          <div>
-            <TypographyTitle>Signals generated</TypographyTitle>
-            <TypographyTitle
-              fontSize={'1rem'}
-              color={isSelected ? '#97C15C' : '#2F7619'}
-            >
-              {el.signalsCount || '24'}
+        <Grid container justify="space-between">
+          <Grid item>
+            <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+            <TypographySubTitle>
+              {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
+            </TypographySubTitle>
+          </Grid>
+          <TypographyEditButton onClick={() => openDialog(el._id)}>
+            edit
+          </TypographyEditButton>
+        </Grid>
+        <Grid
+          container
+          alignItems="center"
+          alignContent="center"
+          justify="space-between"
+        >
+          <FolioValuesCell item>
+            <TypographyTitle>Last update</TypographyTitle>
+            <TypographyTitle color={'#16253D'}>
+              {el.lastUpdate || 'today'}
             </TypographyTitle>
-          </div>
-        </FolioValuesCell>
-        <SwitchOnOff
-          // key={el._id}
-          enabled={el.enabled}
-          id={id}
-          onChange={onChange}
-        />
-      </Grid>
-    </FolioCard>
-  )
+          </FolioValuesCell>
+          <FolioValuesCell item center={true}>
+            <div>
+              <TypographyTitle>Signals generated</TypographyTitle>
+              <TypographyTitle
+                fontSize={'1rem'}
+                color={isSelected ? '#97C15C' : '#2F7619'}
+              >
+                {el.signalsCount || '24'}
+              </TypographyTitle>
+            </div>
+          </FolioValuesCell>
+          <SwitchOnOff
+            enabled={enabled}
+            _id={_id}
+            onChange={() =>
+              toggleEnableSignal(index, _id, enabled, updateSignalMutation)
+            }
+          />
+        </Grid>
+      </FolioCard>
+    )
+  }
 }
 
 const sortBy = [
@@ -267,33 +265,6 @@ class SocialPage extends React.Component {
     followingSignalsList: [],
   }
 
-  componentDidMount() {
-    const {
-      getFollowingSignalsQuery: { getFollowingSignals },
-    } = this.props
-
-    this.setState({
-      followingSignalsList: JSON.parse(JSON.stringify(getFollowingSignals)),
-      ids: getFollowingSignals.map((el) => el._id),
-    })
-  }
-
-  // componentDidMount() {
-  //   const {
-  //     getFollowingSignalsQuery: { getFollowingSignals },
-  //   } = this.props
-
-  //   const invervalId = setInterval(() => {
-  //     this.props.refetch()
-  //   }, 30000)
-
-  //   this.setState({ invervalId })
-  // }
-
-  // componentWillUnmount() {
-  //   clearInterval(this.state.invervalId)
-  // }
-
   openDialog = (signalId) => {
     console.log('signalId open dialog', signalId)
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
@@ -307,18 +278,16 @@ class SocialPage extends React.Component {
     this.setState({ isDialogOpen: false, currentSignalId: null })
   }
 
-  onChangeSignalCheckbox = async (updateSignalMutation, variables) => {
-    console.log('variablesInside', variables)
+  toggleEnableSignal = (arg, arg2, arg3, updateSignalMutation) => {
+    // console.log('arg', arg)
+    // console.log('arg2', arg2)
 
-    await updateSignalMutation({ variables })
-  }
-
-  getIds = (getFollowingSignals) => {
-    const ids = getFollowingSignals.map((el) => {
-      return el._id
+    updateSignalMutation({
+      variables: {
+        signalId: arg2,
+        conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
+      },
     })
-
-    this.setState({ ids })
   }
 
   render() {
@@ -335,21 +304,16 @@ class SocialPage extends React.Component {
 
     const { selectedSignal = 0, currentSignalId } = this.state
 
-    const sharedSignalsList = followingSignalsList.map((el, index) => (
+    const sharedSignalsList = getFollowingSignals.map((el, index) => (
       <SignalListItem
-        key={`${index}${el._id}`}
+        index={index}
+        key={index}
         isSelected={index === selectedSignal}
         el={el}
-        onChange={() => {
-          this.onChangeSignalCheckbox(updateSignalMutation, {
-            signalId: ids[index],
-            conditions: JSON.stringify([['enabled', 'boolean', false]]),
-          })
-        }}
-        // onClick={() => {
-        //   this.setState({ selectedSignal: index })
-        // }}
-        id={ids[index]}
+        _id={el._id}
+        enabled={el.enabled}
+        toggleEnableSignal={this.toggleEnableSignal}
+        updateSignalMutation={updateSignalMutation}
         openDialog={this.openDialog}
         setCurrentSignal={this.setCurrentSignal}
       />
@@ -467,6 +431,9 @@ export default compose(
   }),
   graphql(updateSignal, {
     name: 'updateSignalMutation',
+    options: {
+      refetchQueries: [{ query: GET_FOLLOWING_SIGNALS_QUERY }],
+    },
   })
 )(SocialPage)
 
