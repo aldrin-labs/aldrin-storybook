@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Grid, Typography, Input, SvgIcon } from '@material-ui/core'
+import { Grid, Typography, Input, SvgIcon, Button } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const InputCustom = styled(Input)`
@@ -186,3 +186,37 @@ export const GridFolioConteiner = styled(Grid)`
             height: 50vh,
 
 */
+
+export const Wrapper = styled(Grid)`
+  width: 100%;
+  border-radius: 0.7rem;
+  background: #fff;
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+`
+
+export const WrapperTitle = styled(Wrapper)`
+  text-align: center;
+  padding: 0.9rem 0;
+  margin-bottom: 2rem;
+`
+
+export const WrapperContent = styled(Wrapper)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem 1rem;
+  margin: 1rem 0;
+`
+
+export const TypographyContent = styled(PortfolioName)`
+  color: #16253d;
+  font-size: 1.2rem;
+`
+
+export const UnshareButton = styled(Button)`
+  font-size: 0.7rem;
+  border-radius: 1rem;
+  color: #b93b2b;
+  border: 1px solid #b93b2b;
+  padding: 0.1rem 0.4rem 0 0.4rem;
+`
