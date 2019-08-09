@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { Mutation } from 'react-apollo'
+import { updateSignal } from '@core/graphql/mutations/signals/updateSignal'
 
 const SwitchWrapper = styled.div`
   position: relative;
@@ -77,20 +79,51 @@ const SwitchBall = styled.span`
   transition: all 0.3s;
 `
 
-const SwitchOnOff = (checked: boolean) => {
+const SwitchOnOff = ({ enabled, id }) => {
+  const [isEnabled, updateEnabled] = useState(enabled)
+
+  const createString = (bool: boolean) => {
+    return JSON.stringify([['enabled', 'boolean', bool]])
+  }
+
   return (
-    <SwitchWrapper>
-      <Checkbox
-        type="checkbox"
-        name="onoffswitch"
-        class="onoffswitch-checkbox"
-        id="myonoffswitch"
-      />
-      <Label for="myonoffswitch">
-        <SwitchInner className="label--switch__inner" />
-        <SwitchBall className="label--switch__ball" />
-      </Label>
-    </SwitchWrapper>
+    <Mutation
+      mutation={updateSignal}
+      // variables={{ signalId: id, conditions: createString(isEnabled) }}
+    >
+      {(updateSignal) => (
+        <SwitchWrapper>
+          <Checkbox
+            type="checkbox"
+            name="onoffswitch"
+            class="onoffswitch-checkbox"
+            id="myonoffswitch"
+            checked={isEnabled}
+            onChange={() => {
+              console.log(
+                'id',
+                id,
+                'conditions',
+                `[[\"enabled\",\"boolean\",${!isEnabled}]]`
+              )
+              updateSignal({
+                variables: {
+                  signalId: id,
+                  conditions: JSON.stringify([
+                    ['enabled', 'boolean', !isEnabled],
+                  ]),
+                },
+              })
+              updateEnabled(!isEnabled)
+            }}
+          />
+          <Label for="myonoffswitch">
+            <SwitchInner className="label--switch__inner" />
+            <SwitchBall className="label--switch__ball" />
+          </Label>
+        </SwitchWrapper>
+      )}
+    </Mutation>
   )
 }
 

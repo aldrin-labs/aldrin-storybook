@@ -18,6 +18,10 @@ import {
   StyledSvgIcon,
   GridFolioConteiner,
   TypographyEmptyFolioPanel,
+  TypographyContent,
+  WrapperTitle,
+  WrapperContent,
+  UnshareButton,
 } from './SocialPage.styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -195,6 +199,7 @@ class SocialPage extends React.Component {
   render() {
     const {
       selectedPortfolio,
+      myPortfolios: { myPortfolios },
       getFollowingPortfolios,
       tableData,
       setSelectedPortfolio,
@@ -226,8 +231,12 @@ class SocialPage extends React.Component {
         }
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
-    let filteredData = getFollowingPortfolios.length
-      ? getFollowingPortfolios.filter((folio) => {
+    console.log(myPortfolios)
+
+    const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
+
+    let filteredData = dataToFilter.length
+      ? dataToFilter.filter((folio) => {
           return (
             folio.name
               .toLowerCase()
@@ -463,12 +472,22 @@ class SocialPage extends React.Component {
                 </Grid>
               </>
             ) : (
-              <Grid container xs={12}>
+              <Grid
+                container
+                justify="center"
+                alignItems="center"
+                xs={12}
+                style={{ height: '85%' }}
+              >
                 <Grid item xs={4}>
-                  data in panels
-                </Grid>
-                <Grid item xs={8}>
-                  data in perform chart
+                  <WrapperTitle>
+                    <TypographyTitle>{`Shared to`}</TypographyTitle>
+                    <TypographyContent>{`4 people`}</TypographyContent>
+                  </WrapperTitle>
+                  <WrapperContent>
+                    <TypographyContent>{`andrew willson`}</TypographyContent>
+                    <UnshareButton>unshare</UnshareButton>
+                  </WrapperContent>
                 </Grid>
               </Grid>
             )}

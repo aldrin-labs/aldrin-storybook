@@ -48,7 +48,6 @@ import {
   TypographyEditButton,
 } from './SignalPage.styles'
 
-
 const putDataInTable = (tableData, theme, state) => {
   if (!tableData || tableData.length === 0) {
     return { head: [], body: [], footer: null }
@@ -74,7 +73,6 @@ const putDataInTable = (tableData, theme, state) => {
   }
 }
 
-
 const transformData = (data: any[]) => {
   const transformedData = data.map((row) => ({
     id: row._id,
@@ -89,12 +87,16 @@ const transformData = (data: any[]) => {
     amount: {
       contentToSort: row.amount,
       contentToCSV: roundAndFormatNumber(row.amount, 2, true),
-      render: row.amount ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true) : '-',
+      render: row.amount
+        ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
+        : '-',
     },
     spread: {
       contentToSort: row.spread,
       contentToCSV: roundAndFormatNumber(row.spread, 2, false),
-      render: row.spread ? `${roundAndFormatNumber(row.spread, 2, false)} %` : '-',
+      render: row.spread
+        ? `${roundAndFormatNumber(row.spread, 2, false)} %`
+        : '-',
     },
     priceA: {
       contentToSort: row.priceA,
@@ -198,8 +200,7 @@ const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
         <FolioValuesCell item>
           <TypographyTitle>Last update</TypographyTitle>
           <TypographyTitle color={'#16253D'}>
-            {/* {el.lastUpdate} */}
-            today
+            {el.lastUpdate || 'today'}
           </TypographyTitle>
         </FolioValuesCell>
         <FolioValuesCell item center={true}>
@@ -209,12 +210,11 @@ const SignalListItem = ({ el, onClick, isSelected, openDialog }) => {
               fontSize={'1rem'}
               color={isSelected ? '#97C15C' : '#2F7619'}
             >
-              {/* {el.signalsCount} */}
-              24
+              {el.signalsCount || '24'}
             </TypographyTitle>
           </div>
         </FolioValuesCell>
-        <SwitchOnOff />
+        <SwitchOnOff enabled={el.enabled} id={el._id} />
       </Grid>
     </FolioCard>
   )
@@ -245,6 +245,10 @@ class SocialPage extends React.Component {
   }
 
   componentDidMount() {
+    const {
+      getFollowingSignalsQuery: { getFollowingSignals },
+    } = this.props
+
     const invervalId = setInterval(() => {
       this.props.refetch()
     }, 30000)
@@ -269,7 +273,8 @@ class SocialPage extends React.Component {
       getFollowingSignalsQuery: { getFollowingSignals },
     } = this.props
 
-    const { selectedSignal = 0 } = this.state
+    const { selectedSignal = 0, currentSignalId } = this.state
+
     const sharedSignalsList = getFollowingSignals.map((el, index) => (
       <SignalListItem
         key={index}
@@ -371,11 +376,13 @@ class SocialPage extends React.Component {
             ) : null}
           </Grid>
         </Grid>
-        <SignalPreferencesDialog
-          isDialogOpen={this.state.isDialogOpen}
-          closeDialog={this.closeDialog}
-          signalId={this.state.currentSignalId}
-        />
+        {currentSignalId !== null ? (
+          <SignalPreferencesDialog
+            isDialogOpen={this.state.isDialogOpen}
+            closeDialog={this.closeDialog}
+            signalId={currentSignalId}
+          />
+        ) : null}
       </Grid>
     )
   }
@@ -386,7 +393,8 @@ export default compose(
   queryRendererHoc({
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
-    // fetchPolicy: 'network-only',
+    pollInterval: 5000,
+    fetchPolicy: 'network-only',
   })
 )(SocialPage)
 
