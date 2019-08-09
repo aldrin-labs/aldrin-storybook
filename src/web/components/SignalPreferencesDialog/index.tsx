@@ -42,7 +42,7 @@ const SignalPreferencesDialog = ({
       value = Number(e.target.value)
     } else if (type === 'object') {
       try {
-        value = JSON.parse(e.target.value)
+        value = String(e.target.value)
       } catch (e) {
         //console.log(e)
       }
@@ -73,9 +73,16 @@ const SignalPreferencesDialog = ({
   }
 
   const createUpdatedData = () => {
-    const arr = Object.entries(propertiesState).map(([name, value]) => {
-      return [name, value.type, value.value]
-    })
+    const arr = Object.entries(propertiesState).map(
+      ([name, { type, value }]) => {
+        if (type === 'object') {
+          try {
+            return [name, type, JSON.parse(value)]
+          } catch (e) {}
+        }
+        return [name, type, value]
+      }
+    )
 
     return JSON.stringify(arr.reverse())
   }
@@ -134,7 +141,8 @@ const SignalPreferencesDialog = ({
                 <Line />
               </Grid>
               {properties.map((property) => {
-                const [name, type, value] = property
+                let [name, type, value] = property
+                if (type === 'object') value = JSON.stringify(value)
 
                 return (
                   <SignalPropertyGrid>
