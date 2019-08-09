@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Mutation } from 'react-apollo'
 import { updateSignal } from '@core/graphql/mutations/signals/updateSignal'
+import { graphql } from 'react-apollo'
 
 const SwitchWrapper = styled.div`
   position: relative;
@@ -79,51 +80,23 @@ const SwitchBall = styled.span`
   transition: all 0.3s;
 `
 
-const SwitchOnOff = ({ enabled, id }) => {
-  const [isEnabled, updateEnabled] = useState(enabled)
-
-  const createString = (bool: boolean) => {
-    return JSON.stringify([['enabled', 'boolean', bool]])
-  }
-
+const SwitchOnOff = ({ enabled, id, _id, onChange, onClick }) => {
   return (
-    <Mutation
-      mutation={updateSignal}
-      // variables={{ signalId: id, conditions: createString(isEnabled) }}
-    >
-      {(updateSignal) => (
-        <SwitchWrapper>
-          <Checkbox
-            type="checkbox"
-            name="onoffswitch"
-            class="onoffswitch-checkbox"
-            id="myonoffswitch"
-            checked={isEnabled}
-            onChange={() => {
-              console.log(
-                'id',
-                id,
-                'conditions',
-                `[[\"enabled\",\"boolean\",${!isEnabled}]]`
-              )
-              updateSignal({
-                variables: {
-                  signalId: id,
-                  conditions: JSON.stringify([
-                    ['enabled', 'boolean', !isEnabled],
-                  ]),
-                },
-              })
-              updateEnabled(!isEnabled)
-            }}
-          />
-          <Label for="myonoffswitch">
-            <SwitchInner className="label--switch__inner" />
-            <SwitchBall className="label--switch__ball" />
-          </Label>
-        </SwitchWrapper>
-      )}
-    </Mutation>
+    <SwitchWrapper key={_id}>
+      <Checkbox
+        key={_id}
+        type="checkbox"
+        name={`onoffswitch-${_id}`}
+        class="onoffswitch-checkbox"
+        id={`myonoffswitch-${_id}`}
+        checked={enabled}
+        onChange={onChange}
+      />
+      <Label for={`myonoffswitch-${_id}`}>
+        <SwitchInner className="label--switch__inner" />
+        <SwitchBall className="label--switch__ball" />
+      </Label>
+    </SwitchWrapper>
   )
 }
 
