@@ -12,7 +12,7 @@ export const TypographyAccountName = styled(Typography)`
     font-family: 'DM Sans', sans-serif;
     font-weight: 700;
     letter-spacing: 1.5px;
-    font-size: 1.5rem;
+    font-size: ${props => props.isSideNav ? '2rem' : '1.5rem'};
     line-height: 100%;
     text-transform: uppercase;
     text-align: center;
@@ -21,10 +21,10 @@ export const TypographyAccountMoney = styled(Typography)`
     color: #fff;
     font-family: 'DM Sans', sans-serif;
     letter-spacing: 1.5px;
-    font-size: 1rem;
+    font-size: ${props => props.isSideNav ? '1.25rem' : '1rem'};
     line-height: 100%;
     text-transform: uppercase;
-    margin-top: 1rem;
+    margin-top: ${props => props.isSideNav ? '1.5rem' : '1rem'};
     text-align: center;
 `
 

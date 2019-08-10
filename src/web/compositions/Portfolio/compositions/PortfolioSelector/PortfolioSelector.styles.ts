@@ -41,7 +41,6 @@ export const AccountsWalletsBlock = styled.div`
   font-family: ${(props: { fontFamily: string }) => props.fontFamily};
   min-width: 200px;
   background-color: ${(props: { background: string }) => props.background};
-  padding: 16px;
   left: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
     isSideNavOpen ? '0' : '-18.4rem'};
   cursor: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
@@ -77,13 +76,13 @@ export const AddAccountBlock = styled.div`
 //   <Typography {...rest}/>
 // ))`
 export const TypographyTitle = styled(Typography)`
-  font-family: 'DM Sans', sans-serif;
-  font-size: ${(props) => props.fontSize || `1.2rem`};
-  line-height: ${(props) => props.lineHeight || '35px'};
+  font-family: DM Sans;
+  font-size: ${(props) => props.fontSize || `1.25rem`};
+  line-height: ${(props) => props.lineHeight || '3rem'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: ${(props) => props.textColor || '#ABBAD1'};
-  margin-left: 12px;
+  color: #fff;
+  margin-left: 10px;
 `
 
 export const GridRow = styled(Grid)``
@@ -96,17 +95,18 @@ export const SliderContainer = styled(Grid)`
   padding: 0 15px;
 `
 export const GridSection = styled(Grid)`
-  border-bottom: 1px solid #e7ecf3;
-  padding: 25px 0;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  position: relative;
 `
 export const GridSectionAccounts = styled(Grid)`
-  padding: 25px 0;
+  padding: 2.4rem 1.6rem;
 `
 
 export const GridSectionDust = styled(Grid)`
   min-width: 380px;
   border-top: 1px solid #e7ecf3;
-  padding: 25px 0;
+  padding: 2.4rem 1.6rem;
   position: absolute;
   bottom: 0;
 `
