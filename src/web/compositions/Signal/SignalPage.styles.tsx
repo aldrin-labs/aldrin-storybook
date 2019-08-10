@@ -76,11 +76,19 @@ export const PortfolioName = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
-  font-size: 1.4rem;
+  font-size: ${(props) => (props.bigName ? '1rem' : '1.4rem')};
   letter-spacing: 0.5px;
   text-transform: uppercase;
   padding: 0;
   color: ${(props) => props.textColor};
+
+  @media (max-width: 1600px) {
+    white-space: pre-wrap;
+  }
+
+  @media (min-width: 1921px and max-width: 2160px) {
+    font-size: ${(props) => (props.bigName ? '.9rem' : '1.4rem')};
+  }
 
   @media (min-width: 2560px) {
     padding: 0.3rem 0 0 0.5rem;

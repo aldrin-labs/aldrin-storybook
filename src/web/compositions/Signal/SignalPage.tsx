@@ -195,8 +195,10 @@ class SignalListItem extends React.Component {
         onClick={onClick}
       >
         <Grid container justify="space-between">
-          <Grid item>
-            <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+          <Grid item style={{ maxWidth: '70%' }}>
+            <PortfolioName textColor={'#16253D'} bigName={el.name.length > 30}>
+              {el.name}
+            </PortfolioName>
             <TypographySubTitle>
               {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
             </TypographySubTitle>
@@ -268,7 +270,6 @@ class SocialPage extends React.Component {
   }
 
   openDialog = (signalId) => {
-    console.log('signalId open dialog', signalId)
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
   }
 
@@ -281,9 +282,6 @@ class SocialPage extends React.Component {
   }
 
   toggleEnableSignal = (arg, arg2, arg3, updateSignalMutation) => {
-    // console.log('arg', arg)
-    // console.log('arg2', arg2)
-
     updateSignalMutation({
       variables: {
         signalId: arg2,
