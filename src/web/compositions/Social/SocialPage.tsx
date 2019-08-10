@@ -261,12 +261,17 @@ class SocialPage extends React.Component {
     // my tab data
     const sharedWith = getSharedPortfolios.sharedPortfolios
 
-    console.log('mutation', unsharePortfolioMutation)
-
-    const unshare = (followerId) => {
+    const unshare = (portfolioId, followerId) => {
+      console.log({
+        variables: {
+          inputPortfolio: { id: portfolioId },
+          options: { forAll: false, userId: followerId },
+        },
+      })
       unsharePortfolioMutation({
         variables: {
-          inputPortfolio: { id: followerId },
+          inputPortfolio: { id: portfolioId },
+          options: { forAll: false, userId: followerId },
         },
       })
     }
@@ -388,8 +393,8 @@ class SocialPage extends React.Component {
           <Grid continer lg={12}>
             <SocialPortfolioInfoPanel
               folioData={
-                getFollowingPortfolios.length
-                  ? getFollowingPortfolios[selectedPortfolio]
+                dataToFilter.length
+                  ? dataToFilter[selectedPortfolio]
                   : { name: '', isPrivate: true, ownerId: '' }
               }
             />
@@ -503,11 +508,12 @@ class SocialPage extends React.Component {
                   </WrapperTitle>
                   {sharedWith.map(
                     ({ _id: portfolioId, sharedWith: { email, _id } }) => {
-                      console.log('portfId', portfolioId, email, _id)
                       return (
                         <WrapperContent key={_id}>
                           <TypographyContent>{`${email}`}</TypographyContent>
-                          <UnshareButton onClick={() => unshare(_id)}>
+                          <UnshareButton
+                            onClick={() => unshare(portfolioId, _id)}
+                          >
                             unshare
                           </UnshareButton>
                         </WrapperContent>
