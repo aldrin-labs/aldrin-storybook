@@ -210,9 +210,15 @@ export const FolioCard = styled(Grid)`
   border-bottom: 1px solid #e0e5ec;
   box-shadow: ${(props) => props.boxShadow};
   border-radius: ${(props) => props.borderRadius};
+  transition: all 0.3s;
 
   @media (min-width: 1921px) {
     height: auto;
+  }
+
+  &:hover {
+    box-shadow: 0px 0px 34px -25px rgba(0, 0, 0, 0.6);
+    transform: scale(1.05);
   }
 `
 export const GridFolioScroll = styled(Grid)`
