@@ -13,6 +13,10 @@ export const AccountsListItem = styled.li`
   padding: 0;
   min-height: 7vh;
 
+  &:not(:last-child) {
+    border-bottom: 1px solid #E0E5EC;
+  }
+
   svg {
     width: 2.5rem;
     height: 2.5rem;
@@ -62,12 +66,10 @@ export const AccountName = styled(TypographyFullWidth)`
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
-  letter-spacing: 1.5px;
+  letter-spacing: ${props => props.letterSpacing || '1.5px'};
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: 0;
-  border-bottom: '1px solid #E0E5EC';
-  padding-top: '10px';
 `
 
 export const Headline = styled.div`

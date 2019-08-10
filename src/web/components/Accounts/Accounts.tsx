@@ -1,5 +1,5 @@
 import React from 'react'
-import { Checkbox, Radio } from '@material-ui/core'
+import { Checkbox, Radio, Grid } from '@material-ui/core'
 
 import { IProps } from './Accounts.types'
 import {
@@ -9,6 +9,7 @@ import {
   StyledIcon,
   SelectAll,
   AccountName,
+  AccountMoney,
   AccountsList,
   AccountsListItem,
   TypographyTitle,
@@ -17,6 +18,9 @@ import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import ExchangeLogo from '@icons/ExchangeLogo.svg'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions';
@@ -94,20 +98,24 @@ export default class Accounts extends React.PureComponent<IProps> {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  borderBottom: '1px solid #E0E5EC',
                   padding: '5px 0',
                 }}
               >
+                {isSidebar && <SvgIcon src={ExchangeLogo} style={{
+                  marginRight: '.8rem'
+                }} width="3.5rem" height="auto"/>}
+
                 <AccountName
-                  align="left"
-                  variant="body1"
-                  //color={isChecked ? 'secondary' : 'textSecondary'}
-                  lineHeight={'20px'}
-                  fontSize={'1.184rem'}
-                  textColor={'#7284A0'}
-                >
-                  {keyName.name}
-                  {/* <TypographyTitle>$500,000.00</TypographyTitle> */}
+                    align="left"
+                    variant="body1"
+                    //color={isChecked ? 'secondary' : 'textSecondary'}
+                    lineHeight={'2rem'}
+                    fontSize={'1.4rem'}
+                    textColor={'#7284A0'}
+                    letterSpacing="1px"
+                  >
+                    {keyName.name}
+                    <TypographyTitle lineHeight="122.5%">$500,000.00</TypographyTitle>
                 </AccountName>
                 <Component
                   disabled={!login}
