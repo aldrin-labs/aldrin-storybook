@@ -122,6 +122,9 @@ export default class Accounts extends React.PureComponent<IProps> {
                       onKeyToggle(keyName._id)
                     }
                   }}
+                  style={{
+                    padding: '6px 12px'
+                  }}
                 />
                 {isSidebar && <PortfolioSelectorPopup
                     accountName={keyName.name}

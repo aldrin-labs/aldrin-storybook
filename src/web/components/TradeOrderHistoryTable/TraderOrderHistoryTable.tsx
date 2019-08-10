@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
+import { withWidth } from '@material-ui/core'
+import { isWidthUp } from '@material-ui/core/withWidth'
 import { withTheme } from '@material-ui/styles'
 
 @withTheme()
@@ -8,7 +10,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   state = {
     activeSortArg: null,
     page: 0,
-    rowsPerPage: 11,
+    rowsPerPage: 7,
   }
 
   handleChangePage = (
@@ -23,7 +25,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   }
 
   render() {
-    const { rows, theme } = this.props
+    const { rows } = this.props
 
     return (
       <StyledTable
@@ -34,7 +36,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         columnNames={rows.head}
         emptyTableText="No history"
         pagination={{
-          // enabled: false, // toogle page nav panel in the footer
+          enabled: true, // toogle page nav panel in the footer
           page: this.state.page,
           rowsPerPage: this.state.rowsPerPage,
           rowsPerPageOptions: [20, 50, 100, 200],
@@ -58,6 +60,14 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       />
     )
   }
+
+  componentDidMount() {
+    if (isWidthUp('xl', this.props.width)) {
+      this.setState({
+        rowsPerPage: 20
+      })
+    }
+  }
 }
 
-export default TradeOrderHistoryTable
+export default withWidth()(TradeOrderHistoryTable)

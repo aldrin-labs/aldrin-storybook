@@ -24,7 +24,7 @@ class CheckboxesGroup extends React.Component {
     return (
       <>
         <FormControlCustom component="fieldset">
-          <Grid container justify="space-between">
+          <Grid container justify="space-between" alignItems="center" style={{ marginBottom: '.75rem' }}>
             <TypographyShowHide>Show Deposit / Withdrawal</TypographyShowHide>
             <CheckboxShowHide
               checked={ShowDepositWithdrawal}
@@ -32,7 +32,7 @@ class CheckboxesGroup extends React.Component {
               value="ShowDepositWithdrawal"
             />
           </Grid>
-          <Grid container justify="space-between">
+          <Grid container justify="space-between" alignItems="center">
             <TypographyShowHide>Show Trades</TypographyShowHide>
             <CheckboxShowHide
               checked={ShowTrades}

@@ -32,7 +32,7 @@ export const GridContainerTitle = styled(Grid)`
   width: 100%;
   border-radius: 20px 20px 0 0;
   background: ${(props) => props.bgColor};
-  margin-bottom: 8px;
+  margin-bottom: .33rem;
 
   @media (min-width: 2560px) {
     height: auto;
@@ -48,8 +48,7 @@ export const GridItemContainer = styled(Grid)`
 `
 
 export const ContentGrid = styled(Grid)`
-  padding: 0 15px;
-  margin-top: 25px;
+  padding: 0;
 `
 
 export const TypographyContatinerTitle = styled(Typography)`
@@ -95,15 +94,15 @@ export const TransactionsTitle = styled(TypographyContatinerTitle)`
 
 export const TypographyAccountTitle = styled(Typography)`
   font-family: DM Sans;
-  font-size: ${(props) => props.fontSize || `1.2rem`};
-  line-height: ${(props) => props.lineHeight || '35px'};
+  font-size: ${(props) => props.fontSize || `1rem`};
+  line-height: ${(props) => props.lineHeight || '3rem'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #7284a0;
+  color: #fff;
   margin-left: 10px;
 
-  @media (min-width: 2560px) {
-  }
+  position: relative;
+  z-index: 2;
 `
 
 export const TypographyTitle = styled(Typography)`
@@ -122,10 +121,10 @@ export const TypographyTitle = styled(Typography)`
 `
 
 export const CalendarGrid = styled(Grid)`
-  padding: 0 0 10px 45px;
+  padding: 0 0 1rem 4.5rem;
 
   @media (min-width: 2560px) {
-    padding: 0 0 10px 80px;
+    padding: 0 0 .5rem 4.5rem;
   }
 `
 
@@ -133,9 +132,8 @@ export const GridShowHideDataContainer = styled(Grid)`
   position: absolute;
   bottom: 0;
   min-width: 100%;
-  padding: 20px 0;
+  padding: 2rem 1.25rem;
   display: flex;
-  justify-content: center;
 `
 
 export const TypographyCalendarLegend = styled(Typography)`
@@ -167,7 +165,6 @@ export const LessMoreContainer = styled(Grid)`
 `
 
 export const GridTableContainer = styled(Grid)`
-  height: 50vh;
   overflow: hidden;
   box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
   border-radius: 20px;
@@ -175,8 +172,15 @@ export const GridTableContainer = styled(Grid)`
   ::-webkit-scrollbar {
     display: none;
   }
+`
 
-  @media (min-width: 2560px) {
-    height: 67vh;
+export const PortfolioSelectorWrapper = styled(Grid)`
+  position: relative;
+  padding: .75rem .5rem;
+  overflow: hidden;
+  min-height: 13.5rem;
+
+  @media only screen and (min-device-width: 2256px) {
+    min-height: 15rem;
   }
 `

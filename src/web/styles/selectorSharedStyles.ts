@@ -12,13 +12,18 @@ export const AccountsListItem = styled.li`
   color: ${(props: { color: string }) => props.color};
   padding: 0;
   min-height: 7vh;
+
+  svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 `
 
 export const AccountsList = styled.ul`
   list-style: none;
   display: flex;
   flex-direction: column;
-  padding-left: 8px;
+  padding-left: 2rem;
   margin: 0;
   max-height: 30vh;
 `
@@ -52,7 +57,6 @@ export const SelectAll = styled.div`
 `
 
 export const AccountName = styled(TypographyFullWidth)`
-  font-weight: 700;
   height: 50%;
   margin: auto;
   font-family: DM Sans;
