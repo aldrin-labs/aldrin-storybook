@@ -201,8 +201,10 @@ class SocialPage extends React.Component {
       selectedPortfolio,
       myPortfolios: { myPortfolios },
       getFollowingPortfolios,
+      getSharedPortfolios,
       tableData,
       setSelectedPortfolio,
+      unsharePortfolioMutation,
     } = this.props
 
     const { isFollowingTab } = this.state
@@ -232,6 +234,7 @@ class SocialPage extends React.Component {
 
     const { head, body, footer = [] } = this.putDataInTable(tableData)
 
+    // data for all page (following or my tab)
     const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
 
     let filteredData = dataToFilter.length
@@ -254,6 +257,19 @@ class SocialPage extends React.Component {
         }}
       />
     ))
+
+    // my tab data
+    const sharedWith = getSharedPortfolios.sharedPortfolios
+
+    console.log('mutation', unsharePortfolioMutation)
+
+    const unshare = (followerId) => {
+      unsharePortfolioMutation({
+        variables: {
+          inputPortfolio: { id: followerId },
+        },
+      })
+    }
 
     const sortBy = [
       {
@@ -481,12 +497,23 @@ class SocialPage extends React.Component {
                 <Grid item xs={4}>
                   <WrapperTitle>
                     <TypographyTitle>{`Shared to`}</TypographyTitle>
-                    <TypographyContent>{`4 people`}</TypographyContent>
+                    <TypographyContent>{`${
+                      sharedWith.length
+                    } people`}</TypographyContent>
                   </WrapperTitle>
-                  <WrapperContent>
-                    <TypographyContent>{`andrew willson`}</TypographyContent>
-                    <UnshareButton>unshare</UnshareButton>
-                  </WrapperContent>
+                  {sharedWith.map(
+                    ({ _id: portfolioId, sharedWith: { email, _id } }) => {
+                      console.log('portfId', portfolioId, email, _id)
+                      return (
+                        <WrapperContent key={_id}>
+                          <TypographyContent>{`${email}`}</TypographyContent>
+                          <UnshareButton onClick={() => unshare(_id)}>
+                            unshare
+                          </UnshareButton>
+                        </WrapperContent>
+                      )
+                    }
+                  )}
                 </Grid>
               </Grid>
             )}

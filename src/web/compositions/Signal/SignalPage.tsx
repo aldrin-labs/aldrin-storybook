@@ -176,6 +176,7 @@ class SignalListItem extends React.Component {
   render() {
     const {
       el,
+      onClick,
       isSelected,
       openDialog,
       toggleEnableSignal,
@@ -189,8 +190,9 @@ class SignalListItem extends React.Component {
       <FolioCard
         container
         border={isSelected ? '22px' : '22px 22px 0 0 '}
-        boxShadow={!isSelected ? 'none' : ' 0px 0px 34px -25px rgba(0,0,0,0.6)'}
+        boxShadow={!isSelected ? 'none' : '0px 0px 34px -25px rgba(0,0,0,0.6)'}
         borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
+        onClick={onClick}
       >
         <Grid container justify="space-between">
           <Grid item>
@@ -296,12 +298,6 @@ class SocialPage extends React.Component {
       updateSignalMutation,
     } = this.props
 
-    const { followingSignalsList, ids } = this.state
-
-    // this.getIds(getFollowingSignals)
-
-    console.log('getfollow', getFollowingSignals)
-
     const { selectedSignal = 0, currentSignalId } = this.state
 
     const sharedSignalsList = getFollowingSignals.map((el, index) => (
@@ -315,7 +311,9 @@ class SocialPage extends React.Component {
         toggleEnableSignal={this.toggleEnableSignal}
         updateSignalMutation={updateSignalMutation}
         openDialog={this.openDialog}
-        setCurrentSignal={this.setCurrentSignal}
+        onClick={() => {
+          this.setState({ selectedSignal: index })
+        }}
       />
     ))
 
