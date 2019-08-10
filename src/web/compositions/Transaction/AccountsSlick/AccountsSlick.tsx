@@ -5,7 +5,6 @@ import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortf
 import Slider from 'react-slick'
 
 import {
-    AccountsSlickWrapper,
     AccountsSlickStyles,
     TypographyAccountName,
     TypographyAccountMoney
@@ -33,7 +32,7 @@ const RightArrow = ({ className, onClick, style }) => <SvgIcon
 
 class AccountsSlick extends Component {
     render() {
-        const { getMyPortfoliosQuery } = this.props
+        const { getMyPortfoliosQuery, isSideNav } = this.props
 
         const settings = {
             speed: 375,
@@ -60,8 +59,8 @@ class AccountsSlick extends Component {
                 <Slider {...settings}>
                     {MyPortfoliosOptions.map(slide => (
                         <div>
-                            <TypographyAccountName>{slide.label}</TypographyAccountName>
-                            <TypographyAccountMoney>$500,000.00</TypographyAccountMoney>
+                            <TypographyAccountName isSideNav={isSideNav}>{slide.label}</TypographyAccountName>
+                            <TypographyAccountMoney isSideNav={isSideNav}>$500,000.00</TypographyAccountMoney>
                         </div>
                     ))}
                 </Slider>

@@ -46,6 +46,12 @@ import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { RadioGroup, Radio } from '@material-ui/core'
 
+import { Icon } from '@sb/styles/cssUtils'
+import SvgIcon from '@sb/components/SvgIcon'
+import PortfolioSidebarBack from '@icons/PortfolioSidebarBack.svg'
+
+import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSlick'
+
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 
 const MyLinkToUserSettings = (props: any) => (
@@ -282,48 +288,25 @@ class PortfolioSelector extends React.Component<IProps> {
           fontFamily={theme.typography.fontFamily}
         >
           <GridSection>
-            <TypographyTitle>Portfolio</TypographyTitle>
-            <ReactSelectCustom
-              value={MyPortfoliosOptions[0]}
-              // onChange={(
-              //   optionSelected: {
-              //     label: string
-              //     value: string
-              //   } | null
-              // ) => onRebalanceTimerChange(optionSelected)}
-              isSearchable={false}
-              options={MyPortfoliosOptions}
-              singleValueStyles={{
-                color: theme.palette.text.subPrimary,
-                fontSize: '1.488rem',
-                padding: '0',
-              }}
-              indicatorSeparatorStyles={{}}
-              controlStyles={{
-                background: 'transparent',
-                border: 'none',
-                width: 150,
-              }}
-              menuStyles={{
-                width: 235,
-                padding: '5px 8px',
-                borderRadius: '14px',
-                textAlign: 'center',
-              }}
-              optionStyles={{
-                color: theme.palette.text.primary, //'#7284A0',
-                background: 'transparent',
-                textAlign: 'center',
-                fontSize: '0.992rem',
-                '&:hover': {
-                  borderRadius: '14px',
-                  color: theme.palette.text.subPrimary,
-                  background: theme.palette.hover[theme.palette.type],
-                },
-              }}
-            />
-            <TypographyTitle lineHeight={'22px'}>$500,000.00</TypographyTitle>
-            <CreatePortfolio />
+            <SvgIcon src={PortfolioSidebarBack} style={{
+              position: 'absolute',
+              top: '-4rem',
+              left: 0
+            }} width="100%" height="20rem"/>
+
+            <Grid style={{ position: 'relative', zIndex: 2, padding: '0 1.5rem' }}>
+              <Grid container justify="space-between" alignItems="center">
+                <TypographyTitle>Portfolio</TypographyTitle>
+                <Icon className="fa fa-ellipsis-h" style={{
+                              fontSize: '1.5rem',
+                              color: 'white'
+                }}/>
+              </Grid>
+
+              <AccountsSlick isSideNav/>
+
+              <CreatePortfolio />
+            </Grid>
           </GridSection>
 
           <GridSectionAccounts>
@@ -344,7 +327,7 @@ class PortfolioSelector extends React.Component<IProps> {
           </GridSectionAccounts>
           {!isRebalance && (
             <GridSectionDust lg={12}>
-              <TypographyTitle>Dust Filter</TypographyTitle>
+              <TypographyTitle style={{ color: '#7284a0' }}>Dust Filter</TypographyTitle>
               <>
                 <SliderContainer>
                   <GridSymbolContainer>%</GridSymbolContainer>

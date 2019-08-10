@@ -20,7 +20,9 @@ import {
   SearchIconCustom,
 } from './AddAccountDialog.styles'
 
-import AddIcon from '@material-ui/icons/Add'
+import SvgIcon from '@sb/components/SvgIcon'
+import Plus from '@icons/Plus.svg'
+
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './AddAccountDialog.types'
 
@@ -99,12 +101,20 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           btnColor={'#165BE0'}
           borderRadius={'1rem'}
           color={'#165BE0'}
-          margin={'35px 0 0 8px'}
+          margin={'1.6rem 0 0 1.2rem'}
           padding={'0px'}
-          fontSize={'1.04rem'}
+          fontSize={'1.4rem'}
+          letterSpacing="1px"
           onClick={this.handleClickOpen}
+
+          style={{
+            border: 'none'
+          }}
         >
-          {/* <AddIcon fontSize={`small`} /> */}+ Add Account
+          <SvgIcon src={Plus} width="3.5rem" height="auto" style={{
+            marginRight: '.8rem'
+          }}/>
+          {/* <AddIcon fontSize={`small`} /> */} Add Account
         </BtnCustom>
         <DialogWrapper
           style={{ borderRadius: '50%' }}
