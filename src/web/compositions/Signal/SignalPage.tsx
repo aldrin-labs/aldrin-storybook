@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
+import moment from 'moment'
 
 import withAuth from '@core/hoc/withAuth'
 import {
@@ -80,7 +81,9 @@ const transformData = (data: any[]) => {
     timestamp: {
       contentToSort: row.t,
       contentToCSV: row.t,
-      render: Math.floor(row.t / 1e9) || '-',
+      render:
+        (row.t && moment.unix(row.t).format('YYYY DD MMM h:mm:ss a')) ||
+        '-',
     },
     pair: row.pair || '-',
     exchangeA: row.exchangea || '-',
