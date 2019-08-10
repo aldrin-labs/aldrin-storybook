@@ -67,8 +67,8 @@ const putDataInTable = (tableData, theme, state) => {
       { id: 'exchangeB', label: 'Exchange B', isNumber: false },
       { id: 'amount', label: 'amount', isNumber: false },
       { id: 'spread', label: 'spread', isNumber: false },
-      { id: 'priceA', label: 'priceA', isNumber: false },
-      { id: 'priceB', label: 'priceB', isNumber: false },
+      { id: 'pricea', label: 'pricea', isNumber: false },
+      { id: 'priceb', label: 'priceb', isNumber: false },
       { id: 'status', label: 'Status', isNumber: false },
     ],
     body: transformData(tableData),
@@ -102,15 +102,15 @@ const transformData = (data: any[]) => {
         ? `${roundAndFormatNumber(row.spread, 2, false)} %`
         : '-',
     },
-    priceA: {
-      contentToSort: row.priceA,
-      contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
-      render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
+    pricea: {
+      contentToSort: row.pricea,
+      contentToCSV: roundAndFormatNumber(row.pricea, 8, true),
+      render: row.pricea ? roundAndFormatNumber(row.pricea, 8, true) : '-',
     },
-    priceB: {
-      contentToSort: row.priceB,
-      contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
-      render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
+    priceb: {
+      contentToSort: row.priceb,
+      contentToCSV: roundAndFormatNumber(row.priceb, 8, true),
+      render: row.priceb ? roundAndFormatNumber(row.priceb, 8, true) : '-',
     },
     status: row.status || '-',
   }))
@@ -130,7 +130,7 @@ const SignalEventList = (props) => {
       <TableWithSort
         style={{ height: '100%', overflowY: 'scroll' }}
         id="SignalSocialTable"
-        //title="Signal"
+        // title="Signal"
         columnNames={head}
         data={{ body, footer }}
         padding="dense"
@@ -142,7 +142,7 @@ const SignalEventList = (props) => {
             textAlign: 'left',
             maxWidth: '14px',
             background: '#F2F4F6',
-            fontFamily: "'DM Sans'",
+            fontFamily: '\'DM Sans\'',
             fontSize: '0.9rem',
             color: '#7284A0',
             lineHeight: '31px',
@@ -198,8 +198,10 @@ class SignalListItem extends React.Component {
         onClick={onClick}
       >
         <Grid container justify="space-between">
-          <Grid item>
-            <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+          <Grid item style={{ maxWidth: '70%' }}>
+            <PortfolioName textColor={'#16253D'} bigName={el.name.length > 30}>
+              {el.name}
+            </PortfolioName>
             <TypographySubTitle>
               {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
             </TypographySubTitle>
@@ -271,7 +273,6 @@ class SocialPage extends React.Component {
   }
 
   openDialog = (signalId) => {
-    console.log('signalId open dialog', signalId)
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
   }
 
@@ -284,9 +285,6 @@ class SocialPage extends React.Component {
   }
 
   toggleEnableSignal = (arg, arg2, arg3, updateSignalMutation) => {
-    // console.log('arg', arg)
-    // console.log('arg2', arg2)
-
     updateSignalMutation({
       variables: {
         signalId: arg2,
@@ -385,28 +383,28 @@ class SocialPage extends React.Component {
                   Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                sharedSignalsList
-              )}
+                  sharedSignalsList
+                )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
         <Grid lg={9} xs={9}>
           <Grid item xs={12} spacing={24} style={{ padding: '15px' }}>
             {getFollowingSignals.length > 0 &&
-            getFollowingSignals[this.state.selectedSignal] ? (
-              <QueryRenderer
-                fetchPolicy="network-only"
-                component={SignalEventList}
-                query={GET_SIGNAL_EVENTS_QUERY}
-                variables={{
-                  signalId: getFollowingSignals[this.state.selectedSignal]._id,
-                  page: 0,
-                  perPage: 30,
-                }}
-                state={this.state}
-                {...this.props}
-              />
-            ) : null}
+              getFollowingSignals[this.state.selectedSignal] ? (
+                <QueryRenderer
+                  fetchPolicy="network-only"
+                  component={SignalEventList}
+                  query={GET_SIGNAL_EVENTS_QUERY}
+                  variables={{
+                    signalId: getFollowingSignals[this.state.selectedSignal]._id,
+                    page: 0,
+                    perPage: 30,
+                  }}
+                  state={this.state}
+                  {...this.props}
+                />
+              ) : null}
           </Grid>
         </Grid>
         {currentSignalId !== null ? (

@@ -205,6 +205,7 @@ const SignalPreferencesDialog = ({
                       conditions: createUpdatedData(),
                     },
                   })
+                  setTimeout(() => closeDialog(), 300)
                 }}
               >
                 Save
