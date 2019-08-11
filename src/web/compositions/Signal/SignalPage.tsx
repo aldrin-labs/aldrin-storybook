@@ -217,19 +217,19 @@ class SignalListItem extends React.Component {
           justify="space-between"
         >
           <FolioValuesCell item>
-            <TypographyTitle>Last update</TypographyTitle>
+            <TypographyTitle>Last edit</TypographyTitle>
             <TypographyTitle color={'#16253D'}>
-              {el.lastUpdate || 'today'}
+              {moment.unix(+el.updatedAt).format('DD MMM') || '-'}
             </TypographyTitle>
           </FolioValuesCell>
           <FolioValuesCell item center={true}>
             <div>
-              <TypographyTitle>Signals generated</TypographyTitle>
+              <TypographyTitle>Events generated</TypographyTitle>
               <TypographyTitle
                 fontSize={'1rem'}
                 color={isSelected ? '#97C15C' : '#2F7619'}
               >
-                {el.signalsCount || '24'}
+                {el.eventsCount || '-'}
               </TypographyTitle>
             </div>
           </FolioValuesCell>
