@@ -82,7 +82,7 @@ const transformData = (data: any[]) => {
       contentToSort: row.t,
       contentToCSV: row.t,
       render:
-        (row.t && moment.unix(row.t).format('YYYY DD MMM h:mm:ss a')) ||
+        (row.t && moment(row.t / 1000000).format('YYYY DD MMM h:mm:ss a')) ||
         '-',
     },
     pair: row.pair || '-',
@@ -138,11 +138,11 @@ const SignalEventList = (props) => {
         tableStyles={{
           heading: {
             margin: '0',
-            padding: '0 0 0 1rem',
+            // padding: '0 0 0 1rem',
             textAlign: 'left',
             maxWidth: '14px',
             background: '#F2F4F6',
-            fontFamily: '\'DM Sans\'',
+            fontFamily: "'DM Sans'",
             fontSize: '0.9rem',
             color: '#7284A0',
             lineHeight: '31px',
@@ -383,28 +383,28 @@ class SocialPage extends React.Component {
                   Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                  sharedSignalsList
-                )}
+                sharedSignalsList
+              )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
         <Grid lg={9} xs={9}>
           <Grid item xs={12} spacing={24} style={{ padding: '15px' }}>
             {getFollowingSignals.length > 0 &&
-              getFollowingSignals[this.state.selectedSignal] ? (
-                <QueryRenderer
-                  fetchPolicy="network-only"
-                  component={SignalEventList}
-                  query={GET_SIGNAL_EVENTS_QUERY}
-                  variables={{
-                    signalId: getFollowingSignals[this.state.selectedSignal]._id,
-                    page: 0,
-                    perPage: 30,
-                  }}
-                  state={this.state}
-                  {...this.props}
-                />
-              ) : null}
+            getFollowingSignals[this.state.selectedSignal] ? (
+              <QueryRenderer
+                fetchPolicy="network-only"
+                component={SignalEventList}
+                query={GET_SIGNAL_EVENTS_QUERY}
+                variables={{
+                  signalId: getFollowingSignals[this.state.selectedSignal]._id,
+                  page: 0,
+                  perPage: 30,
+                }}
+                state={this.state}
+                {...this.props}
+              />
+            ) : null}
           </Grid>
         </Grid>
         {currentSignalId !== null ? (
