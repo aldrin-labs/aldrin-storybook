@@ -81,14 +81,9 @@ export const PortfolioName = styled(Typography)`
   text-transform: uppercase;
   padding: 0;
   color: ${(props) => props.textColor};
-
-  @media (max-width: 1600px) {
-    white-space: pre-wrap;
-  }
-
-  @media (min-width: 1921px and max-width: 2160px) {
-    font-size: ${(props) => (props.bigName ? '.9rem' : '1.4rem')};
-  }
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media (min-width: 2560px) {
     padding: 0.3rem 0 0 0.5rem;
@@ -164,7 +159,7 @@ export const FolioValuesCell = styled(Grid)`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 1540px) {
+  @media (max-width: 1543px) {
     width: ${(props) => (props.center ? '120px' : '85px')};
   }
 

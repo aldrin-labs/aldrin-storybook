@@ -21,7 +21,7 @@ export const TabContainerCustom = styled.div`
 `
 
 export const StyledTabs = styled(Tabs)`
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     & > * {
       width: 100%;
     }
@@ -29,21 +29,21 @@ export const StyledTabs = styled(Tabs)`
 `
 
 export const StyledTab = styled(Tab)`
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 1.4rem;
     max-width: 50%;
   }
 `
 
 export const StyledFollowingTab = styled(StyledTab)`
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     margin-left: 0;
     padding: 1rem 0;
   }
 `
 
 export const StyledMyTab = styled(StyledTab)`
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     margin-right: 0;
     padding: 1rem 0;
   }
