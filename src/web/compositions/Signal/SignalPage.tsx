@@ -244,18 +244,18 @@ class SignalListItem extends React.Component {
   }
 }
 
-const sortBy = [
+const signalsSortOptions = [
   {
     label: 'name',
-    value: '1',
+    value: 'name',
   },
   {
     label: 'events generated',
-    value: '1',
+    value: 'events',
   },
   {
     label: 'last update',
-    value: '1',
+    value: 'update',
   },
 ]
 
@@ -269,10 +269,17 @@ class SocialPage extends React.Component {
     ids: [],
     followingSignalsList: [],
     search: '',
+    signalsSort: signalsSortOptions[1],
   }
 
   handleSearchInput = (e) => {
     this.setState({ search: e.target.value })
+  }
+
+  onSortChange = (optionSelected: { label: string; value: number }) => {
+    this.setState({
+      signalsSort: optionSelected,
+    })
   }
 
   openDialog = (signalId) => {
@@ -297,14 +304,14 @@ class SocialPage extends React.Component {
   }
 
   render() {
-    const { selectedSignal = 0, currentSignalId } = this.state
+    const { selectedSignal = 0, currentSignalId, signalsSort } = this.state
 
     const {
       getFollowingSignalsQuery: { getFollowingSignals },
       updateSignalMutation,
     } = this.props
 
-    let filteredData = getFollowingSignals.length
+    const filteredData = getFollowingSignals.length
       ? getFollowingSignals.filter((signal) => {
           return (
             signal.name
@@ -314,7 +321,17 @@ class SocialPage extends React.Component {
         })
       : []
 
-    const sharedSignalsList = filteredData.map((el, index) => (
+    const sortedData = filteredData.length
+      ? filteredData.sort((a, b) => {
+          return signalsSort.value === signalsSortOptions[0].value
+            ? (a.name && b.name && a.name.localeCompare(b.name))
+            : signalsSort.value === signalsSortOptions[1].value
+            ? b.eventsCount - a.eventsCount
+            : b.updatedAt - a.updatedAt
+        })
+      : filteredData
+
+    const sharedSignalsList = sortedData.map((el, index) => (
       <SignalListItem
         index={index}
         key={index}
@@ -348,9 +365,14 @@ class SocialPage extends React.Component {
                   </TypographySearchOption>
 
                   <ReactSelectCustom
-                    value={[sortBy[2]]}
-                    options={sortBy}
+                    value={[signalsSort]}
+                    onChange={(optionSelected: {
+                      label: string
+                      value: string
+                    }) => this.onSortChange(optionSelected)}
+                    options={signalsSortOptions}
                     isSearchable={false}
+                    isClearable={false}
                     singleValueStyles={{
                       color: '#165BE0',
                       fontSize: '.8rem',
