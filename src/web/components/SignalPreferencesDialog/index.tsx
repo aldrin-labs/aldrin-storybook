@@ -57,6 +57,7 @@ const SignalPreferencesDialog = ({
       ...propertiesState,
       [name]: { value: !bool, type },
     })
+    console.log(bool, propertiesState)
   }
 
   const resetValue = (name, type, value) => {
@@ -182,7 +183,9 @@ const SignalPreferencesDialog = ({
                               })
                         }
                         _id={name}
-                        onChange={() => handleBoolean(name, type, value)}
+                        onChange={() =>
+                          handleBoolean(name, type, propertiesState[name].value)
+                        }
                       />
                     )}
                   </SignalPropertyGrid>

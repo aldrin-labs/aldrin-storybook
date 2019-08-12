@@ -82,7 +82,7 @@ export const FolioValuesCell = styled(Grid)`
     border-radius: 1.5rem;
   }
 
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 193dpi) {
     width: 31%;
   }
 `
