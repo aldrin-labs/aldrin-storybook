@@ -11,7 +11,7 @@ import { NavLink as Link } from 'react-router-dom'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
-import { Nav } from './NavBar.styles'
+import { Nav, StyledToolbar } from './NavBar.styles'
 import Feedback from '@sb/components/Feedback'
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
@@ -61,10 +61,7 @@ const NavBarRaw: SFC<Props> = ({
       color="default"
       className="Navbar"
     >
-      <Toolbar
-        variant="dense"
-        style={{ height: '3rem', borderBottom: '1px solid #E0E5EC' }}
-      >
+      <StyledToolbar variant="dense">
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={2}>
@@ -214,7 +211,7 @@ const NavBarRaw: SFC<Props> = ({
             </Grid>
           </Grid>
         </Grid>
-      </Toolbar>
+      </StyledToolbar>
     </Nav>
   )
 }

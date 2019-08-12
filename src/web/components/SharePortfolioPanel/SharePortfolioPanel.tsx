@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
 import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
-import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod';
+import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import { IProps } from './SharePortfolio.types'
 
 export default class SharePortfolioPanel extends Component<IProps> {
@@ -14,7 +14,6 @@ export default class SharePortfolioPanel extends Component<IProps> {
         alignItems="center"
         style={{
           padding: '1.6rem 24px',
-          borderTop: '1px solid #E0E5EC'
         }}
       >
         <Grid item>

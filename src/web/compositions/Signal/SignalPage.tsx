@@ -199,9 +199,7 @@ class SignalListItem extends React.Component {
       >
         <Grid container justify="space-between">
           <Grid item style={{ maxWidth: '70%' }}>
-            <PortfolioName textColor={'#16253D'} bigName={el.name.length > 30}>
-              {el.name}
-            </PortfolioName>
+            <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
             <TypographySubTitle>
               {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
             </TypographySubTitle>

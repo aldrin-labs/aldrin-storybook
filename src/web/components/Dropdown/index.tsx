@@ -30,7 +30,7 @@ export default class Dropdown extends React.Component<IProps> {
   }
 
   render() {
-    const { selectedMenu, id } = this.props;
+    const { selectedMenu, id } = this.props
 
     return (
       <StyledDropdown
@@ -52,10 +52,12 @@ export default class Dropdown extends React.Component<IProps> {
         >
           <MenuList>
             {this.props.items.map(({ icon, text, to, onMouseOver }) => (
-              <StyledMenuItem
-                disableGutters={true}
-              >
-                <StyledLink to={to} onClick={this.handleClose} onMouseOver={onMouseOver ? onMouseOver : () => {}}>
+              <StyledMenuItem disableRipple disableGutters={true}>
+                <StyledLink
+                  to={to}
+                  onClick={this.handleClose}
+                  onMouseOver={onMouseOver ? onMouseOver : () => {}}
+                >
                   {icon}
                   <StyledMenuItemText>{text}</StyledMenuItemText>
                 </StyledLink>
@@ -68,14 +70,14 @@ export default class Dropdown extends React.Component<IProps> {
   }
 
   handleToggle = () => {
-    const { selectedMenu, selectActiveMenu, id } = this.props;
+    const { selectedMenu, selectActiveMenu, id } = this.props
 
     if (selectedMenu !== id) {
-      selectActiveMenu(id);
+      selectActiveMenu(id)
     }
   }
   handleClose = () => {
-    const { selectActiveMenu } = this.props;
-    selectActiveMenu('');
+    const { selectActiveMenu } = this.props
+    selectActiveMenu('')
   }
 }

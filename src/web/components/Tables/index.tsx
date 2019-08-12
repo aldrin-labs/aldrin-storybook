@@ -10,7 +10,11 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
-import { StyledTable, StyledTableSortLabel, StyledTablePagination } from './Table.styles'
+import {
+  StyledTable,
+  StyledTableSortLabel,
+  StyledTablePagination,
+} from './Table.styles'
 
 import {
   Props,
@@ -27,11 +31,7 @@ import {
   TableStyles,
 } from './index.types'
 import { isObject } from 'lodash-es'
-import {
-  Typography,
-  IconButton,
-  Grow,
-} from '@material-ui/core'
+import { Typography, IconButton, Grow, Collapse } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
