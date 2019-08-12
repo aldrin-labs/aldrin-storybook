@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
+import moment from 'moment'
 
 import withAuth from '@core/hoc/withAuth'
 import {
@@ -66,8 +67,8 @@ const putDataInTable = (tableData, theme, state) => {
       { id: 'exchangeB', label: 'Exchange B', isNumber: false },
       { id: 'amount', label: 'amount', isNumber: false },
       { id: 'spread', label: 'spread', isNumber: false },
-      { id: 'priceA', label: 'priceA', isNumber: false },
-      { id: 'priceB', label: 'priceB', isNumber: false },
+      { id: 'pricea', label: 'pricea', isNumber: false },
+      { id: 'priceb', label: 'priceb', isNumber: false },
       { id: 'status', label: 'Status', isNumber: false },
     ],
     body: transformData(tableData),
@@ -80,7 +81,9 @@ const transformData = (data: any[]) => {
     timestamp: {
       contentToSort: row.t,
       contentToCSV: row.t,
-      render: Math.floor(row.t / 1e9) || '-',
+      render:
+        (row.t && moment(row.t / 1000000).format('YYYY DD MMM h:mm:ss a')) ||
+        '-',
     },
     pair: row.pair || '-',
     exchangeA: row.exchangea || '-',
@@ -99,15 +102,15 @@ const transformData = (data: any[]) => {
         ? `${roundAndFormatNumber(row.spread, 2, false)} %`
         : '-',
     },
-    priceA: {
-      contentToSort: row.priceA,
-      contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
-      render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
+    pricea: {
+      contentToSort: row.pricea,
+      contentToCSV: roundAndFormatNumber(row.pricea, 8, true),
+      render: row.pricea ? roundAndFormatNumber(row.pricea, 8, true) : '-',
     },
-    priceB: {
-      contentToSort: row.priceB,
-      contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
-      render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
+    priceb: {
+      contentToSort: row.priceb,
+      contentToCSV: roundAndFormatNumber(row.priceb, 8, true),
+      render: row.priceb ? roundAndFormatNumber(row.priceb, 8, true) : '-',
     },
     status: row.status || '-',
   }))
@@ -127,7 +130,7 @@ const SignalEventList = (props) => {
       <TableWithSort
         style={{ height: '100%', overflowY: 'scroll' }}
         id="SignalSocialTable"
-        //title="Signal"
+        // title="Signal"
         columnNames={head}
         data={{ body, footer }}
         padding="dense"
@@ -135,7 +138,7 @@ const SignalEventList = (props) => {
         tableStyles={{
           heading: {
             margin: '0',
-            padding: '0 0 0 1rem',
+            // padding: '0 0 0 1rem',
             textAlign: 'left',
             maxWidth: '14px',
             background: '#F2F4F6',
@@ -212,19 +215,19 @@ class SignalListItem extends React.Component {
           justify="space-between"
         >
           <FolioValuesCell item>
-            <TypographyTitle>Last update</TypographyTitle>
+            <TypographyTitle>Last edit</TypographyTitle>
             <TypographyTitle color={'#16253D'}>
-              {el.lastUpdate || 'today'}
+              {moment(+el.updatedAt).format('DD MMM') || '-'}
             </TypographyTitle>
           </FolioValuesCell>
           <FolioValuesCell item center={true}>
             <div>
-              <TypographyTitle>Signals generated</TypographyTitle>
+              <TypographyTitle>Events generated</TypographyTitle>
               <TypographyTitle
                 fontSize={'1rem'}
                 color={isSelected ? '#97C15C' : '#2F7619'}
               >
-                {el.signalsCount || '24'}
+                {el.eventsCount || '-'}
               </TypographyTitle>
             </div>
           </FolioValuesCell>
