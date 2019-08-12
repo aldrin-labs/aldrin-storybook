@@ -250,7 +250,7 @@ const sortBy = [
     value: '1',
   },
   {
-    label: 'signals generated',
+    label: 'events generated',
     value: '1',
   },
   {
@@ -268,6 +268,11 @@ class SocialPage extends React.Component {
     invervalId: null,
     ids: [],
     followingSignalsList: [],
+    search: '',
+  }
+
+  handleSearchInput = (e) => {
+    this.setState({ search: e.target.value })
   }
 
   openDialog = (signalId) => {
@@ -292,14 +297,24 @@ class SocialPage extends React.Component {
   }
 
   render() {
+    const { selectedSignal = 0, currentSignalId } = this.state
+
     const {
       getFollowingSignalsQuery: { getFollowingSignals },
       updateSignalMutation,
     } = this.props
 
-    const { selectedSignal = 0, currentSignalId } = this.state
+    let filteredData = getFollowingSignals.length
+      ? getFollowingSignals.filter((signal) => {
+          return (
+            signal.name
+              .toLowerCase()
+              .indexOf(this.state.search.toLowerCase()) !== -1
+          )
+        })
+      : []
 
-    const sharedSignalsList = getFollowingSignals.map((el, index) => (
+    const sharedSignalsList = filteredData.map((el, index) => (
       <SignalListItem
         index={index}
         key={index}
@@ -324,7 +339,7 @@ class SocialPage extends React.Component {
         style={{ maxHeight: '100vh', overflow: 'hidden' }}
       >
         <Grid item xs={3} style={{ padding: '15px' }}>
-          <SocialTabs style={{ height: '100%' }}>
+          <SocialTabs style={{ height: '100%' }} isDisabledMy={true}>
             <GridSortOption container justify="flex-end" alignItems="center">
               <Grid item>
                 <Grid container justify="space-between" alignItems="center">

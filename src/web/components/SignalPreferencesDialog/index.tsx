@@ -57,7 +57,6 @@ const SignalPreferencesDialog = ({
       ...propertiesState,
       [name]: { value: !bool, type },
     })
-    console.log(bool, propertiesState)
   }
 
   const resetValue = (name, type, value) => {
@@ -83,7 +82,7 @@ const SignalPreferencesDialog = ({
         return [name, type, value]
       }
     )
-    console.log('result', arr)
+
     return JSON.stringify(arr.reverse())
   }
 
@@ -98,7 +97,7 @@ const SignalPreferencesDialog = ({
 
         if (!getSignalInputs) return null
         const properties = JSON.parse(getSignalInputs)
-        console.log(propertiesState)
+
         return (
           <Dialog
             PaperComponent={StyledPaper}

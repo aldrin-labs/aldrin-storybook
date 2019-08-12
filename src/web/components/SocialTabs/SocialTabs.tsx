@@ -51,7 +51,13 @@ class SocialTabs extends React.Component {
   }
 
   render() {
-    const { classes, theme, children, changeTab } = this.props
+    const {
+      classes,
+      theme,
+      children,
+      changeTab,
+      isDisabledMy = false,
+    } = this.props
 
     return (
       <div className={classes.root}>
@@ -93,6 +99,7 @@ class SocialTabs extends React.Component {
             />
             <StyledMyTab
               label="My"
+              disabled={isDisabledMy}
               style={{
                 fontSize: '1.2rem',
                 color: '#7284A0',

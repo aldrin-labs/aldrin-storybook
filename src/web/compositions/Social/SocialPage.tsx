@@ -143,10 +143,15 @@ class SocialPage extends React.Component {
   state = {
     search: '',
     isFollowingTab: true,
+    isStatsOpen: false,
   }
 
   handleSearchInput = (e) => {
     this.setState({ search: e.target.value })
+  }
+
+  toggleStatsPage = (bool: boolean) => {
+    this.setState({ isStatsOpen: bool })
   }
 
   putDataInTable = (tableData) => {
@@ -207,7 +212,7 @@ class SocialPage extends React.Component {
       unsharePortfolioMutation,
     } = this.props
 
-    const { isFollowingTab } = this.state
+    const { isFollowingTab, isStatsPage } = this.state
 
     const totalFolioAssetsData = getFollowingPortfolios.length
       ? getFollowingPortfolios[selectedPortfolio].portfolioAssets.reduce(
@@ -398,7 +403,7 @@ class SocialPage extends React.Component {
                   : { name: '', isPrivate: true, ownerId: '' }
               }
             />
-            {isFollowingTab ? (
+            {!isStatsPage ? (
               <>
                 <SocialBalancePanel
                   totalFolioAssetsData={totalFolioAssetsData}
