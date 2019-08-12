@@ -188,7 +188,7 @@ class SignalListItem extends React.Component {
       enabled,
       updateSignalMutation,
     } = this.props
-
+    console.log(el)
     return (
       <FolioCard
         container
@@ -201,7 +201,7 @@ class SignalListItem extends React.Component {
           <Grid item style={{ maxWidth: '70%' }}>
             <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
             <TypographySubTitle>
-              {el.owner + el.isPrivate ? ' Private signal' : ` Public signal`}
+              {el.isPrivate ? ' Private signal' : ` Public signal`}
             </TypographySubTitle>
           </Grid>
           <TypographyEditButton onClick={() => openDialog(el._id)}>

@@ -144,6 +144,7 @@ class SocialPage extends React.Component {
     search: '',
     isFollowingTab: true,
     isStatsOpen: false,
+    selectedMyPortfolio: 0,
   }
 
   handleSearchInput = (e) => {
@@ -212,7 +213,7 @@ class SocialPage extends React.Component {
       unsharePortfolioMutation,
     } = this.props
 
-    const { isFollowingTab, isStatsPage } = this.state
+    const { isFollowingTab, isStatsOpen, selectedMyPortfolio } = this.state
 
     const totalFolioAssetsData = getFollowingPortfolios.length
       ? getFollowingPortfolios[selectedPortfolio].portfolioAssets.reduce(
@@ -295,6 +296,8 @@ class SocialPage extends React.Component {
         value: '1',
       },
     ]
+
+    console.log(selectedPortfolio)
 
     return (
       <GridPageContainer
@@ -403,7 +406,7 @@ class SocialPage extends React.Component {
                   : { name: '', isPrivate: true, ownerId: '' }
               }
             />
-            {!isStatsPage ? (
+            {!isStatsOpen ? (
               <>
                 <SocialBalancePanel
                   totalFolioAssetsData={totalFolioAssetsData}
