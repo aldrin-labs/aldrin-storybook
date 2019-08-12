@@ -11,8 +11,11 @@ const firebaseConfig = {
   appId: '1:364782928285:web:c6b74a512928dcdc',
 }
 // Initialize Firebase
+// why we need to check
+// https://stackoverflow.com/questions/46071657/firebase-cloud-messaging-doesnt-work-on-chrome-ios
 const isSupportedFirebase = firebase.messaging.isSupported()
 let messaging
+
 if (isSupportedFirebase) {
   firebase.initializeApp(firebaseConfig)
   messaging = firebase.messaging()
