@@ -43,10 +43,8 @@ const SignalPreferencesDialog = ({
     } else if (type === 'object') {
       try {
         value = String(e.target.value)
-      } catch (e) {
-        //console.log(e)
-      }
-    }
+      } catch (e) {}
+    } else value = e.target.value
 
     updateProperties({
       ...propertiesState,
@@ -77,13 +75,14 @@ const SignalPreferencesDialog = ({
       ([name, { type, value }]) => {
         if (type === 'object') {
           try {
+            if (!value) return [name, type, JSON.parse(String(value))]
             return [name, type, JSON.parse(value)]
           } catch (e) {}
         }
         return [name, type, value]
       }
     )
-
+    console.log('result', arr)
     return JSON.stringify(arr.reverse())
   }
 
