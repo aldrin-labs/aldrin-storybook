@@ -219,7 +219,7 @@ class SignalListItem extends React.Component {
           <FolioValuesCell item>
             <TypographyTitle>Last edit</TypographyTitle>
             <TypographyTitle color={'#16253D'}>
-              {moment.unix(+el.updatedAt).format('DD MMM') || '-'}
+              {moment(+el.updatedAt).format('DD MMM') || '-'}
             </TypographyTitle>
           </FolioValuesCell>
           <FolioValuesCell item center={true}>
