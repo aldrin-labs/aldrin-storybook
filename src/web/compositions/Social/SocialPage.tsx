@@ -211,17 +211,17 @@ class SocialPage extends React.Component {
     }
   }
 
-  componentWillUnmount = async () => {
+  componentWillUnmount = () => {
     const { unfollowedPortfolios } = this.state
     const { unfollowPortfolioMutation } = this.props
 
-    for await (let id of unfollowedPortfolios) {
-      unfollowPortfolioMutation({
+    unfollowedPortfolios.forEach(async (p) => {
+      await unfollowPortfolioMutation({
         variables: {
-          inputPortfolio: { id },
+          inputPortfolio: { id: p },
         },
       })
-    }
+    })
   }
 
   render() {

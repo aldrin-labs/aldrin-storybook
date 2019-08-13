@@ -89,7 +89,6 @@ class SocialPortfolioInfoPanel extends Component {
           btnHoverColor: '#165BE0',
         }
 
-    console.log(id)
     // if 0 portfolio disable button follow unfollow
     return (
       <GridMainContainer
