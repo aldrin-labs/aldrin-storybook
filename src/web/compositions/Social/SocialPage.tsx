@@ -74,12 +74,10 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
   <FolioCard
     container
     onClick={onClick}
-    border={isSelected ? '22px' : '22px 22px 0 0 '}
     boxShadow={!isSelected ? 'none' : '0px 0px 8px rgba(10, 19, 43, 0.1)'}
-    borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
   >
     <Grid container justify="space-between">
-      <Grid item>
+      <Grid item style={{ maxWidth: '70%' }}>
         <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
         <TypographyTitle fontSize={'0.9rem'} textColor={'#7284A0'}>
           {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
@@ -89,10 +87,14 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
         width="10"
         height="10"
         src={LineGraph}
-        styledComponentsAdditionalStyle="@media(min-width: 2560px) {
-          width: 4.5rem;
-          margin: .5rem .5rem 2rem 0;
-        }"
+        styledComponentsAdditionalStyle="
+          @media(min-width: 1400px) {
+            padding: 1rem 0 2rem 0;
+          }
+
+          @media(min-width: 1921px) {
+            width: 4.5rem;
+          }"
       />
     </Grid>
     <Grid container alignItems="center" justify="space-between">
@@ -135,6 +137,7 @@ class SocialPage extends React.Component {
     isFollowingTab: true,
     isStatsOpen: false,
     selectedPortfolio: 0,
+    unfollowedPortfolios: [],
   }
 
   handleSearchInput = (e) => {
@@ -143,6 +146,20 @@ class SocialPage extends React.Component {
 
   toggleStatsPage = (bool: boolean) => {
     this.setState({ isStatsOpen: bool })
+  }
+
+  unfollowPortfolio = (id: string) => {
+    this.setState((prev) => ({
+      unfollowedPortfolios: [...prev.unfollowedPortfolios, id],
+    }))
+  }
+
+  followPortfolio = (id: string) => {
+    this.setState((prev) => ({
+      unfollowedPortfolios: [
+        ...prev.unfollowedPortfolios.filter((p) => p !== id),
+      ],
+    }))
   }
 
   setSelectedPortfolio = (index: number) => {
@@ -194,16 +211,34 @@ class SocialPage extends React.Component {
     }
   }
 
+  componentWillUnmount = async () => {
+    const { unfollowedPortfolios } = this.state
+    const { unfollowPortfolioMutation } = this.props
+
+    for await (let id of unfollowedPortfolios) {
+      unfollowPortfolioMutation({
+        variables: {
+          inputPortfolio: { id },
+        },
+      })
+    }
+  }
+
   render() {
     const {
       myPortfolios,
       getFollowingPortfolios,
       getSharedPortfolios,
       unsharePortfolioMutation,
-      unfollowPortfolioMutation,
     } = this.props
 
-    const { isFollowingTab, isStatsOpen, selectedPortfolio } = this.state
+    const {
+      isFollowingTab,
+      isStatsOpen,
+      selectedPortfolio,
+      unfollowedPortfolios,
+    } = this.state
+
     // data for all page (following or my tab)
     const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
 
@@ -308,11 +343,7 @@ class SocialPage extends React.Component {
             isFollowingTab={isFollowingTab}
             changeTab={this.changeTab}
           >
-            <GridSortOption
-              container
-              justify="space-between"
-              alignItems="center"
-            >
+            <GridSortOption container justify="flex-end" alignItems="center">
               <Grid item>
                 <Grid container justify="space-between" alignItems="center">
                   <TypographySearchOption textColor={'#16253D'}>
@@ -338,7 +369,8 @@ class SocialPage extends React.Component {
                     controlStyles={{
                       background: 'transparent',
                       border: 'none',
-                      width: 104,
+                      width: 80,
+                      marginRight: 0,
                     }}
                     menuStyles={{
                       width: 120,
@@ -386,18 +418,24 @@ class SocialPage extends React.Component {
         </Grid>
 
         <GridTableContainer container justify="center" xs={9}>
-          <Grid continer lg={12}>
+          <Grid continer xs={12}>
             <SocialPortfolioInfoPanel
+              isFollowingTab={isFollowingTab}
+              isStatsOpen={isStatsOpen}
+              id={
+                getFollowingPortfolios[selectedPortfolio]
+                  ? getFollowingPortfolios[selectedPortfolio]._id
+                  : ''
+              }
+              unfollowedPortfolios={unfollowedPortfolios}
+              toggleStats={this.toggleStats}
+              unfollowPortfolio={this.unfollowPortfolio}
+              followPortfolio={this.followPortfolio}
               folioData={
                 dataToFilter.length
                   ? dataToFilter[selectedPortfolio]
                   : { name: '', isPrivate: true, ownerId: '' }
               }
-              isFollowingTab={isFollowingTab}
-              toggleStats={this.toggleStats}
-              isStatsOpen={isStatsOpen}
-              unfollowPortfolioMutation={unfollowPortfolioMutation}
-              id={getFollowingPortfolios[selectedPortfolio]}
             />
             {!isStatsOpen ? (
               <>
@@ -413,7 +451,11 @@ class SocialPage extends React.Component {
                     }}
                   >
                     <PortfolioMainAllocation
-                      portfolioData={dataToFilter[selectedPortfolio]}
+                      portfolioData={
+                        dataToFilter.length
+                          ? dataToFilter[selectedPortfolio]
+                          : {}
+                      }
                     />
                   </Grid>
                   <Grid item xs={9}>

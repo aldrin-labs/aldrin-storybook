@@ -26,6 +26,7 @@ export const Link = styled(
   justify-content: center;
   align-items: center;
   text-decoration: none;
+  white-space: nowrap;
   margin: ${(props) => props.btnMargin};
   background: ${(props) => props.btnBgColor};
   border-radius: ${(props) => props.btnRadius};
@@ -44,17 +45,27 @@ export const Link = styled(
     border: 1px solid ${(props) => props.borderColor};
   }
 
+  @media (max-width: 1400px) {
+    padding: 0.8rem 1.2rem;
+  }
+
+  @media (max-width: 1090px) {
+    width: 70px;
+  }
+
   @media (min-width: 1921px) {
     font-size: 0.7rem;
     border-radius: 0.5rem;
     width: auto;
     height: auto;
+    max-width: 140px;
     padding: 0.6rem 2rem;
     margin: 0.2rem 0.5rem;
   }
 
   @media (min-width: 2560px) {
     font-size: 0.6rem;
+    margin: 0.2rem 0.5rem 0.15rem 0.5rem;
   }
 `
 
@@ -108,6 +119,14 @@ export const TypographyTariff = styled(Typography)`
   text-transform: uppercase;
   color: ${(props) => props.textColor};
 
+  @media (max-width: 1125px) {
+    padding-left: 12px;
+  }
+
+  @media (max-width: 1400px) {
+    padding-left: 5.5rem;
+  }
+
   @media (min-width: 1921px) {
     margin-left: 0.5rem;
     padding-left: 2rem;
@@ -148,12 +167,13 @@ export const ButtonCustom = styled(
   letter-spacing: 1px;
   text-transform: uppercase;
   transition: all ease-in-out 0.5s;
+  width: fit-content;
+  padding: ${(props) => (props.isStats ? '0.45rem 3rem' : '0.55rem 2rem')};
   margin: ${(props) => props.btnMargin};
   width: ${(props) => props.btnWidth};
   height: ${(props) => props.btnHeight};
   background: ${(props) => props.btnBgColor};
   border-radius: ${(props) => props.btnRadius};
-  padding: ${(props) => (props.isStats ? '5px 8px 7px 8px' : '6px 8px')};
   font-size: ${(props) => props.btnFontSize};
   color: ${(props) => props.btnTextColor};
   border: 1px solid ${(props) => props.borderColor};
@@ -163,22 +183,34 @@ export const ButtonCustom = styled(
     border: 1px solid ${(props) => props.borderColor};
   }
 
+  @media (max-width: 1280px) {
+    width: 80px;
+  }
+
+  @media (max-width: 1090px) {
+    width: 70px;
+  }
+
   @media (max-width: 1400px) {
-    height: 22px;
-    padding: 5px 8px 7px 8px;
+    padding: ${(props) => (props.isStats ? '0.6rem 3.6rem' : '0.7rem 2.6rem')};
   }
 
   @media (min-width: 1921px) {
     font-size: 0.7rem;
     border-radius: 0.5rem;
     width: auto;
+    max-width: 140px;
     height: auto;
-    padding: 0.5rem 2rem;
-    margin: 0.2rem 0.5rem;
+    padding: ${(props) =>
+      props.isStats && !props.isStatsOpen ? '0.5rem 3rem' : '0.5rem 2rem'};
+    margin: 0.2rem 0.5rem 0.1rem 0.5rem;
   }
 
   @media (min-width: 2560px) {
+    padding: ${(props) =>
+      props.isStats && !props.isStatsOpen ? '0.5rem 2.5rem' : '0.5rem 2rem'};
     font-size: 0.6rem;
+    margin: 0.2rem 0.5rem 0.15rem 0.5rem;
   }
 `
 

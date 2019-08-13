@@ -63,8 +63,10 @@ export const TypographyTitle = styled(Typography)`
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#7284a0'};
-  margin: 0;
-  padding: 0;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 export const TypographyPercentage = styled(Typography)`
   color: ${(props) => props.textColor || '#7284a0'};
@@ -76,11 +78,15 @@ export const FolioValuesCell = styled(Grid)`
   text-align: center;
   background: ${(props) => props.bgColor || '#F9FBFD'};
   border: ${(props) => props.borderCell || '1px solid #E0E5EC'};
-  border-radius: ${(props) => props.borderRadius || '12px'};
+  border-radius: 12px;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 1400px) {
+    width: 31%;
+  }
 
   @media (min-width: 1921px) {
     width: 31%;
@@ -96,7 +102,6 @@ export const FolioValuesCell = styled(Grid)`
 
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: DM Sans, sans-serif;
-  width: 100px;
   font-size: 1.2rem;
   text-transform: uppercase;
   border: 1px solid transparent;
@@ -131,7 +136,7 @@ export const FolioCard = styled(Grid)`
   border: ${(props) => props.border};
   border-bottom: 1px solid #e0e5ec;
   box-shadow: ${(props) => props.boxShadow};
-  border-radius: ${(props) => props.borderRadius};
+  border-radius: 22px;
   transition: 0.3s all;
 
   @media (min-width: 1921px) {
