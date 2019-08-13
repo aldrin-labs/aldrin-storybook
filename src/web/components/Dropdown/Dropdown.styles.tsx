@@ -112,7 +112,3 @@ export const StyledMenuItemText = styled.span`
   display: inline-block;
   margin-left: 0.4rem;
 `
-
-// TODO
-// fix padding in folio card
-// 1024 -> 1400

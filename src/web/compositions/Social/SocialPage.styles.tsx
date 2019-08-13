@@ -84,7 +84,7 @@ export const FolioValuesCell = styled(Grid)`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 1400px) {
+  @media (max-width: 1440px) {
     width: 31%;
   }
 
