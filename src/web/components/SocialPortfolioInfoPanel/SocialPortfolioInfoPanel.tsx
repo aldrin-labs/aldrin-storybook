@@ -7,12 +7,9 @@ import {
   GridCell,
   TypographyTitle,
   GridMainContainer,
-  SpanCell,
   Link,
-  ButtonCustomFollow,
-  ButtonCustomUnfollow,
 } from './SocialPortfolioInfoPanel.styles'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/core'
 
 const getOwner = (str: string) => {
@@ -33,25 +30,38 @@ class SocialPortfolioInfoPanel extends Component {
     isFollowEnter: false,
   }
 
-  onMouseEnterFollow() {
+  onMouseEnterFollow = () => {
     this.setState({ isFollowEnter: !this.state.isFollowEnter })
   }
 
-  onMouseLeaveFollow() {
+  onMouseLeaveFollow = () => {
     this.setState({ isFollowEnter: !this.state.isFollowEnter })
   }
 
-  handleToggleFollowBtn() {
+  handleToggleFollowBtn = () => {
+    const { id, unfollowPortfolioMutation } = this.props
+
     this.setState({ isFollow: !this.state.isFollow })
+    unfollowPortfolioMutation({
+      variables: {
+        id,
+      },
+    })
   }
 
-  onStarClick(nextValue, prevValue, name) {
+  onStarClick = (nextValue, prevValue, name) => {
     this.setState({ rating: nextValue })
   }
 
   render() {
     const { rating } = this.state
-    const { theme, folioData } = this.props
+    const {
+      theme,
+      folioData,
+      isFollowingTab,
+      isStatsOpen,
+      toggleStats,
+    } = this.props
 
     return (
       <GridMainContainer
@@ -94,7 +104,7 @@ class SocialPortfolioInfoPanel extends Component {
                   value={rating}
                   starColor={'#DEDB8E'}
                   emptyStarColor={'#E0E5EC'}
-                  onStarClick={this.onStarClick.bind(this)}
+                  onStarClick={this.onStarClick}
                 />
               </Grid>
               <TypographyTitle padding={'0 0 0 5px'}>
@@ -138,44 +148,44 @@ class SocialPortfolioInfoPanel extends Component {
           >
             To Rebalance
           </Link>
-          <ButtonCustom
-            btnMargin={'auto 2px'}
-            btnWidth={'100px'}
-            btnHeight={'26px'}
-            btnTextColor={'#fff'}
-            btnBorderColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
-            btnBgColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
-            btnHoverColor={this.state.isFollowEnter ? '#B93B2B' : '#165BE0'}
-            btnHoverTextColor={'white'}
-            btnRadius={'10px'}
-            btnFontSize={'0.75rem'}
-            onClick={this.handleToggleFollowBtn.bind(this)}
-            onMouseEnter={this.onMouseEnterFollow.bind(this)}
-            onMouseLeave={this.onMouseLeaveFollow.bind(this)}
-          >
-            {this.state.isFollowEnter ? 'unfollow' : 'following'}
-            {/* {this.state.isFollow ? 'unfollow' : 'following'} */}
-          </ButtonCustom>
-          {/* <ButtonCustomUnfollow
-            btnVisibility={'visible'}
-            btnMargin={'auto 2px'}
-            btnWidth={'100px'}
-            btnHeight={'26px'}
-            btnBorderColor={`${
-              !this.state.isFollow ? '#165BE0' : '#B93B2B'
-            }`}
-            btnTextColor={'#fff'}
-            btnBgColor={`${!this.state.isFollow ? '#B93B2B' : '#165BE0'}`}
-            btnHoverColor={`${
-              !this.state.isFollow ? '#B93B2B' : '#165BE0'
-            }`}
-            btnHoverTextColor={'#fff'}
-            btnRadius={'10px'}
-            btnFontSize={'0.75rem'}
-            onClick={this.handleToggleFollowBtn.bind(this)}
-          >
-            {!this.state.isFollow ? 'unfollow' : 'follow'}
-          </ButtonCustomUnfollow> */}
+          {isFollowingTab ? (
+            <ButtonCustom
+              btnMargin={'auto 2px'}
+              btnWidth={'100px'}
+              btnHeight={'26px'}
+              btnTextColor={'#fff'}
+              btnBorderColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
+              btnBgColor={!this.state.isFollowEnter ? '#165BE0' : '#B93B2B'}
+              btnHoverColor={this.state.isFollowEnter ? '#B93B2B' : '#165BE0'}
+              btnHoverTextColor={'white'}
+              btnRadius={'10px'}
+              btnFontSize={'0.75rem'}
+              onClick={this.handleToggleFollowBtn}
+              onMouseEnter={this.onMouseEnterFollow}
+              onMouseLeave={this.onMouseLeaveFollow}
+            >
+              {this.state.isFollowEnter ? 'unfollow' : 'following'}
+              {/* {this.state.isFollow ? 'unfollow' : 'following'} */}
+            </ButtonCustom>
+          ) : (
+            <ButtonCustom
+              btnMargin={'auto 2px'}
+              btnWidth={'100px'}
+              btnHeight={'25px'}
+              btnBorderColor={'#165BE0'}
+              btnTextColor={'#165BE0'}
+              btnBgColor={'transparent'}
+              btnHoverColor={'#165BE0'}
+              btnHoverTextColor={'#fff'}
+              btnRadius={'10px'}
+              btnFontSize={'0.75rem'}
+              borderColor={'#165BE0'}
+              onClick={toggleStats}
+              isStats={true}
+            >
+              {isStatsOpen ? 'performance' : 'stats'}
+            </ButtonCustom>
+          )}
         </Grid>
       </GridMainContainer>
     )

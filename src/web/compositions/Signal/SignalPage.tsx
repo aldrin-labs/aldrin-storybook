@@ -1,15 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { compose } from 'recompose'
 import moment from 'moment'
 
 import withAuth from '@core/hoc/withAuth'
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-  Grid,
-} from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
@@ -35,17 +29,20 @@ import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
 
 import {
-  GridFolioScroll,
-  InputCustom,
-  TypographySearchOption,
+  FolioCard,
   GridSortOption,
   ReactSelectCustom,
-  TypographyTitle,
   PortfolioName,
-  FolioValuesCell,
-  FolioCard,
-  TypographySubTitle,
+  TypographySearchOption,
+  InputCustom,
   TypographyEmptyFolioPanel,
+  TypographyTitle,
+} from '@sb/compositions/Social/SocialPage.styles'
+
+import {
+  GridFolioScroll,
+  FolioValuesCell,
+  TypographySubTitle,
   ContainerGrid,
   TypographyEditButton,
 } from './SignalPage.styles'

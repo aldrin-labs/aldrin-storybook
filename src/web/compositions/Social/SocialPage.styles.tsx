@@ -46,6 +46,13 @@ export const PortfolioName = styled(Typography)`
   text-transform: uppercase;
   padding: 0;
   color: ${(props) => props.textColor};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  @media (min-width: 2560px) {
+    padding: 0.3rem 0 0 0.5rem;
+  }
 `
 
 export const TypographyTitle = styled(Typography)`
@@ -56,8 +63,8 @@ export const TypographyTitle = styled(Typography)`
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#7284a0'};
-  padding: ${(props) => props.paddingText};
-  margin: ${(props) => props.marginText};
+  margin: 0;
+  padding: 0;
 `
 export const TypographyPercentage = styled(Typography)`
   color: ${(props) => props.textColor || '#7284a0'};
@@ -82,7 +89,7 @@ export const FolioValuesCell = styled(Grid)`
     border-radius: 1.5rem;
   }
 
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 193dpi) {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     width: 31%;
   }
 `
@@ -97,7 +104,7 @@ export const ReactSelectCustom = styled(ReactSelect)`
   letter-spacing: 1px;
   background: transparent;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.8rem;
   }
 `
@@ -107,7 +114,7 @@ export const GridSortOption = styled(Grid)`
   border-left: 1px solid #e0e5ec;
   border-right: 1px solid #e0e5ec;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     height: auto;
   }
 `
@@ -125,9 +132,15 @@ export const FolioCard = styled(Grid)`
   border-bottom: 1px solid #e0e5ec;
   box-shadow: ${(props) => props.boxShadow};
   border-radius: ${(props) => props.borderRadius};
+  transition: 0.3s all;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     height: auto;
+  }
+
+  &:hover {
+    box-shadow: 0px 0px 34px -25px rgba(0, 0, 0, 0.6);
+    transform: scale(1.05);
   }
 `
 export const GridFolioScroll = styled(Grid)`

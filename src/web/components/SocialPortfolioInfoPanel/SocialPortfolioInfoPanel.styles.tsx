@@ -20,7 +20,7 @@ export const Link = styled(
 )`
   width: fit-content;
   // margin: 2rem auto 0;
-  padding: 0.52rem 1.2rem;
+  padding: 0.6rem 1.2rem;
 
   display: flex;
   justify-content: center;
@@ -142,24 +142,30 @@ export const ButtonCustom = styled(
     ...rest
   }) => <Button {...rest} />
 )`
+  font-family: DM Sans;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all ease-in-out 0.5s;
   margin: ${(props) => props.btnMargin};
   width: ${(props) => props.btnWidth};
   height: ${(props) => props.btnHeight};
   background: ${(props) => props.btnBgColor};
   border-radius: ${(props) => props.btnRadius};
-  font-family: DM Sans;
-  font-weight: 700;
+  padding: ${(props) => (props.isStats ? '5px 8px 7px 8px' : '6px 8px')};
   font-size: ${(props) => props.btnFontSize};
-  text-align: center;
-  letter-spacing: 1px;
-  text-transform: uppercase;
   color: ${(props) => props.btnTextColor};
-  transition: all ease-in-out 0.5s;
   border: 1px solid ${(props) => props.borderColor};
   &:hover {
     background: ${(props) => props.btnHoverColor};
     color: ${(props) => props.btnHoverTextColor};
     border: 1px solid ${(props) => props.borderColor};
+  }
+
+  @media (max-width: 1400px) {
+    height: 22px;
+    padding: 5px 8px 7px 8px;
   }
 
   @media (min-width: 1921px) {
