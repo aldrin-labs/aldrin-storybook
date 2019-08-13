@@ -18,18 +18,17 @@ const putDataInTable = (tableData) => {
   return {
     head: [
       {
-        id: 'timeStamp',
+        id: 'timestamp',
         label: 'Timestamp',
-        isNumber: false,
       },
-      { id: 'pair', label: 'Pair', isNumber: false },
-      { id: 'exchangeA', label: 'Exchange A', isNumber: false },
-      { id: 'exchangeB', label: 'Exchange B', isNumber: false },
-      { id: 'amount', label: 'amount', isNumber: false },
-      { id: 'spread', label: 'spread', isNumber: false },
-      { id: 'pricea', label: 'pricea', isNumber: false },
-      { id: 'priceb', label: 'priceb', isNumber: false },
-      { id: 'status', label: 'Status', isNumber: false },
+      { id: 'pair', label: 'Pair' },
+      { id: 'exchangeA', label: 'Exchange A' },
+      { id: 'exchangeB', label: 'Exchange B' },
+      { id: 'amount', label: 'amount' },
+      { id: 'spread', label: 'spread' },
+      { id: 'pricea', label: 'pricea' },
+      { id: 'priceb', label: 'priceb' },
+      { id: 'status', label: 'Status' },
     ],
     body: transformData(tableData),
   }
@@ -79,16 +78,23 @@ const transformData = (data: any[]) => {
 }
 
 const SignalEventList = (props) => {
-  const { body, head, footer = [] } = putDataInTable(
-    props.data.getSignalEvents.events
-  )
+  const {
+    page,
+    perPage,
+    handleChangeRowsPerPage,
+    handleChangePage,
+    data: {
+      getSignalEvents: { count, events },
+    },
+  } = props
 
-  const { page, perPage, handleChangeRowsPerPage, handleChangePage } = props
+  const { body, head, footer = [] } = putDataInTable(events)
 
   return (
     <ContainerGrid container style={{ position: 'relative' }}>
       <TableWithSort
         pagination={{
+          totalCount: count,
           enabled: true, // toogle page nav panel in the footer
           page: page,
           rowsPerPage: perPage,
