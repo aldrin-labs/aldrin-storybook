@@ -95,11 +95,11 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       <>
         <BtnCustom
           btnWidth={'17rem'}
-          height={'3rem'}
+          height={'3.5rem'}
           btnColor={'#16253D'}
           backgroundColor="white"
-          borderRadius={'1rem 1rem 0 0'}
-          padding={'0px'}
+          borderRadius={'1rem'}
+          padding={'0'}
           fontSize={'1.175rem'}
           letterSpacing="1px"
           onClick={this.handleClickOpen}
@@ -108,7 +108,8 @@ class CreatePortfolio extends React.Component<IProps, IState> {
             position: 'absolute',
             left: '50%',
             transform: 'translateX(-50%)',
-            border: 'none'
+            border: '2px solid #E0E5EC',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
           }}
         >
           {/* <AddIcon fontSize={`small`} /> */}Create portfolio

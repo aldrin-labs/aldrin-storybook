@@ -28,6 +28,10 @@ export const BtnCustom = styled(
   letter-spacing: ${props => props.letterSpacing || '1.5px'};
   background: ${props => props.backgroundColor || 'transparent'};
 
+  &:hover {
+    background: ${props => props.backgroundColor};
+  }
+
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     padding: 0.5rem 1rem;
   }

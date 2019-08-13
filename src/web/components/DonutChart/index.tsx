@@ -193,7 +193,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
                 items={data.map((d) => (
                   <ColorLegendPercentContainer>
                     <span>{d.label}</span>
-                    <span>{d.realValue.toFixed(1)}%</span>
+                    <span>{parseFloat(d.realValue.toFixed(1))}%</span>
                   </ColorLegendPercentContainer>
                 ))}
                 colors={data.map((d, index) => colorsWithRandom[index])}
