@@ -91,6 +91,8 @@ export default class Accounts extends React.PureComponent<IProps> {
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = keyName.selected
 
+            console.log(keyName.name, isChecked)
+
             return (
               <AccountsListItem
                 key={keyName.name}

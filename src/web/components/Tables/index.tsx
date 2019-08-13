@@ -443,6 +443,7 @@ const CustomTable = (props: Props) => {
     },
     expandableRows = false,
     expandedRows = [],
+    expandAllRows = false,
     onSelectAllClick = () => {
       return
     },
@@ -670,7 +671,7 @@ const CustomTable = (props: Props) => {
                       >).map((collapsedRows: Row, i: number) => {
                         return (
                           <Grow
-                            in={expandedRow}
+                            in={expandAllRows || expandedRow}
                             key={i}
                             unmountOnExit={true}
                             mountOnEnter={true}

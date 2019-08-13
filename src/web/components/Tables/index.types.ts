@@ -110,6 +110,7 @@ export interface Props {
   columnNames?: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
   expandedRows?: ReadonlyArray<string>
+  expandAllRows: boolean
   title?: string | number | React.ReactElement<any>
   onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
