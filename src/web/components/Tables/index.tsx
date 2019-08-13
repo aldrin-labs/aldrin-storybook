@@ -29,6 +29,7 @@ import {
   renderCellType,
   Pagination,
   TableStyles,
+  PaginationFunctionType,
 } from './index.types'
 import { isObject } from 'lodash-es'
 import { Typography, IconButton, Grow, Collapse } from '@material-ui/core'
@@ -413,11 +414,19 @@ const renderFooterCells = ({
   return renderCells({ row, renderCellObject: setFooterCellObject })
 }
 
-const addPagination = (data: ReadonlyArray<any> = [], pagination: Pagination) =>
+const addPaginationFake = (
+  data: ReadonlyArray<any> = [],
+  pagination: Pagination
+) =>
   data.slice(
     pagination!.page * pagination!.rowsPerPage,
     pagination!.page * pagination!.rowsPerPage + pagination!.rowsPerPage
   )
+
+const addRealPagination = (
+  data: ReadonlyArray<any> = [],
+  pagination: Pagination
+) => data
 
 {
   /* ToDo:
@@ -453,7 +462,9 @@ const CustomTable = (props: Props) => {
     theme,
     data = { body: [] },
     pagination = {
+      totalCount: null,
       enabled: false,
+      fakePagination: true,
       rowsPerPage: defaultRowsPerPage,
       rowsPerPageOptions: defaultrowsPerPageOptions,
       page: 0,
@@ -494,6 +505,10 @@ const CustomTable = (props: Props) => {
 
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
+
+  const paginationFunc: PaginationFunctionType = pagination.fakePagination
+    ? addPaginationFake
+    : addRealPagination
 
   return (
     <Paper
@@ -602,7 +617,7 @@ const CustomTable = (props: Props) => {
           {data.body.length === 0 ? (
             <CustomPlaceholder text={emptyTableText} />
           ) : (
-            addPagination(
+            paginationFunc(
               data.body.filter(Boolean).map((row) => {
                 const selected = checkedRows.indexOf(row.id) !== -1
 
@@ -746,7 +761,7 @@ const CustomTable = (props: Props) => {
         <>
           <StyledTablePagination
             component="div"
-            count={data.body.length}
+            count={pagination.totalCount || data.body.length}
             rowsPerPage={pagination.rowsPerPage}
             page={pagination.page}
             backIconButtonProps={{

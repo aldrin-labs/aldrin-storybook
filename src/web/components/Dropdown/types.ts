@@ -10,4 +10,5 @@ export interface IProps {
     items: Item[],
     selectedMenu: string | undefined,
     selectActiveMenu(i: string): void;
+    onMouseOver?: () => void
 }

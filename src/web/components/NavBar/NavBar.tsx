@@ -25,6 +25,7 @@ import OptimizationIcon from '@material-ui/icons/Assessment'
 import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
+import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 
 export interface Props extends WithTheme {
   $hide?: boolean
@@ -189,6 +190,11 @@ const NavBarRaw: SFC<Props> = ({
                 page={`signals`}
                 component={Signals}
                 pathname={pathname}
+                onMouseOver={() => {
+                  client.query({
+                    query: GET_FOLLOWING_SIGNALS_QUERY,
+                  })
+                }}
               >
                 Signals
               </NavLinkButton>

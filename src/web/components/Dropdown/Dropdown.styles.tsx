@@ -4,7 +4,7 @@ import { Paper, MenuItem, Button } from '@material-ui/core'
 
 export const StyledLink = styled(NavLink)`
   color: #7284a0;
-  padding: 0.9rem 1.2rem 0.9rem 0.6rem;
+  padding: 0.9rem 2rem 0.9rem 0.6rem;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
@@ -19,8 +19,13 @@ export const StyledLink = styled(NavLink)`
   }
 
   @media (max-width: 1400px) {
-    font-size: 1.2rem;
-    padding: 1.4rem 1.8rem 1.4rem 0.8rem;
+    font-size: 1.4rem;
+    padding: 1.4rem 2.8rem 1.4rem 0.8rem;
+  }
+
+  @media (min-width: 1921px) {
+    font-size: 1.3rem;
+    padding: 0.9rem 2.2rem 0.9rem 0.6rem;
   }
 `
 
@@ -66,7 +71,7 @@ export const StyledPaper = styled(Paper)`
   }
 
   @media (min-width: 1921px) {
-    top: 69px;
+    top: 71px;
   }
 
   @media (min-width: 2560px) {
@@ -76,6 +81,7 @@ export const StyledPaper = styled(Paper)`
 
 export const StyledMenuItem = styled(MenuItem)`
   padding: 0.3rem 0;
+  height: auto;
 
   svg {
     font-size: 14px;
@@ -86,12 +92,16 @@ export const StyledMenuItem = styled(MenuItem)`
   }
 
   @media (min-width: 1921px) {
-    padding: 0.7rem 0;
+    padding: 0.5rem 0;
+
+    svg {
+      font-size: 1.5rem;
+    }
   }
 
   @media (min-width: 2560px) {
-    padding: 0.5rem 0;
-    height: auto;
+    padding: 0.4rem 0;
+
     svg {
       font-size: 1.3rem;
     }
@@ -102,8 +112,3 @@ export const StyledMenuItemText = styled.span`
   display: inline-block;
   margin-left: 0.4rem;
 `
-
-// TODO
-// make todo ( social portfolio and navbar)
-// fix navbar ( add shadow and paddings )
-// change in my tab condition to stats

@@ -46,6 +46,13 @@ export const PortfolioName = styled(Typography)`
   text-transform: uppercase;
   padding: 0;
   color: ${(props) => props.textColor};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  @media (min-width: 2560px) {
+    padding: 0.3rem 0 0 0.5rem;
+  }
 `
 
 export const TypographyTitle = styled(Typography)`
@@ -56,8 +63,10 @@ export const TypographyTitle = styled(Typography)`
   letter-spacing: 1px;
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#7284a0'};
-  padding: ${(props) => props.paddingText};
-  margin: ${(props) => props.marginText};
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 export const TypographyPercentage = styled(Typography)`
   color: ${(props) => props.textColor || '#7284a0'};
@@ -69,11 +78,15 @@ export const FolioValuesCell = styled(Grid)`
   text-align: center;
   background: ${(props) => props.bgColor || '#F9FBFD'};
   border: ${(props) => props.borderCell || '1px solid #E0E5EC'};
-  border-radius: ${(props) => props.borderRadius || '12px'};
+  border-radius: 12px;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 1440px) {
+    width: 31%;
+  }
 
   @media (min-width: 1921px) {
     width: 31%;
@@ -82,14 +95,13 @@ export const FolioValuesCell = styled(Grid)`
     border-radius: 1.5rem;
   }
 
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 193dpi) {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     width: 31%;
   }
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: DM Sans, sans-serif;
-  width: 100px;
   font-size: 1.2rem;
   text-transform: uppercase;
   border: 1px solid transparent;
@@ -97,7 +109,7 @@ export const ReactSelectCustom = styled(ReactSelect)`
   letter-spacing: 1px;
   background: transparent;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     font-size: 0.8rem;
   }
 `
@@ -107,7 +119,7 @@ export const GridSortOption = styled(Grid)`
   border-left: 1px solid #e0e5ec;
   border-right: 1px solid #e0e5ec;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     height: auto;
   }
 `
@@ -124,10 +136,16 @@ export const FolioCard = styled(Grid)`
   border: ${(props) => props.border};
   border-bottom: 1px solid #e0e5ec;
   box-shadow: ${(props) => props.boxShadow};
-  border-radius: ${(props) => props.borderRadius};
+  border-radius: 22px;
+  transition: 0.3s all;
 
-  @media (min-width: 2560px) {
+  @media (min-width: 1921px) {
     height: auto;
+  }
+
+  &:hover {
+    box-shadow: 0px 0px 34px -25px rgba(0, 0, 0, 0.6);
+    transform: scale(1.05);
   }
 `
 export const GridFolioScroll = styled(Grid)`

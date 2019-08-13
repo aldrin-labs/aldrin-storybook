@@ -137,4 +137,11 @@ export type Pagination = {
   rowsPerPage: number
   // start from  0
   page: number
+  fakePagination: boolean
+  totalCount: number | null
 }
+
+export type PaginationFunctionType = (
+  data: ReadonlyArray<any>,
+  pagination: Pagination
+) => ReadonlyArray<any>

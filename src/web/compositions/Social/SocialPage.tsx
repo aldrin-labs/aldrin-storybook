@@ -1,7 +1,6 @@
 import React from 'react'
-import { compose } from 'recompose'
 
-import { Typography, Input, Grid, Paper } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import {
   PortfolioName,
   TypographyTitle,
@@ -24,9 +23,6 @@ import {
   UnshareButton,
 } from './SocialPage.styles'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
-
 import { IProps, IState } from './Social.types'
 
 import { addMainSymbol, TableWithSort } from '@sb/components'
@@ -35,7 +31,6 @@ import {
   roundAndFormatNumber,
   combineTableData,
 } from '@core/utils/PortfolioTableUtils'
-import { isObject, zip } from 'lodash-es'
 
 import SocialPortfolioInfoPanel from '@sb/components/SocialPortfolioInfoPanel/SocialPortfolioInfoPanel'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
@@ -79,19 +74,12 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
   <FolioCard
     container
     onClick={onClick}
-    border={isSelected ? '22px' : '22px 22px 0 0 '}
     boxShadow={!isSelected ? 'none' : '0px 0px 8px rgba(10, 19, 43, 0.1)'}
-    borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
   >
     <Grid container justify="space-between">
-      <Grid item>
+      <Grid item style={{ maxWidth: '70%' }}>
         <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
-        <TypographyTitle
-          fontSize={'0.9rem'}
-          textColor={'#7284A0'}
-          paddingText={'0'}
-          marginText={'0'}
-        >
+        <TypographyTitle fontSize={'0.9rem'} textColor={'#7284A0'}>
           {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
         </TypographyTitle>
       </Grid>
@@ -99,10 +87,14 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
         width="10"
         height="10"
         src={LineGraph}
-        styledComponentsAdditionalStyle="@media(min-width: 2560px) {
-          width: 4.5rem;
-          margin: .5rem .5rem 2rem 0;
-        }"
+        styledComponentsAdditionalStyle="
+          @media(min-width: 1400px) {
+            padding: 1rem 0 2rem 0;
+          }
+
+          @media(min-width: 1921px) {
+            width: 4.5rem;
+          }"
       />
     </Grid>
     <Grid container alignItems="center" justify="space-between">
@@ -144,7 +136,8 @@ class SocialPage extends React.Component {
     search: '',
     isFollowingTab: true,
     isStatsOpen: false,
-    selectedMyPortfolio: 0,
+    selectedPortfolio: 0,
+    unfollowedPortfolios: [],
   }
 
   handleSearchInput = (e) => {
@@ -155,15 +148,35 @@ class SocialPage extends React.Component {
     this.setState({ isStatsOpen: bool })
   }
 
+  unfollowPortfolio = (id: string) => {
+    this.setState((prev) => ({
+      unfollowedPortfolios: [...prev.unfollowedPortfolios, id],
+    }))
+  }
+
+  followPortfolio = (id: string) => {
+    this.setState((prev) => ({
+      unfollowedPortfolios: [
+        ...prev.unfollowedPortfolios.filter((p) => p !== id),
+      ],
+    }))
+  }
+
+  setSelectedPortfolio = (index: number) => {
+    this.setState({ selectedPortfolio: index })
+  }
+
+  toggleStats = () => {
+    this.setState((prevState) => ({ isStatsOpen: !prevState.isStatsOpen }))
+  }
+
+  changeTab = (isFollowingTab: boolean) => {
+    this.setState({ isFollowingTab, isStatsOpen: false, selectedPortfolio: 0 })
+  }
+
   putDataInTable = (tableData) => {
     const { theme, isUSDCurrently = true, baseCoin = 'USDT' } = this.props
-    const {
-      checkedRows = [],
-      // tableData,
-      numberOfDigitsAfterPoint: round,
-      red = 'red',
-      green = 'green',
-    } = {}
+
     if (tableData.length === 0) {
       return { head: [], body: [], footer: null }
     }
@@ -198,25 +211,62 @@ class SocialPage extends React.Component {
     }
   }
 
-  changeTab = (isFollowingTab: boolean) => {
-    this.setState({ isFollowingTab })
+  componentWillUnmount = () => {
+    const { unfollowedPortfolios } = this.state
+    const { unfollowPortfolioMutation } = this.props
+
+    unfollowedPortfolios.forEach(async (p) => {
+      await unfollowPortfolioMutation({
+        variables: {
+          inputPortfolio: { id: p },
+        },
+      })
+    })
   }
 
   render() {
     const {
-      selectedPortfolio,
-      myPortfolios: { myPortfolios },
+      myPortfolios,
       getFollowingPortfolios,
       getSharedPortfolios,
-      tableData,
-      setSelectedPortfolio,
       unsharePortfolioMutation,
     } = this.props
 
-    const { isFollowingTab, isStatsOpen, selectedMyPortfolio } = this.state
+    const {
+      isFollowingTab,
+      isStatsOpen,
+      selectedPortfolio,
+      unfollowedPortfolios,
+    } = this.state
 
-    const totalFolioAssetsData = getFollowingPortfolios.length
-      ? getFollowingPortfolios[selectedPortfolio].portfolioAssets.reduce(
+    // data for all page (following or my tab)
+    const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
+
+    // table data
+    const tableData = dataToFilter.length
+      ? combineTableData(
+          dataToFilter[selectedPortfolio].portfolioAssets,
+          { usd: -100, percentage: -100 },
+          true
+        )
+      : []
+
+    const { head, body, footer = [] } = this.putDataInTable(tableData)
+
+    // other data
+
+    let filteredData = dataToFilter.length
+      ? dataToFilter.filter((folio) => {
+          return (
+            folio.name
+              .toLowerCase()
+              .indexOf(this.state.search.toLowerCase()) !== -1
+          )
+        })
+      : []
+
+    const totalFolioAssetsData = dataToFilter.length
+      ? dataToFilter[selectedPortfolio].portfolioAssets.reduce(
           (acc, el) => {
             acc.total += el.quantity * el.price
             acc.assets++
@@ -238,42 +288,27 @@ class SocialPage extends React.Component {
           unrealized: 0,
         }
 
-    const { head, body, footer = [] } = this.putDataInTable(tableData)
-
-    // data for all page (following or my tab)
-    const dataToFilter = isFollowingTab ? getFollowingPortfolios : myPortfolios
-
-    let filteredData = dataToFilter.length
-      ? dataToFilter.filter((folio) => {
-          return (
-            folio.name
-              .toLowerCase()
-              .indexOf(this.state.search.toLowerCase()) !== -1
-          )
-        })
-      : []
-
+    // left panel cards
     const sharedPortfoliosList = filteredData.map((el, index) => (
       <PortfolioListItem
         key={index}
         isSelected={index === selectedPortfolio}
         el={el}
         onClick={() => {
-          setSelectedPortfolio(index)
+          this.setSelectedPortfolio(index)
         }}
       />
     ))
 
     // my tab data
-    const sharedWith = getSharedPortfolios.sharedPortfolios
+    const sharedWith = myPortfolios[selectedPortfolio]
+      ? getSharedPortfolios.sharedPortfolios.filter(
+          (portfolio) => portfolio._id === myPortfolios[selectedPortfolio]._id
+        )
+      : []
 
+    // unshare button
     const unshare = (portfolioId, followerId) => {
-      console.log({
-        variables: {
-          inputPortfolio: { id: portfolioId },
-          options: { forAll: false, userId: followerId },
-        },
-      })
       unsharePortfolioMutation({
         variables: {
           inputPortfolio: { id: portfolioId },
@@ -297,8 +332,6 @@ class SocialPage extends React.Component {
       },
     ]
 
-    console.log(selectedPortfolio)
-
     return (
       <GridPageContainer
         container
@@ -310,20 +343,7 @@ class SocialPage extends React.Component {
             isFollowingTab={isFollowingTab}
             changeTab={this.changeTab}
           >
-            <GridSortOption
-              container
-              justify="space-between"
-              alignItems="center"
-            >
-              <Grid item>
-                {/* <TypographySearchOption
-                  textColor={'#165BE0'}
-                  style={{ visible: 'hidden' }}
-                >
-                  compare Index Chart
-                </TypographySearchOption> */}
-              </Grid>
-
+            <GridSortOption container justify="flex-end" alignItems="center">
               <Grid item>
                 <Grid container justify="space-between" alignItems="center">
                   <TypographySearchOption textColor={'#16253D'}>
@@ -349,7 +369,8 @@ class SocialPage extends React.Component {
                     controlStyles={{
                       background: 'transparent',
                       border: 'none',
-                      width: 104,
+                      width: 80,
+                      marginRight: 0,
                     }}
                     menuStyles={{
                       width: 120,
@@ -395,11 +416,21 @@ class SocialPage extends React.Component {
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
-        {/* <Grid lg={8}> */}
 
         <GridTableContainer container justify="center" xs={9}>
-          <Grid continer lg={12}>
+          <Grid continer xs={12}>
             <SocialPortfolioInfoPanel
+              isFollowingTab={isFollowingTab}
+              isStatsOpen={isStatsOpen}
+              id={
+                getFollowingPortfolios[selectedPortfolio]
+                  ? getFollowingPortfolios[selectedPortfolio]._id
+                  : ''
+              }
+              unfollowedPortfolios={unfollowedPortfolios}
+              toggleStats={this.toggleStats}
+              unfollowPortfolio={this.unfollowPortfolio}
+              followPortfolio={this.followPortfolio}
               folioData={
                 dataToFilter.length
                   ? dataToFilter[selectedPortfolio]
@@ -420,7 +451,11 @@ class SocialPage extends React.Component {
                     }}
                   >
                     <PortfolioMainAllocation
-                      portfolioData={getFollowingPortfolios[selectedPortfolio]}
+                      portfolioData={
+                        dataToFilter.length
+                          ? dataToFilter[selectedPortfolio]
+                          : {}
+                      }
                     />
                   </Grid>
                   <Grid item xs={9}>
@@ -465,6 +500,9 @@ class SocialPage extends React.Component {
                             letterSpacing: '0.5px',
                             fontSize: '1rem',
                             padding: '0 0 0 8px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
                             '&:first-child': {
                               // Does'n work
                               color: 'red',
@@ -514,8 +552,15 @@ class SocialPage extends React.Component {
                       sharedWith.length
                     } people`}</TypographyContent>
                   </WrapperTitle>
+
                   {sharedWith.map(
-                    ({ _id: portfolioId, sharedWith: { email, _id } }) => {
+                    ({
+                      _id: portfolioId,
+                      sharedWith: { email, _id },
+                    }: {
+                      _id: string
+                      sharedWith: { email: string; _id: string }
+                    }) => {
                       return (
                         <WrapperContent key={_id}>
                           <TypographyContent>{`${email}`}</TypographyContent>
@@ -533,7 +578,6 @@ class SocialPage extends React.Component {
             )}
           </Grid>
         </GridTableContainer>
-        {/* </Grid> */}
       </GridPageContainer>
     )
   }
