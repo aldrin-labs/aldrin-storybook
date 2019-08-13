@@ -94,6 +94,7 @@ const SignalEventList = (props) => {
     <ContainerGrid container style={{ position: 'relative' }}>
       <TableWithSort
         pagination={{
+          fakePagination: false,
           totalCount: count,
           enabled: true, // toogle page nav panel in the footer
           page: page,
