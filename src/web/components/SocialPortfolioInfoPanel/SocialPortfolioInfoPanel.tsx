@@ -89,6 +89,8 @@ class SocialPortfolioInfoPanel extends Component {
           btnHoverColor: '#165BE0',
         }
 
+    console.log(id)
+    // if 0 portfolio disable button follow unfollow
     return (
       <GridMainContainer
         container
@@ -188,6 +190,7 @@ class SocialPortfolioInfoPanel extends Component {
               btnHoverTextColor={'white'}
               btnRadius={'10px'}
               btnFontSize={'0.75rem'}
+              disabled={!id}
               onClick={this.handleToggleFollowBtn}
               onMouseEnter={this.onMouseEnterFollow}
               onMouseLeave={this.onMouseLeaveFollow}

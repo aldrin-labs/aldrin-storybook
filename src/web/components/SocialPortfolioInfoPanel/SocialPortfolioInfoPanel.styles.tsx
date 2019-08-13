@@ -172,10 +172,11 @@ export const ButtonCustom = styled(
   margin: ${(props) => props.btnMargin};
   width: ${(props) => props.btnWidth};
   height: ${(props) => props.btnHeight};
-  background: ${(props) => props.btnBgColor};
+  background: ${(props) => (props.disabled ? '#4C4C4C' : props.btnBgColor)};
   border-radius: ${(props) => props.btnRadius};
   font-size: ${(props) => props.btnFontSize};
-  color: ${(props) => props.btnTextColor};
+  color: ${(props) =>
+    props.disabled ? '#828282' : props.btnTextColor} !important;
   border: 1px solid ${(props) => props.borderColor};
   &:hover {
     background: ${(props) => props.btnHoverColor};
