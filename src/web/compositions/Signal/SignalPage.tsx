@@ -272,6 +272,18 @@ class SocialPage extends React.Component {
     signalsSort: signalsSortOptions[1],
   }
 
+  componentDidMount() {
+    const invervalId = setInterval(() => {
+      this.props.refetch()
+    }, 30000)
+
+    this.setState({ invervalId })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.invervalId)
+  }
+
   handleSearchInput = (e) => {
     this.setState({ search: e.target.value })
   }
@@ -461,7 +473,7 @@ export default compose(
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
     // pollInterval: 5000,
-    fetchPolicy: 'network-only',
+    // fetchPolicy: 'network-only',
   }),
   graphql(updateSignal, {
     name: 'updateSignalMutation',
