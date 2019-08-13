@@ -29,6 +29,10 @@ export const StyledTabs = styled(Tabs)`
 `
 
 export const StyledTab = styled(Tab)`
+  @media (max-width: 1400px) {
+    min-width: auto;
+  }
+
   @media (min-width: 1921px) {
     font-size: 1.4rem;
     max-width: 50%;
