@@ -27,6 +27,7 @@ import { graphql } from 'react-apollo'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
+import SignalEventList from './SignalEventList'
 
 import {
   FolioCard,
@@ -46,131 +47,6 @@ import {
   ContainerGrid,
   TypographyEditButton,
 } from './SignalPage.styles'
-
-const putDataInTable = (tableData, theme, state) => {
-  if (!tableData || tableData.length === 0) {
-    return { head: [], body: [], footer: null }
-  }
-
-  return {
-    head: [
-      {
-        id: 'timeStamp',
-        label: 'Timestamp',
-        isNumber: false,
-      },
-      { id: 'pair', label: 'Pair', isNumber: false },
-      { id: 'exchangeA', label: 'Exchange A', isNumber: false },
-      { id: 'exchangeB', label: 'Exchange B', isNumber: false },
-      { id: 'amount', label: 'amount', isNumber: false },
-      { id: 'spread', label: 'spread', isNumber: false },
-      { id: 'pricea', label: 'pricea', isNumber: false },
-      { id: 'priceb', label: 'priceb', isNumber: false },
-      { id: 'status', label: 'Status', isNumber: false },
-    ],
-    body: transformData(tableData),
-  }
-}
-
-const transformData = (data: any[]) => {
-  const transformedData = data.map((row) => ({
-    id: row._id,
-    timestamp: {
-      contentToSort: row.t,
-      contentToCSV: row.t,
-      render:
-        (row.t && moment(row.t / 1000000).format('YYYY DD MMM h:mm:ss a')) ||
-        '-',
-    },
-    pair: row.pair || '-',
-    exchangeA: row.exchangea || '-',
-    exchangeB: row.exchangeb || '-',
-    amount: {
-      contentToSort: row.amount,
-      contentToCSV: roundAndFormatNumber(row.amount, 2, true),
-      render: row.amount
-        ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
-        : '-',
-    },
-    spread: {
-      contentToSort: row.spread,
-      contentToCSV: roundAndFormatNumber(row.spread, 2, false),
-      render: row.spread
-        ? `${roundAndFormatNumber(row.spread, 2, false)} %`
-        : '-',
-    },
-    pricea: {
-      contentToSort: row.pricea,
-      contentToCSV: roundAndFormatNumber(row.pricea, 8, true),
-      render: row.pricea ? roundAndFormatNumber(row.pricea, 8, true) : '-',
-    },
-    priceb: {
-      contentToSort: row.priceb,
-      contentToCSV: roundAndFormatNumber(row.priceb, 8, true),
-      render: row.priceb ? roundAndFormatNumber(row.priceb, 8, true) : '-',
-    },
-    status: row.status || '-',
-  }))
-
-  return transformedData
-}
-
-const SignalEventList = (props) => {
-  const { body, head, footer = [] } = putDataInTable(
-    props.data.getSignalEvents.events,
-    props.theme,
-    props.state
-  )
-
-  return (
-    <ContainerGrid container style={{ position: 'relative' }}>
-      <TableWithSort
-        style={{ height: '100%', overflowY: 'scroll' }}
-        id="SignalSocialTable"
-        // title="Signal"
-        columnNames={head}
-        data={{ body, footer }}
-        padding="dense"
-        emptyTableText="No assets"
-        tableStyles={{
-          heading: {
-            margin: '0',
-            // padding: '0 0 0 1rem',
-            textAlign: 'left',
-            maxWidth: '14px',
-            background: '#F2F4F6',
-            fontFamily: "'DM Sans'",
-            fontSize: '0.9rem',
-            color: '#7284A0',
-            lineHeight: '31px',
-            letterSpacing: '1.5px',
-          },
-          cell: {
-            textAlign: 'left',
-            maxWidth: '14px',
-            fontFamily: 'DM Sans',
-            fontStyle: 'normal',
-            fontWeight: '500',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            fontSize: '1rem',
-            padding: '0 0 0 .3rem',
-            '&:before': {
-              content: '',
-              display: 'block',
-              width: 5,
-              height: 5,
-              backgroundColor: 'red',
-              position: 'relative',
-              top: 0,
-              left: 0,
-            },
-          },
-        }}
-      />
-    </ContainerGrid>
-  )
-}
 
 class SignalListItem extends React.Component {
   render() {
@@ -333,7 +209,7 @@ class SocialPage extends React.Component {
     const sortedData = filteredData.length
       ? filteredData.sort((a, b) => {
           return signalsSort.value === signalsSortOptions[0].value
-            ? (a.name && b.name && a.name.localeCompare(b.name))
+            ? a.name && b.name && a.name.localeCompare(b.name)
             : signalsSort.value === signalsSortOptions[1].value
             ? b.eventsCount - a.eventsCount
             : b.updatedAt - a.updatedAt
@@ -436,18 +312,7 @@ class SocialPage extends React.Component {
           <Grid item xs={12} spacing={24} style={{ padding: '15px' }}>
             {getFollowingSignals.length > 0 &&
             getFollowingSignals[this.state.selectedSignal] ? (
-              <QueryRenderer
-                fetchPolicy="network-only"
-                component={SignalEventList}
-                query={GET_SIGNAL_EVENTS_QUERY}
-                variables={{
-                  signalId: getFollowingSignals[this.state.selectedSignal]._id,
-                  page: 0,
-                  perPage: 30,
-                }}
-                state={this.state}
-                {...this.props}
-              />
+              <SignalEventList {...this.props} signalId={getFollowingSignals[this.state.selectedSignal]._id}/>
             ) : null}
           </Grid>
         </Grid>
