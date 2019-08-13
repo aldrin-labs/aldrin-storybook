@@ -105,6 +105,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   handleOpenTransactionWindow = () => {
+    console.log('open popup')
     this.setState(
       {
         openDialogTransaction: true,
@@ -194,6 +195,27 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       percentage: 100,
     }
 
+    const transactionsDataWithPrices = transactions.map(transaction => {
+      const prices = {
+        convertedFromPrice: null,
+        convertedToPrice: null
+      }
+
+      for (const entry of staticRowsMap) {
+        const row = entry[1]
+        if (row.symbol === transaction.convertedFrom) {
+          prices.convertedFromPrice = row.price
+        } else if (row.symbol === transaction.convertedTo) {
+          prices.convertedToPrice = row.price
+        }
+      }
+
+      return {
+        ...transaction,
+        ...prices
+      }
+    })
+
     return (
       <>
         <RebalanceMediaQuery/>
@@ -265,7 +287,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             <RebalanceDialogTransaction
               initialTime={+rebalanceTimePeriod.value}
               accordionTitle="TRANSACTIONS"
-              transactionsData={transactions}
+              transactionsData={transactionsDataWithPrices}
               open={this.state.openDialogTransaction}
               handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleCloseTransactionWindow}

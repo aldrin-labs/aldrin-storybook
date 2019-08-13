@@ -33,6 +33,6 @@ export const AccountsSlickStyles = createGlobalStyle`
         width: 100%;
         display: flex;
         align-items: center;
-        margin: 2rem 0;
+        margin: 2rem 0 2.5rem;
     }
 `
