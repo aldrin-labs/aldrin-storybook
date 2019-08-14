@@ -312,7 +312,7 @@ class SocialPage extends React.Component {
           <Grid item xs={12} spacing={24} style={{ padding: '15px' }}>
             {getFollowingSignals.length > 0 &&
             getFollowingSignals[this.state.selectedSignal] ? (
-              <SignalEventList {...this.props} signalId={getFollowingSignals[this.state.selectedSignal]._id}/>
+              <SignalEventList {...this.props} signalId={sortedData[this.state.selectedSignal]._id}/>
             ) : null}
           </Grid>
         </Grid>
