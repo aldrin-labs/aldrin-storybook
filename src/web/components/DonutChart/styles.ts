@@ -88,7 +88,3 @@ place-content: center;
 place-items: center;
 height: 10%;
 `
-
-export const ChartWithTitle = styled.div`
-  height: 100%;
-`
