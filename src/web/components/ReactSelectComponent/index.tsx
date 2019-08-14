@@ -35,7 +35,6 @@ class ReactSelectComponent extends Component<IProps> {
       closeMenuOnSelect,
       ...otherProps
     } = this.props
-
     const textColor: string = theme.typography.body2.color
     const fontFamily: string = theme.typography.fontFamily
 
