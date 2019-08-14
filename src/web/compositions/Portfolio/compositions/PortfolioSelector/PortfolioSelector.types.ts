@@ -11,8 +11,7 @@ export interface IProps extends WithTheme {
   newKeys: KeyOrWallet[]
   newWallets: KeyOrWallet[]
   portfolioId: string
+  isRebalance: boolean
   dustFilter: DustFilterType
   login: boolean
-
 }
-
