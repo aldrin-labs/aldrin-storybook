@@ -9,7 +9,6 @@ import { Props, State, DonutPiece, InputRecord } from './types'
 import {
   ChartContainer,
   LabelContainer,
-  ChartWithTitle,
   SDiscreteColorLegend,
   ChartWithLegend,
   ColorLegendContainer,
@@ -176,7 +175,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
     }
 
     return (
-      <ChartWithTitle key={sizeKey}>
+      <div key={sizeKey}>
         {!removeLabels && (
           <LabelContainer>
             <Typography variant="h4">
@@ -231,7 +230,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             )}
           </ChartContainer>
         </ChartWithLegend>
-      </ChartWithTitle>
+      </div>
     )
   }
 }
