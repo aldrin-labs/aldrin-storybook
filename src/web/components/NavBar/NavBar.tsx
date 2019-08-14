@@ -11,7 +11,7 @@ import { NavLink as Link } from 'react-router-dom'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
-import { Nav, StyledToolbar } from './NavBar.styles'
+import { Nav, StyledToolbar, NavLinkButtonWrapper } from './NavBar.styles'
 import Feedback from '@sb/components/Feedback'
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
@@ -154,29 +154,30 @@ const NavBarRaw: SFC<Props> = ({
                 ]}
               />
 
-              <Dropdown
-                id="chart-menu"
-                buttonText="Chart"
-                selectedMenu={selectedMenu}
-                selectActiveMenu={selectMenu}
-                items={[
-                  { text: 'Simple Terminal', icon: null, to: '/chart' },
-                  // { text: 'Advanced Terminal', icon: null, to: '/chart' },
-                ]}
-              />
+              <NavLinkButtonWrapper>
+                <NavLinkButton
+                  page={`chart`}
+                  component={Chart}
+                  pathname={pathname}
+                >
+                  Chart
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
 
-              <NavLinkButton
-                page={`market`}
-                component={Market}
-                pathname={pathname}
-                onMouseOver={() => {
-                  client.query({
-                    query: marketsQuery,
-                  })
-                }}
-              >
-                Marketcap
-              </NavLinkButton>
+              <NavLinkButtonWrapper>
+                <NavLinkButton
+                  page={`market`}
+                  component={Market}
+                  pathname={pathname}
+                  onMouseOver={() => {
+                    client.query({
+                      query: marketsQuery,
+                    })
+                  }}
+                >
+                  Marketcap
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
 
               {/*<NavLinkButton*/}
               {/*page={`market`}*/}
@@ -185,19 +186,20 @@ const NavBarRaw: SFC<Props> = ({
               {/*>*/}
               {/*Strategy*/}
               {/*</NavLinkButton>*/}
-
-              <NavLinkButton
-                page={`signals`}
-                component={Signals}
-                pathname={pathname}
-                onMouseOver={() => {
-                  client.query({
-                    query: GET_FOLLOWING_SIGNALS_QUERY,
-                  })
-                }}
-              >
-                Signals
-              </NavLinkButton>
+              <NavLinkButtonWrapper>
+                <NavLinkButton
+                  page={`signals`}
+                  component={Signals}
+                  pathname={pathname}
+                  onMouseOver={() => {
+                    client.query({
+                      query: GET_FOLLOWING_SIGNALS_QUERY,
+                    })
+                  }}
+                >
+                  Signals
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
             </Grid>
           </Grid>
 
