@@ -414,7 +414,8 @@ class Optimization extends Component<IProps, IState> {
           showProgress={true}
           showSkipButton={true}
           steps={portfolioOptimizationSteps}
-          run={getTooltipSettings.portfolioOptimization}
+          // run={getTooltipSettings.portfolioOptimization}
+          run={false}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{

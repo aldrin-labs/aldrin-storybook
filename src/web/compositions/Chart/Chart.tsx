@@ -197,7 +197,9 @@ class Chart extends React.Component<IProps, IState> {
           showSkipButton={true}
           continuous={true}
           steps={singleChartSteps}
-          run={this.state.joyride && getTooltipSettings.chartPage}
+          // run={this.state.joyride && getTooltipSettings.chartPage}
+          run={false}
+
           callback={this.handleJoyrideCallback}
           styles={{
             options: {

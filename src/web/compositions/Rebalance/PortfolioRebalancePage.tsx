@@ -478,7 +478,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           showProgress={true}
           showSkipButton={true}
           steps={portfolioRebalanceSteps}
-          run={getTooltipSettings.portfolioRebalance}
+          // run={getTooltipSettings.portfolioRebalance}
+          run={false}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
