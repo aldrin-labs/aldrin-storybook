@@ -100,8 +100,10 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black, secondary },
       },
+      children,
+      onSearch
     } = this.props
-
+    
     return (
       <>
         <BtnCustom
@@ -136,15 +138,15 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
           <DialogContent justify="center">
             <GridSearchPanel>
               <SearchIconCustom />
-              <InputBaseCustom placeholder="Search…" />
+              <InputBaseCustom placeholder="Search…" onChange={onSearch} />
             </GridSearchPanel>
 
             <GridCustom>
-              <ContentList
+              {children ? children : <ContentList
                 handleRadioBtn={this.handleRadioBtn}
                 isSelected={this.state.isSelected}
                 data={data}
-              />
+              />}
             </GridCustom>
 
             <GridCustom container justify="space-between" alignItems="center">

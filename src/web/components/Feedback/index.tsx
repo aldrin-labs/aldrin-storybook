@@ -58,7 +58,11 @@ export default class Feedback extends Component<Props> {
 }
 
 export const StyledButton = styled(Button)`
-  font-size: 1.4rem;
+  font-size: 12px;
+
+  @media only screen and (min-width: 2367px) {
+    font-size: 16px;
+  }
 `;
 
 export const Wrapper = styled.div`

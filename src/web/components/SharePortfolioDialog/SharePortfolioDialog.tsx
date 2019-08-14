@@ -180,6 +180,16 @@ export default class SharePortfolioDialog extends React.Component<
     return result
   }
 
+  scrollToDropdown = () => {
+    const container = document.getElementById('responsive-dialog-title').parentElement
+    const toScroll = document.getElementById('share-dialog-content')
+
+    // TODO: recreate this on refs
+    setTimeout(() => {
+      toScroll.scrollTop = container.offsetHeight
+    }, 250)
+  }
+
   render() {
     const {
       sharePortfolioTitle,
@@ -236,7 +246,7 @@ export default class SharePortfolioDialog extends React.Component<
             />
           </ClearButton>
         </DialogTitle>
-        <StyledDialogContent>
+        <StyledDialogContent id="share-dialog-content">
           <Grid
             container
             alignItems="center"
@@ -362,7 +372,12 @@ export default class SharePortfolioDialog extends React.Component<
                         : null
                     }
                     onChange={this.onChangeUsername}
-                    onFocus={() => this.setState({ isEnableToInvite: true })}
+                    onFocus={() => {
+                      this.setState({ isEnableToInvite: true })
+                    }}
+                    onMenuOpen={() => {
+                      this.scrollToDropdown()
+                    }}
                   />
                   <StyledButton
                     padding=".8rem 3rem"
@@ -575,8 +590,8 @@ export default class SharePortfolioDialog extends React.Component<
                       alignItems="center"
                       style={{ width: 'auto', flexDirection: 'row' }}
                     >
-                      <TypographySubTitle style={{ paddingRight: '2rem' }}>
-                        Paid
+                      <TypographySubTitle style={{ paddingRight: '.5rem' }}>
+                        Paid $
                       </TypographySubTitle>
                       <StyledInput
                         type="number"

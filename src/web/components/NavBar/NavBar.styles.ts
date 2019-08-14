@@ -41,3 +41,9 @@ export const StyledToolbar = styled(Toolbar)`
     height: 80px;
   }
 `
+
+export const NavLinkButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 1rem .5rem;
+`

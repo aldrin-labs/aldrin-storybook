@@ -5,7 +5,7 @@ import { Paper, MenuItem, Button } from '@material-ui/core'
 export const StyledLink = styled(NavLink)`
   color: #7284a0;
   padding: 0.9rem 2rem 0.9rem 0.6rem;
-  font-size: 1.2rem;
+  font-size: 11px;
   display: flex;
   align-items: center;
   transition: all 0.5s ease-in-out;
@@ -24,20 +24,28 @@ export const StyledLink = styled(NavLink)`
   }
 
   @media (min-width: 1921px) {
-    font-size: 1.3rem;
+    font-size: 13px;
     padding: 0.9rem 2.2rem 0.9rem 0.6rem;
+  }
+
+  @media only screen and (min-width: 2367px) {
+    font-size: 15px;
   }
 `
 
 export const StyledButton = styled(Button)`
-  font-size: 1.4rem;
+  font-size: 12px;
   transition: 0.35s all;
+
+  @media only screen and (min-width: 2367px) {
+    font-size: 16px;
+  }
 `
 
 export const StyledDropdown = styled.div`
   position: relative;
   display: inherit;
-  margin: 0 0.4rem;
+  margin: 0 1rem;
   padding: 1rem 0.5rem;
 
   @media (min-width: 1921px) {
@@ -62,20 +70,12 @@ export const StyledPaper = styled(Paper)`
   padding-left: 8px;
   padding-right: 8px;
 
-  @media (max-width: 1400px) {
-    top: 47px;
-  }
-
   @media (min-width: 1400px) {
-    top: 52px;
-  }
-
-  @media (min-width: 1921px) {
-    top: 71px;
+    top: 5.4rem;
   }
 
   @media (min-width: 2560px) {
-    top: 95px;
+    top: 6.35rem;
   }
 `
 
