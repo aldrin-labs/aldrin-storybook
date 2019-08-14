@@ -2,11 +2,11 @@ import styled from 'styled-components'
 import { Card, Grid } from '@material-ui/core'
 import { customAquaScrollBar } from '../cssUtils'
 
-
 export const TablesBlockWrapper = styled(Card)`
-  min-width: 150px;
   width: 100%;
-  position: relative;
+  margin-bottom: 4px;
+  height: calc(80% - 4px);
+  border-radius: 0;
 
   && {
     box-shadow: none !important;

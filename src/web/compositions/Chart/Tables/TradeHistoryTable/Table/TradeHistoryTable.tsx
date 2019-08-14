@@ -1,13 +1,7 @@
 import React, { memo, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
-import {
-  Row,
-  Body,
-  Head,
-  HeadCell,
-  Cell,
-} from '@sb/components/OldTable/Table'
+import { Row, Body, Head, HeadCell, Cell } from '@sb/components/OldTable/Table'
 import { IProps, IState, ITicker } from './TradeHistoryTable.types'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
@@ -15,7 +9,7 @@ import {
   StyledTypography,
   StyledArrow,
   TradeHistoryTableCollapsible,
-  TriggerTitle
+  TriggerTitle,
 } from './TradeHistoryTable.styles'
 
 const OptimizedRow = memo(
@@ -123,15 +117,11 @@ const MemoizedHead = memo(
     </>
   ),
   (prevProps, nextProps) =>
-    nextProps.type === prevProps.type &&
-    nextProps.quote === prevProps.quote
+    nextProps.type === prevProps.type && nextProps.quote === prevProps.quote
 )
 
-
 @withTheme()
-
 class TradeHistoryTable extends PureComponent<IProps, IState> {
-
   render() {
     const {
       numbersAfterDecimalForPrice,
@@ -139,38 +129,36 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
       data,
       theme: { palette, customPalette },
     } = this.props
-    const { background, primary, type, } = palette
+    const { background, primary, type } = palette
     const { red, green } = customPalette
 
     return (
       <TradeHistoryTableCollapsible key={`trade_history_table-collapsible`}>
-          <MemoizedHead
-            {...{
-              primary,
-              type,
-              palette,
-              quote,
-              key: 'tradehistory_head',
-            }}
-          />
-          <Body
-            data-e2e="tradeHistory__body"
-            background={background.default}
-            height="calc((68vh - 59px) - 48px)"
-          >
-                {data.map((ticker: ITicker, i: number) => (
-                  <OptimizedRow
-                    key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${ticker.fall}`}
-                    {...{
-                      ticker,
-                      background,
-                      numbersAfterDecimalForPrice,
-                      red,
-                      green,
-                    }}
-                  />
-                ))}
-          </Body>
+        <MemoizedHead
+          {...{
+            primary,
+            type,
+            palette,
+            quote,
+            key: 'tradehistory_head',
+          }}
+        />
+        <Body data-e2e="tradeHistory__body" background={background.default}>
+          {data.map((ticker: ITicker, i: number) => (
+            <OptimizedRow
+              key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${
+                ticker.fall
+              }`}
+              {...{
+                ticker,
+                background,
+                numbersAfterDecimalForPrice,
+                red,
+                green,
+              }}
+            />
+          ))}
+        </Body>
       </TradeHistoryTableCollapsible>
     )
   }

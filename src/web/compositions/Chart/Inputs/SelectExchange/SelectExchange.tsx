@@ -30,10 +30,11 @@ export default class SelectExchange extends React.Component<IProps> {
       theme: {
         palette: { divider },
       },
+      selectStyles,
     } = this.props
 
     return (
-      <ExchangeListContainer border={divider}>
+      <ExchangeListContainer border={'#e0e5ec'} selectStyles={selectStyles}>
         <SelectExchangeByCurrencyPair
           onChange={this.onSelectChange}
           defaultValue={[

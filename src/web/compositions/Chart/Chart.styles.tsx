@@ -12,17 +12,85 @@ export const ChartMediaQueryForLg = createGlobalStyle`
 `
 
 export const MainContainer = styled.div`
-  ${(props: { fullscreen: boolean }) => props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
-`
-export const DepthChartContainer = styled(Card)`
-  height: 100%;
-  width: 100%;
+  ${(props: { fullscreen: boolean }) =>
+    props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
 
-export const TablesBlockWrapper = styled(({background = '', ...rest}) => <Card {...rest} />)`
+export const PanelCard = styled.div`
+  min-width: 120px;
+  padding: ${(props) =>
+    props.first ? '0.7rem 0 0 0.5rem' : '0.7rem 0 0 1.5rem'};
+  min-height: 38px;
+  background: #f9fbfd;
+  border-right: 2px solid #e0e5ec;
+  font-weight: bold;
+  font-family: DM Sans;
+  text-transform: uppercase;
+`
+
+export const PanelCardTitle = styled.span`
+  display: block;
+  font-size: 1.2rem;
+  padding: 0.1rem;
+  color: #7284a0;
+`
+
+export const PanelCardValue = styled.span`
+  white-space: pre-line;
+  font-size: 1.3rem;
+  color: ${(props) => props.color};
+`
+
+export const PanelCardSubValue = styled.span`
+  padding-left: 0.4rem;
+  font-size: 1.1rem;
+  color: ${(props) => props.color};
+`
+
+// depth chart container
+export const DepthChartContainer = styled(Card)`
+  width: 100%;
+  margin-bottom: 4px;
+  height: calc(60% - 4px);
+  border-radius: 0;
+`
+
+export const RangesContainer = styled(Card)`
+  width: 100%;
+  margin-top: 4px;
+  height: calc(20% - 4px);
+  border-radius: 0;
+`
+
+export const TablesBlockWrapper = styled(({ background = '', ...rest }) => (
+  <Card {...rest} />
+))`
   min-width: 150px;
-  width: 50%;
+  width: 100%;
   position: relative;
+
+  && {
+    overflow: hidden;
+    background-color: ${(props: { background?: string }) => props.background};
+    box-shadow: none !important;
+  }
+
+  @media (max-width: 1080px) {
+    width: 100%;
+    height: calc(68vh - 57px - 70px);
+    position: relative;
+  }
+`
+// order book container
+
+export const OrderbookContainer = styled(({ background = '', ...rest }) => (
+  <Card {...rest} />
+))`
+  width: 100%;
+  margin-bottom: 4px;
+  height: calc(65% - 4px);
+  border-radius: 0;
+
   && {
     overflow: hidden;
     background-color: ${(props: { background?: string }) => props.background};
@@ -36,27 +104,50 @@ export const TablesBlockWrapper = styled(({background = '', ...rest}) => <Card {
   }
 `
 
+export const TradeHistoryWrapper = styled(({ background = '', ...rest }) => (
+  <Card {...rest} />
+))`
+  width: 100%;
+  margin-top: 4px;
+  height: calc(35% - 4px);
+  border-radius: 0;
+
+  && {
+    overflow: hidden;
+    background-color: ${(props: { background?: string }) => props.background};
+    box-shadow: none !important;
+  }
+
+  @media (max-width: 1080px) {
+    width: 100%;
+    height: calc(68vh - 57px - 70px);
+    position: relative;
+  }
+`
+
+// watch list container
+
+export const WatchListContainer = styled(Card)`
+  width: 100%;
+  margin-top: 4px;
+  height: calc(40% - 4px);
+  border-radius: 0px;
+`
+
 export const ChartGridContainer = styled(Grid)`
   position: relative;
   display: flex;
   flex: auto;
-  width: 66.6%;
   align-items: center;
-
-  && {
-    padding: 3px;
-  }
+  width: 100%;
 `
 
 export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
 
-  && {
-    padding: 3px;
-  }
-
-  height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  // height: calc(60vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  height: 100%;
   overflow: hidden;
 
   @media (max-width: 1080px) {
@@ -69,11 +160,7 @@ export const TradingTerminalContainer = styled(Grid)`
   position: relative;
   display: flex;
 
-  && {
-    padding: 3px;
-  }
-
-  height: 32vh;
+  height: 100%;
   overflow: hidden;
 
   @media (max-width: 1080px) {
@@ -82,11 +169,12 @@ export const TradingTerminalContainer = styled(Grid)`
 `
 
 export const ChartsContainer = styled(TablesContainer)`
-  height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  margin-bottom: 4px;
+  height: calc(50% - 4px);
   justify-content: flex-end;
   flex-direction: column;
-  width: 66.6%;
-
+  border-radius: 0;
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
@@ -95,15 +183,17 @@ export const ChartsContainer = styled(TablesContainer)`
 `
 
 export const TradingTabelContainer = styled(TablesContainer)`
-  height: 32vh;
+  height: calc(50% - 4px); // 32vh was
+  margin-top: 4px;
+  width: 100%;
   justify-content: flex-start;
   flex-direction: column;
-  width: 66.6%;
+  overflow: scroll;
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
-  
+
   flex: auto;
 `
 
@@ -121,8 +211,8 @@ export const Toggler = styled.div`
 
 export const Container = styled(Grid)`
   display: flex;
-  flex-flow: column wrap;
   height: calc(100vh - 48px);
   width: 100%;
   margin: 0;
+  background-color: #e0e5ec;
 `

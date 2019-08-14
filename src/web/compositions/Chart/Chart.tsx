@@ -52,6 +52,13 @@ import {
   TablesContainer,
   Toggler,
   TogglerContainer,
+  OrderbookContainer,
+  TradeHistoryWrapper,
+  WatchListContainer,
+  PanelCard,
+  PanelCardTitle,
+  PanelCardValue,
+  PanelCardSubValue,
   TradingTabelContainer,
   TradingTerminalContainer,
   ChartGridContainer,
@@ -164,6 +171,15 @@ class Chart extends React.Component<IProps, IState> {
     }
   }
 
+  renderDepthAndList = () => {
+    return (
+      <Grid item container direction="column" xs={5}>
+        <DepthChartContainer>depth chart</DepthChartContainer>
+        <WatchListContainer>watch list</WatchListContainer>
+      </Grid>
+    )
+  }
+
   renderTables: any = () => {
     const { aggregation, showTableOnMobile } = this.state
     const {
@@ -191,7 +207,7 @@ class Chart extends React.Component<IProps, IState> {
     const exchange = activeExchange.symbol
 
     return (
-      <TablesContainer item sm={4} style={{ flex: 'auto' }}>
+      <TablesContainer item container direction="column" xs={7}>
         <Joyride
           showProgress={true}
           showSkipButton={true}
@@ -211,49 +227,51 @@ class Chart extends React.Component<IProps, IState> {
             },
           }}
         />
-        <TablesBlockWrapper
+        <OrderbookContainer>orderbook</OrderbookContainer>
+
+        {/* <TablesBlockWrapper
           key={`orderbook_table`}
           background={theme.palette.background.default}
           variant={{
             show: showTableOnMobile === 'ORDER',
           }}
-        >
-          {/*{MASTER_BUILD && <ComingSoon />}*/}
-          {/*<QueryRenderer*/}
-          {/*component={OrderBookTable}*/}
-          {/*withOutSpinner*/}
-          {/*query={ORDERS_MARKET_QUERY}*/}
-          {/*fetchPolicy="network-only"*/}
-          {/*variables={{ symbol, exchange }}*/}
-          {/*subscriptionArgs={{*/}
-          {/*subscription: MARKET_ORDERS,*/}
-          {/*variables: { symbol, exchange },*/}
-          {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
-          {/*}}*/}
-          {/*{...{*/}
-          {/*quote,*/}
-          {/*symbol,*/}
-          {/*activeExchange,*/}
-          {/*currencyPair: pair,,*/}
-          {/*aggregation,*/}
-          {/*onButtonClick: this.changeTable,*/}
-          {/*setOrders: this.props.setOrders,*/}
-          {/*...this.props,*/}
-          {/*key: 'orderbook_table_query_render',*/}
-          {/*}}*/}
-          {/*/>*/}
+        > */}
+        {/*{MASTER_BUILD && <ComingSoon />}*/}
+        {/*<QueryRenderer*/}
+        {/*component={OrderBookTable}*/}
+        {/*withOutSpinner*/}
+        {/*query={ORDERS_MARKET_QUERY}*/}
+        {/*fetchPolicy="network-only"*/}
+        {/*variables={{ symbol, exchange }}*/}
+        {/*subscriptionArgs={{*/}
+        {/*subscription: MARKET_ORDERS,*/}
+        {/*variables: { symbol, exchange },*/}
+        {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
+        {/*}}*/}
+        {/*{...{*/}
+        {/*quote,*/}
+        {/*symbol,*/}
+        {/*activeExchange,*/}
+        {/*currencyPair: pair,,*/}
+        {/*aggregation,*/}
+        {/*onButtonClick: this.changeTable,*/}
+        {/*setOrders: this.props.setOrders,*/}
+        {/*...this.props,*/}
+        {/*key: 'orderbook_table_query_render',*/}
+        {/*}}*/}
+        {/*/>*/}
 
-          {/*<Aggregation*/}
-          {/*{...{*/}
-          {/*theme,*/}
-          {/*aggregation: this.state.aggregation,*/}
-          {/*onButtonClick: this.setAggregation,*/}
-          {/*key: 'aggregation_component',*/}
-          {/*}}*/}
-          {/*/>*/}
-        </TablesBlockWrapper>
+        {/*<Aggregation*/}
+        {/*{...{*/}
+        {/*theme,*/}
+        {/*aggregation: this.state.aggregation,*/}
+        {/*onButtonClick: this.setAggregation,*/}
+        {/*key: 'aggregation_component',*/}
+        {/*}}*/}
+        {/*/>*/}
+        {/* </TablesBlockWrapper> */}
 
-        <TablesBlockWrapper
+        <TradeHistoryWrapper
           key={`tradehistory_table`}
           className="ExchangesTable"
           background={theme.palette.background.default}
@@ -277,7 +295,7 @@ class Chart extends React.Component<IProps, IState> {
               key: 'tradeyistory_table_query_render',
             }}
           />
-        </TablesBlockWrapper>
+        </TradeHistoryWrapper>
       </TablesContainer>
     )
   }
@@ -385,6 +403,29 @@ class Chart extends React.Component<IProps, IState> {
 
     const toggler = this.renderToggler()
 
+    const selectStyles = {
+      border: 'none',
+      background: '#FFFFFF',
+      marginRight: '8px',
+      cursor: 'pointer',
+      '& div': {
+        cursor: 'pointer',
+        color: '#16253D',
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+      },
+      '& svg': {
+        color: '#7284A0',
+      },
+      '.custom-select-box__menu': {
+        minWidth: '130px',
+        marginTop: '0',
+        borderRadius: '0',
+        boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
+        left: '-16px',
+      },
+    }
+
     return (
       <>
         {view === 'onlyCharts' && (
@@ -395,18 +436,53 @@ class Chart extends React.Component<IProps, IState> {
           changeActiveExchangeMutation={changeActiveExchangeMutation}
           activeExchange={activeExchange}
           currencyPair={pair}
+          selectStyles={selectStyles}
         />
 
-        {view === 'default' && <KeySelector exchange={activeExchange} />}
+        {view === 'default' && (
+          <KeySelector
+            exchange={activeExchange}
+            selectStyles={selectStyles}
+            isAccountSelect={true}
+          />
+        )}
 
         <AutoSuggestSelect
           value={view === 'default' && pair}
           id={'currencyPair'}
           view={view}
           activeExchange={activeExchange}
+          selectStyles={selectStyles}
         />
 
-        {view === 'default' && (
+        <PanelCard first>
+          <PanelCardTitle>Last price</PanelCardTitle>
+          <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
+          <PanelCardSubValue>$9964.01</PanelCardSubValue>
+        </PanelCard>
+
+        <PanelCard>
+          <PanelCardTitle>24h change</PanelCardTitle>
+          <PanelCardValue color="#2F7619">9,964.01</PanelCardValue>
+          <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
+        </PanelCard>
+
+        <PanelCard>
+          <PanelCardTitle>24h high</PanelCardTitle>
+          <PanelCardValue>9,964.01</PanelCardValue>
+        </PanelCard>
+
+        <PanelCard>
+          <PanelCardTitle>24h low</PanelCardTitle>
+          <PanelCardValue>9,964.01</PanelCardValue>
+        </PanelCard>
+
+        <PanelCard>
+          <PanelCardTitle>24h volume</PanelCardTitle>
+          <PanelCardValue>9,964.01</PanelCardValue>
+        </PanelCard>
+
+        {/* {view === 'default' && (
           <TransparentExtendedFAB
             onClick={() => {
               this.setState((prevState) => ({
@@ -417,7 +493,8 @@ class Chart extends React.Component<IProps, IState> {
           >
             {activeChart === 'candle' ? 'orderbook' : 'chart'}
           </TransparentExtendedFAB>
-        )}
+        )} */}
+
         <Hidden smDown>{toggler}</Hidden>
       </>
     )
@@ -457,7 +534,7 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
-        <ChartMediaQueryForLg/>
+        <ChartMediaQueryForLg />
         {view === 'onlyCharts' && (
           <TogglerContainer container>
             <Grid
@@ -483,6 +560,7 @@ class Chart extends React.Component<IProps, IState> {
             activeChart={this.state.activeChart}
             renderTogglerBody={this.renderTogglerBody}
             renderTables={this.renderTables}
+            renderDepthAndList={this.renderDepthAndList}
             MASTER_BUILD={MASTER_BUILD}
           />
         )}

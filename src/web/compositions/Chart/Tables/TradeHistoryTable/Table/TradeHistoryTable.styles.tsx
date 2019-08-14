@@ -28,10 +28,6 @@ export const TriggerTitle = styled(Title)`
 `
 
 export const CollapsibleTable = styled(Table)`
-  position: absolute;
-  top: 0;
-  max-height: calc(100% - 37px);
-  z-index: 10;
   width: 100%;
 
   @-moz-document url-prefix() {
@@ -40,8 +36,6 @@ export const CollapsibleTable = styled(Table)`
 `
 
 export const TradeHistoryTableCollapsible = styled(CollapsibleTable)`
-  max-height: 100%;
-
   @media (max-width: 1080px) {
     bottom: 0.8rem;
   }
