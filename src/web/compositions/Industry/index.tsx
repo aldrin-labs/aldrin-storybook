@@ -64,7 +64,8 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
         />
         <Joyride
           steps={portfolioIndustrySteps}
-          run={getTooltipSettings.portfolioIndustry}
+          // run={getTooltipSettings.portfolioIndustry}
+          run={false}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
