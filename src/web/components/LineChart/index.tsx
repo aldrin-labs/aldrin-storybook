@@ -75,7 +75,7 @@ export default class LineChart extends React.Component<Props, State> {
     if (showCustomPlaceholder) {
       return placeholderElement
     }
-
+    
     if (!data) {
       return (
         <FlexibleXYPlot>

@@ -45,7 +45,7 @@ const TransactionPageMediaQuery = createGlobalStyle`
 @withTheme()
 class TransactionPage extends Component {
   render() {
-    const { theme } = this.props
+    const { theme, hideSelector } = this.props
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
@@ -154,69 +154,73 @@ class TransactionPage extends Component {
         container
         justify="space-between"
         style={{
-          padding: '3rem 5% 8rem 5px',
+          padding: !hideSelector && '3rem 5% 8rem 5px',
           overflow: 'hidden',
           flexWrap: 'nowrap'
         }}
         // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
       >
         {/* Accounts */}
-        <Grid item lg={2} md={2}>
-          <GridAccountContainer
-            borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
-          >
-            <GridContainerTitle
-              bgColor={theme.palette.primary.dark}
-              content
-              alignItems="center"
+        {!hideSelector && (
+          <Grid item lg={2} md={2}>
+            <GridAccountContainer
+              borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
             >
-              <TypographyContatinerTitle
-                textColor={theme.palette.text.subPrimary}
+              <GridContainerTitle
+                bgColor={theme.palette.primary.dark}
+                content
+                alignItems="center"
               >
-                accounts
-              </TypographyContatinerTitle>
-            </GridContainerTitle>
-            <ContentGrid>
-              <PortfolioSelectorWrapper>
-                <SvgIcon src={TransactionsAccountsBackground} style={{
-                  position: 'absolute',
-                  top: '-4rem',
-                  left: 0
-                }} width="100%" height="20rem"/>
-                <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
-                <AccountsSlick/>
-              </PortfolioSelectorWrapper>
+                <TypographyContatinerTitle
+                  textColor={theme.palette.text.subPrimary}
+                >
+                  accounts
+                </TypographyContatinerTitle>
+              </GridContainerTitle>
+              <ContentGrid>
+                <PortfolioSelectorWrapper>
+                  <SvgIcon src={TransactionsAccountsBackground} style={{
+                    position: 'absolute',
+                    top: '-4rem',
+                    left: 0
+                  }} width="100%" height="20rem"/>
+                  <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
+                  <AccountsSlick/>
+                </PortfolioSelectorWrapper>
 
-              <Grid>
-                <Accounts
-                  {...{
-                    color,
-                    login,
-                    isSideNavOpen,
-                    isCheckedAll,
-                    newKeys,
-                    isRebalance,
-                    onToggleAll,
-                    onKeyToggle,
-                    onKeySelectOnlyOne
-                  }}
-                />
-              </Grid>
-            </ContentGrid>
-            <GridShowHideDataContainer>
-              <ShowHideData />
-            </GridShowHideDataContainer>
-          </GridAccountContainer>
-        </Grid>
+                <Grid>
+                  <Accounts
+                    {...{
+                      color,
+                      login,
+                      isSideNavOpen,
+                      isCheckedAll,
+                      newKeys,
+                      isRebalance,
+                      onToggleAll,
+                      onKeyToggle,
+                      onKeySelectOnlyOne
+                    }}
+                  />
+                </Grid>
+              </ContentGrid>
+              <GridShowHideDataContainer>
+                <ShowHideData />
+              </GridShowHideDataContainer>
+            </GridAccountContainer>
+          </Grid>
+        )}
 
         <GridItemContainer
           item
-          lg={8}
-          md={8}
-          style={{ boxShadow: 'none', border: 'none', paddingLeft: '1.5rem' }}
+          lg={hideSelector ? 9 : 8}
+          md={hideSelector ? 9 : 8}
+          style={{ boxShadow: 'none', border: 'none', paddingLeft: !hideSelector && '1.5rem' }}
         >
           <Grid item style={{ height: '100%' }}>
-            <ChoosePeriod/>
+            {!hideSelector && <GitTransactionCalendar/>}
+            {hideSelector && <ChoosePeriod/>}
+
             <GridTableContainer
               item
               lg={12}
@@ -245,9 +249,14 @@ class TransactionPage extends Component {
 
         <GridItemContainer
           item
-          lg={2}
-          md={2}
-          style={{ boxShadow: 'none', border: 'none', paddingLeft: '1.5rem' }}
+          lg={hideSelector ? 3 : 2}
+          md={hideSelector ? 3 : 2}
+          style={{
+            boxShadow: 'none',
+            border: 'none',
+            paddingLeft: '1.5rem',
+            paddingTop: hideSelector ? '4rem' : '1.75rem'
+          }}
         >
           <TransactionsActionsStatistic/>
           <WinLossRatio/>
