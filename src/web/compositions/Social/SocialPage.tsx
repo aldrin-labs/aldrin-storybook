@@ -49,10 +49,7 @@ const getOwner = (str: string) => {
   if (!str) {
     return 'public'
   }
-
-  const b = str.match(/(?<=\').*(?=')/gm)
-
-  return (b && b[0]) || 'public'
+  return str
 }
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
@@ -547,7 +544,7 @@ class SocialPage extends React.Component {
               >
                 <Grid item xs={4}>
                   <WrapperTitle>
-                    <TypographyTitle>{`Shared to`}</TypographyTitle>
+                    <TypographyTitle>{`Shared with`}</TypographyTitle>
                     <TypographyContent>{`${
                       sharedWith.length
                     } people`}</TypographyContent>
@@ -556,14 +553,14 @@ class SocialPage extends React.Component {
                   {sharedWith.map(
                     ({
                       _id: portfolioId,
-                      sharedWith: { email, _id },
+                      sharedWith: { username, _id },
                     }: {
                       _id: string
-                      sharedWith: { email: string; _id: string }
+                      sharedWith: { username: string; _id: string }
                     }) => {
                       return (
                         <WrapperContent key={_id}>
-                          <TypographyContent>{`${email}`}</TypographyContent>
+                          <TypographyContent>{`${username}`}</TypographyContent>
                           <UnshareButton
                             onClick={() => unshare(portfolioId, _id)}
                           >
