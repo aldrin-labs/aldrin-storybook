@@ -180,7 +180,7 @@ export const ButtonCustom = styled(
   border: 1px solid ${(props) => props.borderColor};
   &:hover {
     background: ${(props) => props.btnHoverColor};
-    color: ${(props) => props.btnHoverTextColor};
+    color: ${(props) => props.btnHoverTextColor} !important;
     border: 1px solid ${(props) => props.borderColor};
   }
 

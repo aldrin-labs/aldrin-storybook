@@ -7,6 +7,8 @@ import {
   Typography,
   Link,
   InputBase,
+
+  withStyles
 } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 
@@ -49,9 +51,14 @@ export const InputBaseCustom = styled(InputBase)`
   padding: 4px 15px;
 `
 
-export const DialogWrapper = styled(Dialog)`
-  border-radius: 100px;
-`
+export const DialogWrapper = withStyles({
+  root: {
+    borderRadius: '100px'
+  },
+  paper: {
+    minWidth: '600px'
+  }
+})(Dialog)
 
 export const TypographyTopDescription = styled(Typography)`
   margin: auto;

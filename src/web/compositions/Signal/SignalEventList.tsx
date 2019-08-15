@@ -86,6 +86,7 @@ const SignalEventList = (props) => {
     data: {
       getSignalEvents: { count, events },
     },
+    onTrClick,
   } = props
 
   const { body, head, footer = [] } = putDataInTable(events)
@@ -93,6 +94,7 @@ const SignalEventList = (props) => {
   return (
     <ContainerGrid container style={{ position: 'relative' }}>
       <TableWithSort
+        onTrClick={onTrClick}
         pagination={{
           fakePagination: false,
           totalCount: count,

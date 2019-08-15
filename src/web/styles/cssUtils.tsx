@@ -156,8 +156,6 @@ export const CentredContainer = styled.div`
 `
 
 export const ChartSelectStyles = css`
-  margin-left: 1.12rem;
-  border-radius: 24px;
   border: 2px solid ${(props: { border: string }) => props.border};
   padding: 0 16px;
   height: 38px;
@@ -183,7 +181,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
 
   & .DateInput_input {
     padding: ${(props: { dateInputPadding: string }) =>
-    props.dateInputPadding || '5px'};
+      props.dateInputPadding || '5px'};
     font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>

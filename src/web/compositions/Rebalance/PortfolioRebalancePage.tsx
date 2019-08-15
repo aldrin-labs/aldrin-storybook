@@ -32,6 +32,7 @@ import RebalanceInfoPanel from '@sb/components/RebalanceInfoPanel/RebalanceInfoP
 import RebalanceAccordionIndex from '@sb/components/RebalanceAccorionIndex/RebalanceAccordionIndex'
 import RebalanceDialogTransaction from '@sb/components/RebalanceDialogTransaction/RebalanceDialogTransaction'
 import RebalanceDialogAdd from '@sb/components/RebalanceDialogAdd/RebalanceDialogAdd'
+import RebalanceAddSocialPortfolio from '@sb/components/RebalanceAddSocialPortfolio'
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
 import {
@@ -449,7 +450,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           {/*/>*/}
           {/*accordionData={accordionAddPortfolioPanelData}*/}
 
-          <RebalanceDialogAdd title={'ADD PORTFOLIO'} data={addFolioData} />
+          <RebalanceAddSocialPortfolio/>
 
           {/* Accordion Table End */}
 
@@ -477,7 +478,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           showProgress={true}
           showSkipButton={true}
           steps={portfolioRebalanceSteps}
-          run={getTooltipSettings.portfolioRebalance}
+          // run={getTooltipSettings.portfolioRebalance}
+          run={false}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{

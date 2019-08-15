@@ -9,9 +9,15 @@ const Wrapper = styled(Card)`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  border-radius: 0;
 `
 
-export const SingleChart = ({ additionalUrl, name }: { additionalUrl: string }) =>(
+export const SingleChart = ({
+  additionalUrl,
+  name,
+}: {
+  additionalUrl: string
+}) => (
   <Wrapper>
     <iframe
       allowfullscreen="" // needed for fullscreen of chart to work

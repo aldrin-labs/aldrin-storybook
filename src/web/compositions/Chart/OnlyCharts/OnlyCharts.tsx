@@ -113,7 +113,8 @@ class OnlyCharts extends Component<IProps> {
           showSkipButton={true}
           continuous={true}
           steps={multiChartsSteps}
-          run={getTooltipSettings.multiChartPage}
+          // run={getTooltipSettings.multiChartPage}
+          run={false}
           callback={this.handleJoyrideCallback}
           styles={{
             options: {
