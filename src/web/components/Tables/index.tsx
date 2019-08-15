@@ -486,6 +486,7 @@ const CustomTable = (props: Props) => {
       title: {},
       cell: {},
     },
+    onTrClick,
   } = props
 
   if (
@@ -642,6 +643,8 @@ const CustomTable = (props: Props) => {
                   ? `${classes.staticCheckbox} ${classes.checkbox}`
                   : classes.checkbox
 
+                const orderbookData = row.order
+
                 return (
                   <React.Fragment key={row.id}>
                     <TableRow
@@ -652,10 +655,14 @@ const CustomTable = (props: Props) => {
                                 theme!.palette.divider,
                                 0.5
                               )}`,
+                              cursor: 'pointer',
                             }
-                          : {}
+                          : { cursor: 'pointer' }
                       }
                       className={rowHoverClassName}
+                      onClick={() =>
+                        onTrClick ? onTrClick(orderbookData) : null
+                      }
                     >
                       {typeOfCheckbox !== null && (
                         <CustomTableCell padding="checkbox">

@@ -23,6 +23,11 @@ export const RefreshButton = styled(IconButton)`
   padding: 0.5rem;
 `
 
+export const ErrorText = styled.span`
+  font-size: 1.4rem;
+  color: #b93b2b;
+`
+
 export const PropertyName = styled(Typography)`
   padding: 0.5rem 0;
   font-family: DM Sans;
