@@ -3,6 +3,7 @@ import { ChartSelectStyles } from '@sb/styles/cssUtils'
 
 export const ExchangeListContainer = styled.div`
   ${ChartSelectStyles}
+  ${(props) => props.selectStyles}
 
   & > div {
     display: flex;

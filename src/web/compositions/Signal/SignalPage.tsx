@@ -26,7 +26,9 @@ import { isObject, zip } from 'lodash-es'
 import { graphql } from 'react-apollo'
 import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
+
 import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
+import OrderbookDialog from '@sb/components/OrderbookDialog'
 import SignalEventList from './SignalEventList'
 
 import {
@@ -143,6 +145,8 @@ class SocialPage extends React.Component {
     followingSignalsList: [],
     search: '',
     signalsSort: signalsSortOptions[1],
+    isOrderbookOpen: false,
+    orderData: null,
   }
 
   componentDidMount() {
@@ -167,6 +171,10 @@ class SocialPage extends React.Component {
     })
   }
 
+  onTrClick = (data) => {
+    this.setState({ isOrderbookOpen: true, orderData: data })
+  }
+
   openDialog = (signalId) => {
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
   }
@@ -179,6 +187,10 @@ class SocialPage extends React.Component {
     this.setState({ isDialogOpen: false, currentSignalId: null })
   }
 
+  closeOrderbookDialog = () => {
+    this.setState({ isOrderbookOpen: false })
+  }
+
   toggleEnableSignal = (arg, arg2, arg3, updateSignalMutation) => {
     updateSignalMutation({
       variables: {
@@ -189,7 +201,13 @@ class SocialPage extends React.Component {
   }
 
   render() {
-    const { selectedSignal = 0, currentSignalId, signalsSort } = this.state
+    const {
+      selectedSignal = 0,
+      currentSignalId,
+      signalsSort,
+      isOrderbookOpen,
+      orderData,
+    } = this.state
 
     const {
       getFollowingSignalsQuery: { getFollowingSignals },
@@ -314,6 +332,7 @@ class SocialPage extends React.Component {
               <SignalEventList
                 {...this.props}
                 signalId={sortedData[this.state.selectedSignal]._id}
+                onTrClick={this.onTrClick}
               />
             ) : null}
           </Grid>
@@ -324,6 +343,14 @@ class SocialPage extends React.Component {
             closeDialog={this.closeDialog}
             signalId={currentSignalId}
             updateSignalMutation={updateSignalMutation}
+          />
+        ) : null}
+
+        {orderData !== null ? (
+          <OrderbookDialog
+            isDialogOpen={isOrderbookOpen}
+            closeDialog={this.closeOrderbookDialog}
+            data={orderData}
           />
         ) : null}
       </Grid>

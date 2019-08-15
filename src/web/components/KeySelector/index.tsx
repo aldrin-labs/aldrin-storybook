@@ -5,7 +5,7 @@ import OvalSelector from '@sb/components/OvalSelector'
 import { IProps, Key } from './types'
 
 const KeySelecor = ({ ...props }: IProps) => {
-  const { selectedKey, keys, selectKey } = props
+  const { selectedKey, keys, selectKey, selectStyles, isAccountSelect } = props
 
   let suggestions: { value: string; label: string }[] = []
   if (keys) {
@@ -29,13 +29,15 @@ const KeySelecor = ({ ...props }: IProps) => {
         value: selectedKey.keyId,
         label: selectedKey.name,
       }
-
+  console.log(isAccountSelect)
   return (
     <OvalSelector
       placeholder="Select key"
       value={selectValue}
       options={suggestions}
       onChange={handleChange}
+      selectStyles={selectStyles}
+      isAccountSelect={isAccountSelect}
     />
   )
 }

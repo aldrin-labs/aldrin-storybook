@@ -1,4 +1,4 @@
-import React, {  memo , PureComponent} from 'react'
+import React, { memo, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -10,49 +10,70 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 import { IProps } from './OrderBookTable.types'
 import { AsksTable, SwitchTablesButton } from './OrderBookTable.styles'
 
+import {
+  StyledTypography,
+  StyledArrow,
+  StyledTitle,
+  TradeHistoryTableCollapsible,
+  TriggerTitle,
+  CardTitle,
+  StyledCell,
+} from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+
 const MemoHead = memo(
   ({ palette, primary, type, onButtonClick, background, quote }) => (
     <>
-      {' '}
-      <Title background={primary[type]}>
-        <TypographyWithCustomColor
+      {/* {' '} */}
+      <TriggerTitle background={primary[type]}>
+        <CardTitle
           textColor={palette.getContrastText(primary[type])}
           variant="subtitle2"
           align="center"
         >
           Order Book
-        </TypographyWithCustomColor>
-        <SwitchTablesButton
+        </CardTitle>
+        {/* <SwitchTablesButton
           onClick={onButtonClick}
           variant="outlined"
           color="default"
         >
           HISTORY
-        </SwitchTablesButton>
-      </Title>
-      <Head background={background.default} border={palette.divider}>
-        <Row isHead={true} background={background.default}>
-          <EmptyCell width={'10%'} />
-          <HeadCell width={'45%'}>
-            <TypographyFullWidth
-              textColor={palette.getContrastText(background.default)}
+        </SwitchTablesButton> */}
+      </TriggerTitle>
+      <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <HeadCell style={{ width: 'auto' }}>
+            <StyledTitle
+              style={{ padding: '6px 0 0 .5rem' }}
               variant="body2"
               color="default"
               align="right"
             >
-              Trade Size
-            </TypographyFullWidth>
+              Price
+              {/* {quote || 'Fiat'} */}
+            </StyledTitle>
           </HeadCell>
-          <HeadCell width={'45%'}>
-            <TypographyFullWidth
-              textColor={palette.getContrastText(background.default)}
+
+          <HeadCell style={{ width: 'auto' }}>
+            <StyledTitle
+              style={{ padding: '6px 0 0 .5rem' }}
               variant="body2"
-              noWrap={true}
               color="default"
               align="right"
             >
-              Price {quote || 'Fiat'}
-            </TypographyFullWidth>
+              Size
+            </StyledTitle>
+          </HeadCell>
+
+          <HeadCell style={{ width: 'auto' }}>
+            <StyledTitle
+              style={{ padding: '6px 0 0 .5rem' }}
+              variant="body2"
+              color="default"
+              align="right"
+            >
+              Total
+            </StyledTitle>
           </HeadCell>
         </Row>
       </Head>
@@ -76,7 +97,15 @@ class OrderBookTable extends PureComponent<IProps> {
     return (
       <AsksTable>
         <MemoHead
-          {...{ palette, primary, type, onButtonClick, background, quote, key: 'asks_headrow' }}
+          {...{
+            palette,
+            primary,
+            type,
+            onButtonClick,
+            background,
+            quote,
+            key: 'asks_headrow',
+          }}
         />
         {/* hack to autoscroll to bottom */}
         <OrderBookBody

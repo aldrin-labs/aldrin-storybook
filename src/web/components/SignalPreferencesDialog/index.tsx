@@ -19,6 +19,7 @@ import {
   PropertyInput,
   SaveButton,
   RefreshButton,
+  ErrorText,
 } from './SignalPreferencesDialog.styles'
 
 import { Query } from 'react-apollo'
@@ -32,6 +33,7 @@ const SignalPreferencesDialog = ({
   updateSignalMutation,
 }) => {
   const [propertiesState, updateProperties] = useState({})
+  const [isInvalidField, updateInvalidField] = useState(false)
 
   const handleChange = (name, type, e) => {
     let value
@@ -71,8 +73,13 @@ const SignalPreferencesDialog = ({
   }
 
   const createUpdatedData = () => {
+    let result = true
+
     const arr = Object.entries(propertiesState).map(
       ([name, { type, value }]) => {
+        if (value === '0' || value === '' || value === 0) {
+          result = false
+        }
         if (type === 'object') {
           try {
             if (!value) return [name, type, JSON.parse(String(value))]
@@ -83,7 +90,7 @@ const SignalPreferencesDialog = ({
       }
     )
 
-    return JSON.stringify(arr.reverse())
+    return [JSON.stringify(arr.reverse()), result]
   }
 
   return (
@@ -190,6 +197,9 @@ const SignalPreferencesDialog = ({
                   </SignalPropertyGrid>
                 )
               })}
+              {isInvalidField ? (
+                <ErrorText>Please write correct data</ErrorText>
+              ) : null}
             </StyledDialogContent>
             <Grid
               item
@@ -200,13 +210,18 @@ const SignalPreferencesDialog = ({
               <SaveButton
                 padding=""
                 onClick={() => {
-                  updateSignalMutation({
-                    variables: {
-                      signalId,
-                      conditions: createUpdatedData(),
-                    },
-                  })
-                  setTimeout(() => closeDialog(), 300)
+                  const [data, result] = createUpdatedData()
+                  if (result) {
+                    updateSignalMutation({
+                      variables: {
+                        signalId,
+                        conditions: data,
+                      },
+                    })
+                    setTimeout(() => closeDialog(), 300)
+                  } else {
+                    updateInvalidField(true)
+                  }
                 }}
               >
                 Save

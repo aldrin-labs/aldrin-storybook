@@ -10,4 +10,5 @@ export const SelectR = styled(ReactSelectComponent)`
 
 export const ExchangePair = styled.div`
   ${ChartSelectStyles}
+  ${(props) => props.selectStyles}
 `
