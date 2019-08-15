@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import { Card, Grid } from '@material-ui/core'
+import { Card, Grid, Button } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const ChartMediaQueryForLg = createGlobalStyle`
@@ -19,13 +19,17 @@ export const MainContainer = styled.div`
 export const PanelCard = styled.div`
   min-width: 120px;
   padding: ${(props) =>
-    props.first ? '0.7rem 0 0 0.5rem' : '0.7rem 0 0 1.5rem'};
+    props.first ? '0.7rem 1rem 0 0.5rem' : '0.7rem 1rem 0 1.5rem'};
   min-height: 38px;
   background: #f9fbfd;
   border-right: 2px solid #e0e5ec;
   font-weight: bold;
-  font-family: DM Sans;
+  font-family: Trebuchet MS;
   text-transform: uppercase;
+
+  @media (min-width: 1400px) {
+    padding-top: 0.4rem;
+  }
 `
 
 export const PanelCardTitle = styled.span`
@@ -33,12 +37,20 @@ export const PanelCardTitle = styled.span`
   font-size: 1.2rem;
   padding: 0.1rem;
   color: #7284a0;
+
+  @media (min-width: 1400px) {
+    font-size: 1rem;
+  }
 `
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
   font-size: 1.3rem;
   color: ${(props) => props.color};
+
+  @media (min-width: 1400px) {
+    font-size: 1.2rem;
+  }
 `
 
 export const PanelCardSubValue = styled.span`
@@ -204,9 +216,24 @@ export const TogglerContainer = styled(Grid)`
 `
 
 export const Toggler = styled.div`
-  && {
-    margin-left: 1.12rem;
-  }
+  min-width: 240px;
+  width: auto;
+  min-height: 38px;
+  background: #f9fbfd;
+  font-weight: bold;
+  font-family: Trebuchet MS;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 1rem 0 10.8rem;
+`
+
+export const StyledSwitch = styled(Button)`
+  background: ${(props) => (props.isActive ? '#4152AF' : '#F9FBFD')};
+  color: ${(props) => (props.isActive ? '#fff' : '#4152AF')};
+  border: 1px solid #4152af;
+  padding: 0rem 1.5rem;
 `
 
 export const Container = styled(Grid)`

@@ -51,6 +51,7 @@ import {
   TablesBlockWrapper,
   TablesContainer,
   Toggler,
+  StyledSwitch,
   TogglerContainer,
   OrderbookContainer,
   TradeHistoryWrapper,
@@ -205,6 +206,7 @@ class Chart extends React.Component<IProps, IState> {
 
     const symbol = pair || ''
     const exchange = activeExchange.symbol
+    console.log('theme', theme)
 
     return (
       <TablesContainer item container direction="column" xs={7}>
@@ -215,7 +217,6 @@ class Chart extends React.Component<IProps, IState> {
           steps={singleChartSteps}
           // run={this.state.joyride && getTooltipSettings.chartPage}
           run={false}
-
           callback={this.handleJoyrideCallback}
           styles={{
             options: {
@@ -229,54 +230,44 @@ class Chart extends React.Component<IProps, IState> {
             },
           }}
         />
-        <OrderbookContainer>orderbook</OrderbookContainer>
+        <OrderbookContainer key={`orderbook_table`}>
+          <QueryRenderer
+            component={OrderBookTable}
+            withOutSpinner
+            query={ORDERS_MARKET_QUERY}
+            fetchPolicy="network-only"
+            variables={{ symbol, exchange }}
+            subscriptionArgs={{
+              subscription: MARKET_ORDERS,
+              variables: { symbol, exchange },
+              updateQueryFunction: updateOrderBookQuerryFunction,
+            }}
+            {...{
+              quote,
+              symbol,
+              activeExchange,
+              currencyPair: pair,
+              aggregation,
+              onButtonClick: this.changeTable,
+              setOrders: this.props.setOrders,
+              ...this.props,
+              key: 'orderbook_table_query_render',
+            }}
+          />
+        </OrderbookContainer>
 
-        {/* <TablesBlockWrapper
-          key={`orderbook_table`}
-          background={theme.palette.background.default}
-          variant={{
-            show: showTableOnMobile === 'ORDER',
-          }}
-        > */}
-        {/*{MASTER_BUILD && <ComingSoon />}*/}
-        {/*<QueryRenderer*/}
-        {/*component={OrderBookTable}*/}
-        {/*withOutSpinner*/}
-        {/*query={ORDERS_MARKET_QUERY}*/}
-        {/*fetchPolicy="network-only"*/}
-        {/*variables={{ symbol, exchange }}*/}
-        {/*subscriptionArgs={{*/}
-        {/*subscription: MARKET_ORDERS,*/}
-        {/*variables: { symbol, exchange },*/}
-        {/*updateQueryFunction: updateOrderBookQuerryFunction,*/}
-        {/*}}*/}
-        {/*{...{*/}
-        {/*quote,*/}
-        {/*symbol,*/}
-        {/*activeExchange,*/}
-        {/*currencyPair: pair,,*/}
-        {/*aggregation,*/}
-        {/*onButtonClick: this.changeTable,*/}
-        {/*setOrders: this.props.setOrders,*/}
-        {/*...this.props,*/}
-        {/*key: 'orderbook_table_query_render',*/}
-        {/*}}*/}
-        {/*/>*/}
-
-        {/*<Aggregation*/}
-        {/*{...{*/}
-        {/*theme,*/}
-        {/*aggregation: this.state.aggregation,*/}
-        {/*onButtonClick: this.setAggregation,*/}
-        {/*key: 'aggregation_component',*/}
-        {/*}}*/}
-        {/*/>*/}
-        {/* </TablesBlockWrapper> */}
+        {/* <Aggregation
+            {...{
+              theme,
+              aggregation: this.state.aggregation,
+              onButtonClick: this.setAggregation,
+              key: 'aggregation_component',
+            }}
+          /> */}
 
         <TradeHistoryWrapper
           key={`tradehistory_table`}
           className="ExchangesTable"
-          background={theme.palette.background.default}
           variant={{
             show: showTableOnMobile === 'TRADE',
           }}
@@ -348,20 +339,15 @@ class Chart extends React.Component<IProps, IState> {
       },
       addChartMutation,
     } = this.props
-    const defaultView = view === 'default'
+    const isSingleChart = view === 'default'
 
     return (
       <Toggler>
-        <Fab
+        <StyledSwitch
           data-e2e="switchChartPageMode"
-          size="small"
-          style={{
-            height: 36,
-          }}
-          variant="extended"
-          color="secondary"
+          isActive={isSingleChart}
           onClick={async () => {
-            if (defaultView && charts === []) {
+            if (charts === []) {
               await addChartMutation({
                 variables: {
                   chart: pair,
@@ -371,13 +357,29 @@ class Chart extends React.Component<IProps, IState> {
 
             await changeViewModeMutation({
               variables: {
-                view: defaultView ? 'onlyCharts' : 'default',
+                view: 'default',
               },
             })
           }}
+          style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
         >
-          {defaultView ? 'Multi Charts' : ' Single Chart'}
-        </Fab>
+          Single Chart
+        </StyledSwitch>
+
+        <StyledSwitch
+          data-e2e="switchChartPageMode"
+          isActive={!isSingleChart}
+          onClick={async () => {
+            await changeViewModeMutation({
+              variables: {
+                view: 'onlyCharts',
+              },
+            })
+          }}
+          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+        >
+          Multi Charts
+        </StyledSwitch>
       </Toggler>
     )
   }
@@ -465,23 +467,23 @@ class Chart extends React.Component<IProps, IState> {
 
         <PanelCard>
           <PanelCardTitle>24h change</PanelCardTitle>
-          <PanelCardValue color="#2F7619">9,964.01</PanelCardValue>
+          <PanelCardValue color="#2F7619">101.12</PanelCardValue>
           <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
         </PanelCard>
 
         <PanelCard>
           <PanelCardTitle>24h high</PanelCardTitle>
-          <PanelCardValue>9,964.01</PanelCardValue>
+          <PanelCardValue>10,364.01</PanelCardValue>
         </PanelCard>
 
         <PanelCard>
           <PanelCardTitle>24h low</PanelCardTitle>
-          <PanelCardValue>9,964.01</PanelCardValue>
+          <PanelCardValue>9,525.00</PanelCardValue>
         </PanelCard>
 
         <PanelCard>
           <PanelCardTitle>24h volume</PanelCardTitle>
-          <PanelCardValue>9,964.01</PanelCardValue>
+          <PanelCardValue>427,793,139.70</PanelCardValue>
         </PanelCard>
 
         {/* {view === 'default' && (
@@ -533,7 +535,7 @@ class Chart extends React.Component<IProps, IState> {
     if (!pair) {
       return
     }
-
+    console.log(getThemeModeQuery)
     return (
       <MainContainer fullscreen={view !== 'default'}>
         <ChartMediaQueryForLg />
@@ -628,3 +630,9 @@ export default withAuth(
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withErrorFallback(Chart))
 )
+
+// queryrender na save
+// .0 доабвлять к числам
+// zero values error
+// popup for property
+// name order - popup

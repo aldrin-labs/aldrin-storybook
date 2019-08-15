@@ -44,12 +44,27 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   // transforming data
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // when get data from subscr
-    if (
-      newProps.data &&
-      newProps.data.marketOrders &&
-      newProps.data.marketOrders.length > 0
-    ) {
+    // console.log(newProps.data.marketOrders)
+    if (newProps.data && newProps.data.marketOrders) {
       let iterator = state.i
+
+      const newDataAsks = JSON.parse(newProps.data.marketOrders.asks)
+      const newDataBids = JSON.parse(newProps.data.marketOrders.bids)
+
+      const asksData = newDataAsks.map((ask) => ({
+        price: +(+ask[0]).toFixed(2),
+        size: +ask[1][0],
+        total: +ask[1][1],
+      }))
+
+      const bidsData = newDataBids.map((bid) => ({
+        price: +(+bid[0]).toFixed(2),
+        size: +bid[1][0],
+        total: +bid[1][1],
+      }))
+
+      console.log(asksData)
+      return { asks: asksData, bids: bidsData }
 
       const orderData = newProps.data.marketOrders[0]
       const order: IOrder = {
@@ -72,6 +87,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             )
           : state.bids
 
+      console.log('statefrom', asks, bids)
       // find spread
       const spread = findSpread(asks, bids)
       //  you must remove zero orders here after merge new order to orderbook
@@ -178,7 +194,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           quote={quote}
         />
 
-        <HeadRow
+        {/* <HeadRow
           {...{
             primary,
             type,
@@ -191,7 +207,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             ),
             key: 'bids_headrow',
           }}
-        />
+        /> */}
+
+        <div style={{ width: '100%', height: '30px', background: '#F2F4F6' }} />
+
         <SpreadTable
           data={bids}
           digitsAfterDecimalForBidsSize={digitsAfterDecimalForBidsSize}

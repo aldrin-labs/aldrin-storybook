@@ -42,6 +42,7 @@ export const DefaultView = (props) => {
   }
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
+  console.log(`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`)
 
   return (
     <div>
