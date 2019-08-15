@@ -41,22 +41,37 @@ const MemoHead = memo(
         </SwitchTablesButton> */}
       </TriggerTitle>
       <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-        <Row isHead={true} background={background.default}>
+        <Row style={{ justifyContent: 'space-between' }}>
           <HeadCell style={{ width: 'auto' }}>
-            <StyledTitle variant="body2" color="default" align="right">
+            <StyledTitle
+              style={{ padding: '6px 0 0 .5rem' }}
+              variant="body2"
+              color="default"
+              align="right"
+            >
               Price
               {/* {quote || 'Fiat'} */}
             </StyledTitle>
           </HeadCell>
 
           <HeadCell style={{ width: 'auto' }}>
-            <StyledTitle variant="body2" color="default" align="right">
+            <StyledTitle
+              style={{ padding: '6px 0 0 .5rem' }}
+              variant="body2"
+              color="default"
+              align="right"
+            >
               Size
             </StyledTitle>
           </HeadCell>
 
           <HeadCell style={{ width: 'auto' }}>
-            <StyledTitle variant="body2" color="default" align="right">
+            <StyledTitle
+              style={{ padding: '6px 0 0 .5rem' }}
+              variant="body2"
+              color="default"
+              align="right"
+            >
               Total
             </StyledTitle>
           </HeadCell>

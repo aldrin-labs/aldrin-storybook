@@ -32,10 +32,6 @@ const OptimizedRow = memo(
   ({
     order,
     data,
-    background,
-    red,
-    digitsAfterDecimalForAsksSize,
-    digitsAfterDecimalForAsksPrice,
     // type,
   }) => (
     <Row background={'transparent'} style={{ justifyContent: 'space-between' }}>
@@ -94,16 +90,7 @@ class ClassBody extends PureComponent<IProps> {
   }
 
   render() {
-    const {
-      data,
-      digitsAfterDecimalForAsksPrice,
-      digitsAfterDecimalForAsksSize,
-      action,
-      background,
-      theme: {
-        palette: { red, type },
-      },
-    } = this.props
+    const { data } = this.props
 
     return (
       <Body id="body" height={'calc(100% - 44px)'}>
@@ -121,11 +108,6 @@ class ClassBody extends PureComponent<IProps> {
               {...{
                 order,
                 data,
-                action,
-                background,
-                red,
-                digitsAfterDecimalForAsksSize,
-                digitsAfterDecimalForAsksPrice,
               }}
             />
           )

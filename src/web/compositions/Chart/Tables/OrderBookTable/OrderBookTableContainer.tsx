@@ -48,6 +48,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     if (newProps.data && newProps.data.marketOrders) {
       let iterator = state.i
 
+      console.log(newProps.data.marketOrders)
+
       const newDataAsks = JSON.parse(newProps.data.marketOrders.asks)
       const newDataBids = JSON.parse(newProps.data.marketOrders.bids)
 

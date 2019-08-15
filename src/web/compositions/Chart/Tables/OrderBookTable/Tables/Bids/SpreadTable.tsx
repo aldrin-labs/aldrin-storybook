@@ -74,9 +74,8 @@ const RowFunc = ({
 
 const MemoizedRow = memo(
   RowFunc,
-  (prevProps, nextProps) =>
-    nextProps.order.price === prevProps.order.price &&
-    nextProps.type === prevProps.type
+  (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
+  // nextProps.type === prevProps.type
 )
 
 @withTheme()
