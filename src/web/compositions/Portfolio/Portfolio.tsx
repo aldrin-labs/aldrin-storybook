@@ -31,6 +31,7 @@ const safePortfolioDestruction = (
         percentage: 0,
       },
       keys: [],
+      rebalanceKeys: [],
       wallets: [],
     },
   }
@@ -99,18 +100,27 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
           // TODO: hotfix, should be fixed on backend
           let {
-            userSettings: { keys, wallets },
+            userSettings: { keys, rebalanceKeys, wallets },
           } = safePortfolioDestruction(data.myPortfolios[0])
 
+          console.log(rebalanceKeys)
+
           keys = Array.isArray(keys) ? keys : []
+          rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
           wallets = Array.isArray(wallets) ? wallets : []
           // TODO: hotfix, should be fixed on backend
 
           const activeKeys = keys.filter((el) => el.selected)
+          const activeRebalanceKeys = rebalanceKeys.filter((el) => el.selected)
           const activeWallets = wallets.filter((el) => el.selected)
 
-          const hasKeysOrWallets = keys.length + wallets.length > 0
-          const hasActiveKeysOrWallets =
+          const isRebalance = window.location.pathname.includes('rebalance')
+
+          const hasKeysOrWallets = isRebalance ?
+            rebalanceKeys.length + wallets.length > 0 :
+            keys.length + wallets.length > 0
+          const hasActiveKeysOrWallets = isRebalance ?
+            activeRebalanceKeys.length + activeWallets.length > 0 :
             activeKeys.length + activeWallets.length > 0
 
           return (
@@ -141,12 +151,13 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                       updatePortfolioSettings={updatePortfolioSettings}
                       portfolioId={portfolioId}
                       dustFilter={dustFilter}
-                      newKeys={keys}
+                      newKeys={isRebalance ? rebalanceKeys : keys}
                       newWallets={wallets}
-                      activeKeys={activeKeys}
+                      activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
                       activeWallets={activeWallets}
                       toggleWallets={this.toggleWallets}
                       isSideNavOpen={this.state.isSideNavOpen}
+                      isRebalance={isRebalance}
                     />
 
                     {!hasKeysOrWallets && (
@@ -162,11 +173,14 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
                     {hasKeysOrWallets && hasActiveKeysOrWallets && (
                       <PortfolioTable
-                        keys={keys}
-                        key={activeKeys.length + activeWallets.length}
+                        keys={isRebalance ? rebalanceKeys : keys}
+                        key={isRebalance ?
+                          activeRebalanceKeys.length + activeWallets.length :
+                          activeKeys.length + activeWallets.length
+                        }
                         showTable={hasActiveKeysOrWallets}
                         dustFilter={dustFilter}
-                        activeKeys={activeKeys}
+                        activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
                         portfolioId={portfolioId}
                         portfolioName={portfolioName}
                         theme={theme}

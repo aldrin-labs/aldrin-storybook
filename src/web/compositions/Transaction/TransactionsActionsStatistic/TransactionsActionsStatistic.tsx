@@ -13,7 +13,7 @@ import {
 class TransactionsActionsStatistic extends Component {
     render() {
         return (
-          <Grid item style={{ paddingTop: '4.25rem' }}>
+          <Grid item>
             <TransactionActions>
               <Grid container justify="space-between" alignItems="flex-start">
                 <TransactionActionsTypography>Actions today</TransactionActionsTypography>

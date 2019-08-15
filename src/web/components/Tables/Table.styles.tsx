@@ -3,7 +3,7 @@ import { Table, TableSortLabel, TablePagination, withStyles } from '@material-ui
 
 export const StyledTable = styled(Table)`
   td:first-child {
-    padding: 0.75rem 1rem 0.75rem 0.75rem !important;
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
   }
 
   th:first-child {
