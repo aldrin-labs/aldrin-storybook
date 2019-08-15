@@ -45,16 +45,23 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         }}
         tableStyles={{
           heading: {
+            padding: '1.2rem 1.6rem 1.2rem 1.2rem',
             fontFamily: "'DM Sans', sans-serif",
             fontSize: '1.2rem',
             fontWeight: 600,
             letterSpacing: 1,
             borderBottom: '2px solid #e0e5ec',
-            color: '#7284A0',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            color: '#7284A0'
           },
           cell: {
-            width: '9.5rem'
+            padding: '1.2rem 1.6rem 1.2rem 1.2rem',
+            fontFamily: "'DM Sans Bold', sans-serif",
+            fontSize: '1.2rem',
+            fontWeight: 500,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+            color: '#7284A0'
           }
         }}
       />

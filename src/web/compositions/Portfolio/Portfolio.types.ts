@@ -4,6 +4,7 @@ export interface IProps {
   data: { getProfile: any; loading: boolean; error?: string }
   theme: Theme
   keys: string[]
+  rebalanceKeys: string[]
   activeKeys: string[]
   wallets: string[]
   activeWallets: string[]

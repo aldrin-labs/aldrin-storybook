@@ -35,7 +35,7 @@ import {
   FolioCard,
   GridSortOption,
   ReactSelectCustom,
-  PortfolioName,
+  TypographyHeader,
   TypographySearchOption,
   InputCustom,
   TypographyEmptyFolioPanel,
@@ -74,7 +74,7 @@ class SignalListItem extends React.Component {
       >
         <Grid container justify="space-between">
           <Grid item style={{ maxWidth: '70%' }}>
-            <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+            <TypographyHeader textColor={'#16253D'}>{el.name}</TypographyHeader>
             <TypographySubTitle>
               {el.isPrivate ? ' Private signal' : ` Public signal`}
             </TypographySubTitle>
