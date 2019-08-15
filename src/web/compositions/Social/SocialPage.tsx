@@ -49,7 +49,10 @@ const getOwner = (str: string) => {
   if (!str) {
     return 'public'
   }
-  return str
+
+  const b = str.match(/(?<=\').*(?=')/gm)
+
+  return (b && b[0]) || 'public'
 }
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
