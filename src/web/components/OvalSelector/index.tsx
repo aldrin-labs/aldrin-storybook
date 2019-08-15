@@ -2,20 +2,16 @@ import React from 'react'
 
 import { withTheme } from '@material-ui/styles'
 
-import {
-  SelectR,
-  SelectContainer,
-} from './styles'
+import { SelectR, SelectContainer } from './styles'
 
-
-const OvalSelector = ({theme, ...props}) => {
+const OvalSelector = ({ theme, selectStyles, isAccountSelect, ...props }) => {
   return (
     <SelectContainer
+      selectStyles={selectStyles}
+      isAccountSelect={isAccountSelect}
       border={theme.palette.divider}
     >
-      <SelectR
-        {...props}
-      />
+      <SelectR {...props} />
     </SelectContainer>
   )
 }
