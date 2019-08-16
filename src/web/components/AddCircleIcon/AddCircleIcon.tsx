@@ -16,7 +16,7 @@ export const getCircleSymbol = (coin: string, data) => (
             ? '#DEDB8E'
             : '#97C15C'
         }`,
-        margin: 'auto 3px auto 12px',
+        margin: 'auto 3px auto 0',
       }}
     />
     {coin}
@@ -39,7 +39,7 @@ export const getCircleSymbolSocial = (coin: string, data) => (
             : '#97C15C'
         }`,
         fontSize: '1rem',
-        margin: 'auto 3px auto 12px',
+        margin: 'auto 3px auto 0',
       }}
     />
     {coin}
@@ -62,7 +62,7 @@ export const getCircleSymbolPnl = (coin: string, data) => (
             : '#ABBAD1'
         }`,
         fontSize: '1rem',
-        margin: 'auto 3px auto 12px',
+        margin: 'auto 3px auto 0',
 
         '@media only screen and (min-width: 2560px)': {
           position: 'relative',

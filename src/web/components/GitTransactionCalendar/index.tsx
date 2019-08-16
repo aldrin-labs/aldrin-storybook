@@ -2,30 +2,32 @@ import React, { Component } from 'react'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import styled from 'styled-components'
 import 'react-calendar-heatmap/dist/styles.css'
+import { Typography, Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 const styles = (theme) => ({
   root: {
     fontSize: '0.9rem',
     fontFamily: 'DM Sans',
-    lineHeight: '23px',
+    lineHeight: '2rem',
     letterSpacing: '1px',
-    textTransform: 'uppercase',
+    textTransform: 'uppercase'
   },
-  githubZero: { fill: '#EEE' },
-  githubOne: { fill: '#E0E5EC' },
-  githubTwo: { fill: '#B3C8EE' },
-  githubThree: { fill: '#7EA3EA' },
-  githubFourth: { fill: '#165BE0' },
+  githubZero: { fill: '#E0E5EC' },
+  githubOne: { fill: '#8FB4EC' },
+  githubTwo: { fill: '#6FA0EB' },
+  githubThree: { fill: '#5594F1' },
+  githubFourth: { fill: '#357AE1' },
 })
 
 const HeatmapWrapper = styled.div`
+  margin-bottom: 1.25rem;
+
   .react-calendar-heatmap-month-label,
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
     font-family: 'DM Sans', sans-serif;
-    text-transform: uppercase;
-    fill: #7284a0;
-    font-size: 0.75rem;
+    fill: #16253d;
+    font-size: 0.825rem;
   }
 
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
@@ -38,6 +40,21 @@ const HeatmapWrapper = styled.div`
       font-size: .45rem;
     }
   }
+`
+const LegendTypography = styled(Typography)`
+  font-size: .925rem;
+  color: #16253d;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'DM Sans';
+  font-weight: 600;
+  margin: 0 .5rem;
+`
+const LegendHeatmapSquare = styled.div`
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color: ${props => props.fill || 'black'};
+  margin: 0 .175rem;
 `
 
 class GitTransactionCalendar extends Component {
@@ -57,10 +74,10 @@ class GitTransactionCalendar extends Component {
     }
 
     const today = new Date()
-    const randomValues = getRange(200).map((index) => {
+    const randomValues = getRange(366).map((index) => {
       return {
         date: shiftDate(today, -index),
-        count: getRandomInt(1, 3),
+        count: getRandomInt(0, 2),
       }
     })
     console.log(randomValues)
@@ -71,21 +88,23 @@ class GitTransactionCalendar extends Component {
           className={this.props.classes.root}
           // startDate={'Wed Jul 24 2018 12:25:22 GMT+0500'}
           // endDate={'Wed Jul 24 2019 12:25:22 GMT+0500'}
-          startDate={shiftDate(today, -200)}
+          startDate={shiftDate(today, -366)}
           endDate={today}
           values={randomValues}
           classForValue={(value) => {
+            const { classes } = this.props
+
             if (!value) {
               return 'color-empty'
             }
             // return `color-github-${value.count}`
-            return value.count === 1
-              ? this.props.classes.githubOne
-              : value.count === 2
-              ? this.props.classes.githubTwo
-              : value.count === 3
-              ? this.props.classes.githubThree
-              : this.props.classes.githubThree
+            switch(value.count) {
+              case 0: return classes.githubZero
+              case 1: return classes.githubOne
+              case 2: return classes.githubTwo
+              case 3: return classes.githubThree
+              case 4: return classes.githubFourth
+            }
           }}
           tooltipDataAttrs={(value) => {
             return {
@@ -94,12 +113,10 @@ class GitTransactionCalendar extends Component {
                 .slice(0, 10)} has count: ${value.count}`,
             }
           }}
-          showWeekdayLabels={true}
           onClick={
             (value) => {}
             //alert(`Clicked on value with count: ${value.count}`)
           }
-          horizontal={false}
           monthLabels={[
             'Jan',
             'Feb',
@@ -120,6 +137,19 @@ class GitTransactionCalendar extends Component {
           }}
           // showOutOfRangeDays={true}
         />
+
+        <Grid container justify="flex-end" alignItems="center" style={{
+          margin: '2rem 0 2.5rem',
+          padding: '0 3rem'
+        }}>
+            <LegendTypography>Less</LegendTypography>
+            <LegendHeatmapSquare fill={'#E0E5EC'}/>
+            <LegendHeatmapSquare fill={'#8FB4EC'}/>
+            <LegendHeatmapSquare fill={'#6FA0EB'}/>
+            <LegendHeatmapSquare fill={'#5594F1'}/>
+            <LegendHeatmapSquare fill={'#357AE1'}/>
+            <LegendTypography>More</LegendTypography>
+        </Grid>
       </HeatmapWrapper>
     )
   }
