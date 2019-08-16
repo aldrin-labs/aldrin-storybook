@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import { Grid } from '@material-ui/core'
 import {
-  PortfolioName,
+  TypographyHeader,
   TypographyTitle,
   FolioValuesCell,
   FolioCard,
@@ -32,9 +32,9 @@ const CustomContentList = ({ data }) => (
       <FolioCard container key={portfolio._id}>
         <Grid container justify="space-between">
           <Grid item style={{ maxWidth: '70%' }}>
-            <PortfolioName textColor={'#16253D'}>
+            <TypographyHeader textColor={'#16253D'}>
               {portfolio.name}
-            </PortfolioName>
+            </TypographyHeader>
             <TypographyTitle fontSize={'0.9rem'} textColor={'#7284A0'}>
               {portfolio.fromMarket ? 'From market' : 'Shared'}
             </TypographyTitle>

@@ -226,7 +226,7 @@ export const WrapperContent = styled(Wrapper)`
   margin: 1rem 0;
 `
 
-export const TypographyContent = styled(PortfolioName)`
+export const TypographyContent = styled(TypographyHeader)`
   color: #16253d;
   font-size: 1.2rem;
 `
