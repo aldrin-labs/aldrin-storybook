@@ -35,10 +35,14 @@ export const StyledLink = styled(NavLink)`
 
 export const StyledButton = styled(Button)`
   font-size: 12px;
+  letter-spacing: 1px;
   transition: 0.35s all;
 
+  @media only screen and (max-width: 1100px) {
+    font-size: 9px;
+  }
   @media only screen and (min-width: 2367px) {
-    font-size: 16px;
+    font-size: 1rem;
   }
 `
 
@@ -47,6 +51,10 @@ export const StyledDropdown = styled.div`
   display: inherit;
   margin: 0 1rem;
   padding: 1rem 0.5rem;
+
+  @media only screen and (max-width: 1100px) {
+    margin: 0;
+  }
 
   @media (min-width: 1921px) {
     padding: 1.15rem 0.5rem;
@@ -59,7 +67,7 @@ export const StyledDropdown = styled.div`
 
 export const StyledPaper = styled(Paper)`
   position: absolute;
-  top: 50px;
+  top: 95%;
   left: 50%;
   box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
   border: 1px solid #e0e5ec;
@@ -69,14 +77,6 @@ export const StyledPaper = styled(Paper)`
   border-top-right-radius: 0;
   padding-left: 8px;
   padding-right: 8px;
-
-  @media (min-width: 1400px) {
-    top: 5.4rem;
-  }
-
-  @media (min-width: 2560px) {
-    top: 6.35rem;
-  }
 `
 
 export const StyledMenuItem = styled(MenuItem)`

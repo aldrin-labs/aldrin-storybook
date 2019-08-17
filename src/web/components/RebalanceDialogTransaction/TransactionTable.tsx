@@ -68,7 +68,7 @@ const TransactionTable = ({
                   scope="row"
                   style={{ width: '250px', padding: '4px 15px 4px 24px' }}
                 >
-                  <Grid container alignItems="flex-start" flexWrap="nowrap">
+                  <Grid container alignItems="flex-start" wrap="nowrap">
                     <TransactionTableCoin>
                       {parseFloat(sum.toFixed(6))} {row.convertedFrom}
                       <TransactionTablePrice>${parseFloat(row.convertedFromPrice.toFixed(3))}</TransactionTablePrice>

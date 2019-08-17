@@ -44,6 +44,12 @@ export const ColorLegendPercentContainer = styled.div`
       color: #16253D;
     }
   }
+
+  @media only screen and (max-width: 1280px) {
+    span:first-child {
+      width: 5.5rem;
+    }
+  }
 `
 
 export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
@@ -53,8 +59,8 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
   flex-wrap: wrap;
   ${customAquaScrollBar} & .rv-discrete-color-legend-item {
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-left: 5px;
     color: ${(props: { textColor: string }) => props.textColor};
     padding: .64rem 0;
   }

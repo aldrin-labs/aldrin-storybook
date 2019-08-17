@@ -91,6 +91,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       portfolioId,
       portfolioName,
       portfolioKeys,
+      onToggleUSDBTC,
+      isUSDCurrently
     } = this.props
 
     const { openSharePortfolioPopUp } = this.state
@@ -101,6 +103,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <SharePortfolioPanel
             handleOpenSharePortfolio={this.handleOpenSharePortfolio}
             portfolioName={portfolioName}
+            onToggleUSDBTC={onToggleUSDBTC}
+            isUSDCurrently={isUSDCurrently}
           />
           {/* TODO: Recomment if needed <Divider /> */}
           <AccordionOverview />

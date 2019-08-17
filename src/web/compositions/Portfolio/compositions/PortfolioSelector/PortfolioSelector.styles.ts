@@ -6,7 +6,9 @@ import ReactSelect from '@sb/components/ReactSelectComponent'
 import Slider from '@sb/components/Slider/Slider'
 
 export const SliderDustFilter = styled(Slider)`
-  margin: 'auto 0';
+  position: relative;
+  top: 7px;
+  left: 0;
 `
 
 export const Name = styled.h1`
@@ -109,6 +111,11 @@ export const GridSectionDust = styled(Grid)`
   padding: 2.4rem 1.6rem;
   position: absolute;
   bottom: 0;
+
+  @media only screen and (max-width: 1400px) {
+    min-width: 100%;
+    width: 100%;
+  }
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
@@ -133,6 +140,7 @@ export const GridSymbolValue = styled(Grid)`
   color: #7284a0;
   font-size: 1.2rem;
   padding: 0 0 0 15px;
+  white-space: nowrap;
 `
 
 export const TypographySpan = styled(Typography)`

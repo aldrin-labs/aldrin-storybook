@@ -70,6 +70,10 @@ class PortfolioTable extends Component<IProps, IState> {
                       variables={{ baseCoin }}
                       baseCoin={baseCoin}
                       dustFilter={dustFilter}
+                      onToggleUSDBTC={() => {
+                        this.props.onToggleUSDBTC()
+                        toggleBaseCoin()
+                      }}
                       {...rest}
                     />
                   )}
