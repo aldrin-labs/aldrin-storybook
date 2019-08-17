@@ -130,11 +130,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               refetchQueries={[
                 // no need to refetch main
                 // { query: getPortfolioQuery, variables: { baseCoin } },
-                { query: getCoinsForOptimization, variables: { baseCoin } },
-                {
-                  query: getMyPortfolioAndRebalanceQuery,
-                  variables: { baseCoin },
-                }
+                { query: getCoinsForOptimization, variables: { baseCoin } }
               ]}
             >
               {(updatePortfolioSettings) => (
