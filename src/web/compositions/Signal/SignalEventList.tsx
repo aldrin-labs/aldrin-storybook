@@ -24,10 +24,11 @@ const putDataInTable = (tableData) => {
       { id: 'pair', label: 'Pair' },
       { id: 'exchangeA', label: 'Exchange A' },
       { id: 'exchangeB', label: 'Exchange B' },
-      { id: 'amount', label: 'amount' },
-      { id: 'spread', label: 'spread' },
-      { id: 'pricea', label: 'pricea' },
-      { id: 'priceb', label: 'priceb' },
+      { id: 'amount', label: 'Amount' },
+      { id: 'spread', label: 'Spread' },
+      { id: 'priceA', label: 'Price A' },
+      { id: 'priceB', label: 'Price B' },
+      { id: 'profit', label: 'Profit' },
       { id: 'status', label: 'Status' },
     ],
     body: transformData(tableData),
@@ -45,8 +46,8 @@ const transformData = (data: any[]) => {
         '-',
     },
     pair: row.pair || '-',
-    exchangeA: row.exchangea || '-',
-    exchangeB: row.exchangeb || '-',
+    exchangeA: row.exchangeA || '-',
+    exchangeB: row.exchangeB || '-',
     amount: {
       contentToSort: row.amount,
       contentToCSV: roundAndFormatNumber(row.amount, 2, true),
@@ -61,15 +62,20 @@ const transformData = (data: any[]) => {
         ? `${roundAndFormatNumber(row.spread, 2, false)} %`
         : '-',
     },
-    pricea: {
-      contentToSort: row.pricea,
-      contentToCSV: roundAndFormatNumber(row.pricea, 8, true),
-      render: row.pricea ? roundAndFormatNumber(row.pricea, 8, true) : '-',
+    priceA: {
+      contentToSort: row.priceA,
+      contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
+      render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
     },
-    priceb: {
-      contentToSort: row.priceb,
-      contentToCSV: roundAndFormatNumber(row.priceb, 8, true),
-      render: row.priceb ? roundAndFormatNumber(row.priceb, 8, true) : '-',
+    priceB: {
+      contentToSort: row.priceB,
+      contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
+      render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
+    },
+    profit: {
+      contentToSort: row.profit,
+      contentToCSV: roundAndFormatNumber(row.profit, 3, true),
+      render: row.profit ? roundAndFormatNumber(row.profit, 3, true) : '-',
     },
     status: row.status || '-',
   }))
@@ -119,7 +125,7 @@ const SignalEventList = (props) => {
             textAlign: 'left',
             maxWidth: '14px',
             background: '#F2F4F6',
-            fontFamily: "'DM Sans'",
+            fontFamily: '\'DM Sans\'',
             fontSize: '0.9rem',
             color: '#7284A0',
             lineHeight: '31px',
@@ -155,7 +161,7 @@ const SignalEventList = (props) => {
 export default class SignalEventListDataWrapper extends React.PureComponent<
   IProps,
   IState
-> {
+  > {
   state: IState = {
     page: 0,
     perPage: 30,
