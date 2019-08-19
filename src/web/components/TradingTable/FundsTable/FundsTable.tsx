@@ -9,9 +9,7 @@ import {
   getTableHead,
   combineFundsTable,
 } from '@sb/components/TradingTable/TradingTable.utils'
-import {
-  updateFundsQuerryFunction
-} from '@core/utils/TradingTable.utils'
+import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { Switch, Typography } from '@material-ui/core'
@@ -63,8 +61,7 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const { tab, tabIndex, handleTabChange, show } = this.props
-
+    const { tab, handleTabChange, show } = this.props
 
     if (!show) {
       return null
@@ -81,13 +78,15 @@ class FundsTable extends React.PureComponent<IProps> {
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
           },
+          tab: {
+            padding: 0,
+          },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
             <TradingTabs
               tab={tab}
-              tabIndex={tabIndex}
               hideSmallAssets={hideSmallAssets}
               handleTabChange={handleTabChange}
               handleSmallAssetsCheckboxChange={
@@ -102,7 +101,9 @@ class FundsTable extends React.PureComponent<IProps> {
             id: '1',
             icon: (
               <>
-                <Typography style={{ fontSize: CSS_CONFIG.chart.actionCell.fontSize, }}>
+                <Typography
+                  style={{ fontSize: CSS_CONFIG.chart.actionCell.fontSize }}
+                >
                   Hide small assets
                 </Typography>
                 <Switch

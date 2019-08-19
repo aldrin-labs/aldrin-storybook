@@ -7,24 +7,20 @@ import { Grid } from '@material-ui/core'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
-import { GET_SIGNAL_EVENTS_QUERY } from '@core/graphql/queries/signals/getSignalEvents'
 import { updateSignal } from '@core/graphql/mutations/signals/updateSignal'
-
-import QueryRenderer from '@core/components/QueryRenderer'
 
 import { IProps, IState } from './SignalPage.types'
 
-import { addMainSymbol, TableWithSort } from '@sb/components'
-import {
-  roundPercentage,
-  roundAndFormatNumber,
-  combineTableData,
-} from '@core/utils/PortfolioTableUtils'
+// import {
+//   roundPercentage,
+//   roundAndFormatNumber,
+//   combineTableData,
+// } from '@core/utils/PortfolioTableUtils'
 import { withTheme } from '@material-ui/styles'
 import SwitchOnOff from '@sb/components/SwitchOnOff'
-import { isObject, zip } from 'lodash-es'
+// import { isObject, zip } from 'lodash-es'
 import { graphql } from 'react-apollo'
-import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
+// import SocialBalancePanel from '@sb/components/SocialBalancePanel/SocialBalancePanel'
 import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 
 import SignalPreferencesDialog from '@sb/components/SignalPreferencesDialog'
@@ -46,11 +42,10 @@ import {
   GridFolioScroll,
   FolioValuesCell,
   TypographySubTitle,
-  ContainerGrid,
   TypographyEditButton,
 } from './SignalPage.styles'
 
-class SignalListItem extends React.Component {
+class SignalListItem extends React.Component<IProps, IState> {
   render() {
     const {
       el,
@@ -63,7 +58,7 @@ class SignalListItem extends React.Component {
       enabled,
       updateSignalMutation,
     } = this.props
-    console.log(el)
+
     return (
       <FolioCard
         container
@@ -144,7 +139,7 @@ class SocialPage extends React.Component {
     ids: [],
     followingSignalsList: [],
     search: '',
-    signalsSort: signalsSortOptions[1],
+    signalsSort: signalsSortOptions[0],
     isOrderbookOpen: false,
     orderData: null,
   }
@@ -152,7 +147,7 @@ class SocialPage extends React.Component {
   componentDidMount() {
     const invervalId = setInterval(() => {
       this.props.refetch()
-    }, 30000)
+    }, 3000)
 
     this.setState({ invervalId })
   }
@@ -191,7 +186,12 @@ class SocialPage extends React.Component {
     this.setState({ isOrderbookOpen: false })
   }
 
-  toggleEnableSignal = (arg, arg2, arg3, updateSignalMutation) => {
+  toggleEnableSignal = (
+    arg: any,
+    arg2: string,
+    arg3: boolean,
+    updateSignalMutation: (obj: object) => void
+  ) => {
     updateSignalMutation({
       variables: {
         signalId: arg2,
@@ -216,22 +216,22 @@ class SocialPage extends React.Component {
 
     const filteredData = getFollowingSignals.length
       ? getFollowingSignals.filter((signal) => {
-        return (
-          signal.name
-            .toLowerCase()
-            .indexOf(this.state.search.toLowerCase()) !== -1
-        )
-      })
+          return (
+            signal.name
+              .toLowerCase()
+              .indexOf(this.state.search.toLowerCase()) !== -1
+          )
+        })
       : []
 
     const sortedData = filteredData.length
       ? filteredData.sort((a, b) => {
-        return signalsSort.value === signalsSortOptions[0].value
-          ? a.name && b.name && a.name.localeCompare(b.name)
-          : signalsSort.value === signalsSortOptions[1].value
+          return signalsSort.value === signalsSortOptions[0].value
+            ? a.name && b.name && a.name.localeCompare(b.name)
+            : signalsSort.value === signalsSortOptions[1].value
             ? b.eventsCount - a.eventsCount
             : b.updatedAt - a.updatedAt
-      })
+        })
       : filteredData
 
     const sharedSignalsList = sortedData.map((el, index) => (
@@ -321,8 +321,8 @@ class SocialPage extends React.Component {
                   Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                  sharedSignalsList
-                )}
+                sharedSignalsList
+              )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
@@ -373,9 +373,3 @@ export default compose(
     },
   })
 )(SocialPage)
-
-/*
-TODO:
-  mutation with data
-  workable iconButtom reset to initial
-*/
