@@ -14,11 +14,19 @@ export const TypographyCustomHeading = styled(
   ({ color, fontWeight, ...rest }) => <Typography {...rest} />
 )`
   color: ${(props) => props.color || '#000'};
-  font-weight: ${(props) => props.fontWeight || `400`};
+  font-weight: ${(props) => props.fontWeight || `500`};
+  font-family: 'DM Sans';
+  font-size: 1.3rem;
+  line-height: 114.5%;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: left;
+  
+  color: #7284A0;
 `
 
 export const GridCustom = styled(Grid)`
-  padding: 15px;
+  margin: 1.25rem 0;
 `
 export const GridSearchPanel = styled(Grid)`
   padding: 0 0 20px 0;
@@ -44,11 +52,20 @@ export const DialogSubTitle = styled(DialogTitle)`
 
 export const InputBaseCustom = styled(InputBase)`
   width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #e7ecf3;
-  padding: 4px 15px;
-  margin-bottom: 20px;
+  background: #fff;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0;
+  border: 1px solid #E0E5EC;
+  box-sizing: border-box;
+  border-radius: 1rem;
+
+  input {
+    color: #abbad1;
+    font-size: 1.3rem;
+    line-height: 114.5%;
+    text-transform: capitalize;
+    padding: 0;
+  }
 `
 
 export const DialogWrapper = styled(Dialog)`
@@ -71,4 +88,30 @@ export const SearchIconCustom = styled(SearchIcon)`
   right: 36px;
   color: #c4c4c4;
   width: 18px;
+`
+
+export const Legend = styled(Typography)`
+  font-family: 'DM Sans';
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 114.5%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #16253D;
+
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+
+  margin-bottom: 1rem;
+
+  &:after {
+    content: '';
+    background-color: #E0E5EC;
+    height: 1px;
+    width: 100%;
+    display: block;
+    position: relative;
+    margin-left: 1rem;
+  }
 `
