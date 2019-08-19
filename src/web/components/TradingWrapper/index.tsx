@@ -1,121 +1,48 @@
 import React from 'react'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withStyles } from '@material-ui/core/styles'
 
-import {
-  Button,
-  Toolbar,
-  Paper,
-  Tabs,
-  AppBar,
-  Grid,
-  Typography,
-  Tab,
-} from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 
 import { compose } from 'recompose'
 
 import TraidingTerminal from '../TraidingTerminal'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 
-import { TablesBlockWrapper, TerminalContainer, ScrollWrapper } from './styles'
+import {
+  TablesBlockWrapper,
+  TerminalContainer,
+  ScrollWrapper,
+  TabsContainer,
+  TabsTypeContainer,
+  StyledTab,
+  BuyTab,
+  SellTab,
+} from './styles'
 
 import { IProps } from './types'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-
-const styles = (theme) => ({
-  appBar: {
-    background: theme.palette.primary.dark,
-    boxShadow: 'none',
-  },
-  toolBar: {
-    flex: 1,
-  },
-  tabGroupRoot: {
-    minHeight: 30,
-  },
-  tabRoot: {
-    fontSize: CSS_CONFIG.chart.title.fontSize,
-    minWidth: 60,
-    minHeight: 30,
-    '&$tabSelected': {
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-  },
-  tabSelected: {},
-})
-
-const wrapperStyles = (theme) => ({
-  gridWithBorder: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-  },
-})
-
-const BySellWrapper = withStyles(wrapperStyles)((props: IProps) => {
-  const {
-    pair,
-    funds,
-    price,
-    classes,
-    priceType,
-    placeOrder,
-    cancelOrder,
-    decimals,
-    showOrderResult,
-  } = props
-
-  return (
-    <ScrollWrapper>
-      <Grid container alignItems="center" justify="center">
-        <Grid item xs={6} className={classes.gridWithBorder}>
-          <TerminalContainer>
-            <TraidingTerminal
-              byType="buy"
-              priceType={priceType}
-              pair={pair}
-              key={[pair, funds, priceType]}
-              walletValue={funds && funds[1]}
-              marketPrice={price}
-              confirmOperation={placeOrder}
-              cancelOrder={cancelOrder}
-              decimals={decimals}
-              showOrderResult={showOrderResult}
-            />
-          </TerminalContainer>
-        </Grid>
-        <Grid item xs={6}>
-          <TerminalContainer>
-            <TraidingTerminal
-              byType="sell"
-              priceType={priceType}
-              pair={pair}
-              key={[pair, funds, priceType]}
-              walletValue={funds && funds[0]}
-              marketPrice={price}
-              confirmOperation={placeOrder}
-              cancelOrder={cancelOrder}
-              decimals={decimals}
-              showOrderResult={showOrderResult}
-            />
-          </TerminalContainer>
-        </Grid>
-      </Grid>
-    </ScrollWrapper>
-  )
-})
 
 class SimpleTabs extends React.Component {
   state = {
-    value: 0,
+    operation: 'buy',
+    mode: 'market',
+    percentage: '100',
   }
 
-  handleChange = (event, value) => {
-    this.setState({ value })
+  handleChangeMode = (mode: string) => {
+    this.setState({ mode })
+  }
+
+  handleChangeOperation = (operation: string) => {
+    this.setState({ operation })
+  }
+
+  handleChangePercentage = (percentage: string) => {
+    this.setState({ percentage })
   }
 
   render() {
-    const { value } = this.state
+    const { operation, mode, percentage } = this.state
     const {
-      classes,
       pair,
       funds,
       price,
@@ -125,49 +52,68 @@ class SimpleTabs extends React.Component {
       cancelOrder,
     } = this.props
 
+    console.log('wrapper props', this.props)
     return (
       <TablesBlockWrapper>
-        <AppBar position="static" className={classes.appBar}>
-          <Tabs
-            classes={{ root: classes.tabGroupRoot }}
-            value={value}
-            onChange={this.handleChange}
+        <ChartCardHeader>{`${pair[0]}/${pair[1]} Trading`}</ChartCardHeader>
+        <TabsTypeContainer>
+          <BuyTab
+            active={operation === 'buy'}
+            onClick={() => this.handleChangeOperation('buy')}
           >
-            <Tab
-              disableRipple
-              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-              label="Limit"
+            Buy {pair[0]}
+          </BuyTab>
+          <SellTab
+            active={operation === 'sell'}
+            onClick={() => this.handleChangeOperation('sell')}
+          >
+            Sell {pair[0]}
+          </SellTab>
+        </TabsTypeContainer>
+        <TabsContainer>
+          <StyledTab
+            active={mode === 'market'}
+            onClick={() => this.handleChangeMode('market')}
+          >
+            Market
+          </StyledTab>
+          <StyledTab
+            active={mode === 'limit'}
+            onClick={() => this.handleChangeMode('limit')}
+          >
+            Limit
+          </StyledTab>
+          <StyledTab
+            active={mode === 'stop-limit'}
+            onClick={() => this.handleChangeMode('stop-limit')}
+          >
+            Stop-limit
+          </StyledTab>
+        </TabsContainer>
+
+        <Grid xs={12} item>
+          <TerminalContainer>
+            <TraidingTerminal
+              byType="buy"
+              operationType={operation}
+              priceType={mode}
+              percentage={percentage}
+              changePercentage={this.handleChangePercentage}
+              pair={pair}
+              funds={funds}
+              key={[pair, funds, mode]}
+              walletValue={funds && funds[1]}
+              marketPrice={price}
+              confirmOperation={placeOrder}
+              cancelOrder={cancelOrder}
+              decimals={decimals}
+              showOrderResult={showOrderResult}
             />
-            <Tab
-              disableRipple
-              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-              label="Market"
-            />
-            <Tab
-              disableRipple
-              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-              label="Stop-limit"
-            />
-          </Tabs>
-        </AppBar>
-        <BySellWrapper
-          priceType={
-            value === 0 ? 'limit' : value === 1 ? 'market' : 'stop-limit'
-          }
-          pair={pair}
-          funds={funds}
-          price={price}
-          placeOrder={placeOrder}
-          cancelOrder={cancelOrder}
-          decimals={decimals}
-          showOrderResult={showOrderResult}
-        />
+          </TerminalContainer>
+        </Grid>
       </TablesBlockWrapper>
     )
   }
 }
 
-export default compose(
-  withErrorFallback,
-  withStyles(styles)
-)(SimpleTabs)
+export default compose(withErrorFallback)(SimpleTabs)

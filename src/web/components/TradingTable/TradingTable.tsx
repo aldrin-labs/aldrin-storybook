@@ -23,23 +23,25 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     tab: 'openOrders',
   }
 
-  handleTabChange = (e: ChangeEvent<{}>, tabIndex: number | any) => {
+  handleTabChange = (tab: string | any) => {
     this.setState({
-      tabIndex,
-      tab: tradingTableTabConfig[tabIndex],
+      tab,
     })
   }
 
   render() {
-    const { tab, tabIndex } = this.state
-    const { getSelectedKeyQuery: { chart: { selectedKey } } } = this.props
+    const { tab } = this.state
+    const {
+      getSelectedKeyQuery: {
+        chart: { selectedKey },
+      },
+    } = this.props
 
     return (
       <>
         <OpenOrdersTable
           {...{
             tab,
-            tabIndex,
             selectedKey,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
@@ -49,7 +51,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <OrderHistoryTable
           {...{
             tab,
-            tabIndex,
             selectedKey,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
@@ -58,7 +59,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <TradeHistoryTable
           {...{
             tab,
-            tabIndex,
             selectedKey,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
@@ -67,7 +67,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <Funds
           {...{
             tab,
-            tabIndex,
             selectedKey,
             show: tab === 'funds',
             handleTabChange: this.handleTabChange,

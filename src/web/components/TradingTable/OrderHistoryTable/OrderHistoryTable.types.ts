@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 import moment from 'moment'
@@ -7,9 +6,8 @@ import { OrderType, Key } from '@core/types/ChartTypes'
 
 export interface IProps extends WithTheme<Theme> {
   tab: string
-  tabIndex: number
   show: boolean
-  handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
+  handleTabChange: (tab: string | any) => void
   focusedInput: null | string
   startDate: moment.Moment | null
   endDate: moment.Moment | null
@@ -18,9 +16,9 @@ export interface IProps extends WithTheme<Theme> {
   maximumDate: moment.Moment
   onDateButtonClick: (stringDate: string) => void
   onDatesChange: ({
-                    startDate,
-                    endDate,
-                  }: {
+    startDate,
+    endDate,
+  }: {
     startDate: moment.Moment | null
     endDate: moment.Moment | null
   }) => void

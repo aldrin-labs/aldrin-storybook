@@ -2,85 +2,49 @@ import React, { memo, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import { Row, Title, Head, HeadCell } from '@sb/components/OldTable/Table'
+import { Row, Head } from '@sb/components/OldTable/Table'
 import OrderBookBody from './OrderBookBody/OrderBookBody'
-import { EmptyCell } from '../../../SharedStyles'
-import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
-import { IProps } from './OrderBookTable.types'
-import { AsksTable, SwitchTablesButton } from './OrderBookTable.styles'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 
-import {
-  StyledTypography,
-  StyledArrow,
-  StyledTitle,
-  TradeHistoryTableCollapsible,
-  TriggerTitle,
-  CardTitle,
-  StyledCell,
-} from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+import { IProps } from './OrderBookTable.types'
+import { AsksTable, StyledHeadCell } from './OrderBookTable.styles'
+
+import { StyledTitle } from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
 
 const MemoHead = memo(
   ({ palette, primary, type, onButtonClick, background, quote }) => (
     <>
-      {/* {' '} */}
-      <TriggerTitle background={primary[type]}>
-        <CardTitle
-          textColor={palette.getContrastText(primary[type])}
-          variant="subtitle2"
-          align="center"
-        >
-          Order Book
-        </CardTitle>
-        {/* <SwitchTablesButton
-          onClick={onButtonClick}
-          variant="outlined"
-          color="default"
-        >
-          HISTORY
-        </SwitchTablesButton> */}
-      </TriggerTitle>
+      <ChartCardHeader>Orderbook</ChartCardHeader>
       <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <HeadCell style={{ width: 'auto' }}>
-            <StyledTitle
-              style={{ padding: '6px 0 0 .5rem' }}
-              variant="body2"
-              color="default"
-              align="right"
-            >
+        <Row>
+          <StyledHeadCell>
+            <StyledTitle variant="body2" color="default" align="left">
               Price
               {/* {quote || 'Fiat'} */}
             </StyledTitle>
-          </HeadCell>
+          </StyledHeadCell>
 
-          <HeadCell style={{ width: 'auto' }}>
-            <StyledTitle
-              style={{ padding: '6px 0 0 .5rem' }}
-              variant="body2"
-              color="default"
-              align="right"
-            >
+          <StyledHeadCell isCenter={true}>
+            <StyledTitle variant="body2" color="default" align="left">
               Size
             </StyledTitle>
-          </HeadCell>
+          </StyledHeadCell>
 
-          <HeadCell style={{ width: 'auto' }}>
+          <StyledHeadCell>
             <StyledTitle
-              style={{ padding: '6px 0 0 .5rem' }}
               variant="body2"
               color="default"
               align="right"
+              style={{ paddingRight: 0 }}
             >
               Total
             </StyledTitle>
-          </HeadCell>
+          </StyledHeadCell>
         </Row>
       </Head>
     </>
   ),
-  (prevProps, nextProps) =>
-    nextProps.quote === prevProps.quote && nextProps.type === prevProps.type
+  (prevProps, nextProps) => nextProps.quote === prevProps.quote
 )
 
 @withTheme()
