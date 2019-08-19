@@ -1,31 +1,62 @@
 import React, { Component } from 'react'
 
+import { DateRangePicker } from 'react-dates'
 import {
     ChoosePeriodWrapper,
     ChoosePeriodButton,
-    ChoosePeriodDate
+    DatePickerWrapper
 } from './ChoosePeriod.styles'
 
 const PERIODS = [
-    { id: 0, label: '24H' },
-    { id: 1, label: 'Week' },
-    { id: 2, label: '2W' },
-    { id: 3, label: 'Month' },
-    { id: 4, label: '3MO' },
-    { id: 5, label: '6MO' }
+    { name: '1Day', label: '24H' },
+    { name: '1Week', label: 'Week' },
+    { name: '2Weeks', label: '2W' },
+    { name: '1Month', label: 'Month' },
+    { name: '3Months', label: '3MO' },
+    { name: '6Monts', label: '6MO' }
 ]
 class ChoosePeriod extends Component {
-    state = {
-        chosen: 0
-    }
-
     render() {
+        const {
+            focusedInput,
+            activeDateButton,
+            onDateButtonClick,
+            onDatesChange,
+            onFocusChange,
+
+            startDate,
+            endDate,
+            minimumDate,
+            maximumDate
+        } = this.props
+
         return (
             <ChoosePeriodWrapper>
-                {PERIODS.map(({ id, label }) =>
-                    <ChoosePeriodButton active={this.state.chosen === id}>{label}</ChoosePeriodButton>
+                {PERIODS.map(({ name, label }, index) =>
+                    <ChoosePeriodButton
+                        active={activeDateButton === name}
+                        key={index}
+                        onClick={() => onDateButtonClick(name)}
+                    >{label}</ChoosePeriodButton>
                 )}
-                {/*<ChoosePeriodDate type="date"/>*/}
+
+                <DatePickerWrapper>
+                    <DateRangePicker
+                        withPortal={true}
+                        isOutsideRange={(date: any) =>
+                            date.isBefore(minimumDate, 'day') ||
+                            date.isAfter(maximumDate, 'day')
+                        }
+                        startDate={startDate} // momentPropTypes.momentObj or null,
+                        startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+                        endDate={endDate} // momentPropTypes.momentObj or null,
+                        endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+                        onDatesChange={onDatesChange} // PropTypes.func.isRequired,
+                        focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                        onFocusChange={onFocusChange} // PropTypes.func.isRequired,
+                        displayFormat="MM-DD-YYYY"
+                    />
+                </DatePickerWrapper>
             </ChoosePeriodWrapper>
         )
     }

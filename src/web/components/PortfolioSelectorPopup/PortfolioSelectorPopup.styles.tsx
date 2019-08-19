@@ -48,8 +48,7 @@ export const PortfolioSelectorPopupMask = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    min-width: 200px;
-    width: 410px;
+    width: 100%;
     height: 100vh;
     background-color: rgba(0, 0, 0, .33);
     z-index: 1009;

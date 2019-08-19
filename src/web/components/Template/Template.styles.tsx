@@ -42,6 +42,10 @@ export const TableWrapper = styled(Card as React.SFC<
   box-shadow: 0px 0px 12px rgba(10, 19, 43, 0.1);
 
   ${customAquaScrollBar};
+
+  @media only screen and (min-width: 1025px) and (max-width: 1400px) {
+    height: 54rem;
+  }
 `
 
 export const TablesWrapper = styled(Grid as React.SFC<GridProps>)`

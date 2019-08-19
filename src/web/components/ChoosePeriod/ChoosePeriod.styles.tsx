@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 
-import { Grid, withStyles } from '@material-ui/core'
-import TextField from '@material-ui/core/TextField'
+import { Grid } from '@material-ui/core'
 
 export const ChoosePeriodWrapper = styled(Grid)`
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
+    padding: 1rem .5rem 0;
 `
 
 export const ChoosePeriodButton = styled.button`
@@ -31,9 +31,26 @@ export const ChoosePeriodButton = styled.button`
     transition: all .375s ease-in-out;
 `
 
-export const ChoosePeriodDate = withStyles({
-    root: {
-        border: '2px solid #165be0',
-        textTransform: 'uppercase'
+export const DatePickerWrapper = styled.div`
+    & .DateRangePicker {
+        border-radius: 1.2rem;
+        border: 1.5px solid #165be0;
     }
-})(TextField)
+
+    & .DateRangePickerInput.DateRangePickerInput__withBorder,
+    & .DateRangePickerInput .DateInput, & .DateRangePickerInput .DateInput .DateInput_input {
+        background: transparent;
+        border: none;
+        border-radius: 0;
+    }
+
+    & .DateInput {
+        width: 9rem;
+    }
+    & .DateInput_input {
+        font-family: 'DM Sans';
+        font-size: 1.25rem;
+        font-weight: 700;
+        padding: .21rem 1rem;
+    }
+`

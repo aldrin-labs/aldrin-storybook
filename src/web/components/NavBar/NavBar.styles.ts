@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { AppBar, Toolbar } from '@material-ui/core'
+import { AppBar, Toolbar, Grid, Typography } from '@material-ui/core'
 
 export const Nav = styled(AppBar)`
   z-index: 1;
@@ -15,9 +15,10 @@ export const Nav = styled(AppBar)`
 
   && {
     box-shadow: none;
+    padding: 0 3rem 0 6rem;
 
-    @media only screen and (min-width: 600px) {
-      padding: 0 3rem 0 6rem;
+    @media only screen and (max-width: 1024px) {
+      padding: 0 2rem 0 4rem;
     }
   }
 `
@@ -46,4 +47,31 @@ export const NavLinkButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 1rem .5rem;
+`
+
+export const NavBarWrapper = styled(Grid)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  @media only screen and (min-width: 1100px) {
+    justify-content: center;
+  }
+`
+
+export const NavBreadcrumbTypography = styled(Typography)`
+  text-transform: uppercase;
+  border-left: 1px solid #7284A0;
+  padding-left: .75rem;
+  font-size: 12px;
+  line-height: 2.75rem;
+  letter-spacing: 1px;
+
+  @media only screen and (max-width: 1100px) {
+    font-size: 9px;
+  }
+  @media only screen and (min-width: 2367px) {
+    font-size: 1rem;
+  }
 `

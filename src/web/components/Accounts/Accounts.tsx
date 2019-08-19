@@ -39,6 +39,7 @@ export default class Accounts extends React.PureComponent<IProps> {
       login,
       isRebalance,
       onKeySelectOnlyOne,
+      onKeysSelectAll,
       isSidebar
     } = this.props
 
@@ -54,7 +55,13 @@ export default class Accounts extends React.PureComponent<IProps> {
           >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
-            <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>Select All</TypographyTitle>
+            {isRebalance ? <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>
+              Choose only one
+            </TypographyTitle> : <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'} style={{
+              cursor: 'pointer'
+            }} onClick={onKeysSelectAll}>
+              Select all
+            </TypographyTitle>}
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>
@@ -90,8 +97,6 @@ export default class Accounts extends React.PureComponent<IProps> {
             }
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = keyName.selected
-
-            console.log(keyName.name, isChecked)
 
             return (
               <AccountsListItem
