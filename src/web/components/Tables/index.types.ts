@@ -128,8 +128,11 @@ export interface Props {
   rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
   tableStyles?: TableStyles
-  onTrClick?: () => null
+  onTrClick?: (data: any) => void
   style?: CSSProperties
+  autoRefetch?: boolean
+  needRefetch?: boolean
+  toggleAutoRefetch: () => void
 }
 
 export type Pagination = {

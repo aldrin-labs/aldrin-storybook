@@ -58,16 +58,16 @@ const transformData = (data: any[]) => {
     },
     spreadA: {
       contentToSort: row.spreadA,
-      contentToCSV: roundAndFormatNumber(row.spread, 2, false),
-      render: row.spread
-        ? `${roundAndFormatNumber(row.spread, 2, false)} %`
+      contentToCSV: roundAndFormatNumber(row.spreadA, 2, false),
+      render: row.spreadA
+        ? `${roundAndFormatNumber(row.spreadA, 2, false)} %`
         : '-',
     },
     spreadB: {
       contentToSort: row.spreadB,
-      contentToCSV: roundAndFormatNumber(row.spread, 2, false),
-      render: row.spread
-        ? `${roundAndFormatNumber(row.spread, 2, false)} %`
+      contentToCSV: roundAndFormatNumber(row.spreadB, 2, false),
+      render: row.spreadB
+        ? `${roundAndFormatNumber(row.spreadB, 2, false)} %`
         : '-',
     },
     priceA: {
@@ -106,15 +106,20 @@ const SignalEventList = (props) => {
       getSignalEvents: { count, events },
     },
     onTrClick,
+    toggleAutoRefetch,
+    autoRefetch,
   } = props
 
   const { body, head, footer = [] } = putDataInTable(events)
   const smallScreen = window.outerWidth < 1500
 
   return (
-    <ContainerGrid container style={{ position: 'relative' }}>
+    <ContainerGrid container style={{ position: 'relative', height: '100%' }}>
       <TableWithSort
         onTrClick={onTrClick}
+        needRefetch={true}
+        autoRefetch={autoRefetch}
+        toggleAutoRefetch={toggleAutoRefetch}
         pagination={{
           fakePagination: false,
           totalCount: count,
