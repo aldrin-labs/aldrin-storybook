@@ -79,6 +79,7 @@ export const SDiscreteColorLegend = styled(DiscreteColorLegend)`
       display: flex;
       align-items: center;
 
+      width: 10.5rem;
       span:last-child {
         font-weight: 600;
       }

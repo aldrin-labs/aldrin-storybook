@@ -124,7 +124,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
           return (
             <Mutation
-              onCompleted={() => {}}
+              onCompleted={() => refetch()}
               mutation={updatePortfolioSettingsMutation}
               update={updateSettingsMutation}
               refetchQueries={[
