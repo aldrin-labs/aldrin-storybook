@@ -12,7 +12,7 @@ const TradingTabs = ({
     },
   },
 }: IProps) => (
-  <div>
+  <>
     <TitleTabsGroup
       value={tabIndex}
       onChange={handleTabChange}
@@ -24,7 +24,7 @@ const TradingTabs = ({
       <TitleTab label="Trade history" primary={primary} />
       <TitleTab label="Funds" primary={primary} />
     </TitleTabsGroup>
-  </div>
+  </>
 )
 
 export default withTheme()(TradingTabs)

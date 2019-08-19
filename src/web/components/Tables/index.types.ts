@@ -1,6 +1,6 @@
 import { Theme, PropTypes } from '@material-ui/core'
 import React, { CSSProperties } from 'react'
-import { SvgIconProps } from '@material-ui/core/SvgIcon'
+// import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
 import { Classes } from 'jss'
 
@@ -94,6 +94,7 @@ export type TableStyles = {
   heading?: CSSProperties
   title?: CSSProperties
   cell?: CSSProperties
+  tab?: CSSProperties
 }
 
 export interface Props {
@@ -127,6 +128,7 @@ export interface Props {
   rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
   tableStyles?: TableStyles
+  onTrClick?: () => null
 }
 
 export type Pagination = {

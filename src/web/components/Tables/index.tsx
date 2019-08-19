@@ -485,6 +485,7 @@ const CustomTable = (props: Props) => {
       heading: {},
       title: {},
       cell: {},
+      tab: {},
     },
     onTrClick,
   } = props
@@ -533,6 +534,7 @@ const CustomTable = (props: Props) => {
                 padding="default"
                 className={classes.title}
                 colSpan={howManyColumns - actionsColSpan}
+                style={{ ...tableStyles.tab }}
               >
                 <Typography
                   style={{

@@ -1,48 +1,50 @@
 import React, { memo, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
-import { Row, Body, Head, HeadCell, Cell } from '@sb/components/OldTable/Table'
+import { Row, Body, Head } from '@sb/components/OldTable/Table'
 import { IProps, IState, ITicker } from './TradeHistoryTable.types'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 
 import {
   StyledTypography,
-  StyledArrow,
   StyledTitle,
   TradeHistoryTableCollapsible,
-  TriggerTitle,
-  CardTitle,
   StyledCell,
 } from './TradeHistoryTable.styles'
 
+import { StyledHeadCell } from '../../OrderBookTable/Tables/Asks/OrderBookTable.styles'
+
 const OptimizedRow = memo(
-  ({ ticker, background, numbersAfterDecimalForPrice, red, green }) => {
+  ({ ticker, numbersAfterDecimalForPrice }) => {
     return (
-      <Row background={'#fff'} style={{ justifyContent: 'space-between' }}>
-        <StyledCell>
-          {/* <StyledArrow
-          fontSize="small"
-          color={ticker.fall ? red.main : green.main}
-          direction={ticker.fall ? 'down' : 'up'}
-        /> */}
+      <Row background={'#fff'}>
+        <StyledCell style={{ minWidth: '30%' }}>
           <StyledTypography
             textColor={ticker.fall ? '#b93b2b' : '#2F7619'}
             variant="caption"
-            align="right"
+            align="left"
           >
-            {(+ticker.price).toFixed(numbersAfterDecimalForPrice)}
+            {(+ticker.price).toFixed(2)
+            // .toFixed(numbersAfterDecimalForPrice)
+            }
           </StyledTypography>
         </StyledCell>
 
-        <StyledCell>
-          <TypographyFullWidth variant="caption" align="right">
+        <StyledCell style={{ minWidth: '30%' }}>
+          <TypographyFullWidth
+            variant="caption"
+            textColor={'#7284A0'}
+            align="left"
+          >
             {(+ticker.size).toFixed(4)}
           </TypographyFullWidth>
         </StyledCell>
 
-        <StyledCell>
+        <StyledCell style={{ minWidth: '40%' }}>
           <TypographyFullWidth
-            color="textSecondary"
+            style={{ paddingRight: 0 }}
+            textColor={'#7284A0'}
             variant="caption"
             align="right"
           >
@@ -58,54 +60,38 @@ const OptimizedRow = memo(
 )
 
 const MemoizedHead = memo(
-  ({ primary, type, palette, quote }) => (
+  ({ primary, type, palette }) => (
     <>
-      <TriggerTitle
-        data-e2e="tradeHistory__arrowButton"
-        background={primary[type]}
-      >
-        <CardTitle
-          textColor={palette.getContrastText(primary[type])}
-          variant="subtitle2"
-          align="center"
-        >
-          Trade history
-        </CardTitle>
-      </TriggerTitle>
+      <ChartCardHeader>Trade history</ChartCardHeader>
       <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
         <Row
           background={'#fff'}
-          isHead={true}
           style={{
             height: 'auto',
             padding: '0',
-            justifyContent: 'space-between',
           }}
         >
-          <HeadCell style={{ padding: '0 0.32rem', width: 'auto' }}>
-            <StyledTitle noWrap={true} variant="body2" align="left">
+          <StyledHeadCell style={{ minWidth: '30%' }}>
+            <StyledTitle variant="body2" align="left">
               Price
-              {/* {quote || 'Fiat'} */}
             </StyledTitle>
-          </HeadCell>
+          </StyledHeadCell>
 
-          <HeadCell style={{ padding: '0 ', width: 'auto' }}>
-            <StyledTitle variant="body2" align="left" noWrap={true}>
+          <StyledHeadCell style={{ minWidth: '30%' }}>
+            <StyledTitle variant="body2" align="left">
               Size
             </StyledTitle>
-          </HeadCell>
+          </StyledHeadCell>
 
-          <HeadCell
-            style={{
-              lineHeight: '32px',
-              padding: '0 0.32rem',
-              width: 'auto',
-            }}
-          >
-            <StyledTitle variant="body2" style={{ textAlign: 'right' }}>
+          <StyledHeadCell style={{ minWidth: '40%' }}>
+            <StyledTitle
+              variant="body2"
+              align="right"
+              style={{ paddingRight: 0 }}
+            >
               Time
             </StyledTitle>
-          </HeadCell>
+          </StyledHeadCell>
         </Row>
       </Head>
     </>

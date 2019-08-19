@@ -55,7 +55,7 @@ export const DefaultView = (props) => {
           item
           container
           xs={12}
-          style={{ height: 'calc(100% - 3rem)' }}
+          style={{ height: 'calc(100% - 3rem)', paddingRight: 0 }}
           spacing={8}
         >
           <Grid
@@ -95,7 +95,7 @@ export const DefaultView = (props) => {
             item
             container
             xs={6}
-            style={{ height: '100%' }}
+            style={{ height: '100%', paddingRight: 0 }}
           >
             {/*{MASTER_BUILD && <ComingSoon />}*/}
             <Grid item container xs={6} style={{ height: '100%' }} spacing={8}>
@@ -108,7 +108,7 @@ export const DefaultView = (props) => {
               direction="column"
               style={{
                 height: '100%',
-                padding: '4px 8px',
+                padding: '4px  0 4px 8px',
                 position: 'relative',
                 bottom: '4px',
               }}
@@ -121,7 +121,7 @@ export const DefaultView = (props) => {
                 showOrderResult={showOrderResult}
                 showCancelResult={showCancelResult}
               />
-              <RangesContainer>ranges</RangesContainer>
+              {/* <RangesContainer>ranges</RangesContainer> */}
             </Grid>
           </TradingTerminalContainer>
         </Grid>

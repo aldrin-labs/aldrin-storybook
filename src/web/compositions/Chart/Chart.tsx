@@ -56,6 +56,7 @@ import {
   OrderbookContainer,
   TradeHistoryWrapper,
   WatchListContainer,
+  PanelWrapper,
   PanelCard,
   PanelCardTitle,
   PanelCardValue,
@@ -206,7 +207,6 @@ class Chart extends React.Component<IProps, IState> {
 
     const symbol = pair || ''
     const exchange = activeExchange.symbol
-    console.log('theme', theme)
 
     return (
       <TablesContainer item container direction="column" xs={7}>
@@ -235,7 +235,6 @@ class Chart extends React.Component<IProps, IState> {
             component={OrderBookTable}
             withOutSpinner
             query={ORDERS_MARKET_QUERY}
-            fetchPolicy="network-only"
             variables={{ symbol, exchange }}
             subscriptionArgs={{
               subscription: MARKET_ORDERS,
@@ -274,6 +273,7 @@ class Chart extends React.Component<IProps, IState> {
         >
           <QueryRenderer
             component={TradeHistoryTable}
+            withOutSpinner
             query={MARKET_QUERY}
             variables={{ symbol, exchange }}
             subscriptionArgs={{
@@ -432,61 +432,62 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <>
-        {view === 'onlyCharts' && (
-          <LayoutSelector userId={_id} themeMode={themeMode} />
-        )}
+        <PanelWrapper>
+          {view === 'onlyCharts' && (
+            <LayoutSelector userId={_id} themeMode={themeMode} />
+          )}
 
-        <SelectExchange
-          changeActiveExchangeMutation={changeActiveExchangeMutation}
-          activeExchange={activeExchange}
-          currencyPair={pair}
-          selectStyles={selectStyles}
-        />
-
-        {view === 'default' && (
-          <KeySelector
-            exchange={activeExchange}
+          <SelectExchange
+            changeActiveExchangeMutation={changeActiveExchangeMutation}
+            activeExchange={activeExchange}
+            currencyPair={pair}
             selectStyles={selectStyles}
-            isAccountSelect={true}
           />
-        )}
 
-        <AutoSuggestSelect
-          value={view === 'default' && pair}
-          id={'currencyPair'}
-          view={view}
-          activeExchange={activeExchange}
-          selectStyles={selectStyles}
-        />
+          {view === 'default' && (
+            <KeySelector
+              exchange={activeExchange}
+              selectStyles={selectStyles}
+              isAccountSelect={true}
+            />
+          )}
 
-        <PanelCard first>
-          <PanelCardTitle>Last price</PanelCardTitle>
-          <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
-          <PanelCardSubValue>$9964.01</PanelCardSubValue>
-        </PanelCard>
+          <AutoSuggestSelect
+            value={view === 'default' && pair}
+            id={'currencyPair'}
+            view={view}
+            activeExchange={activeExchange}
+            selectStyles={selectStyles}
+          />
 
-        <PanelCard>
-          <PanelCardTitle>24h change</PanelCardTitle>
-          <PanelCardValue color="#2F7619">101.12</PanelCardValue>
-          <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
-        </PanelCard>
+          <PanelCard first>
+            <PanelCardTitle>Last price</PanelCardTitle>
+            <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
+            <PanelCardSubValue>$9964.01</PanelCardSubValue>
+          </PanelCard>
 
-        <PanelCard>
-          <PanelCardTitle>24h high</PanelCardTitle>
-          <PanelCardValue>10,364.01</PanelCardValue>
-        </PanelCard>
+          <PanelCard>
+            <PanelCardTitle>24h change</PanelCardTitle>
+            <PanelCardValue color="#2F7619">101.12</PanelCardValue>
+            <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
+          </PanelCard>
 
-        <PanelCard>
-          <PanelCardTitle>24h low</PanelCardTitle>
-          <PanelCardValue>9,525.00</PanelCardValue>
-        </PanelCard>
+          <PanelCard>
+            <PanelCardTitle>24h high</PanelCardTitle>
+            <PanelCardValue>10,364.01</PanelCardValue>
+          </PanelCard>
 
-        <PanelCard>
-          <PanelCardTitle>24h volume</PanelCardTitle>
-          <PanelCardValue>427,793,139.70</PanelCardValue>
-        </PanelCard>
+          <PanelCard>
+            <PanelCardTitle>24h low</PanelCardTitle>
+            <PanelCardValue>9,525.00</PanelCardValue>
+          </PanelCard>
 
-        {/* {view === 'default' && (
+          <PanelCard>
+            <PanelCardTitle>24h volume</PanelCardTitle>
+            <PanelCardValue>427,793,139.70</PanelCardValue>
+          </PanelCard>
+
+          {/* {view === 'default' && (
           <TransparentExtendedFAB
             onClick={() => {
               this.setState((prevState) => ({
@@ -498,7 +499,7 @@ class Chart extends React.Component<IProps, IState> {
             {activeChart === 'candle' ? 'orderbook' : 'chart'}
           </TransparentExtendedFAB>
         )} */}
-
+        </PanelWrapper>
         <Hidden smDown>{toggler}</Hidden>
       </>
     )
@@ -630,9 +631,3 @@ export default withAuth(
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withErrorFallback(Chart))
 )
-
-// queryrender na save
-// .0 доабвлять к числам
-// zero values error
-// popup for property
-// name order - popup

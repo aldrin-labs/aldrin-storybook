@@ -17,54 +17,24 @@ export const StyledTypography = styled(
 `
 
 export const StyledTitle = styled(TypographyFullWidth)`
-  padding-top: 6px;
   line-height: 18px;
   font-size: 0.9rem;
   color: #16253d;
   font-weight: bold;
-
+  padding: 6px 0 0 1rem;
   @media (min-width: 2560px) {
     line-height: 35px;
   }
 `
 
 export const StyledCell = styled(Cell)`
-  padding: 0 0.32rem;
+  padding: 0 1rem;
 
   & span,
   & p {
     font-size: 0.9rem;
     font-weight: bold;
-  }
-
-  & p {
-    text-align: left;
-  }
-`
-
-export const CardTitle = styled(StyledTitle)`
-  font-family: Trebuchet MS;
-  font-style: normal;
-  font-weight: normal;
-  text-transform: capitalize;
-  letter-spacing: auto;
-  font-size: 1.4rem;
-  line-height: 35px;
-  padding-top: 2px;
-`
-
-export const TriggerTitle = styled(Title)`
-  height: auto;
-  cursor: pointer;
-  position: relative;
-  padding: 0;
-  transition: opacity 0.75s ease-in-out;
-  background: #f2f4f6;
-  color: #16253d;
-  border-bottom: 1px solid #e0e5ec;
-
-  &:hover {
-    opacity: 0.85;
+    padding-left: 0;
   }
 `
 

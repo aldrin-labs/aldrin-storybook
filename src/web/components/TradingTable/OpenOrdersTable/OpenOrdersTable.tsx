@@ -113,6 +113,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
           },
+          tab: {
+            padding: 0,
+          },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
