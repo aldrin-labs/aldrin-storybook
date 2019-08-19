@@ -69,8 +69,8 @@ class PortfolioTableTabs extends React.Component<IProps> {
             <StyledLeftButton onClick={() => toggleWallets()}>
               Accounts
             </StyledLeftButton>
-            <StyledRightButton>
-              <Link to="/portfolio/transactions">Transactions</Link>
+            <StyledRightButton component={Link} to="/portfolio/transactions">
+              Transactions
             </StyledRightButton>
           </>
         ) : null}
@@ -84,8 +84,8 @@ class PortfolioTableTabs extends React.Component<IProps> {
         ) : null}
 
         {isTransactionsPage ? (
-          <StyledLeftButton>
-            <Link to="/portfolio/main">P&L</Link>
+          <StyledLeftButton component={Link} to="/portfolio/main">
+            P&L
           </StyledLeftButton>
         ) : null}
 

@@ -216,22 +216,22 @@ class SocialPage extends React.Component {
 
     const filteredData = getFollowingSignals.length
       ? getFollowingSignals.filter((signal) => {
-          return (
-            signal.name
-              .toLowerCase()
-              .indexOf(this.state.search.toLowerCase()) !== -1
-          )
-        })
+        return (
+          signal.name
+            .toLowerCase()
+            .indexOf(this.state.search.toLowerCase()) !== -1
+        )
+      })
       : []
 
     const sortedData = filteredData.length
       ? filteredData.sort((a, b) => {
-          return signalsSort.value === signalsSortOptions[0].value
-            ? a.name && b.name && a.name.localeCompare(b.name)
-            : signalsSort.value === signalsSortOptions[1].value
+        return signalsSort.value === signalsSortOptions[0].value
+          ? a.name && b.name && a.name.localeCompare(b.name)
+          : signalsSort.value === signalsSortOptions[1].value
             ? b.eventsCount - a.eventsCount
             : b.updatedAt - a.updatedAt
-        })
+      })
       : filteredData
 
     const sharedSignalsList = sortedData.map((el, index) => (
@@ -321,8 +321,8 @@ class SocialPage extends React.Component {
                   Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                sharedSignalsList
-              )}
+                  sharedSignalsList
+                )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
