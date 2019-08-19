@@ -2,26 +2,27 @@ import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
-import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
 
 import { withTheme } from '@material-ui/styles'
 
+import { Grid } from '@material-ui/core'
 import {
   TypographyCustomHeading,
   GridCustom,
   InputBaseCustom,
   DialogWrapper,
   DialogTitleCustom,
-  GridSearchPanel,
+  Legend,
   LinkCustom,
-  SearchIconCustom,
 } from './AddAccountDialog.styles'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Plus from '@icons/Plus.svg'
+
+import SelectAllExchangeList from '@core/components/SelectAllExchangeList/SelectAllExchangeList'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './AddAccountDialog.types'
@@ -86,7 +87,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ open: false })
   }
 
+  handleSelectChange = exchange => {
+    console.log(exchange)
+  }
+
   render() {
+    const { handleSelectChange } = this
     const {
       theme: {
         palette: { blue, black },
@@ -135,14 +141,70 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent justify="center">
-            <GridCustom style={{ width: '440px' }}>
-              <InputBaseCustom placeholder="SELECT EXCHANGE" />
-              <InputBaseCustom placeholder="ACCOUNT NAME" />
-              <InputBaseCustom placeholder="API KEY" />
-              <InputBaseCustom placeholder="SECRET KEY" />
-            </GridCustom>
+            <Grid style={{ width: '440px' }}>
+              <GridCustom>
+                <Legend>Exchange</Legend>
+                <SelectAllExchangeList
+                  classNamePrefix="custom-select-box"
+                  isClearable={true}
+                  isSearchable={true}
+                  openMenuOnClick={true}
+                  options={[
+                    {
+                      label: 'Binance',
+                      value: 'Binance',
+                    },
+                  ]}
+                  menuPortalTarget={document.body}
+                  menuPortalStyles={{
+                    zIndex: 111,
+                  }}
+                  menuStyles={{
+                    fontSize: '12px',
+                    minWidth: '150px',
+                    height: '200px',
+                  }}
+                  menuListStyles={{
+                    height: '200px',
+                  }}
+                  optionStyles={{
+                    fontSize: '12px',
+                  }}
+                  clearIndicatorStyles={{
+                    padding: '2px',
+                  }}
+                  valueContainerStyles={{
+                    minWidth: '35px',
+                    maxWidth: '55px',
+                    overflow: 'hidden',
+                  }}
+                  inputStyles={{
+                    marginLeft: '0',
+                  }}
+                  onChange={(
+                    optionSelected: {
+                      label: string
+                      value: string
+                    } | null
+                  ) => handleSelectChange(optionSelected)}
+                  noOptionsMessage={() => `No such exchange in our DB found`}
+                />
+              </GridCustom>
+              <GridCustom>
+                <Legend>Account name</Legend>
+                <InputBaseCustom placeholder="Type name..." />
+              </GridCustom>
+              <GridCustom>
+                <Legend>Api key</Legend>
+                <InputBaseCustom placeholder="Paste key..." />
+              </GridCustom>
+              <GridCustom>
+                <Legend>Secret key</Legend>
+                <InputBaseCustom placeholder="Paste key..." />
+              </GridCustom>
+            </Grid>
 
-            <GridCustom container justify="space-between" alignItems="center">
+            <Grid container justify="space-between" alignItems="center">
               <LinkCustom href={'#'}>How to get keys?</LinkCustom>
 
               <BtnCustom
@@ -152,7 +214,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               >
                 ADD
               </BtnCustom>
-            </GridCustom>
+            </Grid>
           </DialogContent>
         </DialogWrapper>
       </>
