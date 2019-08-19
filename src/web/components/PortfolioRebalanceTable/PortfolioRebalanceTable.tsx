@@ -68,7 +68,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
             red,
             saveButtonColor,
           })}
-          emptyTableText="No assets"
+          emptyTableText=""
         />
       </ContentInner>
     </>

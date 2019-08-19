@@ -66,6 +66,7 @@ export const StyledTypography = styled(
     props.secondaryColor ||
     '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
+  white-space: ${props => props.whiteSpace || 'normal'};
 
   @media only screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     padding-bottom: 1rem;

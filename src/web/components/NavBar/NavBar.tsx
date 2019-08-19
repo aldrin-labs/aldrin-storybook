@@ -6,12 +6,18 @@ import { client } from '@core/graphql/apolloClient'
 import { Login } from '@core/containers/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
-import { Toolbar, Grid, Typography } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
-import { Nav, StyledToolbar, NavLinkButtonWrapper } from './NavBar.styles'
+import {
+  Nav,
+  StyledToolbar,
+  NavLinkButtonWrapper,
+  NavBarWrapper,
+  NavBreadcrumbTypography
+} from './NavBar.styles'
 import Feedback from '@sb/components/Feedback'
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
@@ -66,36 +72,16 @@ const NavBarRaw: SFC<Props> = ({
         <Grid alignItems="center" container={true} alignContent={'stretch'}>
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={2}>
-              <Grid container={true} alignItems={'center'}>
+              <Grid container={true} alignItems={'center'} wrap="nowrap">
                 <Logo />
-                <Grid style={{ marginLeft: '5%', marginBottom: '4px' }}>
-                  <Typography
-                    style={{
-                      textTransform: 'capitalize',
-                      borderLeft: '1px solid #7284A0',
-                      paddingLeft: '.75rem',
-                      fontSize: '1.25rem',
-                      lineHeight: '2.5rem',
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {page}
-                  </Typography>
+                <Grid style={{ marginLeft: '5%' }}>
+                  <NavBreadcrumbTypography>{page}</NavBreadcrumbTypography>
                 </Grid>
               </Grid>
             </Grid>
           </Hidden>
           <Grid item={true} md={6} sm={5}>
-            <Grid
-              justify="flex-end"
-              container={true}
-              style={{
-                flexDirection: 'row',
-                display: 'flex',
-                flexWrap: 'nowrap',
-                justifyContent: 'center',
-              }}
-            >
+            <NavBarWrapper container={true}>
               {/*<NavLinkButton
                 page={`portfolio`}
                 component={Portfolio}
@@ -200,7 +186,7 @@ const NavBarRaw: SFC<Props> = ({
                   Signals
                 </NavLinkButton>
               </NavLinkButtonWrapper>
-            </Grid>
+            </NavBarWrapper>
           </Grid>
 
           <Grid item={true} md={4} sm={7}>

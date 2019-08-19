@@ -47,9 +47,9 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
           heading: {
             padding: '1.2rem 1.6rem 1.2rem 1.2rem',
             fontFamily: "'DM Sans', sans-serif",
-            fontSize: '1.2rem',
+            fontSize: '1.1rem',
             fontWeight: 600,
-            letterSpacing: 1,
+            letterSpacing: 0.5,
             borderBottom: '2px solid #e0e5ec',
             whiteSpace: 'nowrap',
             color: '#7284A0'
@@ -57,10 +57,10 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
           cell: {
             padding: '1.2rem 1.6rem 1.2rem 1.2rem',
             fontFamily: "'DM Sans Bold', sans-serif",
-            fontSize: '1.2rem',
+            fontSize: '1.1rem',
             fontWeight: 500,
             textTransform: 'uppercase',
-            letterSpacing: 1,
+            letterSpacing: 0.5,
             color: '#7284A0'
           }
         }}

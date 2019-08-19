@@ -237,10 +237,15 @@ export const GridProgressBarContainer = styled(Grid)`
 export const IconCircle = styled.i`
   padding-right: 5px;
   font-size: 1rem;
+`
 
-  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    //font-size: 2.2rem;
-  }
+export const IconArrow = styled.i`
+  padding: 0 5px;
+  font-size: 1rem;
+
+  position: relative;
+  top: -1px;
+  left: 0;
 `
 
 export const GridTableTypographyContainer = styled(Grid)`

@@ -60,6 +60,9 @@ const MyLinkToUserSettings = (props: any) => (
   </Link>
 )
 
+// On this value we divide slider percentage to get btc filter value (100% = 0.01 btc)
+const BTC_PART_DIVIDER = 10000
+
 @withRouter
 @withTheme()
 class PortfolioSelector extends React.Component<IProps> {
@@ -68,27 +71,37 @@ class PortfolioSelector extends React.Component<IProps> {
     valueSliderPercentageContainer: 0,
     valueSliderUsd: 0,
     valueSliderUsdContainer: 0,
+    valueSliderBtc: 0,
+    valueSliderBtcContainer: 0
   }
 
   componentDidMount() {
+    const { dustFilter: {
+      percentage,
+      usd,
+      btc
+    }} = this.props
+
     const value =
-      this.props.dustFilter.percentage === 0.1
+      percentage === 0.1
         ? 20
-        : this.props.dustFilter.percentage === 0.3
+        : percentage === 0.3
         ? 40
-        : this.props.dustFilter.percentage === 0.5
+        : percentage === 0.5
         ? 60
-        : this.props.dustFilter.percentage === 1
+        : percentage === 1
         ? 80
-        : this.props.dustFilter.percentage === 10
+        : percentage === 10
         ? 100
         : 0
 
     this.setState({
       valueSliderPercentage: value,
-      valueSliderPercentageContainer: this.props.dustFilter.percentage,
-      valueSliderUsd: this.props.dustFilter.usd,
-      valueSliderUsdContainer: this.props.dustFilter.usd,
+      valueSliderPercentageContainer: percentage,
+      valueSliderUsd: usd,
+      valueSliderUsdContainer: usd,
+      valueSliderBtc: btc,
+      valueSliderBtcContainer: btc
     })
   }
 
@@ -118,9 +131,17 @@ class PortfolioSelector extends React.Component<IProps> {
     this.onDustFilterChange(value, 'usd')
   }
 
+  handleChangeBtc = (event, value) => {
+    this.setState({
+      valueSliderBtc: value,
+      valueSliderBtcContainer: value / BTC_PART_DIVIDER
+    })
+    this.onDustFilterChange(value, 'btc')
+  }
+
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
-    
+    console.log('update settings')
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
@@ -138,6 +159,20 @@ class PortfolioSelector extends React.Component<IProps> {
         portfolioId,
         [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
           UTILS.getArrayContainsOnlySelected(newKeys, toggledKeyID),
+      },
+    }
+
+    await this.updateSettings(objForQuery)
+  }
+
+  onKeysSelectAll = async () => {
+    const { portfolioId, newKeys, isRebalance } = this.props
+
+    const objForQuery = {
+      settings: {
+        portfolioId,
+        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
+          UTILS.getArrayContainsAllSelected(newKeys),
       },
     }
 
@@ -210,8 +245,11 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onDustFilterChange = (value: number, dustFilterParam: string) => {
-    const { portfolioId, dustFilter } = this.props
-    const { usd, percentage } = dustFilter
+    const { portfolioId, dustFilter: {
+      usd,
+      percentage,
+      btc
+    }} = this.props
     const dustFilterParamValue =
       dustFilterParam === 'percentage'
         ? value === 0
@@ -225,13 +263,14 @@ class PortfolioSelector extends React.Component<IProps> {
           : value === 80
           ? '1'
           : '10'
+        : dustFilterParam === 'btc' ? value / BTC_PART_DIVIDER
         : value
 
     this.updateSettings({
       settings: {
         portfolioId,
         dustFilter: {
-          ...{ usd, percentage },
+          ...{ usd, percentage, btc },
           [dustFilterParam]: dustFilterParamValue,
         }, //TODO
         // dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value }, //TODO
@@ -253,6 +292,7 @@ class PortfolioSelector extends React.Component<IProps> {
         palette: { blue },
       },
       getMyPortfoliosQuery,
+      isUSDCurrently
     } = this.props
 
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
@@ -321,6 +361,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
+                onKeysSelectAll: this.onKeysSelectAll
               }}
               isSidebar={true}
             />
@@ -355,6 +396,7 @@ class PortfolioSelector extends React.Component<IProps> {
                   </GridSymbolValue>
                 </SliderContainer>
 
+                {isUSDCurrently && (
                 <SliderContainer>
                   <GridSymbolContainer>$</GridSymbolContainer>
                   <SliderDustFilter
@@ -375,6 +417,30 @@ class PortfolioSelector extends React.Component<IProps> {
                   />
                   <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
                 </SliderContainer>
+                )}
+
+                {!isUSDCurrently && (
+                  <SliderContainer>
+                    <GridSymbolContainer>BTC</GridSymbolContainer>
+                    <SliderDustFilter
+                      step={1}
+                      thumbWidth="25px"
+                      thumbHeight="25px"
+                      sliderWidth="250px"
+                      sliderHeight="17px"
+                      sliderHeightAfter="20px"
+                      borderRadius="30px"
+                      borderRadiusAfter="30px"
+                      thumbBackground="#165BE0"
+                      borderThumb="2px solid white"
+                      trackAfterBackground="#E7ECF3"
+                      trackBeforeBackground={'#165BE0'}
+                      value={this.state.valueSliderBtc}
+                      onChange={this.handleChangeBtc} //TODO onDragEnd
+                    />
+                    <GridSymbolValue>{`< ${dustFilter.btc} BTC`}</GridSymbolValue>
+                  </SliderContainer>
+                )}
               </>
             </GridSectionDust>
           )}

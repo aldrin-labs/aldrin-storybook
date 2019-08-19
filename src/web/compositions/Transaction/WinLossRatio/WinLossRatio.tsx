@@ -20,7 +20,7 @@ class WinLossRatio extends Component {
                     borderBottom: '2px solid #e0e5ec',
                     marginBottom: '1rem'
                 }}>
-                    <TransactionActionsTypography>Win & loss ratio</TransactionActionsTypography>
+                    <TransactionActionsTypography>Profit & loss ratio</TransactionActionsTypography>
                     <WinLossSelect options={[
                         { id: 0, label: '30D' },
                         { id: 1, label: '7D' }
@@ -34,7 +34,7 @@ class WinLossRatio extends Component {
                             marginBottom: '2rem',
                             paddingBottom: '2rem'
                         }}>
-                            <TransactionActionsTypography>Win</TransactionActionsTypography>
+                            <TransactionActionsTypography>Profit</TransactionActionsTypography>
                             <WinLossRatioNumber>24</WinLossRatioNumber>
                             <TypographyProfit profit>+ $12,500.32</TypographyProfit>
                         </Grid>

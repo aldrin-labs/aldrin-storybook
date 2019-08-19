@@ -33,7 +33,7 @@ export const TransactionActionsTypography = styled(Typography)`
 export const TransactionActionsNumber = styled(Typography)`
     font-family: 'DM Sans';
     font-weight: bold;
-    font-size: 2.5rem;
+    font-size: 2rem;
     line-height: 100%;
 
     letter-spacing: 1.5px;
