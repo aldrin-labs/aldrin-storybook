@@ -29,7 +29,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
 
     return (
       <StyledTable
-        style={{ height: '10vh', overflow: 'scroll' }}
+        style={{ overflowY: 'scroll' }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
