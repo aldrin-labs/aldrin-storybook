@@ -115,7 +115,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             showProgress={true}
             showSkipButton={true}
             steps={portfolioMainSteps}
-            run={getTooltipSettings.portfolioMain}
+            // run={getTooltipSettings.portfolioMain}
+            run={false}
             callback={this.handleJoyrideCallback}
             key={this.state.key}
             styles={{
