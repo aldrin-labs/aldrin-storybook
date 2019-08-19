@@ -142,14 +142,20 @@ class SocialPage extends React.Component {
     signalsSort: signalsSortOptions[0],
     isOrderbookOpen: false,
     orderData: null,
+    autoRefetch: true,
   }
 
-  componentDidMount() {
+  startRefetch = () => {
     const invervalId = setInterval(() => {
       this.props.refetch()
     }, 3000)
 
     this.setState({ invervalId })
+  }
+
+  componentDidMount() {
+    const { autoRefetch } = this.state
+    if (autoRefetch) this.startRefetch()
   }
 
   componentWillUnmount() {
@@ -166,15 +172,15 @@ class SocialPage extends React.Component {
     })
   }
 
-  onTrClick = (data) => {
+  onTrClick = (data: any) => {
     this.setState({ isOrderbookOpen: true, orderData: data })
   }
 
-  openDialog = (signalId) => {
+  openDialog = (signalId: string | number) => {
     this.setState({ isDialogOpen: true, currentSignalId: signalId })
   }
 
-  setCurrentSignal = (id) => {
+  setCurrentSignal = (id: string | number) => {
     this.setState({ currentSignalId: id })
   }
 
@@ -200,6 +206,16 @@ class SocialPage extends React.Component {
     })
   }
 
+  toggleAutoRefetch = () => {
+    this.setState(
+      (prev) => ({ autoRefetch: !prev.autoRefetch }),
+      () =>
+        this.state.autoRefetch
+          ? this.startRefetch()
+          : clearInterval(this.state.invervalId)
+    )
+  }
+
   render() {
     const {
       selectedSignal = 0,
@@ -207,6 +223,7 @@ class SocialPage extends React.Component {
       signalsSort,
       isOrderbookOpen,
       orderData,
+      autoRefetch,
     } = this.state
 
     const {
@@ -326,13 +343,15 @@ class SocialPage extends React.Component {
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
-        <Grid lg={9} xs={9}>
-          <Grid item xs={12} spacing={24} style={{ padding: '15px' }}>
+        <Grid xs={9} style={{ padding: '15px', minHeight: '100%' }}>
+          <Grid item xs={12} spacing={24} style={{ height: '100%' }}>
             {sortedData.length > 0 && sortedData[this.state.selectedSignal] ? (
               <SignalEventList
                 {...this.props}
                 signalId={sortedData[this.state.selectedSignal]._id}
                 onTrClick={this.onTrClick}
+                toggleAutoRefetch={this.toggleAutoRefetch}
+                autoRefetch={autoRefetch}
               />
             ) : null}
           </Grid>

@@ -31,8 +31,10 @@ import {
   TableStyles,
   PaginationFunctionType,
 } from './index.types'
+
+import SwitchOnOff from '@sb/components/SwitchOnOff'
 import { isObject } from 'lodash-es'
-import { Typography, IconButton, Grow, Collapse } from '@material-ui/core'
+import { Typography, IconButton, Grow } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
@@ -82,6 +84,43 @@ const CustomTableCell = withStyles((theme) => ({
 const ActionButton = withStyles(() => ({
   root: { padding: 0 },
 }))(IconButton)
+
+const AutoRefetch = ({
+  autoRefetch,
+  toggleAutoRefetch,
+}: {
+  autoRefetch?: boolean
+  toggleAutoRefetch: () => void
+}) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: '1rem',
+        zIndex: '100',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+      }}
+    >
+      <span
+        style={{
+          color: 'rgba(0, 0, 0, 0.54)',
+          fontSize: '1.125rem',
+          fontFamily: 'DM Sans,sans-serif',
+          padding: '0 1rem',
+        }}
+      >
+        Auto-Refetch
+      </span>
+      <SwitchOnOff
+        enabled={autoRefetch || false}
+        _id={'AutoRefetch'}
+        onChange={toggleAutoRefetch}
+      />
+    </div>
+  )
+}
 
 /**
  * Create a point.
@@ -494,6 +533,9 @@ const CustomTable = (props: Props) => {
     },
     onTrClick,
     style,
+    autoRefetch = false,
+    needRefetch = false,
+    toggleAutoRefetch,
   } = props
 
   if (
@@ -580,7 +622,10 @@ const CustomTable = (props: Props) => {
           )}
           <TableRow className={classes.headRow}>
             {(withCheckboxes || expandableRows) && (
-              <CustomTableCell padding="checkbox" style={{ ...isOnTop, width: '6rem' }}>
+              <CustomTableCell
+                padding="checkbox"
+                style={{ ...isOnTop, width: '6rem' }}
+              >
                 {renderCheckBox({
                   checkedRows,
                   rows: data,
@@ -777,6 +822,12 @@ const CustomTable = (props: Props) => {
         unmountOnExit
       >
         <>
+          {needRefetch ? (
+            <AutoRefetch
+              autoRefetch={autoRefetch}
+              toggleAutoRefetch={toggleAutoRefetch}
+            />
+          ) : null}
           <StyledTablePagination
             component="div"
             count={pagination.totalCount || data.body.length}
