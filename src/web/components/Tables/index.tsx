@@ -571,7 +571,7 @@ const CustomTable = (props: Props) => {
           )}
           <TableRow className={classes.headRow}>
             {(withCheckboxes || expandableRows) && (
-              <CustomTableCell padding="checkbox" style={{ ...isOnTop }}>
+              <CustomTableCell padding="checkbox" style={{ ...isOnTop, width: '6rem' }}>
                 {renderCheckBox({
                   checkedRows,
                   rows: data,

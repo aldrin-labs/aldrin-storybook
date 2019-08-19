@@ -6,7 +6,7 @@ import { IProps } from './SharePortfolio.types'
 
 export default class SharePortfolioPanel extends Component<IProps> {
   render() {
-    const { handleOpenSharePortfolio, portfolioName } = this.props
+    const { handleOpenSharePortfolio, portfolioName, onToggleUSDBTC, isUSDCurrently } = this.props
     return (
       <Grid
         container
@@ -42,14 +42,11 @@ export default class SharePortfolioPanel extends Component<IProps> {
             </Grid>
             <Grid item>
               <StyledButton
-                // onClick={() => {
-                //   this.props.onToggleUSDBTC()
-                //   toggleBaseCoin()
-                // }}
+                onClick={() => { onToggleUSDBTC() }}
                 padding="0.25rem 1rem 0.25rem 1rem"
                 borderRadius={'28px'}
               >
-                Btc
+                {isUSDCurrently ? 'BTC' : 'USD'}
               </StyledButton>
             </Grid>
           </Grid>

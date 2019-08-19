@@ -1,26 +1,23 @@
 import React, { Component } from 'react'
 import { createGlobalStyle } from 'styled-components'
+
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import {
   GridContainerTitle,
   TypographyContatinerTitle,
   GridItemContainer,
   TypographyAccountTitle,
   ContentGrid,
-  TypographyTitle,
   GridShowHideDataContainer,
   GridAccountContainer,
   GridTableContainer,
-  TransactionsTitle,
   PortfolioSelectorWrapper
 } from './TransactionPage.styles'
 
-import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
-import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
+import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistoryWrapper'
 
-import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
 import Accounts from '@sb/components/Accounts/Accounts'
 // import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
 import AccountsSlick from './AccountsSlick/AccountsSlick'
@@ -219,7 +216,6 @@ class TransactionPage extends Component {
         >
           <Grid item style={{ height: '100%' }}>
             {!hideSelector && <GitTransactionCalendar/>}
-            {hideSelector && <ChoosePeriod/>}
 
             <GridTableContainer
               item

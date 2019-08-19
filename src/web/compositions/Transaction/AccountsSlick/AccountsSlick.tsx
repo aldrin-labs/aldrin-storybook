@@ -55,15 +55,22 @@ class AccountsSlick extends Component {
         return (
             <>
                 <AccountsSlickStyles/>
-                    
-                <Slider {...settings}>
-                    {MyPortfoliosOptions.map(slide => (
-                        <div>
-                            <TypographyAccountName isSideNav={isSideNav}>{slide.label}</TypographyAccountName>
-                            <TypographyAccountMoney isSideNav={isSideNav}>$500,000.00</TypographyAccountMoney>
-                        </div>
-                    ))}
-                </Slider>
+                
+                {MyPortfoliosOptions.length > 1 ? (
+                    <Slider {...settings}>
+                        {MyPortfoliosOptions.map(slide => (
+                            <div>
+                                <TypographyAccountName isSideNav={isSideNav}>{slide.label}</TypographyAccountName>
+                                <TypographyAccountMoney isSideNav={isSideNav}>$500,000.00</TypographyAccountMoney>
+                            </div>
+                        ))}
+                    </Slider>
+                ) : (
+                    <div style={{ margin: '2rem 0 2.5rem' }}>
+                        <TypographyAccountName isSideNav={isSideNav}>{MyPortfoliosOptions[0].label}</TypographyAccountName>
+                        <TypographyAccountMoney isSideNav={isSideNav}>$500,000.00</TypographyAccountMoney>
+                    </div>
+                )}
             </>
         )
     }

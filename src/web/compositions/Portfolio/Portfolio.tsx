@@ -28,6 +28,7 @@ const safePortfolioDestruction = (
       portfolioId: '',
       dustFilter: {
         usd: 0,
+        btc: 0,
         percentage: 0,
       },
       keys: [],
@@ -103,8 +104,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             userSettings: { keys, rebalanceKeys, wallets },
           } = safePortfolioDestruction(data.myPortfolios[0])
 
-          console.log(rebalanceKeys)
-
           keys = Array.isArray(keys) ? keys : []
           rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
           wallets = Array.isArray(wallets) ? wallets : []
@@ -150,6 +149,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                       toggleWallets={this.toggleWallets}
                       isSideNavOpen={this.state.isSideNavOpen}
                       isRebalance={isRebalance}
+                      isUSDCurrently={isUSDCurrently}
                     />
 
                     {!hasKeysOrWallets && (

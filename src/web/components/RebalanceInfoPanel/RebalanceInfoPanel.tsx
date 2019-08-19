@@ -70,11 +70,11 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
         justify="space-between"
       >
         {/* Grid - 1st item md - 6 Starts */}
-        <Grid item md={5} lg={5}>
+        <Grid item md={6} lg={6}>
           <Grid container>
             <Grid container justify="space-between">
               <Grid item lg={4} md={3} justify="center">
-                <StyledTypography fontWeight={'700'}>
+                <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
                   Binance trade account
                 </StyledTypography>
                 <StyledSubTypography fontWeight={'700'} letterSpacing="2px" color={theme.palette.secondary.main}>
@@ -119,7 +119,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
         {/* <Grid item md={0} lg={2}></Grid>
           Space */}
         {/* Grid - 2nd item md - 6 Starts */}
-        <Grid item md={5} lg={5}>
+        <Grid item md={6} lg={6} style={{ paddingLeft: '6rem' }}>
           <Grid container>
             <Grid container justify="space-between">
               <GridFlex justify="flex-start" alignItems="center" item lg={3}>
@@ -143,7 +143,6 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 lg={6}
                 justify="center"
                 alignItems="center"
-                style={{ paddingRight: '17px' }}
               >
                 <TypographyRebalance href={'#'} linkColor={grey.dark}>
                   rebalance
