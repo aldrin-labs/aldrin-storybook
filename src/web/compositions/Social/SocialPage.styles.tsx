@@ -17,7 +17,6 @@ export const InputCustom = styled(Input)`
 export const GridPageContainer = styled(Grid)`
   padding-top: 15px;
   width: 100%;
-  height: 85vh;
   /*max-height: 100vh;*/
 `
 
@@ -37,7 +36,7 @@ export const TypographySearchOption = styled(Typography)`
   }
 `
 
-export const PortfolioName = styled(Typography)`
+export const TypographyHeader = styled(Typography)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
@@ -49,6 +48,7 @@ export const PortfolioName = styled(Typography)`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin: ${props => props.margin || 0};
 
   @media (min-width: 2560px) {
     padding: 0.3rem 0 0 0.5rem;
@@ -226,7 +226,7 @@ export const WrapperContent = styled(Wrapper)`
   margin: 1rem 0;
 `
 
-export const TypographyContent = styled(PortfolioName)`
+export const TypographyContent = styled(TypographyHeader)`
   color: #16253d;
   font-size: 1.2rem;
 `

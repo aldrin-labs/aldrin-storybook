@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Grid } from '@material-ui/core'
 import {
-  PortfolioName,
+  TypographyHeader,
   TypographyTitle,
   FolioValuesCell,
   TypographySearchOption,
@@ -39,8 +39,10 @@ import SocialTabs from '@sb/components/SocialTabs/SocialTabs'
 import { withTheme } from '@material-ui/styles'
 import { transformData } from '@core/utils/SocialUtils'
 
+import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
-import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
+import SocialPortfolioChart from '@sb/components/SocialPortfolioChart'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import LineGraph from '@icons/LineGraph.svg'
@@ -49,7 +51,10 @@ const getOwner = (str: string) => {
   if (!str) {
     return 'public'
   }
-  return str
+
+  const b = str.match(/(?<=\').*(?=')/gm)
+
+  return (b && b[0]) || 'public'
 }
 
 const PortfolioListItem = ({ el, onClick, isSelected }) => (
@@ -75,7 +80,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
   >
     <Grid container justify="space-between">
       <Grid item style={{ maxWidth: '70%' }}>
-        <PortfolioName textColor={'#16253D'}>{el.name}</PortfolioName>
+        <TypographyHeader textColor={'#16253D'}>{el.name}</TypographyHeader>
         <TypographyTitle fontSize={'0.9rem'} textColor={'#7284A0'}>
           {el.isPrivate ? getOwner(el.ownerId) : `Public portfolio`}
         </TypographyTitle>
@@ -468,12 +473,12 @@ class SocialPage extends React.Component {
                         emptyTableText="No assets"
                         tableStyles={{
                           heading: {
-                            padding: '0 0 0 48px !important',
+                            padding: '.5rem 0 .5rem 1rem',
                             textAlign: 'left',
                             maxWidth: '14px',
                             background: '#F2F4F6',
                             fontFamily: "'DM Sans'",
-                            fontSize: '0.9rem',
+                            fontSize: '.8rem',
                             color: '#7284A0',
                             lineHeight: '31px',
                             letterSpacing: '1.5px',
@@ -495,8 +500,8 @@ class SocialPage extends React.Component {
                             fontWeight: '500',
                             textTransform: 'uppercase',
                             letterSpacing: '0.5px',
-                            fontSize: '1rem',
-                            padding: '0 0 0 8px',
+                            fontSize: '1.1rem',
+                            padding: '1rem 0 1rem 1rem',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
@@ -519,17 +524,8 @@ class SocialPage extends React.Component {
                         }}
                       />
                     </TableContainer>
-                    <Grid item style={{ paddingTop: '15px', height: '100%' }}>
-                      {/*TODO: Pass real values to this component*/}
-                      {/*<PortfolioMainChart*/}
-                      {/*title="Portfolio performance"*/}
-                      {/*style={{*/}
-                      {/*marginLeft: 0,*/}
-                      {/*maxHeight: '222px',*/}
-                      {/*boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',*/}
-                      {/*border: '1px solid #e0e5ec',*/}
-                      {/*}}*/}
-                      {/*marginTopHr="10px"*/}
+                    <Grid item style={{ paddingTop: '15px' }}>
+                      <SocialPortfolioChart/>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -573,6 +569,14 @@ class SocialPage extends React.Component {
                 </Grid>
               </Grid>
             )}
+          </Grid>
+          <Grid item xs={12} style={{
+            marginTop: '1.5rem',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid #E0E5EC'
+          }}>
+            <TypographyHeader color={'#7284A0'} margin={'0 0 1.25rem 0'}>Transactions</TypographyHeader>
+            <TransactionPage hideSelector={true}/>
           </Grid>
         </GridTableContainer>
       </GridPageContainer>

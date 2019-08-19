@@ -26,6 +26,7 @@ import OrderBookBody from '@sb/compositions/Chart/Tables/OrderBookTable/Tables/A
 import SpreadTable from '@sb/compositions/Chart/Tables/OrderBookTable/Tables/Bids/SpreadTable'
 
 const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
+  console.log('OrderbookDialog', data)
   const newDataAsks = data ? JSON.parse(data.asks) : []
   const newDataBids = data ? JSON.parse(data.bids) : []
 

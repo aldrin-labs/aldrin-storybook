@@ -120,7 +120,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
-
+    
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
@@ -131,12 +131,13 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys } = this.props
+    const { portfolioId, newKeys, isRebalance } = this.props
 
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: UTILS.getArrayContainsOnlySelected(newKeys, toggledKeyID),
+        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
+          UTILS.getArrayContainsOnlySelected(newKeys, toggledKeyID),
       },
     }
 
@@ -144,12 +145,13 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
-    const { portfolioId } = this.props
+    const { portfolioId, isRebalance } = this.props
 
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: [toggledKeyID],
+        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
+          [toggledKeyID],
       },
     }
 
@@ -179,6 +181,7 @@ class PortfolioSelector extends React.Component<IProps> {
       newWallets,
       activeWallets,
       portfolioId,
+      isRebalance
     } = this.props
     let objForQuery
 
@@ -189,7 +192,7 @@ class PortfolioSelector extends React.Component<IProps> {
       objForQuery = {
         settings: {
           portfolioId,
-          selectedKeys: [],
+          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: [],
           selectedWallets: [],
         },
       }
@@ -197,7 +200,7 @@ class PortfolioSelector extends React.Component<IProps> {
       objForQuery = {
         settings: {
           portfolioId,
-          selectedKeys: newKeys.map((el) => el._id),
+          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: newKeys.map((el) => el._id),
           selectedWallets: newWallets.map((el) => el._id),
         },
       }
@@ -245,7 +248,7 @@ class PortfolioSelector extends React.Component<IProps> {
       activeKeys,
       activeWallets,
       dustFilter,
-      location: { pathname },
+      isRebalance,
       theme: {
         palette: { blue },
       },
@@ -261,8 +264,6 @@ class PortfolioSelector extends React.Component<IProps> {
       }
     )
 
-    const isRebalance = pathname === '/portfolio/rebalance'
-
     const login = true
 
     const isCheckedAll =
@@ -271,7 +272,6 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
     const relations = ['first', 'second']
-
 
     return (
       <Slide

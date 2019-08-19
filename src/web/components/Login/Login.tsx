@@ -5,6 +5,8 @@ import { Grow, Slide } from '@material-ui/core'
 import { Props } from './Login.types'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
+import auth0Logo from '@icons/auth0Logo.png'
+
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
 import { withTheme } from '@material-ui/styles'
@@ -17,7 +19,7 @@ class LoginQuery extends React.Component<Props> {
     theme: {
       ...auth0Options.theme,
       primaryColor: this.props.theme.palette.secondary.main,
-      logo: MainLogo,
+      logo: auth0Logo,
     },
   })
 
