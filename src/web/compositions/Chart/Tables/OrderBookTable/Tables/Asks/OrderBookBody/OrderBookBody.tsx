@@ -1,14 +1,7 @@
-import React, { PureComponent, Component, memo } from 'react'
-
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { Row, Cell, Body } from '@sb/components/OldTable/Table'
-import {
-  calculatePercentagesOfOrderSize,
-  ScrollToBottom,
-} from '@core/utils/chartPageUtils'
+import React, { PureComponent, memo } from 'react'
+import { Row, Body } from '@sb/components/OldTable/Table'
+import { ScrollToBottom } from '@core/utils/chartPageUtils'
 import { IProps } from './OrderBookBody.types'
-
-import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 import { StyledCell } from '../../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
@@ -16,7 +9,7 @@ import { StyledCell } from '../../../../TradeHistoryTable/Table/TradeHistoryTabl
 let objDiv: HTMLElement | null
 
 const OptimizedRow = memo(
-  ({ order, data }) => (
+  ({ order }) => (
     <Row background={'transparent'}>
       <StyledCell style={{ minWidth: '30%' }}>
         <TypographyFullWidth textColor={'#b93b2b'} variant="body1" align="left">

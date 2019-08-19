@@ -129,6 +129,7 @@ export interface Props {
   emptyTableText?: string
   tableStyles?: TableStyles
   onTrClick?: () => null
+  style?: CSSProperties
 }
 
 export type Pagination = {

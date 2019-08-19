@@ -44,8 +44,7 @@ const MemoHead = memo(
       </Head>
     </>
   ),
-  (prevProps, nextProps) =>
-    nextProps.quote === prevProps.quote && nextProps.type === prevProps.type
+  (prevProps, nextProps) => nextProps.quote === prevProps.quote
 )
 
 @withTheme()

@@ -36,7 +36,7 @@ export const PropertyName = styled(Typography)`
   font-size: 1.2rem;
   line-height: 23px;
   letter-spacing: 1px;
-  text-transform: uppercase;
+  text-transform: capitalize;
   white-space: nowrap;
   color: #16253d;
   width: 20%;

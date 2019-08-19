@@ -3,26 +3,33 @@ import { IProps } from './TradingTabs.types'
 import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
 import { withTheme } from '@material-ui/styles'
 
-const TradingTabs = ({
-  tabIndex,
-  handleTabChange,
-  theme: {
-    palette: {
-      text: { primary },
-    },
-  },
-}: IProps) => (
+const TradingTabs = ({ tab, handleTabChange }: IProps) => (
   <>
-    <TitleTabsGroup
-      value={tabIndex}
-      onChange={handleTabChange}
-      indicatorColor="secondary"
-      textColor="primary"
-    >
-      <TitleTab label="Open orders" primary={primary} />
-      <TitleTab label="Order history" primary={primary} />
-      <TitleTab label="Trade history" primary={primary} />
-      <TitleTab label="Funds" primary={primary} />
+    <TitleTabsGroup>
+      <TitleTab
+        active={tab === 'openOrders'}
+        onClick={() => handleTabChange('openOrders')}
+      >
+        Open orders
+      </TitleTab>
+      <TitleTab
+        active={tab === 'orderHistory'}
+        onClick={() => handleTabChange('orderHistory')}
+      >
+        Order history
+      </TitleTab>
+      <TitleTab
+        active={tab === 'tradeHistory'}
+        onClick={() => handleTabChange('tradeHistory')}
+      >
+        Trade history
+      </TitleTab>
+      <TitleTab
+        active={tab === 'funds'}
+        onClick={() => handleTabChange('funds')}
+      >
+        Funds
+      </TitleTab>
     </TitleTabsGroup>
   </>
 )

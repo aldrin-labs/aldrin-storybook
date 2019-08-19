@@ -408,6 +408,7 @@ class Chart extends React.Component<IProps, IState> {
     const toggler = this.renderToggler()
 
     const selectStyles = {
+      height: '100%',
       border: 'none',
       background: '#FFFFFF',
       marginRight: '8px',
@@ -438,6 +439,7 @@ class Chart extends React.Component<IProps, IState> {
           )}
 
           <SelectExchange
+            style={{ height: '100%' }}
             changeActiveExchangeMutation={changeActiveExchangeMutation}
             activeExchange={activeExchange}
             currencyPair={pair}

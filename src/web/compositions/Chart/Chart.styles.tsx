@@ -18,6 +18,7 @@ export const MainContainer = styled.div`
 
 export const PanelWrapper = styled.div`
   display: flex;
+  height: 100%;
 `
 
 export const PanelCard = styled.div`
@@ -223,7 +224,7 @@ export const Toggler = styled.div`
   min-width: 240px;
   overflow: hidden;
   width: auto;
-  min-height: 38px;
+  min-height: 100%;
   background: #f9fbfd;
   font-weight: bold;
   font-family: Trebuchet MS;

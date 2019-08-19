@@ -52,7 +52,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
     const {
       tab,
-      tabIndex,
       show,
       handleTabChange,
       focusedInput,
@@ -86,14 +85,14 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
           },
+          tab: {
+            padding: 0,
+          },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs
-              tabIndex={tabIndex}
-              handleTabChange={handleTabChange}
-            />
+            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
             <TradingTitle
               {...{
                 startDate,
