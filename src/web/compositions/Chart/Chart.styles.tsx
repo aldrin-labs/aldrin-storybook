@@ -16,6 +16,11 @@ export const MainContainer = styled.div`
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
 
+export const PanelWrapper = styled.div`
+  display: flex;
+  height: 100%;
+`
+
 export const PanelCard = styled.div`
   min-width: 120px;
   padding: ${(props) =>
@@ -217,16 +222,19 @@ export const TogglerContainer = styled(Grid)`
 
 export const Toggler = styled.div`
   min-width: 240px;
+  overflow: hidden;
   width: auto;
-  min-height: 38px;
+  min-height: 100%;
   background: #f9fbfd;
   font-weight: bold;
   font-family: Trebuchet MS;
   text-transform: uppercase;
   display: flex;
+  flex-grow: 100;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 1rem 0 10.8rem;
+  padding: 0 1rem 0 0;
+  margin-right: 8px;
 `
 
 export const StyledSwitch = styled(Button)`
@@ -234,6 +242,11 @@ export const StyledSwitch = styled(Button)`
   color: ${(props) => (props.isActive ? '#fff' : '#4152AF')};
   border: 1px solid #4152af;
   padding: 0rem 1.5rem;
+
+  &:hover {
+    background-color: ${(props) => (props.isActive ? '#4152AF' : '#F2F4F6')};
+    color: ${(props) => (props.isActive ? '#fff' : '#4152AF')};
+  }
 `
 
 export const Container = styled(Grid)`

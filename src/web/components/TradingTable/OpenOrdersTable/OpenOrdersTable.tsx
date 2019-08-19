@@ -92,7 +92,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   render() {
     const { openOrdersProcessedData } = this.state
-    const { tab, tabIndex, handleTabChange, show } = this.props
+    const { tab, handleTabChange, show } = this.props
 
     if (!show) {
       return null
@@ -108,19 +108,18 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         tableStyles={{
           heading: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
-            top: CSS_CONFIG.chart.headCell.customTop,
           },
           cell: {
             fontSize: CSS_CONFIG.chart.headCell.fontSize,
+          },
+          tab: {
+            padding: 0,
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs
-              tabIndex={tabIndex}
-              handleTabChange={handleTabChange}
-            />
+            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
           </div>
         }
         data={{ body: openOrdersProcessedData }}

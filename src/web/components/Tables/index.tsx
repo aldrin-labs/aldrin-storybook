@@ -347,7 +347,12 @@ const renderCells = ({
 }) => {
   const reduce = Object.keys(row)
     .map((key) => {
-      if (key === 'id' || key === 'options' || key === 'expandableContent') {
+      if (
+        key === 'id' ||
+        key === 'options' ||
+        key === 'expandableContent' ||
+        key === 'orderbook'
+      ) {
         return null
       }
 
@@ -485,8 +490,10 @@ const CustomTable = (props: Props) => {
       heading: {},
       title: {},
       cell: {},
+      tab: {},
     },
     onTrClick,
+    style,
   } = props
 
   if (
@@ -516,6 +523,7 @@ const CustomTable = (props: Props) => {
       elevation={elevation}
       style={{
         width: '100%',
+        ...style,
       }}
     >
       <StyledTable
@@ -533,6 +541,7 @@ const CustomTable = (props: Props) => {
                 padding="default"
                 className={classes.title}
                 colSpan={howManyColumns - actionsColSpan}
+                style={{ ...tableStyles.tab }}
               >
                 <Typography
                   style={{
@@ -643,7 +652,7 @@ const CustomTable = (props: Props) => {
                   ? `${classes.staticCheckbox} ${classes.checkbox}`
                   : classes.checkbox
 
-                const orderbookData = row.order
+                console.log(row)
 
                 return (
                   <React.Fragment key={row.id}>
@@ -661,7 +670,9 @@ const CustomTable = (props: Props) => {
                       }
                       className={rowHoverClassName}
                       onClick={() =>
-                        onTrClick ? onTrClick(orderbookData) : null
+                        onTrClick
+                          ? onTrClick(row.orderbook ? row.orderbook : {})
+                          : null
                       }
                     >
                       {typeOfCheckbox !== null && (

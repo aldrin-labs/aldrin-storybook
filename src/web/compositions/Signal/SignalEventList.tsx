@@ -25,7 +25,8 @@ const putDataInTable = (tableData) => {
       { id: 'exchangeA', label: 'Exchange A' },
       { id: 'exchangeB', label: 'Exchange B' },
       { id: 'amount', label: 'Amount' },
-      { id: 'spread', label: 'Spread' },
+      { id: 'spreadA', label: 'Spread A' },
+      { id: 'spreadB', label: 'Spread B' },
       { id: 'priceA', label: 'Price A' },
       { id: 'priceB', label: 'Price B' },
       { id: 'profit', label: 'Profit' },
@@ -55,8 +56,15 @@ const transformData = (data: any[]) => {
         ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
         : '-',
     },
-    spread: {
-      contentToSort: row.spread,
+    spreadA: {
+      contentToSort: row.spreadA,
+      contentToCSV: roundAndFormatNumber(row.spread, 2, false),
+      render: row.spread
+        ? `${roundAndFormatNumber(row.spread, 2, false)} %`
+        : '-',
+    },
+    spreadB: {
+      contentToSort: row.spreadB,
       contentToCSV: roundAndFormatNumber(row.spread, 2, false),
       render: row.spread
         ? `${roundAndFormatNumber(row.spread, 2, false)} %`
@@ -78,6 +86,11 @@ const transformData = (data: any[]) => {
       render: row.profit ? roundAndFormatNumber(row.profit, 3, true) : '-',
     },
     status: row.status || '-',
+    orderbook: {
+      orders: row.ordersJson,
+      ordersA: row.ordersJsonA,
+      ordersB: row.ordersJsonB,
+    },
   }))
 
   return transformedData
@@ -96,6 +109,7 @@ const SignalEventList = (props) => {
   } = props
 
   const { body, head, footer = [] } = putDataInTable(events)
+  const smallScreen = window.outerWidth < 1500
 
   return (
     <ContainerGrid container style={{ position: 'relative' }}>
@@ -111,7 +125,13 @@ const SignalEventList = (props) => {
           handleChangePage: handleChangePage,
           handleChangeRowsPerPage: handleChangeRowsPerPage,
         }}
-        style={{ height: '100%', overflowY: 'scroll' }}
+        style={{
+          height: '100%',
+          overflowY: 'scroll',
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: 'column',
+        }}
         id="SignalSocialTable"
         // title="Signal"
         columnNames={head}
@@ -125,7 +145,7 @@ const SignalEventList = (props) => {
             textAlign: 'left',
             maxWidth: '14px',
             background: '#F2F4F6',
-            fontFamily: '\'DM Sans\'',
+            fontFamily: "'DM Sans'",
             fontSize: '0.9rem',
             color: '#7284A0',
             lineHeight: '31px',
@@ -139,7 +159,7 @@ const SignalEventList = (props) => {
             fontWeight: '500',
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
-            fontSize: '1rem',
+            fontSize: smallScreen ? '.8rem' : '.9rem',
             padding: '0 0 0 .3rem',
             '&:before': {
               content: '',
@@ -161,7 +181,7 @@ const SignalEventList = (props) => {
 export default class SignalEventListDataWrapper extends React.PureComponent<
   IProps,
   IState
-  > {
+> {
   state: IState = {
     page: 0,
     perPage: 30,

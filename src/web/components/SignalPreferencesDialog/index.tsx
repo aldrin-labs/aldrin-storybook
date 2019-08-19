@@ -80,16 +80,21 @@ const SignalPreferencesDialog = ({
         if (value === '0' || value === '' || value === 0) {
           result = false
         }
+        if (type === 'number') {
+          const haveDot = String(value).match(/\./gm)
+          return haveDot ? [name, type, value] : [name, type, value]
+        }
         if (type === 'object') {
           try {
             if (!value) return [name, type, JSON.parse(String(value))]
             return [name, type, JSON.parse(value)]
           } catch (e) {}
         }
+
         return [name, type, value]
       }
     )
-
+    console.log(arr)
     return [JSON.stringify(arr.reverse()), result]
   }
 

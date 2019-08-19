@@ -18,7 +18,7 @@ import {
 } from '@core/utils/chartPageUtils'
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
-import { HeadRow } from './Tables/HeadRow/HeadRow'
+import { MiddlePrice } from './Tables/Bids/MiddlePrice'
 import ComingSoon from '@sb/components/ComingSoon'
 import { IProps, IState } from './OrderBookTableContainer.types'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -45,6 +45,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // when get data from subscr
     // console.log(newProps.data.marketOrders)
+    console.log('getderivedstate')
     if (newProps.data && newProps.data.marketOrders) {
       let iterator = state.i
 
@@ -211,7 +212,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           }}
         /> */}
 
-        <div style={{ width: '100%', height: '30px', background: '#F2F4F6' }} />
+        <MiddlePrice>$10801.0</MiddlePrice>
 
         <SpreadTable
           data={bids}

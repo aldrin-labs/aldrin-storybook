@@ -8,17 +8,22 @@ export interface IProps extends WithTheme<Theme> {
   tab: string
   tabIndex: number
   show: boolean
-  handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
+  handleTabChange: (tab: string | any) => void
   cancelOrderMutation: CancelOrderMutationType
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory: OrderType[]
   }
   subscribeToMore: () => void
-  showCancelResult: ({ status, message }: { status: string, message: string }) => void
+  showCancelResult: ({
+    status,
+    message,
+  }: {
+    status: string
+    message: string
+  }) => void
   theme: Theme
   selectedKey: Key
 }
-
 
 export interface IState {
   openOrdersProcessedData: any[]

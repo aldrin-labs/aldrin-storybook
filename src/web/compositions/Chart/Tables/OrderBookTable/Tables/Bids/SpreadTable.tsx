@@ -35,15 +35,9 @@ const RowFunc = ({
   green,
   digitsAfterDecimalForBidsPrice,
 }) => (
-  <Row background={'transparent'} style={{ justifyContent: 'space-between' }}>
-    {/* <RowWithVolumeChart
-    volumeColor={hexToRgbAWithOpacity(red.main, 0.25)}
-    colored={calculatePercentagesOfOrderSize(+order.size, data).toString()}
-    background={background.default}
-  > */}
-    {/* <EmptyCell width={'10%'} /> */}
-    <StyledCell style={{ maxWidth: '25%' }}>
-      <TypographyFullWidth textColor={'#2F7619'} variant="body1">
+  <Row background={'transparent'}>
+    <StyledCell style={{ minWidth: '30%' }}>
+      <TypographyFullWidth textColor={'#2F7619'} variant="body1" align="left">
         {
           order.price
           // .toFixed(digitsAfterDecimalForAsksPrice)
@@ -51,7 +45,7 @@ const RowFunc = ({
       </TypographyFullWidth>
     </StyledCell>
 
-    <StyledCell style={{ maxWidth: '35%' }}>
+    <StyledCell style={{ minWidth: '30%' }}>
       <TypographyFullWidth textColor={'#7284A0'} variant="body2" align="left">
         {
           order.size
@@ -60,22 +54,24 @@ const RowFunc = ({
       </TypographyFullWidth>
     </StyledCell>
 
-    <StyledCell style={{ maxWidth: '40%' }}>
-      <TypographyFullWidth textColor={'#7284A0'} variant="body1" align="left">
-        {
-          order.total
-          // .toFixed(digitsAfterDecimalForAsksPrice)
+    <StyledCell style={{ minWidth: '40%' }}>
+      <TypographyFullWidth
+        textColor={'#7284A0'}
+        variant="body1"
+        align="right"
+        style={{ paddingRight: 0 }}
+      >
+        {order.total.toFixed(0)
+        // .toFixed(digitsAfterDecimalForAsksPrice)
         }
       </TypographyFullWidth>
     </StyledCell>
-    {/* </RowWithVolumeChart> */}
   </Row>
 )
 
 const MemoizedRow = memo(
   RowFunc,
   (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
-  // nextProps.type === prevProps.type
 )
 
 @withTheme()

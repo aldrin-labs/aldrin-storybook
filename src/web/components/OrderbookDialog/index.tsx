@@ -1,60 +1,28 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Dialog, DialogTitle, Grid } from '@material-ui/core'
-import { Clear, Refresh } from '@material-ui/icons'
+import { Clear, TrendingFlat as Arrow } from '@material-ui/icons'
 
 // import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import {
-  StyledPaper,
   TypographyTitle,
   StyledDialogContent,
-  Line,
   ClearButton,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import {
-  SignalPropertyGrid,
-  PropertyName,
-  SectionTitle,
-  PropertyInput,
-  SaveButton,
-  RefreshButton,
-  ErrorText,
-} from '@sb/components/SignalPreferencesDialog/SignalPreferencesDialog.styles'
-
-import OrderBookBody from '@sb/compositions/Chart/Tables/OrderBookTable/Tables/Asks/OrderBookTable'
-import SpreadTable from '@sb/compositions/Chart/Tables/OrderBookTable/Tables/Bids/SpreadTable'
+import OrderbookTable from './OrderbookTable'
+import { StyledPaper } from './OrderbookDialog.styles'
 
 const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
-  console.log('OrderbookDialog', data)
-  const newDataAsks = data ? JSON.parse(data.asks) : []
-  const newDataBids = data ? JSON.parse(data.bids) : []
+  const buyOrdersData = data.ordersA ? JSON.parse(data.ordersA) : { asks: [] }
 
-  const asksData = newDataAsks.map((ask) => ({
-    price: +(+ask[0]).toFixed(2),
-    size: +ask[1][0],
-    total: +ask[1][1],
-  }))
+  const middleOrdersData = data.ordersB
+    ? JSON.parse(data.ordersB)
+    : { asks: [] }
 
-  const bidsData = newDataBids.map((bid) => ({
-    price: +(+bid[0]).toFixed(2),
-    size: +bid[1][0],
-    total: +bid[1][1],
-  }))
-
-  console.log('rowdata', asksData, bidsData)
-
-  // const asksData = [
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  //   { price: 1000, size: 1000, total: 1000 },
-  // ]
-  // const bidsData = [{ price: 1000, size: 1000, total: 1000 }]
+  const sellOrdersData = data.orders
+    ? { bids: JSON.parse(data.orders) }
+    : { bids: [] }
 
   return (
     <Dialog
@@ -88,38 +56,18 @@ const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
         </ClearButton>
       </DialogTitle>
       <StyledDialogContent>
-        {/* <Grid
-          style={{ padding: '.8rem 0' }}
-          container
-          alignItems="center"
-          wrap="nowrap"
-        >
-          <SectionTitle>Orderbook</SectionTitle>
-          <Line />
-        </Grid> */}
-        <Grid container direction={'column'}>
-          <OrderBookBody data={asksData} />
-
-          {/* <HeadRow
-            {...{
-              primary,
-              type,
-              palette,
-              quote,
-              spread,
-              digitsAfterDecimalForSpread: Math.max(
-                digitsAfterDecimalForBidsPrice,
-                digitsAfterDecimalForAsksPrice
-              ),
-              key: 'bids_headrow',
-            }}
-          /> */}
-
-          <div
-            style={{ width: '100%', height: '30px', background: '#F2F4F6' }}
+        <Grid container direction={'row'} alignItems={'flex-start'}>
+          <OrderbookTable title={'Buy'} data={{ ...buyOrdersData }} />
+          <Arrow
+            color={'inherit'}
+            style={{ color: '#2F7619', width: '5%', marginTop: '4%' }}
           />
-
-          <SpreadTable data={bidsData} />
+          <OrderbookTable title={'_'} data={{ ...middleOrdersData }} />
+          <Arrow
+            color={'inherit'}
+            style={{ color: '#2F7619', width: '5%', marginTop: '4%' }}
+          />
+          <OrderbookTable title={'Sell'} data={{ ...sellOrdersData }} />
         </Grid>
       </StyledDialogContent>
     </Dialog>
