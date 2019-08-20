@@ -13,8 +13,14 @@ import SearchIcon from '@material-ui/icons/Search'
 export const TypographyCustomHeading = styled(
   ({ color, fontWeight, ...rest }) => <Typography {...rest} />
 )`
-  color: ${(props) => props.color || '#000'};
-  font-weight: ${(props) => props.fontWeight || `400`};
+  color: ${(props) => props.color || '#7284A0'};
+  font-weight: ${(props) => props.fontWeight || `500`};
+  font-family: 'DM Sans';
+  font-size: 1.3rem;
+  line-height: 114.5%;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: left;
 `
 
 export const GridCustom = styled(Grid)`
