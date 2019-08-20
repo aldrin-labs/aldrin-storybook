@@ -15,7 +15,7 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
+// import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 @withTheme()
 class OrderHistoryTable extends React.PureComponent<IProps> {
@@ -79,6 +79,9 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         }}
         withCheckboxes={false}
         tableStyles={{
+          headRow: {
+            borderBottom: '1px solid #e0e5ec',
+          },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
@@ -87,9 +90,10 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           },
           cell: {
             color: '#16253D',
-            fontSize: '1.4rem',
+            fontSize: '1.3rem',
             fontFamily: 'Trebuchet MS',
             letterSpacing: '1.5px',
+            borderBottom: '1px solid #e0e5ec',
           },
           tab: {
             padding: 0,
