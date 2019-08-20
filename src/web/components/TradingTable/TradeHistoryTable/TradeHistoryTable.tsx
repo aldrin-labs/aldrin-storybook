@@ -72,6 +72,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        style={{ borderRadius: 0, height: '100%' }}
+        stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
           sortColumn: getTableHead(tab)[0].id,
           sortDirection: 'desc',
@@ -79,11 +81,16 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         withCheckboxes={false}
         tableStyles={{
           heading: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
-            top: CSS_CONFIG.chart.headCell.top,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#fff',
+            color: '#16253D',
           },
           cell: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            color: '#16253D',
+            fontSize: '1.4rem',
+            fontFamily: 'Trebuchet MS',
+            letterSpacing: '1.5px',
           },
           tab: {
             padding: 0,

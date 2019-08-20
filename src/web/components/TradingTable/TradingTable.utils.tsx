@@ -1,6 +1,9 @@
+import React from 'react'
 import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
-import { TableButton } from './TradingTable.styles'
+// import { TableButton } from './TradingTable.styles'
+import { ArrowForward as Arrow } from '@material-ui/icons'
+
 import {
   fundsColumnNames,
   openOrdersColumnNames,
@@ -105,60 +108,110 @@ export const combineOpenOrdersTable = (
       } = el
 
       const triggerConditions = +stopPrice ? stopPrice : '-'
-      const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+      const pair = symbol.split('/')
 
       return {
         id: `${orderId}${timestamp}`,
-        date: {
-          render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
-          style: { whiteSpace: 'nowrap' },
-          contentToSort: timestamp,
+        pair: {
+          render: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {pair[0]}
+              <Arrow
+                color={'inherit'}
+                style={{ color: '#2F7619', width: '1.5rem' }}
+              />
+              {pair[1]}
+            </div>
+          ),
+          contentToSort: symbol,
         },
-        pair: symbol,
-        type: type,
+        // type: type,
         side: {
-          render: side,
+          render: (
+            <div>
+              <span
+                style={{
+                  display: 'block',
+                  textTransform: 'uppercase',
+                  color: side === 'buy' ? '#2F7619' : '#B93B2B',
+                }}
+              >
+                {side}
+              </span>
+              <span
+                style={{
+                  textTransform: 'capitalize',
+                  color: '#7284A0',
+                  letterSpacing: '1px',
+                }}
+              >
+                {type}
+              </span>
+            </div>
+          ),
           style: {
             color: isBuyTypeOrder(side)
               ? theme.customPalette.green.main
               : theme.customPalette.red.main,
           },
         },
-        price: { render: price, isNumber: true, contentToSort: price },
-        amount: { render: origQty, isNumber: true, contentToSort: +origQty },
-        filled: {
-          render: `${filledQuantityProcessed} %`,
-          isNumber: true,
-          contentToSort: filledQuantityProcessed,
+        price: {
+          render: `${price} ${pair[0]}`,
+          style: { textAlign: 'left' },
+          contentToSort: price,
         },
+        amount: {
+          render: `${+origQty} ${pair[1]}`,
+          contentToSort: +origQty,
+        },
+        // filled: {
+        //   render: `${filledQuantityProcessed} %`,
+        //
+        //   contentToSort: filledQuantityProcessed,
+        // },
         // TODO: We should change "total" to total param from backend when it will be ready
         total: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
           render: '-',
-          isNumber: true,
           contentToSort: 0,
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
           render: triggerConditions,
-          isNumber: true,
           contentToSort: +stopPrice,
         },
-        cancel: {
+        date: {
           render: (
-            <TableButton
-              key={i}
-              variant="outlined"
-              size={`small`}
-              onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
-            >
-              Cancel
-            </TableButton>
+            <div>
+              <span style={{ display: 'block' }}>
+                {String(moment(timestamp).format('MM-DD-YYYY')).replace(
+                  /-/g,
+                  '.'
+                )}
+              </span>
+              <span style={{ color: '#7284A0' }}>
+                {moment(timestamp).format('LT')}
+              </span>
+            </div>
           ),
+          style: { whiteSpace: 'nowrap' },
+          contentToSort: timestamp,
         },
+        // cancel: {
+        //   render: (
+        //     <TableButton
+        //       key={i}
+        //       variant="outlined"
+        //       size={`small`}
+        //       onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
+        //     >
+        //       Cancel
+        //     </TableButton>
+        //   ),
+        // },
       }
     })
-
 
   return processedOpenOrdersData
 }
@@ -171,65 +224,71 @@ export const combineOrderHistoryTable = (
     return []
   }
 
-  const processedOrderHistoryData = orderData
-    .map((el: OrderType) => {
-      const {
-        symbol,
-        timestamp,
-        type,
-        side,
-        price,
-        status,
-        filled,
-        average,
-        info: { orderId, stopPrice = 0, origQty = '0' },
-      } = el
+  const processedOrderHistoryData = orderData.map((el: OrderType) => {
+    const {
+      symbol,
+      timestamp,
+      type,
+      side,
+      price,
+      status,
+      filled,
+      average,
+      info: { orderId, stopPrice = 0, origQty = '0' },
+    } = el
 
-      const triggerConditions = +stopPrice ? stopPrice : '-'
-      const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+    const triggerConditions = +stopPrice ? stopPrice : '-'
+    const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
-      return {
-        id: `${orderId}${timestamp}`,
-        date: {
-          render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
-          style: { whiteSpace: 'nowrap' },
-          contentToSort: timestamp,
+    return {
+      id: `${orderId}${timestamp}`,
+      pair: symbol,
+      // type: type,
+      side: {
+        render: `${side} ${type}`,
+        style: {
+          color: isBuyTypeOrder(side)
+            ? theme.customPalette.green.main
+            : theme.customPalette.red.main,
         },
-        pair: symbol,
-        type: type,
-        side: {
-          render: side,
-          style: {
-            color: isBuyTypeOrder(side)
-              ? theme.customPalette.green.main
-              : theme.customPalette.red.main,
-          },
-        },
-        average: { render: average || '-', isNumber: true, contentToSort: +average },
-        price: { render: price, isNumber: true, contentToSort: price },
-        filled: {
-          render: `${filledQuantityProcessed} %`,
-          isNumber: true,
-          contentToSort: filledQuantityProcessed,
-        },
-        amount: { render: origQty, isNumber: true, contentToSort: +origQty },
-        // TODO: We should change "total" to total param from backend when it will be ready
-        total: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: '-',
-          isNumber: true,
-          contentToSort: 0,
-        },
-        // TODO: Not sure about triggerConditions
-        triggerConditions: {
-          render: triggerConditions,
-          isNumber: true,
-          contentToSort: +stopPrice,
-        },
-        status: status || '-',
-      }
-    })
+      },
+      // average: {
+      //   render: average || '-',
+      //
+      //   contentToSort: +average,
+      // },
+      price: {
+        render: price,
+        style: { textAlign: 'left' },
+        contentToSort: price,
+      },
+      // filled: {
+      //   render: `${filledQuantityProcessed} %`,
+      //
+      //   contentToSort: filledQuantityProcessed,
+      // },
+      amount: { render: origQty, contentToSort: +origQty },
+      // TODO: We should change "total" to total param from backend when it will be ready
+      total: {
+        // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+        render: '-',
 
+        contentToSort: 0,
+      },
+      // TODO: Not sure about triggerConditions
+      triggerConditions: {
+        render: triggerConditions,
+
+        contentToSort: +stopPrice,
+      },
+      status: status || '-',
+      date: {
+        render: moment(timestamp).format('MM-DD-YYYY h:mm A'),
+        style: { whiteSpace: 'nowrap' },
+        contentToSort: timestamp,
+      },
+    }
+  })
 
   return processedOrderHistoryData
 }
@@ -242,49 +301,47 @@ export const combineTradeHistoryTable = (
     return []
   }
 
-  const processedTradeHistoryData = tradeData
-    .map((el: TradeType) => {
-      const { id, timestamp, symbol, side, price, amount } = el
+  const processedTradeHistoryData = tradeData.map((el: TradeType) => {
+    const { id, timestamp, symbol, side, price, amount } = el
 
-      const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
-      const { cost, currency } = fee
+    const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
+    const { cost, currency } = fee
 
-      return {
-        id: id,
-        time: {
-          render: moment(timestamp).format('MM-DD-YYYY h:mm:ss A'),
-          contentToSort: timestamp,
+    return {
+      id: id,
+      pair: symbol,
+      type: {
+        render: side,
+        style: {
+          color: isBuyTypeOrder(side)
+            ? theme.customPalette.green.main
+            : theme.customPalette.red.main,
         },
-        pair: symbol,
-        type: {
-          render: side,
-          style: {
-            color: isBuyTypeOrder(side)
-              ? theme.customPalette.green.main
-              : theme.customPalette.red.main,
-          },
-        },
-        price: { render: price, isNumber: true },
-        filled: {
-          render: `${amount}`,
-          isNumber: true,
-          contentToSort: +amount,
-        },
-        fee: {
-          render: `${cost} ${currency}`,
-          isNumber: true,
-          contentToSort: cost,
-        },
-        // TODO: We should change "total" to total param from backend when it will be ready
-        total: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: '-',
-          isNumber: true,
-          contentToSort: 0,
-        },
-      }
-    })
+      },
+      price: { render: price, style: { textAlign: 'left' }, isNumber: false },
+      filled: {
+        render: `${amount}`,
 
+        contentToSort: +amount,
+      },
+      fee: {
+        render: `${cost} ${currency}`,
+
+        contentToSort: cost,
+      },
+      // TODO: We should change "total" to total param from backend when it will be ready
+      total: {
+        // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+        render: '-',
+
+        contentToSort: 0,
+      },
+      date: {
+        render: moment(timestamp).format('MM-DD-YYYY h:mm A'),
+        contentToSort: timestamp,
+      },
+    }
+  })
 
   return processedTradeHistoryData
 }
@@ -314,22 +371,22 @@ export const combineFundsTable = (
       coin: symbol || 'unknown',
       totalBalance: {
         render: quantity || '-',
-        isNumber: true,
+        style: { textAlign: 'left' },
         contentToSort: +quantity,
       },
       availableBalance: {
         render: free || '-',
-        isNumber: true,
+        style: { textAlign: 'left' },
         contentToSort: +free,
       },
       inOrder: {
         render: locked || '-',
-        isNumber: true,
+        style: { textAlign: 'left' },
         contentToSort: +locked,
       },
       btcValue: {
         render: btcValue || '-',
-        isNumber: true,
+        style: { textAlign: 'left' },
         contentToSort: btcValue,
       },
     }
@@ -429,8 +486,7 @@ export const updateTradeHistoryQuerryFunction = (
   }
 
   const tradeHasTheSameIndex = prev.getTradeHistory.findIndex(
-    (el: TradeType) =>
-      el.id === subscriptionData.data.listenTradeHistory.id
+    (el: TradeType) => el.id === subscriptionData.data.listenTradeHistory.id
   )
   const tradeAlreadyExists = tradeHasTheSameIndex !== -1
 
