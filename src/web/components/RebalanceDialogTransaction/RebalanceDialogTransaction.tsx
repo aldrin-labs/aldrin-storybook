@@ -18,7 +18,7 @@ import AccordionTable from './AccordionTable'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Stroke from '@icons/Stroke.svg'
-import Ellipse from '@icons/Ellipse.png'
+import Ellipse from '@icons/rebalance.svg'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
