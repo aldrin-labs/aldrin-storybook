@@ -63,8 +63,9 @@ const OptimizedRow = memo(
           variant="body1"
           align="left"
         >
-          {price.toFixed(4)
-          // .toFixed(digitsAfterDecimalForAsksPrice)
+          {
+            price
+            // .toFixed(digitsAfterDecimalForAsksPrice)
           }
         </TypographyFullWidth>
       </StyledCell>
@@ -76,8 +77,9 @@ const OptimizedRow = memo(
           align="right"
           style={{ paddingRight: 0 }}
         >
-          {amount.toFixed(4)
-          // .toFixed(digitsAfterDecimalForAsksPrice)
+          {
+            amount
+            // .toFixed(digitsAfterDecimalForAsksPrice)
           }
         </TypographyFullWidth>
       </StyledCell>
@@ -116,8 +118,3 @@ class OrderBookTable extends PureComponent {
 }
 
 export default withErrorFallback(OrderBookTable)
-
-// TODO
-// fix layout
-// add styles
-// check that asks and bids exists

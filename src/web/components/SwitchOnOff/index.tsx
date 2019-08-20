@@ -80,7 +80,15 @@ const SwitchBall = styled.span`
   transition: all 0.3s;
 `
 
-const SwitchOnOff = ({ enabled, id, _id, onChange, onClick }) => {
+const SwitchOnOff = ({
+  enabled,
+  _id,
+  onChange,
+}: {
+  enabled: boolean
+  _id: string
+  onChange: () => void
+}) => {
   return (
     <SwitchWrapper key={_id}>
       <Checkbox

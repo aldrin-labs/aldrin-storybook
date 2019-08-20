@@ -95,6 +95,7 @@ export type TableStyles = {
   title?: CSSProperties
   cell?: CSSProperties
   tab?: CSSProperties
+  headRow?: CSSProperties
 }
 
 export interface Props {
@@ -128,8 +129,12 @@ export interface Props {
   rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
   tableStyles?: TableStyles
-  onTrClick?: () => null
+  onTrClick?: (data: any) => void
   style?: CSSProperties
+  autoRefetch?: boolean
+  needRefetch?: boolean
+  toggleAutoRefetch: () => void
+  stylesForTable?: CSSProperties
 }
 
 export type Pagination = {

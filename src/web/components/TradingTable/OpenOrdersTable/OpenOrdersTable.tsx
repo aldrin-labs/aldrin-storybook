@@ -100,17 +100,29 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        style={{ borderRadius: 0, height: '100%' }}
+        stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
           sortColumn: getTableHead(tab)[0].id,
           sortDirection: 'desc',
         }}
         withCheckboxes={false}
         tableStyles={{
+          headRow: {
+            borderBottom: '1px solid #e0e5ec',
+          },
           heading: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#fff',
+            color: '#16253D',
           },
           cell: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            color: '#16253D',
+            fontSize: '1.3rem',
+            fontFamily: 'Trebuchet MS',
+            letterSpacing: '1.5px',
+            borderBottom: '1px solid #e0e5ec',
           },
           tab: {
             padding: 0,
@@ -160,3 +172,12 @@ const TableDataWrapper = ({ ...props }) => {
 export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
   TableDataWrapper
 )
+
+// TODO
+// slice pair to 2 part
+// make beautiful side/type
+// add 2nd pair to price
+// amount - queantity
+// ask about price
+// maybe percentages for table
+// maybe smaller font
