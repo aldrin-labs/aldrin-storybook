@@ -157,12 +157,26 @@ export const combineOpenOrdersTable = (
           },
         },
         price: {
-          render: `${price} ${pair[0]}`,
-          style: { textAlign: 'left' },
+          render: `${price} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
         amount: {
-          render: `${+origQty} ${pair[1]}`,
+          render: (
+            <div>
+              <span
+                style={{
+                  color: '#2F7619',
+                  fontSize: '1.3rem',
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                }}
+              >{`${+origQty} ${pair[0]}`}</span>
+              <span
+                style={{ color: '#7284A0', fontSize: '.9rem' }}
+              >{`${+origQty} ${pair[0]}`}</span>
+            </div>
+          ),
           contentToSort: +origQty,
         },
         // filled: {
@@ -238,14 +252,48 @@ export const combineOrderHistoryTable = (
     } = el
 
     const triggerConditions = +stopPrice ? stopPrice : '-'
-    const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+    // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+    const pair = symbol.split('/')
 
     return {
       id: `${orderId}${timestamp}`,
-      pair: symbol,
+      pair: {
+        render: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {pair[0]}
+            <Arrow
+              color={'inherit'}
+              style={{ color: '#2F7619', width: '1.5rem' }}
+            />
+            {pair[1]}
+          </div>
+        ),
+        contentToSort: symbol,
+      },
       // type: type,
       side: {
-        render: `${side} ${type}`,
+        render: (
+          <div>
+            <span
+              style={{
+                display: 'block',
+                textTransform: 'uppercase',
+                color: side === 'buy' ? '#2F7619' : '#B93B2B',
+              }}
+            >
+              {side}
+            </span>
+            <span
+              style={{
+                textTransform: 'capitalize',
+                color: '#7284A0',
+                letterSpacing: '1px',
+              }}
+            >
+              {type}
+            </span>
+          </div>
+        ),
         style: {
           color: isBuyTypeOrder(side)
             ? theme.customPalette.green.main
@@ -258,8 +306,8 @@ export const combineOrderHistoryTable = (
       //   contentToSort: +average,
       // },
       price: {
-        render: price,
-        style: { textAlign: 'left' },
+        render: `${price} ${pair[1]}`,
+        style: { textAlign: 'left', whiteSpace: 'nowrap' },
         contentToSort: price,
       },
       // filled: {
@@ -267,7 +315,24 @@ export const combineOrderHistoryTable = (
       //
       //   contentToSort: filledQuantityProcessed,
       // },
-      amount: { render: origQty, contentToSort: +origQty },
+      amount: {
+        render: (
+          <div>
+            <span
+              style={{
+                color: '#2F7619',
+                fontSize: '1.3rem',
+                display: 'block',
+                whiteSpace: 'nowrap',
+              }}
+            >{`${+origQty} ${pair[0]}`}</span>
+            <span
+              style={{ color: '#7284A0', fontSize: '.9rem' }}
+            >{`${+origQty} ${pair[0]}`}</span>
+          </div>
+        ),
+        contentToSort: +origQty,
+      },
       // TODO: We should change "total" to total param from backend when it will be ready
       total: {
         // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
@@ -281,9 +346,29 @@ export const combineOrderHistoryTable = (
 
         contentToSort: +stopPrice,
       },
-      status: status || '-',
+      status: {
+        render: status ? (
+          <span style={{ color: '#2F7619', textTransform: 'uppercase' }}>
+            {status.replace(/_/g, ' ')}
+          </span>
+        ) : (
+          '-'
+        ),
+      },
       date: {
-        render: moment(timestamp).format('MM-DD-YYYY h:mm A'),
+        render: (
+          <div>
+            <span style={{ display: 'block' }}>
+              {String(moment(timestamp).format('MM-DD-YYYY')).replace(
+                /-/g,
+                '.'
+              )}
+            </span>
+            <span style={{ color: '#7284A0' }}>
+              {moment(timestamp).format('LT')}
+            </span>
+          </div>
+        ),
         style: { whiteSpace: 'nowrap' },
         contentToSort: timestamp,
       },
@@ -306,26 +391,59 @@ export const combineTradeHistoryTable = (
 
     const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
     const { cost, currency } = fee
+    const pair = symbol.split('/')
 
     return {
       id: id,
-      pair: symbol,
-      type: {
-        render: side,
-        style: {
-          color: isBuyTypeOrder(side)
-            ? theme.customPalette.green.main
-            : theme.customPalette.red.main,
-        },
+      pair: {
+        render: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {pair[0]}
+            <Arrow
+              color={'inherit'}
+              style={{ color: '#2F7619', width: '1.5rem' }}
+            />
+            {pair[1]}
+          </div>
+        ),
+        contentToSort: symbol,
       },
-      price: { render: price, style: { textAlign: 'left' }, isNumber: false },
+      side: {
+        render: (
+          <div>
+            <span
+              style={{
+                display: 'block',
+                textTransform: 'uppercase',
+                color: side === 'buy' ? '#2F7619' : '#B93B2B',
+              }}
+            >
+              {side}
+            </span>
+            {/* <span
+              style={{
+                textTransform: 'capitalize',
+                color: '#7284A0',
+                letterSpacing: '1px',
+              }}
+            >
+              {type}
+            </span> */}
+          </div>
+        ),
+      },
+      price: {
+        render: `${price} ${pair[1]}`,
+        style: { textAlign: 'left', whiteSpace: 'nowrap' },
+        contentToSort: price,
+      },
       filled: {
         render: `${amount}`,
 
         contentToSort: +amount,
       },
       fee: {
-        render: `${cost} ${currency}`,
+        render: `${cost}`,
 
         contentToSort: cost,
       },
@@ -337,7 +455,20 @@ export const combineTradeHistoryTable = (
         contentToSort: 0,
       },
       date: {
-        render: moment(timestamp).format('MM-DD-YYYY h:mm A'),
+        render: (
+          <div>
+            <span style={{ display: 'block' }}>
+              {String(moment(timestamp).format('MM-DD-YYYY')).replace(
+                /-/g,
+                '.'
+              )}
+            </span>
+            <span style={{ color: '#7284A0' }}>
+              {moment(timestamp).format('LT')}
+            </span>
+          </div>
+        ),
+        style: { whiteSpace: 'nowrap' },
         contentToSort: timestamp,
       },
     }

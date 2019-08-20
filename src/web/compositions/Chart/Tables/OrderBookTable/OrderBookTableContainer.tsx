@@ -45,7 +45,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // when get data from subscr
     // console.log(newProps.data.marketOrders)
-    console.log('getderivedstate')
+
     if (newProps.data && newProps.data.marketOrders) {
       let iterator = state.i
 
@@ -66,7 +66,6 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         total: +bid[1][1],
       }))
 
-      console.log(asksData)
       return { asks: asksData, bids: bidsData }
 
       const orderData = newProps.data.marketOrders[0]

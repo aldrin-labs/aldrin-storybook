@@ -174,10 +174,8 @@ export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
 )
 
 // TODO
-// slice pair to 2 part
-// make beautiful side/type
-// add 2nd pair to price
-// amount - queantity
 // ask about price
 // maybe percentages for table
-// maybe smaller font
+// chart color update
+// signal input fix
+// layout fixes > 2560 and < 1400
