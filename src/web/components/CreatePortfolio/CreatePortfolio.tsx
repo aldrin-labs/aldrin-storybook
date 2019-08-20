@@ -1,8 +1,8 @@
 import React from 'react'
+import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
-import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
@@ -15,10 +15,8 @@ import {
   InputBaseCustom,
   DialogWrapper,
   DialogTitleCustom,
-  GridSearchPanel,
-  LinkCustom,
-  SearchIconCustom,
-} from './CreatePortfolio.styles'
+  Legend
+} from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import AddIcon from '@material-ui/icons/Add'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -132,20 +130,25 @@ class CreatePortfolio extends React.Component<IProps, IState> {
               Create Portfolio
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center">
-            <GridCustom style={{ width: '440px' }}>
-              <InputBaseCustom placeholder="Name" />
-            </GridCustom>
+          <DialogContent justify="center" style={{
+            padding: '0 3rem 3rem'
+          }}>
+            <Grid style={{ width: '440px' }}>
+              <GridCustom>
+                <Legend>Portfolio name</Legend>
+                <InputBaseCustom placeholder="" />
+              </GridCustom>
+            </Grid>
 
-            <GridCustom container justify="space-between" alignItems="center">
+            <Grid container justify="flex-end" alignItems="center">
               <BtnCustom
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
               >
-                Create
+                CREATE
               </BtnCustom>
-            </GridCustom>
+            </Grid>
           </DialogContent>
         </DialogWrapper>
       </>

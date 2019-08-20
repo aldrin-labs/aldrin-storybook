@@ -14,7 +14,7 @@ class GitTransactionCalendarWrapper extends React.PureComponent {
   onDateButtonClick = async (stringDate: string) => {
     this.setState(
       {
-        activeDateButton: stringDate,
+        activeDateButton: moment(stringDate).format('YYYY'),
         startDate: moment(stringDate).startOf('year'),
         endDate: moment(stringDate).endOf('year'),
       },

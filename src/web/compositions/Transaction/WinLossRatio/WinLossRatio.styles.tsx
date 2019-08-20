@@ -5,7 +5,7 @@ import {
 } from './../TransactionsActionsStatistic/TransactionsActionsStatistic.styles'
 import { Grid, Typography } from '@material-ui/core'
 
-export const WinLossRatioWrapper = styled(Grid)`
+export const WinLossRatioGrid = styled(Grid)`
     padding: 1.6rem 1.2rem;
     border-radius: 1.6rem;
     background: white;

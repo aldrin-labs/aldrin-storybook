@@ -24,7 +24,7 @@ import AccountsSlick from './AccountsSlick/AccountsSlick'
 import ShowHideData from './ShowHideData/ShowHideData'
 
 import TransactionsActionsStatistic from './TransactionsActionsStatistic/TransactionsActionsStatistic'
-import WinLossRatio from './WinLossRatio/WinLossRatio'
+import WinLossRatio from './WinLossRatio'
 
 import { withTheme } from '@material-ui/styles'
 
