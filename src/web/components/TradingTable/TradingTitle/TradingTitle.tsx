@@ -4,7 +4,11 @@ import { DateRangePicker } from 'react-dates'
 
 import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
-import { TitleSecondRowContainer, TitleButton } from '../TradingTable.styles'
+import {
+  TitleSecondRowContainer,
+  TitleButton,
+  ClearButton,
+} from '../TradingTable.styles'
 import { IProps } from './TradingTitle.types'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
@@ -37,43 +41,40 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '1Day'}
-          secondary={main}
           onClick={() => onDateButtonClick('1Day')}
         >
-          1 Day
+          24h
         </TitleButton>
         <TitleButton
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '1Week'}
-          secondary={main}
           onClick={() => onDateButtonClick('1Week')}
         >
-          1 Week
+          week
         </TitleButton>
         <TitleButton
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '1Month'}
-          secondary={main}
           onClick={() => onDateButtonClick('1Month')}
         >
-          1 Month
+          month
         </TitleButton>
         <TitleButton
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '3Month'}
-          secondary={main}
           onClick={() => onDateButtonClick('3Month')}
+          style={{ marginRight: '2rem' }}
         >
-          3 Month
+          3m
         </TitleButton>
         <StyledWrapperForDateRangePicker
           color={primary}
           fontFamily={fontFamily}
           fontSize={CSS_CONFIG.chart.content.fontSize}
-          style={{ marginLeft: '18px' }}
+          style={{ paddingLeft: '2rem', borderLeft: '1px solid #e0e5ec' }}
           zIndexPicker={200}
           dateInputHeight={`24px`}
           dateInputPadding={`0 5px`}
@@ -95,13 +96,13 @@ export default class TradingTitle extends React.PureComponent<IProps> {
             displayFormat="MM-DD-YYYY"
           />
         </StyledWrapperForDateRangePicker>
-        <TitleButton
+        <ClearButton
           size="small"
           variant={`outlined`}
           onClick={onClearDateButtonClick}
         >
           Clear
-        </TitleButton>
+        </ClearButton>
       </TitleSecondRowContainer>
     )
   }

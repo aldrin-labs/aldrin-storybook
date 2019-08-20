@@ -161,7 +161,7 @@ export const ChartSelectStyles = css`
 `
 
 export const StyledWrapperForDateRangePicker = styled.div`
-  width: 206px;
+  width: auto;
   padding: ${(props: { dateRangePadding: string }) =>
     props.dateRangePadding || '6px 0'};
 
@@ -175,8 +175,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateInput_input {
-    padding: ${(props: { dateInputPadding: string }) =>
-      props.dateInputPadding || '5px'};
+    padding: 0.2rem 0.5rem;
     font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>
@@ -184,9 +183,12 @@ export const StyledWrapperForDateRangePicker = styled.div`
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) =>
       props.dateInputHeight || '36px'};
-    color: ${(props: { color: string }) => props.color};
-    background: ${(props: { background?: string }) =>
-      props.background || 'transparent'};
+    color: #16253d;
+    background: #fff;
+    border: 1px solid #e0e5ec;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
   }
 
   & .DateRangePicker_picker {
@@ -197,10 +199,9 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateRangePickerInput {
-    border: 0;
     background: ${(props: { background: string }) =>
       props.background || 'transparent'};
-    border-bottom: 1px solid #c1c1c1;
+    border: 0;
   }
 
   & .DateInput_input__focused {
@@ -209,9 +210,10 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateRangePickerInput_arrow_svg {
-    fill: ${(props: { color: string }) => props.color};
+    fill: #7284a0;
     width: 14px;
     height: 14px;
+    margin: 0 0.5rem;
   }
 `
 
