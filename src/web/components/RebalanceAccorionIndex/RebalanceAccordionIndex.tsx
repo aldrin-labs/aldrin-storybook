@@ -12,6 +12,7 @@ import { ExpansionPanelWrapper } from './RebalanceAccordionIndex.styles'
 const styles = (theme) => ({
   root: {
     width: '100%',
+    marginBottom: '2.5rem'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),

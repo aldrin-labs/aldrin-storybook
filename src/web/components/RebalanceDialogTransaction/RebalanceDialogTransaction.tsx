@@ -175,7 +175,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                           borderRadius={'1rem'}
                           btnWidth="120px"
                           onClick={handleClose}
-                          color={'#9f9f9f'}
+                          color={'#B93B2B'}
                           margin="0 5px"
                           disabled={isDisableBtns}
                         >

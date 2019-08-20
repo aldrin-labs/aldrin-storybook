@@ -652,8 +652,6 @@ const CustomTable = (props: Props) => {
                   ? `${classes.staticCheckbox} ${classes.checkbox}`
                   : classes.checkbox
 
-                console.log(row)
-
                 return (
                   <React.Fragment key={row.id}>
                     <TableRow
