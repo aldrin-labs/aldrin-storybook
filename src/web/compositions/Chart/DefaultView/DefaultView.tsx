@@ -86,7 +86,7 @@ export const DefaultView = (props) => {
                 </Fade>
               )}
             </ChartsContainer>
-            <TradingTabelContainer item xs={12}>
+            <TradingTabelContainer style={{ overflowX: 'hidden' }} item xs={12}>
               {/*{MASTER_BUILD && <ComingSoon />}*/}
               <TradingTable showCancelResult={showCancelResult} />
             </TradingTabelContainer>

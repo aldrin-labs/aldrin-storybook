@@ -95,6 +95,7 @@ export type TableStyles = {
   title?: CSSProperties
   cell?: CSSProperties
   tab?: CSSProperties
+  headRow?: CSSProperties
 }
 
 export interface Props {
@@ -133,6 +134,7 @@ export interface Props {
   autoRefetch?: boolean
   needRefetch?: boolean
   toggleAutoRefetch: () => void
+  stylesForTable?: CSSProperties
 }
 
 export type Pagination = {
