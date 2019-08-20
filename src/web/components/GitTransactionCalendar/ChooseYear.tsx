@@ -19,7 +19,7 @@ class ChooseYear extends Component {
             activeDateButton,
             onDateButtonClick
         } = this.props
-
+        
         return (
             <ChoosePeriodWrapper>
                 {PERIODS.map(({ name, label }, index) =>
