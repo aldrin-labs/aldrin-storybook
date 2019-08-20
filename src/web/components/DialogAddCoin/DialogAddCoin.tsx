@@ -38,6 +38,13 @@ class DialogAddCoin extends React.Component {
           color="#165BE0"
           btnWidth="100px"
           onClick={this.handleClickOpen}
+          style={{
+            position: 'relative',
+            left: '75%',
+            top: 0,
+            transform: 'translateX(-50%)',
+            width: '10rem'
+          }}
         >
           Add Coin
         </BtnCustom>
@@ -50,22 +57,6 @@ class DialogAddCoin extends React.Component {
         >
           <DialogContent style={{ minWidth: '400px', height: '220px' }}>
             <SelectCoinList
-              value={
-                // shouldWeShowPlaceholderForCoin
-                //   ? null
-                //   : [
-                //       {
-                //         value: row.symbol,
-                //         label: row.symbol,
-                //       },
-                //     ]
-                [
-                  {
-                    value: 'BRD',
-                    label: 'BRD',
-                  },
-                ]
-              }
               //ref={handleRef}
               key={`inputCoinSymbol${'index'}`}
               classNamePrefix="custom-select-box"
@@ -131,7 +122,6 @@ class DialogAddCoin extends React.Component {
                   value: string
                 } | null
               ) => onAddRowButtonClick(optionSelected.label)}
-              //handleSelectChange('33', 'BRD', optionSelected)}
             />
           </DialogContent>
         </Dialog>
