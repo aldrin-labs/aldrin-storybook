@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import { withTheme } from '@material-ui/styles'
 
 import { Grid } from '@material-ui/core'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import {
   TypographyCustomHeading,
   GridCustom,
@@ -22,10 +23,77 @@ import {
 import SvgIcon from '@sb/components/SvgIcon'
 import Plus from '@icons/Plus.svg'
 
-import SelectAllExchangeList from '@core/components/SelectAllExchangeList/SelectAllExchangeList'
+import { withFormik } from 'formik'
+import Yup from 'yup'
+import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { IProps, IState } from './AddAccountDialog.types'
+import { keysNames } from '@core/graphql/queries/chart/keysNames'
+import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
+import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
+
+
+import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
+import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+
+const MIN_CHAR = 3
+
+const FormError = ({ children }: any) => (
+  <Typography color="error">{children}</Typography>
+)
+
+const formikEnhancer = withFormik({
+  validationSchema: Yup.object().shape({
+    name: Yup.string()
+      .required()
+      .min(MIN_CHAR)
+      .trim(),
+    apiKey: Yup.string()
+      .required()
+      .min(MIN_CHAR)
+      .trim(),
+    secretOfApiKey: Yup.string()
+      .required()
+      .min(MIN_CHAR)
+      .trim(),
+    exchange: Yup.string()
+      .required()
+      .min(MIN_CHAR)
+      .trim(),
+  }),
+  mapPropsToValues: (props: any) => ({
+    name: '',
+    apiKey: '',
+    secretOfApiKey: '',
+    exchange: '',
+  }),
+  handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
+    const variables = {
+      name: values.name,
+      apiKey: values.apiKey,
+      secret: values.secretOfApiKey,
+      exchange: values.exchange.toLowerCase(),
+      date: Math.round(+Date.now() / 1000),
+    }
+
+    try {
+      await props.addExchangeKey({
+        variables,
+        update: (proxy, { data: { addExchangeKey } }) => {
+          const proxyData = proxy.readQuery({ query: getKeysQuery })
+          proxyData.myPortfolios[0].keys.push(addExchangeKey)
+          proxy.writeQuery({ query: getKeysQuery, data: proxyData })
+        },
+      })
+      resetForm({})
+      setSubmitting(false)
+    } catch (error) {
+      setSubmitting(false)
+      console.log(error)
+    }
+  },
+})
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -68,7 +136,7 @@ const DialogContent = withStyles((theme) => ({
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
-    isSelected: true,
+    isSelected: true
   }
 
   handleRadioBtn = () => {
@@ -87,16 +155,21 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ open: false })
   }
 
-  handleSelectChange = exchange => {
-    console.log(exchange)
-  }
-
   render() {
-    const { handleSelectChange } = this
+    const { handleClose } = this
     const {
       theme: {
         palette: { blue, black },
       },
+      values,
+      touched,
+      errors,
+      handleChange,
+      handleBlur,
+      handleSubmit,
+      validateForm,
+      dirty,
+      isSubmitting
     } = this.props
 
     return (
@@ -140,67 +213,107 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               Add Api Key
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center">
-            <Grid style={{ width: '440px' }}>
+          <DialogContent justify="center" style={{
+            padding: '0 3rem 3rem'
+          }}>
+            <form onSubmit={e => {
+              e.preventDefault()
+              validateForm().then(async () => {
+                await handleSubmit()
+                handleClose()
+              })
+            }} style={{ width: '440px' }}>
+              <Grid>
               <GridCustom>
                 <Legend>Exchange</Legend>
-                <SelectAllExchangeList
-                  classNamePrefix="custom-select-box"
+                <SelectExchangeList
                   isClearable={true}
-                  isSearchable={true}
-                  openMenuOnClick={true}
-                  options={[
-                    {
-                      label: 'Binance',
-                      value: 'Binance',
-                    },
-                  ]}
-                  menuPortalTarget={document.body}
-                  menuPortalStyles={{
-                    zIndex: 111,
+                  value={
+                    values.exchange
+                      ? [{ label: values.exchange, value: values.exchange }]
+                      : null
+                  }
+                  onChange={handleSelectChangePrepareForFormik.bind(
+                    this,
+                    'exchange'
+                  )}
+                  controlStyles={{
+                    border: '1px solid #e0e5ec',
+                    borderRadius: '1rem',
+                    padding: '0 1rem',
+                    background: '#fff'
                   }}
-                  menuStyles={{
-                    fontSize: '12px',
-                    minWidth: '150px',
-                    height: '200px',
-                  }}
-                  menuListStyles={{
-                    height: '200px',
+                  singleValueStyles={{
+                    color: '#abbad1',
+                    fontSize: '1.3rem'
                   }}
                   optionStyles={{
-                    fontSize: '12px',
+                    color: '#abbad1',
+                    fontSize: '1.3rem'
                   }}
-                  clearIndicatorStyles={{
-                    padding: '2px',
-                  }}
-                  valueContainerStyles={{
-                    minWidth: '35px',
-                    maxWidth: '55px',
-                    overflow: 'hidden',
-                  }}
-                  inputStyles={{
-                    marginLeft: '0',
-                  }}
-                  onChange={(
-                    optionSelected: {
-                      label: string
-                      value: string
-                    } | null
-                  ) => handleSelectChange(optionSelected)}
-                  noOptionsMessage={() => `No such exchange in our DB found`}
                 />
               </GridCustom>
               <GridCustom>
                 <Legend>Account name</Legend>
-                <InputBaseCustom placeholder="Type name..." />
+                <InputBaseCustom
+                  error={touched.name && !!errors.name}
+                  id="name"
+                  name="name"
+                  label="Name"
+                  autoComplete="off"
+                  value={values.name || ''}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Type name..."
+                  type="text"
+                  margin="normal"
+                  helperText={
+                    touched.name &&
+                    errors.name && <FormError>{errors.name}</FormError>
+                  }
+                />
               </GridCustom>
               <GridCustom>
                 <Legend>Api key</Legend>
-                <InputBaseCustom placeholder="Paste key..." />
+                <InputBaseCustom
+                  error={touched.apiKey && !!errors.apiKey}
+                  id="apiKey"
+                  type="text"
+                  name="apiKey"
+                  label="API Key"
+                  autoComplete="off"
+                  value={values.apiKey || ''}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter API key here..."
+                  margin="normal"
+                  helperText={
+                    touched.apiKey &&
+                    errors.apiKey && <FormError>{errors.apiKey}</FormError>
+                  }
+                />
               </GridCustom>
               <GridCustom>
                 <Legend>Secret key</Legend>
-                <InputBaseCustom placeholder="Paste key..." />
+                <InputBaseCustom
+                  error={touched.secretOfApiKey && !!errors.secretOfApiKey}
+                  id="secretOfApiKey"
+                  name="secretOfApiKey"
+                  label="Secret"
+                  autoComplete="off"
+                  value={values.secretOfApiKey || ''}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter secret key here..."
+                  type="text"
+                  margin="normal"
+                  helperText={
+                    touched.secretOfApiKey &&
+                    errors.secretOfApiKey && (
+                      <FormError>{errors.secretOfApiKey}</FormError>
+                    )
+                  }
+                />
               </GridCustom>
             </Grid>
 
@@ -211,10 +324,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
+                type="submit"
+                disabled={!dirty || isSubmitting}
               >
                 ADD
               </BtnCustom>
             </Grid>
+            </form>
           </DialogContent>
         </DialogWrapper>
       </>
@@ -222,10 +338,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }
 }
 
-
-
-// export default WrappedComponent = compose(
-//     graphql(addExchangeKeyMutation, { name: 'createOrderMutation' })
-// )(AddAccountDialog)
-
-export default AddAccountDialog
+export default compose(
+  graphql(addExchangeKeyMutation, {
+    name: 'addExchangeKey',
+    options: {
+      refetchQueries: [{ query: portfolioKeyAndWalletsQuery }, { query: getKeysQuery }, { query: keysNames }],
+    },
+  }),
+  formikEnhancer
+)(AddAccountDialog)
