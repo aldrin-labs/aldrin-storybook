@@ -538,7 +538,7 @@ class Chart extends React.Component<IProps, IState> {
     if (!pair) {
       return
     }
-    console.log(getThemeModeQuery)
+
     return (
       <MainContainer fullscreen={view !== 'default'}>
         <ChartMediaQueryForLg />

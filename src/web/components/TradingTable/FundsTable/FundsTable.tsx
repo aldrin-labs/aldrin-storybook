@@ -73,6 +73,9 @@ class FundsTable extends React.PureComponent<IProps> {
         stylesForTable={{ backgroundColor: '#fff' }}
         withCheckboxes={false}
         tableStyles={{
+          headRow: {
+            borderBottom: '1px solid #e0e5ec',
+          },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
@@ -81,9 +84,11 @@ class FundsTable extends React.PureComponent<IProps> {
           },
           cell: {
             color: '#16253D',
-            fontSize: '1.4rem',
+            fontSize: '1.3rem',
             fontFamily: 'Trebuchet MS',
             letterSpacing: '1.5px',
+            borderBottom: '1px solid #e0e5ec',
+            padding: '1rem auto',
           },
           tab: {
             padding: 0,

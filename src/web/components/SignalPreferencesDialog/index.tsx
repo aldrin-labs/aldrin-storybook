@@ -41,7 +41,8 @@ const SignalPreferencesDialog = ({
     if (e.target.value === '') {
       value = ''
     } else if (type === 'number') {
-      value = Number(e.target.value)
+      const correctData = e.target.value.match(/^-?[0-9]+\.?\d*/)
+      value = correctData[0]
     } else if (type === 'object') {
       try {
         value = String(e.target.value)
@@ -81,8 +82,7 @@ const SignalPreferencesDialog = ({
           result = false
         }
         if (type === 'number') {
-          const haveDot = String(value).match(/\./gm)
-          return haveDot ? [name, type, value] : [name, type, value]
+          return [name, type, +value]
         }
         if (type === 'object') {
           try {
@@ -94,7 +94,7 @@ const SignalPreferencesDialog = ({
         return [name, type, value]
       }
     )
-    console.log(arr)
+
     return [JSON.stringify(arr.reverse()), result]
   }
 
@@ -163,7 +163,7 @@ const SignalPreferencesDialog = ({
                         <PropertyInput
                           width="60"
                           placeholder={value}
-                          type={type}
+                          type={type === 'number' ? 'string' : type}
                           value={
                             propertiesState[name]
                               ? propertiesState[name].value
