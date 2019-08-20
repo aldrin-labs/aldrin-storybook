@@ -242,6 +242,7 @@ export const StyledSwitch = styled(Button)`
   color: ${(props) => (props.isActive ? '#fff' : '#4152AF')};
   border: 1px solid #4152af;
   padding: 0rem 1.5rem;
+  white-space: nowrap;
 
   &:hover {
     background-color: ${(props) => (props.isActive ? '#4152AF' : '#F2F4F6')};

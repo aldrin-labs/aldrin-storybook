@@ -536,6 +536,7 @@ const CustomTable = (props: Props) => {
     autoRefetch = false,
     needRefetch = false,
     toggleAutoRefetch,
+    stylesForTable,
   } = props
 
   if (
@@ -574,6 +575,7 @@ const CustomTable = (props: Props) => {
         id={props.id}
         style={{
           width: '100%',
+          ...stylesForTable,
         }}
       >
         <TableHead>
@@ -582,7 +584,7 @@ const CustomTable = (props: Props) => {
               <CustomTableCell
                 padding="default"
                 className={classes.title}
-                colSpan={howManyColumns - actionsColSpan}
+                colSpan={howManyColumns} // - actionsColSpan
                 style={{ ...tableStyles.tab }}
               >
                 <Typography
@@ -596,7 +598,7 @@ const CustomTable = (props: Props) => {
                   {title}
                 </Typography>
               </CustomTableCell>
-              <CustomTableCell
+              {/* <CustomTableCell
                 padding="default"
                 colSpan={actionsColSpan}
                 className={classes.title}
@@ -617,10 +619,13 @@ const CustomTable = (props: Props) => {
                     {action.icon}
                   </ActionButton>
                 ))}
-              </CustomTableCell>
+              </CustomTableCell> */}
             </TableRow>
           )}
-          <TableRow className={classes.headRow}>
+          <TableRow
+            className={classes.headRow}
+            style={{ ...tableStyles.headRow }}
+          >
             {(withCheckboxes || expandableRows) && (
               <CustomTableCell
                 padding="checkbox"
@@ -696,8 +701,6 @@ const CustomTable = (props: Props) => {
                 const checkboxClasses = staticCheckbox
                   ? `${classes.staticCheckbox} ${classes.checkbox}`
                   : classes.checkbox
-
-                console.log(row)
 
                 return (
                   <React.Fragment key={row.id}>

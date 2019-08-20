@@ -46,6 +46,99 @@ import {
 } from './SignalPage.styles'
 
 class SignalListItem extends React.Component<IProps, IState> {
+  state = {
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    interval: null,
+  }
+
+  resetTimer = () => {
+    this.setState({
+      seconds: '00',
+      minutes: '00',
+      hours: '00',
+      days: '00',
+    })
+  }
+
+  countUp = () => {
+    const { seconds, minutes, hours, days } = this.state
+    const pad = (num) => (+num < 10 ? '0' + num : num)
+
+    let updatedSeconds = +seconds + 1
+    if (updatedSeconds < 60) {
+      this.setState({ seconds: pad(updatedSeconds) })
+      return null
+    }
+
+    let updatedMinutes = +minutes + 1
+    if (updatedMinutes < 60) {
+      this.setState({ seconds: '00', minutes: pad(updatedMinutes) })
+      return null
+    }
+
+    let updatedHours = +hours + 1
+    if (updatedHours < 24) {
+      this.setState({ seconds: '00', minutes: '00', hours: pad(updatedHours) })
+      return null
+    }
+
+    let updatedDays = +days + 1
+    this.setState({
+      seconds: '00',
+      minutes: '00',
+      hours: '00',
+      days: pad(updatedDays),
+    })
+  }
+
+  updateDate = () => {
+    const { el } = this.props
+    const { interval: interv } = this.state
+    clearInterval(interv)
+
+    let deltaSeconds = (Date.now() - el.updatedAt) / 1000
+
+    const days = Math.floor(deltaSeconds / (3600 * 24))
+    deltaSeconds -= days * 3600 * 24
+
+    const hours = Math.floor(deltaSeconds / 3600)
+    deltaSeconds -= hours * 3600
+
+    const minutes = Math.floor(deltaSeconds / 60)
+    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
+
+    const interval = setInterval(this.countUp, 1000)
+
+    this.setState({ days, hours, minutes, seconds: deltaSeconds, interval })
+  }
+
+  componentDidMount() {
+    this.updateDate()
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    let deltaSeconds = (Date.now() - props.el.updatedAt) / 1000
+
+    const days = Math.floor(deltaSeconds / (3600 * 24))
+    deltaSeconds -= days * 3600 * 24
+
+    const hours = Math.floor(deltaSeconds / 3600)
+    deltaSeconds -= hours * 3600
+
+    const minutes = Math.floor(deltaSeconds / 60)
+    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
+
+    return { days, hours, minutes, seconds: deltaSeconds }
+  }
+
+  componentWillUnmount() {
+    const { interval } = this.state
+    clearInterval(interval)
+  }
+
   render() {
     const {
       el,
@@ -58,6 +151,8 @@ class SignalListItem extends React.Component<IProps, IState> {
       enabled,
       updateSignalMutation,
     } = this.props
+
+    const { seconds, minutes, hours, days } = this.state
 
     return (
       <FolioCard
@@ -86,8 +181,11 @@ class SignalListItem extends React.Component<IProps, IState> {
         >
           <FolioValuesCell item>
             <TypographyTitle>Last edit</TypographyTitle>
-            <TypographyTitle color={'#16253D'}>
-              {moment(+el.updatedAt).format('DD MMM') || '-'}
+            <TypographyTitle
+              color={'#16253D'}
+              style={{ textTransform: 'none' }}
+            >
+              {`${days}d ${hours}h ${minutes}m ${seconds}s`}
             </TypographyTitle>
           </FolioValuesCell>
           <FolioValuesCell item center={true}>
@@ -104,9 +202,10 @@ class SignalListItem extends React.Component<IProps, IState> {
           <SwitchOnOff
             enabled={enabled}
             _id={_id}
-            onChange={() =>
+            onChange={() => {
               toggleEnableSignal(index, _id, enabled, updateSignalMutation)
-            }
+              this.resetTimer()
+            }}
           />
         </Grid>
       </FolioCard>

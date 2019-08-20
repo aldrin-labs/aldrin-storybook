@@ -59,15 +59,19 @@ export const FolioValuesCell = styled(Grid)`
   align-items: center;
 
   @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    width: 31%;
+    width: ${(props) => (props.center ? '40%' : '30%')};
   }
 
   @media (max-width: 1543px) {
     width: ${(props) => (props.center ? '120px' : '85px')};
   }
 
+  @media (max-width: 1450px) {
+    width: ${(props) => (props.center ? '40%' : '30%')};
+  }
+
   @media (min-width: 1921px) {
-    width: ${(props) => (props.center ? '160px' : '125px')};
+    width: ${(props) => (props.center ? '40%' : '30%')};
   }
 
   @media (min-width: 2560px) {
