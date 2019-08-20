@@ -28,6 +28,10 @@ export const TransactionActionsTypography = styled(Typography)`
     left: 0;
 
     color: #7284A0;
+
+    @media only screen and (min-width: 2560px) {
+        font-size: 1rem;
+    }
 `
 
 export const TransactionActionsNumber = styled(Typography)`
@@ -40,6 +44,10 @@ export const TransactionActionsNumber = styled(Typography)`
     text-transform: uppercase;
 
     color: #16253D;
+
+    @media only screen and (min-width: 2560px) {
+        font-size: 1.75rem;
+    }
 `
 
 export const TransactionsActionsActionWrapper = styled(Grid)`

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, Grid, CardContent, Typography } from '@material-ui/core'
-import Stroke from '../../../icons/Stroke.svg'
 
 export const ChartWrapper = styled(({ isEditModeEnabled, ...rest }) => (
   <Grid {...rest} />
@@ -93,9 +92,6 @@ export const GridTransactionBtn = styled(Grid)`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(${Stroke});
-  background-repeat: no-repeat;
-  background-position: center;
 
   & img {
     width: 3.5vw;
