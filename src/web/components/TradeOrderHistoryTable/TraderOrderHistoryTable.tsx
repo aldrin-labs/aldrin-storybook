@@ -52,7 +52,8 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             letterSpacing: 0.5,
             borderBottom: '2px solid #e0e5ec',
             whiteSpace: 'nowrap',
-            color: '#7284A0'
+            color: '#7284A0',
+            background: 'white'
           },
           cell: {
             padding: '1.2rem 1.6rem 1.2rem 1.2rem',
