@@ -57,8 +57,10 @@ export default class Accounts extends React.PureComponent<IProps> {
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
             {isRebalance ? <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>
               Choose only one
-            </TypographyTitle> : <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'} style={{
-              cursor: 'pointer'
+            </TypographyTitle> : <TypographyTitle textColor={'#165BE0'} fontSize={'1.2rem'} style={{
+              cursor: 'pointer',
+              fontWeight: 700,
+              letterSpacing: '1.5px'
             }} onClick={onKeysSelectAll}>
               Select all
             </TypographyTitle>}
