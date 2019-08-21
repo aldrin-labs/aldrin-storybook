@@ -119,9 +119,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           },
           cell: {
             color: '#16253D',
-            fontSize: '1.3rem',
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
             fontFamily: 'Trebuchet MS',
-            letterSpacing: '1.5px',
+            letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
           },
           tab: {
@@ -174,8 +175,5 @@ export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
 )
 
 // TODO
-// ask about price
 // maybe percentages for table
-// chart color update
-// signal input fix
 // layout fixes > 2560 and < 1400

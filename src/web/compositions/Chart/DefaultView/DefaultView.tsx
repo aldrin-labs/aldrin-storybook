@@ -8,22 +8,23 @@ import { SingleChart } from '@sb/components/Chart'
 
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
-import ComingSoon from '@sb/components/ComingSoon'
+// import ComingSoon from '@sb/components/ComingSoon'
 
 import {
   Container,
   ChartsContainer,
   DepthChartContainer,
-  RangesContainer,
+  // RangesContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
   ChartGridContainer,
 } from '../Chart.styles'
 
-export const DefaultView = (props) => {
+// fix props type
+export const DefaultView = (props: any) => {
   const {
     currencyPair,
-    theme,
+    // theme,
     id,
     themeMode,
     activeExchange,
@@ -31,7 +32,7 @@ export const DefaultView = (props) => {
     renderTogglerBody,
     renderTables,
     renderDepthAndList,
-    MASTER_BUILD,
+    // MASTER_BUILD,
     showOrderResult,
     showCancelResult,
     selectedKey,

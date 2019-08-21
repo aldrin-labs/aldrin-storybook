@@ -5,16 +5,17 @@ import { setTimeout } from 'timers'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
-import { Fade, Grid, Hidden, Fab } from '@material-ui/core'
+import { Grid, Hidden } from '@material-ui/core'
 
 import { OrderBookTable, Aggregation, TradeHistoryTable } from './Tables/Tables'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
-import MainDepthChart from './DepthChart/MainDepthChart/MainDepthChart'
+import DepthChart from './DepthChart/DepthChart'
 
 import { singleChartSteps } from '@sb/config/joyrideSteps'
-import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
-import { SingleChart } from '@sb/components/Chart'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
+// import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
+// import { SingleChart } from '@sb/components/Chart'
 
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
@@ -40,7 +41,7 @@ import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
-import ComingSoon from '@sb/components/ComingSoon'
+// import ComingSoon from '@sb/components/ComingSoon'
 
 import {
   ChartMediaQueryForLg,
@@ -61,9 +62,9 @@ import {
   PanelCardTitle,
   PanelCardValue,
   PanelCardSubValue,
-  TradingTabelContainer,
-  TradingTerminalContainer,
-  ChartGridContainer,
+  // TradingTabelContainer,
+  // TradingTerminalContainer,
+  // ChartGridContainer,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
@@ -174,10 +175,47 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   renderDepthAndList = () => {
+    const {
+      getCurrencyPairQuery: {
+        chart: {
+          currencyPair: { pair },
+        },
+      },
+    } = this.props
+
+    const {
+      getActiveExchangeQuery: {
+        chart: { activeExchange },
+      },
+    } = this.props
+
+    const symbol = pair || ''
+    const exchange = activeExchange.symbol
+
     return (
       <Grid item container direction="column" xs={5}>
-        <DepthChartContainer>depth chart</DepthChartContainer>
-        <WatchListContainer>watch list</WatchListContainer>
+        <DepthChartContainer>
+          <ChartCardHeader>Depth chart</ChartCardHeader>
+          <QueryRenderer
+            component={DepthChart}
+            withOutSpinner
+            query={ORDERS_MARKET_QUERY}
+            variables={{ symbol, exchange }}
+            subscriptionArgs={{
+              subscription: MARKET_ORDERS,
+              variables: { symbol, exchange },
+              updateQueryFunction: updateOrderBookQuerryFunction,
+            }}
+            {...{
+              onButtonClick: this.changeTable,
+              ...this.props,
+              key: 'depth_chart_query_render',
+            }}
+          />
+        </DepthChartContainer>
+        <WatchListContainer>
+          <ChartCardHeader>Watch list</ChartCardHeader>
+        </WatchListContainer>
       </Grid>
     )
   }
@@ -403,8 +441,7 @@ class Chart extends React.Component<IProps, IState> {
       themeMode,
       changeActiveExchangeMutation,
     } = this.props
-    const { activeChart } = this.state
-
+    // const { activeChart } = this.state
     const toggler = this.renderToggler()
 
     const selectStyles = {
