@@ -3,26 +3,22 @@ import styled from 'styled-components'
 import { withTheme } from '@material-ui/styles'
 import MdAddCircleOutline from '@material-ui/icons/AddOutlined'
 import MdRemoveCircleOutline from '@material-ui/icons/RemoveOutlined'
-import {
-  FlexibleXYPlot,
-  XAxis,
-  YAxis,
-  AreaSeries,
-  Crosshair,
-} from 'react-vis'
+import { FlexibleXYPlot, XAxis, YAxis, AreaSeries, Crosshair } from 'react-vis'
 import {
   Divider,
   Typography,
   IconButton,
   CircularProgress,
 } from '@material-ui/core'
+
+import { transformOrderbookData } from '../utils'
 import { red, green } from '@material-ui/core/colors'
 
 import { Loading } from '@sb/components/Loading/Loading'
 import { abbrNum } from '../DepthChart/depthChartUtil'
 import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import { IDepthChartProps, IDepthChartState } from './DepthChart.types'
-import ComingSoon from '@sb/components/ComingSoon'
+// import ComingSoon from '@sb/components/ComingSoon'
 
 @withTheme()
 class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
@@ -41,23 +37,25 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     props: IDepthChartProps,
     state: IDepthChartState
   ) {
-    // console.log(props)
+    const objData = transformOrderbookData(props.data)
+
     let totalVolumeAsks = 0
-    let transformedAsksData = props.asks.map((el) => {
+    let transformedAsksData = objData.asks.map((el) => {
       totalVolumeAsks = totalVolumeAsks + +el.size
 
       return {
-        x: +el.price,
-        y: totalVolumeAsks,
+        y: +el.price,
+        x: totalVolumeAsks,
       }
     })
+
     let totalVolumeBids = 0
-    let transformedBidsData = props.bids.map((el) => {
+    let transformedBidsData = objData.bids.reverse().map((el) => {
       totalVolumeBids = totalVolumeBids + +el.size
 
       return {
-        x: +el.price,
-        y: totalVolumeBids,
+        y: +el.price,
+        x: totalVolumeBids,
       }
     })
 
@@ -163,17 +161,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       transformedAsksData: ordersData,
       transformedBidsData: spreadData,
     } = this.state
-    const {
-      base,
-      quote,
-      animated,
-      //      asks,
-      //      bids,
-      xAxisTickTotal,
-      theme,
-    } = this.props
-
-    console.log('theme', theme);
+    const { base, quote, animated, xAxisTickTotal, theme } = this.props
 
     const { palette } = theme
     const axisStyle = {
@@ -201,14 +189,24 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     }
 
     return (
-      <Container>
-        <ComingSoon />
-        <FlexibleXYPlot
-          margin={{ right: 48 }}
-          onMouseLeave={this.onMouseLeave}
-          yDomain={[0, this.state.MAX_DOMAIN_PLOT]}
-        >
-          <ScaleWrapper>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          alignItems: 'flex-end',
+        }}
+      >
+        {/* <ComingSoon /> */}
+        <Container>
+          <FlexibleXYPlot
+            margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
+            onMouseLeave={this.onMouseLeave}
+            style={{ transform: 'scale(1, -1)' }}
+            xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
+            // style={{ transform: 'scale(1, -1)' }}
+          >
+            {/* <ScaleWrapper>
             <MidPriceContainer
               background={hexToRgbAWithOpacity(palette.primary.light, 0.1)}
             >
@@ -227,8 +225,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 <MdAddCircleOutline />
               </IconButton>
             </MidPriceContainer>
-          </ScaleWrapper>
-          <XAxis
+          </ScaleWrapper> */}
+            {/* <XAxis
             tickTotal={xAxisTickTotal || 10}
             tickFormat={(value: number) => abbrNum(+value.toFixed(4), 4)}
             style={axisStyle}
@@ -247,8 +245,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             hideLine
             animation="stiff"
             style={axisStyle}
-          />
-          {/* <VerticalRectSeries
+          /> */}
+            {/* <VerticalRectSeries
             animation="gentle"
             key="charst"
             data={[
@@ -262,108 +260,187 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             ]}
             color="rgba(91, 96, 102, 0.7)"
           /> */}
-          <AreaSeries
-            curve={'curveStep'}
-            onNearestX={this.onNearestOrderX}
-            style={{
-              fill: hexToRgbAWithOpacity(red['A100'], 0.25),
-              stroke: red[400],
-              strokeWidth: '3px',
-            }}
-            animation={animated}
-            key="chart"
-            data={ordersData}
-          />
-          <AreaSeries
+            <AreaSeries
+              curve={'curveStep'}
+              onNearestX={this.onNearestOrderX}
+              style={{
+                fill: hexToRgbAWithOpacity('#b93b2b', 0.5),
+                stroke: '#B93B2B',
+                strokeWidth: '3px',
+                transform: 'translate(0)',
+              }}
+              animation={animated}
+              key="chart"
+              data={ordersData}
+            />
+            {/* <AreaSeries
             curve={'curveStep'}
             onNearestX={this.onNearestSpreadX}
             style={{
-              fill: hexToRgbAWithOpacity(green['A200'], 0.25),
-              stroke: green[500],
+              fill: hexToRgbAWithOpacity('#2f7619', 0.5),
+              stroke: '#2F7619',
               strokeWidth: '3px',
+              // transform: 'translate(0)',
+              width: '50%',
             }}
             animation={animated}
             key="chardt"
             data={spreadData}
+          /> */}
+            <Crosshair values={crosshairValuesForSpread}>
+              <CrosshairContent
+                background={palette.primary.main}
+                textColor={palette.text.primary}
+              >
+                {crosshairValuesForSpread.length >= 1 ? (
+                  <>
+                    <Typography variant="h6" color="secondary">
+                      {`${crosshairValuesForSpread[0].x.toFixed(8)} `}
+                      {base || 'Fiat'}
+                    </Typography>
+                    <Br light={true} />
+                    <CrosshairBottomWrapper>
+                      <Typography variant="body1">
+                        {crosshairValuesForSpread[0].y.toFixed(2)}{' '}
+                        {base || 'Fiat'}
+                      </Typography>
+                      <RotatedBr />
+                      <Typography variant="body1">
+                        {/* For a total of{' '} */}
+                        {(
+                          crosshairValuesForSpread[0].y *
+                          crosshairValuesForSpread[0].x
+                        ).toFixed(8)}{' '}
+                        {quote || 'CC'}
+                      </Typography>
+                    </CrosshairBottomWrapper>
+                  </>
+                ) : (
+                  <CircularProgress color="primary" />
+                )}
+              </CrosshairContent>
+            </Crosshair>
+            <Crosshair values={crosshairValuesForOrder}>
+              <CrosshairContent
+                background={palette.primary.main}
+                textColor={palette.text.primary}
+              >
+                {crosshairValuesForOrder.length >= 1 ? (
+                  <>
+                    <Typography variant="h6" color="secondary">
+                      {`${crosshairValuesForOrder[0].x.toFixed(8)} `}{' '}
+                      {base || 'Fiat'}
+                    </Typography>
+
+                    <Br light={true} />
+                    <CrosshairBottomWrapper>
+                      <Typography variant="body1">
+                        {/* Can be sold  */}
+                        {crosshairValuesForOrder[0].y.toFixed(2)}{' '}
+                        {base || 'Fiat'}
+                      </Typography>
+                      <RotatedBr />
+                      <Typography variant="body1">
+                        {/* {' '}
+                      For a total of{' '} */}
+                        {(
+                          crosshairValuesForOrder[0].y *
+                          crosshairValuesForOrder[0].x
+                        ).toFixed(8)}{' '}
+                        {quote || 'CC'}
+                      </Typography>
+                    </CrosshairBottomWrapper>
+                  </>
+                ) : (
+                  <CircularProgress color="primary" />
+                )}
+              </CrosshairContent>
+            </Crosshair>
+          </FlexibleXYPlot>
+        </Container>
+        <Container>
+          <FlexibleXYPlot
+            margin={{ top: 40, left: 0, right: 0, bottom: 0 }}
+            onMouseLeave={this.onMouseLeave}
+            // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
+          >
+            {/* <ScaleWrapper>
+            <MidPriceContainer
+              background={hexToRgbAWithOpacity(palette.primary.light, 0.1)}
+            >
+              <IconButton onClick={() => this.scale('increase', 1.5)}>
+                <MdRemoveCircleOutline />
+              </IconButton>
+
+              <MidPriceColumnWrapper>
+                <Typography variant="subtitle1">
+                  {this.props.midMarketPrice || 'soon'}
+                </Typography>
+                <Typography variant="caption">Mid Market Price</Typography>
+              </MidPriceColumnWrapper>
+
+              <IconButton onClick={() => this.scale('decrease', 1.5)}>
+                <MdAddCircleOutline />
+              </IconButton>
+            </MidPriceContainer>
+          </ScaleWrapper> */}
+            {/* <XAxis
+            tickTotal={xAxisTickTotal || 10}
+            tickFormat={(value: number) => abbrNum(+value.toFixed(4), 4)}
+            style={axisStyle}
           />
-
-          <Crosshair values={crosshairValuesForSpread}>
-            <CrosshairContent
-              background={palette.primary.main}
-              textColor={palette.text.primary}
-            >
-              {crosshairValuesForSpread.length >= 1 ? (
-                <>
-                  <Typography variant="h6" color="secondary">
-                    {`${crosshairValuesForSpread[0].x.toFixed(8)} `}
-                    {base || 'Fiat'}
-                  </Typography>
-                  <Br light={true} />
-                  <CrosshairBottomWrapper>
-                    <Typography variant="body1">
-                      Can be bought {crosshairValuesForSpread[0].y.toFixed(2)}{' '}
-                      {base || 'Fiat'}
-                    </Typography>
-                    <RotatedBr />
-                    <Typography variant="body1">
-                      For a total of{' '}
-                      {(
-                        crosshairValuesForSpread[0].y *
-                        crosshairValuesForSpread[0].x
-                      ).toFixed(8)}{' '}
-                      {quote || 'CC'}
-                    </Typography>
-                  </CrosshairBottomWrapper>
-                </>
-              ) : (
-                <CircularProgress color="primary" />
-              )}
-            </CrosshairContent>
-          </Crosshair>
-          <Crosshair values={crosshairValuesForOrder}>
-            <CrosshairContent
-              background={palette.primary.main}
-              textColor={palette.text.primary}
-            >
-              {crosshairValuesForOrder.length >= 1 ? (
-                <>
-                  <Typography variant="h6" color="secondary">
-                    {`${crosshairValuesForOrder[0].x.toFixed(8)} `}{' '}
-                    {base || 'Fiat'}
-                  </Typography>
-
-                  <Br light={true} />
-                  <CrosshairBottomWrapper>
-                    <Typography variant="body1">
-                      Can be sold {crosshairValuesForOrder[0].y.toFixed(2)}{' '}
-                      {base || 'Fiat'}
-                    </Typography>
-                    <RotatedBr />
-                    <Typography variant="body1">
-                      {' '}
-                      For a total of{' '}
-                      {(
-                        crosshairValuesForOrder[0].y *
-                        crosshairValuesForOrder[0].x
-                      ).toFixed(8)}{' '}
-                      {quote || 'CC'}
-                    </Typography>
-                  </CrosshairBottomWrapper>
-                </>
-              ) : (
-                <CircularProgress color="primary" />
-              )}
-            </CrosshairContent>
-          </Crosshair>
-        </FlexibleXYPlot>
-      </Container>
+          <YAxis
+            tickFormat={(value: number) => abbrNum(+value.toFixed(2), 2)}
+            key="afd"
+            hideLine
+            animation="stiff"
+            orientation="right"
+            style={axisStyle}
+          />
+          <YAxis
+            tickFormat={(value: number) => abbrNum(+value.toFixed(2), 2)}
+            key="dsafd"
+            hideLine
+            animation="stiff"
+            style={axisStyle}
+          /> */}
+            {/* <VerticalRectSeries
+            animation="gentle"
+            key="charst"
+            data={[
+              {
+                x0:
+                  ordersData.length > 1 &&
+                  ordersData[ordersData.length - 1].x - 0.0001,
+                x: ordersData.length > 1 && ordersData[ordersData.length - 1].x,
+                y: this.state.MAX_DOMAIN_PLOT / 2,
+              },
+            ]}
+            color="rgba(91, 96, 102, 0.7)"
+          /> */}
+            <AreaSeries
+              curve={'curveStep'}
+              onNearestX={this.onNearestSpreadX}
+              style={{
+                fill: hexToRgbAWithOpacity('#2f7619', 0.5),
+                stroke: '#2F7619',
+                strokeWidth: '3px',
+                transform: 'translate(0)',
+              }}
+              animation={animated}
+              key="chardt"
+              data={spreadData}
+            />
+          </FlexibleXYPlot>
+        </Container>
+      </div>
     )
   }
 }
 
 const Container = styled.div`
-  height: 100%;
-  width: 100%;
+  height: 50%;
+  width: 60%;
   position: relative;
 `
 
