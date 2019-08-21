@@ -13,7 +13,7 @@ import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DepthChart from './DepthChart/DepthChart'
 
 import { singleChartSteps } from '@sb/config/joyrideSteps'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
+import ChartCardHeader, { CardTitle } from '@sb/components/ChartCardHeader'
 // import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 // import { SingleChart } from '@sb/components/Chart'
 
@@ -62,6 +62,11 @@ import {
   PanelCardTitle,
   PanelCardValue,
   PanelCardSubValue,
+  WatchItemWrapper,
+  ScrollContainer,
+  SubvaluesContainer,
+  WatchSubvalue,
+  WatchLabel,
   // TradingTabelContainer,
   // TradingTerminalContainer,
   // ChartGridContainer,
@@ -81,6 +86,29 @@ import { GET_CURRENCY_PAIR } from '@core/graphql/queries/chart/getCurrencyPair'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
+
+const WatchItem = ({
+  label,
+  subvalues,
+}: {
+  label: string
+  subvalues: {
+    price: number | string
+    percentages: string
+    total: number | string
+  }
+}) => {
+  return (
+    <WatchItemWrapper>
+      <WatchLabel>{label}</WatchLabel>
+      <SubvaluesContainer>
+        <WatchSubvalue color={'#7284A0'}>{subvalues.price}</WatchSubvalue>
+        <WatchSubvalue color={'#2F7619'}>{subvalues.percentages}</WatchSubvalue>
+        <WatchSubvalue color={'#7284A0'}>{subvalues.total}</WatchSubvalue>
+      </SubvaluesContainer>
+    </WatchItemWrapper>
+  )
+}
 
 @withTheme()
 class Chart extends React.Component<IProps, IState> {
@@ -193,7 +221,7 @@ class Chart extends React.Component<IProps, IState> {
     const exchange = activeExchange.symbol
 
     return (
-      <Grid item container direction="column" xs={5}>
+      <Grid item container direction="column" xs={5} style={{ height: '100%' }}>
         <DepthChartContainer>
           <ChartCardHeader>Depth chart</ChartCardHeader>
           <QueryRenderer
@@ -214,7 +242,26 @@ class Chart extends React.Component<IProps, IState> {
           />
         </DepthChartContainer>
         <WatchListContainer>
-          <ChartCardHeader>Watch list</ChartCardHeader>
+          <ChartCardHeader>Watchlist</ChartCardHeader>
+          {/* query renderer for watchlist */}
+          <ScrollContainer style={{ overflowY: 'auto' }}>
+            {new Array(10)
+              .fill(
+                {
+                  label: 'Bitfinex BTCUSDT',
+                  subvalues: {
+                    price: 10084.0,
+                    percentages: '+4.23%',
+                    total: '10.94K',
+                  },
+                },
+                0,
+                10
+              )
+              .map(({ label, subvalues }) => (
+                <WatchItem label={label} subvalues={subvalues} />
+              ))}
+          </ScrollContainer>
         </WatchListContainer>
       </Grid>
     )
