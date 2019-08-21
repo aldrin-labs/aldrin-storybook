@@ -1,11 +1,16 @@
 import React from 'react'
-import { Grid } from '@material-ui/core'
+
+import { withFormik } from 'formik'
+import Yup from 'yup'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+
+import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
-import Typography from '@material-ui/core/Typography'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -18,9 +23,43 @@ import {
   Legend
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
-import AddIcon from '@material-ui/icons/Add'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
+
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './CreatePortfolio.types'
+
+const formikDialog = withFormik({
+  validationSchema: Yup.object().shape({
+    portfolioName: Yup.string().required(),
+  }),
+  mapPropsToValues: () => ({
+    portfolioName: '',
+  }),
+  handleSubmit: async ({ portfolioName }, props) => {
+    const {
+      createPortfolio
+    } = props.props
+    const variables = {
+      inputPortfolio: {
+        name: portfolioName
+      }
+    }
+
+    try {
+      props.setSubmitting(true)
+      await createPortfolio({
+        variables
+      })
+      props.resetForm({})
+    } catch (error) {
+      console.error(error)
+      props.setFieldError('portfolioName', 'Request error!')
+      props.setSubmitting(false)
+    }
+  }
+})
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -64,6 +103,8 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
     isSelected: true,
+
+    portfolioName: ''
   }
 
   handleRadioBtn = () => {
@@ -87,6 +128,11 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black },
       },
+      handleChange,
+      values,
+      handleSubmit,
+      errors,
+      validateForm
     } = this.props
 
     return (
@@ -136,7 +182,14 @@ class CreatePortfolio extends React.Component<IProps, IState> {
             <Grid style={{ width: '440px' }}>
               <GridCustom>
                 <Legend>Portfolio name</Legend>
-                <InputBaseCustom placeholder="" />
+                <InputBaseCustom
+                  placeholder=""
+                  name="portfolioName"
+                  onChange={handleChange}
+                  value={values.portfolioName}
+                  error={errors && !!errors.portfolioName}
+                />
+                <Typography color="error">{errors.portfolioName}</Typography>
               </GridCustom>
             </Grid>
 
@@ -145,6 +198,14 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
+                onClick={e => {
+                  e.preventDefault()
+            
+                  validateForm().then(async () => {
+                    await handleSubmit()
+                    this.handleClose()
+                  })
+                }}
               >
                 CREATE
               </BtnCustom>
@@ -156,4 +217,14 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   }
 }
 
-export default CreatePortfolio
+export default compose(
+  graphql(createPortfolioMutation, {
+    name: 'createPortfolio',
+    options: {
+      refetchQueries: [
+        { query: getMyPortfoliosQuery }
+      ],
+    },
+  }),
+  formikDialog
+)(CreatePortfolio)
