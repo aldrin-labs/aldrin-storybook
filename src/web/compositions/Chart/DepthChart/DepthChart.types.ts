@@ -2,6 +2,7 @@ import { Theme } from '@material-ui/core'
 import { IOrder } from '@core/types/ChartTypes'
 
 export interface IDepthChartProps {
+  data: { marketOrders: { asks: string; bids: string } }
   base: string
   quote: string
   animated: boolean

@@ -52,7 +52,6 @@ class SimpleTabs extends React.Component {
       cancelOrder,
     } = this.props
 
-    console.log('wrapper props', this.props)
     return (
       <TablesBlockWrapper>
         <ChartCardHeader>{`${pair[0]}/${pair[1]} Trading`}</ChartCardHeader>
