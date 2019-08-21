@@ -144,7 +144,7 @@ export default class Accounts extends React.PureComponent<IProps> {
                   }}
                 />
                 {isSidebar && <PortfolioSelectorPopup
-                    accountName={keyName.name}
+                    exchangeKey={keyName}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />
                 }

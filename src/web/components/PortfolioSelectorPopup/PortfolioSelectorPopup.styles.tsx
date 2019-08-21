@@ -29,12 +29,11 @@ export const PortfolioSelectorPopupMain = styled.div`
         display: block;
     }
 
-    .renameAccount-toggler, .deleteAccountDialog-toggler {
+    .renameAccountDialog-toggler, .deleteAccountDialog-toggler {
         padding: 1rem 10rem;
         cursor: pointer;
-        display: block;
     }
-    .renameAccount-toggler {
+    .renameAccountDialog-toggler {
         padding-top: 1.5rem;
     }
     .deleteAccountDialog-toggler {
