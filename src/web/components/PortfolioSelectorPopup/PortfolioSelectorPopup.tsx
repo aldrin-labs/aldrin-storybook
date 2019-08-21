@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withTheme } from '@material-ui/styles'
 import { Icon } from '@sb/styles/cssUtils'
 
+import { RenameKeyDialog } from '@sb/components/RenameKeyDialog/RenameKeyDialog'
 import { DeleteKeyDialog } from '@sb/components/DeleteKeyDialog/DeleteKeyDialog'
 import {
     PortfolioSelectorPopupWrapper,
@@ -24,7 +25,7 @@ class PortfolioSelectorPopup extends Component {
     render() {
         const {
             theme,
-            accountName,
+            exchangeKey,
             forceUpdateAccountContainer
         } = this.props
 
@@ -38,12 +39,18 @@ class PortfolioSelectorPopup extends Component {
                         }}/>
                     </span>
                     <PortfolioSelectorPopupMain className="popup" theme={theme} ref={this.popupRef}>
-                        <div className="renameAccount-toggler">Rename</div>
-                        <DeleteKeyDialog
-                            keyName={accountName}
+                        <RenameKeyDialog
+                            exchangeKey={exchangeKey}
                             forceUpdateUserContainer={forceUpdateAccountContainer}
                             customHandler={handleClick =>
-                                <span className="deleteAccountDialog-toggler" onClick={handleClick}>Delete</span>
+                                <div className="renameAccountDialog-toggler" onClick={handleClick}>Rename</div>
+                            }
+                        />
+                        <DeleteKeyDialog
+                            keyName={exchangeKey.name}
+                            forceUpdateUserContainer={forceUpdateAccountContainer}
+                            customHandler={handleClick =>
+                                <div className="deleteAccountDialog-toggler" onClick={handleClick}>Delete</div>
                             }
                         />
                     </PortfolioSelectorPopupMain>
