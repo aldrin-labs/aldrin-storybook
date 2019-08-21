@@ -1,55 +1,68 @@
 import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
 
+import QueryRenderer from '@core/components/QueryRenderer'
+import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 import {
     TransactionActionsTypography
 } from './../TransactionsActionsStatistic/TransactionsActionsStatistic.styles'
 import {
-    WinLossRatioWrapper,
     WinLossRatioNumber,
     TypographyProfit,
-    WinLossRatioChart,
-    WinLossSelect
+    WinLossRatioChart
 } from './WinLossRatio.styles'
 
 class WinLossRatio extends Component {
     render() {
         return (
-            <WinLossRatioWrapper>
-                <Grid container justify="space-between" alignItems="center" style={{
-                    borderBottom: '2px solid #e0e5ec',
-                    marginBottom: '1rem'
-                }}>
-                    <TransactionActionsTypography>Profit & loss ratio</TransactionActionsTypography>
-                    <WinLossSelect options={[
-                        { id: 0, label: '30D' },
-                        { id: 1, label: '7D' }
-                    ]} value={[{ id: 0, label: '30D' }]}/>
-                </Grid>
-
-                <Grid container alignItems="stretch" justify="space-between">
-                    <Grid>
-                        <Grid style={{
-                            borderBottom: '2px solid #e0e5ec',
-                            marginBottom: '2rem',
-                            paddingBottom: '2rem'
-                        }}>
-                            <TransactionActionsTypography>Profit</TransactionActionsTypography>
-                            <WinLossRatioNumber>24</WinLossRatioNumber>
-                            <TypographyProfit profit>+ $12,500.32</TypographyProfit>
-                        </Grid>
-                        <Grid>
-                        <TransactionActionsTypography>Loss</TransactionActionsTypography>
-                            <WinLossRatioNumber>11</WinLossRatioNumber>
-                            <TypographyProfit>- $12,500.32</TypographyProfit>
-                        </Grid>
+            <Grid container alignItems="stretch" justify="space-between">
+                <Grid>
+                    <Grid style={{
+                        borderBottom: '2px solid #e0e5ec',
+                        marginBottom: '2rem',
+                        paddingBottom: '2rem'
+                    }}>
+                        <TransactionActionsTypography>Profit</TransactionActionsTypography>
+                        <WinLossRatioNumber>24</WinLossRatioNumber>
+                        <TypographyProfit profit>+ $12,500.32</TypographyProfit>
                     </Grid>
-
-                    <WinLossRatioChart win={70}/>
+                    <Grid>
+                    <TransactionActionsTypography>Loss</TransactionActionsTypography>
+                        <WinLossRatioNumber>11</WinLossRatioNumber>
+                        <TypographyProfit>- $12,500.32</TypographyProfit>
+                    </Grid>
                 </Grid>
-            </WinLossRatioWrapper>
+
+                <WinLossRatioChart win={70}/>
+            </Grid>
         )
     }
 }
 
-export default WinLossRatio
+const WinLossRatioWithPeriod = ({ ...props }) => {
+    let { startDate, endDate } = props
+  
+    startDate = +startDate
+    endDate = +endDate
+  
+    return (
+      <QueryRenderer
+        component={WinLossRatio}
+        withOutSpinner={true}
+        query={MyTradesQuery}
+        name={`myTrades`}
+        fetchPolicy="network-only"
+        variables={{
+          input: {
+            page: 0,
+            perPage: 600,
+            startDate,
+            endDate
+          }
+        }}
+        {...props}
+      />
+    )
+  }
+
+export default WinLossRatioWithPeriod

@@ -72,7 +72,7 @@ class TablePanelSummary extends React.Component {
               <Slider
                 thumbWidth="25px"
                 thumbHeight="25px"
-                sliderWidth="125px"
+                sliderWidth="18rem"
                 sliderHeight="17px"
                 sliderHeightAfter="20px"
                 borderRadius="30px"

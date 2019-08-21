@@ -46,6 +46,9 @@ export const DatePickerWrapper = styled.div`
 
     & .DateInput {
         width: 9rem;
+        &:last-child {
+            width: 9.75rem;
+        }
     }
     & .DateInput_input {
         font-family: 'DM Sans';

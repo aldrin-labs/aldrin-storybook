@@ -13,7 +13,8 @@ import {
   GridShowHideDataContainer,
   GridAccountContainer,
   GridTableContainer,
-  PortfolioSelectorWrapper
+  PortfolioSelectorWrapper,
+  TransactionsPageMediaQuery
 } from './TransactionPage.styles'
 
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistoryWrapper'
@@ -24,20 +25,12 @@ import AccountsSlick from './AccountsSlick/AccountsSlick'
 import ShowHideData from './ShowHideData/ShowHideData'
 
 import TransactionsActionsStatistic from './TransactionsActionsStatistic/TransactionsActionsStatistic'
-import WinLossRatio from './WinLossRatio/WinLossRatio'
+import WinLossRatio from './WinLossRatio'
 
 import { withTheme } from '@material-ui/styles'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
-
-const TransactionPageMediaQuery = createGlobalStyle`
-  @media only screen and (min-width: 2560px) {
-    html {
-      font-size: 15px;
-    }
-  }
-`
 
 @withTheme()
 class TransactionPage extends Component {
@@ -146,7 +139,7 @@ class TransactionPage extends Component {
 
     return (
       <>
-      <TransactionPageMediaQuery/>
+      <TransactionsPageMediaQuery/>
       <Grid
         container
         justify="space-between"

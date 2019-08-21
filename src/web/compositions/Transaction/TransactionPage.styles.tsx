@@ -1,7 +1,14 @@
-import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
+
+export const TransactionsPageMediaQuery = createGlobalStyle`
+  @media only screen and (min-width: 2360px) {
+    html {
+      font-size: 20px;
+    }
+  }
+`
 
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;

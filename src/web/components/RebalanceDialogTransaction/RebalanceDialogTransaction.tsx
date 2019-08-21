@@ -18,7 +18,7 @@ import AccordionTable from './AccordionTable'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Stroke from '@icons/Stroke.svg'
-import Ellipse from '@icons/Ellipse.png'
+import Ellipse from '@icons/rebalance.svg'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
@@ -175,7 +175,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                           borderRadius={'1rem'}
                           btnWidth="120px"
                           onClick={handleClose}
-                          color={'#9f9f9f'}
+                          color={'#B93B2B'}
                           margin="0 5px"
                           disabled={isDisableBtns}
                         >
