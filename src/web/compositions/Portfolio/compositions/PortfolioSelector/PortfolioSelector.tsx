@@ -139,7 +139,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
-    console.log('update settings')
+
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
@@ -319,7 +319,6 @@ class PortfolioSelector extends React.Component<IProps> {
     const color = theme.palette.secondary.main
     const relations = ['first', 'second']
 
-    console.log('selectrProps', this.props)
     return (
       <Slide
         style={{ width: '41rem' }}
