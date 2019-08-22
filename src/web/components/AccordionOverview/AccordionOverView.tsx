@@ -1,4 +1,5 @@
 import React from 'react'
+import { Query } from 'react-apollo'
 import { withTheme } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -16,9 +17,10 @@ import {
   ExpansionPanelDetailsCustom,
 } from './AccordionOverView.style'
 
-import { compose } from 'recompose'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { GET_PORTFOLIO_KEY_ASSETS } from '@core/graphql/queries/portfolio/main/getPortfolioKeysAssets'
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import QueryRenderer from '@core/components/QueryRenderer'
 
 /*
  * 	params:
@@ -71,25 +73,12 @@ const gridBorder = `
 @withTheme()
 class DetailedExpansionPanel extends React.Component {
   render() {
-    const { classes, theme, getPortfolioKeyAssetsQuery } = this.props
-
-    const totalKeyAssetsData = getPortfolioKeyAssetsQuery.portfolioKeys.keys.reduce(
-      (acc, el) => {
-        acc.portfolioKeyAssetsValue += el.portfolioKeyAssetsValue
-        acc.portfolioKeyAssetsCount += el.portfolioKeyAssetsCount
-        acc.realizedPnl += el.realizedPnl
-        acc.unrealizedPnl += el.unrealizedPnl
-        acc.totalPnl += el.totalPnl
-
-        return acc
-      },
-      {
-        portfolioKeyAssetsValue: 0,
-        portfolioKeyAssetsCount: 0,
-        realizedPnl: 0,
-        unrealizedPnl: 0,
-        totalPnl: 0,
-      }
+    const {
+      theme,
+      portfolioAssetsQuery,
+    } = this.props
+    const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
+      portfolioAssetsQuery.myPortfolios[0].portfolioAssets
     )
 
     return (
@@ -107,7 +96,7 @@ class DetailedExpansionPanel extends React.Component {
                   Value
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                  ${format(totalKeyAssetsData.portfolioKeyAssetsValue)}
+                  ${format(totalKeyAssetsData.value)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -117,7 +106,7 @@ class DetailedExpansionPanel extends React.Component {
                   assets
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                  {totalKeyAssetsData.portfolioKeyAssetsCount}
+                  {totalKeyAssetsData.assets}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -127,7 +116,7 @@ class DetailedExpansionPanel extends React.Component {
                   realized P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={'#2F7619'}>
-                  ${format(totalKeyAssetsData.realizedPnl)}
+                  ${format(totalKeyAssetsData.realized)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -137,7 +126,7 @@ class DetailedExpansionPanel extends React.Component {
                   Unrealized P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={'#B93B2B'}>
-                  ${format(totalKeyAssetsData.unrealizedPnl)}
+                  ${format(totalKeyAssetsData.unrealized)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -147,7 +136,7 @@ class DetailedExpansionPanel extends React.Component {
                   Total P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={'#B93B2B'}>
-                  ${format(totalKeyAssetsData.totalPnl)}
+                  ${format(totalKeyAssetsData.total)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -155,7 +144,7 @@ class DetailedExpansionPanel extends React.Component {
 
           <ExpansionPanelDetailsCustom>
             <Grid container justify="center">
-              {getPortfolioKeyAssetsQuery.portfolioKeys.keys.map((el, i) => {
+              {portfolioAssetsData.map((el, i) => {
                 return (
                   <GridRowWrapper
                     item
@@ -174,7 +163,7 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyValueCell
                             textColor={theme.palette.text.subPrimary}
                           >
-                            ${format(el.portfolioKeyAssetsValue)}
+                            ${format(el.value)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -184,7 +173,7 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyValueCell
                             textColor={theme.palette.text.subPrimary}
                           >
-                            {el.portfolioKeyAssetsCount}
+                            {el.assets}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -194,7 +183,7 @@ class DetailedExpansionPanel extends React.Component {
                             realized P{`&`}L
                           </TypographyTitleCell>
                           <TypographyValueCell textColor={'#2F7619'}>
-                            ${format(el.realizedPnl)}
+                            ${format(el.realized)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -204,7 +193,7 @@ class DetailedExpansionPanel extends React.Component {
                             Unrealized P{`&`}L
                           </TypographyTitleCell>
                           <TypographyValueCell textColor={'#B93B2B'}>
-                            ${format(el.unrealizedPnl)}
+                            ${format(el.unrealized)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -214,7 +203,7 @@ class DetailedExpansionPanel extends React.Component {
                             Total P{`&`}L
                           </TypographyTitleCell>
                           <TypographyValueCell textColor={'#B93B2B'}>
-                            ${format(el.totalPnl)}
+                            ${format(el.total)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -230,9 +219,25 @@ class DetailedExpansionPanel extends React.Component {
   }
 }
 
-export default compose(
-  queryRendererHoc({
-    query: GET_PORTFOLIO_KEY_ASSETS,
-    name: 'getPortfolioKeyAssetsQuery',
-  })
-)(DetailedExpansionPanel)
+const APIWrapper = (props: any) => (
+  <Query query={GET_BASE_COIN}>
+    {({ data }) => {
+      const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
+      return (
+        <QueryRenderer
+          {...props}
+          component={DetailedExpansionPanel}
+          name={`portfolioAssetsQuery`}
+          query={getPortfolioMainQuery}
+          variables={{ baseCoin }}
+          baseCoin={baseCoin}
+          isUSDCurrently={baseCoin === 'USDT'}
+          withOutSpinner={true}
+          withTableLoader={true}
+        />
+      )
+    }}
+  </Query>
+)
+
+export default APIWrapper
