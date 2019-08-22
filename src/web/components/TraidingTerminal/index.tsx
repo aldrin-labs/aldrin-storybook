@@ -50,12 +50,12 @@ import {
   PriceContainer,
 } from './styles'
 
-const TradeInputContainer = ({ title, value, coin }) => {
+const TradeInputContainer = ({ title, value, onChange, coin }) => {
   return (
     <>
       <InputTitle>{title}</InputTitle>
       <InputWrapper>
-        <TradeInput value={value} type="number" />
+        <TradeInput value={value} onChange={onChange} type="number" />
         <Coin>{coin}</Coin>
       </InputWrapper>
     </>
@@ -116,6 +116,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
   onAmountChange = (e: SyntheticEvent<Element>) => {
     const { priceType, values, setFieldTouched, errors, decimals } = this.props
+
     if (
       (errors.amount === traidingErrorMessages[1] ||
         errors.total === traidingErrorMessages[1]) &&
@@ -207,9 +208,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     const pairsErrors = toPairs(errors)
-
-    const { background, divider } = palette
-
     const isBuyType = operationType === 'buy'
 
     const firstValuePrice = (funds[0] * (percentage / 100)).toFixed(4)
@@ -221,7 +219,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       (percentage / 100)
     ).toFixed(4)
 
-    // todo: get first value from second ( sell btc - get usdt )
+    // get first value from second ( sell btc - get usdt )
 
     const firstValueInSecond = (
       funds[0] *
@@ -266,7 +264,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <TradeBlock position="left" xs={6}>
                   <TradeInputContainer
                     title={'Exchange'}
-                    value={isBuyType ? secondValuePrice : firstValuePrice}
+                    //value={isBuyType ? secondValuePrice : firstValuePrice}
+                    value={values.amount}
+                    onChange={this.onAmountChange}
                     coin={isBuyType ? pair[1] : pair[0]}
                   />
                 </TradeBlock>
@@ -283,62 +283,124 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               <PercentageGrid item container xs={12}>
                 <PercentageItem
                   active={percentage === '25'}
-                  onClick={() => changePercentage('25')}
+                  onClick={() => {
+                    changePercentage('25')
+                    this.onPercentageClick(0.25)
+                  }}
                 >
                   25%
                 </PercentageItem>
                 <PercentageItem
                   active={percentage === '50'}
-                  onClick={() => changePercentage('50')}
+                  onClick={() => {
+                    changePercentage('50')
+                    this.onPercentageClick(0.5)
+                  }}
                 >
                   50%
                 </PercentageItem>
                 <PercentageItem
                   active={percentage === '75'}
-                  onClick={() => changePercentage('75')}
+                  onClick={() => {
+                    changePercentage('75')
+                    this.onPercentageClick(0.75)
+                  }}
                 >
                   75%
                 </PercentageItem>
                 <PercentageItem
                   active={percentage === '100'}
-                  onClick={() => changePercentage('100')}
+                  onClick={() => {
+                    changePercentage('100')
+                    this.onPercentageClick(1)
+                  }}
                 >
                   100%
                 </PercentageItem>
               </PercentageGrid>
 
               {priceType === 'stop-limit' ? (
-                <PriceContainer xs={12}>
-                  <TradeInputContainer
-                    title={'Stop price'}
-                    value={firstValuePrice}
-                    coin={pair[1]}
-                  />
-                </PriceContainer>
+                <>
+                  <PriceContainer xs={12}>
+                    <TradeInputContainer
+                      title={'Stop price'}
+                      coin={pair[1]}
+                      value={values.stop}
+                      onChange={this.onStopChange}
+                    />
+                  </PriceContainer>
+                  <PriceContainer xs={12}>
+                    <TradeInputContainer
+                      title={'Limit price'}
+                      value={values.limit}
+                      onChange={this.onLimitChange}
+                      coin={pair[1]}
+                    />
+                  </PriceContainer>
+                </>
               ) : null}
 
-              {priceType !== 'market' ? (
+              {priceType === 'limit' ? (
                 <PriceContainer xs={12}>
                   <TradeInputContainer
-                    title={priceType === 'limit' ? 'Price' : 'Limit price'}
-                    value={firstValuePrice}
+                    title={'Price'}
+                    value={values.price}
+                    onChange={this.onPriceChange}
                     coin={pair[1]}
                   />
                 </PriceContainer>
               ) : null}
             </Grid>
+
             <PaddingGrid xs={12} item container direction="column">
               <TradeInputContainer
                 title={`Total ${pair[1]}`}
-                value={firstValuePrice}
+                value={values.total}
+                onChange={this.onTotalChange}
                 coin={pair[1]}
               />
             </PaddingGrid>
 
             <Grid xs={12}>
-              <SendButton type={operationType}>
-                send {operationType} order
-              </SendButton>
+              <FormError hidden={!pairsErrors.length}>
+                {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
+              </FormError>
+            </Grid>
+
+            <Grid xs={12}>
+              {/* <SendButton type={operationType}>
+                
+
+              </SendButton> */}
+              <PlaseOrderDialog
+                typeIsBuy={isBuyType}
+                handleSubmit={handleSubmit}
+                errors={errors}
+                touched={touched}
+                amount={values.amount}
+                validateForm={validateForm}
+                battonText={`send ${operationType} order`}
+                text={
+                  priceType === 'stop-limit'
+                    ? `If the last price drops to or below ${values.stop} ${
+                        pair[1]
+                      },
+                  an order to ${isBuyType ? 'Buy' : 'Sell'} ${values.amount} ${
+                        pair[0]
+                      } at a price of ${values.limit} ${
+                        pair[1]
+                      } will be placed.`
+                    : priceType === 'limit'
+                    ? `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
+                        values.amount
+                      } ${pair[0]} at a price of ${values.price} ${
+                        pair[1]
+                      } will be placed.`
+                    : `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
+                        values.amount
+                      } ${pair[0]} at a market price will be placed.`
+                }
+              />
             </Grid>
 
             {/* <Grid container spacing={0}>

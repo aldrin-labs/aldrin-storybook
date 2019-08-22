@@ -11,6 +11,7 @@ import {
   StyledTitle,
   TradeHistoryTableCollapsible,
   StyledCell,
+  StyledRow,
 } from './TradeHistoryTable.styles'
 
 import { StyledHeadCell } from '../../OrderBookTable/Tables/Asks/OrderBookTable.styles'
@@ -18,7 +19,7 @@ import { StyledHeadCell } from '../../OrderBookTable/Tables/Asks/OrderBookTable.
 const OptimizedRow = memo(
   ({ ticker, numbersAfterDecimalForPrice }) => {
     return (
-      <Row background={'#fff'}>
+      <StyledRow background={'#fff'}>
         <StyledCell style={{ minWidth: '30%' }}>
           <StyledTypography
             textColor={ticker.fall ? '#b93b2b' : '#2F7619'}
@@ -51,7 +52,7 @@ const OptimizedRow = memo(
             {ticker.time}
           </TypographyFullWidth>
         </StyledCell>
-      </Row>
+      </StyledRow>
     )
   },
   (prevProps, nextProps) =>
@@ -59,46 +60,42 @@ const OptimizedRow = memo(
     nextProps.background === prevProps.background
 )
 
-const MemoizedHead = memo(
-  ({ primary, type, palette }) => (
-    <>
-      <ChartCardHeader>Trade history</ChartCardHeader>
-      <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-        <Row
-          background={'#fff'}
-          style={{
-            height: 'auto',
-            padding: '0',
-          }}
-        >
-          <StyledHeadCell style={{ minWidth: '30%' }}>
-            <StyledTitle variant="body2" align="left">
-              Price
-            </StyledTitle>
-          </StyledHeadCell>
+const MemoizedHead = memo(() => (
+  <>
+    <ChartCardHeader>Trade history</ChartCardHeader>
+    <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
+      <Row
+        background={'#fff'}
+        style={{
+          height: 'auto',
+          padding: '0',
+        }}
+      >
+        <StyledHeadCell style={{ minWidth: '30%' }}>
+          <StyledTitle variant="body2" align="left">
+            Price
+          </StyledTitle>
+        </StyledHeadCell>
 
-          <StyledHeadCell style={{ minWidth: '30%' }}>
-            <StyledTitle variant="body2" align="left">
-              Size
-            </StyledTitle>
-          </StyledHeadCell>
+        <StyledHeadCell style={{ minWidth: '30%' }}>
+          <StyledTitle variant="body2" align="left">
+            Size
+          </StyledTitle>
+        </StyledHeadCell>
 
-          <StyledHeadCell style={{ minWidth: '40%' }}>
-            <StyledTitle
-              variant="body2"
-              align="right"
-              style={{ paddingRight: 0 }}
-            >
-              Time
-            </StyledTitle>
-          </StyledHeadCell>
-        </Row>
-      </Head>
-    </>
-  ),
-  (prevProps, nextProps) =>
-    nextProps.type === prevProps.type && nextProps.quote === prevProps.quote
-)
+        <StyledHeadCell style={{ minWidth: '40%' }}>
+          <StyledTitle
+            variant="body2"
+            align="right"
+            style={{ paddingRight: 0 }}
+          >
+            Time
+          </StyledTitle>
+        </StyledHeadCell>
+      </Row>
+    </Head>
+  </>
+))
 
 @withTheme()
 class TradeHistoryTable extends PureComponent<IProps, IState> {

@@ -1,9 +1,9 @@
 import React, { memo, PureComponent } from 'react'
 
-import { calculatePercentagesOfOrderSize } from '@core/utils/chartPageUtils'
-import { Row, Cell, Body } from '@sb/components/OldTable/Table'
+// import { calculatePercentagesOfOrderSize } from '@core/utils/chartPageUtils'
+import { Body } from '@sb/components/OldTable/Table'
 import { SpreadreadTableWrapper } from './SpreadTable.styles'
-import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
+// import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 // import {
 //   EmptyCell,
 //   StyledTypography,
@@ -11,19 +11,19 @@ import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 // } from '../../../SharedStyles'
 import { IProps } from './SpreadTable.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
+// import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { withTheme } from '@material-ui/styles'
-
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 import {
-  StyledTypography,
-  StyledArrow,
-  StyledTitle,
-  TradeHistoryTableCollapsible,
-  TriggerTitle,
-  CardTitle,
+  // StyledTypography,
+  // StyledArrow,
+  // StyledTitle,
+  // TradeHistoryTableCollapsible,
+  // TriggerTitle,
+  // CardTitle,
   StyledCell,
+  StyledRow,
 } from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
 
 const RowFunc = ({
@@ -35,7 +35,7 @@ const RowFunc = ({
   green,
   digitsAfterDecimalForBidsPrice,
 }) => (
-  <Row background={'transparent'}>
+  <StyledRow background={'transparent'}>
     <StyledCell style={{ minWidth: '30%' }}>
       <TypographyFullWidth textColor={'#2F7619'} variant="body1" align="left">
         {
@@ -66,7 +66,7 @@ const RowFunc = ({
         }
       </TypographyFullWidth>
     </StyledCell>
-  </Row>
+  </StyledRow>
 )
 
 const MemoizedRow = memo(

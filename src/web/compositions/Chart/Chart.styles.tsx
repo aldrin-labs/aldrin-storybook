@@ -283,6 +283,10 @@ export const WatchLabel = styled(CardTitle)`
   text-align: left;
   line-height: 1.5rem;
   padding: 0.4rem 1rem;
+
+  @media (min-width: 2560px) {
+    line-height: 1.5rem;
+  }
 `
 
 export const WatchSubvalue = styled.span`
