@@ -199,7 +199,7 @@ export const combineOpenOrdersTable = (
           render: (
             <div>
               <span style={{ display: 'block' }}>
-                {String(moment(timestamp).format('MM-DD-YYYY')).replace(
+                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
                   /-/g,
                   '.'
                 )}
@@ -359,7 +359,7 @@ export const combineOrderHistoryTable = (
         render: (
           <div>
             <span style={{ display: 'block' }}>
-              {String(moment(timestamp).format('MM-DD-YYYY')).replace(
+              {String(moment(timestamp).format('DD-MM-YYYY')).replace(
                 /-/g,
                 '.'
               )}
@@ -458,7 +458,7 @@ export const combineTradeHistoryTable = (
         render: (
           <div>
             <span style={{ display: 'block' }}>
-              {String(moment(timestamp).format('MM-DD-YYYY')).replace(
+              {String(moment(timestamp).format('DD-MM-YYYY')).replace(
                 /-/g,
                 '.'
               )}

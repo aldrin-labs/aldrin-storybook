@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import MdArrowUpward from '@material-ui/icons/ArrowUpward'
 
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import { Table, Title, Cell } from '@sb/components/OldTable/Table'
+import { Table, Cell, Row } from '@sb/components/OldTable/Table'
 
 export const StyledTypography = styled(
   ({ textColor, ...rest }: { textColor: string; rest: any }) => (
@@ -16,15 +16,16 @@ export const StyledTypography = styled(
   }
 `
 
+export const StyledRow = styled(Row)`
+  height: 1.5rem;
+`
+
 export const StyledTitle = styled(TypographyFullWidth)`
   line-height: 18px;
   font-size: 0.9rem;
   color: #16253d;
   font-weight: bold;
   padding: 6px 0 0 1rem;
-  @media (min-width: 2560px) {
-    line-height: 35px;
-  }
 `
 
 export const StyledCell = styled(Cell)`

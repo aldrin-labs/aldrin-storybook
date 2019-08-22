@@ -51,7 +51,7 @@ class SignalListItem extends React.Component<IProps, IState> {
     hours: 0,
     minutes: 0,
     seconds: 0,
-    interval: null,
+    interval: undefined,
   }
 
   resetTimer = () => {
@@ -65,7 +65,7 @@ class SignalListItem extends React.Component<IProps, IState> {
 
   countUp = () => {
     const { seconds, minutes, hours, days } = this.state
-    const pad = (num) => (+num < 10 ? '0' + num : num)
+    const pad = (num: number | string) => (+num < 10 ? '0' + num : num)
 
     let updatedSeconds = +seconds + 1
     if (updatedSeconds < 60) {
