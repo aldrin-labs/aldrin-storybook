@@ -1,16 +1,18 @@
 import React, { PureComponent, memo } from 'react'
-import { Row, Body } from '@sb/components/OldTable/Table'
+import { Body } from '@sb/components/OldTable/Table'
 import { ScrollToBottom } from '@core/utils/chartPageUtils'
 import { IProps } from './OrderBookBody.types'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
-
-import { StyledCell } from '../../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+import {
+  StyledCell,
+  StyledRow,
+} from '../../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
 
 let objDiv: HTMLElement | null
 
 const OptimizedRow = memo(
   ({ order }) => (
-    <Row background={'transparent'}>
+    <StyledRow background={'transparent'}>
       <StyledCell style={{ minWidth: '30%' }}>
         <TypographyFullWidth textColor={'#b93b2b'} variant="body1" align="left">
           {
@@ -41,7 +43,7 @@ const OptimizedRow = memo(
           }
         </TypographyFullWidth>
       </StyledCell>
-    </Row>
+    </StyledRow>
   ),
   (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
 )

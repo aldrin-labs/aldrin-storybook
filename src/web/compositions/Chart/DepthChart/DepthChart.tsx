@@ -203,7 +203,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
             style={{ transform: 'scale(1, -1)' }}
-            xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
+            // xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
             // style={{ transform: 'scale(1, -1)' }}
           >
             {/* <ScaleWrapper>
@@ -360,7 +360,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
         </Container>
         <Container>
           <FlexibleXYPlot
-            margin={{ top: 40, left: 0, right: 0, bottom: 0 }}
+            margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
             // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
           >

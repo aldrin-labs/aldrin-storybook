@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -10,13 +10,20 @@ import { ContainerGrid } from './SignalPage.styles'
 
 import { IState, IProps } from './SignalEventList.types'
 
-const putDataInTable = (tableData) => {
+const putDataInTable = (tableData, timers, updateTimers) => {
   if (!tableData || tableData.length === 0) {
     return { head: [], body: [], footer: null }
   }
 
+  const [body, updateTimersInterval] = transformData(
+    tableData,
+    timers,
+    updateTimers
+  )
+
   return {
     head: [
+      { id: 'updatedAt', label: 'Updated At' },
       {
         id: 'timestamp',
         label: 'Timestamp',
@@ -32,68 +39,150 @@ const putDataInTable = (tableData) => {
       { id: 'profit', label: 'Profit' },
       { id: 'status', label: 'Status' },
     ],
-    body: transformData(tableData),
+    body,
+    updateTimersInterval,
   }
 }
 
-const transformData = (data: any[]) => {
-  const transformedData = data.map((row) => ({
-    id: row._id,
-    timestamp: {
-      contentToSort: row.t,
-      contentToCSV: row.t,
-      render:
-        (row.t && moment(row.t / 1000000).format('YYYY DD MMM h:mm:ss a')) ||
-        '-',
-    },
-    pair: row.pair || '-',
-    exchangeA: row.exchangeA || '-',
-    exchangeB: row.exchangeB || '-',
-    amount: {
-      contentToSort: row.amount,
-      contentToCSV: roundAndFormatNumber(row.amount, 2, true),
-      render: row.amount
-        ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
-        : '-',
-    },
-    spreadA: {
-      contentToSort: row.spreadA,
-      contentToCSV: roundAndFormatNumber(row.spreadA, 2, false),
-      render: row.spreadA
-        ? `${roundAndFormatNumber(row.spreadA, 2, false)} %`
-        : '-',
-    },
-    spreadB: {
-      contentToSort: row.spreadB,
-      contentToCSV: roundAndFormatNumber(row.spreadB, 2, false),
-      render: row.spreadB
-        ? `${roundAndFormatNumber(row.spreadB, 2, false)} %`
-        : '-',
-    },
-    priceA: {
-      contentToSort: row.priceA,
-      contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
-      render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
-    },
-    priceB: {
-      contentToSort: row.priceB,
-      contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
-      render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
-    },
-    profit: {
-      contentToSort: row.profit,
-      contentToCSV: roundAndFormatNumber(row.profit, 3, true),
-      render: row.profit ? roundAndFormatNumber(row.profit, 3, true) : '-',
-    },
-    status: row.status || '-',
-    orderbook: {
-      orders: row.ordersJson,
-      ordersA: row.ordersJsonA,
-      ordersB: row.ordersJsonB,
-    },
-  }))
+const transformData = (data: any[], timers, updateTimers) => {
+  // update timer
+  const countUp = ({ seconds, minutes, hours, days }) => {
+    const pad = (num: number | string) => (+num < 10 ? '0' + num : num)
 
-  return transformedData
+    let updatedSeconds = +seconds + 1
+    if (updatedSeconds < 60) {
+      return { seconds: pad(updatedSeconds), minutes, hours, days }
+    }
+
+    let updatedMinutes = +minutes + 1
+    if (updatedMinutes < 60) {
+      return { seconds: '00', minutes: pad(updatedMinutes), hours, days }
+    }
+
+    let updatedHours = +hours + 1
+    if (updatedHours < 24) {
+      return { seconds: '00', minutes: '00', hours: pad(updatedHours), days }
+    }
+
+    let updatedDays = +days + 1
+    return {
+      seconds: '00',
+      minutes: '00',
+      hours: '00',
+      days: pad(updatedDays),
+    }
+  }
+
+  // update for all signal events
+  const updateTimersInterval = (timers) => {
+    return timers.map((timer) => {
+      return countUp(timer)
+    })
+  }
+
+  // get start data
+  const initializeState = (
+    updatedAt: number
+  ): { seconds: number; minutes: number; hours: number; days: number } => {
+    let deltaSeconds = (Date.now() - updatedAt) / 1000
+
+    const days = Math.floor(deltaSeconds / (3600 * 24))
+    deltaSeconds -= days * 3600 * 24
+
+    const hours = Math.floor(deltaSeconds / 3600)
+    deltaSeconds -= hours * 3600
+
+    const minutes = Math.floor(deltaSeconds / 60)
+    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
+
+    return { days, hours, minutes, seconds: deltaSeconds }
+  }
+
+  const timersArray = []
+  const transformedData = data.map((row, i) => {
+    // get data to update state after cycle
+    timersArray.push(initializeState(row.updatedAt))
+
+    const { days, hours, minutes, seconds } = timers[i]
+      ? timers[i]
+      : { days: 0, hours: 0, minutes: 0, seconds: 0 }
+
+    return {
+      id: row._id,
+      updatedAt: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+      timestamp: {
+        contentToSort: row.t,
+        contentToCSV: row.t,
+        render: row.t ? (
+          <div>
+            <span style={{ display: 'block' }}>
+              {String(moment(row.t / 1000000).format('DD-MM-YYYY')).replace(
+                /-/g,
+                '.'
+              )}
+            </span>
+            <span style={{ color: '#7284A0' }}>
+              {moment(row.t / 1000000).format('LT')}
+            </span>
+          </div>
+        ) : (
+          '-'
+        ),
+      },
+      pair: row.pair || '-',
+      exchangeA: row.exchangeA || '-',
+      exchangeB: row.exchangeB || '-',
+      amount: {
+        contentToSort: row.amount,
+        contentToCSV: roundAndFormatNumber(row.amount, 2, true),
+        render: row.amount
+          ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
+          : '-',
+      },
+      spreadA: {
+        contentToSort: row.spreadA,
+        contentToCSV: roundAndFormatNumber(row.spreadA, 2, false),
+        render: row.spreadA
+          ? `${roundAndFormatNumber(row.spreadA, 2, false)} %`
+          : '-',
+      },
+      spreadB: {
+        contentToSort: row.spreadB,
+        contentToCSV: roundAndFormatNumber(row.spreadB, 2, false),
+        render: row.spreadB
+          ? `${roundAndFormatNumber(row.spreadB, 2, false)} %`
+          : '-',
+      },
+      priceA: {
+        contentToSort: row.priceA,
+        contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
+        render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
+      },
+      priceB: {
+        contentToSort: row.priceB,
+        contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
+        render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
+      },
+      profit: {
+        contentToSort: row.profit,
+        contentToCSV: roundAndFormatNumber(row.profit, 3, true),
+        render: row.profit ? roundAndFormatNumber(row.profit, 3, true) : '-',
+      },
+      status: row.status || '-',
+      orderbook: {
+        orders: row.ordersJson,
+        ordersA: row.ordersJsonA,
+        ordersB: row.ordersJsonB,
+      },
+    }
+  })
+
+  // update data
+  if (timersArray.length > timers.length) {
+    updateTimers(timersArray)
+  }
+
+  return [transformedData, updateTimersInterval]
 }
 
 const SignalEventList = (props) => {
@@ -110,8 +199,23 @@ const SignalEventList = (props) => {
     autoRefetch,
   } = props
 
-  const { body, head, footer = [] } = putDataInTable(events)
   const smallScreen = window.outerWidth < 1500
+  const [timers, updateTimers] = useState([])
+
+  const { body, head, footer = [], updateTimersInterval } = putDataInTable(
+    events,
+    timers,
+    updateTimers
+  )
+
+  useEffect(() => {
+    // update timers for all signals
+    let id = setInterval(() => {
+      updateTimers(updateTimersInterval(timers))
+    }, 1000)
+
+    return () => clearInterval(id)
+  })
 
   return (
     <ContainerGrid container style={{ position: 'relative', height: '100%' }}>
