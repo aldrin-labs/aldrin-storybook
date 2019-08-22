@@ -115,7 +115,7 @@ class DetailedExpansionPanel extends React.Component {
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   realized P{`&`}L
                 </TypographyTitleCell>
-                <TypographyValueCell textColor={'#2F7619'}>
+                <TypographyValueCell textColor={totalKeyAssetsData.realized < 0 ? '#B93B2B' : '#2F7619'}>
                   ${format(totalKeyAssetsData.realized)}
                 </TypographyValueCell>
               </div>
@@ -125,7 +125,7 @@ class DetailedExpansionPanel extends React.Component {
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   Unrealized P{`&`}L
                 </TypographyTitleCell>
-                <TypographyValueCell textColor={'#B93B2B'}>
+                <TypographyValueCell textColor={totalKeyAssetsData.unrealized < 0 ? '#B93B2B' : '#2F7619'}>
                   ${format(totalKeyAssetsData.unrealized)}
                 </TypographyValueCell>
               </div>
@@ -135,7 +135,7 @@ class DetailedExpansionPanel extends React.Component {
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   Total P{`&`}L
                 </TypographyTitleCell>
-                <TypographyValueCell textColor={'#B93B2B'}>
+                <TypographyValueCell textColor={totalKeyAssetsData.total < 0 ? '#B93B2B' : '#2F7619'}>
                   ${format(totalKeyAssetsData.total)}
                 </TypographyValueCell>
               </div>
@@ -182,7 +182,7 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyTitleCell>
                             realized P{`&`}L
                           </TypographyTitleCell>
-                          <TypographyValueCell textColor={'#2F7619'}>
+                          <TypographyValueCell textColor={el.realized < 0 ? '#B93B2B' : '#2F7619'}>
                             ${format(el.realized)}
                           </TypographyValueCell>
                         </div>
@@ -192,7 +192,7 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyTitleCell>
                             Unrealized P{`&`}L
                           </TypographyTitleCell>
-                          <TypographyValueCell textColor={'#B93B2B'}>
+                          <TypographyValueCell textColor={el.unrealized < 0 ? '#B93B2B' : '#2F7619'}>
                             ${format(el.unrealized)}
                           </TypographyValueCell>
                         </div>
@@ -202,7 +202,7 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyTitleCell>
                             Total P{`&`}L
                           </TypographyTitleCell>
-                          <TypographyValueCell textColor={'#B93B2B'}>
+                          <TypographyValueCell textColor={el.total < 0 ? '#B93B2B' : '#2F7619'}>
                             ${format(el.total)}
                           </TypographyValueCell>
                         </div>
