@@ -84,7 +84,7 @@ const transformData = (data: any[], timers, updateTimers) => {
   const initializeState = (
     updatedAt: number
   ): { seconds: number; minutes: number; hours: number; days: number } => {
-    let deltaSeconds = (Date.now() - updatedAt) / 1000
+    let deltaSeconds = ((Date.now() / 1000) | 0) - updatedAt
 
     const days = Math.floor(deltaSeconds / (3600 * 24))
     deltaSeconds -= days * 3600 * 24

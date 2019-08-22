@@ -72,15 +72,13 @@ class PortfolioSelector extends React.Component<IProps> {
     valueSliderUsd: 0,
     valueSliderUsdContainer: 0,
     valueSliderBtc: 0,
-    valueSliderBtcContainer: 0
+    valueSliderBtcContainer: 0,
   }
 
   componentDidMount() {
-    const { dustFilter: {
-      percentage,
-      usd,
-      btc
-    }} = this.props
+    const {
+      dustFilter: { percentage, usd, btc },
+    } = this.props
 
     const value =
       percentage === 0.1
@@ -101,7 +99,7 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderUsd: usd,
       valueSliderUsdContainer: usd,
       valueSliderBtc: btc,
-      valueSliderBtcContainer: btc
+      valueSliderBtcContainer: btc,
     })
   }
 
@@ -134,14 +132,14 @@ class PortfolioSelector extends React.Component<IProps> {
   handleChangeBtc = (event, value) => {
     this.setState({
       valueSliderBtc: value,
-      valueSliderBtcContainer: value / BTC_PART_DIVIDER
+      valueSliderBtcContainer: value / BTC_PART_DIVIDER,
     })
     this.onDustFilterChange(value, 'btc')
   }
 
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
-    console.log('update settings')
+
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
@@ -157,8 +155,12 @@ class PortfolioSelector extends React.Component<IProps> {
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
-          UTILS.getArrayContainsOnlySelected(newKeys, toggledKeyID),
+        [isRebalance
+          ? 'selectedRebalanceKeys'
+          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
+          newKeys,
+          toggledKeyID
+        ),
       },
     }
 
@@ -171,8 +173,9 @@ class PortfolioSelector extends React.Component<IProps> {
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
-          UTILS.getArrayContainsAllSelected(newKeys),
+        [isRebalance
+          ? 'selectedRebalanceKeys'
+          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(newKeys),
       },
     }
 
@@ -185,8 +188,9 @@ class PortfolioSelector extends React.Component<IProps> {
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']:
-          [toggledKeyID],
+        [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: [
+          toggledKeyID,
+        ],
       },
     }
 
@@ -216,7 +220,7 @@ class PortfolioSelector extends React.Component<IProps> {
       newWallets,
       activeWallets,
       portfolioId,
-      isRebalance
+      isRebalance,
     } = this.props
     let objForQuery
 
@@ -235,7 +239,9 @@ class PortfolioSelector extends React.Component<IProps> {
       objForQuery = {
         settings: {
           portfolioId,
-          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: newKeys.map((el) => el._id),
+          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: newKeys.map(
+            (el) => el._id
+          ),
           selectedWallets: newWallets.map((el) => el._id),
         },
       }
@@ -245,11 +251,10 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onDustFilterChange = (value: number, dustFilterParam: string) => {
-    const { portfolioId, dustFilter: {
-      usd,
-      percentage,
-      btc
-    }} = this.props
+    const {
+      portfolioId,
+      dustFilter: { usd, percentage, btc },
+    } = this.props
     const dustFilterParamValue =
       dustFilterParam === 'percentage'
         ? value === 0
@@ -263,7 +268,8 @@ class PortfolioSelector extends React.Component<IProps> {
           : value === 80
           ? '1'
           : '10'
-        : dustFilterParam === 'btc' ? value / BTC_PART_DIVIDER
+        : dustFilterParam === 'btc'
+        ? value / BTC_PART_DIVIDER
         : value
 
     this.updateSettings({
@@ -292,7 +298,7 @@ class PortfolioSelector extends React.Component<IProps> {
         palette: { blue },
       },
       getMyPortfoliosQuery,
-      isUSDCurrently
+      isUSDCurrently,
     } = this.props
 
     const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
@@ -328,22 +334,32 @@ class PortfolioSelector extends React.Component<IProps> {
           fontFamily={theme.typography.fontFamily}
         >
           <GridSection>
-            <SvgIcon src={PortfolioSidebarBack} style={{
-              position: 'absolute',
-              top: '-4rem',
-              left: 0
-            }} width="100%" height="20rem"/>
+            <SvgIcon
+              src={PortfolioSidebarBack}
+              style={{
+                position: 'absolute',
+                top: '-4rem',
+                left: 0,
+              }}
+              width="100%"
+              height="20rem"
+            />
 
-            <Grid style={{ position: 'relative', zIndex: 2, padding: '0 1.5rem' }}>
+            <Grid
+              style={{ position: 'relative', zIndex: 2, padding: '0 1.5rem' }}
+            >
               <Grid container justify="space-between" alignItems="center">
                 <TypographyTitle>Portfolio</TypographyTitle>
-                <Icon className="fa fa-ellipsis-h" style={{
-                              fontSize: '1.5rem',
-                              color: 'white'
-                }}/>
+                <Icon
+                  className="fa fa-ellipsis-h"
+                  style={{
+                    fontSize: '1.5rem',
+                    color: 'white',
+                  }}
+                />
               </Grid>
 
-              <AccountsSlick isSideNav/>
+              <AccountsSlick isSideNav />
 
               <CreatePortfolio />
             </Grid>
@@ -361,14 +377,16 @@ class PortfolioSelector extends React.Component<IProps> {
                 onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
-                onKeysSelectAll: this.onKeysSelectAll
+                onKeysSelectAll: this.onKeysSelectAll,
               }}
               isSidebar={true}
             />
           </GridSectionAccounts>
           {!isRebalance && (
             <GridSectionDust lg={12}>
-              <TypographyTitle style={{ color: '#7284a0' }}>Dust Filter</TypographyTitle>
+              <TypographyTitle style={{ color: '#7284a0' }}>
+                Dust Filter
+              </TypographyTitle>
               <>
                 <SliderContainer>
                   <GridSymbolContainer>%</GridSymbolContainer>
@@ -397,26 +415,26 @@ class PortfolioSelector extends React.Component<IProps> {
                 </SliderContainer>
 
                 {isUSDCurrently && (
-                <SliderContainer>
-                  <GridSymbolContainer>$</GridSymbolContainer>
-                  <SliderDustFilter
-                    step={1}
-                    thumbWidth="25px"
-                    thumbHeight="25px"
-                    sliderWidth="250px"
-                    sliderHeight="17px"
-                    sliderHeightAfter="20px"
-                    borderRadius="30px"
-                    borderRadiusAfter="30px"
-                    thumbBackground="#165BE0"
-                    borderThumb="2px solid white"
-                    trackAfterBackground="#E7ECF3"
-                    trackBeforeBackground={'#165BE0'}
-                    value={this.state.valueSliderUsd}
-                    onChange={this.handleChangeUsd} //TODO onDragEnd
-                  />
-                  <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
-                </SliderContainer>
+                  <SliderContainer>
+                    <GridSymbolContainer>$</GridSymbolContainer>
+                    <SliderDustFilter
+                      step={1}
+                      thumbWidth="25px"
+                      thumbHeight="25px"
+                      sliderWidth="250px"
+                      sliderHeight="17px"
+                      sliderHeightAfter="20px"
+                      borderRadius="30px"
+                      borderRadiusAfter="30px"
+                      thumbBackground="#165BE0"
+                      borderThumb="2px solid white"
+                      trackAfterBackground="#E7ECF3"
+                      trackBeforeBackground={'#165BE0'}
+                      value={this.state.valueSliderUsd}
+                      onChange={this.handleChangeUsd} //TODO onDragEnd
+                    />
+                    <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
+                  </SliderContainer>
                 )}
 
                 {!isUSDCurrently && (
@@ -438,7 +456,9 @@ class PortfolioSelector extends React.Component<IProps> {
                       value={this.state.valueSliderBtc}
                       onChange={this.handleChangeBtc} //TODO onDragEnd
                     />
-                    <GridSymbolValue>{`< ${dustFilter.btc} BTC`}</GridSymbolValue>
+                    <GridSymbolValue>{`< ${
+                      dustFilter.btc
+                    } BTC`}</GridSymbolValue>
                   </SliderContainer>
                 )}
               </>

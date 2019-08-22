@@ -73,10 +73,7 @@ const gridBorder = `
 @withTheme()
 class DetailedExpansionPanel extends React.Component {
   render() {
-    const {
-      theme,
-      portfolioAssetsQuery,
-    } = this.props
+    const { theme, portfolioAssetsQuery } = this.props
     const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
       portfolioAssetsQuery.myPortfolios[0].portfolioAssets
     )
