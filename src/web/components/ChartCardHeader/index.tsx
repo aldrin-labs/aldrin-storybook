@@ -11,14 +11,18 @@ export const CardTitle = styled(TypographyFullWidth)`
   text-transform: capitalize;
   letter-spacing: auto;
   font-size: 1.4rem;
-  line-height: 35px;
+  line-height: 2rem;
   padding-top: 2px;
   text-align: center;
   color: #16253d;
+
+  @media (min-width: 2560px) {
+    line-height: 3rem;
+  }
 `
 
 export const TriggerTitle = styled(Title)`
-  height: auto;
+  height: 4rem;
   cursor: pointer;
   position: relative;
   padding: 0;
@@ -28,6 +32,14 @@ export const TriggerTitle = styled(Title)`
 
   &:hover {
     opacity: 0.85;
+  }
+
+  @media (min-width: 1921px) {
+    height: 3rem;
+  }
+
+  @media (min-width: 2560px) {
+    height: 3.5rem;
   }
 `
 

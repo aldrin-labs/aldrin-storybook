@@ -1,5 +1,6 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
+import { CardTitle } from '@sb/components/ChartCardHeader'
 import { Card, Grid, Button } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
@@ -256,4 +257,39 @@ export const Container = styled(Grid)`
   width: 100%;
   margin: 0;
   background-color: #e0e5ec;
+`
+
+export const WatchItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #e0e5ec;
+`
+
+export const ScrollContainer = styled.div`
+  height: 100%;
+  overflow: auto;
+`
+
+export const SubvaluesContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem 0.4rem 1rem;
+`
+
+export const WatchLabel = styled(CardTitle)`
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  text-align: left;
+  line-height: 1.5rem;
+  padding: 0.4rem 1rem;
+
+  @media (min-width: 2560px) {
+    line-height: 1.5rem;
+  }
+`
+
+export const WatchSubvalue = styled.span`
+  font-family: Trebuchet MS;
+  color: ${(props) => props.color};
 `

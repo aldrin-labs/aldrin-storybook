@@ -11,7 +11,7 @@ import ChartCardHeader from '@sb/components/ChartCardHeader'
 import {
   TablesBlockWrapper,
   TerminalContainer,
-  ScrollWrapper,
+  // ScrollWrapper,
   TabsContainer,
   TabsTypeContainer,
   StyledTab,

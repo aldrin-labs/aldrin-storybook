@@ -8,61 +8,58 @@ import { compose, withStateHandlers } from 'recompose'
 import _ from 'lodash'
 
 import { TradeButton } from './styles'
+import { SendButton } from '../TraidingTerminal/styles'
 import { withTheme } from '@material-ui/styles'
 
 const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
-    const { handleClickOpen,
-      handleClose,
-      open,
-      handleSubmit,
-      battonText,
-      text,
-      amount,
-      errors,
-      touched,
-      validateForm,
-      typeIsBuy,
-    } = props
+  const {
+    handleClickOpen,
+    handleClose,
+    open,
+    handleSubmit,
+    battonText,
+    text,
+    amount,
+    errors,
+    touched,
+    validateForm,
+    typeIsBuy,
+  } = props
 
-    const handleClick = async () => {
-      handleSubmit()
-      handleClose()
-    }
-
-    const handleOpen = () => {
-      validateForm()
-      if (_.isEmpty(errors) && !_.isEmpty(touched)) handleClickOpen()
-    }
-
-    return (<div>
-      <TradeButton
-          typeIsBuy={typeIsBuy}
-          buyButton={true}
-          variant="outlined"
-          onClick={handleOpen}
-        >
-        {battonText}
-      </TradeButton>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogContent>
-          <DialogContentText>
-            {text}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <TradeButton onClick={handleClose}>
-            Cancel
-          </TradeButton>
-          <TradeButton onClick={handleClick}>
-            Place Order
-          </TradeButton>
-        </DialogActions>
-      </Dialog>
-    </div>)
+  const handleClick = async () => {
+    handleSubmit()
+    handleClose()
   }
 
+  const handleOpen = () => {
+    validateForm()
+    if (_.isEmpty(errors) && !_.isEmpty(touched)) handleClickOpen()
+  }
+
+  return (
+    <div>
+      <SendButton type={typeIsBuy ? 'buy' : 'sell'} onClick={handleOpen}>
+        {battonText}
+      </SendButton>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogContent>
+          <DialogContentText>{text}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <TradeButton onClick={handleClose}>Cancel</TradeButton>
+          <TradeButton onClick={handleClick}>Place Order</TradeButton>
+        </DialogActions>
+      </Dialog>
+    </div>
+  )
+}
+
 const handleState = withStateHandlers(
-  ({ open = false }: {open: boolean}) => ({
+  ({ open = false }: { open: boolean }) => ({
     open,
   }),
   {
@@ -75,6 +72,4 @@ const handleState = withStateHandlers(
   }
 )
 
-export const PlaseOrderDialog = compose(
-  handleState,
-)(PlaseOrderDialogComponent)
+export const PlaseOrderDialog = compose(handleState)(PlaseOrderDialogComponent)
