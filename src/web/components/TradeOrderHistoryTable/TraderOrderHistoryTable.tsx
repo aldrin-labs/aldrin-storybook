@@ -16,7 +16,14 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   // }
 
   render() {
-    const { rows, page, perPage, count, handleChangePage, handleChangeRowsPerPage } = this.props
+    const {
+      rows,
+      page,
+      perPage,
+      count,
+      handleChangePage,
+      handleChangeRowsPerPage,
+    } = this.props
 
     return (
       <StyledTable
@@ -46,7 +53,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             borderBottom: '2px solid #e0e5ec',
             whiteSpace: 'nowrap',
             color: '#7284A0',
-            background: 'white'
+            background: 'white',
           },
           cell: {
             padding: '1.2rem 1.6rem 1.2rem 1.2rem',
@@ -55,8 +62,8 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             fontWeight: 500,
             textTransform: 'uppercase',
             letterSpacing: 0.5,
-            color: '#7284A0'
-          }
+            color: '#7284A0',
+          },
         }}
       />
     )
