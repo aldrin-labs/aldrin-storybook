@@ -7,37 +7,40 @@ import {
 } from './ShowHideData.style'
 
 class CheckboxesGroup extends React.Component {
-  state = {
-    ShowDepositWithdrawal: false,
-    ShowTrades: false,
-  }
-
-  handleChange = (option) => (event) => {
-    this.setState({ [option]: event.target.checked })
-  }
+  // state = {
+  //   includeExchangeTransactions: true,
+  //   includeTrades: true,
+  // }
+  //
+  // handleChangeShowHideOptions = (option) => (event) => {
+  //   this.setState({ [option]: event.target.checked })
+  // }
 
   render() {
-    const { ShowDepositWithdrawal, ShowTrades } = this.state
-    const error =
-      [ShowDepositWithdrawal, ShowTrades].filter((v) => v).length !== 2
+    const { includeExchangeTransactions, includeTrades } = this.state
 
     return (
       <>
         <FormControlCustom component="fieldset">
-          <Grid container justify="space-between" alignItems="center" style={{ marginBottom: '.75rem' }}>
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            style={{ marginBottom: '.75rem' }}
+          >
             <TypographyShowHide>Show Deposit / Withdrawal</TypographyShowHide>
             <CheckboxShowHide
-              checked={ShowDepositWithdrawal}
-              onChange={this.handleChange('ShowDepositWithdrawal')}
-              value="ShowDepositWithdrawal"
+              checked={includeExchangeTransactions}
+              onChange={this.handleChangeShowHideOptions('includeExchangeTransactions')}
+              value="includeExchangeTransactions"
             />
           </Grid>
           <Grid container justify="space-between" alignItems="center">
             <TypographyShowHide>Show Trades</TypographyShowHide>
             <CheckboxShowHide
-              checked={ShowTrades}
-              onChange={this.handleChange('ShowTrades')}
-              value="ShowTrades"
+              checked={includeTrades}
+              onChange={this.handleChangeShowHideOptions('includeTrades')}
+              value="includeTrades"
             />
           </Grid>
         </FormControlCustom>
