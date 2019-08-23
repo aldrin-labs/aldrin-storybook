@@ -99,6 +99,10 @@ class TransactionPage extends React.PureComponent {
       theme,
       hideSelector,
       portfolioKeyAndWalletsQuery: { myPortfolios },
+      newWallets = [],
+      newKeys = [],
+      activeKeys = [],
+      activeWallets = [],
     } = this.props
 
     console.log('this.props', this.props);
@@ -107,16 +111,9 @@ class TransactionPage extends React.PureComponent {
     const { includeExchangeTransactions, includeTrades } = this.state
 
     const baseCoin = 'USDT'
-    const { keys, wallets } = myPortfolios[0].userSettings
-
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
-
-    const newKeys = Array.isArray(keys) ? keys : []
-    const newWallets = Array.isArray(wallets) ? wallets : []
-    const activeKeys = keys.filter((el) => el.selected)
-    const activeWallets = wallets.filter((el) => el.selected)
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
@@ -264,7 +261,4 @@ export default compose(
     name: 'portfolioKeyAndWalletsQuery',
     variables: { baseCoin: 'USDT' },
   }),
-  graphql(updatePortfolioSettingsMutation, {
-    name: 'updatePortfolioSettings',
-  })
 )(TransactionPage)

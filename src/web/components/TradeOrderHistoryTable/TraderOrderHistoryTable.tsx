@@ -7,14 +7,6 @@ import { withTheme } from '@material-ui/styles'
 
 @withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
-  // componentDidMount() {
-  //   if (isWidthUp('xl', this.props.width)) {
-  //     this.setState({
-  //       rowsPerPage: 20
-  //     })
-  //   }
-  // }
-
   render() {
     const {
       rows,
@@ -27,7 +19,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
 
     return (
       <StyledTable
-        style={{ height: '19.5vw', overflowY: 'scroll' }}
+        style={{ height: '19.5vw', overflowY: 'scroll', position: 'relative' }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}

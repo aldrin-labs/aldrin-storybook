@@ -186,6 +186,10 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                         baseCoin={baseCoin}
                         isUSDCurrently={isUSDCurrently}
                         toggleWallets={this.toggleWallets}
+                        updatePortfolioSettings={updatePortfolioSettings}
+                        newKeys={isRebalance ? rebalanceKeys : keys}
+                        isRebalance={isRebalance}
+                        data={data}
                       />
                     )}
 
