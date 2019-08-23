@@ -116,7 +116,9 @@ const AutoRefetch = ({
       <SwitchOnOff
         enabled={autoRefetch || false}
         _id={'AutoRefetch'}
-        onChange={toggleAutoRefetch}
+        onChange={() =>
+          toggleAutoRefetch(!autoRefetch) || console.log('changed')
+        }
       />
     </div>
   )
@@ -824,7 +826,7 @@ const CustomTable = (props: Props) => {
         mountOnEnter
         unmountOnExit
       >
-        <>
+        <div>
           {needRefetch ? (
             <AutoRefetch
               autoRefetch={autoRefetch}
@@ -846,7 +848,7 @@ const CustomTable = (props: Props) => {
             onChangePage={pagination.handleChangePage}
             onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
           />
-        </>
+        </div>
       </Grow>
     </Paper>
   )

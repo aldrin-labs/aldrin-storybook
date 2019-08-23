@@ -21,7 +21,7 @@ import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import QueryRenderer from '@core/components/QueryRenderer'
-
+import { addMainSymbol } from '@sb/components/index'
 /*
  * 	params:
  *		c (integer): count numbers of digits after sign
@@ -44,7 +44,7 @@ const formatMoney = function(number, c: number, d: string, t: string) {
   return (
     s +
     (j ? i.substr(0, j) + t : '') +
-    i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) +
+    i.substr(j).replace(/(\d{3})(?=\d)/g, '1' + t) +
     (c
       ? d +
         Math.abs(n - i)
@@ -54,8 +54,12 @@ const formatMoney = function(number, c: number, d: string, t: string) {
   )
 }
 
-const format = (number) => {
-  return formatMoney(number, 2, '.', ',')
+const format = (number, baseCoin) => {
+  const isUSDCurrently = baseCoin === 'USDT'
+
+  return isUSDCurrently
+    ? addMainSymbol(formatMoney(number, 2, '.', ','), isUSDCurrently)
+    : addMainSymbol(formatMoney(number, 8, '.', ','), isUSDCurrently)
 }
 
 const gridBorder = `
@@ -73,7 +77,7 @@ const gridBorder = `
 @withTheme()
 class DetailedExpansionPanel extends React.Component {
   render() {
-    const { theme, portfolioAssetsQuery } = this.props
+    const { theme, portfolioAssetsQuery, baseCoin } = this.props
     const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
       portfolioAssetsQuery.myPortfolios[0].portfolioAssets
     )
@@ -93,7 +97,7 @@ class DetailedExpansionPanel extends React.Component {
                   Value
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                  ${format(totalKeyAssetsData.value)}
+                  {format(totalKeyAssetsData.value, baseCoin)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -112,8 +116,12 @@ class DetailedExpansionPanel extends React.Component {
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   realized P{`&`}L
                 </TypographyTitleCell>
-                <TypographyValueCell textColor={totalKeyAssetsData.realized < 0 ? '#B93B2B' : '#2F7619'}>
-                  ${format(totalKeyAssetsData.realized)}
+                <TypographyValueCell
+                  textColor={
+                    totalKeyAssetsData.realized < 0 ? '#B93B2B' : '#2F7619'
+                  }
+                >
+                  {format(totalKeyAssetsData.realized, baseCoin)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -122,8 +130,12 @@ class DetailedExpansionPanel extends React.Component {
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   Unrealized P{`&`}L
                 </TypographyTitleCell>
-                <TypographyValueCell textColor={totalKeyAssetsData.unrealized < 0 ? '#B93B2B' : '#2F7619'}>
-                  ${format(totalKeyAssetsData.unrealized)}
+                <TypographyValueCell
+                  textColor={
+                    totalKeyAssetsData.unrealized < 0 ? '#B93B2B' : '#2F7619'
+                  }
+                >
+                  {format(totalKeyAssetsData.unrealized, baseCoin)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -132,8 +144,12 @@ class DetailedExpansionPanel extends React.Component {
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   Total P{`&`}L
                 </TypographyTitleCell>
-                <TypographyValueCell textColor={totalKeyAssetsData.total < 0 ? '#B93B2B' : '#2F7619'}>
-                  ${format(totalKeyAssetsData.total)}
+                <TypographyValueCell
+                  textColor={
+                    totalKeyAssetsData.total < 0 ? '#B93B2B' : '#2F7619'
+                  }
+                >
+                  {format(totalKeyAssetsData.total, baseCoin)}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -160,7 +176,7 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyValueCell
                             textColor={theme.palette.text.subPrimary}
                           >
-                            ${format(el.value)}
+                            {format(el.value, baseCoin)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -179,8 +195,10 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyTitleCell>
                             realized P{`&`}L
                           </TypographyTitleCell>
-                          <TypographyValueCell textColor={el.realized < 0 ? '#B93B2B' : '#2F7619'}>
-                            ${format(el.realized)}
+                          <TypographyValueCell
+                            textColor={el.realized < 0 ? '#B93B2B' : '#2F7619'}
+                          >
+                            {format(el.realized, baseCoin)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -189,8 +207,12 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyTitleCell>
                             Unrealized P{`&`}L
                           </TypographyTitleCell>
-                          <TypographyValueCell textColor={el.unrealized < 0 ? '#B93B2B' : '#2F7619'}>
-                            ${format(el.unrealized)}
+                          <TypographyValueCell
+                            textColor={
+                              el.unrealized < 0 ? '#B93B2B' : '#2F7619'
+                            }
+                          >
+                            {format(el.unrealized, baseCoin)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>
@@ -199,8 +221,10 @@ class DetailedExpansionPanel extends React.Component {
                           <TypographyTitleCell>
                             Total P{`&`}L
                           </TypographyTitleCell>
-                          <TypographyValueCell textColor={el.total < 0 ? '#B93B2B' : '#2F7619'}>
-                            ${format(el.total)}
+                          <TypographyValueCell
+                            textColor={el.total < 0 ? '#B93B2B' : '#2F7619'}
+                          >
+                            {format(el.total, baseCoin)}
                           </TypographyValueCell>
                         </div>
                       </GridColumn>

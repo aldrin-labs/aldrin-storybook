@@ -6,6 +6,11 @@ import { PTWrapper as PTWrapperRaw } from '@sb/styles/cssUtils'
 
 export { PTextBox, STypography, STypographyButtonText, SButton, SAddIcon }
 
+export const Wrapper = styled.div`
+  text-align: center;
+  width: 50%;
+`
+
 export const PTWrapper = styled(PTWrapperRaw)`
   width: calc(100% - 1.6rem);
 
@@ -45,7 +50,7 @@ const PTextBox = styled.div`
 
 const STypography = styled(Typography)`
   text-align: center;
-  margin-bottom: 4.8rem;
+  margin-bottom: 2rem;
 `
 
 const STypographyButtonText = styled(Typography)`

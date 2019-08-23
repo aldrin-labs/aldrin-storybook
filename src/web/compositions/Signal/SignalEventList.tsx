@@ -195,16 +195,19 @@ const SignalEventList = (props) => {
       getSignalEvents: { count, events },
     },
     onTrClick,
-    toggleAutoRefetch,
-    autoRefetch,
+    refetch,
   } = props
 
   const smallScreen = window.outerWidth < 1500
+
+  const [refetchTimerId, updateRefetchTimer] = useState(0)
   const [timers, updateTimers] = useState([])
+  const [autoRefetch, toggleAutoRefetch] = useState(true)
 
   const { body, head, footer = [], updateTimersInterval } = putDataInTable(
     events,
     timers,
+    // use to update data when initialize
     updateTimers
   )
 
@@ -217,8 +220,21 @@ const SignalEventList = (props) => {
     return () => clearInterval(id)
   })
 
+  useEffect(() => {
+    // update timers for all signals
+    autoRefetch
+      ? updateRefetchTimer(
+          setInterval(() => {
+            refetch()
+          }, 3000)
+        )
+      : clearInterval(refetchTimerId)
+
+    return () => clearInterval(refetchTimerId)
+  }, [autoRefetch])
+
   return (
-    <ContainerGrid container style={{ position: 'relative', height: '100%' }}>
+    <ContainerGrid container style={{ position: 'relative' }}>
       <TableWithSort
         onTrClick={onTrClick}
         needRefetch={true}
@@ -313,6 +329,8 @@ export default class SignalEventListDataWrapper extends React.PureComponent<
 
     return (
       <QueryRenderer
+        {...this.props}
+        {...this.state}
         fetchPolicy="network-only"
         component={SignalEventList}
         query={GET_SIGNAL_EVENTS_QUERY}
@@ -323,8 +341,6 @@ export default class SignalEventListDataWrapper extends React.PureComponent<
         }}
         handleChangePage={this.handleChangePage}
         handleChangeRowsPerPage={this.handleChangeRowsPerPage}
-        {...this.props}
-        {...this.state}
       />
     )
   }

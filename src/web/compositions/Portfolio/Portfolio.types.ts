@@ -14,4 +14,5 @@ export interface IState {
   isSideNavOpen: boolean
   isUSDCurrently: boolean
   baseCoin: 'USDT' | 'BTC'
+  selectedPortfolio: number
 }
