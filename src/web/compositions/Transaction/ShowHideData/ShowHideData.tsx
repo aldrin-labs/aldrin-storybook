@@ -7,17 +7,12 @@ import {
 } from './ShowHideData.style'
 
 class CheckboxesGroup extends React.Component {
-  // state = {
-  //   includeExchangeTransactions: true,
-  //   includeTrades: true,
-  // }
-  //
-  // handleChangeShowHideOptions = (option) => (event) => {
-  //   this.setState({ [option]: event.target.checked })
-  // }
-
   render() {
-    const { includeExchangeTransactions, includeTrades } = this.state
+    const {
+      includeExchangeTransactions,
+      includeTrades,
+      handleChangeShowHideOptions,
+    } = this.props
 
     return (
       <>
@@ -31,7 +26,9 @@ class CheckboxesGroup extends React.Component {
             <TypographyShowHide>Show Deposit / Withdrawal</TypographyShowHide>
             <CheckboxShowHide
               checked={includeExchangeTransactions}
-              onChange={this.handleChangeShowHideOptions('includeExchangeTransactions')}
+              onChange={handleChangeShowHideOptions(
+                'includeExchangeTransactions'
+              )}
               value="includeExchangeTransactions"
             />
           </Grid>
@@ -39,7 +36,7 @@ class CheckboxesGroup extends React.Component {
             <TypographyShowHide>Show Trades</TypographyShowHide>
             <CheckboxShowHide
               checked={includeTrades}
-              onChange={this.handleChangeShowHideOptions('includeTrades')}
+              onChange={handleChangeShowHideOptions('includeTrades')}
               value="includeTrades"
             />
           </Grid>

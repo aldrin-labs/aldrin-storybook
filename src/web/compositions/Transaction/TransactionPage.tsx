@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { createGlobalStyle } from 'styled-components'
+import React from 'react'
+import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
@@ -32,12 +32,68 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
+import { graphql } from 'react-apollo'
 
 @withTheme()
-class TransactionPage extends Component {
+class TransactionPage extends React.PureComponent {
+  state = {
+    includeExchangeTransactions: true,
+    includeTrades: true,
+  }
+
+  handleChangeShowHideOptions = (option) => (event) => {
+    this.setState({ [option]: event.target.checked })
+  }
+
+  updateSettings = async (objectForMutation) => {
+    const { updatePortfolioSettings } = this.props
+
+    try {
+      await updatePortfolioSettings({
+        variables: objectForMutation,
+      })
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  onKeyToggle = async (toggledKeyID: string) => {
+    const { portfolioId, newKeys, isRebalance } = this.props
+
+    const objForQuery = {
+      settings: {
+        portfolioId,
+        [isRebalance
+          ? 'selectedRebalanceKeys'
+          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
+          newKeys,
+          toggledKeyID
+        ),
+      },
+    }
+
+    await this.updateSettings(objForQuery)
+  }
+
+  onKeysSelectAll = async () => {
+    const { portfolioId, newKeys, isRebalance } = this.props
+
+    const objForQuery = {
+      settings: {
+        portfolioId,
+        [isRebalance
+          ? 'selectedRebalanceKeys'
+          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(newKeys),
+      },
+    }
+
+    await this.updateSettings(objForQuery)
+  }
+
   render() {
     const {
       theme,
@@ -45,6 +101,12 @@ class TransactionPage extends Component {
       portfolioKeyAndWalletsQuery: { myPortfolios },
     } = this.props
 
+    console.log('this.props', this.props);
+
+
+    const { includeExchangeTransactions, includeTrades } = this.state
+
+    const baseCoin = 'USDT'
     const { keys, wallets } = myPortfolios[0].userSettings
 
     const color = theme.palette.secondary.main
@@ -60,20 +122,9 @@ class TransactionPage extends Component {
       activeKeys.length + activeWallets.length ===
       newKeys.length + newWallets.length
 
-    const isRebalance = false
-
-    const onKeyToggle = this.onKeyToggle
-    const onToggleAll = this.onToggleAll
-    const onKeySelectOnlyOne = this.onKeySelectOnlyOne
-
-    const baseCoin = 'USDT'
     const { portfolioAssetsData } = getPortfolioAssetsData(
       myPortfolios[0].portfolioAssets
     )
-
-    console.log('assets', portfolioAssetsData)
-
-    // TODO: Account block, less more pointers, table fonts, titles
 
     return (
       <>
@@ -136,16 +187,21 @@ class TransactionPage extends Component {
                         portfolioAssetsData,
                         baseCoin,
                         newKeys,
-                        isRebalance,
-                        onToggleAll,
-                        onKeyToggle,
-                        onKeySelectOnlyOne,
+                        isRebalance: false,
+                        onKeysSelectAll: this.onKeysSelectAll,
+                        onKeyToggle: this.onKeyToggle,
                       }}
                     />
                   </Grid>
                 </ContentGrid>
                 <GridShowHideDataContainer>
-                  <ShowHideData />
+                  <ShowHideData
+                    handleChangeShowHideOptions={
+                      this.handleChangeShowHideOptions
+                    }
+                    includeExchangeTransactions={includeExchangeTransactions}
+                    includeTrades={includeTrades}
+                  />
                 </GridShowHideDataContainer>
               </GridAccountContainer>
             </Grid>
@@ -172,21 +228,13 @@ class TransactionPage extends Component {
                   theme.palette.grey[theme.palette.type]
                 }`}
               >
-                <TradeOrderHistory style={{ overflow: 'scroll' }} />
+                <TradeOrderHistory
+                  style={{ overflow: 'scroll' }}
+                  includeExchangeTransactions={includeExchangeTransactions}
+                  includeTrades={includeTrades}
+                  handleChangeShowHideOptions={this.handleChangeShowHideOptions}
+                />
               </GridTableContainer>
-
-              {/*
-            <PortfolioMainChart
-              title="Portfolio performance"
-              style={{
-                marginTop: '3%',
-                marginLeft: 0,
-                maxHeight: '235px',
-                boxShadow: '0px 0px 8px rgba(10, 19, 43, 0.1)',
-              }}
-              marginTopHr="10px"
-            />
-            */}
             </Grid>
           </GridItemContainer>
 
@@ -208,12 +256,6 @@ class TransactionPage extends Component {
       </>
     )
   }
-
-  onKeyToggle() {}
-
-  onToggleAll() {}
-
-  onKeySelectOnlyOne() {}
 }
 
 export default compose(
@@ -221,5 +263,8 @@ export default compose(
     query: portfolioKeyAndWalletsQuery,
     name: 'portfolioKeyAndWalletsQuery',
     variables: { baseCoin: 'USDT' },
+  }),
+  graphql(updatePortfolioSettingsMutation, {
+    name: 'updatePortfolioSettings',
   })
 )(TransactionPage)

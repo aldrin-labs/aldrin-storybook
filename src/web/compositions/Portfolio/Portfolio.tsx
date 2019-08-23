@@ -127,11 +127,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               onCompleted={() => refetch()}
               mutation={updatePortfolioSettingsMutation}
               update={updateSettingsMutation}
-              refetchQueries={[
-                // no need to refetch main
-                // { query: getPortfolioQuery, variables: { baseCoin } },
-                { query: getCoinsForOptimization, variables: { baseCoin } },
-              ]}
             >
               {(updatePortfolioSettings) => (
                 <>
