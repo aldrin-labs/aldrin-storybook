@@ -1,12 +1,8 @@
 import * as React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 
-import { graphql } from 'react-apollo'
-import { compose } from 'recompose'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-
 import { withTheme } from '@material-ui/styles'
-import { Slide, Typography, Button } from '@material-ui/core'
+import { Slide } from '@material-ui/core'
 
 import Dropdown from '@sb/components/SimpleDropDownSelector'
 import Accounts from '@sb/components/Accounts/Accounts'
@@ -32,19 +28,19 @@ import {
   SliderDustFilter,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
-import { MASTER_BUILD } from '@core/utils/config'
+// import { MASTER_BUILD } from '@core/utils/config'
 import { IProps } from './PortfolioSelector.types'
-import {
-  percentageDustFilterOptions,
-  usdDustFilterOptions,
-} from './PortfolioSelector.options'
+// import {
+//   percentageDustFilterOptions,
+//   usdDustFilterOptions,
+// } from './PortfolioSelector.options'
 import { Grid } from '@material-ui/core'
 
-import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+//import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { RadioGroup, Radio } from '@material-ui/core'
+// import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+// import { RadioGroup, Radio } from '@material-ui/core'
 
 import { Icon } from '@sb/styles/cssUtils'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -52,13 +48,13 @@ import PortfolioSidebarBack from '@icons/PortfolioSidebarBack.svg'
 
 import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSlick'
 
-import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-
-const MyLinkToUserSettings = (props: any) => (
-  <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
-    {props.children}{' '}
-  </Link>
-)
+// import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+// const MyLinkToUserSettings = (props: any) => (
+//   <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
+//     {props.children}{' '}
+//   </Link>
+// )
 
 // On this value we divide slider percentage to get btc filter value (100% = 0.01 btc)
 const BTC_PART_DIVIDER = 10000
@@ -294,21 +290,16 @@ class PortfolioSelector extends React.Component<IProps> {
       activeWallets,
       dustFilter,
       isRebalance,
-      theme: {
-        palette: { blue },
-      },
-      getMyPortfoliosQuery,
       isUSDCurrently,
+      data: { myPortfolios },
+      baseCoin,
     } = this.props
 
-    const MyPortfoliosOptions = getMyPortfoliosQuery.myPortfolios.map(
-      (item: { _id: string; name: string }) => {
-        return {
-          label: item.name,
-          value: item._id,
-        }
-      }
+    const { portfolioAssetsData } = getPortfolioAssetsData(
+      myPortfolios[0].portfolioAssets
     )
+    console.log('mp', myPortfolios)
+    console.log('data', portfolioAssetsData, baseCoin)
 
     const login = true
 
@@ -317,7 +308,6 @@ class PortfolioSelector extends React.Component<IProps> {
       newKeys.length + newWallets.length
 
     const color = theme.palette.secondary.main
-    const relations = ['first', 'second']
 
     return (
       <Slide
@@ -359,7 +349,11 @@ class PortfolioSelector extends React.Component<IProps> {
                 />
               </Grid>
 
-              <AccountsSlick isSideNav />
+              <AccountsSlick
+                isSideNav
+                myPortfolios={myPortfolios}
+                baseCoin={baseCoin}
+              />
 
               <CreatePortfolio />
             </Grid>
@@ -374,6 +368,8 @@ class PortfolioSelector extends React.Component<IProps> {
                 isCheckedAll,
                 newKeys,
                 isRebalance,
+                portfolioAssetsData,
+                baseCoin,
                 onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
@@ -470,10 +466,34 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 }
 
-export default compose(
-  queryRendererHoc({
-    query: getMyPortfoliosQuery,
-    name: 'getMyPortfoliosQuery',
-  }),
-  withTheme()
-)(PortfolioSelector)
+// export default compose(
+//   // queryRendererHoc({
+//   //   query: getPortfolioAllQuery,
+//   //   name: 'getAllPortfoliosQuery',
+//   // variables={{ baseCoin }}
+//   // }),
+//   withTheme()
+// )(PortfolioSelector)
+
+// const APIWrapper = (props: any) => (
+//   <Query query={GET_BASE_COIN}>
+//     {({ data }) => {
+//       const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
+//       return (
+//         <QueryRenderer
+//           {...props}
+//           component={PortfolioSelector}
+//           name={`getAllPortfoliosQuery`}
+//           query={getPortfolioAllQuery}
+//           variables={{ baseCoin }}
+//           baseCoin={baseCoin}
+//           isUSDCurrently={baseCoin === 'USDT'}
+//           withOutSpinner={true}
+//           withTableLoader={true}
+//         />
+//       )
+//     }}
+//   </Query>
+// )
+
+export default PortfolioSelector

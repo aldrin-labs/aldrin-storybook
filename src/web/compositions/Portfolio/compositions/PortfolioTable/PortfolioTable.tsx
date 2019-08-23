@@ -51,7 +51,6 @@ class PortfolioTable extends Component<IProps, IState> {
               toggleWallets={this.props.toggleWallets}
               isUSDCurrently={isUSDCurrently}
               onToggleUSDBTC={() => {
-                this.props.onToggleUSDBTC()
                 toggleBaseCoin()
               }}
             />
@@ -71,7 +70,6 @@ class PortfolioTable extends Component<IProps, IState> {
                       baseCoin={baseCoin}
                       dustFilter={dustFilter}
                       onToggleUSDBTC={() => {
-                        this.props.onToggleUSDBTC()
                         toggleBaseCoin()
                       }}
                       {...rest}

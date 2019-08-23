@@ -241,24 +241,6 @@ class SocialPage extends React.Component {
     signalsSort: signalsSortOptions[0],
     isOrderbookOpen: false,
     orderData: null,
-    autoRefetch: true,
-  }
-
-  startRefetch = () => {
-    const invervalId = setInterval(() => {
-      this.props.refetch()
-    }, 3000)
-
-    this.setState({ invervalId })
-  }
-
-  componentDidMount() {
-    const { autoRefetch } = this.state
-    if (autoRefetch) this.startRefetch()
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.invervalId)
   }
 
   handleSearchInput = (e) => {
@@ -305,16 +287,6 @@ class SocialPage extends React.Component {
     })
   }
 
-  toggleAutoRefetch = () => {
-    this.setState(
-      (prev) => ({ autoRefetch: !prev.autoRefetch }),
-      () =>
-        this.state.autoRefetch
-          ? this.startRefetch()
-          : clearInterval(this.state.invervalId)
-    )
-  }
-
   render() {
     const {
       selectedSignal = 0,
@@ -322,7 +294,6 @@ class SocialPage extends React.Component {
       signalsSort,
       isOrderbookOpen,
       orderData,
-      autoRefetch,
     } = this.state
 
     const {
@@ -375,7 +346,7 @@ class SocialPage extends React.Component {
         style={{ maxHeight: '100vh', overflow: 'hidden' }}
       >
         <Grid item xs={3} style={{ padding: '15px' }}>
-          <SocialTabs style={{ height: '100%' }} isDisabledMy={true}>
+          <SocialTabs style={{ maxHeight: '82vh' }} isDisabledMy={true}>
             <GridSortOption container justify="flex-end" alignItems="center">
               <Grid item>
                 <Grid container justify="space-between" alignItems="center">
@@ -449,8 +420,6 @@ class SocialPage extends React.Component {
                 {...this.props}
                 signalId={sortedData[this.state.selectedSignal]._id}
                 onTrClick={this.onTrClick}
-                toggleAutoRefetch={this.toggleAutoRefetch}
-                autoRefetch={autoRefetch}
               />
             ) : null}
           </Grid>

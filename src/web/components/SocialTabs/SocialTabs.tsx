@@ -60,7 +60,10 @@ class SocialTabs extends React.Component {
     } = this.props
 
     return (
-      <div className={classes.root}>
+      <div
+        className={classes.root}
+        style={isDisabledMy ? { height: '82vh' } : {}}
+      >
         <AppBar
           position="static"
           color="default"

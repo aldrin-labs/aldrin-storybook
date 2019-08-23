@@ -16,7 +16,7 @@ import {
   StyledToolbar,
   NavLinkButtonWrapper,
   NavBarWrapper,
-  NavBreadcrumbTypography
+  NavBreadcrumbTypography,
 } from './NavBar.styles'
 import Feedback from '@sb/components/Feedback'
 import Logo from '@sb/components/Logo/Logo'
@@ -105,16 +105,16 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions',
                   },
-                  {
-                    text: 'Rebalance',
-                    icon: <RebalanceIcon fontSize="small" />,
-                    to: '/portfolio/rebalance',
-                  },
+                  // {
+                  //   text: 'Rebalance',
+                  //   icon: <RebalanceIcon fontSize="small" />,
+                  //   to: '/portfolio/rebalance',
+                  // },
                   // { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small" />, to: '/portfolio/optimization' },
                 ]}
               />
 
-              <Dropdown
+              {/* <Dropdown
                 id="explore-menu"
                 buttonText="Explore"
                 selectedMenu={selectedMenu}
@@ -138,9 +138,9 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   },
                 ]}
-              />
+              /> */}
 
-              <NavLinkButtonWrapper>
+              {/* <NavLinkButtonWrapper>
                 <NavLinkButton
                   page={`chart`}
                   component={Chart}
@@ -148,9 +148,9 @@ const NavBarRaw: SFC<Props> = ({
                 >
                   Chart
                 </NavLinkButton>
-              </NavLinkButtonWrapper>
+              </NavLinkButtonWrapper> */}
 
-              <NavLinkButtonWrapper>
+              {/* <NavLinkButtonWrapper>
                 <NavLinkButton
                   page={`market`}
                   component={Market}
@@ -163,7 +163,7 @@ const NavBarRaw: SFC<Props> = ({
                 >
                   Marketcap
                 </NavLinkButton>
-              </NavLinkButtonWrapper>
+              </NavLinkButtonWrapper> */}
 
               {/*<NavLinkButton*/}
               {/*page={`market`}*/}
