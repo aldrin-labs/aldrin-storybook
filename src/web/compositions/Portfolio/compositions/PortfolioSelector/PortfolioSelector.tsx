@@ -466,34 +466,4 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 }
 
-// export default compose(
-//   // queryRendererHoc({
-//   //   query: getPortfolioAllQuery,
-//   //   name: 'getAllPortfoliosQuery',
-//   // variables={{ baseCoin }}
-//   // }),
-//   withTheme()
-// )(PortfolioSelector)
-
-// const APIWrapper = (props: any) => (
-//   <Query query={GET_BASE_COIN}>
-//     {({ data }) => {
-//       const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
-//       return (
-//         <QueryRenderer
-//           {...props}
-//           component={PortfolioSelector}
-//           name={`getAllPortfoliosQuery`}
-//           query={getPortfolioAllQuery}
-//           variables={{ baseCoin }}
-//           baseCoin={baseCoin}
-//           isUSDCurrently={baseCoin === 'USDT'}
-//           withOutSpinner={true}
-//           withTableLoader={true}
-//         />
-//       )
-//     }}
-//   </Query>
-// )
-
 export default PortfolioSelector
