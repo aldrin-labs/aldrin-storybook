@@ -11,11 +11,14 @@ import { PortfolioTable, PortfolioSelector } from './compositions'
 
 import { CustomError } from '@sb/components/'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { compose } from 'recompose'
 
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
-import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
-import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
+// import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
+// import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
@@ -41,30 +44,27 @@ const safePortfolioDestruction = (
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
-    baseCoin: 'USDT',
-    isUSDCurrently: true,
   }
 
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
   }
 
-  onToggleUSDBTC = () => {
-    this.setState((prevState) => ({
-      isUSDCurrently: !prevState.isUSDCurrently,
-      baseCoin: !prevState.isUSDCurrently ? 'USDT' : 'BTC',
-    }))
-  }
-
   render() {
-    const { theme } = this.props
-    const { isUSDCurrently, baseCoin } = this.state
+    const {
+      theme,
+      queryBaseCoin: {
+        portfolio: { baseCoin },
+      },
+    } = this.props
+    const isUSDCurrently = baseCoin === 'USDT'
 
     return (
       <Query
         notifyOnNetworkStatusChange
         fetchPolicy="cache-and-network"
         query={portfolioKeyAndWalletsQuery}
+        variables={{ baseCoin }}
       >
         {({
           data = { myPortfolios: [{ userSettings: {} }] },
@@ -115,12 +115,12 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
           const isRebalance = window.location.pathname.includes('rebalance')
 
-          const hasKeysOrWallets = isRebalance ?
-            rebalanceKeys.length + wallets.length > 0 :
-            keys.length + wallets.length > 0
-          const hasActiveKeysOrWallets = isRebalance ?
-            activeRebalanceKeys.length + activeWallets.length > 0 :
-            activeKeys.length + activeWallets.length > 0
+          const hasKeysOrWallets = isRebalance
+            ? rebalanceKeys.length + wallets.length > 0
+            : keys.length + wallets.length > 0
+          const hasActiveKeysOrWallets = isRebalance
+            ? activeRebalanceKeys.length + activeWallets.length > 0
+            : activeKeys.length + activeWallets.length > 0
 
           return (
             <Mutation
@@ -130,7 +130,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               refetchQueries={[
                 // no need to refetch main
                 // { query: getPortfolioQuery, variables: { baseCoin } },
-                { query: getCoinsForOptimization, variables: { baseCoin } }
+                { query: getCoinsForOptimization, variables: { baseCoin } },
               ]}
             >
               {(updatePortfolioSettings) => (
@@ -144,16 +144,25 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                       dustFilter={dustFilter}
                       newKeys={isRebalance ? rebalanceKeys : keys}
                       newWallets={wallets}
-                      activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+                      activeKeys={
+                        isRebalance ? activeRebalanceKeys : activeKeys
+                      }
                       activeWallets={activeWallets}
                       toggleWallets={this.toggleWallets}
                       isSideNavOpen={this.state.isSideNavOpen}
                       isRebalance={isRebalance}
                       isUSDCurrently={isUSDCurrently}
+                      data={data}
+                      baseCoin={baseCoin}
                     />
 
                     {!hasKeysOrWallets && (
-                      <AddExchangeOrWalletWindow theme={theme} />
+                      <>
+                        <AddExchangeOrWalletWindow
+                          theme={theme}
+                          toggleWallets={this.toggleWallets}
+                        />
+                      </>
                     )}
 
                     {hasKeysOrWallets && !hasActiveKeysOrWallets && (
@@ -166,18 +175,20 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                     {hasKeysOrWallets && hasActiveKeysOrWallets && (
                       <PortfolioTable
                         keys={isRebalance ? rebalanceKeys : keys}
-                        key={isRebalance ?
-                          activeRebalanceKeys.length + activeWallets.length :
-                          activeKeys.length + activeWallets.length
+                        key={
+                          isRebalance
+                            ? activeRebalanceKeys.length + activeWallets.length
+                            : activeKeys.length + activeWallets.length
                         }
                         showTable={hasActiveKeysOrWallets}
                         dustFilter={dustFilter}
-                        activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+                        activeKeys={
+                          isRebalance ? activeRebalanceKeys : activeKeys
+                        }
                         portfolioId={portfolioId}
                         portfolioName={portfolioName}
                         theme={theme}
                         baseCoin={baseCoin}
-                        onToggleUSDBTC={this.onToggleUSDBTC}
                         isUSDCurrently={isUSDCurrently}
                         toggleWallets={this.toggleWallets}
                       />
@@ -203,10 +214,16 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   componentDidMount() {
     if (window.location.pathname.includes('rebalance')) {
       this.setState({
-        isSideNavOpen: true
+        isSideNavOpen: true,
       })
     }
   }
 }
 
-export default withAuth(withTheme()(PortfolioComponent))
+// export default withAuth(withTheme()(PortfolioComponent))
+
+export default compose(
+  withAuth,
+  withTheme(),
+  queryRendererHoc({ query: GET_BASE_COIN, name: 'queryBaseCoin' })
+)(PortfolioComponent)

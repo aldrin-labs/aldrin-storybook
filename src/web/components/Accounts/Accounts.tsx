@@ -1,5 +1,7 @@
 import React from 'react'
-import { Checkbox, Radio, Grid } from '@material-ui/core'
+import { Checkbox, Radio } from '@material-ui/core'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { compose } from 'recompose'
 
 import { IProps } from './Accounts.types'
 import {
@@ -16,18 +18,20 @@ import {
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
-import { Typography } from '@material-ui/core'
+// import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
-
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import SvgIcon from '@sb/components/SvgIcon'
 import ExchangeLogo from '@icons/ExchangeLogo.svg'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions';
+// import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+// import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import { addMainSymbol } from '@sb/components'
 
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 
-export default class Accounts extends React.PureComponent<IProps> {
+class Accounts extends React.PureComponent<IProps> {
   render() {
     const {
       isSideNavOpen,
@@ -35,13 +39,20 @@ export default class Accounts extends React.PureComponent<IProps> {
       onToggleAll,
       color,
       newKeys,
+      portfolioAssetsData,
       onKeyToggle,
       login,
       isRebalance,
       onKeySelectOnlyOne,
       onKeysSelectAll,
-      isSidebar
+      isSidebar,
+      queryBaseCoin: {
+        portfolio: { baseCoin },
+      },
     } = this.props
+
+    const isUSDT = baseCoin === 'USDT'
+    const roundNumber = isUSDT ? 2 : 8
 
     return (
       <>
@@ -55,15 +66,24 @@ export default class Accounts extends React.PureComponent<IProps> {
           >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
-            {isRebalance ? <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>
-              Choose only one
-            </TypographyTitle> : <TypographyTitle textColor={'#165BE0'} fontSize={'1.2rem'} style={{
-              cursor: 'pointer',
-              fontWeight: 700,
-              letterSpacing: '1.5px'
-            }} onClick={onKeysSelectAll}>
-              Select all
-            </TypographyTitle>}
+            {isRebalance ? (
+              <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>
+                Choose only one
+              </TypographyTitle>
+            ) : (
+              <TypographyTitle
+                textColor={'#165BE0'}
+                fontSize={'1.2rem'}
+                style={{
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  letterSpacing: '1.5px',
+                }}
+                onClick={onKeysSelectAll}
+              >
+                Select all
+              </TypographyTitle>
+            )}
           </TypographyFullWidth>
 
           <Headline isSideNavOpen={isSideNavOpen} color={color}>
@@ -93,12 +113,21 @@ export default class Accounts extends React.PureComponent<IProps> {
           </SelectAll>
         )} */}
         <AccountsList id="AccountsList">
-          {newKeys.map((keyName) => {
+          {newKeys.map((keyName, i) => {
             if (!keyName) {
               return null
             }
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = keyName.selected
+
+            const value = portfolioAssetsData[i]
+              ? portfolioAssetsData[i].value
+              : 0
+
+            const formattedValue = addMainSymbol(
+              roundAndFormatNumber(value, roundNumber, true),
+              isUSDT
+            )
 
             return (
               <AccountsListItem
@@ -110,21 +139,30 @@ export default class Accounts extends React.PureComponent<IProps> {
                   padding: '5px 0',
                 }}
               >
-                {isSidebar && <SvgIcon src={ExchangeLogo} style={{
-                  marginRight: '.8rem'
-                }} width="3.5rem" height="auto"/>}
+                {isSidebar && (
+                  <SvgIcon
+                    src={ExchangeLogo}
+                    style={{
+                      marginRight: '.8rem',
+                    }}
+                    width="3.5rem"
+                    height="auto"
+                  />
+                )}
 
                 <AccountName
-                    align="left"
-                    variant="body1"
-                    //color={isChecked ? 'secondary' : 'textSecondary'}
-                    lineHeight={'2rem'}
-                    fontSize={'1.4rem'}
-                    textColor={'#7284A0'}
-                    letterSpacing="1px"
-                  >
-                    {keyName.name}
-                    <TypographyTitle lineHeight="122.5%">$500,000.00</TypographyTitle>
+                  align="left"
+                  variant="body1"
+                  //color={isChecked ? 'secondary' : 'textSecondary'}
+                  lineHeight={'2rem'}
+                  fontSize={'1.4rem'}
+                  textColor={'#7284A0'}
+                  letterSpacing="1px"
+                >
+                  {keyName.name}
+                  <TypographyTitle lineHeight="122.5%">
+                    {formattedValue}
+                  </TypographyTitle>
                 </AccountName>
                 <Component
                   disabled={!login}
@@ -140,14 +178,15 @@ export default class Accounts extends React.PureComponent<IProps> {
                     }
                   }}
                   style={{
-                    padding: '6px 12px'
+                    padding: '6px 12px',
                   }}
                 />
-                {isSidebar && <PortfolioSelectorPopup
+                {isSidebar && (
+                  <PortfolioSelectorPopup
                     exchangeKey={keyName}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />
-                }
+                )}
               </AccountsListItem>
             )
           })}
@@ -157,3 +196,7 @@ export default class Accounts extends React.PureComponent<IProps> {
     )
   }
 }
+
+export default compose(
+  queryRendererHoc({ query: GET_BASE_COIN, name: 'queryBaseCoin' })
+)(Accounts)
