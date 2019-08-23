@@ -189,7 +189,7 @@ class TransactionPage extends Component {
                       isRebalance,
                       onToggleAll,
                       onKeyToggle,
-                      onKeySelectOnlyOne
+                      onKeySelectOnlyOne,
                     }}
                   />
                 </Grid>
