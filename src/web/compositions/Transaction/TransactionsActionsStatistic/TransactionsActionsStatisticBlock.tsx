@@ -17,7 +17,7 @@ import {
   TransactionActionsAction,
 } from './TransactionsActionsStatistic.styles'
 
-const Block = ({ actions, refetch }) => {
+const Block = ({ actions, refetch, title }) => {
   const {
     trades,
     deposits,
@@ -36,7 +36,7 @@ const Block = ({ actions, refetch }) => {
     <TransactionActions>
       <Grid container justify="space-between" alignItems="flex-start">
         <TransactionActionsTypography>
-          Actions today
+          Actions {title}
         </TransactionActionsTypography>
         <TransactionActionsNumber>
           {trades + deposits + withdrawals}

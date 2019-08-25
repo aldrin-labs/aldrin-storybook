@@ -26,7 +26,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         emptyTableText="No history"
         pagination={{
           fakePagination: false,
-          enabled: rows.body.length > 20,
+          enabled: rows.body.length >= 30,
           totalCount: count,
           page: page,
           rowsPerPage: perPage,

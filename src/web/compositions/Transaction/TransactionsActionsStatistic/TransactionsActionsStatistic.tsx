@@ -7,8 +7,8 @@ class TransactionsActionsStatistic extends Component {
   render() {
     return (
       <Grid item>
-        <DaysBlock />
-        <WeekBlock />
+        <DaysBlock title={'today'} />
+        <WeekBlock title={'this week'} />
       </Grid>
     )
   }
