@@ -60,12 +60,12 @@ const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
           <OrderbookTable title={'Buy'} data={{ ...buyOrdersData }} />
           <Arrow
             color={'inherit'}
-            style={{ color: '#2F7619', width: '5%', marginTop: '4%' }}
+            style={{ color: '#2F7619', width: '5%', marginTop: '20px' }}
           />
           <OrderbookTable title={'_'} data={{ ...middleOrdersData }} />
           <Arrow
             color={'inherit'}
-            style={{ color: '#2F7619', width: '5%', marginTop: '4%' }}
+            style={{ color: '#2F7619', width: '5%', marginTop: '20px' }}
           />
           <OrderbookTable title={'Sell'} data={{ ...sellOrdersData }} />
         </Grid>

@@ -22,6 +22,7 @@ import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serv
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { addMainSymbol } from '@sb/components/index'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 /*
  * 	params:
  *		c (integer): count numbers of digits after sign
@@ -58,8 +59,8 @@ const format = (number, baseCoin) => {
   const isUSDCurrently = baseCoin === 'USDT'
 
   return isUSDCurrently
-    ? addMainSymbol(formatMoney(number, 2, '.', ','), isUSDCurrently)
-    : addMainSymbol(formatMoney(number, 8, '.', ','), isUSDCurrently)
+    ? addMainSymbol(roundAndFormatNumber(number, 2, true), isUSDCurrently)
+    : addMainSymbol(roundAndFormatNumber(number, 8, true), isUSDCurrently)
 }
 
 const gridBorder = `
