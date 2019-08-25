@@ -26,17 +26,18 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
 
   render() {
     const { rows } = this.props
+    console.log()
 
     return (
       <StyledTable
-        style={{ height: '19.5vw', overflowY: 'scroll' }}
+        style={{ height: '19.5vw', position: 'relative', overflowY: 'scroll' }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
         columnNames={rows.head}
         emptyTableText="No history"
         pagination={{
-          enabled: true, // toogle page nav panel in the footer
+          enabled: rows.body.length > 20, // toogle page nav panel in the footer
           page: this.state.page,
           rowsPerPage: this.state.rowsPerPage,
           rowsPerPageOptions: [20, 50, 100, 200],
@@ -53,7 +54,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             borderBottom: '2px solid #e0e5ec',
             whiteSpace: 'nowrap',
             color: '#7284A0',
-            background: 'white'
+            background: 'white',
           },
           cell: {
             padding: '1.2rem 1.6rem 1.2rem 1.2rem',
@@ -62,8 +63,8 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             fontWeight: 500,
             textTransform: 'uppercase',
             letterSpacing: 0.5,
-            color: '#7284A0'
-          }
+            color: '#7284A0',
+          },
         }}
       />
     )
@@ -72,7 +73,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   componentDidMount() {
     if (isWidthUp('xl', this.props.width)) {
       this.setState({
-        rowsPerPage: 20
+        rowsPerPage: 20,
       })
     }
   }

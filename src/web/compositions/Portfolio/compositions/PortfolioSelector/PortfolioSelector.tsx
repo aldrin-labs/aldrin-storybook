@@ -298,8 +298,6 @@ class PortfolioSelector extends React.Component<IProps> {
     const { portfolioAssetsData } = getPortfolioAssetsData(
       myPortfolios[0].portfolioAssets
     )
-    console.log('mp', myPortfolios)
-    console.log('data', portfolioAssetsData, baseCoin)
 
     const login = true
 
@@ -351,6 +349,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
               <AccountsSlick
                 isSideNav
+                path={this.props.location.pathname}
                 myPortfolios={myPortfolios}
                 baseCoin={baseCoin}
               />

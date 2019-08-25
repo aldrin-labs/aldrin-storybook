@@ -10,12 +10,16 @@ import { ContainerGrid } from './SignalPage.styles'
 
 import { IState, IProps } from './SignalEventList.types'
 
-const putDataInTable = (tableData, timers, updateTimers) => {
+const putDataInTable = (
+  tableData: any[],
+  timers: any[],
+  updateTimers: (data: any[]) => void
+) => {
   if (!tableData || tableData.length === 0) {
     return { head: [], body: [], footer: null }
   }
 
-  const [body, updateTimersInterval] = transformData(
+  const [body, updateTimersInterval, timersArray] = transformData(
     tableData,
     timers,
     updateTimers
@@ -41,10 +45,17 @@ const putDataInTable = (tableData, timers, updateTimers) => {
     ],
     body,
     updateTimersInterval,
+    timersArray,
   }
 }
 
-const transformData = (data: any[], timers, updateTimers) => {
+const transformData = (
+  data: any[],
+  timers: any[],
+  updateTimers: (data: any[]) => void
+) => {
+  const [oldUpdated, updateData] = useState([])
+
   // update timer
   const countUp = ({ seconds, minutes, hours, days }) => {
     const pad = (num: number | string) => (+num < 10 ? '0' + num : num)
@@ -74,7 +85,7 @@ const transformData = (data: any[], timers, updateTimers) => {
   }
 
   // update for all signal events
-  const updateTimersInterval = (timers) => {
+  const updateTimersInterval = (timers: any[]) => {
     return timers.map((timer) => {
       return countUp(timer)
     })
@@ -98,14 +109,23 @@ const transformData = (data: any[], timers, updateTimers) => {
     return { days, hours, minutes, seconds: deltaSeconds }
   }
 
-  const timersArray = []
+  const timersArray: any[] = []
+  const updatedArray: any[] = []
+  let needToUpdateAfterRefetch = false
+
   const transformedData = data.map((row, i) => {
     // get data to update state after cycle
+
+    if (oldUpdated.length === data.length && oldUpdated[i] !== row.updatedAt)
+      needToUpdateAfterRefetch = true
+
+    updatedArray.push(row.updatedAt)
     timersArray.push(initializeState(row.updatedAt))
 
-    const { days, hours, minutes, seconds } = timers[i]
-      ? timers[i]
-      : { days: 0, hours: 0, minutes: 0, seconds: 0 }
+    const { days, hours, minutes, seconds } =
+      timers && timers[i]
+        ? timers[i]
+        : { days: 0, hours: 0, minutes: 0, seconds: 0 }
 
     return {
       id: row._id,
@@ -177,12 +197,16 @@ const transformData = (data: any[], timers, updateTimers) => {
     }
   })
 
-  // update data
-  if (timersArray.length > timers.length) {
+  // update data if its first render or if updatedAt changed ( so we get new data )
+  if (timersArray.length > timers.length || needToUpdateAfterRefetch) {
     updateTimers(timersArray)
   }
 
-  return [transformedData, updateTimersInterval]
+  if (oldUpdated.length < updateData.length) {
+    updateData(updatedArray)
+  }
+
+  return [transformedData, updateTimersInterval, timersArray]
 }
 
 const SignalEventList = (props) => {
@@ -197,8 +221,6 @@ const SignalEventList = (props) => {
     onTrClick,
     refetch,
   } = props
-
-  const smallScreen = window.outerWidth < 1500
 
   const [refetchTimerId, updateRefetchTimer] = useState(0)
   const [timers, updateTimers] = useState([])
@@ -231,7 +253,7 @@ const SignalEventList = (props) => {
       : clearInterval(refetchTimerId)
 
     return () => clearInterval(refetchTimerId)
-  }, [autoRefetch])
+  }, [autoRefetch, events])
 
   return (
     <ContainerGrid container style={{ position: 'relative' }}>
@@ -284,7 +306,7 @@ const SignalEventList = (props) => {
             fontWeight: '500',
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
-            fontSize: smallScreen ? '.8rem' : '.9rem',
+            fontSize: '.9rem',
             padding: '0 0 0 .3rem',
             '&:before': {
               content: '',

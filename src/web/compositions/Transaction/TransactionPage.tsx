@@ -71,8 +71,6 @@ class TransactionPage extends Component {
       myPortfolios[0].portfolioAssets
     )
 
-    console.log('assets', portfolioAssetsData)
-
     // TODO: Account block, less more pointers, table fonts, titles
 
     return (
@@ -121,6 +119,7 @@ class TransactionPage extends Component {
                     />
                     <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
                     <AccountsSlick
+                      path={this.props['0'].location.pathname}
                       myPortfolios={myPortfolios}
                       baseCoin={baseCoin}
                     />
