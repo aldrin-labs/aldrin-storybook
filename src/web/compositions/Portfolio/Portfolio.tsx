@@ -127,11 +127,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               onCompleted={() => refetch()}
               mutation={updatePortfolioSettingsMutation}
               update={updateSettingsMutation}
-              refetchQueries={[
-                // no need to refetch main
-                // { query: getPortfolioQuery, variables: { baseCoin } },
-                { query: getCoinsForOptimization, variables: { baseCoin } },
-              ]}
             >
               {(updatePortfolioSettings) => (
                 <>
@@ -191,6 +186,10 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                         baseCoin={baseCoin}
                         isUSDCurrently={isUSDCurrently}
                         toggleWallets={this.toggleWallets}
+                        updatePortfolioSettings={updatePortfolioSettings}
+                        newKeys={isRebalance ? rebalanceKeys : keys}
+                        isRebalance={isRebalance}
+                        data={data}
                       />
                     )}
 

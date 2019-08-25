@@ -2,31 +2,19 @@ import * as React from 'react'
 import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
 import { withWidth } from '@material-ui/core'
-import { isWidthUp } from '@material-ui/core/withWidth'
 import { withTheme } from '@material-ui/styles'
 
 @withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
-  state = {
-    activeSortArg: null,
-    page: 0,
-    rowsPerPage: 7,
-  }
-
-  handleChangePage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    page: number
-  ) => {
-    this.setState({ page })
-  }
-
-  handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ rowsPerPage: event.target.value })
-  }
-
   render() {
-    const { rows } = this.props
-    console.log()
+    const {
+      rows,
+      page,
+      perPage,
+      count,
+      handleChangePage,
+      handleChangeRowsPerPage,
+    } = this.props
 
     return (
       <StyledTable
@@ -37,12 +25,14 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         columnNames={rows.head}
         emptyTableText="No history"
         pagination={{
-          enabled: rows.body.length > 20, // toogle page nav panel in the footer
-          page: this.state.page,
-          rowsPerPage: this.state.rowsPerPage,
-          rowsPerPageOptions: [20, 50, 100, 200],
-          handleChangeRowsPerPage: this.handleChangeRowsPerPage,
-          handleChangePage: this.handleChangePage,
+          fakePagination: false,
+          enabled: rows.body.length > 20,
+          totalCount: count,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [30, 50, 70, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
         }}
         tableStyles={{
           heading: {
@@ -68,14 +58,6 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         }}
       />
     )
-  }
-
-  componentDidMount() {
-    if (isWidthUp('xl', this.props.width)) {
-      this.setState({
-        rowsPerPage: 20,
-      })
-    }
   }
 }
 
