@@ -1,17 +1,22 @@
 import React, { Component } from 'react'
+import moment from 'moment'
+
 // import { compose } from 'recompose'
 // import { queryRendererHoc } from '@core/components/QueryRenderer'
+
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { selectPortfolio } from '@core/graphql/mutations/portfolio/selectPortfolio'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+
 // import Slider from 'react-slick'
-import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
 import { Query, Mutation } from 'react-apollo'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
+import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 
 import {
   AccountsSlickStyles,
@@ -66,18 +71,9 @@ class AccountsSlick extends Component {
       >
         {({ data, loading, networkStatus }) => {
           if (networkStatus === 4 || loading || !data) {
-            return (
-              <LinearProgress
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  width: '100vw',
-                  zIndex: 1009,
-                }}
-                color="secondary"
-              />
-            )
+            return 'Loading...'
           }
+
           const { myPortfolios: allPortfolios } = data
 
           const index = allPortfolios.findIndex((p) => p._id === portfolio._id)
@@ -101,8 +97,6 @@ class AccountsSlick extends Component {
               },
             })
           }
-
-          console.log(myPortfolios)
 
           return (
             <>
@@ -153,11 +147,40 @@ const APIWrapper = (props: any) => (
   <Query query={GET_BASE_COIN}>
     {({ data }) => {
       const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
+
+      const endDate = +moment().endOf('day')
+      const startDate = +moment().subtract(1, 'weeks')
+      const queries = [
+        { query: getPortfolioMainQuery, variables: { baseCoin } },
+        {
+          query: MyTradesQuery,
+          variables: {
+            input: {
+              page: 0,
+              perPage: 600,
+              startDate,
+              endDate,
+            },
+          },
+        },
+        {
+          query: getCalendarActions,
+          variables: {
+            input: {
+              startDate,
+              endDate,
+            },
+          },
+        },
+      ]
+
       return (
         <Mutation
           mutation={selectPortfolio}
-          refetchQueries={[
+          refetchQueries={() => [
+            { query: getMyPortfoliosQuery, variables: { baseCoin } },
             { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
+            ...queries,
           ]}
         >
           {(mutation) => {

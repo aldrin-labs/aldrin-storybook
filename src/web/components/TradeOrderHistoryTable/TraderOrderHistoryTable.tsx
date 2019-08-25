@@ -2,7 +2,6 @@ import * as React from 'react'
 import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
 import { withWidth } from '@material-ui/core'
-import { isWidthUp } from '@material-ui/core/withWidth'
 import { withTheme } from '@material-ui/styles'
 
 @withTheme()
@@ -19,7 +18,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
 
     return (
       <StyledTable
-        style={{ height: '19.5vw', overflowY: 'scroll', position: 'relative' }}
+        style={{ height: '19.5vw', position: 'relative', overflowY: 'scroll' }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
@@ -27,7 +26,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         emptyTableText="No history"
         pagination={{
           fakePagination: false,
-          enabled: true,
+          enabled: rows.body.length >= 30,
           totalCount: count,
           page: page,
           rowsPerPage: perPage,

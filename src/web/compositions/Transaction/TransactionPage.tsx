@@ -105,8 +105,7 @@ class TransactionPage extends React.PureComponent {
       activeWallets = [],
     } = this.props
 
-    console.log('this.props', this.props);
-
+    console.log('this.props', this.props)
 
     const { includeExchangeTransactions, includeTrades } = this.state
 
@@ -169,6 +168,7 @@ class TransactionPage extends React.PureComponent {
                     />
                     <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
                     <AccountsSlick
+                      path={this.props['0'].location.pathname}
                       myPortfolios={myPortfolios}
                       baseCoin={baseCoin}
                     />
@@ -260,5 +260,5 @@ export default compose(
     query: portfolioKeyAndWalletsQuery,
     name: 'portfolioKeyAndWalletsQuery',
     variables: { baseCoin: 'USDT' },
-  }),
+  })
 )(TransactionPage)
