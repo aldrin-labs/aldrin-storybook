@@ -9,13 +9,13 @@ import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serv
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { selectPortfolio } from '@core/graphql/mutations/portfolio/selectPortfolio'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 
 // import Slider from 'react-slick'
 import { Query, Mutation } from 'react-apollo'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 
 import {
   AccountsSlickStyles,

@@ -62,7 +62,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     return (
       <Query
         notifyOnNetworkStatusChange
-        fetchPolicy="cache-and-network"
+        fetchPolicy="network-only"
         query={portfolioKeyAndWalletsQuery}
         variables={{ baseCoin }}
       >
@@ -123,87 +123,82 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             : activeKeys.length + activeWallets.length > 0
 
           return (
-            <Mutation
-              onCompleted={() => refetch()}
-              mutation={updatePortfolioSettingsMutation}
-              update={updateSettingsMutation}
-            >
-              {(updatePortfolioSettings) => (
-                <>
-                  <PortfolioContainer>
-                    {/* refactor this */}
-                    <PortfolioSelector
-                      login={true}
-                      updatePortfolioSettings={updatePortfolioSettings}
-                      portfolioId={portfolioId}
-                      dustFilter={dustFilter}
-                      newKeys={isRebalance ? rebalanceKeys : keys}
-                      newWallets={wallets}
-                      activeKeys={
-                        isRebalance ? activeRebalanceKeys : activeKeys
-                      }
-                      activeWallets={activeWallets}
+            // <Mutation
+            //   onCompleted={() => refetch()}
+            //   mutation={updatePortfolioSettingsMutation}
+            //   update={updateSettingsMutation}
+            // >
+            //   {(updatePortfolioSettings) => (
+            <>
+              <PortfolioContainer>
+                {/* refactor this */}
+                <PortfolioSelector
+                  login={true}
+                  // updatePortfolioSettings={updatePortfolioSettings}
+                  portfolioId={portfolioId}
+                  dustFilter={dustFilter}
+                  newKeys={isRebalance ? rebalanceKeys : keys}
+                  newWallets={wallets}
+                  activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+                  activeWallets={activeWallets}
+                  toggleWallets={this.toggleWallets}
+                  isSideNavOpen={this.state.isSideNavOpen}
+                  isRebalance={isRebalance}
+                  isUSDCurrently={isUSDCurrently}
+                  data={data}
+                  baseCoin={baseCoin}
+                />
+
+                {!hasKeysOrWallets && (
+                  <>
+                    <AddExchangeOrWalletWindow
+                      theme={theme}
                       toggleWallets={this.toggleWallets}
-                      isSideNavOpen={this.state.isSideNavOpen}
-                      isRebalance={isRebalance}
-                      isUSDCurrently={isUSDCurrently}
-                      data={data}
-                      baseCoin={baseCoin}
                     />
+                  </>
+                )}
 
-                    {!hasKeysOrWallets && (
-                      <>
-                        <AddExchangeOrWalletWindow
-                          theme={theme}
-                          toggleWallets={this.toggleWallets}
-                        />
-                      </>
-                    )}
+                {hasKeysOrWallets && !hasActiveKeysOrWallets && (
+                  <SelectExchangeOrWalletWindow
+                    theme={theme}
+                    toggleWallets={this.toggleWallets}
+                  />
+                )}
 
-                    {hasKeysOrWallets && !hasActiveKeysOrWallets && (
-                      <SelectExchangeOrWalletWindow
-                        theme={theme}
-                        toggleWallets={this.toggleWallets}
-                      />
-                    )}
+                {hasKeysOrWallets && hasActiveKeysOrWallets && (
+                  <PortfolioTable
+                    keys={isRebalance ? rebalanceKeys : keys}
+                    key={
+                      isRebalance
+                        ? activeRebalanceKeys.length + activeWallets.length
+                        : activeKeys.length + activeWallets.length
+                    }
+                    showTable={hasActiveKeysOrWallets}
+                    dustFilter={dustFilter}
+                    activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+                    portfolioId={portfolioId}
+                    portfolioName={portfolioName}
+                    theme={theme}
+                    baseCoin={baseCoin}
+                    isUSDCurrently={isUSDCurrently}
+                    toggleWallets={this.toggleWallets}
+                    newKeys={isRebalance ? rebalanceKeys : keys}
+                    isRebalance={isRebalance}
+                    data={data}
+                  />
+                )}
 
-                    {hasKeysOrWallets && hasActiveKeysOrWallets && (
-                      <PortfolioTable
-                        keys={isRebalance ? rebalanceKeys : keys}
-                        key={
-                          isRebalance
-                            ? activeRebalanceKeys.length + activeWallets.length
-                            : activeKeys.length + activeWallets.length
-                        }
-                        showTable={hasActiveKeysOrWallets}
-                        dustFilter={dustFilter}
-                        activeKeys={
-                          isRebalance ? activeRebalanceKeys : activeKeys
-                        }
-                        portfolioId={portfolioId}
-                        portfolioName={portfolioName}
-                        theme={theme}
-                        baseCoin={baseCoin}
-                        isUSDCurrently={isUSDCurrently}
-                        toggleWallets={this.toggleWallets}
-                        updatePortfolioSettings={updatePortfolioSettings}
-                        newKeys={isRebalance ? rebalanceKeys : keys}
-                        isRebalance={isRebalance}
-                        data={data}
-                      />
-                    )}
-
-                    <Fade
-                      in={this.state.isSideNavOpen}
-                      mountOnEnter={true}
-                      unmountOnExit={true}
-                    >
-                      <Backdrop onClick={this.toggleWallets} />
-                    </Fade>
-                  </PortfolioContainer>
-                </>
-              )}
-            </Mutation>
+                <Fade
+                  in={this.state.isSideNavOpen}
+                  mountOnEnter={true}
+                  unmountOnExit={true}
+                >
+                  <Backdrop onClick={this.toggleWallets} />
+                </Fade>
+              </PortfolioContainer>
+            </>
+            //     )}
+            //   </Mutation>
           )
         }}
       </Query>
