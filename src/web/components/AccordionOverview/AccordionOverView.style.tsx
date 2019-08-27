@@ -8,7 +8,9 @@ import {
   withStyles,
 } from '@material-ui/core'
 
-export const GridColumn = styled(Grid)`
+export const GridColumn = styled(({ gridBorder, ...props }) => (
+  <Grid {...props} />
+))`
   position: relative;
   padding: ${(props) => props.paddingCell};
   flex-basis: 16.66%;
@@ -108,6 +110,7 @@ export const ExpansionPanelSummaryCustom = withStyles({
 
   content: {
     margin: '12px 0 0 0',
+    transition: 'margin 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
   },
 })(ExpansionPanelSummary)
 

@@ -116,9 +116,7 @@ const AutoRefetch = ({
       <SwitchOnOff
         enabled={autoRefetch || false}
         _id={'AutoRefetch'}
-        onChange={() =>
-          toggleAutoRefetch(!autoRefetch) || console.log('changed')
-        }
+        onChange={() => toggleAutoRefetch(!autoRefetch)}
       />
     </div>
   )
@@ -539,6 +537,7 @@ const CustomTable = (props: Props) => {
     needRefetch = false,
     toggleAutoRefetch,
     stylesForTable,
+    paperAdditionalStyle = '',
   } = props
 
   if (

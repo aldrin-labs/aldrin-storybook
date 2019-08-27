@@ -46,32 +46,31 @@ export const StyledToolbar = styled(Toolbar)`
 export const NavLinkButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem .5rem;
+  padding: 1rem 0.5rem;
 `
 
 export const NavBarWrapper = styled(Grid)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-
-  @media only screen and (min-width: 1100px) {
-    justify-content: center;
-  }
+  justify-content: center;
 `
 
 export const NavBreadcrumbTypography = styled(Typography)`
   text-transform: uppercase;
-  border-left: 1px solid #7284A0;
-  padding-left: .75rem;
-  font-size: 12px;
+  border-left: 1px solid #7284a0;
+  padding-left: 0.75rem;
+  padding-top: 0.1rem;
+  font-size: 1.2rem;
   line-height: 2.75rem;
   letter-spacing: 1px;
 
   @media only screen and (max-width: 1100px) {
     font-size: 9px;
   }
+
   @media only screen and (min-width: 2367px) {
-    font-size: 1rem;
+    padding-top: 0.2rem;
+    font-size: 1.4rem;
   }
 `

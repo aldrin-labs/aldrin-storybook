@@ -27,7 +27,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-const version = `10.4.8`
+const version = `10.4.10`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -50,6 +50,7 @@ const AppRaw = ({
   const fullscreen: boolean =
     currentPage === '/chart' && chartPageView !== 'default'
   const showFooter = currentPage !== '/registration'
+  const isPNL = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
 
@@ -57,7 +58,7 @@ const AppRaw = ({
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
-        <AppGridLayout showFooter={showFooter}>
+        <AppGridLayout showFooter={showFooter} isPNL={isPNL}>
           {!pageIsRegistration && (
             <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
           )}

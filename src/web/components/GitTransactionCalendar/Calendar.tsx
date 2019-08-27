@@ -39,7 +39,14 @@ const HeatmapWrapper = styled.div`
     font-size: 0.575rem;
   }
 
-  @media only screen and (min-width: 2560px) {
+  @media only screen and (min-width: 1921px) {
+    .react-calendar-heatmap-month-label,
+    .react-calendar-heatmap .react-calendar-heatmap-small-text {
+      font-size: 0.6rem;
+    }
+  }
+
+  @media only screen and (min-width: 2360px) {
     .react-calendar-heatmap-month-label,
     .react-calendar-heatmap .react-calendar-heatmap-small-text {
       font-size: 0.45rem;
@@ -63,32 +70,6 @@ const LegendHeatmapSquare = styled.div`
 `
 
 class GitTransactionCalendar extends Component {
-  shouldComponentUpdate(nextProps: any) {
-    const { actions, refetch } = this.props
-
-    if (
-      actions &&
-      actions.myPortfolios &&
-      actions.myPortfolios[0].name !== nextProps.actions.myPortfolios[0].name &&
-      nextProps.actions &&
-      nextProps.actions.myPortfolios
-    ) {
-      refetch()
-    }
-
-    return true
-    // if (
-    //   actions &&
-    //   actions.myPortfolios &&
-    //   actions.myPortfolios[0].name !==
-    //     nextProps.myTrades.myPortfolios[0].name &&
-    //   nextProps.myTrades &&
-    //   nextProps.myTrades.myPortfolios
-    // ) {
-    //   refetch()
-    // }
-  }
-
   render() {
     const { actions } = this.props
 

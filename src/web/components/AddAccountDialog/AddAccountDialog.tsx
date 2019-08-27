@@ -32,7 +32,6 @@ import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
 
-
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
@@ -136,7 +135,7 @@ const DialogContent = withStyles((theme) => ({
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
-    isSelected: true
+    isSelected: true,
   }
 
   handleRadioBtn = () => {
@@ -169,7 +168,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       handleSubmit,
       validateForm,
       dirty,
-      isSubmitting
+      isSubmitting,
     } = this.props
 
     return (
@@ -185,14 +184,18 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           fontSize={'1.4rem'}
           letterSpacing="1px"
           onClick={this.handleClickOpen}
-
           style={{
-            border: 'none'
+            border: 'none',
           }}
         >
-          <SvgIcon src={Plus} width="3.5rem" height="auto" style={{
-            marginRight: '.8rem'
-          }}/>
+          <SvgIcon
+            src={Plus}
+            width="3.5rem"
+            height="auto"
+            style={{
+              marginRight: '.8rem',
+            }}
+          />
           {/* <AddIcon fontSize={`small`} /> */} Add Account
         </BtnCustom>
         <DialogWrapper
@@ -213,123 +216,129 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               Add Api Key
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center" style={{
-            padding: '0 3rem 3rem'
-          }}>
-            <form onSubmit={e => {
-              e.preventDefault()
-              validateForm().then(async () => {
-                await handleSubmit()
-                handleClose()
-              })
-            }} style={{ width: '440px' }}>
+          <DialogContent
+            justify="center"
+            style={{
+              padding: '0 3rem 3rem',
+            }}
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                validateForm().then(async () => {
+                  await handleSubmit()
+                  handleClose()
+                })
+              }}
+              style={{ width: '440px' }}
+            >
               <Grid>
-              <GridCustom>
-                <Legend>Exchange</Legend>
-                <SelectExchangeList
-                  isClearable={true}
-                  value={
-                    values.exchange
-                      ? [{ label: values.exchange, value: values.exchange }]
-                      : null
-                  }
-                  onChange={handleSelectChangePrepareForFormik.bind(
-                    this,
-                    'exchange'
-                  )}
-                  controlStyles={{
-                    border: '1px solid #e0e5ec',
-                    borderRadius: '1rem',
-                    padding: '0 1rem',
-                    background: '#fff'
-                  }}
-                  singleValueStyles={{
-                    color: '#abbad1',
-                    fontSize: '1.3rem'
-                  }}
-                  optionStyles={{
-                    color: '#abbad1',
-                    fontSize: '1.3rem'
-                  }}
-                />
-              </GridCustom>
-              <GridCustom>
-                <Legend>Account name</Legend>
-                <InputBaseCustom
-                  error={touched.name && !!errors.name}
-                  id="name"
-                  name="name"
-                  label="Name"
-                  autoComplete="off"
-                  value={values.name || ''}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Type name..."
-                  type="text"
-                  margin="normal"
-                  helperText={
-                    touched.name &&
-                    errors.name && <FormError>{errors.name}</FormError>
-                  }
-                />
-              </GridCustom>
-              <GridCustom>
-                <Legend>Api key</Legend>
-                <InputBaseCustom
-                  error={touched.apiKey && !!errors.apiKey}
-                  id="apiKey"
-                  type="text"
-                  name="apiKey"
-                  label="API Key"
-                  autoComplete="off"
-                  value={values.apiKey || ''}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Enter API key here..."
-                  margin="normal"
-                  helperText={
-                    touched.apiKey &&
-                    errors.apiKey && <FormError>{errors.apiKey}</FormError>
-                  }
-                />
-              </GridCustom>
-              <GridCustom>
-                <Legend>Secret key</Legend>
-                <InputBaseCustom
-                  error={touched.secretOfApiKey && !!errors.secretOfApiKey}
-                  id="secretOfApiKey"
-                  name="secretOfApiKey"
-                  label="Secret"
-                  autoComplete="off"
-                  value={values.secretOfApiKey || ''}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Enter secret key here..."
-                  type="text"
-                  margin="normal"
-                  helperText={
-                    touched.secretOfApiKey &&
-                    errors.secretOfApiKey && (
-                      <FormError>{errors.secretOfApiKey}</FormError>
-                    )
-                  }
-                />
-              </GridCustom>
-            </Grid>
+                <GridCustom>
+                  <Legend>Exchange</Legend>
+                  <SelectExchangeList
+                    isClearable={true}
+                    value={
+                      values.exchange
+                        ? [{ label: values.exchange, value: values.exchange }]
+                        : null
+                    }
+                    onChange={handleSelectChangePrepareForFormik.bind(
+                      this,
+                      'exchange'
+                    )}
+                    controlStyles={{
+                      border: '1px solid #e0e5ec',
+                      borderRadius: '1rem',
+                      padding: '0 1rem',
+                      background: '#fff',
+                    }}
+                    singleValueStyles={{
+                      color: '#abbad1',
+                      fontSize: '1.3rem',
+                    }}
+                    optionStyles={{
+                      color: '#abbad1',
+                      fontSize: '1.3rem',
+                    }}
+                  />
+                </GridCustom>
+                <GridCustom>
+                  <Legend>Account name</Legend>
+                  <InputBaseCustom
+                    error={touched.name && !!errors.name}
+                    id="name"
+                    name="name"
+                    label="Name"
+                    autoComplete="off"
+                    value={values.name || ''}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Type name..."
+                    type="text"
+                    margin="normal"
+                    helperText={
+                      touched.name &&
+                      errors.name && <FormError>{errors.name}</FormError>
+                    }
+                  />
+                </GridCustom>
+                <GridCustom>
+                  <Legend>Api key</Legend>
+                  <InputBaseCustom
+                    error={touched.apiKey && !!errors.apiKey}
+                    id="apiKey"
+                    type="text"
+                    name="apiKey"
+                    label="API Key"
+                    autoComplete="off"
+                    value={values.apiKey || ''}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter API key here..."
+                    margin="normal"
+                    helperText={
+                      touched.apiKey &&
+                      errors.apiKey && <FormError>{errors.apiKey}</FormError>
+                    }
+                  />
+                </GridCustom>
+                <GridCustom>
+                  <Legend>Secret key</Legend>
+                  <InputBaseCustom
+                    error={touched.secretOfApiKey && !!errors.secretOfApiKey}
+                    id="secretOfApiKey"
+                    name="secretOfApiKey"
+                    label="Secret"
+                    autoComplete="off"
+                    value={values.secretOfApiKey || ''}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter secret key here..."
+                    type="text"
+                    margin="normal"
+                    helperText={
+                      touched.secretOfApiKey &&
+                      errors.secretOfApiKey && (
+                        <FormError>{errors.secretOfApiKey}</FormError>
+                      )
+                    }
+                  />
+                </GridCustom>
+              </Grid>
 
-            <Grid container justify="space-between" alignItems="center">
-              <LinkCustom href={'#'}>How to get keys?</LinkCustom>
+              <Grid container justify="space-between" alignItems="center">
+                <LinkCustom href={'#'}>How to get keys?</LinkCustom>
 
-              <BtnCustom
-                btnWidth={'85px'}
-                borderRadius={'32px'}
-                btnColor={blue.custom}
-                type="submit"
-                disabled={!dirty || isSubmitting}
-              >
-                ADD
-              </BtnCustom>
-            </Grid>
+                <BtnCustom
+                  btnWidth={'85px'}
+                  borderRadius={'32px'}
+                  btnColor={blue.custom}
+                  type="submit"
+                  disabled={!dirty || isSubmitting}
+                >
+                  ADD
+                </BtnCustom>
+              </Grid>
             </form>
           </DialogContent>
         </DialogWrapper>
@@ -341,9 +350,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 export default compose(
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
-    options: {
-      refetchQueries: [{ query: portfolioKeyAndWalletsQuery }, { query: getKeysQuery }, { query: keysNames }],
-    },
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin },
+        },
+        { query: getKeysQuery },
+        { query: keysNames },
+      ],
+    }),
   }),
   formikEnhancer
 )(AddAccountDialog)

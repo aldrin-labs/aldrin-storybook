@@ -23,6 +23,13 @@ export const customAquaScrollBar = css`
   }
 `
 
+export const borderRadiusScrollBar = css`
+  &::-webkit-scrollbar-track {
+    margin: calc(3rem + 11px) 0 11px 0;
+    border-bottom-right-radius: 10px;
+  }
+`
+
 export const TypographyFullWidth = styled(TypographyWithCustomColor)`
   width: 100%;
   flex-grow: 1;
@@ -118,7 +125,7 @@ export const GlobalStyle = createGlobalStyle`
 
   @media only screen and (min-width: 2560px) {
     html {
-      font-size: 20px;
+      font-size: 18px;
     }
   }
 `
