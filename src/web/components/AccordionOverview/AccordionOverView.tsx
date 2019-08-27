@@ -107,10 +107,10 @@ class DetailedExpansionPanel extends React.Component {
             <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
-                  assets
+                  unique assets
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                  {totalKeyAssetsData.assets}
+                  {totalKeyAssetsData.uniqueAssets.length}
                 </TypographyValueCell>
               </div>
             </GridColumn>
