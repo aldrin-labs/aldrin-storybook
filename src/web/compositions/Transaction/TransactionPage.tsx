@@ -105,11 +105,8 @@ class TransactionPage extends React.PureComponent {
       activeWallets = [],
     } = this.props
 
-    console.log('this.props', this.props)
-
     const { includeExchangeTransactions, includeTrades } = this.state
 
-    const baseCoin = 'USDT'
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
@@ -170,7 +167,7 @@ class TransactionPage extends React.PureComponent {
                     <AccountsSlick
                       path={this.props['0'].location.pathname}
                       myPortfolios={myPortfolios}
-                      baseCoin={baseCoin}
+                      baseCoin={'USDT'}
                     />
                   </PortfolioSelectorWrapper>
 
@@ -182,7 +179,7 @@ class TransactionPage extends React.PureComponent {
                         isSideNavOpen,
                         isCheckedAll,
                         portfolioAssetsData,
-                        baseCoin,
+                        baseCoin: 'USDT',
                         newKeys,
                         isRebalance: false,
                         onKeysSelectAll: this.onKeysSelectAll,

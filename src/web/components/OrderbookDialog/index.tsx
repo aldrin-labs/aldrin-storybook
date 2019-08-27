@@ -1,6 +1,6 @@
 import React from 'react'
 import { Dialog, DialogTitle, Grid } from '@material-ui/core'
-import { Clear, TrendingFlat as Arrow } from '@material-ui/icons'
+import { Clear } from '@material-ui/icons'
 
 // import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
@@ -11,7 +11,7 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import OrderbookTable from './OrderbookTable'
-import { StyledPaper } from './OrderbookDialog.styles'
+import { StyledPaper, StyledArrow } from './OrderbookDialog.styles'
 
 const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
   const buyOrdersData = data.ordersA ? JSON.parse(data.ordersA) : { asks: [] }
@@ -58,15 +58,9 @@ const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
       <StyledDialogContent>
         <Grid container direction={'row'} alignItems={'flex-start'}>
           <OrderbookTable title={'Buy'} data={{ ...buyOrdersData }} />
-          <Arrow
-            color={'inherit'}
-            style={{ color: '#2F7619', width: '5%', marginTop: '20px' }}
-          />
+          <StyledArrow color={'inherit'} />
           <OrderbookTable title={'_'} data={{ ...middleOrdersData }} />
-          <Arrow
-            color={'inherit'}
-            style={{ color: '#2F7619', width: '5%', marginTop: '20px' }}
-          />
+          <StyledArrow color={'inherit'} />
           <OrderbookTable title={'Sell'} data={{ ...sellOrdersData }} />
         </Grid>
       </StyledDialogContent>

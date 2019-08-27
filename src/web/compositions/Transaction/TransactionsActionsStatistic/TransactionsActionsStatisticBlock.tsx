@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { compose } from 'recompose'
 import moment from 'moment'
 
@@ -17,20 +17,16 @@ import {
   TransactionActionsAction,
 } from './TransactionsActionsStatistic.styles'
 
-const Block = ({ actions, refetch, title }) => {
+const Block = ({ actions, title }) => {
   const {
-    trades,
-    deposits,
-    withdrawals,
+    trades = 0,
+    deposits = 0,
+    withdrawals = 0,
   }: {
     trades: number
     deposits: number
     withdrawals: number
   } = getActionsSummary(actions.myPortfolios[0].portfolioActions.trades)
-
-  useEffect(() => {
-    refetch()
-  }, [actions])
 
   return (
     <TransactionActions>
@@ -75,6 +71,7 @@ const Block = ({ actions, refetch, title }) => {
 export const DaysBlock = compose(
   queryRendererHoc({
     name: 'actions',
+    fetchPolicy: 'network-only',
     query: MyTradesQuery,
     withOutSpinner: false,
     variables: {
@@ -93,6 +90,7 @@ export const DaysBlock = compose(
 export const WeekBlock = compose(
   queryRendererHoc({
     name: 'actions',
+    fetchPolicy: 'network-only',
     query: MyTradesQuery,
     withOutSpinner: false,
     variables: {

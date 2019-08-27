@@ -8,7 +8,6 @@ import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/por
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { selectPortfolio } from '@core/graphql/mutations/portfolio/selectPortfolio'
-import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
 
 // import Slider from 'react-slick'
@@ -24,7 +23,6 @@ import {
   TypographyAccountMoney,
 } from './AccountsSlick.styles'
 
-import { LinearProgress } from '@material-ui/core'
 import SvgIcon from '@sb/components/SvgIcon'
 import SliderArrow from '@icons/SliderArrow.svg'
 
@@ -52,13 +50,13 @@ const RightArrow = ({ className, handleClick, style }) => (
 class AccountsSlick extends Component {
   render() {
     const {
-      myPortfolios,
+      myPortfolios: portfolios = [{ name: 'Loading...', _id: 1 }],
       isSideNav,
       baseCoin,
       selectPortfolioMutation,
     } = this.props
 
-    const portfolio = myPortfolios[0]
+    const portfolio = portfolios[0]
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
 
@@ -69,14 +67,19 @@ class AccountsSlick extends Component {
         query={getMyPortfoliosQuery}
         variables={{ baseCoin }}
       >
-        {({ data, loading, networkStatus }) => {
-          if (networkStatus === 4 || loading || !data) {
-            return 'Loading...'
-          }
+        {({ data }) => {
+          const {
+            myPortfolios: allPortfolios = [
+              { _id: 0 },
+              { _id: 1, portfolioValue: 0 },
+              { _id: 2 },
+            ],
+          } = data
 
-          const { myPortfolios: allPortfolios } = data
+          let index = allPortfolios.findIndex((p) => p._id === portfolio._id)
 
-          const index = allPortfolios.findIndex((p) => p._id === portfolio._id)
+          // instead of loading
+          if (index === -1) index = 1
 
           const prevPortfolioId =
             index === 0
@@ -103,7 +106,7 @@ class AccountsSlick extends Component {
               <AccountsSlickStyles />
               <div style={{ position: 'relative', margin: '2rem 0 2rem 0' }}>
                 <LeftArrow
-                  style={{ position: 'absolute', left: 0, top: '50%' }}
+                  style={{ position: 'absolute', left: 0, top: '20%' }}
                   handleClick={() => handleClick(prevPortfolioId)}
                 />
                 <TypographyAccountName isSideNav={isSideNav}>
@@ -120,7 +123,7 @@ class AccountsSlick extends Component {
                   )}
                 </TypographyAccountMoney>
                 <RightArrow
-                  style={{ position: 'absolute', right: 0, top: '50%' }}
+                  style={{ position: 'absolute', right: 0, top: '20%' }}
                   handleClick={() => handleClick(nextPortfolioId)}
                 />
               </div>
@@ -132,71 +135,56 @@ class AccountsSlick extends Component {
   }
 }
 
-// export default compose(
-//   graphql(selectPortfolio, {
-//     name: 'selectPortfolioMutation',
-//     options: {
-//       refetchQueries: [
-//         { query: portfolioKeyAndWalletsQuery, variables: { baseCoin: 'BTC' } },
-//       ],
-//     },
-//   })
-// )(AccountsSlick)
+const APIWrapper = (props: any) => {
+  const { baseCoin } = props
 
-const APIWrapper = (props: any) => (
-  <Query query={GET_BASE_COIN}>
-    {({ data }) => {
-      const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
-
-      const endDate = +moment().endOf('day')
-      const startDate = +moment().subtract(1, 'weeks')
-      const queries = [
-        { query: getPortfolioMainQuery, variables: { baseCoin } },
-        {
-          query: MyTradesQuery,
-          variables: {
-            input: {
-              page: 0,
-              perPage: 600,
-              startDate,
-              endDate,
-            },
-          },
+  const endDate = +moment().endOf('day')
+  const startDate = +moment().subtract(1, 'weeks')
+  const queries = [
+    { query: getPortfolioMainQuery, variables: { baseCoin } },
+    {
+      query: MyTradesQuery,
+      variables: {
+        input: {
+          page: 0,
+          perPage: 600,
+          startDate,
+          endDate,
         },
-        {
-          query: getCalendarActions,
-          variables: {
-            input: {
-              startDate,
-              endDate,
-            },
-          },
+      },
+    },
+    {
+      query: getCalendarActions,
+      variables: {
+        input: {
+          startDate,
+          endDate,
         },
-      ]
+      },
+    },
+  ]
 
-      return (
-        <Mutation
-          mutation={selectPortfolio}
-          refetchQueries={() => [
-            { query: getMyPortfoliosQuery, variables: { baseCoin } },
-            { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
-            ...queries,
-          ]}
-        >
-          {(mutation) => {
-            return (
-              <AccountsSlick
-                {...props}
-                selectPortfolioMutation={mutation}
-                baseCoin={baseCoin}
-                isUSDCurrently={baseCoin === 'USDT'}
-              />
-            )
-          }}
-        </Mutation>
-      )
-    }}
-  </Query>
-)
+  return (
+    <Mutation
+      mutation={selectPortfolio}
+      refetchQueries={() => [
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+        { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
+        ...queries,
+      ]}
+    >
+      {(mutation) => {
+        return (
+          <AccountsSlick
+            {...props}
+            selectPortfolioMutation={mutation}
+            baseCoin={baseCoin}
+            isUSDCurrently={baseCoin === 'USDT'}
+          />
+        )
+      }}
+    </Mutation>
+  )
+}
 
 export default APIWrapper
