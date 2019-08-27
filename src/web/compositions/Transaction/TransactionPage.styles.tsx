@@ -3,9 +3,9 @@ import { Grid, Typography } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
 
 export const TransactionsPageMediaQuery = createGlobalStyle`
-  @media only screen and (min-width: 2360px) {
+  @media only screen and (min-width: 1921px) and (max-width: 2100px) {
     html {
-      font-size: 20px;
+      font-size: 13px;
     }
   }
 `
@@ -39,7 +39,7 @@ export const GridContainerTitle = styled(Grid)`
   width: 100%;
   border-radius: 20px 20px 0 0;
   background: ${(props) => props.bgColor};
-  margin-bottom: .33rem;
+  margin-bottom: 0.33rem;
 
   @media (min-width: 2560px) {
     height: auto;
@@ -92,7 +92,7 @@ export const TypographyContatinerTitle = styled(Typography)`
 `
 
 export const TransactionsTitle = styled(TypographyContatinerTitle)`
-  color: ${props => props.textColor || '#16253d'};
+  color: ${(props) => props.textColor || '#16253d'};
   font-size: 1.2rem;
   media(min-width: 2560px) {
     padding: 0.4rem 0 1rem 1rem;
@@ -131,7 +131,7 @@ export const CalendarGrid = styled(Grid)`
   padding: 0 0 1rem 4.5rem;
 
   @media (min-width: 2560px) {
-    padding: 0 0 .5rem 4.5rem;
+    padding: 0 0 0.5rem 4.5rem;
   }
 `
 
@@ -146,10 +146,10 @@ export const GridShowHideDataContainer = styled(Grid)`
 export const TypographyCalendarLegend = styled(Typography)`
   padding: 0 5px;
   position: relative;
-  top: .5rem;
+  top: 0.5rem;
   left: 0;
   letter-spacing: 1px;
-  font-size: .9rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
   font-family: 'DM Sans', sans-serif;
   text-align: ${(props) => props.textAlign};
@@ -183,7 +183,7 @@ export const GridTableContainer = styled(Grid)`
 
 export const PortfolioSelectorWrapper = styled(Grid)`
   position: relative;
-  padding: .75rem .5rem;
+  padding: 0.75rem 0.5rem;
   overflow: hidden;
   min-height: 13.5rem;
 

@@ -6,10 +6,10 @@ import {
   Radio,
   Checkbox,
   IconButton,
-  DialogTitle,
   FormControlLabel,
   Paper,
   DialogContent,
+  DialogTitle,
 } from '@material-ui/core'
 
 import SearchUsername from '@core/components/SearchUsername/SearchUsername'
@@ -22,6 +22,15 @@ export const StyledDialogContent = styled(DialogContent)`
   @media (min-width: 2560px) {
     padding: 0 2rem 2rem;
   }
+`
+
+export const StyledDialogTitle = styled(DialogTitle)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e0e5ec;
+  background-color: #f2f4f6;
+  height: 4rem;
 `
 
 export const StyledPaper = styled(Paper)`

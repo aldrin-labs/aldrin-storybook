@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogTitle, Grid, FormControl } from '@material-ui/core'
+import { Dialog, Grid, FormControl } from '@material-ui/core'
 
 import Clear from '@material-ui/icons/Clear'
 import MiniSuccessPopup from '@sb/components/MiniSuccessPopup'
@@ -9,6 +9,7 @@ import { withTheme } from '@material-ui/styles'
 
 import {
   StyledDialogContent,
+  StyledDialogTitle,
   StyledButton,
   ButtonShare,
   TypographySectionTitle,
@@ -181,7 +182,8 @@ export default class SharePortfolioDialog extends React.Component<
   }
 
   scrollToDropdown = () => {
-    const container = document.getElementById('responsive-dialog-title').parentElement
+    const container = document.getElementById('responsive-dialog-title')
+      .parentElement
     const toScroll = document.getElementById('share-dialog-content')
 
     // TODO: recreate this on refs
@@ -225,18 +227,7 @@ export default class SharePortfolioDialog extends React.Component<
         open={openSharePortfolioPopUp}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle
-          disableTypography
-          id="responsive-dialog-title"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '2px solid #E0E5EC',
-            backgroundColor: theme.palette.grey.main,
-            height: '4rem',
-          }}
-        >
+        <StyledDialogTitle disableTypography id="responsive-dialog-title">
           <TypographyTitle>{`SHARE ${sharePortfolioTitle}`}</TypographyTitle>
           <ClearButton>
             <Clear
@@ -245,7 +236,7 @@ export default class SharePortfolioDialog extends React.Component<
               onClick={handleCloseSharePortfolio}
             />
           </ClearButton>
-        </DialogTitle>
+        </StyledDialogTitle>
         <StyledDialogContent id="share-dialog-content">
           <Grid
             container

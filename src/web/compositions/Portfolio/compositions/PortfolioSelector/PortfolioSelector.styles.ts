@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import FaFilter from '@material-ui/icons/FilterList'
 import { Grid, Typography } from '@material-ui/core'
@@ -9,6 +8,20 @@ export const SliderDustFilter = styled(Slider)`
   position: relative;
   top: 7px;
   left: 0;
+
+  @media (min-width: 1921px) {
+    top: 12px;
+    width: 80%;
+
+    .trackAfter {
+      height: 1.8rem;
+    }
+
+    .thumb {
+      height: 1.8rem;
+      width: 1.8rem;
+    }
+  }
 `
 
 export const Name = styled.h1`
@@ -95,6 +108,7 @@ export const SliderContainer = styled(Grid)`
   justify-content: center;
   margin-top: 35px;
   padding: 0 15px;
+  height: 2rem;
 `
 export const GridSection = styled(Grid)`
   padding: 1rem 0;
@@ -106,16 +120,12 @@ export const GridSectionAccounts = styled(Grid)`
 `
 
 export const GridSectionDust = styled(Grid)`
-  min-width: 380px;
+  width: 37rem;
   border-top: 1px solid #e7ecf3;
   padding: 2.4rem 1.6rem;
   position: absolute;
   bottom: 0;
-
-  @media only screen and (max-width: 1400px) {
-    min-width: 100%;
-    width: 100%;
-  }
+  z-index: 1;
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
@@ -130,17 +140,27 @@ export const ReactSelectCustom = styled(ReactSelect)`
   margin-left: 10px;
 `
 export const GridSymbolContainer = styled(Grid)`
-  min-width: 30px;
+  width: 10%;
   color: #7284a0;
   font-size: 1.2rem;
   padding: 0 15px 0 0;
+
+  @media (min-width: 1921px) {
+    margin-right: 1rem;
+    font-size: 1.4rem;
+  }
 `
 export const GridSymbolValue = styled(Grid)`
-  min-width: 75px;
+  width: 10%;
   color: #7284a0;
   font-size: 1.2rem;
   padding: 0 0 0 15px;
   white-space: nowrap;
+
+  @media (min-width: 1921px) {
+    padding: 0;
+    font-size: 1.4rem;
+  }
 `
 
 export const TypographySpan = styled(Typography)`

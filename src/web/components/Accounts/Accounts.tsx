@@ -20,7 +20,6 @@ import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 // import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
-import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import SvgIcon from '@sb/components/SvgIcon'
 import ExchangeLogo from '@icons/ExchangeLogo.svg'
 
@@ -35,8 +34,8 @@ class Accounts extends React.PureComponent<IProps> {
   render() {
     const {
       isSideNavOpen,
-      isCheckedAll,
-      onToggleAll,
+      // isCheckedAll,
+      // onToggleAll,
       color,
       newKeys,
       portfolioAssetsData,
@@ -46,9 +45,7 @@ class Accounts extends React.PureComponent<IProps> {
       onKeySelectOnlyOne,
       onKeysSelectAll,
       isSidebar,
-      queryBaseCoin: {
-        portfolio: { baseCoin },
-      },
+      baseCoin,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -113,12 +110,12 @@ class Accounts extends React.PureComponent<IProps> {
           </SelectAll>
         )} */}
         <AccountsList id="AccountsList">
-          {newKeys.map((keyName, i) => {
-            if (!keyName) {
+          {newKeys.map((key, i) => {
+            if (!key) {
               return null
             }
             const Component = isRebalance ? Radio : Checkbox
-            const isChecked = keyName.selected
+            const isChecked = key.selected
 
             const value = portfolioAssetsData[i]
               ? portfolioAssetsData[i].value
@@ -131,7 +128,7 @@ class Accounts extends React.PureComponent<IProps> {
 
             return (
               <AccountsListItem
-                key={keyName.name}
+                key={key._id}
                 color={color}
                 style={{
                   display: 'flex',
@@ -159,7 +156,7 @@ class Accounts extends React.PureComponent<IProps> {
                   textColor={'#7284A0'}
                   letterSpacing="1px"
                 >
-                  {keyName.name}
+                  {key.name}
                   <TypographyTitle lineHeight="122.5%">
                     {formattedValue}
                   </TypographyTitle>
@@ -168,13 +165,13 @@ class Accounts extends React.PureComponent<IProps> {
                   disabled={!login}
                   type={isRebalance ? 'radio' : 'checkbox'}
                   color="secondary"
-                  id={keyName.name}
+                  id={key.name}
                   checked={isChecked}
                   onClick={() => {
                     if (login && isRebalance) {
-                      onKeySelectOnlyOne(keyName._id)
+                      onKeySelectOnlyOne(key._id)
                     } else if (login && !isRebalance) {
-                      onKeyToggle(keyName._id)
+                      onKeyToggle(key._id)
                     }
                   }}
                   style={{
@@ -183,7 +180,8 @@ class Accounts extends React.PureComponent<IProps> {
                 />
                 {isSidebar && (
                   <PortfolioSelectorPopup
-                    exchangeKey={keyName}
+                    data={key}
+                    baseCoin={baseCoin}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />
                 )}
@@ -191,12 +189,10 @@ class Accounts extends React.PureComponent<IProps> {
             )
           })}
         </AccountsList>
-        {isSidebar && <AddAccountDialog />}
+        {isSidebar && <AddAccountDialog baseCoin={baseCoin} />}
       </>
     )
   }
 }
 
-export default compose(
-  queryRendererHoc({ query: GET_BASE_COIN, name: 'queryBaseCoin' })
-)(Accounts)
+export default Accounts

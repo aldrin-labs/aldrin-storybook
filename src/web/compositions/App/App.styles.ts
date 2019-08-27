@@ -5,5 +5,17 @@ import styled from 'styled-components'
 // on whole page
 export const AppGridLayout = styled.div`
   overflow-x: hidden;
-  min-height: ${props => props.showFooter ? 'calc(100vh - 50px)' : '100vh'};
+  min-height: ${(props) =>
+    props.showFooter
+      ? props.isPNL
+        ? 'calc(100vh - 3rem)'
+        : 'calc(100vh - 50px)'
+      : '100vh'};
+  max-height: ${(props) => (props.isPNL ? 'calc(100vh - 3rem)' : '')};
+
+  @media (max-width: 1920px) {
+    min-height: ${(props) =>
+      props.showFooter ? 'calc(100vh - 48px)' : '100vh'};
+    max-height: ${(props) => (props.isPNL ? 'calc(100vh - 48px)' : '')};
+  }
 `

@@ -3,11 +3,21 @@ import { Grid, Typography, FormControl } from '@material-ui/core'
 import Checkbox from '@material-ui/core/Checkbox'
 
 export const TypographyShowHide = styled(Typography)`
+  width: 80%;
   font-size: 1.3rem;
-  margin-right: 10px;
+  margin-right: 1rem;
+
+  @media (min-width: 1921px) {
+    font-size: 1.4rem;
+  }
 `
 export const CheckboxShowHide = styled(Checkbox)`
   padding: 0;
+
+  & svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 `
 
 export const GridShowDataContainer = styled(Grid)`
