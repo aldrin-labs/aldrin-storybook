@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
@@ -7,6 +9,7 @@ import { Slide } from '@material-ui/core'
 // import Dropdown from '@sb/components/SimpleDropDownSelector'
 import Accounts from '@sb/components/Accounts/Accounts'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
+import { addMainSymbol } from '@sb/components/index'
 // import Wallets from '@sb/components/Wallets/Wallets'
 import {
   AccountsWalletsBlock,
@@ -51,6 +54,12 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 
 // import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
+
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 // const MyLinkToUserSettings = (props: any) => (
 //   <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
 //     {props.children}{' '}
@@ -236,9 +245,9 @@ class PortfolioSelector extends React.Component<IProps> {
       objForQuery = {
         settings: {
           portfolioId,
-          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: newKeys.map(
-            (el) => el._id
-          ),
+          [isRebalance
+            ? 'selectedRebalanceKeys'
+            : 'selectedKeys']: JSON.stringify(newKeys.map((el) => el._id)),
           selectedWallets: newWallets.map((el) => el._id),
         },
       }
@@ -442,7 +451,9 @@ class PortfolioSelector extends React.Component<IProps> {
 
                 {!isUSDCurrently && (
                   <SliderContainer>
-                    <GridSymbolContainer>BTC</GridSymbolContainer>
+                    <GridSymbolContainer>
+                      {addMainSymbol('', false)}
+                    </GridSymbolContainer>
                     <SliderDustFilter
                       step={1}
                       thumbWidth="25px"
@@ -459,11 +470,15 @@ class PortfolioSelector extends React.Component<IProps> {
                       value={this.state.valueSliderBtc}
                       onChange={this.handleChangeBtc} //TODO onDragEnd
                     />
-                    <GridSymbolValue>
-                      {dustFilter.btc === 0 || dustFilter.btc === null
-                        ? `No BTC Filter`
-                        : `< ${dustFilter.btc} BTC`}
-                    </GridSymbolValue>
+                    {dustFilter.btc === 0 || dustFilter.btc === null ? (
+                      <GridSymbolValue>
+                        No {addMainSymbol('', false)} Filter
+                      </GridSymbolValue>
+                    ) : (
+                      <GridSymbolValue>
+                        {'< '} {addMainSymbol(dustFilter.btc, false)}
+                      </GridSymbolValue>
+                    )}
                   </SliderContainer>
                 )}
               </>
@@ -475,4 +490,19 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 }
 
-export default PortfolioSelector
+export default compose(
+  graphql(updatePortfolioSettingsMutation, {
+    name: 'updatePortfolioSettings',
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin },
+        },
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+        { query: getPortfolioMainQuery, variables: { baseCoin } },
+      ],
+      // update: updateSettingsMutation,
+    }),
+  })
+)(PortfolioSelector)

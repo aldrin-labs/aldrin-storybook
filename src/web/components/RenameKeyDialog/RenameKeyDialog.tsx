@@ -21,6 +21,7 @@ import { OpenRenameButton } from '@sb/components/RenameKeyDialog/RenameKeyDialog
 const RenameKeyDialogComponent = ({
   data,
   renameMutation,
+  closeMainPopup,
   isPortfolio = false,
 }) => {
   const { name, _id: id } = data
@@ -50,7 +51,10 @@ const RenameKeyDialogComponent = ({
       variables,
     })
 
-    response ? closeDialog() : null
+    if (response) {
+      closeDialog()
+      closeMainPopup()
+    }
   }
 
   return (

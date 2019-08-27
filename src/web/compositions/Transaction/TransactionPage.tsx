@@ -1,5 +1,6 @@
 import React from 'react'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
+import moment from 'moment'
 
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
@@ -30,7 +31,13 @@ import WinLossRatio from './WinLossRatio'
 import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
+
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
+
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 
@@ -257,5 +264,39 @@ export default compose(
     query: portfolioKeyAndWalletsQuery,
     name: 'portfolioKeyAndWalletsQuery',
     variables: { baseCoin: 'USDT' },
+  }),
+  graphql(updatePortfolioSettingsMutation, {
+    name: 'updatePortfolioSettings',
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin },
+        },
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+        { query: getPortfolioMainQuery, variables: { baseCoin } },
+        {
+          query: MyTradesQuery,
+          variables: {
+            input: {
+              page: 0,
+              perPage: 600,
+              startDate: +moment().subtract(1, 'weeks'),
+              endDate: +moment().endOf('day'),
+            },
+          },
+        },
+        {
+          query: getCalendarActions,
+          variables: {
+            input: {
+              startDate: +moment().subtract(1, 'weeks'),
+              endDate: +moment().endOf('day'),
+            },
+          },
+        },
+      ],
+      // update: updateSettingsMutation,
+    }),
   })
 )(TransactionPage)

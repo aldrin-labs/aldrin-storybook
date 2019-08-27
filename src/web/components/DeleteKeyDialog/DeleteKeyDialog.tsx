@@ -22,6 +22,7 @@ import { OpenDeleteButton } from './DeleteKeyDialog.styles'
 const DeleteAccountDialogComponent = ({
   data,
   deleteMutation,
+  closeMainPopup,
   disabled = false,
   isPortfolio = false,
 }) => {
@@ -46,7 +47,10 @@ const DeleteAccountDialogComponent = ({
         variables: { name: checkName, removeTrades: true },
       })
 
-      response ? closeDialog() : setError('Something went wrong')
+      if (response) {
+        closeDialog()
+        closeMainPopup()
+      } else setError('Something went wrong')
     } else {
       setError('Names do not match')
     }

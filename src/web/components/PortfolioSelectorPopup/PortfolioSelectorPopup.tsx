@@ -60,6 +60,7 @@ class PortfolioSelectorPopup extends Component {
                   isPortfolio={true}
                   baseCoin={baseCoin}
                   forceUpdateUserContainer={forceUpdateAccountContainer}
+                  closeMainPopup={this.closePopup}
                 />
                 <DeletePortfolioDialog
                   data={data}
@@ -67,6 +68,7 @@ class PortfolioSelectorPopup extends Component {
                   isPortfolio={true}
                   disabled={true}
                   forceUpdateUserContainer={forceUpdateAccountContainer}
+                  closeMainPopup={this.closePopup}
                 />
               </>
             ) : (
@@ -75,11 +77,13 @@ class PortfolioSelectorPopup extends Component {
                   data={data}
                   baseCoin={baseCoin}
                   forceUpdateUserContainer={forceUpdateAccountContainer}
+                  closeMainPopup={this.closePopup}
                 />
                 <DeleteKeyDialog
                   data={data}
                   baseCoin={baseCoin}
                   forceUpdateUserContainer={forceUpdateAccountContainer}
+                  closeMainPopup={this.closePopup}
                 />
               </>
             )}
@@ -87,13 +91,13 @@ class PortfolioSelectorPopup extends Component {
         </PortfolioSelectorPopupWrapper>
         <PortfolioSelectorPopupMask
           visible={isPopupOpen}
-          onClick={() => this.closePopup()}
+          onClick={this.closePopup}
         />
       </>
     )
   }
 
-  openPopup() {
+  openPopup = () => {
     const popups = Array.from(document.getElementsByClassName('popup'))
 
     popups.forEach((popup) => {
@@ -106,7 +110,7 @@ class PortfolioSelectorPopup extends Component {
     })
   }
 
-  closePopup() {
+  closePopup = () => {
     this.popupRef.current.classList.remove('popup-visible')
     this.setState({
       isPopupOpen: false,
