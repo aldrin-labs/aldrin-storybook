@@ -1,30 +1,34 @@
 import * as React from 'react'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
 import { Slide } from '@material-ui/core'
 
-import Dropdown from '@sb/components/SimpleDropDownSelector'
+// import Dropdown from '@sb/components/SimpleDropDownSelector'
 import Accounts from '@sb/components/Accounts/Accounts'
-import Wallets from '@sb/components/Wallets/Wallets'
+import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
+import { addMainSymbol } from '@sb/components/index'
+// import Wallets from '@sb/components/Wallets/Wallets'
 import {
   AccountsWalletsBlock,
-  FilterIcon,
-  FilterValues,
-  Name,
-  FilterContainer,
+  // FilterIcon,
+  // FilterValues,
+  // Name,
+  // FilterContainer,
   TypographyTitle,
-  AddAccountBlock,
-  GridRow,
-  GridCell,
+  // AddAccountBlock,
+  // GridRow,
+  // GridCell,
   SliderContainer,
   GridSection,
   GridSectionAccounts,
   GridSectionDust,
-  ReactSelectCustom,
+  // ReactSelectCustom,
   GridSymbolContainer,
   GridSymbolValue,
-  TypographySpan,
+  // TypographySpan,
   SliderDustFilter,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
@@ -42,7 +46,7 @@ import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 // import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 // import { RadioGroup, Radio } from '@material-ui/core'
 
-import { Icon } from '@sb/styles/cssUtils'
+// import { Icon } from '@sb/styles/cssUtils'
 import SvgIcon from '@sb/components/SvgIcon'
 import PortfolioSidebarBack from '@icons/PortfolioSidebarBack.svg'
 
@@ -50,6 +54,12 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 
 // import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
+
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 // const MyLinkToUserSettings = (props: any) => (
 //   <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
 //     {props.children}{' '}
@@ -94,7 +104,7 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer: percentage,
       valueSliderUsd: usd,
       valueSliderUsdContainer: usd,
-      valueSliderBtc: btc,
+      valueSliderBtc: btc * BTC_PART_DIVIDER,
       valueSliderBtcContainer: btc,
     })
   }
@@ -115,14 +125,14 @@ class PortfolioSelector extends React.Component<IProps> {
           ? 1
           : 10,
     })
-    this.onDustFilterChange(value, 'percentage')
+    this.onDustFilterChange(+value, 'percentage')
   }
 
   handleChangeUsd = (event, value) => {
     this.setState({
-      valueSliderUsd: value,
+      valueSliderUsd: +value,
     })
-    this.onDustFilterChange(value, 'usd')
+    this.onDustFilterChange(+value, 'usd')
   }
 
   handleChangeBtc = (event, value) => {
@@ -130,7 +140,7 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderBtc: value,
       valueSliderBtcContainer: value / BTC_PART_DIVIDER,
     })
-    this.onDustFilterChange(value, 'btc')
+    this.onDustFilterChange(+value, 'btc')
   }
 
   updateSettings = async (objectForMutation) => {
@@ -235,9 +245,9 @@ class PortfolioSelector extends React.Component<IProps> {
       objForQuery = {
         settings: {
           portfolioId,
-          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: newKeys.map(
-            (el) => el._id
-          ),
+          [isRebalance
+            ? 'selectedRebalanceKeys'
+            : 'selectedKeys']: JSON.stringify(newKeys.map((el) => el._id)),
           selectedWallets: newWallets.map((el) => el._id),
         },
       }
@@ -273,7 +283,7 @@ class PortfolioSelector extends React.Component<IProps> {
         portfolioId,
         dustFilter: {
           ...{ usd, percentage, btc },
-          [dustFilterParam]: dustFilterParamValue,
+          [dustFilterParam]: +dustFilterParamValue,
         }, //TODO
         // dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value }, //TODO
       },
@@ -295,6 +305,8 @@ class PortfolioSelector extends React.Component<IProps> {
       baseCoin,
     } = this.props
 
+    const { valueSliderPercentageContainer } = this.state
+
     const { portfolioAssetsData } = getPortfolioAssetsData(
       myPortfolios[0].portfolioAssets
     )
@@ -309,9 +321,12 @@ class PortfolioSelector extends React.Component<IProps> {
 
     return (
       <Slide
-        style={{ width: '41rem' }}
+        style={{
+          width: '41rem',
+        }}
         in={isSideNavOpen}
         direction="right"
+        timeout={{ enter: 375, exit: 250 }}
         mountOnEnter={true}
         unmountOnExit={true}
       >
@@ -338,18 +353,16 @@ class PortfolioSelector extends React.Component<IProps> {
             >
               <Grid container justify="space-between" alignItems="center">
                 <TypographyTitle>Portfolio</TypographyTitle>
-                <Icon
-                  className="fa fa-ellipsis-h"
-                  style={{
-                    fontSize: '1.5rem',
-                    color: 'white',
-                  }}
+                <PortfolioSelectorPopup
+                  data={myPortfolios[0]}
+                  baseCoin={baseCoin}
+                  isPortfolio={true}
+                  forceUpdateAccountContainer={() => this.forceUpdate()}
                 />
               </Grid>
 
               <AccountsSlick
                 isSideNav
-                path={this.props.location.pathname}
                 myPortfolios={myPortfolios}
                 baseCoin={baseCoin}
               />
@@ -402,10 +415,10 @@ class PortfolioSelector extends React.Component<IProps> {
                     onChange={this.handleChangePercentage} //TODO onDragEnd
                   />
                   <GridSymbolValue>
-                    {this.state.valueSliderPercentageContainer === 0 ||
-                    this.state.valueSliderPercentageContainer === null
+                    {valueSliderPercentageContainer === 0 ||
+                    valueSliderPercentageContainer === null
                       ? `No % Filter`
-                      : `< ${this.state.valueSliderPercentageContainer} %`}
+                      : `< ${valueSliderPercentageContainer} %`}
                   </GridSymbolValue>
                 </SliderContainer>
 
@@ -428,13 +441,19 @@ class PortfolioSelector extends React.Component<IProps> {
                       value={this.state.valueSliderUsd}
                       onChange={this.handleChangeUsd} //TODO onDragEnd
                     />
-                    <GridSymbolValue>{`< ${dustFilter.usd} $`}</GridSymbolValue>
+                    <GridSymbolValue>
+                      {dustFilter.usd === 0 || dustFilter.usd === null
+                        ? `No $ Filter`
+                        : `< ${dustFilter.usd} $`}
+                    </GridSymbolValue>
                   </SliderContainer>
                 )}
 
                 {!isUSDCurrently && (
                   <SliderContainer>
-                    <GridSymbolContainer>BTC</GridSymbolContainer>
+                    <GridSymbolContainer>
+                      {addMainSymbol('', false)}
+                    </GridSymbolContainer>
                     <SliderDustFilter
                       step={1}
                       thumbWidth="25px"
@@ -451,9 +470,15 @@ class PortfolioSelector extends React.Component<IProps> {
                       value={this.state.valueSliderBtc}
                       onChange={this.handleChangeBtc} //TODO onDragEnd
                     />
-                    <GridSymbolValue>{`< ${
-                      dustFilter.btc
-                    } BTC`}</GridSymbolValue>
+                    {dustFilter.btc === 0 || dustFilter.btc === null ? (
+                      <GridSymbolValue>
+                        No {addMainSymbol('', false)} Filter
+                      </GridSymbolValue>
+                    ) : (
+                      <GridSymbolValue>
+                        {'< '} {addMainSymbol(dustFilter.btc, false)}
+                      </GridSymbolValue>
+                    )}
                   </SliderContainer>
                 )}
               </>
@@ -465,4 +490,19 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 }
 
-export default PortfolioSelector
+export default compose(
+  graphql(updatePortfolioSettingsMutation, {
+    name: 'updatePortfolioSettings',
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin },
+        },
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+        { query: getPortfolioMainQuery, variables: { baseCoin } },
+      ],
+      // update: updateSettingsMutation,
+    }),
+  })
+)(PortfolioSelector)

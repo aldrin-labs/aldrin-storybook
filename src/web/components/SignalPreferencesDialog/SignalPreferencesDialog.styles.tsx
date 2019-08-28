@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography, IconButton } from '@material-ui/core'
 import {
@@ -24,7 +23,8 @@ export const RefreshButton = styled(IconButton)`
 `
 
 export const ErrorText = styled.span`
-  font-size: 1.4rem;
+  font-size: 1.2rem;
+  font-family: DM Sans, sans-serif;
   color: #b93b2b;
 `
 

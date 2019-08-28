@@ -4,12 +4,7 @@ import { compose } from 'recompose'
 import styled from 'styled-components'
 import { withTheme } from '@material-ui/styles'
 import Telegram from '@material-ui/icons/NearMeSharp'
-import {
-  AppBar,
-  IconButton,
-  Switch,
-  Typography
-} from '@material-ui/core'
+import { AppBar, IconButton, Switch, Typography } from '@material-ui/core'
 
 import { StyledButton, StyledTypography } from './index.styles'
 
@@ -68,9 +63,7 @@ const Footer = ({
       </Block>
 
       <Block>
-        <StyledTypography color="textPrimary">
-          NIGHT MODE
-        </StyledTypography>
+        <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
         <Switch
           checked={themeMode === 'dark'}
           onChange={async () => {
@@ -89,6 +82,7 @@ const Footer = ({
 }
 
 const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
+  height: 3rem;
   flex-wrap: nowrap;
   justify-content: space-around;
   transition: background 0.25s ease-in-out;
@@ -99,6 +93,10 @@ const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
     top: 0;
     z-index: -100;`
       : ''};
+
+  @media (max-width: 1920px) {
+    height: 48px;
+  }
 
   && {
     flex-direction: row;

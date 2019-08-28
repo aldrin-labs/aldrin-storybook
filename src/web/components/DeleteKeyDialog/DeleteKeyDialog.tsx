@@ -1,152 +1,157 @@
-import React from 'react'
-import { withFormik } from 'formik'
-import Yup from 'yup'
-import { compose, withStateHandlers } from 'recompose'
-import { graphql } from 'react-apollo'
-import { isEqual } from 'lodash-es'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogContent from '@material-ui/core/DialogContent'
+import React, { useState } from 'react'
+import { Grid, FormControl } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog'
 
-import Typography from '@material-ui/core/Typography'
+import Clear from '@material-ui/icons/Clear'
+import {
+  ClearButton,
+  StyledPaper,
+  StyledDialogTitle,
+  StyledDialogContent,
+  TypographyTitle,
+  TypographySectionTitle,
+  Line,
+  StyledInput,
+  StyledButton,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import { deleteExchangeKeyMutation } from '@core/graphql/mutations/user/deleteExchangeKeyMutation'
-import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
-import { keysNames } from '@core/graphql/queries/chart/keysNames'
-import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { ErrorText } from '@sb/components/SignalPreferencesDialog/SignalPreferencesDialog.styles'
 
-const DeleteKeyDialogComponent = ({
-  handleClickOpen,
-  handleClose,
-  open,
-  keyName = 'none',
-  handleChange,
-  values,
-  handleSubmit,
-  errors,
-  customHandler
-}) => (
-  <div>
-    {customHandler ? customHandler(handleClickOpen) : <Button onClick={handleClickOpen}>Delete</Button>}
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Delete key {keyName}?</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          To delete key please enter it's name:
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="keyNameInput"
-          name="keyNameInput"
-          label="Key name"
-          onChange={handleChange}
-          value={values.keyNameInput}
-          error={errors && !!errors.keyNameInput}
-          type="text"
-          fullWidth
-        />
-        <Typography color="error">{errors.keyNameInput}</Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} color="primary" id="DeleteDialogButton">
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </div>
-)
+import { OpenDeleteButton } from './DeleteKeyDialog.styles'
 
-const formikDialog = withFormik({
-  validationSchema: Yup.object().shape({
-    keyNameInput: Yup.string().required(),
-  }),
-  mapPropsToValues: () => ({
-    keyNameInput: '',
-  }),
-  handleSubmit: async ({ keyNameInput }, props) => {
-    const {
-      keyName,
-      handleClose,
-      deleteExchangeKey,
-      forceUpdateUserContainer,
-    } = props.props
-    const variables = {
-      name: keyNameInput,
-      removeTrades: true,
-    }
-    const checkKeyName = isEqual(keyName, keyNameInput)
+const DeleteAccountDialogComponent = ({
+  data,
+  deleteMutation,
+  closeMainPopup,
+  disabled = false,
+  isPortfolio = false,
+}) => {
+  const { name } = data
+  const target = isPortfolio ? 'portfolio' : 'account'
 
-    if (checkKeyName) {
-      try {
-        props.setSubmitting(true)
-        await deleteExchangeKey({
-          variables,
-          update: (proxy, { data: { deleteExchangeKey } }) => {
-            let proxyData = proxy.readQuery({ query: getKeysQuery })
-            const keys = proxyData.myPortfolios[0].keys.slice()
-            const index = keys.findIndex((v) => v._id === deleteExchangeKey._id)
-            keys.splice(index, 1)
-            proxyData = {
-              ...proxyData,
-              myPortfolios: { ...proxyData.myPortfolios, keys },
-            }
-            proxy.writeQuery({ query: getKeysQuery, data: proxyData })
-          },
-        })
-        await handleClose()
-        forceUpdateUserContainer()
-      } catch (error) {
-        console.log(error)
-        props.setFieldError('keyNameInput', 'Request error!')
-        props.setSubmitting(false)
-      }
-    } else {
-      props.setFieldError('keyNameInput', 'Key name error! Check again!')
-    }
-  },
-})
+  const [isOpen, toggleDialog] = useState(false)
+  const [checkName, updateName] = useState('')
+  const [error, setError] = useState('')
 
-const handleState = withStateHandlers(
-  ({ open = false }) => ({
-    open,
-  }),
-  {
-    handleClickOpen: () => () => ({
-      open: true,
-    }),
-    handleClose: () => () => ({
-      open: false,
-    }),
+  const openDialog = () => toggleDialog(true)
+
+  const closeDialog = () => {
+    toggleDialog(false)
+    updateName('')
+    setError('')
   }
-)
 
-export const DeleteKeyDialog = compose(
-  graphql(deleteExchangeKeyMutation, {
-    name: 'deleteExchangeKey',
-    options: {
-      refetchQueries: [
-        'getKeys',
-        'getPortfolio',
-        'portfolios',
-        { query: portfolioKeyAndWalletsQuery },
-        { query: getKeysQuery },
-        { query: keysNames },
-      ],
-    },
-  }),
-  graphql(getKeysQuery),
-  handleState,
-  formikDialog
-)(DeleteKeyDialogComponent)
+  const handleSubmit = async () => {
+    if (checkName === name) {
+      const response = await deleteMutation({
+        variables: { name: checkName, removeTrades: true },
+      })
+
+      if (response) {
+        closeDialog()
+        closeMainPopup()
+      } else setError('Something went wrong')
+    } else {
+      setError('Names do not match')
+    }
+  }
+
+  return (
+    <>
+      <OpenDeleteButton onClick={openDialog} disabled={disabled}>
+        Delete
+      </OpenDeleteButton>
+      <Dialog
+        PaperComponent={StyledPaper}
+        style={{ width: '75rem', margin: 'auto' }}
+        open={isOpen}
+        onClose={closeDialog}
+        maxWidth={'md'}
+        style={{ transition: 'opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' }}
+        aria-labelledby="form-dialog-title"
+      >
+        <StyledDialogTitle disableTypography id="form-dialog-title">
+          <TypographyTitle>{`Delete ${target} "${name}"?`}</TypographyTitle>
+          <ClearButton>
+            <Clear
+              style={{ fontSize: '2rem' }}
+              color="inherit"
+              onClick={closeDialog}
+            />
+          </ClearButton>
+        </StyledDialogTitle>
+        <StyledDialogContent style={{ paddingBottom: '1rem' }}>
+          <Grid style={{ paddingBottom: '1.5rem' }}>
+            <Grid
+              style={{ padding: '1rem' }}
+              container
+              alignItems="center"
+              wrap="nowrap"
+            >
+              <TypographySectionTitle>
+                To delete a {target}, please enter it's name
+              </TypographySectionTitle>
+              <Line />
+            </Grid>
+            <FormControl fullWidth required>
+              <Grid container alignItems="center">
+                <StyledInput
+                  type="text"
+                  width="100"
+                  value={checkName}
+                  onChange={(e) => updateName(e.target.value)}
+                  placeholder={`Type ${target} name...`}
+                  style={{ marginLeft: '0rem' }}
+                />
+              </Grid>
+              {error ? (
+                <ErrorText style={{ paddingTop: '.5rem' }}>{error}</ErrorText>
+              ) : null}
+            </FormControl>
+            <Grid
+              container
+              alignItems="center"
+              justify="flex-end"
+              wrap="nowrap"
+              style={{ paddingTop: '2rem' }}
+            >
+              <StyledButton
+                onClick={handleSubmit}
+                color="primary"
+                id="DeleteDialogButton"
+              >
+                Delete
+              </StyledButton>
+            </Grid>
+          </Grid>
+        </StyledDialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+//       try {
+//         props.setSubmitting(true)
+//         await deleteExchangeKey({
+//           variables,
+//           update: (proxy, { data: { deleteExchangeKey } }) => {
+//             let proxyData = proxy.readQuery({ query: getKeysQuery })
+//             const keys = proxyData.myPortfolios[0].keys.slice()
+//             const index = keys.findIndex((v) => v._id === deleteExchangeKey._id)
+//             keys.splice(index, 1)
+//             proxyData = {
+//               ...proxyData,
+//               myPortfolios: { ...proxyData.myPortfolios, keys },
+//             }
+//             proxy.writeQuery({ query: getKeysQuery, data: proxyData })
+//           },
+//         })
+//         await handleClose()
+//         forceUpdateAccountContainer()
+//       } catch (error) {
+//         console.log(error)
+//         props.setFieldError('accountNameInput', 'Request error!')
+//         props.setSubmitting(false)
+//       }
+
+export default DeleteAccountDialogComponent
