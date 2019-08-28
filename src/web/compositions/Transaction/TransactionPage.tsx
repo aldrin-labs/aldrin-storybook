@@ -214,7 +214,7 @@ class TransactionPage extends React.PureComponent {
               paddingLeft: !hideSelector && '1.5rem',
             }}
           >
-            <Grid item style={{ height: '100%' }}>
+            <Grid item style={{ height: '30%' }}>
               {!hideSelector && <GitTransactionCalendar />}
 
               <GridTableContainer

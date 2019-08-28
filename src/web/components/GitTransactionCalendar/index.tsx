@@ -8,7 +8,7 @@ class GitTransactionCalendarWrapper extends React.PureComponent {
   state = {
     startDate: moment().startOf('year'),
     endDate: moment().endOf('year'),
-    activeDateButton: moment().format('YYYY')
+    activeDateButton: moment().format('YYYY'),
   }
 
   onDateButtonClick = async (stringDate: string) => {
@@ -30,20 +30,23 @@ class GitTransactionCalendarWrapper extends React.PureComponent {
     return (
       <>
         <ChooseYear
-            {...{
-                activeDateButton,
-                startDate,
-                endDate,
-                onDateButtonClick: this.onDateButtonClick
-            }}
+          {...{
+            activeDateButton,
+            startDate,
+            endDate,
+            onDateButtonClick: this.onDateButtonClick,
+          }}
         />
+        {/* TODO: Fix this when fixing layout */}
+        <div style={{position: 'relative', height: '27vh'}}>
         <Calendar
-            {...{
-                endDate,
-                startDate,
-                ...this.props
-            }}
+          {...{
+            endDate,
+            startDate,
+            ...this.props,
+          }}
         />
+        </div>
       </>
     )
   }
