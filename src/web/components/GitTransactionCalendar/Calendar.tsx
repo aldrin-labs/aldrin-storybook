@@ -8,10 +8,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
-import {
-  getCalendarData,
-  getMaxTransactions,
-} from './Calendar.utils'
+import { getCalendarData, getMaxTransactions } from './Calendar.utils'
 import {
   LEGEND_COLORS,
   HeatmapWrapper,
@@ -55,7 +52,9 @@ class GitTransactionCalendar extends PureComponent {
           endDate={moment(+endDate)}
           values={mappedActionsArray}
           gutterSize={3}
-          classForValue={(value) => classes[value.className]}
+          classForValue={(value) =>
+            value ? classes[value.className] : 'empty-value'
+          }
           monthLabels={[
             'Jan',
             'Feb',
@@ -70,15 +69,22 @@ class GitTransactionCalendar extends PureComponent {
             'Nov',
             'Dec',
           ]}
-          titleForValue={({ count, date }) =>
-            `${count} ${count === 1 ? `action` : 'actions'} on ${moment(
-              date
-            ).format('DD MMM, YYYY')}`
+          titleForValue={(value) =>
+            value
+              ? `${value.count} ${
+                  value.count === 1 ? `action` : 'actions'
+                } on ${moment(value.date).format('DD MMM, YYYY')}`
+              : 'No data'
           }
-          // tooltipDataAttrs={(value) => {
-          //   return { 'data-tooltip': 'Tooltip: ' + value.date }
-          // }}
-          // showOutOfRangeDays={true}
+          tooltipDataAttrs={(value) =>
+            value
+              ? {
+                  'data-tooltip': `${value.count} ${
+                    value.count === 1 ? `action` : 'actions'
+                  } on ${moment(value.date).format('DD MMM, YYYY')}`,
+                }
+              : { 'data-tooltip': 'No data' }
+          }
         />
 
         <Grid
