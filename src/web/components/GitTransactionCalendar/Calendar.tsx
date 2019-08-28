@@ -44,6 +44,8 @@ class GitTransactionCalendar extends PureComponent {
       startDate
     )
 
+    console.log('classes', classes)
+
     return (
       <HeatmapWrapper>
         <CalendarHeatmap

@@ -54,7 +54,7 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 
 // import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
-import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
+// import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -125,22 +125,19 @@ class PortfolioSelector extends React.Component<IProps> {
           ? 1
           : 10,
     })
-    this.onDustFilterChange(+value, 'percentage')
   }
 
   handleChangeUsd = (event, value) => {
     this.setState({
       valueSliderUsd: +value,
     })
-    this.onDustFilterChange(+value, 'usd')
   }
 
   handleChangeBtc = (event, value) => {
     this.setState({
-      valueSliderBtc: value,
+      valueSliderBtc: +value,
       valueSliderBtcContainer: value / BTC_PART_DIVIDER,
     })
-    this.onDustFilterChange(+value, 'btc')
   }
 
   updateSettings = async (objectForMutation) => {
@@ -305,7 +302,12 @@ class PortfolioSelector extends React.Component<IProps> {
       baseCoin,
     } = this.props
 
-    const { valueSliderPercentageContainer } = this.state
+    const {
+      valueSliderPercentageContainer,
+      valueSliderBtc,
+      valueSliderUsd,
+      valueSliderPercentage,
+    } = this.state
 
     const { portfolioAssetsData } = getPortfolioAssetsData(
       myPortfolios[0].portfolioAssets
@@ -318,6 +320,12 @@ class PortfolioSelector extends React.Component<IProps> {
       newKeys.length + newWallets.length
 
     const color = theme.palette.secondary.main
+
+    const updatePercentageSlider = () =>
+      this.onDustFilterChange(valueSliderPercentage, 'percentage')
+
+    const updateUSDSlider = () => this.onDustFilterChange(valueSliderUsd, 'usd')
+    const updateBTCSlider = () => this.onDustFilterChange(valueSliderBtc, 'btc')
 
     return (
       <Slide
@@ -413,6 +421,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     trackBeforeBackground={'#165BE0'}
                     value={this.state.valueSliderPercentage}
                     onChange={this.handleChangePercentage} //TODO onDragEnd
+                    onDragEnd={updatePercentageSlider}
                   />
                   <GridSymbolValue>
                     {valueSliderPercentageContainer === 0 ||
@@ -440,6 +449,7 @@ class PortfolioSelector extends React.Component<IProps> {
                       trackBeforeBackground={'#165BE0'}
                       value={this.state.valueSliderUsd}
                       onChange={this.handleChangeUsd} //TODO onDragEnd
+                      onDragEnd={updateUSDSlider}
                     />
                     <GridSymbolValue>
                       {dustFilter.usd === 0 || dustFilter.usd === null
@@ -469,6 +479,7 @@ class PortfolioSelector extends React.Component<IProps> {
                       trackBeforeBackground={'#165BE0'}
                       value={this.state.valueSliderBtc}
                       onChange={this.handleChangeBtc} //TODO onDragEnd
+                      onDragEnd={updateBTCSlider}
                     />
                     {dustFilter.btc === 0 || dustFilter.btc === null ? (
                       <GridSymbolValue>
