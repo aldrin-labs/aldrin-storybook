@@ -123,18 +123,11 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             : activeKeys.length + activeWallets.length > 0
 
           return (
-            // <Mutation
-            //   onCompleted={() => refetch()}
-            //   mutation={updatePortfolioSettingsMutation}
-            //   update={updateSettingsMutation}
-            // >
-            //   {(updatePortfolioSettings) => (
             <>
               <PortfolioContainer>
                 {/* refactor this */}
                 <PortfolioSelector
                   login={true}
-                  // updatePortfolioSettings={updatePortfolioSettings}
                   portfolioId={portfolioId}
                   dustFilter={dustFilter}
                   newKeys={isRebalance ? rebalanceKeys : keys}
@@ -197,8 +190,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                 </Fade>
               </PortfolioContainer>
             </>
-            //     )}
-            //   </Mutation>
           )
         }}
       </Query>

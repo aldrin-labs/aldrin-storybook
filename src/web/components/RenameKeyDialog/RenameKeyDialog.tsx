@@ -36,6 +36,7 @@ const RenameKeyDialogComponent = ({
   const closeDialog = () => {
     toggleDialog(false)
     updateName('')
+    closeMainPopup()
   }
 
   const handleSubmit = async () => {
@@ -51,10 +52,7 @@ const RenameKeyDialogComponent = ({
       variables,
     })
 
-    if (response) {
-      closeDialog()
-      closeMainPopup()
-    }
+    response ? closeDialog() : null
   }
 
   return (
