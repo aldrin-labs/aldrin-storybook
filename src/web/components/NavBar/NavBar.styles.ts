@@ -13,6 +13,8 @@ export const Nav = styled(AppBar)`
       z-index: -100;`
       : ''};
 
+  height: 100%;
+
   && {
     box-shadow: none;
     padding: 0 3rem 0 6rem;
@@ -25,28 +27,30 @@ export const Nav = styled(AppBar)`
 
 export const StyledToolbar = styled(Toolbar)`
   border-bottom: 1px solid #e0e5ec;
-
-  @media (max-width: 1400px) {
-    height: 30px;
-  }
-
-  @media (min-width: 1400px) {
-    height: 40px;
-  }
-
-  @media (min-width: 1921px) {
-    height: 60px;
-  }
-
-  @media (min-width: 2560px) {
-    height: 80px;
-  }
+  height: 100%;
 `
+
+// @media (max-width: 1400px) {
+//   height: 30px;
+// }
+
+// @media (min-width: 1400px) {
+//   height: 40px;
+// }
+
+// @media (min-width: 1921px) {
+//   height: 60px;
+// }
+
+// @media (min-width: 2560px) {
+//   height: 80px;
+// }
 
 export const NavLinkButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem 0.5rem;
+  padding: 0 0.5rem;
+  height: 100%;
 `
 
 export const NavBarWrapper = styled(Grid)`
@@ -54,6 +58,7 @@ export const NavBarWrapper = styled(Grid)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  height: 100%;
 `
 
 export const NavBreadcrumbTypography = styled(Typography)`

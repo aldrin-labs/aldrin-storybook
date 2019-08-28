@@ -69,7 +69,12 @@ const NavBarRaw: SFC<Props> = ({
       className="Navbar"
     >
       <StyledToolbar variant="dense">
-        <Grid alignItems="center" container={true} alignContent={'stretch'}>
+        <Grid
+          alignItems="center"
+          style={{ height: '100%' }}
+          container={true}
+          alignContent={'stretch'}
+        >
           <Hidden only={['sm', 'xs']}>
             <Grid item={true} md={2}>
               <Grid container={true} alignItems={'center'} wrap="nowrap">
@@ -80,7 +85,7 @@ const NavBarRaw: SFC<Props> = ({
               </Grid>
             </Grid>
           </Hidden>
-          <Grid item={true} md={6} sm={5}>
+          <Grid style={{ height: '100%' }} item={true} md={6} sm={5}>
             <NavBarWrapper container={true}>
               {/*<NavLinkButton
                 page={`portfolio`}

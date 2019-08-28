@@ -13,12 +13,13 @@ const StyledButton = styled(Button)`
   }
 `
 
-export const SButton = styled(({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />)`
+export const SButton = styled(
+  ({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />
+)`
   margin: 0 1rem;
   font-weight: 500;
-  padding: 1rem .5rem;
   letter-spacing: 1px;
-  transition: .35s all;
+  transition: 0.35s all;
 
   @media only screen and (max-width: 1100px) {
     margin: 0;

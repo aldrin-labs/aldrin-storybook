@@ -1,9 +1,5 @@
 import React from 'react'
-import { compose } from 'recompose'
-import moment from 'moment'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 import { getActionsSummary } from './TransactionsActionsStatistic.utils'
 
 import { Grid } from '@material-ui/core'
@@ -68,40 +64,4 @@ const Block = ({ actions, title }) => {
   )
 }
 
-export const DaysBlock = compose(
-  queryRendererHoc({
-    name: 'actions',
-    fetchPolicy: 'network-only',
-    query: MyTradesQuery,
-    withOutSpinner: false,
-    variables: {
-      input: {
-        page: 0,
-        perPage: 600,
-        startDate: moment()
-          .subtract(1, 'days')
-          .valueOf(),
-        endDate: moment().valueOf(),
-      },
-    },
-  })
-)(Block)
-
-export const WeekBlock = compose(
-  queryRendererHoc({
-    name: 'actions',
-    fetchPolicy: 'network-only',
-    query: MyTradesQuery,
-    withOutSpinner: false,
-    variables: {
-      input: {
-        page: 0,
-        perPage: 600,
-        startDate: moment()
-          .subtract(1, 'weeks')
-          .valueOf(),
-        endDate: moment().valueOf(),
-      },
-    },
-  })
-)(Block)
+export default Block
