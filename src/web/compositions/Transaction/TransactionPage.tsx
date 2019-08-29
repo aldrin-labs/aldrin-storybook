@@ -122,10 +122,6 @@ class TransactionPage extends React.PureComponent {
       activeKeys.length + activeWallets.length ===
       newKeys.length + newWallets.length
 
-    const { portfolioAssetsData } = getPortfolioAssetsData(
-      myPortfolios[0].portfolioAssets
-    )
-
     return (
       <>
         <TransactionsPageMediaQuery />
@@ -185,7 +181,6 @@ class TransactionPage extends React.PureComponent {
                         login,
                         isSideNavOpen,
                         isCheckedAll,
-                        portfolioAssetsData,
                         baseCoin: 'USDT',
                         newKeys,
                         isRebalance: false,

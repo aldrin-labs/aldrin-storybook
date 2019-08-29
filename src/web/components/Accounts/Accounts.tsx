@@ -1,7 +1,9 @@
 import React from 'react'
 import { Checkbox, Radio } from '@material-ui/core'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { compose } from 'recompose'
+import QueryRenderer from '@core/components/QueryRenderer'
+
+import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 
 import { IProps } from './Accounts.types'
 import {
@@ -31,6 +33,19 @@ import { addMainSymbol } from '@sb/components'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 
 class Accounts extends React.PureComponent<IProps> {
+  state = {
+    intervalId: null,
+  }
+
+  componentDidMount() {
+    const intervalId = setInterval(this.props.refetch, 30000)
+    this.setState({ intervalId })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId)
+  }
+
   render() {
     const {
       isSideNavOpen,
@@ -38,7 +53,7 @@ class Accounts extends React.PureComponent<IProps> {
       // onToggleAll,
       color,
       newKeys,
-      portfolioAssetsData,
+      portfolioKeys,
       onKeyToggle,
       login,
       isRebalance,
@@ -47,6 +62,10 @@ class Accounts extends React.PureComponent<IProps> {
       isSidebar,
       baseCoin,
     } = this.props
+
+    const { portfolioAssetsData } = getPortfolioAssetsData(
+      portfolioKeys.myPortfolios[0].portfolioAssets
+    )
 
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
@@ -195,4 +214,16 @@ class Accounts extends React.PureComponent<IProps> {
   }
 }
 
-export default Accounts
+const APIWrapper = (props) => {
+  return (
+    <QueryRenderer
+      {...props}
+      component={Accounts}
+      query={getPortfolioKeys}
+      name="portfolioKeys"
+      variables={{ baseCoin: props.baseCoin }}
+    />
+  )
+}
+
+export default APIWrapper
