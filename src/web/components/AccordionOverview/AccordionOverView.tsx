@@ -23,37 +23,6 @@ import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { addMainSymbol } from '@sb/components/index'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-/*
- * 	params:
- *		c (integer): count numbers of digits after sign
- *		d (string): decimals sign separator
- *		t (string): miles sign separator
- *
- *	example:
- *		(123456789.12345).formatMoney(2, ',', '.');
- *			=> "123.456.789,12" Latinoamerican moneyFormat
- */
-
-const formatMoney = function(number, c: number, d: string, t: string) {
-  var n = number,
-    c = isNaN((c = Math.abs(c))) ? 2 : c,
-    d = d == undefined ? ',' : d,
-    t = t == undefined ? '.' : t,
-    s = n < 0 ? '-' : '',
-    i = parseInt((n = Math.abs(+n || 0).toFixed(c))) + '',
-    j = (j = i.length) > 3 ? j % 3 : 0
-  return (
-    s +
-    (j ? i.substr(0, j) + t : '') +
-    i.substr(j).replace(/(\d{3})(?=\d)/g, '1' + t) +
-    (c
-      ? d +
-        Math.abs(n - i)
-          .toFixed(c)
-          .slice(2)
-      : '')
-  )
-}
 
 const format = (number, baseCoin) => {
   const isUSDCurrently = baseCoin === 'USDT'
@@ -84,7 +53,7 @@ class DetailedExpansionPanel extends React.Component {
     )
 
     return (
-      <Grid style={{ width: '100%' }}>
+      <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
         <ExpansionPanel
           TransitionProps={{ timeout: { enter: 375, exit: 250 } }}
         >

@@ -39,6 +39,7 @@ const DeleteAccountDialogComponent = ({
     toggleDialog(false)
     updateName('')
     setError('')
+    closeMainPopup()
   }
 
   const handleSubmit = async () => {
@@ -47,10 +48,7 @@ const DeleteAccountDialogComponent = ({
         variables: { name: checkName, removeTrades: true },
       })
 
-      if (response) {
-        closeDialog()
-        closeMainPopup()
-      } else setError('Something went wrong')
+      response ? closeDialog() : setError('Something went wrong')
     } else {
       setError('Names do not match')
     }

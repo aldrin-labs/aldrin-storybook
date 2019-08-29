@@ -24,12 +24,12 @@ import {
 
 @withRouter
 class PortfolioTableTabs extends React.Component<IProps> {
-  onToggleUSDBTC = () => {
-    const { onToggleUSDBTC } = this.props
-    if (onToggleUSDBTC) {
-      onToggleUSDBTC()
-    }
-  }
+  // onToggleUSDBTC = () => {
+  //   const { onToggleUSDBTC } = this.props
+  //   if (onToggleUSDBTC) {
+  //     onToggleUSDBTC()
+  //   }
+  // }
 
   render() {
     const {
@@ -61,7 +61,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
-          minHeight: '95vh',
+          minHeight: '86.2vh',
         }}
       >
         {isMainPage ? (

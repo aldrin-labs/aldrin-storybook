@@ -82,7 +82,6 @@ const Footer = ({
 }
 
 const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
-  height: 3rem;
   flex-wrap: nowrap;
   justify-content: space-around;
   transition: background 0.25s ease-in-out;
@@ -94,14 +93,16 @@ const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
     z-index: -100;`
       : ''};
 
-  @media (max-width: 1920px) {
-    height: 48px;
-  }
-
   && {
     flex-direction: row;
   }
+
+  height: 6.4vh;
 `
+
+// @media (max-width: 1920px) {
+//   height: 48px;
+// }
 
 const Block = styled.div`
   display: flex;

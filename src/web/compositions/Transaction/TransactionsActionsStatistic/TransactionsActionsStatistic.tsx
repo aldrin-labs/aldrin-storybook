@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 
-import { DaysBlock, WeekBlock } from './TransactionsActionsStatisticBlock'
+import { DayBlock } from '@core/components/TransactionsActionsStatistic/DayActionsStatistic'
+import { WeekBlock } from '@core/components/TransactionsActionsStatistic/WeekActionsStatistic'
+
 import { Grid } from '@material-ui/core'
 
 class TransactionsActionsStatistic extends Component {
@@ -8,7 +10,7 @@ class TransactionsActionsStatistic extends Component {
     return (
       <Grid item>
         <Grid item style={{ position: 'relative', marginBottom: '1.2rem' }}>
-          <DaysBlock title={'last 24 h'} />
+          <DayBlock title={'last 24 h'} />
         </Grid>
         <Grid item style={{ position: 'relative' }}>
           <WeekBlock title={'last 7 d'} />

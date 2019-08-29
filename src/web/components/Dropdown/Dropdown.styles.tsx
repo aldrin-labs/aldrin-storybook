@@ -51,6 +51,7 @@ export const StyledDropdown = styled.div`
   display: inherit;
   margin: 0 1rem;
   padding: 1rem 0.5rem;
+  height: 100%;
 
   @media only screen and (max-width: 1100px) {
     margin: 0;
@@ -67,7 +68,7 @@ export const StyledDropdown = styled.div`
 
 export const StyledPaper = styled(Paper)`
   position: absolute;
-  top: 95%;
+  top: 7.25vh;
   left: 50%;
   box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
   border: 1px solid #e0e5ec;

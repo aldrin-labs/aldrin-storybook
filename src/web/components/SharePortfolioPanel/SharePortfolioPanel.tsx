@@ -4,9 +4,14 @@ import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import { IProps } from './SharePortfolio.types'
 
-export default class SharePortfolioPanel extends Component<IProps> {
+class SharePortfolioPanel extends Component<IProps> {
   render() {
-    const { handleOpenSharePortfolio, portfolioName, onToggleUSDBTC, isUSDCurrently } = this.props
+    const {
+      handleOpenSharePortfolio,
+      portfolioName,
+      onToggleUSDBTC,
+      isUSDCurrently,
+    } = this.props
     return (
       <Grid
         container
@@ -14,6 +19,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
         alignItems="center"
         style={{
           padding: '1.6rem 24px',
+          height: '11%',
         }}
       >
         <Grid item>
@@ -23,7 +29,7 @@ export default class SharePortfolioPanel extends Component<IProps> {
                 {portfolioName}
               </TypographyHeading>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <StyledButton
                 padding="0.4rem 1rem 0.35rem 1rem"
                 borderRadius={'12px'}
@@ -31,18 +37,18 @@ export default class SharePortfolioPanel extends Component<IProps> {
               >
                 share portfolio
               </StyledButton>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
 
         <Grid item>
           <Grid container justify="flex-start" alignItems="center">
-            <Grid item>
+            {/* <Grid item>
               <SelectPortfolioPeriod />
-            </Grid>
+            </Grid> */}
             <Grid item>
               <StyledButton
-                onClick={() => { onToggleUSDBTC() }}
+                onClick={onToggleUSDBTC}
                 padding="0.25rem 1rem 0.25rem 1rem"
                 borderRadius={'28px'}
               >
@@ -55,3 +61,5 @@ export default class SharePortfolioPanel extends Component<IProps> {
     )
   }
 }
+
+export default SharePortfolioPanel
