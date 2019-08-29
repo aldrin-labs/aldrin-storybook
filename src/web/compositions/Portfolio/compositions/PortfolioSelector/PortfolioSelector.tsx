@@ -56,6 +56,7 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 // import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
+import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
@@ -130,6 +131,7 @@ class PortfolioSelector extends React.Component<IProps> {
   handleChangeUsd = (event, value) => {
     this.setState({
       valueSliderUsd: +value,
+      valueSliderUsdContainer: +value,
     })
   }
 
@@ -253,7 +255,7 @@ class PortfolioSelector extends React.Component<IProps> {
     await this.updateSettings(objForQuery)
   }
 
-  onDustFilterChange = (value: number, dustFilterParam: string) => {
+  onDustFilterChange = async (value: number, dustFilterParam: string) => {
     const {
       portfolioId,
       dustFilter: { usd, percentage, btc },
@@ -275,7 +277,7 @@ class PortfolioSelector extends React.Component<IProps> {
         ? value / BTC_PART_DIVIDER
         : value
 
-    this.updateSettings({
+    await this.updateSettings({
       settings: {
         portfolioId,
         dustFilter: {
@@ -303,15 +305,13 @@ class PortfolioSelector extends React.Component<IProps> {
     } = this.props
 
     const {
-      valueSliderPercentageContainer,
       valueSliderBtc,
+      valueSliderBtcContainer,
       valueSliderUsd,
+      valueSliderUsdContainer,
       valueSliderPercentage,
+      valueSliderPercentageContainer,
     } = this.state
-
-    const { portfolioAssetsData } = getPortfolioAssetsData(
-      myPortfolios[0].portfolioAssets
-    )
 
     const login = true
 
@@ -388,7 +388,6 @@ class PortfolioSelector extends React.Component<IProps> {
                 isCheckedAll,
                 newKeys,
                 isRebalance,
-                portfolioAssetsData,
                 baseCoin,
                 onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
@@ -452,9 +451,9 @@ class PortfolioSelector extends React.Component<IProps> {
                       onDragEnd={updateUSDSlider}
                     />
                     <GridSymbolValue>
-                      {dustFilter.usd === 0 || dustFilter.usd === null
+                      {valueSliderUsd === 0 || dustFilter.usd === null
                         ? `No $ Filter`
-                        : `< ${dustFilter.usd} $`}
+                        : `< ${valueSliderUsdContainer} $`}
                     </GridSymbolValue>
                   </SliderContainer>
                 )}
@@ -481,13 +480,14 @@ class PortfolioSelector extends React.Component<IProps> {
                       onChange={this.handleChangeBtc} //TODO onDragEnd
                       onDragEnd={updateBTCSlider}
                     />
-                    {dustFilter.btc === 0 || dustFilter.btc === null ? (
+                    {valueSliderBtcContainer === 0 ||
+                    dustFilter.btc === null ? (
                       <GridSymbolValue>
                         No {addMainSymbol('', false)} Filter
                       </GridSymbolValue>
                     ) : (
                       <GridSymbolValue>
-                        {'< '} {addMainSymbol(dustFilter.btc, false)}
+                        {'< '} {addMainSymbol(valueSliderBtcContainer, false)}
                       </GridSymbolValue>
                     )}
                   </SliderContainer>
@@ -510,6 +510,7 @@ export default compose(
           query: portfolioKeyAndWalletsQuery,
           variables: { baseCoin },
         },
+        { query: getPortfolioKeys, variables: { baseCoin } },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
       ],

@@ -110,7 +110,7 @@ export const ExpansionPanelSummaryCustom = withStyles({
 
   content: {
     margin: '12px 0 0 0',
-    transition: 'margin 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    // transition: 'margin 500ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
   },
 })(ExpansionPanelSummary)
 

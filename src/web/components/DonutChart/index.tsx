@@ -3,6 +3,7 @@ import { Typography, withWidth } from '@material-ui/core'
 import { isWidthUp, isWidthDown } from '@material-ui/core/withWidth'
 import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
+import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
 import { getRandomColor } from './utils'
 import { Props, State, DonutPiece, InputRecord } from './types'
@@ -189,10 +190,14 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             <ColorLegendContainer width={responsiveLegendWidth}>
               <SDiscreteColorLegend
                 width={responsiveLegendWidth}
-                items={data.map((d) => (
+                items={data.map((d, i) => (
                   <ColorLegendPercentContainer>
-                    <span>{d.label}</span>
-                    <span>{parseFloat(d.realValue.toFixed(1))}%</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{d.label}</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>
+                      {i === 3
+                        ? UTILS.preparePercentage(+d.realValue)
+                        : `${parseFloat(d.realValue.toFixed(1))} %`}
+                    </span>
                   </ColorLegendPercentContainer>
                 ))}
                 colors={data.map((d, index) => colorsWithRandom[index])}

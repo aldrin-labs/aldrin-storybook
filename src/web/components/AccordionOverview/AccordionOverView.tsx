@@ -54,9 +54,7 @@ class DetailedExpansionPanel extends React.Component {
 
     return (
       <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
-        <ExpansionPanel
-          TransitionProps={{ timeout: { enter: 375, exit: 250 } }}
-        >
+        <ExpansionPanel CollapseProps={{ timeout: { enter: 425, exit: 350 } }}>
           <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
             <GridColumn style={{ justifyContent: 'flex-start' }}>
               <TypographyHeading textColor={theme.palette.text.primary}>
