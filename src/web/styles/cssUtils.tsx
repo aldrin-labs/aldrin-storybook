@@ -131,7 +131,7 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const SelectR = styled(ReactSelectComponent)`
-  font-family: Roboto;
+  font-family: DM Sans;
   width: 100%;
   font-size: 16px;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
