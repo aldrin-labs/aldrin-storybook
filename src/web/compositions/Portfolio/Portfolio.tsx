@@ -46,6 +46,14 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     isSideNavOpen: false,
   }
 
+  componentDidMount() {
+    if (window.location.pathname.includes('rebalance')) {
+      this.setState({
+        isSideNavOpen: true,
+      })
+    }
+  }
+
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
   }
@@ -64,6 +72,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         notifyOnNetworkStatusChange
         fetchPolicy="network-only"
         query={portfolioKeyAndWalletsQuery}
+        // pollInterval={30000}
         variables={{ baseCoin }}
       >
         {({
@@ -72,7 +81,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
           refetch,
           networkStatus,
         }) => {
-          if (networkStatus === 4 || loading) {
+          if (loading) {
             return (
               <LinearProgress
                 style={{
@@ -85,6 +94,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               />
             )
           }
+
+          // setInterval(() => refetch(), 3000)
 
           if (!has(data, 'myPortfolios') && !loading) {
             return (
@@ -128,6 +139,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                 {/* refactor this */}
                 <PortfolioSelector
                   login={true}
+                  refetch={refetch}
                   portfolioId={portfolioId}
                   dustFilter={dustFilter}
                   newKeys={isRebalance ? rebalanceKeys : keys}
@@ -194,14 +206,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         }}
       </Query>
     )
-  }
-
-  componentDidMount() {
-    if (window.location.pathname.includes('rebalance')) {
-      this.setState({
-        isSideNavOpen: true,
-      })
-    }
   }
 }
 
