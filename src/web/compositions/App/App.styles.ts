@@ -4,6 +4,7 @@ import styled from 'styled-components'
 // we dont need it to horizontal scrollbar
 // on whole page
 export const AppGridLayout = styled.div`
+  position: relative;
   overflow-x: hidden;
   height: 93.6vh;
 `
@@ -14,3 +15,9 @@ export const AppGridLayout = styled.div`
 //     props.showFooter ? 'calc(100vh - 48px)' : '100vh'};
 //   max-height: ${(props) => (props.isPNL ? 'calc(100vh - 48px)' : '')};
 // }
+
+// todo
+
+// fix >5 acc
+// transactions layout
+// btc usdt switcher

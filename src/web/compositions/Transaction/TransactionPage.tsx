@@ -16,6 +16,7 @@ import {
   GridTableContainer,
   PortfolioSelectorWrapper,
   TransactionsPageMediaQuery,
+  GridCalendarContainer,
 } from './TransactionPage.styles'
 
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistoryWrapper'
@@ -129,9 +130,10 @@ class TransactionPage extends React.PureComponent {
           container
           justify="space-between"
           style={{
-            padding: !hideSelector && '3rem 5% 8rem 5px',
+            padding: !hideSelector && '2vh 5% 0 5px',
             overflow: 'hidden',
             flexWrap: 'nowrap',
+            height: '84vh',
           }}
           // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
         >
@@ -213,8 +215,18 @@ class TransactionPage extends React.PureComponent {
               paddingLeft: !hideSelector && '1.5rem',
             }}
           >
-            <Grid item style={{ height: '30%' }}>
-              {!hideSelector && <GitTransactionCalendar />}
+            <Grid item style={{ height: '100%' }}>
+              {!hideSelector && (
+                <GridCalendarContainer
+                  item
+                  xs={12}
+                  borderColor={`1px solid ${
+                    theme.palette.grey[theme.palette.type]
+                  }`}
+                >
+                  <GitTransactionCalendar />
+                </GridCalendarContainer>
+              )}
 
               <GridTableContainer
                 item
@@ -223,6 +235,7 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
+                style={{ height: 'calc(62% - 2vh)' }}
               >
                 <TradeOrderHistory
                   style={{ overflow: 'scroll' }}
@@ -233,7 +246,7 @@ class TransactionPage extends React.PureComponent {
               </GridTableContainer>
             </Grid>
           </GridItemContainer>
-
+          {/* 416 * 1.625 */}
           <GridItemContainer
             item
             lg={hideSelector ? 3 : 2}
@@ -242,11 +255,11 @@ class TransactionPage extends React.PureComponent {
               boxShadow: 'none',
               border: 'none',
               paddingLeft: '1.5rem',
-              paddingTop: hideSelector ? '4rem' : '1.75rem',
+              paddingTop: hideSelector ? '4rem' : '0',
             }}
           >
             <TransactionsActionsStatistic />
-            <WinLossRatio />
+            {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
       </>

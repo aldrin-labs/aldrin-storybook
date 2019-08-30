@@ -55,6 +55,10 @@ export const ContentInner = styled(({ ...props }) => <Card {...props} />)`
     border-bottom: 1px solid #ebeef4;
   }
 
+  & td:first-child {
+    padding: 0 0 0 12px !important;
+  }
+
   & th {
     font-family: DM Sans, sans-serif;
     color: #7284a0;

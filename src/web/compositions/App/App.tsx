@@ -63,9 +63,9 @@ const AppRaw = ({
             <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
           )}
           {children}
+          <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
         </AppGridLayout>
-        <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
-        <ShowWarningOnMoblieDevice />
+        {/* <ShowWarningOnMoblieDevice /> */}
         <GlobalStyle />
       </ThemeWrapper>
     </JssProvider>

@@ -48,10 +48,18 @@ export const GridContainerTitle = styled(Grid)`
 
 export const GridItemContainer = styled(Grid)`
   /* min-height: 200px; */
-  height: 85vh;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  height: 100%;
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border-radius: 20px;
   border: ${(props) => props.borderColor};
+`
+
+export const GridCalendarContainer = styled(Grid)`
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+  background-color: #fff;
+  border-radius: 20px;
+  margin-bottom: 1vh;
+  padding: 0 2rem;
 `
 
 export const ContentGrid = styled(Grid)`
@@ -156,8 +164,8 @@ export const TypographyCalendarLegend = styled(Typography)`
 `
 
 export const GridAccountContainer = styled(Grid)`
-  height: 85vh; /* min-height: 130px; */
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  height: 100%; /* min-height: 130px; */
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border-radius: 20px;
   position: relative;
   border: ${(props) => props.borderColor};
@@ -173,7 +181,7 @@ export const LessMoreContainer = styled(Grid)`
 
 export const GridTableContainer = styled(Grid)`
   overflow: hidden;
-  box-shadow: 0px 0px 15px 0px rgba(30, 30, 30, 0.2);
+  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
   border-radius: 20px;
   border: ${(props) => props.borderColor};
   ::-webkit-scrollbar {

@@ -110,11 +110,11 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions',
                   },
-                  // {
-                  //   text: 'Rebalance',
-                  //   icon: <RebalanceIcon fontSize="small" />,
-                  //   to: '/portfolio/rebalance',
-                  // },
+                  {
+                    text: 'Rebalance',
+                    icon: <RebalanceIcon fontSize="small" />,
+                    to: '/portfolio/rebalance',
+                  },
                   // { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small" />, to: '/portfolio/optimization' },
                 ]}
               />
