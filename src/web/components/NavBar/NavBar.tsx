@@ -32,6 +32,7 @@ import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFol
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
+import { MASTER_BUILD } from '@core/utils/config'
 
 export interface Props extends WithTheme {
   $hide?: boolean
@@ -60,6 +61,7 @@ const NavBarRaw: SFC<Props> = ({
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   const page = pathnamePage[pathnamePage.length - 1]
+  console.log('build', MASTER_BUILD)
 
   return (
     <Nav
@@ -87,13 +89,13 @@ const NavBarRaw: SFC<Props> = ({
           </Hidden>
           <Grid style={{ height: '100%' }} item={true} md={6} sm={5}>
             <NavBarWrapper container={true}>
-              {/*<NavLinkButton
+              {/* <NavLinkButton
                 page={`portfolio`}
                 component={Portfolio}
                 pathname={pathname}
               >
                 Portfolio
-              </NavLinkButton>*/}
+              </NavLinkButton> */}
               <Dropdown
                 id="portfolio-menu"
                 buttonText="Portfolio"
@@ -115,68 +117,78 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
                   },
-                  // { text: 'Optimizaton', icon: <OptimizationIcon fontSize="small" />, to: '/portfolio/optimization' },
+                  !MASTER_BUILD && {
+                    text: 'Optimizaton',
+                    icon: <OptimizationIcon fontSize="small" />,
+                    to: '/portfolio/optimization',
+                  },
                 ]}
               />
 
-              {/* <Dropdown
-                id="explore-menu"
-                buttonText="Explore"
-                selectedMenu={selectedMenu}
-                selectActiveMenu={selectMenu}
-                items={[
-                  {
-                    text: 'Industry',
-                    icon: <MainIcon fontSize="small" />,
-                    to: '/portfolio/industry',
-                  },
-                  // { text: 'Correlation', icon: <CorrelationIcon fontSize="small" />, to: '/portfolio/correlation' },
-                  // { text: 'Index', icon: <RebalanceIcon fontSize="small" />, to: '/' },
-                  {
-                    text: 'Social Portfolio',
-                    icon: <OptimizationIcon fontSize="small" />,
-                    to: '/portfolio/social',
-                    onMouseOver: () => {
-                      client.query({
-                        query: GET_FOLLOWING_PORTFOLIOS,
-                      })
+              {!MASTER_BUILD && (
+                <Dropdown
+                  id="explore-menu"
+                  buttonText="Explore"
+                  selectedMenu={selectedMenu}
+                  selectActiveMenu={selectMenu}
+                  items={[
+                    {
+                      text: 'Industry',
+                      icon: <MainIcon fontSize="small" />,
+                      to: '/portfolio/industry',
                     },
-                  },
-                ]}
-              /> */}
+                    // { text: 'Correlation', icon: <CorrelationIcon fontSize="small" />, to: '/portfolio/correlation' },
+                    // { text: 'Index', icon: <RebalanceIcon fontSize="small" />, to: '/' },
+                    {
+                      text: 'Social Portfolio',
+                      icon: <OptimizationIcon fontSize="small" />,
+                      to: '/portfolio/social',
+                      onMouseOver: () => {
+                        client.query({
+                          query: GET_FOLLOWING_PORTFOLIOS,
+                        })
+                      },
+                    },
+                  ]}
+                />
+              )}
 
-              {/* <NavLinkButtonWrapper>
-                <NavLinkButton
-                  page={`chart`}
-                  component={Chart}
-                  pathname={pathname}
-                >
-                  Chart
-                </NavLinkButton>
-              </NavLinkButtonWrapper> */}
+              {!MASTER_BUILD && (
+                <>
+                  <NavLinkButtonWrapper>
+                    <NavLinkButton
+                      page={`chart`}
+                      component={Chart}
+                      pathname={pathname}
+                    >
+                      Chart
+                    </NavLinkButton>
+                  </NavLinkButtonWrapper>
 
-              {/* <NavLinkButtonWrapper>
-                <NavLinkButton
-                  page={`market`}
-                  component={Market}
-                  pathname={pathname}
-                  onMouseOver={() => {
-                    client.query({
-                      query: marketsQuery,
-                    })
-                  }}
-                >
-                  Marketcap
-                </NavLinkButton>
-              </NavLinkButtonWrapper> */}
+                  <NavLinkButtonWrapper>
+                    <NavLinkButton
+                      page={`market`}
+                      component={Market}
+                      pathname={pathname}
+                      onMouseOver={() => {
+                        client.query({
+                          query: marketsQuery,
+                        })
+                      }}
+                    >
+                      Marketcap
+                    </NavLinkButton>
+                  </NavLinkButtonWrapper>
 
-              {/*<NavLinkButton*/}
-              {/*page={`market`}*/}
-              {/*component={Market}*/}
-              {/*pathname={pathname}*/}
-              {/*>*/}
-              {/*Strategy*/}
-              {/*</NavLinkButton>*/}
+                  <NavLinkButton
+                    page={`market`}
+                    component={Market}
+                    pathname={pathname}
+                  >
+                    Strategy
+                  </NavLinkButton>
+                </>
+              )}
               <NavLinkButtonWrapper>
                 <NavLinkButton
                   page={`signals`}
