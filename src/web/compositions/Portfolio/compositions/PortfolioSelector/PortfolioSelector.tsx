@@ -83,9 +83,9 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   componentDidMount() {
-    const {
-      dustFilter: { percentage, usd, btc },
-    } = this.props
+    const { dustFilter = { usd: 0, percentage: 0, btc: 0 } } = this.props
+
+    const { percentage, usd, btc } = dustFilter
 
     const value =
       percentage === 0.1

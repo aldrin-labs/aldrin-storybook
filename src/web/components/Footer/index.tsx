@@ -98,6 +98,9 @@ const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
   }
 
   height: 6.4vh;
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
 `
 
 // @media (max-width: 1920px) {

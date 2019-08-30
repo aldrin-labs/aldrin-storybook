@@ -68,20 +68,20 @@ class AccountsSlick extends Component {
       isSideNav,
       baseCoin,
       selectPortfolioMutation,
-      data,
+      data = {
+        myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
+      },
     } = this.props
 
     const portfolio = portfolios[0]
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
 
-    const {
-      myPortfolios: allPortfolios = [
-        { _id: 0 },
-        { _id: 1, portfolioValue: 0 },
-        { _id: 2 },
-      ],
-    } = data
+    const { myPortfolios: allPortfolios } = Object.values(data).length
+      ? data
+      : {
+          myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
+        }
 
     let index = allPortfolios.findIndex((p) => p._id === portfolio._id)
 

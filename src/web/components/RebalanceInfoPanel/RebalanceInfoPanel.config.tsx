@@ -14,7 +14,7 @@ export const rebalanceSelectTimeOptions = [
   },
   { label: 'Every', value: 0 },
   {
-    label: 'Stop Rebalance',
+    label: 'Disabled',
     value: -1,
   },
 ]

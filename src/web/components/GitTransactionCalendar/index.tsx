@@ -38,14 +38,14 @@ class GitTransactionCalendarWrapper extends React.PureComponent {
           }}
         />
         {/* TODO: Fix this when fixing layout */}
-        <div style={{position: 'relative', height: '27vh'}}>
-        <Calendar
-          {...{
-            endDate,
-            startDate,
-            ...this.props,
-          }}
-        />
+        <div style={{ position: 'relative', height: '27vh' }}>
+          <Calendar
+            {...{
+              endDate,
+              startDate,
+              ...this.props,
+            }}
+          />
         </div>
       </>
     )
