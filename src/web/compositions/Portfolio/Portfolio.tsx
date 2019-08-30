@@ -47,7 +47,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    setInterval(this.props.refetch, 3000)
     if (window.location.pathname.includes('rebalance')) {
       this.setState({
         isSideNavOpen: true,
@@ -66,44 +65,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       isUSDCurrently,
       portfolioKeyAndWalletsQuery: data,
     } = this.props
-
-    // return (
-    // <Query
-    //   notifyOnNetworkStatusChange
-    //   fetchPolicy="network-only"
-    //   query={portfolioKeyAndWalletsQuery}
-    //   // pollInterval={30000}
-    //   variables={{ baseCoin }}
-    // >
-    //   {({
-    //     data = { myPortfolios: [{ userSettings: {} }] },
-    //     loading,
-    //     refetch,
-    //     networkStatus,
-    //   }) => {
-    //     if (loading) {
-    //       return (
-    //         <LinearProgress
-    //           style={{
-    //             position: 'fixed',
-    //             top: 0,
-    //             width: '100vw',
-    //             zIndex: 1009,
-    //           }}
-    //           color="secondary"
-    //         />
-    //       )
-    //     }
-
-    // setInterval(() => refetch(), 3000)
-
-    // if (!has(data, 'myPortfolios') && !loading) {
-    //   return (
-    //     <CustomError>
-    //       No myPortfolios was provided, check Portoflio.tsx render
-    //     </CustomError>
-    //   )
-    // }
 
     const {
       userSettings: { portfolioId, dustFilter },
@@ -136,7 +97,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     return (
       <>
         <PortfolioContainer>
-          {/* refactor this */}
           <PortfolioSelector
             login={true}
             portfolioId={portfolioId}
@@ -202,19 +162,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         </PortfolioContainer>
       </>
     )
-    //   }}
-    // </Query>
-    // )
   }
 }
-
-// export default withAuth(withTheme()(PortfolioComponent))
-
-// export default compose(
-//   withAuth,
-//   withTheme(),
-//   queryRendererHoc({ query: GET_BASE_COIN, name: 'queryBaseCoin' })
-// )(PortfolioComponent)
 
 const APIWrapper = (props) => {
   return (
@@ -231,7 +180,7 @@ const APIWrapper = (props) => {
             variables={{ baseCoin }}
             baseCoin={baseCoin}
             isUSDCurrently={baseCoin === 'USDT'}
-            // pollInterval={1 * 30 * 1000}
+            pollInterval={1 * 30 * 1000}
             withOutSpinner={false}
             fetchPolicy="network-only"
           />
