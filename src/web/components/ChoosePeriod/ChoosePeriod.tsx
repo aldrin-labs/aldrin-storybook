@@ -31,7 +31,7 @@ class ChoosePeriod extends Component {
     } = this.props
 
     return (
-      <ChoosePeriodWrapper>
+      <ChoosePeriodWrapper style={{ height: '10%' }}>
         {PERIODS.map(({ name, label }, index) => (
           <ChoosePeriodButton
             active={activeDateButton === name}

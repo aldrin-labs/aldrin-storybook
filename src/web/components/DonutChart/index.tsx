@@ -190,16 +190,18 @@ class DonutChartWitoutTheme extends Component<Props, State> {
             <ColorLegendContainer width={responsiveLegendWidth}>
               <SDiscreteColorLegend
                 width={responsiveLegendWidth}
-                items={data.map((d, i) => (
-                  <ColorLegendPercentContainer>
-                    <span style={{ whiteSpace: 'nowrap' }}>{d.label}</span>
-                    <span style={{ whiteSpace: 'nowrap' }}>
-                      {i === 3
-                        ? UTILS.preparePercentage(+d.realValue)
-                        : `${parseFloat(d.realValue.toFixed(1))} %`}
-                    </span>
-                  </ColorLegendPercentContainer>
-                ))}
+                items={data
+                  .sort((a, b) => b.realValue - a.realValue)
+                  .map((d, i) => (
+                    <ColorLegendPercentContainer>
+                      <span style={{ whiteSpace: 'nowrap' }}>{d.label}</span>
+                      <span style={{ whiteSpace: 'nowrap' }}>
+                        {i === 3
+                          ? UTILS.preparePercentage(+d.realValue)
+                          : `${parseFloat(d.realValue.toFixed(1))} %`}
+                      </span>
+                    </ColorLegendPercentContainer>
+                  ))}
                 colors={data.map((d, index) => colorsWithRandom[index])}
                 textColor={theme.typography.body1.color}
               />

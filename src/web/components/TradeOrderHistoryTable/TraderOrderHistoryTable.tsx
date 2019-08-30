@@ -15,10 +15,16 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       handleChangePage,
       handleChangeRowsPerPage,
     } = this.props
-
+    // 82.2
     return (
       <StyledTable
-        style={{ height: '24.5vw', position: 'relative', overflowY: 'scroll' }}
+        style={{
+          height: '88%',
+          position: 'relative',
+          overflowY: 'scroll',
+          borderTopLeftRadius: '0',
+          borderTopRightRadius: '0',
+        }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
@@ -45,7 +51,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             borderBottom: '2px solid #e0e5ec',
             whiteSpace: 'nowrap',
             color: '#7284A0',
-            background: 'white',
+            background: '#F2F4F6',
           },
           cell: {
             padding: '1.2rem 1.6rem 1.2rem 1.2rem',

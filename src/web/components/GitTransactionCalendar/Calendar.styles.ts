@@ -16,7 +16,6 @@ export const HeatmapWrapper = styled.div`
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
     font-family: 'DM Sans', sans-serif;
     fill: #16253d;
-    font-size: 0.825rem;
   }
 
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
@@ -42,6 +41,6 @@ export const LegendTypography = styled(Typography)`
 export const LegendHeatmapSquare = styled.div`
   width: 1.4rem;
   height: 1.4rem;
-  background-color: ${(props) => props.fill || 'black'};
+  background-color: ${(props) => props.fill || '#E0E5EC'};
   margin: 0 0.175rem;
 `

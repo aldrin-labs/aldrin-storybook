@@ -174,13 +174,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     return (
       <>
         <BtnCustom
-          btnWidth={'17rem'}
-          height={'3rem'}
+          btnWidth={'auto'}
+          height={'auto'}
           btnColor={'#165BE0'}
           borderRadius={'1rem'}
           color={'#165BE0'}
-          margin={'1.6rem 0 0 1.2rem'}
-          padding={'0px'}
+          margin={'1.6rem 0 0 2rem'}
+          padding={'.5rem 1rem .5rem 0'}
           fontSize={'1.4rem'}
           letterSpacing="1px"
           onClick={this.handleClickOpen}
@@ -196,7 +196,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               marginRight: '.8rem',
             }}
           />
-          {/* <AddIcon fontSize={`small`} /> */} Add Account
+          Add Account
         </BtnCustom>
         <DialogWrapper
           style={{ borderRadius: '50%' }}

@@ -43,16 +43,11 @@ class PortfolioTable extends Component<IProps, IState> {
     } = this.props
 
     return (
-      // <Mutation mutation={TOGGLE_BASE_COIN}>
-      //   {(toggleBaseCoin) => (
       <>
         <PortfolioTableTabs
           theme={theme}
           toggleWallets={this.props.toggleWallets}
           isUSDCurrently={isUSDCurrently}
-          // onToggleUSDBTC={() => {
-          //   toggleBaseCoin()
-          // }}
         />
         <Suspense fallback={<Loading centerAligned />}>
           <Switch>
@@ -69,9 +64,6 @@ class PortfolioTable extends Component<IProps, IState> {
                   variables={{ baseCoin }}
                   baseCoin={baseCoin}
                   dustFilter={dustFilter}
-                  // onToggleUSDBTC={() => {
-                  //   toggleBaseCoin()
-                  // }}
                   {...rest}
                 />
               )}
@@ -142,8 +134,6 @@ class PortfolioTable extends Component<IProps, IState> {
           </Switch>
         </Suspense>
       </>
-      //   )}
-      // </Mutation>
     )
   }
 }
