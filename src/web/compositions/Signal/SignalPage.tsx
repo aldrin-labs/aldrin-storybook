@@ -54,6 +54,21 @@ class SignalListItem extends React.Component<IProps, IState> {
     interval: undefined,
   }
 
+  static getDerivedStateFromProps(props, state) {
+    let deltaSeconds = (Date.now() - props.el.updatedAt) / 1000
+
+    const days = Math.floor(deltaSeconds / (3600 * 24))
+    deltaSeconds -= days * 3600 * 24
+
+    const hours = Math.floor(deltaSeconds / 3600)
+    deltaSeconds -= hours * 3600
+
+    const minutes = Math.floor(deltaSeconds / 60)
+    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
+
+    return { days, hours, minutes, seconds: deltaSeconds }
+  }
+
   resetTimer = () => {
     this.setState({
       seconds: '00',
@@ -67,25 +82,25 @@ class SignalListItem extends React.Component<IProps, IState> {
     const { seconds, minutes, hours, days } = this.state
     const pad = (num: number | string) => (+num < 10 ? '0' + num : num)
 
-    let updatedSeconds = +seconds + 1
+    const updatedSeconds = +seconds + 1
     if (updatedSeconds < 60) {
       this.setState({ seconds: pad(updatedSeconds) })
       return null
     }
 
-    let updatedMinutes = +minutes + 1
+    const updatedMinutes = +minutes + 1
     if (updatedMinutes < 60) {
       this.setState({ seconds: '00', minutes: pad(updatedMinutes) })
       return null
     }
 
-    let updatedHours = +hours + 1
+    const updatedHours = +hours + 1
     if (updatedHours < 24) {
       this.setState({ seconds: '00', minutes: '00', hours: pad(updatedHours) })
       return null
     }
 
-    let updatedDays = +days + 1
+    const updatedDays = +days + 1
     this.setState({
       seconds: '00',
       minutes: '00',
@@ -117,21 +132,6 @@ class SignalListItem extends React.Component<IProps, IState> {
 
   componentDidMount() {
     this.updateDate()
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    let deltaSeconds = (Date.now() - props.el.updatedAt) / 1000
-
-    const days = Math.floor(deltaSeconds / (3600 * 24))
-    deltaSeconds -= days * 3600 * 24
-
-    const hours = Math.floor(deltaSeconds / 3600)
-    deltaSeconds -= hours * 3600
-
-    const minutes = Math.floor(deltaSeconds / 60)
-    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
-
-    return { days, hours, minutes, seconds: deltaSeconds }
   }
 
   componentWillUnmount() {
@@ -303,22 +303,22 @@ class SocialPage extends React.Component {
 
     const filteredData = getFollowingSignals.length
       ? getFollowingSignals.filter((signal) => {
-          return (
-            signal.name
-              .toLowerCase()
-              .indexOf(this.state.search.toLowerCase()) !== -1
-          )
-        })
+        return (
+          signal.name
+            .toLowerCase()
+            .indexOf(this.state.search.toLowerCase()) !== -1
+        )
+      })
       : []
 
     const sortedData = filteredData.length
       ? filteredData.sort((a, b) => {
-          return signalsSort.value === signalsSortOptions[0].value
-            ? a.name && b.name && a.name.localeCompare(b.name)
-            : signalsSort.value === signalsSortOptions[1].value
+        return signalsSort.value === signalsSortOptions[0].value
+          ? a.name && b.name && a.name.localeCompare(b.name)
+          : signalsSort.value === signalsSortOptions[1].value
             ? b.eventsCount - a.eventsCount
             : b.updatedAt - a.updatedAt
-        })
+      })
       : filteredData
 
     const sharedSignalsList = sortedData.map((el, index) => (
@@ -408,8 +408,8 @@ class SocialPage extends React.Component {
                   Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                sharedSignalsList
-              )}
+                  sharedSignalsList
+                )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>
@@ -451,7 +451,7 @@ export default compose(
     query: GET_FOLLOWING_SIGNALS_QUERY,
     name: 'getFollowingSignalsQuery',
     // pollInterval: 5000,
-    // fetchPolicy: 'network-only',
+    fetchPolicy: 'network-only',
   }),
   graphql(updateSignal, {
     name: 'updateSignalMutation',
