@@ -10,20 +10,12 @@ import { ContainerGrid } from './SignalPage.styles'
 
 import { IState, IProps } from './SignalEventList.types'
 
-const putDataInTable = (
-  tableData: any[],
-  timers: any[],
-  updateTimers: (data: any[]) => void
-) => {
+const putDataInTable = (tableData: any[]) => {
   if (!tableData || tableData.length === 0) {
     return { head: [], body: [], footer: null }
   }
 
-  const [body, updateTimersInterval, timersArray] = transformData(
-    tableData,
-    timers,
-    updateTimers
-  )
+  const [body] = transformData(tableData)
 
   return {
     head: [
@@ -44,92 +36,28 @@ const putDataInTable = (
       { id: 'status', label: 'Status' },
     ],
     body,
-    updateTimersInterval,
-    timersArray,
   }
 }
 
-const transformData = (
-  data: any[],
-  timers: any[],
-  updateTimers: (data: any[]) => void
-) => {
-  const [oldUpdated, updateData] = useState([])
-
-  // update timer
-  const countUp = ({ seconds, minutes, hours, days }) => {
-    const pad = (num: number | string) => (+num < 10 ? '0' + num : num)
-
-    let updatedSeconds = +seconds + 1
-    if (updatedSeconds < 60) {
-      return { seconds: pad(updatedSeconds), minutes, hours, days }
-    }
-
-    let updatedMinutes = +minutes + 1
-    if (updatedMinutes < 60) {
-      return { seconds: '00', minutes: pad(updatedMinutes), hours, days }
-    }
-
-    let updatedHours = +hours + 1
-    if (updatedHours < 24) {
-      return { seconds: '00', minutes: '00', hours: pad(updatedHours), days }
-    }
-
-    let updatedDays = +days + 1
-    return {
-      seconds: '00',
-      minutes: '00',
-      hours: '00',
-      days: pad(updatedDays),
-    }
-  }
-
-  // update for all signal events
-  const updateTimersInterval = (timers: any[]) => {
-    return timers.map((timer) => {
-      return countUp(timer)
-    })
-  }
-
-  // get start data
-  const initializeState = (
-    updatedAt: number
-  ): { seconds: number; minutes: number; hours: number; days: number } => {
-    let deltaSeconds = ((Date.now() / 1000) | 0) - updatedAt
-
-    const days = Math.floor(deltaSeconds / (3600 * 24))
-    deltaSeconds -= days * 3600 * 24
-
-    const hours = Math.floor(deltaSeconds / 3600)
-    deltaSeconds -= hours * 3600
-
-    const minutes = Math.floor(deltaSeconds / 60)
-    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
-
-    return { days, hours, minutes, seconds: deltaSeconds }
-  }
-
-  const timersArray: any[] = []
-  const updatedArray: any[] = []
-  let needToUpdateAfterRefetch = false
-
-  const transformedData = data.map((row, i) => {
+const transformData = (data: any[]) => {
+  const transformedData = data.map((row) => {
     // get data to update state after cycle
 
-    if (oldUpdated.length === data.length && oldUpdated[i] !== row.updatedAt)
-      needToUpdateAfterRefetch = true
+    let deltaSeconds = ((Date.now() / 1000) | 0) - row.updatedAt
 
-    updatedArray.push(row.updatedAt)
-    timersArray.push(initializeState(row.updatedAt))
+    const date = moment
+      .utc(deltaSeconds * 1000)
+      .format('DD HH mm ss')
+      .split(' ')
 
-    const { days, hours, minutes, seconds } =
-      timers && timers[i]
-        ? timers[i]
-        : { days: 0, hours: 0, minutes: 0, seconds: 0 }
+    const [days, hours, minutes, seconds] = date
 
     return {
       id: row._id,
-      updatedAt: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+      updatedAt: {
+        render: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+        style: { textTransform: 'lowercase' },
+      },
       timestamp: {
         contentToSort: row.t,
         contentToCSV: row.t,
@@ -150,8 +78,14 @@ const transformData = (
         ),
       },
       pair: row.pair || '-',
-      exchangeA: row.exchangeA || '-',
-      exchangeB: row.exchangeB || '-',
+      exchangeA: {
+        render: row.exchangeA || '-',
+        style: { textTransform: 'uppercase' },
+      },
+      exchangeB: {
+        render: row.exchangeB || '-',
+        style: { textTransform: 'uppercase' },
+      },
       amount: {
         contentToSort: row.amount,
         contentToCSV: roundAndFormatNumber(row.amount, 2, true),
@@ -188,7 +122,10 @@ const transformData = (
         contentToCSV: roundAndFormatNumber(row.profit, 3, true),
         render: row.profit ? roundAndFormatNumber(row.profit, 3, true) : '-',
       },
-      status: row.status || '-',
+      status: {
+        render: row.status || '-',
+        style: { textTransform: 'uppercase' },
+      },
       orderbook: {
         orders: row.ordersJson,
         ordersA: row.ordersJsonA,
@@ -197,16 +134,7 @@ const transformData = (
     }
   })
 
-  // update data if its first render or if updatedAt changed ( so we get new data )
-  if (timersArray.length > timers.length || needToUpdateAfterRefetch) {
-    updateTimers(timersArray)
-  }
-
-  if (oldUpdated.length < updateData.length) {
-    updateData(updatedArray)
-  }
-
-  return [transformedData, updateTimersInterval, timersArray]
+  return [transformedData]
 }
 
 const SignalEventList = (props) => {
@@ -222,38 +150,30 @@ const SignalEventList = (props) => {
     refetch,
   } = props
 
-  const [refetchTimerId, updateRefetchTimer] = useState(0)
-  const [timers, updateTimers] = useState([])
+  const [_, forceUpdate] = useState([])
   const [autoRefetch, toggleAutoRefetch] = useState(true)
 
-  const { body, head, footer = [], updateTimersInterval } = putDataInTable(
-    events,
-    timers,
-    // use to update data when initialize
-    updateTimers
-  )
+  const { body, head, footer = [] } = putDataInTable(events)
 
   useEffect(() => {
     // update timers for all signals
     let id = setInterval(() => {
-      updateTimers(updateTimersInterval(timers))
+      forceUpdate([])
     }, 1000)
 
     return () => clearInterval(id)
-  })
+  }, [])
 
   useEffect(() => {
-    // update timers for all signals
-    autoRefetch
-      ? updateRefetchTimer(
-          setInterval(() => {
-            refetch()
-          }, 3000)
-        )
-      : clearInterval(refetchTimerId)
+    // auto-refetch
+    const id = autoRefetch
+      ? setInterval(() => {
+          refetch()
+        }, 3000)
+      : 0
 
-    return () => clearInterval(refetchTimerId)
-  }, [autoRefetch, events])
+    return () => clearInterval(id)
+  }, [autoRefetch, refetch])
 
   return (
     <ContainerGrid container style={{ position: 'relative' }}>
@@ -304,7 +224,6 @@ const SignalEventList = (props) => {
             fontFamily: 'DM Sans',
             fontStyle: 'normal',
             fontWeight: '500',
-            textTransform: 'uppercase',
             letterSpacing: '0.5px',
             fontSize: '.9rem',
             padding: '0 0 0 .3rem',
