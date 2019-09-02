@@ -145,10 +145,9 @@ const APIWrapper = (props: any) => {
   const startDate = +moment().subtract(1, 'weeks')
 
   const queries = [
-    { query: getPortfolioKeys, variables: { baseCoin } },
-    { query: getMyPortfoliosQuery, variables: { baseCoin } },
+    { query: getPortfolioKeys, variables: { baseCoin, innerSettings: true } },
+    { query: getPortfolioKeys, variables: { baseCoin, innerSettings: false } },
     { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
-    { query: getPortfolioMainQuery, variables: { baseCoin } },
     {
       query: MyTradesQuery,
       variables: {

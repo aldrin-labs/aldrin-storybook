@@ -299,7 +299,9 @@ class PortfolioSelector extends React.Component<IProps> {
       activeKeys,
       activeWallets,
       dustFilter,
-      portfolioKeys = { myPortfolios: [{ portfolioAssets: {} }] },
+      portfolioKeys = {
+        myPortfolios: [{ portfolioAssets: {}, name: 'Loading...', _id: 1 }],
+      },
       isRebalance,
       isUSDCurrently,
       data: { myPortfolios },
@@ -315,7 +317,7 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    //if (!portfolioKeys || !portfolioKeys.myPortfolios) return <Loader />
+    if (!portfolioKeys || !portfolioKeys.myPortfolios) return <Loader />
 
     const login = true
 
@@ -518,7 +520,7 @@ export default compose(
   graphql(getPortfolioKeys, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
-      variables: { baseCoin },
+      variables: { baseCoin, innerSettings: true },
       pollInterval: 30000,
     }),
   }),
@@ -530,9 +532,14 @@ export default compose(
           query: portfolioKeyAndWalletsQuery,
           variables: { baseCoin },
         },
-        { query: getPortfolioKeys, variables: { baseCoin } },
-        { query: getMyPortfoliosQuery, variables: { baseCoin } },
-        { query: getPortfolioMainQuery, variables: { baseCoin } },
+        {
+          query: getPortfolioKeys,
+          variables: { baseCoin, innerSettings: true },
+        },
+        {
+          query: getPortfolioKeys,
+          variables: { baseCoin, innerSettings: false },
+        },
       ],
       // update: updateSettingsMutation,
     }),

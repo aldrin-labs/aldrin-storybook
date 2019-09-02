@@ -284,7 +284,7 @@ export default compose(
   graphql(getPortfolioKeys, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
-      variables: { baseCoin },
+      variables: { baseCoin, innerSettings: true },
       pollInterval: 30000,
     }),
   }),

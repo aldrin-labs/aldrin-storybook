@@ -222,7 +222,7 @@ const APIWrapper = (props: any) => {
             component={DetailedExpansionPanel}
             name={`portfolioAssetsQuery`}
             query={getPortfolioKeys}
-            variables={{ baseCoin }}
+            variables={{ baseCoin, innerSettings: true }}
             baseCoin={baseCoin}
             isUSDCurrently={baseCoin === 'USDT'}
             fetchPolicy={'cache-first'}
