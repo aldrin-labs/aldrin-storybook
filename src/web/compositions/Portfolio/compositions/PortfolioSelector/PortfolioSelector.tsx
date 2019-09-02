@@ -54,6 +54,7 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 
 // import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 // import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
 import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
@@ -298,6 +299,7 @@ class PortfolioSelector extends React.Component<IProps> {
       activeKeys,
       activeWallets,
       dustFilter,
+      portfolioKeys = { myPortfolios: [{ portfolioAssets: {} }] },
       isRebalance,
       isUSDCurrently,
       data: { myPortfolios },
@@ -313,6 +315,8 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
+    //if (!portfolioKeys || !portfolioKeys.myPortfolios) return <Loader />
+
     const login = true
 
     const isCheckedAll =
@@ -320,6 +324,12 @@ class PortfolioSelector extends React.Component<IProps> {
       newKeys.length + newWallets.length
 
     const color = theme.palette.secondary.main
+
+    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+      portfolioKeys.myPortfolios[0].portfolioAssets
+    )
+
+    const { name, _id } = portfolioKeys.myPortfolios[0]
 
     const updatePercentageSlider = () =>
       this.onDustFilterChange(valueSliderPercentage, 'percentage')
@@ -335,8 +345,8 @@ class PortfolioSelector extends React.Component<IProps> {
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={true}
-        unmountOnExit={true}
+        mountOnEnter={false}
+        unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
@@ -371,7 +381,9 @@ class PortfolioSelector extends React.Component<IProps> {
 
               <AccountsSlick
                 isSideNav
-                myPortfolios={myPortfolios}
+                totalKeyAssetsData={totalKeyAssetsData}
+                name={name}
+                _id={_id}
                 baseCoin={baseCoin}
               />
 
@@ -389,6 +401,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 newKeys,
                 isRebalance,
                 baseCoin,
+                portfolioAssetsData,
                 onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
@@ -502,6 +515,13 @@ class PortfolioSelector extends React.Component<IProps> {
 }
 
 export default compose(
+  graphql(getPortfolioKeys, {
+    name: 'portfolioKeys',
+    options: ({ baseCoin }) => ({
+      variables: { baseCoin },
+      pollInterval: 30000,
+    }),
+  }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({

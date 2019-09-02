@@ -24,6 +24,8 @@ import {
   TypographyAccountMoney,
 } from './AccountsSlick.styles'
 
+import { Loading } from '@sb/components/index'
+
 import SvgIcon from '@sb/components/SvgIcon'
 import SliderArrow from '@icons/SliderArrow.svg'
 
@@ -64,16 +66,17 @@ class AccountsSlick extends Component {
 
   render() {
     const {
-      myPortfolios: portfolios = [{ name: 'Loading...', _id: 1 }],
+      loading,
       isSideNav,
       baseCoin,
       selectPortfolioMutation,
+      totalKeyAssetsData,
       data = {
         myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
       },
+      name,
+      _id,
     } = this.props
-
-    const portfolio = portfolios[0]
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
 
@@ -83,7 +86,7 @@ class AccountsSlick extends Component {
           myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
         }
 
-    let index = allPortfolios.findIndex((p) => p._id === portfolio._id)
+    let index = allPortfolios.findIndex((p) => p._id === _id)
 
     // instead of loading
     if (index === -1) index = 1
@@ -117,15 +120,11 @@ class AccountsSlick extends Component {
             handleClick={() => handleClick(prevPortfolioId)}
           />
           <TypographyAccountName isSideNav={isSideNav}>
-            {portfolio.name}
+            {name}
           </TypographyAccountName>
           <TypographyAccountMoney isSideNav={isSideNav}>
             {addMainSymbol(
-              roundAndFormatNumber(
-                allPortfolios[index].portfolioValue,
-                roundNumber,
-                true
-              ),
+              roundAndFormatNumber(totalKeyAssetsData.value, roundNumber, true),
               isUSDT
             )}
           </TypographyAccountMoney>
