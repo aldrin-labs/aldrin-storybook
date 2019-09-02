@@ -17,8 +17,9 @@ import {
   ExpansionPanelDetailsCustom,
 } from './AccordionOverView.style'
 
+import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
-import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+// import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { addMainSymbol } from '@sb/components/index'
@@ -210,25 +211,28 @@ class DetailedExpansionPanel extends React.Component {
   }
 }
 
-const APIWrapper = (props: any) => (
-  <Query query={GET_BASE_COIN}>
-    {({ data }) => {
-      const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
-      return (
-        <QueryRenderer
-          {...props}
-          component={DetailedExpansionPanel}
-          name={`portfolioAssetsQuery`}
-          query={getPortfolioMainQuery}
-          variables={{ baseCoin }}
-          baseCoin={baseCoin}
-          isUSDCurrently={baseCoin === 'USDT'}
-          withOutSpinner={true}
-          withTableLoader={true}
-        />
-      )
-    }}
-  </Query>
-)
+const APIWrapper = (props: any) => {
+  return (
+    <Query query={GET_BASE_COIN}>
+      {({ data }) => {
+        const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
+        return (
+          <QueryRenderer
+            {...props}
+            component={DetailedExpansionPanel}
+            name={`portfolioAssetsQuery`}
+            query={getPortfolioKeys}
+            variables={{ baseCoin, innerSettings: true }}
+            baseCoin={baseCoin}
+            isUSDCurrently={baseCoin === 'USDT'}
+            fetchPolicy={'cache-first'}
+            withOutSpinner={true}
+            withTableLoader={true}
+          />
+        )
+      }}
+    </Query>
+  )
+}
 
 export default APIWrapper

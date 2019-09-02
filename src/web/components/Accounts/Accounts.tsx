@@ -53,7 +53,7 @@ class Accounts extends React.PureComponent<IProps> {
       // onToggleAll,
       color,
       newKeys,
-      portfolioKeys,
+      portfolioAssetsData,
       onKeyToggle,
       login,
       isRebalance,
@@ -62,10 +62,6 @@ class Accounts extends React.PureComponent<IProps> {
       isSidebar,
       baseCoin,
     } = this.props
-
-    const { portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0].portfolioAssets
-    )
 
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
@@ -214,16 +210,4 @@ class Accounts extends React.PureComponent<IProps> {
   }
 }
 
-const APIWrapper = (props) => {
-  return (
-    <QueryRenderer
-      {...props}
-      component={Accounts}
-      query={getPortfolioKeys}
-      name="portfolioKeys"
-      variables={{ baseCoin: props.baseCoin }}
-    />
-  )
-}
-
-export default APIWrapper
+export default Accounts
