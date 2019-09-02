@@ -191,7 +191,13 @@ class DonutChartWitoutTheme extends Component<Props, State> {
               <SDiscreteColorLegend
                 width={responsiveLegendWidth}
                 items={data
-                  .sort((a, b) => b.realValue - a.realValue)
+                  .sort((a, b) => {
+                    return b.label === 'OTHER'
+                      ? -1
+                      : a.label === 'OTHER'
+                      ? 1
+                      : b.realValue - a.realValue
+                  })
                   .map((d, i) => (
                     <ColorLegendPercentContainer>
                       <span style={{ whiteSpace: 'nowrap' }}>{d.label}</span>

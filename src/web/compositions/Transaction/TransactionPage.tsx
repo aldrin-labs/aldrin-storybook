@@ -33,6 +33,7 @@ import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 
+import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -106,18 +107,28 @@ class TransactionPage extends React.PureComponent {
     const {
       theme,
       hideSelector,
-      portfolioKeyAndWalletsQuery: { myPortfolios },
       newWallets = [],
       newKeys = [],
       activeKeys = [],
       activeWallets = [],
+      portfolioKeys = {
+        myPortfolios: [{ portfolioAssets: {}, name: 'Loading...', _id: '1' }],
+      },
     } = this.props
 
     const { includeExchangeTransactions, includeTrades } = this.state
 
+    console.log(portfolioKeys)
+
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
+
+    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+      portfolioKeys.myPortfolios[0].portfolioAssets
+    )
+
+    const { name, _id } = portfolioKeys.myPortfolios[0]
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
@@ -170,8 +181,9 @@ class TransactionPage extends React.PureComponent {
                     />
                     <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
                     <AccountsSlick
-                      path={this.props['0'].location.pathname}
-                      myPortfolios={myPortfolios}
+                      totalKeyAssetsData={totalKeyAssetsData}
+                      name={name}
+                      _id={_id}
                       baseCoin={'USDT'}
                     />
                   </PortfolioSelectorWrapper>
@@ -185,6 +197,7 @@ class TransactionPage extends React.PureComponent {
                         isCheckedAll,
                         baseCoin: 'USDT',
                         newKeys,
+                        portfolioAssetsData: portfolioAssetsData,
                         isRebalance: false,
                         onKeysSelectAll: this.onKeysSelectAll,
                         onKeyToggle: this.onKeyToggle,
@@ -268,10 +281,12 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
-  queryRendererHoc({
-    query: portfolioKeyAndWalletsQuery,
-    name: 'portfolioKeyAndWalletsQuery',
-    variables: { baseCoin: 'USDT' },
+  graphql(getPortfolioKeys, {
+    name: 'portfolioKeys',
+    options: ({ baseCoin }) => ({
+      variables: { baseCoin, innerSettings: true },
+      pollInterval: 30000,
+    }),
   }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',
