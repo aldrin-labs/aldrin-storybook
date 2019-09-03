@@ -105,8 +105,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
     const { openSharePortfolioPopUp } = this.state
 
-    console.log('main page rerender')
-
     return (
       <LayoutClearfixWrapper>
         <Grid style={{ height: '100%' }}>
