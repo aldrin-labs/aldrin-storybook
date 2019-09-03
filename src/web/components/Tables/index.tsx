@@ -255,9 +255,9 @@ const renderCheckBox = ({
       disabled={Boolean(disabled)}
       checkedIcon={<ExpandLess />}
       icon={<ExpandMore />}
-      onChange={() => {
-        ;(onChange as OnChange)(id)
-      }}
+      // onChange={() => {
+      //   ;(onChange as OnChange)(id)
+      // }}
       color="default"
       checked={checked}
     />
@@ -728,7 +728,8 @@ const CustomTable = (props: Props) => {
                           : null
                       }
                     >
-                      {typeOfCheckbox !== null && (
+                      {row.expandableContent &&
+                      row.expandableContent.length > 0 ? (
                         <CustomTableCell padding="checkbox">
                           {renderCheckBox({
                             onChange,
@@ -747,6 +748,12 @@ const CustomTable = (props: Props) => {
                             type: typeOfCheckbox,
                           })}
                         </CustomTableCell>
+                      ) : (
+                        typeOfCheckbox !== null && (
+                          <CustomTableCell padding="checkbox">
+                            {' '}
+                          </CustomTableCell>
+                        )
                       )}
                       {renderCells({ row, padding, tableStyles })}
                     </TableRow>
