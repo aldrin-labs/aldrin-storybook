@@ -185,6 +185,7 @@ const APIWrapper = (props: any) => {
   return (
     <QueryRenderer
       {...props}
+      loaderColor="#fefefe"
       fetchPolicy="network-only"
       component={MutationComponent}
       query={getMyPortfoliosQuery}

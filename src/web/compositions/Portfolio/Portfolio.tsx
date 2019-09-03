@@ -47,9 +47,17 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
+    const { portfolioKeyAndWalletsQuery: data } = this.props
+
+    let {
+      userSettings: { rebalanceKeys },
+    } = safePortfolioDestruction(data.myPortfolios[0])
+
+    rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
+
     if (window.location.pathname.includes('rebalance')) {
       this.setState({
-        isSideNavOpen: true,
+        isSideNavOpen: rebalanceKeys.length > 1,
       })
     }
   }
@@ -90,6 +98,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const hasKeysOrWallets = isRebalance
       ? rebalanceKeys.length + wallets.length > 0
       : keys.length + wallets.length > 0
+
     const hasActiveKeysOrWallets = isRebalance
       ? activeRebalanceKeys.length + activeWallets.length > 0
       : activeKeys.length + activeWallets.length > 0
