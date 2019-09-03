@@ -48,7 +48,6 @@ class Accounts extends React.PureComponent<IProps> {
 
   render() {
     const {
-      isSideNavOpen,
       // isCheckedAll,
       // onToggleAll,
       color,
@@ -98,12 +97,12 @@ class Accounts extends React.PureComponent<IProps> {
             )}
           </TypographyFullWidth>
 
-          <Headline isSideNavOpen={isSideNavOpen} color={color}>
+          {/* <Headline color={color}>
             settings
-          </Headline>
-          <CloseContainer>
-            {/* <StyledIcon isSideNavOpen={isSideNavOpen} color={color} /> */}
-          </CloseContainer>
+          </Headline> */}
+          {/* <CloseContainer>
+            <StyledIcon isSideNavOpen={isSideNavOpen} color={color} />
+          </CloseContainer> */}
         </AccountsWalletsHeadingWrapper>
         {/*
         {!isRebalance && (

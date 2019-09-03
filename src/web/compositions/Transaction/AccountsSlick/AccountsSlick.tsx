@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 
-// import { compose } from 'recompose'
-// import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { compose } from 'recompose'
+import QueryRenderer from '@core/components/QueryRenderer'
 
 import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
@@ -66,30 +66,22 @@ class AccountsSlick extends Component {
 
   render() {
     const {
-      loading,
-      isSideNav,
       baseCoin,
       selectPortfolioMutation,
       totalKeyAssetsData,
       data = {
         myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
       },
-      name,
-      _id,
+      currentName,
+      currentId,
     } = this.props
+
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
 
-    const { myPortfolios: allPortfolios } = Object.values(data).length
-      ? data
-      : {
-          myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
-        }
+    const { myPortfolios: allPortfolios } = data
 
-    let index = allPortfolios.findIndex((p) => p._id === _id)
-
-    // instead of loading
-    if (index === -1) index = 1
+    const index = allPortfolios.findIndex((p) => p._id === currentId)
 
     const prevPortfolioId =
       index === 0
@@ -119,14 +111,18 @@ class AccountsSlick extends Component {
             style={{ position: 'absolute', left: 0, top: '20%' }}
             handleClick={() => handleClick(prevPortfolioId)}
           />
-          <TypographyAccountName isSideNav={isSideNav}>
-            {name}
-          </TypographyAccountName>
-          <TypographyAccountMoney isSideNav={isSideNav}>
-            {addMainSymbol(
-              roundAndFormatNumber(totalKeyAssetsData.value, roundNumber, true),
-              isUSDT
-            )}
+          <TypographyAccountName>{currentName}</TypographyAccountName>
+          <TypographyAccountMoney>
+            {totalKeyAssetsData
+              ? addMainSymbol(
+                  roundAndFormatNumber(
+                    totalKeyAssetsData.value,
+                    roundNumber,
+                    true
+                  ),
+                  isUSDT
+                )
+              : 'Loading...'}
           </TypographyAccountMoney>
           <RightArrow
             style={{ position: 'absolute', right: 0, top: '20%' }}
@@ -170,28 +166,31 @@ const APIWrapper = (props: any) => {
     },
   ]
 
+  const MutationComponent = (props) => (
+    <Mutation mutation={selectPortfolio} refetchQueries={queries}>
+      {(mutation) => {
+        return (
+          <AccountsSlick
+            {...props}
+            data={props.data}
+            refetch={props.refetch}
+            selectPortfolioMutation={mutation}
+            baseCoin={baseCoin}
+          />
+        )
+      }}
+    </Mutation>
+  )
+
   return (
-    <Query
+    <QueryRenderer
+      {...props}
       fetchPolicy="network-only"
+      component={MutationComponent}
       query={getMyPortfoliosQuery}
       variables={{ baseCoin }}
-    >
-      {({ data, refetch }) => (
-        <Mutation mutation={selectPortfolio} refetchQueries={queries}>
-          {(mutation) => {
-            return (
-              <AccountsSlick
-                {...props}
-                data={data}
-                refetch={refetch}
-                selectPortfolioMutation={mutation}
-                baseCoin={baseCoin}
-              />
-            )
-          }}
-        </Mutation>
-      )}
-    </Query>
+      withOutSpinner={false}
+    />
   )
 }
 
