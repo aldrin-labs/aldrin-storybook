@@ -40,6 +40,7 @@ class PortfolioTable extends Component<IProps, IState> {
       portfolioName,
       activeKeys,
       keys,
+      isSideNavOpen,
     } = this.props
 
     return (
@@ -92,6 +93,7 @@ class PortfolioTable extends Component<IProps, IState> {
                   dustFilter={dustFilter}
                   portfolioId={portfolioId}
                   activeKeys={activeKeys}
+                  isSideNavOpen={isSideNavOpen}
                   {...rest}
                 />
               )}

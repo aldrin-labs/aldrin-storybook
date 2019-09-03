@@ -347,8 +347,6 @@ class PortfolioSelector extends React.Component<IProps> {
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={false}
-        unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
@@ -356,7 +354,7 @@ class PortfolioSelector extends React.Component<IProps> {
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          <GridSection>
+          <GridSection style={{ height: '15rem' }}>
             <SvgIcon
               src={PortfolioSidebarBack}
               style={{
@@ -369,7 +367,12 @@ class PortfolioSelector extends React.Component<IProps> {
             />
 
             <Grid
-              style={{ position: 'relative', zIndex: 2, padding: '0 1.5rem' }}
+              style={{
+                position: 'relative',
+                zIndex: 2,
+                padding: '0 1.5rem',
+                height: '15rem'
+              }}
             >
               <Grid container justify="space-between" alignItems="center">
                 <TypographyTitle>Portfolio</TypographyTitle>
@@ -382,10 +385,9 @@ class PortfolioSelector extends React.Component<IProps> {
               </Grid>
 
               <AccountsSlick
-                isSideNav
                 totalKeyAssetsData={totalKeyAssetsData}
-                name={name}
-                _id={_id}
+                currentName={name}
+                currentId={_id}
                 baseCoin={baseCoin}
               />
 
@@ -398,7 +400,6 @@ class PortfolioSelector extends React.Component<IProps> {
               {...{
                 color,
                 login,
-                isSideNavOpen,
                 isCheckedAll,
                 newKeys,
                 isRebalance,
@@ -434,7 +435,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     trackAfterBackground="#E7ECF3"
                     trackBeforeBackground={'#165BE0'}
                     value={this.state.valueSliderPercentage}
-                    onChange={this.handleChangePercentage} //TODO onDragEnd
+                    onChange={this.handleChangePercentage}
                     onDragEnd={updatePercentageSlider}
                   />
                   <GridSymbolValue>
@@ -462,7 +463,7 @@ class PortfolioSelector extends React.Component<IProps> {
                       trackAfterBackground="#E7ECF3"
                       trackBeforeBackground={'#165BE0'}
                       value={this.state.valueSliderUsd}
-                      onChange={this.handleChangeUsd} //TODO onDragEnd
+                      onChange={this.handleChangeUsd}
                       onDragEnd={updateUSDSlider}
                     />
                     <GridSymbolValue>
@@ -492,7 +493,7 @@ class PortfolioSelector extends React.Component<IProps> {
                       trackAfterBackground="#E7ECF3"
                       trackBeforeBackground={'#165BE0'}
                       value={this.state.valueSliderBtc}
-                      onChange={this.handleChangeBtc} //TODO onDragEnd
+                      onChange={this.handleChangeBtc}
                       onDragEnd={updateBTCSlider}
                     />
                     {valueSliderBtcContainer === 0 ||

@@ -111,14 +111,10 @@ class TransactionPage extends React.PureComponent {
       newKeys = [],
       activeKeys = [],
       activeWallets = [],
-      portfolioKeys = {
-        myPortfolios: [{ portfolioAssets: {}, name: 'Loading...', _id: '1' }],
-      },
+      portfolioKeys,
     } = this.props
 
     const { includeExchangeTransactions, includeTrades } = this.state
-
-    console.log(portfolioKeys)
 
     const color = theme.palette.secondary.main
     const login = true
@@ -182,8 +178,8 @@ class TransactionPage extends React.PureComponent {
                     <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
                     <AccountsSlick
                       totalKeyAssetsData={totalKeyAssetsData}
-                      name={name}
-                      _id={_id}
+                      currentName={name}
+                      currentId={_id}
                       baseCoin={'USDT'}
                     />
                   </PortfolioSelectorWrapper>
