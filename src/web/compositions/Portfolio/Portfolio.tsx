@@ -180,7 +180,7 @@ const APIWrapper = (props) => {
             variables={{ baseCoin }}
             baseCoin={baseCoin}
             isUSDCurrently={baseCoin === 'USDT'}
-            pollInterval={1 * 30 * 1000}
+            // pollInterval={1 * 30 * 1000}
             withOutSpinner={false}
             fetchPolicy="network-only"
           />
