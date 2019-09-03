@@ -20,7 +20,7 @@ import {
   InputBaseCustom,
   DialogWrapper,
   DialogTitleCustom,
-  Legend
+  Legend,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -38,19 +38,17 @@ const formikDialog = withFormik({
     portfolioName: '',
   }),
   handleSubmit: async ({ portfolioName }, props) => {
-    const {
-      createPortfolio
-    } = props.props
+    const { createPortfolio } = props.props
     const variables = {
       inputPortfolio: {
-        name: portfolioName
-      }
+        name: portfolioName,
+      },
     }
 
     try {
       props.setSubmitting(true)
       await createPortfolio({
-        variables
+        variables,
       })
       props.resetForm({})
     } catch (error) {
@@ -58,7 +56,7 @@ const formikDialog = withFormik({
       props.setFieldError('portfolioName', 'Request error!')
       props.setSubmitting(false)
     }
-  }
+  },
 })
 
 const DialogTitle = withStyles((theme) => ({
@@ -104,7 +102,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
     open: false,
     isSelected: true,
 
-    portfolioName: ''
+    portfolioName: '',
   }
 
   handleRadioBtn = () => {
@@ -132,7 +130,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       values,
       handleSubmit,
       errors,
-      validateForm
+      validateForm,
     } = this.props
 
     return (
@@ -147,13 +145,13 @@ class CreatePortfolio extends React.Component<IProps, IState> {
           fontSize={'1.175rem'}
           letterSpacing="1px"
           onClick={this.handleClickOpen}
-
           style={{
             position: 'absolute',
             left: '50%',
+            bottom: '1.5rem',
             transform: 'translateX(-50%)',
             border: '2px solid #E0E5EC',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
           }}
         >
           {/* <AddIcon fontSize={`small`} /> */}Create portfolio
@@ -176,9 +174,12 @@ class CreatePortfolio extends React.Component<IProps, IState> {
               Create Portfolio
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center" style={{
-            padding: '0 3rem 3rem'
-          }}>
+          <DialogContent
+            justify="center"
+            style={{
+              padding: '0 3rem 3rem',
+            }}
+          >
             <Grid style={{ width: '440px' }}>
               <GridCustom>
                 <Legend>Portfolio name</Legend>
@@ -198,9 +199,9 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault()
-            
+
                   validateForm().then(async () => {
                     await handleSubmit()
                     this.handleClose()
@@ -221,9 +222,7 @@ export default compose(
   graphql(createPortfolioMutation, {
     name: 'createPortfolio',
     options: {
-      refetchQueries: [
-        { query: getMyPortfoliosQuery }
-      ],
+      refetchQueries: [{ query: getMyPortfoliosQuery }],
     },
   }),
   formikDialog

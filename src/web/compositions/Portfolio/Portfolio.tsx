@@ -145,6 +145,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               theme={theme}
               baseCoin={baseCoin}
               isUSDCurrently={isUSDCurrently}
+              isSideNavOpen={this.state.isSideNavOpen}
               toggleWallets={this.toggleWallets}
               newKeys={isRebalance ? rebalanceKeys : keys}
               isRebalance={isRebalance}

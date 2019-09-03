@@ -681,11 +681,12 @@ const CustomTable = (props: Props) => {
             paginationFunc(
               data.body.filter(Boolean).map((row) => {
                 const selected = checkedRows.indexOf(row.id) !== -1
-
                 const expandedRow = expandedRows.indexOf(row.id) !== -1
+
                 const rowClassName = selected
                   ? `${classes.row} + ${classes.rowSelected}`
                   : classes.row
+
                 const rowHoverClassName = rowsWithHover
                   ? rowWithHoverBorderRadius
                     ? `${rowClassName} + ${classes.rowWithHover} + ${
@@ -693,6 +694,7 @@ const CustomTable = (props: Props) => {
                       }`
                     : `${classes.rowWithHover}`
                   : rowClassName
+
                 const expandable = row.expandableContent
                 const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
                   ? 'check'
@@ -721,6 +723,8 @@ const CustomTable = (props: Props) => {
                       onClick={() =>
                         onTrClick
                           ? onTrClick(row.orderbook ? row.orderbook : {})
+                          : typeOfCheckbox === 'expand'
+                          ? onChange(row.id)
                           : null
                       }
                     >
