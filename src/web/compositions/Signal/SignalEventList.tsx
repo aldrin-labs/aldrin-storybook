@@ -55,7 +55,7 @@ const transformData = (data: any[]) => {
     return {
       id: row._id,
       updatedAt: {
-        render: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+        render: `${days - 1}d ${hours}h ${minutes}m ${seconds}s`,
         style: { textTransform: 'lowercase' },
       },
       timestamp: {

@@ -1,13 +1,5 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { ReactSelectCustom } from './DialogAddCoin.styles'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
 class DialogAddCoin extends React.Component {
@@ -32,14 +24,15 @@ class DialogAddCoin extends React.Component {
     this.setState({ mouseInPopup: false })
   }
 
-  // handleSelectChange = (index, symbol, optionSelected) => {
-  //   console.log(optionSelected)
-  //   this.handleClose()
-  // }
+  handleSelectChange = async (coin: string) => {
+    const { onAddRowButtonClick } = this.props
+
+    await onAddRowButtonClick(coin)
+
+    this.setState({ open: false })
+  }
 
   render() {
-    const { handleSelectChange, onAddRowButtonClick } = this.props
-
     return (
       <div style={{ position: 'relative', padding: '1rem 0' }}>
         <BtnCustom
@@ -59,14 +52,6 @@ class DialogAddCoin extends React.Component {
         >
           Add Coin
         </BtnCustom>
-        {/* <Dialog
-          style={{ background: 'transparent' }}
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogContent style={{ minWidth: '400px', height: '220px' }}> */}
         {this.state.open && (
           <div
             onMouseEnter={this.mouseEnter}
@@ -126,11 +111,6 @@ class DialogAddCoin extends React.Component {
               clearIndicatorStyles={{
                 padding: '2px',
               }}
-              valueContainerStyles={{
-                minWidth: '35px',
-                maxWidth: '55px',
-                overflow: 'hidden',
-              }}
               inputStyles={{
                 marginLeft: '0',
               }}
@@ -139,8 +119,8 @@ class DialogAddCoin extends React.Component {
               }}
               // noOptionsMessage={() => `No such coin in our DB found`}
               valueContainerStyles={{
-                border: '2px solid #E7ECF3',
-                borderRadius: '54px',
+                border: '1px solid #E7ECF3',
+                borderRadius: '3rem',
                 background: '#F2F4F6',
                 paddingLeft: '15px',
               }}
@@ -153,7 +133,7 @@ class DialogAddCoin extends React.Component {
                   label: string
                   value: string
                 } | null
-              ) => onAddRowButtonClick(optionSelected.label)}
+              ) => this.handleSelectChange(optionSelected.label)}
             />
           </div>
         )}
