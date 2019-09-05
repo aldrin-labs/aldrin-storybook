@@ -836,7 +836,11 @@ const CustomTable = (props: Props) => {
         mountOnEnter
         unmountOnExit
       >
-        <div>
+        <div style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 0
+        }}>
           {needRefetch ? (
             <AutoRefetch
               autoRefetch={autoRefetch}

@@ -119,12 +119,17 @@ class TransactionPage extends React.PureComponent {
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
-
+    
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0].portfolioAssets
+      portfolioKeys.myPortfolios ?
+        portfolioKeys.myPortfolios[0].portfolioAssets :
+        []
     )
 
-    const { name, _id } = portfolioKeys.myPortfolios[0]
+    const { name, _id } = portfolioKeys.myPortfolios ? portfolioKeys.myPortfolios[0] : {
+      _id: null,
+      name: undefined
+    }
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
@@ -244,7 +249,7 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
-                style={{ height: 'calc(62% - 2vh)' }}
+                style={{ height: 'calc(59.5% - 2vh)' }}
               >
                 <TradeOrderHistory
                   style={{ overflow: 'scroll' }}
