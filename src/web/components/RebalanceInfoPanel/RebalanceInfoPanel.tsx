@@ -77,7 +77,11 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
                   Binance trade account
                 </StyledTypography>
-                <StyledSubTypography fontWeight={'700'} letterSpacing="2px" color={theme.palette.secondary.main}>
+                <StyledSubTypography
+                  fontWeight={'700'}
+                  letterSpacing="2px"
+                  color={theme.palette.secondary.main}
+                >
                   {'$'}
                   {roundAndFormatNumber(+accountValue, 2, false)}
                 </StyledSubTypography>
@@ -138,12 +142,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 </BtnCustom>
               </GridFlex>
 
-              <GridFlex
-                item
-                lg={6}
-                justify="center"
-                alignItems="center"
-              >
+              <GridFlex item lg={6} justify="center" alignItems="center">
                 <TypographyRebalance href={'#'} linkColor={grey.dark}>
                   rebalance
                 </TypographyRebalance>
@@ -210,7 +209,11 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
               </GridFlex>
 
               <Grid item lg={3}>
-                <StyledTypography fontWeight={'700'} position="right" fontSize="1rem">
+                <StyledTypography
+                  fontWeight={'700'}
+                  position="right"
+                  fontSize="1rem"
+                >
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography

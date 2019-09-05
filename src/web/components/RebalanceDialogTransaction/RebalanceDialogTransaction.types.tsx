@@ -16,4 +16,5 @@ export interface IState {
   isFinished: boolean
   isError: boolean
   isDisableBtns: boolean
+  showLoader: boolean
 }
