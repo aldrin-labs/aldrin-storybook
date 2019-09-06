@@ -3,13 +3,13 @@ import { IconArrow } from '@sb/styles/cssUtils'
 
 export const getArrowSymbol = (base: string, quote: string) => (
   <>
-    {base.toUpperCase()}
+    <span style={{ textTransform: 'uppercase' }}>{base}</span>
     <IconArrow
       className="fa fa-arrow-right"
       style={{
-        color: '#2F7619'
+        color: '#2F7619',
       }}
     />
-    {quote.toUpperCase()}
+    <span style={{ textTransform: 'uppercase' }}>{quote}</span>
   </>
 )

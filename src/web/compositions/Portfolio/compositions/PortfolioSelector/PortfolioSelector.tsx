@@ -317,7 +317,7 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!portfolioKeys || !portfolioKeys.myPortfolios) return <Loader />
+    if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
 
     const login = true
 
@@ -348,6 +348,8 @@ class PortfolioSelector extends React.Component<IProps> {
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
+        mountOnEnter={true}
+        unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}

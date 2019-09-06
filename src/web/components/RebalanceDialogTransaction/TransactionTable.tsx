@@ -1,9 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import {
-  Grid,
-  Table, TableBody, TableCell, TableRow
-} from '@material-ui/core'
+import { Grid, Table, TableBody, TableCell, TableRow } from '@material-ui/core'
 import ProgressBar from '@sb/components/ProgressBar/ProgressBar'
 import SvgIcon from '../SvgIcon'
 import { IProps } from './TransactionTable.types'
@@ -11,13 +8,15 @@ import { IProps } from './TransactionTable.types'
 import {
   TransactionTablePrice,
   TransactionTableCoin,
-  TransactionTableResult
+  TransactionTableResult,
 } from './TransactionTable.styles'
 
 import DoneIcon from '../../../icons/DoneIcon.svg'
 import Cross from '../../../icons/Cross.svg'
 import Spinner from '../../../icons/Spinner.svg'
 import TradeIcon from '../../../icons/TradeIcon.svg'
+
+import { Loading } from '@sb/components/index'
 
 const styles = (theme) => ({
   root: {
@@ -36,8 +35,9 @@ const TransactionTable = ({
   getError,
   isCompleted,
   isFinished,
+  showLoader,
 }: IProps) => {
-  console.log(transactionsData)
+  console.log('transdata', transactionsData)
   return (
     <>
       <ProgressBar
@@ -46,20 +46,27 @@ const TransactionTable = ({
         transactionsData={transactionsData}
         isFinished={isFinished}
         style={{
-          padding: 0
+          padding: 0,
         }}
       />
       <Table className={classes.table}>
         <TableBody>
           {transactionsData.map((row, index) => {
-            const symbol = row.sum.slice(parseFloat(row.sum).toString().length + 1)
-            const sum = symbol === row.convertedTo ?
-                (parseFloat(row.sum) * row.convertedToPrice) / row.convertedFromPrice :
-                parseFloat(row.sum)
+            const symbol = row.sum.slice(
+              parseFloat(row.sum).toString().length + 1
+            )
+            const sum =
+              symbol === row.convertedTo
+                ? (parseFloat(row.sum) * row.convertedToPrice) /
+                  row.convertedFromPrice
+                : parseFloat(row.sum)
 
             // How much will user receive after exchange in convertedTo coin
-            const convertedSum = ((sum * row.convertedFromPrice) / row.convertedToPrice)
-            const convertedSumUSDT = (convertedSum * row.convertedToPrice)
+            const convertedSum =
+              (sum * row.convertedFromPrice) / row.convertedToPrice
+            const convertedSumUSDT = convertedSum * row.convertedToPrice
+
+            console.log(row, 'row', sum, 'sum')
 
             return (
               <TableRow key={index}>
@@ -70,26 +77,53 @@ const TransactionTable = ({
                 >
                   <Grid container alignItems="flex-start" wrap="nowrap">
                     <TransactionTableCoin>
-                      {parseFloat(sum.toFixed(6))} {row.convertedFrom}
-                      <TransactionTablePrice>${parseFloat(row.convertedFromPrice.toFixed(3))}</TransactionTablePrice>
+                      <span style={{ whiteSpace: 'nowrap' }}>
+                        {parseFloat(sum.toFixed(6))} {row.convertedFrom}
+                      </span>
+                      <TransactionTablePrice>
+                        ${parseFloat(row.convertedFromPrice.toFixed(3))}
+                      </TransactionTablePrice>
                     </TransactionTableCoin>
-                    {<SvgIcon width="20" height="10" src={TradeIcon} style={{ margin: '.2rem .5rem 0' }} />}
+                    {
+                      <SvgIcon
+                        width={20}
+                        height={10}
+                        src={TradeIcon}
+                        style={{ margin: '.2rem .5rem 0' }}
+                      />
+                    }
                     <TransactionTableCoin>
-                      {parseFloat(convertedSum.toFixed(6))} {row.convertedTo}
-                      <TransactionTablePrice>${parseFloat(row.convertedToPrice.toFixed(3))}</TransactionTablePrice>
+                      <span style={{ whiteSpace: 'nowrap' }}>
+                        {parseFloat(convertedSum.toFixed(6))} {row.convertedTo}
+                      </span>
+                      <TransactionTablePrice>
+                        ${parseFloat(row.convertedToPrice.toFixed(3))}
+                      </TransactionTablePrice>
                     </TransactionTableCoin>
                   </Grid>
                 </TableCell>
                 <TableCell align="left">
-                  <TransactionTableResult>${parseFloat(convertedSumUSDT.toFixed(1))}</TransactionTableResult>
+                  <TransactionTableResult>
+                    ${parseFloat(convertedSumUSDT.toFixed(1))}
+                  </TransactionTableResult>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="right" style={{ position: 'relative' }}>
                   {row.isDone === 'success' ? (
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
-                  ) : row.isDone === 'loading' ? (
-                    <SvgIcon width="35px" height="35px" src={Spinner} />
+                  ) : showLoader || row.isDone === 'loading' ? (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '17px',
+                        right: '20px',
+                        height: '24px',
+                        width: '24px',
+                      }}
+                    >
+                      <Loading size={24} />
+                    </div>
                   ) : null}
                 </TableCell>
               </TableRow>
@@ -102,3 +136,7 @@ const TransactionTable = ({
 }
 
 export default withStyles(styles)(TransactionTable)
+
+// TODO:
+// fix arrow rotate and open all functional
+// overview value ?

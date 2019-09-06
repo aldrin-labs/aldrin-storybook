@@ -35,23 +35,29 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     isFinished: false,
     isError: false,
     isDisableBtns: false,
+    showLoader: false,
   }
 
   getErrorForTransaction = (errorState) => {
-    this.setState({ isError: errorState })
+    this.setState({ isError: errorState, showLoader: false })
   }
 
   isCompletedTransaction = () => {
-    this.setState({ isFinished: true })
+    this.setState({ isFinished: true, showLoader: false })
   }
 
   activateGoBtn = async () => {
-    this.setState({ isDisableBtns: true })
+    this.setState({ isDisableBtns: true, showLoader: true })
     await this.props.executeRebalanceHandler()
   }
 
   defaultStateForTransaction = (handleClickOpen) => {
-    this.setState({ isFinished: false, isError: false, isDisableBtns: false })
+    this.setState({
+      isFinished: false,
+      isError: false,
+      isDisableBtns: false,
+      showLoader: false,
+    })
     handleClickOpen()
   }
 
@@ -73,7 +79,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       onNewSnapshot,
     } = this.props
 
-    const { isFinished, isError, isDisableBtns } = this.state
+    const { isFinished, isError, isDisableBtns, showLoader } = this.state
+    const isEmptyTable = transactionsData.length === 0
 
     return (
       <div>
@@ -188,7 +195,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     color={isDisableBtns ? '#9f9f9f' : '#165be0'}
                     margin="0 5px"
                     onClick={this.activateGoBtn}
-                    disabled={isDisableBtns}
+                    disabled={isDisableBtns || isEmptyTable}
                   >
                     Go!
                   </BtnCustom>
@@ -202,6 +209,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               getError={this.getErrorForTransaction}
               isCompleted={this.isCompletedTransaction}
               isFinished={isFinished}
+              showLoader={showLoader}
             />
           </DialogContent>
         </Dialog>

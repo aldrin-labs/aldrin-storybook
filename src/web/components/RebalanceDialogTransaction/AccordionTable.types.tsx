@@ -4,12 +4,13 @@ export interface IProps {
   classes: any
   transactionsData: any
   accordionTitle: string
-  // getError: () => void
-  // isCompleted: () => void
+  getError: (err: any) => void
+  isCompleted: () => void
   isFinished: boolean
+  showLoader: boolean
   theme: Theme
 }
 
 export interface IState {
-  expanded: boolean
+  expanded: boolean | string
 }
