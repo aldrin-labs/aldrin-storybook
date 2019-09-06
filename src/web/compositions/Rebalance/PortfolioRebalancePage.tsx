@@ -375,6 +375,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot,
                 dustFilter,
                 showWarning,
+                hideWarning,
                 sliderStep,
               }}
               // search={search}

@@ -119,7 +119,7 @@ class TransactionPage extends React.PureComponent {
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
-
+    
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
       portfolioKeys.myPortfolios
         ? portfolioKeys.myPortfolios[0].portfolioAssets
@@ -252,7 +252,7 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
-                style={{ height: 'calc(62% - 2vh)' }}
+                style={{ height: 'calc(59.5% - 2vh)' }}
               >
                 <TradeOrderHistory
                   style={{ overflow: 'scroll' }}

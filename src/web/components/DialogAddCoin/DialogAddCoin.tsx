@@ -24,10 +24,10 @@ class DialogAddCoin extends React.Component {
     this.setState({ mouseInPopup: false })
   }
 
-  handleSelectChange = async (coin: string) => {
+  handleSelectChange = async (coin: string, priceUSD: string | number) => {
     const { onAddRowButtonClick } = this.props
 
-    await onAddRowButtonClick(coin)
+    await onAddRowButtonClick(coin, priceUSD)
 
     this.setState({ open: false })
   }
@@ -132,8 +132,14 @@ class DialogAddCoin extends React.Component {
                 optionSelected: {
                   label: string
                   value: string
+                  priceUSD: string | number
                 } | null
-              ) => this.handleSelectChange(optionSelected.label)}
+              ) =>
+                this.handleSelectChange(
+                  optionSelected.label || '',
+                  optionSelected.priceUSD
+                )
+              }
             />
           </div>
         )}
