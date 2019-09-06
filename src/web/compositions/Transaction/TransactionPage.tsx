@@ -73,10 +73,6 @@ class TransactionPage extends React.PureComponent {
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId, newKeys, isRebalance } = this.props
 
-    const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
-    const prevSelected = newKeys[keyIndex].selected ? false : true
-    newKeys[keyIndex].selected = prevSelected
-
     const objForQuery = {
       settings: {
         portfolioId,
@@ -94,10 +90,6 @@ class TransactionPage extends React.PureComponent {
 
   onKeysSelectAll = async () => {
     const { portfolioId, newKeys, isRebalance } = this.props
-
-    newKeys.forEach((item, index) => {
-      newKeys[index].selected = true
-    })
 
     const objForQuery = {
       settings: {
