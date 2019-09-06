@@ -1,5 +1,5 @@
 import React from 'react'
-import Tooltip from '@material-ui/core/Tooltip'
+import { StyledTooltip } from './TooltipCustom.styles'
 
 import { IProps } from './TooltipCustom.types'
 
@@ -13,18 +13,18 @@ const TooltipCustom = ({
 }: IProps) => {
   if (withSpan) {
     return (
-      <Tooltip
+      <StyledTooltip
         {...{ enterDelay, leaveDelay, title: `${title}`, ...otherProps }}
       >
         <span>{component}</span>
-      </Tooltip>
+      </StyledTooltip>
     )
   }
 
   return (
-    <Tooltip {...{ enterDelay, leaveDelay, title: `${title}`, ...otherProps }}>
+    <StyledTooltip {...{ enterDelay, leaveDelay, title: `${title}`, ...otherProps }}>
       {component}
-    </Tooltip>
+    </StyledTooltip>
   )
 }
 
