@@ -128,15 +128,8 @@ class Accounts extends React.PureComponent<IProps> {
             if (!key) {
               return null
             }
-
-            // console.log('Checkbox - ', i, this.props.newKeysCheckboxes, key)
-            // console.log('Selected - ', key.selected)
-            // const isChecked = this.props.newKeysCheckboxes !== undefined ? this.props.newKeysCheckboxes[0].selected : key.selected
-            console.log('newKeys - ', newKeys)
-
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = key.selected
-
 
             const value = portfolioAssetsData[i]
               ? portfolioAssetsData[i].value
