@@ -10,10 +10,9 @@ export const GridFlex = styled(Grid)`
 export const GridInfoPanelWrapper = styled(Grid)`
   position: sticky;
   top: 0;
-  border-top: ${(props) => `2px solid ${props.borderColor}`};
-  border-bottom: ${(props) => `2px solid ${props.borderColor}`};
+  border-bottom: ${(props) => `1px solid ${props.borderColor}`};
   background-color: ${(props) => props.bgColor};
-  padding: 1.6rem 1.6rem .4rem;
+  padding: 1.6rem 1.6rem 0.4rem;
   z-index: 500;
   margin-bottom: 10px;
 
@@ -29,7 +28,7 @@ export const TypographyRebalance = styled(
 )`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
-  font-size: .95rem;
+  font-size: 0.95rem;
   font-weight: 700;
   padding: 0 5px;
   margin-right: 5px;
@@ -37,8 +36,8 @@ export const TypographyRebalance = styled(
   color: ${(props) => props.linkColor || 'white'};
   text-align: ${(props) => props.position || 'none'};
   align-self: ${(props) => props.verticalPosition || 'none'};
-  border-right: 1px solid #E0E5EC;
-  
+  border-right: 1px solid #e0e5ec;
+
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     //font-size: 1.8rem;
   }
@@ -56,7 +55,7 @@ export const StyledTypography = styled(
 )`
   font-family: 'DM Sans', sans-serif;
   letter-spacing: 1px;
-  font-size: ${props => props.fontSize || '1rem'};
+  font-size: ${(props) => props.fontSize || '1rem'};
   line-height: 23px;
   font-weight: ${(props) => props.fontWeight || '400'};
   text-transform: uppercase;
@@ -66,7 +65,7 @@ export const StyledTypography = styled(
     props.secondaryColor ||
     '#7284A0'};
   text-align: ${(props) => props.position || 'none'};
-  white-space: ${props => props.whiteSpace || 'normal'};
+  white-space: ${(props) => props.whiteSpace || 'normal'};
 
   @media only screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     padding-bottom: 1rem;
@@ -87,9 +86,9 @@ export const StyledSubTypography = styled(
 )`
   font-size: ${(props) => props.fontSize || `1.4rem`};
   font-weight: ${(props) => props.fontWeight || '400'};
-  line-height: ${props => props.lineHeight || '23px'};
-  letter-spacing: ${props => props.letterSpacing || '1px'};
-  margin: ${props => props.margin || '.25rem 0 0 0'};
+  line-height: ${(props) => props.lineHeight || '23px'};
+  letter-spacing: ${(props) => props.letterSpacing || '1px'};
+  margin: ${(props) => props.margin || '.25rem 0 0 0'};
   text-transform: uppercase;
   color: ${(props) =>
     props.color ||
@@ -103,7 +102,7 @@ export const StyledSubTypography = styled(
 export const ReactSelectCustom = styled(ReactSelect)`
   font-family: 'DM Sans', sans-serif;
   width: 100px;
-  font-size: .95rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   border: 1px solid transparent;
   font-weight: 700;

@@ -24,8 +24,6 @@ import {
   TypographyAccountMoney,
 } from './AccountsSlick.styles'
 
-import { Loading } from '@sb/components/index'
-
 import SvgIcon from '@sb/components/SvgIcon'
 import SliderArrow from '@icons/SliderArrow.svg'
 
