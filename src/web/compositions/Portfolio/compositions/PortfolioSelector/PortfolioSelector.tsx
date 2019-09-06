@@ -158,6 +158,23 @@ class PortfolioSelector extends React.Component<IProps> {
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId, newKeys, isRebalance } = this.props
 
+    const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
+    const prevSelected = newKeys[keyIndex].selected ? false : true
+    newKeys[keyIndex].selected = prevSelected
+
+    // console.log('Toggle Portfolio newKeys - ', newKeys, newKeys[keyIndex].selected, keyIndex)
+
+    // let newKeysCheckboxes = newKeys
+    // let keyIndex = newKeysCheckboxes.findIndex((elem, index, newKeysCheckboxes) => elem._id === toggledKeyID)
+    // newKeysCheckboxes[keyIndex].selected = newKeys[keyIndex].selected
+    //
+    // this.setState({ newKeysCheckboxes })
+
+
+    // console.log('onKeyToggle', testKeys, toggledKeyID, portfolioId)
+
+    console.log('onKeyToggle', newKeys)
+
     const objForQuery = {
       settings: {
         portfolioId,
@@ -176,6 +193,10 @@ class PortfolioSelector extends React.Component<IProps> {
   onKeysSelectAll = async () => {
     const { portfolioId, newKeys, isRebalance } = this.props
 
+    newKeys.forEach((item, index) => {
+      newKeys[index].selected = true
+    })
+
     const objForQuery = {
       settings: {
         portfolioId,
@@ -189,7 +210,21 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
-    const { portfolioId, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance } = this.props
+
+    console.log('onKeySelectOnlyOne', newKeys)
+    const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
+    const prevSelected = newKeys[keyIndex].selected ? false : true
+
+    newKeys.forEach((item, index) => {
+      index !== keyIndex ? newKeys[index].selected = false : newKeys[keyIndex].selected = prevSelected
+    })
+
+    // newKeys[keyIndex].selected = prevSelected
+
+    // const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
+    // const prevSelected = newKeys[keyIndex].selected ? false : true
+    // newKeys[keyIndex].selected = prevSelected
 
     const objForQuery = {
       settings: {
@@ -405,6 +440,8 @@ class PortfolioSelector extends React.Component<IProps> {
                 isRebalance,
                 baseCoin,
                 portfolioAssetsData,
+                // isCheckedBtn: this.state.isCheckedBtn,
+                newKeysCheckboxes: this.state.newKeysCheckboxes,
                 onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
