@@ -121,10 +121,18 @@ class TransactionPage extends React.PureComponent {
     const isSideNavOpen = true
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0].portfolioAssets
+      portfolioKeys.myPortfolios
+        ? portfolioKeys.myPortfolios[0].portfolioAssets
+        : [],
+      'USDT'
     )
 
-    const { name, _id } = portfolioKeys.myPortfolios[0]
+    const { name, _id } = portfolioKeys.myPortfolios
+      ? portfolioKeys.myPortfolios[0]
+      : {
+          _id: null,
+          name: undefined,
+        }
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===

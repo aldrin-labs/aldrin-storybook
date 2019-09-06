@@ -50,7 +50,8 @@ class DetailedExpansionPanel extends React.Component {
   render() {
     const { theme, portfolioAssetsQuery, baseCoin } = this.props
     const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
-      portfolioAssetsQuery.myPortfolios[0].portfolioAssets
+      portfolioAssetsQuery.myPortfolios[0].portfolioAssets,
+      baseCoin
     )
 
     return (

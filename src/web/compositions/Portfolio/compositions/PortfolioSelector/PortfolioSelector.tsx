@@ -328,7 +328,8 @@ class PortfolioSelector extends React.Component<IProps> {
     const color = theme.palette.secondary.main
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0].portfolioAssets
+      portfolioKeys.myPortfolios[0].portfolioAssets,
+      baseCoin
     )
 
     const { name, _id } = portfolioKeys.myPortfolios[0]
@@ -371,7 +372,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 position: 'relative',
                 zIndex: 2,
                 padding: '0 1.5rem',
-                height: '15rem'
+                height: '15rem',
               }}
             >
               <Grid container justify="space-between" alignItems="center">
