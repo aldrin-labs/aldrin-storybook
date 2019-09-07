@@ -124,7 +124,7 @@ class TransactionPage extends React.PureComponent {
       portfolioKeys.myPortfolios
         ? portfolioKeys.myPortfolios[0].portfolioAssets
         : [],
-      baseCoin
+      'USDT'
     )
 
     const { name, _id } = portfolioKeys.myPortfolios
