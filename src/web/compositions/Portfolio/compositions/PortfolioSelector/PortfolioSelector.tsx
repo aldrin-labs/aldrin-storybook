@@ -328,7 +328,7 @@ class PortfolioSelector extends React.Component<IProps> {
     const color = theme.palette.secondary.main
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0].portfolioAssets
+      portfolioKeys.myPortfolios[0] ? portfolioKeys.myPortfolios[0].portfolioAssets : []
     )
 
     const { name, _id } = portfolioKeys.myPortfolios[0]

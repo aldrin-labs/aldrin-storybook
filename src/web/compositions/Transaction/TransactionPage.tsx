@@ -2,6 +2,8 @@ import React from 'react'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
 
+import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
 import { Grid } from '@material-ui/core'
@@ -47,11 +49,63 @@ import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 import { graphql } from 'react-apollo'
 
+import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
+
 @withTheme()
 class TransactionPage extends React.PureComponent {
   state = {
     includeExchangeTransactions: true,
     includeTrades: true,
+
+    gitCalendarDate: {
+      startDate: moment().startOf('year'),
+      endDate: moment().endOf('year'),
+      activeDateButton: moment().format('YYYY'),
+    },
+
+    tradeOrderHistoryDate: {
+      startDate: getEndDate('1Week'),
+      endDate: moment().endOf('day'),
+      focusedInput: null,
+    }
+  }
+
+  onFocusChange = (focusedInput: string) => this.setState(prevState => ({
+    ...prevState,
+    tradeOrderHistoryDate: {
+      ...prevState.tradeOrderHistoryDate,
+      focusedInput
+    }
+  }))
+
+  onDatesChange = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: moment.Moment | null
+    endDate: moment.Moment | null
+  }) => this.setState(prevState => ({
+    ...prevState,
+    tradeOrderHistoryDate: {
+      ...prevState.tradeOrderHistoryDate,
+      startDate,
+      endDate
+    }
+  }))
+
+  onGitCalendarDateClick = async (stringDate: string) => {
+    this.setState(prevState => ({
+      ...prevState,
+      gitCalendarDate: {
+          activeDateButton: moment(stringDate).format('YYYY'),
+          startDate: moment(stringDate).startOf('year'),
+          endDate: moment(stringDate).endOf('year'),
+      }
+    }),
+      () => {
+        // TODO: there should be mutation for search:
+      }
+    )
   }
 
   handleChangeShowHideOptions = (option) => (event) => {
@@ -114,7 +168,12 @@ class TransactionPage extends React.PureComponent {
       portfolioKeys,
     } = this.props
 
-    const { includeExchangeTransactions, includeTrades } = this.state
+    const {
+      includeExchangeTransactions,
+      includeTrades,
+      gitCalendarDate,
+      tradeOrderHistoryDate
+    } = this.state
 
     const color = theme.palette.secondary.main
     const login = true
@@ -238,7 +297,14 @@ class TransactionPage extends React.PureComponent {
                     theme.palette.grey[theme.palette.type]
                   }`}
                 >
-                  <GitTransactionCalendar />
+                  <GitTransactionCalendar
+                    {...{
+                      ...gitCalendarDate,
+                      tradeOrderHistoryDate,
+                      onFocusChange: this.onFocusChange,
+                      onDatesChange: this.onDatesChange
+                    }}
+                  />
                 </GridCalendarContainer>
               )}
 
@@ -249,13 +315,16 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
-                style={{ height: 'calc(59.5% - 2vh)' }}
+                style={{ height: 'calc(70.5% - 2vh)' }}
               >
                 <TradeOrderHistory
                   style={{ overflow: 'scroll' }}
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
                   handleChangeShowHideOptions={this.handleChangeShowHideOptions}
+
+                  startDate={tradeOrderHistoryDate.startDate}
+                  endDate={tradeOrderHistoryDate.endDate}
                 />
               </GridTableContainer>
             </Grid>
@@ -272,6 +341,12 @@ class TransactionPage extends React.PureComponent {
               paddingTop: hideSelector ? '4rem' : '0',
             }}
           >
+            <GitCalendarChooseYear
+              {...{
+                ...gitCalendarDate,
+                onDateButtonClick: this.onGitCalendarDateClick
+              }}
+            />
             <TransactionsActionsStatistic />
             {/* <WinLossRatio /> */}
           </GridItemContainer>
