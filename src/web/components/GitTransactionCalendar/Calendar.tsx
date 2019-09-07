@@ -10,6 +10,7 @@ import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+import { IProps } from './Calendar.types'
 import { getCalendarData, getMaxTransactions } from './Calendar.utils'
 import {
   LEGEND_COLORS,
@@ -33,7 +34,7 @@ const styles = (theme) => ({
   legendFour: { fill: LEGEND_COLORS.four },
 })
 
-class GitTransactionCalendar extends PureComponent {
+class GitTransactionCalendar extends PureComponent<IProps> {
   render() {
     const {
       getCalendarActionsQuery,

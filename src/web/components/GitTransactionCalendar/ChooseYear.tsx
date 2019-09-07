@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import moment from 'moment'
 
+import { IProps } from './ChooseYear.types'
+
 import {
   ChoosePeriodWrapper,
   ChoosePeriodButton,
@@ -10,7 +12,7 @@ import {
 import SvgIcon from '@sb/components/SvgIcon'
 import LongArrow from '@icons/LongArrow.svg'
 
-class ChooseYear extends PureComponent {
+class ChooseYear extends PureComponent<IProps> {
   render() {
     const { activeDateButton, onDateButtonClick } = this.props
 

@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 
 import { DateRangePicker } from 'react-dates'
+import { IProps } from './ChoosePeriod.types'
 import {
   ChoosePeriodWrapper,
   ChoosePeriodTypography,
   DatePickerWrapper,
 } from './ChoosePeriod.styles'
 
-class ChoosePeriod extends Component {
+class ChoosePeriod extends Component<IProps> {
   render() {
     const {
       focusedInput,
