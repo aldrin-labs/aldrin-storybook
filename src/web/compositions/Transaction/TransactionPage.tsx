@@ -123,7 +123,8 @@ class TransactionPage extends React.PureComponent {
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
       portfolioKeys.myPortfolios
         ? portfolioKeys.myPortfolios[0].portfolioAssets
-        : []
+        : [],
+      'USDT'
     )
 
     const { name, _id } = portfolioKeys.myPortfolios
