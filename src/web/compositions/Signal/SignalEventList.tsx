@@ -41,21 +41,21 @@ const putDataInTable = (tableData: any[]) => {
 
 const transformData = (data: any[]) => {
   const transformedData = data.map((row) => {
-    // get data to update state after cycle
+    const deltaSeconds = Date.now() - row.updatedAt * 1000
 
-    let deltaSeconds = ((Date.now() / 1000) | 0) - row.updatedAt
-
-    const date = moment
-      .utc(deltaSeconds * 1000)
-      .format('DD HH mm ss')
-      .split(' ')
+    const date = [
+      moment.duration(deltaSeconds).days(),
+      moment.duration(deltaSeconds).hours(),
+      moment.duration(deltaSeconds).minutes(),
+      moment.duration(deltaSeconds).seconds(),
+    ]
 
     const [days, hours, minutes, seconds] = date
 
     return {
       id: row._id,
       updatedAt: {
-        render: `${days - 1}d ${hours}h ${minutes}m ${seconds}s`,
+        render: `${days}d ${hours}h ${minutes}m ${seconds}s`,
         style: { textTransform: 'lowercase' },
       },
       timestamp: {

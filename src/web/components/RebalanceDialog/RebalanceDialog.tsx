@@ -20,6 +20,7 @@ const DialogComponent = ({
   onSaveClick,
   onReset,
   createNewSnapshot,
+  isUserHasLockedBalance,
 }: IProps) => (
   <Dialog
     fullScreen={false}
@@ -94,6 +95,20 @@ const DialogComponent = ({
           Ok
         </Button>
       )}
+      {
+        isUserHasLockedBalance && (
+          <Button
+          id="userHasLockedBalance"
+          onClick={() => {
+            hideWarning()
+          }}
+          color="secondary"
+          autoFocus={true}
+        >
+          Ok
+        </Button>
+        )
+      }
     </DialogActions>
   </Dialog>
 )

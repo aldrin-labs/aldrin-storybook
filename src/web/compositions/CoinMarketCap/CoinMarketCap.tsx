@@ -352,6 +352,7 @@ export class CoinMarket extends React.Component<Props, State> {
                 columnNames={dataForTable.head}
                 data={dataForTable.data}
                 padding="default"
+                style={{ height: '100%', overflowY: 'scroll' }}
                 pagination={{
                   enabled: true,
                   page: this.state.page,

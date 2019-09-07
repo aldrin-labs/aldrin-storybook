@@ -171,6 +171,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       transactions,
       rebalanceTimePeriod,
       onRebalanceTimerChange,
+      isUserHasLockedBalance,
       // search,
       // searchCoinInTable,
     } = this.props
@@ -473,6 +474,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               onSaveClick,
               onReset,
               createNewSnapshot,
+              isUserHasLockedBalance,
             }}
           />
         </Content>
