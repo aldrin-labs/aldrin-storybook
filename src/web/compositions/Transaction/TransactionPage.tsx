@@ -347,7 +347,7 @@ class TransactionPage extends React.PureComponent {
                 onDateButtonClick: this.onGitCalendarDateClick
               }}
             />
-            <TransactionsActionsStatistic />
+            {/* <TransactionsActionsStatistic /> */}
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
