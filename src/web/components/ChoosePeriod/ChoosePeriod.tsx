@@ -1,26 +1,17 @@
 import React, { Component } from 'react'
 
 import { DateRangePicker } from 'react-dates'
+import { IProps } from './ChoosePeriod.types'
 import {
   ChoosePeriodWrapper,
-  ChoosePeriodButton,
+  ChoosePeriodTypography,
   DatePickerWrapper,
 } from './ChoosePeriod.styles'
 
-const PERIODS = [
-  { name: '1Day', label: '24H' },
-  { name: '1Week', label: 'Week' },
-  { name: '2Weeks', label: '2W' },
-  { name: '1Month', label: 'Month' },
-  { name: '3Months', label: '3MO' },
-  { name: '6Monts', label: '6MO' },
-]
-class ChoosePeriod extends Component {
+class ChoosePeriod extends Component<IProps> {
   render() {
     const {
       focusedInput,
-      activeDateButton,
-      onDateButtonClick,
       onDatesChange,
       onFocusChange,
 
@@ -28,19 +19,14 @@ class ChoosePeriod extends Component {
       endDate,
       minimumDate,
       maximumDate,
+
+      // remove unneccessary styles if it's trade order history table calendar
+      isTableCalendar
     } = this.props
 
     return (
-      <ChoosePeriodWrapper style={{ height: '10%' }}>
-        {PERIODS.map(({ name, label }, index) => (
-          <ChoosePeriodButton
-            active={activeDateButton === name}
-            key={index}
-            onClick={() => onDateButtonClick(name)}
-          >
-            {label}
-          </ChoosePeriodButton>
-        ))}
+      <ChoosePeriodWrapper isTableCalendar={isTableCalendar} style={{ height: '10%' }}>
+        <ChoosePeriodTypography>Selected period</ChoosePeriodTypography>
 
         <DatePickerWrapper>
           <DateRangePicker
