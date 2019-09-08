@@ -60,6 +60,8 @@ class Accounts extends React.PureComponent<IProps> {
       onKeysSelectAll,
       isSidebar,
       baseCoin,
+      handleChangeCheckbox,
+      checkBoxData,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -135,7 +137,15 @@ class Accounts extends React.PureComponent<IProps> {
             console.log('newKeys - ', newKeys)
 
             const Component = isRebalance ? Radio : Checkbox
-            const isChecked = key.selected
+            const type = isRebalance ? 'radio' : 'checkbox'
+            let isChecked = key.selected
+
+            if(type === 'checkbox' && checkBoxData[key.name] !== undefined) {
+              isChecked = checkBoxData[key.name]
+            }
+            if(type === 'radio' && checkBoxData[`radio_${key.name}`] !== undefined) {
+              isChecked = checkBoxData[`radio_${key.name}`]
+            }
 
 
             const value = portfolioAssetsData[i]
@@ -188,6 +198,7 @@ class Accounts extends React.PureComponent<IProps> {
                   color="secondary"
                   id={key.name}
                   checked={isChecked}
+                  onChange={isRebalance ? handleChangeCheckbox(`radio_${key.name}`) : handleChangeCheckbox(key.name)}
                   onClick={() => {
                     if (login && isRebalance) {
                       onKeySelectOnlyOne(key._id)

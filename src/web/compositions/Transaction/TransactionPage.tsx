@@ -58,6 +58,10 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
+  handleChangeCheckbox = (key) => (e) => {
+    this.setState({ [key]: e.target.checked })
+  }
+
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
 
@@ -72,10 +76,6 @@ class TransactionPage extends React.PureComponent {
 
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId, newKeys, isRebalance } = this.props
-
-    const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
-    const prevSelected = newKeys[keyIndex].selected ? false : true
-    newKeys[keyIndex].selected = prevSelected
 
     const objForQuery = {
       settings: {
@@ -96,7 +96,7 @@ class TransactionPage extends React.PureComponent {
     const { portfolioId, newKeys, isRebalance } = this.props
 
     newKeys.forEach((item, index) => {
-      newKeys[index].selected = true
+      this.setState({ [item.name]: true })
     })
 
     const objForQuery = {
@@ -206,6 +206,8 @@ class TransactionPage extends React.PureComponent {
                         onKeysSelectAll: this.onKeysSelectAll,
                         onKeyToggle: this.onKeyToggle,
                       }}
+                      handleChangeCheckbox={this.handleChangeCheckbox}
+                      checkBoxData={this.state}
                     />
                   </Grid>
                 </ContentGrid>

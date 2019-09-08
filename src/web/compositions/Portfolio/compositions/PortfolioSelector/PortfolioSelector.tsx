@@ -57,6 +57,7 @@ import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 // import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
+// import { InMemoryCache } from 'apollo-cache-inmemory'
 import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -67,6 +68,9 @@ import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfol
 //     {props.children}{' '}
 //   </Link>
 // )
+
+// const cache = new InMemoryCache()
+
 
 // On this value we divide slider percentage to get btc filter value (100% = 0.01 btc)
 const BTC_PART_DIVIDER = 10000
@@ -81,6 +85,10 @@ class PortfolioSelector extends React.Component<IProps> {
     valueSliderUsdContainer: 0,
     valueSliderBtc: 0,
     valueSliderBtcContainer: 0,
+  }
+
+  handleChangeCheckbox = (key) => (e) => {
+    this.setState({ [key]: e.target.checked })
   }
 
   componentDidMount() {
@@ -146,10 +154,38 @@ class PortfolioSelector extends React.Component<IProps> {
   updateSettings = async (objectForMutation) => {
     const { updatePortfolioSettings } = this.props
 
+    // cache.writeQuery({
+    //   query: updatePortfolioSettingsMutation,
+    //   data: {
+    //     updateSettings: {
+    //       portfolioId: -1,
+    //       selectedKeys: [],
+    //       selectedRebalanceKeys: [],
+    //       selectedWallets: [],
+    //       dustFilter: [],
+    //       __typename: "AccountSettings",
+    //     }
+    //   },
+    // })
+    //
+    // console.log('cache', cache)
+
     try {
-      await updatePortfolioSettings({
+      let res = await updatePortfolioSettings({
         variables: objectForMutation,
+        // optimisticResponse: {
+        //     __typename: "Mutation",
+        //     updateSettings: {
+        //       portfolioId: -1,
+        //       selectedKeys: [],
+        //       selectedRebalanceKeys: [],
+        //       selectedWallets: [],
+        //       dustFilter: [],
+        //       __typename: "AccountSettings",
+        //     }
+        // },
       })
+
     } catch (error) {
       console.log('error', error)
     }
@@ -158,20 +194,10 @@ class PortfolioSelector extends React.Component<IProps> {
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId, newKeys, isRebalance } = this.props
 
-    const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
-    const prevSelected = newKeys[keyIndex].selected ? false : true
-    newKeys[keyIndex].selected = prevSelected
-
-    // console.log('Toggle Portfolio newKeys - ', newKeys, newKeys[keyIndex].selected, keyIndex)
-
-    // let newKeysCheckboxes = newKeys
-    // let keyIndex = newKeysCheckboxes.findIndex((elem, index, newKeysCheckboxes) => elem._id === toggledKeyID)
-    // newKeysCheckboxes[keyIndex].selected = newKeys[keyIndex].selected
-    //
-    // this.setState({ newKeysCheckboxes })
-
-
-    // console.log('onKeyToggle', testKeys, toggledKeyID, portfolioId)
+    // let newKeysCache = newKeys;
+    // const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
+    // const prevSelected = newKeys[keyIndex].selected ? false : true
+    // newKeysCache[keyIndex].selected = prevSelected
 
     console.log('onKeyToggle', newKeys)
 
@@ -194,7 +220,7 @@ class PortfolioSelector extends React.Component<IProps> {
     const { portfolioId, newKeys, isRebalance } = this.props
 
     newKeys.forEach((item, index) => {
-      newKeys[index].selected = true
+      this.setState({ [item.name]: true })
     })
 
     const objForQuery = {
@@ -212,19 +238,16 @@ class PortfolioSelector extends React.Component<IProps> {
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
     const { portfolioId, newKeys, isRebalance } = this.props
 
-    console.log('onKeySelectOnlyOne', newKeys)
-    const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
-    const prevSelected = newKeys[keyIndex].selected ? false : true
+    let keysObj = newKeys
+    let activeRadio = keysObj.filter(item => item._id === toggledKeyID)
+    activeRadio = `radio_${activeRadio.name}`
+    this.setState({ [`radio_${activeRadio.name}`]: true })
 
-    newKeys.forEach((item, index) => {
-      index !== keyIndex ? newKeys[index].selected = false : newKeys[keyIndex].selected = prevSelected
+    keysObj.forEach(item => {
+      if(`radio_${item.name}` !== `radio_${activeRadio.name}`) {
+        this.setState({ [`radio_${item.name}`]: false })
+      }
     })
-
-    // newKeys[keyIndex].selected = prevSelected
-
-    // const keyIndex = newKeys.findIndex((elem, index, newKeys) => elem._id === toggledKeyID)
-    // const prevSelected = newKeys[keyIndex].selected ? false : true
-    // newKeys[keyIndex].selected = prevSelected
 
     const objForQuery = {
       settings: {
@@ -447,6 +470,8 @@ class PortfolioSelector extends React.Component<IProps> {
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,
               }}
+              handleChangeCheckbox={this.handleChangeCheckbox}
+              checkBoxData={this.state}
               isSidebar={true}
             />
           </GridSectionAccounts>

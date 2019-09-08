@@ -84,6 +84,9 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       userSettings: { keys, rebalanceKeys, wallets },
     } = safePortfolioDestruction(data.myPortfolios[0])
 
+
+    // console.log('Portfolio keys - ', keys)
+    // console.log('myPortfolios - ', data.myPortfolios[0])
     keys = Array.isArray(keys) ? keys : []
     rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
     wallets = Array.isArray(wallets) ? wallets : []
