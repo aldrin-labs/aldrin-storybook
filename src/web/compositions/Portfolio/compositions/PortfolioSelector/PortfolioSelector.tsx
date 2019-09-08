@@ -320,6 +320,8 @@ class PortfolioSelector extends React.Component<IProps> {
     if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
 
     const login = true
+    const isTransactions =
+      this.props.location.pathname === '/portfolio/transactions'
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
@@ -328,7 +330,8 @@ class PortfolioSelector extends React.Component<IProps> {
     const color = theme.palette.secondary.main
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0] ? portfolioKeys.myPortfolios[0].portfolioAssets : []
+      portfolioKeys.myPortfolios[0] ? portfolioKeys.myPortfolios[0].portfolioAssets : [],
+      isTransactions ? 'USDT' : baseCoin
     )
 
     const { name, _id } = portfolioKeys.myPortfolios[0]

@@ -106,7 +106,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   handleOpenTransactionWindow = () => {
-    console.log('open popup')
     this.setState(
       {
         openDialogTransaction: true,
@@ -171,6 +170,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       transactions,
       rebalanceTimePeriod,
       onRebalanceTimerChange,
+      isUserHasLockedBalance,
       // search,
       // searchCoinInTable,
     } = this.props
@@ -469,6 +469,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               onSaveClick,
               onReset,
               createNewSnapshot,
+              isUserHasLockedBalance,
             }}
           />
         </Content>

@@ -178,17 +178,20 @@ class TransactionPage extends React.PureComponent {
     const color = theme.palette.secondary.main
     const login = true
     const isSideNavOpen = true
-    
+
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios ?
-        portfolioKeys.myPortfolios[0].portfolioAssets :
-        []
+      portfolioKeys.myPortfolios
+        ? portfolioKeys.myPortfolios[0].portfolioAssets
+        : [],
+      'USDT'
     )
 
-    const { name, _id } = portfolioKeys.myPortfolios ? portfolioKeys.myPortfolios[0] : {
-      _id: null,
-      name: undefined
-    }
+    const { name, _id } = portfolioKeys.myPortfolios
+      ? portfolioKeys.myPortfolios[0]
+      : {
+          _id: null,
+          name: undefined,
+        }
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
@@ -360,7 +363,7 @@ export default compose(
   graphql(getPortfolioKeys, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
-      variables: { baseCoin, innerSettings: true },
+      variables: { baseCoin: 'USDT', innerSettings: true },
       pollInterval: 30000,
     }),
   }),
