@@ -144,7 +144,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
 
               <GridFlex item lg={6} justify="center" alignItems="center">
                 <TypographyRebalance href={'#'} linkColor={grey.dark}>
-                  rebalance
+                  Auto-Rebalance
                 </TypographyRebalance>
 
                 <ReactSelectCustom
@@ -157,6 +157,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   ) => onRebalanceTimerChange(optionSelected)}
                   isSearchable={false}
                   options={rebalanceSelectTimeOptions}
+                  isOptionDisabled={option => option.disabled}
                   singleValueStyles={{
                     color: '#165BE0',
                     fontSize: `.95rem`,
@@ -223,25 +224,27 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   fontWeight={700}
                   position="right"
                 >
-                  <Timer
-                    ref={this.timerRef}
-                    initialTime={+rebalanceTimePeriod.value}
-                    direction="backward"
-                    startImmediately={true}
-                  >
-                    {() => (
-                      <React.Fragment>
-                        <Timer.Days />
-                        {' D '}
-                        <Timer.Hours />
-                        {' H '}
-                        <Timer.Minutes />
-                        {' M '}
-                        <Timer.Seconds />
-                        {' S '}
-                      </React.Fragment>
-                    )}
-                  </Timer>
+                  {rebalanceTimePeriod.label === 'Disabled' ? 'Disabled' : (
+                    <Timer
+                      ref={this.timerRef}
+                      initialTime={+rebalanceTimePeriod.value}
+                      direction="backward"
+                      startImmediately={true}
+                    >
+                      {() => (
+                        <React.Fragment>
+                          <Timer.Days />
+                          {' D '}
+                          <Timer.Hours />
+                          {' H '}
+                          <Timer.Minutes />
+                          {' M '}
+                          <Timer.Seconds />
+                          {' S '}
+                        </React.Fragment>
+                      )}
+                    </Timer>
+                  )}
                   {/*<TimerOnHooks />*/}
                 </StyledSubTypography>
               </Grid>

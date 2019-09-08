@@ -112,6 +112,6 @@ export const ReactSelectCustom = styled(ReactSelect)`
   .custom-select-box__indicator {
     position: relative;
     top: 0;
-    left: -3.5rem;
+    left: -3rem;
   }
 `
