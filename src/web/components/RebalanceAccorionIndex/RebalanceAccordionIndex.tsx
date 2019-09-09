@@ -28,7 +28,8 @@ const styles = (theme) => ({
 @withTheme()
 class RebalanceAccordionIndex extends React.Component {
   state = {
-    expanded: null,
+    // change it after we'll do indexes and social portfolios at rebalance
+    expanded: 'panel0',
     value: this.props.sliderValue,
   }
 

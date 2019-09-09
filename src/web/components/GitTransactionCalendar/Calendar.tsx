@@ -6,8 +6,11 @@ import 'react-calendar-heatmap/dist/styles.css'
 import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
+import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
+
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+import { IProps } from './Calendar.types'
 import { getCalendarData, getMaxTransactions } from './Calendar.utils'
 import {
   LEGEND_COLORS,
@@ -31,9 +34,18 @@ const styles = (theme) => ({
   legendFour: { fill: LEGEND_COLORS.four },
 })
 
-class GitTransactionCalendar extends PureComponent {
+class GitTransactionCalendar extends PureComponent<IProps> {
   render() {
-    const { getCalendarActionsQuery, startDate, endDate, classes } = this.props
+    const {
+      getCalendarActionsQuery,
+      startDate,
+      endDate,
+      tradeOrderHistoryDate,
+      onDatesChange,
+      onFocusChange,
+      focusedInput,
+      classes
+    } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
     )
@@ -43,6 +55,9 @@ class GitTransactionCalendar extends PureComponent {
       maxTransactionsCount,
       startDate
     )
+
+    const maximumDate = moment().endOf('day')
+    const minimumDate = moment().subtract(3, 'years')
 
     return (
       <HeatmapWrapper>
@@ -89,20 +104,38 @@ class GitTransactionCalendar extends PureComponent {
 
         <Grid
           container
-          justify="flex-end"
+          justify="space-between"
           alignItems="center"
+          wrap="nowrap"
           style={{
-            margin: '2rem 0 2.5rem',
-            padding: '0 3rem',
+            margin: '.75rem 0 2.5rem',
+            padding: '0 3rem 0 0',
           }}
         >
-          <LegendTypography>Less</LegendTypography>
-          <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
-          <LegendHeatmapSquare fill={LEGEND_COLORS.one} />
-          <LegendHeatmapSquare fill={LEGEND_COLORS.two} />
-          <LegendHeatmapSquare fill={LEGEND_COLORS.three} />
-          <LegendHeatmapSquare fill={LEGEND_COLORS.four} />
-          <LegendTypography>More</LegendTypography>
+          <Grid item>
+            <ChoosePeriod
+              isTableCalendar={true}
+              {...{
+                ...tradeOrderHistoryDate,
+                maximumDate,
+                minimumDate,
+                onFocusChange,
+                onDatesChange
+              }}
+            />
+          </Grid>
+          <Grid item alignItems="center" style={{
+            width: 'auto',
+            display: 'flex'
+          }}>
+            <LegendTypography>Less</LegendTypography>
+            <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
+            <LegendHeatmapSquare fill={LEGEND_COLORS.one} />
+            <LegendHeatmapSquare fill={LEGEND_COLORS.two} />
+            <LegendHeatmapSquare fill={LEGEND_COLORS.three} />
+            <LegendHeatmapSquare fill={LEGEND_COLORS.four} />
+            <LegendTypography>More</LegendTypography>
+          </Grid>
         </Grid>
       </HeatmapWrapper>
     )

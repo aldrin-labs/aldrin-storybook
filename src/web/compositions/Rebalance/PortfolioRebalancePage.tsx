@@ -106,7 +106,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   handleOpenTransactionWindow = () => {
-    console.log('open popup')
     this.setState(
       {
         openDialogTransaction: true,
