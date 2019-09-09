@@ -14,7 +14,7 @@ export const TransactionTablePrice = styled(Typography)`
 `
 
 export const TransactionTableCoin = styled(Grid)`
-    width: 9rem;
+    width: auto;
 `
 
 export const TransactionTableResult = styled(TransactionTablePrice)`
