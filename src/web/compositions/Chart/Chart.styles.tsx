@@ -4,7 +4,16 @@ import { CardTitle } from '@sb/components/ChartCardHeader'
 import { Card, Grid, Button } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
+// Free footer styles included
 export const ChartMediaQueryForLg = createGlobalStyle`
+  [class^=Appstyles__AppGridLayout] {
+    height: 100vh;
+  }
+
+  [class*=Footer__Container] {
+    position: static;
+  }
+
   @media only screen and (min-width: 2560px) {
     html {
       font-size: 12px;
