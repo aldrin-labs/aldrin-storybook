@@ -1,15 +1,18 @@
 import React from 'react'
 import { Grid, withWidth } from '@material-ui/core'
-import {
-  GridFlex,
-  TypographyCustom,
-} from './ProgressBar.styles'
+import { GridFlex, TypographyCustom } from './ProgressBar.styles'
 
-import { GridProgressBarContainer, IconCircle, LinearProgressCustom } from '@sb/styles/cssUtils'
+import {
+  GridProgressBarContainer,
+  IconCircle,
+  LinearProgressCustom,
+} from '@sb/styles/cssUtils'
 
 import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 
 function ProgressBarCoins({ datum, index }) {
+  if (!datum) return null
+
   return (
     <Grid
       container
