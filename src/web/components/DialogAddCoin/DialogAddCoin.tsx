@@ -47,7 +47,6 @@ class DialogAddCoin extends React.Component {
             top: 0,
             transform: 'translateX(-50%)',
             width: '10rem',
-            height: '2.5rem',
           }}
         >
           Add Coin
@@ -65,6 +64,7 @@ class DialogAddCoin extends React.Component {
               border: '1px solid #ABBAD1',
               width: '24rem',
               borderRadius: '1.5rem',
+              zIndex: '10007',
             }}
           >
             <SelectCoinList
