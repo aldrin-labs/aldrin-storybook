@@ -52,7 +52,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
       {/*)}*/}
       <ContentInner>
         <Table
-          style={{ width: '100%' }}
+          style={{ width: '100%', minHeight: '22rem' }}
           columnNames={tableData.columnNames}
           id="PortfolioRebalanceTable"
           data={tableData.data}
