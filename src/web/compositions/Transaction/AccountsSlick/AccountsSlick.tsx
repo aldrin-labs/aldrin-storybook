@@ -53,6 +53,18 @@ class AccountsSlick extends Component {
     intervalId: null,
   }
 
+  handleClick = (id: string) => {
+    const { selectPortfolioMutation } = this.props
+
+    selectPortfolioMutation({
+      variables: {
+        inputPortfolio: {
+          id,
+        },
+      },
+    })
+  }
+
   componentDidMount() {
     const intervalId = setInterval(() => this.props.refetch(), 30000)
     this.setState({ intervalId })
@@ -79,36 +91,34 @@ class AccountsSlick extends Component {
 
     const { myPortfolios: allPortfolios } = data
 
+    const showArrows = allPortfolios.length > 1
     const index = allPortfolios.findIndex((p) => p._id === currentId)
 
-    const prevPortfolioId =
-      index === 0
-        ? allPortfolios[allPortfolios.length - 1]._id
-        : allPortfolios[index - 1]._id
+    let prevPortfolioId
+    let nextPortfolioId
 
-    const nextPortfolioId =
-      index === allPortfolios.length - 1
-        ? allPortfolios[0]._id
-        : allPortfolios[index + 1]._id
+    if (showArrows) {
+      prevPortfolioId =
+        index === 0
+          ? allPortfolios[allPortfolios.length - 1]._id
+          : allPortfolios[index - 1]._id
 
-    const handleClick = (id: string) => {
-      selectPortfolioMutation({
-        variables: {
-          inputPortfolio: {
-            id,
-          },
-        },
-      })
+      nextPortfolioId =
+        index === allPortfolios.length - 1
+          ? allPortfolios[0]._id
+          : allPortfolios[index + 1]._id
     }
 
     return (
       <>
         <AccountsSlickStyles />
         <div style={{ position: 'relative', margin: '2rem 0 2rem 0' }}>
-          <LeftArrow
-            style={{ position: 'absolute', left: 0, top: '20%' }}
-            handleClick={() => handleClick(prevPortfolioId)}
-          />
+          {showArrows && (
+            <LeftArrow
+              style={{ position: 'absolute', left: 0, top: '20%' }}
+              handleClick={() => this.handleClick(prevPortfolioId)}
+            />
+          )}
           <TypographyAccountName>{currentName}</TypographyAccountName>
           <TypographyAccountMoney>
             {totalKeyAssetsData
@@ -122,10 +132,12 @@ class AccountsSlick extends Component {
                 )
               : 'Loading...'}
           </TypographyAccountMoney>
-          <RightArrow
-            style={{ position: 'absolute', right: 0, top: '20%' }}
-            handleClick={() => handleClick(nextPortfolioId)}
-          />
+          {showArrows && (
+            <RightArrow
+              style={{ position: 'absolute', right: 0, top: '20%' }}
+              handleClick={() => this.handleClick(nextPortfolioId)}
+            />
+          )}
         </div>
       </>
     )
