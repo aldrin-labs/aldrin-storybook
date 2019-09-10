@@ -44,18 +44,21 @@ const transformData = (data: any[]) => {
     const deltaSeconds = Date.now() - row.updatedAt * 1000
 
     const date = [
+      moment.duration(deltaSeconds).months(),
       moment.duration(deltaSeconds).days(),
       moment.duration(deltaSeconds).hours(),
       moment.duration(deltaSeconds).minutes(),
       moment.duration(deltaSeconds).seconds(),
     ]
 
-    const [days, hours, minutes, seconds] = date
+    const [months, days, hours, minutes, seconds] = date
 
     return {
       id: row._id,
       updatedAt: {
-        render: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+        render: `${
+          months > 0 ? `${months}m` : ''
+        }${days}d ${hours}h ${minutes}m ${seconds}s`,
         style: { textTransform: 'lowercase' },
       },
       timestamp: {
