@@ -43,19 +43,27 @@ class DialogAddCoin extends React.Component {
             left: '75%',
             top: 0,
             transform: 'translateX(-50%)',
-            width: '10rem'
+            width: '10rem',
           }}
         >
           Add Coin
         </BtnCustom>
-        <Dialog
-          style={{ background: 'transparent' }}
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogContent style={{ minWidth: '400px', height: '220px' }}>
+        {this.state.open && (
+          <div
+            onMouseEnter={this.mouseEnter}
+            onMouseLeave={this.mouseLeave}
+            onBlur={this.handleClose}
+            style={{
+              position: 'absolute',
+              right: '0',
+              top: '4.5rem',
+              background: 'white',
+              border: '1px solid #ABBAD1',
+              width: '24rem',
+              borderRadius: '1.5rem',
+              zIndex: '10007',
+            }}
+          >
             <SelectCoinList
               //ref={handleRef}
               key={`inputCoinSymbol${'index'}`}
@@ -123,8 +131,8 @@ class DialogAddCoin extends React.Component {
                 } | null
               ) => onAddRowButtonClick(optionSelected.label)}
             />
-          </DialogContent>
-        </Dialog>
+          </div>
+        )}
       </div>
     )
   }

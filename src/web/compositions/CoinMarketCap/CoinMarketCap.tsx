@@ -228,11 +228,11 @@ export class CoinMarket extends React.Component<Props, State> {
             contentToSort: value.price_btc || 0,
             contentToCSV:
               typeof value.price_btc === 'number'
-                ? roundAndFormatNumber(value.price_btc, 8)
+                ? roundAndFormatNumber(value.price_btc, 8, false)
                 : '?',
             render: addMainSymbol(
               typeof value.price_btc === 'number'
-                ? roundAndFormatNumber(value.price_btc, 8)
+                ? roundAndFormatNumber(value.price_btc, 8, false)
                 : '?',
               false
             ),

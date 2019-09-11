@@ -221,9 +221,11 @@ class CreatePortfolio extends React.Component<IProps, IState> {
 export default compose(
   graphql(createPortfolioMutation, {
     name: 'createPortfolio',
-    options: {
-      refetchQueries: [{ query: getMyPortfoliosQuery }],
-    },
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+      ],
+    }),
   }),
   formikDialog
 )(CreatePortfolio)
