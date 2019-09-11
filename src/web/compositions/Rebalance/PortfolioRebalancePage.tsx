@@ -65,8 +65,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   onChangeExpandedPanel = () => {
-    this.setState((prevstate)=> ({
-      isPanelExpanded: !prevstate.isPanelExpanded
+    this.setState((prevstate) => ({
+      isPanelExpanded: !prevstate.isPanelExpanded,
     }))
   }
 
@@ -196,37 +196,40 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       percentage: 100,
     }
 
-    const transactionsDataWithPrices = transactions.map(transaction => {
+    const transactionsDataWithPrices = transactions.map((transaction) => {
       const prices = {
         convertedFromPrice: null,
-        convertedToPrice: null
+        convertedToPrice: null,
       }
 
-      for (const entry of staticRowsMap) {
-        const row = entry[1]
-        if (row.symbol === transaction.convertedFrom) {
+      rows.forEach((row) => {
+        if (row.symbol === transaction.convertedFrom)
           prices.convertedFromPrice = row.price
-        } else if (row.symbol === transaction.convertedTo) {
+        else if (row.symbol === transaction.convertedTo)
           prices.convertedToPrice = row.price
-        }
-      }
+      })
 
       return {
         ...transaction,
-        ...prices
+        ...prices,
       }
     })
 
     return (
       <>
-        <RebalanceMediaQuery/>
+        <RebalanceMediaQuery />
 
         {children}
         <Content
           key={`content`}
           container
           spacing={16}
-          style={{ padding: '0 25px 25px 25px', marginLeft: '-3rem', alignContent: 'flex-start', alignItems: 'flex-start' }}
+          style={{
+            padding: '0 25px 25px 25px',
+            marginLeft: '-3rem',
+            alignContent: 'flex-start',
+            alignItems: 'flex-start',
+          }}
         >
           {/*<Container
             key={`table-container`}
@@ -282,7 +285,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             md={2}
             justify="center"
             style={{
-              marginTop: '5rem'
+              marginTop: '5rem',
             }}
           >
             <RebalanceDialogTransaction
@@ -372,6 +375,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 onNewSnapshot,
                 dustFilter,
                 showWarning,
+                hideWarning,
                 sliderStep,
               }}
               // search={search}
@@ -450,7 +454,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           {/*/>*/}
           {/*accordionData={accordionAddPortfolioPanelData}*/}
 
-          <RebalanceAddSocialPortfolio/>
+          <RebalanceAddSocialPortfolio />
 
           {/* Accordion Table End */}
 

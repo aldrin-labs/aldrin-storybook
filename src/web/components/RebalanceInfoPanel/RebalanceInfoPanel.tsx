@@ -157,7 +157,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   ) => onRebalanceTimerChange(optionSelected)}
                   isSearchable={false}
                   options={rebalanceSelectTimeOptions}
-                  isOptionDisabled={option => option.disabled}
+                  isOptionDisabled={(option) => option.disabled}
                   singleValueStyles={{
                     color: '#165BE0',
                     fontSize: `.95rem`,
@@ -224,7 +224,9 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   fontWeight={700}
                   position="right"
                 >
-                  {rebalanceTimePeriod.label === 'Disabled' ? 'Disabled' : (
+                  {rebalanceTimePeriod.label === 'Disabled' ? (
+                    'Disabled'
+                  ) : (
                     <Timer
                       ref={this.timerRef}
                       initialTime={+rebalanceTimePeriod.value}

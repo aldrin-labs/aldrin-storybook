@@ -136,7 +136,3 @@ const TransactionTable = ({
 }
 
 export default withStyles(styles)(TransactionTable)
-
-// TODO:
-// fix arrow rotate and open all functional
-// overview value ?

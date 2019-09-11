@@ -1,18 +1,11 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { ReactSelectCustom } from './DialogAddCoin.styles'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
 class DialogAddCoin extends React.Component {
   state = {
     open: false,
+    mouseInPopup: false,
   }
 
   handleClickOpen = () => {
@@ -20,24 +13,34 @@ class DialogAddCoin extends React.Component {
   }
 
   handleClose = () => {
+    !this.state.mouseInPopup ? this.setState({ open: false }) : null
+  }
+
+  mouseEnter = () => {
+    this.setState({ mouseInPopup: true })
+  }
+
+  mouseLeave = () => {
+    this.setState({ mouseInPopup: false })
+  }
+
+  handleSelectChange = async (coin: string, priceUSD: string | number) => {
+    const { onAddRowButtonClick } = this.props
+
+    await onAddRowButtonClick(coin, priceUSD)
+
     this.setState({ open: false })
   }
 
-  // handleSelectChange = (index, symbol, optionSelected) => {
-  //   console.log(optionSelected)
-  //   this.handleClose()
-  // }
-
   render() {
-    const { handleSelectChange, onAddRowButtonClick } = this.props
-
     return (
-      <div>
+      <div style={{ position: 'relative', padding: '1rem 0' }}>
         <BtnCustom
           variant="outlined"
           color="#165BE0"
           btnWidth="100px"
-          onClick={this.handleClickOpen}
+          onFocus={this.handleClickOpen}
+          onBlur={this.handleClose}
           style={{
             position: 'relative',
             left: '75%',
@@ -71,30 +74,30 @@ class DialogAddCoin extends React.Component {
               isClearable={true}
               isSearchable={true}
               openMenuOnClick={false}
-              menuPortalTarget={document.body}
-              menuPortalStyles={{
-                zIndex: 11111,
-              }}
+              // menuPortalTarget={document.body}
+              // menuPortalStyles={{
+              //   zIndex: 11111,
+              // }}
               menuStyles={{
                 fontSize: '12px',
                 minWidth: '150px',
-                height: '140px',
-                width: '350px',
-                padding: '5px 8px',
-                borderRadius: '14px',
+                padding: '0 0 0 1.5rem',
+                borderRadius: '1.5rem',
                 textAlign: 'center',
-                border: '1px solid transparent',
-                boxShadow: '0 0 0 1px transparent',
                 background: 'white',
+                position: 'relative',
+                boxShadow: 'none',
+                border: 'none',
               }}
               menuListStyles={{
-                height: '140px',
+                height: '8rem',
               }}
               optionStyles={{
                 color: '#7284A0',
                 background: 'transparent',
                 textAlign: 'left',
                 fontSize: '12px',
+                position: 'relative',
 
                 '&:hover': {
                   borderRadius: '1rem',
@@ -102,13 +105,11 @@ class DialogAddCoin extends React.Component {
                   background: '#E7ECF3',
                 },
               }}
+              controlStyles={{
+                padding: '1rem 1.5rem 0 1.5rem',
+              }}
               clearIndicatorStyles={{
                 padding: '2px',
-              }}
-              valueContainerStyles={{
-                minWidth: '35px',
-                maxWidth: '55px',
-                overflow: 'hidden',
               }}
               inputStyles={{
                 marginLeft: '0',
@@ -116,20 +117,29 @@ class DialogAddCoin extends React.Component {
               dropdownIndicatorStyles={{
                 display: 'none',
               }}
-              noOptionsMessage={() => `No such coin in our DB found`}
+              // noOptionsMessage={() => `No such coin in our DB found`}
               valueContainerStyles={{
-                border: '2px solid #E7ECF3',
-                borderRadius: '54px',
+                border: '1px solid #E7ECF3',
+                borderRadius: '3rem',
                 background: '#F2F4F6',
                 paddingLeft: '15px',
+              }}
+              noOptionsMessageStyles={{
+                textAlign: 'left',
               }}
               menuIsOpen={true}
               onChange={(
                 optionSelected: {
                   label: string
                   value: string
+                  priceUSD: string | number
                 } | null
-              ) => onAddRowButtonClick(optionSelected.label)}
+              ) =>
+                this.handleSelectChange(
+                  optionSelected.label || '',
+                  optionSelected.priceUSD
+                )
+              }
             />
           </div>
         )}
