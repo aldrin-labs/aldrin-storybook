@@ -30,7 +30,7 @@ const format = (number, baseCoin) => {
 
   return isUSDCurrently
     ? addMainSymbol(roundAndFormatNumber(number, 2, true), isUSDCurrently)
-    : addMainSymbol(roundAndFormatNumber(number, 8, true), isUSDCurrently)
+    : addMainSymbol(roundAndFormatNumber(number, 8, false), isUSDCurrently)
 }
 
 const gridBorder = `
