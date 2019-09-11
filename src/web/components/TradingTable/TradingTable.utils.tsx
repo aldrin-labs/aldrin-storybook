@@ -251,6 +251,7 @@ export const combineOrderHistoryTable = (
       info: { orderId, stopPrice = 0, origQty = '0' },
     } = el
 
+    console.log('el for history', el)
     const triggerConditions = +stopPrice ? stopPrice : '-'
     // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
     const pair = symbol.split('/')
@@ -326,9 +327,9 @@ export const combineOrderHistoryTable = (
                 whiteSpace: 'nowrap',
               }}
             >{`${+origQty} ${pair[0]}`}</span>
-            <span
-              style={{ color: '#7284A0', fontSize: '.9rem' }}
-            >{`${+origQty} ${pair[0]}`}</span>
+            <span style={{ color: '#7284A0', fontSize: '.9rem' }}>{`${+(
+              origQty * price
+            ).toFixed(8)} ${pair[1]}`}</span>
           </div>
         ),
         contentToSort: +origQty,
