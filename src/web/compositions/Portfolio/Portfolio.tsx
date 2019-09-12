@@ -181,6 +181,7 @@ const APIWrapper = (props) => {
       {({ data }) => {
         const baseCoin =
           (data && data.portfolio && data.portfolio.baseCoin) || 'USDT'
+        console.log('rerender portfolio page')
         return (
           <QueryRenderer
             {...props}

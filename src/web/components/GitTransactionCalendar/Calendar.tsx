@@ -44,7 +44,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       onDatesChange,
       onFocusChange,
       focusedInput,
-      classes
+      classes,
     } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
@@ -120,14 +120,18 @@ class GitTransactionCalendar extends PureComponent<IProps> {
                 maximumDate,
                 minimumDate,
                 onFocusChange,
-                onDatesChange
+                onDatesChange,
               }}
             />
           </Grid>
-          <Grid item alignItems="center" style={{
-            width: 'auto',
-            display: 'flex'
-          }}>
+          <Grid
+            item
+            alignItems="center"
+            style={{
+              width: 'auto',
+              display: 'flex',
+            }}
+          >
             <LegendTypography>Less</LegendTypography>
             <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
             <LegendHeatmapSquare fill={LEGEND_COLORS.one} />

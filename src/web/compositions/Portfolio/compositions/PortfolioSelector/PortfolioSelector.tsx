@@ -57,6 +57,8 @@ import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 // import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
+
 import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -329,10 +331,18 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
 
-    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+    const filteredData = combineTableData(
       portfolioKeys.myPortfolios[0]
         ? portfolioKeys.myPortfolios[0].portfolioAssets
         : [],
+      dustFilter,
+      isUSDCurrently
+    )
+
+    console.log(isTransactions ? 'USDT' : baseCoin)
+
+    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+      filteredData,
       isTransactions ? 'USDT' : baseCoin
     )
 
@@ -348,12 +358,13 @@ class PortfolioSelector extends React.Component<IProps> {
       <Slide
         style={{
           width: '41rem',
+          visibility: isSideNavOpen ? 'visible' : 'hidden',
         }}
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={true}
-        unmountOnExit={true}
+        mountOnEnter={false}
+        unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
@@ -529,7 +540,7 @@ export default compose(
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: true },
-      pollInterval: 30000,
+      // pollInterval: 30000,
     }),
   }),
   graphql(updatePortfolioSettingsMutation, {
