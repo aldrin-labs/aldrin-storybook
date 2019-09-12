@@ -108,6 +108,15 @@ class TransactionPage extends React.PureComponent {
     )
   }
 
+  onHeatmapDateClick = value => this.setState(prevState => ({
+    ...prevState,
+    tradeOrderHistoryDate: {
+      ...prevState.tradeOrderHistoryDate,
+      startDate: moment(value.date).startOf('day'),
+      endDate: moment(value.date).endOf('day')
+    }
+  }))
+
   handleChangeShowHideOptions = (option) => (event) => {
     this.setState({ [option]: event.target.checked })
   }
@@ -305,7 +314,8 @@ class TransactionPage extends React.PureComponent {
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
                       onFocusChange: this.onFocusChange,
-                      onDatesChange: this.onDatesChange
+                      onDatesChange: this.onDatesChange,
+                      onHeatmapDateClick: this.onHeatmapDateClick
                     }}
                   />
                 </GridCalendarContainer>
