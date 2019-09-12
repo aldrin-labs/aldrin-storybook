@@ -68,7 +68,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
     return (
       <HeatmapWrapper>
-        <SquarePopup innerRef={this.popupRef} ref={this.popupRef}>Lol look at me</SquarePopup>
+        <SquarePopup ref={this.popupRef}/>
         <CalendarHeatmap
           className={classes.root}
           startDate={moment(+startDate).subtract(1, 'seconds')}
