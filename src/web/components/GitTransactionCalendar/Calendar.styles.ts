@@ -22,6 +22,10 @@ export const HeatmapWrapper = styled.div`
     font-size: 0.575rem;
   }
 
+  .react-calendar-heatmap-week rect {
+    cursor: pointer;
+  }
+
   @media only screen and (min-width: 2560px) {
     .react-calendar-heatmap-month-label,
     .react-calendar-heatmap .react-calendar-heatmap-small-text {
@@ -43,4 +47,19 @@ export const LegendHeatmapSquare = styled.div`
   height: 1.4rem;
   background-color: ${(props) => props.fill || '#E0E5EC'};
   margin: 0 0.175rem;
+`
+
+export const SquarePopup = styled.div`
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: .75rem;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
 `
