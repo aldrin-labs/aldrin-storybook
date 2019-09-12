@@ -49,8 +49,9 @@ const AppRaw = ({
 
   const fullscreen: boolean =
     currentPage === '/chart' && chartPageView !== 'default'
-  const showFooter = currentPage !== '/registration'
-  const isPNL = currentPage === '/portfolio/main'
+  const showFooter: boolean = currentPage !== '/registration'
+  const isChartPage: boolean = currentPage === '/chart'
+  const isPNL: boolean = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
 
@@ -58,12 +59,12 @@ const AppRaw = ({
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
-        <AppGridLayout showFooter={showFooter} isPNL={isPNL}>
+        <AppGridLayout showFooter={showFooter} isPNL={isPNL} maxHeight={isChartPage}>
           {!pageIsRegistration && (
             <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
           )}
           {children}
-          <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
+          <Footer fullscreenMode={fullscreen} showFooter={showFooter} isFooterStatic={isChartPage}/>
         </AppGridLayout>
         {/* <ShowWarningOnMoblieDevice /> */}
         <GlobalStyle />

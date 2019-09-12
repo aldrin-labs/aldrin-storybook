@@ -20,6 +20,7 @@ const Footer = ({
   getThemeModeQuery,
   toggleThemeModeMutation,
   showFooter,
+  isFooterStatic
 }: Props) => {
   const themeMode =
     getThemeModeQuery &&
@@ -37,6 +38,7 @@ const Footer = ({
       position="static"
       color="default"
       fullscreenMode={fullscreenMode}
+      static={isFooterStatic}
     >
       <Block>
         <StyledTypography color="default">
@@ -98,7 +100,7 @@ const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
   }
 
   height: 6.4vh;
-  position: fixed;
+  position: ${(props: { static: boolean }) => props.static ? 'static' : 'fixed'};
   bottom: 0;
   z-index: 1;
 `
