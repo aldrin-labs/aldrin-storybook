@@ -17,6 +17,9 @@ import {
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import { addMainSymbol } from '@sb/components'
+
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
     ? openOrdersBody
@@ -112,7 +115,7 @@ export const combineOpenOrdersTable = (
       const pair = symbol.split('/')
 
       return {
-        id: `${orderId}${timestamp}`,
+        id: `${orderId}${timestamp}${i}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -161,7 +164,7 @@ export const combineOpenOrdersTable = (
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
-        amount: {
+        quantity: {
           render: (
             <div>
               <span
@@ -238,7 +241,7 @@ export const combineOrderHistoryTable = (
     return []
   }
 
-  const processedOrderHistoryData = orderData.map((el: OrderType) => {
+  const processedOrderHistoryData = orderData.map((el: OrderType, i) => {
     const {
       symbol,
       timestamp,
@@ -256,7 +259,7 @@ export const combineOrderHistoryTable = (
     const pair = symbol.split('/')
 
     return {
-      id: `${orderId}${timestamp}`,
+      id: `${orderId}${timestamp}${i}`,
       pair: {
         render: (
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -299,6 +302,7 @@ export const combineOrderHistoryTable = (
             ? theme.customPalette.green.main
             : theme.customPalette.red.main,
         },
+        contentToSort: side,
       },
       // average: {
       //   render: average || '-',
@@ -315,7 +319,7 @@ export const combineOrderHistoryTable = (
       //
       //   contentToSort: filledQuantityProcessed,
       // },
-      amount: {
+      quantity: {
         render: (
           <div>
             <span
@@ -326,9 +330,9 @@ export const combineOrderHistoryTable = (
                 whiteSpace: 'nowrap',
               }}
             >{`${+origQty} ${pair[0]}`}</span>
-            <span
-              style={{ color: '#7284A0', fontSize: '.9rem' }}
-            >{`${+origQty} ${pair[0]}`}</span>
+            <span style={{ color: '#7284A0', fontSize: '.9rem' }}>{`${+(
+              origQty * price
+            ).toFixed(8)} ${pair[1]}`}</span>
           </div>
         ),
         contentToSort: +origQty,
@@ -354,6 +358,7 @@ export const combineOrderHistoryTable = (
         ) : (
           '-'
         ),
+        contentToSort: status,
       },
       date: {
         render: (
@@ -389,7 +394,7 @@ export const combineTradeHistoryTable = (
   const processedTradeHistoryData = tradeData.map((el: TradeType) => {
     const { id, timestamp, symbol, side, price, amount } = el
 
-    const fee = el.fee ? el.fee : { cost: 0, currency: 'unknown' }
+    const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
     const { cost, currency } = fee
     const pair = symbol.split('/')
 
@@ -408,7 +413,7 @@ export const combineTradeHistoryTable = (
         ),
         contentToSort: symbol,
       },
-      side: {
+      type: {
         render: (
           <div>
             <span
@@ -431,26 +436,50 @@ export const combineTradeHistoryTable = (
             </span> */}
           </div>
         ),
+        contentToSort: side,
       },
       price: {
         render: `${price} ${pair[1]}`,
         style: { textAlign: 'left', whiteSpace: 'nowrap' },
         contentToSort: price,
       },
-      filled: {
-        render: `${amount}`,
+      quantity: {
+        render: (
+          <div>
+            <span
+              style={{
+                color: '#2F7619',
+                fontSize: '1.3rem',
+                display: 'block',
+                whiteSpace: 'nowrap',
+              }}
+            >{`${+amount} ${pair[0]}`}</span>
+            <span style={{ color: '#7284A0', fontSize: '.9rem' }}>{`${+(
+              amount * price
+            ).toFixed(8)} ${pair[1]}`}</span>
+          </div>
+        ),
 
-        contentToSort: +amount,
-      },
-      fee: {
-        render: `${cost}`,
-
-        contentToSort: cost,
+        contentToSort: amount,
       },
       // TODO: We should change "total" to total param from backend when it will be ready
       total: {
         // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
         render: '-',
+
+        contentToSort: 0,
+      },
+      fee: {
+        render: `${cost} ${currency}`,
+
+        contentToSort: cost,
+      },
+      status: {
+        render: (
+          <span style={{ color: '#2F7619', textTransform: 'uppercase' }}>
+            succesful
+          </span>
+        ),
 
         contentToSort: 0,
       },
@@ -492,20 +521,39 @@ export const combineFundsTable = (
       quantity,
       locked,
       free,
-      asset: { symbol, priceBTC },
+      asset: { symbol, priceBTC, priceUSD },
     } = el
 
-    const btcValue = +priceBTC * +quantity
+    const btcValue = addMainSymbol(
+      roundAndFormatNumber(quantity * priceBTC, 8, false),
+      false
+    )
 
     return {
       id: symbol,
       coin: symbol || 'unknown',
       totalBalance: {
+        render:
+          addMainSymbol(
+            roundAndFormatNumber(quantity * priceUSD, 8, true),
+            true
+          ) || '-',
+        style: { textAlign: 'left' },
+        contentToSort: +quantity * priceUSD,
+      },
+      totalQuantity: {
         render: quantity || '-',
         style: { textAlign: 'left' },
         contentToSort: +quantity,
       },
       availableBalance: {
+        render:
+          addMainSymbol(roundAndFormatNumber(free * priceUSD, 8, true), true) ||
+          '-',
+        style: { textAlign: 'left' },
+        contentToSort: +free * priceUSD,
+      },
+      availableQuantity: {
         render: free || '-',
         style: { textAlign: 'left' },
         contentToSort: +free,
@@ -518,7 +566,7 @@ export const combineFundsTable = (
       btcValue: {
         render: btcValue || '-',
         style: { textAlign: 'left' },
-        contentToSort: btcValue,
+        contentToSort: quantity * priceBTC,
       },
     }
   })

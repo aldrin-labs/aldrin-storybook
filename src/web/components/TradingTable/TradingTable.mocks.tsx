@@ -18,7 +18,7 @@ export const openOrdersColumnNames = [
   // { label: 'Type', id: 'type' },
   { label: 'Side/Type', id: 'side' },
   { label: 'Price', id: 'price' },
-  { label: 'Quantity', id: 'Quantity' },
+  { label: 'Quantity', id: 'quantity' },
   // { label: 'Filled %', id: 'filled',  },
   { label: 'Total', id: 'total' },
   { label: 'Trigger', id: 'triggerConditions' },
@@ -59,7 +59,7 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
 export const orderHistoryColumnNames = [
   { label: 'Pair', id: 'pair' },
   // { label: 'Type', id: 'type' },
-  { label: 'Side/Type', id: 'side-type' },
+  { label: 'Side/Type', id: 'side' },
   // { label: 'Average', id: 'average',  },
   { label: 'Price', id: 'price' },
   // { label: 'Filled %', id: 'filled',  },
@@ -80,7 +80,7 @@ export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   average: getRandomInt(100, 50000),
   price: getRandomInt(100, 3000),
   filled: { render: '100%' },
-  amount: getRandomInt(100, 8000),
+  quantity: getRandomInt(100, 8000),
   total: 100,
   triggerConditions: '-',
   status: arrayOforderStatus[getRandomInt(0, 2)],
@@ -90,9 +90,10 @@ export const tradeHistoryColumnNames = [
   { label: 'Pair', id: 'pair' },
   { label: 'Type', id: 'type' },
   { label: 'Price', id: 'price' },
-  { label: 'Filled', id: 'filled' },
-  { label: 'Fee', id: 'fee' },
+  { label: 'Quantity', id: 'quantity' },
   { label: 'Total', id: 'total' },
+  { label: 'Fee', id: 'fee' },
+  { label: 'Status', id: 'status' },
   { label: 'Date', id: 'date' },
 ]
 
@@ -103,15 +104,18 @@ export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
     String.fromCharCode(getRandomInt(65, 80))}`,
   type: arrayOfOrdersType[getRandomInt(0, 3)],
   price: getRandomInt(100, 3000),
-  filled: { render: '100%' },
+  quantity: { render: '100%' },
   fee: getRandomInt(1, 100),
+  status: 'succesful',
   total: 100,
 }))
 
 export const fundsColumnNames = [
   { label: 'Coin', id: 'coin' },
   { label: 'Total balance', id: 'totalBalance' },
+  { label: 'Total quantity', id: 'totalQuantity' },
   { label: 'Available balance', id: 'availableBalance' },
+  { label: 'Available quantity', id: 'availableQuantity' },
   { label: 'In order', id: 'inOrder' },
   { label: 'BTC Value', id: 'btcValue' },
 ]
@@ -121,7 +125,9 @@ export const fundsBody = new Array(13).fill(undefined).map((el, i) => ({
     String.fromCharCode(getRandomInt(65, 80)) +
     String.fromCharCode(getRandomInt(65, 80))}`,
   totalBalance: getRandomInt(100, 300000),
+  totalQuantity: getRandomInt(100, 3000),
   availableBalance: getRandomInt(100, 3000),
+  availableQuantity: getRandomInt(100, 3000),
   inOrder: getRandomInt(1, 100),
   btcValue: getRandomInt(1, 10000),
 }))
