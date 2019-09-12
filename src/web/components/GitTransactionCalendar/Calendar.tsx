@@ -92,15 +92,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Nov',
             'Dec',
           ]}
-          tooltipDataAttrs={(value) =>
-            value
-              ? {
-                  'data-tip': `${value.count} ${
-                    value.count === 1 ? `action` : 'actions'
-                  } on ${moment(value.date).format('DD MMM, YYYY')}`,
-                }
-              : { 'data-tip': 'No data' }
-          }
 
           onMouseOver={(e, value) => {
             const popupRef = this.popupRef.current
