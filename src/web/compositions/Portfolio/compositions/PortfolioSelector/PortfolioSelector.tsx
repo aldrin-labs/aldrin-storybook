@@ -371,7 +371,7 @@ class PortfolioSelector extends React.Component<IProps> {
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
         mountOnEnter={false}
-        unmountOnExit={false}
+        unmountOnExit={true}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
