@@ -42,27 +42,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
     this.popupRef = React.createRef()
   }
 
-  componentDidMount() {
-    const popup = this.popupRef.current
-    const wrapper = this.props.wrapperRef.current
-
-    const squares = Array.from(document.querySelectorAll('.react-calendar-heatmap-week rect'))
-    squares.forEach(square => {
-      square.addEventListener('mouseover', (e) => {
-        const { x, y } = square.getBoundingClientRect()
-        popup.style.display = 'block'
-        popup.style.top = `${y - wrapper.offsetTop - 30}px`
-        popup.style.left = `${x - wrapper.offsetLeft + 15}px`
-
-        popup.textContent = square.dataset.tip
-      }, false)
-
-      square.addEventListener('mouseout', () => {
-        popup.style.display = 'none'
-      }, false)
-    })
-  }
-
   render() {
     const {
       getCalendarActionsQuery,
@@ -71,8 +50,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       tradeOrderHistoryDate,
       onDatesChange,
       onFocusChange,
-      focusedInput,
-      classes
+      classes,
+      wrapperRef
     } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
@@ -122,6 +101,22 @@ class GitTransactionCalendar extends PureComponent<IProps> {
                 }
               : { 'data-tip': 'No data' }
           }
+
+          onMouseOver={(e, value) => {
+            const popupRef = this.popupRef.current
+            const { x, y } = e.target.getBoundingClientRect()
+            popupRef.style.display = 'block'
+            popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
+            popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
+    
+            popupRef.textContent = value ? `${value.count} ${
+              value.count === 1 ? `action` : 'actions'
+            } on ${moment(value.date).format('DD MMM, YYYY')}` : 'No data'
+          }}
+          onMouseLeave={() => {
+            const popupRef = this.popupRef.current
+            popupRef.style.display = 'none'
+          }}
         />
 
         <Grid
