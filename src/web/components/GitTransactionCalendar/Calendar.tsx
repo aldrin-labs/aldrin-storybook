@@ -17,6 +17,7 @@ import {
   HeatmapWrapper,
   LegendHeatmapSquare,
   LegendTypography,
+  SquarePopup
 } from './Calendar.styles'
 
 const styles = (theme) => ({
@@ -35,6 +36,12 @@ const styles = (theme) => ({
 })
 
 class GitTransactionCalendar extends PureComponent<IProps> {
+  constructor(props) {
+    super(props)
+
+    this.popupRef = React.createRef()
+  }
+
   render() {
     const {
       getCalendarActionsQuery,
@@ -43,8 +50,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       tradeOrderHistoryDate,
       onDatesChange,
       onFocusChange,
-      focusedInput,
-      classes
+      classes,
+      wrapperRef
     } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
@@ -61,6 +68,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
     return (
       <HeatmapWrapper>
+        <SquarePopup ref={this.popupRef}/>
         <CalendarHeatmap
           className={classes.root}
           startDate={moment(+startDate).subtract(1, 'seconds')}
@@ -84,22 +92,22 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Nov',
             'Dec',
           ]}
-          titleForValue={(value) =>
-            value
-              ? `${value.count} ${
-                  value.count === 1 ? `action` : 'actions'
-                } on ${moment(value.date).format('DD MMM, YYYY')}`
-              : 'No data'
-          }
-          tooltipDataAttrs={(value) =>
-            value
-              ? {
-                  'data-tooltip': `${value.count} ${
-                    value.count === 1 ? `action` : 'actions'
-                  } on ${moment(value.date).format('DD MMM, YYYY')}`,
-                }
-              : { 'data-tooltip': 'No data' }
-          }
+
+          onMouseOver={(e, value) => {
+            const popupRef = this.popupRef.current
+            const { x, y } = e.target.getBoundingClientRect()
+            popupRef.style.display = 'block'
+            popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
+            popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
+    
+            popupRef.textContent = value ? `${value.count} ${
+              value.count === 1 ? `action` : 'actions'
+            } on ${moment(value.date).format('DD MMM, YYYY')}` : 'No data'
+          }}
+          onMouseLeave={() => {
+            const popupRef = this.popupRef.current
+            popupRef.style.display = 'none'
+          }}
         />
 
         <Grid
