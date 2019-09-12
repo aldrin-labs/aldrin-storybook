@@ -331,15 +331,22 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
 
-    const filteredData = combineTableData(
-      portfolioKeys.myPortfolios[0]
-        ? portfolioKeys.myPortfolios[0].portfolioAssets
-        : [],
-      dustFilter,
-      isUSDCurrently
-    )
+    const assets = portfolioKeys.myPortfolios[0]
+      ? portfolioKeys.myPortfolios[0].portfolioAssets
+      : []
 
-    console.log(isTransactions ? 'USDT' : baseCoin)
+    const activeKeyNames = activeKeys.map((key) => key.name)
+
+    const sumOfEnabledAccounts = assets
+      .filter((asset) => activeKeyNames.includes(asset.name))
+      .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
+
+    const filteredData = combineTableData(
+      assets,
+      dustFilter,
+      isUSDCurrently,
+      sumOfEnabledAccounts
+    )
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
       filteredData,
