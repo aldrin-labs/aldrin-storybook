@@ -50,6 +50,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       tradeOrderHistoryDate,
       onDatesChange,
       onFocusChange,
+      onHeatmapDateClick,
       classes,
       wrapperRef
     } = this.props
@@ -93,6 +94,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Dec',
           ]}
 
+          onClick={onHeatmapDateClick}
           onMouseOver={(e, value) => {
             const popupRef = this.popupRef.current
             const { x, y } = e.target.getBoundingClientRect()
