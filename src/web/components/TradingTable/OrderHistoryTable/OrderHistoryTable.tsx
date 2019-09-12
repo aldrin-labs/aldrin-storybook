@@ -42,6 +42,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       nextProps.getOrderHistoryQuery.getOrderHistory,
       nextProps.theme
     )
+
     this.setState({
       orderHistoryProcessedData,
     })
