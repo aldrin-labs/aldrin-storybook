@@ -17,6 +17,7 @@ import {
   HeatmapWrapper,
   LegendHeatmapSquare,
   LegendTypography,
+  SquarePopup
 } from './Calendar.styles'
 
 const styles = (theme) => ({
@@ -35,6 +36,33 @@ const styles = (theme) => ({
 })
 
 class GitTransactionCalendar extends PureComponent<IProps> {
+  constructor(props) {
+    super(props)
+
+    this.popupRef = React.createRef()
+  }
+
+  componentDidMount() {
+    const popup = this.popupRef.current
+    const wrapper = this.props.wrapperRef.current
+
+    const squares = Array.from(document.querySelectorAll('.react-calendar-heatmap-week rect'))
+    squares.forEach(square => {
+      square.addEventListener('mouseover', (e) => {
+        const { x, y } = square.getBoundingClientRect()
+        popup.style.display = 'block'
+        popup.style.top = `${y - wrapper.offsetTop - 30}px`
+        popup.style.left = `${x - wrapper.offsetLeft + 15}px`
+
+        popup.textContent = square.dataset.tip
+      }, false)
+
+      square.addEventListener('mouseout', () => {
+        popup.style.display = 'none'
+      }, false)
+    })
+  }
+
   render() {
     const {
       getCalendarActionsQuery,
@@ -61,6 +89,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
     return (
       <HeatmapWrapper>
+        <SquarePopup innerRef={this.popupRef} ref={this.popupRef}>Lol look at me</SquarePopup>
         <CalendarHeatmap
           className={classes.root}
           startDate={moment(+startDate).subtract(1, 'seconds')}
@@ -84,21 +113,14 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Nov',
             'Dec',
           ]}
-          titleForValue={(value) =>
-            value
-              ? `${value.count} ${
-                  value.count === 1 ? `action` : 'actions'
-                } on ${moment(value.date).format('DD MMM, YYYY')}`
-              : 'No data'
-          }
           tooltipDataAttrs={(value) =>
             value
               ? {
-                  'data-tooltip': `${value.count} ${
+                  'data-tip': `${value.count} ${
                     value.count === 1 ? `action` : 'actions'
                   } on ${moment(value.date).format('DD MMM, YYYY')}`,
                 }
-              : { 'data-tooltip': 'No data' }
+              : { 'data-tip': 'No data' }
           }
         />
 
