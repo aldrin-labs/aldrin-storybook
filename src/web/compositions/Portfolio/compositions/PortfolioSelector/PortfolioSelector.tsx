@@ -365,7 +365,6 @@ class PortfolioSelector extends React.Component<IProps> {
       <Slide
         style={{
           width: '41rem',
-          visibility: isSideNavOpen ? 'visible' : 'hidden',
         }}
         in={isSideNavOpen}
         direction="right"
