@@ -43,6 +43,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       tradeOrderHistoryDate,
       onDatesChange,
       onFocusChange,
+      onHeatmapDateClick,
       focusedInput,
       classes
     } = this.props
@@ -70,6 +71,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           classForValue={(value) =>
             value ? classes[value.className] : 'empty-value'
           }
+          onClick={onHeatmapDateClick}
           monthLabels={[
             'Jan',
             'Feb',
