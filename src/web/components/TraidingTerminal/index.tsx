@@ -352,6 +352,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               ) : null}
             </Grid>
 
+            {/*
             <PaddingGrid xs={12} item container direction="column">
               <TradeInputContainer
                 title={`Total ${pair[1]}`}
@@ -360,6 +361,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 coin={pair[1]}
               />
             </PaddingGrid>
+            */}
 
             <Grid xs={12}>
               <FormError hidden={!pairsErrors.length}>
