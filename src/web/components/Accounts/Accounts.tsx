@@ -199,7 +199,7 @@ class Accounts extends React.PureComponent<IProps> {
                 {isSidebar && (
                   <PortfolioSelectorPopup
                     data={account}
-                    allKeys={newKeys}
+                    allKeysNames={newKeys.map((key) => key.name.toLowerCase())}
                     baseCoin={baseCoin}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />

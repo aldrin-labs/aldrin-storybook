@@ -45,9 +45,7 @@ const formikDialog = withFormik({
       },
     }
 
-    const isNameExists = props.props.allPortfolios
-      .map((portfolio) => portfolio.name)
-      .includes(portfolioName)
+    const isNameExists = props.props.allPortfoliosNames.includes(portfolioName)
 
     if (isNameExists) {
       props.setFieldError(
@@ -147,7 +145,6 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       validateForm,
     } = this.props
 
-    console.log(errors)
     return (
       <>
         <BtnCustom

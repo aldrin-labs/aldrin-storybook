@@ -328,6 +328,10 @@ class PortfolioSelector extends React.Component<IProps> {
     )
       return null
 
+    const allPortfoliosNames = portfolioNames.myPortfolios.map((portfolio) =>
+      portfolio.name.toLowerCase()
+    )
+
     const login = true
 
     const isTransactions =
@@ -395,7 +399,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 <TypographyTitle>Portfolio</TypographyTitle>
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
-                  allPortfolios={portfolioNames.myPortfolios}
+                  allPortfoliosNames={allPortfoliosNames}
                   baseCoin={baseCoin}
                   isPortfolio={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
@@ -412,7 +416,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
               <CreatePortfolio
                 baseCoin={baseCoin}
-                allPortfolios={portfolioNames.myPortfolios}
+                allPortfoliosNames={allPortfoliosNames}
               />
             </Grid>
           </GridSection>
