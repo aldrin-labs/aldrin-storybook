@@ -78,6 +78,28 @@ class TransactionPage extends React.PureComponent {
     }
   }))
 
+  onDateButtonClick = async (stringDate: string) => {
+    // this.setState(
+    //   {
+    //     activeDateButton: stringDate,
+    //     startDate: getEndDate(stringDate),
+    //     endDate: moment().endOf('day'),
+    //   },
+    //   () => {
+    //     // TODO: there should be mutation for search:
+    //   }
+    // )
+
+    this.setState(prevState => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate: getEndDate(stringDate),
+        endDate: moment().endOf('day'),
+      }
+    }))
+  }
+
   onDatesChange = ({
     startDate,
     endDate,
@@ -181,7 +203,7 @@ class TransactionPage extends React.PureComponent {
       includeExchangeTransactions,
       includeTrades,
       gitCalendarDate,
-      tradeOrderHistoryDate
+      tradeOrderHistoryDate,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -313,9 +335,11 @@ class TransactionPage extends React.PureComponent {
                     {...{
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
+                      onDateButtonClick: this.onDateButtonClick,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,
-                      onHeatmapDateClick: this.onHeatmapDateClick
+                      onHeatmapDateClick: this.onHeatmapDateClick,
+                      activeDateButton: gitCalendarDate.activeDateButton,
                     }}
                   />
                 </GridCalendarContainer>

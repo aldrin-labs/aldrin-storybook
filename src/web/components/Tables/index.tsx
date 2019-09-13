@@ -842,6 +842,9 @@ const CustomTable = (props: Props) => {
               // position: 'absolute',
               // bottom: 0,
               // right: 0
+              position: 'fixed',
+              bottom: '9%',
+              right: '21%',
             }
           }
         >
