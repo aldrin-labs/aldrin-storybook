@@ -17,8 +17,6 @@ class Block extends React.Component {
   shouldComponentUpdate(nextProps: any) {
     const prevActions = this.props.actions.myPortfolios[0].portfolioActions.tradesCount
     const nextActions = nextProps.actions.myPortfolios[0].portfolioActions.tradesCount
-
-    console.log(prevActions, nextActions)
   
     if (prevActions === nextActions) {
       return true

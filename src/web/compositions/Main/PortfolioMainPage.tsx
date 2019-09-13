@@ -36,14 +36,6 @@ const LayoutClearfixWrapper = styled.div`
   }
 `
 
-const PNLPageMediaQuery = createGlobalStyle`
-  @media only screen and (min-width: 1921px) and (max-width: 2100px) {
-    html {
-      font-size: 13px;
-    }
-  }
-`
-
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {

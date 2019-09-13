@@ -27,7 +27,7 @@ class ChoosePeriod extends Component<IProps> {
     return (
       <ChoosePeriodWrapper isTableCalendar={isTableCalendar} style={{ height: '10%' }}>
         <ChoosePeriodTypography>Selected period</ChoosePeriodTypography>
-
+        
         <DatePickerWrapper>
           <DateRangePicker
             withPortal={true}
