@@ -43,7 +43,7 @@ const DeleteAccountDialogComponent = ({
   }
 
   const handleSubmit = async () => {
-    if (checkName === name) {
+    if (checkName.toLowerCase() === name.toLowerCase()) {
       const response = await deleteMutation({
         variables: { name: checkName, removeTrades: true },
       })

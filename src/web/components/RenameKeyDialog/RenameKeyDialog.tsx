@@ -20,12 +20,14 @@ import { OpenRenameButton } from '@sb/components/RenameKeyDialog/RenameKeyDialog
 
 const RenameKeyDialogComponent = ({
   data,
+  allKeys,
   renameMutation,
   closeMainPopup,
   isPortfolio = false,
 }) => {
   const { name, _id: id } = data
   const target = isPortfolio ? 'portfolio' : 'account'
+  const allKeyNames = allKeys.map((key) => key.name)
 
   const [isOpen, toggleDialog] = useState(false)
   const [newName, updateName] = useState('')
@@ -44,7 +46,11 @@ const RenameKeyDialogComponent = ({
       ? { inputPortfolio: { id, name: newName } }
       : { input: { keyId: id, name: newName } }
 
-    if (newName === '') {
+    const isNameExists = allKeyNames.includes(newName)
+
+    if (isNameExists) {
+      return setError('You already have account with this name')
+    } else if (newName === '') {
       return setError('Account can not have empty name')
     }
 

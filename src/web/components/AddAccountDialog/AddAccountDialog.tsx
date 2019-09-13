@@ -67,13 +67,25 @@ const formikEnhancer = withFormik({
     secretOfApiKey: '',
     exchange: '',
   }),
-  handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
+  handleSubmit: async (
+    values,
+    { props, setSubmitting, resetForm, setFieldError }
+  ) => {
     const variables = {
       name: values.name,
       apiKey: values.apiKey,
       secret: values.secretOfApiKey,
       exchange: values.exchange.toLowerCase(),
       date: Math.round(+Date.now() / 1000),
+    }
+
+    const isNameExists = props.allKeys
+      .map((key) => key.name)
+      .includes(values.name)
+
+    if (isNameExists) {
+      setFieldError('name', 'You alredy have account with this name')
+      return false
     }
 
     try {
@@ -91,6 +103,8 @@ const formikEnhancer = withFormik({
       setSubmitting(false)
       console.log(error)
     }
+
+    return true
   },
 })
 
@@ -170,7 +184,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       dirty,
       isSubmitting,
     } = this.props
-
+    console.log(errors)
     return (
       <>
         <BtnCustom
@@ -222,16 +236,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               padding: '0 3rem 3rem',
             }}
           >
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                validateForm().then(async () => {
-                  await handleSubmit()
-                  handleClose()
-                })
-              }}
-              style={{ width: '440px' }}
-            >
+            <form style={{ width: '440px' }}>
               <Grid>
                 <GridCustom>
                   <Legend>Exchange</Legend>
@@ -276,11 +281,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     placeholder="Type name..."
                     type="text"
                     margin="normal"
-                    helperText={
-                      touched.name &&
-                      errors.name && <FormError>{errors.name}</FormError>
-                    }
                   />
+                  {touched.name && errors.name && (
+                    <FormError>{errors.name}</FormError>
+                  )}
                 </GridCustom>
                 <GridCustom>
                   <Legend>Api key</Legend>
@@ -296,11 +300,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     onBlur={handleBlur}
                     placeholder="Enter API key here..."
                     margin="normal"
-                    helperText={
-                      touched.apiKey &&
-                      errors.apiKey && <FormError>{errors.apiKey}</FormError>
-                    }
                   />
+                  {touched.apiKey && errors.apiKey && (
+                    <FormError>{errors.apiKey}</FormError>
+                  )}
                 </GridCustom>
                 <GridCustom>
                   <Legend>Secret key</Legend>
@@ -316,13 +319,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     placeholder="Enter secret key here..."
                     type="text"
                     margin="normal"
-                    helperText={
-                      touched.secretOfApiKey &&
-                      errors.secretOfApiKey && (
-                        <FormError>{errors.secretOfApiKey}</FormError>
-                      )
-                    }
                   />
+                  {touched.secretOfApiKey && errors.secretOfApiKey && (
+                    <FormError>{errors.secretOfApiKey}</FormError>
+                  )}
                 </GridCustom>
               </Grid>
 
@@ -333,7 +333,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   btnWidth={'85px'}
                   borderRadius={'32px'}
                   btnColor={blue.custom}
-                  type="submit"
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    validateForm().then(async () => {
+                      const result = await handleSubmit()
+                      if (result) handleClose()
+                    })
+                  }}
                   disabled={!dirty || isSubmitting}
                 >
                   ADD

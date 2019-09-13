@@ -65,6 +65,17 @@ class Accounts extends React.PureComponent<IProps> {
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
 
+    const accounts = newKeys.map(({ _id, name, selected }) => {
+      const account = portfolioAssetsData.filter((asset) => asset.name === name)
+
+      return {
+        _id,
+        name,
+        selected,
+        value: account.length > 0 ? account[0].value : 0,
+      }
+    })
+
     return (
       <>
         <AccountsWalletsHeadingWrapper>
@@ -124,25 +135,55 @@ class Accounts extends React.PureComponent<IProps> {
           </SelectAll>
         )} */}
         <AccountsList id="AccountsList">
+<<<<<<< Updated upstream
           {newKeys.map((key, i) => {
             if (!key) {
               return null
             }
+||||||| merged common ancestors
+          {newKeys.map((key, i) => {
+            if (!key) {
+              return null
+            }
+
+=======
+          {accounts.map((account, i) => {
+>>>>>>> Stashed changes
             const Component = isRebalance ? Radio : Checkbox
+<<<<<<< Updated upstream
             const isChecked = key.selected
 
             const value = portfolioAssetsData[i]
               ? portfolioAssetsData[i].value
               : 0
+||||||| merged common ancestors
+            const isChecked = key.selected
+
+            const assetData = portfolioAssetsData.filter((asset) => {
+              return asset.name === key.name
+            })
+=======
+            const isChecked = account.selected
+>>>>>>> Stashed changes
 
             const formattedValue = addMainSymbol(
+<<<<<<< Updated upstream
               roundAndFormatNumber(value, roundNumber, true),
+||||||| merged common ancestors
+              roundAndFormatNumber(
+                assetData[0] ? assetData[0].value : 0,
+                roundNumber,
+                true
+              ),
+=======
+              roundAndFormatNumber(account.value, roundNumber, true),
+>>>>>>> Stashed changes
               isUSDT
             )
 
             return (
               <AccountsListItem
-                key={key._id}
+                key={account._id}
                 color={color}
                 style={{
                   display: 'flex',
@@ -170,7 +211,7 @@ class Accounts extends React.PureComponent<IProps> {
                   textColor={'#7284A0'}
                   letterSpacing="1px"
                 >
-                  {key.name}
+                  {account.name}
                   <TypographyTitle lineHeight="122.5%">
                     {formattedValue}
                   </TypographyTitle>
@@ -179,13 +220,13 @@ class Accounts extends React.PureComponent<IProps> {
                   disabled={!login}
                   type={isRebalance ? 'radio' : 'checkbox'}
                   color="secondary"
-                  id={key.name}
+                  id={account.name}
                   checked={isChecked}
                   onClick={() => {
                     if (login && isRebalance) {
-                      onKeySelectOnlyOne(key._id)
+                      onKeySelectOnlyOne(account._id)
                     } else if (login && !isRebalance) {
-                      onKeyToggle(key._id)
+                      onKeyToggle(account._id)
                     }
                   }}
                   style={{
@@ -194,7 +235,8 @@ class Accounts extends React.PureComponent<IProps> {
                 />
                 {isSidebar && (
                   <PortfolioSelectorPopup
-                    data={key}
+                    data={account}
+                    allKeys={newKeys}
                     baseCoin={baseCoin}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />
@@ -203,7 +245,9 @@ class Accounts extends React.PureComponent<IProps> {
             )
           })}
         </AccountsList>
-        {isSidebar && <AddAccountDialog baseCoin={baseCoin} />}
+        {isSidebar && (
+          <AddAccountDialog baseCoin={baseCoin} allKeys={newKeys} />
+        )}
       </>
     )
   }

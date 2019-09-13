@@ -31,6 +31,8 @@ class PortfolioSelectorPopup extends Component {
     const {
       theme,
       data,
+      allKeys,
+      allPortfolios = [],
       forceUpdateAccountContainer,
       baseCoin,
       isPortfolio = false,
@@ -57,6 +59,7 @@ class PortfolioSelectorPopup extends Component {
               <>
                 <RenamePortfolioDialog
                   data={data}
+                  allKeys={allPortfolios}
                   isPortfolio={true}
                   baseCoin={baseCoin}
                   forceUpdateUserContainer={forceUpdateAccountContainer}
@@ -75,6 +78,7 @@ class PortfolioSelectorPopup extends Component {
               <>
                 <RenameKeyDialog
                   data={data}
+                  allKeys={allKeys}
                   baseCoin={baseCoin}
                   forceUpdateUserContainer={forceUpdateAccountContainer}
                   closeMainPopup={this.closePopup}

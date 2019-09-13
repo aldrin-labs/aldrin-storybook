@@ -302,6 +302,9 @@ class PortfolioSelector extends React.Component<IProps> {
       portfolioKeys = {
         myPortfolios: [{ portfolioAssets: {}, name: 'Loading...', _id: 1 }],
       },
+      portfolioNames = {
+        myPortfolios: [],
+      },
       isRebalance,
       isUSDCurrently,
       data: { myPortfolios },
@@ -317,9 +320,16 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
+    if (
+      !portfolioKeys ||
+      !portfolioKeys.myPortfolios ||
+      !portfolioNames ||
+      !portfolioNames.myPortfolios
+    )
+      return null
 
     const login = true
+
     const isTransactions =
       this.props.location.pathname === '/portfolio/transactions'
 
@@ -385,6 +395,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 <TypographyTitle>Portfolio</TypographyTitle>
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
+                  allPortfolios={portfolioNames.myPortfolios}
                   baseCoin={baseCoin}
                   isPortfolio={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
@@ -392,13 +403,17 @@ class PortfolioSelector extends React.Component<IProps> {
               </Grid>
 
               <AccountsSlick
+                allPortfolios={portfolioNames.myPortfolios}
                 totalKeyAssetsData={totalKeyAssetsData}
                 currentName={name}
                 currentId={_id}
                 baseCoin={baseCoin}
               />
 
-              <CreatePortfolio baseCoin={baseCoin} />
+              <CreatePortfolio
+                baseCoin={baseCoin}
+                allPortfolios={portfolioNames.myPortfolios}
+              />
             </Grid>
           </GridSection>
 
@@ -530,6 +545,12 @@ export default compose(
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: true },
       pollInterval: 30000,
+    }),
+  }),
+  graphql(getMyPortfoliosQuery, {
+    name: 'portfolioNames',
+    options: ({ baseCoin }) => ({
+      variables: { baseCoin, innerSettings: true },
     }),
   }),
   graphql(updatePortfolioSettingsMutation, {

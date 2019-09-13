@@ -45,6 +45,18 @@ const formikDialog = withFormik({
       },
     }
 
+    const isNameExists = props.props.allPortfolios
+      .map((portfolio) => portfolio.name)
+      .includes(portfolioName)
+
+    if (isNameExists) {
+      props.setFieldError(
+        'portfolioName',
+        'You already have portfolio with this name'
+      )
+      return false
+    }
+
     try {
       props.setSubmitting(true)
       await createPortfolio({
@@ -56,6 +68,8 @@ const formikDialog = withFormik({
       props.setFieldError('portfolioName', 'Request error!')
       props.setSubmitting(false)
     }
+
+    return true
   },
 })
 
@@ -133,6 +147,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       validateForm,
     } = this.props
 
+    console.log(errors)
     return (
       <>
         <BtnCustom
@@ -203,8 +218,9 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                   e.preventDefault()
 
                   validateForm().then(async () => {
-                    await handleSubmit()
-                    this.handleClose()
+                    const result = await handleSubmit()
+
+                    if (result) this.handleClose()
                   })
                 }}
               >

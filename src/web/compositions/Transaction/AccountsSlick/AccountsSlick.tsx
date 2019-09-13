@@ -49,10 +49,6 @@ const RightArrow = ({ className, handleClick, style }) => (
 )
 
 class AccountsSlick extends Component {
-  state = {
-    intervalId: null,
-  }
-
   handleClick = (id: string) => {
     const { selectPortfolioMutation } = this.props
 
@@ -65,31 +61,18 @@ class AccountsSlick extends Component {
     })
   }
 
-  componentDidMount() {
-    const intervalId = setInterval(() => this.props.refetch(), 30000)
-    this.setState({ intervalId })
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.intervalId)
-  }
-
   render() {
     const {
       baseCoin,
       selectPortfolioMutation,
       totalKeyAssetsData,
-      data = {
-        myPortfolios: [{ _id: 0 }, { _id: 1, portfolioValue: 0 }, { _id: 2 }],
-      },
+      allPortfolios,
       currentName,
       currentId,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
-
-    const { myPortfolios: allPortfolios } = data
 
     const showArrows = allPortfolios.length > 1
     const index = allPortfolios.findIndex((p) => p._id === currentId)
@@ -176,7 +159,7 @@ const APIWrapper = (props: any) => {
     },
   ]
 
-  const MutationComponent = (props) => (
+  return (
     <Mutation mutation={selectPortfolio} refetchQueries={queries}>
       {(mutation) => {
         return (
@@ -190,18 +173,6 @@ const APIWrapper = (props: any) => {
         )
       }}
     </Mutation>
-  )
-
-  return (
-    <QueryRenderer
-      {...props}
-      loaderColor="#fefefe"
-      fetchPolicy="network-only"
-      component={MutationComponent}
-      query={getMyPortfoliosQuery}
-      variables={{ baseCoin }}
-      withOutSpinner={false}
-    />
   )
 }
 
