@@ -226,8 +226,9 @@ const APIWrapper = (props: any) => {
             variables={{ baseCoin, innerSettings: true }}
             baseCoin={baseCoin}
             isUSDCurrently={baseCoin === 'USDT'}
-            fetchPolicy={'cache-first'}
-            withOutSpinner={false}
+            fetchPolicy={'cache-and-network'}
+            withOutSpinner={true}
+            withTableLoader={true}
           />
         )
       }}
