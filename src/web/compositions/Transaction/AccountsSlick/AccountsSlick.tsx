@@ -66,7 +66,7 @@ class AccountsSlick extends Component {
       baseCoin,
       selectPortfolioMutation,
       totalKeyAssetsData,
-      allPortfolios,
+      allPortfolios = [],
       currentName,
       currentId,
     } = this.props

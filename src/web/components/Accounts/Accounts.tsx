@@ -135,49 +135,12 @@ class Accounts extends React.PureComponent<IProps> {
           </SelectAll>
         )} */}
         <AccountsList id="AccountsList">
-<<<<<<< Updated upstream
-          {newKeys.map((key, i) => {
-            if (!key) {
-              return null
-            }
-||||||| merged common ancestors
-          {newKeys.map((key, i) => {
-            if (!key) {
-              return null
-            }
-
-=======
           {accounts.map((account, i) => {
->>>>>>> Stashed changes
             const Component = isRebalance ? Radio : Checkbox
-<<<<<<< Updated upstream
-            const isChecked = key.selected
-
-            const value = portfolioAssetsData[i]
-              ? portfolioAssetsData[i].value
-              : 0
-||||||| merged common ancestors
-            const isChecked = key.selected
-
-            const assetData = portfolioAssetsData.filter((asset) => {
-              return asset.name === key.name
-            })
-=======
             const isChecked = account.selected
->>>>>>> Stashed changes
 
             const formattedValue = addMainSymbol(
-<<<<<<< Updated upstream
-              roundAndFormatNumber(value, roundNumber, true),
-||||||| merged common ancestors
-              roundAndFormatNumber(
-                assetData[0] ? assetData[0].value : 0,
-                roundNumber,
-                true
-              ),
-=======
               roundAndFormatNumber(account.value, roundNumber, true),
->>>>>>> Stashed changes
               isUSDT
             )
 

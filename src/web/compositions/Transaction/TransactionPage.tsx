@@ -67,16 +67,17 @@ class TransactionPage extends React.PureComponent {
       startDate: getEndDate('1Week'),
       endDate: moment().endOf('day'),
       focusedInput: null,
-    }
+    },
   }
 
-  onFocusChange = (focusedInput: string) => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      focusedInput
-    }
-  }))
+  onFocusChange = (focusedInput: string) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        focusedInput,
+      },
+    }))
 
   onDatesChange = ({
     startDate,
@@ -84,38 +85,41 @@ class TransactionPage extends React.PureComponent {
   }: {
     startDate: moment.Moment | null
     endDate: moment.Moment | null
-  }) => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      startDate,
-      endDate
-    }
-  }))
+  }) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate,
+        endDate,
+      },
+    }))
 
   onGitCalendarDateClick = async (stringDate: string) => {
-    this.setState(prevState => ({
-      ...prevState,
-      gitCalendarDate: {
+    this.setState(
+      (prevState) => ({
+        ...prevState,
+        gitCalendarDate: {
           activeDateButton: moment(stringDate).format('YYYY'),
           startDate: moment(stringDate).startOf('year'),
           endDate: moment(stringDate).endOf('year'),
-      }
-    }),
+        },
+      }),
       () => {
         // TODO: there should be mutation for search:
       }
     )
   }
 
-  onHeatmapDateClick = value => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      startDate: moment(value.date).startOf('day'),
-      endDate: moment(value.date).endOf('day')
-    }
-  }))
+  onHeatmapDateClick = (value) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate: moment(value.date).startOf('day'),
+        endDate: moment(value.date).endOf('day'),
+      },
+    }))
 
   handleChangeShowHideOptions = (option) => (event) => {
     this.setState({ [option]: event.target.checked })
@@ -174,14 +178,15 @@ class TransactionPage extends React.PureComponent {
       newKeys = [],
       activeKeys = [],
       activeWallets = [],
-      portfolioKeys,
+      portfolioKeys = [],
+      portfolioNames = [],
     } = this.props
 
     const {
       includeExchangeTransactions,
       includeTrades,
       gitCalendarDate,
-      tradeOrderHistoryDate
+      tradeOrderHistoryDate,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -254,6 +259,7 @@ class TransactionPage extends React.PureComponent {
                     <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
                     <AccountsSlick
                       totalKeyAssetsData={totalKeyAssetsData}
+                      allPortfolios={portfolioNames.myPortfolios}
                       currentName={name}
                       currentId={_id}
                       baseCoin={'USDT'}
@@ -315,7 +321,7 @@ class TransactionPage extends React.PureComponent {
                       tradeOrderHistoryDate,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,
-                      onHeatmapDateClick: this.onHeatmapDateClick
+                      onHeatmapDateClick: this.onHeatmapDateClick,
                     }}
                   />
                 </GridCalendarContainer>
@@ -335,7 +341,6 @@ class TransactionPage extends React.PureComponent {
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
                   handleChangeShowHideOptions={this.handleChangeShowHideOptions}
-
                   startDate={tradeOrderHistoryDate.startDate}
                   endDate={tradeOrderHistoryDate.endDate}
                 />
@@ -357,7 +362,7 @@ class TransactionPage extends React.PureComponent {
             <GitCalendarChooseYear
               {...{
                 ...gitCalendarDate,
-                onDateButtonClick: this.onGitCalendarDateClick
+                onDateButtonClick: this.onGitCalendarDateClick,
               }}
             />
             <TransactionsActionsStatistic />
@@ -372,9 +377,15 @@ class TransactionPage extends React.PureComponent {
 export default compose(
   graphql(getPortfolioKeys, {
     name: 'portfolioKeys',
-    options: ({ baseCoin }) => ({
+    options: {
       variables: { baseCoin: 'USDT', innerSettings: true },
       pollInterval: 30000,
+    },
+  }),
+  graphql(getMyPortfoliosQuery, {
+    name: 'portfolioNames',
+    options: ({ baseCoin }) => ({
+      variables: { baseCoin, innerSettings: true },
     }),
   }),
   graphql(updatePortfolioSettingsMutation, {
