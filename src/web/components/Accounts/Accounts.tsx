@@ -2,7 +2,7 @@ import React from 'react'
 import { Checkbox, Radio } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 
 import { IProps } from './Accounts.types'

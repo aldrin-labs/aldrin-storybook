@@ -17,7 +17,7 @@ import {
   ExpansionPanelDetailsCustom,
 } from './AccordionOverView.style'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 // import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
@@ -222,7 +222,7 @@ const APIWrapper = (props: any) => {
             {...props}
             component={DetailedExpansionPanel}
             name={`portfolioAssetsQuery`}
-            query={getPortfolioKeys}
+            query={getPortfolioAssets}
             variables={{ baseCoin, innerSettings: true }}
             baseCoin={baseCoin}
             isUSDCurrently={baseCoin === 'USDT'}

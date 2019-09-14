@@ -57,7 +57,7 @@ import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 // import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
@@ -352,8 +352,8 @@ class PortfolioSelector extends React.Component<IProps> {
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={true}
-        unmountOnExit={true}
+        mountOnEnter={false}
+        unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
@@ -525,11 +525,18 @@ class PortfolioSelector extends React.Component<IProps> {
 }
 
 export default compose(
-  graphql(getPortfolioKeys, {
+  graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: true },
-      pollInterval: 30000,
+      pollInterval: 3000,
+    }),
+  }),
+  graphql(getPortfolioAssets, {
+    name: 'portfolioKeysTry',
+    options: ({ baseCoin }) => ({
+      variables: { baseCoin, innerSettings: false },
+      pollInterval: 3000,
     }),
   }),
   graphql(updatePortfolioSettingsMutation, {
@@ -541,11 +548,11 @@ export default compose(
           variables: { baseCoin },
         },
         {
-          query: getPortfolioKeys,
+          query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
         },
         {
-          query: getPortfolioKeys,
+          query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: false },
         },
       ],

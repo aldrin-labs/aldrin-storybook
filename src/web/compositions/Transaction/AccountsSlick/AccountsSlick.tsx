@@ -4,7 +4,7 @@ import moment from 'moment'
 import { compose } from 'recompose'
 import QueryRenderer from '@core/components/QueryRenderer'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -151,8 +151,8 @@ const APIWrapper = (props: any) => {
   const startDate = +moment().subtract(1, 'weeks')
 
   const queries = [
-    { query: getPortfolioKeys, variables: { baseCoin, innerSettings: true } },
-    { query: getPortfolioKeys, variables: { baseCoin, innerSettings: false } },
+    { query: getPortfolioAssets, variables: { baseCoin, innerSettings: true } },
+    { query: getPortfolioAssets, variables: { baseCoin, innerSettings: false } },
     { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
     {
       query: MyTradesQuery,
