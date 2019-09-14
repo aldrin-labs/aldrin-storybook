@@ -22,6 +22,8 @@ import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 // import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import QueryRenderer from '@core/components/QueryRenderer'
+
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 import { addMainSymbol } from '@sb/components/index'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
@@ -48,11 +50,12 @@ const gridBorder = `
 @withTheme()
 class DetailedExpansionPanel extends React.Component {
   render() {
-    const { theme, portfolioAssetsQuery, baseCoin } = this.props
-    const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
-      portfolioAssetsQuery.myPortfolios[0].portfolioAssets,
-      baseCoin
-    )
+    const {
+      theme,
+      portfolioAssetsData,
+      totalKeyAssetsData,
+      baseCoin,
+    } = this.props
 
     return (
       <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
@@ -212,27 +215,4 @@ class DetailedExpansionPanel extends React.Component {
   }
 }
 
-const APIWrapper = (props: any) => {
-  return (
-    <Query query={GET_BASE_COIN}>
-      {({ data }) => {
-        const baseCoin = (data.portfolio && data.portfolio.baseCoin) || 'USDT'
-        return (
-          <QueryRenderer
-            {...props}
-            component={DetailedExpansionPanel}
-            name={`portfolioAssetsQuery`}
-            query={getPortfolioAssets}
-            variables={{ baseCoin, innerSettings: true }}
-            baseCoin={baseCoin}
-            isUSDCurrently={baseCoin === 'USDT'}
-            fetchPolicy={'cache-first'}
-            withOutSpinner={false}
-          />
-        )
-      }}
-    </Query>
-  )
-}
-
-export default APIWrapper
+export default DetailedExpansionPanel

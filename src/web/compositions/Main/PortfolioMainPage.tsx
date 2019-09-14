@@ -13,6 +13,9 @@ import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMai
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+
 import Template from '@sb/components/Template/Template'
 import SharePortfolioDialog from '@sb/components/SharePortfolioDialog/SharePortfolioDialog'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -102,11 +105,23 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       // onToggleUSDBTC,
       isUSDCurrently,
       portfolioAssets: assets,
+      baseCoin,
     } = this.props
 
     const { openSharePortfolioPopUp } = this.state
 
     const portfolioAssets = assets.myPortfolios[0].portfolioAssets
+
+    const filteredData = combineTableData(
+      assets.myPortfolios[0] ? assets.myPortfolios[0].portfolioAssets : [],
+      dustFilter,
+      isUSDCurrently
+    )
+
+    const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
+      filteredData,
+      baseCoin
+    )
 
     return (
       <LayoutClearfixWrapper>
@@ -118,12 +133,21 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             isUSDCurrently={isUSDCurrently}
           />
           {/* TODO: Recomment if needed <Divider /> */}
-          <AccordionOverview portfolioAssets={portfolioAssets} />
+          <AccordionOverview
+            baseCoin={baseCoin}
+            isUSDCurrently={isUSDCurrently}
+            portfolioAssets={portfolioAssets}
+          />
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
             }
-            Chart={<PortfolioMainAllocation />}
+            Chart={
+              <PortfolioMainAllocation
+                dustFilter={dustFilter}
+                isUSDCurrently={isUSDCurrently}
+              />
+            }
           />
           <Joyride
             continuous={true}
