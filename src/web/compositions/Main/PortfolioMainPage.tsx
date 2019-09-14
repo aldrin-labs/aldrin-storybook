@@ -101,11 +101,12 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       portfolioKeys,
       // onToggleUSDBTC,
       isUSDCurrently,
+      portfolioAssets: assets,
     } = this.props
 
     const { openSharePortfolioPopUp } = this.state
 
-    console.log(this.props.portfolioAssets)
+    const portfolioAssets = assets.myPortfolios[0].portfolioAssets
 
     return (
       <LayoutClearfixWrapper>
@@ -117,7 +118,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             isUSDCurrently={isUSDCurrently}
           />
           {/* TODO: Recomment if needed <Divider /> */}
-          <AccordionOverview />
+          <AccordionOverview portfolioAssets={portfolioAssets} />
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
