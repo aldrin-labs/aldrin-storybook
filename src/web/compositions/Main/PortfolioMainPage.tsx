@@ -136,14 +136,22 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <AccordionOverview
             baseCoin={baseCoin}
             isUSDCurrently={isUSDCurrently}
-            portfolioAssets={portfolioAssets}
+            portfolioAssetsData={portfolioAssetsData}
+            totalKeyAssetsData={totalKeyAssetsData}
           />
           <Template
             PortfolioMainTable={
-              <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+              <PortfolioMainTable
+                data={assets}
+                theme={theme}
+                dustFilter={dustFilter}
+                baseCoin={baseCoin}
+                isUSDCurrently={isUSDCurrently}
+              />
             }
             Chart={
               <PortfolioMainAllocation
+                data={filteredData}
                 dustFilter={dustFilter}
                 isUSDCurrently={isUSDCurrently}
               />

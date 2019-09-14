@@ -1,5 +1,4 @@
 import React from 'react'
-import { Query } from 'react-apollo'
 import { withTheme } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -17,13 +16,6 @@ import {
   ExpansionPanelDetailsCustom,
 } from './AccordionOverView.style'
 
-import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
-// import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
-import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
-import QueryRenderer from '@core/components/QueryRenderer'
-
-import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 import { addMainSymbol } from '@sb/components/index'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 

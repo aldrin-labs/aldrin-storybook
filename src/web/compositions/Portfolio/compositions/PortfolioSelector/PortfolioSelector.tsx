@@ -546,14 +546,14 @@ export default compose(
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: true },
-      pollInterval: 3000,
+      pollInterval: 30000,
     }),
   }),
   graphql(getPortfolioAssets, {
     name: 'portfolioKeysTry',
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: false },
-      pollInterval: 3000,
+      pollInterval: 30000,
     }),
   }),
   graphql(updatePortfolioSettingsMutation, {
