@@ -128,15 +128,20 @@ class Accounts extends React.PureComponent<IProps> {
             if (!key) {
               return null
             }
+
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = key.selected
 
-            const value = portfolioAssetsData[i]
-              ? portfolioAssetsData[i].value
-              : 0
+            const assetData = portfolioAssetsData.filter((asset) => {
+              return asset.name === key.name
+            })
 
             const formattedValue = addMainSymbol(
-              roundAndFormatNumber(value, roundNumber, true),
+              roundAndFormatNumber(
+                assetData[0] ? assetData[0].value : 0,
+                roundNumber,
+                true
+              ),
               isUSDT
             )
 

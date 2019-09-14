@@ -57,6 +57,8 @@ import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 // import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
+
 import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -329,10 +331,25 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
 
+    const assets = portfolioKeys.myPortfolios[0]
+      ? portfolioKeys.myPortfolios[0].portfolioAssets
+      : []
+
+    const activeKeyNames = activeKeys.map((key) => key.name)
+
+    const sumOfEnabledAccounts = assets
+      .filter((asset) => activeKeyNames.includes(asset.name))
+      .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
+
+    const filteredData = combineTableData(
+      assets,
+      dustFilter,
+      isUSDCurrently,
+      sumOfEnabledAccounts
+    )
+
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0]
-        ? portfolioKeys.myPortfolios[0].portfolioAssets
-        : [],
+      filteredData,
       isTransactions ? 'USDT' : baseCoin
     )
 
@@ -352,7 +369,7 @@ class PortfolioSelector extends React.Component<IProps> {
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={true}
+        mountOnEnter={false}
         unmountOnExit={true}
       >
         <AccountsWalletsBlock
@@ -529,7 +546,7 @@ export default compose(
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: true },
-      pollInterval: 30000,
+      // pollInterval: 30000,
     }),
   }),
   graphql(updatePortfolioSettingsMutation, {

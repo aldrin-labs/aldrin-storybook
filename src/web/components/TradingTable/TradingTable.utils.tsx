@@ -115,7 +115,7 @@ export const combineOpenOrdersTable = (
       const pair = symbol.split('/')
 
       return {
-        id: `${orderId}${timestamp}${i}`,
+        id: `${orderId}${timestamp}${origQty}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -259,7 +259,7 @@ export const combineOrderHistoryTable = (
     const pair = symbol.split('/')
 
     return {
-      id: `${orderId}${timestamp}${i}`,
+      id: `${orderId}${timestamp}${origQty}`,
       pair: {
         render: (
           <div style={{ display: 'flex', alignItems: 'center' }}>

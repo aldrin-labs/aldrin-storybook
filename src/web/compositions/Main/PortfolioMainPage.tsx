@@ -101,6 +101,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       portfolioKeys,
       // onToggleUSDBTC,
       isUSDCurrently,
+      baseCoin,
     } = this.props
 
     const { openSharePortfolioPopUp } = this.state
@@ -115,12 +116,21 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             isUSDCurrently={isUSDCurrently}
           />
           {/* TODO: Recomment if needed <Divider /> */}
-          <AccordionOverview />
+          <AccordionOverview
+            dustFilter={dustFilter}
+            baseCoin={baseCoin}
+            isUSDCurrently={isUSDCurrently}
+          />
           <Template
             PortfolioMainTable={
               <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
             }
-            Chart={<PortfolioMainAllocation />}
+            Chart={
+              <PortfolioMainAllocation
+                dustFilter={dustFilter}
+                isUSDCurrently={isUSDCurrently}
+              />
+            }
           />
           <Joyride
             continuous={true}
