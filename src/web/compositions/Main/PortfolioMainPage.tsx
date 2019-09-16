@@ -110,10 +110,12 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
     const { openSharePortfolioPopUp } = this.state
 
-    const portfolioAssets = assets.myPortfolios[0].portfolioAssets
+    const accountsNames = portfolioKeys.filter(key => key.selected).map(key => key.name)
+
+    const enabledAssets = assets.myPortfolios[0].portfolioAssets.filter(asset => accountsNames.includes(asset.name))
 
     const filteredData = combineTableData(
-      assets.myPortfolios[0] ? assets.myPortfolios[0].portfolioAssets : [],
+      enabledAssets || [],
       dustFilter,
       isUSDCurrently
     )
@@ -142,7 +144,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <Template
             PortfolioMainTable={
               <PortfolioMainTable
-                data={assets}
+                data={{myPortfolios: [{portfolioAssets: enabledAssets}]}}
                 theme={theme}
                 dustFilter={dustFilter}
                 baseCoin={baseCoin}
