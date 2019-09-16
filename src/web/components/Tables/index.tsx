@@ -66,6 +66,7 @@ const CustomTableCell = withStyles((theme) => ({
     zIndex: 100,
     backgroundColor: theme.palette.primary.dark,
     padding: '0.2rem 1.6rem 0.2rem  0.6rem',
+
   },
   paddingDense: {
     padding: '1px 0.4rem 1px 0.4rem',
@@ -528,6 +529,7 @@ const CustomTable = (props: Props) => {
     tableStyles = {
       heading: {},
       title: {},
+      footer: {},
       cell: {},
       tab: {},
     },
@@ -538,6 +540,7 @@ const CustomTable = (props: Props) => {
     toggleAutoRefetch,
     stylesForTable,
     paperAdditionalStyle = '',
+    isCustomStyleForFooter,
   } = props
 
   if (
@@ -787,7 +790,7 @@ const CustomTable = (props: Props) => {
             )
           )}
         </TableBody>
-        {/* {Array.isArray(data.footer) && (
+         {/*{Array.isArray(data.footer) && (
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
@@ -838,11 +841,18 @@ const CustomTable = (props: Props) => {
       >
         <div
           style={
-            {
-              // position: 'absolute',
-              // bottom: 0,
-              // right: 0
-            }
+            isCustomStyleForFooter !== undefined && isCustomStyleForFooter === true
+            ?
+              {
+                // position: 'absolute',
+                // bottom: 0,
+                // right: 0
+                position: 'fixed',
+                bottom: '9%',
+                right: '21%',
+              }
+            :
+              ''
           }
         >
           {needRefetch ? (
