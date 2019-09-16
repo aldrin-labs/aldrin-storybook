@@ -35,7 +35,7 @@ import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -385,7 +385,7 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
-  graphql(getPortfolioKeys, {
+  graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin: 'USDT', innerSettings: true },
