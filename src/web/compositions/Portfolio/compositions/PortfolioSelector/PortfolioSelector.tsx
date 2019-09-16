@@ -564,10 +564,6 @@ export default compose(
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
         },
-        {
-          query: getPortfolioAssets,
-          variables: { baseCoin, innerSettings: false },
-        },
       ],
       // update: updateSettingsMutation,
     }),

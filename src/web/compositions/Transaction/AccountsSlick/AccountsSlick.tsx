@@ -152,7 +152,6 @@ const APIWrapper = (props: any) => {
 
   const queries = [
     { query: getPortfolioAssets, variables: { baseCoin, innerSettings: true } },
-    { query: getPortfolioAssets, variables: { baseCoin, innerSettings: false } },
     { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
     {
       query: MyTradesQuery,
