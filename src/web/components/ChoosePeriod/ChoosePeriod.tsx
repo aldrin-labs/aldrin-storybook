@@ -59,7 +59,6 @@ class ChoosePeriod extends Component<IProps> {
             displayFormat="MM-DD-YYYY"
           />
         </DatePickerWrapper>
-        { activeDateButton }
 
         {PERIODS.map(({ name, label }, index) => (
           <ChoosePeriodButton
@@ -69,8 +68,7 @@ class ChoosePeriod extends Component<IProps> {
               onDateButtonClick(name)
             }}
           >
-            {`${label} `}
-            { name }
+            {label}
           </ChoosePeriodButton>
         ))}
       </ChoosePeriodWrapper>

@@ -96,8 +96,6 @@ class TransactionPage extends React.PureComponent {
         endDate: moment().endOf('day'),
       }
     })
-
-    console.log('startDate, endDate', getEndDate(stringDate), moment().endOf('day'))
   }
 
   onDatesChange = ({
