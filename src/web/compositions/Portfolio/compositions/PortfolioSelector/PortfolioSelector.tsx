@@ -321,6 +321,8 @@ class PortfolioSelector extends React.Component<IProps> {
 
     if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
 
+    // TODO: separate dust filter
+
     const login = true
     const isTransactions =
       this.props.location.pathname === '/portfolio/transactions'
@@ -341,12 +343,13 @@ class PortfolioSelector extends React.Component<IProps> {
       .filter((asset) => activeKeyNames.includes(asset.name))
       .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
 
-    const filteredData = combineTableData(
+    const filteredData = !isRebalance ? combineTableData(
       assets,
       dustFilter,
       isUSDCurrently,
+      true,
       sumOfEnabledAccounts
-    )
+    ) : assets
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
       filteredData,

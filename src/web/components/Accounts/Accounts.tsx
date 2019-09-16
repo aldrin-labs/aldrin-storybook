@@ -132,6 +132,7 @@ class Accounts extends React.PureComponent<IProps> {
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = key.selected
 
+            // TODO: filter by account id in portfolio asset
             const assetData = portfolioAssetsData.filter((asset) => {
               return asset.name === key.name
             })
