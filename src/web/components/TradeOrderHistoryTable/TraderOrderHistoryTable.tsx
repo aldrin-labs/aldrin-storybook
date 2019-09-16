@@ -14,10 +14,12 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       count,
       handleChangePage,
       handleChangeRowsPerPage,
+      isCustomStyleForFooter,
     } = this.props
     // 82.2
     return (
       <StyledTable
+        isCustomStyleForFooter={isCustomStyleForFooter}
         style={{
           height: '88%',
           position: 'relative',

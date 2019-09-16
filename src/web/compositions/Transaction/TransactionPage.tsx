@@ -66,6 +66,7 @@ class TransactionPage extends React.PureComponent {
     tradeOrderHistoryDate: {
       startDate: getEndDate('1Week'),
       endDate: moment().endOf('day'),
+      activeDateButton: '1Week',
       focusedInput: null,
     }
   }
@@ -77,6 +78,16 @@ class TransactionPage extends React.PureComponent {
       focusedInput
     }
   }))
+
+  onDateButtonClick = async (stringDate: string) => {
+    this.setState({
+      tradeOrderHistoryDate: {
+        activeDateButton: stringDate,
+        startDate: getEndDate(stringDate),
+        endDate: moment().endOf('day'),
+      }
+    })
+  }
 
   onDatesChange = ({
     startDate,
@@ -175,13 +186,14 @@ class TransactionPage extends React.PureComponent {
       activeKeys = [],
       activeWallets = [],
       portfolioKeys,
+      isCustomStyleForFooter,
     } = this.props
 
     const {
       includeExchangeTransactions,
       includeTrades,
       gitCalendarDate,
-      tradeOrderHistoryDate
+      tradeOrderHistoryDate,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -313,9 +325,11 @@ class TransactionPage extends React.PureComponent {
                     {...{
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
+                      onDateButtonClick: this.onDateButtonClick,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,
-                      onHeatmapDateClick: this.onHeatmapDateClick
+                      onHeatmapDateClick: this.onHeatmapDateClick,
+                      activeDateButton: tradeOrderHistoryDate.activeDateButton,
                     }}
                   />
                 </GridCalendarContainer>
@@ -331,6 +345,7 @@ class TransactionPage extends React.PureComponent {
                 style={{ height: 'calc(70.5% - 2vh)' }}
               >
                 <TradeOrderHistory
+                  isCustomStyleForFooter={isCustomStyleForFooter}
                   style={{ overflow: 'scroll' }}
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}

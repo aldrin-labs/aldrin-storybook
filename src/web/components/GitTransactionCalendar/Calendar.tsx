@@ -51,6 +51,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       onDatesChange,
       onFocusChange,
       onHeatmapDateClick,
+      onDateButtonClick,
+      activeDateButton,
       classes,
       wrapperRef
     } = this.props
@@ -68,7 +70,12 @@ class GitTransactionCalendar extends PureComponent<IProps> {
     const minimumDate = moment().subtract(3, 'years')
 
     return (
-      <HeatmapWrapper>
+      <HeatmapWrapper
+        style={{
+          paddingTop: '15px',
+          paddingBottom: '5px',
+        }}
+      >
         <SquarePopup ref={this.popupRef}/>
         <CalendarHeatmap
           className={classes.root}
@@ -101,7 +108,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             popupRef.style.display = 'block'
             popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
             popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
-    
+
             popupRef.textContent = value ? `${value.count} ${
               value.count === 1 ? `action` : 'actions'
             } on ${moment(value.date).format('DD MMM, YYYY')}` : 'No data'
@@ -130,7 +137,9 @@ class GitTransactionCalendar extends PureComponent<IProps> {
                 maximumDate,
                 minimumDate,
                 onFocusChange,
-                onDatesChange
+                onDatesChange,
+                onDateButtonClick,
+                activeDateButton,
               }}
             />
           </Grid>
