@@ -80,15 +80,6 @@ class TransactionPage extends React.PureComponent {
   }))
 
   onDateButtonClick = async (stringDate: string) => {
-    // this.setState(prevState => ({
-    //   ...prevState,
-    //   tradeOrderHistoryDate: {
-    //     activeDateButton: stringDate,
-    //     startDate: getEndDate(stringDate),
-    //     endDate: moment().endOf('day'),
-    //   }
-    // }))
-
     this.setState({
       tradeOrderHistoryDate: {
         activeDateButton: stringDate,
@@ -195,6 +186,7 @@ class TransactionPage extends React.PureComponent {
       activeKeys = [],
       activeWallets = [],
       portfolioKeys,
+      isCustomStyleForFooter,
     } = this.props
 
     const {
@@ -353,6 +345,7 @@ class TransactionPage extends React.PureComponent {
                 style={{ height: 'calc(70.5% - 2vh)' }}
               >
                 <TradeOrderHistory
+                  isCustomStyleForFooter={isCustomStyleForFooter}
                   style={{ overflow: 'scroll' }}
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
