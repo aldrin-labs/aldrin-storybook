@@ -8,6 +8,11 @@ class DialogAddCoin extends React.Component {
     mouseInPopup: false,
   }
 
+  filterCoins = (coin) => {
+    const { existCoinsNames } = this.props
+    return !existCoinsNames.includes(coin.symbol)
+  }
+
   handleClickOpen = () => {
     this.setState({ open: true })
   }
@@ -74,6 +79,8 @@ class DialogAddCoin extends React.Component {
               isClearable={true}
               isSearchable={true}
               openMenuOnClick={false}
+              needAdditionalFiltering={true}
+              additionalFiltering={this.filterCoins}
               menuStyles={{
                 fontSize: '1.2rem',
                 minWidth: '150px',
