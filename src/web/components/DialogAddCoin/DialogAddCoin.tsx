@@ -74,29 +74,28 @@ class DialogAddCoin extends React.Component {
               isClearable={true}
               isSearchable={true}
               openMenuOnClick={false}
-              // menuPortalTarget={document.body}
-              // menuPortalStyles={{
-              //   zIndex: 11111,
-              // }}
               menuStyles={{
-                fontSize: '12px',
+                fontSize: '1.2rem',
                 minWidth: '150px',
-                padding: '0 0 0 1.5rem',
+                padding: '0 1.5rem 0 1.5rem',
                 borderRadius: '1.5rem',
                 textAlign: 'center',
                 background: 'white',
                 position: 'relative',
+                overflowY: 'auto',
                 boxShadow: 'none',
                 border: 'none',
               }}
               menuListStyles={{
-                height: '8rem',
+                height: '16rem',
+                overflowY: ''
               }}
               optionStyles={{
                 color: '#7284A0',
                 background: 'transparent',
                 textAlign: 'left',
-                fontSize: '12px',
+                fontSize: '1.2rem',
+                borderBottom: '.1rem solid #e0e5ec',
                 position: 'relative',
 
                 '&:hover': {
@@ -136,7 +135,7 @@ class DialogAddCoin extends React.Component {
                 } | null
               ) =>
                 this.handleSelectChange(
-                  optionSelected.label || '',
+                  optionSelected.value || '',
                   optionSelected.priceUSD
                 )
               }
