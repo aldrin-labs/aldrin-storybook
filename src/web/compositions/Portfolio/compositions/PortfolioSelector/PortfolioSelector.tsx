@@ -52,16 +52,12 @@ import PortfolioSidebarBack from '@icons/PortfolioSidebarBack.svg'
 
 import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSlick'
 
-// import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
-// import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 
-// import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
-// import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 // const MyLinkToUserSettings = (props: any) => (
