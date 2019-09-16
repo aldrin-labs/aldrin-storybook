@@ -14,8 +14,8 @@ const PERIODS = [
   { name: '1Week', label: 'Week' },
   { name: '2Weeks', label: '2W' },
   { name: '1Month', label: 'Month' },
-  { name: '3Months', label: '3MO' },
-  { name: '6Monts', label: '6MO' },
+  { name: '3Month', label: '3MO' },
+  { name: '6Months', label: '6MO' },
 ]
 
 class ChoosePeriod extends Component<IProps> {
@@ -59,6 +59,7 @@ class ChoosePeriod extends Component<IProps> {
             displayFormat="MM-DD-YYYY"
           />
         </DatePickerWrapper>
+        { activeDateButton }
 
         {PERIODS.map(({ name, label }, index) => (
           <ChoosePeriodButton
@@ -68,7 +69,8 @@ class ChoosePeriod extends Component<IProps> {
               onDateButtonClick(name)
             }}
           >
-            {label}
+            {`${label} `}
+            { name }
           </ChoosePeriodButton>
         ))}
       </ChoosePeriodWrapper>
