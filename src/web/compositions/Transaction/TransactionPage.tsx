@@ -1,6 +1,7 @@
 import React from 'react'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
+import { client } from '@core/graphql/apolloClient'
 
 import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 
@@ -132,20 +133,69 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
-  updateSettings = async (objectForMutation) => {
+  updateSettings = async (objectForMutation, data, type, toggledKeyID:null) => {
     const { updatePortfolioSettings } = this.props
 
+    let currentKey = data.myPortfolios[0].userSettings.keys,
+        keyIndex = currentKey.findIndex((elem, index, currentKey) => elem._id === toggledKeyID),
+        keys = data.myPortfolios[0].userSettings.keys,
+        rebalanceKeys = data.myPortfolios[0].userSettings.rebalanceKeys
+
+    if(type === 'keyCheckboxes') {
+      keys.forEach((item, index) => {
+        if(item._id === toggledKeyID) {
+          item.selected = !data.myPortfolios[0].userSettings.keys[keyIndex].selected
+        }
+      })
+    } else if(type === 'keyAll') {
+      keys = data.myPortfolios[0].userSettings.keys
+
+      keys.forEach((item, index) => {
+        item.selected = true
+      })
+    }
+
+
+
+
+    // Для того, чтобы писать в кэш напрямую до мутации
+    client.writeQuery({
+      query: portfolioKeyAndWalletsQuery,
+      data: {
+       myPortfolios: [{
+          name: data.myPortfolios[0].name,
+          portfolioValue: data.myPortfolios[0].portfolioValue,
+          userSettings: {
+            portfolioId: data.myPortfolios[0]._id,
+            keys: keys,
+            rebalanceKeys: rebalanceKeys,
+            wallets: data.myPortfolios[0].userSettings.wallets,
+            dustFilter: data.myPortfolios[0].userSettings.dustFilter,
+            __typename: "settings",
+          },
+          _id: data.myPortfolios[0]._id,
+          __typename: "Portfolio",
+        }]
+      },
+    })
+
+    // console.log('keys', data.myPortfolios[0].userSettings.keys)
+
     try {
-      await updatePortfolioSettings({
+      let res = await updatePortfolioSettings({
         variables: objectForMutation,
       })
+
+      console.log(client)
+
     } catch (error) {
       console.log('error', error)
     }
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyCheckboxes'
 
     const objForQuery = {
       settings: {
@@ -159,11 +209,12 @@ class TransactionPage extends React.PureComponent {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, data, type, toggledKeyID)
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyAll'
 
     const objForQuery = {
       settings: {
@@ -174,7 +225,7 @@ class TransactionPage extends React.PureComponent {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, data, type)
   }
 
   render() {
@@ -402,6 +453,14 @@ export default compose(
         },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
+        {
+          query: getPortfolioKeys,
+          variables: { baseCoin, innerSettings: true },
+        },
+        {
+          query: getPortfolioKeys,
+          variables: { baseCoin, innerSettings: false },
+        },
         {
           query: MyTradesQuery,
           variables: {

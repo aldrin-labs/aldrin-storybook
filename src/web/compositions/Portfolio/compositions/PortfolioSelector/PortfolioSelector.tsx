@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import { client } from '@core/graphql/apolloClient'
 import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
@@ -143,20 +144,78 @@ class PortfolioSelector extends React.Component<IProps> {
     })
   }
 
-  updateSettings = async (objectForMutation) => {
+  updateSettings = async (objectForMutation, data, type, toggledKeyID:null) => {
     const { updatePortfolioSettings } = this.props
 
+    let currentKey = data.myPortfolios[0].userSettings.keys,
+        keyIndex = currentKey.findIndex((elem, index, currentKey) => elem._id === toggledKeyID),
+        keys = data.myPortfolios[0].userSettings.keys,
+        rebalanceKeys = data.myPortfolios[0].userSettings.rebalanceKeys
+
+    if(type === 'keyCheckboxes') {
+      keys.forEach((item, index) => {
+        if(item._id === toggledKeyID) {
+          item.selected = !data.myPortfolios[0].userSettings.keys[keyIndex].selected
+        }
+      })
+    } else if(type === 'keyAll') {
+      keys = data.myPortfolios[0].userSettings.keys
+
+      keys.forEach((item, index) => {
+        item.selected = true
+      })
+    } else if(type === 'keyOnlyOne') {
+      rebalanceKeys = data.myPortfolios[0].userSettings.rebalanceKeys
+
+      rebalanceKeys.forEach((item, index) => {
+        if(item._id === toggledKeyID) {
+          item.selected = true
+        } else {
+          item.selected = false
+        }
+      })
+    }
+
+
+
+
+    // Для того, чтобы писать в кэш напрямую до мутации
+    client.writeQuery({
+      query: portfolioKeyAndWalletsQuery,
+      data: {
+       myPortfolios: [{
+          name: data.myPortfolios[0].name,
+          portfolioValue: data.myPortfolios[0].portfolioValue,
+          userSettings: {
+            portfolioId: data.myPortfolios[0]._id,
+            keys: keys,
+            rebalanceKeys: rebalanceKeys,
+            wallets: data.myPortfolios[0].userSettings.wallets,
+            dustFilter: data.myPortfolios[0].userSettings.dustFilter,
+            __typename: "settings",
+          },
+          _id: data.myPortfolios[0]._id,
+          __typename: "Portfolio",
+        }]
+      },
+    })
+
+
     try {
-      await updatePortfolioSettings({
+      let res = await updatePortfolioSettings({
         variables: objectForMutation,
       })
+
+      console.log(client)
+
     } catch (error) {
       console.log('error', error)
     }
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyCheckboxes'
 
     const objForQuery = {
       settings: {
@@ -170,11 +229,12 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, data, type, toggledKeyID)
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyAll'
 
     const objForQuery = {
       settings: {
@@ -185,11 +245,23 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, data, type)
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
-    const { portfolioId, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyOnlyOne'
+
+    // let keysObj = newKeys
+    // let activeRadio = keysObj.filter(item => item._id === toggledKeyID)
+    // activeRadio = `radio_${activeRadio.name}`
+    // this.setState({ [`radio_${activeRadio.name}`]: true })
+    //
+    // keysObj.forEach(item => {
+    //   if(`radio_${item.name}` !== `radio_${activeRadio.name}`) {
+    //     this.setState({ [`radio_${item.name}`]: false })
+    //   }
+    // })
 
     const objForQuery = {
       settings: {
@@ -200,7 +272,7 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, data, type, toggledKeyID)
   }
 
   onWalletToggle = async (toggledWalletID: string) => {
@@ -547,6 +619,10 @@ export default compose(
         {
           query: getPortfolioKeys,
           variables: { baseCoin, innerSettings: false },
+        },
+        {
+          query: getMyPortfoliosQuery,
+          variables: { baseCoin },
         },
       ],
       // update: updateSettingsMutation,
