@@ -38,6 +38,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   width,
 }: IProps) => {
   const Table = isEditModeEnabled ? ImTable : TableWithSort
+
   return (
     <>
       {/*{loading && (*/}
@@ -69,6 +70,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
             saveButtonColor,
           })}
           emptyTableText=""
+          isRebalance={true}
         />
       </ContentInner>
     </>

@@ -97,3 +97,13 @@ export const GridTransactionBtn = styled(Grid)`
     width: 3.5vw;
   }
 `
+
+export const RebalanceDialogTitle = styled(Typography)`
+  font-family: 'DM Sans', sans-serif;
+  font-size: .92rem;
+  margin-bottom: .75rem;
+
+  span {
+    font-weight: 700;
+  }
+`

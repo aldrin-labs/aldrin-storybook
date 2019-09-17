@@ -15,6 +15,7 @@ import {
   TypographyProgress,
   GridProgressTitle,
   GridTransactionBtn,
+  RebalanceDialogTitle
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -286,8 +287,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             justify="center"
             style={{
               marginTop: '5rem',
+              flexDirection: 'column'
             }}
           >
+            <RebalanceDialogTitle>Distribute <span>100%</span> of your assets for rebalance.</RebalanceDialogTitle>
             <RebalanceDialogTransaction
               initialTime={+rebalanceTimePeriod.value}
               accordionTitle="TRANSACTIONS"

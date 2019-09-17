@@ -64,6 +64,7 @@ class RebalanceAccordionIndex extends React.Component {
             fourthColValue,
             percentage,
           } = item
+          console.log(fourthColValue)
 
           const panelId = `panel` + `${i}`
 
