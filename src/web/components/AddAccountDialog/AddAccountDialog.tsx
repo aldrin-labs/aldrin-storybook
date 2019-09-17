@@ -258,11 +258,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       background: '#fff',
                     }}
                     singleValueStyles={{
-                      color: '#abbad1',
+                      color: '#6D7786',
                       fontSize: '1.3rem',
                     }}
                     optionStyles={{
-                      color: '#abbad1',
+                      color: '#6D7786',
                       fontSize: '1.3rem',
                     }}
                   />

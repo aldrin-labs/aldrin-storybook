@@ -35,7 +35,7 @@ import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -66,6 +66,7 @@ class TransactionPage extends React.PureComponent {
     tradeOrderHistoryDate: {
       startDate: getEndDate('1Week'),
       endDate: moment().endOf('day'),
+      activeDateButton: '1Week',
       focusedInput: null,
     },
   }
@@ -78,6 +79,16 @@ class TransactionPage extends React.PureComponent {
         focusedInput,
       },
     }))
+
+  onDateButtonClick = async (stringDate: string) => {
+    this.setState({
+      tradeOrderHistoryDate: {
+        activeDateButton: stringDate,
+        startDate: getEndDate(stringDate),
+        endDate: moment().endOf('day'),
+      }
+    })
+  }
 
   onDatesChange = ({
     startDate,
@@ -180,6 +191,7 @@ class TransactionPage extends React.PureComponent {
       activeWallets = [],
       portfolioKeys = [],
       portfolioNames = [],
+      isCustomStyleForFooter,
     } = this.props
 
     const {
@@ -319,9 +331,11 @@ class TransactionPage extends React.PureComponent {
                     {...{
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
+                      onDateButtonClick: this.onDateButtonClick,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,
                       onHeatmapDateClick: this.onHeatmapDateClick,
+                      activeDateButton: tradeOrderHistoryDate.activeDateButton,
                     }}
                   />
                 </GridCalendarContainer>
@@ -337,6 +351,7 @@ class TransactionPage extends React.PureComponent {
                 style={{ height: 'calc(70.5% - 2vh)' }}
               >
                 <TradeOrderHistory
+                  isCustomStyleForFooter={isCustomStyleForFooter}
                   style={{ overflow: 'scroll' }}
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
@@ -375,7 +390,7 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
-  graphql(getPortfolioKeys, {
+  graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: {
       variables: { baseCoin: 'USDT', innerSettings: true },
