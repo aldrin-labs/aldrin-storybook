@@ -55,6 +55,7 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 

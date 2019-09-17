@@ -45,7 +45,7 @@ const formikDialog = withFormik({
       },
     }
 
-    const isNameExists = props.props.allPortfoliosNames.includes(portfolioName)
+    const isNameExists = props.props.allPortfoliosNames.includes(portfolioName.toLowerCase())
 
     if (isNameExists) {
       props.setFieldError(

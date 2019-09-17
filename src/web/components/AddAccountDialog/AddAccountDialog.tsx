@@ -80,7 +80,7 @@ const formikEnhancer = withFormik({
     }
 
     const isNameExists = props.allKeys
-      .map((key) => key.name)
+      .map((key) => key.name.toLowerCase())
       .includes(values.name)
 
     if (isNameExists) {
@@ -184,7 +184,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       dirty,
       isSubmitting,
     } = this.props
-    console.log(errors)
+
     return (
       <>
         <BtnCustom
