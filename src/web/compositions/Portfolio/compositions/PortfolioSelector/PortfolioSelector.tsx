@@ -144,69 +144,16 @@ class PortfolioSelector extends React.Component<IProps> {
     })
   }
 
-  updateSettings = async (objectForMutation, data, type, toggledKeyID:null) => {
-    const { updatePortfolioSettings } = this.props
+  updateSettings = async (objectForMutation, type, toggledKeyID:null) => {
+    const { updatePortfolioSettings, data } = this.props
 
-    let currentKey = data.myPortfolios[0].userSettings.keys,
-        keyIndex = currentKey.findIndex((elem, index, currentKey) => elem._id === toggledKeyID),
-        keys = data.myPortfolios[0].userSettings.keys,
-        rebalanceKeys = data.myPortfolios[0].userSettings.rebalanceKeys
-
-    if(type === 'keyCheckboxes') {
-      keys.forEach((item, index) => {
-        if(item._id === toggledKeyID) {
-          item.selected = !data.myPortfolios[0].userSettings.keys[keyIndex].selected
-        }
-      })
-    } else if(type === 'keyAll') {
-      keys = data.myPortfolios[0].userSettings.keys
-
-      keys.forEach((item, index) => {
-        item.selected = true
-      })
-    } else if(type === 'keyOnlyOne') {
-      rebalanceKeys = data.myPortfolios[0].userSettings.rebalanceKeys
-
-      rebalanceKeys.forEach((item, index) => {
-        if(item._id === toggledKeyID) {
-          item.selected = true
-        } else {
-          item.selected = false
-        }
-      })
-    }
-
-
-
-
-    // Для того, чтобы писать в кэш напрямую до мутации
-    client.writeQuery({
-      query: portfolioKeyAndWalletsQuery,
-      data: {
-       myPortfolios: [{
-          name: data.myPortfolios[0].name,
-          portfolioValue: data.myPortfolios[0].portfolioValue,
-          userSettings: {
-            portfolioId: data.myPortfolios[0]._id,
-            keys: keys,
-            rebalanceKeys: rebalanceKeys,
-            wallets: data.myPortfolios[0].userSettings.wallets,
-            dustFilter: data.myPortfolios[0].userSettings.dustFilter,
-            __typename: "settings",
-          },
-          _id: data.myPortfolios[0]._id,
-          __typename: "Portfolio",
-        }]
-      },
-    })
-
+    const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
+    UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       let res = await updatePortfolioSettings({
         variables: objectForMutation,
       })
-
-      console.log(client)
 
     } catch (error) {
       console.log('error', error)
@@ -229,7 +176,7 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery, data, type, toggledKeyID)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onKeysSelectAll = async () => {
@@ -245,23 +192,12 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery, data, type)
+    await this.updateSettings(objForQuery, type)
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
     const { portfolioId, newKeys, isRebalance, data } = this.props
     const type = 'keyOnlyOne'
-
-    // let keysObj = newKeys
-    // let activeRadio = keysObj.filter(item => item._id === toggledKeyID)
-    // activeRadio = `radio_${activeRadio.name}`
-    // this.setState({ [`radio_${activeRadio.name}`]: true })
-    //
-    // keysObj.forEach(item => {
-    //   if(`radio_${item.name}` !== `radio_${activeRadio.name}`) {
-    //     this.setState({ [`radio_${item.name}`]: false })
-    //   }
-    // })
 
     const objForQuery = {
       settings: {
@@ -272,7 +208,7 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery, data, type, toggledKeyID)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onWalletToggle = async (toggledWalletID: string) => {
