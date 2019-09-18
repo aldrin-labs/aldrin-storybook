@@ -53,12 +53,12 @@ import PortfolioSidebarBack from '@icons/PortfolioSidebarBack.svg'
 
 import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSlick'
 
-// import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
-// import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
+
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
@@ -327,6 +327,8 @@ class PortfolioSelector extends React.Component<IProps> {
 
     if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
 
+    // TODO: separate dust filter
+
     const login = true
     const isTransactions =
       this.props.location.pathname === '/portfolio/transactions'
@@ -337,10 +339,26 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const color = theme.palette.secondary.main
 
+    const assets = portfolioKeys.myPortfolios[0]
+      ? portfolioKeys.myPortfolios[0].portfolioAssets
+      : []
+
+    const activeKeyNames = activeKeys.map((key) => key.name)
+
+    const sumOfEnabledAccounts = assets
+      .filter((asset) => activeKeyNames.includes(asset.name))
+      .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
+
+    const filteredData = !isRebalance ? combineTableData(
+      assets,
+      dustFilter,
+      isUSDCurrently,
+      true,
+      sumOfEnabledAccounts
+    ) : assets
+
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios[0]
-        ? portfolioKeys.myPortfolios[0].portfolioAssets
-        : [],
+      filteredData,
       isTransactions ? 'USDT' : baseCoin
     )
 
@@ -360,8 +378,8 @@ class PortfolioSelector extends React.Component<IProps> {
         in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={true}
-        unmountOnExit={true}
+        mountOnEnter={false}
+        unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
@@ -533,7 +551,7 @@ class PortfolioSelector extends React.Component<IProps> {
 }
 
 export default compose(
-  graphql(getPortfolioKeys, {
+  graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin, innerSettings: true },
@@ -549,11 +567,11 @@ export default compose(
           variables: { baseCoin },
         },
         {
-          query: getPortfolioKeys,
+          query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
         },
         {
-          query: getPortfolioKeys,
+          query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: false },
         },
         {
