@@ -144,7 +144,7 @@ class PortfolioSelector extends React.Component<IProps> {
     })
   }
 
-  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:null) => {
+  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
     const { updatePortfolioSettings, data } = this.props
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
