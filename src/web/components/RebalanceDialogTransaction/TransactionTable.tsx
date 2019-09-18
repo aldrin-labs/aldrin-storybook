@@ -77,7 +77,7 @@ const TransactionTable = ({
                         {parseFloat(sum.toFixed(6))} {row.convertedFrom}
                       </span>
                       <TransactionTablePrice>
-                        ${parseFloat(row.convertedFromPrice.toFixed(3))}
+                        ${parseFloat(row.convertedFromPrice.toFixed(8))}
                       </TransactionTablePrice>
                     </TransactionTableCoin>
                     {
@@ -93,7 +93,7 @@ const TransactionTable = ({
                         {parseFloat(convertedSum.toFixed(6))} {row.convertedTo}
                       </span>
                       <TransactionTablePrice>
-                        ${parseFloat(row.convertedToPrice.toFixed(3))}
+                        ${parseFloat(row.convertedToPrice.toFixed(8))}
                       </TransactionTablePrice>
                     </TransactionTableCoin>
                   </Grid>
