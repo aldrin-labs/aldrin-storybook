@@ -84,7 +84,7 @@ export const FolioValuesCell = styled(Grid)`
 
 export const GridFolioScroll = styled(Grid)`
   padding: 0;
-  height: 70vh; /*TODO : Left Panel Hight*/
+  height: 65vh; /*TODO : Left Panel Hight*/
   overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;

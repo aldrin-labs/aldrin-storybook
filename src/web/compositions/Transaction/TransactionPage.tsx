@@ -1,6 +1,7 @@
 import React from 'react'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
+import { client } from '@core/graphql/apolloClient'
 
 import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 
@@ -35,7 +36,7 @@ import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
@@ -132,20 +133,25 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
-  updateSettings = async (objectForMutation) => {
-    const { updatePortfolioSettings } = this.props
+  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
+    const { updatePortfolioSettings, data } = this.props
+
+    const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
+    UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
       })
+
     } catch (error) {
       console.log('error', error)
     }
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyCheckboxes'
 
     const objForQuery = {
       settings: {
@@ -159,11 +165,12 @@ class TransactionPage extends React.PureComponent {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyAll'
 
     const objForQuery = {
       settings: {
@@ -174,7 +181,7 @@ class TransactionPage extends React.PureComponent {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type)
   }
 
   render() {
@@ -385,7 +392,7 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
-  graphql(getPortfolioKeys, {
+  graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
       variables: { baseCoin: 'USDT', innerSettings: true },
@@ -402,6 +409,14 @@ export default compose(
         },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
+        {
+          query: getPortfolioKeys,
+          variables: { baseCoin, innerSettings: true },
+        },
+        {
+          query: getPortfolioKeys,
+          variables: { baseCoin, innerSettings: false },
+        },
         {
           query: MyTradesQuery,
           variables: {
