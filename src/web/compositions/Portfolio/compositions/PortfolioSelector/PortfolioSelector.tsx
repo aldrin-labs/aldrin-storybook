@@ -144,14 +144,14 @@ class PortfolioSelector extends React.Component<IProps> {
     })
   }
 
-  updateSettings = async (objectForMutation, type, toggledKeyID:null) => {
+  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:null) => {
     const { updatePortfolioSettings, data } = this.props
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
-      let res = await updatePortfolioSettings({
+      await updatePortfolioSettings({
         variables: objectForMutation,
       })
 
