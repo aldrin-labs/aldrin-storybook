@@ -568,14 +568,14 @@ export default compose(
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
         },
-        {
-          query: getPortfolioKeys,
-          variables: { baseCoin, innerSettings: false },
-        },
-        {
-          query: getMyPortfoliosQuery,
-          variables: { baseCoin },
-        },
+        // {
+        //   query: getPortfolioKeys,
+        //   variables: { baseCoin, innerSettings: false },
+        // },
+        // {
+        //   query: getMyPortfoliosQuery,
+        //   variables: { baseCoin },
+        // },
       ],
       // update: updateSettingsMutation,
     }),
