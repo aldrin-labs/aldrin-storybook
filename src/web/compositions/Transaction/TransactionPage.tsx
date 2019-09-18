@@ -133,7 +133,7 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
-  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:null) => {
+  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
     const { updatePortfolioSettings, data } = this.props
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
