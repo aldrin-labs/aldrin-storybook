@@ -5,8 +5,18 @@ import { IProps } from './ChoosePeriod.types'
 import {
   ChoosePeriodWrapper,
   ChoosePeriodTypography,
+  ChoosePeriodButton,
   DatePickerWrapper,
 } from './ChoosePeriod.styles'
+
+const PERIODS = [
+  { name: '1Day', label: '24H' },
+  { name: '1Week', label: 'Week' },
+  { name: '2Weeks', label: '2W' },
+  { name: '1Month', label: 'Month' },
+  { name: '3Month', label: '3MO' },
+  { name: '6Months', label: '6MO' },
+]
 
 class ChoosePeriod extends Component<IProps> {
   render() {
@@ -14,6 +24,8 @@ class ChoosePeriod extends Component<IProps> {
       focusedInput,
       onDatesChange,
       onFocusChange,
+      onDateButtonClick,
+      activeDateButton,
 
       startDate,
       endDate,
@@ -25,10 +37,12 @@ class ChoosePeriod extends Component<IProps> {
     } = this.props
 
     return (
-      <ChoosePeriodWrapper isTableCalendar={isTableCalendar} style={{ height: '10%' }}>
+      <ChoosePeriodWrapper isTableCalendar={isTableCalendar} style={{ height: '10%', marginTop: '10px' }}>
         <ChoosePeriodTypography>Selected period</ChoosePeriodTypography>
-        
-        <DatePickerWrapper>
+
+        <DatePickerWrapper
+          style={{ marginRight: '20px' }}
+        >
           <DateRangePicker
             withPortal={true}
             isOutsideRange={(date: any) =>
@@ -45,6 +59,18 @@ class ChoosePeriod extends Component<IProps> {
             displayFormat="MM-DD-YYYY"
           />
         </DatePickerWrapper>
+
+        {PERIODS.map(({ name, label }, index) => (
+          <ChoosePeriodButton
+            active={activeDateButton === name}
+            key={index}
+            onClick={() => {
+              onDateButtonClick(name)
+            }}
+          >
+            {label}
+          </ChoosePeriodButton>
+        ))}
       </ChoosePeriodWrapper>
     )
   }

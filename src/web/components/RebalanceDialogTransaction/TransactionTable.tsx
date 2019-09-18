@@ -37,7 +37,6 @@ const TransactionTable = ({
   isFinished,
   showLoader,
 }: IProps) => {
-  console.log('transdata', transactionsData)
   return (
     <>
       <ProgressBar
@@ -65,9 +64,6 @@ const TransactionTable = ({
             const convertedSum =
               (sum * row.convertedFromPrice) / row.convertedToPrice
             const convertedSumUSDT = convertedSum * row.convertedToPrice
-
-            console.log(row, 'row', sum, 'sum')
-
             return (
               <TableRow key={index}>
                 <TableCell
