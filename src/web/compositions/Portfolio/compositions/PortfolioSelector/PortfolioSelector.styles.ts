@@ -55,6 +55,7 @@ export const FilterIcon = styled(FaFilter)`
 export const AccountsWalletsBlock = styled.div`
   font-family: ${(props: { fontFamily: string }) => props.fontFamily};
   min-width: 200px;
+  width: 100%;
   background-color: ${(props: { background: string }) => props.background};
   left: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
     isSideNavOpen ? '0' : '-18.4rem'};
@@ -166,4 +167,19 @@ export const GridSymbolValue = styled(Grid)`
 export const TypographySpan = styled(Typography)`
   font-size: 1.2rem;
   color: #165be0 !important;
+`
+
+export const Slide = styled.div`
+  font-family: DM Sans, sans-serif;
+  min-width: 200px;
+  background-color: #fefefe;
+  left: 0;
+  cursor: auto;
+  display: block;
+  position: fixed;
+  top: 0;
+  z-index: 1008;
+  height: 100vh;
+  -webkit-transition: right 0.2s ease-in;
+  transition: right 0.2s ease-in;
 `
