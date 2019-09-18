@@ -37,6 +37,8 @@ const TransactionTable = ({
   isFinished,
   showLoader,
 }: IProps) => {
+  let loaderExists = false
+
   return (
     <>
       <ProgressBar
@@ -108,18 +110,21 @@ const TransactionTable = ({
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
-                  ) : showLoader || row.isDone === 'loading' ? (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '17px',
-                        right: '20px',
-                        height: '24px',
-                        width: '24px',
-                      }}
-                    >
-                      <Loading size={24} />
-                    </div>
+                  ) : (showLoader || row.isDone === 'loading') &&
+                    !loaderExists ? (
+                    (loaderExists = true && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '17px',
+                          right: '20px',
+                          height: '24px',
+                          width: '24px',
+                        }}
+                      >
+                        <Loading size={24} />
+                      </div>
+                    ))
                   ) : null}
                 </TableCell>
               </TableRow>

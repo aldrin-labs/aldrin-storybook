@@ -35,6 +35,8 @@ import RebalanceDialogAdd from '@sb/components/RebalanceDialogAdd/RebalanceDialo
 import RebalanceAddSocialPortfolio from '@sb/components/RebalanceAddSocialPortfolio'
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
+import RouteLeavingGuard from '@sb/components/RouteLeavingGuard'
+
 import {
   accordionAddPortfolioPanelData, // This data will be used in the future
   accordionAddIndexPanelData, // This data will be used in the future
@@ -171,6 +173,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       rebalanceTimePeriod,
       onRebalanceTimerChange,
       isUserHasLockedBalance,
+      history,
       // search,
       // searchCoinInTable,
     } = this.props
@@ -477,6 +480,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             }}
           />
         </Content>
+
+        <RouteLeavingGuard
+          when={true}
+          navigate={(path) => history.push(path)}
+          shouldBlockNavigation={(location) => true}
+        />
 
         <Joyride
           continuous={true}
