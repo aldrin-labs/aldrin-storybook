@@ -6,6 +6,11 @@ class DialogAddCoin extends React.Component {
   state = {
     open: false,
     mouseInPopup: false,
+    inputValue: '',
+  }
+
+  onInputChange = (inputValue: string) => {
+    this.setState({ inputValue })
   }
 
   handleClickOpen = () => {
@@ -128,6 +133,8 @@ class DialogAddCoin extends React.Component {
                 textAlign: 'left',
               }}
               menuIsOpen={true}
+              inputValue={this.state.inputValue}
+              onInputChange={this.onInputChange}
               onChange={(
                 optionSelected: {
                   label: string

@@ -56,6 +56,8 @@ class TransactionPage extends React.PureComponent {
   state = {
     includeExchangeTransactions: true,
     includeTrades: true,
+    filterCoin: '',
+    inputValue: '',
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -68,16 +70,25 @@ class TransactionPage extends React.PureComponent {
       endDate: moment().endOf('day'),
       activeDateButton: '1Week',
       focusedInput: null,
-    }
+    },
   }
 
-  onFocusChange = (focusedInput: string) => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      focusedInput
-    }
-  }))
+  updateFilterCoin = (inputValue: string) => {
+    this.setState({ filterCoin: inputValue })
+  }
+
+  onInputChange = (inputValue: string) => {
+    this.setState({ inputValue })
+  }
+
+  onFocusChange = (focusedInput: string) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        focusedInput,
+      },
+    }))
 
   onDateButtonClick = async (stringDate: string) => {
     this.setState({
@@ -85,7 +96,7 @@ class TransactionPage extends React.PureComponent {
         activeDateButton: stringDate,
         startDate: getEndDate(stringDate),
         endDate: moment().endOf('day'),
-      }
+      },
     })
   }
 
@@ -95,38 +106,41 @@ class TransactionPage extends React.PureComponent {
   }: {
     startDate: moment.Moment | null
     endDate: moment.Moment | null
-  }) => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      startDate,
-      endDate
-    }
-  }))
+  }) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate,
+        endDate,
+      },
+    }))
 
   onGitCalendarDateClick = async (stringDate: string) => {
-    this.setState(prevState => ({
-      ...prevState,
-      gitCalendarDate: {
+    this.setState(
+      (prevState) => ({
+        ...prevState,
+        gitCalendarDate: {
           activeDateButton: moment(stringDate).format('YYYY'),
           startDate: moment(stringDate).startOf('year'),
           endDate: moment(stringDate).endOf('year'),
-      }
-    }),
+        },
+      }),
       () => {
         // TODO: there should be mutation for search:
       }
     )
   }
 
-  onHeatmapDateClick = value => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      startDate: moment(value.date).startOf('day'),
-      endDate: moment(value.date).endOf('day')
-    }
-  }))
+  onHeatmapDateClick = (value) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate: moment(value.date).startOf('day'),
+        endDate: moment(value.date).endOf('day'),
+      },
+    }))
 
   handleChangeShowHideOptions = (option) => (event) => {
     this.setState({ [option]: event.target.checked })
@@ -194,6 +208,8 @@ class TransactionPage extends React.PureComponent {
       includeTrades,
       gitCalendarDate,
       tradeOrderHistoryDate,
+      inputValue,
+      filterCoin,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -350,7 +366,10 @@ class TransactionPage extends React.PureComponent {
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
                   handleChangeShowHideOptions={this.handleChangeShowHideOptions}
-
+                  inputValue={inputValue}
+                  filterCoin={filterCoin}
+                  onInputChange={this.onInputChange}
+                  updateFilterCoin={this.updateFilterCoin}
                   startDate={tradeOrderHistoryDate.startDate}
                   endDate={tradeOrderHistoryDate.endDate}
                 />
@@ -372,7 +391,7 @@ class TransactionPage extends React.PureComponent {
             <GitCalendarChooseYear
               {...{
                 ...gitCalendarDate,
-                onDateButtonClick: this.onGitCalendarDateClick
+                onDateButtonClick: this.onGitCalendarDateClick,
               }}
             />
             <TransactionsActionsStatistic />
