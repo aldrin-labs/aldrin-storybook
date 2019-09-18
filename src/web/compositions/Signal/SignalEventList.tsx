@@ -57,7 +57,7 @@ const transformData = (data: any[]) => {
       id: row._id,
       updatedAt: {
         render: `${
-          months > 0 ? `${months}m` : ''
+          months > 0 ? `${months}m ` : ''
         }${days}d ${hours}h ${minutes}m ${seconds}s`,
         style: { textTransform: 'lowercase' },
       },
