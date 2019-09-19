@@ -14,9 +14,10 @@ export class RouteLeavingGuard extends React.Component {
       const { when } = this.props
 
       if (when) {
+        const textToShow = 'You have processing rebalance'
         ev.preventDefault()
-        ev.returnValue = 'R U SURE?'
-        return 'R U SURE?'
+        ev.returnValue = textToShow
+        return textToShow
       }
     })
   }
@@ -79,6 +80,7 @@ export class RouteLeavingGuard extends React.Component {
           visible={modalVisible}
           handleClose={() => this.closeModal(() => {})}
           handleConfirm={this.handleConfirmNavigationClick}
+          lastLocation={lastLocation}
           {...propsForModal}
         />
       </>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dialog } from '@material-ui/core'
 import {
   TypographyCustomHeading,
@@ -11,15 +11,17 @@ import {
 import AccordionTable from '@sb/components/RebalanceDialogTransaction/AccordionTable'
 import RebalanceSlippageSlider from '@sb/components/RebalanceSlippageSlider'
 
+import { StyledLink } from './RebalanceDialogLeave.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const RebalanceDialogLeave = ({
   visible = false,
+  lastLocation,
   slippageValue,
   onChangeSlippage,
   handleClose,
-  handleConfirm,
   transactionsData,
+  hideLeavePopup,
 }) => {
   const [isFinished, setFinished] = useState(false)
   const [showLoader, setLoader] = useState(true)
@@ -28,6 +30,19 @@ const RebalanceDialogLeave = ({
     setFinished(true)
     setLoader(false)
   }
+
+  const lineStatuses = transactionsData.map((t) => t.isDone).join('')
+
+  useEffect(() => {
+    const transactionStatuses = transactionsData.map((t) => t.isDone)
+    const consistFailTransaction = transactionStatuses.includes('fail')
+    const consistLoadingTransaction =
+      transactionStatuses.includes('loading') ||
+      transactionStatuses.includes(null)
+
+    if (consistFailTransaction || !consistLoadingTransaction) hideLeavePopup()
+  }, [lineStatuses])
+
   return (
     <Dialog
       PaperComponent={StyledPaper}
@@ -45,7 +60,10 @@ const RebalanceDialogLeave = ({
         </TypographyCustomHeading>
       </DialogTitleCustom>
       <DialogContent justify="center" style={{ borderRadius: '20px' }}>
-        <TypographyTopDescription margin="20px auto 32px auto">
+        <TypographyTopDescription
+          margin="3rem auto 2rem"
+          style={{ color: '#16253D' }}
+        >
           If you leave this page your rebalance processing will be canceled.
         </TypographyTopDescription>
         <GridCustom>
@@ -56,22 +74,21 @@ const RebalanceDialogLeave = ({
           />
         </GridCustom>
         <GridCustom container justify="center">
-          <BtnCustom
-            height="40px"
-            borderRadius={'1rem'}
-            btnWidth="15rem"
-            onClick={handleConfirm}
-            color={'#b93b2b'}
-            margin="0 5px"
+          <StyledLink
+            href={lastLocation && `${location.origin}${lastLocation.pathname}`}
+            target={'_blank'}
+            rel={'noreferrer noopener'}
           >
-            Cancel and leave
-          </BtnCustom>
+            open in a new tab
+          </StyledLink>
           <BtnCustom
-            height="40px"
+            height="4rem"
+            fontSize={'1.2rem'}
             borderRadius={'1rem'}
-            btnWidth="15rem"
-            color={'#165be0'}
-            margin="0 5px"
+            btnWidth="17rem"
+            color={'#2F7619'}
+            margin="0 .6rem"
+            padding={'.5rem 0 .2rem 0'}
             onClick={handleClose}
           >
             wait for execution
