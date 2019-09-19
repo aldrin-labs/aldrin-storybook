@@ -77,11 +77,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       onChangeSlippage,
       handleClickOpen,
       handleClose,
-      executeRebalanceHandler,
-      initialTime,
-      theme: {
-        palette: { black },
-      },
       onNewSnapshot,
       progress,
       rebalanceInfoPanelData
@@ -270,7 +265,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             />
           </DialogContent>
         </Dialog>
-      </>
+      </div>
     )
   }
 }

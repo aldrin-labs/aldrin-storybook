@@ -5,6 +5,11 @@ import { buildStyles } from 'react-circular-progressbar'
 import CircularProgressbar from '@sb/components/ProgressBar/CircularProgressBar'
 import Joyride from 'react-joyride'
 
+import { IconButton } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
+import { SnackbarProvider, withSnackbar } from 'notistack'
+import { withStyles } from '@material-ui/core/styles'
+
 import { createGlobalStyle } from 'styled-components'
 
 import { REBALANCE_CONFIG } from '@core/config/rebalanceConfig'
@@ -15,7 +20,6 @@ import DialogComponent from '@sb/components/RebalanceDialog/RebalanceDialog'
 
 import PortfolioRebalanceChart from '@core/containers/PortfolioRebalanceChart/PortfolioRebalanceChart'
 import {
-  Container,
   TypographyAccordionTitle,
   TypographyProgress,
   GridProgressTitle,
@@ -23,7 +27,7 @@ import {
   GridTransactionTypography
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { graphql } from 'react-apollo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -45,11 +49,7 @@ import RouteLeavingGuard from '@sb/components/RouteLeavingGuard'
 import RebalanceDialogLeave from '@sb/components/RebalanceDialogLeave/RebalanceDialogLeave'
 
 import {
-  accordionAddPortfolioPanelData, // This data will be used in the future
-  accordionAddIndexPanelData, // This data will be used in the future
-  rebalanceInfoPanelData, // TODO: Delete?
   rebalanceOption,
-  addFolioData,
   addIndexData,
   targetAllocation,
 } from './mockData'
@@ -64,6 +64,27 @@ const RebalanceMediaQuery = createGlobalStyle`
   }
 `
 
+const canselStyeles = theme => ({
+  icon: {
+    fontSize: 20,
+  }
+})
+
+const snackStyeles = theme => ({
+  success: { backgroundColor: theme.customPalette.green.main },
+  error: { backgroundColor: theme.customPalette.red.main },
+})
+
+const CloseButton = withStyles(canselStyeles)((props) => (
+  <IconButton
+    key="close"
+    aria-label="Close"
+    color="inherit"
+  >
+    <CloseIcon className={props.classes.icon} />
+</IconButton>
+))
+
 @withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
@@ -72,28 +93,38 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     isSectionChart: false,
     isPanelExpanded: false,
     progress: null,
-    rebalanceFinished: false
+    rebalanceFinished: false,
+    rebalanceError: false
   }
 
   getRebalanceProgress = (transactions, oldProgress) => {
     let progress
     const rebalanceStarted = transactions.some(transaction => transaction.isDone === 'loading')
     const rebalanceFinished = transactions.every(transaction => transaction.isDone)
+    const isRebalanceError = transactions.some(transaction => transaction.isDone === 'error')
 
-    if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
-      progress = Math.round(transactions.reduce((progress, transaction) => {
-        return transaction.isDone ? progress + (100 / transactions.length) : progress
-      }, 0))
+    if (isRebalanceError) {
+      this.setState({
+        rebalanceError: true
+      })
+      progress = 'N/A'
+      this.props.enqueueSnackbar('Something went wrong when rebalancing', { variant: 'error' })
     } else {
-      if (oldProgress !== null) {
-        this.setState({
-          progress: null
-        })
+      if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
+        progress = Math.round(transactions.reduce((progress, transaction) => {
+          return transaction.isDone ? progress + (100 / transactions.length) : progress
+        }, 0))
+      } else {
+        if (oldProgress !== null) {
+          this.setState({
+            progress: null
+          })
+        }
+        progress = null
       }
-      progress = null
     }
 
-    if (progress === 100) {
+    if (progress === 100 || isRebalanceError) {
       this.setState({
         rebalanceFinished: true
       })
@@ -101,7 +132,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       // Here we create bogus delay so user can notice that rebalance finished
       setTimeout(() => {
         this.setState({
-          rebalanceFinished: false
+          rebalanceFinished: false,
+          rebalanceError: false
         })
       }, REBALANCE_CONFIG.bogusAfterRebalanceDelay)
     }
@@ -231,7 +263,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       // searchCoinInTable,
     } = this.props
 
-    const { progress, rebalanceFinished } = this.state
+    const { progress, rebalanceFinished, rebalanceError } = this.state
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -351,7 +383,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           >
             <GridTransactionTypography>
               {progress !== null ?
-                  <span>REBALANCE IS PROCESSING</span> :
+               (rebalanceError ? <span>Rebalance is unsuccesful</span> : <span>REBALANCE IS PROCESSING</span>) :
                   <div>Distribute <span>100%</span> of your assets for rebalance.</div>
               }
             </GridTransactionTypography>
@@ -612,6 +644,32 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 }
 
+const SnackbarWrapper = withSnackbar(PortfolioRebalancePage)
+
+const IntegrationNotistack = ({classes, ...otherProps}) => {
+  return (
+    <SnackbarProvider
+      maxSnack={3}
+      autoHideDuration={3000}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      action={(
+        <CloseButton />
+      )}
+      classes={{
+        variantSuccess: classes.success,
+        variantError: classes.error,
+      }}
+    >
+      <SnackbarWrapper
+        {...otherProps}
+      />
+    </SnackbarProvider>
+  );
+}
+
 export default compose(
   withTheme(),
   queryRendererHoc({
@@ -623,5 +681,6 @@ export default compose(
     options: {
       update: updateTooltipMutation,
     },
-  })
-)(PortfolioRebalancePage)
+  }),
+  withStyles(snackStyeles)
+)(IntegrationNotistack)
