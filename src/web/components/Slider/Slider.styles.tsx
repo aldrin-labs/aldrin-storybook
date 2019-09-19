@@ -85,3 +85,15 @@ export const StyledSlider = styled(
 
     ${sliderThumbMediaQueries}
 `
+
+export const AvailableRange = styled.div`
+  height: 16px;
+  position: absolute;
+  top: 0;
+  left: ${props => props.x || 0};
+  background: #ABBAD1;
+  width: ${props => props.range || '125px'};
+  opacity: .5;
+  border-radius: 30px;
+  z-index: 1;
+`

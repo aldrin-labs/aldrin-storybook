@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
+
+import { buildStyles } from 'react-circular-progressbar'
+import CircularProgressbar from '@sb/components/ProgressBar/CircularProgressBar'
 import Joyride from 'react-joyride'
 
 import { createGlobalStyle } from 'styled-components'
+
+import { REBALANCE_CONFIG } from '@core/config/rebalanceConfig'
 
 import { Container as Content } from '@sb/styles/cssUtils'
 import { portfolioRebalanceSteps } from '@sb/config/joyrideSteps'
@@ -15,6 +20,7 @@ import {
   TypographyProgress,
   GridProgressTitle,
   GridTransactionBtn,
+  GridTransactionTypography
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -65,6 +71,50 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     openDialogTransaction: false,
     isSectionChart: false,
     isPanelExpanded: false,
+    progress: null,
+    rebalanceFinished: false
+  }
+
+  getRebalanceProgress = (transactions, oldProgress) => {
+    let progress
+    const rebalanceStarted = transactions.some(transaction => transaction.isDone === 'loading')
+    const rebalanceFinished = transactions.every(transaction => transaction.isDone)
+
+    if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
+      progress = Math.round(transactions.reduce((progress, transaction) => {
+        return transaction.isDone ? progress + (100 / transactions.length) : progress
+      }, 0))
+    } else {
+      if (oldProgress !== null) {
+        this.setState({
+          progress: null
+        })
+      }
+      progress = null
+    }
+
+    if (progress === 100) {
+      this.setState({
+        rebalanceFinished: true
+      })
+
+      // Here we create bogus delay so user can notice that rebalance finished
+      setTimeout(() => {
+        this.setState({
+          rebalanceFinished: false
+        })
+      }, REBALANCE_CONFIG.bogusAfterRebalanceDelay)
+    }
+
+    return progress
+  }
+
+  emitExecutingRebalanceHandler = () => {
+    this.setState({
+      progress: 0
+    })
+
+    this.props.executeRebalanceHandler()
   }
 
   onChangeExpandedPanel = () => {
@@ -169,7 +219,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           background: { table },
         },
       },
-      executeRebalanceHandler,
       transactions,
       rebalanceTimePeriod,
       onRebalanceTimerChange,
@@ -177,10 +226,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       history,
       slippageValue,
       onChangeSlippage,
-      rebalanceIsExecuting,
+      rebalanceIsExecuting
       // search,
       // searchCoinInTable,
     } = this.props
+
+    const { progress, rebalanceFinished } = this.state
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -221,6 +272,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
         ...prices,
       }
     })
+
+    const newProgress = rebalanceFinished ? 100 : this.getRebalanceProgress(transactionsDataWithPrices, progress)
 
     return (
       <>
@@ -291,10 +344,40 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             lg={2}
             md={2}
             justify="center"
+            direction="column"
             style={{
               marginTop: '5rem',
             }}
           >
+            <GridTransactionTypography>
+              {progress !== null ?
+                  <span>REBALANCE IS PROCESSING</span> :
+                  <div>Distribute <span>100%</span> of your assets for rebalance.</div>
+              }
+            </GridTransactionTypography>
+
+            {progress !== null && <div style={{ width: '28%' }}>
+              <CircularProgressbar
+                value={newProgress}
+                text={`${newProgress}%`}
+                maxValue={100}
+                styles={{
+                  ...buildStyles({
+                    pathColor: '#0B1FD1',
+                    trailColor: '#F9FBFD'
+                  }),
+                  text: {
+                    fontSize: '2rem',
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontWeight: 'bold',
+                    fill: '#dd6956',
+                    letterSpacing: '1.5px'
+                  }
+                }}
+                strokeWidth={12}
+              />
+            </div>}
+
             <RebalanceDialogTransaction
               initialTime={+rebalanceTimePeriod.value}
               accordionTitle="TRANSACTIONS"
@@ -303,9 +386,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleCloseTransactionWindow}
               onNewSnapshot={onNewSnapshot}
-              executeRebalanceHandler={executeRebalanceHandler}
               slippageValue={slippageValue}
               onChangeSlippage={onChangeSlippage}
+              executeRebalanceHandler={this.emitExecutingRebalanceHandler}
+              onProgressChange={this.onProgressChange}
+              progress={progress}
+              rebalanceInfoPanelData={rebalanceInfoPanelData}
             />
           </GridTransactionBtn>
 
@@ -348,7 +434,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           </Grid>
 
           {/* Accordion Table Start */}
-          <TypographyAccordionTitle>Portfolio</TypographyAccordionTitle>
+          <TypographyAccordionTitle margin={'3rem auto 1rem'}>Portfolio</TypographyAccordionTitle>
 
           <RebalanceAccordionIndex
             sliderValue={100}
@@ -386,6 +472,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 showWarning,
                 hideWarning,
                 sliderStep,
+                rebalanceInfoPanelData
               }}
               // search={search}
               // searchCoinInTable={searchCoinInTable}

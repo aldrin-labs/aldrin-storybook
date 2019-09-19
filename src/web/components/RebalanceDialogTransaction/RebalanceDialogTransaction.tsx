@@ -2,25 +2,25 @@ import React from 'react'
 // import { withStyles } from '@material-ui/core/styles'
 // import MuiDialogContent from '@material-ui/core/DialogContent'
 // import Timer from 'react-compound-timer'
+
+import { buildStyles } from 'react-circular-progressbar'
+import CircularProgressbar from '@sb/components/ProgressBar/CircularProgressBar'
+
 import { withTheme } from '@material-ui/styles'
-import { Dialog, Grid } from '@material-ui/core'
+import { Dialog } from '@material-ui/core'
 import {
   TypographyCustomHeading,
   GridCustom,
   DialogContent,
   DialogTitleCustom,
   TypographyTopDescription,
-  LinkCustom,
   StyledPaper,
+  RebalanceDialogTypography
 } from './RebalanceDialogTransaction.styles'
 
 import RebalanceSlippageSlider from '@sb/components/RebalanceSlippageSlider'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
-
-import SvgIcon from '@sb/components/SvgIcon'
-import Stroke from '@icons/Stroke.svg'
-import Ellipse from '@icons/rebalance.svg'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
@@ -38,6 +38,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     isError: false,
     isDisableBtns: false,
     showLoader: false,
+    hideDialogButton: false
   }
 
   getErrorForTransaction = (errorState) => {
@@ -49,7 +50,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   activateGoBtn = async () => {
-    this.setState({ isDisableBtns: true, showLoader: true })
+    this.setState({ isDisableBtns: true, showLoader: true, hideDialogButton: true })
     await this.props.executeRebalanceHandler()
   }
 
@@ -78,20 +79,49 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       handleClose,
       executeRebalanceHandler,
       initialTime,
+      theme: {
+        palette: { black },
+      },
       onNewSnapshot,
+      progress,
+      rebalanceInfoPanelData
     } = this.props
 
     const { isFinished, isError, isDisableBtns, showLoader } = this.state
     const isEmptyTable = transactionsData.length === 0
 
+    const availablePercentage = Math.ceil(100 - rebalanceInfoPanelData.availablePercentage)
+
     return (
-      <>
-        <LinkCustom
-          background={Stroke}
-          onClick={() => this.defaultStateForTransaction(handleClickOpen)}
+      <div>
+        {progress === null ? <div
+          style={{ width: '28%', margin: '0 auto', cursor: availablePercentage === 100 ? 'pointer' : 'default' }}
+          onClick={() => availablePercentage === 100 ? this.defaultStateForTransaction(handleClickOpen) : null}
         >
-          <SvgIcon width={60} height={60} src={Ellipse} />
-        </LinkCustom>
+              <CircularProgressbar
+                value={availablePercentage}
+                text={availablePercentage === 100 ? 'GO!' : `${availablePercentage}%`}
+                maxValue={100}
+                styles={{
+                  ...buildStyles({
+                    pathColor: '#0B1FD1',
+                    trailColor: '#F9FBFD'
+                  }),
+                  text: {
+                    fontSize: '2rem',
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontWeight: 'bold',
+                    fill: '#dd6956',
+                    letterSpacing: '1.5px'
+                  }
+                }}
+                strokeWidth={12}
+              />
+            </div> :
+          <RebalanceDialogTypography
+            onClick={() => this.defaultStateForTransaction(handleClickOpen)}
+          >See detailed status</RebalanceDialogTypography>
+        }
 
         <Dialog
           PaperComponent={StyledPaper}
