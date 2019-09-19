@@ -60,6 +60,8 @@ import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 // const MyLinkToUserSettings = (props: any) => (
@@ -586,14 +588,14 @@ export default compose(
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
         },
-        // {
-        //   query: getPortfolioKeys,
-        //   variables: { baseCoin, innerSettings: false },
-        // },
-        // {
-        //   query: getMyPortfoliosQuery,
-        //   variables: { baseCoin },
-        // },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: false },
+        },
+        {
+          query: getMyPortfoliosQuery,
+          variables: { baseCoin },
+        },
       ],
       // update: updateSettingsMutation,
     }),

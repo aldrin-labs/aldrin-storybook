@@ -428,14 +428,14 @@ export default compose(
         },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
-        // {
-        //   query: getPortfolioKeys,
-        //   variables: { baseCoin, innerSettings: true },
-        // },
-        // {
-        //   query: getPortfolioKeys,
-        //   variables: { baseCoin, innerSettings: false },
-        // },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: true },
+        },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: false },
+        },
         {
           query: MyTradesQuery,
           variables: {
