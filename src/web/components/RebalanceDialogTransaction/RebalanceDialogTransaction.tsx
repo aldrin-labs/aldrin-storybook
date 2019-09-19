@@ -124,11 +124,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     Rebalance unsuccessful
                   </TypographyTopDescription>
                 </GridCustom>
-                <RebalanceSlippageSlider
-                  disabled={true}
-                  slippageValue={slippageValue}
-                  onChangeSlippage={onChangeSlippage}
-                />
+                <GridCustom container justify="center">
+                  <RebalanceSlippageSlider
+                    disabled={true}
+                    slippageValue={slippageValue}
+                    onChangeSlippage={onChangeSlippage}
+                  />
+                </GridCustom>
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="34px"
@@ -168,11 +170,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   </TypographyTopDescription>
                 </GridCustom>
 
-                <RebalanceSlippageSlider
-                  disabled={true}
-                  slippageValue={slippageValue}
-                  onChangeSlippage={onChangeSlippage}
-                />
+                <GridCustom container justify="center">
+                  <RebalanceSlippageSlider
+                    disabled={true}
+                    slippageValue={slippageValue}
+                    onChangeSlippage={onChangeSlippage}
+                  />
+                </GridCustom>
 
                 <GridCustom container justify="center">
                   <BtnCustom

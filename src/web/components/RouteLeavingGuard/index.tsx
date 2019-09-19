@@ -8,20 +8,16 @@ export class RouteLeavingGuard extends React.Component {
     confirmedNavigation: false,
   }
 
-  doSomethingBeforeUnload = () => {
-    // this.setState({
-    //   modalVisible: true,
-    // })
-    return 'R U SURE?'
-  }
-
   // Setup the `beforeunload` event listener
   setupBeforeUnloadListener = () => {
-    const { when } = this.props
     window.addEventListener('beforeunload', (ev) => {
-      when ? ev.preventDefault() : null
-      ev.returnValue = 'R U SURE?'
-      return this.doSomethingBeforeUnload()
+      const { when } = this.props
+
+      if (when) {
+        ev.preventDefault()
+        ev.returnValue = 'R U SURE?'
+        return 'R U SURE?'
+      }
     })
   }
 
