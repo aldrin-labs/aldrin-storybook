@@ -37,7 +37,8 @@ const TransactionTable = ({
   isFinished,
   showLoader,
 }: IProps) => {
-  console.log('transdata', transactionsData)
+  let loaderExists = false
+
   return (
     <>
       <ProgressBar
@@ -65,9 +66,6 @@ const TransactionTable = ({
             const convertedSum =
               (sum * row.convertedFromPrice) / row.convertedToPrice
             const convertedSumUSDT = convertedSum * row.convertedToPrice
-
-            console.log(row, 'row', sum, 'sum')
-
             return (
               <TableRow key={index}>
                 <TableCell
@@ -81,7 +79,7 @@ const TransactionTable = ({
                         {parseFloat(sum.toFixed(6))} {row.convertedFrom}
                       </span>
                       <TransactionTablePrice>
-                        ${parseFloat(row.convertedFromPrice.toFixed(3))}
+                        ${parseFloat(row.convertedFromPrice.toFixed(8))}
                       </TransactionTablePrice>
                     </TransactionTableCoin>
                     {
@@ -97,7 +95,7 @@ const TransactionTable = ({
                         {parseFloat(convertedSum.toFixed(6))} {row.convertedTo}
                       </span>
                       <TransactionTablePrice>
-                        ${parseFloat(row.convertedToPrice.toFixed(3))}
+                        ${parseFloat(row.convertedToPrice.toFixed(8))}
                       </TransactionTablePrice>
                     </TransactionTableCoin>
                   </Grid>
@@ -112,18 +110,21 @@ const TransactionTable = ({
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
-                  ) : showLoader || row.isDone === 'loading' ? (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '17px',
-                        right: '20px',
-                        height: '24px',
-                        width: '24px',
-                      }}
-                    >
-                      <Loading size={24} />
-                    </div>
+                  ) : (showLoader || row.isDone === 'loading') &&
+                    !loaderExists ? (
+                    (loaderExists = true && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '17px',
+                          right: '20px',
+                          height: '24px',
+                          width: '24px',
+                        }}
+                      >
+                        <Loading size={24} />
+                      </div>
+                    ))
                   ) : null}
                 </TableCell>
               </TableRow>

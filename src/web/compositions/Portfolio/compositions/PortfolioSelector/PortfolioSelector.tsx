@@ -5,7 +5,7 @@ import { client } from '@core/graphql/apolloClient'
 import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
-import { Slide } from '@material-ui/core'
+// import { Slide } from '@material-ui/core'
 
 // import Dropdown from '@sb/components/SimpleDropDownSelector'
 import Accounts from '@sb/components/Accounts/Accounts'
@@ -31,6 +31,7 @@ import {
   GridSymbolValue,
   // TypographySpan,
   SliderDustFilter,
+  Slide,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 // import { MASTER_BUILD } from '@core/utils/config'
@@ -144,17 +145,24 @@ class PortfolioSelector extends React.Component<IProps> {
     })
   }
 
-  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
+  updateSettings = async (
+    objectForMutation: any,
+    type: string,
+    toggledKeyID: string
+  ) => {
     const { updatePortfolioSettings, data } = this.props
 
-    const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
+    const { keys, rebalanceKeys } = UTILS.updateDataSettings(
+      data,
+      type,
+      toggledKeyID
+    )
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
       })
-
     } catch (error) {
       console.log('error', error)
     }
@@ -349,13 +357,15 @@ class PortfolioSelector extends React.Component<IProps> {
       .filter((asset) => activeKeyNames.includes(asset.name))
       .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
 
-    const filteredData = !isRebalance ? combineTableData(
-      assets,
-      dustFilter,
-      isUSDCurrently,
-      true,
-      sumOfEnabledAccounts
-    ) : assets
+    const filteredData = !isRebalance
+      ? combineTableData(
+          assets,
+          dustFilter,
+          isUSDCurrently,
+          true,
+          sumOfEnabledAccounts
+        )
+      : assets
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
       filteredData,
@@ -370,16 +380,24 @@ class PortfolioSelector extends React.Component<IProps> {
     const updateUSDSlider = () => this.onDustFilterChange(valueSliderUsd, 'usd')
     const updateBTCSlider = () => this.onDustFilterChange(valueSliderBtc, 'btc')
 
+    const styleForContainer = !isSideNavOpen
+      ? {
+          transition: '.2s all ease-out',
+          transform: 'translateX(-41rem)',
+        }
+      : { transition: '.375s all ease-out', transform: 'translateX(0)' }
+
     return (
       <Slide
         style={{
           width: '41rem',
+          ...styleForContainer,
         }}
-        in={isSideNavOpen}
-        direction="right"
-        timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={false}
-        unmountOnExit={false}
+        // in={isSideNavOpen}
+        // direction="right"
+        // timeout={{ enter: 375, exit: 250 }}
+        // mountOnEnter={false}
+        // unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}

@@ -6,11 +6,14 @@ import {
   Button,
   DialogTitle,
   Typography,
-  Link, Paper,
+  Link,
+  Paper,
 } from '@material-ui/core'
 
+import MuiDialogContent from '@material-ui/core/DialogContent'
+
 export const TypographyCustomHeading = styled(
-  ({ color, fontWeight, ...rest }) => (<Typography {...rest} />)
+  ({ color, fontWeight, ...rest }) => <Typography {...rest} />
 )`
   font-size: 1.2rem;
   color: ${(props) => props.color || '#000'};
@@ -25,6 +28,7 @@ export const GridCustom = styled(Grid)`
 `
 export const DialogTitleCustom = styled(DialogTitle)`
   text-align: center;
+  text-transform: uppercase;
   color: #16253d;
   background: #f2f4f6;
   border-radius: 20px 20px 0px 0px;
@@ -56,24 +60,27 @@ export const LinkCustom = styled(({ background, ...rest }) => (
   background: ${(props) => props.background || 'none'};
 `
 
+export const DialogContent = styled(MuiDialogContent)`
+  margin: 0,
+  padding: ${(props) => props.unit * 2}px;
+`
 
 export const StyledPaper = styled(Paper)`
-
   &::-webkit-scrollbar-thumb {
-    background: #165BE0;
+    background: #165be0;
   }
 
   border-radius: 2rem;
 
-  @media(min-width: 1440px) {
+  @media (min-width: 1440px) {
     min-width: 600px;
   }
 
-  @media(min-width: 1921px) {
+  @media (min-width: 1921px) {
     min-width: 680px;
   }
 
-  @media(min-width: 2500px) {
+  @media (min-width: 2500px) {
     min-width: 900px;
   }
 `
