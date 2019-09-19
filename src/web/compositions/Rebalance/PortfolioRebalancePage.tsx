@@ -36,6 +36,7 @@ import RebalanceAddSocialPortfolio from '@sb/components/RebalanceAddSocialPortfo
 import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanceTableContainer/PortfolioRebalanceTableContainer'
 
 import RouteLeavingGuard from '@sb/components/RouteLeavingGuard'
+import RebalanceDialogLeave from '@sb/components/RebalanceDialogLeave/RebalanceDialogLeave'
 
 import {
   accordionAddPortfolioPanelData, // This data will be used in the future
@@ -174,6 +175,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       onRebalanceTimerChange,
       isUserHasLockedBalance,
       history,
+      slippageValue,
+      onChangeSlippage,
+      rebalanceIsExecuting,
       // search,
       // searchCoinInTable,
     } = this.props
@@ -300,6 +304,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               handleClose={this.handleCloseTransactionWindow}
               onNewSnapshot={onNewSnapshot}
               executeRebalanceHandler={executeRebalanceHandler}
+              slippageValue={slippageValue}
+              onChangeSlippage={onChangeSlippage}
             />
           </GridTransactionBtn>
 
@@ -482,9 +488,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
         </Content>
 
         <RouteLeavingGuard
-          when={true}
+          when={rebalanceIsExecuting}
           navigate={(path) => history.push(path)}
           shouldBlockNavigation={(location) => true}
+          CustomModal={RebalanceDialogLeave}
+          transactionsData={transactionsDataWithPrices}
+          slippageValue={slippageValue}
+          onChangeSlippage={onChangeSlippage}
         />
 
         <Joyride

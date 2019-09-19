@@ -1,18 +1,20 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
-import Timer from 'react-compound-timer'
+// import { withStyles } from '@material-ui/core/styles'
+// import MuiDialogContent from '@material-ui/core/DialogContent'
+// import Timer from 'react-compound-timer'
 import { withTheme } from '@material-ui/styles'
 import { Dialog, Grid } from '@material-ui/core'
 import {
   TypographyCustomHeading,
   GridCustom,
+  DialogContent,
   DialogTitleCustom,
   TypographyTopDescription,
   LinkCustom,
   StyledPaper,
 } from './RebalanceDialogTransaction.styles'
 
+import RebalanceSlippageSlider from '@sb/components/RebalanceSlippageSlider'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
 
@@ -22,12 +24,12 @@ import Ellipse from '@icons/rebalance.svg'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+// const DialogContent = withStyles((theme) => ({
+//   root: {
+//     margin: 0,
+//     padding: theme.spacing.unit * 2,
+//   },
+// }))(MuiDialogContent)
 
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
@@ -66,14 +68,14 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       accordionTitle,
       transactionsData,
       theme: {
-        palette: { blue, red },
+        palette: { blue, red, black },
+        spacing: { unit },
       },
       open,
+      slippageValue,
+      onChangeSlippage,
       handleClickOpen,
       handleClose,
-      theme: {
-        palette: { black },
-      },
       executeRebalanceHandler,
       initialTime,
       onNewSnapshot,
@@ -83,7 +85,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     const isEmptyTable = transactionsData.length === 0
 
     return (
-      <div>
+      <>
         <LinkCustom
           background={Stroke}
           onClick={() => this.defaultStateForTransaction(handleClickOpen)}
@@ -110,7 +112,11 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 : `ARE YOU SURE?`}
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center" style={{ borderRadius: '20px' }}>
+          <DialogContent
+            justify="center"
+            style={{ borderRadius: '20px' }}
+            unit={unit}
+          >
             {isError ? (
               <>
                 <GridCustom container>
@@ -118,7 +124,11 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     Rebalance unsuccessful
                   </TypographyTopDescription>
                 </GridCustom>
-
+                <RebalanceSlippageSlider
+                  disabled={true}
+                  slippageValue={slippageValue}
+                  onChangeSlippage={onChangeSlippage}
+                />
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="34px"
@@ -158,6 +168,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   </TypographyTopDescription>
                 </GridCustom>
 
+                <RebalanceSlippageSlider
+                  disabled={true}
+                  slippageValue={slippageValue}
+                  onChangeSlippage={onChangeSlippage}
+                />
+
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="34px"
@@ -176,6 +192,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 <TypographyTopDescription margin="20px auto 32px auto">
                   Your portfolio will change.
                 </TypographyTopDescription>
+                <GridCustom container justify="center">
+                  <RebalanceSlippageSlider
+                    disabled={isEmptyTable}
+                    slippageValue={slippageValue}
+                    onChangeSlippage={onChangeSlippage}
+                  />
+                </GridCustom>
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="34px"
@@ -213,7 +236,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             />
           </DialogContent>
         </Dialog>
-      </div>
+      </>
     )
   }
 }

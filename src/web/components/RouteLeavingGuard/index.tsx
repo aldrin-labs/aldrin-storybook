@@ -1,6 +1,6 @@
 import React from 'react'
 import { Prompt } from 'react-router-dom'
-import { CustomModal } from './CustomModal'
+// import { CustomModal } from './CustomModal'
 export class RouteLeavingGuard extends React.Component {
   state = {
     modalVisible: false,
@@ -9,17 +9,17 @@ export class RouteLeavingGuard extends React.Component {
   }
 
   doSomethingBeforeUnload = () => {
-    this.setState({
-      modalVisible: true,
-    })
-
+    // this.setState({
+    //   modalVisible: true,
+    // })
     return 'R U SURE?'
   }
 
   // Setup the `beforeunload` event listener
   setupBeforeUnloadListener = () => {
+    const { when } = this.props
     window.addEventListener('beforeunload', (ev) => {
-      ev.preventDefault()
+      when ? ev.preventDefault() : null
       ev.returnValue = 'R U SURE?'
       return this.doSomethingBeforeUnload()
     })
@@ -73,7 +73,7 @@ export class RouteLeavingGuard extends React.Component {
     })
 
   render() {
-    const { when } = this.props
+    const { when, CustomModal, ...propsForModal } = this.props
     const { modalVisible, lastLocation } = this.state
     return (
       <>
@@ -81,8 +81,9 @@ export class RouteLeavingGuard extends React.Component {
         {/* pass from props */}
         <CustomModal
           visible={modalVisible}
-          onCancel={this.closeModal}
-          onConfirm={this.handleConfirmNavigationClick}
+          handleClose={() => this.closeModal(() => {})}
+          handleConfirm={this.handleConfirmNavigationClick}
+          {...propsForModal}
         />
       </>
     )
