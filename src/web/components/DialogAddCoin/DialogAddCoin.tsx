@@ -8,14 +8,15 @@ class DialogAddCoin extends React.Component {
     open: false,
     mouseInPopup: false,
     inputValue: '',
-    options: null,
+    options: [],
   }
 
   saveOptions = (options) => {
+    console.log('hm', options)
     const optionsWithIcon = options.map((option) => {
       return {
         ...option,
-        label: <CoinRow symbol={option.symbol} priceUSD={option.priceUSD} />,
+        label: <CoinRow symbol={option.value} priceUSD={option.priceUSD} />,
       }
     })
 
@@ -47,10 +48,14 @@ class DialogAddCoin extends React.Component {
     this.setState({ mouseInPopup: false })
   }
 
-  handleSelectChange = async (coin: string, priceUSD: string | number) => {
+  handleSelectChange = async (
+    coin: string,
+    priceUSD: string | number,
+    priceBTC: string | number
+  ) => {
     const { onAddRowButtonClick } = this.props
 
-    await onAddRowButtonClick(coin, priceUSD)
+    await onAddRowButtonClick(coin, priceUSD, priceBTC)
 
     this.setState({ open: false })
   }
@@ -100,6 +105,7 @@ class DialogAddCoin extends React.Component {
               needAdditionalFiltering={true}
               additionalFiltering={this.filterCoins}
               options={this.state.options}
+              saveOptions={this.saveOptions}
               // menuPortalTarget={document.body}
               // menuPortalStyles={{
               //   zIndex: 11111,
@@ -168,7 +174,8 @@ class DialogAddCoin extends React.Component {
               ) =>
                 this.handleSelectChange(
                   optionSelected.value || '',
-                  optionSelected.priceUSD
+                  optionSelected.priceUSD,
+                  optionSelected.priceBTC
                 )
               }
             />
