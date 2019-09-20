@@ -65,6 +65,18 @@ export const DialogContent = styled(MuiDialogContent)`
   padding: ${(props) => props.unit * 2}px;
 `
 
+export const RebalanceDialogTypography = styled(Typography)`
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 114.5%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #0b1fd1;
+  margin-top: .75rem;
+  cursor: pointer;
+`
+
 export const StyledPaper = styled(Paper)`
   &::-webkit-scrollbar-thumb {
     background: #165be0;
