@@ -43,6 +43,10 @@ export const ChoosePeriodButton = styled.button`
 
   transition: all 0.375s ease-in-out;
 
+  @media only screen and (min-width: 1920px) {
+    font-size: 0.9rem
+  }
+
   @media only screen and (min-width: 2560px) {
     border-radius: 1.5rem;
   }
@@ -102,22 +106,22 @@ export const DatePickerWrapper = styled.div`
 
   @media only screen and (min-width: 1024px) {
     & .DateInput {
-      width: 8.6rem;
+      width: 7.9rem;
   
       .DateInput_input {
         padding: 0.11rem 0.9rem 0.11rem 0.9rem;
         text-transform: uppercase;
         text-align: center;
-        font-size: 11px;
+        font-size: 9px;
       }
   
-      &:last-child {
-        width: 9.75rem;
-  
-        .DateInput_input {
-          padding: 0.21rem 1rem;
-        }
-      }
+      
+    }
+  }
+
+  @media only screen and (min-width: 1920px) {
+    & .DateInput {
+      width: 6.6rem;
     }
   }
 
