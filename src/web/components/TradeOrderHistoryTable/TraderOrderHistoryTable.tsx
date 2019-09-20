@@ -3,9 +3,38 @@ import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
 import { withWidth } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
+import CoinRow from './CoinRow'
 
 @withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
+  addFilter = () => {
+    const {
+      rows: { head: headings },
+      inputValue,
+      filterCoin,
+      onInputChange,
+      updateFilterCoin,
+    } = this.props
+
+    return headings.map((heading) => {
+      if (heading.label === 'pairFilter')
+        return {
+          ...heading,
+          label: (
+            <CoinRow
+              {...{
+                inputValue,
+                filterCoin,
+                onInputChange,
+                updateFilterCoin,
+              }}
+            />
+          ),
+        }
+      return { ...heading }
+    })
+  }
+
   render() {
     const {
       rows,
@@ -16,6 +45,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       handleChangeRowsPerPage,
       isCustomStyleForFooter,
     } = this.props
+
     // 82.2
     return (
       <StyledTable
@@ -31,7 +61,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
-        columnNames={rows.head}
+        columnNames={this.addFilter()}
         emptyTableText="No history"
         pagination={{
           fakePagination: false,

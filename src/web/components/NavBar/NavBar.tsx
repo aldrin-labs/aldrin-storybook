@@ -61,7 +61,6 @@ const NavBarRaw: SFC<Props> = ({
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   const page = pathnamePage[pathnamePage.length - 1]
-  console.log('build', MASTER_BUILD)
 
   return (
     <Nav

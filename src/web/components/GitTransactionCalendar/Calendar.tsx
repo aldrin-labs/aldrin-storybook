@@ -20,7 +20,7 @@ import {
   HeatmapWrapper,
   LegendHeatmapSquare,
   LegendTypography,
-  SquarePopup
+  SquarePopup,
 } from './Calendar.styles'
 
 const styles = (theme) => ({
@@ -57,7 +57,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       onDateButtonClick,
       activeDateButton,
       classes,
-      wrapperRef
+      wrapperRef,
     } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
@@ -131,7 +131,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Nov',
             'Dec',
           ]}
-
           onClick={onHeatmapDateClick}
           onMouseOver={(e, value) => {
             const popupRef = this.popupRef.current
@@ -182,10 +181,14 @@ class GitTransactionCalendar extends PureComponent<IProps> {
               }}
             />
           </Grid>
-          <Grid item alignItems="center" style={{
-            width: 'auto',
-            display: 'flex',
-          }}>
+          <Grid
+            item
+            alignItems="center"
+            style={{
+              width: 'auto',
+              display: 'flex',
+            }}
+          >
             <LegendTypography>Less</LegendTypography>
             <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
             <LegendHeatmapSquare fill={LEGEND_COLORS.one} />

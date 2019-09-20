@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import moment from 'moment'
 
@@ -45,172 +45,112 @@ import {
   TypographyEditButton,
 } from './SignalPage.styles'
 
-class SignalListItem extends React.Component<IProps, IState> {
-  state = {
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    interval: undefined,
-  }
+const SignalListItem = (props) => {
+  const {
+    el,
+    onClick,
+    isSelected,
+    openDialog,
+    toggleEnableSignal: toggleEnableMutation,
+    index,
+    _id,
+    enabled,
+    updateSignalMutation,
+  } = props
 
-  static getDerivedStateFromProps(props, state) {
-    let deltaSeconds = (Date.now() - props.el.updatedAt) / 1000
+  const [isEnabled, toggleEnable] = useState(enabled)
+  const [timeLeft, updateTimeLeft] = useState([0, 0, 0, 0, 0])
 
-    const days = Math.floor(deltaSeconds / (3600 * 24))
-    deltaSeconds -= days * 3600 * 24
+  const [months, days, hours, minutes, seconds] = timeLeft
 
-    const hours = Math.floor(deltaSeconds / 3600)
-    deltaSeconds -= hours * 3600
+  useEffect(() => {
+    const id = setInterval(() => {
+      const deltaSeconds = Date.now() - el.updatedAt
 
-    const minutes = Math.floor(deltaSeconds / 60)
-    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
+      const date = [
+        moment.duration(deltaSeconds).months(),
+        moment.duration(deltaSeconds).days(),
+        moment.duration(deltaSeconds).hours(),
+        moment.duration(deltaSeconds).minutes(),
+        moment.duration(deltaSeconds).seconds(),
+      ]
 
-    return { days, hours, minutes, seconds: deltaSeconds }
-  }
-
-  resetTimer = () => {
-    this.setState({
-      seconds: '00',
-      minutes: '00',
-      hours: '00',
-      days: '00',
+      updateTimeLeft(date)
     })
-  }
 
-  countUp = () => {
-    const { seconds, minutes, hours, days } = this.state
-    const pad = (num: number | string) => (+num < 10 ? '0' + num : num)
+    return () => clearInterval(id)
+  }, [el.updatedAt])
 
-    const updatedSeconds = +seconds + 1
-    if (updatedSeconds < 60) {
-      this.setState({ seconds: pad(updatedSeconds) })
-      return null
-    }
-
-    const updatedMinutes = +minutes + 1
-    if (updatedMinutes < 60) {
-      this.setState({ seconds: '00', minutes: pad(updatedMinutes) })
-      return null
-    }
-
-    const updatedHours = +hours + 1
-    if (updatedHours < 24) {
-      this.setState({ seconds: '00', minutes: '00', hours: pad(updatedHours) })
-      return null
-    }
-
-    const updatedDays = +days + 1
-    this.setState({
-      seconds: '00',
-      minutes: '00',
-      hours: '00',
-      days: pad(updatedDays),
-    })
-  }
-
-  updateDate = () => {
-    const { el } = this.props
-    const { interval: interv } = this.state
-    clearInterval(interv)
-
-    let deltaSeconds = (Date.now() - el.updatedAt) / 1000
-
-    const days = Math.floor(deltaSeconds / (3600 * 24))
-    deltaSeconds -= days * 3600 * 24
-
-    const hours = Math.floor(deltaSeconds / 3600)
-    deltaSeconds -= hours * 3600
-
-    const minutes = Math.floor(deltaSeconds / 60)
-    deltaSeconds = Math.floor(deltaSeconds - minutes * 60)
-
-    const interval = setInterval(this.countUp, 1000)
-
-    this.setState({ days, hours, minutes, seconds: deltaSeconds, interval })
-  }
-
-  componentDidMount() {
-    this.updateDate()
-  }
-
-  componentWillUnmount() {
-    const { interval } = this.state
-    clearInterval(interval)
-  }
-
-  render() {
-    const {
-      el,
-      onClick,
-      isSelected,
-      openDialog,
-      toggleEnableSignal,
+  const toggleEnableSignal = async (
+    index: number | string,
+    _id: string,
+    enabled: boolean,
+    updateSignalMutation: any
+  ) => {
+    const result = await toggleEnableMutation(
       index,
       _id,
       enabled,
-      updateSignalMutation,
-    } = this.props
-
-    const { seconds, minutes, hours, days } = this.state
-
-    return (
-      <FolioCard
-        container
-        border={isSelected ? '22px' : '22px 22px 0 0 '}
-        boxShadow={!isSelected ? 'none' : '0px 0px 34px -25px rgba(0,0,0,0.6)'}
-        borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
-        onClick={onClick}
-      >
-        <Grid container justify="space-between">
-          <Grid item style={{ maxWidth: '70%' }}>
-            <TypographyHeader textColor={'#16253D'}>{el.name}</TypographyHeader>
-            <TypographySubTitle>
-              {el.isPrivate ? ' Private signal' : ` Public signal`}
-            </TypographySubTitle>
-          </Grid>
-          <TypographyEditButton onClick={() => openDialog(el._id)}>
-            edit
-          </TypographyEditButton>
-        </Grid>
-        <Grid
-          container
-          alignItems="center"
-          alignContent="center"
-          justify="space-between"
-        >
-          <FolioValuesCell item>
-            <TypographyTitle>Last edit</TypographyTitle>
-            <TypographyTitle
-              color={'#16253D'}
-              style={{ textTransform: 'none' }}
-            >
-              {`${days}d ${hours}h ${minutes}m ${seconds}s`}
-            </TypographyTitle>
-          </FolioValuesCell>
-          <FolioValuesCell item center={true}>
-            <div>
-              <TypographyTitle>Events generated</TypographyTitle>
-              <TypographyTitle
-                fontSize={'1rem'}
-                color={isSelected ? '#97C15C' : '#2F7619'}
-              >
-                {el.eventsCount || '-'}
-              </TypographyTitle>
-            </div>
-          </FolioValuesCell>
-          <SwitchOnOff
-            enabled={enabled}
-            _id={_id}
-            onChange={() => {
-              toggleEnableSignal(index, _id, enabled, updateSignalMutation)
-              this.resetTimer()
-            }}
-          />
-        </Grid>
-      </FolioCard>
+      updateSignalMutation
     )
+
+    toggleEnable(!isEnabled)
   }
+
+  return (
+    <FolioCard
+      container
+      border={isSelected ? '22px' : '22px 22px 0 0 '}
+      boxShadow={!isSelected ? 'none' : '0px 0px 34px -25px rgba(0,0,0,0.6)'}
+      borderRadius={!isSelected ? '22px 22px 0 0 ' : '22px'}
+      onClick={onClick}
+    >
+      <Grid container justify="space-between">
+        <Grid item style={{ maxWidth: '70%' }}>
+          <TypographyHeader textColor={'#16253D'}>{el.name}</TypographyHeader>
+          <TypographySubTitle>
+            {el.isPrivate ? ' Private signal' : ` Public signal`}
+          </TypographySubTitle>
+        </Grid>
+        <TypographyEditButton onClick={() => openDialog(el._id)}>
+          edit
+        </TypographyEditButton>
+      </Grid>
+      <Grid
+        container
+        alignItems="center"
+        alignContent="center"
+        justify="space-between"
+      >
+        <FolioValuesCell item>
+          <TypographyTitle>Last edit</TypographyTitle>
+          <TypographyTitle color={'#16253D'} style={{ textTransform: 'none' }}>
+            {`${
+              months > 0 ? `${months}m ` : ''
+            }${days}d ${hours}h ${minutes}m ${seconds}s`}
+          </TypographyTitle>
+        </FolioValuesCell>
+        <FolioValuesCell item center={true}>
+          <div>
+            <TypographyTitle>Events generated</TypographyTitle>
+            <TypographyTitle
+              fontSize={'1rem'}
+              color={isSelected ? '#97C15C' : '#2F7619'}
+            >
+              {el.eventsCount || '-'}
+            </TypographyTitle>
+          </div>
+        </FolioValuesCell>
+        <SwitchOnOff
+          enabled={isEnabled}
+          _id={_id}
+          onChange={() => {
+            toggleEnableSignal(index, _id, enabled, updateSignalMutation)
+          }}
+        />
+      </Grid>
+    </FolioCard>
+  )
 }
 
 const signalsSortOptions = [
@@ -273,13 +213,13 @@ class SocialPage extends React.Component {
     this.setState({ isOrderbookOpen: false })
   }
 
-  toggleEnableSignal = (
+  toggleEnableSignal = async (
     arg: any,
     arg2: string,
     arg3: boolean,
     updateSignalMutation: (obj: object) => void
   ) => {
-    updateSignalMutation({
+    await updateSignalMutation({
       variables: {
         signalId: arg2,
         conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
@@ -303,22 +243,22 @@ class SocialPage extends React.Component {
 
     const filteredData = getFollowingSignals.length
       ? getFollowingSignals.filter((signal) => {
-        return (
-          signal.name
-            .toLowerCase()
-            .indexOf(this.state.search.toLowerCase()) !== -1
-        )
-      })
+          return (
+            signal.name
+              .toLowerCase()
+              .indexOf(this.state.search.toLowerCase()) !== -1
+          )
+        })
       : []
 
     const sortedData = filteredData.length
       ? filteredData.sort((a, b) => {
-        return signalsSort.value === signalsSortOptions[0].value
-          ? a.name && b.name && a.name.localeCompare(b.name)
-          : signalsSort.value === signalsSortOptions[1].value
+          return signalsSort.value === signalsSortOptions[0].value
+            ? a.name && b.name && a.name.localeCompare(b.name)
+            : signalsSort.value === signalsSortOptions[1].value
             ? b.eventsCount - a.eventsCount
             : b.updatedAt - a.updatedAt
-      })
+        })
       : filteredData
 
     const sharedSignalsList = sortedData.map((el, index) => (
@@ -408,8 +348,8 @@ class SocialPage extends React.Component {
                   Signal has not been found in the list
                 </TypographyEmptyFolioPanel>
               ) : (
-                  sharedSignalsList
-                )}
+                sharedSignalsList
+              )}
             </GridFolioScroll>
           </SocialTabs>
         </Grid>

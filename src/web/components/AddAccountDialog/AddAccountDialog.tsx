@@ -253,11 +253,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       background: '#fff',
                     }}
                     singleValueStyles={{
-                      color: '#abbad1',
+                      color: '#6D7786',
                       fontSize: '1.3rem',
                     }}
                     optionStyles={{
-                      color: '#abbad1',
+                      color: '#6D7786',
                       fontSize: '1.3rem',
                     }}
                   />
@@ -332,7 +332,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 <BtnCustom
                   btnWidth={'85px'}
                   borderRadius={'32px'}
-                  btnColor={blue.custom}
+                  btnColor={!dirty || isSubmitting ? 'rgba(0, 0, 0, 0.26)' : blue.custom}
                   type="submit"
                   disabled={!dirty || isSubmitting}
                 >
