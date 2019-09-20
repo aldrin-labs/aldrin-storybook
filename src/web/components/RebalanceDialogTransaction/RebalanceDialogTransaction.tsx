@@ -90,29 +90,14 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     return (
       <div>
         {progress === null ? <div
-          style={{ width: '28%', margin: '0 auto', cursor: availablePercentage === 100 ? 'pointer' : 'default' }}
+          style={{ cursor: availablePercentage === 100 ? 'pointer' : 'default' }}
           onClick={() => availablePercentage === 100 ? this.defaultStateForTransaction(handleClickOpen) : null}
         >
               <CircularProgressbar
                 value={availablePercentage}
-                text={availablePercentage === 100 ? 'GO!' : `${availablePercentage}%`}
-                maxValue={100}
-                styles={{
-                  ...buildStyles({
-                    pathColor: '#0B1FD1',
-                    trailColor: '#F9FBFD'
-                  }),
-                  text: {
-                    fontSize: '2rem',
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 'bold',
-                    fill: '#dd6956',
-                    letterSpacing: '1.5px'
-                  }
-                }}
-                strokeWidth={12}
+                text={availablePercentage === 100 ? 'GO!' : `${availablePercentage > 100 ? 100 : availablePercentage}%`}
               />
-            </div> :
+          </div> :
           <RebalanceDialogTypography
             onClick={() => this.defaultStateForTransaction(handleClickOpen)}
           >See detailed status</RebalanceDialogTypography>

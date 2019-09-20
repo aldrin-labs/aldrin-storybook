@@ -388,27 +388,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               }
             </GridTransactionTypography>
 
-            {progress !== null && <div style={{ width: '28%' }}>
-              <CircularProgressbar
-                value={newProgress}
-                text={`${newProgress}%`}
-                maxValue={100}
-                styles={{
-                  ...buildStyles({
-                    pathColor: '#0B1FD1',
-                    trailColor: '#F9FBFD'
-                  }),
-                  text: {
-                    fontSize: '2rem',
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 'bold',
-                    fill: '#dd6956',
-                    letterSpacing: '1.5px'
-                  }
-                }}
-                strokeWidth={12}
-              />
-            </div>}
+            {progress !== null && <CircularProgressbar value={newProgress} text={`${newProgress}%`}/>}
 
             <RebalanceDialogTransaction
               initialTime={+rebalanceTimePeriod.value}
