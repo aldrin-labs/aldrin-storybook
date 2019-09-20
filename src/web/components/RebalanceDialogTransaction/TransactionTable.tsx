@@ -114,7 +114,7 @@ const TransactionTable = ({
                 <TableCell
                   align="left"
                   className={classes.cell}
-                  style={{ minWidth: '6rem' }}
+                  style={{ minWidth: '18rem' }}
                 >
                   <TransactionTableStatus>
                     {row.isDone === 'success'

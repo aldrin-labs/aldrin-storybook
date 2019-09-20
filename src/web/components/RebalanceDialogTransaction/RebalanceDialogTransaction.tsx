@@ -172,7 +172,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
                 <GridCustom container justify="center">
                   <RebalanceSlippageSlider
-                    disabled={true}
+                    disabled={false}
                     slippageValue={slippageValue}
                     onChangeSlippage={onChangeSlippage}
                   />
@@ -198,7 +198,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 </TypographyTopDescription>
                 <GridCustom container justify="center">
                   <RebalanceSlippageSlider
-                    disabled={isEmptyTable}
+                    disabled={isEmptyTable || showLoader}
                     slippageValue={slippageValue}
                     onChangeSlippage={onChangeSlippage}
                   />
