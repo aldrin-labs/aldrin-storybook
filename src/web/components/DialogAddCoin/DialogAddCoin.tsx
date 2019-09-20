@@ -1,5 +1,6 @@
 import React from 'react'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import CoinRow from './CoinRow'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
 class DialogAddCoin extends React.Component {
@@ -7,6 +8,18 @@ class DialogAddCoin extends React.Component {
     open: false,
     mouseInPopup: false,
     inputValue: '',
+    options: null,
+  }
+
+  saveOptions = (options) => {
+    const optionsWithIcon = options.map((option) => {
+      return {
+        ...option,
+        label: <CoinRow symbol={option.symbol} priceUSD={option.priceUSD} />,
+      }
+    })
+
+    this.setState({ options: optionsWithIcon })
   }
 
   onInputChange = (inputValue: string) => {
@@ -86,6 +99,11 @@ class DialogAddCoin extends React.Component {
               openMenuOnClick={false}
               needAdditionalFiltering={true}
               additionalFiltering={this.filterCoins}
+              options={this.state.options}
+              // menuPortalTarget={document.body}
+              // menuPortalStyles={{
+              //   zIndex: 11111,
+              // }}
               menuStyles={{
                 fontSize: '1.2rem',
                 minWidth: '150px',
@@ -100,7 +118,7 @@ class DialogAddCoin extends React.Component {
               }}
               menuListStyles={{
                 height: '16rem',
-                overflowY: ''
+                overflowY: '',
               }}
               optionStyles={{
                 color: '#7284A0',
