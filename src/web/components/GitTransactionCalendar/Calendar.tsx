@@ -20,7 +20,7 @@ import {
   HeatmapWrapper,
   LegendHeatmapSquare,
   LegendTypography,
-  SquarePopup,
+  SquarePopup
 } from './Calendar.styles'
 
 const styles = (theme) => ({
@@ -57,7 +57,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       onDateButtonClick,
       activeDateButton,
       classes,
-      wrapperRef,
+      wrapperRef
     } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
@@ -71,32 +71,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
     const maximumDate = moment().endOf('day')
     const minimumDate = moment().subtract(3, 'years')
-
-    const actions = client.readQuery({ 
-      query: MyTradesQuery,
-      variables: {
-        input: {
-          page: 0,
-          perPage: 600,
-          startDate: moment()
-            .startOf('day')
-            .valueOf(),
-          endDate: moment().endOf('day').valueOf(),
-        },
-      },
-    })
-
-    const {
-      trades = 0,
-      deposits = 0,
-      withdrawals = 0,
-    }: {
-      trades: number
-      deposits: number
-      withdrawals: number
-    } = getActionsSummary(actions.myPortfolios[0].portfolioActions.trades)
-
-    console.log('MyTradesQuery', trades, deposits, withdrawals)
 
     return (
       <HeatmapWrapper
@@ -131,23 +105,18 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Nov',
             'Dec',
           ]}
+
           onClick={onHeatmapDateClick}
           onMouseOver={(e, value) => {
             const popupRef = this.popupRef.current
             const { x, y } = e.target.getBoundingClientRect()
-            const sum = trades + deposits + withdrawals
-            let actionsValue = value
             popupRef.style.display = 'block'
             popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
             popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
 
-            if(moment(value.date).valueOf() === moment().startOf('day').valueOf()) {
-              actionsValue.count = sum
-            }
-
-            popupRef.textContent = actionsValue ? `${actionsValue.count} ${
-              actionsValue.count === 1 ? `action` : 'actions'
-            } on ${moment(actionsValue.date).format('DD MMM, YYYY')}` : 'No data'
+            popupRef.textContent = value ? `${value.count} ${
+              value.count === 1 ? `action` : 'actions'
+            } on ${moment(value.date).format('DD MMM, YYYY')}` : 'No data'
           }}
           onMouseLeave={() => {
             const popupRef = this.popupRef.current
@@ -163,8 +132,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           className="ChoosePeriodsBlock"
           style={{
             margin: '.75rem 0 2.5rem',
-            padding: '0 3rem 0 0',
-            position: 'absolute',
+            padding: '0 1rem 0 0',
+            marginTop: '-4%',
           }}
         >
           <Grid item>
@@ -181,14 +150,10 @@ class GitTransactionCalendar extends PureComponent<IProps> {
               }}
             />
           </Grid>
-          <Grid
-            item
-            alignItems="center"
-            style={{
-              width: 'auto',
-              display: 'flex',
-            }}
-          >
+          <Grid item alignItems="center" style={{
+            width: 'auto',
+            display: 'flex',
+          }}>
             <LegendTypography>Less</LegendTypography>
             <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
             <LegendHeatmapSquare fill={LEGEND_COLORS.one} />
@@ -208,8 +173,6 @@ const CalendarDataWrapper = ({ ...props }) => {
 
   startDate = +startDate
   endDate = +endDate
-
-  console.log('startDate, endDate', startDate, endDate)
 
   return (
     <QueryRenderer
