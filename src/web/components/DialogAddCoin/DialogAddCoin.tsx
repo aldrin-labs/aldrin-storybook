@@ -8,19 +8,13 @@ class DialogAddCoin extends React.Component {
     open: false,
     mouseInPopup: false,
     inputValue: '',
-    options: [],
   }
 
-  saveOptions = (options) => {
-    console.log('hm', options)
-    const optionsWithIcon = options.map((option) => {
-      return {
-        ...option,
-        label: <CoinRow symbol={option.value} priceUSD={option.priceUSD} />,
-      }
-    })
-
-    this.setState({ options: optionsWithIcon })
+  changeRowToShow = (option) => {
+    return {
+      ...option,
+      label: <CoinRow symbol={option.value} priceUSD={option.priceUSD} />,
+    }
   }
 
   onInputChange = (inputValue: string) => {
@@ -104,8 +98,7 @@ class DialogAddCoin extends React.Component {
               openMenuOnClick={false}
               needAdditionalFiltering={true}
               additionalFiltering={this.filterCoins}
-              options={this.state.options}
-              saveOptions={this.saveOptions}
+              changeRowToShow={this.changeRowToShow}
               // menuPortalTarget={document.body}
               // menuPortalStyles={{
               //   zIndex: 11111,

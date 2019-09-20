@@ -2,8 +2,6 @@ import React from 'react'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
 const CoinRow = ({
-  options,
-  saveOptions,
   inputValue,
   filterCoin,
   onInputChange,
@@ -16,8 +14,6 @@ const CoinRow = ({
     classNamePrefix="custom-select-box"
     isClearable={true}
     isSearchable={true}
-    options={options}
-    saveOptions={saveOptions}
     menuPortalTarget={document.body}
     menuPortalStyles={{
       zIndex: 11111,

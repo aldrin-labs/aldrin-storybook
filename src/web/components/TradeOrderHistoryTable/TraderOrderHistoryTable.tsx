@@ -7,12 +7,6 @@ import CoinRow from './CoinRow'
 
 @withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
-  state = {
-    options: [],
-  }
-
-  saveOptions = (options) => this.setState({ options })
-
   addFilter = () => {
     const {
       rows: { head: headings },
@@ -22,8 +16,6 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       updateFilterCoin,
     } = this.props
 
-    const { options } = this.state
-
     return headings.map((heading) => {
       if (heading.label === 'pairFilter')
         return {
@@ -31,12 +23,10 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
           label: (
             <CoinRow
               {...{
-                options,
                 inputValue,
                 filterCoin,
                 onInputChange,
                 updateFilterCoin,
-                saveOptions: this.saveOptions,
               }}
             />
           ),

@@ -25,8 +25,6 @@ const RebalanceDialogLeave = ({
 }) => {
   const transactionStatuses = transactionsData.map((t) => t.isDone)
 
-  const lineStatuses = transactionStatuses.join('')
-
   const consistFailTransaction = transactionStatuses.includes('fail')
   const consistLoadingTransaction =
     transactionStatuses.includes('loading') ||
@@ -44,11 +42,17 @@ const RebalanceDialogLeave = ({
   }
 
   useEffect(() => {
+    setLoader(true)
+
     if (consistFailTransaction || !consistLoadingTransaction) {
       hideLeavePopup()
-      if (lineStatuses.length > 0) setLoader(false)
+      setLoader(transactionsData.length === 0)
     }
-  }, [lineStatuses, consistFailTransaction, consistLoadingTransaction])
+  }, [
+    transactionsData.length,
+    consistFailTransaction,
+    consistLoadingTransaction,
+  ])
 
   return (
     <Dialog
