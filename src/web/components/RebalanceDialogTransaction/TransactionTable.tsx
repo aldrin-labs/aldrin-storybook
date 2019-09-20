@@ -9,6 +9,7 @@ import {
   TransactionTablePrice,
   TransactionTableCoin,
   TransactionTableResult,
+  TransactionTableStatus,
 } from './TransactionTable.styles'
 
 import DoneIcon from '../../../icons/DoneIcon.svg'
@@ -37,7 +38,8 @@ const TransactionTable = ({
   isFinished,
   showLoader,
 }: IProps) => {
-  console.log('transdata', transactionsData)
+  let loaderExists = false
+
   return (
     <>
       <ProgressBar
@@ -47,6 +49,7 @@ const TransactionTable = ({
         isFinished={isFinished}
         style={{
           padding: 0,
+          marginBottom: '1.5rem',
         }}
       />
       <Table className={classes.table}>
@@ -66,14 +69,15 @@ const TransactionTable = ({
               (sum * row.convertedFromPrice) / row.convertedToPrice
             const convertedSumUSDT = convertedSum * row.convertedToPrice
 
-            console.log(row, 'row', sum, 'sum')
-
             return (
               <TableRow key={index}>
                 <TableCell
                   component="th"
                   scope="row"
-                  style={{ width: '250px', padding: '4px 15px 4px 24px' }}
+                  style={{
+                    width: '250px',
+                    padding: '.4rem 1.5rem .4rem 2.4rem',
+                  }}
                 >
                   <Grid container alignItems="flex-start" wrap="nowrap">
                     <TransactionTableCoin>
@@ -81,7 +85,7 @@ const TransactionTable = ({
                         {parseFloat(sum.toFixed(6))} {row.convertedFrom}
                       </span>
                       <TransactionTablePrice>
-                        ${parseFloat(row.convertedFromPrice.toFixed(3))}
+                        ${parseFloat(row.convertedFromPrice.toFixed(8))}
                       </TransactionTablePrice>
                     </TransactionTableCoin>
                     {
@@ -97,33 +101,47 @@ const TransactionTable = ({
                         {parseFloat(convertedSum.toFixed(6))} {row.convertedTo}
                       </span>
                       <TransactionTablePrice>
-                        ${parseFloat(row.convertedToPrice.toFixed(3))}
+                        ${parseFloat(row.convertedToPrice.toFixed(8))}
                       </TransactionTablePrice>
                     </TransactionTableCoin>
                   </Grid>
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="left" style={{ paddingRight: '10px' }}>
                   <TransactionTableResult>
                     ${parseFloat(convertedSumUSDT.toFixed(1))}
                   </TransactionTableResult>
+                </TableCell>
+                <TableCell align="left" className={classes.cell}>
+                  <TransactionTableStatus>
+                    {row.isDone === 'success'
+                      ? 'order executed'
+                      : row.isDone === 'fail'
+                      ? 'unsuccesful'
+                      : row.isDone === 'loading'
+                      ? 'order placed'
+                      : null}
+                  </TransactionTableStatus>
                 </TableCell>
                 <TableCell align="right" style={{ position: 'relative' }}>
                   {row.isDone === 'success' ? (
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
-                  ) : showLoader || row.isDone === 'loading' ? (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '17px',
-                        right: '20px',
-                        height: '24px',
-                        width: '24px',
-                      }}
-                    >
-                      <Loading size={24} />
-                    </div>
+                  ) : (showLoader || row.isDone === 'loading') &&
+                    !loaderExists ? (
+                    (loaderExists = true && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '17px',
+                          right: '20px',
+                          height: '24px',
+                          width: '24px',
+                        }}
+                      >
+                        <Loading size={24} />
+                      </div>
+                    ))
                   ) : null}
                 </TableCell>
               </TableRow>
