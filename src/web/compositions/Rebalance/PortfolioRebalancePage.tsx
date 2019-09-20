@@ -101,14 +101,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     let progress
     const rebalanceStarted = transactions.some(transaction => transaction.isDone === 'loading')
     const rebalanceFinished = transactions.every(transaction => transaction.isDone)
-    const isRebalanceError = transactions.some(transaction => transaction.isDone === 'error')
+    const failedTransactionIndex = transactions.findIndex(transaction => transaction.error !== undefined)
 
-    if (isRebalanceError) {
+    if (failedTransactionIndex !== -1) {
       this.setState({
         rebalanceError: true
       })
       progress = 'N/A'
-      this.props.enqueueSnackbar('Something went wrong when rebalancing', { variant: 'error' })
+      this.props.enqueueSnackbar(transactions[failedTransactionIndex].error.message, { variant: 'error' })
     } else {
       if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
         progress = Math.round(transactions.reduce((progress, transaction) => {
@@ -124,7 +124,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       }
     }
 
-    if (progress === 100 || isRebalanceError) {
+    if (progress === 100 || failedTransactionIndex !== -1) {
       this.setState({
         rebalanceFinished: true
       })
