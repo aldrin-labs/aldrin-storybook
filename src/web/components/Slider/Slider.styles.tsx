@@ -19,9 +19,6 @@ export const sliderTrackMediaQueries = css`
   @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
     height: 1.5rem;
   }
-  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 2rem;
-  }
 `
 
 export const sliderThumbMediaQueries = css`
@@ -99,21 +96,28 @@ export const StyledLock = styled(({ value, sliderWidth, ...rest }) => (
   color: #fff;
   position: absolute;
   z-index: 10;
-  left: calc(${(props) =>
-    props.value * +(parseFloat(props.sliderWidth) / 100)}rem - 0.75rem)};
+  left: calc(
+    ${(props) => props.value * +(parseFloat(props.sliderWidth) / 100)}rem -
+      0.75rem
+  );
   height: 1.5rem;
   width: 1.5rem;
-  top: .2rem;
+  top: 0.2rem;
 `
 
 export const AvailableRange = styled.div`
-  height: 16px;
+  height: 1.8rem;
   position: absolute;
-  top: 0;
+  top: 0.1rem;
   left: ${(props) => props.x || 0};
   background: #abbad1;
-  width: ${(props) => props.range || '175px'};
+  width: ${(props) => props.range || '17.5rem'};
   opacity: 0.5;
-  border-radius: 30px;
+  border-radius: 3rem;
   z-index: 1;
+
+  @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 1.6rem;
+    top: 0.2rem;
+  }
 `
