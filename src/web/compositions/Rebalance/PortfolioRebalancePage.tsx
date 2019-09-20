@@ -272,7 +272,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       history,
       slippageValue,
       onChangeSlippage,
-      rebalanceIsExecuting
+      rebalanceIsExecuting,
+      hideLeavePopup,
       // search,
       // searchCoinInTable,
     } = this.props
@@ -608,6 +609,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           transactionsData={transactionsDataWithPrices}
           slippageValue={slippageValue}
           onChangeSlippage={onChangeSlippage}
+          hideLeavePopup={hideLeavePopup}
         />
 
         <Joyride

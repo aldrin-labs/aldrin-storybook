@@ -9,6 +9,7 @@ import {
   TransactionTablePrice,
   TransactionTableCoin,
   TransactionTableResult,
+  TransactionTableStatus,
 } from './TransactionTable.styles'
 
 import DoneIcon from '../../../icons/DoneIcon.svg'
@@ -48,6 +49,7 @@ const TransactionTable = ({
         isFinished={isFinished}
         style={{
           padding: 0,
+          marginBottom: '1.5rem',
         }}
       />
       <Table className={classes.table}>
@@ -66,12 +68,16 @@ const TransactionTable = ({
             const convertedSum =
               (sum * row.convertedFromPrice) / row.convertedToPrice
             const convertedSumUSDT = convertedSum * row.convertedToPrice
+
             return (
               <TableRow key={index}>
                 <TableCell
                   component="th"
                   scope="row"
-                  style={{ width: '250px', padding: '4px 15px 4px 24px' }}
+                  style={{
+                    width: '250px',
+                    padding: '.4rem 1.5rem .4rem 2.4rem',
+                  }}
                 >
                   <Grid container alignItems="flex-start" wrap="nowrap">
                     <TransactionTableCoin>
@@ -100,10 +106,21 @@ const TransactionTable = ({
                     </TransactionTableCoin>
                   </Grid>
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="left" style={{ paddingRight: '10px' }}>
                   <TransactionTableResult>
                     ${parseFloat(convertedSumUSDT.toFixed(1))}
                   </TransactionTableResult>
+                </TableCell>
+                <TableCell align="left" className={classes.cell}>
+                  <TransactionTableStatus>
+                    {row.isDone === 'success'
+                      ? 'order executed'
+                      : row.isDone === 'fail'
+                      ? 'unsuccesful'
+                      : row.isDone === 'loading'
+                      ? 'order placed'
+                      : null}
+                  </TransactionTableStatus>
                 </TableCell>
                 <TableCell align="right" style={{ position: 'relative' }}>
                   {row.isDone === 'success' ? (
