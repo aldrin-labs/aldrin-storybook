@@ -387,6 +387,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 showWarning,
                 hideWarning,
                 sliderStep,
+                rebalanceIsExecuting,
               }}
               // search={search}
               // searchCoinInTable={searchCoinInTable}

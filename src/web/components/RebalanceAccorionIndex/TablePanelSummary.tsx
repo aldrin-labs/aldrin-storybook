@@ -23,7 +23,6 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 @withTheme()
-
 class TablePanelSummary extends React.Component {
   render() {
     const {
@@ -36,15 +35,16 @@ class TablePanelSummary extends React.Component {
       handleSlideChange,
       theme,
       width,
-      expanded
+      expanded,
     } = this.props
-
 
     return (
       <Table style={{ minWidth: '700' }}>
         <TableHead>
           <TableRow>
-            <TableCell style={{ padding: '0px', width: '12vw', border: 'none' }}>
+            <TableCell
+              style={{ padding: '0px', width: '12vw', border: 'none' }}
+            >
               <StyledTypographyAccordionHeader fontWeight="700">
                 Portfolio
               </StyledTypographyAccordionHeader>
@@ -53,7 +53,9 @@ class TablePanelSummary extends React.Component {
               align="left"
               style={{ padding: '0px', width: '26vw', border: 'none' }}
             >
-              <StyledTypography fontWeight="700" fontSize="1.2rem">Current value</StyledTypography>
+              <StyledTypography fontWeight="700" fontSize="1.2rem">
+                Current value
+              </StyledTypography>
               <StyledSubTypography color={theme.palette.text.subPrimary}>
                 ${roundAndFormatNumber(+secondColValue, 2, false)}
               </StyledSubTypography>
@@ -70,15 +72,15 @@ class TablePanelSummary extends React.Component {
               }}
             >
               <Slider
-                thumbWidth="25px"
-                thumbHeight="25px"
+                thumbWidth="2.4rem"
+                thumbHeight="2.4rem"
                 sliderWidth="18rem"
-                sliderHeight="17px"
-                sliderHeightAfter="20px"
-                borderRadius="30px"
-                borderRadiusAfter="30px"
+                sliderHeight="1.7rem"
+                sliderHeightAfter="2rem"
+                borderRadius="3rem"
+                borderRadiusAfter="3rem"
                 thumbBackground="#165BE0"
-                borderThumb="2px solid white"
+                borderThumb="2px solid #165BE0"
                 trackAfterBackground="#E7ECF3"
                 trackBeforeBackground={accordionPanelHeadingBorderColor}
                 value={value}
@@ -102,15 +104,19 @@ class TablePanelSummary extends React.Component {
               align="left"
               // style={{ border: 'none', padding: '0 120px 0 0' }}
             >
-              <StyledTypography fontWeight="700" fontSize="1.2rem">Target value</StyledTypography>
+              <StyledTypography fontWeight="700" fontSize="1.2rem">
+                Target value
+              </StyledTypography>
               <StyledSubTypography color={theme.palette.text.subPrimary}>
                 ${roundAndFormatNumber(+fourthColValue, 2, false)}
               </StyledSubTypography>
             </TableCellLast>
             <TableCell align="right">
-              <ExpandMoreIcon style={{
-                transform: `rotate(${expanded ? '180deg' : '0'})`
-              }}/>
+              <ExpandMoreIcon
+                style={{
+                  transform: `rotate(${expanded ? '180deg' : '0'})`,
+                }}
+              />
             </TableCell>
           </TableRow>
         </TableHead>
