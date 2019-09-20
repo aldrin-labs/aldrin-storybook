@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import moment from 'moment'
+import { client } from '@core/graphql/apolloClient'
 
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
@@ -8,6 +9,8 @@ import { withStyles } from '@material-ui/core/styles'
 
 import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
 
+import { getActionsSummary } from '../../compositions/Transaction/TransactionsActionsStatistic/TransactionsActionsStatistic.utils'
+import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
 import { IProps } from './Calendar.types'
@@ -69,6 +72,32 @@ class GitTransactionCalendar extends PureComponent<IProps> {
     const maximumDate = moment().endOf('day')
     const minimumDate = moment().subtract(3, 'years')
 
+    const actions = client.readQuery({ 
+      query: MyTradesQuery,
+      variables: {
+        input: {
+          page: 0,
+          perPage: 600,
+          startDate: moment()
+            .startOf('day')
+            .valueOf(),
+          endDate: moment().endOf('day').valueOf(),
+        },
+      },
+    })
+
+    const {
+      trades = 0,
+      deposits = 0,
+      withdrawals = 0,
+    }: {
+      trades: number
+      deposits: number
+      withdrawals: number
+    } = getActionsSummary(actions.myPortfolios[0].portfolioActions.trades)
+
+    console.log('MyTradesQuery', trades, deposits, withdrawals)
+
     return (
       <HeatmapWrapper
         style={{
@@ -77,6 +106,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
         }}
       >
         <SquarePopup ref={this.popupRef}/>
+        
         <CalendarHeatmap
           className={classes.root}
           startDate={moment(+startDate).subtract(1, 'seconds')}
@@ -86,6 +116,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           classForValue={(value) =>
             value ? classes[value.className] : 'empty-value'
           }
+          showWeekdayLabels={true}
           monthLabels={[
             'Jan',
             'Feb',
@@ -105,13 +136,19 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           onMouseOver={(e, value) => {
             const popupRef = this.popupRef.current
             const { x, y } = e.target.getBoundingClientRect()
+            const sum = trades + deposits + withdrawals
+            let actionsValue = value
             popupRef.style.display = 'block'
             popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
             popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
 
-            popupRef.textContent = value ? `${value.count} ${
-              value.count === 1 ? `action` : 'actions'
-            } on ${moment(value.date).format('DD MMM, YYYY')}` : 'No data'
+            if(moment(value.date).valueOf() === moment().startOf('day').valueOf()) {
+              actionsValue.count = sum
+            }
+
+            popupRef.textContent = actionsValue ? `${actionsValue.count} ${
+              actionsValue.count === 1 ? `action` : 'actions'
+            } on ${moment(actionsValue.date).format('DD MMM, YYYY')}` : 'No data'
           }}
           onMouseLeave={() => {
             const popupRef = this.popupRef.current
@@ -124,9 +161,11 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           justify="space-between"
           alignItems="center"
           wrap="nowrap"
+          className="ChoosePeriodsBlock"
           style={{
             margin: '.75rem 0 2.5rem',
             padding: '0 3rem 0 0',
+            position: 'absolute',
           }}
         >
           <Grid item>
@@ -145,7 +184,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           </Grid>
           <Grid item alignItems="center" style={{
             width: 'auto',
-            display: 'flex'
+            display: 'flex',
           }}>
             <LegendTypography>Less</LegendTypography>
             <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
@@ -166,6 +205,8 @@ const CalendarDataWrapper = ({ ...props }) => {
 
   startDate = +startDate
   endDate = +endDate
+
+  console.log('startDate, endDate', startDate, endDate)
 
   return (
     <QueryRenderer

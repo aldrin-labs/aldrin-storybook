@@ -21,21 +21,21 @@ export const ChoosePeriodButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 1.2rem;
-  border: 1.5px solid #165be0;
+  border-radius: 1rem;
   text-transform: uppercase;
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
-  padding: 0 1.8rem;
+  padding: 0 1.2rem;
   min-height: 2.5rem;
-  font-weight: 700;
+  font-weight: 400;
   cursor: pointer;
 
   outline: none;
   box-shadow: none;
 
-  color: ${(props) => (props.active ? '#fff' : '#165be0')};
-  background-color: ${(props) => (props.active ? '#165be0' : 'transparent')};
+  color: ${(props) => (props.active ? '#fff' : '#7284A0')};
+  background-color: ${(props) => (props.active ? '#0B1FD1' : 'transparent')};
+  border: 1.3px solid ${(props) => (props.active ? '#0B1FD1' : '#E0E5EC')};
 
   &:not(:last-child) {
     margin-right: .75rem;
@@ -62,13 +62,25 @@ export const ChoosePeriodTypography = styled(Typography)`
 
 export const DatePickerWrapper = styled.div`
   & .DateRangePicker {
-    border-radius: 1.2rem;
-    border: 1.5px solid #165be0;
+    border-radius: 0.5rem;
+    border: 1.35px solid #165be0;
   }
 
   & .DateRangePickerInput {
     display: flex;
     align-items: center;
+
+    &_calendarIcon {
+      padding: 0px;
+
+      &_svg {
+        margin-right: 5px;
+        fill: #5C8CEA;
+        height: 13px;
+        width: 12px;
+        outline: 0;
+      }
+    }
   }
 
   & .DateRangePickerInput.DateRangePickerInput__withBorder,
@@ -79,25 +91,34 @@ export const DatePickerWrapper = styled.div`
     border-radius: 0;
   }
 
-  & .DateInput {
-    width: 9.5rem;
-
-    .DateInput_input {
-      padding: 0.21rem 1rem 0.21rem 1.25rem;
-    }
-
-    &:last-child {
-      width: 9.75rem;
-
-      .DateInput_input {
-        padding: 0.21rem 1rem;
-      }
-    }
-  }
+  
   & .DateInput_input {
     font-family: 'DM Sans';
     font-size: 1.25rem;
     font-weight: 700;
+    line-height: 18px;
+  }
+
+
+  @media only screen and (min-width: 1024px) {
+    & .DateInput {
+      width: 8.6rem;
+  
+      .DateInput_input {
+        padding: 0.11rem 0.9rem 0.11rem 0.9rem;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 11px;
+      }
+  
+      &:last-child {
+        width: 9.75rem;
+  
+        .DateInput_input {
+          padding: 0.21rem 1rem;
+        }
+      }
+    }
   }
 
   @media only screen and (min-width: 2560px) {
