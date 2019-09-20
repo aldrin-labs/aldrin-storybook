@@ -1,6 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import Slider from '@material-ui/lab/Slider'
+import Lock from '@material-ui/icons/Lock'
 
 // const thumbWidth = '25px'
 // const thumbHeight = '25px'
@@ -16,22 +17,19 @@ import Slider from '@material-ui/lab/Slider'
 
 export const sliderTrackMediaQueries = css`
   @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 20px;
-  }
-  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-    height: 26px;
+    height: 1.5rem;
   }
 `
 
 export const sliderThumbMediaQueries = css`
   @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
-    width: 24px;
-    height: 24px;
+    width: 2rem;
+    height: 2rem;
   }
 
   @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-    width: 30px;
-    height: 30px;
+    width: 3rem;
+    height: 3rem;
   }
 `
 
@@ -41,9 +39,11 @@ export const StyledSlider = styled(
     trackBeforeBackground,
     trackAfterOpacity,
     thumbBackground,
+    title,
     ...rest
   }) => <Slider {...rest} />
 )`
+  top: 1rem;
   width: ${(props: { sliderWidth: string }) => props.sliderWidth || '100px'};
   
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
@@ -52,8 +52,10 @@ export const StyledSlider = styled(
   }
   
   & .trackAfter {
-    border-radius: ${(props: { borderRadiusAfter: string }) =>
+    border-top-right-radius: ${(props: { borderRadiusAfter: string }) =>
       props.borderRadiusAfter || '50px'};
+      border-bottom-right-radius: ${(props: { borderRadiusAfter: string }) =>
+        props.borderRadiusAfter || '50px'};
     background: ${(props: { trackAfterBackground: string }) =>
       props.trackAfterBackground};
     opacity: ${(props: { trackAfterOpacity: string }) =>
@@ -65,8 +67,10 @@ export const StyledSlider = styled(
   }
 
   & .trackBefore {
-    border-radius: ${(props: { borderRadius: string }) =>
+    border-top-left-radius: ${(props: { borderRadius: string }) =>
       props.borderRadius || '50px'};
+      border-bottom-left-radius: ${(props: { borderRadius: string }) =>
+        props.borderRadius || '50px'};
     height: ${(props: { sliderHeight: string }) => props.sliderHeight || '2px'};
     background: ${(props: { trackBeforeBackground: string }) =>
       props.trackBeforeBackground};
@@ -86,14 +90,34 @@ export const StyledSlider = styled(
     ${sliderThumbMediaQueries}
 `
 
-export const AvailableRange = styled.div`
-  height: 16px;
+export const StyledLock = styled(({ value, sliderWidth, ...rest }) => (
+  <Lock {...rest} />
+))`
+  color: #fff;
   position: absolute;
-  top: 0;
-  left: ${props => props.x || 0};
-  background: #ABBAD1;
-  width: ${props => props.range || '175px'};
-  opacity: .5;
-  border-radius: 30px;
+  z-index: 10;
+  left: calc(
+    ${(props) => props.value * +(parseFloat(props.sliderWidth) / 100)}rem -
+      0.75rem
+  );
+  height: 1.5rem;
+  width: 1.5rem;
+  top: 0.2rem;
+`
+
+export const AvailableRange = styled.div`
+  height: 1.8rem;
+  position: absolute;
+  top: 0.1rem;
+  left: ${(props) => props.x || 0};
+  background: #abbad1;
+  width: ${(props) => props.range || '17.5rem'};
+  opacity: 0.5;
+  border-radius: 3rem;
   z-index: 1;
+
+  @media screen and (min-device-width: 1921px) and (min-device-height: 1081px) and (-webkit-min-device-pixel-ratio: 1) {
+    height: 1.6rem;
+    top: 0.2rem;
+  }
 `
