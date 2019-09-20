@@ -23,7 +23,17 @@ const RebalanceDialogLeave = ({
   transactionsData,
   hideLeavePopup,
 }) => {
-  const [isFinished, setFinished] = useState(false)
+  const transactionStatuses = transactionsData.map((t) => t.isDone)
+
+  const consistFailTransaction = transactionStatuses.includes('fail')
+  const consistLoadingTransaction =
+    transactionStatuses.includes('loading') ||
+    transactionStatuses.includes(null)
+
+  const [isFinished, setFinished] = useState(
+    consistFailTransaction || !consistLoadingTransaction
+  )
+
   const [showLoader, setLoader] = useState(true)
 
   const isCompletedTransaction = () => {
@@ -31,17 +41,18 @@ const RebalanceDialogLeave = ({
     setLoader(false)
   }
 
-  const lineStatuses = transactionsData.map((t) => t.isDone).join('')
-
   useEffect(() => {
-    const transactionStatuses = transactionsData.map((t) => t.isDone)
-    const consistFailTransaction = transactionStatuses.includes('fail')
-    const consistLoadingTransaction =
-      transactionStatuses.includes('loading') ||
-      transactionStatuses.includes(null)
+    setLoader(true)
 
-    if (consistFailTransaction || !consistLoadingTransaction) hideLeavePopup()
-  }, [lineStatuses])
+    if (consistFailTransaction || !consistLoadingTransaction) {
+      hideLeavePopup()
+      setLoader(transactionsData.length === 0)
+    }
+  }, [
+    transactionsData.length,
+    consistFailTransaction,
+    consistLoadingTransaction,
+  ])
 
   return (
     <Dialog
@@ -96,7 +107,7 @@ const RebalanceDialogLeave = ({
         </GridCustom>
 
         <AccordionTable
-          accordionTitle={'Status'}
+          accordionTitle={'status'}
           transactionsData={transactionsData}
           getError={() => {}}
           isCompleted={isCompletedTransaction}
