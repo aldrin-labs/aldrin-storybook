@@ -15,7 +15,7 @@ import {
   DialogTitleCustom,
   TypographyTopDescription,
   StyledPaper,
-  RebalanceDialogTypography
+  RebalanceDialogTypography,
 } from './RebalanceDialogTransaction.styles'
 
 import RebalanceSlippageSlider from '@sb/components/RebalanceSlippageSlider'
@@ -38,7 +38,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     isError: false,
     isDisableBtns: false,
     showLoader: false,
-    hideDialogButton: false
+    hideDialogButton: false,
   }
 
   getErrorForTransaction = (errorState) => {
@@ -50,7 +50,11 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   activateGoBtn = async () => {
-    this.setState({ isDisableBtns: true, showLoader: true, hideDialogButton: true })
+    this.setState({
+      isDisableBtns: true,
+      showLoader: true,
+      hideDialogButton: true,
+    })
     await this.props.executeRebalanceHandler()
   }
 
@@ -79,29 +83,45 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       handleClose,
       onNewSnapshot,
       progress,
-      rebalanceInfoPanelData
+      rebalanceInfoPanelData,
     } = this.props
 
     const { isFinished, isError, isDisableBtns, showLoader } = this.state
     const isEmptyTable = transactionsData.length === 0
 
-    const availablePercentage = Math.ceil(100 - rebalanceInfoPanelData.availablePercentage)
+    const availablePercentage = Math.ceil(
+      100 - rebalanceInfoPanelData.availablePercentage
+    )
 
     return (
       <div>
-        {progress === null ? <div
-          style={{ cursor: availablePercentage === 100 ? 'pointer' : 'default' }}
-          onClick={() => availablePercentage === 100 ? this.defaultStateForTransaction(handleClickOpen) : null}
-        >
-              <CircularProgressbar
-                value={availablePercentage}
-                text={availablePercentage === 100 ? 'GO!' : `${availablePercentage > 100 ? 100 : availablePercentage}%`}
-              />
-          </div> :
+        {progress === null ? (
+          <div
+            style={{
+              cursor: availablePercentage === 100 ? 'pointer' : 'default',
+            }}
+            onClick={() =>
+              availablePercentage === 100
+                ? this.defaultStateForTransaction(handleClickOpen)
+                : null
+            }
+          >
+            <CircularProgressbar
+              value={availablePercentage}
+              text={
+                availablePercentage === 100
+                  ? 'GO!'
+                  : `${availablePercentage > 100 ? 100 : availablePercentage}%`
+              }
+            />
+          </div>
+        ) : (
           <RebalanceDialogTypography
             onClick={() => this.defaultStateForTransaction(handleClickOpen)}
-          >See detailed status</RebalanceDialogTypography>
-        }
+          >
+            See detailed status
+          </RebalanceDialogTypography>
+        )}
 
         <Dialog
           PaperComponent={StyledPaper}
@@ -208,7 +228,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 </TypographyTopDescription>
                 <GridCustom container justify="center">
                   <RebalanceSlippageSlider
-                    disabled={isEmptyTable || showLoader}
+                    disabled={showLoader}
                     slippageValue={slippageValue}
                     onChangeSlippage={onChangeSlippage}
                   />

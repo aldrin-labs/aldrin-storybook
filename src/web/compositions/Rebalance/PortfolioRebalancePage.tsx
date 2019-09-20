@@ -499,6 +499,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 showWarning,
                 hideWarning,
                 sliderStep,
+                rebalanceIsExecuting,
                 rebalanceInfoPanelData
               }}
               // search={search}

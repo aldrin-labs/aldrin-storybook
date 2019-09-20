@@ -16,6 +16,9 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
+import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
+import Help from '@material-ui/icons/Help'
+
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
 
 @withTheme()
@@ -84,6 +87,21 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 >
                   {'$'}
                   {roundAndFormatNumber(+accountValue, 2, false)}
+                  <LightTooltip
+                    title={'Amount less funds currently in open orders.'}
+                    placement={'right-end'}
+                  >
+                    <Help
+                      style={{
+                        position: 'relative',
+                        left: '.3rem',
+                        top: '2px',
+                        height: '1.5rem',
+                        width: '1.5rem',
+                        color: '#005dd9',
+                      }}
+                    />
+                  </LightTooltip>
                 </StyledSubTypography>
               </Grid>
 
