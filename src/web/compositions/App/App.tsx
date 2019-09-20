@@ -27,7 +27,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-const version = `10.4.26`
+const version = `10.4.30`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -49,9 +49,8 @@ const AppRaw = ({
 
   const fullscreen: boolean =
     currentPage === '/chart' && chartPageView !== 'default'
-  const showFooter: boolean = currentPage !== '/registration'
-  const isChartPage: boolean = currentPage === '/chart'
-  const isPNL: boolean = currentPage === '/portfolio/main'
+  const showFooter = currentPage !== '/registration'
+  const isPNL = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
 
@@ -59,12 +58,12 @@ const AppRaw = ({
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
-        <AppGridLayout showFooter={showFooter} isPNL={isPNL} maxHeight={isChartPage}>
+        <AppGridLayout showFooter={showFooter} isPNL={isPNL}>
           {!pageIsRegistration && (
             <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
           )}
           {children}
-          <Footer fullscreenMode={fullscreen} showFooter={showFooter} isFooterStatic={isChartPage}/>
+          <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
         </AppGridLayout>
         {/* <ShowWarningOnMoblieDevice /> */}
         <GlobalStyle />

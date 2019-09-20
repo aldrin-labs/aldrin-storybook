@@ -102,14 +102,14 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             this.state.nearestSpreadXIndex === 0 &&
             i === index
           ) {
-            return { x: 1.75, dX: d.x, y: d.y }
+            return d
           }
           if (index === 0) {
             return null
           }
 
           if (i === index) {
-            return { x: 1.75, dX: d.x, y: d.y }
+            return d
           }
 
           return null
@@ -129,7 +129,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             this.state.nearestOrderXIndex === 0 &&
             i === index
           ) {
-            return { x: 1.75, dX: d.x, y: d.y }
+            return d
           }
 
           if (index === 0) {
@@ -137,7 +137,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
           }
 
           if (i === index) {
-            return { x: 1.75, dX: d.x, y: d.y }
+            return d
           }
 
           return null
@@ -295,7 +295,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 {crosshairValuesForSpread.length >= 1 ? (
                   <>
                     <Typography variant="h6" color="secondary">
-                      {`${crosshairValuesForSpread[0].dX.toFixed(8)} `}
+                      {`${crosshairValuesForSpread[0].x.toFixed(8)} `}
                       {base || 'Fiat'}
                     </Typography>
                     <Br light={true} />
@@ -304,11 +304,12 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                         {crosshairValuesForSpread[0].y.toFixed(2)}{' '}
                         {base || 'Fiat'}
                       </Typography>
+                      <RotatedBr />
                       <Typography variant="body1">
                         {/* For a total of{' '} */}
                         {(
                           crosshairValuesForSpread[0].y *
-                          crosshairValuesForSpread[0].dX
+                          crosshairValuesForSpread[0].x
                         ).toFixed(8)}{' '}
                         {quote || 'CC'}
                       </Typography>
@@ -327,7 +328,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 {crosshairValuesForOrder.length >= 1 ? (
                   <>
                     <Typography variant="h6" color="secondary">
-                      {`${crosshairValuesForOrder[0].dX.toFixed(8)} `}{' '}
+                      {`${crosshairValuesForOrder[0].x.toFixed(8)} `}{' '}
                       {base || 'Fiat'}
                     </Typography>
 
@@ -338,12 +339,13 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                         {crosshairValuesForOrder[0].y.toFixed(2)}{' '}
                         {base || 'Fiat'}
                       </Typography>
+                      <RotatedBr />
                       <Typography variant="body1">
                         {/* {' '}
                       For a total of{' '} */}
                         {(
                           crosshairValuesForOrder[0].y *
-                          crosshairValuesForOrder[0].dX
+                          crosshairValuesForOrder[0].x
                         ).toFixed(8)}{' '}
                         {quote || 'CC'}
                       </Typography>
@@ -447,14 +449,11 @@ const CrosshairContent = styled.div`
     props.background};
   color: ${(props: { textColor?: string; background?: string }) =>
     props.textColor};
-  padding: 0.4rem;
+  padding: 0.8rem;
+  font-size: 1.6rem;
   border-radius: 5px;
-  min-width: 16rem;
+  min-width: 24rem;
   z-index: 1;
-
-  * {
-    font-size: 1.1rem;
-  }
 `
 
 const Br = styled(Divider)`
@@ -474,6 +473,8 @@ const RotatedBr = styled(Br)`
 `
 
 const CrosshairBottomWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
   color: gray;
   font-weight: 300;
   font-size: 1.2rem;

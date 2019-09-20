@@ -1,29 +1,28 @@
 import React from 'react'
 import { Checkbox, Radio } from '@material-ui/core'
-import QueryRenderer from '@core/components/QueryRenderer'
-
-import { getPortfolioKeys } from '@core/graphql/queries/portfolio/getPortfolioKeys'
-import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 
 import { IProps } from './Accounts.types'
 import {
   AccountsWalletsHeadingWrapper,
-  Headline,
-  CloseContainer,
-  StyledIcon,
-  SelectAll,
+  // Headline,
+  // CloseContainer,
+  // StyledIcon,
+  // SelectAll,
   AccountName,
-  AccountMoney,
+  // AccountMoney,
   AccountsList,
   AccountsListItem,
   TypographyTitle,
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
+import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
+
 // import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import SvgIcon from '@sb/components/SvgIcon'
 import ExchangeLogo from '@icons/ExchangeLogo.svg'
+import Help from '@material-ui/icons/Help'
 
 // import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 // import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions'
@@ -73,14 +72,41 @@ class Accounts extends React.PureComponent<IProps> {
             align="left"
             color="secondary"
             variant="h6"
-            style={{ display: 'flex', justifyContent: 'space-between' }}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              position: 'relative',
+            }}
           >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
             {isRebalance ? (
-              <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>
-                Choose only one
-              </TypographyTitle>
+              <>
+                <TypographyTitle
+                  textColor={'#7284A0'}
+                  fontSize={'.9rem'}
+                  style={{ paddingRight: '.5rem', fontWeight: 'bold' }}
+                >
+                  Choose only one
+                </TypographyTitle>
+                <LightTooltip
+                  title={
+                    'We cannot transfer funds from key to key or exchange to exchange. Also, the rebalance between the two exchanges is impossible due to the difference in price.'
+                  }
+                  placement={'right-end'}
+                >
+                  <Help
+                    style={{
+                      position: 'absolute',
+                      right: '-0.3rem',
+                      top: '27.5%',
+                      height: '1.5rem',
+                      width: '1.5rem',
+                      color: '#005dd9',
+                    }}
+                  />
+                </LightTooltip>
+              </>
             ) : (
               <TypographyTitle
                 textColor={'#165BE0'}
@@ -128,15 +154,21 @@ class Accounts extends React.PureComponent<IProps> {
             if (!key) {
               return null
             }
+
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = key.selected
 
-            const value = portfolioAssetsData[i]
-              ? portfolioAssetsData[i].value
-              : 0
+            // TODO: filter by account id in portfolio asset
+            const assetData = portfolioAssetsData.filter((asset) => {
+              return asset.name === key.name
+            })
 
             const formattedValue = addMainSymbol(
-              roundAndFormatNumber(value, roundNumber, true),
+              roundAndFormatNumber(
+                assetData[0] ? assetData[0].value : 0,
+                roundNumber,
+                true
+              ),
               isUSDT
             )
 
