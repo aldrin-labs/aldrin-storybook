@@ -111,7 +111,11 @@ const TransactionTable = ({
                     ${parseFloat(convertedSumUSDT.toFixed(1))}
                   </TransactionTableResult>
                 </TableCell>
-                <TableCell align="left" className={classes.cell}>
+                <TableCell
+                  align="left"
+                  className={classes.cell}
+                  style={{ minWidth: '18rem' }}
+                >
                   <TransactionTableStatus>
                     {row.isDone === 'success'
                       ? 'order executed'

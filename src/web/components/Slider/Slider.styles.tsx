@@ -105,3 +105,15 @@ export const StyledLock = styled(({ value, sliderWidth, ...rest }) => (
   width: 1.5rem;
   top: .2rem;
 `
+
+export const AvailableRange = styled.div`
+  height: 16px;
+  position: absolute;
+  top: 0;
+  left: ${(props) => props.x || 0};
+  background: #abbad1;
+  width: ${(props) => props.range || '175px'};
+  opacity: 0.5;
+  border-radius: 30px;
+  z-index: 1;
+`
