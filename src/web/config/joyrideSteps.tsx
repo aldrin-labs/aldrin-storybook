@@ -7,62 +7,151 @@ type T = {
   disableBeacon?: boolean
 }
 
+const buttonsText = { 
+  back: 'PREVIOUS', 
+  close: 'CLOSE', 
+  last: 'FINISH P&L INTRODUCTION', 
+  next: 'NEXT',
+  skip: 'SKIP INTRODUCTION',
+}
+
 export const portfolioMainSteps = [
   {
-    disableBeacon: true,
-    target: 'body',
+    target: '#sharePortfolioPanel',
     content: (
-      <p>
-        {' '}
-        Welcome to Cryptocurrencies.Ai beta! <br /> We have added a real Binance
-        account, so you can experience all of the functionality. To add your own
-        Binance account please go to settings and enter your api key where you
-        can also delete this demo account. Please note our application only
-        supports Binance currently and we will be adding support for more
-        exchanges soon.
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>It's your portfolio name</b>
       </p>
     ),
-    placement: 'center',
+    placement: 'left',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
   },
   {
-    target: '.Navbar',
-    content:
-      'We have two main sections Portfolio and Chart. Our portfolio consists of five different sub-sections which can be selected from the menu on the left.',
+    target: '#accordionOverview',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>It’s overview.</b><br/>
+        Your overview panel shows the portfolio performance for each of your exchange accounts.
+      </p>
+    ),
+    placement: 'left',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
+  },
+  {
+    target: '#allocationChart',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Allocation Chart</b><br/>
+        View distribution percent by assets and exchanges
+      </p>
+    ),
+    placement: 'right',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
+  },
+  {
+    target: '#PortfolioMainTable',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Assets table</b><br/>
+        This table shows all of your assets with real-time market prices and performance.
+        You can also do a quick trade from here without going to the trading terminal.
+      </p>
+    ),
+    placement: 'auto',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
+  },
+  {
+    target: '#sharePortfolioSwitcher',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>USD/BTC Switcher</b><br/>
+        Switch between crypto and fiat for portfolio performance data.
+      </p>
+    ),
     placement: 'bottom',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
   },
   {
-    target: '.PortfolioMainTable',
-    content:
-      'Portfolio main table shows connected accounts, your asset allocation %, your profit & loss.',
-    placement: 'auto',
+    target: '#accountsPanel',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Accounts panel</b><br/>
+        Create a new portfolio or add new exchange accounts to existing portfolio.
+      </p>
+    ),
+    placement: 'right',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
   },
   {
-    target: '.PortfolioTradeOrderHistoryTable',
-    content:
-      'Portfolio actions contains all your trade history, deposits and withdrawals.',
-    placement: 'auto',
+    target: '#porfolioSelector',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Accounts panel</b><br/>
+        Create a new portfolio or add new exchange accounts to existing portfolio.
+        Filter out small values by dust filter
+      </p>
+    ),
+    placement: 'right',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
   },
   {
-    target: '.PortfolioValueChart',
-    content:
-      'Portfolio value chart shows the value of the portfolio over time.',
-    placement: 'auto',
-  },
-  {
-    target: '.SwitchButton',
-    content: 'You can view your portfolio in crypto and fiat.',
-    placement: 'auto',
-  },
-  {
-    target: '.settingsIcon',
-    content:
-      'Select settings to select or deselect multiple accounts. Dust filter will remove coins from your portfolio which are insignificant.',
-    placement: 'auto',
-  },
-  {
-    target: '.LoginButton',
-    content: 'To import your account, click here to register or login.',
-    placement: 'auto',
+    target: '#transactionsPanel',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Ok, lets explore transactions page now</b><br/>
+        You can view your transaction data here.
+      </p>
+    ),
+    placement: 'left',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsText,
   },
 ]
 
