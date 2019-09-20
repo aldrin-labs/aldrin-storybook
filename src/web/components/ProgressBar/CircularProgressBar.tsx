@@ -21,8 +21,8 @@ const Text = styled(Typography)`
     color: #dd6956;
     letter-spacing: 1.5px;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 48.5%;
+    left: 51%;
     transform: translateX(-50%) translateY(-50%);
 `
 

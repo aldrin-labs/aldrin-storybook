@@ -97,34 +97,48 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     rebalanceError: false
   }
 
-  getRebalanceProgress = (transactions, oldProgress) => {
+  getRebalanceProgress = ({
+      rebalanceStarted,
+      rebalanceFinished,
+      failedTransactionIndex,
+      oldProgress,
+      transactions
+  }) => {
     let progress
-    const rebalanceStarted = transactions.some(transaction => transaction.isDone === 'loading')
-    const rebalanceFinished = transactions.every(transaction => transaction.isDone)
-    const failedTransactionIndex = transactions.findIndex(transaction => transaction.error !== undefined)
-
     if (failedTransactionIndex !== -1) {
       this.setState({
         rebalanceError: true
       })
       progress = 'N/A'
       this.props.enqueueSnackbar(transactions[failedTransactionIndex].error.message, { variant: 'error' })
-    } else {
-      if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
-        progress = Math.round(transactions.reduce((progress, transaction) => {
-          return transaction.isDone ? progress + (100 / transactions.length) : progress
-        }, 0))
-      } else {
-        if (oldProgress !== null) {
-          this.setState({
-            progress: null
-          })
-        }
-        progress = null
-      }
+    } else if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
+      progress = Math.round(transactions.reduce((progress, transaction) => {
+        return transaction.isDone ? progress + (100 / transactions.length) : progress
+      }, 0))
+    } else if (oldProgress !== null) {
+      this.setState({
+        progress: null
+      })
+      progress = null
     }
 
-    if (progress === 100 || failedTransactionIndex !== -1) {
+    return progress
+  }
+
+  getRebalanceStatus = (transactions, oldProgress) => {
+    const rebalanceStarted = transactions.some(transaction => transaction.isDone === 'loading')
+    const rebalanceFinished = transactions.every(transaction => transaction.isDone)
+    const failedTransactionIndex = transactions.findIndex(transaction => transaction.error !== undefined)
+
+    const status = this.getRebalanceProgress({
+      rebalanceStarted,
+      rebalanceFinished,
+      failedTransactionIndex,
+      oldProgress,
+      transactions
+    })
+    
+    if (status === 100 || failedTransactionIndex !== -1) {
       this.setState({
         rebalanceFinished: true
       })
@@ -138,7 +152,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       }, REBALANCE_CONFIG.bogusAfterRebalanceDelay)
     }
 
-    return progress
+    return status
   }
 
   emitExecutingRebalanceHandler = () => {
@@ -305,7 +319,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       }
     })
 
-    const newProgress = rebalanceFinished ? 100 : this.getRebalanceProgress(transactionsDataWithPrices, progress)
+    const newProgress = rebalanceFinished ? 100 : this.getRebalanceStatus(transactionsDataWithPrices, progress)
 
     return (
       <>
