@@ -43,9 +43,9 @@ const DeleteAccountDialogComponent = ({
   }
 
   const handleSubmit = async () => {
-    if (checkName === name) {
+    if (checkName.toLowerCase() === name.toLowerCase()) {
       const response = await deleteMutation({
-        variables: { name: checkName, removeTrades: true },
+        variables: { name: name, removeTrades: true },
       })
 
       response ? closeDialog() : setError('Something went wrong')
@@ -127,29 +127,5 @@ const DeleteAccountDialogComponent = ({
     </>
   )
 }
-
-//       try {
-//         props.setSubmitting(true)
-//         await deleteExchangeKey({
-//           variables,
-//           update: (proxy, { data: { deleteExchangeKey } }) => {
-//             let proxyData = proxy.readQuery({ query: getKeysQuery })
-//             const keys = proxyData.myPortfolios[0].keys.slice()
-//             const index = keys.findIndex((v) => v._id === deleteExchangeKey._id)
-//             keys.splice(index, 1)
-//             proxyData = {
-//               ...proxyData,
-//               myPortfolios: { ...proxyData.myPortfolios, keys },
-//             }
-//             proxy.writeQuery({ query: getKeysQuery, data: proxyData })
-//           },
-//         })
-//         await handleClose()
-//         forceUpdateAccountContainer()
-//       } catch (error) {
-//         console.log(error)
-//         props.setFieldError('accountNameInput', 'Request error!')
-//         props.setSubmitting(false)
-//       }
 
 export default DeleteAccountDialogComponent
