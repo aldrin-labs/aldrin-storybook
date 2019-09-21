@@ -47,8 +47,6 @@ class Accounts extends React.PureComponent<IProps> {
 
   render() {
     const {
-      // isCheckedAll,
-      // onToggleAll,
       color,
       newKeys,
       portfolioAssetsData,
