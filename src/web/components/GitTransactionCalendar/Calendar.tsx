@@ -9,8 +9,6 @@ import { withStyles } from '@material-ui/core/styles'
 
 import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
 
-import { getActionsSummary } from '../../compositions/Transaction/TransactionsActionsStatistic/TransactionsActionsStatistic.utils'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
 import { IProps } from './Calendar.types'
