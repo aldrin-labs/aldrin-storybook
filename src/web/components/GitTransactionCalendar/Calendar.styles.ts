@@ -3,10 +3,10 @@ import { Typography } from '@material-ui/core'
 
 export const LEGEND_COLORS = {
   zero: '#E0E5EC',
-  one: '#8FB4EC',
-  two: '#6FA0EB',
-  three: '#5594F1',
-  four: '#357AE1',
+  one: '#A1BFF9',
+  two: '#6992E1',
+  three: '#447AE2',
+  four: '#0B1FD1',
 }
 
 export const HeatmapWrapper = styled.div`
@@ -24,6 +24,23 @@ export const HeatmapWrapper = styled.div`
 
   .react-calendar-heatmap-week rect {
     cursor: pointer;
+  }
+
+  .react-calendar-heatmap-month-labels {
+    transform: translate(48px, -1px);
+  }
+
+  .react-calendar-heatmap-weekday-labels {
+    transform: translate(22px,15px);
+  }
+
+  .react-calendar-heatmap {
+    text {
+      font-size: 10px;
+      fill: #16253D;
+      font-family: DM Sans;
+      text-anchor: end;
+    }
   }
 
   @media only screen and (min-width: 2560px) {

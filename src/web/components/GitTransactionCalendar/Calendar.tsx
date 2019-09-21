@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import moment from 'moment'
+import { client } from '@core/graphql/apolloClient'
 
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
@@ -17,7 +18,7 @@ import {
   HeatmapWrapper,
   LegendHeatmapSquare,
   LegendTypography,
-  SquarePopup,
+  SquarePopup
 } from './Calendar.styles'
 
 const styles = (theme) => ({
@@ -54,7 +55,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       onDateButtonClick,
       activeDateButton,
       classes,
-      wrapperRef,
+      wrapperRef
     } = this.props
     const maxTransactionsCount = getMaxTransactions(
       getCalendarActionsQuery.myPortfolios[0]
@@ -77,6 +78,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
         }}
       >
         <SquarePopup ref={this.popupRef}/>
+        
         <CalendarHeatmap
           className={classes.root}
           startDate={moment(+startDate).subtract(1, 'seconds')}
@@ -86,6 +88,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           classForValue={(value) =>
             value ? classes[value.className] : 'empty-value'
           }
+          showWeekdayLabels={true}
           monthLabels={[
             'Jan',
             'Feb',
@@ -100,6 +103,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             'Nov',
             'Dec',
           ]}
+
           onClick={onHeatmapDateClick}
           onMouseOver={(e, value) => {
             const popupRef = this.popupRef.current
@@ -123,9 +127,11 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           justify="space-between"
           alignItems="center"
           wrap="nowrap"
+          className="ChoosePeriodsBlock"
           style={{
             margin: '.75rem 0 2.5rem',
-            padding: '0 3rem 0 0',
+            padding: '0 1rem 0 0',
+            marginTop: '-4%',
           }}
         >
           <Grid item>
@@ -142,14 +148,10 @@ class GitTransactionCalendar extends PureComponent<IProps> {
               }}
             />
           </Grid>
-          <Grid
-            item
-            alignItems="center"
-            style={{
-              width: 'auto',
-              display: 'flex',
-            }}
-          >
+          <Grid item alignItems="center" style={{
+            width: 'auto',
+            display: 'flex',
+          }}>
             <LegendTypography>Less</LegendTypography>
             <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
             <LegendHeatmapSquare fill={LEGEND_COLORS.one} />
