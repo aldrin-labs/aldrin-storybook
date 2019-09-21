@@ -85,7 +85,7 @@ const CustomContentList = ({ data }) => (
 )
 class RebalanceAddSocialPortfolio extends Component {
   state = {
-      search: ''
+    search: '',
   }
 
   render() {
@@ -94,15 +94,20 @@ class RebalanceAddSocialPortfolio extends Component {
     } = this.props
     const { search } = this.state
 
-    const transformedData = transformData(getFollowingPortfolios).filter(({ name }) => {
+    const transformedData = transformData(getFollowingPortfolios).filter(
+      ({ name }) => {
         return name.toLowerCase().startsWith(search.toLowerCase())
-    })
+      }
+    )
     return (
-      <RebalanceDialogAdd title={'ADD PORTFOLIO'} onSearch={e => {
+      <RebalanceDialogAdd
+        title={'ADD PORTFOLIO'}
+        onSearch={(e) => {
           this.setState({
-            search: e.target.value
+            search: e.target.value,
           })
-      }}>
+        }}
+      >
         <CustomContentList data={transformedData} />
       </RebalanceDialogAdd>
     )
