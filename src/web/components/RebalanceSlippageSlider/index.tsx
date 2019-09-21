@@ -39,7 +39,6 @@ const RebalanceSlippageSlider = ({
                 onChange={(e, value) => onChangeSlippage(value)}
                 style={{ top: '1rem' }}
                 disabled={disabled}
-                disabledText={''}
                 min={0}
                 max={100}
                 step={1}

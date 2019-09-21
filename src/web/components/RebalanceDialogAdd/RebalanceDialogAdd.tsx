@@ -7,6 +7,8 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
 
+import { MASTER_BUILD } from '@core/utils/config'
+
 import { withTheme } from '@material-ui/styles'
 
 import {
@@ -24,6 +26,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import ContentList from './ContentList'
 
 import { IProps, IState } from './RebalanceDialogAdd.types'
+import ComingSoon from '../ComingSoon'
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -101,9 +104,9 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
         palette: { blue, black, secondary },
       },
       children,
-      onSearch
+      onSearch,
     } = this.props
-    
+
     return (
       <>
         <BtnCustom
@@ -135,18 +138,25 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               {title}
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center">
+          <DialogContent
+            justify="center"
+            style={MASTER_BUILD && { filter: 'blur(3px)' }}
+          >
             <GridSearchPanel>
               <SearchIconCustom />
               <InputBaseCustom placeholder="Search…" onChange={onSearch} />
             </GridSearchPanel>
 
             <GridCustom>
-              {children ? children : <ContentList
-                handleRadioBtn={this.handleRadioBtn}
-                isSelected={this.state.isSelected}
-                data={data}
-              />}
+              {children ? (
+                children
+              ) : (
+                <ContentList
+                  handleRadioBtn={this.handleRadioBtn}
+                  isSelected={this.state.isSelected}
+                  data={data}
+                />
+              )}
             </GridCustom>
 
             <GridCustom container justify="space-between" alignItems="center">
@@ -162,6 +172,7 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               </BtnCustom>
             </GridCustom>
           </DialogContent>
+          {MASTER_BUILD && <ComingSoon />}
         </DialogWrapper>
       </>
     )

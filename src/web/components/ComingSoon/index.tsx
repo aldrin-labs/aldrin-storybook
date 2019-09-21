@@ -10,7 +10,7 @@ export default ({ show = true }) =>
   show ? (
     <Container>
       <Fade timeout={1000} in={show}>
-        <Typography variant="h3" color="textPrimary">
+        <Typography variant="h3" style={{ color: '#005dd9' }}>
           Coming Soon
         </Typography>
       </Fade>
@@ -30,4 +30,5 @@ const Container = styled.div`
   place-items: center;
   position: absolute;
   z-index: 999;
+  text-transform: uppercase;
 `
