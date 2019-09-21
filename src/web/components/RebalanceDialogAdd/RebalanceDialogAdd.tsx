@@ -7,6 +7,8 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
 
+import { MASTER_BUILD } from '@core/utils/config'
+
 import { withTheme } from '@material-ui/styles'
 
 import {
@@ -24,6 +26,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import ContentList from './ContentList'
 
 import { IProps, IState } from './RebalanceDialogAdd.types'
+import ComingSoon from '../ComingSoon'
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -98,16 +101,21 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
       title,
       data,
       theme: {
-        palette: { blue, black },
+        palette: { blue, black, secondary },
       },
+      children,
+      onSearch,
     } = this.props
 
     return (
       <>
         <BtnCustom
-          btnColor={blue.custom}
+          btnColor={secondary.main}
+          fontSize="1.2rem"
+          letterSpacing="1px"
           margin="0px auto 12px auto"
-          padding="5px"
+          padding="3px"
+          borderRadius="16px"
           onClick={this.handleClickOpen}
         >
           {title}
@@ -124,24 +132,31 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
           >
             <TypographyCustomHeading
               fontWeight={'700'}
-              borderRadius={'10px'}
+              borderRadius={'1rem'}
               color={black.custom}
             >
               {title}
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center">
+          <DialogContent
+            justify="center"
+            style={MASTER_BUILD && { filter: 'blur(3px)' }}
+          >
             <GridSearchPanel>
               <SearchIconCustom />
-              <InputBaseCustom placeholder="Search…" />
+              <InputBaseCustom placeholder="Search…" onChange={onSearch} />
             </GridSearchPanel>
 
             <GridCustom>
-              <ContentList
-                handleRadioBtn={this.handleRadioBtn}
-                isSelected={this.state.isSelected}
-                data={data}
-              />
+              {children ? (
+                children
+              ) : (
+                <ContentList
+                  handleRadioBtn={this.handleRadioBtn}
+                  isSelected={this.state.isSelected}
+                  data={data}
+                />
+              )}
             </GridCustom>
 
             <GridCustom container justify="space-between" alignItems="center">
@@ -150,13 +165,14 @@ class RebalanceDialogAdd extends React.Component<IProps, IState> {
               </LinkCustom>
               <BtnCustom
                 btnWidth={'110px'}
-                borderRadius={'10px'}
+                borderRadius={'1rem'}
                 btnColor={blue.custom}
               >
                 ADD
               </BtnCustom>
             </GridCustom>
           </DialogContent>
+          {MASTER_BUILD && <ComingSoon />}
         </DialogWrapper>
       </>
     )

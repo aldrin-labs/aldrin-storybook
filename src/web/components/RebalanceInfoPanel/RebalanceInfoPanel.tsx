@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, Input, withWidth } from '@material-ui/core'
 import {
   GridFlex,
   GridInfoPanelWrapper,
@@ -12,20 +12,17 @@ import { withTheme } from '@material-ui/styles'
 import Timer, { useTimer } from 'react-compound-timer'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './RebalanceInfoPanel.types'
-
-import * as UTILS from '@core/utils/PortfolioRebalanceUtils'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-
-import Input from '@material-ui/core/Input'
-//import { IState } from '@sb/compositions/Chart/Inputs/AutoSuggestSelect/AutoSuggestSeletec.types';
 
 import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
+import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
+import Help from '@material-ui/icons/Help'
+
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
-import { ThemeConsumer } from 'styled-components'
 
 @withTheme()
-export default class RebalanceInfoPanel extends Component<IProps, IState> {
+class RebalanceInfoPanel extends Component<IProps, IState> {
   state: IState = {
     isHiddenRebalanceDaysInput: 'hidden',
   }
@@ -58,10 +55,11 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
       toggleSectionCoinChart,
       isSectionChart,
       theme: {
-        palette: { blue, red, green, grey },
+        palette: { blue, red, green, grey, secondary },
       },
       rebalanceTimePeriod,
       onRebalanceTimerChange,
+      width,
     } = this.props
 
     const showEveryTimeInput =
@@ -75,16 +73,35 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
         justify="space-between"
       >
         {/* Grid - 1st item md - 6 Starts */}
-        <Grid item md={5} lg={5}>
+        <Grid item md={6} lg={6}>
           <Grid container>
             <Grid container justify="space-between">
               <Grid item lg={4} md={3} justify="center">
-                <StyledTypography fontWeight={'700'}>
+                <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
                   Binance trade account
                 </StyledTypography>
-                <StyledSubTypography fontWeight={'700'} color={blue.light}>
+                <StyledSubTypography
+                  fontWeight={'700'}
+                  letterSpacing="2px"
+                  color={theme.palette.secondary.main}
+                >
                   {'$'}
                   {roundAndFormatNumber(+accountValue, 2, false)}
+                  <LightTooltip
+                    title={'Amount less funds currently in open orders.'}
+                    placement={'right-end'}
+                  >
+                    <Help
+                      style={{
+                        position: 'relative',
+                        left: '.3rem',
+                        top: '2px',
+                        height: '1.5rem',
+                        width: '1.5rem',
+                        color: '#005dd9',
+                      }}
+                    />
+                  </LightTooltip>
                 </StyledSubTypography>
               </Grid>
 
@@ -96,6 +113,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   fontWeight={'700'}
                   color={green.custom}
                   position="right"
+                  letterSpacing="2px"
                 >
                   $ {availableValue !== '0' ? slicePrice(availableValue) : `0`}
                 </StyledSubTypography>
@@ -109,6 +127,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   fontWeight={'700'}
                   color={green.custom}
                   position="right"
+                  letterSpacing="2px"
                 >
                   {slicePrice(availablePercentage)}%
                 </StyledSubTypography>
@@ -122,30 +141,28 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
         {/* <Grid item md={0} lg={2}></Grid>
           Space */}
         {/* Grid - 2nd item md - 6 Starts */}
-        <Grid item md={5} lg={5}>
+        <Grid item md={6} lg={6} style={{ paddingLeft: '6rem' }}>
           <Grid container>
             <Grid container justify="space-between">
               <GridFlex justify="flex-start" alignItems="center" item lg={3}>
                 <BtnCustom
-                  borderRadius={'10px'}
-                  btnColor={blue.custom}
-                  btnWidth="118px"
-                  height="24px"
+                  borderRadius={'1rem'}
+                  letterSpacing="1px"
+                  fontSize=".925rem"
+                  padding=".4rem 0 .3rem"
+                  btnColor={secondary.main}
+                  btnWidth="12.5rem"
+                  // height="24px"
+                  size={width === 'xl' ? 'large' : ''}
                   onClick={toggleSectionCoinChart}
                 >
                   {isSectionChart ? `coin chart` : `section chart`}
                 </BtnCustom>
               </GridFlex>
 
-              <GridFlex
-                item
-                lg={6}
-                justify="center"
-                alignItems="center"
-                style={{ paddingRight: '17px' }}
-              >
+              <GridFlex item lg={6} justify="center" alignItems="center">
                 <TypographyRebalance href={'#'} linkColor={grey.dark}>
-                  rebalance
+                  Auto-Rebalance
                 </TypographyRebalance>
 
                 <ReactSelectCustom
@@ -158,9 +175,10 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                   ) => onRebalanceTimerChange(optionSelected)}
                   isSearchable={false}
                   options={rebalanceSelectTimeOptions}
+                  isOptionDisabled={(option) => option.disabled}
                   singleValueStyles={{
                     color: '#165BE0',
-                    fontSize: '11px',
+                    fontSize: `.95rem`,
                     padding: '0',
                   }}
                   indicatorSeparatorStyles={{}}
@@ -179,7 +197,7 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
                     color: '#7284A0',
                     background: 'transparent',
                     textAlign: 'center',
-                    fontSize: '0.62rem',
+                    fontSize: `1.1rem`,
                     '&:hover': {
                       borderRadius: '14px',
                       color: '#16253D',
@@ -210,34 +228,43 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
               </GridFlex>
 
               <Grid item lg={3}>
-                <StyledTypography fontWeight={'700'} position="right">
+                <StyledTypography
+                  fontWeight={'700'}
+                  position="right"
+                  fontSize="1rem"
+                >
                   Next Rebalance in
                 </StyledTypography>
                 <StyledSubTypography
-                  fontSize={'0.72rem'}
+                  fontSize={'1.25rem'}
+                  lineHeight="2rem"
                   color={red.bright}
-                  fontWeight={'700'}
+                  fontWeight={700}
                   position="right"
                 >
-                  <Timer
-                    ref={this.timerRef}
-                    initialTime={+rebalanceTimePeriod.value}
-                    direction="backward"
-                    startImmediately={true}
-                  >
-                    {() => (
-                      <React.Fragment>
-                        <Timer.Days />
-                        {' D '}
-                        <Timer.Hours />
-                        {' H '}
-                        <Timer.Minutes />
-                        {' M '}
-                        <Timer.Seconds />
-                        {' S '}
-                      </React.Fragment>
-                    )}
-                  </Timer>
+                  {rebalanceTimePeriod.label === 'Disabled' ? (
+                    'Disabled'
+                  ) : (
+                    <Timer
+                      ref={this.timerRef}
+                      initialTime={+rebalanceTimePeriod.value}
+                      direction="backward"
+                      startImmediately={true}
+                    >
+                      {() => (
+                        <React.Fragment>
+                          <Timer.Days />
+                          {' D '}
+                          <Timer.Hours />
+                          {' H '}
+                          <Timer.Minutes />
+                          {' M '}
+                          <Timer.Seconds />
+                          {' S '}
+                        </React.Fragment>
+                      )}
+                    </Timer>
+                  )}
                   {/*<TimerOnHooks />*/}
                 </StyledSubTypography>
               </Grid>
@@ -252,3 +279,5 @@ export default class RebalanceInfoPanel extends Component<IProps, IState> {
     )
   }
 }
+
+export default withWidth()(RebalanceInfoPanel)

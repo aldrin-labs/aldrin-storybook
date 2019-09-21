@@ -7,6 +7,7 @@ import { IProps, IState } from './ProgressBar.types'
 const styles = {
   root: {
     flexGrow: 1,
+    padding: '2rem 0',
   },
 }
 
@@ -61,12 +62,12 @@ class ProgressBar extends PureComponent<IProps> {
   }
 
   render() {
-    const { classes, theme, isFinished } = this.props
+    const { classes, theme, isFinished, style } = this.props
 
     const { completed, isError } = this.state
 
     return (
-      <div className={classes.root}>
+      <div className={classes.root} style={style}>
         <LinearProgressCustom
           color={
             isError
@@ -77,7 +78,6 @@ class ProgressBar extends PureComponent<IProps> {
               ? 'secondary'
               : '#E7ECF3'
           }
-          height="20px"
           variant="determinate"
           value={completed}
         />

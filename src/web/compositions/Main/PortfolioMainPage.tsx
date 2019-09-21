@@ -1,18 +1,21 @@
 import React from 'react'
 import { withTheme } from '@material-ui/styles'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 import Joyride from 'react-joyride'
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
 
-import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
-import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
+// import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
+// import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+
 import Template from '@sb/components/Template/Template'
 import SharePortfolioDialog from '@sb/components/SharePortfolioDialog/SharePortfolioDialog'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -24,16 +27,23 @@ import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 import { Grid, Divider } from '@material-ui/core'
-import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
-import SharePortfolioPanel from '@sb/components/SharePortfolioPanel/SharePortfolioPanel'
+// import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
+import SharePortfolioPanel from '@core/components/SharePortfolioPanel/SharePortfolioPanel'
 import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
 const LayoutClearfixWrapper = styled.div`
   @media only screen and (min-width: 600px) {
-    margin-left: -2.5%;
     padding-right: calc(2.5% + 3rem);
+  }
+`
+
+const PNLPageMediaQuery = createGlobalStyle`
+  @media only screen and (min-width: 1921px) and (max-width: 2100px) {
+    html {
+      font-size: 13px;
+    }
   }
 `
 
@@ -92,31 +102,70 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       portfolioId,
       portfolioName,
       portfolioKeys,
+      // onToggleUSDBTC,
+      isUSDCurrently,
+      portfolioAssets: assets,
+      baseCoin,
     } = this.props
 
     const { openSharePortfolioPopUp } = this.state
 
+    const accountsNames = portfolioKeys.filter(key => key.selected).map(key => key.name)
+
+    const enabledAssets = assets.myPortfolios[0].portfolioAssets.filter(asset => accountsNames.includes(asset.name))
+
+    const filteredData = combineTableData(
+      enabledAssets || [],
+      dustFilter,
+      isUSDCurrently
+    )
+
+    const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
+      filteredData,
+      baseCoin
+    )
+
     return (
       <LayoutClearfixWrapper>
-        <Grid>
+        <Grid style={{ height: '100%' }}>
           <SharePortfolioPanel
             handleOpenSharePortfolio={this.handleOpenSharePortfolio}
             portfolioName={portfolioName}
+            // onToggleUSDBTC={onToggleUSDBTC}
+            isUSDCurrently={isUSDCurrently}
           />
           {/* TODO: Recomment if needed <Divider /> */}
-          <AccordionOverview />
+          <AccordionOverview
+            baseCoin={baseCoin}
+            isUSDCurrently={isUSDCurrently}
+            portfolioAssetsData={portfolioAssetsData}
+            totalKeyAssetsData={totalKeyAssetsData}
+          />
           <Template
             PortfolioMainTable={
-              <PortfolioMainTable theme={theme} dustFilter={dustFilter} />
+              <PortfolioMainTable
+                data={{myPortfolios: [{portfolioAssets: enabledAssets}]}}
+                theme={theme}
+                dustFilter={dustFilter}
+                baseCoin={baseCoin}
+                isUSDCurrently={isUSDCurrently}
+              />
             }
-            Chart={<PortfolioMainAllocation />}
+            Chart={
+              <PortfolioMainAllocation
+                data={filteredData}
+                dustFilter={dustFilter}
+                isUSDCurrently={isUSDCurrently}
+              />
+            }
           />
           <Joyride
             continuous={true}
             showProgress={true}
             showSkipButton={true}
             steps={portfolioMainSteps}
-            run={getTooltipSettings.portfolioMain}
+            // run={getTooltipSettings.portfolioMain}
+            run={false}
             callback={this.handleJoyrideCallback}
             key={this.state.key}
             styles={{
@@ -136,7 +185,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <SharePortfolioDialog
             portfolioKeys={portfolioKeys}
             portfolioId={portfolioId}
-            sharePortfolioTitle={`SHARE ${portfolioName}`}
+            sharePortfolioTitle={portfolioName}
             openSharePortfolioPopUp={openSharePortfolioPopUp}
             sharePortfolioMutation={sharePortfolioMutation}
             handleCloseSharePortfolio={this.handleCloseSharePortfolio}

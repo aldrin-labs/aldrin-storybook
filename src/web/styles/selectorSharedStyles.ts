@@ -11,14 +11,25 @@ export const AccountsListItem = styled.li`
   text-align: left;
   color: ${(props: { color: string }) => props.color};
   padding: 0;
+  min-height: 7vh;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #E0E5EC;
+  }
+
+  svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 `
 
 export const AccountsList = styled.ul`
   list-style: none;
   display: flex;
   flex-direction: column;
-  padding-left: 8px;
+  padding-left: 2rem;
   margin: 0;
+  max-height: 30vh;
 `
 
 export const AccountsWalletsHeadingWrapper = styled.div`
@@ -31,8 +42,8 @@ export const StyledIcon = styled(Arrow)`
   text-align: center;
   opacity: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
     isSideNavOpen ? '1' : '0'};
-  font-size: 2rem;
-  right: -0.5rem;
+  font-size: 3.2rem;
+  right: -0.8rem;
 
   position: absolute;
   bottom: 50%;
@@ -44,24 +55,21 @@ export const CloseContainer = styled.div`
 `
 
 export const SelectAll = styled.div`
-  margin-top: 1rem;
-  padding-left: 0.5rem;
+  margin-top: 1.6rem;
+  padding-left: 0.8rem;
   display: flex;
 `
 
 export const AccountName = styled(TypographyFullWidth)`
-  font-weight: 700;
   height: 50%;
   margin: auto;
   font-family: DM Sans;
-  font-size: ${(props) => props.fontSize || `0.75rem`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
-  letter-spacing: 1.5px;
+  letter-spacing: ${props => props.letterSpacing || '1.5px'};
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: 0;
-  border-bottom: '1px solid #E0E5EC';
-  padding-top: '10px';
 `
 
 export const Headline = styled.div`
@@ -70,21 +78,21 @@ export const Headline = styled.div`
     isSideNavOpen ? '0' : '1'};
   font-size: 0.7em;
   transform: rotate(-90deg);
-  left: -0.6rem;
+  left: -0.96rem;
   transform-origin: right, top;
   position: absolute;
   bottom: 50%;
   transition: opacity 0.4s linear;
 
   @media (min-width: 1000px) {
-    font-size: 1rem;
-    right: 10.8rem;
+    font-size: 1.6rem;
+    right: 17.28rem;
   }
 `
 
 export const TypographyTitle = styled(Typography)`
   font-family: DM Sans;
-  font-size: ${(props) => props.fontSize || `0.75rem`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
   text-transform: uppercase;

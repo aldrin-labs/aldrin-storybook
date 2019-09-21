@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { createGlobalStyle, css } from 'styled-components'
-import { Grid, Card, Theme } from '@material-ui/core'
+import { Grid, Card, Theme, LinearProgress } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -23,36 +23,43 @@ export const customAquaScrollBar = css`
   }
 `
 
+export const borderRadiusScrollBar = css`
+  &::-webkit-scrollbar-track {
+    margin: calc(3rem + 11px) 0 11px 0;
+    border-bottom-right-radius: 10px;
+  }
+`
+
 export const TypographyFullWidth = styled(TypographyWithCustomColor)`
   width: 100%;
   flex-grow: 1;
   font-family: 'DM Sans', sans-serif;
-  font-size: ${(props) => props.fontSize || `0.75rem`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
-  padding-left: 9px;
+  padding: 0 1rem;
 `
 
 export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
   grid-column: 2;
   width: ${(props: { tableData?: boolean }) =>
-    props.tableData ? 'calc(100% - 2rem)' : '100%'};
+    props.tableData ? 'calc(100% - 3.2rem)' : '100%'};
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: 1.5rem auto;
-  padding: 1rem 0;
+  margin: 2.4rem auto;
+  padding: 1.6rem 0;
   height: calc(100vh - 130px);
   overflow-y: auto;
   @media (max-width: 840px) {
-    margin: 1.5rem auto;
+    margin: 2.4rem auto;
   }
 
   @media (max-width: 550px) {
     width: calc(100% - 90px);
-    margin: 0.625rem auto;
+    margin: 1rem auto;
   }
 
   @media (max-width: 425px) {
@@ -62,7 +69,6 @@ export const PTWrapper = styled(({ tableData, ...rest }) => <Card {...rest} />)`
 
 export const Container = styled(Grid as React.FunctionComponent<GridProps>)`
   && {
-    overflow-y: auto;
     height: calc(100vh - ${CSS_CONFIG.navBarHeight}px);
     margin: 0;
     width: 100%;
@@ -82,6 +88,11 @@ export const LegendContainer = styled.div`
 `
 
 export const GlobalStyle = createGlobalStyle`
+ 
+ html {
+  font-size: 10px;
+ }
+ 
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
       scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
@@ -93,28 +104,40 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgb(39, 39, 45);
+    background: #165BE0;
   }
   
   .DateRangePicker_picker.DateRangePicker_picker__portal {
     z-index: 200;
   }
-`
+  
+  @media only screen and (max-width: 1400px) {
+    html {
+      font-size: 8px;
+    }
+  }
+  @media only screen and (min-width: 1921px) {
+    html {
+      font-size: 15px;
+    }
+  }
 
-export const SelectR = styled(ReactSelectComponent)`
-  font-family: Roboto;
-  width: 100%;
-  font-size: 16px;
-  border-bottom: 1px solid #c1c1c1;
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    border-bottom: 2px solid #fff;
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 18px;
+    }
   }
 `
 
+export const SelectR = styled(ReactSelectComponent)`
+  font-family: DM Sans;
+  width: 100%;
+  font-size: 16px;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+`
+
 export const Icon = styled.i`
-  padding-right: 5px;
+  margin-right: -1px;
 `
 
 export const chooseRed = (theme: Theme) =>
@@ -134,8 +157,6 @@ export const CentredContainer = styled.div`
 `
 
 export const ChartSelectStyles = css`
-  margin-left: 0.7rem;
-  border-radius: 24px;
   border: 2px solid ${(props: { border: string }) => props.border};
   padding: 0 16px;
   height: 38px;
@@ -146,7 +167,7 @@ export const ChartSelectStyles = css`
 `
 
 export const StyledWrapperForDateRangePicker = styled.div`
-  width: 206px;
+  width: auto;
   padding: ${(props: { dateRangePadding: string }) =>
     props.dateRangePadding || '6px 0'};
 
@@ -160,18 +181,20 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateInput_input {
-    padding: ${(props: { dateInputPadding: string }) =>
-      props.dateInputPadding || '5px'};
-    font-size: 0.875rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>
       props.fontSize ? props.fontSize : ''};
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) =>
       props.dateInputHeight || '36px'};
-    color: ${(props: { color: string }) => props.color};
-    background: ${(props: { background?: string }) =>
-      props.background || 'transparent'};
+    color: #16253d;
+    background: #fff;
+    border: 1px solid #e0e5ec;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
   }
 
   & .DateRangePicker_picker {
@@ -182,10 +205,9 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateRangePickerInput {
-    border: 0;
     background: ${(props: { background: string }) =>
       props.background || 'transparent'};
-    border-bottom: 1px solid #c1c1c1;
+    border: 0;
   }
 
   & .DateInput_input__focused {
@@ -194,8 +216,45 @@ export const StyledWrapperForDateRangePicker = styled.div`
   }
 
   & .DateRangePickerInput_arrow_svg {
-    fill: ${(props: { color: string }) => props.color};
+    fill: #7284a0;
     width: 14px;
     height: 14px;
+    margin: 0 0.5rem;
+  }
+`
+
+export const LinearProgressCustom = styled(
+  ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
+)`
+  width: ${(props) => props.width || `100%`};
+  background-color: ${(props) => props.color || '#E7ECF3'};
+  border-radius: 1rem;
+  height: 1.75rem;
+  padding: 0;
+`
+
+export const GridProgressBarContainer = styled(Grid)`
+  height: 1.75rem;
+`
+
+export const IconCircle = styled.i`
+  padding-right: 5px;
+  font-size: 1rem;
+`
+
+export const IconArrow = styled.i`
+  padding: 0 5px;
+  font-size: 1rem;
+
+  position: relative;
+  top: -1px;
+  left: 0;
+`
+
+export const GridTableTypographyContainer = styled(Grid)`
+  font-size: 1.2rem;
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    //font-size: 2.4rem;
   }
 `

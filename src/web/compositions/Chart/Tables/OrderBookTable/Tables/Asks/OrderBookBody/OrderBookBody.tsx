@@ -1,68 +1,51 @@
-import React, { PureComponent, Component, memo } from 'react'
-
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { Row, Cell, Body } from '@sb/components/OldTable/Table'
-import {
-  calculatePercentagesOfOrderSize,
-  ScrollToBottom,
-} from '@core/utils/chartPageUtils'
+import React, { PureComponent, memo } from 'react'
+import { Body } from '@sb/components/OldTable/Table'
+import { ScrollToBottom } from '@core/utils/chartPageUtils'
 import { IProps } from './OrderBookBody.types'
+import { TypographyFullWidth } from '@sb/styles/cssUtils'
 import {
-  EmptyCell,
-  RowWithVolumeChart,
-  StyledTypography,
-} from '../../../../SharedStyles'
-import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
+  StyledCell,
+  StyledRow,
+} from '../../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
 
 let objDiv: HTMLElement | null
 
 const OptimizedRow = memo(
-  ({
-    order,
-    data,
-    background,
-    red,
-    digitsAfterDecimalForAsksSize,
-    digitsAfterDecimalForAsksPrice,
-    type,
-  }) => (
-    <Row background={'transparent'}>
-      <RowWithVolumeChart
-        volumeColor={hexToRgbAWithOpacity(red.main, 0.25)}
-        colored={calculatePercentagesOfOrderSize(+order.size, data).toString()}
-        background={background.default}
-      >
-        <EmptyCell width={'10%'} />
-        <Cell width={'45%'}>
-          <StyledTypography
-            fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
-            textColor={red.main}
-            color="default"
-            noWrap={true}
-            variant="body2"
-            align="right"
-          >
-            {(order.size).toFixed(digitsAfterDecimalForAsksSize)}
-          </StyledTypography>
-        </Cell>
-        <Cell width={'45%'}>
-          <StyledTypography
-            fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
-            textColor={red.main}
-            color="default"
-            noWrap={true}
-            variant="body1"
-            align="right"
-          >
-            {(order.price).toFixed(digitsAfterDecimalForAsksPrice)}
-          </StyledTypography>
-        </Cell>
-      </RowWithVolumeChart>
-    </Row>
+  ({ order }) => (
+    <StyledRow background={'transparent'}>
+      <StyledCell style={{ minWidth: '30%' }}>
+        <TypographyFullWidth textColor={'#b93b2b'} variant="body1" align="left">
+          {
+            order.price
+            // .toFixed(digitsAfterDecimalForAsksPrice)
+          }
+        </TypographyFullWidth>
+      </StyledCell>
+
+      <StyledCell style={{ minWidth: '30%' }}>
+        <TypographyFullWidth textColor={'#7284A0'} variant="body2" align="left">
+          {
+            order.size
+            // .toFixed(digitsAfterDecimalForAsksSize)
+          }
+        </TypographyFullWidth>
+      </StyledCell>
+
+      <StyledCell style={{ minWidth: '40%' }}>
+        <TypographyFullWidth
+          textColor={'#7284A0'}
+          variant="body1"
+          align="right"
+          style={{ paddingRight: 0 }}
+        >
+          {order.total.toFixed(0)
+          // .toFixed(digitsAfterDecimalForAsksPrice)
+          }
+        </TypographyFullWidth>
+      </StyledCell>
+    </StyledRow>
   ),
-  (prevProps, nextProps) =>
-    nextProps.order.price === prevProps.order.price &&
-    nextProps.type === prevProps.type
+  (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
 )
 
 class ClassBody extends PureComponent<IProps> {
@@ -80,42 +63,29 @@ class ClassBody extends PureComponent<IProps> {
     }
   }
 
-
   render() {
-    const {
-      data,
-      digitsAfterDecimalForAsksPrice,
-      digitsAfterDecimalForAsksSize,
-      action,
-      background,
-      theme: {
-        palette: { red, type },
-      },
-    } = this.props
-
+    const { data } = this.props
 
     return (
       <Body id="body" height={'calc(100% - 44px)'}>
-            {data.map(
-              (
-                order: { size: number | string, price: number | string, type: string },
-                i: number
-              ) => (
-                <OptimizedRow
-                  key={`${order.price}${order.size}${order.type}`}
-                  {...{
-                    type,
-                    order,
-                    data,
-                    action,
-                    background,
-                    red,
-                    digitsAfterDecimalForAsksSize,
-                    digitsAfterDecimalForAsksPrice,
-                  }}
-                />
-              )
-            )}
+        {data.map(
+          (
+            order: {
+              size: number | string
+              price: number | string
+              total: number | string
+            },
+            i: number
+          ) => (
+            <OptimizedRow
+              key={`${order.price}${order.size}${order.total}`}
+              {...{
+                order,
+                data,
+              }}
+            />
+          )
+        )}
       </Body>
     )
   }

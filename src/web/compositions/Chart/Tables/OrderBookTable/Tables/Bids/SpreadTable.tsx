@@ -1,22 +1,30 @@
 import React, { memo, PureComponent } from 'react'
 
-import { calculatePercentagesOfOrderSize } from '@core/utils/chartPageUtils'
-import {
-  Row,
-  Cell,
-  Body,
-} from '@sb/components/OldTable/Table'
+// import { calculatePercentagesOfOrderSize } from '@core/utils/chartPageUtils'
+import { Body } from '@sb/components/OldTable/Table'
 import { SpreadreadTableWrapper } from './SpreadTable.styles'
-import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
-import {
-  EmptyCell,
-  StyledTypography,
-  RowWithVolumeChart,
-} from '../../../SharedStyles'
+// import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
+// import {
+//   EmptyCell,
+//   StyledTypography,
+//   RowWithVolumeChart,
+// } from '../../../SharedStyles'
 import { IProps } from './SpreadTable.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
+// import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { withTheme } from '@material-ui/styles'
+import { TypographyFullWidth } from '@sb/styles/cssUtils'
+
+import {
+  // StyledTypography,
+  // StyledArrow,
+  // StyledTitle,
+  // TradeHistoryTableCollapsible,
+  // TriggerTitle,
+  // CardTitle,
+  StyledCell,
+  StyledRow,
+} from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
 
 const RowFunc = ({
   order,
@@ -27,48 +35,43 @@ const RowFunc = ({
   green,
   digitsAfterDecimalForBidsPrice,
 }) => (
-  <Row background={'transparent'} key={order.price}>
-    <RowWithVolumeChart
-      volumeColor={hexToRgbAWithOpacity(green.main, 0.25)}
-      colored={calculatePercentagesOfOrderSize(order.size, data).toString()}
-      hoverBackground={action.hover}
-      background={background.default}
-    >
-      <EmptyCell width={'10%'} />
+  <StyledRow background={'transparent'}>
+    <StyledCell style={{ minWidth: '30%' }}>
+      <TypographyFullWidth textColor={'#2F7619'} variant="body1" align="left">
+        {
+          order.price
+          // .toFixed(digitsAfterDecimalForAsksPrice)
+        }
+      </TypographyFullWidth>
+    </StyledCell>
 
-      <Cell width={'45%'}>
-        <StyledTypography
-          fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
-          textColor={green.main}
-          color="default"
-          noWrap={true}
-          variant="body1"
-          align="right"
-        >
-          {(order.size).toFixed(digitsAfterDecimalForBidsSize)}
-        </StyledTypography>
-      </Cell>
-      <Cell width={'45%'}>
-        <StyledTypography
-          fontSize={CSS_CONFIG.chart.bodyCell.fontSize}
-          textColor={green.main}
-          color="default"
-          noWrap={true}
-          variant="body1"
-          align="right"
-        >
-          {(order.price).toFixed(digitsAfterDecimalForBidsPrice)}
-        </StyledTypography>
-      </Cell>
-    </RowWithVolumeChart>
-  </Row>
+    <StyledCell style={{ minWidth: '30%' }}>
+      <TypographyFullWidth textColor={'#7284A0'} variant="body2" align="left">
+        {
+          order.size
+          // .toFixed(digitsAfterDecimalForAsksSize)
+        }
+      </TypographyFullWidth>
+    </StyledCell>
+
+    <StyledCell style={{ minWidth: '40%' }}>
+      <TypographyFullWidth
+        textColor={'#7284A0'}
+        variant="body1"
+        align="right"
+        style={{ paddingRight: 0 }}
+      >
+        {order.total.toFixed(0)
+        // .toFixed(digitsAfterDecimalForAsksPrice)
+        }
+      </TypographyFullWidth>
+    </StyledCell>
+  </StyledRow>
 )
 
 const MemoizedRow = memo(
   RowFunc,
-  (prevProps, nextProps) =>
-    nextProps.order.price === prevProps.order.price &&
-    nextProps.type === prevProps.type
+  (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
 )
 
 @withTheme()
@@ -87,7 +90,7 @@ class SpreadTable extends PureComponent<IProps> {
     return (
       <SpreadreadTableWrapper>
         <Body height="calc(100% - 26px)">
-        {data.map(
+          {data.map(
             (
               order: { size: number; price: number; type: string },
               i: number
@@ -112,7 +115,5 @@ class SpreadTable extends PureComponent<IProps> {
     )
   }
 }
-
-
 
 export default withErrorFallback(SpreadTable)

@@ -22,10 +22,19 @@ const styles = (theme) => ({
 })
 
 function isMobileDevice() {
-  return (
-    typeof window.orientation !== 'undefined' ||
-    navigator.userAgent.indexOf('IEMobile') !== -1
-  )
+  if (
+    navigator.userAgent.match(/Android/i) ||
+    navigator.userAgent.match(/webOS/i) ||
+    navigator.userAgent.match(/iPhone/i) ||
+    navigator.userAgent.match(/iPad/i) ||
+    navigator.userAgent.match(/iPod/i) ||
+    navigator.userAgent.match(/BlackBerry/i) ||
+    navigator.userAgent.match(/Windows Phone/i)
+  ) {
+    return true
+  } else {
+    return false
+  }
 }
 
 const Transition = (props: any) => {
@@ -84,6 +93,5 @@ const PopUp = ({ classes }: { classes: any }) => {
     </Dialog>
   )
 }
-
 
 export default withStyles(styles)(PopUp)

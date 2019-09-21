@@ -203,15 +203,15 @@ const Chart = styled.div`
   width: 100%;
   height: 100%;
   min-height: 5em;
-  max-height: 10rem;
-  margin-bottom: 1rem;
+  max-height: 16rem;
+  margin-bottom: 1.6rem;
 `
 
 const SProfileChart = styled.div`
   width: 100%;
   border-radius: 3px;
   background-color: #393e44;
-  min-height: 10rem;
+  min-height: 16rem;
   margin: 0 auto;
 
   display: flex;

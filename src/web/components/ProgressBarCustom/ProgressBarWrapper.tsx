@@ -5,14 +5,13 @@ import { Grid } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
   GridFlex,
-  LinearProgressCustom,
   TypographyCustom,
-  IconCircle,
 } from './ProgressBar.styles'
 
 import ProgressBarSection from './ProgressBarSection'
 import ProgressBarCoins from './ProgressBarCoins'
 import ProgressOtherCoins from './ProgressOtherCoins'
+import { LinearProgressCustom } from '@sb/styles/cssUtils'
 
 const styles = (theme) => ({
   root: {
@@ -35,6 +34,8 @@ function ProgressBarWrapper(props: IProps) {
     otherCoinsPercentage,
     isSectionChart,
     isTargetChart,
+    isPanelExpanded,
+    onChangeExpandedPanel,
   } = props
 
 
@@ -52,6 +53,8 @@ function ProgressBarWrapper(props: IProps) {
         <ProgressOtherCoins
           otherCoinData={otherCoinData}
           otherCoinsPercentage={otherCoinsPercentage}
+          isPanelExpanded={isPanelExpanded}
+          onChangeExpandedPanel={onChangeExpandedPanel}
         />
       ) : (
         ' '

@@ -1,61 +1,65 @@
 import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
-import { TypographyHeading } from './SharePortfolioPanel.style'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
+import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import { IProps } from './SharePortfolio.types'
 
-export default class SharePortfolioPanel extends Component<IProps> {
+class SharePortfolioPanel extends Component<IProps> {
   render() {
-    const { handleOpenSharePortfolio, portfolioName } = this.props
+    const {
+      handleOpenSharePortfolio,
+      portfolioName,
+      onToggleUSDBTC,
+      isUSDCurrently,
+    } = this.props
     return (
       <Grid
         container
         justify="space-between"
         alignItems="center"
         style={{
-          height: '85px',
-          padding: '0 24px',
+          padding: '1.6rem 24px',
+          height: '11%',
         }}
       >
         <Grid item>
-          <Grid container justify="flex-start">
-            <Grid item style={{ marginRight: '15px' }}>
-              <TypographyHeading textColor={theme.palette.text.primary}>
+          <Grid container justify="flex-start" alignItems="center">
+            <Grid item style={{ marginRight: '1rem' }}>
+              <TypographyHeading textColor={theme.palette.black.registration}>
                 {portfolioName}
               </TypographyHeading>
             </Grid>
-            <Grid item>
-              <BtnCustom
-                btnWidth={'150px'}
-                height={'24px'}
-                btnColor={'#165BE0'}
-                margin="auto"
-                padding="2px"
+            {/* <Grid item>
+              <StyledButton
+                padding="0.4rem 1rem 0.35rem 1rem"
+                borderRadius={'12px'}
                 onClick={handleOpenSharePortfolio}
               >
                 share portfolio
-              </BtnCustom>
-            </Grid>
+              </StyledButton>
+            </Grid> */}
           </Grid>
         </Grid>
 
         <Grid item>
-          <BtnCustom
-            // onClick={() => {
-            //   this.props.onToggleUSDBTC()
-            //   toggleBaseCoin()
-            // }}
-            borderRadius={'32px'}
-            btnWidth={'100%'}
-            height={'24px'}
-            btnColor={'#165BE0'}
-            margin="auto"
-            padding="2px"
-          >
-            Btc
-          </BtnCustom>
+          <Grid container justify="flex-start" alignItems="center">
+            {/* <Grid item>
+              <SelectPortfolioPeriod />
+            </Grid> */}
+            <Grid item>
+              <StyledButton
+                onClick={onToggleUSDBTC}
+                padding="0.25rem 1rem 0.25rem 1rem"
+                borderRadius={'28px'}
+              >
+                {isUSDCurrently ? 'BTC' : 'USD'}
+              </StyledButton>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     )
   }
 }
+
+export default SharePortfolioPanel

@@ -15,7 +15,7 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
 import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
+// import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 @withTheme()
 class TradeHistoryTable extends React.PureComponent<IProps> {
@@ -52,7 +52,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
     const {
       tab,
-      tabIndex,
       show,
       handleTabChange,
       focusedInput,
@@ -73,27 +72,39 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        style={{ borderRadius: 0, height: '100%' }}
+        stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
           sortColumn: getTableHead(tab)[0].id,
           sortDirection: 'desc',
         }}
         withCheckboxes={false}
         tableStyles={{
+          headRow: {
+            borderBottom: '1px solid #e0e5ec',
+          },
           heading: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
-            top: CSS_CONFIG.chart.headCell.top,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#fff',
+            color: '#16253D',
           },
           cell: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            color: '#16253D',
+            fontSize: '1.3rem', // 1.2 if bold
+            // fontWeight: 'bold',
+            fontFamily: 'Trebuchet MS',
+            letterSpacing: '1px',
+            borderBottom: '1px solid #e0e5ec',
+          },
+          tab: {
+            padding: 0,
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs
-              tabIndex={tabIndex}
-              handleTabChange={handleTabChange}
-            />
+            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
             <TradingTitle
               {...{
                 startDate,

@@ -1,11 +1,16 @@
 import React from 'react'
+
+import { withFormik } from 'formik'
+import Yup from 'yup'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+
+import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
-import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
-import Typography from '@material-ui/core/Typography'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -15,14 +20,44 @@ import {
   InputBaseCustom,
   DialogWrapper,
   DialogTitleCustom,
-  GridSearchPanel,
-  LinkCustom,
-  SearchIconCustom,
-} from './CreatePortfolio.styles'
+  Legend,
+} from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
-import AddIcon from '@material-ui/icons/Add'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
+
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './CreatePortfolio.types'
+
+const formikDialog = withFormik({
+  validationSchema: Yup.object().shape({
+    portfolioName: Yup.string().required(),
+  }),
+  mapPropsToValues: () => ({
+    portfolioName: '',
+  }),
+  handleSubmit: async ({ portfolioName }, props) => {
+    const { createPortfolio } = props.props
+    const variables = {
+      inputPortfolio: {
+        name: portfolioName,
+      },
+    }
+
+    try {
+      props.setSubmitting(true)
+      await createPortfolio({
+        variables,
+      })
+      props.resetForm({})
+    } catch (error) {
+      console.error(error)
+      props.setFieldError('portfolioName', 'Request error!')
+      props.setSubmitting(false)
+    }
+  },
+})
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -66,6 +101,8 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
     isSelected: true,
+
+    portfolioName: '',
   }
 
   handleRadioBtn = () => {
@@ -89,22 +126,35 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black },
       },
+      handleChange,
+      values,
+      handleSubmit,
+      errors,
+      validateForm,
     } = this.props
 
     return (
       <>
         <BtnCustom
-          btnWidth={'160px'}
-          height={'28px'}
-          btnColor={'#165BE0'}
-          borderRadius={'10px'}
-          color={'#165BE0'}
-          margin={'20px 0 0 8px'}
-          padding={'0px'}
-          fontSize={'0.65rem'}
+          btnWidth={'17rem'}
+          height={'3.5rem'}
+          btnColor={'#16253D'}
+          backgroundColor="white"
+          borderRadius={'1rem'}
+          padding={'0'}
+          fontSize={'1.175rem'}
+          letterSpacing="1px"
           onClick={this.handleClickOpen}
+          style={{
+            position: 'absolute',
+            left: '50%',
+            bottom: '1.5rem',
+            transform: 'translateX(-50%)',
+            border: '2px solid #E0E5EC',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+          }}
         >
-          {/* <AddIcon fontSize={`small`} /> */}+ create portfolio
+          {/* <AddIcon fontSize={`small`} /> */}Create portfolio
         </BtnCustom>
         <DialogWrapper
           style={{ borderRadius: '50%' }}
@@ -118,26 +168,49 @@ class CreatePortfolio extends React.Component<IProps, IState> {
           >
             <TypographyCustomHeading
               fontWeight={'700'}
-              borderRadius={'10px'}
+              borderRadius={'1rem'}
               color={black.custom}
             >
               Create Portfolio
             </TypographyCustomHeading>
           </DialogTitleCustom>
-          <DialogContent justify="center">
-            <GridCustom style={{ width: '440px' }}>
-              <InputBaseCustom placeholder="Name" />
-            </GridCustom>
+          <DialogContent
+            justify="center"
+            style={{
+              padding: '0 3rem 3rem',
+            }}
+          >
+            <Grid style={{ width: '440px' }}>
+              <GridCustom>
+                <Legend>Portfolio name</Legend>
+                <InputBaseCustom
+                  placeholder=""
+                  name="portfolioName"
+                  onChange={handleChange}
+                  value={values.portfolioName}
+                  error={errors && !!errors.portfolioName}
+                />
+                <Typography color="error">{errors.portfolioName}</Typography>
+              </GridCustom>
+            </Grid>
 
-            <GridCustom container justify="space-between" alignItems="center">
+            <Grid container justify="flex-end" alignItems="center">
               <BtnCustom
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
+                onClick={(e) => {
+                  e.preventDefault()
+
+                  validateForm().then(async () => {
+                    await handleSubmit()
+                    this.handleClose()
+                  })
+                }}
               >
-                Create
+                CREATE
               </BtnCustom>
-            </GridCustom>
+            </Grid>
           </DialogContent>
         </DialogWrapper>
       </>
@@ -145,4 +218,14 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   }
 }
 
-export default CreatePortfolio
+export default compose(
+  graphql(createPortfolioMutation, {
+    name: 'createPortfolio',
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+      ],
+    }),
+  }),
+  formikDialog
+)(CreatePortfolio)

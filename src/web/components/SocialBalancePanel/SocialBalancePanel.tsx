@@ -4,61 +4,125 @@ import {
   GridColumn,
   TypographyTitleCell,
   TypographyValueCell,
+  GridMainContainer,
 } from './SocialBalancePanel.styles'
+import { compose } from 'recompose'
+import {
+  roundAndFormatNumber,
+  roundPercentage,
+} from '@core/utils/PortfolioTableUtils'
 
 @withTheme()
 class SocialBalancePanel extends Component {
   render() {
-    const { theme } = this.props
+    const { theme, totalFolioAssetsData } = this.props
     return (
-      <Grid container justify="space-between">
+      <GridMainContainer container justify="space-between">
         <GridColumn>
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Value
             </TypographyTitleCell>
             <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-              $100,000
+              ${roundAndFormatNumber(totalFolioAssetsData.total, 3, true)}
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="center">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               assets
             </TypographyTitleCell>
             <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-              12
+              {totalFolioAssetsData.assets}
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="center">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               realized P{`&`}L
             </TypographyTitleCell>
-            <TypographyValueCell textColor={'#2F7619'}>
-              $24500
+            <TypographyValueCell
+              textColor={
+                totalFolioAssetsData.realized > 0
+                  ? theme.palette.price.increase
+                  : totalFolioAssetsData.realized < 0
+                  ? theme.palette.price.decrease
+                  : theme.palette.text.subPrimary
+              }
+            >
+              {totalFolioAssetsData.realized < 0 ? '-' : ''}$
+              {Math.sign(
+                roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
+              ) === 1
+                ? roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
+                : Math.abs(
+                    roundAndFormatNumber(totalFolioAssetsData.realized, 3, true)
+                  )}
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="center">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Unrealized P{`&`}L
             </TypographyTitleCell>
-            <TypographyValueCell textColor={'#B93B2B'}>
-              -$120300
+            <TypographyValueCell
+              textColor={
+                totalFolioAssetsData.unrealized > 0
+                  ? theme.palette.price.increase
+                  : totalFolioAssetsData.unrealized < 0
+                  ? theme.palette.price.decrease
+                  : theme.palette.text.subPrimary
+              }
+            >
+              {totalFolioAssetsData.unrealized < 0 ? '-' : ''}$
+              {Math.sign(
+                roundAndFormatNumber(totalFolioAssetsData.unrealized, 3, true)
+              ) === 1
+                ? roundAndFormatNumber(totalFolioAssetsData.unrealized, 3, true)
+                : Math.abs(
+                    roundAndFormatNumber(
+                      totalFolioAssetsData.unrealized,
+                      3,
+                      true
+                    )
+                  )}
             </TypographyValueCell>
           </div>
         </GridColumn>
-        <GridColumn>
+        <GridColumn justify="flex-end">
           <div>
             <TypographyTitleCell textColor={theme.palette.text.primary}>
               Total P{`&`}L
             </TypographyTitleCell>
-            <TypographyValueCell textColor={'#B93B2B'}>
-              -$120300
+            <TypographyValueCell
+              textColor={
+                totalFolioAssetsData.realized +
+                  totalFolioAssetsData.unrealized >
+                0
+                  ? theme.palette.price.increase
+                  : totalFolioAssetsData.realized +
+                      totalFolioAssetsData.unrealized <
+                    0
+                  ? theme.palette.price.decrease
+                  : theme.palette.text.subPrimary
+              }
+            >
+              {totalFolioAssetsData.realized + totalFolioAssetsData.unrealized <
+              0
+                ? '-'
+                : ''}
+              $
+              {Math.abs(
+                roundAndFormatNumber(
+                  totalFolioAssetsData.realized +
+                    totalFolioAssetsData.unrealized,
+                  3,
+                  true
+                )
+              )}
             </TypographyValueCell>
           </div>
         </GridColumn>
@@ -82,9 +146,15 @@ class SocialBalancePanel extends Component {
             <TypographyTitle>Value</TypographyTitle>
             <TypographyValue>$100,000</TypographyValue>
           </Grid> */}
-      </Grid>
+      </GridMainContainer>
     )
   }
 }
 
 export default SocialBalancePanel
+// export default compose(
+//   queryRendererHoc({
+//     query: GET_TOOLTIP_SETTINGS,
+//     name: 'getTooltipSettingsQuery',
+//   })
+// )(SocialBalancePanel)

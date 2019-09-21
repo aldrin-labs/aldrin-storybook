@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 import Settings from '@material-ui/icons/Settings'
 import Main from '@material-ui/icons/LineStyle'
@@ -18,17 +18,18 @@ import {
   DividerWithMargin,
   Marker,
   Tab,
-  StyledButton,
+  StyledLeftButton,
+  StyledRightButton,
 } from './PortfolioTableTabs.styles'
 
 @withRouter
 class PortfolioTableTabs extends React.Component<IProps> {
-  onToggleUSDBTC = () => {
-    const { onToggleUSDBTC } = this.props
-    if (onToggleUSDBTC) {
-      onToggleUSDBTC()
-    }
-  }
+  // onToggleUSDBTC = () => {
+  //   const { onToggleUSDBTC } = this.props
+  //   if (onToggleUSDBTC) {
+  //     onToggleUSDBTC()
+  //   }
+  // }
 
   render() {
     const {
@@ -44,7 +45,11 @@ class PortfolioTableTabs extends React.Component<IProps> {
       },
       location: { pathname },
     } = this.props
+
     const switchUSDBTC = pathname === '/portfolio/main'
+    const isMainPage = pathname === '/portfolio/main'
+    const isTransactionsPage = pathname === '/portfolio/transactions'
+    const isRebalancePage = pathname === '/portfolio/rebalance'
 
     return (
       <Container
@@ -56,9 +61,33 @@ class PortfolioTableTabs extends React.Component<IProps> {
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
+          minHeight: '86.2vh',
         }}
       >
-        <StyledButton onClick={() => toggleWallets()}>Accounts</StyledButton>
+        {isMainPage ? (
+          <>
+            <StyledLeftButton onClick={() => toggleWallets()}>
+              Accounts
+            </StyledLeftButton>
+            <StyledRightButton component={Link} to="/portfolio/transactions">
+              Transactions
+            </StyledRightButton>
+          </>
+        ) : null}
+
+        {isRebalancePage ? (
+          <>
+            <StyledLeftButton onClick={() => toggleWallets()}>
+              Accounts
+            </StyledLeftButton>
+          </>
+        ) : null}
+
+        {isTransactionsPage ? (
+          <StyledLeftButton component={Link} to="/portfolio/main">
+            P&L
+          </StyledLeftButton>
+        ) : null}
 
         {/*<BarContainer*/}
         {/*onClick={() => {*/}

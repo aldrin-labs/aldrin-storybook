@@ -16,9 +16,11 @@ import {
   removeZeroSizeOrders,
   reduceArrayLength,
 } from '@core/utils/chartPageUtils'
+
+import { transformOrderbookData } from '../../utils'
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
-import { HeadRow } from './Tables/HeadRow/HeadRow'
+import { MiddlePrice } from './Tables/Bids/MiddlePrice'
 import ComingSoon from '@sb/components/ComingSoon'
 import { IProps, IState } from './OrderBookTableContainer.types'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -44,84 +46,79 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   // transforming data
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // when get data from subscr
-    if (
-      newProps.data &&
-      newProps.data.marketOrders &&
-      newProps.data.marketOrders.length > 0
-    ) {
-      let iterator = state.i
+    // console.log(newProps.data.marketOrders)
 
-      const orderData = newProps.data.marketOrders[0]
-      const order: IOrder = {
-        price: +(+orderData.price).toFixed(8),
-        size: +(+orderData.size).toFixed(8),
-        type: orderData.side,
-      }
+    return transformOrderbookData(newProps.data)
 
-      const asks =
-        order.type === 'ask'
-          ? sortDesc(
-              removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price'))
-            )
-          : state.asks
-
-      let bids =
-        order.type === 'bid'
-          ? sortDesc(
-              removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price'))
-            )
-          : state.bids
-
-      // find spread
-      const spread = findSpread(asks, bids)
-      //  you must remove zero orders here after merge new order to orderbook
-      bids = bidsPriceFiltering(asks, bids)
-
-      // update depth chart every 100 iterations
-      if (iterator === 100) {
-        newProps.setOrdersMutation({
-          variables: {
-            setOrdersInput: {
-              bids,
-              asks,
-            },
-          },
-        })
-        iterator = 0
-      } else {
-        iterator += 1
-      }
-
-      return {
-        spread,
-        asks:
-          order.type === 'ask'
-            ? maximumItemsInArray(asks, 100, 40, true)
-            : state.asks,
-        bids: reduceArrayLength(bids),
-        // bids: [],
-        // asks: [],
-        i: iterator,
-        digitsAfterDecimalForAsksPrice: getNumberOfDigitsAfterDecimal(
-          asks,
-          'price'
-        ),
-        digitsAfterDecimalForAsksSize: getNumberOfDigitsAfterDecimal(
-          asks,
-          'size'
-        ),
-        digitsAfterDecimalForBidsPrice: getNumberOfDigitsAfterDecimal(
-          bids,
-          'price'
-        ),
-        digitsAfterDecimalForBidsSize: getNumberOfDigitsAfterDecimal(
-          bids,
-          'size'
-        ),
-      }
+    const orderData = newProps.data.marketOrders[0]
+    const order: IOrder = {
+      price: +(+orderData.price).toFixed(8),
+      size: +(+orderData.size).toFixed(8),
+      type: orderData.side,
     }
 
-    return null
+    const asks =
+      order.type === 'ask'
+        ? sortDesc(
+            removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price'))
+          )
+        : state.asks
+
+    let bids =
+      order.type === 'bid'
+        ? sortDesc(
+            removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price'))
+          )
+        : state.bids
+
+    console.log('statefrom', asks, bids)
+    // find spread
+    const spread = findSpread(asks, bids)
+    //  you must remove zero orders here after merge new order to orderbook
+    bids = bidsPriceFiltering(asks, bids)
+
+    // update depth chart every 100 iterations
+    if (iterator === 100) {
+      newProps.setOrdersMutation({
+        variables: {
+          setOrdersInput: {
+            bids,
+            asks,
+          },
+        },
+      })
+      iterator = 0
+    } else {
+      iterator += 1
+    }
+
+    return {
+      spread,
+      asks:
+        order.type === 'ask'
+          ? maximumItemsInArray(asks, 100, 40, true)
+          : state.asks,
+      bids: reduceArrayLength(bids),
+      // bids: [],
+      // asks: [],
+      i: iterator,
+      digitsAfterDecimalForAsksPrice: getNumberOfDigitsAfterDecimal(
+        asks,
+        'price'
+      ),
+      digitsAfterDecimalForAsksSize: getNumberOfDigitsAfterDecimal(
+        asks,
+        'size'
+      ),
+      digitsAfterDecimalForBidsPrice: getNumberOfDigitsAfterDecimal(
+        bids,
+        'price'
+      ),
+      digitsAfterDecimalForBidsSize: getNumberOfDigitsAfterDecimal(
+        bids,
+        'size'
+      ),
+    }
   }
 
   componentDidMount() {
@@ -178,7 +175,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           quote={quote}
         />
 
-        <HeadRow
+        {/* <HeadRow
           {...{
             primary,
             type,
@@ -191,7 +188,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             ),
             key: 'bids_headrow',
           }}
-        />
+        /> */}
+
+        <MiddlePrice>$10801.0</MiddlePrice>
+
         <SpreadTable
           data={bids}
           digitsAfterDecimalForBidsSize={digitsAfterDecimalForBidsSize}

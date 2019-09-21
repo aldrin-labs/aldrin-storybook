@@ -140,7 +140,7 @@ export default class ProfileChart extends React.Component<IProfileChartProps, IP
 
         <Chart
           style={{
-            height
+            height,
           }}
         >
           <FlexibleXYPlot
@@ -173,7 +173,7 @@ export default class ProfileChart extends React.Component<IProfileChartProps, IP
               data={yearData}
               style={{
                 fill: 'rgba(133, 237, 238, 0.35)',
-                stroke: 'rgb(78, 216, 218)',
+                stroke: '#165BE0', //'rgb(78, 216, 218)',
                 strokeWidth: '3px',
               }}
             />
@@ -182,14 +182,16 @@ export default class ProfileChart extends React.Component<IProfileChartProps, IP
               <div
                 style={{
                   background: '#4c5055',
-                  color: '#4ed8da',
+                  color: '#165BE0',
                   padding: '5px',
                   fontSize: '14px',
                 }}
               >
                 <p>
-                  {crosshairValues.map((v) => calculateMonths(v.x)).join(' ')}:{' '}
-                  {crosshairValues.map((v) => v.y.toFixed(2)).join(' ')}
+                  {crosshairValues
+                    .map((v) => calculateMonths(v.x))
+                    .join(' ')}
+                  : {crosshairValues.map((v) => v.y.toFixed(2)).join(' ')}
                 </p>
               </div>
             </Crosshair>
@@ -213,7 +215,7 @@ export default class ProfileChart extends React.Component<IProfileChartProps, IP
                 onClick={() => this.onChangeActiveChart(i)}
                 style={
                   i === this.state.activeChart
-                    ? { backgroundColor: '#4ed8da', color: '#4c5055' }
+                    ? { backgroundColor: '#165BE0', color: '#4c5055' }
                     : {}
                 }
                 key={chartBtn}
@@ -261,7 +263,7 @@ const ChartBtn = styled.button`
   font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #4ed8da;
+  color: #165BE0;
   cursor: pointer;
 `
 
@@ -296,7 +298,7 @@ const CurrentRate = styled.span`
   font-family: Roboto, sans-serif;
   font-size: 25px;
   font-weight: 500;
-  color: #4ed8da;
+  color: #165BE0;
 `
 
 const CommonRate = styled.span`

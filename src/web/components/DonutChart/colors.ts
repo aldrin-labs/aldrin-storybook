@@ -1,8 +1,8 @@
 export const defaultColors = [
-  '#335ecc',
-  '#07c61b',
-  '#ce549d',
-  '#f05011',
+  '#F29C38',
+  '#4152AF',
+  '#DEDB8E',
+  '#abbad1',
   '#CAC531',
   '#ff7e5f',
   '#4ecdc4',

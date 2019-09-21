@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography } from '@material-ui/core'
+import { Typography, withWidth } from '@material-ui/core'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 
 import { Table as ImTable, TableWithSort, Loading } from '@sb/components'
@@ -10,9 +10,10 @@ import {
   LoaderWrapper,
   LoaderInnerWrapper,
   ContentInner,
-} from './RebalancedPortfolioTable.styles'
+} from './PortfolioRebalanceTable.styles'
 
 import { IProps } from './PortfolioRebalanceTable.types'
+import { compose } from 'recompose'
 
 // const styles = (theme) => ({
 //   heading: {
@@ -34,6 +35,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   timestampSnapshot,
   onNewSnapshot,
   tableData,
+  width,
 }: IProps) => {
   const Table = isEditModeEnabled ? ImTable : TableWithSort
   return (
@@ -50,7 +52,7 @@ const PortfolioRebalanceTable: React.FunctionComponent<
       {/*)}*/}
       <ContentInner>
         <Table
-          style={{ width: '100%' }}
+          style={{ width: '100%', minHeight: '22rem' }}
           columnNames={tableData.columnNames}
           id="PortfolioRebalanceTable"
           data={tableData.data}
@@ -66,33 +68,14 @@ const PortfolioRebalanceTable: React.FunctionComponent<
             red,
             saveButtonColor,
           })}
-          tableStyles={{
-            heading: {
-              fontFamily: `DM Sans, sans-serif`,
-              color: theme.palette.text.primary,
-              background: theme.palette.background.table,
-              textTransform: 'uppercase',
-              fontWeight: 'bold',
-              fontSize: '10px',
-            },
-            title: {},
-            cell: {
-              padding: '0px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              fontSize: '12px',
-              height: '48px',
-              borderBottom: `1px solid ${
-                theme.palette.grey[theme.palette.type]
-              }`,
-            },
-          }}
-          emptyTableText="No assets"
+          emptyTableText=""
         />
       </ContentInner>
     </>
   )
 }
 
-//export default PortfolioRebalanceTable
-export default withTheme()(PortfolioRebalanceTable)
+export default compose(
+  withWidth(),
+  withTheme()
+)(PortfolioRebalanceTable)

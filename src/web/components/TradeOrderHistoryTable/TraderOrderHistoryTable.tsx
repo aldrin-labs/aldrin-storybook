@@ -1,77 +1,104 @@
 import * as React from 'react'
-import { TableWithSort } from '@sb/components/index'
+import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
+import { withWidth } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
+import CoinRow from './CoinRow'
 
 @withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
-  state = {
-    activeSortArg: null,
-    page: 0,
-    rowsPerPage: 14,
-  }
+  addFilter = () => {
+    const {
+      rows: { head: headings },
+      inputValue,
+      filterCoin,
+      onInputChange,
+      updateFilterCoin,
+    } = this.props
 
-  handleChangePage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    page: number
-  ) => {
-    this.setState({ page })
-  }
-
-  handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ rowsPerPage: event.target.value })
+    return headings.map((heading) => {
+      if (heading.label === 'pairFilter')
+        return {
+          ...heading,
+          label: (
+            <CoinRow
+              {...{
+                inputValue,
+                filterCoin,
+                onInputChange,
+                updateFilterCoin,
+              }}
+            />
+          ),
+        }
+      return { ...heading }
+    })
   }
 
   render() {
-    const { rows, theme } = this.props
+    const {
+      rows,
+      page,
+      perPage,
+      count,
+      handleChangePage,
+      handleChangeRowsPerPage,
+      isCustomStyleForFooter,
+    } = this.props
 
-    const tableStyles = {
-      heading: {
-        background: 'transparent',
-        color: '#ABBAD1',
-        fontFamily: `DM Sans`,
-        textTransform: 'uppercase',
-        fontWeight: '700',
-        fontSize: '0.75rem',
-        borderBottom: '1px solid #E0E5EC',
-        padding: '0 0 10px 10px',
-      },
-      title: {},
-      cell: {
-        letterSpacing: '1.5px',
-        textTransform: 'uppercase',
-        color: theme.palette.text.subPrimary,
-        fontFamily: 'DM Sans',
-        fontStyle: 'normal',
-        fontWeight: '700',
-        fontSize: '0.75rem',
-        lineHeight: '31px',
-        background: 'transparent',
-        borderBottom: '1px solid #E0E5EC',
-        height: '48px',
-        paddingLeft: '10px',
-      },
-    }
-
+    // 82.2
     return (
-      <TableWithSort
+      <StyledTable
+        isCustomStyleForFooter={isCustomStyleForFooter}
+        style={{
+          height: '88%',
+          position: 'relative',
+          overflowY: 'scroll',
+          overflowX: 'hidden',
+          borderTopLeftRadius: '0',
+          borderTopRightRadius: '0',
+        }}
         id="PortfolioActionsTable"
         padding="dense"
         data={{ body: rows.body }}
-        columnNames={rows.head}
+        columnNames={this.addFilter()}
         emptyTableText="No history"
-        tableStyles={tableStyles}
         pagination={{
-          enabled: true, // toogle page nav panel in the footer
-          page: this.state.page,
-          rowsPerPage: this.state.rowsPerPage,
-          rowsPerPageOptions: [20, 50, 100, 200],
-          handleChangeRowsPerPage: this.handleChangeRowsPerPage,
-          handleChangePage: this.handleChangePage,
+          fakePagination: false,
+          enabled: true,
+          totalCount: count,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [30, 50, 70, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
+        }}
+        tableStyles={{
+          heading: {
+            top: '-1px',
+            padding: '1.2rem 1.6rem 1.2rem 1.2rem',
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: '1.1rem',
+            fontWeight: 600,
+            letterSpacing: 0.5,
+            borderBottom: '2px solid #e0e5ec',
+            whiteSpace: 'nowrap',
+            color: '#7284A0',
+            background: '#F2F4F6',
+          },
+          cell: {
+            padding: '1.2rem 1.6rem 1.2rem 1.2rem',
+            fontFamily: "'DM Sans Bold', sans-serif",
+            fontSize: '1.1rem',
+            fontWeight: 500,
+            textTransform: 'uppercase',
+            letterSpacing: 0.5,
+            color: '#7284A0',
+          },
         }}
       />
     )
   }
 }
 
-export default TradeOrderHistoryTable
+export default withWidth()(TradeOrderHistoryTable)

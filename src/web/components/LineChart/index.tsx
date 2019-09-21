@@ -75,7 +75,7 @@ export default class LineChart extends React.Component<Props, State> {
     if (showCustomPlaceholder) {
       return placeholderElement
     }
-
+    
     if (!data) {
       return (
         <FlexibleXYPlot>
@@ -154,7 +154,7 @@ export default class LineChart extends React.Component<Props, State> {
         {crosshairValues && (
           <Crosshair values={crosshairValues}>
             <ContainerForCrossHairValues>
-              <Typography variant="subtitle1" style={{ marginBottom: '1rem' }}>
+              <Typography variant="subtitle1" style={{ marginBottom: '1.6rem' }}>
                 {dateDataFormatted}
               </Typography>
 
@@ -174,7 +174,7 @@ export default class LineChart extends React.Component<Props, State> {
               {additionalInfoInPopup && (
                 <Typography
                   variant="body2"
-                  style={{ marginTop: '1rem', fontStyle: 'italic' }}
+                  style={{ marginTop: '1.6rem', fontStyle: 'italic' }}
                 >
                   Note: we simulate the starting balance of $1,000 for
                   optimization

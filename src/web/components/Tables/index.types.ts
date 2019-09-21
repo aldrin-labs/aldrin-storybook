@@ -1,6 +1,6 @@
 import { Theme, PropTypes } from '@material-ui/core'
 import React, { CSSProperties } from 'react'
-import { SvgIconProps } from '@material-ui/core/SvgIcon'
+// import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { Padding } from '@material-ui/core/TableCell'
 import { Classes } from 'jss'
 
@@ -94,6 +94,8 @@ export type TableStyles = {
   heading?: CSSProperties
   title?: CSSProperties
   cell?: CSSProperties
+  tab?: CSSProperties
+  headRow?: CSSProperties
 }
 
 export interface Props {
@@ -110,6 +112,7 @@ export interface Props {
   columnNames?: ReadonlyArray<Head>
   checkedRows?: ReadonlyArray<string>
   expandedRows?: ReadonlyArray<string>
+  expandAllRows: boolean
   title?: string | number | React.ReactElement<any>
   onChange?: OnChange | OnChangeWithEvent
   onSelectAllClick?: OnChange & OnChangeWithEvent
@@ -126,6 +129,12 @@ export interface Props {
   rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
   tableStyles?: TableStyles
+  onTrClick?: (data: any) => void
+  style?: CSSProperties
+  autoRefetch?: boolean
+  needRefetch?: boolean
+  toggleAutoRefetch: () => void
+  stylesForTable?: CSSProperties
 }
 
 export type Pagination = {
@@ -136,4 +145,11 @@ export type Pagination = {
   rowsPerPage: number
   // start from  0
   page: number
+  fakePagination: boolean
+  totalCount: number | null
 }
+
+export type PaginationFunctionType = (
+  data: ReadonlyArray<any>,
+  pagination: Pagination
+) => ReadonlyArray<any>

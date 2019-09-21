@@ -7,5 +7,8 @@ interface Item {
 export interface IProps {
     id: string,
     buttonText: string,
-    items: Item[]
+    items: Item[],
+    selectedMenu: string | undefined,
+    selectActiveMenu(i: string): void;
+    onMouseOver?: () => void
 }

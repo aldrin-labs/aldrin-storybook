@@ -1,13 +1,7 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/core/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import classNames from 'classnames'
-// import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
-// import Chip from '@material-ui/core/Chip'
-// import Button from '@material-ui/core/Button'
-// import Divider from '@material-ui/core/Divider'
 
 import { Grid } from '@material-ui/core'
 import {
@@ -17,178 +11,200 @@ import {
   ExpansionPanelSummaryCustom,
   TypographySubHeading,
   GridColumn,
+  GridRowWrapper,
   GridRow,
+  ExpansionPanelDetailsCustom,
 } from './AccordionOverView.style'
 
-import { withTheme } from '@material-ui/styles'
+import { addMainSymbol } from '@sb/components/index'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
-const dataOverview = [
-  {
-    exchange: 'Binance trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-  {
-    exchange: 'Bittrex trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-  {
-    exchange: 'Huobi trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-  {
-    exchange: 'Kraken trade account',
-    value: '100000',
-    assets: '12',
-    realized: '138000.50',
-    unrealized: '138000.50',
-    total: '138000.50',
-  },
-]
+const format = (number, baseCoin) => {
+  const isUSDCurrently = baseCoin === 'USDT'
 
-function DetailedExpansionPanel(props) {
-  const { classes } = props
-  return (
-    <Grid style={{ width: '100%' }}>
-      <ExpansionPanel>
-        <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
-          <GridColumn>
-            <TypographyHeading textColor={theme.palette.text.primary}>
-              overview
-            </TypographyHeading>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                Value
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                $100,000
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                assets
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={theme.palette.text.subPrimary}>
-                12
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                realized P{`&`}L
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={'#2F7619'}>
-                $24500
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                Unrealized P{`&`}L
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={'#B93B2B'}>
-                -$120300
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-          <GridColumn>
-            <div>
-              <TypographyTitleCell textColor={theme.palette.text.primary}>
-                Total P{`&`}L
-              </TypographyTitleCell>
-              <TypographyValueCell textColor={'#B93B2B'}>
-                -$120300
-              </TypographyValueCell>
-            </div>
-          </GridColumn>
-        </ExpansionPanelSummaryCustom>
-
-        <ExpansionPanelDetails>
-          <Grid container justify="center">
-            {dataOverview.map((dataRow) => {
-              return (
-                <GridRow
-                  item
-                  hoverColor={theme.palette.hover[theme.palette.type]}
-                >
-                  <GridColumn>
-                    <TypographySubHeading>
-                      Binance trade account
-                    </TypographySubHeading>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>Value</TypographyTitleCell>
-                      <TypographyValueCell
-                        textColor={theme.palette.text.subPrimary}
-                      >
-                        $100,000
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>assets</TypographyTitleCell>
-                      <TypographyValueCell
-                        textColor={theme.palette.text.subPrimary}
-                      >
-                        12
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>
-                        realized P{`&`}L
-                      </TypographyTitleCell>
-                      <TypographyValueCell textColor={'#2F7619'}>
-                        $24500
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>
-                        Unrealized P{`&`}L
-                      </TypographyTitleCell>
-                      <TypographyValueCell textColor={'#B93B2B'}>
-                        -$120300
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                  <GridColumn>
-                    <div>
-                      <TypographyTitleCell>Total P{`&`}L</TypographyTitleCell>
-                      <TypographyValueCell textColor={'#B93B2B'}>
-                        -$120300
-                      </TypographyValueCell>
-                    </div>
-                  </GridColumn>
-                </GridRow>
-              )
-            })}
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </Grid>
-  )
+  return isUSDCurrently
+    ? addMainSymbol(roundAndFormatNumber(number, 2, true), isUSDCurrently)
+    : addMainSymbol(roundAndFormatNumber(number, 8, false), isUSDCurrently)
 }
 
-export default withTheme()(DetailedExpansionPanel)
+const gridBorder = `
+&::after {
+  position: absolute;
+  top: 25%;
+  left: 100%;
+  display: block;
+  content: '';
+  height: 3.5rem;
+  width: 1px;
+  background-color: #e0e5ec;
+}`
+
+@withTheme()
+class DetailedExpansionPanel extends React.Component {
+  render() {
+    const {
+      theme,
+      portfolioAssetsData,
+      totalKeyAssetsData,
+      baseCoin,
+    } = this.props
+
+    return (
+      <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
+        <ExpansionPanel CollapseProps={{ timeout: { enter: 425, exit: 350 } }}>
+          <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
+            <GridColumn style={{ justifyContent: 'flex-start' }}>
+              <TypographyHeading textColor={theme.palette.text.primary}>
+                overview
+              </TypographyHeading>
+            </GridColumn>
+            <GridColumn gridBorder={gridBorder}>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Value
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={theme.palette.text.subPrimary}>
+                  {format(totalKeyAssetsData.value, baseCoin)}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn gridBorder={gridBorder}>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  unique assets
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={theme.palette.text.subPrimary}>
+                  {totalKeyAssetsData.uniqueAssets.length}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn gridBorder={gridBorder}>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  realized P{`&`}L
+                </TypographyTitleCell>
+                <TypographyValueCell
+                  textColor={
+                    totalKeyAssetsData.realized < 0 ? '#B93B2B' : '#2F7619'
+                  }
+                >
+                  {format(totalKeyAssetsData.realized, baseCoin)}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn gridBorder={gridBorder}>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Unrealized P{`&`}L
+                </TypographyTitleCell>
+                <TypographyValueCell
+                  textColor={
+                    totalKeyAssetsData.unrealized < 0 ? '#B93B2B' : '#2F7619'
+                  }
+                >
+                  {format(totalKeyAssetsData.unrealized, baseCoin)}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Total P{`&`}L
+                </TypographyTitleCell>
+                <TypographyValueCell
+                  textColor={
+                    totalKeyAssetsData.total < 0 ? '#B93B2B' : '#2F7619'
+                  }
+                >
+                  {format(totalKeyAssetsData.total, baseCoin)}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+          </ExpansionPanelSummaryCustom>
+
+          <ExpansionPanelDetailsCustom>
+            <Grid container justify="center">
+              {portfolioAssetsData.map((el, i) => {
+                return (
+                  <GridRowWrapper
+                    item
+                    hoverColor={theme.palette.hover[theme.palette.type]}
+                  >
+                    <GridRow>
+                      <GridColumn>
+                        <TypographySubHeading>{el.name}</TypographySubHeading>
+                      </GridColumn>
+                      <GridColumn
+                        paddingCell={'0 1rem !important'}
+                        gridBorder={i % 2 !== 0 ? gridBorder : ''}
+                      >
+                        <div>
+                          <TypographyTitleCell>Value</TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={theme.palette.text.subPrimary}
+                          >
+                            {format(el.value, baseCoin)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
+                        <div>
+                          <TypographyTitleCell>assets</TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={theme.palette.text.subPrimary}
+                          >
+                            {el.assets}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
+                        <div>
+                          <TypographyTitleCell>
+                            realized P{`&`}L
+                          </TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={el.realized < 0 ? '#B93B2B' : '#2F7619'}
+                          >
+                            {format(el.realized, baseCoin)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
+                        <div>
+                          <TypographyTitleCell>
+                            Unrealized P{`&`}L
+                          </TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={
+                              el.unrealized < 0 ? '#B93B2B' : '#2F7619'
+                            }
+                          >
+                            {format(el.unrealized, baseCoin)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                      <GridColumn>
+                        <div>
+                          <TypographyTitleCell>
+                            Total P{`&`}L
+                          </TypographyTitleCell>
+                          <TypographyValueCell
+                            textColor={el.total < 0 ? '#B93B2B' : '#2F7619'}
+                          >
+                            {format(el.total, baseCoin)}
+                          </TypographyValueCell>
+                        </div>
+                      </GridColumn>
+                    </GridRow>
+                  </GridRowWrapper>
+                )
+              })}
+            </Grid>
+          </ExpansionPanelDetailsCustom>
+        </ExpansionPanel>
+      </Grid>
+    )
+  }
+}
+
+export default DetailedExpansionPanel

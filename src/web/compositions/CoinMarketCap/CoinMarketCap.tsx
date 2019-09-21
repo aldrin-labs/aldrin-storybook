@@ -74,6 +74,18 @@ export class CoinMarket extends React.Component<Props, State> {
     rowsPerPage: 20,
   }
 
+  componentDidMount() {
+    const invervalId = setInterval(() => {
+      this.props.refetch()
+    }, 30000)
+
+    this.setState({ invervalId })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.invervalId)
+  }
+
   handleChangePage = (
     event: React.ChangeEvent<HTMLInputElement>,
     page: number
@@ -216,11 +228,11 @@ export class CoinMarket extends React.Component<Props, State> {
             contentToSort: value.price_btc || 0,
             contentToCSV:
               typeof value.price_btc === 'number'
-                ? roundAndFormatNumber(value.price_btc, 8)
+                ? roundAndFormatNumber(value.price_btc, 8, false)
                 : '?',
             render: addMainSymbol(
               typeof value.price_btc === 'number'
-                ? roundAndFormatNumber(value.price_btc, 8)
+                ? roundAndFormatNumber(value.price_btc, 8, false)
                 : '?',
               false
             ),
@@ -340,6 +352,7 @@ export class CoinMarket extends React.Component<Props, State> {
                 columnNames={dataForTable.head}
                 data={dataForTable.data}
                 padding="default"
+                style={{ height: '100%', overflowY: 'scroll' }}
                 pagination={{
                   enabled: true,
                   page: this.state.page,
@@ -402,8 +415,8 @@ export const MyCoinMarket = withAuth(
     }),
     queryRendererHoc({
       query: marketsQuery,
-      pollInterval: 30 * 1000,
-      fetchPolicy: 'network-only',
+      // pollInterval: 30 * 1000,
+      // fetchPolicy: 'network-only',
       variables: options(location),
     })
   )(queryRender)

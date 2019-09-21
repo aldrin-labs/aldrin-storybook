@@ -9,9 +9,13 @@ const PortfolioRebalanceChartComponent = ({
   isSectionChart,
   sectionDataProgress,
   isTargetChart,
+  isPanelExpanded,
+  onChangeExpandedPanel,
 }: IProps) => (
   <>
     <ProgressBarWrapper
+      isPanelExpanded={isPanelExpanded}
+      onChangeExpandedPanel={onChangeExpandedPanel}
       isTargetChart={isTargetChart}
       sectionDataProgress={sectionDataProgress}
       coinData={coinData}

@@ -14,12 +14,12 @@ export const SearchIconCustom = styled(SearchIcon)`
   justify-content: 'center';
 `
 export const InputBaseCustom = styled(
-  ({ width, height, fontSize, borderRadius, ...rest }) => (
+  ({ width, height, fontSize, borderRadius, marginLeft, ...rest }) => (
     <InputBase {...rest} />
   )
 )`
   border-radius: 20px;
-  margin-left: 12px;
+  margin-left: ${(props) => props.marginLeft || '12px'};
   width: ${(props) => props.width || `100%`};
   height: ${(props) => props.height};
   font-size: ${(props) => props.fontSize};

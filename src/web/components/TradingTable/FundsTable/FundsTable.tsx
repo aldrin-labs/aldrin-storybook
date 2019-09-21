@@ -9,9 +9,7 @@ import {
   getTableHead,
   combineFundsTable,
 } from '@sb/components/TradingTable/TradingTable.utils'
-import {
-  updateFundsQuerryFunction
-} from '@core/utils/TradingTable.utils'
+import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { Switch, Typography } from '@material-ui/core'
@@ -63,8 +61,7 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const { tab, tabIndex, handleTabChange, show } = this.props
-
+    const { tab, handleTabChange, show } = this.props
 
     if (!show) {
       return null
@@ -72,14 +69,29 @@ class FundsTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        style={{ borderRadius: 0, height: '100%' }}
+        stylesForTable={{ backgroundColor: '#fff' }}
         withCheckboxes={false}
         tableStyles={{
+          headRow: {
+            borderBottom: '1px solid #e0e5ec',
+          },
           heading: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
-            top: CSS_CONFIG.chart.headCell.customTop,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#fff',
+            color: '#16253D',
           },
           cell: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            color: '#16253D',
+            fontSize: '1.3rem', // 1.2 if bold
+            // fontWeight: 'bold',
+            fontFamily: 'Trebuchet MS',
+            letterSpacing: '1px',
+            borderBottom: '1px solid #e0e5ec',
+          },
+          tab: {
+            padding: 0,
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
@@ -87,7 +99,6 @@ class FundsTable extends React.PureComponent<IProps> {
           <div>
             <TradingTabs
               tab={tab}
-              tabIndex={tabIndex}
               hideSmallAssets={hideSmallAssets}
               handleTabChange={handleTabChange}
               handleSmallAssetsCheckboxChange={
@@ -102,7 +113,9 @@ class FundsTable extends React.PureComponent<IProps> {
             id: '1',
             icon: (
               <>
-                <Typography style={{ fontSize: CSS_CONFIG.chart.actionCell.fontSize, }}>
+                <Typography
+                  style={{ fontSize: CSS_CONFIG.chart.actionCell.fontSize }}
+                >
                   Hide small assets
                 </Typography>
                 <Switch

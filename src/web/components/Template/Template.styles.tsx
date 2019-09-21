@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Grid, Card } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 import { CardProps } from '@material-ui/core/Card'
-import { Container } from '@sb/styles/cssUtils'
+import { Container, borderRadiusScrollBar } from '@sb/styles/cssUtils'
 
 export const GridContainer = styled(Container as React.SFC<GridProps>)`
   position: relative;
@@ -13,7 +13,7 @@ export const GridContainer = styled(Container as React.SFC<GridProps>)`
     flex-wrap: wrap;
   }
   && {
-    height: auto;
+    height: 76%;
     margin: 0;
   }
 `
@@ -26,27 +26,43 @@ export const ChartContainer = styled(Grid as React.SFC<GridProps>)`
     padding: 0 8px;
   }
   && {
-    height: 40%;
+    min-height: 100%;
   }
 `
 
 export const TableWrapper = styled(Card as React.SFC<
   CardProps & { className?: string }
 >)`
-  max-height: 100%;
+  ${borderRadiusScrollBar}
+
+  position: relative;
+  height: 64vh;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
+  border: 1px solid #e0e5ec;
+  border-radius: 20px;
+  box-shadow: 0px 0px 12px rgba(10, 19, 43, 0.1);
 `
 
+// @media only screen and (min-width: 1025px) and (max-width: 1400px) {
+//   height: 54rem;
+// }
+
+// @media only screen and (min-width: 2245px) and (max-width: 2560px) {
+//   height: 54rem;
+// }
+
 export const TablesWrapper = styled(Grid as React.SFC<GridProps>)`
-  max-height: 50%;
+  height: 100%;
   flex-basis: inherit;
   padding: 0 !important;
   margin: 0;
-  @media (max-width: 960px) {
-    max-height: inherit;
-  }
 `
+
+// @media (max-width: 960px) {
+//   max-height: inherit;
+// }
 
 export const GridTableContainer = styled(Grid as React.SFC<GridProps>)`
   position: relative;

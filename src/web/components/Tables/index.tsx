@@ -1,16 +1,20 @@
 import React, { memo } from 'react'
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell, { Padding } from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import TableFooter from '@material-ui/core/TableFooter'
 import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
+
+import {
+  StyledTable,
+  StyledTableSortLabel,
+  StyledTablePagination,
+} from './Table.styles'
 
 import {
   Props,
@@ -25,15 +29,12 @@ import {
   renderCellType,
   Pagination,
   TableStyles,
+  PaginationFunctionType,
 } from './index.types'
+
+import SwitchOnOff from '@sb/components/SwitchOnOff'
 import { isObject } from 'lodash-es'
-import {
-  Typography,
-  IconButton,
-  Grow,
-  TableSortLabel,
-  TablePagination,
-} from '@material-ui/core'
+import { Typography, IconButton, Grow } from '@material-ui/core'
 import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
@@ -52,24 +53,25 @@ const CustomTableCell = withStyles((theme) => ({
     border: 0,
     whiteSpace: 'nowrap',
     zIndex: 100,
-    padding: '0.125rem 1rem 0.125rem  0.375rem',
+    padding: '0.2rem 1.6rem 0.2rem  0.6rem',
   },
   body: {
     color: theme.palette.text.primary,
     borderBottom: 'none',
     fontSize: 14,
-    padding: '0.125rem 1rem 0.125rem  0.375rem',
+    padding: '0.2rem 1.6rem 0.2rem 0.6rem',
   },
   footer: {
     fontSize: 14,
     zIndex: 100,
     backgroundColor: theme.palette.primary.dark,
-    padding: '0.125rem 1rem 0.125rem  0.375rem',
+    padding: '0.2rem 1.6rem 0.2rem  0.6rem',
+
   },
   paddingDense: {
-    padding: '1px 0.25rem 1px 0.25rem',
+    padding: '1px 0.4rem 1px 0.4rem',
     '&:last-child': {
-      padding: '1px 0.5rem 1px 0.25rem',
+      padding: '1px 0.8rem 1px 0.4rem',
     },
   },
   paddingNone: {
@@ -84,6 +86,43 @@ const ActionButton = withStyles(() => ({
   root: { padding: 0 },
 }))(IconButton)
 
+const AutoRefetch = ({
+  autoRefetch,
+  toggleAutoRefetch,
+}: {
+  autoRefetch?: boolean
+  toggleAutoRefetch: () => void
+}) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: '1rem',
+        zIndex: '100',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+      }}
+    >
+      <span
+        style={{
+          color: 'rgba(0, 0, 0, 0.54)',
+          fontSize: '1.125rem',
+          fontFamily: 'DM Sans,sans-serif',
+          padding: '0 1rem',
+        }}
+      >
+        Auto-Refetch
+      </span>
+      <SwitchOnOff
+        enabled={autoRefetch || false}
+        _id={'AutoRefetch'}
+        onChange={() => toggleAutoRefetch(!autoRefetch)}
+      />
+    </div>
+  )
+}
+
 /**
  * Create a point.
  * @param {number} i -  is curr index.
@@ -95,7 +134,6 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      border: '0px solid transparent',
       overflowX: 'auto',
       '&::-webkit-scrollbar': {
         width: '3px',
@@ -144,13 +182,13 @@ const styles = (theme: Theme) =>
       },
     },
     headRow: {
-      height: theme.spacing.unit * 4,
+      height: '2rem',
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
     },
     row: {
-      height: theme.spacing.unit * 4,
+      height: '2rem',
       transition: `background-color ${theme.transitions.duration.short}ms  ${
         theme.transitions.easing.easeOut
       }`,
@@ -218,9 +256,9 @@ const renderCheckBox = ({
       disabled={Boolean(disabled)}
       checkedIcon={<ExpandLess />}
       icon={<ExpandMore />}
-      onChange={() => {
-        ;(onChange as OnChange)(id)
-      }}
+      // onChange={() => {
+      //   ;(onChange as OnChange)(id)
+      // }}
       color="default"
       checked={checked}
     />
@@ -325,13 +363,13 @@ const renderHeadCell = ({
   sort: sortTypes | undefined
 }) =>
   isSortable ? (
-    <TableSortLabel
+    <StyledTableSortLabel
       active={sort!.sortColumn === cell.id}
       direction={sort!.sortDirection}
       onClick={() => sort!.sortHandler(cell.id)}
     >
       {cell.label}
-    </TableSortLabel>
+    </StyledTableSortLabel>
   ) : (
     cell.label
   )
@@ -349,7 +387,12 @@ const renderCells = ({
 }) => {
   const reduce = Object.keys(row)
     .map((key) => {
-      if (key === 'id' || key === 'options' || key === 'expandableContent') {
+      if (
+        key === 'id' ||
+        key === 'options' ||
+        key === 'expandableContent' ||
+        key === 'orderbook'
+      ) {
         return null
       }
 
@@ -416,11 +459,19 @@ const renderFooterCells = ({
   return renderCells({ row, renderCellObject: setFooterCellObject })
 }
 
-const addPagination = (data: ReadonlyArray<any> = [], pagination: Pagination) =>
+const addPaginationFake = (
+  data: ReadonlyArray<any> = [],
+  pagination: Pagination
+) =>
   data.slice(
     pagination!.page * pagination!.rowsPerPage,
     pagination!.page * pagination!.rowsPerPage + pagination!.rowsPerPage
   )
+
+const addRealPagination = (
+  data: ReadonlyArray<any> = [],
+  pagination: Pagination
+) => data
 
 {
   /* ToDo:
@@ -446,6 +497,7 @@ const CustomTable = (props: Props) => {
     },
     expandableRows = false,
     expandedRows = [],
+    expandAllRows = false,
     onSelectAllClick = () => {
       return
     },
@@ -455,7 +507,9 @@ const CustomTable = (props: Props) => {
     theme,
     data = { body: [] },
     pagination = {
+      totalCount: null,
       enabled: false,
+      fakePagination: true,
       rowsPerPage: defaultRowsPerPage,
       rowsPerPageOptions: defaultrowsPerPageOptions,
       page: 0,
@@ -475,8 +529,18 @@ const CustomTable = (props: Props) => {
     tableStyles = {
       heading: {},
       title: {},
+      footer: {},
       cell: {},
+      tab: {},
     },
+    onTrClick,
+    style,
+    autoRefetch = false,
+    needRefetch = false,
+    toggleAutoRefetch,
+    stylesForTable,
+    paperAdditionalStyle = '',
+    isCustomStyleForFooter,
   } = props
 
   if (
@@ -497,19 +561,25 @@ const CustomTable = (props: Props) => {
   //  if there is no title head must be at the top
   const isOnTop = !title ? { top: 0 } : {}
 
+  const paginationFunc: PaginationFunctionType = pagination.fakePagination
+    ? addPaginationFake
+    : addRealPagination
+
   return (
     <Paper
       elevation={elevation}
       style={{
         width: '100%',
+        ...style,
       }}
     >
-      <Table
+      <StyledTable
         padding={padding ? padding : 'default'}
         className={`${classes.table} ${props.className || ''}`}
         id={props.id}
         style={{
           width: '100%',
+          ...stylesForTable,
         }}
       >
         <TableHead>
@@ -518,7 +588,8 @@ const CustomTable = (props: Props) => {
               <CustomTableCell
                 padding="default"
                 className={classes.title}
-                colSpan={howManyColumns - actionsColSpan}
+                colSpan={howManyColumns} // - actionsColSpan
+                style={{ ...tableStyles.tab }}
               >
                 <Typography
                   style={{
@@ -531,7 +602,7 @@ const CustomTable = (props: Props) => {
                   {title}
                 </Typography>
               </CustomTableCell>
-              <CustomTableCell
+              {/* <CustomTableCell
                 padding="default"
                 colSpan={actionsColSpan}
                 className={classes.title}
@@ -552,19 +623,25 @@ const CustomTable = (props: Props) => {
                     {action.icon}
                   </ActionButton>
                 ))}
-              </CustomTableCell>
+              </CustomTableCell> */}
             </TableRow>
           )}
-          <TableRow className={classes.headRow}>
+          <TableRow
+            className={classes.headRow}
+            style={{ ...tableStyles.headRow }}
+          >
             {(withCheckboxes || expandableRows) && (
-              <CustomTableCell padding="checkbox" style={{ ...isOnTop }}>
+              <CustomTableCell
+                padding="checkbox"
+                style={{ ...isOnTop, width: '6rem' }}
+              >
                 {renderCheckBox({
                   checkedRows,
                   rows: data,
                   type: withCheckboxes ? 'checkAll' : 'expandAll',
                   checked: withCheckboxes
                     ? data && data.body.length === checkedRows.length
-                    : expandedRows.length > 0,
+                    : expandAllRows,
                   onChange: onSelectAllClick,
                   className: {
                     indeterminate: classes.indeterminateCheckbox,
@@ -604,14 +681,15 @@ const CustomTable = (props: Props) => {
           {data.body.length === 0 ? (
             <CustomPlaceholder text={emptyTableText} />
           ) : (
-            addPagination(
+            paginationFunc(
               data.body.filter(Boolean).map((row) => {
                 const selected = checkedRows.indexOf(row.id) !== -1
-
                 const expandedRow = expandedRows.indexOf(row.id) !== -1
+
                 const rowClassName = selected
                   ? `${classes.row} + ${classes.rowSelected}`
                   : classes.row
+
                 const rowHoverClassName = rowsWithHover
                   ? rowWithHoverBorderRadius
                     ? `${rowClassName} + ${classes.rowWithHover} + ${
@@ -619,6 +697,7 @@ const CustomTable = (props: Props) => {
                       }`
                     : `${classes.rowWithHover}`
                   : rowClassName
+
                 const expandable = row.expandableContent
                 const typeOfCheckbox: 'check' | 'expand' | null = withCheckboxes
                   ? 'check'
@@ -639,12 +718,21 @@ const CustomTable = (props: Props) => {
                                 theme!.palette.divider,
                                 0.5
                               )}`,
+                              cursor: 'pointer',
                             }
-                          : {}
+                          : { cursor: 'pointer' }
                       }
                       className={rowHoverClassName}
+                      onClick={() =>
+                        onTrClick
+                          ? onTrClick(row.orderbook ? row.orderbook : {})
+                          : typeOfCheckbox === 'expand'
+                          ? onChange(row.id)
+                          : null
+                      }
                     >
-                      {typeOfCheckbox !== null && (
+                      {row.expandableContent &&
+                      row.expandableContent.length > 0 ? (
                         <CustomTableCell padding="checkbox">
                           {renderCheckBox({
                             onChange,
@@ -663,10 +751,17 @@ const CustomTable = (props: Props) => {
                             type: typeOfCheckbox,
                           })}
                         </CustomTableCell>
+                      ) : (
+                        typeOfCheckbox !== null && (
+                          <CustomTableCell padding="checkbox">
+                            {' '}
+                          </CustomTableCell>
+                        )
                       )}
                       {renderCells({ row, padding, tableStyles })}
                     </TableRow>
-                    {expandable && // rendering content of expanded row if it is expandable
+                    {expandable &&
+                      // rendering content of expanded row if it is expandable
                       (row!.expandableContent! as ReadonlyArray<
                         NotExpandableRow
                       >).map((collapsedRows: Row, i: number) => {
@@ -695,7 +790,7 @@ const CustomTable = (props: Props) => {
             )
           )}
         </TableBody>
-        {Array.isArray(data.footer) && (
+         {/*{Array.isArray(data.footer) && (
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
@@ -735,8 +830,8 @@ const CustomTable = (props: Props) => {
               )
             })}
           </TableFooter>
-        )}
-      </Table>
+        )} */}
+      </StyledTable>
 
       <Grow
         // we show pagination only when you pass pagination.enabled = true
@@ -744,10 +839,31 @@ const CustomTable = (props: Props) => {
         mountOnEnter
         unmountOnExit
       >
-        <>
-          <TablePagination
+        <div
+          style={
+            isCustomStyleForFooter !== undefined && isCustomStyleForFooter === true
+            ?
+              {
+                // position: 'absolute',
+                // bottom: 0,
+                // right: 0
+                position: 'fixed',
+                bottom: '9%',
+                right: '21%',
+              }
+            :
+              ''
+          }
+        >
+          {needRefetch ? (
+            <AutoRefetch
+              autoRefetch={autoRefetch}
+              toggleAutoRefetch={toggleAutoRefetch}
+            />
+          ) : null}
+          <StyledTablePagination
             component="div"
-            count={data.body.length}
+            count={pagination.totalCount || data.body.length}
             rowsPerPage={pagination.rowsPerPage}
             page={pagination.page}
             backIconButtonProps={{
@@ -760,7 +876,7 @@ const CustomTable = (props: Props) => {
             onChangePage={pagination.handleChangePage}
             onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
           />
-        </>
+        </div>
       </Grow>
     </Paper>
   )

@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
@@ -15,19 +14,24 @@ import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { DeleteKeyDialog } from './DeleteKeyDialog'
 import QueryRenderer from '@core/components/QueryRenderer'
 
+import { StyledTableCell } from './../styles.tsx'
+
 class KeysListComponent extends React.Component {
   state = {
     keys: null,
   }
 
   componentDidMount() {
-    if (this.props.data.myPortfolios && this.props.data.myPortfolios.length > 0) {
+    if (
+      this.props.data.myPortfolios &&
+      this.props.data.myPortfolios.length > 0
+    ) {
       this.setState({ keys: this.props.data.myPortfolios[0].keys })
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.props.refetch();
+    this.props.refetch()
 
     if (nextProps.data.myPortfolios && nextProps.data.myPortfolios.length > 0) {
       this.setState({ keys: nextProps.data.myPortfolios[0].keys })
@@ -61,13 +65,21 @@ class KeysListComponent extends React.Component {
           <TableBody>
             {keys &&
               keys.map((key) => {
-                const { _id, name, exchange, apiKey, date, processing, lastUpdate, status, valid } = key
+                const {
+                  _id,
+                  name,
+                  exchange,
+                  apiKey,
+                  date,
+                  processing,
+                  lastUpdate,
+                  status,
+                  valid,
+                } = key
                 return (
                   <TableRow key={_id}>
                     <KeyTableCell>{name}</KeyTableCell>
-                    <KeyTableCell numeric={true}>
-                      {exchange}
-                    </KeyTableCell>
+                    <KeyTableCell numeric={true}>{exchange}</KeyTableCell>
                     <KeyTableCell numeric={true}>{apiKey}</KeyTableCell>
                     <KeyTableCell numeric={true}>
                       {<FormattedDate value={date} />}
@@ -78,14 +90,17 @@ class KeysListComponent extends React.Component {
                     <KeyTableCell>
                       {!(valid === null) && (valid ? 'Yes' : 'No')}
                     </KeyTableCell>
+                    <KeyTableCell>{status}</KeyTableCell>
                     <KeyTableCell>
-                      {status}
-                    </KeyTableCell>
-                    <KeyTableCell>
-                      {(new Date(lastUpdate === 0 ? date : lastUpdate * 1000)).toDateString()}
+                      {new Date(
+                        lastUpdate === 0 ? date : lastUpdate * 1000
+                      ).toDateString()}
                     </KeyTableCell>
                     <KeyTableCell numeric={true}>
-                      <DeleteKeyDialog keyName={name} forceUpdateUserContainer={forceUpdateUserContainer} />
+                      <DeleteKeyDialog
+                        keyName={name}
+                        forceUpdateUserContainer={forceUpdateUserContainer}
+                      />
                     </KeyTableCell>
                   </TableRow>
                 )
@@ -97,7 +112,7 @@ class KeysListComponent extends React.Component {
   }
 }
 
-const KeyTableCell = styled(TableCell)`
+const KeyTableCell = styled(StyledTableCell)`
   padding: 0;
   overflow: hidden;
   text-align: center;
@@ -117,10 +132,10 @@ const KeysTable = styled(Table)`
 
 export default (props) => (
   <QueryRenderer
-  component={KeysListComponent}
-  query={getKeysQuery}
-  fetchPolicy="network-only"
-  withOutSpinner={true}
-  {...props}
+    component={KeysListComponent}
+    query={getKeysQuery}
+    fetchPolicy="network-only"
+    withOutSpinner={true}
+    {...props}
   />
 )

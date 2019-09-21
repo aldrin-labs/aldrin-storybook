@@ -6,8 +6,7 @@ import { FundsType, Key } from '@core/types/ChartTypes'
 
 export interface IProps extends WithTheme<Theme> {
   tab: string
-  tabIndex: number
-  handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
+  handleTabChange: (tab: string | any) => void
   show: boolean
   getFundsQuery: {
     getFunds: FundsType[]

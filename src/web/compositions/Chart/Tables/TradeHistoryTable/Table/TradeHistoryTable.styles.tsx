@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import MdArrowUpward from '@material-ui/icons/ArrowUpward'
 
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import { Table, Title } from '@sb/components/OldTable/Table'
+import { Table, Cell, Row } from '@sb/components/OldTable/Table'
 
 export const StyledTypography = styled(
   ({ textColor, ...rest }: { textColor: string; rest: any }) => (
@@ -11,27 +11,35 @@ export const StyledTypography = styled(
   )
 )`
   && {
-    color: ${(props: { textColor: string }) => props.textColor};
+    color: ${(props) => props.textColor};
     font-variant-numeric: lining-nums tabular-nums;
   }
 `
 
-export const TriggerTitle = styled(Title)`
-  cursor: pointer;
-  position: relative;
-  padding: 0;
-  transition: opacity 0.75s ease-in-out;
-  height: 21px;
-  &:hover {
-    opacity: 0.85;
+export const StyledRow = styled(Row)`
+  height: 1.5rem;
+`
+
+export const StyledTitle = styled(TypographyFullWidth)`
+  line-height: 18px;
+  font-size: 0.9rem;
+  color: #16253d;
+  font-weight: bold;
+  padding: 6px 0 0 1rem;
+`
+
+export const StyledCell = styled(Cell)`
+  padding: 0 1rem;
+
+  & span,
+  & p {
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding-left: 0;
   }
 `
 
 export const CollapsibleTable = styled(Table)`
-  position: absolute;
-  top: 0;
-  max-height: calc(100% - 37px);
-  z-index: 10;
   width: 100%;
 
   @-moz-document url-prefix() {
@@ -40,10 +48,8 @@ export const CollapsibleTable = styled(Table)`
 `
 
 export const TradeHistoryTableCollapsible = styled(CollapsibleTable)`
-  max-height: 100%;
-
   @media (max-width: 1080px) {
-    bottom: 0.5rem;
+    bottom: 0.8rem;
   }
 `
 

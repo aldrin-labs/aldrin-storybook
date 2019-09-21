@@ -92,7 +92,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   render() {
     const { openOrdersProcessedData } = this.state
-    const { tab, tabIndex, handleTabChange, show } = this.props
+    const { tab, handleTabChange, show } = this.props
 
     if (!show) {
       return null
@@ -100,27 +100,39 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        style={{ borderRadius: 0, height: '100%' }}
+        stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
           sortColumn: getTableHead(tab)[0].id,
           sortDirection: 'desc',
         }}
         withCheckboxes={false}
         tableStyles={{
+          headRow: {
+            borderBottom: '1px solid #e0e5ec',
+          },
           heading: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
-            top: CSS_CONFIG.chart.headCell.customTop,
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            backgroundColor: '#fff',
+            color: '#16253D',
           },
           cell: {
-            fontSize: CSS_CONFIG.chart.headCell.fontSize,
+            color: '#16253D',
+            fontSize: '1.3rem', // 1.2 if bold
+            // fontWeight: 'bold',
+            fontFamily: 'Trebuchet MS',
+            letterSpacing: '1px',
+            borderBottom: '1px solid #e0e5ec',
+          },
+          tab: {
+            padding: 0,
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs
-              tabIndex={tabIndex}
-              handleTabChange={handleTabChange}
-            />
+            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
           </div>
         }
         data={{ body: openOrdersProcessedData }}
@@ -161,3 +173,7 @@ const TableDataWrapper = ({ ...props }) => {
 export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
   TableDataWrapper
 )
+
+// TODO
+// maybe percentages for table
+// layout fixes > 2560 and < 1400

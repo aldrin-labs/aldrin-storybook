@@ -21,7 +21,7 @@ const Correlation = React.lazy(() =>
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
 const Social = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Social/SocialPage')
+  import(/* webpackPrefetch: true */ '@core/containers/Social/Social')
 )
 
 const Transaction = React.lazy(() =>
@@ -40,112 +40,102 @@ class PortfolioTable extends Component<IProps, IState> {
       portfolioName,
       activeKeys,
       keys,
+      isSideNavOpen,
     } = this.props
 
     return (
-      <Mutation mutation={TOGGLE_BASE_COIN}>
-        {(toggleBaseCoin) => (
-          <>
-            <PortfolioTableTabs
-              theme={theme}
-              toggleWallets={this.props.toggleWallets}
-              isUSDCurrently={isUSDCurrently}
-              onToggleUSDBTC={() => {
-                this.props.onToggleUSDBTC()
-                toggleBaseCoin()
-              }}
+      <>
+        <PortfolioTableTabs
+          theme={theme}
+          toggleWallets={this.props.toggleWallets}
+          isUSDCurrently={isUSDCurrently}
+        />
+        <Suspense fallback={<Loading centerAligned />}>
+          <Switch>
+            <Route
+              exact
+              path="/portfolio/main"
+              render={(...rest) => (
+                <PortfolioMain
+                  portfolioKeys={keys}
+                  portfolioId={portfolioId}
+                  portfolioName={portfolioName}
+                  isUSDCurrently={isUSDCurrently}
+                  theme={theme}
+                  variables={{ baseCoin }}
+                  baseCoin={baseCoin}
+                  dustFilter={dustFilter}
+                  {...rest}
+                />
+              )}
             />
-            <Suspense fallback={<Loading centerAligned />}>
-              <Switch>
-                <Route
-                  exact
-                  path="/portfolio/main"
-                  render={(...rest) => (
-                    <PortfolioMain
-                      portfolioKeys={keys}
-                      portfolioId={portfolioId}
-                      portfolioName={portfolioName}
-                      isUSDCurrently={isUSDCurrently}
-                      theme={theme}
-                      variables={{ baseCoin }}
-                      baseCoin={baseCoin}
-                      dustFilter={dustFilter}
-                      {...rest}
-                    />
-                  )}
+            <Route
+              exact
+              path="/portfolio/industry"
+              render={(...rest) => (
+                <PortfolioTableIndustries
+                  isUSDCurrently={isUSDCurrently}
+                  theme={theme}
+                  variables={{ baseCoin: 'USDT' }}
+                  baseCoin="USDT"
+                  dustFilter={dustFilter}
+                  {...rest}
                 />
-                <Route
-                  exact
-                  path="/portfolio/industry"
-                  render={(...rest) => (
-                    <PortfolioTableIndustries
-                      isUSDCurrently={isUSDCurrently}
-                      theme={theme}
-                      variables={{ baseCoin: 'USDT' }}
-                      baseCoin="USDT"
-                      dustFilter={dustFilter}
-                      {...rest}
-                    />
-                  )}
+              )}
+            />
+            <Route
+              exact
+              path="/portfolio/rebalance"
+              render={(...rest) => (
+                <Rebalance
+                  baseCoin={`USDT`}
+                  isUSDCurrently={true}
+                  dustFilter={dustFilter}
+                  portfolioId={portfolioId}
+                  activeKeys={activeKeys}
+                  isSideNavOpen={isSideNavOpen}
+                  {...rest}
                 />
-                <Route
-                  exact
-                  path="/portfolio/rebalance"
-                  render={(...rest) => (
-                    <Rebalance
-                      baseCoin={`USDT`}
-                      isUSDCurrently={true}
-                      dustFilter={dustFilter}
-                      portfolioId={portfolioId}
-                      activeKeys={activeKeys}
-                      {...rest}
-                    />
-                  )}
+              )}
+            />
+            <Route
+              exact
+              path="/portfolio/correlation"
+              render={(...rest) => (
+                <Correlation
+                  baseCoin="USDT"
+                  theme={theme}
+                  dustFilter={dustFilter}
+                  {...rest}
                 />
-                <Route
-                  exact
-                  path="/portfolio/correlation"
-                  render={(...rest) => (
-                    <Correlation
-                      baseCoin="USDT"
-                      theme={theme}
-                      dustFilter={dustFilter}
-                      {...rest}
-                    />
-                  )}
+              )}
+            />
+            <Route
+              exact
+              path="/portfolio/optimization"
+              render={(...rest) => (
+                <Optimization
+                  theme={theme}
+                  isUSDCurrently={isUSDCurrently}
+                  baseCoin="USDT"
+                  dustFilter={dustFilter}
+                  {...rest}
                 />
-                <Route
-                  exact
-                  path="/portfolio/optimization"
-                  render={(...rest) => (
-                    <Optimization
-                      theme={theme}
-                      isUSDCurrently={isUSDCurrently}
-                      baseCoin="USDT"
-                      dustFilter={dustFilter}
-                      {...rest}
-                    />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/portfolio/social"
-                  render={(...rest) => (
-                    <Social dustFilter={dustFilter} {...rest} />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/portfolio/transactions"
-                  render={(...rest) => (
-                    <Transaction {...rest} />
-                  )}
-                />
-              </Switch>
-            </Suspense>
-          </>
-        )}
-      </Mutation>
+              )}
+            />
+            <Route
+              exact
+              path="/portfolio/social"
+              render={(...rest) => <Social dustFilter={dustFilter} {...rest} />}
+            />
+            <Route
+              exact
+              path="/portfolio/transactions"
+              render={(...rest) => <Transaction {...rest} {...this.props} isCustomStyleForFooter={true} />}
+            />
+          </Switch>
+        </Suspense>
+      </>
     )
   }
 }

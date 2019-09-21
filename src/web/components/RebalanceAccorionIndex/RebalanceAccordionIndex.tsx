@@ -12,6 +12,7 @@ import { ExpansionPanelWrapper } from './RebalanceAccordionIndex.styles'
 const styles = (theme) => ({
   root: {
     width: '100%',
+    marginBottom: '2.5rem'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -27,7 +28,8 @@ const styles = (theme) => ({
 @withTheme()
 class RebalanceAccordionIndex extends React.Component {
   state = {
-    expanded: null,
+    // change it after we'll do indexes and social portfolios at rebalance
+    expanded: 'panel0',
     value: this.props.sliderValue,
   }
 
@@ -37,7 +39,7 @@ class RebalanceAccordionIndex extends React.Component {
     })
   }
 
-  handleSlideChange = (event, value) => {
+  handleSlideChange (event, value) {
     this.setState({ value })
   }
 
@@ -67,10 +69,14 @@ class RebalanceAccordionIndex extends React.Component {
 
           return (
             <ExpansionPanelWrapper
-              expanded={true}
+              expanded={expanded === `${panelId}`}
               //TODO: change on in the future version 
               //expanded={expanded === `${panelId}`}
               onChange={this.handleChange(`${panelId}`)}
+
+              CollapseProps={{
+                timeout: 500
+              }}
             >
               <ExpansionPanelSummary
                 style={{ background: 'transparent' }}
@@ -85,7 +91,8 @@ class RebalanceAccordionIndex extends React.Component {
                   fourthColValue={fourthColValue}
                   percentage={percentage}
                   value={this.state.value}
-                  handleSlideChange={() => handleSlideChange()}
+                  handleSlideChange={() => this.handleSlideChange()}
+                  expanded={expanded === `${panelId}`}
                 />
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>

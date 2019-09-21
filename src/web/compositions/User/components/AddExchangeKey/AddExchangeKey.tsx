@@ -15,10 +15,11 @@ import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
 
-
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import SelectPortfolio from '@core/components/SelectPortfolio/SelectPortfolio'
+import { selectPortfolio } from '@core/graphql/mutations/portfolio/selectPortfolio'
 
 const MIN_CHAR = 3
 
@@ -76,7 +77,6 @@ const formikEnhancer = withFormik({
         event_category: 'App - adding exchange key',
         event_label: 'Adding key to user account',
       })
-
     } catch (error) {
       setSubmitting(false)
       console.log(error)
@@ -85,6 +85,33 @@ const formikEnhancer = withFormik({
 })
 
 class AddExchangeKeyComponent extends React.Component {
+  state = {
+    selectedPortfolio: null,
+  }
+
+  onChangePortfolio = async (
+    optionSelected: { label: string; value: string } | null
+  ) => {
+    const { selectPortfolioMutation } = this.props
+
+    const selectedPortfolio =
+      optionSelected && !Array.isArray(optionSelected)
+        ? { label: optionSelected.label, value: optionSelected.value }
+        : null
+
+    this.setState({ selectedPortfolio })
+
+    if (!selectedPortfolio) return;
+
+    await selectPortfolioMutation({
+      variables: {
+        inputPortfolio: {
+          id: selectedPortfolio.value,
+        },
+      },
+    })
+  }
+
   render() {
     const {
       values,
@@ -99,12 +126,35 @@ class AddExchangeKeyComponent extends React.Component {
       getExchangesForKeysList,
     } = this.props
 
+    const { selectedPortfolio } = this.state
+
     return (
       <SPaper>
         <Typography variant="h6">Add new key</Typography>
         <FormContainer onSubmit={handleSubmit} autoComplete="new-password">
           <input type="hidden" value="something" />
 
+          <SExchangeSelect
+            id="SelectPortfolio"
+            style={{ margin: '2rem 0 0 0' }}
+          >
+            <InputLabel htmlFor="exchange">Portfolio</InputLabel>
+            <SelectPortfolio
+              placeholder={`current portfolio`}
+              isClearable={false}
+              value={
+                selectedPortfolio
+                  ? [
+                      {
+                        label: selectedPortfolio.label,
+                        value: selectedPortfolio.value,
+                      },
+                    ]
+                  : null
+              }
+              onChange={this.onChangePortfolio}
+            />
+          </SExchangeSelect>
           <STextField
             error={touched.name && !!errors.name}
             id="name"
@@ -176,7 +226,11 @@ class AddExchangeKeyComponent extends React.Component {
             />
           </SExchangeSelect>
 
-          <Button type="submit" disabled={!dirty || isSubmitting} id="AddKeyButton">
+          <Button
+            type="submit"
+            disabled={!dirty || isSubmitting}
+            id="AddKeyButton"
+          >
             Add key
           </Button>
         </FormContainer>
@@ -222,7 +276,21 @@ export const AddExchangeKey = compose(
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
     options: {
-      refetchQueries: [{ query: portfolioKeyAndWalletsQuery }, { query: getKeysQuery }, { query: keysNames }],
+      refetchQueries: [
+        { query: portfolioKeyAndWalletsQuery },
+        { query: getKeysQuery },
+        { query: keysNames },
+      ],
+    },
+  }),
+  graphql(selectPortfolio, {
+    name: 'selectPortfolioMutation',
+    options: {
+      refetchQueries: [
+        // { query: portfolioKeyAndWalletsQuery },
+        { query: getKeysQuery },
+        { query: keysNames },
+      ],
     },
   }),
   formikEnhancer

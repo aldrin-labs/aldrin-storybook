@@ -159,7 +159,8 @@ const CorrelationWrapper = (props: IProps) => {
 
       <Joyride
         steps={portfolioCorrelationSteps}
-        run={getTooltipSettings.portfolioCorrelation}
+        // run={getTooltipSettings.portfolioCorrelation}
+        run={false}
         callback={handleJoyrideCallback}
         key={key}
         styles={{

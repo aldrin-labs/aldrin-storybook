@@ -5,8 +5,8 @@ interface Props {
   src: string
   styledComponentsAdditionalStyle?: string
   style?: Object
-  width?: number
-  height?: number
+  width?: number | string
+  height?: number | string
 }
 
 export default class SvgIcon extends React.Component<Props, {}> {
@@ -16,6 +16,7 @@ export default class SvgIcon extends React.Component<Props, {}> {
       style,
       styledComponentsAdditionalStyle,
       animation,
+      onClick,
     } = this.props
     const width = this.props.width || 16
     const height = this.props.height || 16
@@ -25,6 +26,7 @@ export default class SvgIcon extends React.Component<Props, {}> {
         styledComponentsAdditionalStyle={styledComponentsAdditionalStyle}
         src={src.replace(/"/gi, '')}
         style={{ ...style, width, height }}
+        onClick={onClick}
       />
     )
   }

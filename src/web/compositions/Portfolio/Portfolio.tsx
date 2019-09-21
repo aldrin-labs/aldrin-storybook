@@ -11,10 +11,14 @@ import { PortfolioTable, PortfolioSelector } from './compositions'
 
 import { CustomError } from '@sb/components/'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
+import { compose } from 'recompose'
 
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
-import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
-import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
+// import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
+// import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
@@ -25,8 +29,13 @@ const safePortfolioDestruction = (
     name: '',
     userSettings: {
       portfolioId: '',
-      dustFilter: null,
+      dustFilter: {
+        usd: 0,
+        btc: 0,
+        percentage: 0,
+      },
       keys: [],
+      rebalanceKeys: [],
       wallets: [],
     },
   }
@@ -35,163 +44,164 @@ const safePortfolioDestruction = (
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
-    baseCoin: 'USDT',
-    isUSDCurrently: true,
+  }
+
+  componentDidMount() {
+    const { portfolioKeyAndWalletsQuery: data } = this.props
+
+    let {
+      userSettings: { rebalanceKeys },
+    } = safePortfolioDestruction(data.myPortfolios[0])
+
+    rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
+    const activeKeys = rebalanceKeys.filter((key) => key.selected)
+
+    if (window.location.pathname.includes('rebalance')) {
+      this.setState({
+        isSideNavOpen: activeKeys.length === 0,
+      })
+    }
   }
 
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
   }
 
-  onToggleUSDBTC = () => {
-    this.setState((prevState) => ({
-      isUSDCurrently: !prevState.isUSDCurrently,
-      baseCoin: !prevState.isUSDCurrently ? 'USDT' : 'BTC',
-    }))
-  }
-
   render() {
-    const { theme } = this.props
-    const { isUSDCurrently, baseCoin } = this.state
+    const {
+      theme,
+      baseCoin,
+      isUSDCurrently,
+      portfolioKeyAndWalletsQuery: data,
+    } = this.props
+
+    const {
+      userSettings: { portfolioId, dustFilter },
+      name: portfolioName,
+    } = safePortfolioDestruction(data.myPortfolios[0])
+
+    // TODO: hotfix, should be fixed on backend
+    let {
+      userSettings: { keys, rebalanceKeys, wallets },
+    } = safePortfolioDestruction(data.myPortfolios[0])
+
+    keys = Array.isArray(keys) ? keys : []
+    rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
+    wallets = Array.isArray(wallets) ? wallets : []
+    // TODO: hotfix, should be fixed on backend
+
+    const activeKeys = keys.filter((el) => el.selected)
+    const activeRebalanceKeys = rebalanceKeys.filter((el) => el.selected)
+    const activeWallets = wallets.filter((el) => el.selected)
+
+    const isRebalance = window.location.pathname.includes('rebalance')
+
+    const hasKeysOrWallets = isRebalance
+      ? rebalanceKeys.length + wallets.length > 0
+      : keys.length + wallets.length > 0
+
+    const hasActiveKeysOrWallets = isRebalance
+      ? activeRebalanceKeys.length + activeWallets.length > 0
+      : activeKeys.length + activeWallets.length > 0
 
     return (
-      <Query
-        notifyOnNetworkStatusChange
-        fetchPolicy="cache-and-network"
-        query={portfolioKeyAndWalletsQuery}
-      >
-        {({
-          data = { myPortfolios: [{ userSettings: {} }] },
-          loading,
-          refetch,
-          networkStatus,
-        }) => {
-          if (networkStatus === 4 || loading) {
-            return (
-              <LinearProgress
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  width: '100vw',
-                  zIndex: 1009,
-                }}
-                color="secondary"
+      <>
+        <PortfolioContainer>
+          <PortfolioSelector
+            login={true}
+            portfolioId={portfolioId}
+            dustFilter={dustFilter}
+            newKeys={isRebalance ? rebalanceKeys : keys}
+            newWallets={wallets}
+            activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+            activeWallets={activeWallets}
+            toggleWallets={this.toggleWallets}
+            isSideNavOpen={this.state.isSideNavOpen}
+            isRebalance={isRebalance}
+            isUSDCurrently={isUSDCurrently}
+            data={data}
+            baseCoin={baseCoin}
+          />
+
+          {!hasKeysOrWallets && (
+            <>
+              <AddExchangeOrWalletWindow
+                theme={theme}
+                toggleWallets={this.toggleWallets}
               />
-            )
-          }
+            </>
+          )}
 
-          if (!has(data, 'myPortfolios') && !loading) {
-            return (
-              <CustomError>
-                No myPortfolios was provided, check Portoflio.tsx render
-              </CustomError>
-            )
-          }
+          {hasKeysOrWallets && !hasActiveKeysOrWallets && (
+            <SelectExchangeOrWalletWindow
+              theme={theme}
+              toggleWallets={this.toggleWallets}
+            />
+          )}
 
-          const {
-            userSettings: { portfolioId, dustFilter },
-            name: portfolioName,
-          } = safePortfolioDestruction(data.myPortfolios[0])
+          {hasKeysOrWallets && hasActiveKeysOrWallets && (
+            <PortfolioTable
+              keys={isRebalance ? rebalanceKeys : keys}
+              key={
+                isRebalance
+                  ? activeRebalanceKeys.length + activeWallets.length
+                  : activeKeys.length + activeWallets.length
+              }
+              showTable={hasActiveKeysOrWallets}
+              dustFilter={dustFilter}
+              activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+              portfolioId={portfolioId}
+              portfolioName={portfolioName}
+              theme={theme}
+              baseCoin={baseCoin}
+              isUSDCurrently={isUSDCurrently}
+              isSideNavOpen={this.state.isSideNavOpen}
+              toggleWallets={this.toggleWallets}
+              newKeys={isRebalance ? rebalanceKeys : keys}
+              isRebalance={isRebalance}
+              data={data}
+            />
+          )}
 
-          // TODO: hotfix, should be fixed on backend
-          let {
-            userSettings: { keys, wallets },
-          } = safePortfolioDestruction(data.myPortfolios[0])
-
-          keys = Array.isArray(keys) ? keys : []
-          wallets = Array.isArray(wallets) ? wallets : []
-          // TODO: hotfix, should be fixed on backend
-
-          const activeKeys = keys.filter((el) => el.selected)
-          const activeWallets = wallets.filter((el) => el.selected)
-
-          const hasKeysOrWallets = keys.length + wallets.length > 0
-          const hasActiveKeysOrWallets =
-            activeKeys.length + activeWallets.length > 0
-
-
-          console.log('portfolioName', portfolioName);
-
-
-          return (
-            <Mutation
-              onCompleted={() => refetch()}
-              mutation={updatePortfolioSettingsMutation}
-              refetchQueries={[
-                // no need to refetch main
-                { query: getPortfolioQuery, variables: { baseCoin } },
-                { query: getCoinsForOptimization, variables: { baseCoin } },
-                {
-                  query: getMyPortfolioAndRebalanceQuery,
-                  variables: { baseCoin },
-                },
-                {
-                  query: getMyPortfolioAndRebalanceQuery,
-                  variables: { baseCoin },
-                },
-              ]}
-            >
-              {(updatePortfolioSettings) => (
-                <>
-                  <PortfolioContainer>
-                    {/* refactor this */}
-                    <PortfolioSelector
-                      login={true}
-                      updatePortfolioSettings={updatePortfolioSettings}
-                      portfolioId={portfolioId}
-                      dustFilter={dustFilter}
-                      newKeys={keys}
-                      newWallets={wallets}
-                      activeKeys={activeKeys}
-                      activeWallets={activeWallets}
-                      toggleWallets={this.toggleWallets}
-                      isSideNavOpen={this.state.isSideNavOpen}
-                    />
-
-                    {!hasKeysOrWallets && (
-                      <AddExchangeOrWalletWindow theme={theme} />
-                    )}
-
-                    {hasKeysOrWallets && !hasActiveKeysOrWallets && (
-                      <SelectExchangeOrWalletWindow
-                        theme={theme}
-                        toggleWallets={this.toggleWallets}
-                      />
-                    )}
-
-                    {hasKeysOrWallets && hasActiveKeysOrWallets && (
-                      <PortfolioTable
-                        keys={keys}
-                        key={activeKeys.length + activeWallets.length}
-                        showTable={hasActiveKeysOrWallets}
-                        dustFilter={dustFilter}
-                        activeKeys={activeKeys}
-                        portfolioId={portfolioId}
-                        portfolioName={portfolioName}
-                        theme={theme}
-                        baseCoin={baseCoin}
-                        onToggleUSDBTC={this.onToggleUSDBTC}
-                        isUSDCurrently={isUSDCurrently}
-                        toggleWallets={this.toggleWallets}
-                      />
-                    )}
-
-                    <Fade
-                      in={this.state.isSideNavOpen}
-                      mountOnEnter={true}
-                      unmountOnExit={true}
-                    >
-                      <Backdrop onClick={this.toggleWallets} />
-                    </Fade>
-                  </PortfolioContainer>
-                </>
-              )}
-            </Mutation>
-          )
-        }}
-      </Query>
+          <Fade
+            in={this.state.isSideNavOpen}
+            mountOnEnter={true}
+            unmountOnExit={true}
+          >
+            <Backdrop onClick={this.toggleWallets} />
+          </Fade>
+        </PortfolioContainer>
+      </>
     )
   }
 }
 
-export default withAuth(withTheme()(PortfolioComponent))
+const APIWrapper = (props) => {
+  return (
+    <Query query={GET_BASE_COIN}>
+      {({ data }) => {
+        const baseCoin =
+          (data && data.portfolio && data.portfolio.baseCoin) || 'USDT'
+        return (
+          <QueryRenderer
+            {...props}
+            component={PortfolioComponent}
+            query={portfolioKeyAndWalletsQuery}
+            name={'portfolioKeyAndWalletsQuery'}
+            variables={{ baseCoin }}
+            baseCoin={baseCoin}
+            isUSDCurrently={baseCoin === 'USDT'}
+            // pollInterval={1 * 30 * 1000}
+            withOutSpinner={false}
+            fetchPolicy="network-only"
+          />
+        )
+      }}
+    </Query>
+  )
+}
+
+export default compose(
+  withAuth,
+  withTheme()
+)(APIWrapper)

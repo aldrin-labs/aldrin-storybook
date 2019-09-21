@@ -15,12 +15,15 @@ export default ({ show = true, text, containerHeight = '' }) => (
 const Container = styled.div`
   height: ${({ containerHeight }: { containerHeight: string }) =>
     containerHeight};
-  padding: 2rem;
+  padding: 3.2rem;
   opacity: 0.5;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 `

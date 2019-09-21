@@ -1,6 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Grid, ExpansionPanel, Typography } from '@material-ui/core'
+import styled, {css} from 'styled-components'
+import { Grid, ExpansionPanel, Typography, TableCell } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`
   display: flex;
@@ -32,10 +32,29 @@ export const ExpansionPanelWrapper = styled(ExpansionPanel)`
 export const GridItemHeadingCustom = styled(
   ({ fontSize, borderColor, ...rest }) => <Grid {...rest} />
 )`
-  font-size: ${(props) => props.fontSize || `12px`};
+  font-size: ${(props) => props.fontSize || `1.2rem`};
   border-left: 3px solid ${(props) => props.borderColor || '#fff'};
   align-self: center;
   padding: 5px 0 5px 20px;
+`
+
+const tphtphystylescss = css`
+  font-family: 'DM Sans';
+  text-align: center;
+  font-size: ${(props) => props.fontSize || `1rem`};
+  font-weight: ${(props) => props.fontWeight || 500};
+  line-height: 25px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: ${(props) => props.primaryColor || props.color || '#7284A0'};
+  text-align: ${(props) => props.position || 'none'};
+  margin-left: ${(props) => props.marginLeft};
+`
+
+export const SliderTypography = styled(Typography)`
+  ${tphtphystylescss}
+  line-height: 2rem;
+  border-bottom: 1px solid #7284A0;
 `
 
 export const StyledTypography = styled(
@@ -49,16 +68,13 @@ export const StyledTypography = styled(
     ...rest
   }) => <Typography {...rest} />
 )`
-  font-family: 'DM Sans';
-  text-align: center;
-  font-size: ${(props) => props.fontSize || `10px`};
-  font-weight: ${(props) => props.fontWeight || `500`};
-  line-height: 25px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: ${(props) => props.primaryColor || props.color || '#7284A0'};
-  text-align: ${(props) => props.position || 'none'};
-  margin-left: ${(props) => props.marginLeft};
+
+  ${tphtphystylescss}
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    //font-size: 2.4rem;
+    margin-bottom: 1.5rem;
+  }
 `
 
 export const StyledTypographyAccordionHeader = styled(
@@ -74,10 +90,14 @@ export const StyledTypographyAccordionHeader = styled(
   color: ${(props) => props.primaryColor || props.color || '#7284A0'};
   margin-left: ${(props) => props.marginLeft};
   text-align: left;
-  font-size: 14px;
+  font-size: 1.4rem;
   border-left: 5px solid orange;
   border-radius: 3px 0 3px 0;
   padding-left: 24px;
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    //font-size: 2.8rem;
+  }
 `
 
 export const StyledSubTypography = styled(
@@ -85,11 +105,32 @@ export const StyledSubTypography = styled(
 )`
   font-family: 'DM Sans';
   text-align: center;
-  font-size: 15px;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 25px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: ${(props) => props.primaryColor || props.color || '#97c15c'};
   text-align: ${(props) => props.position || 'none'};
+
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    //font-size: 3.2rem;
+  }
+`
+
+export const TableCellLast = styled(TableCell)`
+  border: none;
+  padding: 0 9.5vw 0 0;
+  
+  @media screen and (min-device-width: 1520px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 10.5vw 0 0;
+  }
+  
+  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 11.5vw 0 0;
+  }
+  
+  @media screen and (min-device-width: 2500px) and (-webkit-min-device-pixel-ratio: 1) {
+    padding: 0 12.3vw 0 0;
+  }
 `

@@ -414,14 +414,15 @@ class Optimization extends Component<IProps, IState> {
           showProgress={true}
           showSkipButton={true}
           steps={portfolioOptimizationSteps}
-          run={getTooltipSettings.portfolioOptimization}
+          // run={getTooltipSettings.portfolioOptimization}
+          run={false}
           callback={this.handleJoyrideCallback}
           key={this.state.key}
           styles={{
             options: {
               backgroundColor: theme.palette.common.white,
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.primary.main,
+              primaryColor: theme.palette.black.custom,
+              textColor: theme.palette.black.custom,
             },
             tooltip: {
               fontFamily: theme.typography.fontFamily,

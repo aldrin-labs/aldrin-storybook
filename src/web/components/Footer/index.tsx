@@ -4,13 +4,9 @@ import { compose } from 'recompose'
 import styled from 'styled-components'
 import { withTheme } from '@material-ui/styles'
 import Telegram from '@material-ui/icons/NearMeSharp'
-import {
-  AppBar,
-  IconButton,
-  Switch,
-  Typography,
-  Button,
-} from '@material-ui/core'
+import { AppBar, IconButton, Switch, Typography } from '@material-ui/core'
+
+import { StyledButton, StyledTypography } from './index.styles'
 
 import { PrivacyPolicy } from '@sb/components/index'
 
@@ -43,21 +39,21 @@ const Footer = ({
       fullscreenMode={fullscreenMode}
     >
       <Block>
-        <Typography variant="caption" color="default">
+        <StyledTypography color="default">
           Cryptocurrencies Ai, 2018{' '}
-        </Typography>
+        </StyledTypography>
 
         <Typography variant="h6" color="secondary">
           •
         </Typography>
 
-        <Button
+        <StyledButton
           size="small"
           onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
           color="default"
         >
           Privacy Policy
-        </Button>
+        </StyledButton>
       </Block>
 
       <Block>
@@ -67,9 +63,7 @@ const Footer = ({
       </Block>
 
       <Block>
-        <Typography variant="body1" color="textPrimary">
-          NIGHT MODE
-        </Typography>
+        <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
         <Switch
           checked={themeMode === 'dark'}
           onChange={async () => {
@@ -102,7 +96,16 @@ const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
   && {
     flex-direction: row;
   }
+
+  height: 6.4vh;
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
 `
+
+// @media (max-width: 1920px) {
+//   height: 48px;
+// }
 
 const Block = styled.div`
   display: flex;

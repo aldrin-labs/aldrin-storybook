@@ -1,14 +1,16 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+// import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+// import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import Typography from '@material-ui/core/Typography'
+// import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import TransactionTable from './TransactionTable'
 import { IProps, IState } from './AccordionTable.types'
 import { withTheme } from '@material-ui/styles'
+
+import { Loading } from '@sb/components/index'
 
 import {
   ExpansionPanelCustom,
@@ -19,6 +21,9 @@ import {
 const styles = (theme) => ({
   root: {
     width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -37,7 +42,7 @@ class AccordionTable extends React.Component<IProps, IState> {
     expanded: false,
   }
 
-  handleChange = (panel) => (event, expanded) => {
+  handleChange = (panel: string) => (event, expanded) => {
     this.setState({
       expanded: expanded ? panel : false,
     })
@@ -51,9 +56,7 @@ class AccordionTable extends React.Component<IProps, IState> {
       getError,
       isCompleted,
       isFinished,
-      theme: {
-        palette: { grey },
-      },
+      showLoader,
     } = this.props
 
     const { expanded } = this.state
@@ -64,21 +67,32 @@ class AccordionTable extends React.Component<IProps, IState> {
           expanded={expanded === 'panel1'}
           onChange={this.handleChange('panel1')}
         >
-          <ExpansionPanelSummaryCustom
-            border={`1px solid ${grey.light}`}
-            expandIcon={<ExpandMoreIcon />}
-          >
+          <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
             <TypographyCustom>{accordionTitle}</TypographyCustom>
+            {showLoader && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: expanded === 'panel1' ? '15px' : '10px',
+                  right: '12px',
+                  height: '24px',
+                  width: '24px',
+                }}
+              >
+                <Loading size={24} />
+              </div>
+            )}
           </ExpansionPanelSummaryCustom>
-          <ExpansionPanelDetails>
-            <Typography>
-              <TransactionTable
-                isCompleted={isCompleted}
-                getError={getError}
-                transactionsData={transactionsData}
-                isFinished={isFinished}
-              />
-            </Typography>
+          <ExpansionPanelDetails
+            style={{ padding: '0.1rem 0 2rem 0', display: 'block' }}
+          >
+            <TransactionTable
+              isCompleted={isCompleted}
+              getError={getError}
+              transactionsData={transactionsData}
+              isFinished={isFinished}
+              showLoader={showLoader}
+            />
           </ExpansionPanelDetails>
         </ExpansionPanelCustom>
       </div>

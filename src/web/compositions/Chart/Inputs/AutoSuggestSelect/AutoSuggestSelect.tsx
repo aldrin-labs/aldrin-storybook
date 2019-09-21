@@ -73,7 +73,6 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
 
       return
     } else {
-
       setTimeout(async () => {
         await toggleWarningMessageMutation({})
       }, 1500)
@@ -89,6 +88,7 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
       theme: {
         palette: { divider },
       },
+      selectStyles,
     } = this.props
     if (!suggestions || !data) {
       return <Loading centerAligned={true} />
@@ -116,8 +116,9 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
     }
     return (
       <ExchangePair
-        style={{ width: '9rem' }}
+        style={{ width: '14.4rem' }}
         border={divider}
+        selectStyles={selectStyles}
       >
         <SelectR
           id={this.props.id}
@@ -148,7 +149,6 @@ const queryRender = (props: IProps) => (
   />
 )
 
-
 export default compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
@@ -164,5 +164,5 @@ export default compose(
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
   }),
-  graphql(ADD_CHART, { name: 'addChartMutation' }),
+  graphql(ADD_CHART, { name: 'addChartMutation' })
 )(queryRender)

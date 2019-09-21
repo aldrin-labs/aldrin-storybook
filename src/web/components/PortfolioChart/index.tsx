@@ -18,6 +18,7 @@ import { Props } from './types'
 import {
   Chart,
   SProfileChart,
+  SButton,
   axisStyle,
   horizontalGridLinesStyle,
   verticalGridLinesStyle,
@@ -25,7 +26,9 @@ import {
   crosshairStyle,
 } from './styles'
 import CardHeader from '../CardHeader'
+import { withTheme } from '@material-ui/styles'
 
+@withTheme()
 export default class PortfolioChart extends Component<Props> {
   state: Partial<Props> = {
     activeChart: '1Y',
@@ -79,13 +82,12 @@ export default class PortfolioChart extends Component<Props> {
     return (
       <SProfileChart style={{ ...style, height }}>
         <CardHeader
-          title={title}
           action={
             <>
               {chartBtns &&
                 chartBtns.map((chartBtn) => (
-                  <Button
-                    color="secondary"
+                  <SButton
+                    //color="secondary"
                     size="small"
                     onClick={() => {
                       this.onChangeActiveChart(chartBtn)
@@ -93,91 +95,114 @@ export default class PortfolioChart extends Component<Props> {
                     data-e2e={`${chartBtn}`}
                     variant={chartBtn !== activeChart ? 'text' : 'contained'}
                     key={chartBtn}
-                    style={{ margin: '0 1rem' }}
+                    style={{
+                      width: '4.3rem',
+                      lineHeight: '1.5rem',
+                      border: `${
+                        chartBtn === activeChart
+                          ? `1px solid ${theme.palette.secondary.main}`
+                          : `1px solid ${
+                              theme.palette.btnChartBorderNotActive.main
+                            }`
+                      }`,
+                      background: `${
+                        chartBtn === activeChart
+                          ? theme.palette.secondary.main
+                          : 'transparent'
+                      }`,
+                      color: `${
+                        chartBtn === activeChart
+                          ? 'white'
+                          : theme.palette.text.dark
+                      }`,
+                      borderRadius: '25px',
+                    }}
                   >
                     {chartBtn}
-                  </Button>
+                  </SButton>
                 ))}
             </>
           }
+          title={title}
         />
         {/* minus cardHeader Height */}
+        {/* style={{ paddingRight: '540px' }} */}
         <Chart height={`calc(100% - 68px)`}>
-            <FlexibleXYPlot
-              margin={{ left: 50 }}
-              animation={true}
-              onMouseLeave={this._onMouseLeave}
-              xDomain={
-                lastDrawLocation && [
-                  lastDrawLocation.left,
-                  lastDrawLocation.right,
-                ]
+          <FlexibleXYPlot
+            tickLabelAngle={45}
+            margin={{ right: 50 }}
+            animation={true}
+            onMouseLeave={this._onMouseLeave}
+            xDomain={
+              lastDrawLocation && [
+                lastDrawLocation.left,
+                lastDrawLocation.right,
+              ]
+            }
+          >
+            <VerticalGridLines
+              style={verticalGridLinesStyle}
+              tickTotal={12}
+              tickFormat={(v: number) => '`$${v}`'}
+              tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
+              labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
+            />
+            <HorizontalGridLines style={horizontalGridLinesStyle} />
+            <XAxis
+              style={axisStyle}
+              tickFormat={(v: number) =>
+                new Date(v * 1000).toUTCString().substring(5, 11)
               }
-            >
-              <VerticalGridLines
-                style={verticalGridLinesStyle}
-                tickTotal={12}
-                tickFormat={(v: number) => '`$${v}`'}
-                tickValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
-                labelValues={[0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66]}
-              />
-              <HorizontalGridLines style={horizontalGridLinesStyle} />
-              <XAxis
+            />
+            {/* hiding Axis for a while */}
+            {false && (
+              <YAxis
                 style={axisStyle}
-                tickFormat={(v: number) =>
-                  new Date(v * 1000).toUTCString().substring(5, 11)
-                }
+                tickFormat={(value: any) => `$${abbrNum(+value.toFixed(2), 2)}`}
               />
-              {/* hiding Axis for a while */}
-              {false && (
-                <YAxis
-                  style={axisStyle}
-                  tickFormat={(value: any) =>
-                    `$${abbrNum(+value.toFixed(2), 2)}`
-                  }
+            )}
+            <GradientDefs>
+              <linearGradient id="CoolGradient" x1="0" x2="0" y1="0" y2="1">
+                <stop
+                  offset="0%"
+                  stopColor={theme && theme.palette.secondary.main}
+                  stopOpacity={0}
+                  // stopOpacity={0.3}   GRADIENT
                 />
-              )}
-              <GradientDefs>
-                <linearGradient id="CoolGradient" x1="0" x2="0" y1="0" y2="1">
-                  <stop
-                    offset="0%"
-                    stopColor={theme && theme.palette.secondary.main}
-                    stopOpacity={0.3}
-                  />
-                  <stop
-                    offset="60%"
-                    stopColor={theme && theme.palette.secondary.main}
-                    stopOpacity={0}
-                  />
-                </linearGradient>
-              </GradientDefs>
-              <AreaSeries
-                color={'url(#CoolGradient)'}
-                onNearestX={this._onNearestX}
-                data={data}
-                style={areaSeriesStyle}
-              />
+                <stop
+                  offset="60%"
+                  stopColor={theme && theme.palette.secondary.main}
+                  stopOpacity={0}
+                />
+              </linearGradient>
+            </GradientDefs>
+            <AreaSeries
+              color={'url(#CoolGradient)'}
+              onNearestX={this._onNearestX}
+              data={data}
+              style={areaSeriesStyle}
+            />
 
-              <Crosshair values={crosshairValues}>
-                <div style={crosshairStyle}>
-                  <p>
-                    {crosshairValues &&
-                      crosshairValues
-                        .map((v) => new Date(v.x * 1000).toDateString())
-                        .join(' ')}
-                    :{' '}
-                    {crosshairValues &&
-                      crosshairValues
-                        .map((v) => `$${Number(v.y).toFixed(2)}`)
-                        .join(' ')}
-                  </p>
-                </div>
-              </Crosshair>
+            <Crosshair values={crosshairValues}>
+              <div style={crosshairStyle}>
+                <p>
+                  {crosshairValues &&
+                    crosshairValues
+                      .map((v) => new Date(v.x * 1000).toDateString())
+                      .join(' ')}
+                  :{' '}
+                  {crosshairValues &&
+                    crosshairValues
+                      .map((v) => `$${Number(v.y).toFixed(2)}`)
+                      .join(' ')}
+                </p>
+              </div>
+            </Crosshair>
 
-              {this.props.isShownMocks ? null : (
-                <Highlight onBrushEnd={this._onBrushEnd} />
-              )}
-            </FlexibleXYPlot>
+            {this.props.isShownMocks ? null : (
+              <Highlight onBrushEnd={this._onBrushEnd} />
+            )}
+          </FlexibleXYPlot>
         </Chart>
       </SProfileChart>
     )

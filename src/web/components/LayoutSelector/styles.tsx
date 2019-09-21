@@ -2,13 +2,13 @@ import styled from 'styled-components'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 
 export const SelectR = styled(ReactSelectComponent)`
-  width: 9rem;
-  font-size: 0.8rem;
+  width: 14.4rem;
+  font-size: 1.28rem;
   display: flex;
 `
 
 export const SelectContainer = styled.div`
-  margin-left: 0.7rem;
+  margin-left: 1.12rem;
   border-radius: 24px;
   border: 2px solid ${(props: { border: string }) => props.border};
   padding: 0 16px;
