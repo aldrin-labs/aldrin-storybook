@@ -79,7 +79,7 @@ const RebalanceDialogLeave = ({
         </TypographyTopDescription>
         <GridCustom>
           <RebalanceSlippageSlider
-            disabled={!isFinished}
+            disabled={showLoader}
             slippageValue={slippageValue}
             onChangeSlippage={onChangeSlippage}
           />
