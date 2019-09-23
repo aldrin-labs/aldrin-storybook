@@ -193,7 +193,6 @@ const APIWrapper = (props) => {
             isUSDCurrently={baseCoin === 'USDT'}
             // pollInterval={1 * 30 * 1000}
             withOutSpinner={false}
-            fetchPolicy="network-only"
           />
         )
       }}
