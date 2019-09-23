@@ -45,6 +45,7 @@ import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuer
 
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
@@ -148,7 +149,14 @@ class TransactionPage extends React.PureComponent {
   }
 
   updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
-    const { updatePortfolioSettings, data } = this.props
+    const { updatePortfolioSettings } = this.props
+    const { portfolio: { baseCoin } } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const data = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin }
+    })
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
@@ -164,16 +172,23 @@ class TransactionPage extends React.PureComponent {
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId } = this.props
     const type = 'keyCheckboxes'
+    const { portfolio: { baseCoin } } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const { myPortfolios } = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin }
+    })
+
+    const keys = myPortfolios[0].userSettings.keys
 
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
-          newKeys,
+        selectedKeys: UTILS.getArrayContainsOnlySelected(
+          keys,
           toggledKeyID
         ),
       },
@@ -422,10 +437,10 @@ export default compose(
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({
       refetchQueries: [
-        {
-          query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin },
-        },
+        // {
+        //   query: portfolioKeyAndWalletsQuery,
+        //   variables: { baseCoin },
+        // },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
         {
@@ -457,7 +472,6 @@ export default compose(
           },
         },
       ],
-      // update: updateSettingsMutation,
     }),
   })
 )(TransactionPage)
