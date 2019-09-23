@@ -1,17 +1,11 @@
 import React from 'react'
 
-import { withFormik } from 'formik'
-import Yup from 'yup'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
 import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
-
 import { withTheme } from '@material-ui/styles'
 
 import {
@@ -24,70 +18,10 @@ import {
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './CreatePortfolio.types'
-
-const formikDialog = withFormik({
-  validationSchema: Yup.object().shape({
-    portfolioName: Yup.string().required(),
-  }),
-  mapPropsToValues: () => ({
-    portfolioName: '',
-  }),
-  handleSubmit: async ({ portfolioName }, props) => {
-    const { createPortfolio } = props.props
-    const variables = {
-      inputPortfolio: {
-        name: portfolioName,
-      },
-    }
-
-    try {
-      props.setSubmitting(true)
-      await createPortfolio({
-        variables,
-      })
-      props.resetForm({})
-    } catch (error) {
-      console.error(error)
-      props.setFieldError('portfolioName', 'Request error!')
-      props.setSubmitting(false)
-    }
-  },
-})
-
-const DialogTitle = withStyles((theme) => ({
-  root: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing.unit,
-    top: theme.spacing.unit,
-    color: theme.palette.grey[500],
-  },
-}))((props) => {
-  const { children, classes, onClose } = props
-  return (
-    <MuiDialogTitle disableTypography className={classes.root}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="Close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  )
-})
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -97,11 +31,11 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent)
 
 @withTheme()
-class CreatePortfolio extends React.Component<IProps, IState> {
+class CreatePortfolio extends React.Component {
   state: IState = {
     open: false,
     isSelected: true,
-
+    error: '',
     portfolioName: '',
   }
 
@@ -111,6 +45,34 @@ class CreatePortfolio extends React.Component<IProps, IState> {
     })
   }
 
+  handleChange = (inputValue: string) => {
+    this.setState({ portfolioName: inputValue })
+  }
+
+  handleSubmit = async () => {
+    const { createPortfolio } = this.props
+    const { portfolioName } = this.state
+
+    const variables = {
+      inputPortfolio: {
+        name: portfolioName,
+      },
+    }
+
+    const { data } = await createPortfolio({
+      variables,
+    })
+
+    const { executed, error } = await data.createPortfolio
+
+    if (!executed) {
+      this.setState({ error })
+      return false
+    }
+
+    return true
+  }
+
   handleClickOpen = () => {
     this.setState({
       open: true,
@@ -118,7 +80,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   }
 
   handleClose = () => {
-    this.setState({ open: false })
+    this.setState({ open: false, portfolioName: '', error: '' })
   }
 
   render() {
@@ -126,12 +88,9 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black },
       },
-      handleChange,
-      values,
-      handleSubmit,
-      errors,
-      validateForm,
     } = this.props
+
+    const { error, portfolioName } = this.state
 
     return (
       <>
@@ -162,10 +121,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
           aria-labelledby="customized-dialog-title"
           open={this.state.open}
         >
-          <DialogTitleCustom
-            id="customized-dialog-title"
-            onClose={this.handleClose}
-          >
+          <DialogTitleCustom id="customized-dialog-title">
             <TypographyCustomHeading
               fontWeight={'700'}
               borderRadius={'1rem'}
@@ -186,11 +142,10 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 <InputBaseCustom
                   placeholder=""
                   name="portfolioName"
-                  onChange={handleChange}
-                  value={values.portfolioName}
-                  error={errors && !!errors.portfolioName}
+                  onChange={(e) => this.handleChange(e.target.value)}
+                  value={portfolioName}
                 />
-                <Typography color="error">{errors.portfolioName}</Typography>
+                <Typography color="error">{error}</Typography>
               </GridCustom>
             </Grid>
 
@@ -199,13 +154,10 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
-                onClick={(e) => {
-                  e.preventDefault()
-
-                  validateForm().then(async () => {
-                    await handleSubmit()
-                    this.handleClose()
-                  })
+                onClick={async () => {
+                  const response = await this.handleSubmit()
+                  console.log('response', response)
+                  if (response) this.handleClose()
                 }}
               >
                 CREATE
@@ -226,6 +178,5 @@ export default compose(
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
       ],
     }),
-  }),
-  formikDialog
+  })
 )(CreatePortfolio)
