@@ -1,5 +1,4 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
@@ -9,13 +8,12 @@ import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/
 import { PortfolioTable, PortfolioSelector } from './compositions'
 
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
-import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
+// import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
-import { Loading } from '@sb/components/index'
 
 const safePortfolioDestruction = (
   portfolio = {
@@ -43,8 +41,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   componentDidMount() {
     const { data } = this.props
 
-    if (data.loading) return
-
     let {
       userSettings: { rebalanceKeys },
     } = safePortfolioDestruction(data.myPortfolios[0])
@@ -65,9 +61,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
   render() {
     const { theme, baseData, data } = this.props
-
-    if (!baseData || !baseData.portfolio || !data || !data.myPortfolios)
-      return <Loading centerAligned={true} color={'#165BE0'} />
 
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
@@ -173,18 +166,24 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 }
 
+const APIWrapper = (props) => {
+  return (
+    <QueryRenderer
+      {...props}
+      component={PortfolioComponent}
+      query={portfolioKeyAndWalletsQuery}
+      name={'data'}
+      variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
+      withOutSpinner={false}
+    />
+  )
+}
+
 export default compose(
   withAuth,
   withTheme(),
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
-  }),
-  graphql(portfolioKeyAndWalletsQuery, {
-    options: (props) => ({
-      variables: {
-        baseCoin: props.baseData.portfolio.baseCoin,
-      },
-    }),
   })
-)(PortfolioComponent)
+)(APIWrapper)
