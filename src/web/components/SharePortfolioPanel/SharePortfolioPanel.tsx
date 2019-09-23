@@ -20,9 +20,10 @@ class SharePortfolioPanel extends Component<IProps> {
         style={{
           padding: '1.6rem 24px',
           height: '11%',
+          background: '#F9FBFD',
         }}
       >
-        <Grid item>
+        <Grid item id="sharePortfolioPanel">
           <Grid container justify="flex-start" alignItems="center">
             <Grid item style={{ marginRight: '1rem' }}>
               <TypographyHeading textColor={theme.palette.black.registration}>
@@ -42,7 +43,7 @@ class SharePortfolioPanel extends Component<IProps> {
         </Grid>
 
         <Grid item>
-          <Grid container justify="flex-start" alignItems="center">
+          <Grid container justify="flex-start" alignItems="center" id="sharePortfolioSwitcher">
             {/* <Grid item>
               <SelectPortfolioPeriod />
             </Grid> */}
