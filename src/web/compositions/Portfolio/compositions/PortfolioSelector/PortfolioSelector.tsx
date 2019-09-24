@@ -309,7 +309,8 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
+    if (!portfolioKeys || !portfolioKeys.myPortfolios || !dustFilter)
+      return null
 
     // TODO: separate dust filter
 
