@@ -54,10 +54,11 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     } = safePortfolioDestruction(data.myPortfolios[0])
 
     rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
+    const activeKeys = rebalanceKeys.filter((key) => key.selected)
 
     if (window.location.pathname.includes('rebalance')) {
       this.setState({
-        isSideNavOpen: rebalanceKeys.length > 1,
+        isSideNavOpen: activeKeys.length === 0,
       })
     }
   }

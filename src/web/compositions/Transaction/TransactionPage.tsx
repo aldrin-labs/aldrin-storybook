@@ -1,6 +1,7 @@
 import React from 'react'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
+import { client } from '@core/graphql/apolloClient'
 
 import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 
@@ -44,6 +45,7 @@ import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuer
 
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
@@ -56,6 +58,8 @@ class TransactionPage extends React.PureComponent {
   state = {
     includeExchangeTransactions: true,
     includeTrades: true,
+    filterCoin: '',
+    inputValue: '',
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -68,16 +72,25 @@ class TransactionPage extends React.PureComponent {
       endDate: moment().endOf('day'),
       activeDateButton: '1Week',
       focusedInput: null,
-    }
+    },
   }
 
-  onFocusChange = (focusedInput: string) => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      focusedInput
-    }
-  }))
+  updateFilterCoin = (inputValue: string) => {
+    this.setState({ filterCoin: inputValue })
+  }
+
+  onInputChange = (inputValue: string) => {
+    this.setState({ inputValue })
+  }
+
+  onFocusChange = (focusedInput: string) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        focusedInput,
+      },
+    }))
 
   onDateButtonClick = async (stringDate: string) => {
     this.setState({
@@ -85,7 +98,7 @@ class TransactionPage extends React.PureComponent {
         activeDateButton: stringDate,
         startDate: getEndDate(stringDate),
         endDate: moment().endOf('day'),
-      }
+      },
     })
   }
 
@@ -95,75 +108,98 @@ class TransactionPage extends React.PureComponent {
   }: {
     startDate: moment.Moment | null
     endDate: moment.Moment | null
-  }) => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      startDate,
-      endDate
-    }
-  }))
+  }) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate,
+        endDate,
+      },
+    }))
 
   onGitCalendarDateClick = async (stringDate: string) => {
-    this.setState(prevState => ({
-      ...prevState,
-      gitCalendarDate: {
+    this.setState(
+      (prevState) => ({
+        ...prevState,
+        gitCalendarDate: {
           activeDateButton: moment(stringDate).format('YYYY'),
           startDate: moment(stringDate).startOf('year'),
           endDate: moment(stringDate).endOf('year'),
-      }
-    }),
+        },
+      }),
       () => {
         // TODO: there should be mutation for search:
       }
     )
   }
 
-  onHeatmapDateClick = value => this.setState(prevState => ({
-    ...prevState,
-    tradeOrderHistoryDate: {
-      ...prevState.tradeOrderHistoryDate,
-      startDate: moment(value.date).startOf('day'),
-      endDate: moment(value.date).endOf('day')
-    }
-  }))
+  onHeatmapDateClick = (value) =>
+    this.setState((prevState) => ({
+      ...prevState,
+      tradeOrderHistoryDate: {
+        ...prevState.tradeOrderHistoryDate,
+        startDate: moment(value.date).startOf('day'),
+        endDate: moment(value.date).endOf('day'),
+      },
+    }))
 
   handleChangeShowHideOptions = (option) => (event) => {
     this.setState({ [option]: event.target.checked })
   }
 
-  updateSettings = async (objectForMutation) => {
+  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
     const { updatePortfolioSettings } = this.props
+    const { portfolio: { baseCoin } } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const data = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin }
+    })
+
+    const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
+    UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
       })
+
     } catch (error) {
       console.log('error', error)
     }
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId } = this.props
+    const type = 'keyCheckboxes'
+    const { portfolio: { baseCoin } } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const { myPortfolios } = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin }
+    })
+
+    const keys = myPortfolios[0].userSettings.keys
 
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
-          newKeys,
+        selectedKeys: UTILS.getArrayContainsOnlySelected(
+          keys,
           toggledKeyID
         ),
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const type = 'keyAll'
 
     const objForQuery = {
       settings: {
@@ -174,7 +210,7 @@ class TransactionPage extends React.PureComponent {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type)
   }
 
   render() {
@@ -194,6 +230,8 @@ class TransactionPage extends React.PureComponent {
       includeTrades,
       gitCalendarDate,
       tradeOrderHistoryDate,
+      inputValue,
+      filterCoin,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -350,7 +388,10 @@ class TransactionPage extends React.PureComponent {
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
                   handleChangeShowHideOptions={this.handleChangeShowHideOptions}
-
+                  inputValue={inputValue}
+                  filterCoin={filterCoin}
+                  onInputChange={this.onInputChange}
+                  updateFilterCoin={this.updateFilterCoin}
                   startDate={tradeOrderHistoryDate.startDate}
                   endDate={tradeOrderHistoryDate.endDate}
                 />
@@ -372,7 +413,7 @@ class TransactionPage extends React.PureComponent {
             <GitCalendarChooseYear
               {...{
                 ...gitCalendarDate,
-                onDateButtonClick: this.onGitCalendarDateClick
+                onDateButtonClick: this.onGitCalendarDateClick,
               }}
             />
             <TransactionsActionsStatistic />
@@ -396,12 +437,20 @@ export default compose(
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({
       refetchQueries: [
-        {
-          query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin },
-        },
+        // {
+        //   query: portfolioKeyAndWalletsQuery,
+        //   variables: { baseCoin },
+        // },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: true },
+        },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: false },
+        },
         {
           query: MyTradesQuery,
           variables: {
@@ -423,7 +472,6 @@ export default compose(
           },
         },
       ],
-      // update: updateSettingsMutation,
     }),
   })
 )(TransactionPage)

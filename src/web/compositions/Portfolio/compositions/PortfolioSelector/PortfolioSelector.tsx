@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import { client } from '@core/graphql/apolloClient'
 import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
-import { Slide } from '@material-ui/core'
+// import { Slide } from '@material-ui/core'
 
 // import Dropdown from '@sb/components/SimpleDropDownSelector'
 import Accounts from '@sb/components/Accounts/Accounts'
@@ -30,6 +31,7 @@ import {
   GridSymbolValue,
   // TypographySpan,
   SliderDustFilter,
+  Slide,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 // import { MASTER_BUILD } from '@core/utils/config'
@@ -55,9 +57,12 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
-
+import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils.ts'
+import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 // const MyLinkToUserSettings = (props: any) => (
@@ -141,8 +146,26 @@ class PortfolioSelector extends React.Component<IProps> {
     })
   }
 
-  updateSettings = async (objectForMutation) => {
+  updateSettings = async (
+    objectForMutation: any,
+    type: string,
+    toggledKeyID: string
+  ) => {
     const { updatePortfolioSettings } = this.props
+    const { portfolio: { baseCoin } } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const data = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin }
+    })
+
+    const { keys, rebalanceKeys } = UTILS.updateDataSettings(
+      data,
+      type,
+      toggledKeyID
+    )
+    UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
@@ -154,40 +177,48 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId } = this.props
+    const type = 'keyCheckboxes'
+    const { portfolio: { baseCoin } } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const { myPortfolios } = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin }
+    })
+
+    const keys = myPortfolios[0].userSettings.keys
 
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
-          newKeys,
+        selectedKeys: UTILS.getArrayContainsOnlySelected(
+          keys,
           toggledKeyID
         ),
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onKeysSelectAll = async () => {
     const { portfolioId, newKeys, isRebalance } = this.props
+    const type = 'keyAll'
 
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(newKeys),
+        selectedKeys: UTILS.getArrayContainsAllSelected(newKeys),
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type)
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
     const { portfolioId, isRebalance } = this.props
+    const type = 'keyOnlyOne'
 
     const objForQuery = {
       settings: {
@@ -198,7 +229,7 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onWalletToggle = async (toggledWalletID: string) => {
@@ -212,43 +243,6 @@ class PortfolioSelector extends React.Component<IProps> {
           toggledWalletID
         ),
       },
-    }
-
-    await this.updateSettings(objForQuery)
-  }
-
-  onToggleAll = async () => {
-    const {
-      newKeys,
-      activeKeys,
-      newWallets,
-      activeWallets,
-      portfolioId,
-      isRebalance,
-    } = this.props
-    let objForQuery
-
-    if (
-      activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
-    ) {
-      objForQuery = {
-        settings: {
-          portfolioId,
-          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: [],
-          selectedWallets: [],
-        },
-      }
-    } else {
-      objForQuery = {
-        settings: {
-          portfolioId,
-          [isRebalance
-            ? 'selectedRebalanceKeys'
-            : 'selectedKeys']: JSON.stringify(newKeys.map((el) => el._id)),
-          selectedWallets: newWallets.map((el) => el._id),
-        },
-      }
     }
 
     await this.updateSettings(objForQuery)
@@ -339,13 +333,15 @@ class PortfolioSelector extends React.Component<IProps> {
       .filter((asset) => activeKeyNames.includes(asset.name))
       .reduce((acc, cur) => acc + cur.price * cur.quantity, 0)
 
-    const filteredData = !isRebalance ? combineTableData(
-      assets,
-      dustFilter,
-      isUSDCurrently,
-      true,
-      sumOfEnabledAccounts
-    ) : assets
+    const filteredData = !isRebalance
+      ? combineTableData(
+          assets,
+          dustFilter,
+          isUSDCurrently,
+          true,
+          sumOfEnabledAccounts
+        )
+      : assets
 
     const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
       filteredData,
@@ -360,16 +356,24 @@ class PortfolioSelector extends React.Component<IProps> {
     const updateUSDSlider = () => this.onDustFilterChange(valueSliderUsd, 'usd')
     const updateBTCSlider = () => this.onDustFilterChange(valueSliderBtc, 'btc')
 
+    const styleForContainer = !isSideNavOpen
+      ? {
+          transition: '.2s all ease-out',
+          transform: 'translateX(-41rem)',
+        }
+      : { transition: '.375s all ease-out', transform: 'translateX(0)' }
+
     return (
       <Slide
         style={{
           width: '41rem',
+          ...styleForContainer,
         }}
-        in={isSideNavOpen}
-        direction="right"
-        timeout={{ enter: 375, exit: 250 }}
-        mountOnEnter={false}
-        unmountOnExit={false}
+        // in={isSideNavOpen}
+        // direction="right"
+        // timeout={{ enter: 375, exit: 250 }}
+        // mountOnEnter={false}
+        // unmountOnExit={false}
       >
         <AccountsWalletsBlock
           isSideNavOpen={true}
@@ -428,7 +432,6 @@ class PortfolioSelector extends React.Component<IProps> {
                 isRebalance,
                 baseCoin,
                 portfolioAssetsData,
-                onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,
@@ -553,15 +556,18 @@ export default compose(
     options: ({ baseCoin }) => ({
       refetchQueries: [
         {
-          query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin },
-        },
-        {
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
         },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: false },
+        },
+        {
+          query: getMyPortfoliosQuery,
+          variables: { baseCoin },
+        },
       ],
-      // update: updateSettingsMutation,
     }),
   })
 )(PortfolioSelector)

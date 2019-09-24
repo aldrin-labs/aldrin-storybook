@@ -88,6 +88,19 @@ export const TypographyProgress = styled(Typography)`
   }
 `
 
+export const GridTransactionTypography = styled(Typography)`
+  font-family: 'DM Sans', sans-serif;
+  font-size: .92rem;
+  line-height: 114.5%;
+  color: #7284a0;
+  margin-bottom: .75rem;
+
+  span {
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+`
+
 export const GridTransactionBtn = styled(Grid)`
   display: flex;
   justify-content: center;

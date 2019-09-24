@@ -12,10 +12,10 @@ import {
 const PERIODS = [
   { name: '1Day', label: '24H' },
   { name: '1Week', label: 'Week' },
-  { name: '2Weeks', label: '2W' },
+  // { name: '2Weeks', label: '2W' },
   { name: '1Month', label: 'Month' },
-  { name: '3Month', label: '3MO' },
-  { name: '6Months', label: '6MO' },
+  { name: '3Month', label: '3M' },
+  { name: '6Months', label: '6M' },
 ]
 
 class ChoosePeriod extends Component<IProps> {
@@ -38,8 +38,6 @@ class ChoosePeriod extends Component<IProps> {
 
     return (
       <ChoosePeriodWrapper isTableCalendar={isTableCalendar} style={{ height: '10%', marginTop: '10px' }}>
-        <ChoosePeriodTypography>Selected period</ChoosePeriodTypography>
-
         <DatePickerWrapper
           style={{ marginRight: '20px' }}
         >
@@ -49,14 +47,17 @@ class ChoosePeriod extends Component<IProps> {
               date.isBefore(minimumDate, 'day') ||
               date.isAfter(maximumDate, 'day')
             }
+            showDefaultInputIcon={true}
+            customArrowIcon="-"
+            inputIconPosition="after"
             startDate={startDate} // momentPropTypes.momentObj or null,
-            startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+            startDateId="dateButtonId" // PropTypes.string.isRequired,
             endDate={endDate} // momentPropTypes.momentObj or null,
-            endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+            endDateId="dateButtonId" // PropTypes.string.isRequired,
             onDatesChange={onDatesChange} // PropTypes.func.isRequired,
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
             onFocusChange={onFocusChange} // PropTypes.func.isRequired,
-            displayFormat="MM-DD-YYYY"
+            displayFormat="MMM D, YYYY"
           />
         </DatePickerWrapper>
 

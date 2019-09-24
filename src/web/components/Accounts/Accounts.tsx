@@ -1,29 +1,28 @@
 import React from 'react'
 import { Checkbox, Radio } from '@material-ui/core'
-import QueryRenderer from '@core/components/QueryRenderer'
-
-import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 
 import { IProps } from './Accounts.types'
 import {
   AccountsWalletsHeadingWrapper,
-  Headline,
-  CloseContainer,
-  StyledIcon,
-  SelectAll,
+  // Headline,
+  // CloseContainer,
+  // StyledIcon,
+  // SelectAll,
   AccountName,
-  AccountMoney,
+  // AccountMoney,
   AccountsList,
   AccountsListItem,
   TypographyTitle,
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
+import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
+
 // import { Typography } from '@material-ui/core'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import SvgIcon from '@sb/components/SvgIcon'
 import ExchangeLogo from '@icons/ExchangeLogo.svg'
+import Help from '@material-ui/icons/Help'
 
 // import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 // import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions'
@@ -48,8 +47,6 @@ class Accounts extends React.PureComponent<IProps> {
 
   render() {
     const {
-      // isCheckedAll,
-      // onToggleAll,
       color,
       newKeys,
       portfolioAssetsData,
@@ -73,14 +70,41 @@ class Accounts extends React.PureComponent<IProps> {
             align="left"
             color="secondary"
             variant="h6"
-            style={{ display: 'flex', justifyContent: 'space-between' }}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              position: 'relative',
+            }}
           >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
             {isRebalance ? (
-              <TypographyTitle textColor={'#7284A0'} fontSize={'.9rem'}>
-                Choose only one
-              </TypographyTitle>
+              <>
+                <TypographyTitle
+                  textColor={'#7284A0'}
+                  fontSize={'.9rem'}
+                  style={{ paddingRight: '.5rem', fontWeight: 'bold' }}
+                >
+                  Choose only one
+                </TypographyTitle>
+                <LightTooltip
+                  title={
+                    'We cannot transfer funds from key to key or exchange to exchange. Also, the rebalance between the two exchanges is impossible due to the difference in price.'
+                  }
+                  placement={'right-end'}
+                >
+                  <Help
+                    style={{
+                      position: 'absolute',
+                      right: '-0.3rem',
+                      top: '27.5%',
+                      height: '1.5rem',
+                      width: '1.5rem',
+                      color: '#005dd9',
+                    }}
+                  />
+                </LightTooltip>
+              </>
             ) : (
               <TypographyTitle
                 textColor={'#165BE0'}
@@ -90,39 +114,13 @@ class Accounts extends React.PureComponent<IProps> {
                   fontWeight: 700,
                   letterSpacing: '1.5px',
                 }}
-                onClick={onKeysSelectAll}
+                onClick={async () => { await onKeysSelectAll() }}
               >
                 Select all
               </TypographyTitle>
             )}
           </TypographyFullWidth>
-
-          {/* <Headline color={color}>
-            settings
-          </Headline> */}
-          {/* <CloseContainer>
-            <StyledIcon isSideNavOpen={isSideNavOpen} color={color} />
-          </CloseContainer> */}
         </AccountsWalletsHeadingWrapper>
-        {/*
-        {!isRebalance && (
-          <SelectAll>
-            <Checkbox
-              disabled={!login}
-              type="checkbox"
-              id="all"
-              checked={isCheckedAll}
-              onClick={login && onToggleAll}
-            />
-
-            <AccountName
-              variant="body1"
-              color={isCheckedAll ? 'secondary' : 'textSecondary'}
-            >
-              Select All
-            </AccountName>
-          </SelectAll>
-        )} */}
         <AccountsList id="AccountsList">
           {newKeys.map((key, i) => {
             if (!key) {
@@ -187,11 +185,11 @@ class Accounts extends React.PureComponent<IProps> {
                   color="secondary"
                   id={key.name}
                   checked={isChecked}
-                  onClick={() => {
+                  onClick={async () => {
                     if (login && isRebalance) {
-                      onKeySelectOnlyOne(key._id)
+                      await onKeySelectOnlyOne(key._id)
                     } else if (login && !isRebalance) {
-                      onKeyToggle(key._id)
+                      await onKeyToggle(key._id)
                     }
                   }}
                   style={{

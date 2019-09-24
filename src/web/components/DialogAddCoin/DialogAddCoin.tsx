@@ -1,11 +1,29 @@
 import React from 'react'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import CoinRow from './CoinRow'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 
 class DialogAddCoin extends React.Component {
   state = {
     open: false,
     mouseInPopup: false,
+    inputValue: '',
+  }
+
+  changeRowToShow = (option) => {
+    return {
+      ...option,
+      label: <CoinRow symbol={option.value} priceUSD={option.priceUSD} />,
+    }
+  }
+
+  onInputChange = (inputValue: string) => {
+    this.setState({ inputValue })
+  }
+
+  filterCoins = (coin) => {
+    const { existCoinsNames } = this.props
+    return !existCoinsNames.includes(coin.symbol)
   }
 
   handleClickOpen = () => {
@@ -24,10 +42,14 @@ class DialogAddCoin extends React.Component {
     this.setState({ mouseInPopup: false })
   }
 
-  handleSelectChange = async (coin: string, priceUSD: string | number) => {
+  handleSelectChange = async (
+    coin: string,
+    priceUSD: string | number,
+    priceBTC: string | number
+  ) => {
     const { onAddRowButtonClick } = this.props
 
-    await onAddRowButtonClick(coin, priceUSD)
+    await onAddRowButtonClick(coin, priceUSD, priceBTC)
 
     this.setState({ open: false })
   }
@@ -74,29 +96,35 @@ class DialogAddCoin extends React.Component {
               isClearable={true}
               isSearchable={true}
               openMenuOnClick={false}
+              needAdditionalFiltering={true}
+              additionalFiltering={this.filterCoins}
+              changeRowToShow={this.changeRowToShow}
               // menuPortalTarget={document.body}
               // menuPortalStyles={{
               //   zIndex: 11111,
               // }}
               menuStyles={{
-                fontSize: '12px',
+                fontSize: '1.2rem',
                 minWidth: '150px',
-                padding: '0 0 0 1.5rem',
+                padding: '0 1.5rem 0 1.5rem',
                 borderRadius: '1.5rem',
                 textAlign: 'center',
                 background: 'white',
                 position: 'relative',
+                overflowY: 'auto',
                 boxShadow: 'none',
                 border: 'none',
               }}
               menuListStyles={{
-                height: '8rem',
+                height: '16rem',
+                overflowY: '',
               }}
               optionStyles={{
                 color: '#7284A0',
                 background: 'transparent',
                 textAlign: 'left',
-                fontSize: '12px',
+                fontSize: '1.2rem',
+                borderBottom: '.1rem solid #e0e5ec',
                 position: 'relative',
 
                 '&:hover': {
@@ -128,6 +156,8 @@ class DialogAddCoin extends React.Component {
                 textAlign: 'left',
               }}
               menuIsOpen={true}
+              inputValue={this.state.inputValue}
+              onInputChange={this.onInputChange}
               onChange={(
                 optionSelected: {
                   label: string
@@ -136,8 +166,9 @@ class DialogAddCoin extends React.Component {
                 } | null
               ) =>
                 this.handleSelectChange(
-                  optionSelected.label || '',
-                  optionSelected.priceUSD
+                  optionSelected.value || '',
+                  optionSelected.priceUSD,
+                  optionSelected.priceBTC
                 )
               }
             />
