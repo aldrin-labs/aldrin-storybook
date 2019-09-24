@@ -18,7 +18,7 @@ const SelectExchangeList = ({ data, ...otherPropsForSelect }) => {
       }))
   return (
     <SelectR
-      placeholder={otherPropsForSelect.inputValue}
+      placeholder={''}
       options={exchangeOptions || []}
       {...otherPropsForSelect}
     />

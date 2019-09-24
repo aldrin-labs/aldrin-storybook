@@ -30,6 +30,7 @@ import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchange
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { IState, IProps } from './AddAccountDialog.types'
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
@@ -86,7 +87,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         error: '',
         name: '',
         apiKey: '',
-        secret: '',
+        secretOfApiKey: '',
         exchange: '',
       })
     } catch (error) {
@@ -101,7 +102,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }
 
   handleSelectExchange = (e) => {
-    console.log('e', e.value)
     this.setState({ exchange: e.value.toLowerCase() })
   }
 

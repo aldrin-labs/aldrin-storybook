@@ -169,7 +169,7 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId, keys, isRebalance, data } = this.props
     const type = 'keyCheckboxes'
 
     const objForQuery = {
@@ -178,7 +178,7 @@ class PortfolioSelector extends React.Component<IProps> {
         [isRebalance
           ? 'selectedRebalanceKeys'
           : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
-          newKeys,
+          keys,
           toggledKeyID
         ),
       },
@@ -188,7 +188,7 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId, keys, isRebalance, data } = this.props
     const type = 'keyAll'
 
     const objForQuery = {
@@ -196,7 +196,7 @@ class PortfolioSelector extends React.Component<IProps> {
         portfolioId,
         [isRebalance
           ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(newKeys),
+          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(keys),
       },
     }
 
@@ -204,7 +204,7 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId, keys, isRebalance, data } = this.props
     const type = 'keyOnlyOne'
 
     const objForQuery = {
@@ -237,7 +237,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
   onToggleAll = async () => {
     const {
-      newKeys,
+      keys,
       activeKeys,
       newWallets,
       activeWallets,
@@ -248,7 +248,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
     if (
       activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
+      keys.length + newWallets.length
     ) {
       objForQuery = {
         settings: {
@@ -263,7 +263,7 @@ class PortfolioSelector extends React.Component<IProps> {
           portfolioId,
           [isRebalance
             ? 'selectedRebalanceKeys'
-            : 'selectedKeys']: JSON.stringify(newKeys.map((el) => el._id)),
+            : 'selectedKeys']: JSON.stringify(keys.map((el) => el._id)),
           selectedWallets: newWallets.map((el) => el._id),
         },
       }
@@ -311,7 +311,7 @@ class PortfolioSelector extends React.Component<IProps> {
       isSideNavOpen,
       theme,
       newWallets,
-      newKeys,
+      keys,
       activeKeys,
       activeWallets,
       dustFilter,
@@ -344,7 +344,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
+      keys.length + newWallets.length
 
     const color = theme.palette.secondary.main
 
@@ -453,7 +453,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 color,
                 login,
                 isCheckedAll,
-                newKeys,
+                keys,
                 isRebalance,
                 baseCoin,
                 portfolioAssetsData,

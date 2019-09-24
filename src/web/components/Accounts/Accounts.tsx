@@ -48,7 +48,7 @@ class Accounts extends React.PureComponent<IProps> {
   render() {
     const {
       color,
-      newKeys,
+      keys = [],
       portfolioAssetsData,
       onKeyToggle,
       login,
@@ -148,7 +148,7 @@ class Accounts extends React.PureComponent<IProps> {
           </SelectAll>
         )} */}
         <AccountsList id="AccountsList">
-          {newKeys.map((key, i) => {
+          {keys.map((key, i) => {
             if (!key) {
               return null
             }

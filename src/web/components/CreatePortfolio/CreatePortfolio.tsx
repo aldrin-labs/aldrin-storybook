@@ -31,7 +31,7 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent)
 
 @withTheme()
-class CreatePortfolio extends React.Component {
+class CreatePortfolio extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
     isSelected: true,
@@ -63,7 +63,7 @@ class CreatePortfolio extends React.Component {
       variables,
     })
 
-    const { executed, error } = await data.createPortfolio
+    const { executed, error } = data.createPortfolio
 
     if (!executed) {
       this.setState({ error })
@@ -131,7 +131,7 @@ class CreatePortfolio extends React.Component {
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
-            justify="center"
+            //justify="center"
             style={{
               padding: '0 3rem 3rem',
             }}
@@ -173,7 +173,7 @@ class CreatePortfolio extends React.Component {
 export default compose(
   graphql(createPortfolioMutation, {
     name: 'createPortfolio',
-    options: ({ baseCoin }) => ({
+    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
       refetchQueries: [
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
       ],

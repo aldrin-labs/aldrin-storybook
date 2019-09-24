@@ -5,6 +5,33 @@ export interface IState {
   portfolioName: string
 }
 
+type Variables = {
+  variables: {
+    inputPortfolio: {
+      name: string
+    }
+  }
+}
+
+type Response = {
+  data: {
+    createPortfolio: {
+      error: string
+      executed: boolean
+    }
+  }
+}
+
 export interface IProps {
-  title: string
+  theme: {
+    palette: {
+      black: {
+        custom: string
+      }
+      blue: {
+        custom: string
+      }
+    }
+  }
+  createPortfolio(variables: Variables): Response
 }
