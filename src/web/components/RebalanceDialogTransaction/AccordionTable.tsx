@@ -64,7 +64,7 @@ class AccordionTable extends React.Component<IProps, IState> {
     return (
       <div className={classes.root}>
         <ExpansionPanelCustom
-          expanded={expanded === 'panel1'}
+          expanded={expanded !== 'panel1'}
           onChange={this.handleChange('panel1')}
         >
           <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>

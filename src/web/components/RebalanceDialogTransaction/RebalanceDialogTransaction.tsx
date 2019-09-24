@@ -8,9 +8,15 @@ import CircularProgressbar from '@sb/components/ProgressBar/CircularProgressBar'
 
 import { withTheme } from '@material-ui/styles'
 import { Dialog } from '@material-ui/core'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import Stroke from '@icons/Stroke.svg'
+import Ellipse from '@icons/RainbowGo.svg'
+
 import {
   TypographyCustomHeading,
   GridCustom,
+  LinkCustom,
   DialogContent,
   DialogTitleCustom,
   TypographyTopDescription,
@@ -39,10 +45,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     isDisableBtns: false,
     showLoader: false,
     hideDialogButton: false,
+    showTransactionTable: true,
   }
 
   getErrorForTransaction = (errorState) => {
-    this.setState({ isError: errorState, showLoader: false })
+    this.props.setErrorStatus(true)
+    this.setState({ isError: errorState, showLoader: false, isFinished: false })
   }
 
   isCompletedTransaction = () => {
@@ -50,21 +58,30 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   activateGoBtn = async () => {
-    this.setState({
+    await this.setState({
+      isFinished: false,
+      isError: false,
       isDisableBtns: true,
       showLoader: true,
       hideDialogButton: true,
+      showTransactionTable: true,
     })
+
     await this.props.executeRebalanceHandler()
   }
 
   defaultStateForTransaction = (handleClickOpen) => {
-    this.setState({
-      isFinished: false,
-      isError: false,
-      isDisableBtns: false,
-      showLoader: false,
-    })
+    this.setState(
+      {
+        isFinished: false,
+        isError: false,
+        isDisableBtns: false,
+        showLoader: false,
+        showTransactionTable: false,
+      },
+      () => this.setState({ showTransactionTable: true })
+    )
+
     handleClickOpen()
   }
 
@@ -84,40 +101,61 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       onNewSnapshot,
       progress,
       rebalanceInfoPanelData,
+      setTransactions,
+      openDialog,
+      rebalanceError,
     } = this.props
 
-    const { isFinished, isError, isDisableBtns, showLoader } = this.state
+    const {
+      isFinished,
+      isError,
+      isDisableBtns,
+      showLoader,
+      showTransactionTable,
+    } = this.state
     const isEmptyTable = transactionsData.length === 0
 
     const availablePercentage = Math.ceil(
       100 - rebalanceInfoPanelData.availablePercentage
     )
 
+    const elementToShow = rebalanceError ? (
+      <LinkCustom
+        background={Stroke}
+        onClick={async () => {
+          await handleClickOpen()
+          await this.setState({ showTransactionTable: false })
+          await this.props.setErrorStatus(false)
+          await this.activateGoBtn()
+        }}
+      >
+        <CircularProgressbar value={100} text={`RETRY`} />
+      </LinkCustom>
+    ) : availablePercentage === 100 ? (
+      <LinkCustom
+        style={{ position: 'relative', bottom: '.5rem' }}
+        background={Stroke}
+        onClick={() => this.defaultStateForTransaction(handleClickOpen)}
+      >
+        <SvgIcon width={'9rem'} height={'9rem'} src={Ellipse} />
+      </LinkCustom>
+    ) : (
+      <CircularProgressbar
+        value={availablePercentage}
+        text={`${availablePercentage > 100 ? 100 : availablePercentage}%`}
+      />
+    )
+
     return (
-      <div>
+      <div style={{ textAlign: 'center' }}>
         {progress === null ? (
-          <div
-            style={{
-              cursor: availablePercentage === 100 ? 'pointer' : 'default',
-            }}
-            onClick={() =>
-              availablePercentage === 100
-                ? this.defaultStateForTransaction(handleClickOpen)
-                : null
-            }
-          >
-            <CircularProgressbar
-              value={availablePercentage}
-              text={
-                availablePercentage === 100
-                  ? 'GO!'
-                  : `${availablePercentage > 100 ? 100 : availablePercentage}%`
-              }
-            />
-          </div>
+          elementToShow
         ) : (
           <RebalanceDialogTypography
-            onClick={() => this.defaultStateForTransaction(handleClickOpen)}
+            onClick={() => {
+              openDialog()
+              // this.setState({ })
+            }}
           >
             See detailed status
           </RebalanceDialogTypography>
@@ -127,7 +165,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           PaperComponent={StyledPaper}
           onClose={handleClose}
           aria-labelledby="customized-dialog-title"
-          open={open}
+          open={true}
+          style={{
+            opacity: open ? '1' : '0',
+            visibility: open ? 'visible' : 'hidden',
+            transition: '.3s opacity ',
+          }}
         >
           <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
             <TypographyCustomHeading
@@ -173,7 +216,22 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                       handleClose()
                     }}
                   >
-                    Ok
+                    Cancel
+                  </BtnCustom>
+                  <BtnCustom
+                    height="34px"
+                    borderRadius={'1rem'}
+                    btnWidth="120px"
+                    color={blue.custom}
+                    margin="0 5px"
+                    onClick={async () => {
+                      await handleClickOpen()
+                      await this.props.setErrorStatus(false)
+                      await this.setState({ showTransactionTable: false })
+                      await this.activateGoBtn()
+                    }}
+                  >
+                    Retry
                   </BtnCustom>
                 </GridCustom>
               </>
@@ -260,14 +318,16 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               </>
             )}
 
-            <AccordionTable
-              accordionTitle={accordionTitle}
-              transactionsData={transactionsData}
-              getError={this.getErrorForTransaction}
-              isCompleted={this.isCompletedTransaction}
-              isFinished={isFinished}
-              showLoader={showLoader}
-            />
+            {showTransactionTable && (
+              <AccordionTable
+                accordionTitle={accordionTitle}
+                transactionsData={transactionsData}
+                getError={this.getErrorForTransaction}
+                isCompleted={this.isCompletedTransaction}
+                isFinished={isFinished}
+                showLoader={showLoader}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </div>

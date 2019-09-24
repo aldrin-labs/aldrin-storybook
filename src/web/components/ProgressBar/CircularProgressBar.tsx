@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `
 const Text = styled(Typography)`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-family: 'DM Sans', sans-serif;
   font-weight: bold;
   color: #dd6956;
@@ -24,6 +24,10 @@ const Text = styled(Typography)`
   top: 48.5%;
   left: 51%;
   transform: translateX(-50%) translateY(-50%);
+
+  @media (min-width: 1921px) {
+    font-weight: 1.5rem;
+  }
 `
 
 const Progress = (props: any) => (
