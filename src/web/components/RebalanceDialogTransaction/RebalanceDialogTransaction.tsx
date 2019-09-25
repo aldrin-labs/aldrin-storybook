@@ -217,12 +217,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     borderRadius={'1rem'}
                     btnWidth="10rem"
                     btnColor={'#fff'}
-                    backgroundColor={
-                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
-                    }
-                    borderColor={
-                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
-                    }
+                    backgroundColor={'#165be0'}
+                    borderColor={'#165be0'}
                     margin="0 .5rem"
                     onClick={this.retryRebalance}
                   >

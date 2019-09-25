@@ -442,7 +442,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 )
               ) : (
                 <span style={{ color: '#DD6956', textTransform: 'uppercase' }}>
-                  Rebalance is unsuccesful
+                  Rebalance is unsuccessful
                 </span>
               )}
             </GridTransactionTypography>
