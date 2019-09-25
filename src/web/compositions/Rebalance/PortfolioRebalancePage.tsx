@@ -306,6 +306,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       onChangeSlippage,
       rebalanceIsExecuting,
       hideLeavePopup,
+      showRetryButton,
+      enableShowRetryButton,
       // search,
       // searchCoinInTable,
       cancelOrder,
@@ -432,8 +434,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             }}
           >
             <GridTransactionTypography>
-              {!rebalanceError ? (
-                progress !== null ? (
+              {!showRetryButton ? (
+                progress !== null && !rebalanceError ? (
                   <span>REBALANCE IS PROCESSING</span>
                 ) : (
                   <div>
@@ -446,7 +448,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 </span>
               )}
             </GridTransactionTypography>
-            {progress !== null && (
+            {progress !== null && !rebalanceError && (
               <CircularProgressbar
                 value={newProgress}
                 text={`${newProgress}%`}
@@ -470,6 +472,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               setErrorStatus={this.setErrorStatus}
               rebalanceError={this.state.rebalanceError}
               rebalanceInfoPanelData={rebalanceInfoPanelData}
+              showRetryButton={showRetryButton}
+              enableShowRetryButton={enableShowRetryButton}
               cancelOrder={cancelOrder}
             />
           </GridTransactionBtn>

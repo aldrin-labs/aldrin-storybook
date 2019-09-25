@@ -41,7 +41,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   getErrorForTransaction = (errorState) => {
-    this.props.setErrorStatus(true)
+    const { setErrorStatus, enableShowRetryButton } = this.props
+
+    setErrorStatus(true)
+    enableShowRetryButton()
     this.setState({ isError: errorState, showLoader: false, isFinished: false })
   }
 
@@ -107,6 +110,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       openDialog,
       rebalanceError,
       cancelOrder,
+      showRetryButton,
     } = this.props
 
     const {
@@ -118,32 +122,35 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.state
     const isEmptyTable = transactionsData.length === 0
 
+    console.log('show', showRetryButton, 'rebalance', rebalanceError)
+
     const availablePercentage = Math.ceil(
       100 - rebalanceInfoPanelData.availablePercentage
     )
 
-    const elementToShow = rebalanceError ? (
-      <LinkCustom background={Stroke} onClick={this.retryRebalance}>
-        <CircularProgressbar value={100} text={`RETRY`} />
-      </LinkCustom>
-    ) : availablePercentage === 100 ? (
-      <LinkCustom
-        style={{ position: 'relative', bottom: '.5rem' }}
-        background={Stroke}
-        onClick={() => this.defaultStateForTransaction(handleClickOpen)}
-      >
-        <SvgIcon width={'9rem'} height={'9rem'} src={Ellipse} />
-      </LinkCustom>
-    ) : (
-      <CircularProgressbar
-        value={availablePercentage}
-        text={`${availablePercentage > 100 ? 100 : availablePercentage}%`}
-      />
-    )
+    const elementToShow =
+      rebalanceError && showRetryButton ? (
+        <LinkCustom background={Stroke} onClick={this.retryRebalance}>
+          <CircularProgressbar value={100} text={`RETRY`} />
+        </LinkCustom>
+      ) : availablePercentage === 100 ? (
+        <LinkCustom
+          style={{ position: 'relative', bottom: '.5rem' }}
+          background={Stroke}
+          onClick={() => this.defaultStateForTransaction(handleClickOpen)}
+        >
+          <SvgIcon width={'9rem'} height={'9rem'} src={Ellipse} />
+        </LinkCustom>
+      ) : (
+        <CircularProgressbar
+          value={availablePercentage}
+          text={`${availablePercentage > 100 ? 100 : availablePercentage}%`}
+        />
+      )
 
     return (
       <div style={{ textAlign: 'center' }}>
-        {progress === null ? (
+        {progress === null || rebalanceError ? (
           elementToShow
         ) : (
           <RebalanceDialogTypography
