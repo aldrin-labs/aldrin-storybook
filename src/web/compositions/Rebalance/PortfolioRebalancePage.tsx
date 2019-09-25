@@ -276,6 +276,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       hideLeavePopup,
       // search,
       // searchCoinInTable,
+      cancelOrder,
     } = this.props
 
     const { progress, rebalanceFinished, rebalanceError } = this.state
@@ -419,6 +420,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               onProgressChange={this.onProgressChange}
               progress={progress}
               rebalanceInfoPanelData={rebalanceInfoPanelData}
+              cancelOrder={cancelOrder}
             />
           </GridTransactionBtn>
 
