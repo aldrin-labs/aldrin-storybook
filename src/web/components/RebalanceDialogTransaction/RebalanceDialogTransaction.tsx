@@ -104,6 +104,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       setTransactions,
       openDialog,
       rebalanceError,
+      cancelOrder,
     } = this.props
 
     const {
@@ -326,6 +327,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 isCompleted={this.isCompletedTransaction}
                 isFinished={isFinished}
                 showLoader={showLoader}
+                cancelOrder={cancelOrder}
               />
             )}
           </DialogContent>
