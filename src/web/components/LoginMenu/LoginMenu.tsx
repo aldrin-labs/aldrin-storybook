@@ -88,45 +88,6 @@ class LoginMenuComponent extends React.Component {
 
 
 
-// const LoginMenuComponent = ({
-//   userName,
-//   handleLogout,
-//   updateTooltipSettingsMutation,
-// }: any) => (
-//   <>
-//     <Tooltip title={'Show Tips'} enterDelay={250}>
-//       <IconButton
-//         onClick={async () => {
-//           alert('ok')
-//           updateTooltipSettingsMutation({
-//             variables: {
-//               settings: {
-//                 ...tooltipsConfig,
-//               },
-//             },
-//           })
-//           }
-//         }
-//         color="default"
-//         className="TipButton"
-//       >
-//         <LiveHelp />
-//       </IconButton>
-//     </Tooltip>
-//     {/*<Onboarding />*/}
-//     <Tooltip title={userName} enterDelay={250}>
-//       <IconButton color="default" component={UserLink} className="UserLink">
-//         <AccountCircle />
-//       </IconButton>
-//     </Tooltip>
-//     <Tooltip title="Log out" enterDelay={500}>
-//       <IconButton color="default" onClick={handleLogout} id="ExitButton">
-//         <ExitIcon />
-//       </IconButton>
-//     </Tooltip>
-//   </>
-// )
-
 export const LoginMenu = compose(
   graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
 )(LoginMenuComponent)
