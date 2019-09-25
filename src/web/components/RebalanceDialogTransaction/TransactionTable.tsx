@@ -154,9 +154,9 @@ const TransactionTable = ({
                 </TableCell>
                 <TableCell>
                   <BtnCustom
-                    height="34px"
+                    height="3rem"
                     borderRadius={'1rem'}
-                    btnWidth="60px"
+                    btnWidth="6rem"
                     color={row.isDone !== 'loading' ? '#9f9f9f' : '#165be0'}
                     margin="0 5px"
                     onClick={cancelOrder}

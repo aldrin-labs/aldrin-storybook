@@ -441,22 +441,17 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                   </div>
                 )
               ) : (
-                <span>Rebalance is unsuccesful</span>
+                <span style={{ color: '#DD6956', textTransform: 'uppercase' }}>
+                  Rebalance is unsuccesful
+                </span>
               )}
             </GridTransactionTypography>
-            {progress !== null ? (
-              // newProgress !== 100 ? (
+            {progress !== null && (
               <CircularProgressbar
                 value={newProgress}
                 text={`${newProgress}%`}
               />
-            ) : // )
-            // ) : (
-            //   <LinkCustom background={Stroke}>
-            //     <SvgIcon width={'6rem'} height={'6rem'} src={Ellipse} />
-            //   </LinkCustom>
-            // )
-            null}
+            )}
             <RebalanceDialogTransaction
               initialTime={+rebalanceTimePeriod.value}
               accordionTitle="TRANSACTIONS"

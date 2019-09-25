@@ -3,7 +3,6 @@ import React from 'react'
 // import MuiDialogContent from '@material-ui/core/DialogContent'
 // import Timer from 'react-compound-timer'
 
-import { buildStyles } from 'react-circular-progressbar'
 import CircularProgressbar from '@sb/components/ProgressBar/CircularProgressBar'
 
 import { withTheme } from '@material-ui/styles'
@@ -29,13 +28,6 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccordionTable from './AccordionTable'
 
 import { IProps, IState } from './RebalanceDialogTransaction.types'
-
-// const DialogContent = withStyles((theme) => ({
-//   root: {
-//     margin: 0,
-//     padding: theme.spacing.unit * 2,
-//   },
-// }))(MuiDialogContent)
 
 @withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
@@ -70,6 +62,17 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     await this.props.executeRebalanceHandler()
   }
 
+  retryRebalance = async () => {
+    const { handleClickOpen, setErrorStatus } = this.props
+
+    // to restart rebalance we need to unmount transactions table ( progress bar )
+    // so here i do it before activate rebalance
+    await handleClickOpen()
+    await this.setState({ showTransactionTable: false })
+    await setErrorStatus(false)
+    await this.activateGoBtn()
+  }
+
   defaultStateForTransaction = (handleClickOpen) => {
     this.setState(
       {
@@ -101,7 +104,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       onNewSnapshot,
       progress,
       rebalanceInfoPanelData,
-      setTransactions,
       openDialog,
       rebalanceError,
       cancelOrder,
@@ -121,15 +123,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     )
 
     const elementToShow = rebalanceError ? (
-      <LinkCustom
-        background={Stroke}
-        onClick={async () => {
-          await handleClickOpen()
-          await this.setState({ showTransactionTable: false })
-          await this.props.setErrorStatus(false)
-          await this.activateGoBtn()
-        }}
-      >
+      <LinkCustom background={Stroke} onClick={this.retryRebalance}>
         <CircularProgressbar value={100} text={`RETRY`} />
       </LinkCustom>
     ) : availablePercentage === 100 ? (
@@ -155,7 +149,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           <RebalanceDialogTypography
             onClick={() => {
               openDialog()
-              // this.setState({ })
             }}
           >
             See detailed status
@@ -170,7 +163,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           style={{
             opacity: open ? '1' : '0',
             visibility: open ? 'visible' : 'hidden',
-            transition: '.3s opacity ',
+            transition: '.3s all ',
           }}
         >
           <DialogTitleCustom id="customized-dialog-title" onClose={handleClose}>
@@ -207,11 +200,11 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 </GridCustom>
                 <GridCustom container justify="center">
                   <BtnCustom
-                    height="34px"
+                    height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="120px"
+                    btnWidth="9rem"
                     color={blue.custom}
-                    margin="0 5px"
+                    margin="0 .5rem"
                     onClick={() => {
                       onNewSnapshot()
                       handleClose()
@@ -220,17 +213,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     Cancel
                   </BtnCustom>
                   <BtnCustom
-                    height="34px"
+                    height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="120px"
+                    btnWidth="12rem"
                     color={blue.custom}
-                    margin="0 5px"
-                    onClick={async () => {
-                      await handleClickOpen()
-                      await this.props.setErrorStatus(false)
-                      await this.setState({ showTransactionTable: false })
-                      await this.activateGoBtn()
-                    }}
+                    margin="0 .5rem"
+                    onClick={this.retryRebalance}
                   >
                     Retry
                   </BtnCustom>
@@ -239,7 +227,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             ) : isFinished ? (
               <>
                 <GridCustom container>
-                  <TypographyTopDescription margin="-12px 0 25px 0">
+                  <TypographyTopDescription margin="-12px 0 2.5rem 0">
                     Next rebalance will be at the time that you selected.
                     {/*<span style={{ color: `${blue.custom}` }}>*/}
                     {/*<Timer*/}
@@ -269,11 +257,11 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
                 <GridCustom container justify="center">
                   <BtnCustom
-                    height="34px"
+                    height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="120px"
+                    btnWidth="12rem"
                     color={blue.custom}
-                    margin="0 5px"
+                    margin="0 .5rem"
                     onClick={handleClose}
                   >
                     Ok
@@ -294,22 +282,25 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 </GridCustom>
                 <GridCustom container justify="center">
                   <BtnCustom
-                    height="34px"
+                    height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="120px"
+                    btnWidth="9rem"
                     onClick={handleClose}
                     color={isDisableBtns ? '#9f9f9f' : '#b93b2b'}
-                    margin="0 5px"
+                    margin="0 .5rem"
                     disabled={isDisableBtns}
                   >
                     Cancel
                   </BtnCustom>
                   <BtnCustom
-                    height="34px"
+                    height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="120px"
-                    color={isDisableBtns ? '#9f9f9f' : '#165be0'}
-                    margin="0 5px"
+                    btnWidth="9rem"
+                    btnColor={'#fff'}
+                    backgroundColor={
+                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
+                    }
+                    margin="0 .5rem"
                     onClick={this.activateGoBtn}
                     disabled={isDisableBtns || isEmptyTable}
                   >
