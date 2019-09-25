@@ -7,10 +7,10 @@ type T = {
   disableBeacon?: boolean
 }
 
-const buttonsText = { 
-  back: 'PREVIOUS', 
-  close: 'CLOSE', 
-  last: 'FINISH P&L INTRODUCTION', 
+const buttonsText = {
+  back: 'PREVIOUS',
+  close: 'CLOSE',
+  last: 'FINISH P&L INTRODUCTION',
   next: 'NEXT',
   skip: 'SKIP INTRODUCTION',
 }
@@ -72,6 +72,9 @@ export const portfolioMainSteps = [
       <p style={{
         fontFamily: 'DM Sans',
         textAlign: 'left',
+        padding: 0,
+        margin: 0,
+        marginTop: '-9%',
       }}>
         <b>Assets table</b><br/>
         This table shows all of your assets with real-time market prices and performance.
@@ -152,6 +155,21 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+  },
+]
+
+export const transactionsPageSteps = [
+  {
+    disableBeacon: true,
+    target: 'body',
+    content:
+      'You can see which industries you are invested in and the performance of each industry for various durations.',
+    placement: 'center',
+  },
+  {
+    target: '.PortfolioDistributionChart',
+    content: 'Portfolio allocation of current assets vs rebalanced.',
+    placement: 'auto',
   },
 ]
 

@@ -4,8 +4,8 @@ import { withFormik } from 'formik'
 import Yup from 'yup'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import Joyride from 'react-joyride'
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import JoyrideOnboarding from '../JoyrideOnboarding/JoyrideOnboarding'
 
 import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
@@ -13,6 +13,7 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import MainLogo from '@icons/Logo.svg'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -32,34 +33,6 @@ import { IProps, IState } from './Congratulations.types'
 import { Logo } from './Congratulations.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-// const formikDialog = withFormik({
-//   validationSchema: Yup.object().shape({
-//     portfolioName: Yup.string().required(),
-//   }),
-//   mapPropsToValues: () => ({
-//     portfolioName: '',
-//   }),
-//   handleSubmit: async ({ portfolioName }, props) => {
-//     const { CreatePortfolio } = props.props
-//     const variables = {
-//       inputPortfolio: {
-//         name: portfolioName,
-//       },
-//     }
-//
-//     try {
-//       props.setSubmitting(true)
-//       await CreatePortfolio({
-//         variables,
-//       })
-//       props.resetForm({})
-//     } catch (error) {
-//       console.error(error)
-//       props.setFieldError('portfolioName', 'Request error!')
-//       props.setSubmitting(false)
-//     }
-//   },
-// })
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -131,33 +104,6 @@ class Congratulations extends React.Component<IProps, IState> {
     this.setState({ openCreatePortfolio: false })
   }
 
-  // handleJoyrideCallback = async (data: any) => {
-  //   if (
-  //     data.action === 'close' ||
-  //     data.action === 'skip' ||
-  //     data.status === 'finished'
-  //   ) {
-  //     const {
-  //       updateTooltipSettingsMutation,
-  //       getTooltipSettingsQuery: { getTooltipSettings },
-  //     } = this.props
-  //
-  //     await updateTooltipSettingsMutation({
-  //       variables: {
-  //         settings: {
-  //           ...removeTypenameFromObject(getTooltipSettings),
-  //           portfolioMain: false,
-  //         },
-  //       },
-  //     })
-  //   }
-  //
-  //   if (data.status === 'finished') {
-  //     const oldKey = this.state.key
-  //     this.setState({ key: oldKey + 1 })
-  //   }
-  // }
-
   render() {
     const {
       theme: {
@@ -174,44 +120,11 @@ class Congratulations extends React.Component<IProps, IState> {
       loading,
     } = this.props
 
-    // console.log(this.state)
-
     return (
       <>
-        {/*<CreatePortfolio
-          open={this.state.openCreatePortfolio}
-          handleClickOpen={this.handleClickOpen}
-          handleClose={this.handleClose}
-        />*/}
-
-        <Joyride
-          continuous={true}
-          showProgress={true}
-          showSkipButton={false}
+        <JoyrideOnboarding
           steps={portfolioMainSteps}
-          // run={getTooltipSettings.portfolioMain}
-          run={this.state.openOnboarding}
-          // callback={this.handleJoyrideCallback}
-          key={this.state.key}
-          styles={{
-            options: {
-              backgroundColor: 'transparent', //theme.palette.getContrastText(theme.palette.primary.main)
-              primaryColor: '#29AC80', //theme.palette.secondary.main
-              textColor: '#fff',
-              arrowColor: 'transparent', //#29AC80
-              buttonNext: {
-                borderRadius: 16,
-                color: '#fff',
-                width: 283,
-              },
-              zIndex: 99999,
-              // overlayColor: 'rgba(0, 23, 68, 0.8)',
-            },
-            tooltip: {
-              fontFamily: 'DM Sans',
-              fontSize: '18px',
-            },
-          }}
+          open={this.state.openOnboarding}
         />
 
         <DialogWrapper
@@ -221,19 +134,7 @@ class Congratulations extends React.Component<IProps, IState> {
           open={open}
         >
 
-          <Logo
-            src={'../public/apple-touch-icon.png'}
-          >
-            {/*<img
-              src={'../public/apple-touch-icon.png'}
-              style={{
-                width: '83px',
-                display: 'block',
-                margin: '0 auto',
-                marginTop: '48px',
-              }}
-            />*/}
-          </Logo>
+          <Logo src={'../public/apple-touch-icon.png'} />
 
           <DialogTitleCustom
             id="customized-dialog-title"
@@ -264,7 +165,7 @@ class Congratulations extends React.Component<IProps, IState> {
             <Grid style={{ width: '440px' }}>
               <GridCustom>
                 <Typography
-                  style={{ 
+                  style={{
                     color: '#16253D',
                     fontSize: '12px',
                     fontWeight: 'bold',
@@ -280,7 +181,7 @@ class Congratulations extends React.Component<IProps, IState> {
                 {
                   loading
                     ?
-                      <Typography 
+                      <Typography
                         style={{
                           fontSize: '17px',
                           fontWeight: 'bold',

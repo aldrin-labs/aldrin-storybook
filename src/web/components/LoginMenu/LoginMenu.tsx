@@ -9,7 +9,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import Tooltip from '@material-ui/core/Tooltip'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { tooltipsConfig } from '@core/config/tooltipsConfig'
-import PopupStart from '../Onboarding/PopupStart/PopupStart'
+import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import JoyrideOnboarding from '../Onboarding/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
 
 // import { IProps, IState } from './CreatePortfolio.types'
@@ -23,19 +24,15 @@ class LoginMenuComponent extends React.Component {
 
     this.state = {
       openPopup: false,
+      openOnboarding: false,
+      key: 0,
     }
   }
 
   handleClickOpen = () => {
     this.setState({
-      openPopup: true,
+      openOnboarding: true,
     })
-
-    console.log('handleClickOpen')
-  }
-
-  handleClose = () => {
-    this.setState({ openPopup: false })
   }
 
   render() {
@@ -48,11 +45,11 @@ class LoginMenuComponent extends React.Component {
 
     return (
       <>
-        <PopupStart
-          open={this.state.openPopup}
-          handleClickOpen={this.handleClickOpen}
-          handleClose={this.handleClose}
+        <JoyrideOnboarding
+          steps={portfolioMainSteps}
+          open={this.state.openOnboarding}
         />
+
         <Tooltip title={'Show Tips'} enterDelay={250}>
           <IconButton
             onClick={async () => {

@@ -11,6 +11,7 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import CubeLogo from '@icons/auth0Logo.png'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -29,36 +30,7 @@ import { createPortfolioMutation } from '@core/graphql/mutations/user/createPort
 
 import { IProps, IState } from './PopupStart.types'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import CreatePortfolio from '../CreatePortfolio/CreatePortfolio'
-
-const formikDialog = withFormik({
-  validationSchema: Yup.object().shape({
-    portfolioName: Yup.string().required(),
-  }),
-  mapPropsToValues: () => ({
-    portfolioName: '',
-  }),
-  handleSubmit: async ({ portfolioName }, props) => {
-    const { CreatePortfolio } = props.props
-    const variables = {
-      inputPortfolio: {
-        name: portfolioName,
-      },
-    }
-
-    try {
-      props.setSubmitting(true)
-      await CreatePortfolio({
-        variables,
-      })
-      props.resetForm({})
-    } catch (error) {
-      console.error(error)
-      props.setFieldError('portfolioName', 'Request error!')
-      props.setSubmitting(false)
-    }
-  },
-})
+import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 
 const DialogTitle = withStyles((theme) => ({
   root: {
@@ -101,6 +73,7 @@ const DialogContent = withStyles((theme) => ({
 class PopupStart extends React.Component<IProps, IState> {
   state: IState = {
     openCreatePortfolio: false,
+    openAddAccountDialog: false,
     isSelected: true,
 
     portfolioName: '',
@@ -122,6 +95,14 @@ class PopupStart extends React.Component<IProps, IState> {
     this.setState({ openCreatePortfolio: false })
   }
 
+ handleClickOpenAccount = () => {
+    this.setState({ openAddAccountDialog: true })
+  }
+
+ handleCloseAccount = () => {
+    this.setState({ openAddAccountDialog: false })
+  }
+
   render() {
     const {
       theme: {
@@ -135,9 +116,11 @@ class PopupStart extends React.Component<IProps, IState> {
       handleClickOpen,
       handleClose,
       open,
+      portfolioId,
+      baseCoin,
     } = this.props
 
-    // console.log(this.state)
+    console.log('PopupStart', portfolioId)
 
     return (
       <>
@@ -145,6 +128,14 @@ class PopupStart extends React.Component<IProps, IState> {
           open={this.state.openCreatePortfolio}
           handleClickOpen={this.handleClickOpen}
           handleClose={this.handleClose}
+
+          openAddAccountDialog={this.state.openAddAccountDialog}
+          handleClickOpenAccount={this.handleClickOpenAccount}
+          handleCloseAccount={this.handleCloseAccount}
+
+          onboarding={true}
+          portfolioId={portfolioId}
+          baseCoin={baseCoin}
         />
 
         <DialogWrapper
@@ -163,15 +154,15 @@ class PopupStart extends React.Component<IProps, IState> {
             }}
           >
             <img
-              src={'../public/apple-touch-icon.png'}
+              src={CubeLogo}
               style={{
-                width: '83px',
                 display: 'block',
                 margin: '0 auto',
                 marginTop: '30px',
                 marginBottom: '30px',
               }}
             />
+
             <TypographyCustomHeading
               fontWeight={'700'}
               borderRadius={'1rem'}
@@ -265,12 +256,4 @@ class PopupStart extends React.Component<IProps, IState> {
   }
 }
 
-export default compose(
-  graphql(createPortfolioMutation, {
-    name: 'CreatePortfolio',
-    options: {
-      refetchQueries: [{ query: getMyPortfoliosQuery }],
-    },
-  }),
-  formikDialog
-)(PopupStart)
+export default PopupStart
