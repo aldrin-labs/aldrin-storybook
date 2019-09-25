@@ -1,6 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid, Table, TableBody, TableCell, TableRow } from '@material-ui/core'
+import { Grid, Table, TableBody, TableCell, TableRow, } from '@material-ui/core'
 import ProgressBar from '@sb/components/ProgressBar/ProgressBar'
 import SvgIcon from '../SvgIcon'
 import { IProps } from './TransactionTable.types'
@@ -11,6 +11,7 @@ import {
   TransactionTableResult,
   TransactionTableStatus,
 } from './TransactionTable.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 import DoneIcon from '../../../icons/DoneIcon.svg'
 import Cross from '../../../icons/Cross.svg'
@@ -37,6 +38,7 @@ const TransactionTable = ({
   isCompleted,
   isFinished,
   showLoader,
+  cancelOrder,
 }: IProps) => {
   let loaderExists = false
 
@@ -131,7 +133,9 @@ const TransactionTable = ({
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
-                  ) : (showLoader || row.isDone === 'loading') &&
+                  ) : row.isDone === 'cancel' ? 
+                    `Canceled`
+                    : (showLoader || row.isDone === 'loading') &&
                     !loaderExists ? (
                     (loaderExists = true && (
                       <div
@@ -147,6 +151,19 @@ const TransactionTable = ({
                       </div>
                     ))
                   ) : null}
+                </TableCell>
+                <TableCell>
+                <BtnCustom
+                    height="34px"
+                    borderRadius={'1rem'}
+                    btnWidth="120px"
+                    color={row.isDone !== 'loading' ? '#9f9f9f' : '#165be0'}
+                    margin="0 5px"
+                    onClick={cancelOrder}
+                    disabled={row.isDone !== 'loading'}
+                  >
+                    cancel
+                  </BtnCustom>
                 </TableCell>
               </TableRow>
             )
