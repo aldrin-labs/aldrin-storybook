@@ -89,9 +89,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     const { isFinished, isError, isDisableBtns, showLoader } = this.state
     const isEmptyTable = transactionsData.length === 0
 
-    const availablePercentage = Math.ceil(
-      100 - rebalanceInfoPanelData.availablePercentage
-    )
+    let availablePercentage = 0
+    if (rebalanceInfoPanelData) {
+      availablePercentage = Math.ceil(
+        100 - rebalanceInfoPanelData.availablePercentage
+      )
+    }
 
     return (
       <div>
