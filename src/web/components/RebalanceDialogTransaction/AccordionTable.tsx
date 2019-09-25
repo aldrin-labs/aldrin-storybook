@@ -39,7 +39,7 @@ const styles = (theme) => ({
 @withTheme()
 class AccordionTable extends React.Component<IProps, IState> {
   state: IState = {
-    expanded: false,
+    expanded: 'panel1',
   }
 
   handleChange = (panel: string) => (event, expanded) => {
@@ -65,7 +65,7 @@ class AccordionTable extends React.Component<IProps, IState> {
     return (
       <div className={classes.root}>
         <ExpansionPanelCustom
-          expanded={expanded !== 'panel1'}
+          expanded={expanded === 'panel1'}
           onChange={this.handleChange('panel1')}
         >
           <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>

@@ -175,6 +175,7 @@ const APIWrapper = (props) => {
       name={'data'}
       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
       withOutSpinner={false}
+      fetchPolicy="network-only"
     />
   )
 }
