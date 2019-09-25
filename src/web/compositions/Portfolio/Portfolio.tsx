@@ -1,26 +1,18 @@
 import React from 'react'
-import { Query, Mutation } from 'react-apollo'
-import { has } from 'lodash-es'
 import { withTheme } from '@material-ui/styles'
-import { Fade, LinearProgress } from '@material-ui/core'
+import { Fade } from '@material-ui/core'
 
 import { IProps, IState } from './Portfolio.types'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
 
-import { CustomError } from '@sb/components/'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
-
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
-import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
-import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
-// import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
-// import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
-import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
+// import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
 
 const safePortfolioDestruction = (
@@ -47,7 +39,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    const { portfolioKeyAndWalletsQuery: data } = this.props
+    const { data } = this.props
 
     let {
       userSettings: { rebalanceKeys },
@@ -68,12 +60,10 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   render() {
-    const {
-      theme,
-      baseCoin,
-      isUSDCurrently,
-      portfolioKeyAndWalletsQuery: data,
-    } = this.props
+    const { theme, baseData, data } = this.props
+
+    const baseCoin = baseData.portfolio.baseCoin
+    const isUSDCurrently = baseCoin === 'USDT'
 
     const {
       userSettings: { portfolioId, dustFilter },
@@ -178,30 +168,22 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
 const APIWrapper = (props) => {
   return (
-    <Query query={GET_BASE_COIN}>
-      {({ data }) => {
-        const baseCoin =
-          (data && data.portfolio && data.portfolio.baseCoin) || 'USDT'
-        return (
-          <QueryRenderer
-            {...props}
-            component={PortfolioComponent}
-            query={portfolioKeyAndWalletsQuery}
-            name={'portfolioKeyAndWalletsQuery'}
-            variables={{ baseCoin }}
-            baseCoin={baseCoin}
-            isUSDCurrently={baseCoin === 'USDT'}
-            // pollInterval={1 * 30 * 1000}
-            withOutSpinner={false}
-            fetchPolicy="network-only"
-          />
-        )
-      }}
-    </Query>
+    <QueryRenderer
+      {...props}
+      component={PortfolioComponent}
+      query={portfolioKeyAndWalletsQuery}
+      name={'data'}
+      variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
+      withOutSpinner={false}
+    />
   )
 }
 
 export default compose(
   withAuth,
-  withTheme()
+  withTheme(),
+  queryRendererHoc({
+    query: GET_BASE_COIN,
+    name: 'baseData',
+  })
 )(APIWrapper)
