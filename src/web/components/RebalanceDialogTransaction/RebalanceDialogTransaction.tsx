@@ -202,7 +202,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   <BtnCustom
                     height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="9rem"
+                    btnWidth="10rem"
                     color={blue.custom}
                     margin="0 .5rem"
                     onClick={() => {
@@ -215,8 +215,14 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   <BtnCustom
                     height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="12rem"
-                    color={blue.custom}
+                    btnWidth="10rem"
+                    btnColor={'#fff'}
+                    backgroundColor={
+                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
+                    }
+                    borderColor={
+                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
+                    }
                     margin="0 .5rem"
                     onClick={this.retryRebalance}
                   >
@@ -259,7 +265,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   <BtnCustom
                     height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="12rem"
+                    btnWidth="10rem"
                     color={blue.custom}
                     margin="0 .5rem"
                     onClick={handleClose}
@@ -284,7 +290,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   <BtnCustom
                     height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="9rem"
+                    btnWidth="10rem"
                     onClick={handleClose}
                     color={isDisableBtns ? '#9f9f9f' : '#b93b2b'}
                     margin="0 .5rem"
@@ -295,9 +301,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   <BtnCustom
                     height="3.4rem"
                     borderRadius={'1rem'}
-                    btnWidth="9rem"
+                    btnWidth="10rem"
                     btnColor={'#fff'}
                     backgroundColor={
+                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
+                    }
+                    borderColor={
                       isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
                     }
                     margin="0 .5rem"
