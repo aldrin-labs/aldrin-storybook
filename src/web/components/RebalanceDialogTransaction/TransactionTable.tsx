@@ -1,6 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid, Table, TableBody, TableCell, TableRow, } from '@material-ui/core'
+import { Grid, Table, TableBody, TableCell, TableRow } from '@material-ui/core'
 import ProgressBar from '@sb/components/ProgressBar/ProgressBar'
 import SvgIcon from '../SvgIcon'
 import { IProps } from './TransactionTable.types'
@@ -116,7 +116,7 @@ const TransactionTable = ({
                 <TableCell
                   align="left"
                   className={classes.cell}
-                  style={{ minWidth: '18rem' }}
+                  style={{ minWidth: '6rem' }}
                 >
                   <TransactionTableStatus>
                     {row.isDone === 'success'
@@ -133,15 +133,15 @@ const TransactionTable = ({
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
-                  ) : row.isDone === 'cancel' ? 
+                  ) : row.isDone === 'cancel' ? (
                     `Canceled`
-                    : (showLoader || row.isDone === 'loading') &&
+                  ) : (showLoader || row.isDone === 'loading') &&
                     !loaderExists ? (
                     (loaderExists = true && (
                       <div
                         style={{
                           position: 'absolute',
-                          top: '17px',
+                          top: '15px',
                           right: '20px',
                           height: '24px',
                           width: '24px',
@@ -153,10 +153,10 @@ const TransactionTable = ({
                   ) : null}
                 </TableCell>
                 <TableCell>
-                <BtnCustom
-                    height="34px"
+                  <BtnCustom
+                    height="3rem"
                     borderRadius={'1rem'}
-                    btnWidth="120px"
+                    btnWidth="6rem"
                     color={row.isDone !== 'loading' ? '#9f9f9f' : '#165be0'}
                     margin="0 5px"
                     onClick={cancelOrder}

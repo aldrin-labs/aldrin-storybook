@@ -20,15 +20,17 @@ export const BtnCustom = styled(
   border: 1.5px solid ${(props) => props.btnColor || props.color || '#333'};
   border-radius: ${(props) => props.borderRadius || '.8rem'};
   border-width: ${(props) => props.borderWidth || '1.5px'};
+  border-color: ${(props) =>
+    props.borderColor || props.btnColor || props.color || '#333'};
   color: ${(props) => props.btnColor || props.color || '#333'};
   font-size: ${(props) => props.fontSize || '1rem'};
   font-weight: 700;
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};
-  letter-spacing: ${props => props.letterSpacing || '1.5px'};
-  background: ${props => props.backgroundColor || 'transparent'};
+  letter-spacing: ${(props) => props.letterSpacing || '1.5px'};
+  background: ${(props) => props.backgroundColor || 'transparent'};
 
   &:hover {
-    background: ${props => props.backgroundColor};
+    background: ${(props) => props.backgroundColor};
   }
 `
