@@ -152,12 +152,14 @@ class PortfolioSelector extends React.Component<IProps> {
     toggledKeyID: string
   ) => {
     const { updatePortfolioSettings } = this.props
-    const { portfolio: { baseCoin } } = client.readQuery({
+    const {
+      portfolio: { baseCoin },
+    } = client.readQuery({
       query: GET_BASE_COIN,
     })
     const data = client.readQuery({
       query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin }
+      variables: { baseCoin },
     })
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(
@@ -165,6 +167,7 @@ class PortfolioSelector extends React.Component<IProps> {
       type,
       toggledKeyID
     )
+
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
@@ -179,12 +182,14 @@ class PortfolioSelector extends React.Component<IProps> {
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId } = this.props
     const type = 'keyCheckboxes'
-    const { portfolio: { baseCoin } } = client.readQuery({
+    const {
+      portfolio: { baseCoin },
+    } = client.readQuery({
       query: GET_BASE_COIN,
     })
     const { myPortfolios } = client.readQuery({
       query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin }
+      variables: { baseCoin },
     })
 
     const keys = myPortfolios[0].userSettings.keys
@@ -192,10 +197,7 @@ class PortfolioSelector extends React.Component<IProps> {
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: UTILS.getArrayContainsOnlySelected(
-          keys,
-          toggledKeyID
-        ),
+        selectedKeys: UTILS.getArrayContainsOnlySelected(keys, toggledKeyID),
       },
     }
 
@@ -556,6 +558,10 @@ export default compose(
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({
       refetchQueries: [
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin, innerSettings: true },
+        },
         {
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },

@@ -26,11 +26,6 @@ export const sliderThumbMediaQueries = css`
     width: 2rem;
     height: 2rem;
   }
-
-  @media screen and (min-device-width: 2521px) and (min-device-height: 1481px) and (-webkit-min-device-pixel-ratio: 1) {
-    width: 3rem;
-    height: 3rem;
-  }
 `
 
 export const StyledSlider = styled(
