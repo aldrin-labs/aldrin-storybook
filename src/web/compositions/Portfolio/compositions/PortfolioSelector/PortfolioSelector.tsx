@@ -167,6 +167,7 @@ class PortfolioSelector extends React.Component<IProps> {
       type,
       toggledKeyID
     )
+
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
@@ -558,6 +559,10 @@ export default compose(
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({
       refetchQueries: [
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin, innerSettings: true },
+        },
         {
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
