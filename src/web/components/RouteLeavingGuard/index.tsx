@@ -11,22 +11,8 @@ export class RouteLeavingGuard extends React.Component {
 
   // Setup the `beforeunload` event listener
   setupBeforeUnloadListener = () => {
-    const { actionBeforeUnload, action, when } = this.props
-
     window.addEventListener('beforeunload', (ev) => {
-      //const { when, actionBeforeUnload, action } = this.props
-
-      console.log('start beforeunload')
-
-      const result = actionBeforeUnload()
-      console.log('when', when)
-      console.log('modalVisible', this.state.modalVisible)
-      console.log('func', this.state.func)
-      console.log('action', action)
-      console.log('action before unload', actionBeforeUnload)
-      console.log('result exit', result)
-
-      console.log('end beforeunload')
+      const { when } = this.props
 
       if (!when) {
         const textToShow = 'You have processing rebalance'
@@ -36,13 +22,13 @@ export class RouteLeavingGuard extends React.Component {
       }
     })
 
-    window.addEventListener('unload', async (ev) => {
-      const result = await actionBeforeUnload()
-      console.log('when', when)
-      console.log('action', action)
-      console.log('action before unload', actionBeforeUnload)
-      console.log('result exit', result)
-    })
+    // window.addEventListener('unload', async (ev) => {
+    //   const result = await actionBeforeUnload()
+    //   console.log('when', when)
+    //   console.log('action', action)
+    //   console.log('action before unload', actionBeforeUnload)
+    //   console.log('result exit', result)
+    // })
   }
 
   componentDidMount() {
