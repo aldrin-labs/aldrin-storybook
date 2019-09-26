@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
 import { client } from '@core/graphql/apolloClient'
@@ -45,11 +46,13 @@ import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuer
 
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
-import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 import { graphql } from 'react-apollo'
+
+import JoyrideOnboarding from '../../components/Onboarding/JoyrideOnboarding/JoyrideOnboarding'
+import { transactionsPageSteps } from '@sb/config/joyrideSteps'
 
 import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
 
@@ -60,6 +63,7 @@ class TransactionPage extends React.PureComponent {
     includeTrades: true,
     filterCoin: '',
     inputValue: '',
+    key: 0,
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -149,14 +153,7 @@ class TransactionPage extends React.PureComponent {
   }
 
   updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
-    const { updatePortfolioSettings } = this.props
-    const { portfolio: { baseCoin } } = client.readQuery({
-      query: GET_BASE_COIN,
-    })
-    const data = client.readQuery({
-      query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin }
-    })
+    const { updatePortfolioSettings, data } = this.props
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
@@ -172,23 +169,16 @@ class TransactionPage extends React.PureComponent {
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId } = this.props
+    const { portfolioId, newKeys, isRebalance, data } = this.props
     const type = 'keyCheckboxes'
-    const { portfolio: { baseCoin } } = client.readQuery({
-      query: GET_BASE_COIN,
-    })
-    const { myPortfolios } = client.readQuery({
-      query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin }
-    })
-
-    const keys = myPortfolios[0].userSettings.keys
 
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: UTILS.getArrayContainsOnlySelected(
-          keys,
+        [isRebalance
+          ? 'selectedRebalanceKeys'
+          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
+          newKeys,
           toggledKeyID
         ),
       },
@@ -256,9 +246,13 @@ class TransactionPage extends React.PureComponent {
       activeKeys.length + activeWallets.length ===
       newKeys.length + newWallets.length
 
+    const isTransactionsPage = this.props.location.pathname === '/portfolio/transactions'
+    console.log('activeKeys',activeKeys)
+
     return (
       <>
         <TransactionsPageMediaQuery />
+
         <Grid
           container
           justify="space-between"
@@ -277,6 +271,9 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
+                style={{ backgroundColor: '#fff' }}
+                id='accountsTransactions'
+
               >
                 <GridContainerTitle
                   bgColor={theme.palette.primary.dark}
@@ -355,6 +352,7 @@ class TransactionPage extends React.PureComponent {
                 <GridCalendarContainer
                   item
                   xs={12}
+                  id='calendarTransactions'
                   borderColor={`1px solid ${
                     theme.palette.grey[theme.palette.type]
                   }`}
@@ -381,6 +379,7 @@ class TransactionPage extends React.PureComponent {
                   theme.palette.grey[theme.palette.type]
                 }`}
                 style={{ height: 'calc(70.5% - 2vh)' }}
+                id='tableTransactions'
               >
                 <TradeOrderHistory
                   isCustomStyleForFooter={isCustomStyleForFooter}
@@ -403,6 +402,7 @@ class TransactionPage extends React.PureComponent {
             item
             lg={hideSelector ? 3 : 2}
             md={hideSelector ? 3 : 2}
+            id='statisticTransactions'
             style={{
               boxShadow: 'none',
               border: 'none',
@@ -420,12 +420,24 @@ class TransactionPage extends React.PureComponent {
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
+
+
+        {
+          activeKeys.length === 1 && activeKeys[0].name === 'demo' && isTransactionsPage
+            ?
+              <JoyrideOnboarding
+                steps={transactionsPageSteps}
+                open={true}
+              />
+            :
+              ''
+        }
       </>
     )
   }
 }
 
-export default compose(
+export default withRouter(compose(
   graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
@@ -437,10 +449,10 @@ export default compose(
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({
       refetchQueries: [
-        // {
-        //   query: portfolioKeyAndWalletsQuery,
-        //   variables: { baseCoin },
-        // },
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin },
+        },
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
         { query: getPortfolioMainQuery, variables: { baseCoin } },
         {
@@ -472,6 +484,7 @@ export default compose(
           },
         },
       ],
+      // update: updateSettingsMutation,
     }),
   })
-)(TransactionPage)
+)(TransactionPage))

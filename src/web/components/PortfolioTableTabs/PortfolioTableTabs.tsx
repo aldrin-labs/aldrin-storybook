@@ -84,7 +84,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
         ) : null}
 
         {isTransactionsPage ? (
-          <StyledLeftButton component={Link} to="/portfolio/main">
+          <StyledLeftButton component={Link} to="/portfolio/main" id='accountsPanel'>
             P&L
           </StyledLeftButton>
         ) : null}

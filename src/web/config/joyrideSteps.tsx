@@ -15,6 +15,14 @@ const buttonsText = {
   skip: 'SKIP INTRODUCTION',
 }
 
+const buttonsTransactionsText = {
+  back: 'PREVIOUS',
+  close: 'CLOSE',
+  last: 'FINISH TRANSACTIONS INTRODUCTION',
+  next: 'NEXT',
+  skip: 'SKIP INTRODUCTION',
+}
+
 export const portfolioMainSteps = [
   {
     target: '#sharePortfolioPanel',
@@ -160,16 +168,91 @@ export const portfolioMainSteps = [
 
 export const transactionsPageSteps = [
   {
-    disableBeacon: true,
-    target: 'body',
-    content:
-      'You can see which industries you are invested in and the performance of each industry for various durations.',
-    placement: 'center',
+    target: '#accountsTransactions',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Accounts filter</b><br/>
+        Select your portfolio and accounts to view its transactions.
+        Filter for transaction type
+      </p>
+    ),
+    placement: 'auto',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
   },
   {
-    target: '.PortfolioDistributionChart',
-    content: 'Portfolio allocation of current assets vs rebalanced.',
+    target: '#calendarTransactions',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Calendar</b><br/>
+        Calendar shows the heat-map of your trading frequency.
+        Use the period selector to filter data.
+      </p>
+    ),
+    placement: 'bottom',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#tableTransactions',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Your actions table</b><br/>
+        The table shows your detail data per transaction
+      </p>
+    ),
     placement: 'auto',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#statisticTransactions',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Your actions dashboard</b><br/>
+        These widgets show your recent actions and win/loss ratio of your trades profitability
+      </p>
+    ),
+    placement: 'left',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#accountsPanel',
+    content: (
+      <p style={{
+        fontFamily: 'DM Sans',
+        textAlign: 'left',
+      }}>
+        <b>Our introduction is over.</b><br/>
+        Now you can return to P&L page by using quick navigation button.
+      </p>
+    ),
+    placement: 'right',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
   },
 ]
 

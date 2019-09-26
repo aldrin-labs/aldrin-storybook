@@ -9,7 +9,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import Tooltip from '@material-ui/core/Tooltip'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { tooltipsConfig } from '@core/config/tooltipsConfig'
-import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import { portfolioMainSteps, transactionsPageSteps } from '@sb/config/joyrideSteps'
 import JoyrideOnboarding from '../Onboarding/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
 
@@ -42,11 +42,12 @@ class LoginMenuComponent extends React.Component {
       updateTooltipSettingsMutation,
     } = this.props
     const isMainPage = this.props.location.pathname === '/portfolio/main'
+    const isTransactionsPage = this.props.location.pathname === '/portfolio/transactions'
 
     return (
       <>
         <JoyrideOnboarding
-          steps={portfolioMainSteps}
+          steps={isMainPage ? portfolioMainSteps : transactionsPageSteps}
           open={this.state.openOnboarding}
         />
 
@@ -87,6 +88,45 @@ class LoginMenuComponent extends React.Component {
 }
 
 
+
+// const LoginMenuComponent = ({
+//   userName,
+//   handleLogout,
+//   updateTooltipSettingsMutation,
+// }: any) => (
+//   <>
+//     <Tooltip title={'Show Tips'} enterDelay={250}>
+//       <IconButton
+//         onClick={async () => {
+//           alert('ok')
+//           updateTooltipSettingsMutation({
+//             variables: {
+//               settings: {
+//                 ...tooltipsConfig,
+//               },
+//             },
+//           })
+//           }
+//         }
+//         color="default"
+//         className="TipButton"
+//       >
+//         <LiveHelp />
+//       </IconButton>
+//     </Tooltip>
+//     {/*<Onboarding />*/}
+//     <Tooltip title={userName} enterDelay={250}>
+//       <IconButton color="default" component={UserLink} className="UserLink">
+//         <AccountCircle />
+//       </IconButton>
+//     </Tooltip>
+//     <Tooltip title="Log out" enterDelay={500}>
+//       <IconButton color="default" onClick={handleLogout} id="ExitButton">
+//         <ExitIcon />
+//       </IconButton>
+//     </Tooltip>
+//   </>
+// )
 
 export const LoginMenu = compose(
   graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
