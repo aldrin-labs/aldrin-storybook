@@ -11,7 +11,7 @@ export const SliderDustFilter = styled(Slider)`
 
   @media (min-width: 1921px) {
     top: 12px;
-    width: 80%;
+    width: 28rem;
 
     .trackAfter {
       height: 1.8rem;
