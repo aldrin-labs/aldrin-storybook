@@ -20,4 +20,5 @@ export interface IState {
   isDisableBtns: boolean
   showLoader: boolean
   hideDialogButton: boolean
+  showTransactionTable: boolean
 }

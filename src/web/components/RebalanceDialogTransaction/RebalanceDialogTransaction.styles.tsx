@@ -85,14 +85,14 @@ export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
 
   @media (min-width: 1440px) {
-    min-width: 600px;
+    min-width: 800px;
   }
 
   @media (min-width: 1921px) {
-    min-width: 680px;
+    min-width: 880px;
   }
 
   @media (min-width: 2500px) {
-    min-width: 900px;
+    min-width: 1000px;
   }
 `

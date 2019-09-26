@@ -57,9 +57,10 @@ import AccountsSlick from '@sb/compositions/Transaction/AccountsSlick/AccountsSl
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
-
+import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils.ts'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
@@ -150,13 +151,23 @@ class PortfolioSelector extends React.Component<IProps> {
     type: string,
     toggledKeyID: string
   ) => {
-    const { updatePortfolioSettings, data } = this.props
+    const { updatePortfolioSettings } = this.props
+    const {
+      portfolio: { baseCoin },
+    } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const data = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin },
+    })
 
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(
       data,
       type,
       toggledKeyID
     )
+
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
@@ -169,18 +180,24 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId } = this.props
     const type = 'keyCheckboxes'
+    const {
+      portfolio: { baseCoin },
+    } = client.readQuery({
+      query: GET_BASE_COIN,
+    })
+    const { myPortfolios } = client.readQuery({
+      query: portfolioKeyAndWalletsQuery,
+      variables: { baseCoin },
+    })
+
+    const keys = myPortfolios[0].userSettings.keys
 
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsOnlySelected(
-          newKeys,
-          toggledKeyID
-        ),
+        selectedKeys: UTILS.getArrayContainsOnlySelected(keys, toggledKeyID),
       },
     }
 
@@ -188,15 +205,13 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId, newKeys, isRebalance } = this.props
     const type = 'keyAll'
 
     const objForQuery = {
       settings: {
         portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(newKeys),
+        selectedKeys: UTILS.getArrayContainsAllSelected(newKeys),
       },
     }
 
@@ -204,7 +219,7 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId, isRebalance } = this.props
     const type = 'keyOnlyOne'
 
     const objForQuery = {
@@ -230,43 +245,6 @@ class PortfolioSelector extends React.Component<IProps> {
           toggledWalletID
         ),
       },
-    }
-
-    await this.updateSettings(objForQuery)
-  }
-
-  onToggleAll = async () => {
-    const {
-      newKeys,
-      activeKeys,
-      newWallets,
-      activeWallets,
-      portfolioId,
-      isRebalance,
-    } = this.props
-    let objForQuery
-
-    if (
-      activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
-    ) {
-      objForQuery = {
-        settings: {
-          portfolioId,
-          [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: [],
-          selectedWallets: [],
-        },
-      }
-    } else {
-      objForQuery = {
-        settings: {
-          portfolioId,
-          [isRebalance
-            ? 'selectedRebalanceKeys'
-            : 'selectedKeys']: JSON.stringify(newKeys.map((el) => el._id)),
-          selectedWallets: newWallets.map((el) => el._id),
-        },
-      }
     }
 
     await this.updateSettings(objForQuery)
@@ -333,7 +311,8 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!portfolioKeys || !portfolioKeys.myPortfolios) return null
+    if (!portfolioKeys || !portfolioKeys.myPortfolios || !dustFilter)
+      return null
 
     // TODO: separate dust filter
 
@@ -457,7 +436,6 @@ class PortfolioSelector extends React.Component<IProps> {
                 isRebalance,
                 baseCoin,
                 portfolioAssetsData,
-                onToggleAll: this.onToggleAll,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,
@@ -583,7 +561,7 @@ export default compose(
       refetchQueries: [
         {
           query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin },
+          variables: { baseCoin, innerSettings: true },
         },
         {
           query: getPortfolioAssets,
@@ -598,7 +576,6 @@ export default compose(
           variables: { baseCoin },
         },
       ],
-      // update: updateSettingsMutation,
     }),
   })
 )(PortfolioSelector)
