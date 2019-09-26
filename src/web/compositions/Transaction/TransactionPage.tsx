@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
 import { client } from '@core/graphql/apolloClient'
@@ -50,6 +51,9 @@ import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 import { graphql } from 'react-apollo'
 
+import JoyrideOnboarding from '../../components/JoyrideOnboarding/JoyrideOnboarding'
+import { transactionsPageSteps } from '@sb/config/joyrideSteps'
+
 import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
 
 @withTheme()
@@ -59,6 +63,7 @@ class TransactionPage extends React.PureComponent {
     includeTrades: true,
     filterCoin: '',
     inputValue: '',
+    key: 0,
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -241,9 +246,13 @@ class TransactionPage extends React.PureComponent {
       activeKeys.length + activeWallets.length ===
       newKeys.length + newWallets.length
 
+    const isTransactionsPage = this.props.location.pathname === '/portfolio/transactions'
+    console.log('activeKeys',activeKeys)
+
     return (
       <>
         <TransactionsPageMediaQuery />
+
         <Grid
           container
           justify="space-between"
@@ -262,6 +271,9 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
+                style={{ backgroundColor: '#fff' }}
+                id='accountsTransactions'
+
               >
                 <GridContainerTitle
                   bgColor={theme.palette.primary.dark}
@@ -340,6 +352,7 @@ class TransactionPage extends React.PureComponent {
                 <GridCalendarContainer
                   item
                   xs={12}
+                  id='calendarTransactions'
                   borderColor={`1px solid ${
                     theme.palette.grey[theme.palette.type]
                   }`}
@@ -366,6 +379,7 @@ class TransactionPage extends React.PureComponent {
                   theme.palette.grey[theme.palette.type]
                 }`}
                 style={{ height: 'calc(70.5% - 2vh)' }}
+                id='tableTransactions'
               >
                 <TradeOrderHistory
                   isCustomStyleForFooter={isCustomStyleForFooter}
@@ -388,6 +402,7 @@ class TransactionPage extends React.PureComponent {
             item
             lg={hideSelector ? 3 : 2}
             md={hideSelector ? 3 : 2}
+            id='statisticTransactions'
             style={{
               boxShadow: 'none',
               border: 'none',
@@ -405,12 +420,24 @@ class TransactionPage extends React.PureComponent {
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
+
+
+        {
+          isTransactionsPage //activeKeys.length === 1 && activeKeys[0].name === 'demo' &&
+            ?
+              <JoyrideOnboarding
+                steps={transactionsPageSteps}
+                open={true}
+              />
+            :
+              ''
+        }
       </>
     )
   }
 }
 
-export default compose(
+export default withRouter(compose(
   graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: ({ baseCoin }) => ({
@@ -460,4 +487,4 @@ export default compose(
       // update: updateSettingsMutation,
     }),
   })
-)(TransactionPage)
+)(TransactionPage))

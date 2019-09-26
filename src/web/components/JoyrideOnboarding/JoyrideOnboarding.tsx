@@ -2,6 +2,7 @@ import Joyride from 'react-joyride'
 
 function JoyrideOnboarding(props) {
   const { steps, open } = props
+
   return (
     <Joyride
       continuous={true}
@@ -55,4 +56,5 @@ function JoyrideOnboarding(props) {
     />
   )
 }
+
 export default JoyrideOnboarding
