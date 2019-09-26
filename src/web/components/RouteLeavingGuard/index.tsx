@@ -14,7 +14,7 @@ export class RouteLeavingGuard extends React.Component {
     window.addEventListener('beforeunload', (ev) => {
       const { when } = this.props
 
-      if (!when) {
+      if (when) {
         const textToShow = 'You have processing rebalance'
         ev.preventDefault()
         ev.returnValue = textToShow
