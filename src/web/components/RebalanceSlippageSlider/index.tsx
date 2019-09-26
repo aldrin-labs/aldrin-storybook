@@ -40,7 +40,7 @@ const RebalanceSlippageSlider = ({
                 style={{ top: '1rem' }}
                 disabled={disabled}
                 min={0}
-                max={100}
+                max={20}
                 step={1}
               />
             }

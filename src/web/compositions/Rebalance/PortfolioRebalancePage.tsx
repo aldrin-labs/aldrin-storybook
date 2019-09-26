@@ -49,6 +49,7 @@ import RouteLeavingGuard from '@sb/components/RouteLeavingGuard'
 import RebalanceDialogLeave from '@sb/components/RebalanceDialogLeave/RebalanceDialogLeave'
 
 import { rebalanceOption, addIndexData, targetAllocation } from './mockData'
+import * as UTILS from './utils'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
@@ -91,6 +92,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
   setErrorStatus = (status: boolean) =>
     this.setState({ rebalanceError: status })
+
+  updateProgress = (progress) => this.setState({ progress })
 
   getRebalanceProgress = ({
     rebalanceStarted,
@@ -308,6 +311,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       hideLeavePopup,
       showRetryButton,
       enableShowRetryButton,
+      setTransactions,
+      rebalanceIsCanceled,
+      toggleCancelRebalance,
       // search,
       // searchCoinInTable,
       cancelOrder,
@@ -434,20 +440,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             }}
           >
             <GridTransactionTypography>
-              {!showRetryButton ? (
-                progress !== null && !rebalanceError ? (
-                  <span>REBALANCE IS PROCESSING</span>
-                ) : (
-                  <div>
-                    Distribute <span>100%</span> of your assets for rebalance.
-                  </div>
-                )
-              ) : (
-                <span style={{ color: '#DD6956', textTransform: 'uppercase' }}>
-                  Rebalance is unsuccessful
-                </span>
-              )}
+              {UTILS.getTextOverButton({
+                progress,
+                rebalanceError,
+                showRetryButton,
+                rebalanceIsCanceled,
+              })}
             </GridTransactionTypography>
+            {/* if rebalance is processing and no error */}
             {progress !== null && !rebalanceError && (
               <CircularProgressbar
                 value={newProgress}
@@ -455,24 +455,27 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               />
             )}
             <RebalanceDialogTransaction
+              accordionTitle="transactions"
               initialTime={+rebalanceTimePeriod.value}
-              accordionTitle="TRANSACTIONS"
-              setTransactions={this.props.setTransactions}
+              progress={progress}
               transactionsData={transactionsDataWithPrices}
+              rebalanceError={rebalanceError}
+              rebalanceInfoPanelData={rebalanceInfoPanelData}
+              showRetryButton={showRetryButton}
+              slippageValue={slippageValue}
+              rebalanceIsCanceled={rebalanceIsCanceled}
+              onChangeSlippage={onChangeSlippage}
+              setTransactions={setTransactions}
+              onNewSnapshot={onNewSnapshot}
+              hideLeavePopup={hideLeavePopup}
+              toggleCancelRebalance={toggleCancelRebalance}
               openDialog={this.openDialog}
+              updateProgress={this.updateProgress}
               open={this.state.openDialogTransaction}
               handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleCloseTransactionWindow}
-              onNewSnapshot={onNewSnapshot}
-              slippageValue={slippageValue}
-              onChangeSlippage={onChangeSlippage}
               executeRebalanceHandler={this.emitExecutingRebalanceHandler}
-              onProgressChange={this.onProgressChange}
-              progress={progress}
               setErrorStatus={this.setErrorStatus}
-              rebalanceError={this.state.rebalanceError}
-              rebalanceInfoPanelData={rebalanceInfoPanelData}
-              showRetryButton={showRetryButton}
               enableShowRetryButton={enableShowRetryButton}
               cancelOrder={cancelOrder}
             />
@@ -662,6 +665,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
         <RouteLeavingGuard
           when={rebalanceIsExecuting}
+          actionBeforeUnload={cancelOrder}
+          action={() => {
+            console.log('actions')
+          }}
           navigate={(path) => history.push(path)}
           shouldBlockNavigation={(location) => true}
           CustomModal={RebalanceDialogLeave}
