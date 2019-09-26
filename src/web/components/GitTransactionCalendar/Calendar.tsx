@@ -148,10 +148,14 @@ class GitTransactionCalendar extends PureComponent<IProps> {
               }}
             />
           </Grid>
-          <Grid item alignItems="center" style={{
-            width: 'auto',
-            display: 'flex',
-          }}>
+          <Grid
+            item
+            alignItems="center"
+            style={{
+              width: 'auto',
+              display: 'flex',
+            }}
+          >
             <LegendTypography>Less</LegendTypography>
             <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
             <LegendHeatmapSquare fill={LEGEND_COLORS.one} />

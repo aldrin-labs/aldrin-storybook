@@ -1,4 +1,7 @@
 import React from 'react'
+import { Query, Mutation } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
+import { has } from 'lodash-es'
 import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
@@ -12,7 +15,8 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
-// import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
+import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
+import PopupStart from '../../components/Onboarding/PopupStart/PopupStart'
 import withAuth from '@core/hoc/withAuth'
 
 const safePortfolioDestruction = (
@@ -36,6 +40,17 @@ const safePortfolioDestruction = (
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
+    openPopup: true,
+  }
+
+  handleClickOpen = () => {
+    this.setState({
+      openPopup: true,
+    })
+  }
+
+  handleClose = () => {
+    this.setState({ openPopup: false })
   }
 
   componentDidMount() {
@@ -94,8 +109,27 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       ? activeRebalanceKeys.length + activeWallets.length > 0
       : activeKeys.length + activeWallets.length > 0
 
+    console.log('myPortfolios - ', data)
+    console.log('this.state.openPopup - ', this.state.openPopup)
+
+    const isMainPage = this.props.location.pathname === '/portfolio/main'
+
     return (
       <>
+        {
+          keys.length === 1 && keys[0].name === 'demo' && isMainPage
+            ?
+              <PopupStart
+                open={this.state.openPopup}
+                handleClickOpen={this.handleClickOpen}
+                handleClose={this.handleClose}
+                baseCoin={baseCoin}
+                portfolioId={portfolioId}
+              />
+            :
+              ''
+        }
+
         <PortfolioContainer>
           <PortfolioSelector
             login={true}
@@ -180,7 +214,7 @@ const APIWrapper = (props) => {
   )
 }
 
-export default compose(
+export default withRouter(compose(
   withAuth,
   withTheme(),
   queryRendererHoc({
