@@ -51,11 +51,16 @@ class CreatePortfolio extends React.Component<IProps, IState> {
 
   handleSubmit = async () => {
     const { createPortfolio } = this.props
-    const { portfolioName } = this.state
+    const { portfolioName: name } = this.state
+
+    if (name.length > 20) {
+      this.setState({ error: 'Please limit name to 20 characters ' })
+      return false
+    }
 
     const variables = {
       inputPortfolio: {
-        name: portfolioName,
+        name,
       },
     }
 
@@ -156,7 +161,6 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 btnColor={blue.custom}
                 onClick={async () => {
                   const response = await this.handleSubmit()
-                  console.log('response', response)
                   if (response) this.handleClose()
                 }}
               >

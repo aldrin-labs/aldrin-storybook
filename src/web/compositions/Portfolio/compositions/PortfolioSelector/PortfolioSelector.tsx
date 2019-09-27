@@ -385,7 +385,7 @@ class PortfolioSelector extends React.Component<IProps> {
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          <GridSection style={{ height: '15rem' }}>
+          <GridSection style={{ height: '18vh' }}>
             <SvgIcon
               src={PortfolioSidebarBack}
               style={{
@@ -410,6 +410,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
                   baseCoin={baseCoin}
+                  isSideNavOpen={isSideNavOpen}
                   isPortfolio={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
                 />
@@ -435,6 +436,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 keys,
                 isRebalance,
                 baseCoin,
+                isSideNavOpen,
                 portfolioAssetsData,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,

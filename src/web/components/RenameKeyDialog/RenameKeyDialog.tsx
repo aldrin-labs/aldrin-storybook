@@ -49,6 +49,10 @@ const RenameKeyDialogComponent = ({
       return setError('Account can not have empty name')
     }
 
+    if (newName.length > 20) {
+      return setError('Please limit name to 20 characters')
+    }
+
     const { data } = await renameMutation({
       variables,
     })

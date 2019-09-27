@@ -66,6 +66,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       date: Math.round(+Date.now() / 1000),
     }
 
+    if (name.length > 20) {
+      this.setState({ error: 'Please limit name to 20 characters ' })
+      return false
+    }
+
     try {
       const { data } = await this.props.addExchangeKey({
         variables,

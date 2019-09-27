@@ -117,10 +117,12 @@ export const GridSection = styled(Grid)`
   position: relative;
 `
 export const GridSectionAccounts = styled(Grid)`
-  padding: 2.4rem 1.6rem;
+  height: 61vh;
+  padding: 2.4rem 0 2.4rem 1.6rem;
 `
 
 export const GridSectionDust = styled(Grid)`
+  max-height: 24vh;
   width: 37rem;
   border-top: 1px solid #e7ecf3;
   padding: 2.4rem 1.6rem;
