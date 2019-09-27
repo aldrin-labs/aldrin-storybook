@@ -211,12 +211,6 @@ class SocialPage extends React.Component {
         conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
       },
       update: (proxy) => {
-        // const data = proxy.readQuery({
-        //   query: GET_FOLLOWING_SIGNALS_QUERY,
-        // }).getFollowingSignals
-
-        console.log('get data', data)
-
         const signalIndex = data.findIndex((signal) => signal._id === arg2)
 
         // Write our data back to the cache with the new comment in it
