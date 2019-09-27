@@ -53,6 +53,7 @@ class Accounts extends React.PureComponent<IProps> {
       onKeyToggle,
       login,
       isRebalance,
+      isTransactions,
       onKeySelectOnlyOne,
       onKeysSelectAll,
       isSidebar,
@@ -124,7 +125,7 @@ class Accounts extends React.PureComponent<IProps> {
             )}
           </TypographyFullWidth>
         </AccountsWalletsHeadingWrapper>
-        <AccountsList id="AccountsList">
+        <AccountsList id="AccountsList" isTransactions={isTransactions}>
           {keys.map((key, i) => {
             if (!key) {
               return null

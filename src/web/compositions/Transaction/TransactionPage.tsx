@@ -327,6 +327,7 @@ class TransactionPage extends React.PureComponent {
                         isCheckedAll,
                         baseCoin: 'USDT',
                         keys,
+                        isTransactions: true,
                         portfolioAssetsData: portfolioAssetsData,
                         isRebalance: false,
                         onKeysSelectAll: this.onKeysSelectAll,

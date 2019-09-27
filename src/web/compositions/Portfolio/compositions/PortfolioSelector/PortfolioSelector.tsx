@@ -435,6 +435,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 isCheckedAll,
                 keys,
                 isRebalance,
+                isTransactions,
                 baseCoin,
                 isSideNavOpen,
                 portfolioAssetsData,
