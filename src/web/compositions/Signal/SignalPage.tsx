@@ -56,7 +56,6 @@ const SignalListItem = (props) => {
     _id,
     enabled,
     updateSignalMutation,
-    arr,
   } = props
 
   const [isEnabled, toggleEnable] = useState(enabled)
