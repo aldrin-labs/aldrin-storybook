@@ -69,6 +69,12 @@ export const AccountName = styled(TypographyFullWidth)`
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: 0;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70%;
+  margin: 0 auto;
+  overflow: hidden;
 `
 
 export const Headline = styled.div`
