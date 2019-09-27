@@ -19,7 +19,11 @@ const Slider = (props: any) => (
             {...props}
           />
           {props.disabled && (
-            <StyledLock value={props.value} sliderWidth={props.sliderWidth} />
+            <StyledLock
+              value={props.value}
+              sliderWidth={props.sliderWidth}
+              max={props.max}
+            />
           )}
         </>
       }

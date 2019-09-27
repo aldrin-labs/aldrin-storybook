@@ -85,6 +85,7 @@ class TablePanelSummary extends React.Component {
                 trackBeforeBackground={accordionPanelHeadingBorderColor}
                 value={value}
                 onChange={handleSlideChange}
+                max={100}
                 // style={{ margin: 'auto 0' }}
                 disabled
               />
