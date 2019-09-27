@@ -56,6 +56,7 @@ const SignalListItem = (props) => {
     _id,
     enabled,
     updateSignalMutation,
+    arr,
   } = props
 
   const [isEnabled, toggleEnable] = useState(enabled)
@@ -219,10 +220,32 @@ class SocialPage extends React.Component {
     arg3: boolean,
     updateSignalMutation: (obj: object) => void
   ) => {
-    await updateSignalMutation({
+    const {
+      getFollowingSignalsQuery: { getFollowingSignals: data },
+    } = this.props
+
+    updateSignalMutation({
       variables: {
         signalId: arg2,
         conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
+      },
+      update: (proxy) => {
+        const signalIndex = data.findIndex((signal) => signal._id === arg2)
+
+        // Write our data back to the cache with the new comment in it
+        proxy.writeQuery({
+          query: GET_FOLLOWING_SIGNALS_QUERY,
+          data: {
+            getFollowingSignals: [
+              ...data.slice(0, signalIndex),
+              {
+                ...data[signalIndex],
+                enabled: !arg3,
+              },
+              ...data.slice(signalIndex + 1),
+            ],
+          },
+        })
       },
     })
   }
