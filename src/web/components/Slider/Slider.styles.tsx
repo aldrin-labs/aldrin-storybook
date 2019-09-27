@@ -85,14 +85,14 @@ export const StyledSlider = styled(
     ${sliderThumbMediaQueries}
 `
 
-export const StyledLock = styled(({ value, sliderWidth, ...rest }) => (
-  <Lock {...rest} />
-))`
+export const StyledLock = styled(
+  ({ value, sliderWidth, max = 100, ...rest }) => <Lock {...rest} />
+)`
   color: #fff;
   position: absolute;
   z-index: 10;
   left: calc(
-    ${(props) => props.value * +(parseFloat(props.sliderWidth) / 100)}rem -
+    ${(props) => props.value * +(parseFloat(props.sliderWidth) / props.max)}rem -
       0.75rem
   );
   height: 1.5rem;
