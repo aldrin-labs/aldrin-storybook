@@ -126,8 +126,8 @@ const SignalListItem = (props) => {
         <SwitchOnOff
           enabled={enabled}
           _id={_id}
-          onChange={() => {
-            toggleEnableSignal(index, _id, enabled, updateSignalMutation)
+          onChange={async () => {
+            await toggleEnableSignal(index, _id, enabled, updateSignalMutation)
           }}
         />
       </Grid>
@@ -195,7 +195,7 @@ class SocialPage extends React.Component {
     this.setState({ isOrderbookOpen: false })
   }
 
-  toggleEnableSignal = (
+  toggleEnableSignal = async (
     arg: any,
     arg2: string,
     arg3: boolean,
@@ -205,7 +205,7 @@ class SocialPage extends React.Component {
       getFollowingSignalsQuery: { getFollowingSignals: data },
     } = this.props
 
-    updateSignalMutation({
+    await updateSignalMutation({
       variables: {
         signalId: arg2,
         conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
