@@ -51,16 +51,14 @@ const SignalListItem = (props) => {
     onClick,
     isSelected,
     openDialog,
-    toggleEnableSignal: toggleEnableMutation,
+    toggleEnableSignal,
     index,
     _id,
     enabled,
     updateSignalMutation,
   } = props
 
-  const [isEnabled, toggleEnable] = useState(enabled)
   const [timeLeft, updateTimeLeft] = useState([0, 0, 0, 0, 0])
-
   const [months, days, hours, minutes, seconds] = timeLeft
 
   useEffect(() => {
@@ -76,26 +74,10 @@ const SignalListItem = (props) => {
       ]
 
       updateTimeLeft(date)
-    })
+    }, 1000)
 
     return () => clearInterval(id)
   }, [el.updatedAt])
-
-  const toggleEnableSignal = async (
-    index: number | string,
-    _id: string,
-    enabled: boolean,
-    updateSignalMutation: any
-  ) => {
-    const result = await toggleEnableMutation(
-      index,
-      _id,
-      enabled,
-      updateSignalMutation
-    )
-
-    toggleEnable(!isEnabled)
-  }
 
   return (
     <FolioCard
@@ -142,7 +124,7 @@ const SignalListItem = (props) => {
           </div>
         </FolioValuesCell>
         <SwitchOnOff
-          enabled={isEnabled}
+          enabled={enabled}
           _id={_id}
           onChange={() => {
             toggleEnableSignal(index, _id, enabled, updateSignalMutation)
@@ -213,7 +195,7 @@ class SocialPage extends React.Component {
     this.setState({ isOrderbookOpen: false })
   }
 
-  toggleEnableSignal = async (
+  toggleEnableSignal = (
     arg: any,
     arg2: string,
     arg3: boolean,
@@ -246,6 +228,7 @@ class SocialPage extends React.Component {
           },
         })
       },
+      //refetchQueries: [{ query: GET_FOLLOWING_SIGNALS_QUERY }],
     })
   }
 
@@ -286,7 +269,7 @@ class SocialPage extends React.Component {
     const sharedSignalsList = sortedData.map((el, index) => (
       <SignalListItem
         index={index}
-        key={index}
+        key={el._id}
         isSelected={index === selectedSignal}
         el={el}
         _id={el._id}
