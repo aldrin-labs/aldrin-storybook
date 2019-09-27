@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { withTheme } from '@material-ui/styles'
 import { Icon } from '@sb/styles/cssUtils'
 
@@ -34,6 +35,7 @@ class PortfolioSelectorPopup extends Component {
       forceUpdateAccountContainer,
       baseCoin,
       isPortfolio = false,
+      isSideNavOpen,
     } = this.props
 
     return (
@@ -48,70 +50,80 @@ class PortfolioSelectorPopup extends Component {
               }}
             />
           </span>
-          <PortfolioSelectorPopupMain
-            className="popup"
-            theme={theme}
-            ref={this.popupRef}
-          >
-            {isPortfolio ? (
-              <>
-                <RenamePortfolioDialog
-                  data={data}
-                  isPortfolio={true}
-                  baseCoin={baseCoin}
-                  forceUpdateUserContainer={forceUpdateAccountContainer}
-                  closeMainPopup={this.closePopup}
-                />
-                <DeletePortfolioDialog
-                  data={data}
-                  baseCoin={baseCoin}
-                  isPortfolio={true}
-                  disabled={true}
-                  forceUpdateUserContainer={forceUpdateAccountContainer}
-                  closeMainPopup={this.closePopup}
-                />
-              </>
-            ) : (
-              <>
-                <RenameKeyDialog
-                  data={data}
-                  baseCoin={baseCoin}
-                  forceUpdateUserContainer={forceUpdateAccountContainer}
-                  closeMainPopup={this.closePopup}
-                />
-                <DeleteKeyDialog
-                  data={data}
-                  baseCoin={baseCoin}
-                  forceUpdateUserContainer={forceUpdateAccountContainer}
-                  closeMainPopup={this.closePopup}
-                />
-              </>
-            )}
-          </PortfolioSelectorPopupMain>
+          {isPopupOpen && isSideNavOpen ? (
+            //ReactDOM.createPortal(
+            <PortfolioSelectorPopupMain
+              className="popup"
+              theme={theme}
+              isPopupOpen={isPopupOpen}
+              // ref={this.popupRef}
+            >
+              {isPortfolio ? (
+                <>
+                  <RenamePortfolioDialog
+                    data={data}
+                    isPortfolio={true}
+                    baseCoin={baseCoin}
+                    forceUpdateUserContainer={forceUpdateAccountContainer}
+                    closeMainPopup={this.closePopup}
+                  />
+                  <DeletePortfolioDialog
+                    data={data}
+                    baseCoin={baseCoin}
+                    isPortfolio={true}
+                    disabled={true}
+                    forceUpdateUserContainer={forceUpdateAccountContainer}
+                    closeMainPopup={this.closePopup}
+                  />
+                </>
+              ) : (
+                <>
+                  <RenameKeyDialog
+                    data={data}
+                    baseCoin={baseCoin}
+                    forceUpdateUserContainer={forceUpdateAccountContainer}
+                    closeMainPopup={this.closePopup}
+                  />
+                  <DeleteKeyDialog
+                    data={data}
+                    baseCoin={baseCoin}
+                    forceUpdateUserContainer={forceUpdateAccountContainer}
+                    closeMainPopup={this.closePopup}
+                  />
+                </>
+              )}
+            </PortfolioSelectorPopupMain>
+          ) : //document.body
+
+          null}
         </PortfolioSelectorPopupWrapper>
-        <PortfolioSelectorPopupMask
-          visible={isPopupOpen}
-          onClick={this.closePopup}
-        />
+        {/* portal to backdrop */}
+        {isPopupOpen && isSideNavOpen ? (
+          <PortfolioSelectorPopupMask
+            visible={isPopupOpen}
+            onClick={this.closePopup}
+          />
+        ) : null}
       </>
     )
   }
 
   openPopup = () => {
-    const popups = Array.from(document.getElementsByClassName('popup'))
-
-    popups.forEach((popup) => {
-      popup.classList.remove('popup-visible')
-    })
-
-    this.popupRef.current.classList.add('popup-visible')
     this.setState({
       isPopupOpen: true,
     })
+
+    // const popups = Array.from(document.getElementsByClassName('popup'))
+
+    // popups.forEach((popup) => {
+    //   popup.classList.remove('popup-visible')
+    // })
+
+    // this.popupRef.current.classList.add('popup-visible')
   }
 
   closePopup = () => {
-    this.popupRef.current.classList.remove('popup-visible')
+    // this.popupRef.current.classList.remove('popup-visible')
     this.setState({
       isPopupOpen: false,
     })

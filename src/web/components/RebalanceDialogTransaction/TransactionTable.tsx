@@ -122,7 +122,7 @@ const TransactionTable = ({
                     {row.isDone === 'success'
                       ? 'order executed'
                       : row.isDone === 'fail'
-                      ? 'unsuccesful'
+                      ? 'unsuccessful'
                       : row.isDone === 'loading'
                       ? 'order placed'
                       : null}
