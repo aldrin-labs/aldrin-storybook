@@ -48,7 +48,7 @@ class Accounts extends React.PureComponent<IProps> {
   render() {
     const {
       color,
-      newKeys,
+      keys = [],
       portfolioAssetsData,
       onKeyToggle,
       login,
@@ -57,6 +57,7 @@ class Accounts extends React.PureComponent<IProps> {
       onKeysSelectAll,
       isSidebar,
       baseCoin,
+      isSideNavOpen,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -114,7 +115,9 @@ class Accounts extends React.PureComponent<IProps> {
                   fontWeight: 700,
                   letterSpacing: '1.5px',
                 }}
-                onClick={async () => { await onKeysSelectAll() }}
+                onClick={async () => {
+                  await onKeysSelectAll()
+                }}
               >
                 Select all
               </TypographyTitle>
@@ -122,7 +125,7 @@ class Accounts extends React.PureComponent<IProps> {
           </TypographyFullWidth>
         </AccountsWalletsHeadingWrapper>
         <AccountsList id="AccountsList">
-          {newKeys.map((key, i) => {
+          {keys.map((key, i) => {
             if (!key) {
               return null
             }
@@ -200,6 +203,7 @@ class Accounts extends React.PureComponent<IProps> {
                   <PortfolioSelectorPopup
                     data={key}
                     baseCoin={baseCoin}
+                    isSideNavOpen={isSideNavOpen}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />
                 )}

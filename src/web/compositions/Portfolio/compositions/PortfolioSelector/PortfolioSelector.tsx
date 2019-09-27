@@ -181,6 +181,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId } = this.props
+
     const type = 'keyCheckboxes'
     const {
       portfolio: { baseCoin },
@@ -205,13 +206,13 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, keys } = this.props
     const type = 'keyAll'
 
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: UTILS.getArrayContainsAllSelected(newKeys),
+        selectedKeys: UTILS.getArrayContainsAllSelected(keys),
       },
     }
 
@@ -289,7 +290,7 @@ class PortfolioSelector extends React.Component<IProps> {
       isSideNavOpen,
       theme,
       newWallets,
-      newKeys,
+      keys,
       activeKeys,
       activeWallets,
       dustFilter,
@@ -322,7 +323,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
+      keys.length + newWallets.length
 
     const color = theme.palette.secondary.main
 
@@ -384,7 +385,7 @@ class PortfolioSelector extends React.Component<IProps> {
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          <GridSection style={{ height: '15rem' }}>
+          <GridSection style={{ height: '18vh' }}>
             <SvgIcon
               src={PortfolioSidebarBack}
               style={{
@@ -409,6 +410,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
                   baseCoin={baseCoin}
+                  isSideNavOpen={isSideNavOpen}
                   isPortfolio={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
                 />
@@ -431,9 +433,10 @@ class PortfolioSelector extends React.Component<IProps> {
                 color,
                 login,
                 isCheckedAll,
-                newKeys,
+                keys,
                 isRebalance,
                 baseCoin,
+                isSideNavOpen,
                 portfolioAssetsData,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,

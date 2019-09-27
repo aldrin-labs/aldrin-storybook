@@ -148,24 +148,33 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
-  updateSettings = async (objectForMutation:any, type:string, toggledKeyID:string) => {
+  updateSettings = async (
+    objectForMutation: any,
+    type: string,
+    toggledKeyID: string
+  ) => {
     const { updatePortfolioSettings } = this.props
-    const { portfolio: { baseCoin } } = client.readQuery({
+    const {
+      portfolio: { baseCoin },
+    } = client.readQuery({
       query: GET_BASE_COIN,
     })
     const data = client.readQuery({
       query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin }
+      variables: { baseCoin },
     })
 
-    const { keys, rebalanceKeys } = UTILS.updateDataSettings(data, type, toggledKeyID)
+    const { keys, rebalanceKeys } = UTILS.updateDataSettings(
+      data,
+      type,
+      toggledKeyID
+    )
     UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
         variables: objectForMutation,
       })
-
     } catch (error) {
       console.log('error', error)
     }
@@ -174,12 +183,14 @@ class TransactionPage extends React.PureComponent {
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId } = this.props
     const type = 'keyCheckboxes'
-    const { portfolio: { baseCoin } } = client.readQuery({
+    const {
+      portfolio: { baseCoin },
+    } = client.readQuery({
       query: GET_BASE_COIN,
     })
     const { myPortfolios } = client.readQuery({
       query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin }
+      variables: { baseCoin },
     })
 
     const keys = myPortfolios[0].userSettings.keys
@@ -187,10 +198,7 @@ class TransactionPage extends React.PureComponent {
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: UTILS.getArrayContainsOnlySelected(
-          keys,
-          toggledKeyID
-        ),
+        selectedKeys: UTILS.getArrayContainsOnlySelected(keys, toggledKeyID),
       },
     }
 
@@ -198,7 +206,7 @@ class TransactionPage extends React.PureComponent {
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance, data } = this.props
+    const { portfolioId, keys, isRebalance } = this.props
     const type = 'keyAll'
 
     const objForQuery = {
@@ -206,7 +214,7 @@ class TransactionPage extends React.PureComponent {
         portfolioId,
         [isRebalance
           ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(newKeys),
+          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(keys),
       },
     }
 
@@ -218,7 +226,7 @@ class TransactionPage extends React.PureComponent {
       theme,
       hideSelector,
       newWallets = [],
-      newKeys = [],
+      keys = [],
       activeKeys = [],
       activeWallets = [],
       portfolioKeys,
@@ -254,7 +262,7 @@ class TransactionPage extends React.PureComponent {
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
+      keys.length + newWallets.length
 
     return (
       <>
@@ -318,7 +326,7 @@ class TransactionPage extends React.PureComponent {
                         isSideNavOpen,
                         isCheckedAll,
                         baseCoin: 'USDT',
-                        newKeys,
+                        keys,
                         portfolioAssetsData: portfolioAssetsData,
                         isRebalance: false,
                         onKeysSelectAll: this.onKeysSelectAll,
@@ -428,10 +436,10 @@ class TransactionPage extends React.PureComponent {
 export default compose(
   graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
-    options: ({ baseCoin }) => ({
+    options: {
       variables: { baseCoin: 'USDT', innerSettings: true },
       pollInterval: 30000,
-    }),
+    },
   }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',
