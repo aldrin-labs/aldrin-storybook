@@ -27,7 +27,8 @@ export const AccountsList = styled.ul`
   list-style: none;
   display: flex;
   flex-direction: column;
-  padding: 0 2.4rem 0 2rem;
+  padding: ${(props) =>
+    props.isTransactions ? '0rem 0.3rem' : '0 2.4rem 0 2rem'};
   margin: 0;
 `
 
