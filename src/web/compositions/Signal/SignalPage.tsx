@@ -4,6 +4,7 @@ import moment from 'moment'
 
 import withAuth from '@core/hoc/withAuth'
 import { Grid } from '@material-ui/core'
+import { client } from '@core/graphql/apolloClient'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
@@ -201,34 +202,29 @@ class SocialPage extends React.Component {
     arg3: boolean,
     updateSignalMutation: (obj: object) => void
   ) => {
-    const {
-      getFollowingSignalsQuery: { getFollowingSignals: data },
-    } = this.props
+    const data = await client.readQuery({ query: GET_FOLLOWING_SIGNALS_QUERY })
+      .getFollowingSignals
+    const signalIndex = data.findIndex((signal) => signal._id === arg2)
+
+    await client.writeQuery({
+      query: GET_FOLLOWING_SIGNALS_QUERY,
+      data: {
+        getFollowingSignals: [
+          ...data.slice(0, signalIndex),
+          {
+            ...data[signalIndex],
+            enabled: !arg3,
+          },
+          ...data.slice(signalIndex + 1),
+        ],
+      },
+    })
 
     await updateSignalMutation({
       variables: {
         signalId: arg2,
         conditions: JSON.stringify([['enabled', 'boolean', !arg3]]),
       },
-      update: (proxy) => {
-        const signalIndex = data.findIndex((signal) => signal._id === arg2)
-
-        // Write our data back to the cache with the new comment in it
-        proxy.writeQuery({
-          query: GET_FOLLOWING_SIGNALS_QUERY,
-          data: {
-            getFollowingSignals: [
-              ...data.slice(0, signalIndex),
-              {
-                ...data[signalIndex],
-                enabled: !arg3,
-              },
-              ...data.slice(signalIndex + 1),
-            ],
-          },
-        })
-      },
-      //refetchQueries: [{ query: GET_FOLLOWING_SIGNALS_QUERY }],
     })
   }
 
@@ -400,8 +396,10 @@ export default compose(
   }),
   graphql(updateSignal, {
     name: 'updateSignalMutation',
-    options: {
+    options: (props) => ({
       refetchQueries: [{ query: GET_FOLLOWING_SIGNALS_QUERY }],
-    },
+      awaitRefetchQueries: true,
+      onCompleted: () => props.refetch(),
+    }),
   })
 )(SocialPage)
