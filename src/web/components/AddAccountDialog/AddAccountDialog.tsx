@@ -35,6 +35,9 @@ import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchange
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
+import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
+import Steps from '@sb/components/Onboarding/Steps/Steps'
 
 const MIN_CHAR = 3
 
@@ -68,6 +71,7 @@ const formikEnhancer = withFormik({
     exchange: '',
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
+    // console.log('values', values)
     const variables = {
       name: values.name,
       apiKey: values.apiKey,
@@ -105,6 +109,9 @@ const DialogContent = withStyles((theme) => ({
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
+    openCongratulations: false,
+    openGetKeysInfo: false,
+    loading: false,
     isSelected: true,
   }
 
@@ -124,8 +131,37 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ open: false })
   }
 
+  handleClickOpenGetKeys = () => {
+    this.setState({
+      openGetKeysInfo: true,
+    })
+  }
+
+  handleCloseGetKeys = () => {
+    this.setState({
+      openGetKeysInfo: false,
+    })
+  }
+
+  handleClickOpenCongratulations = () => {
+    this.setState({
+      openCongratulations: true,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          loading: true,
+        })
+      }, 4000)
+    })
+
+  }
+
+  handleCloseCongratulations = () => {
+    this.setState({ openCongratulations: false })
+  }
+
   render() {
-    const { handleClose } = this
+    // const { handleClose } = this
     const {
       theme: {
         palette: { blue, black },
@@ -139,180 +175,236 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       validateForm,
       dirty,
       isSubmitting,
+      handleClickOpen,
+      handleClose,
+      open,
+      onboarding,
+      baseCoin,
     } = this.props
 
+    const onboardingOk = onboarding !== undefined && onboarding
+
     return (
-      <>
-        <BtnCustom
-          btnWidth={'auto'}
-          height={'auto'}
-          btnColor={'#165BE0'}
-          borderRadius={'1rem'}
-          color={'#165BE0'}
-          margin={'1.6rem 0 0 2rem'}
-          padding={'.5rem 1rem .5rem 0'}
-          fontSize={'1.4rem'}
-          letterSpacing="1px"
-          onClick={this.handleClickOpen}
-          style={{
-            border: 'none',
-          }}
-        >
-          <SvgIcon
-            src={Plus}
-            width="3.5rem"
-            height="auto"
-            style={{
-              marginRight: '.8rem',
-            }}
-          />
-          Add Account
-        </BtnCustom>
-        <DialogWrapper
-          style={{ borderRadius: '50%' }}
-          onClose={this.handleClose}
-          aria-labelledby="customized-dialog-title"
-          open={this.state.open}
-        >
-          <DialogTitleCustom
-            id="customized-dialog-title"
-            onClose={this.handleClose}
-          >
-            <TypographyCustomHeading
-              fontWeight={'700'}
-              borderRadius={'1rem'}
-              color={black.custom}
-            >
-              Add Api Key
-            </TypographyCustomHeading>
-          </DialogTitleCustom>
-          <DialogContent
-            justify="center"
-            style={{
-              padding: '0 3rem 3rem',
-            }}
-          >
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                validateForm().then(async () => {
-                  await handleSubmit()
-                  handleClose()
-                })
-              }}
-              style={{ width: '440px' }}
-            >
-              <Grid>
-                <GridCustom>
-                  <Legend>Exchange</Legend>
-                  <SelectExchangeList
-                    isClearable={true}
-                    value={
-                      values.exchange
-                        ? [{ label: values.exchange, value: values.exchange }]
-                        : null
-                    }
-                    onChange={handleSelectChangePrepareForFormik.bind(
-                      this,
-                      'exchange'
-                    )}
-                    controlStyles={{
-                      border: '1px solid #e0e5ec',
-                      borderRadius: '1rem',
-                      padding: '0 1rem',
-                      background: '#fff',
-                    }}
-                    singleValueStyles={{
-                      color: '#6D7786',
-                      fontSize: '1.3rem',
-                    }}
-                    optionStyles={{
-                      color: '#6D7786',
-                      fontSize: '1.3rem',
-                    }}
-                  />
-                </GridCustom>
-                <GridCustom>
-                  <Legend>Account name</Legend>
-                  <InputBaseCustom
-                    error={touched.name && !!errors.name}
-                    id="name"
-                    name="name"
-                    label="Name"
-                    autoComplete="off"
-                    value={values.name || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Type name..."
-                    type="text"
-                    margin="normal"
-                    helperText={
-                      touched.name &&
-                      errors.name && <FormError>{errors.name}</FormError>
-                    }
-                  />
-                </GridCustom>
-                <GridCustom>
-                  <Legend>Api key</Legend>
-                  <InputBaseCustom
-                    error={touched.apiKey && !!errors.apiKey}
-                    id="apiKey"
-                    type="text"
-                    name="apiKey"
-                    label="API Key"
-                    autoComplete="off"
-                    value={values.apiKey || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter API key here..."
-                    margin="normal"
-                    helperText={
-                      touched.apiKey &&
-                      errors.apiKey && <FormError>{errors.apiKey}</FormError>
-                    }
-                  />
-                </GridCustom>
-                <GridCustom>
-                  <Legend>Secret key</Legend>
-                  <InputBaseCustom
-                    error={touched.secretOfApiKey && !!errors.secretOfApiKey}
-                    id="secretOfApiKey"
-                    name="secretOfApiKey"
-                    label="Secret"
-                    autoComplete="off"
-                    value={values.secretOfApiKey || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    placeholder="Enter secret key here..."
-                    type="text"
-                    margin="normal"
-                    helperText={
-                      touched.secretOfApiKey &&
-                      errors.secretOfApiKey && (
-                        <FormError>{errors.secretOfApiKey}</FormError>
-                      )
-                    }
-                  />
-                </GridCustom>
-              </Grid>
+          <>
+            <GetKeysInfo
+              open={this.state.openGetKeysInfo}
+              handleClose={this.handleCloseGetKeys}
+            />
 
-              <Grid container justify="space-between" alignItems="center">
-                <LinkCustom href={'#'}>How to get keys?</LinkCustom>
-
+            {
+              onboardingOk
+              ?
+                <Congratulations
+                  open={this.state.openCongratulations}
+                  handleClickOpen={this.handleClickOpenCongratulations}
+                  handleClose={this.handleCloseCongratulations}
+                  loading={this.state.loading}
+                />
+              :
                 <BtnCustom
-                  btnWidth={'85px'}
-                  borderRadius={'32px'}
-                  btnColor={!dirty || isSubmitting ? 'rgba(0, 0, 0, 0.26)' : blue.custom}
-                  type="submit"
-                  disabled={!dirty || isSubmitting}
+                  btnWidth={'auto'}
+                  height={'auto'}
+                  btnColor={'#165BE0'}
+                  borderRadius={'1rem'}
+                  color={'#165BE0'}
+                  margin={'1.6rem 0 0 2rem'}
+                  padding={'.5rem 1rem .5rem 0'}
+                  fontSize={'1.4rem'}
+                  letterSpacing="1px"
+                  onClick={this.handleClickOpen}
+                  style={{
+                    border: 'none',
+                  }}
                 >
-                  ADD
+                  <SvgIcon
+                    src={Plus}
+                    width="3.5rem"
+                    height="auto"
+                    style={{
+                      marginRight: '.8rem',
+                    }}
+                  />
+                  Add Account
                 </BtnCustom>
-              </Grid>
-            </form>
-          </DialogContent>
-        </DialogWrapper>
-      </>
+            }
+
+            <DialogWrapper
+              style={{ borderRadius: '50%' }}
+              onClose={() => {
+                if(onboardingOk) {
+                  handleClose()
+                } else {
+                  this.handleClose()
+                }
+              }}
+              open={onboardingOk ? open : this.state.open}
+              aria-labelledby="customized-dialog-title"
+            >
+              <DialogTitleCustom
+                id="customized-dialog-title"
+                onClose={() => {
+                  if(onboardingOk) {
+                    handleClose()
+                  } else {
+                    this.handleClose()
+                  }
+                }}
+              >
+                <TypographyCustomHeading
+                  fontWeight={'700'}
+                  borderRadius={'1rem'}
+                  color={black.custom}
+                >
+                  {
+                    onboardingOk
+                    ?
+                      <>connect your exchanges - <Steps current={2} /></>
+                    :
+                      'Add Api Key'
+                  }
+                </TypographyCustomHeading>
+              </DialogTitleCustom>
+              <DialogContent
+                justify="center"
+                style={{
+                  padding: '0 3rem 3rem',
+                }}
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    validateForm().then(async () => {
+                      await handleSubmit()
+
+                      if(onboardingOk) {
+                        this.handleClickOpenCongratulations()
+                        handleClose()
+                      } else {
+                        this.handleClose()
+                      }
+                    })
+                  }}
+                  style={{ width: '440px' }}
+                >
+                  <Grid>
+                    <GridCustom>
+                      <Legend>Exchange</Legend>
+                      <SelectExchangeList
+                        isClearable={true}
+                        value={
+                          values.exchange
+                            ? [{ label: values.exchange, value: values.exchange }]
+                            : null
+                        }
+                        onChange={handleSelectChangePrepareForFormik.bind(
+                          this,
+                          'exchange'
+                        )}
+                        controlStyles={{
+                          border: '1px solid #e0e5ec',
+                          borderRadius: '1rem',
+                          padding: '0 1rem',
+                          background: '#fff',
+                        }}
+                        singleValueStyles={{
+                          color: '#6D7786',
+                          fontSize: '1.3rem',
+                        }}
+                        optionStyles={{
+                          color: '#6D7786',
+                          fontSize: '1.3rem',
+                        }}
+                      />
+                    </GridCustom>
+                    <GridCustom>
+                      <Legend>Account name</Legend>
+                      <InputBaseCustom
+                        error={touched.name && !!errors.name}
+                        id="name"
+                        name="name"
+                        label="Name"
+                        autoComplete="off"
+                        value={values.name || ''}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="Type name..."
+                        type="text"
+                        margin="normal"
+                        helperText={
+                          touched.name &&
+                          errors.name && <FormError>{errors.name}</FormError>
+                        }
+                      />
+                    </GridCustom>
+                    <GridCustom>
+                      <Legend>Api key</Legend>
+                      <InputBaseCustom
+                        error={touched.apiKey && !!errors.apiKey}
+                        id="apiKey"
+                        type="text"
+                        name="apiKey"
+                        label="API Key"
+                        autoComplete="off"
+                        value={values.apiKey || ''}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="Enter API key here..."
+                        margin="normal"
+                        helperText={
+                          touched.apiKey &&
+                          errors.apiKey && <FormError>{errors.apiKey}</FormError>
+                        }
+                      />
+                    </GridCustom>
+                    <GridCustom>
+                      <Legend>Secret key</Legend>
+                      <InputBaseCustom
+                        error={touched.secretOfApiKey && !!errors.secretOfApiKey}
+                        id="secretOfApiKey"
+                        name="secretOfApiKey"
+                        label="Secret"
+                        autoComplete="off"
+                        value={values.secretOfApiKey || ''}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="Enter secret key here..."
+                        type="text"
+                        margin="normal"
+                        helperText={
+                          touched.secretOfApiKey &&
+                          errors.secretOfApiKey && (
+                            <FormError>{errors.secretOfApiKey}</FormError>
+                          )
+                        }
+                      />
+                    </GridCustom>
+                  </Grid>
+
+                  <Grid container justify="space-between" alignItems="center">
+                    <LinkCustom
+                      href={'#'}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.handleClickOpenGetKeys()
+                      }}
+                    >
+                      How to get keys?
+                    </LinkCustom>
+
+                    <BtnCustom
+                      btnWidth={'85px'}
+                      borderRadius={'32px'}
+                      btnColor={!dirty || isSubmitting ? 'rgba(0, 0, 0, 0.26)' : blue.custom}
+                      type="submit"
+                      disabled={!dirty || isSubmitting}
+                    >
+                      { onboardingOk ? 'FINISH' : 'ADD' }
+                    </BtnCustom>
+                  </Grid>
+                </form>
+              </DialogContent>
+            </DialogWrapper>
+          </>
     )
   }
 }
