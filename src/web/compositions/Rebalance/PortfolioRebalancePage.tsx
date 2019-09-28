@@ -24,7 +24,7 @@ import {
   TypographyProgress,
   GridProgressTitle,
   GridTransactionBtn,
-  GridTransactionTypography
+  GridTransactionTypography,
 } from './PortfolioRebalancePage.styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid } from '@material-ui/core'
@@ -48,11 +48,8 @@ import PortfolioRebalanceTableContainer from '@core/containers/PortfolioRebalanc
 import RouteLeavingGuard from '@sb/components/RouteLeavingGuard'
 import RebalanceDialogLeave from '@sb/components/RebalanceDialogLeave/RebalanceDialogLeave'
 
-import {
-  rebalanceOption,
-  addIndexData,
-  targetAllocation,
-} from './mockData'
+import { rebalanceOption, addIndexData, targetAllocation } from './mockData'
+import * as UTILS from './utils'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
@@ -64,25 +61,21 @@ const RebalanceMediaQuery = createGlobalStyle`
   }
 `
 
-const canselStyeles = theme => ({
+const canselStyeles = (theme) => ({
   icon: {
     fontSize: 20,
-  }
+  },
 })
 
-const snackStyeles = theme => ({
+const snackStyeles = (theme) => ({
   success: { backgroundColor: theme.customPalette.green.main },
   error: { backgroundColor: theme.customPalette.red.main },
 })
 
 const CloseButton = withStyles(canselStyeles)((props) => (
-  <IconButton
-    key="close"
-    aria-label="Close"
-    color="inherit"
-  >
+  <IconButton key="close" aria-label="Close" color="inherit">
     <CloseIcon className={props.classes.icon} />
-</IconButton>
+  </IconButton>
 ))
 
 @withTheme()
@@ -94,30 +87,47 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     isPanelExpanded: false,
     progress: null,
     rebalanceFinished: false,
-    rebalanceError: false
+    rebalanceError: false,
   }
 
+  setErrorStatus = (status: boolean) =>
+    this.setState({ rebalanceError: status })
+
+  updateProgress = (progress) => this.setState({ progress })
+
   getRebalanceProgress = ({
-      rebalanceStarted,
-      rebalanceFinished,
-      failedTransactionIndex,
-      oldProgress,
-      transactions
+    rebalanceStarted,
+    rebalanceFinished,
+    failedTransactionIndex,
+    oldProgress,
+    transactions,
   }) => {
     let progress
     if (failedTransactionIndex !== -1) {
       this.setState({
-        rebalanceError: true
+        rebalanceError: true,
       })
+
       progress = 'N/A'
-      this.props.enqueueSnackbar(transactions[failedTransactionIndex].error.message, { variant: 'error' })
-    } else if (rebalanceStarted || oldProgress === 0 && !rebalanceFinished) {
-      progress = Math.round(transactions.reduce((progress, transaction) => {
-        return transaction.isDone ? progress + (100 / transactions.length) : progress
-      }, 0))
+      this.props.enqueueSnackbar(
+        transactions[failedTransactionIndex].error.message,
+        { variant: 'error' }
+      )
+
+      this.props.hideLeavePopup()
+    } else if (rebalanceStarted || (oldProgress === 0 && !rebalanceFinished)) {
+      progress = Math.round(
+        transactions.reduce((progress, transaction) => {
+          return transaction.isDone === 'success'
+            ? progress + 100 / transactions.length
+            : transaction.isDone === 'loading'
+            ? progress + 50 / transactions.length
+            : progress
+        }, 0)
+      )
     } else if (oldProgress !== null) {
       this.setState({
-        progress: null
+        progress: null,
       })
       progress = null
     }
@@ -126,38 +136,57 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 
   getRebalanceStatus = (transactions, oldProgress) => {
-    const rebalanceStarted = transactions.some(transaction => transaction.isDone === 'loading')
-    const rebalanceFinished = transactions.every(transaction => transaction.isDone)
-    const failedTransactionIndex = transactions.findIndex(transaction => transaction.error !== undefined)
+    const waitingTransactions = transactions.some(
+      (transaction) => transaction.isDone === null
+    )
+
+    const rebalanceStarted = transactions.some(
+      (transaction) => transaction.isDone === 'loading'
+    )
+
+    const rebalanceFinished = transactions.every(
+      (transaction) => transaction.isDone
+    )
+
+    const failedTransactionIndex = transactions.findIndex(
+      (transaction) => transaction.error !== undefined
+    )
 
     const status = this.getRebalanceProgress({
       rebalanceStarted,
       rebalanceFinished,
       failedTransactionIndex,
       oldProgress,
-      transactions
+      transactions,
     })
-    
+
     if (status === 100 || failedTransactionIndex !== -1) {
       this.setState({
-        rebalanceFinished: true
+        rebalanceFinished: true,
       })
 
       // Here we create bogus delay so user can notice that rebalance finished
       setTimeout(() => {
         this.setState({
           rebalanceFinished: false,
-          rebalanceError: false
+          // rebalanceError: false,
         })
       }, REBALANCE_CONFIG.bogusAfterRebalanceDelay)
     }
+
+    if (failedTransactionIndex !== -1) {
+      this.setState({ rebalanceError: true })
+      this.props.hideLeavePopup()
+    }
+
+    if (!rebalanceStarted && status === 100) this.props.hideLeavePopup()
 
     return status
   }
 
   emitExecutingRebalanceHandler = () => {
     this.setState({
-      progress: 0
+      progress: 0,
     })
 
     this.props.executeRebalanceHandler()
@@ -214,6 +243,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
         this.props.setTransactions()
       }
     )
+  }
+
+  openDialog = () => {
+    this.setState({
+      openDialogTransaction: true,
+    })
   }
 
   handleCloseTransactionWindow = () => {
@@ -274,8 +309,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       onChangeSlippage,
       rebalanceIsExecuting,
       hideLeavePopup,
+      showRetryButton,
+      enableShowRetryButton,
+      setTransactions,
+      rebalanceIsCanceled,
+      toggleCancelRebalance,
       // search,
       // searchCoinInTable,
+      cancelOrder,
     } = this.props
 
     const { progress, rebalanceFinished, rebalanceError } = this.state
@@ -320,7 +361,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       }
     })
 
-    const newProgress = rebalanceFinished ? 100 : this.getRebalanceStatus(transactionsDataWithPrices, progress)
+    const newProgress = rebalanceFinished
+      ? 100
+      : this.getRebalanceStatus(transactionsDataWithPrices, progress)
 
     return (
       <>
@@ -397,28 +440,44 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             }}
           >
             <GridTransactionTypography>
-              {progress !== null ?
-               (rebalanceError ? <span>Rebalance is unsuccesful</span> : <span>REBALANCE IS PROCESSING</span>) :
-                  <div>Distribute <span>100%</span> of your assets for rebalance.</div>
-              }
+              {UTILS.getTextOverButton({
+                progress,
+                rebalanceError,
+                showRetryButton,
+                rebalanceIsCanceled,
+              })}
             </GridTransactionTypography>
-
-            {progress !== null && <CircularProgressbar value={newProgress} text={`${newProgress}%`}/>}
-
+            {/* if rebalance is processing and no error */}
+            {progress !== null && !rebalanceError && (
+              <CircularProgressbar
+                value={newProgress}
+                text={`${newProgress}%`}
+              />
+            )}
             <RebalanceDialogTransaction
+              accordionTitle="transactions"
               initialTime={+rebalanceTimePeriod.value}
-              accordionTitle="TRANSACTIONS"
+              progress={progress}
               transactionsData={transactionsDataWithPrices}
+              rebalanceError={rebalanceError}
+              rebalanceInfoPanelData={rebalanceInfoPanelData}
+              showRetryButton={showRetryButton}
+              slippageValue={slippageValue}
+              rebalanceIsCanceled={rebalanceIsCanceled}
+              onChangeSlippage={onChangeSlippage}
+              setTransactions={setTransactions}
+              onNewSnapshot={onNewSnapshot}
+              hideLeavePopup={hideLeavePopup}
+              toggleCancelRebalance={toggleCancelRebalance}
+              openDialog={this.openDialog}
+              updateProgress={this.updateProgress}
               open={this.state.openDialogTransaction}
               handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleCloseTransactionWindow}
-              onNewSnapshot={onNewSnapshot}
-              slippageValue={slippageValue}
-              onChangeSlippage={onChangeSlippage}
               executeRebalanceHandler={this.emitExecutingRebalanceHandler}
-              onProgressChange={this.onProgressChange}
-              progress={progress}
-              rebalanceInfoPanelData={rebalanceInfoPanelData}
+              setErrorStatus={this.setErrorStatus}
+              enableShowRetryButton={enableShowRetryButton}
+              cancelOrder={cancelOrder}
             />
           </GridTransactionBtn>
 
@@ -461,7 +520,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           </Grid>
 
           {/* Accordion Table Start */}
-          <TypographyAccordionTitle margin={'3rem auto 1rem'}>Portfolio</TypographyAccordionTitle>
+          <TypographyAccordionTitle margin={'3rem auto 1rem'}>
+            Portfolio
+          </TypographyAccordionTitle>
 
           <RebalanceAccordionIndex
             sliderValue={100}
@@ -500,7 +561,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
                 hideWarning,
                 sliderStep,
                 rebalanceIsExecuting,
-                rebalanceInfoPanelData
+                rebalanceInfoPanelData,
               }}
               // search={search}
               // searchCoinInTable={searchCoinInTable}
@@ -604,6 +665,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
         <RouteLeavingGuard
           when={rebalanceIsExecuting}
+          actionBeforeUnload={cancelOrder}
+          action={() => {
+            console.log('actions')
+          }}
           navigate={(path) => history.push(path)}
           shouldBlockNavigation={(location) => true}
           CustomModal={RebalanceDialogLeave}
@@ -643,7 +708,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 
 const SnackbarWrapper = withSnackbar(PortfolioRebalancePage)
 
-const IntegrationNotistack = ({classes, ...otherProps}) => {
+const IntegrationNotistack = ({ classes, ...otherProps }) => {
   return (
     <SnackbarProvider
       maxSnack={3}
@@ -652,19 +717,15 @@ const IntegrationNotistack = ({classes, ...otherProps}) => {
         vertical: 'top',
         horizontal: 'right',
       }}
-      action={(
-        <CloseButton />
-      )}
+      action={<CloseButton />}
       classes={{
         variantSuccess: classes.success,
         variantError: classes.error,
       }}
     >
-      <SnackbarWrapper
-        {...otherProps}
-      />
+      <SnackbarWrapper {...otherProps} />
     </SnackbarProvider>
-  );
+  )
 }
 
 export default compose(

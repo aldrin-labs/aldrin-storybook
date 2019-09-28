@@ -191,7 +191,7 @@ const SignalEventList = (props) => {
           enabled: true, // toogle page nav panel in the footer
           page: page,
           rowsPerPage: perPage,
-          rowsPerPageOptions: [30, 50, 70, 100],
+          rowsPerPageOptions: [30, 50, 70, 100, 500, 1000],
           handleChangePage: handleChangePage,
           handleChangeRowsPerPage: handleChangeRowsPerPage,
         }}
