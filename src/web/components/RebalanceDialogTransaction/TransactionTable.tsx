@@ -39,6 +39,7 @@ const TransactionTable = ({
   isFinished,
   showLoader,
   cancelOrder,
+  cancelTransaction,
 }: IProps) => {
   let loaderExists = false
 
@@ -159,8 +160,8 @@ const TransactionTable = ({
                     btnWidth="6rem"
                     color={row.isDone !== 'loading' ? '#9f9f9f' : '#165be0'}
                     margin="0 5px"
-                    onClick={cancelOrder}
-                    disabled={row.isDone !== 'loading'}
+                    onClick={cancelTransaction}
+                    //disabled={row.isDone !== 'loading'}
                   >
                     cancel
                   </BtnCustom>

@@ -73,6 +73,18 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     await hideLeavePopup()
   }
 
+  cancelTransaction = async () => {
+    const {
+      toggleCancelRebalance,
+      cancelOrder,
+      enableShowRetryButton,
+    } = this.props
+
+    await toggleCancelRebalance(true)
+    await cancelOrder()
+    await enableShowRetryButton()
+  }
+
   activateGoBtn = async () => {
     const { setErrorStatus, executeRebalanceHandler } = this.props
 
@@ -195,7 +207,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       <div style={{ textAlign: 'center' }}>
         {progress === null || rebalanceError ? elementToShow : null}
 
-        {progress !== null &&
+        {(progress !== null || showRetryButton) &&
         (rebalanceError ? !isChangedSliderAfterRebalanceError : true) ? (
           <RebalanceDialogTypography
             onClick={() => {
@@ -223,7 +235,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               borderRadius={'1rem'}
               color={black.custom}
             >
-              {isError
+              {isError || showRetryButton
                 ? `rebalance unsuccessful`
                 : isFinished
                 ? `REBALANCE SUCCESSFULL`
@@ -235,7 +247,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             style={{ borderRadius: '20px' }}
             unit={unit}
           >
-            {isError ? (
+            {isError || showRetryButton ? (
               <>
                 <GridCustom container>
                   <TypographyTopDescription margin="-10px 0 0 0">
@@ -374,6 +386,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 isCompleted={this.isCompletedTransaction}
                 isFinished={isFinished}
                 showLoader={showLoader}
+                cancelTransaction={this.cancelTransaction}
                 cancelOrder={cancelOrder}
               />
             )}

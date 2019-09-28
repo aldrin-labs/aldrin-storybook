@@ -58,6 +58,7 @@ class AccordionTable extends React.Component<IProps, IState> {
       isFinished,
       showLoader,
       cancelOrder,
+      cancelTransaction,
     } = this.props
 
     const { expanded } = this.state
@@ -93,6 +94,7 @@ class AccordionTable extends React.Component<IProps, IState> {
               transactionsData={transactionsData}
               isFinished={isFinished}
               showLoader={showLoader}
+              cancelTransaction={cancelTransaction}
               cancelOrder={cancelOrder}
             />
           </ExpansionPanelDetails>

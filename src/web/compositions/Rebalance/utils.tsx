@@ -11,7 +11,7 @@ export const getTextOverButton = ({
   rebalanceError: boolean
   rebalanceIsCanceled: boolean
 }): ReactNode => {
-  if (rebalanceError && showRetryButton && !rebalanceIsCanceled) {
+  if ((rebalanceError || rebalanceIsCanceled) && showRetryButton) {
     return (
       <span style={{ color: '#DD6956', textTransform: 'uppercase' }}>
         Rebalance is unsuccessful
