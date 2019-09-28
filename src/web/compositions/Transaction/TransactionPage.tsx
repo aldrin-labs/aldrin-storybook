@@ -46,11 +46,15 @@ import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuer
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 import { graphql } from 'react-apollo'
 
+import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+import { transactionsPageSteps } from '@sb/config/joyrideSteps'
 import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
 
 @withTheme()
@@ -221,6 +225,12 @@ class TransactionPage extends React.PureComponent {
     await this.updateSettings(objForQuery, type)
   }
 
+  joyrideChange = async () => {
+    const { updateTooltipSettings } = this.props
+
+    await updateTooltipSettings({ transactionPage: false })
+  }
+
   render() {
     const {
       theme,
@@ -231,6 +241,7 @@ class TransactionPage extends React.PureComponent {
       activeWallets = [],
       portfolioKeys,
       isCustomStyleForFooter,
+      getTooltipSettingsQuery: { getTooltipSettings: { transactionPage } },
     } = this.props
 
     const {
@@ -264,6 +275,7 @@ class TransactionPage extends React.PureComponent {
       activeKeys.length + activeWallets.length ===
       keys.length + newWallets.length
 
+
     return (
       <>
         <TransactionsPageMediaQuery />
@@ -285,6 +297,8 @@ class TransactionPage extends React.PureComponent {
                 borderColor={`1px solid ${
                   theme.palette.grey[theme.palette.type]
                 }`}
+                style={{ backgroundColor: '#fff' }}
+                id='accountsTransactions'
               >
                 <GridContainerTitle
                   bgColor={theme.palette.primary.dark}
@@ -364,6 +378,7 @@ class TransactionPage extends React.PureComponent {
                 <GridCalendarContainer
                   item
                   xs={12}
+                  id='calendarTransactions'
                   borderColor={`1px solid ${
                     theme.palette.grey[theme.palette.type]
                   }`}
@@ -390,6 +405,7 @@ class TransactionPage extends React.PureComponent {
                   theme.palette.grey[theme.palette.type]
                 }`}
                 style={{ height: 'calc(70.5% - 2vh)' }}
+                id='tableTransactions'
               >
                 <TradeOrderHistory
                   isCustomStyleForFooter={isCustomStyleForFooter}
@@ -412,6 +428,7 @@ class TransactionPage extends React.PureComponent {
             item
             lg={hideSelector ? 3 : 2}
             md={hideSelector ? 3 : 2}
+            id='statisticTransactions'
             style={{
               boxShadow: 'none',
               border: 'none',
@@ -429,6 +446,16 @@ class TransactionPage extends React.PureComponent {
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
+
+        { transactionPage && (
+            <JoyrideOnboarding
+              steps={transactionsPageSteps}
+              callback={this.joyrideChange}
+              open={true}
+            />
+          )
+        }
+
       </>
     )
   }
@@ -442,6 +469,17 @@ export default compose(
       pollInterval: 30000,
     },
   }),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'network-only',
+    refetchQueries: [
+      {
+        query: GET_TOOLTIP_SETTINGS,
+      }
+    ]
+  }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettings' }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({

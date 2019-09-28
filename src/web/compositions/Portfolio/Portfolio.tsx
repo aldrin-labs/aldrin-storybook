@@ -1,4 +1,5 @@
 import React from 'react'
+import { Query, Mutation, graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
@@ -11,8 +12,11 @@ import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
+import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import withAuth from '@core/hoc/withAuth'
 
 const safePortfolioDestruction = (
@@ -50,6 +54,51 @@ const safePortfolioDestruction = (
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
+    openPopup: false,
+    click: false,
+  }
+
+  setOnboarding = async (type) => {
+    const { getTooltipSettingsQuery, updateTooltipSettings } = this.props
+
+      const {
+        portfolioMain,
+        portfolioIndustry,
+        portfolioRebalance,
+        portfolioCorrelation,
+        portfolioOptimization,
+        chartPage,
+        multiChartPage,
+        transactionPage,
+      } = getTooltipSettingsQuery.getTooltipSettings
+
+      let variables = {
+        settings: {
+          portfolioMain,
+          portfolioIndustry,
+          portfolioRebalance,
+          portfolioCorrelation,
+          portfolioOptimization,
+          chartPage,
+          multiChartPage,
+          transactionPage,
+        },
+      }
+
+      if(type === 'Main') {
+        variables.settings.portfolioMain = false
+        variables.settings.transactionPage = true
+      }
+      console.log('TYPE portfolioMain', variables.settings.portfolioMain)
+      console.log('TYPE transactionPage', variables.settings.transactionPage)
+
+      try {
+        const res = await updateTooltipSettings({ variables })
+
+        console.log('updateTooltipSettings res - ', res)
+      } catch (error) {
+        console.error(error)
+      }
   }
 
   componentDidMount() {
@@ -62,6 +111,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
     const activeKeys = rebalanceKeys.filter((key) => key.selected)
 
+    // this.setOnboarding()
+
     if (window.location.pathname.includes('rebalance')) {
       this.setState({
         isSideNavOpen: activeKeys.length === 0,
@@ -69,12 +120,25 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     }
   }
 
+  handleClickOpen = () => {
+    this.setState({
+      openPopup: true,
+    })
+  }
+
+  handleClose = () => {
+    const type = 'Main'
+    this.setOnboarding(type)
+    this.setState({ click: true, openPopup: false })
+  }
+
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
   }
 
   render() {
-    const { theme, baseData, data } = this.props
+    const { theme, baseData, data, getTooltipSettingsQuery: { getTooltipSettings: { portfolioMain } } } = this.props
+
 
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
@@ -99,6 +163,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const activeWallets = wallets.filter((el) => el.selected)
 
     const isRebalance = window.location.pathname.includes('rebalance')
+    const isMain = window.location.pathname.includes('main')
 
     const hasKeysOrWallets = isRebalance
       ? rebalanceKeys.length + wallets.length > 0
@@ -108,8 +173,23 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       ? activeRebalanceKeys.length + activeWallets.length > 0
       : activeKeys.length + activeWallets.length > 0
 
+    console.log('isMain', isMain)
+    console.log('this.state.openPopup', this.state.openPopup)
+
     return (
       <>
+        {
+          portfolioMain && isMain && (
+            <PopupStart
+              open={this.state.click ? this.state.openPopup : portfolioMain}
+              handleClickOpen={this.handleClickOpen}
+              handleClose={this.handleClose}
+              baseCoin={baseCoin}
+              portfolioId={portfolioId}
+            />
+          )
+        }
+
         <PortfolioContainer>
           <PortfolioSelector
             login={true}
@@ -195,6 +275,17 @@ const APIWrapper = (props: any) => {
 export default compose(
   withAuth,
   withTheme(),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'network-only',
+    refetchQueries: [
+      {
+        query: GET_TOOLTIP_SETTINGS,
+      }
+    ]
+  }),
+  graphql(updateTooltipSettings, { name: 'updateTooltipSettings' }),
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',

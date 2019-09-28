@@ -373,6 +373,7 @@ class PortfolioSelector extends React.Component<IProps> {
           width: '41rem',
           ...styleForContainer,
         }}
+        id='porfolioSelector'
         // in={isSideNavOpen}
         // direction="right"
         // timeout={{ enter: 375, exit: 250 }}
