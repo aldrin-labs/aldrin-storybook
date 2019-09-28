@@ -1,29 +1,22 @@
 import React from 'react'
+import { withTheme } from '@material-ui/styles'
 import { Query, Mutation, graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
-import { has } from 'lodash-es'
-import { withTheme } from '@material-ui/styles'
-import { Fade, LinearProgress } from '@material-ui/core'
+import { Fade } from '@material-ui/core'
 
-import { IProps, IState } from './Portfolio.types'
+import { IProps, IState, Key } from './Portfolio.types'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
 
-import { CustomError } from '@sb/components/'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
-
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils'
-import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
-// import { getPortfolioQuery } from '@core/graphql/queries/portfolio/getPortfolio'
-// import { getMyPortfolioAndRebalanceQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioAndRebalanceQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
-import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
+// import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import withAuth from '@core/hoc/withAuth'
 
@@ -43,7 +36,21 @@ const safePortfolioDestruction = (
       wallets: [],
     },
   }
-) => portfolio
+): {
+  _id: string
+  name: string
+  userSettings: {
+    portfolioId: string
+    dustFilter: {
+      usd: number
+      btc: number
+      percentage: number | string
+    }
+    keys: Key[]
+    rebalanceKeys: Key[]
+    wallets: Key[]
+  }
+} => portfolio
 
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
@@ -92,7 +99,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    const { portfolioKeyAndWalletsQuery: data } = this.props
+    const { data } = this.props
 
     let {
       userSettings: { rebalanceKeys },
@@ -125,13 +132,10 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   render() {
-    const {
-      theme,
-      baseCoin,
-      isUSDCurrently,
-      portfolioKeyAndWalletsQuery: data,
-      getTooltipSettings,
-    } = this.props
+    const { theme, baseData, data, getTooltipSettings } = this.props
+
+    const baseCoin = baseData.portfolio.baseCoin
+    const isUSDCurrently = baseCoin === 'USDT'
 
     const {
       userSettings: { portfolioId, dustFilter },
@@ -163,7 +167,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       : activeKeys.length + activeWallets.length > 0
 
     console.log('PROPS - ', getTooltipSettings.getTooltipSettings)
-    console.log('this.state.openPopup - ', this.state.openPopup)
 
     return (
       <>
@@ -188,7 +191,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             login={true}
             portfolioId={portfolioId}
             dustFilter={dustFilter}
-            newKeys={isRebalance ? rebalanceKeys : keys}
+            keys={isRebalance ? rebalanceKeys : keys}
             newWallets={wallets}
             activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
             activeWallets={activeWallets}
@@ -234,8 +237,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               isUSDCurrently={isUSDCurrently}
               isSideNavOpen={this.state.isSideNavOpen}
               toggleWallets={this.toggleWallets}
-              newKeys={isRebalance ? rebalanceKeys : keys}
-              isRebalance={isRebalance}
               data={data}
             />
           )}
@@ -253,32 +254,21 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 }
 
-const APIWrapper = (props) => {
+const APIWrapper = (props: any) => {
   return (
-    <Query query={GET_BASE_COIN}>
-      {({ data }) => {
-        const baseCoin =
-          (data && data.portfolio && data.portfolio.baseCoin) || 'USDT'
-        return (
-          <QueryRenderer
-            {...props}
-            component={PortfolioComponent}
-            query={portfolioKeyAndWalletsQuery}
-            name={'portfolioKeyAndWalletsQuery'}
-            variables={{ baseCoin }}
-            baseCoin={baseCoin}
-            isUSDCurrently={baseCoin === 'USDT'}
-            // pollInterval={1 * 30 * 1000}
-            withOutSpinner={false}
-            fetchPolicy="network-only"
-          />
-        )
-      }}
-    </Query>
+    <QueryRenderer
+      {...props}
+      component={PortfolioComponent}
+      query={portfolioKeyAndWalletsQuery}
+      name={'data'}
+      variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
+      withOutSpinner={false}
+      // fetchPolicy="network-only"
+    />
   )
 }
 
-export default withRouter(compose(
+export default compose(
   withAuth,
   withTheme(),
   graphql(GET_TOOLTIP_SETTINGS, {
@@ -286,4 +276,8 @@ export default withRouter(compose(
     options: { fetchPolicy: 'network-only' },
   }),
   graphql(updateTooltipSettings, { name: 'updateTooltipSettings' }),
-)(APIWrapper))
+  queryRendererHoc({
+    query: GET_BASE_COIN,
+    name: 'baseData',
+  })
+)(APIWrapper)
