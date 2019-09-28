@@ -35,6 +35,7 @@ const RenameKeyDialogComponent = ({
 
   const closeDialog = () => {
     toggleDialog(false)
+    setError('')
     updateName('')
     closeMainPopup()
   }
@@ -48,11 +49,21 @@ const RenameKeyDialogComponent = ({
       return setError('Account can not have empty name')
     }
 
-    const response = await renameMutation({
+    if (newName.length > 20) {
+      return setError('Please limit name to 20 characters')
+    }
+
+    const { data } = await renameMutation({
       variables,
     })
 
-    response ? closeDialog() : null
+    const { executed, error } = data.renameExchangeKey || data.renamePortfolio
+
+    if (!executed) {
+      return setError(error)
+    }
+
+    executed ? closeDialog() : null
   }
 
   return (

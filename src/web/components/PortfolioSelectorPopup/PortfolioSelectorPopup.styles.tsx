@@ -25,11 +25,11 @@ export const PortfolioSelectorPopupMain = styled.div`
   opacity: 0;
   visibility: hidden;
 
-  &.popup-visible {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  }
+  // &.popup-visible {
+  visibility: ${(props) => (props.isPopupOpen ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.isPopupOpen ? '1' : '0')};
+  transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  // }
 `
 
 export const PortfolioSelectorPopupMask = styled.div`

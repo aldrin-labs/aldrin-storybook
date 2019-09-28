@@ -1,9 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
 
 import { withTheme } from '@material-ui/styles'
@@ -23,8 +20,6 @@ import {
 import SvgIcon from '@sb/components/SvgIcon'
 import Plus from '@icons/Plus.svg'
 
-import { withFormik } from 'formik'
-import Yup from 'yup'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
@@ -33,96 +28,13 @@ import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
-import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
+// import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
-
-const MIN_CHAR = 3
+import { IState, IProps } from './AddAccountDialog.types'
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
 )
-
-const formikEnhancer = withFormik({
-  validationSchema: Yup.object().shape({
-    name: Yup.string()
-      .required()
-      .min(MIN_CHAR)
-      .trim(),
-    apiKey: Yup.string()
-      .required()
-      .min(MIN_CHAR)
-      .trim(),
-    secretOfApiKey: Yup.string()
-      .required()
-      .min(MIN_CHAR)
-      .trim(),
-    exchange: Yup.string()
-      .required()
-      .min(MIN_CHAR)
-      .trim(),
-  }),
-  mapPropsToValues: (props: any) => ({
-    name: '',
-    apiKey: '',
-    secretOfApiKey: '',
-    exchange: '',
-  }),
-  handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
-    const variables = {
-      name: values.name,
-      apiKey: values.apiKey,
-      secret: values.secretOfApiKey,
-      exchange: values.exchange.toLowerCase(),
-      date: Math.round(+Date.now() / 1000),
-    }
-
-    try {
-      await props.addExchangeKey({
-        variables,
-        update: (proxy, { data: { addExchangeKey } }) => {
-          const proxyData = proxy.readQuery({ query: getKeysQuery })
-          proxyData.myPortfolios[0].keys.push(addExchangeKey)
-          proxy.writeQuery({ query: getKeysQuery, data: proxyData })
-        },
-      })
-      resetForm({})
-      setSubmitting(false)
-    } catch (error) {
-      setSubmitting(false)
-      console.log(error)
-    }
-  },
-})
-
-const DialogTitle = withStyles((theme) => ({
-  root: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing.unit,
-    top: theme.spacing.unit,
-    color: theme.palette.grey[500],
-  },
-}))((props) => {
-  const { children, classes, onClose } = props
-  return (
-    <MuiDialogTitle disableTypography className={classes.root}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="Close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  )
-})
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -136,6 +48,66 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
     isSelected: true,
+    name: '',
+    apiKey: '',
+    secretOfApiKey: '',
+    exchange: '',
+    error: '',
+  }
+
+  handleSubmit = async () => {
+    const { name, apiKey, secretOfApiKey, exchange } = this.state
+
+    const variables = {
+      name,
+      apiKey,
+      secret: secretOfApiKey,
+      exchange: exchange.toLowerCase(),
+      date: Math.round(+Date.now() / 1000),
+    }
+
+    if (name.length > 20) {
+      this.setState({ error: 'Please limit name to 20 characters ' })
+      return false
+    }
+
+    try {
+      const { data } = await this.props.addExchangeKey({
+        variables,
+        update: (proxy, { data: { addExchangeKey } }) => {
+          const proxyData = proxy.readQuery({ query: getKeysQuery })
+          proxyData.myPortfolios[0].keys.push(addExchangeKey)
+          proxy.writeQuery({ query: getKeysQuery, data: proxyData })
+        },
+      })
+
+      const { error } = data.addExchangeKey
+
+      if (error !== '') {
+        this.setState({ error })
+        return false
+      }
+
+      this.setState({
+        error: '',
+        name: '',
+        apiKey: '',
+        secretOfApiKey: '',
+        exchange: '',
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    return true
+  }
+
+  handleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+  handleSelectExchange = (e) => {
+    this.setState({ exchange: e.value.toLowerCase() })
   }
 
   handleRadioBtn = () => {
@@ -155,21 +127,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { handleClose } = this
     const {
       theme: {
-        palette: { blue, black },
+        palette: { black },
       },
-      values,
-      touched,
-      errors,
-      handleChange,
-      handleBlur,
-      handleSubmit,
-      validateForm,
-      dirty,
-      isSubmitting,
     } = this.props
+
+    const { name, apiKey, secretOfApiKey, exchange, error } = this.state
 
     return (
       <>
@@ -199,6 +163,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           Add Account
         </BtnCustom>
         <DialogWrapper
+          maxWidth="xl"
           style={{ borderRadius: '50%' }}
           onClose={this.handleClose}
           aria-labelledby="customized-dialog-title"
@@ -223,38 +188,40 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             }}
           >
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
-                validateForm().then(async () => {
-                  await handleSubmit()
-                  handleClose()
-                })
+
+                const response = await this.handleSubmit()
+
+                console.log('end', response)
+                if (response) this.handleClose()
               }}
-              style={{ width: '440px' }}
+              style={{ minWidth: '440px' }}
             >
               <Grid>
                 <GridCustom>
                   <Legend>Exchange</Legend>
                   <SelectExchangeList
                     isClearable={true}
-                    value={
-                      values.exchange
-                        ? [{ label: values.exchange, value: values.exchange }]
-                        : null
-                    }
-                    onChange={handleSelectChangePrepareForFormik.bind(
-                      this,
-                      'exchange'
-                    )}
+                    inputValue={exchange}
+                    placeholder={exchange}
+                    onChange={(e) => this.handleSelectExchange(e)}
                     controlStyles={{
                       border: '1px solid #e0e5ec',
                       borderRadius: '1rem',
                       padding: '0 1rem',
                       background: '#fff',
                     }}
+                    inputStyles={{
+                      marginLeft: '0',
+                      color: '#7284A0',
+                      opacity: '1',
+                    }}
                     singleValueStyles={{
-                      color: '#6D7786',
-                      fontSize: '1.3rem',
+                      height: 'auto',
+                      width: 'auto',
+                      color: 'rgb(114, 132, 160);',
+                      overflow: 'auto',
                     }}
                     optionStyles={{
                       color: '#6D7786',
@@ -265,63 +232,41 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 <GridCustom>
                   <Legend>Account name</Legend>
                   <InputBaseCustom
-                    error={touched.name && !!errors.name}
                     id="name"
                     name="name"
                     label="Name"
-                    autoComplete="off"
-                    value={values.name || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    value={name}
+                    onChange={(e) => this.handleChange(e)}
                     placeholder="Type name..."
                     type="text"
-                    margin="normal"
-                    helperText={
-                      touched.name &&
-                      errors.name && <FormError>{errors.name}</FormError>
-                    }
+                    // margin="normal"
                   />
+                  {error && <FormError>{error}</FormError>}
                 </GridCustom>
                 <GridCustom>
                   <Legend>Api key</Legend>
                   <InputBaseCustom
-                    error={touched.apiKey && !!errors.apiKey}
                     id="apiKey"
                     type="text"
                     name="apiKey"
                     label="API Key"
-                    autoComplete="off"
-                    value={values.apiKey || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    value={apiKey}
+                    onChange={(e) => this.handleChange(e)}
                     placeholder="Enter API key here..."
-                    margin="normal"
-                    helperText={
-                      touched.apiKey &&
-                      errors.apiKey && <FormError>{errors.apiKey}</FormError>
-                    }
+                    // margin="normal"
                   />
                 </GridCustom>
                 <GridCustom>
                   <Legend>Secret key</Legend>
                   <InputBaseCustom
-                    error={touched.secretOfApiKey && !!errors.secretOfApiKey}
                     id="secretOfApiKey"
                     name="secretOfApiKey"
                     label="Secret"
-                    autoComplete="off"
-                    value={values.secretOfApiKey || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    value={secretOfApiKey}
+                    onChange={(e) => this.handleChange(e)}
                     placeholder="Enter secret key here..."
                     type="text"
-                    margin="normal"
-                    helperText={
-                      touched.secretOfApiKey &&
-                      errors.secretOfApiKey && (
-                        <FormError>{errors.secretOfApiKey}</FormError>
-                      )
-                    }
+                    // margin="dense"
                   />
                 </GridCustom>
               </Grid>
@@ -332,9 +277,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 <BtnCustom
                   btnWidth={'85px'}
                   borderRadius={'32px'}
-                  btnColor={!dirty || isSubmitting ? 'rgba(0, 0, 0, 0.26)' : blue.custom}
+                  btnColor={'#165BE0'}
                   type="submit"
-                  disabled={!dirty || isSubmitting}
                 >
                   ADD
                 </BtnCustom>
@@ -350,7 +294,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 export default compose(
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
-    options: ({ baseCoin }) => ({
+    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
       refetchQueries: [
         {
           query: portfolioKeyAndWalletsQuery,
@@ -360,6 +304,5 @@ export default compose(
         { query: keysNames },
       ],
     }),
-  }),
-  formikEnhancer
+  })
 )(AddAccountDialog)

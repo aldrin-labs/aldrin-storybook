@@ -47,18 +47,18 @@ class Accounts extends React.PureComponent<IProps> {
 
   render() {
     const {
-      // isCheckedAll,
-      // onToggleAll,
       color,
-      newKeys,
+      keys = [],
       portfolioAssetsData,
       onKeyToggle,
       login,
       isRebalance,
+      isTransactions,
       onKeySelectOnlyOne,
       onKeysSelectAll,
       isSidebar,
       baseCoin,
+      isSideNavOpen,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -116,41 +116,17 @@ class Accounts extends React.PureComponent<IProps> {
                   fontWeight: 700,
                   letterSpacing: '1.5px',
                 }}
-                onClick={onKeysSelectAll}
+                onClick={async () => {
+                  await onKeysSelectAll()
+                }}
               >
                 Select all
               </TypographyTitle>
             )}
           </TypographyFullWidth>
-
-          {/* <Headline color={color}>
-            settings
-          </Headline> */}
-          {/* <CloseContainer>
-            <StyledIcon isSideNavOpen={isSideNavOpen} color={color} />
-          </CloseContainer> */}
         </AccountsWalletsHeadingWrapper>
-        {/*
-        {!isRebalance && (
-          <SelectAll>
-            <Checkbox
-              disabled={!login}
-              type="checkbox"
-              id="all"
-              checked={isCheckedAll}
-              onClick={login && onToggleAll}
-            />
-
-            <AccountName
-              variant="body1"
-              color={isCheckedAll ? 'secondary' : 'textSecondary'}
-            >
-              Select All
-            </AccountName>
-          </SelectAll>
-        )} */}
-        <AccountsList id="AccountsList">
-          {newKeys.map((key, i) => {
+        <AccountsList id="AccountsList" isTransactions={isTransactions}>
+          {keys.map((key, i) => {
             if (!key) {
               return null
             }
@@ -213,11 +189,11 @@ class Accounts extends React.PureComponent<IProps> {
                   color="secondary"
                   id={key.name}
                   checked={isChecked}
-                  onClick={() => {
+                  onClick={async () => {
                     if (login && isRebalance) {
-                      onKeySelectOnlyOne(key._id)
+                      await onKeySelectOnlyOne(key._id)
                     } else if (login && !isRebalance) {
-                      onKeyToggle(key._id)
+                      await onKeyToggle(key._id)
                     }
                   }}
                   style={{
@@ -228,6 +204,7 @@ class Accounts extends React.PureComponent<IProps> {
                   <PortfolioSelectorPopup
                     data={key}
                     baseCoin={baseCoin}
+                    isSideNavOpen={isSideNavOpen}
                     forceUpdateAccountContainer={() => this.forceUpdate()}
                   />
                 )}

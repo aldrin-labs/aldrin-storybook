@@ -53,6 +53,10 @@ const transformData = (data: any[]) => {
 
     const [months, days, hours, minutes, seconds] = date
 
+    const spreadA = row.spreadA || row.spreadC
+    const priceA = row.priceA || row.priceC
+    const ordersA = row.ordersJsonA || row.ordersJsonC
+
     return {
       id: row._id,
       updatedAt: {
@@ -97,11 +101,9 @@ const transformData = (data: any[]) => {
           : '-',
       },
       spreadA: {
-        contentToSort: row.spreadA,
-        contentToCSV: roundAndFormatNumber(row.spreadA, 2, false),
-        render: row.spreadA
-          ? `${roundAndFormatNumber(row.spreadA, 2, false)} %`
-          : '-',
+        contentToSort: spreadA,
+        contentToCSV: roundAndFormatNumber(spreadA, 2, false),
+        render: spreadA ? `${roundAndFormatNumber(spreadA, 2, false)} %` : '-',
       },
       spreadB: {
         contentToSort: row.spreadB,
@@ -111,9 +113,9 @@ const transformData = (data: any[]) => {
           : '-',
       },
       priceA: {
-        contentToSort: row.priceA,
-        contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
-        render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
+        contentToSort: priceA,
+        contentToCSV: roundAndFormatNumber(priceA, 8, true),
+        render: priceA ? roundAndFormatNumber(priceA, 8, true) : '-',
       },
       priceB: {
         contentToSort: row.priceB,
@@ -131,7 +133,7 @@ const transformData = (data: any[]) => {
       },
       orderbook: {
         orders: row.ordersJson,
-        ordersA: row.ordersJsonA,
+        ordersA,
         ordersB: row.ordersJsonB,
       },
     }
@@ -191,7 +193,7 @@ const SignalEventList = (props) => {
           enabled: true, // toogle page nav panel in the footer
           page: page,
           rowsPerPage: perPage,
-          rowsPerPageOptions: [30, 50, 70, 100],
+          rowsPerPageOptions: [30, 50, 70, 100, 500, 1000],
           handleChangePage: handleChangePage,
           handleChangeRowsPerPage: handleChangeRowsPerPage,
         }}

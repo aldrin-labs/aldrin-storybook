@@ -54,12 +54,12 @@ export const InputBaseCustom = styled(InputBase)`
   background: #fff;
   padding: 1rem 1.25rem;
   margin-bottom: 0;
-  border: 1px solid #E0E5EC;
+  border: 1px solid #e0e5ec;
   box-sizing: border-box;
   border-radius: 1rem;
 
   input {
-    color: #abbad1;
+    color: #7284a0;
     font-size: 1.3rem;
     line-height: 114.5%;
     padding: 0;
@@ -88,8 +88,7 @@ export const LinkCustom = styled(Link)`
   line-height: 114.5%;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #165BE0;
-
+  color: #165be0;
 `
 export const SearchIconCustom = styled(SearchIcon)`
   position: absolute;
@@ -106,7 +105,7 @@ export const Legend = styled(Typography)`
   line-height: 114.5%;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #16253D;
+  color: #16253d;
 
   display: flex;
   align-items: center;
@@ -116,7 +115,7 @@ export const Legend = styled(Typography)`
 
   &:after {
     content: '';
-    background-color: #E0E5EC;
+    background-color: #e0e5ec;
     height: 1px;
     width: 100%;
     display: block;
