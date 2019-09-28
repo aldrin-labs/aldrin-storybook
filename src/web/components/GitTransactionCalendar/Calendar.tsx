@@ -168,9 +168,11 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
 const CalendarDataWrapper = ({ ...props }) => {
   let { startDate, endDate } = props
+  const timezone = moment().format('ZZ')
 
   startDate = +startDate
   endDate = +endDate
+
 
   return (
     <QueryRenderer
@@ -180,6 +182,7 @@ const CalendarDataWrapper = ({ ...props }) => {
       fetchPolicy="network-only"
       variables={{
         input: {
+          timezone,
           startDate,
           endDate,
         },
