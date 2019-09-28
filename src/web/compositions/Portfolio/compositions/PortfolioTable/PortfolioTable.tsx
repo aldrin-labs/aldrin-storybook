@@ -1,10 +1,8 @@
 import React, { Component, lazy, Suspense, memo } from 'react'
-import { Mutation } from 'react-apollo'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 
 import { Loading } from '@sb/components/index'
-import { TOGGLE_BASE_COIN } from '@core/graphql/mutations/portfolio/toggleBaseCoin'
 import { IProps, IState } from './PortfolioTable.types'
 
 import PortfolioMain from '@core/compositions/PortfolioMain'
@@ -131,7 +129,13 @@ class PortfolioTable extends Component<IProps, IState> {
             <Route
               exact
               path="/portfolio/transactions"
-              render={(...rest) => <Transaction {...rest} {...this.props} isCustomStyleForFooter={true} />}
+              render={(...rest) => (
+                <Transaction
+                  {...rest}
+                  {...this.props}
+                  isCustomStyleForFooter={true}
+                />
+              )}
             />
           </Switch>
         </Suspense>

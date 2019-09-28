@@ -11,6 +11,7 @@ import {
   TransactionTableResult,
   TransactionTableStatus,
 } from './TransactionTable.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 import DoneIcon from '../../../icons/DoneIcon.svg'
 import Cross from '../../../icons/Cross.svg'
@@ -37,6 +38,7 @@ const TransactionTable = ({
   isCompleted,
   isFinished,
   showLoader,
+  cancelOrder,
 }: IProps) => {
   let loaderExists = false
 
@@ -114,13 +116,13 @@ const TransactionTable = ({
                 <TableCell
                   align="left"
                   className={classes.cell}
-                  style={{ minWidth: '18rem' }}
+                  style={{ minWidth: '6rem' }}
                 >
                   <TransactionTableStatus>
                     {row.isDone === 'success'
                       ? 'order executed'
                       : row.isDone === 'fail'
-                      ? 'unsuccesful'
+                      ? 'unsuccessful'
                       : row.isDone === 'loading'
                       ? 'order placed'
                       : null}
@@ -131,13 +133,15 @@ const TransactionTable = ({
                     <SvgIcon src={DoneIcon} />
                   ) : row.isDone === 'fail' ? (
                     <SvgIcon src={Cross} />
+                  ) : row.isDone === 'cancel' ? (
+                    `Canceled`
                   ) : (showLoader || row.isDone === 'loading') &&
                     !loaderExists ? (
                     (loaderExists = true && (
                       <div
                         style={{
                           position: 'absolute',
-                          top: '17px',
+                          top: '15px',
                           right: '20px',
                           height: '24px',
                           width: '24px',
@@ -147,6 +151,19 @@ const TransactionTable = ({
                       </div>
                     ))
                   ) : null}
+                </TableCell>
+                <TableCell>
+                  <BtnCustom
+                    height="3rem"
+                    borderRadius={'1rem'}
+                    btnWidth="6rem"
+                    color={row.isDone !== 'loading' ? '#9f9f9f' : '#165be0'}
+                    margin="0 5px"
+                    onClick={cancelOrder}
+                    disabled={row.isDone !== 'loading'}
+                  >
+                    cancel
+                  </BtnCustom>
                 </TableCell>
               </TableRow>
             )
