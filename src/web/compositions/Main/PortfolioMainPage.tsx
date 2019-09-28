@@ -132,20 +132,22 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     return (
       <LayoutClearfixWrapper>
         <Grid style={{ height: '100%' }}>
-          <SharePortfolioPanel
-            handleOpenSharePortfolio={this.handleOpenSharePortfolio}
-            portfolioName={portfolioName}
-            // onToggleUSDBTC={onToggleUSDBTC}
-            baseCoin={baseCoin}
-            isUSDCurrently={isUSDCurrently}
-          />
-          {/* TODO: Recomment if needed <Divider /> */}
-          <AccordionOverview
-            baseCoin={baseCoin}
-            isUSDCurrently={isUSDCurrently}
-            portfolioAssetsData={portfolioAssetsData}
-            totalKeyAssetsData={totalKeyAssetsData}
-          />
+          <div id='sharePortfolioPanel'>
+            <SharePortfolioPanel
+              handleOpenSharePortfolio={this.handleOpenSharePortfolio}
+              portfolioName={portfolioName}
+              // onToggleUSDBTC={onToggleUSDBTC}
+              isUSDCurrently={isUSDCurrently}
+            />
+            {/* TODO: Recomment if needed <Divider /> */}
+            <AccordionOverview
+              baseCoin={baseCoin}
+              isUSDCurrently={isUSDCurrently}
+              portfolioAssetsData={portfolioAssetsData}
+              totalKeyAssetsData={totalKeyAssetsData}
+            />
+          </div>
+
           <Template
             PortfolioMainTable={
               <PortfolioMainTable

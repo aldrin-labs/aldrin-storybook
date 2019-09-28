@@ -31,6 +31,9 @@ import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchange
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
+import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
+import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
+import Steps from '@sb/components/Onboarding/Steps/Steps'
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
@@ -47,6 +50,9 @@ const DialogContent = withStyles((theme) => ({
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
+    openCongratulations: false,
+    openGetKeysInfo: false,
+    loading: false,
     isSelected: true,
     name: '',
     apiKey: '',
@@ -126,59 +132,128 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ open: false })
   }
 
+  handleClickOpenGetKeys = () => {
+    this.setState({
+      openGetKeysInfo: true,
+    })
+  }
+
+  handleCloseGetKeys = () => {
+    this.setState({
+      openGetKeysInfo: false,
+    })
+  }
+
+  handleClickOpenCongratulations = () => {
+    this.setState({
+      openCongratulations: true,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          loading: true,
+        })
+      }, 4000)
+    })
+
+  }
+
+  handleCloseCongratulations = () => {
+    this.setState({ openCongratulations: false })
+  }
+
   render() {
     const {
       theme: {
         palette: { black },
       },
+      handleClickOpen,
+      handleClose,
+      open,
+      onboarding,
     } = this.props
 
     const { name, apiKey, secretOfApiKey, exchange, error } = this.state
+    const onboardingOk = onboarding !== undefined && onboarding
 
     return (
       <>
-        <BtnCustom
-          btnWidth={'auto'}
-          height={'auto'}
-          btnColor={'#165BE0'}
-          borderRadius={'1rem'}
-          color={'#165BE0'}
-          margin={'1.6rem 0 0 2rem'}
-          padding={'.5rem 1rem .5rem 0'}
-          fontSize={'1.4rem'}
-          letterSpacing="1px"
-          onClick={this.handleClickOpen}
-          style={{
-            border: 'none',
-          }}
-        >
-          <SvgIcon
-            src={Plus}
-            width="3.5rem"
-            height="auto"
-            style={{
-              marginRight: '.8rem',
-            }}
-          />
-          Add Account
-        </BtnCustom>
+        <GetKeysInfo
+          open={this.state.openGetKeysInfo}
+          handleClose={this.handleCloseGetKeys}
+        />
+
+        {
+          onboardingOk
+          ?
+            <Congratulations
+              open={this.state.openCongratulations}
+              handleClickOpen={this.handleClickOpenCongratulations}
+              handleClose={this.handleCloseCongratulations}
+              loading={this.state.loading}
+            />
+          :
+            <BtnCustom
+              btnWidth={'auto'}
+              height={'auto'}
+              btnColor={'#165BE0'}
+              borderRadius={'1rem'}
+              color={'#165BE0'}
+              margin={'1.6rem 0 0 2rem'}
+              padding={'.5rem 1rem .5rem 0'}
+              fontSize={'1.4rem'}
+              letterSpacing="1px"
+              onClick={this.handleClickOpen}
+              style={{
+                border: 'none',
+              }}
+            >
+              <SvgIcon
+                src={Plus}
+                width="3.5rem"
+                height="auto"
+                style={{
+                  marginRight: '.8rem',
+                }}
+              />
+              Add Account
+            </BtnCustom>
+        }
+
         <DialogWrapper
           maxWidth="xl"
           style={{ borderRadius: '50%' }}
-          onClose={this.handleClose}
+          onClose={() => {
+            if(onboardingOk) {
+              handleClose()
+            } else {
+              this.handleClose()
+            }
+          }}
+          open={onboardingOk ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
-          open={this.state.open}
         >
           <DialogTitleCustom
             id="customized-dialog-title"
-            onClose={this.handleClose}
+            onClose={() => {
+              if(onboardingOk) {
+                handleClose()
+              } else {
+                this.handleClose()
+              }
+            }}
           >
             <TypographyCustomHeading
               fontWeight={'700'}
               borderRadius={'1rem'}
               color={black.custom}
             >
-              Add Api Key
+              {
+                onboardingOk
+                ?
+                  <>connect your exchanges - <Steps current={2} /></>
+                :
+                  'Add Api Key'
+              }
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
@@ -194,7 +269,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 const response = await this.handleSubmit()
 
                 console.log('end', response)
-                if (response) this.handleClose()
+                if (response) {
+                  if(onboardingOk) {
+                    this.handleClickOpenCongratulations()
+                    handleClose()
+                  } else {
+                    this.handleClose()
+                  }
+                }
               }}
               style={{ minWidth: '440px' }}
             >
@@ -272,7 +354,15 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               </Grid>
 
               <Grid container justify="space-between" alignItems="center">
-                <LinkCustom href={'#'}>How to get keys?</LinkCustom>
+                <LinkCustom
+                  href={'#'}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.handleClickOpenGetKeys()
+                  }}
+                >
+                  How to get keys?
+                </LinkCustom>
 
                 <BtnCustom
                   btnWidth={'85px'}
@@ -280,7 +370,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   btnColor={'#165BE0'}
                   type="submit"
                 >
-                  ADD
+                  { onboardingOk ? 'FINISH' : 'ADD' }
                 </BtnCustom>
               </Grid>
             </form>
