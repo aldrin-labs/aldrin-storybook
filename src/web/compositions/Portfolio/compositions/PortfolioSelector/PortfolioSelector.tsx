@@ -41,6 +41,7 @@ import { IProps } from './PortfolioSelector.types'
 //   usdDustFilterOptions,
 // } from './PortfolioSelector.options'
 import { Grid } from '@material-ui/core'
+import { createGlobalStyle } from 'styled-components'
 
 //import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
@@ -73,6 +74,14 @@ import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfol
 
 // On this value we divide slider percentage to get btc filter value (100% = 0.01 btc)
 const BTC_PART_DIVIDER = 10000
+
+const RebalanceMediaQuery = createGlobalStyle`
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 15px;
+    }
+  }
+`
 
 @withRouter
 @withTheme()
@@ -373,13 +382,14 @@ class PortfolioSelector extends React.Component<IProps> {
           width: '41rem',
           ...styleForContainer,
         }}
-        id='porfolioSelector'
-        // in={isSideNavOpen}
-        // direction="right"
-        // timeout={{ enter: 375, exit: 250 }}
-        // mountOnEnter={false}
-        // unmountOnExit={false}
+        id="porfolioSelector"
+        in={isSideNavOpen}
+        direction="right"
+        timeout={{ enter: 375, exit: 250 }}
+        mountOnEnter={false}
+        unmountOnExit={false}
       >
+        {isRebalance && <RebalanceMediaQuery />}
         <AccountsWalletsBlock
           isSideNavOpen={true}
           background={theme.palette.background.paper}
