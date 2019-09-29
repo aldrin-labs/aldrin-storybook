@@ -11,12 +11,19 @@ import { PortfolioTable, PortfolioSelector } from './compositions'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
+import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
+import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import withAuth from '@core/hoc/withAuth'
 
 const safePortfolioDestruction = (
@@ -70,32 +77,58 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         chartPage,
         multiChartPage,
         transactionPage,
+        onboarding: {
+        	instructions,
+          portfolioName,
+          exchangeKey,
+          congratulations,
+      	},
       } = getTooltipSettingsQuery.getTooltipSettings
 
       let variables = {
         settings: {
-          portfolioMain,
-          portfolioIndustry,
-          portfolioRebalance,
-          portfolioCorrelation,
-          portfolioOptimization,
-          chartPage,
-          multiChartPage,
-          transactionPage,
+          portfolioMain: true,
+          portfolioIndustry: true,
+          portfolioRebalance: true,
+          portfolioCorrelation: true,
+          portfolioOptimization: true,
+          chartPage: true,
+          multiChartPage: true,
+          transactionPage: true,
+          onboarding: {
+          	instructions:true,
+            portfolioName:false,
+            exchangeKey:false,
+            congratulations:false,
+        	},
         },
       }
 
-      if(type === 'Main') {
+      if(type === 'main') {
         variables.settings.portfolioMain = false
         variables.settings.transactionPage = true
+      } else if (type === 'instructions') {
+        variables.settings.onboarding.instructions = false
+      } else if (type === 'portfolioName') {
+        variables.settings.onboarding.instructions = false
       }
       console.log('TYPE portfolioMain', variables.settings.portfolioMain)
       console.log('TYPE transactionPage', variables.settings.transactionPage)
+      console.log('variables',variables)
 
       try {
-        const res = await updateTooltipSettings({ variables })
+        // const res = await updateTooltipSettings({ variables })
 
-        console.log('updateTooltipSettings res - ', res)
+        await updateTooltipSettings({
+          variables: {
+            settings: {
+              ...removeTypenameFromObject(getTooltipSettingsQuery.getTooltipSettings),
+              transactionPage: false,
+            },
+          },
+          update: updateTooltipMutation,
+        })
+
       } catch (error) {
         console.error(error)
       }
@@ -120,24 +153,28 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  handleClickOpen = () => {
-    this.setState({
-      openPopup: true,
-    })
-  }
+  // handleClickOpen = () => {
+  //   this.setState({
+  //     openPopup: true,
+  //   })
+  // }
 
-  handleClose = () => {
-    const type = 'Main'
-    this.setOnboarding(type)
-    this.setState({ click: true, openPopup: false })
-  }
+  // handleClose = () => {
+  //   const type = 'main'
+  //   this.setOnboarding(type)
+  //   this.setState({ click: true, openPopup: false })
+  // }
 
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
   }
 
   render() {
-    const { theme, baseData, data, getTooltipSettingsQuery: { getTooltipSettings: { portfolioMain } } } = this.props
+    const { theme, baseData, data,
+      getTooltipSettingsQuery: { getTooltipSettings: {
+        portfolioMain,
+        onboarding,
+      } } } = this.props
 
 
     const baseCoin = baseData.portfolio.baseCoin
@@ -173,22 +210,53 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       ? activeRebalanceKeys.length + activeWallets.length > 0
       : activeKeys.length + activeWallets.length > 0
 
-    console.log('isMain', isMain)
+    console.log('getTooltipSettingsQuery', portfolioMain, onboarding)
     console.log('this.state.openPopup', this.state.openPopup)
+    console.log('Theme',theme)
 
     return (
       <>
         {
           portfolioMain && isMain && (
             <PopupStart
-              open={this.state.click ? this.state.openPopup : portfolioMain}
-              handleClickOpen={this.handleClickOpen}
-              handleClose={this.handleClose}
+              theme={theme}
+              open={onboarding.instructions !== null ? onboarding.instructions : portfolioMain}
+              handleClickOpen={this.setOnboarding}
+              handleClose={this.setOnboarding}
               baseCoin={baseCoin}
               portfolioId={portfolioId}
             />
           )
         }
+
+        {/*<CreatePortfolio
+          open={this.state.openCreatePortfolio}
+          handleClickOpen={this.handleClickOpen}
+          handleClose={this.handleClose}
+
+          openAddAccountDialog={this.state.openAddAccountDialog}
+          handleClickOpenAccount={this.handleClickOpenAccount}
+          handleCloseAccount={this.handleCloseAccount}
+
+          onboarding={true}
+          portfolioId={portfolioId}
+          baseCoin={baseCoin}
+        />
+
+        <AddAccountDialog
+          open={openAddAccountDialog}
+          handleClickOpen={handleClickOpenAccount}
+          handleClose={handleCloseAccount}
+          onboarding={true}
+          baseCoin={baseCoin}
+        />
+
+        <Congratulations
+          open={this.state.openCongratulations}
+          handleClickOpen={this.handleClickOpenCongratulations}
+          handleClose={this.handleCloseCongratulations}
+          loading={this.state.loading}
+        />*/}
 
         <PortfolioContainer>
           <PortfolioSelector
@@ -253,6 +321,11 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             <Backdrop onClick={this.toggleWallets} />
           </Fade>
         </PortfolioContainer>
+
+        {/*<JoyrideOnboarding
+          steps={portfolioMainSteps}
+          open={portfolioMain}
+        />*/}
       </>
     )
   }
@@ -285,7 +358,12 @@ export default compose(
       }
     ]
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettings' }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettings',
+    // options: {
+    //   update: updateTooltipMutation,
+    // },
+  }),
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',

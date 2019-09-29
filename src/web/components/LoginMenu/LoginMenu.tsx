@@ -9,6 +9,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import Tooltip from '@material-ui/core/Tooltip'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { tooltipsConfig } from '@core/config/tooltipsConfig'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import { portfolioMainSteps, transactionsPageSteps } from '@sb/config/joyrideSteps'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
@@ -24,44 +25,46 @@ class LoginMenuComponent extends React.Component {
 
     this.state = {
       openPopup: false,
-      openOnboarding: false,
+      // openOnboarding: false,
       key: 0,
     }
   }
 
   handleClickOpen = () => {
-    this.setState({
-      openOnboarding: true,
-    })
+    // this.setState({
+    //   openOnboarding: true,
+    // })
+
   }
 
   render() {
     const {
       userName,
       handleLogout,
-      updateTooltipSettingsMutation,
+      updateTooltipSettings,
     } = this.props
     const isMainPage = this.props.location.pathname === '/portfolio/main'
 
     return (
       <>
-        <JoyrideOnboarding
+        {/*<JoyrideOnboarding
           steps={isMainPage ? portfolioMainSteps : transactionsPageSteps}
           open={this.state.openOnboarding}
-        />
+        />*/}
 
         <Tooltip title={'Show Tips'} enterDelay={250}>
           <IconButton
             onClick={async () => {
-              this.handleClickOpen()
+              // this.handleClickOpen()
 
-              // updateTooltipSettingsMutation({
-              //   variables: {
-              //     settings: {
-              //       ...tooltipsConfig,
-              //     },
-              //   },
-              // })
+              updateTooltipSettings({
+                variables: {
+                  settings: {
+                    ...tooltipsConfig,
+                  },
+                },
+                update: updateTooltipMutation,
+              })
               }
             }
             color="default"
@@ -87,5 +90,7 @@ class LoginMenuComponent extends React.Component {
 }
 
 export const LoginMenu = compose(
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettingsMutation' })
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettings',
+  })
 )(LoginMenuComponent)

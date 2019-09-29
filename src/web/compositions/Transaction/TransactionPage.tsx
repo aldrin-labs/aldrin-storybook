@@ -49,6 +49,7 @@ import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
@@ -232,6 +233,8 @@ class TransactionPage extends React.PureComponent {
       getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
 
+    console.log('Handle Joyride')
+
     await updateTooltipSettings({
       variables: {
         settings: {
@@ -239,6 +242,7 @@ class TransactionPage extends React.PureComponent {
           transactionPage: false,
         },
       },
+      update: updateTooltipMutation,
     })
   }
 
@@ -285,6 +289,8 @@ class TransactionPage extends React.PureComponent {
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
       keys.length + newWallets.length
+
+    console.log('transactionPage',transactionPage)
 
 
     return (
@@ -458,14 +464,11 @@ class TransactionPage extends React.PureComponent {
           </GridItemContainer>
         </Grid>
 
-        { transactionPage && (
-            <JoyrideOnboarding
-              steps={transactionsPageSteps}
-              open={transactionPage}
-              handleJoyrideCallback={this.handleJoyrideCallback}
-            />
-          )
-        }
+        <JoyrideOnboarding
+          steps={transactionsPageSteps}
+          open={transactionPage}
+          handleJoyrideCallback={this.handleJoyrideCallback}
+        />
 
       </>
     )
@@ -490,7 +493,9 @@ export default compose(
       }
     ]
   }),
-  graphql(updateTooltipSettings, { name: 'updateTooltipSettings' }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettings',
+  }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({

@@ -4,8 +4,8 @@ import { withFormik } from 'formik'
 import Yup from 'yup'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { portfolioMainSteps } from '@sb/config/joyrideSteps'
-import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+// import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
 import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
@@ -125,10 +125,10 @@ class Congratulations extends React.Component<IProps, IState> {
 
     return (
       <>
-        <JoyrideOnboarding
+        {/*<JoyrideOnboarding
           steps={portfolioMainSteps}
           open={this.state.openOnboarding}
-        />
+        />*/}
 
         <DialogWrapper
           style={{ borderRadius: '50%' }}
@@ -221,7 +221,7 @@ class Congratulations extends React.Component<IProps, IState> {
 
                         handleClose()
 
-                        this.handleOnboardingOpen()
+                        // this.handleOnboardingOpen()
                       }}
                       style={{
                         maxWidth: '133px',

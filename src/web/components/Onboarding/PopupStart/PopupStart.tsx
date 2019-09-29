@@ -126,7 +126,7 @@ class PopupStart extends React.Component<IProps, IState> {
 
     return (
       <>
-        <CreatePortfolio
+        {/*<CreatePortfolio
           open={this.state.openCreatePortfolio}
           handleClickOpen={this.handleClickOpen}
           handleClose={this.handleClose}
@@ -138,10 +138,10 @@ class PopupStart extends React.Component<IProps, IState> {
           onboarding={true}
           portfolioId={portfolioId}
           baseCoin={baseCoin}
-        />
+        />*/}
 
         <DialogWrapper
-          onClose={handleClose}
+          onClose={handleClose('instructions')}
           aria-labelledby="customized-dialog-title"
           open={open}
           style={{
@@ -150,9 +150,10 @@ class PopupStart extends React.Component<IProps, IState> {
         >
           <DialogTitleCustom
             id="customized-dialog-title"
-            onClose={handleClose}
+            onClose={handleClose('instructions')}
             style={{
-              backgroundColor: '#fff'
+              // backgroundColor: '#fff'
+              backgroundColor: theme.palette.background.default,
             }}
           >
             <img
@@ -230,8 +231,8 @@ class PopupStart extends React.Component<IProps, IState> {
               <BtnCustom
                 backgroundColor="white"
                 onClick={() => {
-                  this.handleClickOpen()
-                  handleClose()
+                  handleClickOpen('portfolioName')
+                  handleClose('instructions')
                 }}
                 style={{
                   maxWidth: '275px',
