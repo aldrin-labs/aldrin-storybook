@@ -85,8 +85,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           endDate={moment(+endDate)}
           values={mappedActionsArray}
           gutterSize={3}
-          classForValue={(value) =>
-            value ? classes[value.className] : 'empty-value'
+          classForValue={(value) => {
+            return value ? classes[value.className] : 'empty-value' }
           }
           showWeekdayLabels={true}
           monthLabels={[
@@ -109,6 +109,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             const popupRef = this.popupRef.current
             const { x, y } = e.target.getBoundingClientRect()
             popupRef.style.display = 'block'
+            popupRef.style.zIndex = 999
             popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
             popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
 
