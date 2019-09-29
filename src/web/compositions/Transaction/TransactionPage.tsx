@@ -53,7 +53,6 @@ import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import SvgIcon from '@sb/components/SvgIcon'
 import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 import { graphql } from 'react-apollo'
-import Joyride from 'react-joyride'
 
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { transactionsPageSteps } from '@sb/config/joyrideSteps'
@@ -467,58 +466,6 @@ class TransactionPage extends React.PureComponent {
             />
           )
         }
-
-        {/*<Joyride
-          continuous={true}
-          showProgress={true}
-          showSkipButton={false}
-          steps={transactionsPageSteps}
-          run={transactionPage}
-          callback={this.handleJoyrideCallback}
-          styles={{
-            options: {
-              backgroundColor: 'transparent',
-              primaryColor: '#29AC80',
-              textColor: '#fff',
-              arrowColor: '#fff',
-              zIndex: 99999,
-            },
-            tooltip: {
-              fontFamily: 'DM Sans',
-              fontSize: '18px',
-            },
-            buttonClose: {
-              display: 'none',
-            },
-            buttonNext: {
-              backgroundColor: '#29AC80',
-              border: '2px solid transparent',
-              borderRadius: '10px',
-              color: '#fff',
-              outline: 0,
-              padding: '10px 35px',
-              textTransform: 'uppercase',
-              fontFamily: 'DM Sans',
-              fontWeight: 'bold',
-              letterSpacing: '1px',
-              lineHeight: '23px',
-            },
-            buttonBack: {
-              backgroundColor: 'transparent',
-              border: '2px solid #FFFFFF',
-              borderRadius: '10px',
-              color: '#fff',
-              outline: 0,
-              padding: '13px 35px',
-              textTransform: 'uppercase',
-              fontFamily: 'DM Sans',
-              fontWeight: 'bold',
-              marginLeft: 'auto',
-              marginRight: 10,
-              letterSpacing: '1px',
-            },
-          }}
-        />*/}
 
       </>
     )
