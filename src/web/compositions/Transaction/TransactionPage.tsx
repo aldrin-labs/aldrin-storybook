@@ -134,7 +134,11 @@ class TransactionPage extends React.PureComponent {
     )
   }
 
-  onHeatmapDateClick = (value) =>
+  onHeatmapDateClick = (value) => {
+    if (!value) {
+      return
+    }
+
     this.setState((prevState) => ({
       ...prevState,
       tradeOrderHistoryDate: {
@@ -143,6 +147,7 @@ class TransactionPage extends React.PureComponent {
         endDate: moment(value.date).endOf('day'),
       },
     }))
+  }
 
   handleChangeShowHideOptions = (option) => (event) => {
     this.setState({ [option]: event.target.checked })
