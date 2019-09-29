@@ -176,7 +176,7 @@ class PopupStart extends React.Component<IProps, IState> {
                 color: '#16253D',
               }}
             >
-              Hi! Nice to met you!
+              Hi! Nice to meet you!
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
