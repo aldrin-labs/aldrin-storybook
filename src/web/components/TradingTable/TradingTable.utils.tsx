@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
-// import { TableButton } from './TradingTable.styles'
+import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 
 import {
@@ -215,18 +215,18 @@ export const combineOpenOrdersTable = (
           style: { whiteSpace: 'nowrap' },
           contentToSort: timestamp,
         },
-        // cancel: {
-        //   render: (
-        //     <TableButton
-        //       key={i}
-        //       variant="outlined"
-        //       size={`small`}
-        //       onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
-        //     >
-        //       Cancel
-        //     </TableButton>
-        //   ),
-        // },
+        cancel: {
+          render: (
+            <TableButton
+              key={i}
+              variant="outlined"
+              size={`small`}
+              onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
+            >
+              Cancel
+            </TableButton>
+          ),
+        },
       }
     })
 
