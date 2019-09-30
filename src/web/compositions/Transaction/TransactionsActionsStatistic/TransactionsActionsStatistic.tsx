@@ -10,10 +10,10 @@ class TransactionsActionsStatistic extends Component {
     return (
       <Grid item>
         <Grid item style={{ position: 'relative', marginBottom: '1.2rem' }}>
-          <DayBlock title={'last 24h'} />
+          <DayBlock title={'today'} />
         </Grid>
         <Grid item style={{ position: 'relative' }}>
-          <WeekBlock title={'last 7d'} />
+          <WeekBlock title={'this week'} />
         </Grid>
       </Grid>
     )
