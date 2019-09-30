@@ -57,7 +57,7 @@ class ChoosePeriod extends Component<IProps> {
             onDatesChange={onDatesChange} // PropTypes.func.isRequired,
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
             onFocusChange={onFocusChange} // PropTypes.func.isRequired,
-            displayFormat="MMM D, YYYY"
+            displayFormat="MMM, DD, YYYY"
           />
         </DatePickerWrapper>
 
