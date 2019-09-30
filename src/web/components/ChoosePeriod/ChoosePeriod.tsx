@@ -11,7 +11,7 @@ import {
 
 const PERIODS = [
   { name: '1Day', label: '24H' },
-  { name: '1Week', label: 'Week' },
+  { name: '1Week', label: '7 days' },
   // { name: '2Weeks', label: '2W' },
   { name: '1Month', label: 'Month' },
   { name: '3Month', label: '3M' },
