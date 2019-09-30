@@ -23,15 +23,15 @@ export const openOrdersColumnNames = [
   { label: 'Total', id: 'total' },
   { label: 'Trigger', id: 'triggerConditions' },
   { label: 'Date', id: 'date' },
-  // {
-  //   label: (
-  //     <TableButton size="small" variant="outlined">
-  //       Cancel all
-  //     </TableButton>
-  //   ),
-  //   id: 'cancel',
-  //   isSortable: false,
-  // },
+  {
+    label:
+      // <TableButton size="small" variant="outlined">
+      //   Cancel all
+      // </TableButton>
+      '',
+    id: 'cancel',
+    isSortable: false,
+  },
 ]
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
