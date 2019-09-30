@@ -43,9 +43,9 @@ class SharePortfolioPanel extends Component<IProps> {
 
         <Grid item>
           <Grid container justify="flex-start" alignItems="center">
-            {/* <Grid item>
+            <Grid item>
               <SelectPortfolioPeriod />
-            </Grid> */}
+            </Grid>
             <Grid item>
               <StyledButton
                 onClick={onToggleUSDBTC}
