@@ -42,6 +42,7 @@ class PopupStart extends React.Component<IProps, IState> {
           open={open}
           style={{
             borderRadius: '50%',
+            paddingTop: 0,
           }}
         >
           <DialogTitleCustom
@@ -56,8 +57,9 @@ class PopupStart extends React.Component<IProps, IState> {
               style={{
                 display: 'block',
                 margin: '0 auto',
-                marginTop: '30px',
-                marginBottom: '30px',
+                width: '15rem',
+                marginTop: '1.5rem',
+                marginBottom: '1.5rem',
               }}
             />
 
@@ -66,7 +68,7 @@ class PopupStart extends React.Component<IProps, IState> {
               borderRadius={'1rem'}
               style={{
                 textAlign: 'center',
-                fontSize: '28px',
+                fontSize: '1.4rem',
                 letterSpacing: '1.5px',
                 color: '#16253D',
               }}
@@ -84,12 +86,12 @@ class PopupStart extends React.Component<IProps, IState> {
               <GridCustom>
                 <Typography
                   style={{
-                    maxWidth: '466px',
+                    maxWidth: '26rem',
                     width: '100%',
                     margin: '0 auto',
                     color: '#7284A0',
-                    fontSize: '24px',
-                    lineHeight: '31px',
+                    fontSize: '1.3rem',
+                    lineHeight: '1.3rem',
                   }}
                 >
                   First, you need to create a portfolio (there may be more than
@@ -100,8 +102,8 @@ class PopupStart extends React.Component<IProps, IState> {
               <GridCustom>
                 <Typography
                   style={{
-                    fontSize: '24px',
-                    lineHeight: '31px',
+                    fontSize: '1.2rem',
+                    lineHeight: '1.2rem',
                     textAlign: 'center',
                     color: '#16253D',
                   }}
@@ -118,16 +120,16 @@ class PopupStart extends React.Component<IProps, IState> {
                   setCurrentStep('createPortfolio')
                 }}
                 style={{
-                  maxWidth: '275px',
+                  maxWidth: '15rem',
                   width: '100%',
                   height: '100%',
                   border: '2px solid #0B1FD1',
-                  borderRadius: '16px',
-                  padding: '8px 47px',
+                  borderRadius: '.8rem',
+                  padding: '.4rem 1rem',
                   color: '#0B1FD1',
                   textTransform: 'uppercase',
                   textAlign: 'center',
-                  fontSize: '24px',
+                  fontSize: '1.2rem',
                   letterSpacing: '1.5px',
                   margin: '0 auto',
                 }}

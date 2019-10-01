@@ -41,16 +41,18 @@ const RenameKeyDialogComponent = ({
   }
 
   const handleSubmit = async () => {
-    const variables = isPortfolio
-      ? { inputPortfolio: { id, name: newName } }
-      : { input: { keyId: id, name: newName } }
+    const trimmedName = newName.trim()
 
-    if (name.length < 3) {
+    const variables = isPortfolio
+      ? { inputPortfolio: { id, name: trimmedName } }
+      : { input: { keyId: id, name: trimmedName } }
+
+    if (trimmedName.length < 3) {
       setError('Please enter name with at least 3 characters ')
       return false
     }
 
-    if (newName.length > 20) {
+    if (trimmedName.length > 20) {
       return setError('Please limit name to 20 characters')
     }
 

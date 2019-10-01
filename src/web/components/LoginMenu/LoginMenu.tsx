@@ -10,7 +10,10 @@ import Tooltip from '@material-ui/core/Tooltip'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { tooltipsConfig } from '@core/config/tooltipsConfig'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
-import { portfolioMainSteps, transactionsPageSteps } from '@sb/config/joyrideSteps'
+import {
+  portfolioMainSteps,
+  transactionsPageSteps,
+} from '@sb/config/joyrideSteps'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
 
@@ -34,15 +37,10 @@ class LoginMenuComponent extends React.Component {
     // this.setState({
     //   openOnboarding: true,
     // })
-
   }
 
   render() {
-    const {
-      userName,
-      handleLogout,
-      updateTooltipSettings,
-    } = this.props
+    const { userName, handleLogout, updateTooltipSettings } = this.props
     const isMainPage = this.props.location.pathname === '/portfolio/main'
 
     return (
@@ -52,7 +50,7 @@ class LoginMenuComponent extends React.Component {
           open={this.state.openOnboarding}
         />*/}
 
-        <Tooltip title={'Show Tips'} enterDelay={250}>
+        {/* <Tooltip title={'Show Tips'} enterDelay={250}>
           <IconButton
             onClick={async () => {
               // this.handleClickOpen()
@@ -72,7 +70,7 @@ class LoginMenuComponent extends React.Component {
           >
             <LiveHelp />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         {/*<Onboarding />*/}
         <Tooltip title={userName} enterDelay={250}>
           <IconButton color="default" component={UserLink} className="UserLink">

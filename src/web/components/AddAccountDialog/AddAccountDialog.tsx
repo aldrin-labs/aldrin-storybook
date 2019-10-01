@@ -61,20 +61,22 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   handleSubmit = async () => {
     const { name, apiKey, secretOfApiKey, exchange } = this.state
 
+    const trimmedName = name.trim()
+
     const variables = {
-      name,
+      name: trimmedName,
       apiKey,
       secret: secretOfApiKey,
       exchange: exchange.toLowerCase(),
       date: Math.round(+Date.now() / 1000),
     }
 
-    if (name.length < 3) {
+    if (trimmedName.length < 3) {
       this.setState({ error: 'Please enter name with at least 3 characters ' })
       return false
     }
 
-    if (name.length > 20) {
+    if (trimmedName.length > 20) {
       this.setState({ error: 'Please limit name to 20 characters ' })
       return false
     }

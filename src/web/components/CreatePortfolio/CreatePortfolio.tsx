@@ -57,13 +57,14 @@ class CreatePortfolio extends React.Component<IProps, IState> {
     } = this.props
 
     const { portfolioName: name } = this.state
+    const trimmedName = name.trim()
 
-    if (name.length < 3) {
+    if (trimmedName.length < 3) {
       this.setState({ error: 'Please enter name with at least 3 characters ' })
       return false
     }
 
-    if (name.length > 20) {
+    if (trimmedName.length > 20) {
       this.setState({ error: 'Please limit name to 20 characters ' })
       return false
     }
@@ -72,7 +73,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       const variablesRename = {
         inputPortfolio: {
           id: portfolioId,
-          name,
+          name: trimmedName,
         },
       }
 
@@ -91,7 +92,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
     } else {
       const variables = {
         inputPortfolio: {
-          name,
+          name: trimmedName,
         },
       }
 
