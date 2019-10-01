@@ -5,19 +5,19 @@ import { StyledPaper as Paper } from '@sb/components/SharePortfolioDialog/ShareP
 
 export const StyledPaper = styled(Paper)`
   @media (max-width: 1440px) {
-    max-width: 550px;
+    max-width: 750px;
   }
 
   @media (min-width: 1400px) {
-    max-width: 680px;
+    max-width: 880px;
   }
 
   @media (min-width: 1921px) {
-    max-width: 950px;
+    max-width: 1250px;
   }
 
   @media (min-width: 2560px) {
-    max-width: 1250px;
+    max-width: 1450px;
   }
 `
 
