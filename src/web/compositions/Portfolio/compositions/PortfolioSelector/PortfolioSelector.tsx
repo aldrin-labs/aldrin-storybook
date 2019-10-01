@@ -229,7 +229,7 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeySelectOnlyOne = async (toggledKeyID: string) => {
-    const { portfolioId, isRebalance } = this.props
+    const { portfolioId, isRebalance, updatePortfolioSettings } = this.props
     const type = 'keyOnlyOne'
 
     const objForQuery = {
@@ -241,7 +241,14 @@ class PortfolioSelector extends React.Component<IProps> {
       },
     }
 
-    await this.updateSettings(objForQuery, type, toggledKeyID)
+    try {
+      await updatePortfolioSettings({
+        variables: objForQuery,
+      })
+    } catch (error) {
+      console.log('error', error)
+    }
+    // await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onWalletToggle = async (toggledWalletID: string) => {

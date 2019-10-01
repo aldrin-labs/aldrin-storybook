@@ -3,7 +3,7 @@ import { Body, Table, HeadCell } from '@sb/components/OldTable/Table'
 import { StyledCell } from '@sb/compositions/Chart/Tables/TradeHistoryTable/Table/TradeHistoryTable.styles'
 
 export const Wrapper = styled(Table)`
-  width: 30%;
+  width: 21%;
   height: 100%;
   margin-top: 1rem;
   flex-wrap: nowrap;
