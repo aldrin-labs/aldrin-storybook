@@ -28,8 +28,10 @@ const putDataInTable = (tableData: any[]) => {
       { id: 'exchangeA', label: 'Exchange A' },
       { id: 'exchangeB', label: 'Exchange B' },
       { id: 'amount', label: 'Amount' },
+      { id: 'spreadC', label: 'Spread C' },
       { id: 'spreadA', label: 'Spread A' },
       { id: 'spreadB', label: 'Spread B' },
+      { id: 'priceC', label: 'Price C' },
       { id: 'priceA', label: 'Price A' },
       { id: 'priceB', label: 'Price B' },
       { id: 'profit', label: 'Profit' },
@@ -53,9 +55,10 @@ const transformData = (data: any[]) => {
 
     const [months, days, hours, minutes, seconds] = date
 
-    const spreadA = row.spreadA || row.spreadC
-    const priceA = row.priceA || row.priceC
-    const ordersA = row.ordersJsonA || row.ordersJsonC
+    // check it again, doesn't work
+    // const spreadA = row.spreadA || row.spreadC
+    // const priceA = row.priceA || row.priceC
+    // const ordersA = row.ordersJsonA || row.ordersJsonC
 
     return {
       id: row._id,
@@ -100,10 +103,19 @@ const transformData = (data: any[]) => {
           ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
           : '-',
       },
+      spreadC: {
+        contentToSort: row.spreadC,
+        contentToCSV: roundAndFormatNumber(row.spreadC, 2, false),
+        render: row.spreadC
+          ? `${roundAndFormatNumber(row.spreadC, 2, false)} %`
+          : '-',
+      },
       spreadA: {
-        contentToSort: spreadA,
-        contentToCSV: roundAndFormatNumber(spreadA, 2, false),
-        render: spreadA ? `${roundAndFormatNumber(spreadA, 2, false)} %` : '-',
+        contentToSort: row.spreadA,
+        contentToCSV: roundAndFormatNumber(row.spreadA, 2, false),
+        render: row.spreadA
+          ? `${roundAndFormatNumber(row.spreadA, 2, false)} %`
+          : '-',
       },
       spreadB: {
         contentToSort: row.spreadB,
@@ -112,10 +124,15 @@ const transformData = (data: any[]) => {
           ? `${roundAndFormatNumber(row.spreadB, 2, false)} %`
           : '-',
       },
+      priceC: {
+        contentToSort: row.priceC,
+        contentToCSV: roundAndFormatNumber(row.priceC, 8, true),
+        render: row.priceC ? roundAndFormatNumber(row.priceC, 8, true) : '-',
+      },
       priceA: {
-        contentToSort: priceA,
-        contentToCSV: roundAndFormatNumber(priceA, 8, true),
-        render: priceA ? roundAndFormatNumber(priceA, 8, true) : '-',
+        contentToSort: row.priceA,
+        contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
+        render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
       },
       priceB: {
         contentToSort: row.priceB,
@@ -133,8 +150,9 @@ const transformData = (data: any[]) => {
       },
       orderbook: {
         orders: row.ordersJson,
-        ordersA,
+        ordersA: row.ordersJsonA,
         ordersB: row.ordersJsonB,
+        ordersC: row.ordersJsonC,
       },
     }
   })

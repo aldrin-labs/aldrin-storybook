@@ -24,13 +24,15 @@ const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
     ? { bids: JSON.parse(data.orders) }
     : { bids: [] }
 
+  const ordersWithCData = data.ordersC ? JSON.parse(data.ordersC) : { asks: [] }
+
   return (
     <Dialog
       PaperComponent={StyledPaper}
       style={{ width: '100%', margin: 'auto' }}
       fullScreen={false}
       onClose={closeDialog}
-      maxWidth={'md'}
+      maxWidth={'xl'}
       open={isDialogOpen}
       aria-labelledby="responsive-dialog-title"
     >
@@ -57,6 +59,8 @@ const OrderbookDialog = ({ isDialogOpen, closeDialog, data }) => {
       </DialogTitle>
       <StyledDialogContent>
         <Grid container direction={'row'} alignItems={'flex-start'}>
+          <OrderbookTable title={'spreadC'} data={{ ...ordersWithCData }} />
+          <StyledArrow color={'inherit'} />
           <OrderbookTable title={'Buy'} data={{ ...buyOrdersData }} />
           <StyledArrow color={'inherit'} />
           <OrderbookTable title={'_'} data={{ ...middleOrdersData }} />
