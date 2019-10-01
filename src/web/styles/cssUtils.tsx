@@ -134,6 +134,10 @@ export const SelectR = styled(ReactSelectComponent)`
   width: 100%;
   font-size: 16px;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  & input {
+    opacity: 1 !important;
+  }
 `
 
 export const Icon = styled.i`

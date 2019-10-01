@@ -6,6 +6,7 @@ export class RouteLeavingGuard extends React.Component {
     modalVisible: false,
     lastLocation: null,
     confirmedNavigation: false,
+    func: () => {},
   }
 
   // Setup the `beforeunload` event listener
@@ -20,6 +21,14 @@ export class RouteLeavingGuard extends React.Component {
         return textToShow
       }
     })
+
+    // window.addEventListener('unload', async (ev) => {
+    //   const result = await actionBeforeUnload()
+    //   console.log('when', when)
+    //   console.log('action', action)
+    //   console.log('action before unload', actionBeforeUnload)
+    //   console.log('result exit', result)
+    // })
   }
 
   componentDidMount() {

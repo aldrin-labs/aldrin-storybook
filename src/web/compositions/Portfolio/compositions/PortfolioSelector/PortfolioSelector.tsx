@@ -41,6 +41,7 @@ import { IProps } from './PortfolioSelector.types'
 //   usdDustFilterOptions,
 // } from './PortfolioSelector.options'
 import { Grid } from '@material-ui/core'
+import { createGlobalStyle } from 'styled-components'
 
 //import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
@@ -73,6 +74,14 @@ import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfol
 
 // On this value we divide slider percentage to get btc filter value (100% = 0.01 btc)
 const BTC_PART_DIVIDER = 10000
+
+const RebalanceMediaQuery = createGlobalStyle`
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 15px;
+    }
+  }
+`
 
 @withRouter
 @withTheme()
@@ -181,6 +190,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
   onKeyToggle = async (toggledKeyID: string) => {
     const { portfolioId } = this.props
+
     const type = 'keyCheckboxes'
     const {
       portfolio: { baseCoin },
@@ -205,13 +215,13 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   onKeysSelectAll = async () => {
-    const { portfolioId, newKeys, isRebalance } = this.props
+    const { portfolioId, keys } = this.props
     const type = 'keyAll'
 
     const objForQuery = {
       settings: {
         portfolioId,
-        selectedKeys: UTILS.getArrayContainsAllSelected(newKeys),
+        selectedKeys: UTILS.getArrayContainsAllSelected(keys),
       },
     }
 
@@ -289,7 +299,7 @@ class PortfolioSelector extends React.Component<IProps> {
       isSideNavOpen,
       theme,
       newWallets,
-      newKeys,
+      keys,
       activeKeys,
       activeWallets,
       dustFilter,
@@ -322,7 +332,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===
-      newKeys.length + newWallets.length
+      keys.length + newWallets.length
 
     const color = theme.palette.secondary.main
 
@@ -372,19 +382,21 @@ class PortfolioSelector extends React.Component<IProps> {
           width: '41rem',
           ...styleForContainer,
         }}
-        // in={isSideNavOpen}
-        // direction="right"
-        // timeout={{ enter: 375, exit: 250 }}
-        // mountOnEnter={false}
-        // unmountOnExit={false}
+        id="porfolioSelector"
+        in={isSideNavOpen}
+        direction="right"
+        timeout={{ enter: 375, exit: 250 }}
+        mountOnEnter={false}
+        unmountOnExit={false}
       >
+        {isRebalance && <RebalanceMediaQuery />}
         <AccountsWalletsBlock
           isSideNavOpen={true}
           background={theme.palette.background.paper}
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          <GridSection style={{ height: '15rem' }}>
+          <GridSection style={{ height: '18vh' }}>
             <SvgIcon
               src={PortfolioSidebarBack}
               style={{
@@ -409,6 +421,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
                   baseCoin={baseCoin}
+                  isSideNavOpen={isSideNavOpen}
                   isPortfolio={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
                 />
@@ -431,9 +444,11 @@ class PortfolioSelector extends React.Component<IProps> {
                 color,
                 login,
                 isCheckedAll,
-                newKeys,
+                keys,
                 isRebalance,
+                isTransactions,
                 baseCoin,
+                isSideNavOpen,
                 portfolioAssetsData,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,

@@ -2,7 +2,7 @@ import React from 'react'
 import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
-import { IProps, IState } from './Portfolio.types'
+import { IProps, IState, Key } from './Portfolio.types'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
@@ -31,7 +31,21 @@ const safePortfolioDestruction = (
       wallets: [],
     },
   }
-) => portfolio
+): {
+  _id: string
+  name: string
+  userSettings: {
+    portfolioId: string
+    dustFilter: {
+      usd: number
+      btc: number
+      percentage: number | string
+    }
+    keys: Key[]
+    rebalanceKeys: Key[]
+    wallets: Key[]
+  }
+} => portfolio
 
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
@@ -101,7 +115,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             login={true}
             portfolioId={portfolioId}
             dustFilter={dustFilter}
-            newKeys={isRebalance ? rebalanceKeys : keys}
+            keys={isRebalance ? rebalanceKeys : keys}
             newWallets={wallets}
             activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
             activeWallets={activeWallets}
@@ -147,8 +161,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               isUSDCurrently={isUSDCurrently}
               isSideNavOpen={this.state.isSideNavOpen}
               toggleWallets={this.toggleWallets}
-              newKeys={isRebalance ? rebalanceKeys : keys}
-              isRebalance={isRebalance}
               data={data}
             />
           )}
@@ -166,7 +178,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 }
 
-const APIWrapper = (props) => {
+const APIWrapper = (props: any) => {
   return (
     <QueryRenderer
       {...props}
@@ -175,7 +187,7 @@ const APIWrapper = (props) => {
       name={'data'}
       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
       withOutSpinner={false}
-      //fetchPolicy="network-only"
+      // fetchPolicy="network-only"
     />
   )
 }
