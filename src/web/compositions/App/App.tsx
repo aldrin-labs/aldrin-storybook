@@ -26,6 +26,7 @@ import 'react-dates/lib/css/_datepicker.css'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 
 const version = `10.4.32`
 const currentVersion = localStorage.getItem('version')
@@ -39,6 +40,7 @@ const AppRaw = ({
   getViewModeQuery,
   getThemeModeQuery,
   location: { pathname: currentPage },
+  history: { push },
 }: any) => {
   const themeMode =
     getThemeModeQuery &&
@@ -60,7 +62,11 @@ const AppRaw = ({
         <CssBaseline />
         <AppGridLayout showFooter={showFooter} isPNL={isPNL}>
           {!pageIsRegistration && (
-            <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
+            <AnimatedNavBar
+              pathname={currentPage}
+              hide={fullscreen}
+              push={push}
+            />
           )}
           {children}
           <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
