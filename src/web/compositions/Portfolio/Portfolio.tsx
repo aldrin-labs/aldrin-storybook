@@ -1,5 +1,4 @@
 import React from 'react'
-// import { Query, Mutation, graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
@@ -11,10 +10,7 @@ import { PortfolioTable, PortfolioSelector } from './compositions'
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
-// import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
-// import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
-// import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 // import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
@@ -55,80 +51,7 @@ const safePortfolioDestruction = (
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
-    // openPopup: false,
-    // click: false,
-    //
-    // popupStart: true,
-    // openCreatePortfolio: false,
-    // openAddAccountDialog: false,
   }
-
-  // setOnboarding = async (type) => {
-  //   const { getTooltipSettingsQuery, updateTooltipSettings } = this.props
-
-  //   const {
-  //     portfolioMain,
-  //     portfolioIndustry,
-  //     portfolioRebalance,
-  //     portfolioCorrelation,
-  //     portfolioOptimization,
-  //     chartPage,
-  //     multiChartPage,
-  //     transactionPage,
-  //     onboarding: { instructions, portfolioName, exchangeKey, congratulations },
-  //   } = getTooltipSettingsQuery.getTooltipSettings
-
-  //   let variables = {
-  //     settings: {
-  //       portfolioMain: true,
-  //       portfolioIndustry: true,
-  //       portfolioRebalance: true,
-  //       portfolioCorrelation: true,
-  //       portfolioOptimization: true,
-  //       chartPage: true,
-  //       multiChartPage: true,
-  //       transactionPage: true,
-  //       onboarding: {
-  //         instructions: true,
-  //         portfolioName: false,
-  //         exchangeKey: false,
-  //         congratulations: false,
-  //       },
-  //     },
-  //   }
-
-  //   if (type === 'main') {
-  //     variables.settings.portfolioMain = false
-  //     variables.settings.transactionPage = true
-  //   } else if (type === 'instructions') {
-  //     variables.settings.onboarding.instructions = false
-  //   } else if (type === 'portfolioName') {
-  //     variables.settings.onboarding.instructions = false
-  //   }
-  //   console.log('TYPE portfolioMain', variables.settings.portfolioMain)
-  //   console.log('TYPE transactionPage', variables.settings.transactionPage)
-  //   console.log('variables', variables)
-
-  //   try {
-  //     // const res = await updateTooltipSettings({ variables })
-  //     await updateTooltipSettings({
-  //       variables: {
-  //         settings: {
-  //           ...removeTypenameFromObject(
-  //             getTooltipSettingsQuery.getTooltipSettings
-  //           ),
-  //           onboarding: {
-  //             ...removeTypenameFromObject(variables.settings.onboarding),
-  //           },
-  //           transactionPage: false,
-  //         },
-  //       },
-  //       update: updateTooltipMutation,
-  //     })
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
 
   componentDidMount() {
     const { data } = this.props
@@ -140,8 +63,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     rebalanceKeys = Array.isArray(rebalanceKeys) ? rebalanceKeys : []
     const activeKeys = rebalanceKeys.filter((key) => key.selected)
 
-    // this.setOnboarding()
-
     if (window.location.pathname.includes('rebalance')) {
       this.setState({
         isSideNavOpen: activeKeys.length === 0,
@@ -149,50 +70,12 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  // handleClickOpen = () => {
-  //   this.setState({
-  //     openPopup: true,
-  //   })
-  // }
-
-  // handleClose = () => {
-  //   const type = 'main'
-  //   this.setOnboarding(type)
-  //   this.setState({ click: true, openPopup: false })
-  // }
-
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
   }
 
-  // closeStartPopup = () => {
-  //   console.log('closed fuf')
-  //   this.setState({ popupStart: false })
-  // }
-
-  // toggleCreatePortfolio = (value: boolean) => {
-  //   this.setState({ openCreatePortfolio: value })
-  // }
-
-  // handleClickOpenAccount = () => {
-  //   this.setState({ openAddAccountDialog: true })
-  // }
-
-  // handleCloseAccount = () => {
-  //   this.setState({ openAddAccountDialog: false })
-  // }
-
   render() {
-    const {
-      theme,
-      baseData,
-      data,
-      // getTooltipSettingsQuery: {
-      //   getTooltipSettings: { portfolioMain, onboarding },
-      // },
-    } = this.props
-
-    // console.log('query', getTooltipSettingsQuery)
+    const { theme, baseData, data } = this.props
 
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
@@ -217,7 +100,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const activeWallets = wallets.filter((el) => el.selected)
 
     const isRebalance = window.location.pathname.includes('rebalance')
-    // const isMain = window.location.pathname.includes('main')
 
     const hasKeysOrWallets = isRebalance
       ? rebalanceKeys.length + wallets.length > 0
@@ -227,61 +109,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       ? activeRebalanceKeys.length + activeWallets.length > 0
       : activeKeys.length + activeWallets.length > 0
 
-    // console.log('getTooltipSettingsQuery', portfolioMain, onboarding)
-    // console.log('this.state.openPopup', this.state.openPopup)
-    // console.log('Theme', theme)
-
-    // console.log('suka', this.state.openCreatePortfolio)
-    // console.log('start', this.state.popupStart)
-
     return (
       <>
-        {/* {portfolioMain && isMain && (
-          <PopupStart
-            theme={theme}
-            open={
-              // onboarding.instructions !== null
-              //   ? onboarding.instructions
-              //   : portfolioMain
-              this.state.popupStart
-            }
-            handleClickOpen={this.setOnboarding}
-            toggleCreatePortfolio={this.toggleCreatePortfolio}
-            handleClose={this.setOnboarding}
-            closeStartPopup={this.closeStartPopup}
-            baseCoin={baseCoin}
-            portfolioId={portfolioId}
-          />
-        )}
-
-        <CreatePortfolio
-          open={this.state.openCreatePortfolio}
-          handleClickOpen={this.handleClickOpen}
-          handleClose={this.handleClose}
-          toggleCreatePortfolio={this.toggleCreatePortfolio}
-          openAddAccountDialog={this.state.openAddAccountDialog}
-          handleClickOpenAccount={this.handleClickOpenAccount}
-          handleCloseAccount={this.handleCloseAccount}
-          onboarding={true}
-          portfolioId={portfolioId}
-          baseCoin={baseCoin}
-        />
-
-        <AddAccountDialog
-          open={this.state.openAddAccountDialog}
-          handleClickOpen={this.handleClickOpenAccount}
-          handleClose={this.handleCloseAccount}
-          onboarding={true}
-          baseCoin={baseCoin}
-        />
-
-        <Congratulations
-          open={this.state.openCongratulations}
-          handleClickOpen={this.handleClickOpenCongratulations}
-          handleClose={this.handleCloseCongratulations}
-          loading={this.state.loading}
-        /> */}
-
         <PortfolioContainer>
           <PortfolioSelector
             login={true}
@@ -369,22 +198,6 @@ const APIWrapper = (props: any) => {
 export default compose(
   withAuth,
   withTheme(),
-  // queryRendererHoc({
-  //   query: GET_TOOLTIP_SETTINGS,
-  //   name: 'getTooltipSettingsQuery',
-  //   fetchPolicy: 'network-only',
-  //   refetchQueries: [
-  //     {
-  //       query: GET_TOOLTIP_SETTINGS,
-  //     },
-  //   ],
-  // }),
-  // graphql(updateTooltipSettings, {
-  //   name: 'updateTooltipSettings',
-  //   options: {
-  //     update: updateTooltipMutation,
-  //   },
-  // }),
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
