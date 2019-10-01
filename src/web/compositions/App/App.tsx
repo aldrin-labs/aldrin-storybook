@@ -19,7 +19,7 @@ import Footer from '@sb/components/Footer'
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import { AppGridLayout } from './App.styles'
-import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
+// import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/cssUtils'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
@@ -27,7 +27,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-const version = `10.4.32`
+const version = `10.4.33`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -39,6 +39,7 @@ const AppRaw = ({
   getViewModeQuery,
   getThemeModeQuery,
   location: { pathname: currentPage },
+  history: { push },
 }: any) => {
   const themeMode =
     getThemeModeQuery &&
@@ -60,7 +61,11 @@ const AppRaw = ({
         <CssBaseline />
         <AppGridLayout showFooter={showFooter} isPNL={isPNL}>
           {!pageIsRegistration && (
-            <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
+            <AnimatedNavBar
+              pathname={currentPage}
+              hide={fullscreen}
+              push={push}
+            />
           )}
           {children}
           <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
