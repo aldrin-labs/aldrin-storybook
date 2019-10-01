@@ -31,7 +31,6 @@ import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchange
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
-import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
 import Steps from '@sb/components/Onboarding/Steps/Steps'
 
@@ -50,9 +49,7 @@ const DialogContent = withStyles((theme) => ({
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
-    openCongratulations: false,
     openGetKeysInfo: false,
-    loading: false,
     isSelected: true,
     name: '',
     apiKey: '',
@@ -70,6 +67,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       secret: secretOfApiKey,
       exchange: exchange.toLowerCase(),
       date: Math.round(+Date.now() / 1000),
+    }
+
+    if (name.length < 3) {
+      this.setState({ error: 'Please enter name with at least 3 characters ' })
+      return false
     }
 
     if (name.length > 20) {
@@ -116,12 +118,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ exchange: e.value.toLowerCase() })
   }
 
-  handleRadioBtn = () => {
-    this.setState({
-      isSelected: !this.state.isSelected,
-    })
-  }
-
   handleClickOpen = () => {
     this.setState({
       open: true,
@@ -144,36 +140,17 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     })
   }
 
-  handleClickOpenCongratulations = () => {
-    this.setState({
-      openCongratulations: true,
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          loading: true,
-        })
-      }, 4000)
-    })
-
-  }
-
-  handleCloseCongratulations = () => {
-    this.setState({ openCongratulations: false })
-  }
-
   render() {
     const {
       theme: {
         palette: { black },
       },
-      handleClickOpen,
-      handleClose,
       open,
-      onboarding,
+      onboarding = undefined,
+      setCurrentStep,
     } = this.props
 
     const { name, apiKey, secretOfApiKey, exchange, error } = this.state
-    const onboardingOk = onboarding !== undefined && onboarding
 
     return (
       <>
@@ -182,62 +159,47 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           handleClose={this.handleCloseGetKeys}
         />
 
-        {
-          onboardingOk
-          ?
-            <Congratulations
-              open={this.state.openCongratulations}
-              handleClickOpen={this.handleClickOpenCongratulations}
-              handleClose={this.handleCloseCongratulations}
-              loading={this.state.loading}
-            />
-          :
-            <BtnCustom
-              btnWidth={'auto'}
-              height={'auto'}
-              btnColor={'#165BE0'}
-              borderRadius={'1rem'}
-              color={'#165BE0'}
-              margin={'1.6rem 0 0 2rem'}
-              padding={'.5rem 1rem .5rem 0'}
-              fontSize={'1.4rem'}
-              letterSpacing="1px"
-              onClick={this.handleClickOpen}
-              style={{
-                border: 'none',
-              }}
-            >
-              <SvgIcon
-                src={Plus}
-                width="3.5rem"
-                height="auto"
-                style={{
-                  marginRight: '.8rem',
-                }}
-              />
-              Add Account
-            </BtnCustom>
-        }
+        <BtnCustom
+          btnWidth={'auto'}
+          height={'auto'}
+          btnColor={'#165BE0'}
+          borderRadius={'1rem'}
+          color={'#165BE0'}
+          margin={'1.6rem 0 0 2rem'}
+          padding={'.5rem 1rem .5rem 0'}
+          fontSize={'1.4rem'}
+          letterSpacing="1px"
+          onClick={this.handleClickOpen}
+          style={{
+            border: 'none',
+          }}
+        >
+          <SvgIcon
+            src={Plus}
+            width="3.5rem"
+            height="auto"
+            style={{
+              marginRight: '.8rem',
+            }}
+          />
+          Add Account
+        </BtnCustom>
 
         <DialogWrapper
           maxWidth="xl"
           style={{ borderRadius: '50%' }}
           onClose={() => {
-            if(onboardingOk) {
-              handleClose()
-            } else {
+            if (!onboarding) {
               this.handleClose()
             }
           }}
-          open={onboardingOk ? open : this.state.open}
+          open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
         >
           <DialogTitleCustom
             id="customized-dialog-title"
             onClose={() => {
-              if(onboardingOk) {
-                handleClose()
-              } else {
+              if (!onboarding) {
                 this.handleClose()
               }
             }}
@@ -247,13 +209,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               borderRadius={'1rem'}
               color={black.custom}
             >
-              {
-                onboardingOk
-                ?
-                  <>connect your exchanges - <Steps current={2} /></>
-                :
-                  'Add Api Key'
-              }
+              {onboarding ? (
+                <>
+                  connect your exchanges - <Steps current={2} />
+                </>
+              ) : (
+                'Add Api Key'
+              )}
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
@@ -265,14 +227,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
-
                 const response = await this.handleSubmit()
 
-                console.log('end', response)
                 if (response) {
-                  if(onboardingOk) {
-                    this.handleClickOpenCongratulations()
-                    handleClose()
+                  if (onboarding) {
+                    setCurrentStep('congratulations')
                   } else {
                     this.handleClose()
                   }
@@ -370,7 +329,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   btnColor={'#165BE0'}
                   type="submit"
                 >
-                  { onboardingOk ? 'FINISH' : 'ADD' }
+                  {onboarding ? 'FINISH' : 'ADD'}
                 </BtnCustom>
               </Grid>
             </form>
@@ -384,15 +343,23 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 export default compose(
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
-    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
-      refetchQueries: [
-        {
-          query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin },
-        },
-        { query: getKeysQuery },
-        { query: keysNames },
-      ],
+    options: ({
+      baseCoin,
+      onboarding,
+    }: {
+      baseCoin: 'USDT' | 'BTC'
+      onboarding: boolean
+    }) => ({
+      refetchQueries: !onboarding
+        ? [
+            {
+              query: portfolioKeyAndWalletsQuery,
+              variables: { baseCoin },
+            },
+            { query: getKeysQuery },
+            { query: keysNames },
+          ]
+        : [],
     }),
   })
 )(AddAccountDialog)

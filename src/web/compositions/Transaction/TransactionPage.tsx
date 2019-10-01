@@ -261,7 +261,9 @@ class TransactionPage extends React.PureComponent {
       activeWallets = [],
       portfolioKeys,
       isCustomStyleForFooter,
-      getTooltipSettingsQuery: { getTooltipSettings: { transactionPage } },
+      getTooltipSettingsQuery: {
+        getTooltipSettings: { transactionPage },
+      },
     } = this.props
 
     const {
@@ -295,8 +297,7 @@ class TransactionPage extends React.PureComponent {
       activeKeys.length + activeWallets.length ===
       keys.length + newWallets.length
 
-    console.log('transactionPage',transactionPage)
-
+    console.log('transactionPage', transactionPage)
 
     return (
       <>
@@ -320,7 +321,7 @@ class TransactionPage extends React.PureComponent {
                   theme.palette.grey[theme.palette.type]
                 }`}
                 style={{ backgroundColor: '#fff' }}
-                id='accountsTransactions'
+                id="accountsTransactions"
               >
                 <GridContainerTitle
                   bgColor={theme.palette.primary.dark}
@@ -400,7 +401,7 @@ class TransactionPage extends React.PureComponent {
                 <GridCalendarContainer
                   item
                   xs={12}
-                  id='calendarTransactions'
+                  id="calendarTransactions"
                   borderColor={`1px solid ${
                     theme.palette.grey[theme.palette.type]
                   }`}
@@ -427,7 +428,7 @@ class TransactionPage extends React.PureComponent {
                   theme.palette.grey[theme.palette.type]
                 }`}
                 style={{ height: 'calc(70.5% - 2vh)' }}
-                id='tableTransactions'
+                id="tableTransactions"
               >
                 <TradeOrderHistory
                   isCustomStyleForFooter={isCustomStyleForFooter}
@@ -450,7 +451,7 @@ class TransactionPage extends React.PureComponent {
             item
             lg={hideSelector ? 3 : 2}
             md={hideSelector ? 3 : 2}
-            id='statisticTransactions'
+            id="statisticTransactions"
             style={{
               boxShadow: 'none',
               border: 'none',
@@ -468,13 +469,12 @@ class TransactionPage extends React.PureComponent {
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
-
+        {/* 
         <JoyrideOnboarding
           steps={transactionsPageSteps}
           open={transactionPage}
           handleJoyrideCallback={this.handleJoyrideCallback}
-        />
-
+        /> */}
       </>
     )
   }
@@ -495,8 +495,8 @@ export default compose(
     refetchQueries: [
       {
         query: GET_TOOLTIP_SETTINGS,
-      }
-    ]
+      },
+    ],
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettings',

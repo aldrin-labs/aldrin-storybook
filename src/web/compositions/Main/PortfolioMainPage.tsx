@@ -11,6 +11,7 @@ import { IProps, IState } from './PortfolioMainPage.types'
 // import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
+import PortfolioOnboarding from './PortfolioOnboarding'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
@@ -38,15 +39,6 @@ const LayoutClearfixWrapper = styled.div`
     padding-right: calc(2.5% + 3rem);
   }
 `
-
-const PNLPageMediaQuery = createGlobalStyle`
-  @media only screen and (min-width: 1921px) and (max-width: 2100px) {
-    html {
-      font-size: 13px;
-    }
-  }
-`
-
 @withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
@@ -81,6 +73,9 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
         variables: {
           settings: {
             ...removeTypenameFromObject(getTooltipSettings),
+            onboarding: {
+              ...removeTypenameFromObject(getTooltipSettings.onboarding),
+            },
             portfolioMain: false,
           },
         },
@@ -110,9 +105,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
     const { openSharePortfolioPopUp } = this.state
 
-    const accountsNames = portfolioKeys.filter(key => key.selected).map(key => key.name)
+    const accountsNames = portfolioKeys
+      .filter((key) => key.selected)
+      .map((key) => key.name)
 
-    const enabledAssets = assets.myPortfolios[0].portfolioAssets.filter(asset => accountsNames.includes(asset.name))
+    const enabledAssets = assets.myPortfolios[0].portfolioAssets.filter(
+      (asset) => accountsNames.includes(asset.name)
+    )
 
     const filteredData = combineTableData(
       enabledAssets || [],
@@ -128,7 +127,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     return (
       <LayoutClearfixWrapper>
         <Grid style={{ height: '100%' }}>
-          <div id='sharePortfolioPanel'>
+          <div id="sharePortfolioPanel">
             <SharePortfolioPanel
               handleOpenSharePortfolio={this.handleOpenSharePortfolio}
               portfolioName={portfolioName}
@@ -147,7 +146,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           <Template
             PortfolioMainTable={
               <PortfolioMainTable
-                data={{myPortfolios: [{portfolioAssets: enabledAssets}]}}
+                data={{ myPortfolios: [{ portfolioAssets: enabledAssets }] }}
                 theme={theme}
                 dustFilter={dustFilter}
                 baseCoin={baseCoin}
@@ -169,7 +168,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             steps={portfolioMainSteps}
             // run={getTooltipSettings.portfolioMain}
             run={false}
-            callback={this.handleJoyrideCallback}
+            //callback={this.handleJoyrideCallback}
             key={this.state.key}
             styles={{
               options: {
@@ -194,6 +193,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             handleCloseSharePortfolio={this.handleCloseSharePortfolio}
           />
         </Grid>
+        <PortfolioOnboarding portfolioId={portfolioId} baseCoin={baseCoin} />
       </LayoutClearfixWrapper>
     )
   }

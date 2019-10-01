@@ -45,8 +45,9 @@ const RenameKeyDialogComponent = ({
       ? { inputPortfolio: { id, name: newName } }
       : { input: { keyId: id, name: newName } }
 
-    if (newName === '') {
-      return setError('Account can not have empty name')
+    if (name.length < 3) {
+      setError('Please enter name with at least 3 characters ')
+      return false
     }
 
     if (newName.length > 20) {
