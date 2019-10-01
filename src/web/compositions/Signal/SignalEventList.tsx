@@ -8,6 +8,7 @@ import { GET_SIGNAL_EVENTS_QUERY } from '@core/graphql/queries/signals/getSignal
 import { addMainSymbol, TableWithSort } from '@sb/components'
 import { ContainerGrid } from './SignalPage.styles'
 
+import { checkValue } from './utils'
 import { IState, IProps } from './SignalEventList.types'
 
 const putDataInTable = (tableData: any[]) => {
@@ -99,50 +100,66 @@ const transformData = (data: any[]) => {
       amount: {
         contentToSort: row.amount,
         contentToCSV: roundAndFormatNumber(row.amount, 2, true),
-        render: row.amount
-          ? addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
-          : '-',
+        render: checkValue(
+          row.amount,
+          addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true)
+        ),
       },
       spreadC: {
         contentToSort: row.spreadC,
         contentToCSV: roundAndFormatNumber(row.spreadC, 2, false),
-        render: row.spreadC
-          ? `${roundAndFormatNumber(row.spreadC, 2, false)} %`
-          : '-',
+        render: checkValue(
+          row.spreadC,
+          `${roundAndFormatNumber(row.spreadC, 2, false)} %`
+        ),
       },
       spreadA: {
         contentToSort: row.spreadA,
         contentToCSV: roundAndFormatNumber(row.spreadA, 2, false),
-        render: row.spreadA
-          ? `${roundAndFormatNumber(row.spreadA, 2, false)} %`
-          : '-',
+        render: checkValue(
+          row.spreadA,
+          `${roundAndFormatNumber(row.spreadA, 2, false)} %`
+        ),
       },
       spreadB: {
         contentToSort: row.spreadB,
         contentToCSV: roundAndFormatNumber(row.spreadB, 2, false),
-        render: row.spreadB
-          ? `${roundAndFormatNumber(row.spreadB, 2, false)} %`
-          : '-',
+        render: checkValue(
+          row.spreadB,
+          `${roundAndFormatNumber(row.spreadB, 2, false)} %`
+        ),
       },
       priceC: {
         contentToSort: row.priceC,
         contentToCSV: roundAndFormatNumber(row.priceC, 8, true),
-        render: row.priceC ? roundAndFormatNumber(row.priceC, 8, true) : '-',
+        render: checkValue(
+          row.priceC,
+          roundAndFormatNumber(row.priceC, 8, true)
+        ),
       },
       priceA: {
         contentToSort: row.priceA,
         contentToCSV: roundAndFormatNumber(row.priceA, 8, true),
-        render: row.priceA ? roundAndFormatNumber(row.priceA, 8, true) : '-',
+        render: checkValue(
+          row.priceA,
+          roundAndFormatNumber(row.priceA, 8, true)
+        ),
       },
       priceB: {
         contentToSort: row.priceB,
         contentToCSV: roundAndFormatNumber(row.priceB, 8, true),
-        render: row.priceB ? roundAndFormatNumber(row.priceB, 8, true) : '-',
+        render: checkValue(
+          row.priceB,
+          roundAndFormatNumber(row.priceB, 8, true)
+        ),
       },
       profit: {
         contentToSort: row.profit,
         contentToCSV: roundAndFormatNumber(row.profit, 3, true),
-        render: row.profit ? roundAndFormatNumber(row.profit, 3, true) : '-',
+        render: checkValue(
+          row.profit,
+          roundAndFormatNumber(row.profit, 3, true)
+        ),
       },
       status: {
         render: row.status || '-',
