@@ -1,7 +1,8 @@
 import Joyride from 'react-joyride'
 
 function JoyrideOnboarding(props) {
-  const { steps, open } = props
+  const { steps, open, handleJoyrideCallback } = props
+
   return (
     <Joyride
       continuous={true}
@@ -9,6 +10,7 @@ function JoyrideOnboarding(props) {
       showSkipButton={false}
       steps={steps}
       run={open}
+      callback={handleJoyrideCallback}
       styles={{
         options: {
           backgroundColor: 'transparent',

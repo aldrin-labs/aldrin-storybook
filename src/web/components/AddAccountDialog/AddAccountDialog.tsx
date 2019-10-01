@@ -31,6 +31,8 @@ import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchange
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
+import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
+import Steps from '@sb/components/Onboarding/Steps/Steps'
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
@@ -47,6 +49,7 @@ const DialogContent = withStyles((theme) => ({
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
+    openGetKeysInfo: false,
     isSelected: true,
     name: '',
     apiKey: '',
@@ -58,15 +61,22 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   handleSubmit = async () => {
     const { name, apiKey, secretOfApiKey, exchange } = this.state
 
+    const trimmedName = name.trim()
+
     const variables = {
-      name,
+      name: trimmedName,
       apiKey,
       secret: secretOfApiKey,
       exchange: exchange.toLowerCase(),
       date: Math.round(+Date.now() / 1000),
     }
 
-    if (name.length > 20) {
+    if (trimmedName.length < 3) {
+      this.setState({ error: 'Please enter name with at least 3 characters ' })
+      return false
+    }
+
+    if (trimmedName.length > 20) {
       this.setState({ error: 'Please limit name to 20 characters ' })
       return false
     }
@@ -110,12 +120,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ exchange: e.value.toLowerCase() })
   }
 
-  handleRadioBtn = () => {
-    this.setState({
-      isSelected: !this.state.isSelected,
-    })
-  }
-
   handleClickOpen = () => {
     this.setState({
       open: true,
@@ -126,17 +130,37 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ open: false })
   }
 
+  handleClickOpenGetKeys = () => {
+    this.setState({
+      openGetKeysInfo: true,
+    })
+  }
+
+  handleCloseGetKeys = () => {
+    this.setState({
+      openGetKeysInfo: false,
+    })
+  }
+
   render() {
     const {
       theme: {
         palette: { black },
       },
+      open,
+      onboarding = undefined,
+      setCurrentStep,
     } = this.props
 
     const { name, apiKey, secretOfApiKey, exchange, error } = this.state
 
     return (
       <>
+        <GetKeysInfo
+          open={this.state.openGetKeysInfo}
+          handleClose={this.handleCloseGetKeys}
+        />
+
         <BtnCustom
           btnWidth={'auto'}
           height={'auto'}
@@ -162,23 +186,38 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           />
           Add Account
         </BtnCustom>
+
         <DialogWrapper
           maxWidth="xl"
           style={{ borderRadius: '50%' }}
-          onClose={this.handleClose}
+          onClose={() => {
+            if (!onboarding) {
+              this.handleClose()
+            }
+          }}
+          open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
-          open={this.state.open}
         >
           <DialogTitleCustom
             id="customized-dialog-title"
-            onClose={this.handleClose}
+            onClose={() => {
+              if (!onboarding) {
+                this.handleClose()
+              }
+            }}
           >
             <TypographyCustomHeading
               fontWeight={'700'}
               borderRadius={'1rem'}
               color={black.custom}
             >
-              Add Api Key
+              {onboarding ? (
+                <>
+                  connect your exchanges - <Steps current={2} />
+                </>
+              ) : (
+                'Add Api Key'
+              )}
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
@@ -190,11 +229,15 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
-
                 const response = await this.handleSubmit()
 
-                console.log('end', response)
-                if (response) this.handleClose()
+                if (response) {
+                  if (onboarding) {
+                    setCurrentStep('congratulations')
+                  } else {
+                    this.handleClose()
+                  }
+                }
               }}
               style={{ minWidth: '440px' }}
             >
@@ -272,7 +315,15 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               </Grid>
 
               <Grid container justify="space-between" alignItems="center">
-                <LinkCustom href={'#'}>How to get keys?</LinkCustom>
+                <LinkCustom
+                  href={'#'}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.handleClickOpenGetKeys()
+                  }}
+                >
+                  How to get keys?
+                </LinkCustom>
 
                 <BtnCustom
                   btnWidth={'85px'}
@@ -280,7 +331,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   btnColor={'#165BE0'}
                   type="submit"
                 >
-                  ADD
+                  {onboarding ? 'FINISH' : 'ADD'}
                 </BtnCustom>
               </Grid>
             </form>
@@ -294,15 +345,23 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 export default compose(
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
-    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
-      refetchQueries: [
-        {
-          query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin },
-        },
-        { query: getKeysQuery },
-        { query: keysNames },
-      ],
+    options: ({
+      baseCoin,
+      onboarding,
+    }: {
+      baseCoin: 'USDT' | 'BTC'
+      onboarding: boolean
+    }) => ({
+      refetchQueries: !onboarding
+        ? [
+            {
+              query: portfolioKeyAndWalletsQuery,
+              variables: { baseCoin },
+            },
+            { query: getKeysQuery },
+            { query: keysNames },
+          ]
+        : [],
     }),
   })
 )(AddAccountDialog)

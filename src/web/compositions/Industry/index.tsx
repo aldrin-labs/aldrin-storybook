@@ -62,7 +62,7 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
           Table={<IndustryTable dustFilter={dustFilter} />}
           Chart={<IndustryChart />}
         />
-        <Joyride
+        {/* <Joyride
           steps={portfolioIndustrySteps}
           // run={getTooltipSettings.portfolioIndustry}
           run={false}
@@ -81,7 +81,7 @@ class PortfolioTableIndustries extends React.Component<IProps, IState> {
               fontSize: theme.typography.fontSize,
             },
           }}
-        />
+        /> */}
       </>
     )
   }
