@@ -37,7 +37,6 @@ class PopupStart extends React.Component<IProps, IState> {
     return (
       <>
         <DialogWrapper
-          // onClose={() => handleClose('instructions')}
           aria-labelledby="customized-dialog-title"
           open={open}
           style={{
@@ -47,7 +46,6 @@ class PopupStart extends React.Component<IProps, IState> {
         >
           <DialogTitleCustom
             id="customized-dialog-title"
-            // onClose={() => handleClose('instructions')}
             style={{
               backgroundColor: theme.palette.background.default,
             }}

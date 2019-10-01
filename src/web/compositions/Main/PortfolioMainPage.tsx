@@ -92,12 +92,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     const {
       theme,
       dustFilter,
-      getTooltipSettingsQuery: { getTooltipSettings },
       sharePortfolioMutation,
       portfolioId,
       portfolioName,
       portfolioKeys,
-      // onToggleUSDBTC,
       isUSDCurrently,
       portfolioAssets: assets,
       baseCoin,
@@ -131,7 +129,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             <SharePortfolioPanel
               handleOpenSharePortfolio={this.handleOpenSharePortfolio}
               portfolioName={portfolioName}
-              // onToggleUSDBTC={onToggleUSDBTC}
               isUSDCurrently={isUSDCurrently}
             />
             {/* TODO: Recomment if needed <Divider /> */}

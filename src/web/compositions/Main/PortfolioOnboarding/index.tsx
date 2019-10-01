@@ -97,11 +97,7 @@ export default compose(
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
     fetchPolicy: 'network-only',
-    // refetchQueries: [
-    //   {
-    //     query: GET_TOOLTIP_SETTINGS,
-    //   },
-    // ],
+    withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettings',

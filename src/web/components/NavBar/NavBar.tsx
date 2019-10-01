@@ -63,8 +63,6 @@ const NavBarRaw: SFC<Props> = ({
   const pathnamePage = pathname.split('/')
   const page = pathnamePage[pathnamePage.length - 1]
 
-  console.log('navbarP', push)
-
   return (
     <Nav
       position="static"
