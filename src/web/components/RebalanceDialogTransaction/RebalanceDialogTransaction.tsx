@@ -240,16 +240,21 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 <GridCustom container>
                   <TypographyTopDescription margin="-10px 0 0 0">
                     You can cancel the unexecuted orders <br />
-                    or reset slippage and re-execute the remaining orders.
                   </TypographyTopDescription>
                 </GridCustom>
-                <GridCustom container justify="center">
+                {/* <GridCustom container>
+                  <TypographyTopDescription margin="-10px 0 0 0">
+                    You can cancel the unexecuted orders <br />
+                    or reset slippage and re-execute the remaining orders.
+                  </TypographyTopDescription>
+                </GridCustom> */}
+                {/* <GridCustom container justify="center">
                   <RebalanceSlippageSlider
                     disabled={false}
                     slippageValue={slippageValue}
                     onChangeSlippage={onChangeSlippage}
                   />
-                </GridCustom>
+                </GridCustom> */}
                 <GridCustom container justify="center">
                   <BtnCustom
                     height="3.4rem"
@@ -301,13 +306,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                   </TypographyTopDescription>
                 </GridCustom>
 
-                <GridCustom container justify="center">
+                {/* <GridCustom container justify="center">
                   <RebalanceSlippageSlider
                     disabled={false}
                     slippageValue={slippageValue}
                     onChangeSlippage={onChangeSlippage}
                   />
-                </GridCustom>
+                </GridCustom> */}
 
                 <GridCustom container justify="center">
                   <BtnCustom
@@ -327,12 +332,17 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 <TypographyTopDescription margin="20px auto 32px auto">
                   Your portfolio will change.
                 </TypographyTopDescription>
-                <GridCustom container justify="center">
+                {/* <GridCustom container justify="center">
                   <RebalanceSlippageSlider
                     disabled={showLoader}
                     slippageValue={slippageValue}
                     onChangeSlippage={onChangeSlippage}
                   />
+                </GridCustom> */}
+                <GridCustom container>
+                  <TypographyTopDescription margin="-10px 0 0 0">
+                  We are using market orders for testing. This will be replaced with limit orders with slippage control. <br />
+                  </TypographyTopDescription>
                 </GridCustom>
                 <GridCustom container justify="center">
                   <BtnCustom
