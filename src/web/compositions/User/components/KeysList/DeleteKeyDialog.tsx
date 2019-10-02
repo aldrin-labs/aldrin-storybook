@@ -14,10 +14,12 @@ import Dialog from '@material-ui/core/Dialog'
 
 import Typography from '@material-ui/core/Typography'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { deleteExchangeKeyMutation } from '@core/graphql/mutations/user/deleteExchangeKeyMutation'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 const DeleteKeyDialogComponent = ({
   handleClickOpen,
@@ -132,18 +134,25 @@ const handleState = withStateHandlers(
 )
 
 export const DeleteKeyDialog = compose(
+  queryRendererHoc({
+    query: GET_BASE_COIN,
+    name: 'baseData',
+  }),
   graphql(deleteExchangeKeyMutation, {
     name: 'deleteExchangeKey',
-    options: {
+    options: ({ baseData: {portfolio: { baseCoin }} }) => ({
       refetchQueries: [
         'getKeys',
         'getPortfolio',
         'portfolios',
-        { query: portfolioKeyAndWalletsQuery },
+        {
+          query: portfolioKeyAndWalletsQuery,
+          variables: { baseCoin },
+        },
         { query: getKeysQuery },
         { query: keysNames },
       ],
-    },
+    }),
   }),
   graphql(getKeysQuery),
   handleState,

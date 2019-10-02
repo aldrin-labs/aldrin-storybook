@@ -44,7 +44,7 @@ export const getCalendarData = (
         return {
           date: moment(+startDate)
             .dayOfYear(action._id)
-            .startOf('day')
+            .add(2, 'hours') // react-heatmap-calendar doesn't handle time change during seasons
             .toDate(),
           count: action.transactionsCount,
           className: getSquareClassName(
@@ -58,7 +58,7 @@ export const getCalendarData = (
       return {
         date: moment(+startDate)
           .dayOfYear(index)
-          .startOf('day')
+          .add(2, 'hours') // react-heatmap-calendar doesn't handle time change during seasons
           .toDate(),
         count: 0,
         className: squareColorsRange[0].className,

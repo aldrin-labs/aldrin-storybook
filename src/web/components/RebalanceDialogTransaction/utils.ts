@@ -4,7 +4,7 @@ export const decideElementToShow = ({
   rebalanceIsCanceled,
   availablePercentage,
 }) => {
-  return rebalanceError && showRetryButton && !rebalanceIsCanceled
+  return (rebalanceError || rebalanceIsCanceled) && showRetryButton
     ? 'retry'
     : availablePercentage === 100
     ? 'goButton'
