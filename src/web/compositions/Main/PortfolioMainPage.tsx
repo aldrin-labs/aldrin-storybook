@@ -129,6 +129,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             <SharePortfolioPanel
               handleOpenSharePortfolio={this.handleOpenSharePortfolio}
               portfolioName={portfolioName}
+              baseCoin={baseCoin}
               isUSDCurrently={isUSDCurrently}
             />
             {/* TODO: Recomment if needed <Divider /> */}
