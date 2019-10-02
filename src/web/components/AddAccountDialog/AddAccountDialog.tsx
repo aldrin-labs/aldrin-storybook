@@ -84,11 +84,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     try {
       const { data } = await this.props.addExchangeKey({
         variables,
-        update: (proxy, { data: { addExchangeKey } }) => {
-          const proxyData = proxy.readQuery({ query: getKeysQuery })
-          proxyData.myPortfolios[0].keys.push(addExchangeKey)
-          proxy.writeQuery({ query: getKeysQuery, data: proxyData })
-        },
+        // update: (proxy, { data: { addExchangeKey } }) => {
+        //   const proxyData = proxy.readQuery({ query: getKeysQuery })
+        //   proxyData.myPortfolios[0].keys.push(addExchangeKey)
+        //   proxy.writeQuery({ query: getKeysQuery, data: proxyData })
+        // },
       })
 
       const { error } = data.addExchangeKey

@@ -1,17 +1,17 @@
 import React, { ReactNode } from 'react'
 
 export const getTextOverButton = ({
-  progress,
+  showRebalanceProgress,
   showRetryButton,
   rebalanceError,
   rebalanceIsCanceled,
 }: {
-  progress: number | null
+  showRebalanceProgress: boolean
   showRetryButton: boolean
   rebalanceError: boolean
   rebalanceIsCanceled: boolean
 }): ReactNode => {
-  if (rebalanceError && showRetryButton && !rebalanceIsCanceled) {
+  if ((rebalanceError || rebalanceIsCanceled) && showRetryButton) {
     return (
       <span style={{ color: '#DD6956', textTransform: 'uppercase' }}>
         Rebalance is unsuccessful
@@ -27,7 +27,7 @@ export const getTextOverButton = ({
     )
   }
 
-  if (progress !== null) {
+  if (showRebalanceProgress) {
     return <span>REBALANCE IS PROCESSING</span>
   } else {
     return (

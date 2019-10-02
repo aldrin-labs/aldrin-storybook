@@ -60,6 +60,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
       rebalanceTimePeriod,
       onRebalanceTimerChange,
       width,
+      accountName,
     } = this.props
 
     const showEveryTimeInput =
@@ -78,7 +79,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
             <Grid container justify="space-between">
               <Grid item lg={4} md={3} justify="center">
                 <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
-                  Binance trade account
+                  {accountName}
                 </StyledTypography>
                 <StyledSubTypography
                   fontWeight={'700'}
