@@ -57,6 +57,7 @@ const NavBarRaw: SFC<Props> = ({
   theme,
   pathname,
   $hide = false,
+  push,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
@@ -164,21 +165,6 @@ const NavBarRaw: SFC<Props> = ({
                     </NavLinkButton>
                   </NavLinkButtonWrapper>
 
-                  <NavLinkButtonWrapper>
-                    <NavLinkButton
-                      page={`market`}
-                      component={Market}
-                      pathname={pathname}
-                      onMouseOver={() => {
-                        client.query({
-                          query: marketsQuery,
-                        })
-                      }}
-                    >
-                      Marketcap
-                    </NavLinkButton>
-                  </NavLinkButtonWrapper>
-
                   <NavLinkButton
                     page={`market`}
                     component={Market}
@@ -188,6 +174,21 @@ const NavBarRaw: SFC<Props> = ({
                   </NavLinkButton>
                 </>
               )}
+
+              <NavLinkButtonWrapper>
+                <NavLinkButton
+                  page={`market`}
+                  component={Market}
+                  pathname={pathname}
+                  onMouseOver={() => {
+                    client.query({
+                      query: marketsQuery,
+                    })
+                  }}
+                >
+                  Marketcap
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
               <NavLinkButtonWrapper>
                 <NavLinkButton
                   page={`signals`}
@@ -216,7 +217,7 @@ const NavBarRaw: SFC<Props> = ({
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden>
               <Hidden only="xs">
-                <Login />
+                <Login push={push} />
               </Hidden>
             </Grid>
           </Grid>

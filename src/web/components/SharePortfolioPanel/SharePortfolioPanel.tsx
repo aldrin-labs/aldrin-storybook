@@ -20,6 +20,7 @@ class SharePortfolioPanel extends Component<IProps> {
         style={{
           padding: '1.6rem 24px',
           height: '11%',
+          background: '#F9FBFD',
         }}
       >
         <Grid item>
@@ -42,10 +43,15 @@ class SharePortfolioPanel extends Component<IProps> {
         </Grid>
 
         <Grid item>
-          <Grid container justify="flex-start" alignItems="center">
-            {/* <Grid item>
+          <Grid
+            container
+            justify="flex-start"
+            alignItems="center"
+            id="sharePortfolioSwitcher"
+          >
+            <Grid item>
               <SelectPortfolioPeriod />
-            </Grid> */}
+            </Grid>
             <Grid item>
               <StyledButton
                 onClick={onToggleUSDBTC}

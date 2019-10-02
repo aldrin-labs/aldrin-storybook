@@ -4,6 +4,7 @@ import moment from 'moment'
 
 import withAuth from '@core/hoc/withAuth'
 import { Grid } from '@material-ui/core'
+import { client } from '@core/graphql/apolloClient'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
@@ -51,16 +52,14 @@ const SignalListItem = (props) => {
     onClick,
     isSelected,
     openDialog,
-    toggleEnableSignal: toggleEnableMutation,
+    toggleEnableSignal,
     index,
     _id,
     enabled,
     updateSignalMutation,
   } = props
 
-  const [isEnabled, toggleEnable] = useState(enabled)
   const [timeLeft, updateTimeLeft] = useState([0, 0, 0, 0, 0])
-
   const [months, days, hours, minutes, seconds] = timeLeft
 
   useEffect(() => {
@@ -76,26 +75,10 @@ const SignalListItem = (props) => {
       ]
 
       updateTimeLeft(date)
-    })
+    }, 1000)
 
     return () => clearInterval(id)
   }, [el.updatedAt])
-
-  const toggleEnableSignal = async (
-    index: number | string,
-    _id: string,
-    enabled: boolean,
-    updateSignalMutation: any
-  ) => {
-    const result = await toggleEnableMutation(
-      index,
-      _id,
-      enabled,
-      updateSignalMutation
-    )
-
-    toggleEnable(!isEnabled)
-  }
 
   return (
     <FolioCard
@@ -142,10 +125,10 @@ const SignalListItem = (props) => {
           </div>
         </FolioValuesCell>
         <SwitchOnOff
-          enabled={isEnabled}
+          enabled={enabled}
           _id={_id}
-          onChange={() => {
-            toggleEnableSignal(index, _id, enabled, updateSignalMutation)
+          onChange={async () => {
+            await toggleEnableSignal(index, _id, enabled, updateSignalMutation)
           }}
         />
       </Grid>
@@ -219,6 +202,24 @@ class SocialPage extends React.Component {
     arg3: boolean,
     updateSignalMutation: (obj: object) => void
   ) => {
+    const data = await client.readQuery({ query: GET_FOLLOWING_SIGNALS_QUERY })
+      .getFollowingSignals
+    const signalIndex = data.findIndex((signal) => signal._id === arg2)
+
+    await client.writeQuery({
+      query: GET_FOLLOWING_SIGNALS_QUERY,
+      data: {
+        getFollowingSignals: [
+          ...data.slice(0, signalIndex),
+          {
+            ...data[signalIndex],
+            enabled: !arg3,
+          },
+          ...data.slice(signalIndex + 1),
+        ],
+      },
+    })
+
     await updateSignalMutation({
       variables: {
         signalId: arg2,
@@ -264,7 +265,7 @@ class SocialPage extends React.Component {
     const sharedSignalsList = sortedData.map((el, index) => (
       <SignalListItem
         index={index}
-        key={index}
+        key={el._id}
         isSelected={index === selectedSignal}
         el={el}
         _id={el._id}
@@ -395,8 +396,10 @@ export default compose(
   }),
   graphql(updateSignal, {
     name: 'updateSignalMutation',
-    options: {
+    options: (props) => ({
       refetchQueries: [{ query: GET_FOLLOWING_SIGNALS_QUERY }],
-    },
+      awaitRefetchQueries: true,
+      onCompleted: () => props.refetch(),
+    }),
   })
 )(SocialPage)

@@ -11,10 +11,10 @@ export const AccountsListItem = styled.li`
   text-align: left;
   color: ${(props: { color: string }) => props.color};
   padding: 0;
-  min-height: 7vh;
+  min-height: 5vh;
 
   &:not(:last-child) {
-    border-bottom: 1px solid #E0E5EC;
+    border-bottom: 1px solid #e0e5ec;
   }
 
   svg {
@@ -27,9 +27,9 @@ export const AccountsList = styled.ul`
   list-style: none;
   display: flex;
   flex-direction: column;
-  padding-left: 2rem;
+  padding: ${(props) =>
+    props.isTransactions ? '0rem 0.3rem' : '0 2.4rem 0 2rem'};
   margin: 0;
-  max-height: 30vh;
 `
 
 export const AccountsWalletsHeadingWrapper = styled.div`
@@ -66,10 +66,16 @@ export const AccountName = styled(TypographyFullWidth)`
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
-  letter-spacing: ${props => props.letterSpacing || '1.5px'};
+  letter-spacing: ${(props) => props.letterSpacing || '1.5px'};
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: 0;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70%;
+  margin: 0 auto;
+  overflow: hidden;
 `
 
 export const Headline = styled.div`

@@ -2,7 +2,7 @@ import React from 'react'
 import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
-import { IProps, IState } from './Portfolio.types'
+import { IProps, IState, Key } from './Portfolio.types'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
@@ -12,6 +12,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+// import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
 
@@ -31,7 +32,21 @@ const safePortfolioDestruction = (
       wallets: [],
     },
   }
-) => portfolio
+): {
+  _id: string
+  name: string
+  userSettings: {
+    portfolioId: string
+    dustFilter: {
+      usd: number
+      btc: number
+      percentage: number | string
+    }
+    keys: Key[]
+    rebalanceKeys: Key[]
+    wallets: Key[]
+  }
+} => portfolio
 
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
@@ -101,7 +116,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             login={true}
             portfolioId={portfolioId}
             dustFilter={dustFilter}
-            newKeys={isRebalance ? rebalanceKeys : keys}
+            keys={isRebalance ? rebalanceKeys : keys}
             newWallets={wallets}
             activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
             activeWallets={activeWallets}
@@ -147,8 +162,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               isUSDCurrently={isUSDCurrently}
               isSideNavOpen={this.state.isSideNavOpen}
               toggleWallets={this.toggleWallets}
-              newKeys={isRebalance ? rebalanceKeys : keys}
-              isRebalance={isRebalance}
               data={data}
             />
           )}
@@ -161,12 +174,14 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             <Backdrop onClick={this.toggleWallets} />
           </Fade>
         </PortfolioContainer>
+
+        {/* <JoyrideOnboarding steps={portfolioMainSteps} open={portfolioMain} /> */}
       </>
     )
   }
 }
 
-const APIWrapper = (props) => {
+const APIWrapper = (props: any) => {
   return (
     <QueryRenderer
       {...props}

@@ -1,17 +1,11 @@
 import React from 'react'
 
-import { withFormik } from 'formik'
-import Yup from 'yup'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
 import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
-
 import { withTheme } from '@material-ui/styles'
 
 import {
@@ -24,70 +18,14 @@ import {
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
+import { renamePortfolio } from '@core/graphql/mutations/portfolio/renamePortfolio'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './CreatePortfolio.types'
-
-const formikDialog = withFormik({
-  validationSchema: Yup.object().shape({
-    portfolioName: Yup.string().required(),
-  }),
-  mapPropsToValues: () => ({
-    portfolioName: '',
-  }),
-  handleSubmit: async ({ portfolioName }, props) => {
-    const { createPortfolio } = props.props
-    const variables = {
-      inputPortfolio: {
-        name: portfolioName,
-      },
-    }
-
-    try {
-      props.setSubmitting(true)
-      await createPortfolio({
-        variables,
-      })
-      props.resetForm({})
-    } catch (error) {
-      console.error(error)
-      props.setFieldError('portfolioName', 'Request error!')
-      props.setSubmitting(false)
-    }
-  },
-})
-
-const DialogTitle = withStyles((theme) => ({
-  root: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing.unit,
-    top: theme.spacing.unit,
-    color: theme.palette.grey[500],
-  },
-}))((props) => {
-  const { children, classes, onClose } = props
-  return (
-    <MuiDialogTitle disableTypography className={classes.root}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="Close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  )
-})
+// import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+import Steps from '@sb/components/Onboarding/Steps/Steps'
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -101,14 +39,76 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
     isSelected: true,
-
+    error: '',
     portfolioName: '',
   }
 
-  handleRadioBtn = () => {
-    this.setState({
-      isSelected: !this.state.isSelected,
-    })
+  handleChange = (inputValue: string) => {
+    this.setState({ portfolioName: inputValue })
+  }
+
+  handleSubmit = async () => {
+    const {
+      createPortfolio,
+      renamePortfolio,
+      onboarding,
+      portfolioId,
+      setCurrentStep,
+    } = this.props
+
+    const { portfolioName: name } = this.state
+    const trimmedName = name.trim()
+
+    if (trimmedName.length < 3) {
+      this.setState({ error: 'Please enter name with at least 3 characters ' })
+      return false
+    }
+
+    if (trimmedName.length > 20) {
+      this.setState({ error: 'Please limit name to 20 characters ' })
+      return false
+    }
+
+    if (onboarding) {
+      const variablesRename = {
+        inputPortfolio: {
+          id: portfolioId,
+          name: trimmedName,
+        },
+      }
+
+      const { data } = await renamePortfolio({
+        variables: variablesRename,
+      })
+
+      const { executed, error } = data.renamePortfolio
+
+      if (!executed) {
+        this.setState({ error })
+        return false
+      }
+
+      setCurrentStep('addAccount')
+    } else {
+      const variables = {
+        inputPortfolio: {
+          name: trimmedName,
+        },
+      }
+
+      const { data } = await createPortfolio({
+        variables,
+      })
+
+      const { executed, error } = data.createPortfolio
+
+      if (!executed) {
+        this.setState({ error })
+        return false
+      }
+    }
+
+    return true
   }
 
   handleClickOpen = () => {
@@ -118,7 +118,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
   }
 
   handleClose = () => {
-    this.setState({ open: false })
+    this.setState({ open: false, portfolioName: '', error: '' })
   }
 
   render() {
@@ -126,56 +126,80 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black },
       },
-      handleChange,
-      values,
-      handleSubmit,
-      errors,
-      validateForm,
+      onboarding,
+      open,
     } = this.props
+
+    const { error, portfolioName } = this.state
 
     return (
       <>
-        <BtnCustom
-          btnWidth={'17rem'}
-          height={'3.5rem'}
-          btnColor={'#16253D'}
-          backgroundColor="white"
-          borderRadius={'1rem'}
-          padding={'0'}
-          fontSize={'1.175rem'}
-          letterSpacing="1px"
-          onClick={this.handleClickOpen}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            bottom: '1.5rem',
-            transform: 'translateX(-50%)',
-            border: '2px solid #E0E5EC',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          {/* <AddIcon fontSize={`small`} /> */}Create portfolio
-        </BtnCustom>
+        {onboarding ? (
+          <>
+            {/* <JoyrideOnboarding
+                  steps={portfolioMainSteps}
+                  open={this.state.openOnboarding}
+                />
+            */}
+          </>
+        ) : (
+          <BtnCustom
+            btnWidth={'17rem'}
+            height={'3.5rem'}
+            btnColor={'#16253D'}
+            backgroundColor="white"
+            borderRadius={'1rem'}
+            padding={'0'}
+            fontSize={'1.175rem'}
+            letterSpacing="1px"
+            onClick={this.handleClickOpen}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              bottom: '1.5rem',
+              transform: 'translateX(-50%)',
+              border: '2px solid #E0E5EC',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+            }}
+          >
+            {/* <AddIcon fontSize={`small`} /> */}Create portfolio
+          </BtnCustom>
+        )}
+
         <DialogWrapper
           style={{ borderRadius: '50%' }}
-          onClose={this.handleClose}
+          onClose={() => {
+            if (!onboarding) {
+              this.handleClose()
+            }
+          }}
+          open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
-          open={this.state.open}
         >
           <DialogTitleCustom
             id="customized-dialog-title"
-            onClose={this.handleClose}
+            onClose={() => {
+              if (!onboarding) {
+                this.handleClose()
+              }
+            }}
           >
             <TypographyCustomHeading
               fontWeight={'700'}
               borderRadius={'1rem'}
               color={black.custom}
             >
-              Create Portfolio
+              {onboarding ? (
+                <>
+                  Set your portfolio name - <Steps current={1} />
+                </>
+              ) : (
+                'Create Portfolio'
+              )}
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
-            justify="center"
+            //justify="center"
             style={{
               padding: '0 3rem 3rem',
             }}
@@ -186,11 +210,10 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 <InputBaseCustom
                   placeholder=""
                   name="portfolioName"
-                  onChange={handleChange}
-                  value={values.portfolioName}
-                  error={errors && !!errors.portfolioName}
+                  onChange={(e) => this.handleChange(e.target.value)}
+                  value={portfolioName}
                 />
-                <Typography color="error">{errors.portfolioName}</Typography>
+                <Typography color="error">{error}</Typography>
               </GridCustom>
             </Grid>
 
@@ -199,16 +222,16 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 btnWidth={'85px'}
                 borderRadius={'32px'}
                 btnColor={blue.custom}
-                onClick={(e) => {
-                  e.preventDefault()
-
-                  validateForm().then(async () => {
-                    await handleSubmit()
-                    this.handleClose()
-                  })
+                onClick={async () => {
+                  const response = await this.handleSubmit()
+                  if (response) {
+                    if (!onboarding) {
+                      this.handleClose()
+                    }
+                  }
                 }}
               >
-                CREATE
+                {onboarding ? 'SAVE' : 'CREATE'}
               </BtnCustom>
             </Grid>
           </DialogContent>
@@ -221,11 +244,18 @@ class CreatePortfolio extends React.Component<IProps, IState> {
 export default compose(
   graphql(createPortfolioMutation, {
     name: 'createPortfolio',
-    options: ({ baseCoin }) => ({
+    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
       refetchQueries: [
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
       ],
     }),
   }),
-  formikDialog
+  graphql(renamePortfolio, {
+    name: 'renamePortfolio',
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+      ],
+    }),
+  })
 )(CreatePortfolio)

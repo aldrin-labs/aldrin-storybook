@@ -11,7 +11,7 @@ export const SliderDustFilter = styled(Slider)`
 
   @media (min-width: 1921px) {
     top: 12px;
-    width: 80%;
+    width: 28rem;
 
     .trackAfter {
       height: 1.8rem;
@@ -117,10 +117,12 @@ export const GridSection = styled(Grid)`
   position: relative;
 `
 export const GridSectionAccounts = styled(Grid)`
-  padding: 2.4rem 1.6rem;
+  height: 61vh;
+  padding: 2.4rem 1.6rem 2.4rem 1.6rem;
 `
 
 export const GridSectionDust = styled(Grid)`
+  max-height: 24vh;
   width: 37rem;
   border-top: 1px solid #e7ecf3;
   padding: 2.4rem 1.6rem;
