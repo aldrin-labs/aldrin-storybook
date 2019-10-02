@@ -118,7 +118,7 @@ export const GridSection = styled(Grid)`
 `
 export const GridSectionAccounts = styled(Grid)`
   height: 61vh;
-  padding: 2.4rem 0 2.4rem 1.6rem;
+  padding: 2.4rem 1.6rem 2.4rem 1.6rem;
 `
 
 export const GridSectionDust = styled(Grid)`

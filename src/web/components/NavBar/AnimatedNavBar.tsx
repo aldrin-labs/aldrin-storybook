@@ -33,13 +33,12 @@ export default class AnimatedNavBar extends Component<Props> {
   }
 
   render() {
-    const { hide, pathname } = this.props
+    const { hide, pathname, push } = this.props
     const { delayedHide } = this.state
-
     return (
       <AnimatedContainer pose={hide ? 'hidden' : 'visible'}>
         {' '}
-        <NavBar pathname={pathname} $hide={delayedHide} />
+        <NavBar pathname={pathname} $hide={delayedHide} push={push} />
       </AnimatedContainer>
     )
   }

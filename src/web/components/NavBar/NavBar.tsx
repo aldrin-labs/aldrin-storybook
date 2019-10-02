@@ -57,6 +57,7 @@ const NavBarRaw: SFC<Props> = ({
   theme,
   pathname,
   $hide = false,
+  push,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
@@ -216,7 +217,7 @@ const NavBarRaw: SFC<Props> = ({
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden>
               <Hidden only="xs">
-                <Login />
+                <Login push={push} />
               </Hidden>
             </Grid>
           </Grid>

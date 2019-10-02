@@ -8,6 +8,8 @@ export interface IProps {
   slippageValue: number
   showRetryButton: boolean
   rebalanceIsCanceled: boolean
+  rebalanceIsExecuting: boolean
+  showRebalanceProgress: boolean
   openDialog: () => void
   updateProgress: (value: number) => void
   onChangeSlippage: (value: number | string) => void
@@ -20,6 +22,7 @@ export interface IProps {
   enableShowRetryButton: () => void
   setErrorStatus: (status: boolean) => void
   toggleCancelRebalance: (isRebalanceCanceled: boolean) => void
+  updateRebalanceProgress: (value: boolean) => void
   theme: Theme
   executeRebalanceHandler: any
   initialTime: any

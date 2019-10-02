@@ -12,6 +12,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+// import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
 import withAuth from '@core/hoc/withAuth'
 
@@ -173,6 +174,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             <Backdrop onClick={this.toggleWallets} />
           </Fade>
         </PortfolioContainer>
+
+        {/* <JoyrideOnboarding steps={portfolioMainSteps} open={portfolioMain} /> */}
       </>
     )
   }
@@ -187,7 +190,7 @@ const APIWrapper = (props: any) => {
       name={'data'}
       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
       withOutSpinner={false}
-      // fetchPolicy="network-only"
+      fetchPolicy="network-only"
     />
   )
 }

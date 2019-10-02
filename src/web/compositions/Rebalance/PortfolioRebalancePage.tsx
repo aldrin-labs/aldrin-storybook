@@ -86,6 +86,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     isSectionChart: false,
     isPanelExpanded: false,
     progress: null,
+    showRebalanceProgress: false,
     rebalanceFinished: false,
     rebalanceError: false,
   }
@@ -94,6 +95,9 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     this.setState({ rebalanceError: status })
 
   updateProgress = (progress) => this.setState({ progress })
+
+  updateRebalanceProgress = (value: boolean) =>
+    this.setState({ showRebalanceProgress: value })
 
   getRebalanceProgress = ({
     rebalanceStarted,
@@ -106,6 +110,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     if (failedTransactionIndex !== -1) {
       this.setState({
         rebalanceError: true,
+        showRebalanceProgress: false,
       })
 
       progress = 'N/A'
@@ -177,9 +182,13 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     if (failedTransactionIndex !== -1) {
       this.setState({ rebalanceError: true })
       this.props.hideLeavePopup()
+      this.updateRebalanceProgress(false)
     }
 
-    if (!rebalanceStarted && status === 100) this.props.hideLeavePopup()
+    if (!rebalanceStarted && status === 100) {
+      this.updateRebalanceProgress(false)
+      this.props.hideLeavePopup()
+    }
 
     return status
   }
@@ -292,7 +301,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       createNewSnapshot,
       dustFilter,
       showWarning,
-      getTooltipSettingsQuery: { getTooltipSettings },
+      // getTooltipSettingsQuery: { getTooltipSettings },
       sliderStep,
       theme: {
         palette: {
@@ -304,6 +313,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       rebalanceTimePeriod,
       onRebalanceTimerChange,
       isUserHasLockedBalance,
+      accountName,
       history,
       slippageValue,
       onChangeSlippage,
@@ -319,7 +329,12 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       cancelOrder,
     } = this.props
 
-    const { progress, rebalanceFinished, rebalanceError } = this.state
+    const {
+      progress,
+      rebalanceFinished,
+      rebalanceError,
+      showRebalanceProgress,
+    } = this.state
 
     const secondary = palette.secondary.main
     const red = customPalette.red.main
@@ -394,6 +409,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             onRebalanceTimerChange={onRebalanceTimerChange}
             toggleSectionCoinChart={() => this.toggleSectionCoinChart()}
             isSectionChart={this.state.isSectionChart}
+            accountName={accountName}
             rebalanceInfoPanelData={rebalanceInfoPanelData}
             rebalanceOption={rebalanceOption}
           />
@@ -441,19 +457,20 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           >
             <GridTransactionTypography>
               {UTILS.getTextOverButton({
-                progress,
+                showRebalanceProgress,
                 rebalanceError,
                 showRetryButton,
                 rebalanceIsCanceled,
               })}
             </GridTransactionTypography>
             {/* if rebalance is processing and no error */}
-            {progress !== null && !rebalanceError && (
+            {showRebalanceProgress && !rebalanceError && (
               <CircularProgressbar
                 value={newProgress}
                 text={`${newProgress}%`}
               />
             )}
+
             <RebalanceDialogTransaction
               accordionTitle="transactions"
               initialTime={+rebalanceTimePeriod.value}
@@ -464,6 +481,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               showRetryButton={showRetryButton}
               slippageValue={slippageValue}
               rebalanceIsCanceled={rebalanceIsCanceled}
+              rebalanceIsExecuting={rebalanceIsExecuting}
+              showRebalanceProgress={showRebalanceProgress}
               onChangeSlippage={onChangeSlippage}
               setTransactions={setTransactions}
               onNewSnapshot={onNewSnapshot}
@@ -471,6 +490,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               toggleCancelRebalance={toggleCancelRebalance}
               openDialog={this.openDialog}
               updateProgress={this.updateProgress}
+              updateRebalanceProgress={this.updateRebalanceProgress}
               open={this.state.openDialogTransaction}
               handleClickOpen={this.handleOpenTransactionWindow}
               handleClose={this.handleCloseTransactionWindow}

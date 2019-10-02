@@ -6,6 +6,7 @@ export interface IState {
   secretOfApiKey: string
   exchange: string
   error: string
+  openGetKeysInfo: boolean
 }
 
 type Variables = {
@@ -34,6 +35,10 @@ type Response = {
 }
 
 export interface IProps {
+  title: string
+  open: boolean
+  onboarding: boolean
+  setCurrentStep(step: string): void
   theme: {
     palette: {
       black: {

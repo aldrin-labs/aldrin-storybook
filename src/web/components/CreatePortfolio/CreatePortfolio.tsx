@@ -19,9 +19,13 @@ import {
 
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
+import { renamePortfolio } from '@core/graphql/mutations/portfolio/renamePortfolio'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { IProps, IState } from './CreatePortfolio.types'
+// import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+import Steps from '@sb/components/Onboarding/Steps/Steps'
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -39,40 +43,69 @@ class CreatePortfolio extends React.Component<IProps, IState> {
     portfolioName: '',
   }
 
-  handleRadioBtn = () => {
-    this.setState({
-      isSelected: !this.state.isSelected,
-    })
-  }
-
   handleChange = (inputValue: string) => {
     this.setState({ portfolioName: inputValue })
   }
 
   handleSubmit = async () => {
-    const { createPortfolio } = this.props
-    const { portfolioName: name } = this.state
+    const {
+      createPortfolio,
+      renamePortfolio,
+      onboarding,
+      portfolioId,
+      setCurrentStep,
+    } = this.props
 
-    if (name.length > 20) {
+    const { portfolioName: name } = this.state
+    const trimmedName = name.trim()
+
+    if (trimmedName.length < 3) {
+      this.setState({ error: 'Please enter name with at least 3 characters ' })
+      return false
+    }
+
+    if (trimmedName.length > 20) {
       this.setState({ error: 'Please limit name to 20 characters ' })
       return false
     }
 
-    const variables = {
-      inputPortfolio: {
-        name,
-      },
-    }
+    if (onboarding) {
+      const variablesRename = {
+        inputPortfolio: {
+          id: portfolioId,
+          name: trimmedName,
+        },
+      }
 
-    const { data } = await createPortfolio({
-      variables,
-    })
+      const { data } = await renamePortfolio({
+        variables: variablesRename,
+      })
 
-    const { executed, error } = data.createPortfolio
+      const { executed, error } = data.renamePortfolio
 
-    if (!executed) {
-      this.setState({ error })
-      return false
+      if (!executed) {
+        this.setState({ error })
+        return false
+      }
+
+      setCurrentStep('addAccount')
+    } else {
+      const variables = {
+        inputPortfolio: {
+          name: trimmedName,
+        },
+      }
+
+      const { data } = await createPortfolio({
+        variables,
+      })
+
+      const { executed, error } = data.createPortfolio
+
+      if (!executed) {
+        this.setState({ error })
+        return false
+      }
     }
 
     return true
@@ -93,46 +126,76 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black },
       },
+      onboarding,
+      open,
     } = this.props
 
     const { error, portfolioName } = this.state
 
     return (
       <>
-        <BtnCustom
-          btnWidth={'17rem'}
-          height={'3.5rem'}
-          btnColor={'#16253D'}
-          backgroundColor="white"
-          borderRadius={'1rem'}
-          padding={'0'}
-          fontSize={'1.175rem'}
-          letterSpacing="1px"
-          onClick={this.handleClickOpen}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            bottom: '1.5rem',
-            transform: 'translateX(-50%)',
-            border: '2px solid #E0E5EC',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          {/* <AddIcon fontSize={`small`} /> */}Create portfolio
-        </BtnCustom>
+        {onboarding ? (
+          <>
+            {/* <JoyrideOnboarding
+                  steps={portfolioMainSteps}
+                  open={this.state.openOnboarding}
+                />
+            */}
+          </>
+        ) : (
+          <BtnCustom
+            btnWidth={'17rem'}
+            height={'3.5rem'}
+            btnColor={'#16253D'}
+            backgroundColor="white"
+            borderRadius={'1rem'}
+            padding={'0'}
+            fontSize={'1.175rem'}
+            letterSpacing="1px"
+            onClick={this.handleClickOpen}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              bottom: '1.5rem',
+              transform: 'translateX(-50%)',
+              border: '2px solid #E0E5EC',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+            }}
+          >
+            {/* <AddIcon fontSize={`small`} /> */}Create portfolio
+          </BtnCustom>
+        )}
+
         <DialogWrapper
           style={{ borderRadius: '50%' }}
-          onClose={this.handleClose}
+          onClose={() => {
+            if (!onboarding) {
+              this.handleClose()
+            }
+          }}
+          open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
-          open={this.state.open}
         >
-          <DialogTitleCustom id="customized-dialog-title">
+          <DialogTitleCustom
+            id="customized-dialog-title"
+            onClose={() => {
+              if (!onboarding) {
+                this.handleClose()
+              }
+            }}
+          >
             <TypographyCustomHeading
               fontWeight={'700'}
               borderRadius={'1rem'}
               color={black.custom}
             >
-              Create Portfolio
+              {onboarding ? (
+                <>
+                  Set your portfolio name - <Steps current={1} />
+                </>
+              ) : (
+                'Create Portfolio'
+              )}
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
@@ -161,10 +224,14 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 btnColor={blue.custom}
                 onClick={async () => {
                   const response = await this.handleSubmit()
-                  if (response) this.handleClose()
+                  if (response) {
+                    if (!onboarding) {
+                      this.handleClose()
+                    }
+                  }
                 }}
               >
-                CREATE
+                {onboarding ? 'SAVE' : 'CREATE'}
               </BtnCustom>
             </Grid>
           </DialogContent>
@@ -178,6 +245,14 @@ export default compose(
   graphql(createPortfolioMutation, {
     name: 'createPortfolio',
     options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
+      refetchQueries: [
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+      ],
+    }),
+  }),
+  graphql(renamePortfolio, {
+    name: 'renamePortfolio',
+    options: ({ baseCoin }) => ({
       refetchQueries: [
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
       ],
