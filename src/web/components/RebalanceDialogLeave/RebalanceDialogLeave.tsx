@@ -77,13 +77,13 @@ const RebalanceDialogLeave = ({
         >
           If you leave this page your rebalance processing will be canceled.
         </TypographyTopDescription>
-        <GridCustom>
+        {/* <GridCustom>
           <RebalanceSlippageSlider
             disabled={showLoader}
             slippageValue={slippageValue}
             onChangeSlippage={onChangeSlippage}
           />
-        </GridCustom>
+        </GridCustom> */}
         <GridCustom container justify="center">
           <StyledLink
             href={lastLocation && `${location.origin}${lastLocation.pathname}`}

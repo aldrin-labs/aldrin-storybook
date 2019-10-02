@@ -21,9 +21,16 @@ export type IVariables = {
   update(): void
 }
 
+type PorfolioKey = {
+  selected: boolean
+  name: string
+  _id: string
+}
+
 export interface IProps {
   getTooltipSettingsQuery: ITooltip
-  updateTooltipSettings(setting: IVariables): boolean
+  updateTooltipSettings: (setting: IVariables) => boolean
+  portfolioKeys: PorfolioKey[]
   portfolioId: string
   baseCoin: 'USDT' | 'BTC'
   theme: Theme
