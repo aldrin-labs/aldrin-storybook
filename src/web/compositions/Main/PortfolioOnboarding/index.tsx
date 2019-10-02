@@ -16,6 +16,8 @@ import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
 
+import { demoKeyId } from '@core/utils/config'
+
 import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
@@ -23,6 +25,7 @@ import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 const Onboarding = ({
   getTooltipSettingsQuery,
   updateTooltipSettings,
+  portfolioKeys,
   portfolioId,
   baseCoin,
   theme,
@@ -32,6 +35,12 @@ const Onboarding = ({
       onboarding: { instructions: onboarding },
     },
   } = getTooltipSettingsQuery
+
+  if (
+    portfolioKeys.length > 1 ||
+    !portfolioKeys.find((key) => key._id === demoKeyId)
+  )
+    return null
 
   if (!onboarding) return null
 

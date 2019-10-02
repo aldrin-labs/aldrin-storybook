@@ -16,8 +16,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import { rebalanceSelectTimeOptions } from './RebalanceInfoPanel.config'
 
-import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
-import Help from '@material-ui/icons/Help'
+import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
 
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
 
@@ -88,21 +87,17 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 >
                   {'$'}
                   {roundAndFormatNumber(+accountValue, 2, false)}
-                  <LightTooltip
+                  <HelpTooltip
                     title={'Amount less funds currently in open orders.'}
-                    placement={'right-end'}
-                  >
-                    <Help
-                      style={{
-                        position: 'relative',
-                        left: '.3rem',
-                        top: '2px',
-                        height: '1.5rem',
-                        width: '1.5rem',
-                        color: '#005dd9',
-                      }}
-                    />
-                  </LightTooltip>
+                    style={{
+                      position: 'relative',
+                      left: '.3rem',
+                      top: '2px',
+                      height: '1.5rem',
+                      width: '1.5rem',
+                      color: '#005dd9',
+                    }}
+                  />
                 </StyledSubTypography>
               </Grid>
 

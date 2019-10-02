@@ -33,14 +33,16 @@ class ChoosePeriod extends Component<IProps> {
       maximumDate,
 
       // remove unneccessary styles if it's trade order history table calendar
-      isTableCalendar
+      isTableCalendar,
+      concreteDaySelected,
     } = this.props
 
     return (
-      <ChoosePeriodWrapper isTableCalendar={isTableCalendar} style={{ height: '10%', marginTop: '10px' }}>
-        <DatePickerWrapper
-          style={{ marginRight: '20px' }}
-        >
+      <ChoosePeriodWrapper
+        isTableCalendar={isTableCalendar}
+        style={{ height: '10%', marginTop: '10px' }}
+      >
+        <DatePickerWrapper style={{ marginRight: '20px' }}>
           <DateRangePicker
             withPortal={true}
             isOutsideRange={(date: any) =>
@@ -63,7 +65,7 @@ class ChoosePeriod extends Component<IProps> {
 
         {PERIODS.map(({ name, label }, index) => (
           <ChoosePeriodButton
-            active={activeDateButton === name}
+            active={activeDateButton === name && !concreteDaySelected}
             key={index}
             onClick={() => {
               onDateButtonClick(name)
