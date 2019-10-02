@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react'
 
 export const getTextOverButton = ({
-  progress,
+  showRebalanceProgress,
   showRetryButton,
   rebalanceError,
   rebalanceIsCanceled,
 }: {
-  progress: number | null
+  showRebalanceProgress: boolean
   showRetryButton: boolean
   rebalanceError: boolean
   rebalanceIsCanceled: boolean
@@ -27,7 +27,7 @@ export const getTextOverButton = ({
     )
   }
 
-  if (progress !== null) {
+  if (showRebalanceProgress) {
     return <span>REBALANCE IS PROCESSING</span>
   } else {
     return (

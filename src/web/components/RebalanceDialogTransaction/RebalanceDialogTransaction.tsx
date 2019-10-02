@@ -42,15 +42,23 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   getErrorForTransaction = (errorState: boolean) => {
-    const { setErrorStatus, enableShowRetryButton } = this.props
+    const {
+      setErrorStatus,
+      enableShowRetryButton,
+      updateRebalanceProgress,
+    } = this.props
 
     setErrorStatus(true)
     enableShowRetryButton()
+    updateRebalanceProgress(false)
     this.setState({ isError: errorState, showLoader: false, isFinished: false })
   }
 
-  isCompletedTransaction = () => {
+  isCompletedTransaction = async () => {
+    const { updateRebalanceProgress } = this.props
+
     this.setState({ isFinished: true, showLoader: false })
+    await updateRebalanceProgress(false)
   }
 
   cancelRebalance = async () => {
@@ -62,6 +70,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       updateProgress,
       hideLeavePopup,
       handleClose,
+      updateRebalanceProgress,
     } = this.props
 
     await toggleCancelRebalance(true)
@@ -70,6 +79,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     await this.defaultStateForTransaction(handleClose)
     await setErrorStatus(false)
     await updateProgress(100)
+    await updateRebalanceProgress(false)
     await hideLeavePopup()
   }
 
@@ -86,7 +96,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   activateGoBtn = async () => {
-    const { setErrorStatus, executeRebalanceHandler } = this.props
+    const {
+      setErrorStatus,
+      executeRebalanceHandler,
+      toggleCancelRebalance,
+      updateRebalanceProgress,
+    } = this.props
 
     await this.setState({
       isFinished: false,
@@ -98,6 +113,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     })
 
     await setErrorStatus(false)
+    await updateRebalanceProgress(true)
+    await toggleCancelRebalance(false)
     await executeRebalanceHandler()
   }
 
@@ -151,13 +168,14 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       onChangeSlippage,
       handleClose,
       onNewSnapshot,
-      progress,
       rebalanceInfoPanelData,
       openDialog,
       rebalanceError,
       cancelOrder,
       showRetryButton,
       rebalanceIsCanceled,
+      rebalanceIsExecuting,
+      showRebalanceProgress,
     } = this.props
 
     const {
@@ -205,10 +223,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
     return (
       <div style={{ textAlign: 'center' }}>
-        {progress === null || rebalanceError ? elementToShow : null}
-
-        {(progress !== null || showRetryButton) &&
-        (rebalanceError ? !isChangedSliderAfterRebalanceError : true) ? (
+        {!showRebalanceProgress || rebalanceError ? elementToShow : null}
+        {/* if rebalance was unsuccessful or user canceled it. but after sliders move we hide it */}
+        {((rebalanceError && !rebalanceIsCanceled) || isFinished ? (
+          !isChangedSliderAfterRebalanceError
+        ) : (
+          rebalanceIsExecuting
+        )) ? (
           <RebalanceDialogTypography
             onClick={() => {
               openDialog()
@@ -217,7 +238,6 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             See detailed status
           </RebalanceDialogTypography>
         ) : null}
-
         <Dialog
           PaperComponent={StyledPaper}
           onClose={handleClose}
@@ -251,8 +271,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               <>
                 <GridCustom container>
                   <TypographyTopDescription margin="-10px 0 0 0">
-                    You can cancel the unexecuted orders <br />
-                    or reset slippage and re-execute the remaining orders.
+                    You can reset slippage <br />
+                    and re-execute the remaining orders.
                   </TypographyTopDescription>
                 </GridCustom>
                 <GridCustom container justify="center">
@@ -294,7 +314,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               <>
                 <GridCustom container>
                   <TypographyTopDescription margin="-12px 0 2.5rem 0">
-                    Next rebalance will be at the time that you selected.
+                    All orders was placed and executed
+                    {/* Next rebalance will be at the time that you selected. */}
                     {/*<span style={{ color: `${blue.custom}` }}>*/}
                     {/*<Timer*/}
                     {/*initialTime={initialTime}*/}
@@ -338,6 +359,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               <>
                 <TypographyTopDescription margin="20px auto 32px auto">
                   Your portfolio will change.
+                  <br />
+                  Limit orders will be placed, it’ll take some time.
                 </TypographyTopDescription>
                 <GridCustom container justify="center">
                   <RebalanceSlippageSlider
@@ -361,12 +384,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                     height="3.4rem"
                     borderRadius={'1rem'}
                     btnWidth="10rem"
-                    btnColor={'#fff'}
+                    btnColor={'#fff !important'}
                     backgroundColor={
-                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
+                      isDisableBtns || isEmptyTable ? '#ABBAD1' : '#165be0'
                     }
                     borderColor={
-                      isDisableBtns || isEmptyTable ? '#9f9f9f' : '#165be0'
+                      isDisableBtns || isEmptyTable ? '#ABBAD1' : '#165be0'
                     }
                     margin="0 .5rem"
                     onClick={this.activateGoBtn}
