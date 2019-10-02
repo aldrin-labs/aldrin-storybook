@@ -96,7 +96,12 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 
   componentDidMount() {
-    const { dustFilter = { usd: 0, percentage: 0, btc: 0 } } = this.props
+    const {
+      dustFilter = { usd: 0, percentage: 0, btc: 0 },
+      keys,
+      portfolioId,
+      activeKeys,
+    } = this.props
 
     const { percentage, usd, btc } = dustFilter
 
@@ -112,6 +117,17 @@ class PortfolioSelector extends React.Component<IProps> {
         : percentage === 10
         ? 100
         : 0
+
+    if (keys.length > 0 && activeKeys.length === 0) {
+      const objForQuery = {
+        settings: {
+          portfolioId,
+          selectedKeys: UTILS.getArrayContainsOnlySelected(keys, keys[0]._id),
+        },
+      }
+
+      this.updateSettings(objForQuery)
+    }
 
     this.setState({
       valueSliderPercentage: value,
