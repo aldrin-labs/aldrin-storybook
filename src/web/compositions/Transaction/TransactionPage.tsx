@@ -66,6 +66,7 @@ class TransactionPage extends React.PureComponent {
     includeTrades: true,
     filterCoin: '',
     inputValue: '',
+    concreteDaySelected: false,
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -100,6 +101,7 @@ class TransactionPage extends React.PureComponent {
 
   onDateButtonClick = async (stringDate: string) => {
     this.setState({
+      concreteDaySelected: false,
       tradeOrderHistoryDate: {
         activeDateButton: stringDate,
         startDate: getEndDate(stringDate),
@@ -147,6 +149,7 @@ class TransactionPage extends React.PureComponent {
 
     this.setState((prevState) => ({
       ...prevState,
+      concreteDaySelected: true,
       tradeOrderHistoryDate: {
         ...prevState.tradeOrderHistoryDate,
         startDate: moment(value.date).startOf('day'),
@@ -273,6 +276,7 @@ class TransactionPage extends React.PureComponent {
       tradeOrderHistoryDate,
       inputValue,
       filterCoin,
+      concreteDaySelected,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -410,6 +414,7 @@ class TransactionPage extends React.PureComponent {
                     {...{
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
+                      concreteDaySelected,
                       onDateButtonClick: this.onDateButtonClick,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,

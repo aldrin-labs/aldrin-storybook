@@ -16,11 +16,11 @@ import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
 
+import { demoKeyId } from '@core/utils/config'
+
 import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
-
-import { demoKeyId } from '@core/utils/config'
 
 const Onboarding = ({
   getTooltipSettingsQuery,
@@ -39,8 +39,10 @@ const Onboarding = ({
   if (
     portfolioKeys.length > 1 ||
     !portfolioKeys.find((key) => key._id === demoKeyId)
-  )
+  ) {
     return null
+  }
+
   if (!onboarding) return null
 
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')

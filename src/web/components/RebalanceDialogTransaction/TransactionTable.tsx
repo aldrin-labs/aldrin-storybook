@@ -12,6 +12,7 @@ import {
   TransactionTableStatus,
 } from './TransactionTable.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
 
 import DoneIcon from '../../../icons/DoneIcon.svg'
 import Cross from '../../../icons/Cross.svg'
@@ -119,7 +120,9 @@ const TransactionTable = ({
                   className={classes.cell}
                   style={{ minWidth: '6rem' }}
                 >
-                  <TransactionTableStatus>
+                  <TransactionTableStatus
+                    style={{ marginBottom: row.isDone === 'fail' && '.5rem' }}
+                  >
                     {row.isDone === 'success'
                       ? 'order executed'
                       : row.isDone === 'fail'
@@ -127,6 +130,19 @@ const TransactionTable = ({
                       : row.isDone === 'loading'
                       ? 'order placed'
                       : null}
+                    {row.isDone === 'fail' && (
+                      <HelpTooltip
+                        title={row.error}
+                        style={{
+                          width: '1.5rem',
+                          height: '1.5rem',
+                          position: 'relative',
+                          top: '.3rem',
+                          left: '.2rem',
+                          color: '#DD6956',
+                        }}
+                      />
+                    )}
                   </TransactionTableStatus>
                 </TableCell>
                 <TableCell align="right" style={{ position: 'relative' }}>
