@@ -30,6 +30,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
+import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
 
 class Accounts extends React.PureComponent<IProps> {
   state = {
@@ -89,23 +90,19 @@ class Accounts extends React.PureComponent<IProps> {
                 >
                   Choose only one
                 </TypographyTitle>
-                <LightTooltip
+                <HelpTooltip
                   title={
                     'We cannot transfer funds from key to key or exchange to exchange. Also, the rebalance between the two exchanges is impossible due to the difference in price.'
                   }
-                  placement={'right-end'}
-                >
-                  <Help
-                    style={{
-                      position: 'absolute',
-                      right: '-0.3rem',
-                      top: '27.5%',
-                      height: '1.5rem',
-                      width: '1.5rem',
-                      color: '#005dd9',
-                    }}
-                  />
-                </LightTooltip>
+                  style={{
+                    position: 'absolute',
+                    right: '-0.3rem',
+                    top: '27.5%',
+                    height: '1.5rem',
+                    width: '1.5rem',
+                    color: '#005dd9',
+                  }}
+                />
               </>
             ) : (
               <TypographyTitle

@@ -125,6 +125,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     // so here i do it before activate rebalance
     await handleClickOpen()
     await this.setState({ showTransactionTable: false })
+    await console.log(this.props.transactionsData.length === 0)
     await this.activateGoBtn()
   }
 
