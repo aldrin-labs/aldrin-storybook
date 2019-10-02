@@ -20,7 +20,7 @@ import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
-const demoKeyId = '5bf4a857041eba001a8b945b'
+import { demoKeyId } from '@core/utils/config'
 
 const Onboarding = ({
   getTooltipSettingsQuery,
@@ -35,7 +35,6 @@ const Onboarding = ({
       onboarding: { instructions: onboarding },
     },
   } = getTooltipSettingsQuery
-  console.log('keys', portfolioKeys, onboarding)
 
   if (
     portfolioKeys.length > 1 ||
