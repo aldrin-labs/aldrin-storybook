@@ -20,9 +20,12 @@ import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
+const demoKeyId = '5bf4a857041eba001a8b945b'
+
 const Onboarding = ({
   getTooltipSettingsQuery,
   updateTooltipSettings,
+  portfolioKeys,
   portfolioId,
   baseCoin,
   theme,
@@ -32,7 +35,13 @@ const Onboarding = ({
       onboarding: { instructions: onboarding },
     },
   } = getTooltipSettingsQuery
+  console.log('keys', portfolioKeys, onboarding)
 
+  if (
+    portfolioKeys.length > 1 ||
+    !portfolioKeys.find((key) => key._id === demoKeyId)
+  )
+    return null
   if (!onboarding) return null
 
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
