@@ -329,7 +329,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               <>
                 <GridCustom container>
                   <TypographyTopDescription margin="-12px 0 2.5rem 0">
-                    All orders was placed and executed
+                    All orders were placed and executed
                     {/* Next rebalance will be at the time that you selected. */}
                     {/*<span style={{ color: `${blue.custom}` }}>*/}
                     {/*<Timer*/}
