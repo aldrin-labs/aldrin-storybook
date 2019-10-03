@@ -638,6 +638,7 @@ export const updateOrderHistoryQuerryFunction = (
   let result
 
   if (openOrderAlreadyExists) {
+    console.log('subscriptionData.data.listenOrderHistory.status !== open', subscriptionData.data.listenOrderHistory.status !== 'open')
     if (subscriptionData.data.listenOrderHistory.status !== 'open') { // here we handling wrong order of subscribtion events
       prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
         ...prev.getOrderHistory[openOrderHasTheSameOrderIndex],
