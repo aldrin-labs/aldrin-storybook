@@ -197,8 +197,6 @@ const SignalEventList = (props) => {
     toggleAutoRefetch,
   } = props
 
-  console.log('p', props)
-
   const autoRefetch = client.readQuery({
     query: GET_SIGNAL_EVENTS_AUTO_REFETCH,
   }).autoRefetchSignals.enabled
