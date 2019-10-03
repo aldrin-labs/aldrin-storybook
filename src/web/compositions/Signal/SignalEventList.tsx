@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { GET_SIGNAL_EVENTS_QUERY } from '@core/graphql/queries/signals/getSignalEvents'
+import { GET_SIGNAL_EVENTS_AUTO_REFETCH } from '@core/graphql/queries/signals/getSignalEventsAutoRefetch'
 
 import { addMainSymbol, TableWithSort } from '@sb/components'
 import { ContainerGrid } from './SignalPage.styles'
+
+import { client } from '@core/graphql/apolloClient'
+import { toggleAutoRefetchSignalEvents } from '@core/graphql/mutations/signals/toggleAutoRefetchSignalEvents'
 
 import { checkValue } from './utils'
 import { IState, IProps } from './SignalEventList.types'
@@ -188,11 +194,14 @@ const SignalEventList = (props) => {
     },
     onTrClick,
     refetch,
+    toggleAutoRefetch,
   } = props
 
-  const [_, forceUpdate] = useState([])
-  const [autoRefetch, toggleAutoRefetch] = useState(true)
+  const autoRefetch = client.readQuery({
+    query: GET_SIGNAL_EVENTS_AUTO_REFETCH,
+  }).autoRefetchSignals.enabled
 
+  const [_, forceUpdate] = useState([])
   const { body, head, footer = [] } = putDataInTable(events)
 
   useEffect(() => {
@@ -209,7 +218,7 @@ const SignalEventList = (props) => {
     const id = autoRefetch
       ? setInterval(() => {
           refetch()
-        }, 10000)
+        }, 25000)
       : 0
 
     return () => clearInterval(id)
@@ -284,10 +293,7 @@ const SignalEventList = (props) => {
   )
 }
 
-export default class SignalEventListDataWrapper extends React.PureComponent<
-  IProps,
-  IState
-> {
+class SignalEventListDataWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
     page: 0,
     perPage: 30,
@@ -326,3 +332,9 @@ export default class SignalEventListDataWrapper extends React.PureComponent<
     )
   }
 }
+
+export default compose(
+  graphql(toggleAutoRefetchSignalEvents, {
+    name: 'toggleAutoRefetch',
+  })
+)(SignalEventListDataWrapper)

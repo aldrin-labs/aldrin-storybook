@@ -317,13 +317,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       rebalanceIsExecuting,
       hideLeavePopup,
       showRetryButton,
-      enableShowRetryButton,
+      toggleShowRetryButton,
       setTransactions,
       rebalanceIsCanceled,
       toggleCancelRebalance,
       // search,
       // searchCoinInTable,
       cancelOrder,
+      clearIntervalForUpdateOrder,
     } = this.props
 
     const {
@@ -493,7 +494,8 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               handleClose={this.handleCloseTransactionWindow}
               executeRebalanceHandler={this.emitExecutingRebalanceHandler}
               setErrorStatus={this.setErrorStatus}
-              enableShowRetryButton={enableShowRetryButton}
+              clearIntervalForUpdateOrder={clearIntervalForUpdateOrder}
+              toggleShowRetryButton={toggleShowRetryButton}
               cancelOrder={cancelOrder}
             />
           </GridTransactionBtn>
