@@ -622,6 +622,7 @@ export const updateOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
+  console.log('isEmptySubscription', isEmptySubscription)  
   if (isEmptySubscription) {
     return prev
   }
@@ -632,12 +633,17 @@ export const updateOrderHistoryQuerryFunction = (
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
+  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
+  console.log('subscriptionData.data.listenOrderHistory', subscriptionData.data.listenOrderHistory)
   let result
 
   if (openOrderAlreadyExists) {
-    prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
-      ...prev.getOrderHistory[openOrderHasTheSameOrderIndex],
-      ...subscriptionData.data.listenOrderHistory,
+    console.log('subscriptionData.data.listenOrderHistory.status !== open', subscriptionData.data.listenOrderHistory.status !== 'open')
+    if (subscriptionData.data.listenOrderHistory.status !== 'open') { // here we handling wrong order of subscribtion events
+      prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
+        ...prev.getOrderHistory[openOrderHasTheSameOrderIndex],
+        ...subscriptionData.data.listenOrderHistory,
+      }
     }
 
     result = { ...prev }

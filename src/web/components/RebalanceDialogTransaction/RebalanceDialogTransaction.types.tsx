@@ -19,7 +19,7 @@ export interface IProps {
   hideLeavePopup: () => void
   setTransactions: () => void
   cancelOrder: () => void
-  enableShowRetryButton: () => void
+  toggleShowRetryButton: (value: boolean) => void
   setErrorStatus: (status: boolean) => void
   toggleCancelRebalance: (isRebalanceCanceled: boolean) => void
   updateRebalanceProgress: (value: boolean) => void
