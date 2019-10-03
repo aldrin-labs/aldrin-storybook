@@ -317,7 +317,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       rebalanceIsExecuting,
       hideLeavePopup,
       showRetryButton,
-      enableShowRetryButton,
+      toggleShowRetryButton,
       setTransactions,
       rebalanceIsCanceled,
       toggleCancelRebalance,
@@ -493,7 +493,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               handleClose={this.handleCloseTransactionWindow}
               executeRebalanceHandler={this.emitExecutingRebalanceHandler}
               setErrorStatus={this.setErrorStatus}
-              enableShowRetryButton={enableShowRetryButton}
+              toggleShowRetryButton={toggleShowRetryButton}
               cancelOrder={cancelOrder}
             />
           </GridTransactionBtn>
