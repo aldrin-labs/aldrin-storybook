@@ -191,7 +191,11 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             handleCloseSharePortfolio={this.handleCloseSharePortfolio}
           />
         </Grid>
-        <PortfolioOnboarding portfolioId={portfolioId} baseCoin={baseCoin} />
+        <PortfolioOnboarding
+          portfolioKeys={portfolioKeys}
+          portfolioId={portfolioId}
+          baseCoin={baseCoin}
+        />
       </LayoutClearfixWrapper>
     )
   }

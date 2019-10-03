@@ -114,10 +114,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       })
 
       progress = 'N/A'
-      this.props.enqueueSnackbar(
-        transactions[failedTransactionIndex].error.message,
-        { variant: 'error' }
-      )
+      // this.props.enqueueSnackbar(
+      //   transactions[failedTransactionIndex].error.message,
+      //   { variant: 'error' }
+      // )
 
       this.props.hideLeavePopup()
     } else if (rebalanceStarted || (oldProgress === 0 && !rebalanceFinished)) {
@@ -180,7 +180,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     }
 
     if (failedTransactionIndex !== -1) {
-      this.setState({ rebalanceError: true })
+      this.setState({
+        rebalanceError: true,
+      })
+
       this.props.hideLeavePopup()
       this.updateRebalanceProgress(false)
     }
@@ -303,12 +306,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       showWarning,
       // getTooltipSettingsQuery: { getTooltipSettings },
       sliderStep,
-      theme: {
-        palette: {
-          blue,
-          background: { table },
-        },
-      },
       transactions,
       rebalanceTimePeriod,
       onRebalanceTimerChange,
@@ -686,9 +683,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
         <RouteLeavingGuard
           when={rebalanceIsExecuting}
           actionBeforeUnload={cancelOrder}
-          action={() => {
-            console.log('actions')
-          }}
           navigate={(path) => history.push(path)}
           shouldBlockNavigation={(location) => true}
           CustomModal={RebalanceDialogLeave}
@@ -726,27 +720,27 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
   }
 }
 
-const SnackbarWrapper = withSnackbar(PortfolioRebalancePage)
+// const SnackbarWrapper = withSnackbar(PortfolioRebalancePage)
 
-const IntegrationNotistack = ({ classes, ...otherProps }) => {
-  return (
-    <SnackbarProvider
-      maxSnack={3}
-      autoHideDuration={3000}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      action={<CloseButton />}
-      classes={{
-        variantSuccess: classes.success,
-        variantError: classes.error,
-      }}
-    >
-      <SnackbarWrapper {...otherProps} />
-    </SnackbarProvider>
-  )
-}
+// const IntegrationNotistack = ({ classes, ...otherProps }) => {
+//   return (
+//     <SnackbarProvider
+//       maxSnack={3}
+//       autoHideDuration={3000}
+//       anchorOrigin={{
+//         vertical: 'top',
+//         horizontal: 'right',
+//       }}
+//       action={<CloseButton />}
+//       classes={{
+//         variantSuccess: classes.success,
+//         variantError: classes.error,
+//       }}
+//     >
+//       <SnackbarWrapper {...otherProps} />
+//     </SnackbarProvider>
+//   )
+// }
 
 export default compose(
   withTheme(),
@@ -759,6 +753,6 @@ export default compose(
     options: {
       update: updateTooltipMutation,
     },
-  }),
-  withStyles(snackStyeles)
-)(IntegrationNotistack)
+  })
+  //withStyles(snackStyeles)
+)(PortfolioRebalancePage)

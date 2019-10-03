@@ -125,6 +125,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     // so here i do it before activate rebalance
     await handleClickOpen()
     await this.setState({ showTransactionTable: false })
+    await console.log(this.props.transactionsData.length === 0)
     await this.activateGoBtn()
   }
 
@@ -271,7 +272,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               <>
                 <GridCustom container>
                   <TypographyTopDescription margin="-10px 0 0 0">
-                    You can cancel the unexecuted orders <br />
+                    You can retry rebalance with updated price
                   </TypographyTopDescription>
                 </GridCustom>
                 {/* <GridCustom container>
@@ -363,9 +364,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             ) : (
               <>
                 <TypographyTopDescription margin="20px auto 32px auto">
-                  Your portfolio will change.
-                  <br />
-                  Limit orders will be placed, it’ll take some time.
+                  <p>Your portfolio will change.</p>
+                  Market orders will be executed, it’ll take some time.
                 </TypographyTopDescription>
                 {/* <GridCustom container justify="center">
                   <RebalanceSlippageSlider
@@ -376,7 +376,8 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
                 </GridCustom> */}
                 <GridCustom container>
                   <TypographyTopDescription margin="-10px 0 0 0">
-                  We are using market orders for testing. This will be replaced with limit orders with slippage control. <br />
+                    We are using market orders for testing. This will be
+                    replaced with limit orders with slippage control. <br />
                   </TypographyTopDescription>
                 </GridCustom>
                 <GridCustom container justify="center">
