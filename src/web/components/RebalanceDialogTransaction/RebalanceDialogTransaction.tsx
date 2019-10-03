@@ -44,20 +44,23 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   getErrorForTransaction = (errorState: boolean) => {
     const {
       setErrorStatus,
-      enableShowRetryButton,
+      toggleShowRetryButton,
       updateRebalanceProgress,
+      clearIntervalForUpdateOrder,
     } = this.props
 
+    clearIntervalForUpdateOrder()
     setErrorStatus(true)
-    enableShowRetryButton()
+    toggleShowRetryButton(true)
     updateRebalanceProgress(false)
     this.setState({ isError: errorState, showLoader: false, isFinished: false })
   }
 
   isCompletedTransaction = async () => {
-    const { updateRebalanceProgress } = this.props
+    const { updateRebalanceProgress, clearIntervalForUpdateOrder } = this.props
 
     this.setState({ isFinished: true, showLoader: false })
+    clearIntervalForUpdateOrder()
     await updateRebalanceProgress(false)
   }
 
@@ -71,28 +74,34 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       hideLeavePopup,
       handleClose,
       updateRebalanceProgress,
+      clearIntervalForUpdateOrder,
     } = this.props
 
-    await toggleCancelRebalance(true)
-    await cancelOrder()
-    await setTransactions()
-    await this.defaultStateForTransaction(handleClose)
-    await setErrorStatus(false)
-    await updateProgress(100)
-    await updateRebalanceProgress(false)
-    await hideLeavePopup()
+    try {
+      await clearIntervalForUpdateOrder()
+      await toggleCancelRebalance(true)
+      await cancelOrder()
+      await setTransactions()
+      await this.defaultStateForTransaction(handleClose)
+      await setErrorStatus(false)
+      await updateProgress(100)
+      await updateRebalanceProgress(false)
+      await hideLeavePopup()
+    } catch (e) {
+      console.log(`error canceling rebalance: ${e}`)
+    }
   }
 
   cancelTransaction = async () => {
     const {
       toggleCancelRebalance,
       cancelOrder,
-      enableShowRetryButton,
+      toggleShowRetryButton,
     } = this.props
 
     await toggleCancelRebalance(true)
     await cancelOrder()
-    await enableShowRetryButton()
+    await toggleShowRetryButton(true)
   }
 
   activateGoBtn = async () => {
@@ -119,13 +128,13 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   retryRebalance = async () => {
-    const { handleClickOpen } = this.props
+    const { handleClickOpen, toggleShowRetryButton } = this.props
 
     // to restart rebalance we need to unmount transactions table ( progress bar )
     // so here i do it before activate rebalance
     await handleClickOpen()
     await this.setState({ showTransactionTable: false })
-    await console.log(this.props.transactionsData.length === 0)
+    toggleShowRetryButton(false)
     await this.activateGoBtn()
   }
 
@@ -272,7 +281,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
               <>
                 <GridCustom container>
                   <TypographyTopDescription margin="-10px 0 0 0">
-                    You can retry rebalance with updated price
+                    Sorry something went wrong, please retry with updated price
                   </TypographyTopDescription>
                 </GridCustom>
                 {/* <GridCustom container>
