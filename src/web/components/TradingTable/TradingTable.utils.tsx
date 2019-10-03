@@ -622,6 +622,7 @@ export const updateOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
+  console.log('isEmptySubscription', isEmptySubscription)  
   if (isEmptySubscription) {
     return prev
   }
@@ -632,6 +633,8 @@ export const updateOrderHistoryQuerryFunction = (
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
+  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
+  console.log('subscriptionData.data.listenOrderHistory', subscriptionData.data.listenOrderHistory)
   let result
 
   if (openOrderAlreadyExists) {
