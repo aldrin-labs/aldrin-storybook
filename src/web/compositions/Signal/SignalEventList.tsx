@@ -209,7 +209,7 @@ const SignalEventList = (props) => {
     const id = autoRefetch
       ? setInterval(() => {
           refetch()
-        }, 3000)
+        }, 10000)
       : 0
 
     return () => clearInterval(id)
