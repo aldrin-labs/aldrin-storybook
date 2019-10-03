@@ -46,8 +46,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       setErrorStatus,
       toggleShowRetryButton,
       updateRebalanceProgress,
+      clearIntervalForUpdateOrder,
     } = this.props
 
+    clearIntervalForUpdateOrder()
     setErrorStatus(true)
     toggleShowRetryButton(true)
     updateRebalanceProgress(false)
@@ -55,9 +57,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   }
 
   isCompletedTransaction = async () => {
-    const { updateRebalanceProgress } = this.props
+    const { updateRebalanceProgress, clearIntervalForUpdateOrder } = this.props
 
     this.setState({ isFinished: true, showLoader: false })
+    clearIntervalForUpdateOrder()
     await updateRebalanceProgress(false)
   }
 
@@ -71,16 +74,22 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       hideLeavePopup,
       handleClose,
       updateRebalanceProgress,
+      clearIntervalForUpdateOrder,
     } = this.props
 
-    await toggleCancelRebalance(true)
-    await cancelOrder()
-    await setTransactions()
-    await this.defaultStateForTransaction(handleClose)
-    await setErrorStatus(false)
-    await updateProgress(100)
-    await updateRebalanceProgress(false)
-    await hideLeavePopup()
+    try {
+      await clearIntervalForUpdateOrder()
+      await toggleCancelRebalance(true)
+      await cancelOrder()
+      await setTransactions()
+      await this.defaultStateForTransaction(handleClose)
+      await setErrorStatus(false)
+      await updateProgress(100)
+      await updateRebalanceProgress(false)
+      await hideLeavePopup()
+    } catch (e) {
+      console.log(`error canceling rebalance: ${e}`)
+    }
   }
 
   cancelTransaction = async () => {

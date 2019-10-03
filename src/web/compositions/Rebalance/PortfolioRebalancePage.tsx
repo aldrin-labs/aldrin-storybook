@@ -324,6 +324,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
       // search,
       // searchCoinInTable,
       cancelOrder,
+      clearIntervalForUpdateOrder,
     } = this.props
 
     const {
@@ -493,6 +494,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               handleClose={this.handleCloseTransactionWindow}
               executeRebalanceHandler={this.emitExecutingRebalanceHandler}
               setErrorStatus={this.setErrorStatus}
+              clearIntervalForUpdateOrder={clearIntervalForUpdateOrder}
               toggleShowRetryButton={toggleShowRetryButton}
               cancelOrder={cancelOrder}
             />
