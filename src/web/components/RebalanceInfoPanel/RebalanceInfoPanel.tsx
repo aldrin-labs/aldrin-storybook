@@ -8,6 +8,9 @@ import {
   TypographyRebalance,
   ReactSelectCustom,
 } from './RebalanceInfoPanel.styles'
+
+import RebalanceSwitcherDustFilter from './RebalanceDustFilter'
+
 import { withTheme } from '@material-ui/styles'
 import Timer, { useTimer } from 'react-compound-timer'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -76,7 +79,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
         <Grid item md={6} lg={6}>
           <Grid container>
             <Grid container justify="space-between">
-              <Grid item lg={4} md={3} justify="center">
+              <Grid item lg={2} md={3} justify="center">
                 <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
                   {accountName}
                 </StyledTypography>
@@ -101,7 +104,20 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 </StyledSubTypography>
               </Grid>
 
-              <Grid item lg={3} md={4} style={{ paddingRight: '17px' }}>
+              <Grid
+                item
+                lg={3}
+                md={3}
+                justify="center"
+                style={{ textAlign: 'center' }}
+              >
+                <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
+                  {'filter dust assets'}
+                </StyledTypography>
+                <RebalanceSwitcherDustFilter />
+              </Grid>
+
+              <Grid item lg={3} md={3} style={{ paddingRight: '17px' }}>
                 <StyledTypography fontWeight={'700'} position="right">
                   Available value
                 </StyledTypography>
@@ -115,7 +131,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                 </StyledSubTypography>
               </Grid>
 
-              <Grid item lg={4} md={4}>
+              <Grid item lg={4} md={3}>
                 <StyledTypography fontWeight={'700'} position="right">
                   Available percentage
                 </StyledTypography>

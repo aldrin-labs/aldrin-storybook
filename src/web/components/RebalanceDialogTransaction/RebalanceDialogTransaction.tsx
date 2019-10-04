@@ -78,15 +78,16 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.props
 
     try {
-      await clearIntervalForUpdateOrder()
+      this.defaultStateForTransaction(handleClose)
+      updateProgress(100)
+      updateRebalanceProgress(false)
+      hideLeavePopup()
+
       await toggleCancelRebalance(true)
       await cancelOrder()
       await setTransactions()
-      await this.defaultStateForTransaction(handleClose)
-      await setErrorStatus(false)
-      await updateProgress(100)
-      await updateRebalanceProgress(false)
-      await hideLeavePopup()
+      await clearIntervalForUpdateOrder()
+      // await setErrorStatus(false)
     } catch (e) {
       console.log(`error canceling rebalance: ${e}`)
     }
@@ -112,7 +113,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       updateRebalanceProgress,
     } = this.props
 
-    await this.setState({
+    this.setState({
       isFinished: false,
       isError: false,
       isDisableBtns: true,
@@ -121,10 +122,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       showTransactionTable: true,
     })
 
-    await setErrorStatus(false)
-    await updateRebalanceProgress(true)
-    await toggleCancelRebalance(false)
-    await executeRebalanceHandler()
+    setErrorStatus(false)
+    updateRebalanceProgress(true)
+    toggleCancelRebalance(false)
+    executeRebalanceHandler()
   }
 
   retryRebalance = async () => {
@@ -132,9 +133,9 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
     // to restart rebalance we need to unmount transactions table ( progress bar )
     // so here i do it before activate rebalance
+    toggleShowRetryButton(false)
     await handleClickOpen()
     await this.setState({ showTransactionTable: false })
-    toggleShowRetryButton(false)
     await this.activateGoBtn()
   }
 
