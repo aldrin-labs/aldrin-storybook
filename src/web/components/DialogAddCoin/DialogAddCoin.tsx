@@ -13,7 +13,7 @@ class DialogAddCoin extends React.Component {
   changeRowToShow = (option) => {
     return {
       ...option,
-      label: <CoinRow symbol={option.value} priceUSD={option.priceUSD} />,
+      label: <CoinRow symbol={option.value} {...option} />,
     }
   }
 
@@ -24,6 +24,12 @@ class DialogAddCoin extends React.Component {
   filterCoins = (coin) => {
     const { existCoinsNames } = this.props
     return !existCoinsNames.includes(coin.symbol)
+  }
+
+  addExistCoinsLighting = (coin) => {
+    const { existCoinsNames } = this.props
+
+    return { ...coin, alreadyExist: existCoinsNames.includes(coin.symbol) }
   }
 
   handleClickOpen = () => {
@@ -96,8 +102,10 @@ class DialogAddCoin extends React.Component {
               isClearable={true}
               isSearchable={true}
               openMenuOnClick={false}
-              needAdditionalFiltering={true}
-              additionalFiltering={this.filterCoins}
+              //needAdditionalFiltering={true}
+              //additionalFiltering={this.filterCoins}
+              needAdditionalMapping={true}
+              additionalMapping={this.addExistCoinsLighting}
               changeRowToShow={this.changeRowToShow}
               // menuPortalTarget={document.body}
               // menuPortalStyles={{
@@ -126,6 +134,7 @@ class DialogAddCoin extends React.Component {
                 fontSize: '1.2rem',
                 borderBottom: '.1rem solid #e0e5ec',
                 position: 'relative',
+                padding: '0',
 
                 '&:hover': {
                   borderRadius: '1rem',
