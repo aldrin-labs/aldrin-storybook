@@ -2,9 +2,16 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
 import { addMainSymbol } from '@sb/components/index'
 
-const CoinRow = ({ symbol, priceUSD }) => {
+const CoinRow = ({ symbol, priceUSD, alreadyExist = false }) => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        background: alreadyExist ? '#f2f4f6' : '#fff',
+        padding: '.8rem 1.2rem',
+      }}
+    >
       <span>
         <SvgIcon
           style={{
