@@ -5,12 +5,20 @@ import { compose } from 'recompose'
 
 import { Loading } from '@sb/components/index'
 import { MainContainer } from '@sb/compositions/Profile/Profile.styles'
-import { CenterContainer, ComingSoon } from './ProfileRoutes.styles'
+import { CenterContainer, ComingSoon } from './ProfileRouter.styles'
 
-const ComingSoonBlock = () => (
+export const ComingSoonBlock = () => (
   <CenterContainer>
     <ComingSoon>Coming Soon</ComingSoon>
   </CenterContainer>
+)
+
+const Accounts = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/ProfileAccounts/ProfileAccounts')
+)
+
+const Settings = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/ProfileSettings/ProfileSettings')
 )
 
 const ProfileRouter = () => {
@@ -27,12 +35,12 @@ const ProfileRouter = () => {
           <Route
             exact
             path="/profile/accounts"
-            render={(...rest) => <div>accounts</div>}
+            render={(...rest) => <Accounts />}
           />
           <Route
             exact
             path="/profile/settings"
-            render={(...rest) => <div>settings</div>}
+            render={(...rest) => <Settings />}
           />
           <Route
             exact

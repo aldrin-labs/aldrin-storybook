@@ -10,7 +10,7 @@ export const ProfileContainer = styled(Grid)`
 
 export const GridCard = styled(Grid)`
   background: #ffffff;
-  border-radius: 0.1rem solid #e0e5ec;
+  border: 0.1rem solid #e0e5ec;
   box-shadow: 0px 0px 1.5rem rgba(8, 22, 58, 0.1);
   border-radius: 1.5rem;
 `
