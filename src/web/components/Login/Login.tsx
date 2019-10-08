@@ -10,7 +10,11 @@ import auth0Logo from '@icons/auth0Logo.png'
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
 import { withTheme } from '@material-ui/styles'
-import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInProcessOfLoginin } from '@core/utils/errorsConfig'
+import {
+  auth0VerifyEmailErrorMessage,
+  auth0UnauthorizedErrorMessage,
+  errorInProcessOfLoginin,
+} from '@core/utils/errorsConfig'
 
 @withTheme()
 class LoginQuery extends React.Component<Props> {
@@ -24,7 +28,11 @@ class LoginQuery extends React.Component<Props> {
   })
 
   componentDidUpdate = async (prevProps: Props) => {
-    if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
+    if (
+      !this.props.loginStatus &&
+      !this.props.modalIsOpen &&
+      this.props.loginStatus !== prevProps.loginStatus
+    ) {
       await this.onModalChanges(true)
       this.showLoginAfterDelay()
     }
@@ -45,7 +53,12 @@ class LoginQuery extends React.Component<Props> {
   handleAuthError = async (errorObject: any) => {
     const { authErrorsMutation, persistCacheImmediately } = this.props
     // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
-    if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
+    if (
+      !(
+        auth0VerifyEmailErrorMessage === errorObject.errorDescription &&
+        errorObject.error === auth0UnauthorizedErrorMessage
+      )
+    ) {
       return
     }
 
@@ -101,7 +114,7 @@ class LoginQuery extends React.Component<Props> {
     try {
       await modalStatusMutation({ variables })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -114,7 +127,7 @@ class LoginQuery extends React.Component<Props> {
     try {
       await modalProcessMutation({ variables })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -149,10 +162,7 @@ class LoginQuery extends React.Component<Props> {
           unmountOnExit={true}
           mountOnEnter={true}
         >
-          <LoginMenu
-            handleLogout={handleLogout}
-            userName={user && user.name}
-          />
+          <LoginMenu handleLogout={handleLogout} userName={user && user.name} />
         </Slide>
       </SWrapper>
     )

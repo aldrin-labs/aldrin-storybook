@@ -79,7 +79,7 @@ const formikEnhancer = withFormik({
       })
     } catch (error) {
       setSubmitting(false)
-      console.log(error)
+      console.error(error)
     }
   },
 })
@@ -101,7 +101,7 @@ class AddExchangeKeyComponent extends React.Component {
 
     this.setState({ selectedPortfolio })
 
-    if (!selectedPortfolio) return;
+    if (!selectedPortfolio) return
 
     await selectPortfolioMutation({
       variables: {

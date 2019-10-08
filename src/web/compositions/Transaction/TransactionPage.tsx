@@ -190,7 +190,7 @@ class TransactionPage extends React.PureComponent {
         variables: objectForMutation,
       })
     } catch (error) {
-      console.log('error', error)
+      console.error('error', error)
     }
   }
 

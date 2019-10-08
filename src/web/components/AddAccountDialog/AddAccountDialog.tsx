@@ -106,7 +106,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         exchange: '',
       })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
 
     return true

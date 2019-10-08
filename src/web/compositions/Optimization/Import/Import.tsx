@@ -54,7 +54,10 @@ export default class Import extends PureComponent<IProps> {
     const assets =
       this.props.data &&
       this.props.data.myPortfolios[0] &&
-      this.props.transformData(this.props.data.myPortfolios[0].portfolioAssets, this.props.dustFilter)
+      this.props.transformData(
+        this.props.data.myPortfolios[0].portfolioAssets,
+        this.props.dustFilter
+      )
 
     this.props.updateData(assets[0])
     const isUSDTInInitialPortfolioExists = assets[0].some(
@@ -76,10 +79,11 @@ export default class Import extends PureComponent<IProps> {
     startDate: object,
     endDate: object
   ) => {
-    window.gtag && window.gtag('event', 'Optimization run', {
-      event_category: 'App - Optimization',
-      event_label: 'Optimization run',
-    })
+    window.gtag &&
+      window.gtag('event', 'Optimization run', {
+        event_category: 'App - Optimization',
+        event_label: 'Optimization run',
+      })
 
     const { totalPriceOfAllAssets, isUSDTInInitialPortfolioExists } = this.state
     const {
@@ -133,7 +137,7 @@ export default class Import extends PureComponent<IProps> {
       showWarning(systemError, true)
       this.onReset()
       this.props.toggleLoading()
-      console.log('ERROR IN AWAIT FUNC:', e)
+      console.error('ERROR IN AWAIT FUNC:', e)
       return
     }
 
@@ -223,7 +227,11 @@ export default class Import extends PureComponent<IProps> {
       return
     }
 
-    if ((this.props.dustFilter.usd >= 0 || this.props.dustFilter.percentage >= 0) && !disableFiltering) {
+    if (
+      (this.props.dustFilter.usd >= 0 ||
+        this.props.dustFilter.percentage >= 0) &&
+      !disableFiltering
+    ) {
       this.props.showWarning(dustFilterEnabled)
 
       return
@@ -301,18 +309,18 @@ export default class Import extends PureComponent<IProps> {
         <StyledCardHeader title="Portfolio Distribution" />
         <InnerChartContainer>
           <Chart background={theme.palette.background.default}>
-              <BarChart
-                showCustomPlaceholder={showCustomPlaceholder}
-                placeholderElement={placeholderElement}
-                bottomMargin={75}
-                theme={theme}
-                height={340}
-                showPlaceholder={formatedData.length === 0}
-                charts={barChartData}
-                alwaysShowLegend={true}
-                hideDashForToolTip={true}
-                xAxisVertical={true}
-              />
+            <BarChart
+              showCustomPlaceholder={showCustomPlaceholder}
+              placeholderElement={placeholderElement}
+              bottomMargin={75}
+              theme={theme}
+              height={340}
+              showPlaceholder={formatedData.length === 0}
+              charts={barChartData}
+              alwaysShowLegend={true}
+              hideDashForToolTip={true}
+              xAxisVertical={true}
+            />
           </Chart>
         </InnerChartContainer>
       </ChartContainer>

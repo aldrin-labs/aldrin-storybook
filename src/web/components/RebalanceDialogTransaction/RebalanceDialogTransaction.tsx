@@ -89,7 +89,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       await clearIntervalForUpdateOrder()
       // await setErrorStatus(false)
     } catch (e) {
-      console.log(`error canceling rebalance: ${e}`)
+      console.error(`error canceling rebalance: ${e}`)
     }
   }
 

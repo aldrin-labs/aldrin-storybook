@@ -111,7 +111,7 @@ const formikDialog = withFormik({
         await handleClose()
         forceUpdateUserContainer()
       } catch (error) {
-        console.log(error)
+        console.error(error)
         props.setFieldError('cryptoWalletNameInput', 'Request error!')
         props.setSubmitting(false)
       }

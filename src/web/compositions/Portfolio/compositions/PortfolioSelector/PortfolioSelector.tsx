@@ -200,7 +200,7 @@ class PortfolioSelector extends React.Component<IProps> {
         variables: objectForMutation,
       })
     } catch (error) {
-      console.log('error', error)
+      console.error('error', error)
     }
   }
 
@@ -262,7 +262,7 @@ class PortfolioSelector extends React.Component<IProps> {
         variables: objForQuery,
       })
     } catch (error) {
-      console.log('error', error)
+      console.error('error', error)
     }
     // await this.updateSettings(objForQuery, type, toggledKeyID)
   }

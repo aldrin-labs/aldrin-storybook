@@ -45,43 +45,35 @@ class ImportKey extends React.Component {
 
     return (
       <Wrapper>
-        <Typography
-          variant="h5"
-          color="secondary"
-          align="center"
-        >
+        <Typography variant="h5" color="secondary" align="center">
           Import Keys
         </Typography>
         <ImportContent>
           <SubHeader>
-            <StyledTypography
-                color="inherit"
-                align="center"
-                variant="h6"
-            >
+            <StyledTypography color="inherit" align="center" variant="h6">
               Grab your keys from your Binane account and place them here.
             </StyledTypography>
             <Link
-                onClick={() => changePage('ImportHelp')}
-                color="inherit"
-                align="center"
-                variant="caption"
+              onClick={() => changePage('ImportHelp')}
+              color="inherit"
+              align="center"
+              variant="caption"
             >
               <i>Need help?</i>
             </Link>
-            </SubHeader>
-            <ContentContainer>
-              <InputTextField
-                autoComplete="off"
-                color="secondary"
-                id="apiKey"
-                label="Api Key"
-                margin="normal"
-                value={values.apiKey || ''}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <InputTextField
+          </SubHeader>
+          <ContentContainer>
+            <InputTextField
+              autoComplete="off"
+              color="secondary"
+              id="apiKey"
+              label="Api Key"
+              margin="normal"
+              value={values.apiKey || ''}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <InputTextField
               autoComplete="off"
               color="secondary"
               id="secretKey"
@@ -101,13 +93,11 @@ class ImportKey extends React.Component {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <Typography color="error">{
-              pairsErrors.length
-                ? pairsErrors[0][1]
-                : '\u00A0'
-            }</Typography>
-            </ContentContainer>
-            <ButtonContainer>
+            <Typography color="error">
+              {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
+            </Typography>
+          </ContentContainer>
+          <ButtonContainer>
             <StyledBeginButton onClick={handleSubmit}>
               Add Exchange
             </StyledBeginButton>
@@ -154,11 +144,9 @@ const formikEnhancer = withFormik({
       props.changePage('finish')
     } catch (error) {
       setSubmitting(false)
-      console.log(error)
+      console.error(error)
     }
   },
 })
 
-export default compose(
-  formikEnhancer
-)(ImportKey)
+export default compose(formikEnhancer)(ImportKey)

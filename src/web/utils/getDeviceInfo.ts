@@ -66,7 +66,7 @@ const getFcmToken = async () => {
           return ''
         })
         .catch((err) => {
-          console.log('An error occurred while retrieving token. ', err)
+          console.error('An error occurred while retrieving token. ', err)
           return ''
         })
     } else {

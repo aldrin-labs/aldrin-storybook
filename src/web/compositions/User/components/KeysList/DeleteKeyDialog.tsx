@@ -109,7 +109,7 @@ const formikDialog = withFormik({
         await handleClose()
         forceUpdateUserContainer()
       } catch (error) {
-        console.log(error)
+        console.error(error)
         props.setFieldError('keyNameInput', 'Request error!')
         props.setSubmitting(false)
       }
@@ -140,7 +140,11 @@ export const DeleteKeyDialog = compose(
   }),
   graphql(deleteExchangeKeyMutation, {
     name: 'deleteExchangeKey',
-    options: ({ baseData: {portfolio: { baseCoin }} }) => ({
+    options: ({
+      baseData: {
+        portfolio: { baseCoin },
+      },
+    }) => ({
       refetchQueries: [
         'getKeys',
         'getPortfolio',

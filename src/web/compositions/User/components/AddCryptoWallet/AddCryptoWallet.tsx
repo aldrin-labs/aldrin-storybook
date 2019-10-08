@@ -71,7 +71,7 @@ const formikEnhancer = withFormik({
       setSubmitting(false)
     } catch (error) {
       setSubmitting(false)
-      console.log(error)
+      console.error(error)
     }
   },
 })

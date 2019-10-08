@@ -8,7 +8,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import Dialog from '@material-ui/core/Dialog'
 import Typography from '@material-ui/core/Typography'
 
-
 import { withFormik } from 'formik'
 import Yup from 'yup'
 import { compose, withStateHandlers } from 'recompose'
@@ -18,19 +17,25 @@ import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 import { IProps, IhandleSubmitProps } from './types'
 
 const SaveLayoutDialogComponent = ({ ...props }: IProps) => {
-    const { handleClickOpen,
-      handleClose,
-      open,
-      handleChange,
-      values,
-      handleSubmit,
-      errors,
-    } = props
-    return (<div>
+  const {
+    handleClickOpen,
+    handleClose,
+    open,
+    handleChange,
+    values,
+    handleSubmit,
+    errors,
+  } = props
+  return (
+    <div>
       <TransparentExtendedFAB onClick={handleClickOpen}>
         Save layout
       </TransparentExtendedFAB>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogContent>
           <DialogContentText>
             To save layout please enter name:
@@ -49,16 +54,15 @@ const SaveLayoutDialogComponent = ({ ...props }: IProps) => {
           <Typography color="error">{errors.layoutNameInput}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>
-            Cancel
-          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSubmit} id="SaveDialogButton">
             Save
           </Button>
         </DialogActions>
       </Dialog>
-    </div>)
-  }
+    </div>
+  )
+}
 
 const formikDialog = withFormik({
   validationSchema: Yup.object().shape({
@@ -68,25 +72,21 @@ const formikDialog = withFormik({
     layoutNameInput: '',
   }),
   handleSubmit: async ({ layoutNameInput }, props: IhandleSubmitProps) => {
-    const {
-      handleClose,
-      saveLayout,
-    } = props.props
+    const { handleClose, saveLayout } = props.props
 
     try {
       props.setSubmitting(true)
       await saveLayout(layoutNameInput)
       await handleClose()
     } catch (error) {
-      console.log(error)
+      console.error(error)
       props.setSubmitting(false)
     }
-
   },
 })
 
 const handleState = withStateHandlers(
-  ({ open = false }: {open: boolean}) => ({
+  ({ open = false }: { open: boolean }) => ({
     open,
   }),
   {
