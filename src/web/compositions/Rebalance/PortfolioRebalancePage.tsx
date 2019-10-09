@@ -196,14 +196,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     return status
   }
 
-  emitExecutingRebalanceHandler = () => {
-    this.setState({
-      progress: 0,
-    })
-
-    this.props.executeRebalanceHandler()
-  }
-
   onChangeExpandedPanel = () => {
     this.setState((prevstate) => ({
       isPanelExpanded: !prevstate.isPanelExpanded,
