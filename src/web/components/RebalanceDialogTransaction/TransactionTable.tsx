@@ -121,16 +121,16 @@ const TransactionTable = ({
                   style={{ minWidth: '6rem' }}
                 >
                   <TransactionTableStatus
-                    style={{ marginBottom: row.isDone === 'fail' && '.5rem' }}
+                    style={{ marginBottom: row.isDone === 'error' && '.5rem' }}
                   >
                     {(row.isDone === 'closed' || row.isDone === 'filled')
                       ? 'order executed'
-                      : row.isDone === 'fail'
+                      : row.isDone === 'error'
                       ? 'unsuccessful'
                       : row.isDone === 'loading'
                       ? 'order placed'
                       : null}
-                    {row.isDone === 'fail' && (
+                    {row.isDone === 'error' && (
                       <HelpTooltip
                         title={row.error}
                         style={{
@@ -148,7 +148,7 @@ const TransactionTable = ({
                 <TableCell align="right" style={{ position: 'relative' }}>
                   {(row.isDone === 'closed' || row.isDone === 'filled') ? (
                     <SvgIcon src={DoneIcon} />
-                  ) : row.isDone === 'fail' ? (
+                  ) : row.isDone === 'error' ? (
                     <SvgIcon src={Cross} />
                   ) : row.isDone === 'cancel' ? (
                     `Canceled`
