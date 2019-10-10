@@ -6,6 +6,9 @@ const HelpTooltip = ({ title, style }: { title: string; style: any }) => {
     <LightTooltip title={title} placement={'right-end'}>
       <Help
         style={{
+          height: '1.5rem',
+          width: '1.5rem',
+          color: 'rgb(0, 93, 217)',
           ...style,
         }}
       />

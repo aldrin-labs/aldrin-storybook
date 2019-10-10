@@ -40,37 +40,37 @@ export const StyledSlider = styled(
 )`
   top: 1rem;
   width: ${(props: { sliderWidth: string }) => props.sliderWidth || '100px'};
-  
+
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     //margin-top: 32px;
     margin-right: 20px;
   }
-  
+
   & .trackAfter {
     border-top-right-radius: ${(props: { borderRadiusAfter: string }) =>
       props.borderRadiusAfter || '50px'};
-      border-bottom-right-radius: ${(props: { borderRadiusAfter: string }) =>
-        props.borderRadiusAfter || '50px'};
+    border-bottom-right-radius: ${(props: { borderRadiusAfter: string }) =>
+      props.borderRadiusAfter || '50px'};
     background: ${(props: { trackAfterBackground: string }) =>
       props.trackAfterBackground};
     opacity: ${(props: { trackAfterOpacity: string }) =>
       props.trackAfterOpacity};
     height: ${(props: { sliderHeightAfter: string }) =>
       props.sliderHeightAfter || '2px'};
-    
+
     ${sliderTrackMediaQueries}
   }
 
   & .trackBefore {
     border-top-left-radius: ${(props: { borderRadius: string }) =>
       props.borderRadius || '50px'};
-      border-bottom-left-radius: ${(props: { borderRadius: string }) =>
-        props.borderRadius || '50px'};
+    border-bottom-left-radius: ${(props: { borderRadius: string }) =>
+      props.borderRadius || '50px'};
     height: ${(props: { sliderHeight: string }) => props.sliderHeight || '2px'};
     background: ${(props: { trackBeforeBackground: string }) =>
       props.trackBeforeBackground};
     opacity: 1;
-    
+
     ${sliderTrackMediaQueries}
   }
 
@@ -82,7 +82,10 @@ export const StyledSlider = styled(
     border: ${(props: { borderThumb: string }) =>
       props.borderThumb || '0px solid white'};
 
+    box-shadow: 0px 0.2rem 0.4rem rgba(8, 22, 58, 0.3);
+
     ${sliderThumbMediaQueries}
+  }
 `
 
 export const StyledLock = styled(
