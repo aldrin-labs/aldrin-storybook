@@ -208,6 +208,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     })
   }
 
+  emitExecutingRebalanceHandler = () => {
+  this.setState({progress: 0 })
+    this.props.executeRebalanceHandler()
+  }
+
   handleJoyrideCallback = async (data: any) => {
     if (
       data.action === 'close' ||

@@ -36,7 +36,7 @@ class ProgressBar extends PureComponent<IProps> {
 
       const successfulTransactionNumber = props.transactionsData.reduce(
         (acc, el) => {
-          if (el.isDone === 'success') {
+          if (el.isDone === 'closed' || el.isDone === 'filled') {
             return acc + 1
           }
           return acc
