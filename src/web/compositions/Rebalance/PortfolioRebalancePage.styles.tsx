@@ -48,7 +48,7 @@ export const Container = styled(({ isEditModeEnabled, ...rest }) => (
 export const TypographyAccordionTitle = styled(Typography)`
   width: 100%;
   letter-spacing: 1.5px;
-  margin: ${props => props.margin || '0 auto 1rem'};
+  margin: ${(props) => props.margin || '0 auto 1rem'};
   color: #abbad1;
   text-align: center;
   font-size: 1.2rem;
@@ -62,14 +62,14 @@ export const TypographyAccordionTitle = styled(Typography)`
 export const GridProgressTitle = styled(Grid)`
   display: flex;
   width: 100%;
-  border-radius: 20px 20px 0 0;
+  border-radius: 1.5rem 1.5rem 0 0;
   background: ${(props) => props.bgColor || '#f2f4f6'};
   margin-bottom: 8px;
-  border-bottom: 1.5px solid #E0E5EC;
+  border-bottom: 0.1rem solid #e0e5ec;
 `
 
 export const TypographyProgress = styled(Typography)`
-  margin-top: 10px;
+  // margin-top: 10px;
   color: ${(props) => props.textColor || '#16253d'};
   font-size: 1.2rem;
   text-transform: uppercase;
@@ -77,23 +77,24 @@ export const TypographyProgress = styled(Typography)`
   font-weight: 700;
   width: 100%;
   text-align: center;
-  height: 24px;
+  padding: 0.5rem 0;
 
-  @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 57px;
-    //font-size: 2.4rem;
-  }
+  // height: 24px;
+  // @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
+  //   display: flex;
+  //   align-items: center;
+  //   justify-content: center;
+  //   height: 57px;
+  //   //font-size: 2.4rem;
+  // }
 `
 
 export const GridTransactionTypography = styled(Typography)`
   font-family: 'DM Sans', sans-serif;
-  font-size: .92rem;
+  font-size: 0.92rem;
   line-height: 114.5%;
   color: #7284a0;
-  margin-bottom: .75rem;
+  margin-bottom: 0.75rem;
 
   span {
     font-weight: 700;
@@ -103,8 +104,14 @@ export const GridTransactionTypography = styled(Typography)`
 
 export const GridTransactionBtn = styled(Grid)`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
+
+  width: calc(16.6% - 2rem);
+  margin-left: 2rem;
+  margin-top: 2rem;
 
   & img {
     width: 3.5vw;
