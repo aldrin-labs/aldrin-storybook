@@ -414,9 +414,10 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             <Grid
               style={{
                 paddingBottom: '.5rem',
-                boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
-                borderRadius: '20px',
-                border: `1px solid ${theme.palette.grey[theme.palette.type]}`,
+                boxShadow: `0px 0px .5rem 0px rgba(30, 30, 30, 0.1)`,
+                borderRadius: '1.5rem',
+                marginRight: '1rem',
+                border: `.1rem solid #e0e5ec`,
               }}
             >
               <GridProgressTitle
@@ -441,15 +442,46 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             </Grid>
           </Grid>
 
-          <GridTransactionBtn
-            lg={2}
-            md={2}
-            justify="center"
-            direction="column"
+          <Grid
+            item
+            lg={5}
+            md={5}
             style={{
-              marginTop: '5rem',
+              minHeight: '100px',
+              padding: '0',
             }}
           >
+            <Grid
+              style={{
+                paddingBottom: '.5rem',
+                boxShadow: `0px 0px .5rem 0px rgba(30, 30, 30, 0.1)`,
+                borderRadius: '1.5rem',
+                marginLeft: '1rem',
+                border: `.1rem solid #e0e5ec`,
+              }}
+            >
+              <GridProgressTitle
+                bgColor={theme.palette.primary.dark}
+                content
+                alignItems="center"
+              >
+                <TypographyProgress textColor={theme.palette.text.subPrimary}>
+                  target allocation
+                </TypographyProgress>
+              </GridProgressTitle>
+              <PortfolioRebalanceChart
+                key={`target-chart`}
+                isTargetChart={true}
+                coinData={rows}
+                isSectionChart={this.state.isSectionChart}
+                sectionDataProgress={targetAllocation}
+                isPanelExpanded={this.state.isPanelExpanded}
+                onChangeExpandedPanel={this.onChangeExpandedPanel}
+              />
+            </Grid>
+          </Grid>
+
+          <GridTransactionBtn>
             <GridTransactionTypography>
               {UTILS.getTextOverButton({
                 showRebalanceProgress,
@@ -459,17 +491,18 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
               })}
             </GridTransactionTypography>
             {/* if rebalance is processing and no error */}
-            {showRebalanceProgress && !rebalanceError && (
+            {/* {showRebalanceProgress && !rebalanceError && (
               <CircularProgressbar
                 value={newProgress}
                 text={`${newProgress}%`}
               />
-            )}
+            )} */}
 
             <RebalanceDialogTransaction
               accordionTitle="transactions"
               initialTime={+rebalanceTimePeriod.value}
               progress={progress}
+              newProgress={newProgress}
               transactionsData={transactionsDataWithPrices}
               rebalanceError={rebalanceError}
               rebalanceInfoPanelData={rebalanceInfoPanelData}
@@ -497,46 +530,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
             />
           </GridTransactionBtn>
 
-          <Grid
-            item
-            lg={5}
-            md={5}
-            style={{
-              minHeight: '100px',
-              padding: '0',
-            }}
-          >
-            <Grid
-              style={{
-                paddingBottom: '.5rem',
-                boxShadow: `0px 0px 15px 0px rgba(30, 30, 30, 0.2)`,
-                borderRadius: '20px',
-                border: `1px solid ${theme.palette.grey[theme.palette.type]}`,
-              }}
-            >
-              <GridProgressTitle
-                bgColor={theme.palette.primary.dark}
-                content
-                alignItems="center"
-              >
-                <TypographyProgress textColor={theme.palette.text.subPrimary}>
-                  target allocation
-                </TypographyProgress>
-              </GridProgressTitle>
-              <PortfolioRebalanceChart
-                key={`target-chart`}
-                isTargetChart={true}
-                coinData={rows}
-                isSectionChart={this.state.isSectionChart}
-                sectionDataProgress={targetAllocation}
-                isPanelExpanded={this.state.isPanelExpanded}
-                onChangeExpandedPanel={this.onChangeExpandedPanel}
-              />
-            </Grid>
-          </Grid>
-
           {/* Accordion Table Start */}
-          <TypographyAccordionTitle margin={'3rem auto 1rem'}>
+          <TypographyAccordionTitle
+            margin={'1.5rem 0 1.5rem'}
+            style={{ textAlign: 'left' }}
+          >
             Portfolio
           </TypographyAccordionTitle>
 

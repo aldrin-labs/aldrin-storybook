@@ -21,6 +21,8 @@ import {
   TypographyTopDescription,
   StyledPaper,
   RebalanceDialogTypography,
+  DistributedPercentage,
+  RebalanceGoButton,
 } from './RebalanceDialogTransaction.styles'
 
 import RebalanceSlippageSlider from '@sb/components/RebalanceSlippageSlider'
@@ -78,15 +80,16 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     } = this.props
 
     try {
-      await clearIntervalForUpdateOrder()
+      this.defaultStateForTransaction(handleClose)
+      updateProgress(100)
+      updateRebalanceProgress(false)
+      hideLeavePopup()
+
       await toggleCancelRebalance(true)
       await cancelOrder()
       await setTransactions()
-      await this.defaultStateForTransaction(handleClose)
-      await setErrorStatus(false)
-      await updateProgress(100)
-      await updateRebalanceProgress(false)
-      await hideLeavePopup()
+      await clearIntervalForUpdateOrder()
+      // await setErrorStatus(false)
     } catch (e) {
       console.log(`error canceling rebalance: ${e}`)
     }
@@ -112,7 +115,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       updateRebalanceProgress,
     } = this.props
 
-    await this.setState({
+    this.setState({
       isFinished: false,
       isError: false,
       isDisableBtns: true,
@@ -121,10 +124,10 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       showTransactionTable: true,
     })
 
-    await setErrorStatus(false)
-    await updateRebalanceProgress(true)
-    await toggleCancelRebalance(false)
-    await executeRebalanceHandler()
+    setErrorStatus(false)
+    updateRebalanceProgress(true)
+    toggleCancelRebalance(false)
+    executeRebalanceHandler()
   }
 
   retryRebalance = async () => {
@@ -132,9 +135,9 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
 
     // to restart rebalance we need to unmount transactions table ( progress bar )
     // so here i do it before activate rebalance
+    toggleShowRetryButton(false)
     await handleClickOpen()
     await this.setState({ showTransactionTable: false })
-    toggleShowRetryButton(false)
     await this.activateGoBtn()
   }
 
@@ -211,29 +214,49 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       availablePercentage,
     })
 
-    const elementToShow =
-      whatElementToShow === 'retry' ? (
-        <LinkCustom background={Stroke} onClick={this.retryRebalance}>
-          <CircularProgressbar value={100} text={`RETRY`} />
-        </LinkCustom>
-      ) : whatElementToShow === 'goButton' ? (
-        <LinkCustom
-          style={{ position: 'relative', bottom: '.5rem' }}
-          background={Stroke}
-          onClick={this.handleRainbowGoButton}
-        >
-          <SvgIcon width={'9rem'} height={'9rem'} src={Ellipse} />
-        </LinkCustom>
-      ) : (
-        <CircularProgressbar
-          value={availablePercentage}
-          text={`${availablePercentage > 100 ? 100 : availablePercentage}%`}
-        />
-      )
+    // const elementToShow =
+    //   whatElementToShow === 'retry' ? (
+    //     <LinkCustom background={Stroke} onClick={this.retryRebalance}>
+    //       <CircularProgressbar value={100} text={`RETRY`} />
+    //     </LinkCustom>
+    //   ) : whatElementToShow === 'goButton' ? (
+    //     <LinkCustom
+    //       style={{ position: 'relative', bottom: '.5rem' }}
+    //       background={Stroke}
+    //       onClick={this.handleRainbowGoButton}
+    //     >
+    //       <SvgIcon width={'9rem'} height={'9rem'} src={Ellipse} />
+    //     </LinkCustom>
+    //   ) : (
+    //     <CircularProgressbar
+    //       value={availablePercentage}
+    //       text={`${availablePercentage > 100 ? 100 : availablePercentage}%`}
+    //     />
+    //   )
+
+    const functionForButton =
+      whatElementToShow === 'retry'
+        ? this.retryRebalance
+        : whatElementToShow === 'goButton'
+        ? this.handleRainbowGoButton
+        : () => {}
 
     return (
-      <div style={{ textAlign: 'center' }}>
-        {!showRebalanceProgress || rebalanceError ? elementToShow : null}
+      <>
+        {/* {!showRebalanceProgress || rebalanceError ? elementToShow : null} */}
+        <RebalanceGoButton
+          disabled={
+            availablePercentage < 100 ||
+            rebalanceIsExecuting ||
+            (showRetryButton && !rebalanceError)
+          }
+          onClick={() => functionForButton()}
+        >
+          {(rebalanceError || rebalanceIsCanceled) &&
+          !isChangedSliderAfterRebalanceError
+            ? 'retry'
+            : 'rebalance now'}
+        </RebalanceGoButton>
         {/* if rebalance was unsuccessful or user canceled it. but after sliders move we hide it */}
         {((rebalanceError && !rebalanceIsCanceled) || isFinished ? (
           !isChangedSliderAfterRebalanceError
@@ -247,7 +270,12 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           >
             See detailed status
           </RebalanceDialogTypography>
-        ) : null}
+        ) : (
+          <DistributedPercentage>
+            {availablePercentage > 100 ? 100 : availablePercentage}% distributed
+          </DistributedPercentage>
+        )}
+
         <Dialog
           PaperComponent={StyledPaper}
           onClose={handleClose}
@@ -435,7 +463,7 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
             )}
           </DialogContent>
         </Dialog>
-      </div>
+      </>
     )
   }
 }
