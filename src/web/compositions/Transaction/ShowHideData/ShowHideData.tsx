@@ -21,7 +21,10 @@ class CheckboxesGroup extends React.Component {
             container
             justify="space-between"
             alignItems="center"
-            style={{ marginBottom: '.75rem' }}
+            style={{
+              padding: '.5rem 0',
+              borderBottom: '.1rem solid #e0e5ec',
+            }}
           >
             <TypographyShowHide>Show Deposit / Withdrawal</TypographyShowHide>
             <CheckboxShowHide
@@ -32,7 +35,15 @@ class CheckboxesGroup extends React.Component {
               value="includeExchangeTransactions"
             />
           </Grid>
-          <Grid container justify="space-between" alignItems="center">
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            style={{
+              padding: '.5rem 0',
+              borderBottom: '.1rem solid #e0e5ec',
+            }}
+          >
             <TypographyShowHide>Show Trades</TypographyShowHide>
             <CheckboxShowHide
               checked={includeTrades}
@@ -40,6 +51,21 @@ class CheckboxesGroup extends React.Component {
               value="includeTrades"
             />
           </Grid>
+          {/* <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            style={{
+              padding: '.5rem 0',
+            }}
+          >
+            <TypographyShowHide>Show Futures</TypographyShowHide>
+            <CheckboxShowHide
+              checked={includeTrades}
+              onChange={handleChangeShowHideOptions('includeTrades')}
+              value="includeTrades"
+            />
+          </Grid> */}
         </FormControlCustom>
       </>
     )
