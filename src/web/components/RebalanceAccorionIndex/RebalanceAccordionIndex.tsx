@@ -12,7 +12,7 @@ import { ExpansionPanelWrapper } from './RebalanceAccordionIndex.styles'
 const styles = (theme) => ({
   root: {
     width: '100%',
-    marginBottom: '2.5rem'
+    marginBottom: '2.5rem',
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -39,7 +39,7 @@ class RebalanceAccordionIndex extends React.Component {
     })
   }
 
-  handleSlideChange (event, value) {
+  handleSlideChange(event, value) {
     this.setState({ value })
   }
 
@@ -70,17 +70,16 @@ class RebalanceAccordionIndex extends React.Component {
           return (
             <ExpansionPanelWrapper
               expanded={expanded === `${panelId}`}
-              //TODO: change on in the future version 
+              //TODO: change on in the future version
               //expanded={expanded === `${panelId}`}
               onChange={this.handleChange(`${panelId}`)}
-
               CollapseProps={{
-                timeout: 500
+                timeout: 500,
               }}
             >
               <ExpansionPanelSummary
                 style={{ background: 'transparent' }}
-               //TODO ICON expandIcon={<ExpandMoreIcon />}
+                //TODO ICON expandIcon={<ExpandMoreIcon />}
               >
                 <TablePanelSummary
                   accordionPanelHeadingBorderColor={
@@ -95,9 +94,7 @@ class RebalanceAccordionIndex extends React.Component {
                   expanded={expanded === `${panelId}`}
                 />
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                {children}
-              </ExpansionPanelDetails>
+              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
             </ExpansionPanelWrapper>
           )
         })}

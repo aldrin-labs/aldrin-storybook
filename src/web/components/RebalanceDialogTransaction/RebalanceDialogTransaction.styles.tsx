@@ -73,7 +73,7 @@ export const RebalanceDialogTypography = styled(Typography)`
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #0b1fd1;
-  margin-top: .75rem;
+  margin-top: 0.75rem;
   cursor: pointer;
 `
 
@@ -94,5 +94,34 @@ export const StyledPaper = styled(Paper)`
 
   @media (min-width: 2500px) {
     min-width: 1000px;
+  }
+`
+
+export const DistributedPercentage = styled.span`
+  color: #dd6956;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 1.2rem;
+  font-family: DM Sans;
+  font-weight: bold;
+`
+
+export const RebalanceGoButton = styled(Button)`
+  width: 100%;
+  padding: 1.3rem 0 1.2rem 0;
+  margin: 1rem 0 1.4rem 0;
+  border-radius: 0.75rem;
+  color: #fff !important;
+  background: ${(props) => (props.disabled ? '#7284A0 !important' : '#0B1FD1')};
+  box-shadow: 0px 0.4rem 0.6rem rgba(8, 22, 58, 0.3);
+
+  letter-spacing: 0.15rem;
+  font-size: 1.35rem;
+  font-family: DM Sans;
+  font-weight: bold;
+
+  &:hover {
+    background: ${(props) =>
+      props.disabled ? '#7284A0 !important' : '#0B1FD1'};
   }
 `

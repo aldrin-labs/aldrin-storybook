@@ -2,13 +2,15 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
 import { addMainSymbol } from '@sb/components/index'
 
+import { Add, Done, VisibilityOff } from '@material-ui/icons'
+
 const CoinRow = ({ symbol, priceUSD, alreadyExist = false }) => {
   return (
     <div
       style={{
         display: 'flex',
         justifyContent: 'space-between',
-        background: alreadyExist ? '#f2f4f6' : '#fff',
+        background: alreadyExist ? '#F9FBFD' : '#fff',
         padding: '.8rem 1.2rem',
       }}
     >
@@ -24,10 +26,25 @@ const CoinRow = ({ symbol, priceUSD, alreadyExist = false }) => {
           src={importCoinIcon(symbol)}
         />
         <span style={{ position: 'relative', bottom: '.2rem' }}>{symbol}</span>
+
+        <span
+          style={{
+            color: '#29AC80',
+            position: 'relative',
+            fontSize: '0.9rem',
+            fontWeight: 'bold',
+            left: '.8rem',
+            bottom: '.2rem',
+          }}
+        >
+          {addMainSymbol(priceUSD, true)}
+        </span>
       </span>
-      <span style={{ color: '#2F7619', position: 'relative', top: '.275rem' }}>
-        {addMainSymbol(priceUSD, true)}
-      </span>
+      {alreadyExist ? (
+        <Done style={{ color: '#29AC80' }} />
+      ) : (
+        <Add style={{ color: '#4a8de5' }} />
+      )}
     </div>
   )
 }

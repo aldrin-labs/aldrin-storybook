@@ -1,14 +1,21 @@
 import React from 'react'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+
 import CoinRow from './CoinRow'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
+import Add from '@material-ui/icons/Add'
 
 class DialogAddCoin extends React.Component {
   state = {
     open: false,
     mouseInPopup: false,
     inputValue: '',
+    timeout: null,
   }
+
+  // componentDidUpdate() {
+  //   this.state.ref ? this.state.ref.focus() : null
+  // }
 
   changeRowToShow = (option) => {
     return {
@@ -41,11 +48,16 @@ class DialogAddCoin extends React.Component {
   }
 
   mouseEnter = () => {
-    this.setState({ mouseInPopup: true })
+    this.setState((prevState) => ({
+      mouseInPopup: true,
+      timeout: clearTimeout(prevState.timeout),
+    }))
   }
 
   mouseLeave = () => {
-    this.setState({ mouseInPopup: false })
+    this.setState({ mouseInPopup: false }, () =>
+      this.setState({ timeout: setTimeout(this.handleClose, 2000) })
+    )
   }
 
   handleSelectChange = async (
@@ -57,26 +69,40 @@ class DialogAddCoin extends React.Component {
 
     await onAddRowButtonClick(coin, priceUSD, priceBTC)
 
-    this.setState({ open: false })
+    this.setState({ open: false }, () => this.setState({ open: true }))
   }
 
   render() {
     return (
-      <div style={{ position: 'relative', padding: '1rem 0' }}>
+      <div
+        style={{
+          position: 'relative',
+          padding: '1rem 0',
+          display: 'inline-block',
+        }}
+      >
         <BtnCustom
-          variant="outlined"
-          color="#165BE0"
-          btnWidth="100px"
+          color="#fff"
           onFocus={this.handleClickOpen}
           onBlur={this.handleClose}
           style={{
             position: 'relative',
-            left: '75%',
             top: 0,
-            transform: 'translateX(-50%)',
-            width: '10rem',
+            right: 0,
+            width: '9.5rem',
+            borderRadius: '.75rem',
+            background: '#0B1FD1',
+            letterSpacing: '1px',
           }}
         >
+          <Add
+            style={{
+              color: '#fff',
+              position: 'relative',
+              bottom: '.1rem',
+              right: '.2rem',
+            }}
+          />
           Add Coin
         </BtnCustom>
         {this.state.open && (
@@ -96,7 +122,7 @@ class DialogAddCoin extends React.Component {
             }}
           >
             <SelectCoinList
-              //ref={handleRef}
+              //ref={(ref) => this.setState({ ref })}
               key={`inputCoinSymbol${'index'}`}
               classNamePrefix="custom-select-box"
               isClearable={true}
@@ -173,13 +199,14 @@ class DialogAddCoin extends React.Component {
                   value: string
                   priceUSD: string | number
                 } | null
-              ) =>
+              ) => {
                 this.handleSelectChange(
                   optionSelected.value || '',
                   optionSelected.priceUSD,
                   optionSelected.priceBTC
                 )
-              }
+                this.handleClickOpen()
+              }}
             />
           </div>
         )}
@@ -189,3 +216,6 @@ class DialogAddCoin extends React.Component {
 }
 
 export default DialogAddCoin
+
+// Coming soon for popups
+// add coin
