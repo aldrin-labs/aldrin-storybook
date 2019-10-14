@@ -3,14 +3,8 @@ import React from 'react'
 // import MuiDialogContent from '@material-ui/core/DialogContent'
 // import Timer from 'react-compound-timer'
 
-import CircularProgressbar from '@sb/components/ProgressBar/CircularProgressBar'
-
 import { withTheme } from '@material-ui/styles'
 import { Dialog } from '@material-ui/core'
-
-import SvgIcon from '@sb/components/SvgIcon'
-import Stroke from '@icons/Stroke.svg'
-import Ellipse from '@icons/RainbowGo.svg'
 
 import {
   TypographyCustomHeading,
@@ -22,6 +16,7 @@ import {
   StyledPaper,
   RebalanceDialogTypography,
   DistributedPercentage,
+  RebalanceActionButton,
   RebalanceGoButton,
 } from './RebalanceDialogTransaction.styles'
 
@@ -244,6 +239,9 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
     return (
       <>
         {/* {!showRebalanceProgress || rebalanceError ? elementToShow : null} */}
+        <RebalanceActionButton disabled={true}>
+          save target
+        </RebalanceActionButton>
         <RebalanceGoButton
           disabled={
             availablePercentage < 100 ||
