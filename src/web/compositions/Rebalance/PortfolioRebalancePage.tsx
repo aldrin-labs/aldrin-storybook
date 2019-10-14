@@ -485,14 +485,14 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
           </Grid>
 
           <GridTransactionBtn>
-            {/* <GridTransactionTypography>
+            <GridTransactionTypography>
               {UTILS.getTextOverButton({
                 showRebalanceProgress,
                 rebalanceError,
                 showRetryButton,
                 rebalanceIsCanceled,
               })}
-            </GridTransactionTypography> */}
+            </GridTransactionTypography>
             {/* if rebalance is processing and no error */}
             {/* {showRebalanceProgress && !rebalanceError && (
               <CircularProgressbar
