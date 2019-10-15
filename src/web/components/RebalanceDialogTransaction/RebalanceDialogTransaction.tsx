@@ -86,7 +86,9 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
       hideLeavePopup()
 
       await toggleCancelRebalance(true)
+      console.log('before canceling order', cancelOrder)
       await cancelOrder()
+      console.log('after canceling order')
       await setTransactions()
       await clearIntervalForUpdateOrder()
       // await setErrorStatus(false)
@@ -252,17 +254,22 @@ class RebalanceDialogTransaction extends React.Component<IProps, IState> {
           }
           onClick={() => functionForButton()}
         >
-          {(rebalanceError || rebalanceIsCanceled) &&
-          !isChangedSliderAfterRebalanceError
-            ? 'retry'
-            : 'rebalance now'}
+          {whatElementToShow === 'retry' ? 'retry' : 'rebalance now'}
         </RebalanceGoButton>
         {/* if rebalance was unsuccessful or user canceled it. but after sliders move we hide it */}
-        {((rebalanceError && !rebalanceIsCanceled) || isFinished ? (
+        {/* {((rebalanceError && !rebalanceIsCanceled) || isFinished) ? (
           !isChangedSliderAfterRebalanceError
+        ) ? (
+          
         ) : (
           rebalanceIsExecuting
-        )) ? (
+        ) ? (
+          
+        ) : null} */}
+
+        {rebalanceIsCanceled ||
+        (rebalanceError && !isChangedSliderAfterRebalanceError) ||
+        rebalanceIsExecuting ? (
           <RebalanceDialogTypography
             onClick={() => {
               openDialog()
