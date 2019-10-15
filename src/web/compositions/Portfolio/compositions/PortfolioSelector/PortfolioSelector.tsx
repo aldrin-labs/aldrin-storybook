@@ -605,10 +605,6 @@ export default compose(
           variables: { baseCoin, innerSettings: true },
         },
         {
-          query: getPortfolioAssets,
-          variables: { baseCoin, innerSettings: false },
-        },
-        {
           query: getMyPortfoliosQuery,
           variables: { baseCoin },
         },

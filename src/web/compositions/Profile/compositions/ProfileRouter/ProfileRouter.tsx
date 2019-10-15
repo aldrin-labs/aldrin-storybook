@@ -14,7 +14,7 @@ export const ComingSoonBlock = () => (
 )
 
 const Accounts = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/ProfileAccounts/ProfileAccounts')
+  import(/* webpackPrefetch: true */ '@core/containers/Profile/ProfileAccounts/ProfileAccounts')
 )
 
 const Settings = React.lazy(() =>
@@ -31,7 +31,6 @@ const ProfileRouter = () => {
             path="/profile"
             render={(...rest) => <ComingSoonBlock />}
           />
-          {/* total portfolio - 14% height, next 14 * 3, next rest */}
           <Route
             exact
             path="/profile/accounts"
