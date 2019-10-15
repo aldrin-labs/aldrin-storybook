@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, {css} from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Grid, ExpansionPanel, Typography, TableCell } from '@material-ui/core'
 
 export const GridFlex = styled(Grid)`
@@ -17,9 +17,8 @@ export const ExpansionPanelWrapper = styled(ExpansionPanel)`
   margin-bottom: 20px;
   padding: 7px 0;
   border-radius: 50%;
-  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
-  -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.29);
+  border: 0.1rem solid #e0e5ec;
+  box-shadow: 0px 0px 0.5rem 0px rgba(30, 30, 30, 0.1) !important;
 
   &&:first-child {
     border-radius: 16px;
@@ -54,7 +53,7 @@ const tphtphystylescss = css`
 export const SliderTypography = styled(Typography)`
   ${tphtphystylescss}
   line-height: 2rem;
-  border-bottom: 1px solid #7284A0;
+  border-bottom: 1px solid #7284a0;
 `
 
 export const StyledTypography = styled(
@@ -68,7 +67,6 @@ export const StyledTypography = styled(
     ...rest
   }) => <Typography {...rest} />
 )`
-
   ${tphtphystylescss}
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
@@ -121,15 +119,15 @@ export const StyledSubTypography = styled(
 export const TableCellLast = styled(TableCell)`
   border: none;
   padding: 0 9.5vw 0 0;
-  
+
   @media screen and (min-device-width: 1520px) and (-webkit-min-device-pixel-ratio: 1) {
     padding: 0 10.5vw 0 0;
   }
-  
+
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
     padding: 0 11.5vw 0 0;
   }
-  
+
   @media screen and (min-device-width: 2500px) and (-webkit-min-device-pixel-ratio: 1) {
     padding: 0 12.3vw 0 0;
   }

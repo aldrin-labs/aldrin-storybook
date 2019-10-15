@@ -22,7 +22,7 @@ class ProgressBar extends PureComponent<IProps> {
   static getDerivedStateFromProps(props: IProps, state: IState) {
     if (state.completed !== 100) {
       const isFailedTransaction = props.transactionsData.some(
-        (el) => el.isDone === 'fail'
+        (el) => el.isDone === 'error'
       )
 
       if (isFailedTransaction) {
@@ -36,7 +36,7 @@ class ProgressBar extends PureComponent<IProps> {
 
       const successfulTransactionNumber = props.transactionsData.reduce(
         (acc, el) => {
-          if (el.isDone === 'success') {
+          if (el.isDone === 'closed' || el.isDone === 'filled') {
             return acc + 1
           }
           return acc
