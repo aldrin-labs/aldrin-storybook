@@ -25,7 +25,7 @@ const RebalanceDialogLeave = ({
 }) => {
   const transactionStatuses = transactionsData.map((t) => t.isDone)
 
-  const consistFailTransaction = transactionStatuses.includes('fail')
+  const consistFailTransaction = transactionStatuses.includes('error')
   const consistLoadingTransaction =
     transactionStatuses.includes('loading') ||
     transactionStatuses.includes(null)

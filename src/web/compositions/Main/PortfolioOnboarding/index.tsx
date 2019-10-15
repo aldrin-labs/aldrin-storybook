@@ -31,10 +31,12 @@ const Onboarding = ({
   theme,
 }: IProps) => {
   const {
-    getTooltipSettings: {
-      onboarding: { instructions: onboarding },
-    },
+    getTooltipSettings: { onboarding },
   } = getTooltipSettingsQuery
+
+  const { instructions: needOnboarding } = onboarding
+    ? onboarding
+    : { instructions: false }
 
   if (
     portfolioKeys.length > 1 ||
@@ -43,7 +45,7 @@ const Onboarding = ({
     return null
   }
 
-  if (!onboarding) return null
+  if (!needOnboarding) return null
 
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
   const completeOnboarding = async () =>

@@ -76,10 +76,10 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
         justify="space-between"
       >
         {/* Grid - 1st item md - 6 Starts */}
-        <Grid item md={6} lg={6}>
+        <Grid item md={12} lg={12}>
           <Grid container>
             <Grid container justify="space-between">
-              <Grid item lg={2} md={3} justify="center">
+              <Grid item lg={3} md={3} justify="center">
                 <StyledTypography fontWeight={'700'} whiteSpace="nowrap">
                   {accountName}
                 </StyledTypography>
@@ -103,8 +103,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   />
                 </StyledSubTypography>
               </Grid>
-
-              <Grid
+              {/* <Grid
                 item
                 lg={3}
                 md={3}
@@ -115,9 +114,10 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   {'filter dust assets'}
                 </StyledTypography>
                 <RebalanceSwitcherDustFilter />
-              </Grid>
-
-              <Grid item lg={3} md={3} style={{ paddingRight: '17px' }}>
+              </Grid> */}
+              <Grid item xs={4} />
+              {/* Space */}
+              <Grid item lg={2} md={2} style={{ paddingRight: '17px' }}>
                 <StyledTypography fontWeight={'700'} position="right">
                   Available value
                 </StyledTypography>
@@ -130,8 +130,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                   $ {availableValue !== '0' ? slicePrice(availableValue) : `0`}
                 </StyledSubTypography>
               </Grid>
-
-              <Grid item lg={4} md={3}>
+              <Grid item lg={2} md={2}>
                 <StyledTypography fontWeight={'700'} position="right">
                   Available percentage
                 </StyledTypography>
@@ -153,7 +152,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
         {/* <Grid item md={0} lg={2}></Grid>
           Space */}
         {/* Grid - 2nd item md - 6 Starts */}
-        <Grid item md={6} lg={6} style={{ paddingLeft: '6rem' }}>
+        {/* <Grid item md={6} lg={6} style={{ paddingLeft: '6rem' }}>
           <Grid container>
             <Grid container justify="space-between">
               <GridFlex justify="flex-start" alignItems="center" item lg={3}>
@@ -278,13 +277,13 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
                     </Timer>
                   )}
                   {/*<TimerOnHooks />*/}
-                </StyledSubTypography>
-              </Grid>
-            </Grid>
-            {/* Grid - container justify center end*/}
-          </Grid>
-          {/* Grid - container end*/}
-        </Grid>{' '}
+        {/* </StyledSubTypography> */}
+        {/* //   </Grid> */}
+        {/* // </Grid> */}
+        {/* Grid - container justify center end*/}
+        {/* </Grid> */}
+        {/* Grid - container end*/}
+        {/* </Grid>  */}
         {/* Grid - 2nd item md = 6 end */}
       </GridInfoPanelWrapper>
       // Grid - main container
