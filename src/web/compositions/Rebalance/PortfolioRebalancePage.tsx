@@ -196,14 +196,6 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     return status
   }
 
-  emitExecutingRebalanceHandler = () => {
-    this.setState({
-      progress: 0,
-    })
-
-    this.props.executeRebalanceHandler()
-  }
-
   onChangeExpandedPanel = () => {
     this.setState((prevstate) => ({
       isPanelExpanded: !prevstate.isPanelExpanded,
@@ -214,6 +206,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
     this.setState({
       isSectionChart: !this.state.isSectionChart,
     })
+  }
+
+  emitExecutingRebalanceHandler = () => {
+  this.setState({progress: 0 })
+    this.props.executeRebalanceHandler()
   }
 
   handleJoyrideCallback = async (data: any) => {
