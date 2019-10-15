@@ -32,10 +32,12 @@ class PortfolioSelectorPopup extends Component {
     const {
       theme,
       data,
-      forceUpdateAccountContainer,
-      baseCoin,
+      dotsColor = '#fff',
+      forceUpdateAccountContainer = () => {},
+      baseCoin = 'USDT',
       isPortfolio = false,
-      isSideNavOpen,
+      isSideNavOpen = true,
+      needPortal = false,
     } = this.props
 
     return (
@@ -46,7 +48,7 @@ class PortfolioSelectorPopup extends Component {
               className="fa fa-ellipsis-h"
               style={{
                 fontSize: '1.5rem',
-                color: isPortfolio ? '#fff' : theme.palette.text.dark,
+                color: isPortfolio ? dotsColor : theme.palette.text.dark,
               }}
             />
           </span>
@@ -99,10 +101,20 @@ class PortfolioSelectorPopup extends Component {
         </PortfolioSelectorPopupWrapper>
         {/* portal to backdrop */}
         {isPopupOpen && isSideNavOpen ? (
-          <PortfolioSelectorPopupMask
-            visible={isPopupOpen}
-            onClick={this.closePopup}
-          />
+          needPortal ? (
+            ReactDOM.createPortal(
+              <PortfolioSelectorPopupMask
+                visible={isPopupOpen}
+                onClick={this.closePopup}
+              />,
+              document.getElementById('root')
+            )
+          ) : (
+            <PortfolioSelectorPopupMask
+              visible={isPopupOpen}
+              onClick={this.closePopup}
+            />
+          )
         ) : null}
       </>
     )

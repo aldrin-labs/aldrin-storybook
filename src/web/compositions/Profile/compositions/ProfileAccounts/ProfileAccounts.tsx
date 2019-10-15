@@ -1,4 +1,5 @@
 import React from 'react'
+import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons'
 
 import {
   MainContainer,
@@ -9,6 +10,8 @@ import {
   SummaryAccountsBlock,
   CurrentPortfolioBlock,
   PortfoliosValue,
+  PortfolioValues,
+  PortfolioValuesBlock,
   AccountsValue,
   AccountsChartBlock,
   GridTitle,
@@ -16,11 +19,23 @@ import {
   BigNumberValue,
   ChangePortfolioBlock,
   CreatePortfolioButton,
+  ChangePortfolioArrowsBlock,
+  ChangePortfolioArrow,
+  GreyValue,
+  PortfolioName,
+  StyledAddIcon,
+  Typography,
 } from './ProfileAccounts.styles'
+import ProfileAccountsTable from './ProfileAccountsTable'
 
+import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { ComingSoonBlock } from '@sb/compositions/Profile/compositions/ProfileRouter/ProfileRouter'
 
-const ProfileAccounts = (props) => {
+const ProfileAccounts = ({
+  currentPortfolioData,
+  portfolioAccountsData: { keys: accounts },
+  ...props
+}) => {
   console.log('props', props)
 
   return (
@@ -54,12 +69,45 @@ const ProfileAccounts = (props) => {
       <ContentContainer>
         {/* current portfolio info */}
         <CurrentPortfolioBlock>
-          <ChangePortfolioBlock>change portfolio etc</ChangePortfolioBlock>
-          <CreatePortfolioButton>create portfolio +</CreatePortfolioButton>
+          <ChangePortfolioBlock>
+            <PortfolioValues>
+              {/* switch between portfolios */}
+              <ChangePortfolioArrowsBlock>
+                {/* prev portfolio */}
+                <ChangePortfolioArrow>
+                  <KeyboardArrowUp />
+                </ChangePortfolioArrow>
+                {/* next portfolio */}
+                <ChangePortfolioArrow>
+                  <KeyboardArrowDown />
+                </ChangePortfolioArrow>
+              </ChangePortfolioArrowsBlock>
+
+              {/* current portfolio values */}
+              <PortfolioValuesBlock>
+                <PortfolioName>trade portfolio 1</PortfolioName>
+                <GreyValue>5 accounts</GreyValue>
+                <GreenValue>$10,000</GreenValue>
+              </PortfolioValuesBlock>
+            </PortfolioValues>
+            {/* edit portfolio name */}
+            <PortfolioSelectorPopup
+              isPortfolio={true}
+              needPortal={true}
+              dotsColor={'#7284A0'}
+              data={currentPortfolioData}
+            />
+          </ChangePortfolioBlock>
+          <CreatePortfolioButton>
+            <StyledAddIcon />
+            <Typography>create new portfolio</Typography>
+          </CreatePortfolioButton>
         </CurrentPortfolioBlock>
 
         {/* account table */}
-        <GridBlock height={'86%'}>table with accounts</GridBlock>
+        <GridBlock height={'86%'}>
+          <ProfileAccountsTable accounts={accounts} />
+        </GridBlock>
       </ContentContainer>
     </MainContainer>
   )
