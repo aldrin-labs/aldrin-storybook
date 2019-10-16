@@ -37,13 +37,8 @@ export const ReactSelectCustom = styled(ReactSelect)`
 export const GridContainerTitle = styled(Grid)`
   display: flex;
   width: 100%;
-  border-radius: 20px 20px 0 0;
+  border-radius: 1.5rem 1.5rem 0 0;
   background: ${(props) => props.bgColor};
-  margin-bottom: 0.33rem;
-
-  @media (min-width: 2560px) {
-    height: auto;
-  }
 `
 
 export const GridItemContainer = styled(Grid)`
@@ -55,10 +50,12 @@ export const GridItemContainer = styled(Grid)`
 `
 
 export const GridCalendarContainer = styled(Grid)`
-  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
+  height: 30%;
+  box-shadow: 0px 0px 0.4rem rgba(10, 19, 43, 0.1);
   background-color: #fff;
-  border-radius: 20px;
-  margin-bottom: 1vh;
+  border: 0.1rem solid #e0e5ec;
+  border-radius: 1.5rem;
+  margin-bottom: 1%;
   padding: 0 2rem;
 `
 
@@ -81,22 +78,15 @@ export const TypographyContatinerTitle = styled(Typography)`
      padding: 1rem 0;
      color: #7284a0; */
   background: ${(props) => props.bgColor};
-  margin-top: 10px;
-  color: ${(props) => props.textColor};
+  color: #16253D;
+  padding: 1.2rem 0 1rem;
+
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
   width: 100%;
   text-align: ${(props) => props.textAlign || 'center'};
-  height: 24px;
-  padding: ${(props) => props.textPadding};
-
-  @media (min-width: 2560px) {
-    color: #7284a0;
-    padding: 0.4rem 0 1rem 0.8rem;
-    height: auto;
-  }
 `
 
 export const TransactionsTitle = styled(TypographyContatinerTitle)`
@@ -165,10 +155,11 @@ export const TypographyCalendarLegend = styled(Typography)`
 
 export const GridAccountContainer = styled(Grid)`
   height: 100%; /* min-height: 130px; */
-  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
-  border-radius: 20px;
+  box-shadow: 0px 0px 0.4rem rgba(10, 19, 43, 0.1);
+  border: 0.1rem solid #e0e5ec;
+  background: #fff;
+  border-radius: 1.5rem;
   position: relative;
-  border: ${(props) => props.borderColor};
 `
 
 export const LessMoreContainer = styled(Grid)`
@@ -181,9 +172,10 @@ export const LessMoreContainer = styled(Grid)`
 
 export const GridTableContainer = styled(Grid)`
   overflow: hidden;
-  box-shadow: 0px 0px 8px rgba(10, 19, 43, 0.1);
-  border-radius: 20px;
-  border: ${(props) => props.borderColor};
+  box-shadow: 0px 0px 0.4rem rgba(10, 19, 43, 0.1);
+  border-radius: 1.5rem;
+  border: 0.1rem solid #e0e5ec;
+  height: 68.5%;
   ::-webkit-scrollbar {
     display: none;
   }

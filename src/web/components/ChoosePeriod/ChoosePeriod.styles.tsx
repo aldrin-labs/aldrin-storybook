@@ -8,13 +8,14 @@ export const ChoosePeriodWrapper = styled(Grid)`
   justify-content: space-between;
   margin-bottom: 1rem;
 
-  ${props => !props.isTableCalendar && {
-    padding: '.5rem .825rem',
-    background: '#fff',
-    border: '.2rem solid #e0e5ec',
-    boxShadow: '0 0 2rem rgba(8, 22, 58, 0.1)',
-    borderRadius: '2rem'
-  }}
+  ${(props) =>
+    !props.isTableCalendar && {
+      padding: '.5rem .825rem',
+      background: '#fff',
+      border: '.1rem solid #e0e5ec',
+      boxShadow: '0 0 2rem rgba(8, 22, 58, 0.1)',
+      borderRadius: '2rem',
+    }}
 `
 
 export const ChoosePeriodButton = styled.button`
@@ -38,13 +39,13 @@ export const ChoosePeriodButton = styled.button`
   border: 1.3px solid ${(props) => (props.active ? '#0B1FD1' : '#E0E5EC')};
 
   &:not(:last-child) {
-    margin-right: .75rem;
+    margin-right: 0.75rem;
   }
 
   transition: all 0.375s ease-in-out;
 
   @media only screen and (min-width: 1920px) {
-    font-size: 0.9rem
+    font-size: 0.9rem;
   }
 
   @media only screen and (min-width: 2560px) {
@@ -60,7 +61,7 @@ export const ChoosePeriodTypography = styled(Typography)`
   font-size: 1.175rem;
   line-height: 114.5%;
 
-  color: #16253D;
+  color: #16253d;
   margin-right: 1.5rem;
 `
 
@@ -79,7 +80,7 @@ export const DatePickerWrapper = styled.div`
 
       &_svg {
         margin-right: 5px;
-        fill: #5C8CEA;
+        fill: #5c8cea;
         height: 13px;
         width: 12px;
         outline: 0;
@@ -95,7 +96,6 @@ export const DatePickerWrapper = styled.div`
     border-radius: 0;
   }
 
-  
   & .DateInput_input {
     font-family: 'DM Sans';
     font-size: 1.25rem;
@@ -103,36 +103,37 @@ export const DatePickerWrapper = styled.div`
     line-height: 18px;
   }
 
-
   @media only screen and (min-width: 1024px) {
     & .DateInput {
       width: 7.9rem;
-  
+
       .DateInput_input {
-        padding: 0.11rem 0.9rem 0.11rem 0.9rem;
+        padding: 0.5rem 0.9rem 0.11rem 0.5rem;
         text-transform: uppercase;
         text-align: center;
         font-size: 9px;
       }
-  
-      
     }
   }
 
   @media only screen and (min-width: 1920px) {
     & .DateInput {
-      width: 6.6rem;
+      width: 12rem;
+
+      .DateInput_input {
+        font-size: 1.2rem;
+      }
     }
   }
 
   @media only screen and (min-width: 2560px) {
     & .DateInput {
       .DateInput_input {
-        padding: .5rem 1rem .5rem 1.25rem;
+        padding: 0.5rem 1rem 0.5rem 1.25rem;
       }
 
       &:last-child .DateInput_input {
-        padding: .5rem 1rem;
+        padding: 0.5rem 1rem;
       }
     }
     & .DateRangePicker {

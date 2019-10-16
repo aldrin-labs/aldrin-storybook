@@ -301,8 +301,6 @@ class TransactionPage extends React.PureComponent {
       activeKeys.length + activeWallets.length ===
       keys.length + newWallets.length
 
-    console.log('transactionPage', transactionPage)
-
     return (
       <>
         <TransactionsPageMediaQuery />
@@ -320,13 +318,7 @@ class TransactionPage extends React.PureComponent {
           {/* Accounts */}
           {!hideSelector && (
             <Grid item lg={2} md={2}>
-              <GridAccountContainer
-                borderColor={`1px solid ${
-                  theme.palette.grey[theme.palette.type]
-                }`}
-                style={{ backgroundColor: '#fff' }}
-                id="accountsTransactions"
-              >
+              <GridAccountContainer id="accountsTransactions">
                 <GridContainerTitle
                   bgColor={theme.palette.primary.dark}
                   content
@@ -402,14 +394,7 @@ class TransactionPage extends React.PureComponent {
           >
             <Grid item style={{ height: '100%' }}>
               {!hideSelector && (
-                <GridCalendarContainer
-                  item
-                  xs={12}
-                  id="calendarTransactions"
-                  borderColor={`1px solid ${
-                    theme.palette.grey[theme.palette.type]
-                  }`}
-                >
+                <GridCalendarContainer item xs={12} id="calendarTransactions">
                   <GitTransactionCalendar
                     {...{
                       ...gitCalendarDate,
@@ -425,16 +410,7 @@ class TransactionPage extends React.PureComponent {
                 </GridCalendarContainer>
               )}
 
-              <GridTableContainer
-                item
-                lg={12}
-                md={12}
-                borderColor={`1px solid ${
-                  theme.palette.grey[theme.palette.type]
-                }`}
-                style={{ height: 'calc(70.5% - 2vh)' }}
-                id="tableTransactions"
-              >
+              <GridTableContainer item xs={12} id="tableTransactions">
                 <TradeOrderHistory
                   isCustomStyleForFooter={isCustomStyleForFooter}
                   style={{ overflow: 'scroll' }}
@@ -451,7 +427,7 @@ class TransactionPage extends React.PureComponent {
               </GridTableContainer>
             </Grid>
           </GridItemContainer>
-          {/* 416 * 1.625 */}
+
           <GridItemContainer
             item
             lg={hideSelector ? 3 : 2}

@@ -4,7 +4,12 @@ import { addMainSymbol } from '@sb/components/index'
 
 import { Add, Done, VisibilityOff } from '@material-ui/icons'
 
-const CoinRow = ({ symbol, priceUSD, alreadyExist = false }) => {
+const CoinRow = ({
+  symbol,
+  priceUSD,
+  alreadyExist = false,
+  dustFiltered = false,
+}) => {
   return (
     <div
       style={{
@@ -41,9 +46,13 @@ const CoinRow = ({ symbol, priceUSD, alreadyExist = false }) => {
         </span>
       </span>
       {alreadyExist ? (
-        <Done style={{ color: '#29AC80' }} />
+        dustFiltered ? (
+          <VisibilityOff style={{ width: '1.5rem', height: '1.5rem', position: 'relative', top: '.3rem' }} />
+        ) : (
+          <Done style={{ color: '#29AC80', width: '2rem', height: '2rem' }} />
+        )
       ) : (
-        <Add style={{ color: '#4a8de5' }} />
+        <Add style={{ color: '#4a8de5', width: '2.4rem', height: '2.4rem', position: 'relative', left: '.4rem' }} />
       )}
     </div>
   )
