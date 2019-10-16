@@ -106,10 +106,9 @@ export const DistributedPercentage = styled.span`
   font-weight: bold;
 `
 
-export const RebalanceGoButton = styled(Button)`
+export const RebalanceActionButton = styled(Button)`
   width: 100%;
   padding: 1.3rem 0 1.2rem 0;
-  margin: 1rem 0 1.4rem 0;
   border-radius: 0.75rem;
   color: #fff !important;
   background: ${(props) => (props.disabled ? '#7284A0 !important' : '#0B1FD1')};
@@ -124,4 +123,8 @@ export const RebalanceGoButton = styled(Button)`
     background: ${(props) =>
       props.disabled ? '#7284A0 !important' : '#0B1FD1'};
   }
+`
+
+export const RebalanceGoButton = styled(RebalanceActionButton)`
+  margin: 1rem 0 1.4rem 0;
 `

@@ -240,6 +240,3 @@ class DialogAddCoin extends React.Component {
 }
 
 export default DialogAddCoin
-
-// Coming soon for popups
-// add coin
