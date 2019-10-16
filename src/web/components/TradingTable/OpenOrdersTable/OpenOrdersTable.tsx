@@ -52,6 +52,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     pair: string
   ) => {
     const { showCancelResult } = this.props
+
+    const reversedPair = pair
+      .split('/')
+      .reverse()
+      .join('/')
+
     const result = await this.onCancelOrder(keyId, orderId, pair)
     showCancelResult(cancelOrderStatus(result))
   }

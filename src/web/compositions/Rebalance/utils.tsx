@@ -20,20 +20,17 @@ export const getTextOverButton = ({
   }
 
   if (rebalanceIsCanceled) {
-    return (
-      <div>
-        Distribute <span>100%</span> of your assets for rebalance.
-      </div>
-    )
+    return null
+    // (
+    //   <div>
+    //     Distribute <span>100%</span> of your assets for rebalance.
+    //   </div>
+    // )
   }
 
   if (showRebalanceProgress) {
     return <span>REBALANCE IS PROCESSING</span>
   } else {
-    return (
-      <div>
-        Distribute <span>100%</span> of your assets for rebalance.
-      </div>
-    )
+    return null
   }
 }
