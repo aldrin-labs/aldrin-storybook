@@ -22,13 +22,17 @@ const LINKS = [
 ]
 
 const ProfileSidebar = ({ logoutMutation, accountData, path }) => {
+  const data = !accountData
+    ? { imageUrl: '', username: 'Loading...', email: 'Loading...' }
+    : accountData
+
   return (
     <SidebarContainer xs={2}>
       <div>
         <UserInfo>
-          <UserAvatar src={accountData.imageUrl} />
-          <UserName>{accountData.username}</UserName>
-          <UserEmail>{accountData.email}</UserEmail>
+          <UserAvatar src={data.imageUrl} />
+          <UserName>{data.username}</UserName>
+          <UserEmail>{data.email}</UserEmail>
         </UserInfo>
         <Navigation>
           {LINKS.map((link) => (

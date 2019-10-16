@@ -137,12 +137,14 @@ export const transformData = (data: any[]) => {
         render: (
           <span
             style={
-              row.status.includes('initialized')
+              row.status.includes('initialized') && row.valid
                 ? { ...greenStyle }
                 : { ...redStyle }
             }
           >
-            {row.status.includes('initialized') ? 'initialized' : 'invalid'}
+            {row.status.includes('initialized') && row.valid
+              ? 'initialized'
+              : 'invalid'}
           </span>
         ),
       },
