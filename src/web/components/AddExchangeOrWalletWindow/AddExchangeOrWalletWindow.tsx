@@ -12,7 +12,9 @@ import {
   Wrapper,
 } from '@sb/styles/walletWindows.styles'
 
-const MyLinkToUserSettings = (props: object) => <Link to="/user" {...props} />
+const MyLinkToUserSettings = (props: object) => (
+  <Link to="/profile" {...props} />
+)
 
 export default class AddExchangeOrWalletWindow extends React.Component<IProps> {
   render() {
