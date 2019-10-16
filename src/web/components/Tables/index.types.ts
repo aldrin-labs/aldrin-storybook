@@ -91,7 +91,7 @@ export type action = {
 }
 
 export type TableStyles = {
-  heading?: CSSProperties
+  heading?: CSSProperties | object
   title?: CSSProperties
   cell?: CSSProperties
   tab?: CSSProperties

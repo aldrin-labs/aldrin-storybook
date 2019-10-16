@@ -4,11 +4,16 @@ import Checkbox from '@material-ui/core/Checkbox'
 
 export const TypographyShowHide = styled(Typography)`
   width: 80%;
+  white-space: nowrap;
   font-size: 1.3rem;
   margin-right: 1rem;
 
   @media (min-width: 1921px) {
     font-size: 1.4rem;
+  }
+
+  @media (min-width: 2560px) {
+    font-size: 1.25rem;
   }
 `
 export const CheckboxShowHide = styled(Checkbox)`
@@ -28,7 +33,6 @@ export const GridShowDataContainer = styled(Grid)`
   justify-content: center;
 `
 export const FormControlCustom = styled(FormControl)`
-  border-top: 1px solid #e0e5ec;
-  padding-top: 25px;
+  border-top: 0.15rem solid #e0e5ec;
   width: 100%;
 `
