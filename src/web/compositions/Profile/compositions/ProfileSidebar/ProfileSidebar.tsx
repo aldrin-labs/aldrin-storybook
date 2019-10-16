@@ -1,7 +1,4 @@
 import React from 'react'
-import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
-import { LOGOUT } from '@core/graphql/mutations/login'
 
 import { SidebarContainer } from '@sb/compositions/Profile/Profile.styles'
 import {
@@ -24,14 +21,14 @@ const LINKS = [
   { path: '/profile/notifications', text: 'Notifications' },
 ]
 
-const ProfileSidebar = ({ logoutMutation, path, ...rest }) => {
+const ProfileSidebar = ({ logoutMutation, accountData, path }) => {
   return (
     <SidebarContainer xs={2}>
       <div>
         <UserInfo>
-          <UserAvatar src={Avatar} />
-          <UserName>Nezuko</UserName>
-          <UserEmail>nezuko@gmail.com</UserEmail>
+          <UserAvatar src={accountData.imageUrl} />
+          <UserName>{accountData.username}</UserName>
+          <UserEmail>{accountData.email}</UserEmail>
         </UserInfo>
         <Navigation>
           {LINKS.map((link) => (
@@ -52,6 +49,4 @@ const ProfileSidebar = ({ logoutMutation, path, ...rest }) => {
   )
 }
 
-export default compose(graphql(LOGOUT, { name: 'logoutMutation' }))(
-  ProfileSidebar
-)
+export default ProfileSidebar

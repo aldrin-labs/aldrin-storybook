@@ -38,6 +38,7 @@ class PortfolioSelectorPopup extends Component {
       isPortfolio = false,
       isSideNavOpen = true,
       needPortal = false,
+      popupStyle = {},
     } = this.props
 
     return (
@@ -58,6 +59,7 @@ class PortfolioSelectorPopup extends Component {
               className="popup"
               theme={theme}
               isPopupOpen={isPopupOpen}
+              style={popupStyle}
               // ref={this.popupRef}
             >
               {isPortfolio ? (

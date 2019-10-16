@@ -126,8 +126,10 @@ class CreatePortfolio extends React.Component<IProps, IState> {
       theme: {
         palette: { blue, black },
       },
-      onboarding,
-      open,
+      onboarding = false,
+      open = false,
+      CustomButton,
+      existCustomButton = false,
     } = this.props
 
     const { error, portfolioName } = this.state
@@ -142,6 +144,8 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 />
             */}
           </>
+        ) : existCustomButton ? (
+          <CustomButton handleClick={this.handleClickOpen} />
         ) : (
           <BtnCustom
             btnWidth={'17rem'}

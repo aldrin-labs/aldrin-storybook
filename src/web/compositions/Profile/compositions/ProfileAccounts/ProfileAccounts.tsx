@@ -27,16 +27,31 @@ import {
   Typography,
 } from './ProfileAccounts.styles'
 import ProfileAccountsTable from './ProfileAccountsTable'
+import { formatValue, countAllPortfoliosValue } from './ProfileAccounts.utils'
 
+import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { ComingSoonBlock } from '@sb/compositions/Profile/compositions/ProfileRouter/ProfileRouter'
 
 const ProfileAccounts = ({
   currentPortfolioData,
+  allPortfoliosData,
   portfolioAccountsData: { keys: accounts },
-  ...props
+  selectPortfolioMutation,
 }) => {
-  console.log('props', props)
+  const currentPortfolioIndex = allPortfoliosData.findIndex(
+    (portfolio) => portfolio._id === currentPortfolioData._id
+  )
+
+  const prevPortfolioId =
+    currentPortfolioIndex === 0
+      ? allPortfoliosData[allPortfoliosData.length - 1]._id
+      : allPortfoliosData[currentPortfolioIndex - 1]._id
+
+  const nextPortfolioId =
+    currentPortfolioIndex === allPortfoliosData.length - 1
+      ? allPortfoliosData[0]._id
+      : allPortfoliosData[currentPortfolioIndex + 1]._id
 
   return (
     <MainContainer>
@@ -45,8 +60,10 @@ const ProfileAccounts = ({
         <PortfoliosBlock>
           <GridTitle>total portfolios</GridTitle>
           <PortfoliosValue>
-            <GreenValue>$10,000</GreenValue>
-            <BigNumberValue>1</BigNumberValue>
+            <GreenValue>
+              {formatValue(countAllPortfoliosValue(allPortfoliosData))}
+            </GreenValue>
+            <BigNumberValue>{allPortfoliosData.length}</BigNumberValue>
           </PortfoliosValue>
         </PortfoliosBlock>
 
@@ -54,7 +71,7 @@ const ProfileAccounts = ({
         <SummaryAccountsBlock height={'42%'}>
           <GridTitle>summary accounts</GridTitle>
           <AccountsValue>
-            <BigNumberValue>5</BigNumberValue>
+            <BigNumberValue>{accounts.length}</BigNumberValue>
           </AccountsValue>
           <AccountsChartBlock>
             <GridTitle>chart</GridTitle>
@@ -74,20 +91,44 @@ const ProfileAccounts = ({
               {/* switch between portfolios */}
               <ChangePortfolioArrowsBlock>
                 {/* prev portfolio */}
-                <ChangePortfolioArrow>
+                <ChangePortfolioArrow
+                  onClick={() =>
+                    selectPortfolioMutation({
+                      variables: {
+                        inputPortfolio: {
+                          id: nextPortfolioId,
+                        },
+                      },
+                    })
+                  }
+                >
                   <KeyboardArrowUp />
                 </ChangePortfolioArrow>
                 {/* next portfolio */}
-                <ChangePortfolioArrow>
+                <ChangePortfolioArrow
+                  onClick={() =>
+                    selectPortfolioMutation({
+                      variables: {
+                        inputPortfolio: {
+                          id: prevPortfolioId,
+                        },
+                      },
+                    })
+                  }
+                >
                   <KeyboardArrowDown />
                 </ChangePortfolioArrow>
               </ChangePortfolioArrowsBlock>
 
               {/* current portfolio values */}
               <PortfolioValuesBlock>
-                <PortfolioName>trade portfolio 1</PortfolioName>
-                <GreyValue>5 accounts</GreyValue>
-                <GreenValue>$10,000</GreenValue>
+                <PortfolioName>{currentPortfolioData.name}</PortfolioName>
+                <GreyValue>{`${accounts.length} ${
+                  accounts.length === 1 ? 'account' : 'accounts'
+                }`}</GreyValue>
+                <GreenValue>
+                  {formatValue(currentPortfolioData.portfolioValue)}
+                </GreenValue>
               </PortfolioValuesBlock>
             </PortfolioValues>
             {/* edit portfolio name */}
@@ -98,10 +139,16 @@ const ProfileAccounts = ({
               data={currentPortfolioData}
             />
           </ChangePortfolioBlock>
-          <CreatePortfolioButton>
-            <StyledAddIcon />
-            <Typography>create new portfolio</Typography>
-          </CreatePortfolioButton>
+          <CreatePortfolio
+            baseCoin={'USDT'}
+            existCustomButton={true}
+            CustomButton={({ handleClick }) => (
+              <CreatePortfolioButton onClick={handleClick}>
+                <StyledAddIcon />
+                <Typography>create new portfolio</Typography>
+              </CreatePortfolioButton>
+            )}
+          />
         </CurrentPortfolioBlock>
 
         {/* account table */}
