@@ -42,7 +42,6 @@ const TransactionTable = ({
   cancelOrder,
   cancelTransaction,
 }: IProps) => {
-  let loaderExists = false
 
   return (
     <>
@@ -127,7 +126,7 @@ const TransactionTable = ({
                       ? 'order executed'
                       : row.isDone === 'error'
                       ? 'unsuccessful'
-                      : row.isDone === 'loading'
+                      : row.isDone === 'open'
                       ? 'order placed'
                       : null}
                     {row.isDone === 'error' && (
@@ -154,9 +153,7 @@ const TransactionTable = ({
                     `Canceled`
                   ) : row.isDone === 'partially_filled' ? (
                     `Partially filled`
-                  ) : (showLoader || row.isDone === 'loading') &&
-                    !loaderExists ? (
-                    (loaderExists = true && (
+                  ) : (showLoader || row.isDone === 'loading') && (
                       <div
                         style={{
                           position: 'absolute',
@@ -168,8 +165,7 @@ const TransactionTable = ({
                       >
                         <Loading size={24} />
                       </div>
-                    ))
-                  ) : null}
+                    )}
                 </TableCell>
                 <TableCell>
                   <BtnCustom
