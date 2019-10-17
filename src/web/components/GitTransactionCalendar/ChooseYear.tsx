@@ -6,7 +6,7 @@ import { IProps } from './ChooseYear.types'
 import {
   ChoosePeriodWrapper,
   ChoosePeriodButton,
-  ChoosePeriodArrow
+  ChoosePeriodArrow,
 } from '@sb/components/ChoosePeriod/ChoosePeriod.styles'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -18,29 +18,36 @@ class ChooseYear extends PureComponent<IProps> {
 
     return (
       <ChoosePeriodWrapper>
-          <ChoosePeriodArrow onClick={
-            () => onDateButtonClick(
-              moment(`${activeDateButton}-01-01`).subtract(1, 'years').toDate()
+        <ChoosePeriodArrow
+          onClick={() =>
+            onDateButtonClick(
+              moment(`${activeDateButton}-01-01`)
+                .subtract(1, 'years')
+                .toDate()
             )
-          }>
-            <SvgIcon src={LongArrow} />
-          </ChoosePeriodArrow>
-          <ChoosePeriodButton>
-            {activeDateButton}
-          </ChoosePeriodButton>
-          <ChoosePeriodArrow onClick={
-            () => {
-              if (moment().year() !== Number(activeDateButton)) {
-                onDateButtonClick(
-                  moment(`${activeDateButton}-01-01`).add(1, 'years').toDate()
-                )
-              }
+          }
+        >
+          <SvgIcon src={LongArrow} />
+        </ChoosePeriodArrow>
+        <ChoosePeriodButton>{activeDateButton}</ChoosePeriodButton>
+        <ChoosePeriodArrow
+          onClick={() => {
+            if (moment().year() !== Number(activeDateButton)) {
+              onDateButtonClick(
+                moment(`${activeDateButton}-01-01`)
+                  .add(1, 'years')
+                  .toDate()
+              )
             }
-          }>
-            <SvgIcon src={LongArrow} style={{
-              transform: 'rotate(180deg)'
-            }} />
-          </ChoosePeriodArrow>
+          }}
+        >
+          <SvgIcon
+            src={LongArrow}
+            style={{
+              transform: 'rotate(180deg)',
+            }}
+          />
+        </ChoosePeriodArrow>
       </ChoosePeriodWrapper>
     )
   }

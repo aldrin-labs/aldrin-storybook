@@ -10,6 +10,7 @@ class DialogAddCoin extends React.Component {
     open: false,
     mouseInPopup: false,
     inputValue: '',
+    selectedValue: '',
     timeout: null,
   }
 
@@ -29,14 +30,33 @@ class DialogAddCoin extends React.Component {
   }
 
   filterCoins = (coin) => {
-    const { existCoinsNames } = this.props
-    return !existCoinsNames.includes(coin.symbol)
+    const { existCoins } = this.props
+
+    // dustFilterEnabled &&
+    // row.coinValueSnapshot < dustFilterRebalanceValue &&
+    // row.coinValue < dustFilterRebalanceValue &&
+    // !row.isCustomAsset
+
+    return !existCoins.find((row) => row.symbol === coin.symbol)
   }
 
   addExistCoinsLighting = (coin) => {
-    const { existCoinsNames } = this.props
+    const { existCoins, dustFilterEnabled } = this.props
 
-    return { ...coin, alreadyExist: existCoinsNames.includes(coin.symbol) }
+    const existCoin = existCoins.find((row) => row.symbol === coin.symbol)
+
+    const dustFiltered =
+      dustFilterEnabled &&
+      existCoin &&
+      existCoin.coinValueSnapshot < 1 &&
+      existCoin.coinValue < 1 &&
+      !existCoin.isCustomAsset
+
+    return {
+      ...coin,
+      alreadyExist: !!existCoin,
+      dustFiltered,
+    }
   }
 
   handleClickOpen = () => {
@@ -69,7 +89,7 @@ class DialogAddCoin extends React.Component {
 
     await onAddRowButtonClick(coin, priceUSD, priceBTC)
 
-    this.setState({ open: false }, () => this.setState({ open: true }))
+    await this.setState({ inputValue: '' })
   }
 
   render() {
@@ -83,6 +103,7 @@ class DialogAddCoin extends React.Component {
       >
         <BtnCustom
           color="#fff"
+          onClick={this.handleClickOpen}
           onFocus={this.handleClickOpen}
           onBlur={this.handleClose}
           style={{
@@ -93,6 +114,7 @@ class DialogAddCoin extends React.Component {
             borderRadius: '.75rem',
             background: '#0B1FD1',
             letterSpacing: '1px',
+            paddingRight: '.5rem',
           }}
         >
           <Add
@@ -123,11 +145,13 @@ class DialogAddCoin extends React.Component {
           >
             <SelectCoinList
               //ref={(ref) => this.setState({ ref })}
-              key={`inputCoinSymbol${'index'}`}
+              key={JSON.stringify(this.state.selectedValue)}
               classNamePrefix="custom-select-box"
+              controlShouldRenderValue={false}
               isClearable={true}
               isSearchable={true}
               openMenuOnClick={false}
+              filterOption={() => true}
               //needAdditionalFiltering={true}
               //additionalFiltering={this.filterCoins}
               needAdditionalMapping={true}
@@ -205,7 +229,7 @@ class DialogAddCoin extends React.Component {
                   optionSelected.priceUSD,
                   optionSelected.priceBTC
                 )
-                this.handleClickOpen()
+                this.setState({ selectedValue: optionSelected.value })
               }}
             />
           </div>
@@ -216,6 +240,3 @@ class DialogAddCoin extends React.Component {
 }
 
 export default DialogAddCoin
-
-// Coming soon for popups
-// add coin

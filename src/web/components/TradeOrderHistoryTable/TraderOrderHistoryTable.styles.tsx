@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import TrendingFlat from '@material-ui/icons/TrendingFlat'
 
 import TableWithSort from '@sb/components/Tables/WithSort'
 
@@ -39,7 +40,7 @@ export const StyledTable = styled(TableWithSort)`
     white-space: nowrap;
 
     &:first-child {
-      padding: .75rem 1.5rem !important;
+      padding: 0.75rem 1.5rem !important;
     }
     &:last-child {
       width: 5rem;
@@ -52,5 +53,23 @@ export const StyledTable = styled(TableWithSort)`
     td {
       font-size: 1.1rem;
     }
+  }
+`
+
+export const StyledArrow = styled(TrendingFlat)`
+  position: absolute;
+
+  bottom: -0.2rem;
+  right: -100%;
+
+  width: 3vw;
+  height: 2rem;
+
+  @media (min-width: 1920px) {
+    top: -0.4rem;
+  }
+
+  @media (max-width: 1650px) {
+    right: -90%;
   }
 `

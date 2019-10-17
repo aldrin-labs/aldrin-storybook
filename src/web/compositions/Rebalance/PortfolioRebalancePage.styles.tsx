@@ -111,7 +111,7 @@ export const GridTransactionBtn = styled(Grid)`
 
   width: calc(16.6% - 2rem);
   margin-left: 2rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 
   & img {
     width: 3.5vw;
