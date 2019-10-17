@@ -1,43 +1,40 @@
 import React from 'react'
 
 import {
-  GridBlock,
-  GridTitle,
-  TextTitle,
+  ProfileSettingsGrid,
   LogsGrid,
   SettingsLeftBlock,
   SettingsRightBlock,
+  SettingsBlock,
 } from './ProfileSettings.styles'
-import { MainContainer } from '@sb/compositions/Profile/compositions/ProfileAccounts/ProfileAccounts.styles'
 
-const ProfileSettingsGrid = ({
-  title,
-  height = '100%',
-  width = '100%',
-  needMarginTop = false,
-  needMarginLeft = false,
-  children,
-}) => {
-  return (
-    <GridBlock
-      height={height}
-      width={width}
-      needMarginTop={needMarginTop}
-      needMarginLeft={needMarginLeft}
-    >
-      <GridTitle>
-        <TextTitle>{title}</TextTitle>
-      </GridTitle>
-      {children}
-    </GridBlock>
-  )
-}
+import {
+  Line,
+  StyledInput,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { MainContainer } from '@sb/compositions/Profile/compositions/ProfileAccounts/ProfileAccounts.styles'
 
 const ProfileSettings = () => {
   return (
     <MainContainer>
       <SettingsLeftBlock>
-        <ProfileSettingsGrid title={'settings'} height={'35%'} />
+        <ProfileSettingsGrid title={'settings'} height={'35%'}>
+          <SettingsBlock>
+            <div>
+              <p>prikol</p>
+              <StyledInput
+                type="text"
+                width="100"
+                // value={marketName}
+                // onChange={(e) => this.changeMarketName(e)}
+                placeholder="Type name..."
+                style={{ marginLeft: '0rem' }}
+              />
+            </div>
+            <div>button</div>
+          </SettingsBlock>
+        </ProfileSettingsGrid>
+
         <LogsGrid>
           <ProfileSettingsGrid title={'last login'} width={'33.3%'} />
 
@@ -62,6 +59,3 @@ const ProfileSettings = () => {
 }
 
 export default ProfileSettings
-
-// prod demo id "5bf4d8df5cdf80001dfa67a2"
-// return add coin
