@@ -19,7 +19,6 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 
 import {
-  AccountsSlickStyles,
   TypographyAccountName,
   TypographyAccountMoney,
 } from './AccountsSlick.styles'
@@ -111,7 +110,6 @@ class AccountsSlick extends Component {
 
     return (
       <>
-        <AccountsSlickStyles />
         <div style={{ position: 'relative', margin: '2rem 0 2rem 0' }}>
           {showArrows && (
             <LeftArrow
