@@ -33,12 +33,3 @@ export const TypographyAccountMoney = styled(Typography)`
   margin-top: ${(props) => (props.isSideNav ? '1.5rem' : '1rem')};
   text-align: center;
 `
-
-export const AccountsSlickStyles = createGlobalStyle`
-    .slick-slider {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        margin: 2rem 0 2.5rem;
-    }
-`
