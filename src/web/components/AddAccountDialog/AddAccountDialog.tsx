@@ -29,8 +29,11 @@ import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchange
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
+
+import InfoDialog from '@sb/components/InfoDialog/InfoDialog'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
 import Steps from '@sb/components/Onboarding/Steps/Steps'
 
@@ -51,6 +54,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     open: false,
     openGetKeysInfo: false,
     isSelected: true,
+    showWarning: false,
     name: '',
     apiKey: '',
     secretOfApiKey: '',
@@ -104,6 +108,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         apiKey: '',
         secretOfApiKey: '',
         exchange: '',
+        showWarning: true,
       })
     } catch (error) {
       console.log(error)
@@ -142,6 +147,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     })
   }
 
+  updateWarningStatus = (newStatus: boolean) =>
+    this.setState({ showWarning: newStatus })
+
   render() {
     const {
       theme: {
@@ -150,9 +158,18 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       open,
       onboarding = undefined,
       setCurrentStep,
+      existCustomButton = false,
+      CustomButton,
     } = this.props
 
-    const { name, apiKey, secretOfApiKey, exchange, error } = this.state
+    const {
+      name,
+      apiKey,
+      secretOfApiKey,
+      exchange,
+      error,
+      showWarning,
+    } = this.state
 
     return (
       <>
@@ -161,31 +178,35 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           handleClose={this.handleCloseGetKeys}
         />
 
-        <BtnCustom
-          btnWidth={'auto'}
-          height={'auto'}
-          btnColor={'#165BE0'}
-          borderRadius={'1rem'}
-          color={'#165BE0'}
-          margin={'1.6rem 0 0 2rem'}
-          padding={'.5rem 1rem .5rem 0'}
-          fontSize={'1.4rem'}
-          letterSpacing="1px"
-          onClick={this.handleClickOpen}
-          style={{
-            border: 'none',
-          }}
-        >
-          <SvgIcon
-            src={Plus}
-            width="3.5rem"
-            height="auto"
+        {existCustomButton ? (
+          <CustomButton handleClick={this.handleClickOpen} />
+        ) : (
+          <BtnCustom
+            btnWidth={'auto'}
+            height={'auto'}
+            btnColor={'#165BE0'}
+            borderRadius={'1rem'}
+            color={'#165BE0'}
+            margin={'1.6rem 0 0 2rem'}
+            padding={'.5rem 1rem .5rem 0'}
+            fontSize={'1.4rem'}
+            letterSpacing="1px"
+            onClick={this.handleClickOpen}
             style={{
-              marginRight: '.8rem',
+              border: 'none',
             }}
-          />
-          Add Account
-        </BtnCustom>
+          >
+            <SvgIcon
+              src={Plus}
+              width="3.5rem"
+              height="auto"
+              style={{
+                marginRight: '.8rem',
+              }}
+            />
+            Add Account
+          </BtnCustom>
+        )}
 
         <DialogWrapper
           maxWidth="xl"
@@ -337,6 +358,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             </form>
           </DialogContent>
         </DialogWrapper>
+
+        <InfoDialog
+          dialogStatus={showWarning}
+          updateDialogStatus={this.updateWarningStatus}
+          text={
+            'Importing your trades from the exchange may take up to a few minutes.'
+          }
+        />
       </>
     )
   }
@@ -357,6 +386,10 @@ export default compose(
             {
               query: portfolioKeyAndWalletsQuery,
               variables: { baseCoin },
+            },
+            {
+              query: getPortfolioAssets,
+              variables: { baseCoin, innerSettings: true },
             },
             { query: getKeysQuery },
             { query: keysNames },
