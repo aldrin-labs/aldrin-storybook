@@ -168,3 +168,14 @@ export const StyledAddIcon = styled(Add)`
     width: 4.5rem;
   }
 `
+
+export const AddAccountButton = styled(Button)`
+  color: #0b1fd1;
+`
+
+export const SmallAddIcon = styled(Add)`
+  color: #0b1fd1;
+  height: 2.4rem;
+  width: 2.4rem;
+  margin-right: 1rem;
+`

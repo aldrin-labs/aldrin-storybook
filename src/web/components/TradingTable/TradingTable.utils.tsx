@@ -3,6 +3,7 @@ import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
+import { cloneDeep } from 'lodash-es'
 
 import {
   fundsColumnNames,
@@ -616,7 +617,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
 }
 
 export const updateOrderHistoryQuerryFunction = (
-  prev,
+  previous,
   { subscriptionData }
 ) => {
   const isEmptySubscription =
@@ -624,8 +625,10 @@ export const updateOrderHistoryQuerryFunction = (
 
   console.log('isEmptySubscription', isEmptySubscription)  
   if (isEmptySubscription) {
-    return prev
+    return previous
   }
+
+  const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getOrderHistory.findIndex(
     (el: OrderType) =>

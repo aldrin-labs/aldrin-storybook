@@ -11,8 +11,6 @@ import {
   UserEmail,
 } from './ProfileSidebar.styles'
 
-import Avatar from '@icons/nezuko.jpg'
-
 const LINKS = [
   { path: '/profile', text: 'Profile' },
   { path: '/profile/accounts', text: 'Accounts' },
