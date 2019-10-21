@@ -60,11 +60,13 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       handleChangePage,
       handleChangeRowsPerPage,
       isCustomStyleForFooter,
+      defaultSort,
     } = this.props
 
     // 82.2
     return (
       <StyledTable
+        defaultSort={defaultSort}
         isCustomStyleForFooter={isCustomStyleForFooter}
         style={{
           height: '88%',
