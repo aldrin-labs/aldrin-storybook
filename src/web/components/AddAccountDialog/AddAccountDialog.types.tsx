@@ -6,6 +6,7 @@ export interface IState {
   secretOfApiKey: string
   exchange: string
   error: string
+  showWarning: boolean
   openGetKeysInfo: boolean
 }
 

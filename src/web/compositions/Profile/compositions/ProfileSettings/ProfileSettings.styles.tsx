@@ -43,3 +43,30 @@ export const SettingsLeftBlock = styled(Grid)`
 export const SettingsRightBlock = styled(Grid)`
   width: calc(41.7% - 1.5rem);
 `
+
+export const ProfileSettingsGrid = ({
+  title = '',
+  height = '100%',
+  width = '100%',
+  needMarginTop = false,
+  needMarginLeft = false,
+  children,
+}) => {
+  return (
+    <GridBlock
+      height={height}
+      width={width}
+      needMarginTop={needMarginTop}
+      needMarginLeft={needMarginLeft}
+    >
+      <GridTitle>
+        <TextTitle>{title}</TextTitle>
+      </GridTitle>
+      {children}
+    </GridBlock>
+  )
+}
+
+export const SettingsBlock = styled.div`
+  padding: 2rem;
+`

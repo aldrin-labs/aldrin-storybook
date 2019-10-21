@@ -74,7 +74,7 @@ const ProfileAccounts = ({
             <BigNumberValue>{accounts.length}</BigNumberValue>
           </AccountsValue>
           <AccountsChartBlock>
-            <GridTitle>chart</GridTitle>
+            <GridTitle>chart soon</GridTitle>
           </AccountsChartBlock>
         </SummaryAccountsBlock>
 

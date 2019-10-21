@@ -3,7 +3,14 @@ import moment from 'moment'
 
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+
 import { addMainSymbol } from '@sb/components'
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
+import {
+  AddAccountButton,
+  Typography,
+  SmallAddIcon,
+} from './ProfileAccounts.styles'
 
 export const accountsColors = [
   '#9A77F7',
@@ -54,8 +61,17 @@ const redStyle = {
   color: '#DD6956',
 }
 
+const getKeyStatus = (status: string, valid: boolean) => {
+  if (!valid) return 'invalid'
+  return status.includes('initialized')
+    ? 'initialized'
+    : status.includes('%')
+    ? 'initializing'
+    : status
+}
+
 export const transformData = (data: any[]) => {
-  return data.map((row, i) => {
+  const transformedData = data.map((row, i) => {
     return {
       id: row._id,
       colorDot: {
@@ -135,16 +151,8 @@ export const transformData = (data: any[]) => {
       },
       status: {
         render: (
-          <span
-            style={
-              row.status.includes('initialized') && row.valid
-                ? { ...greenStyle }
-                : { ...redStyle }
-            }
-          >
-            {row.status.includes('initialized') && row.valid
-              ? 'initialized'
-              : 'invalid'}
+          <span style={row.valid ? { ...greenStyle } : { ...redStyle }}>
+            {getKeyStatus(row.status, row.valid)}
           </span>
         ),
       },
@@ -165,6 +173,33 @@ export const transformData = (data: any[]) => {
       },
     }
   })
+
+  transformedData.push({
+    id: 'addKeyButton',
+    colorDot: ' ',
+    exchange: ' ',
+    name: ' ',
+    value: ' ',
+    added: ' ',
+    lastUpdate: ' ',
+    status: ' ',
+    autoRebalance: {
+      render: (
+        <AddAccountDialog
+          existCustomButton={true}
+          CustomButton={({ handleClick }) => (
+            <AddAccountButton onClick={handleClick}>
+              <SmallAddIcon />
+              <Typography>add new key</Typography>
+            </AddAccountButton>
+          )}
+        />
+      ),
+    },
+    edit: ' ',
+  })
+
+  return transformedData
 }
 
 export const putDataInTable = (tableData: any[]) => {
