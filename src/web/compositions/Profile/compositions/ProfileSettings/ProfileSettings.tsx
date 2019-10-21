@@ -19,7 +19,7 @@ const ProfileSettings = () => {
     <MainContainer>
       <SettingsLeftBlock>
         <ProfileSettingsGrid title={'settings'} height={'35%'}>
-          <SettingsBlock>
+          {/* <SettingsBlock>
             <div>
               <p>prikol</p>
               <StyledInput
@@ -32,7 +32,7 @@ const ProfileSettings = () => {
               />
             </div>
             <div>button</div>
-          </SettingsBlock>
+          </SettingsBlock> */}
         </ProfileSettingsGrid>
 
         <LogsGrid>
