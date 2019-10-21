@@ -75,7 +75,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         style={{ borderRadius: 0, height: '100%' }}
         stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
-          sortColumn: getTableHead(tab)[0].id,
+          sortColumn: 'date',
           sortDirection: 'desc',
         }}
         withCheckboxes={false}
