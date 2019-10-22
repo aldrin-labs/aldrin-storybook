@@ -2,7 +2,7 @@ import React from 'react'
 import { withTheme } from '@material-ui/styles'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
-import Joyride from 'react-joyride'
+// import Joyride from 'react-joyride'
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
@@ -10,19 +10,23 @@ import { IProps, IState } from './PortfolioMainPage.types'
 // import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 // import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
+import PortfolioMainFuturesTable from '@core/containers/PortfolioMainTable/PortfolioMainFuturesTable'
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 import PortfolioOnboarding from './PortfolioOnboarding'
 
-import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+// import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 
 import Template from '@sb/components/Template/Template'
-import SharePortfolioDialog from '@sb/components/SharePortfolioDialog/SharePortfolioDialog'
+// import SharePortfolioDialog from '@sb/components/SharePortfolioDialog/SharePortfolioDialog'
+
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { sharePortfolio } from '@core/graphql/mutations/portfolio/sharePortfolio'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPageType } from '@core/graphql/queries/portfolio/main/getPageType'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
@@ -92,16 +96,20 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     const {
       theme,
       dustFilter,
-      sharePortfolioMutation,
+      // sharePortfolioMutation,
       portfolioId,
       portfolioName,
       portfolioKeys,
       isUSDCurrently,
       portfolioAssets: assets,
       baseCoin,
+      getPageTypeQuery: {
+        portfolio: { pageType },
+      },
     } = this.props
 
-    const { openSharePortfolioPopUp } = this.state
+    const isSPOTCurrently = pageType === 'SPOT'
+    // const { openSharePortfolioPopUp } = this.state
 
     const accountsNames = portfolioKeys
       .filter((key) => key.selected)
@@ -130,11 +138,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               handleOpenSharePortfolio={this.handleOpenSharePortfolio}
               portfolioName={portfolioName}
               baseCoin={baseCoin}
+              isSPOTCurrently={isSPOTCurrently}
               isUSDCurrently={isUSDCurrently}
             />
             {/* TODO: Recomment if needed <Divider /> */}
             <AccordionOverview
               baseCoin={baseCoin}
+              isSPOTCurrently={isSPOTCurrently}
               isUSDCurrently={isUSDCurrently}
               portfolioAssetsData={portfolioAssetsData}
               totalKeyAssetsData={totalKeyAssetsData}
@@ -142,6 +152,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
           </div>
 
           <Template
+            isSPOTCurrently={isSPOTCurrently}
+            PortfolioMainFuturesTable={<PortfolioMainFuturesTable />}
             PortfolioMainTable={
               <PortfolioMainTable
                 data={{ myPortfolios: [{ portfolioAssets: enabledAssets }] }}
@@ -159,7 +171,8 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               />
             }
           />
-          <Joyride
+
+          {/* <Joyride
             continuous={true}
             showProgress={true}
             showSkipButton={true}
@@ -181,16 +194,18 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
                 fontSize: theme.typography.fontSize,
               },
             }}
-          />
-          <SharePortfolioDialog
+          /> */}
+
+          {/* <SharePortfolioDialog
             portfolioKeys={portfolioKeys}
             portfolioId={portfolioId}
             sharePortfolioTitle={portfolioName}
             openSharePortfolioPopUp={openSharePortfolioPopUp}
             sharePortfolioMutation={sharePortfolioMutation}
             handleCloseSharePortfolio={this.handleCloseSharePortfolio}
-          />
+          /> */}
         </Grid>
+
         <PortfolioOnboarding
           portfolioKeys={portfolioKeys}
           portfolioId={portfolioId}
@@ -205,6 +220,10 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+  }),
+  queryRendererHoc({
+    query: getPageType,
+    name: 'getPageTypeQuery',
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
