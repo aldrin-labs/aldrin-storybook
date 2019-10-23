@@ -29,6 +29,8 @@ import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchange
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
+import { getCurrentPortfolio } from '@core/graphql/queries/profile/getCurrentPortfolio'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
@@ -315,6 +317,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     name="apiKey"
                     label="API Key"
                     value={apiKey}
+                    autoComplete={'off'}
                     onChange={(e) => this.handleChange(e)}
                     placeholder="Enter API key here..."
                     // margin="normal"
@@ -327,6 +330,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     name="secretOfApiKey"
                     label="Secret"
                     value={secretOfApiKey}
+                    autoComplete={'off'}
                     onChange={(e) => this.handleChange(e)}
                     placeholder="Enter secret key here..."
                     type="text"
@@ -391,6 +395,8 @@ export default compose(
               query: getPortfolioAssets,
               variables: { baseCoin, innerSettings: true },
             },
+            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
+            { query: getCurrentPortfolio },
             { query: getKeysQuery },
             { query: keysNames },
           ]
