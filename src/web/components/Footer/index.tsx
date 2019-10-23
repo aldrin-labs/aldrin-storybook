@@ -20,6 +20,7 @@ const Footer = ({
   getThemeModeQuery,
   toggleThemeModeMutation,
   showFooter,
+  isChartPage,
 }: Props) => {
   const themeMode =
     getThemeModeQuery &&
@@ -37,6 +38,7 @@ const Footer = ({
       position="static"
       color="default"
       fullscreenMode={fullscreenMode}
+      isChartPage={isChartPage}
     >
       <Block>
         <StyledTypography color="default">
@@ -81,7 +83,9 @@ const Footer = ({
   )
 }
 
-const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
+const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
+  <AppBar {...rest} />
+))`
   flex-wrap: nowrap;
   justify-content: space-around;
   transition: background 0.25s ease-in-out;
@@ -98,7 +102,7 @@ const Container = styled(({ fullscreenMode, ...rest }) => <AppBar {...rest} />)`
   }
 
   height: 6.4vh;
-  position: fixed;
+  position: ${(props) => !props.isChartPage && 'fixed'};
   bottom: 0;
   z-index: 1;
 `

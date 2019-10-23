@@ -22,6 +22,8 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
+import { getQuoteQuantityFromBase } from '@core/utils/chartPageUtils'
+
 import {
   Container,
   NameHeader,
@@ -207,17 +209,22 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       marketPrice,
     } = this.props
 
+    console.log('funds', funds)
+    console.log('marketPrice', marketPrice)
+
     const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
 
-    const firstValuePrice = (funds[0] * (percentage / 100)).toFixed(4)
+    const firstValuePrice = (funds[0].value * (percentage / 100)).toFixed(4)
     const secondValuePrice = (funds[1] * (percentage / 100)).toFixed(4)
 
     // second value in price first
-    const secondValueInFirst = (
-      (funds[1] / marketPrice) *
-      (percentage / 100)
-    ).toFixed(4)
+    const quoteQuantity = getQuoteQuantityFromBase(
+      funds[0].quantity,
+      marketPrice,
+      percentage / 100
+    )
+    console.log('quote', quoteQuantity)
 
     // get first value from second ( sell btc - get usdt )
 
@@ -274,7 +281,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <TradeBlock position="right" xs={6}>
                   <TradeInputContainer
                     title={'Recieve'}
-                    value={isBuyType ? secondValueInFirst : firstValueInSecond}
+                    value={isBuyType ? quoteQuantity : firstValueInSecond}
                     coin={isBuyType ? pair[0] : pair[1]}
                   />
                 </TradeBlock>
