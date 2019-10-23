@@ -242,9 +242,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <BalanceItem item xs={4}>
                   <TradingItemTitle>{pair[0]}</TradingItemTitle>
                   <TradingItemValue>
-                    {funds[0].toFixed(4)}
+                    {funds[0].quantity.toFixed(4)}
                     <TradingItemSubValue>
-                      {`$${funds[0].toFixed(2)}`}
+                      {`$${funds[0].value.toFixed(2)}`}
                     </TradingItemSubValue>
                   </TradingItemValue>
                 </BalanceItem>
@@ -252,9 +252,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <BalanceItem item xs={4} lastItem>
                   <TradingItemTitle>{pair[1]}</TradingItemTitle>
                   <TradingItemValue>
-                    {funds[1].toFixed(4)}
+                    {funds[1].quantity.toFixed(4)}
                     <TradingItemSubValue>
-                      {`$${funds[1].toFixed(2)}`}
+                      {`$${funds[1].value.toFixed(2)}`}
                     </TradingItemSubValue>
                   </TradingItemValue>
                 </BalanceItem>
