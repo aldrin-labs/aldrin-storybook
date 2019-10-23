@@ -203,10 +203,6 @@ export const transformData = (data: any[]) => {
 }
 
 export const putDataInTable = (tableData: any[]) => {
-  if (!tableData || tableData.length === 0) {
-    return { head: [], body: [] }
-  }
-
   const body = transformData(tableData)
 
   return {
