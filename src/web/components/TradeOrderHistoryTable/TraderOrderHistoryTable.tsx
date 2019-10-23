@@ -1,18 +1,9 @@
 import * as React from 'react'
-import { StyledTable, StyledArrow } from './TraderOrderHistoryTable.styles'
+import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
 import { withWidth } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 import CoinRow from './CoinRow'
-
-// const QuantityHeading = () => {
-//   return (
-//     <div>
-//       <span>quantity</span>
-//       <StyledArrow />
-//     </div>
-//   )
-// }
 
 @withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
@@ -41,13 +32,6 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
           ),
         }
       }
-      // else if (heading.label === 'quantity') {
-      //   return {
-      //     ...heading,
-      //     label: <QuantityHeading />,
-      //   }
-      // }
-
       return { ...heading }
     })
   }
