@@ -708,12 +708,12 @@ export default withAuth(
     graphql(CHANGE_VIEW_MODE, {
       name: 'changeViewModeMutation',
     }),
-    graphql(updateTooltipSettings, {
-      name: 'updateTooltipSettingsMutation',
-      options: {
-        update: updateTooltipMutation,
-      },
-    }),
+    // graphql(updateTooltipSettings, {
+    //   name: 'updateTooltipSettingsMutation',
+    //   options: {
+    //     update: updateTooltipMutation,
+    //   },
+    // }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withErrorFallback(Chart))
 )
