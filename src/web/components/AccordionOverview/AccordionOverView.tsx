@@ -47,11 +47,14 @@ class DetailedExpansionPanel extends React.Component {
       portfolioAssetsData,
       totalKeyAssetsData,
       baseCoin,
+      isSPOTCurrently,
     } = this.props
-
     return (
       <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
-        <ExpansionPanel CollapseProps={{ timeout: { enter: 425, exit: 350 } }} id="accordionOverview">
+        <ExpansionPanel
+          CollapseProps={{ timeout: { enter: 425, exit: 350 } }}
+          id="accordionOverview"
+        >
           <ExpansionPanelSummaryCustom expandIcon={<ExpandMoreIcon />}>
             <GridColumn style={{ justifyContent: 'flex-start' }}>
               <TypographyHeading textColor={theme.palette.text.primary}>
@@ -61,7 +64,7 @@ class DetailedExpansionPanel extends React.Component {
             <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
-                  Value
+                  {isSPOTCurrently ? 'Value' : 'Balance'}
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
                   {format(totalKeyAssetsData.value, baseCoin)}
@@ -71,7 +74,7 @@ class DetailedExpansionPanel extends React.Component {
             <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
-                  unique assets
+                  {isSPOTCurrently ? 'unique assets' : 'Maintenance margin'}
                 </TypographyTitleCell>
                 <TypographyValueCell textColor={theme.palette.text.subPrimary}>
                   {totalKeyAssetsData.uniqueAssets.length}
@@ -139,7 +142,9 @@ class DetailedExpansionPanel extends React.Component {
                         gridBorder={i % 2 !== 0 ? gridBorder : ''}
                       >
                         <div>
-                          <TypographyTitleCell>Value</TypographyTitleCell>
+                          <TypographyTitleCell>
+                            {isSPOTCurrently ? 'Value' : 'Balance'}
+                          </TypographyTitleCell>
                           <TypographyValueCell
                             textColor={theme.palette.text.subPrimary}
                           >
@@ -149,7 +154,9 @@ class DetailedExpansionPanel extends React.Component {
                       </GridColumn>
                       <GridColumn gridBorder={i % 2 !== 0 ? gridBorder : ''}>
                         <div>
-                          <TypographyTitleCell>assets</TypographyTitleCell>
+                          <TypographyTitleCell>
+                            {isSPOTCurrently ? 'assets' : 'Maintenance margin'}
+                          </TypographyTitleCell>
                           <TypographyValueCell
                             textColor={theme.palette.text.subPrimary}
                           >

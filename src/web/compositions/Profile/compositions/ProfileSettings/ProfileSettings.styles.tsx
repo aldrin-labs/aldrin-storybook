@@ -33,6 +33,7 @@ export const TextTitle = styled(Typography)`
   color: #16253d;
   font-size: 1.2rem;
   text-transform: uppercase;
+  letter-spacing: 0.15rem;
 `
 
 export const SettingsLeftBlock = styled(Grid)`

@@ -17,10 +17,10 @@ export const BtnCustom = styled(
 )`
   width: ${(props) => props.btnWidth || '22.5rem'};
   height: ${(props) => props.height || `3rem`};
-  border: 1.5px solid
+  border: 0.1rem solid
     ${(props) => props.borderColor || props.btnColor || props.color || '#333'};
   border-radius: ${(props) => props.borderRadius || '.8rem'};
-  border-width: ${(props) => props.borderWidth || '1.5px'};
+  border-width: ${(props) => props.borderWidth || '.1rem'};
   border-color: ${(props) =>
     props.borderColor || props.btnColor || props.color || '#333'};
   color: ${(props) => props.btnColor || props.color || '#333'};
