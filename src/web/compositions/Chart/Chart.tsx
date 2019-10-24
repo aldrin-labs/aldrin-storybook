@@ -168,9 +168,7 @@ class Chart extends React.Component<IProps, IState> {
     ) {
       const {
         updateTooltipSettingsMutation,
-        getChartDataQuery: {
-          getTooltipSettings,
-        },
+        getChartDataQuery: { getTooltipSettings },
       } = this.props
 
       await updateTooltipSettingsMutation({
