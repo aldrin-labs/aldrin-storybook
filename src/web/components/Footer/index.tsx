@@ -102,8 +102,8 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
   }
 
   height: 6.4vh;
-  position: ${(props) => !props.isChartPage && 'fixed'};
-  bottom: 0;
+  position: ${(props) => (props.isChartPage ? 'absolute' : 'fixed')};
+  bottom: ${(props) => (props.isChartPage ? '-6.4vh' : '0')};
   z-index: 1;
 `
 

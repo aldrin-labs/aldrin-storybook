@@ -83,6 +83,20 @@ const toFixedTrunc = (value, n) => {
 
 @withTheme()
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
+  componentDidUpdate(prevProps) {
+    if (prevProps.priceType !== this.props.priceType) {
+      const {
+        priceType,
+        values: { amount, price, limit },
+      } = this.props
+
+      const priceForCalculate =
+        priceType !== 'market' && limit !== null ? limit : price
+
+      this.setFormatted('total', amount * priceForCalculate, 1)
+    }
+  }
+
   setFormatted = (fild: priceType, value: any, index: number) => {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
@@ -102,47 +116,61 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   onTotalChange = (e: SyntheticEvent<Element>) => {
-    const { priceType, values, setFieldTouched, errors, decimals } = this.props
+    const {
+      priceType,
+      values: { limit, price, total },
+      setFieldTouched,
+      errors,
+      decimals,
+    } = this.props
     if (
       (errors.amount === traidingErrorMessages[1] ||
         errors.total === traidingErrorMessages[1]) &&
-      e.target.value > values.total
+      e.target.value > total
     )
       return null
-    const price = priceType === 'limit' ? values.price : values.limit
+
+    const priceForCalculate =
+      priceType !== 'market' && limit !== null ? limit : price
+
     this.setFormatted('total', e.target.value, 1)
     setFieldTouched('total', true)
-    if (price && price !== '') {
-      const amount = toFixedTrunc(e.target.value, decimals[1]) / price
+
+    if (priceForCalculate) {
+      const amount =
+        toFixedTrunc(e.target.value, decimals[1]) / priceForCalculate
+
       this.setFormatted('amount', amount, 0)
       setFieldTouched('amount', true)
     }
   }
 
   onAmountChange = (e: SyntheticEvent<Element>) => {
-    const { priceType, values, setFieldTouched, errors, decimals } = this.props
+    const {
+      priceType,
+      values: { amount, price, limit },
+      setFieldTouched,
+      errors,
+      decimals,
+    } = this.props
 
     if (
       (errors.amount === traidingErrorMessages[1] ||
         errors.total === traidingErrorMessages[1]) &&
-      e.target.value > values.amount
+      e.target.value > amount
     )
       return null
 
-    const total =
-      priceType === 'limit'
-        ? toFixedTrunc(e.target.value, decimals[0]) * values.price
-        : priceType === 'stop-limit'
-        ? toFixedTrunc(e.target.value, decimals[0]) * values.limit
-        : 0
+    const priceForCalculate =
+      priceType !== 'market' && limit !== null ? limit : price
+
+    const total = toFixedTrunc(e.target.value, decimals[0]) * priceForCalculate
 
     this.setFormatted('amount', e.target.value, 0)
     setFieldTouched('amount', true)
 
-    if (priceType !== 'market') {
-      this.setFormatted('total', total, 1)
-      setFieldTouched('total', true)
-    }
+    this.setFormatted('total', total, 1)
+    setFieldTouched('total', true)
   }
 
   onPriceChange = (e: SyntheticEvent<Element>) => {
@@ -150,6 +178,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     this.setFormatted('price', e.target.value, 1)
     const total = e.target.value * values.amount
     this.setFormatted('total', total, 1)
+
     setFieldTouched('price', true)
     setFieldTouched('total', true)
   }
@@ -157,16 +186,17 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   onLimitChange = (e: SyntheticEvent<Element>) => {
     const { values, setFieldTouched } = this.props
     const total = e.target.value * values.amount
+
     this.setFormatted('limit', e.target.value, 1)
     this.setFormatted('total', total, 1)
+
     setFieldTouched('limit', true)
     setFieldTouched('total', true)
   }
 
   onPercentageClick = (value: number) => {
     const {
-      walletValue,
-      values,
+      values: { limit, price },
       funds,
       setFieldTouched,
       validateForm,
@@ -174,21 +204,27 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       byType,
     } = this.props
 
-    console.log('value percent', value)
+    const priceForCalculate =
+      priceType !== 'market' && limit !== null ? limit : price
 
     if (byType === 'buy') {
-      console.log('set buy values')
-      this.setFormatted('total', funds[1].value * value, 1)
-      this.setFormatted(
-        'amount',
-        funds[1].value * value,
-        //  / (priceType === 'stop-limit' ? values.limit : values.price),
-        0
-      )
+      const baseQuantity = getBaseQuantityFromQuote({
+        quoteQuantity: funds[1].quantity,
+        price: priceForCalculate,
+        percentage: value,
+      })
+
+      this.setFormatted('total', funds[1].quantity * value, 1)
+      this.setFormatted('amount', baseQuantity, 0)
     } else {
-      console.log('set sell values')
-      this.setFormatted('total', 0 * value, 1)
-      this.setFormatted('amount', funds[0].value * value, 0)
+      const quoteQuantity = getQuoteQuantityFromBase({
+        baseQuantity: funds[0].quantity,
+        price: priceForCalculate,
+        percentage: value,
+      })
+
+      this.setFormatted('total', quoteQuantity, 1)
+      this.setFormatted('amount', funds[0].quantity * value, 0)
     }
 
     setFieldTouched('amount', true)
@@ -216,29 +252,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       marketPrice,
     } = this.props
 
-    console.log('funds', funds)
-    console.log('values', values)
-
     const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
-
-    const baseQuantity = getBaseQuantityFromQuote({
-      quoteQuantity: funds[1].quantity,
-      price: marketPrice,
-      percentage: percentage / 100,
-    }).toFixed(4)
-
-    // second value in price first
-    const quoteQuantity = getQuoteQuantityFromBase({
-      baseQuantity: funds[0].quantity,
-      price: marketPrice,
-      percentage: percentage / 100,
-    }).toFixed(4)
-
-    console.log('base', baseQuantity)
-    console.log('quote', quoteQuantity)
-
-    console.log('props', this.props)
 
     return (
       <Container background={'transparent'}>
@@ -272,7 +287,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               </Grid>
 
               <PaddingGrid item container xs={12}>
-                <TradeBlock position="left" xs={6}>
+                {/* <TradeBlock position="left" xs={6}>
                   <TradeInputContainer
                     title={'Exchange'}
                     // value={isBuyType ? quoteQuantity : baseQuantity}
@@ -288,12 +303,19 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     value={isBuyType ? baseQuantity : quoteQuantity}
                     coin={isBuyType ? pair[0] : pair[1]}
                   />
-                </TradeBlock>
+                </TradeBlock> */}
+
+                <TradeInputContainer
+                  title={`Amount`}
+                  value={values.amount}
+                  onChange={this.onAmountChange}
+                  coin={pair[0]}
+                />
               </PaddingGrid>
 
               <PercentageGrid item container xs={12}>
                 <PercentageItem
-                  active={percentage === '25'}
+                  // active={percentage === '25'}
                   onClick={() => {
                     changePercentage('25')
                     this.onPercentageClick(0.25)
@@ -302,7 +324,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   25%
                 </PercentageItem>
                 <PercentageItem
-                  active={percentage === '50'}
+                  // active={percentage === '50'}
                   onClick={() => {
                     changePercentage('50')
                     this.onPercentageClick(0.5)
@@ -311,7 +333,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   50%
                 </PercentageItem>
                 <PercentageItem
-                  active={percentage === '75'}
+                  // active={percentage === '75'}
                   onClick={() => {
                     changePercentage('75')
                     this.onPercentageClick(0.75)
@@ -320,7 +342,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   75%
                 </PercentageItem>
                 <PercentageItem
-                  active={percentage === '100'}
+                  // active={percentage === '100'}
                   onClick={() => {
                     changePercentage('100')
                     this.onPercentageClick(1)
@@ -340,23 +362,23 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       onChange={this.onStopChange}
                     />
                   </PriceContainer>
-                  <PriceContainer xs={12}>
-                    <TradeInputContainer
-                      title={'Limit price'}
-                      value={values.limit}
-                      onChange={this.onLimitChange}
-                      coin={pair[1]}
-                    />
-                  </PriceContainer>
                 </>
               ) : null}
 
-              {priceType === 'limit' ? (
+              {priceType !== 'market' ? (
+                // <PriceContainer xs={12}>
+                //   <TradeInputContainer
+                //     title={'Limit price'}
+                //     value={values.price}
+                //     onChange={this.onPriceChange}
+                //     coin={pair[1]}
+                //   />
+                // </PriceContainer>
                 <PriceContainer xs={12}>
                   <TradeInputContainer
-                    title={'Price'}
-                    value={values.price}
-                    onChange={this.onPriceChange}
+                    title={'Limit price'}
+                    value={values.limit !== null ? values.limit : values.price}
+                    onChange={this.onLimitChange}
                     coin={pair[1]}
                   />
                 </PriceContainer>
@@ -366,7 +388,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             <PaddingGrid xs={12} item container direction="column">
               <TradeInputContainer
                 title={`Total ${pair[1]}`}
-                value={values.amount}
+                value={values.total}
                 onChange={this.onTotalChange}
                 coin={pair[1]}
               />
@@ -649,7 +671,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[0].value, traidingErrorMessages[1])
+                  .max(funds[0].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -660,7 +682,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[1].value, traidingErrorMessages[1])
+                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -674,7 +696,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[0].value, traidingErrorMessages[1])
+                  .max(funds[0].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -685,7 +707,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[1].value, traidingErrorMessages[1])
+                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -706,7 +728,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[0].value, traidingErrorMessages[1])
+                  .max(funds[0].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -717,7 +739,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[1].value, traidingErrorMessages[1])
+                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -771,8 +793,3 @@ export default compose(
   withErrorFallback,
   formikEnhancer
 )(TraidingTerminal)
-
-//
-// add baseQuantity
-// add quoteQuantity
-// add receive field

@@ -100,7 +100,7 @@ class SimpleTabs extends React.Component {
               changePercentage={this.handleChangePercentage}
               pair={pair}
               funds={funds}
-              key={[pair, funds, mode]}
+              key={[pair, funds]}
               walletValue={funds && funds[1]}
               marketPrice={price}
               confirmOperation={placeOrder}
