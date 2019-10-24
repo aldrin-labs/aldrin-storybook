@@ -5,8 +5,30 @@ import {
   Key,
 } from '@core/types/ChartTypes'
 import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
+import { TooltipsType } from '@core/types/PortfolioTypes'
 
-export interface IProps extends TooltipQueryType, TooltipMutationType {
+export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
+  app: {
+    themeMode: string
+  }
+  getTooltipSettings: TooltipsType
+  chart: {
+    selectedKey: Key
+    activeExchange: {
+      name: string
+      symbol: string
+    }
+    currencyPair: {
+      pair: string
+    }
+    view: 'default' | 'onlyCharts'
+  }
+  multichart: {
+    charts: string[]
+  }
+}
+
+export interface IProps extends TooltipMutationType {
   isNoCharts: boolean
   view: string
   currencyPair: string
@@ -14,28 +36,23 @@ export interface IProps extends TooltipQueryType, TooltipMutationType {
   selectCurrencies: Function
   theme: any
   themeMode: 'dark' | 'light'
-  getMyProfile: IGetMyProfile
-  getCharts: IGetCharts
+  getChartDataQuery:  GetChartDataQueryInterface
   addChartMutation: (queryObject: any) => Promise<any>
-  getSelectedKeyQuery: {
-    chart: {
-      selectedKey: Key
-    }
-  }
   changeActiveExchangeMutation: ({
     variables: exchange,
   }: {
     variables: { exchange: IExchange }
   }) => Promise<any>
+  changeViewModeMutation: ({
+    variables: view,
+  }: {
+    variables: { view: 'default' | 'onlyCharts' }
+  }) => Promise<any>
 }
 
 export interface IState {
-  view: string
-  orders: []
   aggregation: number
   showTableOnMobile: string
   activeChart: string
-  exchanges: []
-  tradeHistory: []
   joyride: boolean
 }

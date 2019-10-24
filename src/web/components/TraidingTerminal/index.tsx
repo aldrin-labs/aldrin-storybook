@@ -227,8 +227,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       (percentage / 100)
     ).toFixed(4)
 
-    console.log('props', this.props)
-
     return (
       <Container background={'transparent'}>
         <div>
