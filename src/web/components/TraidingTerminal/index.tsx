@@ -22,6 +22,8 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
+import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import {
   Container,
   NameHeader,
@@ -227,7 +229,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       (percentage / 100)
     ).toFixed(4)
 
-    console.log('props', this.props)
+    const firstValuePair = stripDigitPlaces(funds[0].value) === null ? funds[0].value : formatNumberToUSFormat(stripDigitPlaces(funds[0].value))
+    const secondValuePair = stripDigitPlaces(funds[1].value) === null ? funds[1].value : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
 
     return (
       <Container background={'transparent'}>
@@ -242,9 +245,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <BalanceItem item xs={4}>
                   <TradingItemTitle>{pair[0]}</TradingItemTitle>
                   <TradingItemValue>
-                    {funds[0].toFixed(4)}
+                    {funds[0].quantity}
                     <TradingItemSubValue>
-                      {`$${funds[0].toFixed(2)}`}
+                      {`$${firstValuePair}`}
                     </TradingItemSubValue>
                   </TradingItemValue>
                 </BalanceItem>
@@ -252,9 +255,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <BalanceItem item xs={4} lastItem>
                   <TradingItemTitle>{pair[1]}</TradingItemTitle>
                   <TradingItemValue>
-                    {funds[1].toFixed(4)}
+                    {funds[1].quantity}
                     <TradingItemSubValue>
-                      {`$${funds[1].toFixed(2)}`}
+                      {`$${secondValuePair}`}
                     </TradingItemSubValue>
                   </TradingItemValue>
                 </BalanceItem>

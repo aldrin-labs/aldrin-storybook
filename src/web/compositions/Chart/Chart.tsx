@@ -1,7 +1,6 @@
 import React from 'react'
 import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
-import { setTimeout } from 'timers'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
@@ -11,9 +10,10 @@ import { OrderBookTable, Aggregation, TradeHistoryTable } from './Tables/Tables'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DepthChart from './DepthChart/DepthChart'
+import DefaultView from './DefaultView/StatusWrapper'
 
 import { singleChartSteps } from '@sb/config/joyrideSteps'
-import ChartCardHeader, { CardTitle } from '@sb/components/ChartCardHeader'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 // import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 // import { SingleChart } from '@sb/components/Chart'
 
@@ -23,10 +23,12 @@ import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_Q
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { GET_ACTIVE_EXCHANGE } from '@core/graphql/queries/chart/getActiveExchange'
 import { CHANGE_ACTIVE_EXCHANGE } from '@core/graphql/mutations/chart/changeActiveExchange'
 import { CHANGE_VIEW_MODE } from '@core/graphql/mutations/chart/changeViewMode'
+import { getChartData } from '@core/graphql/queries/chart/getChartData'
+import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
+import { MASTER_BUILD } from '@core/utils/config'
+import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
@@ -37,19 +39,14 @@ import {
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withAuth from '@core/hoc/withAuth'
 import LayoutSelector from '@core/components/LayoutSelector'
-import TradingComponent from '@core/components/TradingComponent'
-import TradingTable from '@sb/components/TradingTable/TradingTable'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
 // import ComingSoon from '@sb/components/ComingSoon'
 
 import {
   ChartMediaQueryForLg,
-  Container,
-  ChartsContainer,
   DepthChartContainer,
   MainContainer,
-  TablesBlockWrapper,
   TablesContainer,
   Toggler,
   StyledSwitch,
@@ -67,25 +64,8 @@ import {
   SubvaluesContainer,
   WatchSubvalue,
   WatchLabel,
-  // TradingTabelContainer,
-  // TradingTerminalContainer,
-  // ChartGridContainer,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
-
-import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
-import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
-import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
-import { MASTER_BUILD } from '@core/utils/config'
-
-import DefaultView from './DefaultView/StatusWrapper'
-import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
-import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
-import { GET_CURRENCY_PAIR } from '@core/graphql/queries/chart/getCurrencyPair'
-import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
-import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 const WatchItem = ({
   label,
@@ -121,7 +101,7 @@ class Chart extends React.Component<IProps, IState> {
 
   static getDerivedStateFromProps(nextProps: IProps) {
     const {
-      getCurrencyPairQuery: {
+      getChartDataQuery: {
         chart: {
           currencyPair: { pair },
         },
@@ -188,7 +168,7 @@ class Chart extends React.Component<IProps, IState> {
     ) {
       const {
         updateTooltipSettingsMutation,
-        getTooltipSettingsQuery: { getTooltipSettings },
+        getChartDataQuery: { getTooltipSettings },
       } = this.props
 
       await updateTooltipSettingsMutation({
@@ -204,16 +184,11 @@ class Chart extends React.Component<IProps, IState> {
 
   renderDepthAndList = () => {
     const {
-      getCurrencyPairQuery: {
+      getChartDataQuery: {
         chart: {
+          activeExchange,
           currencyPair: { pair },
         },
-      },
-    } = this.props
-
-    const {
-      getActiveExchangeQuery: {
-        chart: { activeExchange },
       },
     } = this.props
 
@@ -270,25 +245,19 @@ class Chart extends React.Component<IProps, IState> {
   renderTables: any = () => {
     const { aggregation, showTableOnMobile } = this.state
     const {
-      getCurrencyPairQuery: {
+      getChartDataQuery: {
         chart: {
+          activeExchange,
           currencyPair: { pair },
         },
       },
+      theme,
     } = this.props
 
     let quote
     if (pair) {
       quote = pair.split('_')[1]
     }
-
-    const {
-      theme,
-      getTooltipSettingsQuery: { getTooltipSettings },
-      getActiveExchangeQuery: {
-        chart: { activeExchange },
-      },
-    } = this.props
 
     const symbol = pair || ''
     const exchange = activeExchange.symbol
@@ -380,19 +349,15 @@ class Chart extends React.Component<IProps, IState> {
 
   renderOnlyCharts = () => {
     const {
-      getMyProfile: {
+      getChartDataQuery: {
         getMyProfile: { _id },
-      },
-      theme,
-      themeMode,
-      getCurrencyPairQuery: {
         chart: {
           currencyPair: { pair },
+          view,
         },
+        app: { themeMode },
       },
-      getViewModeQuery: {
-        chart: { view },
-      },
+      theme,
     } = this.props
 
     return (
@@ -411,15 +376,11 @@ class Chart extends React.Component<IProps, IState> {
   renderToggler = () => {
     const {
       changeViewModeMutation,
-      getViewModeQuery: {
-        chart: { view },
-      },
-      getCurrencyPairQuery: {
+      getChartDataQuery: {
         chart: {
           currencyPair: { pair },
+          view,
         },
-      },
-      getCharts: {
         multichart: { charts },
       },
       addChartMutation,
@@ -471,21 +432,15 @@ class Chart extends React.Component<IProps, IState> {
 
   renderTogglerBody = () => {
     const {
-      getCurrencyPairQuery: {
-        chart: {
-          currencyPair: { pair },
-        },
-      },
-      getActiveExchangeQuery: {
-        chart: { activeExchange },
-      },
-      getMyProfile: {
+      getChartDataQuery: {
         getMyProfile: { _id },
+        chart: {
+          activeExchange,
+          currencyPair: { pair },
+          view,
+        },
+        app: { themeMode },
       },
-      getViewModeQuery: {
-        chart: { view },
-      },
-      themeMode,
       changeActiveExchangeMutation,
     } = this.props
     // const { activeChart } = this.state
@@ -593,31 +548,17 @@ class Chart extends React.Component<IProps, IState> {
 
   render() {
     const {
-      getMyProfile: {
+      getChartDataQuery: {
         getMyProfile: { _id },
-      },
-      getSelectedKeyQuery: {
-        chart: { selectedKey },
-      },
-      getThemeModeQuery,
-      getActiveExchangeQuery: {
-        chart: { activeExchange },
-      },
-      getCurrencyPairQuery: {
         chart: {
+          selectedKey,
+          activeExchange,
           currencyPair: { pair },
+          view,
         },
+        app: { themeMode },
       },
-      getViewModeQuery: {
-        chart: { view },
-      },
-      theme,
     } = this.props
-
-    const themeMode =
-      getThemeModeQuery &&
-      getThemeModeQuery.app &&
-      getThemeModeQuery.app.themeMode
 
     if (!pair) {
       return
@@ -664,40 +605,8 @@ class Chart extends React.Component<IProps, IState> {
 export default withAuth(
   compose(
     queryRendererHoc({
-      query: GET_MY_PROFILE,
-      withOutSpinner: false,
-      withTableLoader: false,
-      name: 'getMyProfile',
-    }),
-    queryRendererHoc({
-      query: GET_CHARTS,
-      withOutSpinner: false,
-      withTableLoader: false,
-      name: 'getCharts',
-    }),
-    queryRendererHoc({
-      query: getSelectedKey,
-      name: 'getSelectedKeyQuery',
-    }),
-    queryRendererHoc({
-      query: GET_THEME_MODE,
-      name: 'getThemeModeQuery',
-    }),
-    queryRendererHoc({
-      query: GET_TOOLTIP_SETTINGS,
-      name: 'getTooltipSettingsQuery',
-    }),
-    queryRendererHoc({
-      query: GET_ACTIVE_EXCHANGE,
-      name: 'getActiveExchangeQuery',
-    }),
-    queryRendererHoc({
-      query: GET_CURRENCY_PAIR,
-      name: 'getCurrencyPairQuery',
-    }),
-    queryRendererHoc({
-      query: GET_VIEW_MODE,
-      name: 'getViewModeQuery',
+      query: getChartData,
+      name: 'getChartDataQuery',
     }),
     graphql(CHANGE_CURRENCY_PAIR, {
       name: 'changeCurrencyPairMutation',
@@ -707,12 +616,6 @@ export default withAuth(
     }),
     graphql(CHANGE_VIEW_MODE, {
       name: 'changeViewModeMutation',
-    }),
-    graphql(updateTooltipSettings, {
-      name: 'updateTooltipSettingsMutation',
-      options: {
-        update: updateTooltipMutation,
-      },
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withErrorFallback(Chart))

@@ -12,11 +12,11 @@ import {
 } from './ProfileSidebar.styles'
 
 const LINKS = [
-  { path: '/profile', text: 'Profile' },
+  // { path: '/profile', text: 'Profile' },
   { path: '/profile/accounts', text: 'Accounts' },
-  { path: '/profile/settings', text: 'Settings' },
-  { path: '/profile/billing', text: 'Billing' },
-  { path: '/profile/notifications', text: 'Notifications' },
+  // { path: '/profile/settings', text: 'Settings' },
+  // { path: '/profile/billing', text: 'Billing' },
+  // { path: '/profile/notifications', text: 'Notifications' },
 ]
 
 const ProfileSidebar = ({ logoutMutation, accountData, path }) => {
