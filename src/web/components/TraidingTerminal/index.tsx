@@ -100,8 +100,19 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   setFormatted = (fild: priceType, value: any, index: number) => {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
+
+    console.log('value', numberValue)
+    console.log('formatted', toFixedTrunc(numberValue, decimals[index]))
+    console.log(
+      'condition',
+      value.toString().split('.')[1] &&
+        value.toString().split('.')[1].length > decimals[index]
+    )
+
     if (value === '') setFieldValue(fild, '', false)
-    else if (
+    else if (numberValue.toString().includes('e')) {
+      setFieldValue(fild, numberValue.toFixed(8), false)
+    } else if (
       value.toString().split('.')[1] &&
       value.toString().split('.')[1].length > decimals[index]
     ) {
@@ -258,7 +269,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     return (
       <Container background={'transparent'}>
         <div>
-          <GridContainer>
+          <GridContainer key={pair}>
             <Grid container style={{ borderBottom: '1px solid #e0e5ec' }}>
               <Grid item container xs={12}>
                 <BalanceTitle item xs={4}>
@@ -354,7 +365,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
               {priceType === 'stop-limit' ? (
                 <>
-                  <PriceContainer xs={12}>
+                  <PriceContainer xs={12} key={'stop-limit'}>
                     <TradeInputContainer
                       title={'Stop price'}
                       coin={pair[1]}
@@ -374,10 +385,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 //     coin={pair[1]}
                 //   />
                 // </PriceContainer>
-                <PriceContainer xs={12}>
+                <PriceContainer xs={12} key={'limit-price'}>
                   <TradeInputContainer
                     title={'Limit price'}
-                    value={values.limit !== null ? values.limit : values.price}
+                    value={values.limit}
                     onChange={this.onLimitChange}
                     coin={pair[1]}
                   />
@@ -409,6 +420,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 typeIsBuy={isBuyType}
                 handleSubmit={handleSubmit}
                 errors={errors}
+                pairsErrors={pairsErrors}
                 touched={touched}
                 amount={values.amount}
                 validateForm={validateForm}
@@ -760,7 +772,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
   mapPropsToValues: (props) => ({
     price: props.marketPrice,
     stop: null,
-    limit: null,
+    limit: props.marketPrice,
     amount: null,
     total: null,
   }),
@@ -769,7 +781,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     if (priceType || byType) {
       const filtredValues =
         priceType === 'limit'
-          ? { price: values.price, amount: values.amount }
+          ? { limit: values.limit, price: values.price, amount: values.amount }
           : priceType === 'market'
           ? { amount: values.amount }
           : {
