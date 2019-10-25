@@ -23,6 +23,11 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
 import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
+import {
   getBaseQuantityFromQuote,
   getQuoteQuantityFromBase,
 } from '@core/utils/chartPageUtils'
@@ -247,11 +252,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       pair,
       funds,
-      percentage,
       changePercentage,
       operationType,
-      walletValue,
-      byType,
       priceType,
       theme: { palette },
       values,
@@ -259,12 +261,20 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       touched,
       errors,
       validateForm,
-      decimals,
-      marketPrice,
     } = this.props
 
     const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
+
+    const firstValuePair =
+      stripDigitPlaces(funds[0].value) === null
+        ? funds[0].value
+        : formatNumberToUSFormat(stripDigitPlaces(funds[0].value))
+
+    const secondValuePair =
+      stripDigitPlaces(funds[1].value) === null
+        ? funds[1].value
+        : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
 
     return (
       <Container background={'transparent'}>
@@ -279,9 +289,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <BalanceItem item xs={4}>
                   <TradingItemTitle>{pair[0]}</TradingItemTitle>
                   <TradingItemValue>
-                    {funds[0].quantity.toFixed(4)}
+                    {funds[0].quantity.toFixed(8)}
                     <TradingItemSubValue>
-                      {`$${funds[0].value.toFixed(2)}`}
+                      {`$${firstValuePair}`}
                     </TradingItemSubValue>
                   </TradingItemValue>
                 </BalanceItem>
@@ -289,33 +299,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <BalanceItem item xs={4} lastItem>
                   <TradingItemTitle>{pair[1]}</TradingItemTitle>
                   <TradingItemValue>
-                    {funds[1].quantity.toFixed(4)}
+                    {funds[1].quantity.toFixed(8)}
                     <TradingItemSubValue>
-                      {`$${funds[1].value.toFixed(2)}`}
+                      {`$${secondValuePair}`}
                     </TradingItemSubValue>
                   </TradingItemValue>
                 </BalanceItem>
               </Grid>
 
               <PaddingGrid item container xs={12}>
-                {/* <TradeBlock position="left" xs={6}>
-                  <TradeInputContainer
-                    title={'Exchange'}
-                    // value={isBuyType ? quoteQuantity : baseQuantity}
-                    value={isBuyType ? values.amount : 0}
-                    onChange={this.onAmountChange}
-                    coin={isBuyType ? pair[1] : pair[0]}
-                  />
-                </TradeBlock>
-
-                <TradeBlock position="right" xs={6}>
-                  <TradeInputContainer
-                    title={'Recieve'}
-                    value={isBuyType ? baseQuantity : quoteQuantity}
-                    coin={isBuyType ? pair[0] : pair[1]}
-                  />
-                </TradeBlock> */}
-
                 <TradeInputContainer
                   title={`Amount`}
                   value={values.amount}
@@ -377,14 +369,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               ) : null}
 
               {priceType !== 'market' ? (
-                // <PriceContainer xs={12}>
-                //   <TradeInputContainer
-                //     title={'Limit price'}
-                //     value={values.price}
-                //     onChange={this.onPriceChange}
-                //     coin={pair[1]}
-                //   />
-                // </PriceContainer>
                 <PriceContainer xs={12} key={'limit-price'}>
                   <TradeInputContainer
                     title={'Limit price'}
@@ -412,10 +396,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             </Grid>
 
             <Grid xs={12}>
-              {/* <SendButton type={operationType}>
-                
-
-              </SendButton> */}
               <PlaseOrderDialog
                 typeIsBuy={isBuyType}
                 handleSubmit={handleSubmit}
@@ -447,219 +427,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 }
               />
             </Grid>
-
-            {/* <Grid container spacing={0}>
-              <Grid item xs={3}>
-                <TitleContainer>
-                  <TypographyWithCustomColor
-                    textColor
-                    variant="body2"
-                    fontSize={CSS_CONFIG.chart.content.fontSize}
-                  >
-                    {priceType === 'stop-limit' ? 'Stop:' : 'Price:'}
-                  </TypographyWithCustomColor>
-                </TitleContainer>
-              </Grid>
-              <Grid item xs={9}>
-                <InputContainer>
-                  {priceType === 'stop-limit' ? (
-                    <InputTextField
-                      fullWidth
-                      name="stop"
-                      value={values.stop}
-                      id="stop"
-                      type="number"
-                      onChange={this.onStopChange}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          {pair[1]}
-                        </InputAdornment>
-                      }
-                    />
-                  ) : (
-                    <InputTextField
-                      fullWidth
-                      id="price"
-                      name="price"
-                      type={priceType === 'market' ? 'string' : 'number'} // if priceType is market we show Market Price in price
-                      value={
-                        priceType === 'market' ? 'Market Price' : values.price
-                      }
-                      onChange={this.onPriceChange}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          {pair[1]}
-                        </InputAdornment>
-                      }
-                      disabled={priceType === 'market'}
-                    />
-                  )}
-                </InputContainer>
-              </Grid>
-              {priceType === 'stop-limit' && (
-                <Grid item xs={3}>
-                  <TitleContainer>
-                    <TypographyWithCustomColor
-                      textColor
-                      variant="body2"
-                      fontSize={CSS_CONFIG.chart.content.fontSize}
-                    >
-                      Limit:
-                    </TypographyWithCustomColor>
-                  </TitleContainer>
-                </Grid>
-              )}
-              {priceType === 'stop-limit' && (
-                <Grid item xs={9}>
-                  <InputContainer>
-                    <InputTextField
-                      fullWidth
-                      id="limit"
-                      name="limit"
-                      value={values.limit}
-                      onChange={this.onLimitChange}
-                      type="number"
-                      endAdornment={
-                        <InputAdornment position="end">
-                          {pair[1]}
-                        </InputAdornment>
-                      }
-                    />
-                  </InputContainer>
-                </Grid>
-              )}
-              <Grid item xs={3}>
-                <TitleContainer>
-                  <TypographyWithCustomColor
-                    textColor
-                    variant="body2"
-                    fontSize={CSS_CONFIG.chart.content.fontSize}
-                  >
-                    Amount:
-                  </TypographyWithCustomColor>
-                </TitleContainer>
-              </Grid>
-              <Grid item xs={9}>
-                <InputContainer>
-                  <InputTextField
-                    fullWidth
-                    id="amount"
-                    name="amount"
-                    value={values.amount}
-                    onChange={this.onAmountChange}
-                    type="number"
-                    endAdornment={
-                      <InputAdornment position="end">{pair[0]}</InputAdornment>
-                    }
-                  />
-                </InputContainer>
-              </Grid>
-              <Grid container spacing={8}>
-                <Grid item sm={3} xs={6}>
-                  <ButtonContainer>
-                    <PriceButton onClick={() => this.onPercentageClick(0.25)}>
-                      25%
-                    </PriceButton>
-                  </ButtonContainer>
-                </Grid>
-                <Grid item sm={3} xs={6}>
-                  <ButtonContainer>
-                    <PriceButton onClick={() => this.onPercentageClick(0.5)}>
-                      50%
-                    </PriceButton>
-                  </ButtonContainer>
-                </Grid>
-                <Grid item sm={3} xs={6}>
-                  <ButtonContainer>
-                    <PriceButton onClick={() => this.onPercentageClick(0.75)}>
-                      75%
-                    </PriceButton>
-                  </ButtonContainer>
-                </Grid>
-                <Grid item sm={3} xs={6}>
-                  <ButtonContainer>
-                    <PriceButton onClick={() => this.onPercentageClick(1)}>
-                      100%
-                    </PriceButton>
-                  </ButtonContainer>
-                </Grid>
-              </Grid>
-              {priceType !== 'market' && (
-                <Grid item xs={3}>
-                  <TitleContainer>
-                    <TypographyWithCustomColor
-                      textColor
-                      variant="body2"
-                      fontSize={CSS_CONFIG.chart.content.fontSize}
-                    >
-                      Total:
-                    </TypographyWithCustomColor>
-                  </TitleContainer>
-                </Grid>
-              )}
-              {priceType !== 'market' && (
-                <Grid item xs={9}>
-                  <InputContainer>
-                    <InputTextField
-                      fullWidth
-                      value={values.total}
-                      onChange={this.onTotalChange}
-                      id="total"
-                      name="total"
-                      type="number"
-                      endAdornment={
-                        <InputAdornment position="end">
-                          {pair[1]}
-                        </InputAdornment>
-                      }
-                    />
-                  </InputContainer>
-                </Grid>
-              )}
-              <Grid item xs={3}>
-                {' '}
-              </Grid>
-              <Grid item xs={9}>
-                <FormError hidden={!pairsErrors.length}>
-                  {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
-                </FormError>
-              </Grid>
-              <Grid item xs={12}>
-                <ByButtonContainer>
-                  <PlaseOrderDialog
-                    typeIsBuy={typeIsBuy}
-                    handleSubmit={handleSubmit}
-                    errors={errors}
-                    touched={touched}
-                    amount={values.amount}
-                    validateForm={validateForm}
-                    battonText={
-                      typeIsBuy ? `Buy ${pair[0]}` : `Sell ${pair[0]}`
-                    }
-                    text={
-                      priceType === 'stop-limit'
-                        ? `If the last price drops to or below ${values.stop} ${
-                            pair[1]
-                          },
-                  an order to ${typeIsBuy ? 'Buy' : 'Sell'} ${values.amount} ${
-                            pair[0]
-                          } at a price of ${values.limit} ${
-                            pair[1]
-                          } will be placed.`
-                        : priceType === 'limit'
-                        ? `An order to ${typeIsBuy ? 'Buy' : 'Sell'} ${
-                            values.amount
-                          } ${pair[0]} at a price of ${values.price} ${
-                            pair[1]
-                          } will be placed.`
-                        : `An order to ${typeIsBuy ? 'Buy' : 'Sell'} ${
-                            values.amount
-                          } ${pair[0]} at a market price will be placed.`
-                    }
-                  />
-                </ByButtonContainer>
-              </Grid>
-            </Grid> */}
           </GridContainer>
         </div>
       </Container>

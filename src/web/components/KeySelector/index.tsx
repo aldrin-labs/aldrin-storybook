@@ -29,7 +29,7 @@ const KeySelecor = ({ ...props }: IProps) => {
         value: selectedKey.keyId,
         label: selectedKey.name,
       }
-  console.log(isAccountSelect)
+
   return (
     <OvalSelector
       placeholder="Select key"
