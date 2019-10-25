@@ -93,14 +93,14 @@ class SimpleTabs extends React.Component {
         <Grid xs={12} item>
           <TerminalContainer>
             <TraidingTerminal
-              byType="buy"
+              byType={operation}
               operationType={operation}
               priceType={mode}
               percentage={percentage}
               changePercentage={this.handleChangePercentage}
               pair={pair}
               funds={funds}
-              key={[pair, funds, mode]}
+              key={[pair, funds]}
               walletValue={funds && funds[1]}
               marketPrice={price}
               confirmOperation={placeOrder}

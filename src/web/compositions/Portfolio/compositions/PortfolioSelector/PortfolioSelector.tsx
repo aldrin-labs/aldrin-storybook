@@ -123,6 +123,10 @@ class PortfolioSelector extends React.Component<IProps> {
         settings: {
           portfolioId,
           selectedKeys: UTILS.getArrayContainsOnlySelected(keys, keys[0]._id),
+          selectedRebalanceKeys: UTILS.getArrayContainsOnlySelected(
+            keys,
+            keys[0]._id
+          ),
         },
       }
 
