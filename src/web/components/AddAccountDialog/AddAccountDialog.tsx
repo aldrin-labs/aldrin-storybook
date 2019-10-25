@@ -277,17 +277,17 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     }}
                     inputStyles={{
                       marginLeft: '0',
-                      color: '#7284A0',
+                      color: '#16253d',
                       opacity: '1',
                     }}
                     singleValueStyles={{
                       height: 'auto',
                       width: 'auto',
-                      color: 'rgb(114, 132, 160);',
+                      color: '#16253d',
                       overflow: 'auto',
                     }}
                     optionStyles={{
-                      color: '#6D7786',
+                      color: '#16253d',
                       fontSize: '1.3rem',
                     }}
                   />

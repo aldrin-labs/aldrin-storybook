@@ -38,6 +38,8 @@ const Onboarding = ({
     ? onboarding
     : { instructions: false }
 
+  console.log('onboarding', portfolioKeys.length > 1, !needOnboarding)
+
   if (portfolioKeys.length > 1) {
     return null
   }

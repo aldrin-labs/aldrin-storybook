@@ -24,6 +24,7 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
     touched,
     validateForm,
     typeIsBuy,
+    pairsErrors,
   } = props
 
   const handleClick = async () => {
@@ -31,9 +32,9 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
     handleClose()
   }
 
-  const handleOpen = () => {
-    validateForm()
-    if (_.isEmpty(errors) && !_.isEmpty(touched)) handleClickOpen()
+  const handleOpen = async () => {
+    const result = await validateForm()
+    if (!_.isEmpty(touched) && _.isEmpty(result)) handleClickOpen()
   }
 
   return (

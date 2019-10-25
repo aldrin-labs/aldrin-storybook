@@ -59,7 +59,7 @@ export const InputBaseCustom = styled(InputBase)`
   border-radius: 1rem;
 
   input {
-    color: #7284a0;
+    color: #16253d;
     font-size: 1.3rem;
     line-height: 114.5%;
     padding: 0;

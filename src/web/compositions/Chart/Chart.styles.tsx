@@ -253,7 +253,8 @@ export const StyledSwitch = styled(Button)`
 
 export const Container = styled(Grid)`
   display: flex;
-  height: calc(100vh - 48px);
+  // - ( menu + margin )
+  height: calc(100vh - 6.4vh - 1rem);
   width: 100%;
   margin: 0;
   background-color: #e0e5ec;

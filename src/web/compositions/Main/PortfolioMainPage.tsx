@@ -12,8 +12,6 @@ import { IProps, IState } from './PortfolioMainPage.types'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
 import PortfolioMainFuturesTable from '@core/containers/PortfolioMainTable/PortfolioMainFuturesTable'
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
-import PortfolioOnboarding from './PortfolioOnboarding'
-
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
@@ -205,12 +203,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             handleCloseSharePortfolio={this.handleCloseSharePortfolio}
           /> */}
         </Grid>
-
-        <PortfolioOnboarding
-          portfolioKeys={portfolioKeys}
-          portfolioId={portfolioId}
-          baseCoin={baseCoin}
-        />
       </LayoutClearfixWrapper>
     )
   }

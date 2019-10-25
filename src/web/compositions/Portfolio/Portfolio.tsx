@@ -3,6 +3,7 @@ import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
 import { IProps, IState, Key } from './Portfolio.types'
+import PortfolioOnboarding from '@sb/compositions/Main/PortfolioOnboarding'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
@@ -133,6 +134,11 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               <AddExchangeOrWalletWindow
                 theme={theme}
                 toggleWallets={this.toggleWallets}
+              />
+              <PortfolioOnboarding
+                portfolioKeys={keys}
+                portfolioId={portfolioId}
+                baseCoin={baseCoin}
               />
             </>
           )}
