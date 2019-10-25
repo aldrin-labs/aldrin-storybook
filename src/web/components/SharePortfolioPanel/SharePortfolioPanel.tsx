@@ -3,15 +3,21 @@ import { Grid } from '@material-ui/core'
 import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import { IProps } from './SharePortfolio.types'
+import { MASTER_BUILD } from '@core/utils/config'
+
+import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 
 class SharePortfolioPanel extends Component<IProps> {
   render() {
     const {
-      handleOpenSharePortfolio,
+      // handleOpenSharePortfolio,
       portfolioName,
       onToggleUSDBTC,
       isUSDCurrently,
+      isSPOTCurrently,
+      setPageType,
     } = this.props
+
     return (
       <Grid
         container
@@ -52,14 +58,35 @@ class SharePortfolioPanel extends Component<IProps> {
             <Grid item>
               <SelectPortfolioPeriod />
             </Grid>
-            <Grid item>
-              <StyledButton
+            <Grid item style={{ display: 'flex' }}>
+              {/* <StyledButton
                 onClick={onToggleUSDBTC}
                 padding="0.25rem 1rem 0.25rem 1rem"
                 borderRadius={'28px'}
               >
                 {isUSDCurrently ? 'BTC' : 'USD'}
-              </StyledButton>
+              </StyledButton> */}
+
+              {!MASTER_BUILD && (
+                <PillowButton
+                  firstHalfText={'spot'}
+                  secondHalfText={'futures'}
+                  activeHalf={isSPOTCurrently ? 'first' : 'second'}
+                  changeHalf={() =>
+                    setPageType({
+                      variables: {
+                        pageType: isSPOTCurrently ? 'FUTURES' : 'SPOT',
+                      },
+                    })
+                  }
+                />
+              )}
+              <PillowButton
+                firstHalfText={'USD'}
+                secondHalfText={'BTC'}
+                activeHalf={isUSDCurrently ? 'first' : 'second'}
+                changeHalf={onToggleUSDBTC}
+              />
             </Grid>
           </Grid>
         </Grid>
