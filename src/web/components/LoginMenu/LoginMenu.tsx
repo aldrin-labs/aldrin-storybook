@@ -19,7 +19,7 @@ import Onboarding from '../../compositions/Onboarding/'
 
 // import { IProps, IState } from './CreatePortfolio.types'
 
-const UserLink = (props) => <Link to="/profile" {...props} />
+const UserLink = (props) => <Link to="/profile/accounts" {...props} />
 
 @withRouter
 class LoginMenuComponent extends React.Component {
