@@ -390,12 +390,12 @@ export default compose(
               query: portfolioKeyAndWalletsQuery,
               variables: { baseCoin },
             },
+            { query: getKeysQuery },
+            { query: keysNames },
             {
               query: getPortfolioAssets,
               variables: { baseCoin, innerSettings: true },
             },
-            { query: getKeysQuery },
-            { query: keysNames },
           ]
         : [],
     }),
