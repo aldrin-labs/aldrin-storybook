@@ -38,10 +38,9 @@ const Onboarding = ({
     ? onboarding
     : { instructions: false }
 
-  if (
-    portfolioKeys.length > 1 ||
-    !portfolioKeys.find((key) => key._id === demoKeyId)
-  ) {
+  console.log('onboarding', portfolioKeys.length > 1, !needOnboarding)
+
+  if (portfolioKeys.length > 1) {
     return null
   }
 

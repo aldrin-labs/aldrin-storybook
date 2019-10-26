@@ -23,12 +23,16 @@ import Plus from '@icons/Plus.svg'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
+import { getCurrentPortfolio } from '@core/graphql/queries/profile/getCurrentPortfolio'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
@@ -88,11 +92,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     try {
       const { data } = await this.props.addExchangeKey({
         variables,
-        // update: (proxy, { data: { addExchangeKey } }) => {
-        //   const proxyData = proxy.readQuery({ query: getKeysQuery })
-        //   proxyData.myPortfolios[0].keys.push(addExchangeKey)
-        //   proxy.writeQuery({ query: getKeysQuery, data: proxyData })
-        // },
       })
 
       const { error } = data.addExchangeKey
@@ -278,17 +277,17 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     }}
                     inputStyles={{
                       marginLeft: '0',
-                      color: '#7284A0',
+                      color: '#16253d',
                       opacity: '1',
                     }}
                     singleValueStyles={{
                       height: 'auto',
                       width: 'auto',
-                      color: 'rgb(114, 132, 160);',
+                      color: '#16253d',
                       overflow: 'auto',
                     }}
                     optionStyles={{
-                      color: '#6D7786',
+                      color: '#16253d',
                       fontSize: '1.3rem',
                     }}
                   />
@@ -315,6 +314,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     name="apiKey"
                     label="API Key"
                     value={apiKey}
+                    autoComplete={'off'}
                     onChange={(e) => this.handleChange(e)}
                     placeholder="Enter API key here..."
                     // margin="normal"
@@ -327,6 +327,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     name="secretOfApiKey"
                     label="Secret"
                     value={secretOfApiKey}
+                    autoComplete={'off'}
                     onChange={(e) => this.handleChange(e)}
                     placeholder="Enter secret key here..."
                     type="text"
@@ -372,13 +373,19 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 }
 
 export default compose(
+  queryRendererHoc({
+    query: GET_BASE_COIN,
+    name: 'baseData',
+  }),
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
     options: ({
-      baseCoin,
+      baseData: {
+        portfolio: { baseCoin },
+      },
       onboarding,
     }: {
-      baseCoin: 'USDT' | 'BTC'
+      baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
       onboarding: boolean
     }) => ({
       refetchQueries: !onboarding
@@ -387,12 +394,14 @@ export default compose(
               query: portfolioKeyAndWalletsQuery,
               variables: { baseCoin },
             },
+            { query: getKeysQuery },
+            { query: keysNames },
             {
               query: getPortfolioAssets,
               variables: { baseCoin, innerSettings: true },
             },
-            { query: getKeysQuery },
-            { query: keysNames },
+            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
+            { query: getCurrentPortfolio },
           ]
         : [],
     }),

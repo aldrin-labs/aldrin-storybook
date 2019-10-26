@@ -27,7 +27,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-const version = `10.5.3`
+const version = `10.5.5`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -54,12 +54,17 @@ const AppRaw = ({
   const isPNL = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
+  const isChartPage = currentPage === '/chart'
 
   return (
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
-        <AppGridLayout showFooter={showFooter} isPNL={isPNL}>
+        <AppGridLayout
+          showFooter={showFooter}
+          isPNL={isPNL}
+          isChartPage={isChartPage}
+        >
           {!pageIsRegistration && (
             <AnimatedNavBar
               pathname={currentPage}
@@ -68,7 +73,11 @@ const AppRaw = ({
             />
           )}
           {children}
-          <Footer fullscreenMode={fullscreen} showFooter={showFooter} />
+          <Footer
+            isChartPage={isChartPage}
+            fullscreenMode={fullscreen}
+            showFooter={showFooter}
+          />
         </AppGridLayout>
         {/* <ShowWarningOnMoblieDevice /> */}
         <GlobalStyle />
