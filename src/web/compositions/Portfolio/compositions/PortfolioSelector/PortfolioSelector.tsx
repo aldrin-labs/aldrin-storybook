@@ -319,17 +319,6 @@ class PortfolioSelector extends React.Component<IProps> {
         },
       },
     })
-
-    await this.updateSettings({
-      settings: {
-        portfolioId,
-        dustFilter: {
-          ...{ usd, percentage, btc },
-          [dustFilterParam]: +dustFilterParamValue,
-        }, //TODO
-        // dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value }, //TODO
-      },
-    })
   }
 
   render() {
