@@ -17,6 +17,8 @@ import {
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
 
+import { TooltipCustom } from '@sb/components/index'
+
 // import { IProps, IState } from './CreatePortfolio.types'
 
 const UserLink = (props) => <Link to="/profile/accounts" {...props} />
@@ -72,16 +74,28 @@ class LoginMenuComponent extends React.Component {
           </IconButton>
         </Tooltip> */}
         {/*<Onboarding />*/}
-        <Tooltip title={userName} enterDelay={250}>
-          <IconButton color="default" component={UserLink} className="UserLink">
-            <AccountCircle />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Log out" enterDelay={500}>
-          <IconButton color="default" onClick={handleLogout} id="ExitButton">
-            <ExitIcon />
-          </IconButton>
-        </Tooltip>
+        <TooltipCustom
+          title={userName}
+          enterDelay={250}
+          component={
+            <IconButton
+              color="default"
+              component={UserLink}
+              className="UserLink"
+            >
+              <AccountCircle />
+            </IconButton>
+          }
+        />
+        <TooltipCustom
+          title="Log out"
+          enterDelay={500}
+          component={
+            <IconButton color="default" onClick={handleLogout} id="ExitButton">
+              <ExitIcon />
+            </IconButton>
+          }
+        />
       </>
     )
   }

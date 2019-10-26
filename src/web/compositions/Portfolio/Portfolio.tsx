@@ -12,6 +12,7 @@ import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { getDustFilter } from '@core/graphql/queries/portfolio/getDustFilter'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 // import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
@@ -76,13 +77,23 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, baseData, data } = this.props
+    const {
+      theme,
+      baseData,
+      data,
+      dustFilterQuery: {
+        portfolio: { dustFilter },
+      },
+    } = this.props
+
+    console.log('dustFilter', dustFilter)
+    console.log('props portfolio', this.props)
 
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
 
     const {
-      userSettings: { portfolioId, dustFilter },
+      userSettings: { portfolioId },
       name: portfolioName,
     } = safePortfolioDestruction(data.myPortfolios[0])
 
@@ -207,5 +218,9 @@ export default compose(
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
+  }),
+  queryRendererHoc({
+    query: getDustFilter,
+    name: 'dustFilterQuery',
   })
 )(APIWrapper)
