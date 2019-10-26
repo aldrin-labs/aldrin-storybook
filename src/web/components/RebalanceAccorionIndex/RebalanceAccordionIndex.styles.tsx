@@ -91,6 +91,7 @@ export const StyledTypographyAccordionHeader = styled(
   font-size: 1.4rem;
   border-left: 5px solid orange;
   border-radius: 3px 0 3px 0;
+  border-bottom-left-radius: 3px;
   padding-left: 24px;
 
   @media screen and (min-device-width: 1920px) and (-webkit-min-device-pixel-ratio: 1) {
