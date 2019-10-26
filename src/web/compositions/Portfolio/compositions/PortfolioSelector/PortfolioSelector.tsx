@@ -65,6 +65,7 @@ import { updateSettingsMutation } from '@core/utils/PortfolioSelectorUtils.ts'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
+import { updateDustFilter } from '@core/graphql/mutations/portfolio/updateDustFilter'
 import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 // const MyLinkToUserSettings = (props: any) => (
 //   <Link to="/user" style={{ textDecoration: 'none' }} {...props}>
@@ -123,6 +124,10 @@ class PortfolioSelector extends React.Component<IProps> {
         settings: {
           portfolioId,
           selectedKeys: UTILS.getArrayContainsOnlySelected(keys, keys[0]._id),
+          selectedRebalanceKeys: UTILS.getArrayContainsOnlySelected(
+            keys,
+            keys[0]._id
+          ),
         },
       }
 
@@ -287,32 +292,31 @@ class PortfolioSelector extends React.Component<IProps> {
     const {
       portfolioId,
       dustFilter: { usd, percentage, btc },
+      updateDustFilter,
     } = this.props
     const dustFilterParamValue =
       dustFilterParam === 'percentage'
         ? value === 0
-          ? '0'
+          ? 0
           : value === 20
-          ? '0.1'
+          ? 0.1
           : value === 40
-          ? '0.3'
+          ? 0.3
           : value === 60
-          ? '0.5'
+          ? 0.5
           : value === 80
-          ? '1'
-          : '10'
+          ? 1
+          : 10
         : dustFilterParam === 'btc'
         ? value / BTC_PART_DIVIDER
         : value
 
-    await this.updateSettings({
-      settings: {
-        portfolioId,
-        dustFilter: {
+    await updateDustFilter({
+      variables: {
+        settings: {
           ...{ usd, percentage, btc },
           [dustFilterParam]: +dustFilterParamValue,
-        }, //TODO
-        // dustFilter: { ...{ usd, percentage }, [dustFilterParam]: value }, //TODO
+        },
       },
     })
   }
@@ -591,6 +595,9 @@ export default compose(
       variables: { baseCoin, innerSettings: true },
       pollInterval: 30000,
     }),
+  }),
+  graphql(updateDustFilter, {
+    name: 'updateDustFilter',
   }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',

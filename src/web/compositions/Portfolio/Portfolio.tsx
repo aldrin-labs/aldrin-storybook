@@ -3,6 +3,7 @@ import { withTheme } from '@material-ui/styles'
 import { Fade } from '@material-ui/core'
 
 import { IProps, IState, Key } from './Portfolio.types'
+import PortfolioOnboarding from '@sb/compositions/Main/PortfolioOnboarding'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
@@ -11,6 +12,7 @@ import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { getDustFilter } from '@core/graphql/queries/portfolio/getDustFilter'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 // import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
@@ -75,13 +77,23 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { theme, baseData, data } = this.props
+    const {
+      theme,
+      baseData,
+      data,
+      dustFilterQuery: {
+        portfolio: { dustFilter },
+      },
+    } = this.props
+
+    console.log('dustFilter', dustFilter)
+    console.log('props portfolio', this.props)
 
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
 
     const {
-      userSettings: { portfolioId, dustFilter },
+      userSettings: { portfolioId },
       name: portfolioName,
     } = safePortfolioDestruction(data.myPortfolios[0])
 
@@ -133,6 +145,11 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               <AddExchangeOrWalletWindow
                 theme={theme}
                 toggleWallets={this.toggleWallets}
+              />
+              <PortfolioOnboarding
+                portfolioKeys={keys}
+                portfolioId={portfolioId}
+                baseCoin={baseCoin}
               />
             </>
           )}
@@ -201,5 +218,9 @@ export default compose(
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
+  }),
+  queryRendererHoc({
+    query: getDustFilter,
+    name: 'dustFilterQuery',
   })
 )(APIWrapper)

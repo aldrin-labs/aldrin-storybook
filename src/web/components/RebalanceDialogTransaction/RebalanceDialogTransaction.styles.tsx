@@ -84,6 +84,9 @@ export const StyledPaper = styled(Paper)`
 
   border-radius: 2rem;
 
+  max-width: 700px;
+  min-width: 700px;
+
   @media (min-width: 1440px) {
     min-width: 800px;
   }

@@ -1,4 +1,3 @@
-
 export default interface IProps {
   getThemeModeQuery: {
     app: {
@@ -8,4 +7,5 @@ export default interface IProps {
   toggleThemeModeMutation: () => Promise<any>
   fullscreenMode: boolean
   showFooter: boolean
+  isChartPage: boolean
 }
