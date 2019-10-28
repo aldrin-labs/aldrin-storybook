@@ -13,7 +13,7 @@ import {
 } from '@sb/styles/walletWindows.styles'
 
 const MyLinkToUserSettings = (props: object) => (
-  <Link to="/profile" {...props} />
+  <Link to="/profile/accounts" {...props} />
 )
 
 export default class AddExchangeOrWalletWindow extends React.Component<IProps> {
