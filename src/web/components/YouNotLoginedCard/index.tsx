@@ -17,7 +17,7 @@ const LoginCard = ({ open }: IProps) => (
           variant="h4"
           gutterBottom={true}
         >
-          Hello there, welcome to cryptocurrencies.ai👐
+          Hello there, welcome to cryptocurrencies.ai
         </Typography>
         <Typography
           color="textSecondary"
