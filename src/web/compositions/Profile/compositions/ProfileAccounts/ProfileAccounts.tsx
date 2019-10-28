@@ -2,6 +2,10 @@ import React from 'react'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons'
 
 import {
+  IProps,
+  PortfolioData,
+} from '@core/containers/Profile/ProfileAccounts/ProfileAccounts.types'
+import {
   MainContainer,
   StatisticContainer,
   ContentContainer,
@@ -26,6 +30,7 @@ import {
   StyledAddIcon,
   Typography,
 } from './ProfileAccounts.styles'
+
 import ProfileAccountsTable from './ProfileAccountsTable'
 import { formatValue, countAllPortfoliosValue } from './ProfileAccounts.utils'
 
@@ -36,11 +41,11 @@ import { ComingSoonBlock } from '@sb/compositions/Profile/compositions/ProfileRo
 const ProfileAccounts = ({
   currentPortfolioData,
   allPortfoliosData,
-  portfolioAccountsData: { keys: accounts },
+  portfolioAccountsData,
   selectPortfolioMutation,
-}) => {
+}: IProps) => {
   const currentPortfolioIndex = allPortfoliosData.findIndex(
-    (portfolio) => portfolio._id === currentPortfolioData._id
+    (portfolio: PortfolioData) => portfolio._id === currentPortfolioData._id
   )
 
   const prevPortfolioId =
@@ -71,7 +76,7 @@ const ProfileAccounts = ({
         <SummaryAccountsBlock height={'42%'}>
           <GridTitle>summary accounts</GridTitle>
           <AccountsValue>
-            <BigNumberValue>{accounts.length}</BigNumberValue>
+            <BigNumberValue>{portfolioAccountsData.length}</BigNumberValue>
           </AccountsValue>
           <AccountsChartBlock>
             <GridTitle>chart soon</GridTitle>
@@ -123,8 +128,8 @@ const ProfileAccounts = ({
               {/* current portfolio values */}
               <PortfolioValuesBlock>
                 <PortfolioName>{currentPortfolioData.name}</PortfolioName>
-                <GreyValue>{`${accounts.length} ${
-                  accounts.length === 1 ? 'account' : 'accounts'
+                <GreyValue>{`${portfolioAccountsData.length} ${
+                  portfolioAccountsData.length === 1 ? 'account' : 'accounts'
                 }`}</GreyValue>
                 <GreenValue>
                   {formatValue(currentPortfolioData.portfolioValue)}
@@ -142,7 +147,7 @@ const ProfileAccounts = ({
           <CreatePortfolio
             baseCoin={'USDT'}
             existCustomButton={true}
-            CustomButton={({ handleClick }) => (
+            CustomButton={({ handleClick }: { handleClick: () => void }) => (
               <CreatePortfolioButton onClick={handleClick}>
                 <StyledAddIcon />
                 <Typography>create new portfolio</Typography>
@@ -153,7 +158,7 @@ const ProfileAccounts = ({
 
         {/* account table */}
         <GridBlock height={'86%'}>
-          <ProfileAccountsTable accounts={accounts} />
+          <ProfileAccountsTable accounts={portfolioAccountsData} />
         </GridBlock>
       </ContentContainer>
     </MainContainer>

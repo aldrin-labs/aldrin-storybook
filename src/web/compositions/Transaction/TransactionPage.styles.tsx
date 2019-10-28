@@ -1,3 +1,4 @@
+import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Grid, Typography } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
@@ -34,7 +35,9 @@ export const ReactSelectCustom = styled(ReactSelect)`
   }
 `
 
-export const GridContainerTitle = styled(Grid)`
+export const GridContainerTitle = styled(({ bgColor, ...rest }) => (
+  <Grid {...rest} />
+))`
   display: flex;
   width: 100%;
   border-radius: 1.5rem 1.5rem 0 0;
@@ -63,7 +66,9 @@ export const ContentGrid = styled(Grid)`
   padding: 0;
 `
 
-export const TypographyContatinerTitle = styled(Typography)`
+export const TypographyContatinerTitle = styled(
+  ({ bgColor, textColor, ...rest }) => <Typography {...rest} />
+)`
 /* background: ${(props) => props.bgColor};
      margin-top: 10px;
      color: ${(props) => props.textColor};
@@ -89,11 +94,13 @@ export const TypographyContatinerTitle = styled(Typography)`
   text-align: ${(props) => props.textAlign || 'center'};
 `
 
-export const TransactionsTitle = styled(TypographyContatinerTitle)`
+export const TransactionsTitle = styled(({ textColor, ...rest }) => (
+  <TypographyContatinerTitle {...rest} />
+))`
   color: ${(props) => props.textColor || '#16253d'};
   font-size: 1.2rem;
   media(min-width: 2560px) {
-    padding: 0.4rem 0 1rem 1rem;
+    orpadding: 0.4rem 0 1rem 1rem;
   }
 `
 
@@ -110,7 +117,9 @@ export const TypographyAccountTitle = styled(Typography)`
   z-index: 2;
 `
 
-export const TypographyTitle = styled(Typography)`
+export const TypographyTitle = styled(({ textColor, ...rest }) => (
+  <Typography {...rest} />
+))`
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};

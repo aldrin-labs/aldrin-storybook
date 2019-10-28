@@ -1,8 +1,11 @@
+import React from 'react'
 import styled from 'styled-components'
 
 import { Grid, Typography } from '@material-ui/core'
 
-export const ChoosePeriodWrapper = styled(Grid)`
+export const ChoosePeriodWrapper = styled(({ isTableCalendar, ...rest }) => (
+  <Grid {...rest} />
+))`
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -3,6 +3,10 @@ import moment from 'moment'
 
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import {
+  PortfolioData,
+  AccountData,
+} from '@core/containers/Profile/ProfileAccounts/ProfileAccounts.types'
 
 import { addMainSymbol } from '@sb/components'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
@@ -70,13 +74,14 @@ const getKeyStatus = (status: string, valid: boolean) => {
     : status
 }
 
-export const transformData = (data: any[]) => {
+export const transformData = (data: AccountData[]) => {
   const transformedData = data.map((row, i) => {
     return {
       id: row._id,
       colorDot: {
         render: (
           <div
+            key={row._id}
             style={{
               position: 'relative',
               left: '50%',
@@ -187,7 +192,7 @@ export const transformData = (data: any[]) => {
       render: (
         <AddAccountDialog
           existCustomButton={true}
-          CustomButton={({ handleClick }) => (
+          CustomButton={({ handleClick }: { handleClick: () => void }) => (
             <AddAccountButton onClick={handleClick}>
               <SmallAddIcon />
               <Typography>add new key</Typography>
@@ -250,7 +255,7 @@ export const formatValue = (value: number) => {
   return addMainSymbol(roundAndFormatNumber(value, true), true)
 }
 
-export const countAllPortfoliosValue = (allPortfolios) => {
+export const countAllPortfoliosValue = (allPortfolios: PortfolioData[]) => {
   return allPortfolios.reduce(
     (acc, portfolio) => portfolio.portfolioValue + acc,
     0
