@@ -1,8 +1,10 @@
 import React from 'react'
+import moment from 'moment'
 import { withTheme } from '@material-ui/styles'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 // import Joyride from 'react-joyride'
+import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
@@ -10,7 +12,7 @@ import { IProps, IState } from './PortfolioMainPage.types'
 // import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 // import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
-import PortfolioMainFuturesTable from '@core/containers/PortfolioMainTable/PortfolioMainFuturesTable'
+import PortfolioMainFuturesTable from '@core/containers/PortfolioMainTable/FuturesTableWrapper'
 import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
@@ -25,6 +27,8 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { sharePortfolio } from '@core/graphql/mutations/portfolio/sharePortfolio'
 import { getPageType } from '@core/graphql/queries/portfolio/main/getPageType'
+import { getFuturesOverview } from '@core/graphql/queries/portfolio/main/getFuturesOverview'
+
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
@@ -45,7 +49,16 @@ const LayoutClearfixWrapper = styled.div`
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
+    startDate: getEndDate('1Week'),
+    endDate: moment().endOf('day'),
     openSharePortfolioPopUp: false,
+  }
+
+  choosePeriod = (stringDate: string) => {
+    this.setState({
+      startDate: getEndDate(stringDate),
+      endDate: moment().endOf('day'),
+    })
   }
 
   handleOpenSharePortfolio = () => {
@@ -95,7 +108,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       theme,
       dustFilter,
       // sharePortfolioMutation,
-      portfolioId,
+      // portfolioId,
       portfolioName,
       portfolioKeys,
       isUSDCurrently,
@@ -104,6 +117,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       getPageTypeQuery: {
         portfolio: { pageType },
       },
+      getFuturesOverviewQuery: { getFuturesOverview },
     } = this.props
 
     const isSPOTCurrently = pageType === 'SPOT'
@@ -138,12 +152,14 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               baseCoin={baseCoin}
               isSPOTCurrently={isSPOTCurrently}
               isUSDCurrently={isUSDCurrently}
+              choosePeriod={this.choosePeriod}
             />
             {/* TODO: Recomment if needed <Divider /> */}
             <AccordionOverview
               baseCoin={baseCoin}
               isSPOTCurrently={isSPOTCurrently}
               isUSDCurrently={isUSDCurrently}
+              getFuturesOverview={getFuturesOverview}
               portfolioAssetsData={portfolioAssetsData}
               totalKeyAssetsData={totalKeyAssetsData}
             />
@@ -151,7 +167,12 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
           <Template
             isSPOTCurrently={isSPOTCurrently}
-            PortfolioMainFuturesTable={<PortfolioMainFuturesTable />}
+            PortfolioMainFuturesTable={
+              <PortfolioMainFuturesTable
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+              />
+            }
             PortfolioMainTable={
               <PortfolioMainTable
                 data={{ myPortfolios: [{ portfolioAssets: enabledAssets }] }}
@@ -216,6 +237,12 @@ export default compose(
   queryRendererHoc({
     query: getPageType,
     name: 'getPageTypeQuery',
+  }),
+  queryRendererHoc({
+    query: getFuturesOverview,
+    name: 'getFuturesOverviewQuery',
+    fetchPolicy: 'network-only',
+    pollInterval: 30000,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
