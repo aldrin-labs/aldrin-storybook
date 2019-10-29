@@ -86,9 +86,6 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       },
     } = this.props
 
-    console.log('dustFilter', dustFilter)
-    console.log('props portfolio', this.props)
-
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
 

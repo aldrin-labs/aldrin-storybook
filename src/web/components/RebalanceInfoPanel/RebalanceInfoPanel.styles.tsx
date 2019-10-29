@@ -7,7 +7,9 @@ export const GridFlex = styled(Grid)`
   display: flex;
 `
 
-export const GridInfoPanelWrapper = styled(Grid)`
+export const GridInfoPanelWrapper = styled(
+  ({ bgColor, borderColor, ...rest }) => <Grid {...rest} />
+)`
   position: sticky;
   top: 0;
   border-bottom: ${(props) => `1px solid ${props.borderColor}`};

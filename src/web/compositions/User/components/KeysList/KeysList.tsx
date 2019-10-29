@@ -52,14 +52,14 @@ class KeysListComponent extends React.Component {
           <TableHead>
             <TableRow>
               <KeyTableCell>Name</KeyTableCell>
-              <KeyTableCell numeric={true}>Exchange</KeyTableCell>
-              <KeyTableCell numeric={true}>Api key</KeyTableCell>
-              <KeyTableCell numeric={true}>Added</KeyTableCell>
-              <KeyTableCell numeric={true}>Is Processing</KeyTableCell>
-              <KeyTableCell numeric={true}>Valid?</KeyTableCell>
-              <KeyTableCell numeric={true}>Status</KeyTableCell>
-              <KeyTableCell numeric={true}>Last update</KeyTableCell>
-              <KeyTableCell numeric={true}>Delete key</KeyTableCell>
+              <KeyTableCell align="center">Exchange</KeyTableCell>
+              <KeyTableCell align="center">Api key</KeyTableCell>
+              <KeyTableCell align="center">Added</KeyTableCell>
+              <KeyTableCell align="center">Is Processing</KeyTableCell>
+              <KeyTableCell align="center">Valid?</KeyTableCell>
+              <KeyTableCell align="center">Status</KeyTableCell>
+              <KeyTableCell align="center">Last update</KeyTableCell>
+              <KeyTableCell align="center">Delete key</KeyTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -79,10 +79,10 @@ class KeysListComponent extends React.Component {
                 return (
                   <TableRow key={_id}>
                     <KeyTableCell>{name}</KeyTableCell>
-                    <KeyTableCell numeric={true}>{exchange}</KeyTableCell>
-                    <KeyTableCell numeric={true}>{apiKey}</KeyTableCell>
-                    <KeyTableCell numeric={true}>
-                      {<FormattedDate value={date} />}
+                    <KeyTableCell align="center">{exchange}</KeyTableCell>
+                    <KeyTableCell align="center">{apiKey}</KeyTableCell>
+                    <KeyTableCell align="center">
+                      {<FormattedDate value={'invalid date'} />}
                     </KeyTableCell>
                     <KeyTableCell>
                       {!(processing === null) && (processing ? 'Yes' : 'No')}
@@ -91,12 +91,8 @@ class KeysListComponent extends React.Component {
                       {!(valid === null) && (valid ? 'Yes' : 'No')}
                     </KeyTableCell>
                     <KeyTableCell>{status}</KeyTableCell>
-                    <KeyTableCell>
-                      {new Date(
-                        lastUpdate === 0 ? date : lastUpdate * 1000
-                      ).toDateString()}
-                    </KeyTableCell>
-                    <KeyTableCell numeric={true}>
+                    <KeyTableCell>{'invalid date'}</KeyTableCell>
+                    <KeyTableCell align="center">
                       <DeleteKeyDialog
                         keyName={name}
                         forceUpdateUserContainer={forceUpdateUserContainer}

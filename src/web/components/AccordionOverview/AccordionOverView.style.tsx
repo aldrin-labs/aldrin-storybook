@@ -8,7 +8,7 @@ import {
   withStyles,
 } from '@material-ui/core'
 
-export const GridColumn = styled(({ gridBorder, ...props }) => (
+export const GridColumn = styled(({ gridBorder, paddingCell, ...props }) => (
   <Grid {...props} />
 ))`
   position: relative;
@@ -33,7 +33,9 @@ export const GridRow = styled(Grid)`
   }
 `
 
-export const GridRowWrapper = styled(Grid)`
+export const GridRowWrapper = styled(({ hoverColor, ...rest }) => (
+  <Grid {...rest} />
+))`
   min-width: 10%;
   width: 100%;
   &&:nth-child(2n-1) {
@@ -42,7 +44,9 @@ export const GridRowWrapper = styled(Grid)`
   }
 `
 
-export const TypographyHeading = styled(Typography)`
+export const TypographyHeading = styled(({ textColor, ...rest }) => (
+  <Typography {...rest} />
+))`
   border-left: 0.3rem solid #165be0;
   border-radius: 0.4rem 0px 0px 0.4rem;
   padding: 0.5rem 0 0.5rem 1rem;
@@ -68,7 +72,9 @@ export const TypographySubHeading = styled(Typography)`
   color: #7284a0;
 `
 
-export const TypographyTitleCell = styled(Typography)`
+export const TypographyTitleCell = styled(
+  ({ paddingCell, textColor, ...rest }) => <Typography {...rest} />
+)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 700;
@@ -85,9 +91,9 @@ export const TypographyTitleCell = styled(Typography)`
     margin-bottom: 0;
   }
 `
-export const TypographyValueCell = styled(({ fontWeight, ...rest }) => (
-  <Typography {...rest} />
-))`
+export const TypographyValueCell = styled(
+  ({ fontWeight, textColor, ...rest }) => <Typography {...rest} />
+)`
   font-family: DM Sans;
   font-style: normal;
   font-weight: 600;

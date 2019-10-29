@@ -78,7 +78,7 @@ export const getCurrentCurrencySymbol = (
   symbolPair: string,
   tradeType: string
 ): string => {
-  const splittedSymbolPair = symbolPair.split('/')
+  const splittedSymbolPair = symbolPair.split('_')
   const [quote, base] = splittedSymbolPair
 
   return isBuyTypeOrder(tradeType) ? quote : base
@@ -113,7 +113,7 @@ export const combineOpenOrdersTable = (
 
       const triggerConditions = +stopPrice ? stopPrice : '-'
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-      const pair = symbol.split('/')
+      const pair = symbol.split('_')
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -257,7 +257,7 @@ export const combineOrderHistoryTable = (
 
     const triggerConditions = +stopPrice ? stopPrice : '-'
     // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-    const pair = symbol.split('/')
+    const pair = symbol.split('_')
 
     return {
       id: `${orderId}${timestamp}${origQty}`,
@@ -397,7 +397,7 @@ export const combineTradeHistoryTable = (
 
     const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
     const { cost, currency } = fee
-    const pair = symbol.split('/')
+    const pair = symbol.split('_')
 
     return {
       id: id,

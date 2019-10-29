@@ -30,7 +30,9 @@ export const borderRadiusScrollBar = css`
   }
 `
 
-export const TypographyFullWidth = styled(TypographyWithCustomColor)`
+export const TypographyFullWidth = styled(({ textColor, ...rest }) => (
+  <TypographyWithCustomColor {...rest} />
+))`
   width: 100%;
   flex-grow: 1;
   font-family: 'DM Sans', sans-serif;
