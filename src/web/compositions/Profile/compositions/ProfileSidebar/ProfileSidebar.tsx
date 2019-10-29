@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { IProps } from '@core/containers/Profile/ProfileSidebar/ProfileSidebar.types'
 import { SidebarContainer } from '@sb/compositions/Profile/Profile.styles'
 import {
   UserInfo,
@@ -19,7 +20,7 @@ const LINKS = [
   // { path: '/profile/notifications', text: 'Notifications' },
 ]
 
-const ProfileSidebar = ({ logoutMutation, accountData, path }) => {
+const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
   const data = !accountData
     ? { imageUrl: '', username: 'Loading...', email: 'Loading...' }
     : accountData

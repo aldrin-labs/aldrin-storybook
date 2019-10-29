@@ -66,7 +66,6 @@ const CustomTableCell = withStyles((theme) => ({
     zIndex: 100,
     backgroundColor: theme.palette.primary.dark,
     padding: '0.2rem 1.6rem 0.2rem  0.6rem',
-
   },
   paddingDense: {
     padding: '1px 0.4rem 1px 0.4rem',
@@ -311,6 +310,7 @@ const renderCell = ({
     cell: {},
   },
 }: renderCellType) => {
+  const align = numeric ? 'right' : 'left'
   if (cell !== null && typeof cell === 'object') {
     return (
       <CustomTableCell
@@ -319,7 +319,7 @@ const renderCell = ({
         style={{ color: cell.color, ...cell.style, ...tableStyles.cell }}
         key={id}
         padding={padding}
-        numeric={numeric}
+        align={align}
       >
         {cell.render}
       </CustomTableCell>
@@ -332,7 +332,7 @@ const renderCell = ({
         padding={padding}
         scope="row"
         variant={variant}
-        numeric={numeric}
+        align={align}
         key={id}
       >
         {cell}
@@ -345,7 +345,7 @@ const renderCell = ({
       padding={padding}
       scope="row"
       variant={variant}
-      numeric={numeric}
+      align={align}
       key={id}
     >
       {''}
@@ -661,7 +661,7 @@ const CustomTable = (props: Props) => {
                   }}
                   variant="head"
                   padding={column.disablePadding ? 'none' : padding}
-                  numeric={column.isNumber}
+                  align={column.isNumber ? 'right' : 'left'}
                   key={column.id}
                 >
                   {renderHeadCell({
@@ -790,7 +790,7 @@ const CustomTable = (props: Props) => {
             )
           )}
         </TableBody>
-         {/*{Array.isArray(data.footer) && (
+        {/*{Array.isArray(data.footer) && (
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =
@@ -841,18 +841,17 @@ const CustomTable = (props: Props) => {
       >
         <div
           style={
-            isCustomStyleForFooter !== undefined && isCustomStyleForFooter === true
-            ?
-              {
-                // position: 'absolute',
-                // bottom: 0,
-                // right: 0
-                position: 'fixed',
-                bottom: '9%',
-                right: '21%',
-              }
-            :
-              ''
+            isCustomStyleForFooter !== undefined &&
+            isCustomStyleForFooter === true
+              ? {
+                  // position: 'absolute',
+                  // bottom: 0,
+                  // right: 0
+                  position: 'fixed',
+                  bottom: '9%',
+                  right: '21%',
+                }
+              : ''
           }
         >
           {needRefetch ? (

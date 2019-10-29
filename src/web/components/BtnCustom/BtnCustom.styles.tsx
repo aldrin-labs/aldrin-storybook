@@ -12,6 +12,8 @@ export const BtnCustom = styled(
     margin,
     padding,
     fontSize,
+    backgroundColor,
+    borderColor,
     ...rest
   }) => <Button {...rest} />
 )`

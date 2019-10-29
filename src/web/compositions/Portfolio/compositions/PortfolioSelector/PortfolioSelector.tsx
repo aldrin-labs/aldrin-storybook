@@ -410,7 +410,7 @@ class PortfolioSelector extends React.Component<IProps> {
           ...styleForContainer,
         }}
         id="porfolioSelector"
-        in={isSideNavOpen}
+        // in={isSideNavOpen}
         direction="right"
         timeout={{ enter: 375, exit: 250 }}
         mountOnEnter={false}
@@ -485,7 +485,7 @@ class PortfolioSelector extends React.Component<IProps> {
             />
           </GridSectionAccounts>
           {!isRebalance && (
-            <GridSectionDust lg={12}>
+            <GridSectionDust>
               <TypographyTitle style={{ color: '#7284a0' }}>
                 Dust Filter
               </TypographyTitle>
@@ -494,6 +494,7 @@ class PortfolioSelector extends React.Component<IProps> {
                   <GridSymbolContainer>%</GridSymbolContainer>
                   <SliderDustFilter
                     step={20}
+                    key={'percentage'}
                     thumbWidth="25px"
                     thumbHeight="25px"
                     sliderWidth="250px"
@@ -522,6 +523,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     <GridSymbolContainer>$</GridSymbolContainer>
                     <SliderDustFilter
                       step={1}
+                      key={'usd'}
                       thumbWidth="25px"
                       thumbHeight="25px"
                       sliderWidth="250px"
@@ -552,6 +554,7 @@ class PortfolioSelector extends React.Component<IProps> {
                     </GridSymbolContainer>
                     <SliderDustFilter
                       step={1}
+                      key={'btc'}
                       thumbWidth="25px"
                       thumbHeight="25px"
                       sliderWidth="250px"

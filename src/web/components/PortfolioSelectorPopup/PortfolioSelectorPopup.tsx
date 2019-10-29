@@ -126,18 +126,9 @@ class PortfolioSelectorPopup extends Component {
     this.setState({
       isPopupOpen: true,
     })
-
-    // const popups = Array.from(document.getElementsByClassName('popup'))
-
-    // popups.forEach((popup) => {
-    //   popup.classList.remove('popup-visible')
-    // })
-
-    // this.popupRef.current.classList.add('popup-visible')
   }
 
   closePopup = () => {
-    // this.popupRef.current.classList.remove('popup-visible')
     this.setState({
       isPopupOpen: false,
     })

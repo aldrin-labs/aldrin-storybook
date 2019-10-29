@@ -87,8 +87,14 @@ const NavBarRaw: SFC<Props> = ({
               </Grid>
             </Grid>
           </Hidden>
-          <Grid style={{ height: '100%' }} item={true} md={6} sm={5}>
-            <NavBarWrapper container={true}>
+          <Grid
+            style={{ height: '100%' }}
+            item={true}
+            md={6}
+            sm={5}
+            key={'navBarGrid'}
+          >
+            <NavBarWrapper container={true} key={'NavBarWrapper'}>
               {/* <NavLinkButton
                 page={`portfolio`}
                 component={Portfolio}
@@ -98,6 +104,7 @@ const NavBarRaw: SFC<Props> = ({
               </NavLinkButton> */}
               <Dropdown
                 id="portfolio-menu"
+                key="portfolio-menu"
                 buttonText="Portfolio"
                 selectedMenu={selectedMenu}
                 selectActiveMenu={selectMenu}
@@ -128,6 +135,7 @@ const NavBarRaw: SFC<Props> = ({
               {!MASTER_BUILD && (
                 <Dropdown
                   id="explore-menu"
+                  key="explore-menu"
                   buttonText="Explore"
                   selectedMenu={selectedMenu}
                   selectActiveMenu={selectMenu}
@@ -155,8 +163,9 @@ const NavBarRaw: SFC<Props> = ({
 
               {!MASTER_BUILD && (
                 <>
-                  <NavLinkButtonWrapper>
+                  <NavLinkButtonWrapper key="chart-wrapper">
                     <NavLinkButton
+                      key="chart"
                       page={`chart`}
                       component={Chart}
                       pathname={pathname}
@@ -166,6 +175,7 @@ const NavBarRaw: SFC<Props> = ({
                   </NavLinkButtonWrapper>
 
                   <NavLinkButton
+                    key="market"
                     page={`market`}
                     component={Market}
                     pathname={pathname}
@@ -175,8 +185,9 @@ const NavBarRaw: SFC<Props> = ({
                 </>
               )}
 
-              <NavLinkButtonWrapper>
+              <NavLinkButtonWrapper key="market-wrapper">
                 <NavLinkButton
+                  key="market-2"
                   page={`market`}
                   component={Market}
                   pathname={pathname}
@@ -189,8 +200,9 @@ const NavBarRaw: SFC<Props> = ({
                   Marketcap
                 </NavLinkButton>
               </NavLinkButtonWrapper>
-              <NavLinkButtonWrapper>
+              <NavLinkButtonWrapper key="signals-wrapper">
                 <NavLinkButton
+                  key="signals"
                   page={`signals`}
                   component={Signals}
                   pathname={pathname}

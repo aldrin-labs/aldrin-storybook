@@ -35,6 +35,14 @@ export const StyledSlider = styled(
     trackAfterOpacity,
     thumbBackground,
     title,
+    sliderWidth,
+    borderRadiusAfter,
+    sliderHeightAfter,
+    borderRadius,
+    sliderHeight,
+    thumbHeight,
+    thumbWidth,
+    borderThumb,
     ...rest
   }) => <Slider {...rest} />
 )`
