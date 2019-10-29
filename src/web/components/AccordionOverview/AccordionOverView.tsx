@@ -131,6 +131,7 @@ class DetailedExpansionPanel extends React.Component {
                 return (
                   <GridRowWrapper
                     item
+                    key={`${el.value}-${i}`}
                     hoverColor={theme.palette.hover[theme.palette.type]}
                   >
                     <GridRow>

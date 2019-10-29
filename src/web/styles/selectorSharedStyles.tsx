@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import Arrow from '@material-ui/icons/ChevronRight'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
@@ -60,9 +61,10 @@ export const SelectAll = styled.div`
   display: flex;
 `
 
-export const AccountName = styled(TypographyFullWidth)`
+export const AccountName = styled(({ textColor, lineHeight, ...rest }) => (
+  <div {...rest} />
+))`
   height: 50%;
-  margin: auto;
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
@@ -71,10 +73,13 @@ export const AccountName = styled(TypographyFullWidth)`
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: 0;
 
+  display: flex;
+  flex-direction: column;
+
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 70%;
-  margin: 0 auto;
+  margin: 0 auto 0 0;
   overflow: hidden;
 `
 
@@ -96,7 +101,9 @@ export const Headline = styled.div`
   }
 `
 
-export const TypographyTitle = styled(Typography)`
+export const TypographyTitle = styled(
+  ({ textColor, textPadding, lineHeight, ...rest }) => <Typography {...rest} />
+)`
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};

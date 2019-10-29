@@ -50,7 +50,9 @@ const tphtphystylescss = css`
   margin-left: ${(props) => props.marginLeft};
 `
 
-export const SliderTypography = styled(Typography)`
+export const SliderTypography = styled(({ marginLeft, ...rest }) => (
+  <Typography {...rest} />
+))`
   ${tphtphystylescss}
   line-height: 2rem;
   border-bottom: 1px solid #7284a0;

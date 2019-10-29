@@ -3,7 +3,9 @@ import styled from 'styled-components'
 // import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import { Typography, Button } from '@material-ui/core'
 
-export const TypographyHeading = styled(Typography)`
+export const TypographyHeading = styled(({ textColor, ...rest }) => (
+  <Typography {...rest} />
+))`
   border-left: 0.3rem solid #165be0;
   border-radius: 0.4rem 0px 0px 0.4rem;
   padding: 0.5rem 1.2rem 0.5rem 1rem;

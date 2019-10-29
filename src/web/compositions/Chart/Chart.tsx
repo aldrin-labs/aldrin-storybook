@@ -120,7 +120,7 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   changeTable = () => {
-    this.setState((prevState) => ({
+    this.setState((prevState: IProps) => ({
       showTableOnMobile:
         prevState.showTableOnMobile === 'ORDER' ? 'TRADE' : 'ORDER',
     }))

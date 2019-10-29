@@ -7,7 +7,9 @@ import {
   cellStyle,
 } from './ProfileAccounts.utils'
 
-const ProfileAccountsTable = ({ accounts }) => {
+import { AccountData } from '@core/containers/Profile/ProfileAccounts/ProfileAccounts.types'
+
+const ProfileAccountsTable = ({ accounts }: { accounts: AccountData[] }) => {
   const { body, head } = putDataInTable(accounts)
 
   return (

@@ -53,6 +53,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
 
     return (
       <Container
+        key={pathname}
         background={'transparent'}
         elevation={0}
         style={{
@@ -66,25 +67,40 @@ class PortfolioTableTabs extends React.Component<IProps> {
       >
         {isMainPage ? (
           <>
-            <StyledLeftButton onClick={() => toggleWallets()} id="accountsPanel">
+            <StyledLeftButton
+              key={'accountsFromMain'}
+              onClick={() => toggleWallets()}
+              id="accountsPanel"
+            >
               Accounts
             </StyledLeftButton>
-            <StyledRightButton component={Link} to="/portfolio/transactions" id="transactionsPanel">
+            <StyledRightButton
+              key={'transactions'}
+              component={Link}
+              to="/portfolio/transactions"
+              id="transactionsPanel"
+            >
               Transactions
             </StyledRightButton>
           </>
         ) : null}
 
         {isRebalancePage ? (
-          <>
-            <StyledLeftButton onClick={() => toggleWallets()}>
-              Accounts
-            </StyledLeftButton>
-          </>
+          <StyledLeftButton
+            key={'accountsFromRebalance'}
+            onClick={() => toggleWallets()}
+          >
+            Accounts
+          </StyledLeftButton>
         ) : null}
 
         {isTransactionsPage ? (
-          <StyledLeftButton component={Link} to="/portfolio/main" id='accountsPanel'>
+          <StyledLeftButton
+            key={'P&L'}
+            component={Link}
+            to="/portfolio/main"
+            id="accountsPanel"
+          >
             P&L
           </StyledLeftButton>
         ) : null}
