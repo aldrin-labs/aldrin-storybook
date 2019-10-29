@@ -847,9 +847,10 @@ const CustomTable = (props: Props) => {
                   // position: 'absolute',
                   // bottom: 0,
                   // right: 0
-                  position: 'fixed',
-                  bottom: '9%',
-                  right: '21%',
+                  position: 'sticky',
+                  bottom: '-1px',
+                  right: '0',
+                  backgroundColor: '#f2f4f6',
                 }
               : ''
           }
