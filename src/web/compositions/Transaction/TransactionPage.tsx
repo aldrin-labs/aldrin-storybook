@@ -321,8 +321,8 @@ class TransactionPage extends React.PureComponent {
               <GridAccountContainer id="accountsTransactions">
                 <GridContainerTitle
                   bgColor={theme.palette.primary.dark}
-                  content
-                  alignItems="center"
+                  // content
+                  // alignItems="center"
                 >
                   <TypographyContatinerTitle
                     textColor={theme.palette.text.subPrimary}
