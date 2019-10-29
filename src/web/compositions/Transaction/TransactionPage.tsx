@@ -64,6 +64,7 @@ class TransactionPage extends React.PureComponent {
   state = {
     includeExchangeTransactions: true,
     includeTrades: true,
+    includeFutures: true,
     filterCoin: '',
     inputValue: '',
     concreteDaySelected: false,
@@ -272,6 +273,7 @@ class TransactionPage extends React.PureComponent {
     const {
       includeExchangeTransactions,
       includeTrades,
+      includeFutures,
       gitCalendarDate,
       tradeOrderHistoryDate,
       inputValue,
@@ -376,6 +378,7 @@ class TransactionPage extends React.PureComponent {
                     }
                     includeExchangeTransactions={includeExchangeTransactions}
                     includeTrades={includeTrades}
+                    includeFutures={includeFutures}
                   />
                 </GridShowHideDataContainer>
               </GridAccountContainer>
@@ -416,6 +419,7 @@ class TransactionPage extends React.PureComponent {
                   style={{ overflow: 'scroll' }}
                   includeExchangeTransactions={includeExchangeTransactions}
                   includeTrades={includeTrades}
+                  includeFutures={includeFutures}
                   handleChangeShowHideOptions={this.handleChangeShowHideOptions}
                   inputValue={inputValue}
                   filterCoin={filterCoin}

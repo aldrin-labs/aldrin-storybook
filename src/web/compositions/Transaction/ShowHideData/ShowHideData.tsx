@@ -11,6 +11,7 @@ class CheckboxesGroup extends React.Component {
     const {
       includeExchangeTransactions,
       includeTrades,
+      includeFutures,
       handleChangeShowHideOptions,
     } = this.props
 
@@ -51,7 +52,7 @@ class CheckboxesGroup extends React.Component {
               value="includeTrades"
             />
           </Grid>
-          {/* <Grid
+          <Grid
             container
             justify="space-between"
             alignItems="center"
@@ -61,11 +62,11 @@ class CheckboxesGroup extends React.Component {
           >
             <TypographyShowHide>Show Futures</TypographyShowHide>
             <CheckboxShowHide
-              checked={includeTrades}
-              onChange={handleChangeShowHideOptions('includeTrades')}
-              value="includeTrades"
+              checked={includeFutures}
+              onChange={handleChangeShowHideOptions('includeFutures')}
+              value="includeFutures"
             />
-          </Grid> */}
+          </Grid>
         </FormControlCustom>
       </>
     )
