@@ -71,20 +71,18 @@ class SharePortfolioPanel extends Component<IProps> {
                 {isUSDCurrently ? 'BTC' : 'USD'}
               </StyledButton> */}
 
-              {!MASTER_BUILD && (
-                <PillowButton
-                  firstHalfText={'spot'}
-                  secondHalfText={'futures'}
-                  activeHalf={isSPOTCurrently ? 'first' : 'second'}
-                  changeHalf={() =>
-                    setPageType({
-                      variables: {
-                        pageType: isSPOTCurrently ? 'FUTURES' : 'SPOT',
-                      },
-                    })
-                  }
-                />
-              )}
+              <PillowButton
+                firstHalfText={'spot'}
+                secondHalfText={'futures'}
+                activeHalf={isSPOTCurrently ? 'first' : 'second'}
+                changeHalf={() =>
+                  setPageType({
+                    variables: {
+                      pageType: isSPOTCurrently ? 'FUTURES' : 'SPOT',
+                    },
+                  })
+                }
+              />
               <PillowButton
                 firstHalfText={'USD'}
                 secondHalfText={'BTC'}
