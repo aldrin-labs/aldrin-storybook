@@ -174,6 +174,7 @@ class Accounts extends React.PureComponent<IProps> {
                   fontSize={'1.4rem'}
                   textColor={'#7284A0'}
                   letterSpacing="1px"
+                  style={{ paddingLeft: '1rem'}}
                 >
                   {key.name}
                   <TypographyTitle lineHeight="122.5%">

@@ -37,6 +37,7 @@ import { Grid, Divider } from '@material-ui/core'
 // import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
 import SharePortfolioPanel from '@core/components/SharePortfolioPanel/SharePortfolioPanel'
 import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
+import { CodeSharp } from '@material-ui/icons'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
@@ -52,6 +53,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     startDate: getEndDate('1Week'),
     endDate: moment().endOf('day'),
     openSharePortfolioPopUp: false,
+  }
+
+  componentDidMount() {
+    this.props.portfolioAssetsRefetch()
   }
 
   choosePeriod = (stringDate: string) => {
