@@ -43,6 +43,10 @@ class GitTransactionCalendar extends PureComponent<IProps> {
     this.popupRef = React.createRef()
   }
 
+  componentDidMount() {
+    this.props.getCalendarActionsQueryRefetch()
+  }
+
   render() {
     const {
       getCalendarActionsQuery,
