@@ -53,7 +53,7 @@ export default function SelectProtfolioPeriod({
     <Wrapper>
       <StyledButton
         disabled={isOpen && !isSPOTCurrently ? true : false}
-        onClick={() => isSPOTCurrently && openPeriods()}
+        onClick={() => !isSPOTCurrently && openPeriods()}
       >
         {isSPOTCurrently ? 'show p&l for' : 'show history for'}
         <StyledArrow

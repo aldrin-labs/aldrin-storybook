@@ -28,13 +28,17 @@ const format = (number, baseCoin) => {
 }
 
 const getWalletTotal = (getFuturesOverview: any) => {
-  return getFuturesOverview.reduce(
-    (acc, el) => el.keyAssetsInfo[0].walletBalance + acc,
-    0
-  )
+  return getFuturesOverview.reduce((acc, el) => {
+    if (el.keyAssetsInfo.length > 0) {
+      return el.keyAssetsInfo[0].walletBalance + acc
+    }
+    return acc
+  }, 0)
 }
 
 const getRealizedTotal = (getFuturesOverview: any) => {
+  if (getFuturesOverview.length < 1) return 0
+
   return getFuturesOverview.reduce(
     (acc, el) =>
       (el.tradesInfoSummary.length > 0
@@ -83,6 +87,8 @@ class DetailedExpansionPanel extends React.Component {
     const assetsData = isSPOTCurrently
       ? portfolioAssetsData
       : getFuturesOverview
+
+    console.log('assets', assetsData)
 
     return (
       <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
@@ -173,8 +179,11 @@ class DetailedExpansionPanel extends React.Component {
           <ExpansionPanelDetailsCustom>
             <Grid container justify="center">
               {assetsData.map((el, i) => {
+                if (!isSPOTCurrently && el.keyAssetsInfo.length === 0) return
+
                 const currentKeyId =
                   !isSPOTCurrently && el.keyAssetsInfo[0].keyId
+
                 const realizedPnl = isSPOTCurrently
                   ? el.realized
                   : getFuturesAccountRealized(el)
