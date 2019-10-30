@@ -1,9 +1,14 @@
 import { Theme } from '@material-ui/core'
 import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
-import { DustFilterType, SharePortfolioMutationType } from '@core/types/PortfolioTypes'
+import {
+  DustFilterType,
+  SharePortfolioMutationType,
+} from '@core/types/PortfolioTypes'
 
 export interface IState {
   key: number
+  startDate: any
+  endDate: any
   openSharePortfolioPopUp: boolean
 }
 
