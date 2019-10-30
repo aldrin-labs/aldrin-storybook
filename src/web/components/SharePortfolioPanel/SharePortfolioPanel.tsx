@@ -16,6 +16,7 @@ class SharePortfolioPanel extends Component<IProps> {
       isUSDCurrently,
       isSPOTCurrently,
       setPageType,
+      choosePeriod,
     } = this.props
 
     return (
@@ -56,7 +57,10 @@ class SharePortfolioPanel extends Component<IProps> {
             id="sharePortfolioSwitcher"
           >
             <Grid item>
-              <SelectPortfolioPeriod />
+              <SelectPortfolioPeriod
+                isSPOTCurrently={isSPOTCurrently}
+                chooseHistoryPeriod={choosePeriod}
+              />
             </Grid>
             <Grid item style={{ display: 'flex' }}>
               {/* <StyledButton
