@@ -247,6 +247,7 @@ export default compose(
     query: getFuturesOverview,
     name: 'getFuturesOverviewQuery',
     fetchPolicy: 'network-only',
+    pollInterval: 30000,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
