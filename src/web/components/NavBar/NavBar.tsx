@@ -200,6 +200,7 @@ const NavBarRaw: SFC<Props> = ({
                   Marketcap
                 </NavLinkButton>
               </NavLinkButtonWrapper>
+              {!MASTER_BUILD && (
               <NavLinkButtonWrapper key="signals-wrapper">
                 <NavLinkButton
                   key="signals"
@@ -215,6 +216,7 @@ const NavBarRaw: SFC<Props> = ({
                   Signals
                 </NavLinkButton>
               </NavLinkButtonWrapper>
+              )}
             </NavBarWrapper>
           </Grid>
 
