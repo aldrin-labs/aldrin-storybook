@@ -88,7 +88,9 @@ class DetailedExpansionPanel extends React.Component {
       ? portfolioAssetsData
       : getFuturesOverview
 
-    console.log('assets', assetsData)
+    const totalRealizedPnl = isSPOTCurrently ? totalKeyAssetsData.realized : getRealizedTotal(getFuturesOverview)
+
+    const totalTotalPnl = isSPOTCurrently ? totalKeyAssetsData.total : getRealizedTotal(getFuturesOverview)
 
     return (
       <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
@@ -133,12 +135,12 @@ class DetailedExpansionPanel extends React.Component {
                 </TypographyTitleCell>
                 <TypographyValueCell
                   textColor={
-                    totalKeyAssetsData.realized < 0 ? '#B93B2B' : '#2F7619'
+                    totalRealizedPnl < 0 ? '#B93B2B' : '#2F7619'
                   }
                 >
                   {isSPOTCurrently
-                    ? format(totalKeyAssetsData.realized, baseCoin)
-                    : format(getRealizedTotal(getFuturesOverview), 'USDT')}
+                    ? format(totalRealizedPnl, baseCoin)
+                    : format(totalRealizedPnl, 'USDT')}
                 </TypographyValueCell>
               </div>
             </GridColumn>
@@ -165,12 +167,12 @@ class DetailedExpansionPanel extends React.Component {
                 </TypographyTitleCell>
                 <TypographyValueCell
                   textColor={
-                    totalKeyAssetsData.total < 0 ? '#B93B2B' : '#2F7619'
+                    totalTotalPnl < 0 ? '#B93B2B' : '#2F7619'
                   }
                 >
                   {isSPOTCurrently
-                    ? format(totalKeyAssetsData.total, baseCoin)
-                    : format(getRealizedTotal(getFuturesOverview), 'USDT')}
+                    ? format(totalTotalPnl, baseCoin)
+                    : format(totalTotalPnl, 'USDT')}
                 </TypographyValueCell>
               </div>
             </GridColumn>
