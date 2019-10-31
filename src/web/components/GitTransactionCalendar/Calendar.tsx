@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import moment from 'moment'
+import { createGlobalStyle } from 'styled-components'
 import { client } from '@core/graphql/apolloClient'
 
 import CalendarHeatmap from 'react-calendar-heatmap'
@@ -20,6 +21,89 @@ import {
   LegendTypography,
   SquarePopup,
 } from './Calendar.styles'
+
+const StyleForCalendar = createGlobalStyle`
+  .DateRangePicker_picker.DateRangePicker_picker__portal {
+    z-index: 1008;
+  }
+
+  .DateRangePicker_picker {
+    font-family: DM Sans;
+
+    .DayPicker__withBorder {
+      border-radius: 1rem;
+    }
+    
+    .DayPicker_weekHeader {
+      color: #7284A0;
+    }
+
+    .DayPicker, .CalendarMonthGrid, .CalendarMonth {
+      background: #F9FBFD;
+    }
+
+    .CalendarDay__default {
+      border: 1px solid #e0e5ec;
+    }
+
+    .CalendarDay__default, 
+    .CalendarMonth_caption {
+      color: #16253D;
+    }
+
+    .CalendarDay__selected_span {
+      color: #fff;
+      background: #5c8cea;
+      border: 1px solid #e0e5ec;
+    }
+
+    .CalendarDay__hovered_span,
+    .CalendarDay__hovered_span:hover, 
+    .CalendarDay__hovered_span:active {
+      color: #fff;
+      background: #A1BFF9;
+      border: 1px solid #e0e5ec;
+    }
+
+    .CalendarDay__selected_span:hover, 
+    .CalendarDay__selected_span:active {
+      color: #fff;
+      background: #4152AF;
+      border: 1px solid #e0e5ec;
+      border: 1px solid #e0e5ec;
+    }
+
+    & .CalendarDay__selected,
+    .CalendarDay__selected:active,
+    .CalendarDay__selected:hover {
+      color: #fff;
+      background: #0b1fd1;
+      border: 1px solid #e0e5ec;
+    }
+
+    .CalendarDay__blocked_out_of_range,
+     .CalendarDay__blocked_out_of_range:active,
+      .CalendarDay__blocked_out_of_range:hover {
+      color: #7284A0;
+    }
+
+    .DayPickerKeyboardShortcuts_show__bottomRight::before {
+      border-right-color: #0b1fd1;
+    }
+
+    .DayPickerKeyboardShortcuts_show__bottomRight:hover::before {
+      border-right-color: #4152AF;
+    }
+
+    .DayPickerNavigation_svg__horizontal {
+      fill: #7284A0;
+    }
+
+    .DayPickerNavigation_button__default {
+      border: 1px solid #e0e5ec;
+    }
+  }
+`
 
 const styles = (theme) => ({
   root: {
@@ -173,6 +257,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             <LegendTypography>More</LegendTypography>
           </Grid>
         </Grid>
+        <StyleForCalendar />
       </HeatmapWrapper>
     )
   }
