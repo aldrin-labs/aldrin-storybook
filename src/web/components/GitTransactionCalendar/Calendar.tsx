@@ -23,9 +23,6 @@ import {
 } from './Calendar.styles'
 
 const StyleForCalendar = createGlobalStyle`
-  // color dark #16253D
-  // color grey #7284A0
-
   .DateRangePicker_picker.DateRangePicker_picker__portal {
     z-index: 1008;
   }
