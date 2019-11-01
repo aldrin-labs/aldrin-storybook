@@ -2,6 +2,8 @@ import * as React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
+import { cloneDeep } from 'lodash-es'
+
 import { Link, withRouter } from 'react-router-dom'
 
 import { withTheme } from '@material-ui/styles'
@@ -192,13 +194,15 @@ class PortfolioSelector extends React.Component<IProps> {
       variables: { baseCoin },
     })
 
+    const clonedData = cloneDeep(data)
+
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(
-      data,
+      clonedData,
       type,
       toggledKeyID
     )
 
-    UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
+    UTILS.updateSettingsLocalCache(clonedData, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
@@ -606,10 +610,10 @@ export default compose(
     name: 'updatePortfolioSettings',
     options: ({ baseCoin }) => ({
       refetchQueries: [
-        {
-          query: portfolioKeyAndWalletsQuery,
-          variables: { baseCoin, innerSettings: true },
-        },
+        // {
+        //   query: portfolioKeyAndWalletsQuery,
+        //   variables: { baseCoin, innerSettings: true },
+        // },
         {
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: true },
