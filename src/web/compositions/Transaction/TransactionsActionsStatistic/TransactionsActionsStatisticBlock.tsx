@@ -15,15 +15,17 @@ import {
 
 class Block extends React.Component {
   shouldComponentUpdate(nextProps: any) {
-    const prevActions = this.props.actions.myPortfolios[0].portfolioActions.tradesCount
-    const nextActions = nextProps.actions.myPortfolios[0].portfolioActions.tradesCount
+    const prevActions = this.props.actions.myPortfolios[0].portfolioActions
+      .tradesCount
+    const nextActions =
+      nextProps.actions.myPortfolios[0].portfolioActions.tradesCount
 
     // console.log(prevActions, nextActions)
-  
+
     if (prevActions === nextActions) {
       return true
     }
-  
+
     return false
   }
 
@@ -43,9 +45,7 @@ class Block extends React.Component {
     return (
       <TransactionActions>
         <Grid container justify="space-between" alignItems="flex-start">
-          <TransactionActionsTypography>
-            Actions {title}
-          </TransactionActionsTypography>
+          <TransactionActionsTypography>{title}</TransactionActionsTypography>
           <TransactionActionsNumber>
             {trades + deposits + withdrawals}
           </TransactionActionsNumber>
