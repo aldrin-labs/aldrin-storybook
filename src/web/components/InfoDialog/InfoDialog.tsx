@@ -23,19 +23,19 @@ const ContentWrapper = styled(DialogContent)`
 
 const InfoDialog = ({
   text,
+  closeDialog,
   dialogStatus,
-  updateDialogStatus,
 }: {
   text: string
+  closeDialog: () => void
   dialogStatus: boolean
-  updateDialogStatus: (newStatus: boolean) => void
 }) => {
   return (
     <DialogWrapper
       open={dialogStatus}
       maxWidth="sm"
       style={{ borderRadius: '50%' }}
-      onClose={() => updateDialogStatus(false)}
+      onClose={closeDialog}
     >
       <ContentWrapper>
         <TextComponent>{text}</TextComponent>
@@ -47,7 +47,7 @@ const InfoDialog = ({
           fontSize={'1.5rem'}
           btnColor={'#0B1FD1'}
           btnWidth={'10rem'}
-          onClick={() => updateDialogStatus(false)}
+          onClick={closeDialog}
         >
           OK
         </BtnCustom>

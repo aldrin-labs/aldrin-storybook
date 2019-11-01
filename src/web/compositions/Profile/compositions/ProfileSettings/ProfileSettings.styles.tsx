@@ -52,6 +52,7 @@ export const ProfileSettingsGrid = ({
   needMarginTop = false,
   needMarginLeft = false,
   children,
+  style,
 }) => {
   return (
     <GridBlock
@@ -59,6 +60,7 @@ export const ProfileSettingsGrid = ({
       width={width}
       needMarginTop={needMarginTop}
       needMarginLeft={needMarginLeft}
+      style={style}
     >
       <GridTitle>
         <TextTitle>{title}</TextTitle>
