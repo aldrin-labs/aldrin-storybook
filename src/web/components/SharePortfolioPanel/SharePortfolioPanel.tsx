@@ -26,7 +26,7 @@ class SharePortfolioPanel extends Component<IProps> {
         alignItems="center"
         style={{
           padding: '1.6rem 24px',
-          height: '11%',
+          height: '45%',
           background: '#F9FBFD',
         }}
       >
