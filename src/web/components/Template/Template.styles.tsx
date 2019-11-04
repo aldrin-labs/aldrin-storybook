@@ -13,19 +13,21 @@ export const GridContainer = styled(Container as React.SFC<GridProps>)`
     flex-wrap: wrap;
   }
   && {
-    height: 76%;
+    height: calc(69vh - 2rem);
     margin: 0;
+    margin-bottom: 2rem;
   }
 `
 
 export const ChartContainer = styled(Grid as React.SFC<GridProps>)`
   flex-basis: 51%;
-  padding: 0 8px;
+  padding: 0 0 0 8px;
   @media (max-width: 960px) {
     flex-basis: 100%;
-    padding: 0 8px;
+    padding: 0 0 0 8px;
   }
   && {
+    padding-bottom: 0;
     min-height: 100%;
   }
 `
@@ -36,12 +38,12 @@ export const TableWrapper = styled(Card as React.SFC<
   ${borderRadiusScrollBar}
 
   position: relative;
-  height: 64vh;
+  height: calc(68.2vh - 2rem);
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
   border: 1px solid #e0e5ec;
-  border-radius: 20px;
+  border-radius: 1.5rem;
   box-shadow: 0px 0px 12px rgba(10, 19, 43, 0.1);
 `
 
