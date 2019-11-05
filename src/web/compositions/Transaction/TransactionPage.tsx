@@ -70,6 +70,7 @@ class TransactionPage extends React.PureComponent {
     filterCoin: '',
     inputValue: '',
     concreteDaySelected: false,
+    pageType: 'SPOT',
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -84,6 +85,11 @@ class TransactionPage extends React.PureComponent {
       focusedInput: null,
     },
   }
+
+  togglePageType = () =>
+    this.setState((prevState) => ({
+      pageType: prevState.pageType === 'SPOT' ? 'FUTURES' : 'SPOT',
+    }))
 
   updateFilterCoin = (inputValue: string) => {
     this.setState({ filterCoin: inputValue })
@@ -283,6 +289,7 @@ class TransactionPage extends React.PureComponent {
       inputValue,
       filterCoin,
       concreteDaySelected,
+      pageType,
     } = this.state
 
     const color = theme.palette.secondary.main
@@ -407,6 +414,8 @@ class TransactionPage extends React.PureComponent {
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
                       concreteDaySelected,
+                      pageType,
+                      togglePageType: this.togglePageType,
                       onDateButtonClick: this.onDateButtonClick,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,
@@ -421,9 +430,11 @@ class TransactionPage extends React.PureComponent {
                 <TradeOrderHistory
                   isCustomStyleForFooter={isCustomStyleForFooter}
                   style={{ overflow: 'scroll' }}
-                  includeExchangeTransactions={includeExchangeTransactions}
-                  includeTrades={includeTrades}
-                  includeFutures={includeFutures}
+                  includeExchangeTransactions={
+                    pageType === 'SPOT' && includeExchangeTransactions
+                  }
+                  includeTrades={pageType === 'SPOT' && includeTrades}
+                  includeFutures={pageType === 'FUTURES'}
                   handleChangeShowHideOptions={this.handleChangeShowHideOptions}
                   inputValue={inputValue}
                   filterCoin={filterCoin}
@@ -474,7 +485,7 @@ export default compose(
   //   query: getPortfolioAssets,
   //   name: 'portfolioKeys',
   //   // pollInterval: 30000,
-  //   variables: { baseCoin: 'USDT', innerSettings: true },    
+  //   variables: { baseCoin: 'USDT', innerSettings: true },
   // }),
   graphql(getPortfolioAssets, {
     name: 'portfolioKeys',

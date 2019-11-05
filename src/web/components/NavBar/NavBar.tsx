@@ -124,11 +124,11 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
                   },
-                  !MASTER_BUILD && {
-                    text: 'Optimizaton',
-                    icon: <OptimizationIcon fontSize="small" />,
-                    to: '/portfolio/optimization',
-                  },
+                  // !MASTER_BUILD && {
+                  //   text: 'Optimizaton',
+                  //   icon: <OptimizationIcon fontSize="small" />,
+                  //   to: '/portfolio/optimization',
+                  // },
                 ]}
               />
 
@@ -201,21 +201,21 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
               {!MASTER_BUILD && (
-              <NavLinkButtonWrapper key="signals-wrapper">
-                <NavLinkButton
-                  key="signals"
-                  page={`signals`}
-                  component={Signals}
-                  pathname={pathname}
-                  onMouseOver={() => {
-                    client.query({
-                      query: GET_FOLLOWING_SIGNALS_QUERY,
-                    })
-                  }}
-                >
-                  Signals
-                </NavLinkButton>
-              </NavLinkButtonWrapper>
+                <NavLinkButtonWrapper key="signals-wrapper">
+                  <NavLinkButton
+                    key="signals"
+                    page={`signals`}
+                    component={Signals}
+                    pathname={pathname}
+                    onMouseOver={() => {
+                      client.query({
+                        query: GET_FOLLOWING_SIGNALS_QUERY,
+                      })
+                    }}
+                  >
+                    Signals
+                  </NavLinkButton>
+                </NavLinkButtonWrapper>
               )}
             </NavBarWrapper>
           </Grid>
