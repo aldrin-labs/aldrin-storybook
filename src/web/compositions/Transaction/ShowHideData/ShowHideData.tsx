@@ -42,7 +42,7 @@ class CheckboxesGroup extends React.Component {
             alignItems="center"
             style={{
               padding: '.5rem 0',
-              borderBottom: '.1rem solid #e0e5ec',
+              // borderBottom: '.1rem solid #e0e5ec',
             }}
           >
             <TypographyShowHide>Show Trades</TypographyShowHide>
@@ -52,7 +52,7 @@ class CheckboxesGroup extends React.Component {
               value="includeTrades"
             />
           </Grid>
-          <Grid
+          {/* <Grid
             container
             justify="space-between"
             alignItems="center"
@@ -66,7 +66,7 @@ class CheckboxesGroup extends React.Component {
               onChange={handleChangeShowHideOptions('includeFutures')}
               value="includeFutures"
             />
-          </Grid>
+          </Grid> */}
         </FormControlCustom>
       </>
     )

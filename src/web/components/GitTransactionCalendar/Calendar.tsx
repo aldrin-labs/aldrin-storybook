@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import moment from 'moment'
-import { createGlobalStyle } from 'styled-components'
-import { client } from '@core/graphql/apolloClient'
+// import { client } from '@core/graphql/apolloClient'
 
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
@@ -9,9 +8,13 @@ import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
+import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+import { getFormattedProfit } from '@core/containers/TradeOrderHistory/TradeOrderHistory'
+
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { IProps } from './Calendar.types'
 import { getCalendarData, getMaxTransactions } from './Calendar.utils'
 import {
@@ -20,90 +23,36 @@ import {
   LegendHeatmapSquare,
   LegendTypography,
   SquarePopup,
+  StyleForCalendar,
 } from './Calendar.styles'
 
-const StyleForCalendar = createGlobalStyle`
-  .DateRangePicker_picker.DateRangePicker_picker__portal {
-    z-index: 1008;
-  }
+const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
+  const { transactionsCount, realizedPnlSum, date } = squareDayInfo
 
-  .DateRangePicker_picker {
-    font-family: DM Sans;
-
-    .DayPicker__withBorder {
-      border-radius: 1rem;
-    }
-    
-    .DayPicker_weekHeader {
-      color: #7284A0;
-    }
-
-    .DayPicker, .CalendarMonthGrid, .CalendarMonth {
-      background: #F9FBFD;
-    }
-
-    .CalendarDay__default {
-      border: 1px solid #e0e5ec;
-    }
-
-    .CalendarDay__default, 
-    .CalendarMonth_caption {
-      color: #16253D;
-    }
-
-    .CalendarDay__selected_span {
-      color: #fff;
-      background: #5c8cea;
-      border: 1px solid #e0e5ec;
-    }
-
-    .CalendarDay__hovered_span,
-    .CalendarDay__hovered_span:hover, 
-    .CalendarDay__hovered_span:active {
-      color: #fff;
-      background: #A1BFF9;
-      border: 1px solid #e0e5ec;
-    }
-
-    .CalendarDay__selected_span:hover, 
-    .CalendarDay__selected_span:active {
-      color: #fff;
-      background: #4152AF;
-      border: 1px solid #e0e5ec;
-      border: 1px solid #e0e5ec;
-    }
-
-    & .CalendarDay__selected,
-    .CalendarDay__selected:active,
-    .CalendarDay__selected:hover {
-      color: #fff;
-      background: #0b1fd1;
-      border: 1px solid #e0e5ec;
-    }
-
-    .CalendarDay__blocked_out_of_range,
-     .CalendarDay__blocked_out_of_range:active,
-      .CalendarDay__blocked_out_of_range:hover {
-      color: #7284A0;
-    }
-
-    .DayPickerKeyboardShortcuts_show__bottomRight::before {
-      border-right-color: #0b1fd1;
-    }
-
-    .DayPickerKeyboardShortcuts_show__bottomRight:hover::before {
-      border-right-color: #4152AF;
-    }
-
-    .DayPickerNavigation_svg__horizontal {
-      fill: #7284A0;
-    }
-
-    .DayPickerNavigation_button__default {
-      border: 1px solid #e0e5ec;
-    }
-  }
-`
+  return (
+    <SquarePopup ref={inputRef}>
+      {isSPOTCurrently ? (
+        <>
+          <span>
+            {transactionsCount} {transactionsCount === 1 ? `action` : 'actions'}
+            {` on ${moment(date).format('DD MMM, YYYY')}`}
+          </span>
+        </>
+      ) : (
+        <>
+          <span>
+            {transactionsCount}{' '}
+            {transactionsCount === 1 ? `futures trade` : 'futures trades'}
+          </span>
+          <p>
+            {getFormattedProfit(realizedPnlSum)} {'realized profit'}
+          </p>
+          <span>on {moment(date).format('DD MMM, YYYY')}</span>
+        </>
+      )}
+    </SquarePopup>
+  )
+}
 
 const styles = (theme) => ({
   root: {
@@ -121,10 +70,20 @@ const styles = (theme) => ({
 })
 
 class GitTransactionCalendar extends PureComponent<IProps> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props)
 
     this.popupRef = React.createRef()
+    this.state = {
+      squareDayInfo: {
+        transactionsCount: null,
+        futuresTradesCount: null,
+        spotTradesCount: null,
+        exchangeTransactionsCount: null,
+        realizedPnlSum: null,
+        date: null,
+      },
+    }
   }
 
   componentDidMount() {
@@ -145,15 +104,20 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       classes,
       wrapperRef,
       concreteDaySelected,
+      isSPOTCurrently,
+      togglePageType,
     } = this.props
+
     const maxTransactionsCount = getMaxTransactions(
-      getCalendarActionsQuery.myPortfolios[0]
+      getCalendarActionsQuery.myPortfolios[0],
+      isSPOTCurrently
     )
 
     const { mappedActionsArray } = getCalendarData(
       getCalendarActionsQuery.myPortfolios[0],
       maxTransactionsCount,
-      startDate
+      startDate,
+      isSPOTCurrently
     )
 
     const maximumDate = moment().endOf('day')
@@ -166,7 +130,11 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           paddingBottom: '5px',
         }}
       >
-        <SquarePopup ref={this.popupRef} />
+        <SquarePopupTooltip
+          inputRef={(el) => (this.popupRef = el)}
+          isSPOTCurrently={isSPOTCurrently}
+          squareDayInfo={this.state.squareDayInfo}
+        />
 
         <CalendarHeatmap
           className={classes.root}
@@ -194,21 +162,35 @@ class GitTransactionCalendar extends PureComponent<IProps> {
           ]}
           onClick={onHeatmapDateClick}
           onMouseOver={(e, value) => {
-            const popupRef = this.popupRef.current
+            const popupRef = this.popupRef
             const { x, y } = e.target.getBoundingClientRect()
-            popupRef.style.display = 'block'
-            popupRef.style.zIndex = 999
-            popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
-            popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 15}px`
 
-            popupRef.textContent = value
-              ? `${value.count} ${
-                  value.count === 1 ? `action` : 'actions'
-                } on ${moment(value.date).format('DD MMM, YYYY')}`
-              : 'No data'
+            const {
+              transactionsCount,
+              futuresTradesCount,
+              spotTradesCount,
+              exchangeTransactionsCount,
+              realizedPnlSum,
+              date,
+            } = value
+
+            popupRef.style.display = 'block'
+            popupRef.style.top = `${y - wrapperRef.current.offsetTop - 30}px`
+            popupRef.style.left = `${x - wrapperRef.current.offsetLeft + 20}px`
+
+            this.setState({
+              squareDayInfo: {
+                transactionsCount,
+                futuresTradesCount,
+                spotTradesCount,
+                exchangeTransactionsCount,
+                realizedPnlSum,
+                date,
+              },
+            })
           }}
           onMouseLeave={() => {
-            const popupRef = this.popupRef.current
+            const popupRef = this.popupRef
             popupRef.style.display = 'none'
           }}
         />
@@ -240,6 +222,14 @@ class GitTransactionCalendar extends PureComponent<IProps> {
               }}
             />
           </Grid>
+          <Grid item>
+            <PillowButton
+              firstHalfText={'spot'}
+              secondHalfText={'futures'}
+              activeHalf={isSPOTCurrently ? 'first' : 'second'}
+              changeHalf={togglePageType}
+            />
+          </Grid>
           <Grid
             item
             alignItems="center"
@@ -264,8 +254,9 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 }
 
 const CalendarDataWrapper = ({ ...props }) => {
-  let { startDate, endDate } = props
+  let { startDate, endDate, pageType } = props
   const timezone = moment().format('ZZ')
+  const isSPOTCurrently = pageType === 'SPOT'
 
   startDate = +startDate
   endDate = +endDate
@@ -284,6 +275,7 @@ const CalendarDataWrapper = ({ ...props }) => {
         },
       }}
       {...props}
+      isSPOTCurrently={isSPOTCurrently}
       startDate={startDate}
       endDate={endDate}
     />
