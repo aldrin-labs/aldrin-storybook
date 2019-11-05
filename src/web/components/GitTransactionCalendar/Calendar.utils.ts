@@ -22,33 +22,43 @@ export const getCalendarData = (
     portfolioActionsByDay: {
       actionsByDay: [],
     },
+    futuresActionsByDay: {
+      actionsByDay: [],
+    },
   },
   maxTransactionsCount: number,
-  startDate: number
+  startDate: number,
+  isSPOTCurrently: boolean
 ) => {
   const {
     portfolioActionsByDay: { actionsByDay = [] },
+    futuresActionsByDay: { actionsByDay: futuresActionsByDay = [] },
   } = portfolio
   const { squareColorsRange } = getSquareColorRange(maxTransactionsCount)
+
+  const actions = isSPOTCurrently ? actionsByDay : futuresActionsByDay
 
   const lastDayOfYear = moment(startDate).isLeapYear() ? 367 : 366
   const mappedActionsArray = Array(lastDayOfYear)
     .fill(undefined)
     .map((el, index) => {
-      const action = actionsByDay.find(
+      const action = actions.find(
         (actionEl: { _id: number; transactionsCount: number }) =>
           actionEl._id === index
       )
 
       if (action) {
+        const { transactionsCount, realizedPnlSum = 0 } = action
+
         return {
           date: moment(+startDate)
             .dayOfYear(action._id)
             .add(2, 'hours') // react-heatmap-calendar doesn't handle time change during seasons
             .toDate(),
-          count: action.transactionsCount,
+          transactionsCount,
+          realizedPnlSum,
           className: getSquareClassName(
-            action.transactionsCount,
+            transactionsCount,
             maxTransactionsCount,
             squareColorsRange
           ),
@@ -60,7 +70,8 @@ export const getCalendarData = (
           .dayOfYear(index)
           .add(2, 'hours') // react-heatmap-calendar doesn't handle time change during seasons
           .toDate(),
-        count: 0,
+        transactionsCount: 0,
+        realizedPnlSum: 0,
         className: squareColorsRange[0].className,
       }
     })
@@ -73,17 +84,20 @@ export const getMaxTransactions = (
     portfolioActionsByDay: {
       actionsByDay: [],
     },
-  }
+    futuresActionsByDay: { actionsByDay: [] },
+  },
+  isSPOTCurrently = true
 ) => {
   const {
     portfolioActionsByDay: { actionsByDay = [] },
+    futuresActionsByDay: { actionsByDay: futuresActionsByDay = [] },
   } = portfolio
 
-  const maxTransactionsCount = actionsByDay.reduce(
-    (max, { transactionsCount }) =>
-      transactionsCount > max ? transactionsCount : max,
-    0
-  )
+  const actions = isSPOTCurrently ? actionsByDay : futuresActionsByDay
+
+  const maxTransactionsCount = actions.reduce((max, { transactionsCount }) => {
+    return transactionsCount > max ? transactionsCount : max
+  }, 0)
 
   return maxTransactionsCount
 }

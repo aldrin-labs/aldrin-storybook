@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { Typography } from '@material-ui/core'
 
 export const LEGEND_COLORS = {
@@ -31,13 +31,13 @@ export const HeatmapWrapper = styled.div`
   }
 
   .react-calendar-heatmap-weekday-labels {
-    transform: translate(22px,15px);
+    transform: translate(22px, 15px);
   }
 
   .react-calendar-heatmap {
     text {
       font-size: 10px;
-      fill: #16253D;
+      fill: #16253d;
       font-family: DM Sans;
       text-anchor: end;
     }
@@ -70,13 +70,97 @@ export const SquarePopup = styled.div`
   background: rgba(0, 0, 0, 0.8);
   color: white;
   font-family: 'DM Sans', sans-serif;
-  font-size: .9rem;
+  font-size: 0.9rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: 700;
-  padding: .75rem;
+  padding: 0.75rem;
   display: none;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 999;
+`
+
+export const StyleForCalendar = createGlobalStyle`
+.DateRangePicker_picker.DateRangePicker_picker__portal {
+  z-index: 1008;
+}
+
+.DateRangePicker_picker {
+  font-family: DM Sans;
+
+  .DayPicker__withBorder {
+    border-radius: 1rem;
+  }
+  
+  .DayPicker_weekHeader {
+    color: #7284A0;
+  }
+
+  .DayPicker, .CalendarMonthGrid, .CalendarMonth {
+    background: #F9FBFD;
+  }
+
+  .CalendarDay__default {
+    border: 1px solid #e0e5ec;
+  }
+
+  .CalendarDay__default, 
+  .CalendarMonth_caption {
+    color: #16253D;
+  }
+
+  .CalendarDay__selected_span {
+    color: #fff;
+    background: #5c8cea;
+    border: 1px solid #e0e5ec;
+  }
+
+  .CalendarDay__hovered_span,
+  .CalendarDay__hovered_span:hover, 
+  .CalendarDay__hovered_span:active {
+    color: #fff;
+    background: #A1BFF9;
+    border: 1px solid #e0e5ec;
+  }
+
+  .CalendarDay__selected_span:hover, 
+  .CalendarDay__selected_span:active {
+    color: #fff;
+    background: #4152AF;
+    border: 1px solid #e0e5ec;
+    border: 1px solid #e0e5ec;
+  }
+
+  & .CalendarDay__selected,
+  .CalendarDay__selected:active,
+  .CalendarDay__selected:hover {
+    color: #fff;
+    background: #0b1fd1;
+    border: 1px solid #e0e5ec;
+  }
+
+  .CalendarDay__blocked_out_of_range,
+   .CalendarDay__blocked_out_of_range:active,
+    .CalendarDay__blocked_out_of_range:hover {
+    color: #7284A0;
+  }
+
+  .DayPickerKeyboardShortcuts_show__bottomRight::before {
+    border-right-color: #0b1fd1;
+  }
+
+  .DayPickerKeyboardShortcuts_show__bottomRight:hover::before {
+    border-right-color: #4152AF;
+  }
+
+  .DayPickerNavigation_svg__horizontal {
+    fill: #7284A0;
+  }
+
+  .DayPickerNavigation_button__default {
+    border: 1px solid #e0e5ec;
+  }
+}
 `
