@@ -1,6 +1,8 @@
 import React from 'react'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
+import { cloneDeep } from 'lodash-es'
+
 import { client } from '@core/graphql/apolloClient'
 
 import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
@@ -179,12 +181,14 @@ class TransactionPage extends React.PureComponent {
       variables: { baseCoin },
     })
 
+    const clonedData = cloneDeep(data)
+
     const { keys, rebalanceKeys } = UTILS.updateDataSettings(
-      data,
+      clonedData,
       type,
       toggledKeyID
     )
-    UTILS.updateSettingsLocalCache(data, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
+    UTILS.updateSettingsLocalCache(clonedData, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
 
     try {
       await updatePortfolioSettings({
@@ -466,6 +470,12 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
+  // queryRendererHoc({
+  //   query: getPortfolioAssets,
+  //   name: 'portfolioKeys',
+  //   // pollInterval: 30000,
+  //   variables: { baseCoin: 'USDT', innerSettings: true },    
+  // }),
   graphql(getPortfolioAssets, {
     name: 'portfolioKeys',
     options: {
@@ -476,12 +486,7 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'network-only',
-    refetchQueries: [
-      {
-        query: GET_TOOLTIP_SETTINGS,
-      },
-    ],
+    withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettings',
@@ -504,26 +509,26 @@ export default compose(
           query: getPortfolioAssets,
           variables: { baseCoin, innerSettings: false },
         },
-        {
-          query: MyTradesQuery,
-          variables: {
-            input: {
-              page: 0,
-              perPage: 600,
-              startDate: +moment().subtract(1, 'weeks'),
-              endDate: +moment().endOf('day'),
-            },
-          },
-        },
-        {
-          query: getCalendarActions,
-          variables: {
-            input: {
-              startDate: +moment().subtract(1, 'weeks'),
-              endDate: +moment().endOf('day'),
-            },
-          },
-        },
+        // {
+        //   query: MyTradesQuery,
+        //   variables: {
+        //     input: {
+        //       page: 0,
+        //       perPage: 600,
+        //       startDate: +moment().subtract(1, 'weeks'),
+        //       endDate: +moment().endOf('day'),
+        //     },
+        //   },
+        // },
+        // {
+        //   query: getCalendarActions,
+        //   variables: {
+        //     input: {
+        //       startDate: +moment().subtract(1, 'weeks'),
+        //       endDate: +moment().endOf('day'),
+        //     },
+        //   },
+        // },
       ],
     }),
   })

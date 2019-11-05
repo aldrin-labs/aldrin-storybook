@@ -29,7 +29,7 @@ export const GridRow = styled(Grid)`
   padding: 0 14px;
 
   @media (min-width: 1921px) {
-    padding: 0 24px;
+    padding: 0 1.5rem;
   }
 `
 
@@ -122,7 +122,7 @@ export const ExpansionPanelSummaryCustom = withStyles({
 
 export const ExpansionPanelDetailsCustom = styled(ExpansionPanelDetails)`
   background: #f9fbfd;
-  padding: 8px 8px 24px 8px;
+  padding: 8px 8px 1.5rem 8px;
 `
 
 export const GridColumnWrapper = styled(Grid)``

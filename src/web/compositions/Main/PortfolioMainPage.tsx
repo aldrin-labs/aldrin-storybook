@@ -150,7 +150,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     return (
       <LayoutClearfixWrapper>
         <Grid style={{ height: '100%' }}>
-          <div id="sharePortfolioPanel">
+          <div id="sharePortfolioPanel" style={{ minHeight: '17.2vh' }}>
             <SharePortfolioPanel
               handleOpenSharePortfolio={this.handleOpenSharePortfolio}
               portfolioName={portfolioName}

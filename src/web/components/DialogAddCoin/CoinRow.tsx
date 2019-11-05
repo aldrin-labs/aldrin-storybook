@@ -1,6 +1,7 @@
 import SvgIcon from '@sb/components/SvgIcon'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
 import { addMainSymbol } from '@sb/components/index'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import { Add, Done, VisibilityOff } from '@material-ui/icons'
 
@@ -42,17 +43,32 @@ const CoinRow = ({
             bottom: '.2rem',
           }}
         >
-          {addMainSymbol(priceUSD, true)}
+          {addMainSymbol(roundAndFormatNumber(priceUSD, 8, true), true)}
         </span>
       </span>
       {alreadyExist ? (
         dustFiltered ? (
-          <VisibilityOff style={{ width: '1.5rem', height: '1.5rem', position: 'relative', top: '.3rem' }} />
+          <VisibilityOff
+            style={{
+              width: '1.5rem',
+              height: '1.5rem',
+              position: 'relative',
+              top: '.3rem',
+            }}
+          />
         ) : (
           <Done style={{ color: '#29AC80', width: '2rem', height: '2rem' }} />
         )
       ) : (
-        <Add style={{ color: '#4a8de5', width: '2.4rem', height: '2.4rem', position: 'relative', left: '.4rem' }} />
+        <Add
+          style={{
+            color: '#4a8de5',
+            width: '2.4rem',
+            height: '2.4rem',
+            position: 'relative',
+            left: '.4rem',
+          }}
+        />
       )}
     </div>
   )

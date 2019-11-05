@@ -88,12 +88,16 @@ class DetailedExpansionPanel extends React.Component {
       ? portfolioAssetsData
       : getFuturesOverview
 
-    const totalRealizedPnl = isSPOTCurrently ? totalKeyAssetsData.realized : getRealizedTotal(getFuturesOverview)
+    const totalRealizedPnl = isSPOTCurrently
+      ? totalKeyAssetsData.realized
+      : getRealizedTotal(getFuturesOverview)
 
-    const totalTotalPnl = isSPOTCurrently ? totalKeyAssetsData.total : getRealizedTotal(getFuturesOverview)
+    const totalTotalPnl = isSPOTCurrently
+      ? totalKeyAssetsData.total
+      : getRealizedTotal(getFuturesOverview)
 
     return (
-      <Grid style={{ width: '100%', minHeight: '11%', height: 'auto' }}>
+      <Grid style={{ width: '100%', minHeight: '65%', height: 'auto' }}>
         <ExpansionPanel
           CollapseProps={{ timeout: { enter: 425, exit: 350 } }}
           id="accordionOverview"
@@ -134,9 +138,7 @@ class DetailedExpansionPanel extends React.Component {
                   realized P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell
-                  textColor={
-                    totalRealizedPnl < 0 ? '#B93B2B' : '#2F7619'
-                  }
+                  textColor={totalRealizedPnl < 0 ? '#B93B2B' : '#2F7619'}
                 >
                   {isSPOTCurrently
                     ? format(totalRealizedPnl, baseCoin)
@@ -166,9 +168,7 @@ class DetailedExpansionPanel extends React.Component {
                   Total P{`&`}L
                 </TypographyTitleCell>
                 <TypographyValueCell
-                  textColor={
-                    totalTotalPnl < 0 ? '#B93B2B' : '#2F7619'
-                  }
+                  textColor={totalTotalPnl < 0 ? '#B93B2B' : '#2F7619'}
                 >
                   {isSPOTCurrently
                     ? format(totalTotalPnl, baseCoin)
