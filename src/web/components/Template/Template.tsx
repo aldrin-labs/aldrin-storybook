@@ -41,7 +41,10 @@ const Template = ({
           </TablesWrapper>
         </>
       ) : (
-        <FuturesTableGrid title={'History'}>
+        <FuturesTableGrid
+          title={'History'}
+          style={{ backgroundColor: '#f2f4f6' }}
+        >
           {PortfolioMainFuturesTable}
         </FuturesTableGrid>
       )}
