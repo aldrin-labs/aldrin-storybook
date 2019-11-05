@@ -252,11 +252,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 const response = await this.handleSubmit()
 
                 if (response) {
-                  if (onboarding) {
-                    setCurrentStep('congratulations')
-                  } else {
-                    this.handleClose()
-                  }
+                  this.handleClose()
                 }
               }}
               style={{ minWidth: '440px' }}
@@ -362,7 +358,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 
         <InfoDialog
           dialogStatus={showWarning}
-          updateDialogStatus={this.updateWarningStatus}
+          closeDialog={() => {
+            if (onboarding) {
+              setCurrentStep('congratulations')
+            }
+            this.updateWarningStatus(false)
+          }}
           text={
             'Importing your trades from the exchange may take up to a few minutes.'
           }

@@ -579,15 +579,17 @@ export const combineFundsTable = (
 // TODO: Make it one function
 
 export const updateOpenOrderHistoryQuerryFunction = (
-  prev,
+  previous,
   { subscriptionData }
 ) => {
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
 
   if (isEmptySubscription) {
-    return prev
+    return previous
   }
+
+  const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
     (el: OrderType) =>
@@ -665,15 +667,17 @@ export const updateOrderHistoryQuerryFunction = (
 }
 
 export const updateTradeHistoryQuerryFunction = (
-  prev,
+  previous,
   { subscriptionData }
 ) => {
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenTradeHistory
 
   if (isEmptySubscription) {
-    return prev
+    return previous
   }
+
+  const prev = cloneDeep(previous)
 
   const tradeHasTheSameIndex = prev.getTradeHistory.findIndex(
     (el: TradeType) => el.id === subscriptionData.data.listenTradeHistory.id

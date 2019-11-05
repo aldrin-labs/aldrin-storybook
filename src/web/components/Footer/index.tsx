@@ -10,6 +10,7 @@ import { StyledButton, StyledTypography } from './index.styles'
 
 import { PrivacyPolicy } from '@sb/components/index'
 
+import { MASTER_BUILD } from '@core/utils/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
@@ -64,17 +65,19 @@ const Footer = ({
         </IconButton>
       </Block>
 
-      <Block>
-        <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
-        <Switch
-          checked={themeMode === 'dark'}
-          onChange={async () => {
-            await toggleThemeModeMutation()
-          }}
-          value="theme"
-          color="default"
-        />
-      </Block>
+      {!MASTER_BUILD && (
+        <Block>
+          <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
+          <Switch
+            checked={themeMode === 'dark'}
+            onChange={async () => {
+              await toggleThemeModeMutation()
+            }}
+            value="theme"
+            color="default"
+          />
+        </Block>
+      )}
       <PrivacyPolicy
         open={showPrivacyPolicy}
         onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}

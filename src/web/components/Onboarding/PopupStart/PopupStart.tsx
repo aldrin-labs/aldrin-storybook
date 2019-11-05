@@ -71,7 +71,7 @@ class PopupStart extends React.Component<IProps, IState> {
                 color: '#16253D',
               }}
             >
-              Hi! Nice to meet you!
+              Welcome to Cryptocurrencies.Ai
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
