@@ -60,107 +60,115 @@ const DialogContent = withStyles((theme) => ({
 }))(MuiDialogContent)
 
 function GetKeysInfo(props) {
-    const {
-      handleClose,
-      open,
-    } = props
+  const { handleClose, open } = props
 
-    return (
-      <>
-        <DialogWrapper
-          aria-labelledby="customized-dialog-title"
-          open={open}
+  return (
+    <>
+      <DialogWrapper aria-labelledby="customized-dialog-title" open={open}>
+        <DialogTitleCustom
+          id="customized-dialog-title"
+          style={{
+            backgroundColor: '#fff',
+          }}
         >
-          <DialogTitleCustom
-            id="customized-dialog-title"
+          <TypographyCustomHeading
+            fontWeight={'700'}
+            borderRadius={'1rem'}
             style={{
-              backgroundColor: '#fff'
+              textAlign: 'center',
+              fontSize: '17px',
+              letterSpacing: '1.5px',
+              color: '#16253D',
             }}
           >
-            <TypographyCustomHeading
-              fontWeight={'700'}
-              borderRadius={'1rem'}
-              style={{
-                textAlign: 'center',
-                fontSize: '17px',
-                letterSpacing: '1.5px',
-                color: '#16253D',
-              }}
-            >
-              Import Keys
-            </TypographyCustomHeading>
+            Import Keys
+          </TypographyCustomHeading>
 
-            <Typography style={{
+          <Typography
+            style={{
               marginTop: '9px',
               fontSize: '13px',
               lineHeight: '23px',
               color: '#4A4A4A',
-            }}>
-              Follow these instructions to import your keys from Binance.
-            </Typography>
-          </DialogTitleCustom>
-          <DialogContent
-            justify="center"
-            style={{
-              padding: '0 3rem 3rem',
             }}
           >
-            <Grid justify="center">
-              <GridCustom>
-                <Typography
+            Follow these instructions to import your keys from Binance.
+          </Typography>
+        </DialogTitleCustom>
+        <DialogContent
+          justify="center"
+          style={{
+            padding: '0 3rem 3rem',
+          }}
+        >
+          <Grid justify="center">
+            <GridCustom>
+              <Typography
+                style={{
+                  maxWidth: '466px',
+                  width: '100%',
+                  margin: '0 auto',
+                  color: '#4A4A4A',
+                  fontWeight: 400,
+                  fontSize: '16px',
+                  lineHeight: '26px',
+                }}
+              >
+                <ul
                   style={{
-                    maxWidth: '466px',
-                    width: '100%',
-                    margin: '0 auto',
-                    color: '#4A4A4A',
-                    fontWeight: 400,
-                    fontSize: '16px',
-                    lineHeight: '26px',
-                  }}
-                >
-                  <ul style={{
                     listStyle: 'none',
                     color: '#4A4A4A',
                     padding: 0,
                     marginBottom: '3em',
-                  }}>
-                    <li style={{ marginBottom: '2%' }}>1. Log into your account at https://binance.com</li>
-                    <li style={{ marginBottom: '2%' }}>2. Navigate to account settings</li>
-                    <li style={{ marginBottom: '2%' }}>3. Locate the API section and click ‘Enable’</li>
-                    <li style={{ marginBottom: '2%' }}>4. Copy keys</li>
-                  </ul>
-                </Typography>
-              </GridCustom>
-            </Grid>
+                  }}
+                >
+                  <li style={{ marginBottom: '2%' }}>
+                    1. Log into your account at https://binance.com
+                  </li>
+                  <li style={{ marginBottom: '2%' }}>
+                    2. Navigate to account settings
+                  </li>
+                  <li style={{ marginBottom: '2%' }}>
+                    3. Locate the API section and click ‘Enable’
+                  </li>
+                  <li style={{ marginBottom: '2%' }}>
+                    4. If you want to import your futures data - enable futures
+                    on API settings
+                  </li>
+                  <li style={{ marginBottom: '2%' }}>5. Copy keys</li>
+                </ul>
+              </Typography>
+            </GridCustom>
+          </Grid>
 
-            <Grid container justify="flex-center" alignItems="center">
-              <BtnCustom
-                backgroundColor="white"
-                onClick={() => {
-                  handleClose()
-                }}
-                style={{
-                  maxWidth: '160px',
-                  width: '100%',
-                  height: '100%',
-                  border: '2px solid #E0E5EC',
-                  borderRadius: '16px',
-                  padding: '8px 20px',
-                  color: '#16253D',
-                  textTransform: 'uppercase',
-                  textAlign: 'center',
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  margin: '0 auto',
-                }}
-              >
-                OK
-              </BtnCustom>
-            </Grid>
-          </DialogContent>
-        </DialogWrapper>
-      </>
-    )
+          <Grid container justify="flex-center" alignItems="center">
+            <BtnCustom
+              backgroundColor="white"
+              onClick={() => {
+                handleClose()
+              }}
+              style={{
+                maxWidth: '160px',
+                width: '100%',
+                height: '100%',
+                border: '2px solid #E0E5EC',
+                borderRadius: '16px',
+                padding: '8px 20px',
+                color: '#16253D',
+                textTransform: 'uppercase',
+                textAlign: 'center',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                margin: '0 auto',
+              }}
+            >
+              OK
+            </BtnCustom>
+          </Grid>
+        </DialogContent>
+      </DialogWrapper>
+    </>
+  )
 }
 
 export default GetKeysInfo
