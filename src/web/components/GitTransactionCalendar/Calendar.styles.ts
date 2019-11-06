@@ -2,11 +2,23 @@ import styled, { createGlobalStyle } from 'styled-components'
 import { Typography } from '@material-ui/core'
 
 export const LEGEND_COLORS = {
+  // spot
   zero: '#E0E5EC',
   one: '#A1BFF9',
   two: '#6992E1',
   three: '#447AE2',
   four: '#0B1FD1',
+
+  // futures
+  oneProfit: '#AAF390',
+  twoProfit: '#59C257',
+  threeProfit: '#23B929',
+  fourProfit: '#008805',
+
+  oneLoss: '#F39E90',
+  twoLoss: '#C26757',
+  threeLoss: '#D34730',
+  fourLoss: '#AE321E',
 }
 
 export const HeatmapWrapper = styled.div`
@@ -67,19 +79,25 @@ export const LegendHeatmapSquare = styled.div`
 `
 
 export const SquarePopup = styled.div`
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
+  background: #16253d;
+  color: #fff;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.9rem;
   letter-spacing: 1px;
+  text-align: center;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: bold;
   padding: 0.75rem;
   display: none;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 999;
+  z-index: 1008;
+
+  box-shadow: 0px 0.4rem 0.6rem rgba(8, 22, 58, 0.3);
+  border-radius: 0.4rem;
+  padding: 0 1rem;
+  border: 0.1rem solid #e0e5ec;
 `
 
 export const StyleForCalendar = createGlobalStyle`
@@ -163,4 +181,35 @@ export const StyleForCalendar = createGlobalStyle`
     border: 1px solid #e0e5ec;
   }
 }
+`
+
+export const PopupDateContainer = styled.div`
+  border-bottom: 0.1rem solid #e0e5ec;
+  padding: 0.6rem 0;
+  font-size: 1rem;
+`
+
+export const PopupInfoContainer = styled.div`
+  display: flex;
+  padding: 0.6rem 0;
+`
+
+export const PopupInfoBlock = styled.div`
+  border-right: ${(props) => props.isFirstBlock && '.1rem solid #e0e5ec'};
+  padding: ${(props) =>
+    props.isFirstBlock ? '0 1.5rem 0 .6rem' : '0 .6rem 0 1.5rem'};
+  width: 50%;
+`
+
+export const PopupInfoTitle = styled.p`
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
+  padding-bottom: 0.6rem;
+`
+
+export const PopupInfoValue = styled.span`
+  font-size: 1.2rem;
+  white-space: nowrap;
+  color: ${(props) => props.isSPOTRealized && '#5C8CEA'};
 `
