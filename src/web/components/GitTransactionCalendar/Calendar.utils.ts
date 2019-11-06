@@ -3,18 +3,26 @@ import moment from 'moment'
 const getSquareClassName = (
   count: number,
   maxTransactionsCount: number,
-  squareColorsRange: { range: number[]; className: string }[]
+  squareColorsRange: { range: number[]; className: string }[],
+  isSPOTCurrently: boolean,
+  realizedPnlSum: number
 ) => {
+  const classNamePostfix = isSPOTCurrently
+    ? ''
+    : realizedPnlSum > 0
+    ? 'Profit'
+    : 'Loss'
+
   return count >= squareColorsRange[1].range[0] &&
     count <= squareColorsRange[1].range[1]
-    ? squareColorsRange[1].className
+    ? `${squareColorsRange[1].className}${classNamePostfix}`
     : count >= squareColorsRange[2].range[0] &&
       count <= squareColorsRange[2].range[1]
-    ? squareColorsRange[2].className
+    ? `${squareColorsRange[2].className}${classNamePostfix}`
     : count >= squareColorsRange[3].range[0] &&
       count <= squareColorsRange[3].range[1]
-    ? squareColorsRange[3].className
-    : squareColorsRange[4].className
+    ? `${squareColorsRange[3].className}${classNamePostfix}`
+    : `${squareColorsRange[4].className}${classNamePostfix}`
 }
 
 export const getCalendarData = (
@@ -60,7 +68,9 @@ export const getCalendarData = (
           className: getSquareClassName(
             transactionsCount,
             maxTransactionsCount,
-            squareColorsRange
+            squareColorsRange,
+            isSPOTCurrently,
+            realizedPnlSum
           ),
         }
       }
