@@ -36,6 +36,7 @@ export const ChoosePeriodButton = styled.button`
 
   outline: none;
   box-shadow: none;
+  white-space: nowrap;
 
   color: ${(props) => (props.active ? '#fff' : '#7284A0')};
   background-color: ${(props) => (props.active ? '#0B1FD1' : 'transparent')};
