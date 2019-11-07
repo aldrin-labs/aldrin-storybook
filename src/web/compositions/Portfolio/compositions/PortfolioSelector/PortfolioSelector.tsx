@@ -273,7 +273,7 @@ class PortfolioSelector extends React.Component<IProps> {
     } catch (error) {
       console.log('error', error)
     }
-    // await this.updateSettings(objForQuery, type, toggledKeyID)
+    await this.updateSettings(objForQuery, type, toggledKeyID)
   }
 
   onWalletToggle = async (toggledWalletID: string) => {
