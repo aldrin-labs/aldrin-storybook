@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 import moment from 'moment'
 // import { client } from '@core/graphql/apolloClient'
-
+import { getTimeZone } from '@core/utils/dateUtils'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
 import { Grid } from '@material-ui/core'
@@ -281,7 +281,7 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
 const CalendarDataWrapper = ({ ...props }) => {
   let { startDate, endDate, pageType } = props
-  const timezone = moment().format('ZZ')
+  const timezone = getTimeZone()
   const isSPOTCurrently = pageType === 'SPOT'
 
   startDate = +startDate
