@@ -8,6 +8,7 @@ import 'react-dates/lib/css/_datepicker.css'
 
 import { IProps, IState } from './TradingTable.types'
 import { tradingTableTabConfig } from './TradingTable.mocks'
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
