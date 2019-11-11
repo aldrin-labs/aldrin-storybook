@@ -9,11 +9,12 @@ import { Grid, Hidden } from '@material-ui/core'
 import { OrderBookTable, Aggregation, TradeHistoryTable } from './Tables/Tables'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
-import DepthChart from './DepthChart/DepthChart'
+import DepthChartComponent from './DepthChart/DepthChart'
 import DefaultView from './DefaultView/StatusWrapper'
 
 import { singleChartSteps } from '@sb/config/joyrideSteps'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 // import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 // import { SingleChart } from '@sb/components/Chart'
 
@@ -44,7 +45,6 @@ import SelectExchange from './Inputs/SelectExchange/SelectExchange'
 // import ComingSoon from '@sb/components/ComingSoon'
 
 import {
-  ChartMediaQueryForLg,
   DepthChartContainer,
   MainContainer,
   TablesContainer,
@@ -64,6 +64,7 @@ import {
   SubvaluesContainer,
   WatchSubvalue,
   WatchLabel,
+  CustomCard,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
@@ -89,6 +90,126 @@ const WatchItem = ({
     </WatchItemWrapper>
   )
 }
+
+const WatchList = () => (
+  <WatchListContainer>
+    <ChartCardHeader>Watchlist</ChartCardHeader>
+    {/* query renderer for watchlist */}
+    <ScrollContainer style={{ overflowY: 'auto' }}>
+      {new Array(10)
+        .fill(
+          {
+            label: 'Bitfinex BTCUSDT',
+            subvalues: {
+              price: 10084.0,
+              percentages: '+4.23%',
+              total: '10.94K',
+            },
+          },
+          0,
+          10
+        )
+        .map(({ label, subvalues }) => (
+          <WatchItem label={label} subvalues={subvalues} />
+        ))}
+    </ScrollContainer>
+  </WatchListContainer>
+)
+
+export const DepthChart = ({ chartProps, changeTable, exchange, symbol }) => {
+  return (
+    <DepthChartContainer>
+      <ChartCardHeader>Depth chart</ChartCardHeader>
+      <QueryRenderer
+        component={DepthChartComponent}
+        withOutSpinner
+        query={ORDERS_MARKET_QUERY}
+        variables={{ symbol, exchange }}
+        subscriptionArgs={{
+          subscription: MARKET_ORDERS,
+          variables: { symbol, exchange },
+          updateQueryFunction: updateOrderBookQuerryFunction,
+        }}
+        {...{
+          onButtonClick: changeTable,
+          ...chartProps,
+          key: 'depth_chart_query_render',
+        }}
+      />
+    </DepthChartContainer>
+  )
+}
+
+export const OrderBook = ({
+  chartProps,
+  changeTable,
+  aggregation,
+  pair,
+  activeExchange,
+  exchange,
+  symbol,
+  quote,
+}) => (
+  <OrderbookContainer key={`orderbook_table`}>
+    <QueryRenderer
+      component={OrderBookTable}
+      withOutSpinner
+      query={ORDERS_MARKET_QUERY}
+      variables={{ symbol, exchange }}
+      subscriptionArgs={{
+        subscription: MARKET_ORDERS,
+        variables: { symbol, exchange },
+        updateQueryFunction: updateOrderBookQuerryFunction,
+      }}
+      {...{
+        quote,
+        symbol,
+        activeExchange,
+        currencyPair: pair,
+        aggregation,
+        onButtonClick: changeTable,
+        setOrders: chartProps.setOrders,
+        ...chartProps,
+        key: 'orderbook_table_query_render',
+      }}
+    />
+  </OrderbookContainer>
+)
+
+export const TradeHistory = ({
+  showTableOnMobile,
+  symbol,
+  exchange,
+  quote,
+  activeExchange,
+  pair,
+}) => (
+  <TradeHistoryWrapper
+    key={`tradehistory_table`}
+    className="ExchangesTable"
+    variant={{
+      show: showTableOnMobile === 'TRADE',
+    }}
+  >
+    <QueryRenderer
+      component={TradeHistoryTable}
+      withOutSpinner
+      query={MARKET_QUERY}
+      variables={{ symbol, exchange }}
+      subscriptionArgs={{
+        subscription: MARKET_TICKERS,
+        variables: { symbol, exchange },
+        updateQueryFunction: updateTradeHistoryQuerryFunction,
+      }}
+      {...{
+        quote,
+        activeExchange,
+        currencyPair: pair,
+        key: 'tradeyistory_table_query_render',
+      }}
+    />
+  </TradeHistoryWrapper>
+)
 
 @withTheme()
 class Chart extends React.Component<IProps, IState> {
@@ -182,66 +303,6 @@ class Chart extends React.Component<IProps, IState> {
     }
   }
 
-  renderDepthAndList = () => {
-    const {
-      getChartDataQuery: {
-        chart: {
-          activeExchange,
-          currencyPair: { pair },
-        },
-      },
-    } = this.props
-
-    const symbol = pair || ''
-    const exchange = activeExchange.symbol
-
-    return (
-      <Grid item container direction="column" xs={5} style={{ height: '100%' }}>
-        <DepthChartContainer>
-          <ChartCardHeader>Depth chart</ChartCardHeader>
-          <QueryRenderer
-            component={DepthChart}
-            withOutSpinner
-            query={ORDERS_MARKET_QUERY}
-            variables={{ symbol, exchange }}
-            subscriptionArgs={{
-              subscription: MARKET_ORDERS,
-              variables: { symbol, exchange },
-              updateQueryFunction: updateOrderBookQuerryFunction,
-            }}
-            {...{
-              onButtonClick: this.changeTable,
-              ...this.props,
-              key: 'depth_chart_query_render',
-            }}
-          />
-        </DepthChartContainer>
-        <WatchListContainer>
-          <ChartCardHeader>Watchlist</ChartCardHeader>
-          {/* query renderer for watchlist */}
-          <ScrollContainer style={{ overflowY: 'auto' }}>
-            {new Array(10)
-              .fill(
-                {
-                  label: 'Bitfinex BTCUSDT',
-                  subvalues: {
-                    price: 10084.0,
-                    percentages: '+4.23%',
-                    total: '10.94K',
-                  },
-                },
-                0,
-                10
-              )
-              .map(({ label, subvalues }) => (
-                <WatchItem label={label} subvalues={subvalues} />
-              ))}
-          </ScrollContainer>
-        </WatchListContainer>
-      </Grid>
-    )
-  }
-
   renderTables: any = () => {
     const { aggregation, showTableOnMobile } = this.state
     const {
@@ -264,12 +325,12 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <TablesContainer item container direction="column" xs={7}>
-        <Joyride
+        {/* <Joyride
           showProgress={true}
           showSkipButton={true}
           continuous={true}
           steps={singleChartSteps}
-          // run={this.state.joyride && getTooltipSettings.chartPage}
+          run={this.state.joyride && getTooltipSettings.chartPage}
           run={false}
           callback={this.handleJoyrideCallback}
           styles={{
@@ -283,31 +344,7 @@ class Chart extends React.Component<IProps, IState> {
               fontSize: theme.typography.fontSize,
             },
           }}
-        />
-        <OrderbookContainer key={`orderbook_table`}>
-          <QueryRenderer
-            component={OrderBookTable}
-            withOutSpinner
-            query={ORDERS_MARKET_QUERY}
-            variables={{ symbol, exchange }}
-            subscriptionArgs={{
-              subscription: MARKET_ORDERS,
-              variables: { symbol, exchange },
-              updateQueryFunction: updateOrderBookQuerryFunction,
-            }}
-            {...{
-              quote,
-              symbol,
-              activeExchange,
-              currencyPair: pair,
-              aggregation,
-              onButtonClick: this.changeTable,
-              setOrders: this.props.setOrders,
-              ...this.props,
-              key: 'orderbook_table_query_render',
-            }}
-          />
-        </OrderbookContainer>
+        /> */}
 
         {/* <Aggregation
             {...{
@@ -317,32 +354,6 @@ class Chart extends React.Component<IProps, IState> {
               key: 'aggregation_component',
             }}
           /> */}
-
-        <TradeHistoryWrapper
-          key={`tradehistory_table`}
-          className="ExchangesTable"
-          variant={{
-            show: showTableOnMobile === 'TRADE',
-          }}
-        >
-          <QueryRenderer
-            component={TradeHistoryTable}
-            withOutSpinner
-            query={MARKET_QUERY}
-            variables={{ symbol, exchange }}
-            subscriptionArgs={{
-              subscription: MARKET_TICKERS,
-              variables: { symbol, exchange },
-              updateQueryFunction: updateTradeHistoryQuerryFunction,
-            }}
-            {...{
-              quote,
-              activeExchange,
-              currencyPair: pair,
-              key: 'tradeyistory_table_query_render',
-            }}
-          />
-        </TradeHistoryWrapper>
       </TablesContainer>
     )
   }
@@ -387,47 +398,47 @@ class Chart extends React.Component<IProps, IState> {
     } = this.props
     const isSingleChart = view === 'default'
 
-    return (
-      <Toggler>
-        <StyledSwitch
-          data-e2e="switchChartPageMode"
-          isActive={isSingleChart}
-          onClick={async () => {
-            if (charts === []) {
-              await addChartMutation({
-                variables: {
-                  chart: pair,
-                },
-              })
-            }
+    return null
 
-            await changeViewModeMutation({
-              variables: {
-                view: 'default',
-              },
-            })
-          }}
-          style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-        >
-          Single Chart
-        </StyledSwitch>
+    // <Toggler>
+    //   <StyledSwitch
+    //     data-e2e="switchChartPageMode"
+    //     isActive={isSingleChart}
+    //     onClick={async () => {
+    //       if (charts === []) {
+    //         await addChartMutation({
+    //           variables: {
+    //             chart: pair,
+    //           },
+    //         })
+    //       }
 
-        <StyledSwitch
-          data-e2e="switchChartPageMode"
-          isActive={!isSingleChart}
-          onClick={async () => {
-            await changeViewModeMutation({
-              variables: {
-                view: 'onlyCharts',
-              },
-            })
-          }}
-          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-        >
-          Multi Charts
-        </StyledSwitch>
-      </Toggler>
-    )
+    //       await changeViewModeMutation({
+    //         variables: {
+    //           view: 'default',
+    //         },
+    //       })
+    //     }}
+    //     style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+    //   >
+    //     Single Chart
+    //   </StyledSwitch>
+
+    //   <StyledSwitch
+    //     data-e2e="switchChartPageMode"
+    //     isActive={!isSingleChart}
+    //     onClick={async () => {
+    //       await changeViewModeMutation({
+    //         variables: {
+    //           view: 'onlyCharts',
+    //         },
+    //       })
+    //     }}
+    //     style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+    //   >
+    //     Multi Charts
+    //   </StyledSwitch>
+    // </Toggler>
   }
 
   renderTogglerBody = () => {
@@ -444,14 +455,18 @@ class Chart extends React.Component<IProps, IState> {
       changeActiveExchangeMutation,
     } = this.props
     // const { activeChart } = this.state
-    const toggler = this.renderToggler()
 
     const selectStyles = {
       height: '100%',
-      border: 'none',
       background: '#FFFFFF',
-      marginRight: '8px',
+      marginRight: '.8rem',
       cursor: 'pointer',
+      padding: 0,
+      backgroundColor: '#fff',
+      border: '0.1rem solid #e0e5ec',
+      borderRadius: '0.75rem',
+      boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
+      width: '8.5%',
       '& div': {
         cursor: 'pointer',
         color: '#16253D',
@@ -461,12 +476,14 @@ class Chart extends React.Component<IProps, IState> {
       '& svg': {
         color: '#7284A0',
       },
+      '.custom-select-box__control': {
+        padding: '0 .75rem',
+      },
       '.custom-select-box__menu': {
         minWidth: '130px',
         marginTop: '0',
         borderRadius: '0',
         boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
-        left: '-16px',
       },
     }
 
@@ -488,7 +505,7 @@ class Chart extends React.Component<IProps, IState> {
           {view === 'default' && (
             <KeySelector
               exchange={activeExchange}
-              selectStyles={selectStyles}
+              selectStyles={{ ...selectStyles, width: '17%' }}
               isAccountSelect={true}
             />
           )}
@@ -501,32 +518,54 @@ class Chart extends React.Component<IProps, IState> {
             selectStyles={selectStyles}
           />
 
-          <PanelCard first>
-            <PanelCardTitle>Last price</PanelCardTitle>
-            <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
-            <PanelCardSubValue>$9964.01</PanelCardSubValue>
-          </PanelCard>
+          <CustomCard style={{ display: 'flex', width: '50%' }}>
+            <PanelCard first>
+              <PanelCardTitle>Last price</PanelCardTitle>
+              <span>
+                <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
+                <PanelCardSubValue>$9964.01</PanelCardSubValue>
+              </span>
+            </PanelCard>
 
-          <PanelCard>
-            <PanelCardTitle>24h change</PanelCardTitle>
-            <PanelCardValue color="#2F7619">101.12</PanelCardValue>
-            <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
-          </PanelCard>
+            <PanelCard>
+              <PanelCardTitle>24h change</PanelCardTitle>
+              <span>
+                <PanelCardValue color="#2F7619">101.12</PanelCardValue>
+                <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
+              </span>
+            </PanelCard>
 
-          <PanelCard>
-            <PanelCardTitle>24h high</PanelCardTitle>
-            <PanelCardValue>10,364.01</PanelCardValue>
-          </PanelCard>
+            <PanelCard>
+              <PanelCardTitle>24h high</PanelCardTitle>
+              <PanelCardValue>10,364.01</PanelCardValue>
+            </PanelCard>
 
-          <PanelCard>
-            <PanelCardTitle>24h low</PanelCardTitle>
-            <PanelCardValue>9,525.00</PanelCardValue>
-          </PanelCard>
+            <PanelCard>
+              <PanelCardTitle>24h low</PanelCardTitle>
+              <PanelCardValue>9,525.00</PanelCardValue>
+            </PanelCard>
 
-          <PanelCard>
-            <PanelCardTitle>24h volume</PanelCardTitle>
-            <PanelCardValue>427,793,139.70</PanelCardValue>
-          </PanelCard>
+            <PanelCard>
+              <PanelCardTitle>24h volume</PanelCardTitle>
+              <PanelCardValue>427,793,139.70</PanelCardValue>
+            </PanelCard>
+
+            <PanelCard style={{ borderRight: '0' }}>
+              <PanelCardTitle>24h change</PanelCardTitle>
+              <span>
+                <PanelCardValue color="#2F7619">101.12</PanelCardValue>
+                <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
+              </span>
+            </PanelCard>
+          </CustomCard>
+
+          <PillowButton
+            firstHalfText={'single chart'}
+            secondHalfText={'multichart'}
+            activeHalf={'first'}
+            changeHalf={() => {}}
+            buttonAdditionalStyle={{ height: '100%', padding: '0 1rem' }}
+          />
 
           {/* {view === 'default' && (
           <TransparentExtendedFAB
@@ -541,12 +580,13 @@ class Chart extends React.Component<IProps, IState> {
           </TransparentExtendedFAB>
         )} */}
         </PanelWrapper>
-        <Hidden smDown>{toggler}</Hidden>
       </>
     )
   }
 
   render() {
+    const { aggregation, showTableOnMobile } = this.state
+
     const {
       getChartDataQuery: {
         getMyProfile: { _id },
@@ -566,7 +606,6 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
-        <ChartMediaQueryForLg />
         {view === 'onlyCharts' && (
           <TogglerContainer container>
             <Grid
@@ -584,15 +623,17 @@ class Chart extends React.Component<IProps, IState> {
         )}
         {view === 'default' && (
           <DefaultView
-            selectedKey={selectedKey}
-            currencyPair={pair}
             id={_id}
+            currencyPair={pair}
             themeMode={themeMode}
+            selectedKey={selectedKey}
+            aggregation={aggregation}
             activeExchange={activeExchange}
+            showTableOnMobile={showTableOnMobile}
             activeChart={this.state.activeChart}
+            changeTable={this.changeTable}
             renderTogglerBody={this.renderTogglerBody}
-            renderTables={this.renderTables}
-            renderDepthAndList={this.renderDepthAndList}
+            chartProps={this.props}
             MASTER_BUILD={MASTER_BUILD}
           />
         )}
