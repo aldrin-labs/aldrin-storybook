@@ -4,14 +4,6 @@ import { CardTitle } from '@sb/components/ChartCardHeader'
 import { Card, Grid, Button } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-export const ChartMediaQueryForLg = createGlobalStyle`
-  @media only screen and (min-width: 2560px) {
-    html {
-      font-size: 12px;
-    }
-  }
-`
-
 export const MainContainer = styled.div`
   ${(props: { fullscreen: boolean }) =>
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
@@ -19,19 +11,33 @@ export const MainContainer = styled.div`
 
 export const PanelWrapper = styled.div`
   display: flex;
+  width: 100%;
   height: 100%;
 `
 
+export const CustomCard = styled(Card)`
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border: 0.1rem solid #e0e5ec;
+  border-radius: 0.75rem;
+  box-shadow: 0px 0px 1.2rem rgba(8, 22, 58, 0.1);
+`
+
 export const PanelCard = styled.div`
-  min-width: 120px;
-  padding: ${(props) =>
-    props.first ? '0.7rem 1rem 0 0.5rem' : '0.7rem 1rem 0 1.5rem'};
-  min-height: 38px;
-  background: #f9fbfd;
-  border-right: 2px solid #e0e5ec;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 16.6%;
+  padding: ${(props: { first?: boolean }) =>
+    props.first ? '0.7rem 1rem .7rem .7rem' : '0.7rem 1rem .7rem 1.5rem'};
+  margin: 0.6rem 0;
+  min-height: auto;
+  border-right: 0.1rem solid #e0e5ec;
   font-weight: bold;
-  font-family: Trebuchet MS;
+  font-family: DM Sans;
   text-transform: uppercase;
+  letter-spacing: 0.05rem;
 
   @media (min-width: 1400px) {
     padding-top: 0.4rem;
@@ -66,12 +72,7 @@ export const PanelCardSubValue = styled.span`
 `
 
 // depth chart container
-export const DepthChartContainer = styled(Card)`
-  width: 100%;
-  margin-bottom: 4px;
-  height: calc(60% - 4px);
-  border-radius: 0;
-`
+export const DepthChartContainer = styled(CustomCard)``
 
 export const RangesContainer = styled(Card)`
   width: 100%;
@@ -81,10 +82,9 @@ export const RangesContainer = styled(Card)`
 `
 
 export const TablesBlockWrapper = styled(({ background = '', ...rest }) => (
-  <Card {...rest} />
+  <CustomCard {...rest} />
 ))`
   min-width: 150px;
-  width: 100%;
   position: relative;
 
   && {
@@ -102,43 +102,30 @@ export const TablesBlockWrapper = styled(({ background = '', ...rest }) => (
 // order book container
 
 export const OrderbookContainer = styled(({ background = '', ...rest }) => (
-  <Card {...rest} />
+  <CustomCard {...rest} />
 ))`
-  width: 100%;
-  margin-bottom: 4px;
-  height: calc(65% - 4px);
-  border-radius: 0;
-
   && {
     overflow: hidden;
-    background-color: ${(props: { background?: string }) => props.background};
-    box-shadow: none !important;
   }
 
   @media (max-width: 1080px) {
     width: 100%;
-    height: calc(68vh - 57px - 70px);
+    // height: calc(68vh - 57px - 70px);
+    height: 100%;
     position: relative;
   }
 `
 
 export const TradeHistoryWrapper = styled(({ background = '', ...rest }) => (
-  <Card {...rest} />
+  <CustomCard {...rest} />
 ))`
-  width: 100%;
-  margin-top: 4px;
-  height: calc(35% - 4px);
-  border-radius: 0;
-
   && {
     overflow: hidden;
-    background-color: ${(props: { background?: string }) => props.background};
-    box-shadow: none !important;
   }
 
   @media (max-width: 1080px) {
     width: 100%;
-    height: calc(68vh - 57px - 70px);
+    height: 100%;
     position: relative;
   }
 `
@@ -158,6 +145,9 @@ export const ChartGridContainer = styled(Grid)`
   flex: auto;
   align-items: center;
   width: 100%;
+  height: 6%;
+
+  padding: 0 0 0.4rem 0 !important;
 `
 
 export const TablesContainer = styled(Grid)`
@@ -188,11 +178,12 @@ export const TradingTerminalContainer = styled(Grid)`
 
 export const ChartsContainer = styled(TablesContainer)`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  margin-bottom: 4px;
-  height: calc(50% - 4px);
+  margin-bottom: .4rem;
+  height: calc(50% - .4rem);
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
+  box-shadow: 0px 0px 1.2rem rgba(8,22,58,0.1);
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
@@ -201,12 +192,13 @@ export const ChartsContainer = styled(TablesContainer)`
 `
 
 export const TradingTabelContainer = styled(TablesContainer)`
-  height: calc(50% - 4px); // 32vh was
-  margin-top: 4px;
+  height: calc(50% - 0.4rem); // 32vh was
+  margin-top: 0.4rem;
   width: 100%;
   justify-content: flex-start;
   flex-direction: column;
-  overflow: scroll;
+  overflow: hidden;
+  box-shadow: 0px 0px 1.2rem rgba(8, 22, 58, 0.1);
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
@@ -222,7 +214,6 @@ export const TogglerContainer = styled(Grid)`
 `
 
 export const Toggler = styled.div`
-  min-width: 240px;
   overflow: hidden;
   width: auto;
   min-height: 100%;
@@ -234,8 +225,6 @@ export const Toggler = styled.div`
   flex-grow: 100;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 1rem 0 0;
-  margin-right: 8px;
 `
 
 export const StyledSwitch = styled(Button)`
@@ -256,8 +245,9 @@ export const Container = styled(Grid)`
   // - ( menu + margin )
   height: calc(100vh - 6.4vh - 1rem);
   width: 100%;
+  padding: 1rem;
   margin: 0;
-  background-color: #e0e5ec;
+  background-color: #f9fbfd;
 `
 
 export const WatchItemWrapper = styled.div`

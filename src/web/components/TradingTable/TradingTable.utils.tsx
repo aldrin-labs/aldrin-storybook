@@ -252,12 +252,16 @@ export const combineOrderHistoryTable = (
       status,
       filled,
       average,
-      info: { orderId, stopPrice = 0, origQty = '0' },
+      info,
     } = el
 
     const triggerConditions = +stopPrice ? stopPrice : '-'
     // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
     const pair = symbol.split('_')
+
+    const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
+      ? info
+      : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
     return {
       id: `${orderId}${timestamp}${origQty}`,
@@ -625,7 +629,7 @@ export const updateOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
-  console.log('isEmptySubscription', isEmptySubscription)  
+  console.log('isEmptySubscription', isEmptySubscription)
   if (isEmptySubscription) {
     return previous
   }
@@ -639,14 +643,24 @@ export const updateOrderHistoryQuerryFunction = (
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   console.log('openOrderAlreadyExists', openOrderAlreadyExists)
-  console.log('subscriptionData.data.listenOrderHistory', subscriptionData.data.listenOrderHistory)
+  console.log(
+    'subscriptionData.data.listenOrderHistory',
+    subscriptionData.data.listenOrderHistory
+  )
   let result
 
   if (openOrderAlreadyExists) {
     const oldDataElement = prev.getOrderHistory[openOrderHasTheSameOrderIndex]
     const newDataElement = subscriptionData.data.listenOrderHistory
 
-    if (newDataElement.status !== 'open' && !(newDataElement.status === 'partially_filled' && oldDataElement.status === 'filled')) { // here we handling wrong order of subscribtion events
+    if (
+      newDataElement.status !== 'open' &&
+      !(
+        newDataElement.status === 'partially_filled' &&
+        oldDataElement.status === 'filled'
+      )
+    ) {
+      // here we handling wrong order of subscribtion events
       prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
         ...prev.getOrderHistory[openOrderHasTheSameOrderIndex],
         ...subscriptionData.data.listenOrderHistory,

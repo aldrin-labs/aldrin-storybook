@@ -266,47 +266,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
 
-    const firstValuePair =
-      stripDigitPlaces(funds[0].value) === null
-        ? funds[0].value
-        : formatNumberToUSFormat(stripDigitPlaces(funds[0].value))
-
-    const secondValuePair =
-      stripDigitPlaces(funds[1].value) === null
-        ? funds[1].value
-        : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
-
     return (
       <Container background={'transparent'}>
         <div>
           <GridContainer key={pair}>
             <Grid container style={{ borderBottom: '1px solid #e0e5ec' }}>
-              <Grid item container xs={12}>
-                <BalanceTitle item xs={4}>
-                  balances
-                </BalanceTitle>
-
-                <BalanceItem item xs={4}>
-                  <TradingItemTitle>{pair[0]}</TradingItemTitle>
-                  <TradingItemValue>
-                    {funds[0].quantity.toFixed(8)}
-                    <TradingItemSubValue>
-                      {`$${firstValuePair}`}
-                    </TradingItemSubValue>
-                  </TradingItemValue>
-                </BalanceItem>
-
-                <BalanceItem item xs={4} lastItem>
-                  <TradingItemTitle>{pair[1]}</TradingItemTitle>
-                  <TradingItemValue>
-                    {funds[1].quantity.toFixed(8)}
-                    <TradingItemSubValue>
-                      {`$${secondValuePair}`}
-                    </TradingItemSubValue>
-                  </TradingItemValue>
-                </BalanceItem>
-              </Grid>
-
               <PaddingGrid item container xs={12}>
                 <TradeInputContainer
                   title={`Amount`}

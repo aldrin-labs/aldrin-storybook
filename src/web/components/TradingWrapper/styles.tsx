@@ -1,13 +1,16 @@
+import React from 'react'
 import styled from 'styled-components'
-import { Card, Tabs, Tab, Button } from '@material-ui/core'
+import { Card, Tabs, Tab, Button, Grid } from '@material-ui/core'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { customAquaScrollBar } from '../cssUtils'
 
-export const TablesBlockWrapper = styled(Card)`
+export const TablesBlockWrapper = styled(Grid)`
   width: 100%;
-  margin-bottom: 4px;
-  height: calc(100% - 4px);
+  height: 100%;
   border-radius: 0;
   padding-right: 0;
+  border: none;
+
   && {
     box-shadow: none !important;
   }
@@ -82,3 +85,25 @@ export const SellTab = styled(StyledTab)`
     background-color: ${(props) => (props.active ? '#B93B2B' : '#F2F4F6')};
   }
 `
+
+export const TerminalHeader = styled.div`
+  background-color: #f2f4f6;
+  border-bottom: 0.1rem solid #e0e5ec;
+`
+
+export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
+  <BtnCustom
+    fontSize="1.3rem"
+    padding=".35rem 4rem .1rem 4rem"
+    btnWidth="auto"
+    height="auto"
+    btnColor={isActive ? '#fff' : '#16253D'}
+    backgroundColor={isActive ? '#5C8CEA' : '#f2f4f6'}
+    borderColor="#e0e5ec"
+    borderWidth="0"
+    borderRadius="0"
+    {...rest}
+  >
+    {children}
+  </BtnCustom>
+))``

@@ -120,7 +120,11 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
             key: 'tradehistory_head',
           }}
         />
-        <Body data-e2e="tradeHistory__body" background={background.default}>
+        <Body
+          data-e2e="tradeHistory__body"
+          background={background.default}
+          height="45vh"
+        >
           {data.map((ticker: ITicker, i: number) => (
             <OptimizedRow
               key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${
