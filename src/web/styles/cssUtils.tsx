@@ -10,7 +10,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+    scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -97,7 +97,7 @@ export const GlobalStyle = createGlobalStyle`
  
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+    scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
     height: 6px;
   }
 
@@ -178,7 +178,7 @@ export const StyledWrapperForDateRangePicker = styled.div`
     props.dateRangePadding || '6px 0'};
 
   & .DateInput {
-    width: 95px;
+    width: 9.5rem;
     background-color: transparent;
   }
 
@@ -191,10 +191,10 @@ export const StyledWrapperForDateRangePicker = styled.div`
     font-size: 1.4rem;
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     font-size: ${(props: { fontSize?: string }) =>
-      props.fontSize ? props.fontSize : ''};
+    props.fontSize ? props.fontSize : ''};
     font-weight: 400;
     height: ${(props: { dateInputHeight?: string }) =>
-      props.dateInputHeight || '36px'};
+    props.dateInputHeight || '36px'};
     color: #16253d;
     background: #fff;
     border: 1px solid #e0e5ec;
@@ -205,14 +205,14 @@ export const StyledWrapperForDateRangePicker = styled.div`
 
   & .DateRangePicker_picker {
     font-size: ${(props: { fontSize?: string }) =>
-      props.fontSize ? props.fontSize : ''};
+    props.fontSize ? props.fontSize : ''};
     font-family: ${(props: { fontFamily: string }) => props.fontFamily};
     z-index: ${(props: { zIndexPicker: number }) => props.zIndexPicker || 10};
   }
 
   & .DateRangePickerInput {
     background: ${(props: { background: string }) =>
-      props.background || 'transparent'};
+    props.background || 'transparent'};
     border: 0;
   }
 

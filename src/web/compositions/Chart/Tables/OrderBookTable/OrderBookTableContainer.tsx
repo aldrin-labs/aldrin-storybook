@@ -20,7 +20,7 @@ import {
 import { transformOrderbookData } from '../../utils'
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
-import { MiddlePrice } from './Tables/Bids/MiddlePrice'
+import { LastTradeContainer, LastTradeValue } from './Tables/Bids/MiddlePrice'
 import ComingSoon from '@sb/components/ComingSoon'
 import { IProps, IState } from './OrderBookTableContainer.types'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -60,15 +60,15 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const asks =
       order.type === 'ask'
         ? sortDesc(
-            removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price'))
-          )
+          removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price'))
+        )
         : state.asks
 
     let bids =
       order.type === 'bid'
         ? sortDesc(
-            removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price'))
-          )
+          removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price'))
+        )
         : state.bids
 
     console.log('statefrom', asks, bids)
@@ -190,7 +190,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           }}
         /> */}
 
-        <MiddlePrice>$10801.0</MiddlePrice>
+        <LastTradeContainer>
+          <LastTradeValue>$10801.00</LastTradeValue></LastTradeContainer>
 
         <SpreadTable
           data={bids}

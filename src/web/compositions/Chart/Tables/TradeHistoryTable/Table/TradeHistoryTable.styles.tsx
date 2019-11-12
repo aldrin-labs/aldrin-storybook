@@ -22,7 +22,7 @@ export const StyledRow = styled(Row)`
 
 export const StyledTitle = styled(TypographyFullWidth)`
   line-height: 18px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #16253d;
   font-weight: bold;
   padding: 6px 0 0 1rem;
