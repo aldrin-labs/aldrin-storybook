@@ -17,6 +17,7 @@ export const TablesBlockWrapper = styled(Grid)`
 `
 
 export const TerminalContainer = styled.div`
+  height: 100%;
   padding: 5px;
 `
 
@@ -46,7 +47,7 @@ export const StyledTab = styled(Button)`
   min-height: 3rem;
   font-size: 1.3rem;
   font-weight: bold;
-  font-family: Trebuchet MS;
+  
   letter-spacing: 1.5px;
   transition: 0.3s all;
 
@@ -91,6 +92,49 @@ export const TerminalHeader = styled.div`
   border-bottom: 0.1rem solid #e0e5ec;
 `
 
+export const BalanceTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: .8rem;
+  padding: .5rem .8rem;
+  border-radius: .8rem;
+  background-color: #e0e5ec;
+`
+
+export const BalanceValues = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 2.5rem;
+  padding: 0 1rem;
+`
+
+export const BalanceQuantity = styled.span`
+  color: #16253D;
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 0.075rem;
+`
+
+export const BalanceValue = styled.span`
+  font-size: 1rem;
+  color: #29AC80;
+`
+
+export const BalanceSymbol = styled.span`
+  color: #7284A0;
+  font-size: 1.2rem;
+`
+
+export const TerminalMainGrid = styled(Grid)`
+  height: calc(100% - 3.5rem);
+`
+
+export const FullHeightGrid = styled(Grid)`
+  height: 100%;
+`
+
 export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   <BtnCustom
     fontSize="1.3rem"
@@ -107,3 +151,4 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
     {children}
   </BtnCustom>
 ))``
+

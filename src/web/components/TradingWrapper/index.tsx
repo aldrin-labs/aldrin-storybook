@@ -1,38 +1,36 @@
 import React from 'react'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-
 import { Grid } from '@material-ui/core'
-
 import { compose } from 'recompose'
 
+import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
 import TraidingTerminal from '../TraidingTerminal'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 
 import {
   TablesBlockWrapper,
   TerminalContainer,
+  TerminalMainGrid,
+  FullHeightGrid,
   TerminalHeader,
   TerminalModeButton,
-  TabsContainer,
-  TabsTypeContainer,
-  StyledTab,
-  BuyTab,
-  SellTab,
+  BalanceTitle,
+  BalanceSymbol,
+  BalanceValues,
+  BalanceQuantity,
+  BalanceValue,
 } from './styles'
 
+import {
+  addMainSymbol,
+} from '@sb/components/index'
+import SvgIcon from '@sb/components/SvgIcon'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
-
-import {
-  TradingItemTitle,
-  TradingItemValue,
-  TradingItemSubValue,
-} from '@sb/components/TraidingTerminal/styles'
-
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 
 class SimpleTabs extends React.Component {
   state = {
@@ -54,7 +52,7 @@ class SimpleTabs extends React.Component {
   }
 
   render() {
-    const { operation, mode, percentage } = this.state
+    const { mode, percentage } = this.state
     const {
       pair,
       funds,
@@ -91,7 +89,7 @@ class SimpleTabs extends React.Component {
               container
               xs={12}
               direction="column"
-              style={{ height: 'calc(100% - 3rem)', padding: '.8rem .3rem' }}
+              style={{ height: 'calc(100% - 3rem)', padding: '0 .3rem' }}
             >
               <Grid
                 item
@@ -101,22 +99,40 @@ class SimpleTabs extends React.Component {
                   maxWidth: '100%',
                 }}
               >
-                <TradingItemTitle>{pair[0]}</TradingItemTitle>
-                <TradingItemValue>
-                  {funds[0].quantity.toFixed(8)}
-                  <TradingItemSubValue>
-                    {`$${firstValuePair}`}
-                  </TradingItemSubValue>
-                </TradingItemValue>
+                <BalanceTitle>
+                  <BalanceSymbol>{pair[0]}</BalanceSymbol>
+                  <SvgIcon
+                    width={`1.7rem`}
+                    height={`1.7rem`}
+                    src={importCoinIcon(pair[0])}
+                  />
+                </BalanceTitle>
+                <BalanceValues>
+                  <BalanceQuantity>
+                    {funds[0].quantity.toFixed(8)}
+                  </BalanceQuantity>
+                  <BalanceValue>
+                    {addMainSymbol(firstValuePair, true)}
+                  </BalanceValue>
+                </BalanceValues>
               </Grid>
               <Grid item xs={6} style={{ maxWidth: '100%' }}>
-                <TradingItemTitle>{pair[1]}</TradingItemTitle>
-                <TradingItemValue>
-                  {funds[1].quantity.toFixed(8)}
-                  <TradingItemSubValue>
-                    {`$${secondValuePair}`}
-                  </TradingItemSubValue>
-                </TradingItemValue>
+                <BalanceTitle>
+                  <BalanceSymbol>{pair[1]}</BalanceSymbol>
+                  <SvgIcon
+                    width={`1.7rem`}
+                    height={`1.7rem`}
+                    src={importCoinIcon(pair[1])}
+                  />
+                </BalanceTitle>
+                <BalanceValues>
+                  <BalanceQuantity>
+                    {funds[1].quantity.toFixed(8)}
+                  </BalanceQuantity>
+                  <BalanceValue>
+                    {addMainSymbol(secondValuePair, true)}
+                  </BalanceValue>
+                </BalanceValues>
               </Grid>
             </Grid>
           </CustomCard>
@@ -147,8 +163,8 @@ class SimpleTabs extends React.Component {
               </TerminalModeButton>
             </TerminalHeader>
 
-            <Grid xs={12} container>
-              <Grid xs={6} item>
+            <TerminalMainGrid xs={12} container>
+              <FullHeightGrid xs={6} item>
                 <TerminalContainer>
                   <TraidingTerminal
                     byType={'buy'}
@@ -167,9 +183,9 @@ class SimpleTabs extends React.Component {
                     showOrderResult={showOrderResult}
                   />
                 </TerminalContainer>
-              </Grid>
+              </FullHeightGrid>
 
-              <Grid xs={6} item>
+              <FullHeightGrid xs={6} item>
                 <TerminalContainer>
                   <TraidingTerminal
                     byType={'sell'}
@@ -188,8 +204,8 @@ class SimpleTabs extends React.Component {
                     showOrderResult={showOrderResult}
                   />
                 </TerminalContainer>
-              </Grid>
-            </Grid>
+              </FullHeightGrid>
+            </TerminalMainGrid>
           </CustomCard>
         </Grid>
       </TablesBlockWrapper>
