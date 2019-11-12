@@ -1,29 +1,23 @@
 import React from 'react'
-import Joyride from 'react-joyride'
+// import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
 import { Grid, Hidden } from '@material-ui/core'
 
-import { OrderBookTable, Aggregation, TradeHistoryTable } from './Tables/Tables'
+// import { Aggregation } from './Tables/Tables'
 import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
-import DepthChartComponent from './DepthChart/DepthChart'
 import DefaultView from './DefaultView/StatusWrapper'
 
-import { singleChartSteps } from '@sb/config/joyrideSteps'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
+// import { singleChartSteps } from '@sb/config/joyrideSteps'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 // import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 // import { SingleChart } from '@sb/components/Chart'
 
-import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
-import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-
-import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
-import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { CHANGE_ACTIVE_EXCHANGE } from '@core/graphql/mutations/chart/changeActiveExchange'
 import { CHANGE_VIEW_MODE } from '@core/graphql/mutations/chart/changeViewMode'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
@@ -33,183 +27,24 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
-import {
-  updateTradeHistoryQuerryFunction,
-  updateOrderBookQuerryFunction,
-} from '@core/utils/chartPageUtils'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withAuth from '@core/hoc/withAuth'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from './Inputs/SelectExchange/SelectExchange'
-// import ComingSoon from '@sb/components/ComingSoon'
 
 import {
-  DepthChartContainer,
   MainContainer,
   TablesContainer,
-  Toggler,
-  StyledSwitch,
   TogglerContainer,
-  OrderbookContainer,
-  TradeHistoryWrapper,
-  WatchListContainer,
   PanelWrapper,
   PanelCard,
   PanelCardTitle,
   PanelCardValue,
   PanelCardSubValue,
-  WatchItemWrapper,
-  ScrollContainer,
-  SubvaluesContainer,
-  WatchSubvalue,
-  WatchLabel,
   CustomCard,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
-const WatchItem = ({
-  label,
-  subvalues,
-}: {
-  label: string
-  subvalues: {
-    price: number | string
-    percentages: string
-    total: number | string
-  }
-}) => {
-  return (
-    <WatchItemWrapper>
-      <WatchLabel>{label}</WatchLabel>
-      <SubvaluesContainer>
-        <WatchSubvalue color={'#7284A0'}>{subvalues.price}</WatchSubvalue>
-        <WatchSubvalue color={'#2F7619'}>{subvalues.percentages}</WatchSubvalue>
-        <WatchSubvalue color={'#7284A0'}>{subvalues.total}</WatchSubvalue>
-      </SubvaluesContainer>
-    </WatchItemWrapper>
-  )
-}
-
-const WatchList = () => (
-  <WatchListContainer>
-    <ChartCardHeader>Watchlist</ChartCardHeader>
-    {/* query renderer for watchlist */}
-    <ScrollContainer style={{ overflowY: 'auto' }}>
-      {new Array(10)
-        .fill(
-          {
-            label: 'Bitfinex BTCUSDT',
-            subvalues: {
-              price: 10084.0,
-              percentages: '+4.23%',
-              total: '10.94K',
-            },
-          },
-          0,
-          10
-        )
-        .map(({ label, subvalues }) => (
-          <WatchItem label={label} subvalues={subvalues} />
-        ))}
-    </ScrollContainer>
-  </WatchListContainer>
-)
-
-export const DepthChart = ({ chartProps, changeTable, exchange, symbol }) => {
-  return (
-    <DepthChartContainer>
-      <ChartCardHeader>Depth chart</ChartCardHeader>
-      <QueryRenderer
-        component={DepthChartComponent}
-        withOutSpinner
-        query={ORDERS_MARKET_QUERY}
-        variables={{ symbol, exchange }}
-        subscriptionArgs={{
-          subscription: MARKET_ORDERS,
-          variables: { symbol, exchange },
-          updateQueryFunction: updateOrderBookQuerryFunction,
-        }}
-        {...{
-          onButtonClick: changeTable,
-          ...chartProps,
-          key: 'depth_chart_query_render',
-        }}
-      />
-    </DepthChartContainer>
-  )
-}
-
-export const OrderBook = ({
-  chartProps,
-  changeTable,
-  aggregation,
-  pair,
-  activeExchange,
-  exchange,
-  symbol,
-  quote,
-}) => (
-  <OrderbookContainer key={`orderbook_table`}>
-    <QueryRenderer
-      component={OrderBookTable}
-      withOutSpinner
-      query={ORDERS_MARKET_QUERY}
-      variables={{ symbol, exchange }}
-      subscriptionArgs={{
-        subscription: MARKET_ORDERS,
-        variables: { symbol, exchange },
-        updateQueryFunction: updateOrderBookQuerryFunction,
-      }}
-      {...{
-        quote,
-        symbol,
-        activeExchange,
-        currencyPair: pair,
-        aggregation,
-        onButtonClick: changeTable,
-        setOrders: chartProps.setOrders,
-        ...chartProps,
-        key: 'orderbook_table_query_render',
-      }}
-    />
-  </OrderbookContainer>
-)
-
-export const TradeHistory = ({
-  showTableOnMobile,
-  symbol,
-  exchange,
-  quote,
-  activeExchange,
-  pair,
-}) => (
-  <TradeHistoryWrapper
-    key={`tradehistory_table`}
-    className="ExchangesTable"
-    variant={{
-      show: showTableOnMobile === 'TRADE',
-    }}
-  >
-    <QueryRenderer
-      component={TradeHistoryTable}
-      withOutSpinner
-      query={MARKET_QUERY}
-      variables={{ symbol, exchange }}
-      subscriptionArgs={{
-        subscription: MARKET_TICKERS,
-        variables: { symbol, exchange },
-        updateQueryFunction: updateTradeHistoryQuerryFunction,
-      }}
-      {...{
-        quote,
-        activeExchange,
-        currencyPair: pair,
-        key: 'tradeyistory_table_query_render',
-      }}
-    />
-  </TradeHistoryWrapper>
-)
 
 @withTheme
 class Chart extends React.Component<IProps, IState> {
@@ -385,21 +220,6 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   renderToggler = () => {
-    const {
-      changeViewModeMutation,
-      getChartDataQuery: {
-        chart: {
-          currencyPair: { pair },
-          view,
-        },
-        multichart: { charts },
-      },
-      addChartMutation,
-    } = this.props
-    const isSingleChart = view === 'default'
-
-    return null
-
     // <Toggler>
     //   <StyledSwitch
     //     data-e2e="switchChartPageMode"
@@ -563,7 +383,7 @@ class Chart extends React.Component<IProps, IState> {
             firstHalfText={'single chart'}
             secondHalfText={'multichart'}
             activeHalf={'first'}
-            changeHalf={() => {}}
+            changeHalf={() => { }}
             buttonAdditionalStyle={{ height: '100%', padding: '0 1rem' }}
           />
 

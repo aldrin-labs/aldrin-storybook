@@ -83,10 +83,9 @@ class FundsTable extends React.PureComponent<IProps> {
             color: '#16253D',
           },
           cell: {
-            color: '#16253D',
-            fontSize: '1.3rem', // 1.2 if bold
-            // fontWeight: 'bold',
-            fontFamily: 'Trebuchet MS',
+            color: '#7284A0',
+            fontSize: '1rem', // 1.2 if bold
+            fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
           },

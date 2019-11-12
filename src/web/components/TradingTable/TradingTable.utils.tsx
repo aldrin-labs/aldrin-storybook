@@ -18,6 +18,10 @@ import {
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
+import {
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 
@@ -25,43 +29,43 @@ export const getTableBody = (tab: string) =>
   tab === 'openOrders'
     ? openOrdersBody
     : tab === 'orderHistory'
-    ? orderHistoryBody
-    : tab === 'tradeHistory'
-    ? tradeHistoryBody
-    : tab === 'funds'
-    ? fundsBody
-    : []
+      ? orderHistoryBody
+      : tab === 'tradeHistory'
+        ? tradeHistoryBody
+        : tab === 'funds'
+          ? fundsBody
+          : []
 
 export const getTableHead = (tab: string): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames
     : tab === 'orderHistory'
-    ? orderHistoryColumnNames
-    : tab === 'tradeHistory'
-    ? tradeHistoryColumnNames
-    : tab === 'funds'
-    ? fundsColumnNames
-    : []
+      ? orderHistoryColumnNames
+      : tab === 'tradeHistory'
+        ? tradeHistoryColumnNames
+        : tab === 'funds'
+          ? fundsColumnNames
+          : []
 
 export const getEndDate = (stringDate: string) =>
   stringDate === '1Day'
     ? moment().subtract(1, 'days')
     : stringDate === '1Week'
-    ? moment().subtract(1, 'weeks')
-    : stringDate === '1Month'
-    ? moment().subtract(1, 'months')
-    : moment().subtract(3, 'months')
+      ? moment().subtract(1, 'weeks')
+      : stringDate === '1Month'
+        ? moment().subtract(1, 'months')
+        : moment().subtract(3, 'months')
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
     ? 'You have no open orders.'
     : tab === 'orderHistory'
-    ? 'You have no order history.'
-    : tab === 'tradeHistory'
-    ? 'You have no trades.'
-    : tab === 'funds'
-    ? 'You have no Funds.'
-    : 'You have no assets'
+      ? 'You have no order history.'
+      : tab === 'tradeHistory'
+        ? 'You have no trades.'
+        : tab === 'funds'
+          ? 'You have no Funds.'
+          : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
   /buy/i.test(orderStringType)
@@ -120,12 +124,7 @@ export const combineOpenOrdersTable = (
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {pair[0]}
-              <Arrow
-                color={'inherit'}
-                style={{ color: '#2F7619', width: '1.5rem' }}
-              />
-              {pair[1]}
+              {pair[0]}/{pair[1]}
             </div>
           ),
           contentToSort: symbol,
@@ -138,7 +137,7 @@ export const combineOpenOrdersTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: side === 'buy' ? '#2F7619' : '#B93B2B',
+                  color: side === 'buy' ? '#29AC80' : '#DD6956',
                 }}
               >
                 {side}
@@ -161,27 +160,9 @@ export const combineOpenOrdersTable = (
           },
         },
         price: {
-          render: `${price} ${pair[1]}`,
+          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
-        },
-        quantity: {
-          render: (
-            <div>
-              <span
-                style={{
-                  color: '#2F7619',
-                  fontSize: '1.3rem',
-                  display: 'block',
-                  whiteSpace: 'nowrap',
-                }}
-              >{`${+origQty} ${pair[0]}`}</span>
-              <span
-                style={{ color: '#7284A0', fontSize: '.9rem' }}
-              >{`${+origQty} ${pair[0]}`}</span>
-            </div>
-          ),
-          contentToSort: +origQty,
         },
         // filled: {
         //   render: `${filledQuantityProcessed} %`,
@@ -189,10 +170,15 @@ export const combineOpenOrdersTable = (
         //   contentToSort: filledQuantityProcessed,
         // },
         // TODO: We should change "total" to total param from backend when it will be ready
-        total: {
+        quantity: {
+          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
+          contentToSort: +origQty,
+        },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        amount: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: '-',
-          contentToSort: 0,
+          render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+          contentToSort: origQty * price,
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
@@ -222,6 +208,7 @@ export const combineOpenOrdersTable = (
               key={i}
               variant="outlined"
               size={`small`}
+              style={{ color: '#DD6956', borderColor: '#DD6956' }}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
             >
               Cancel
@@ -268,12 +255,7 @@ export const combineOrderHistoryTable = (
       pair: {
         render: (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {pair[0]}
-            <Arrow
-              color={'inherit'}
-              style={{ color: '#2F7619', width: '1.5rem' }}
-            />
-            {pair[1]}
+            {pair[0]}/{pair[1]}
           </div>
         ),
         contentToSort: symbol,
@@ -286,7 +268,7 @@ export const combineOrderHistoryTable = (
               style={{
                 display: 'block',
                 textTransform: 'uppercase',
-                color: side === 'buy' ? '#2F7619' : '#B93B2B',
+                color: side === 'buy' ? '#29AC80' : '#DD6956',
               }}
             >
               {side}
@@ -315,7 +297,7 @@ export const combineOrderHistoryTable = (
       //   contentToSort: +average,
       // },
       price: {
-        render: `${price} ${pair[1]}`,
+        render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
         style: { textAlign: 'left', whiteSpace: 'nowrap' },
         contentToSort: price,
       },
@@ -325,29 +307,14 @@ export const combineOrderHistoryTable = (
       //   contentToSort: filledQuantityProcessed,
       // },
       quantity: {
-        render: (
-          <div>
-            <span
-              style={{
-                color: '#2F7619',
-                fontSize: '1.3rem',
-                display: 'block',
-                whiteSpace: 'nowrap',
-              }}
-            >{`${+origQty} ${pair[0]}`}</span>
-            <span style={{ color: '#7284A0', fontSize: '.9rem' }}>{`${+(
-              origQty * price
-            ).toFixed(8)} ${pair[1]}`}</span>
-          </div>
-        ),
+        render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
         contentToSort: +origQty,
       },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: {
+      amount: {
         // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-        render: '-',
-
-        contentToSort: 0,
+        render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+        contentToSort: origQty * price,
       },
       // TODO: Not sure about triggerConditions
       triggerConditions: {
@@ -357,12 +324,12 @@ export const combineOrderHistoryTable = (
       },
       status: {
         render: status ? (
-          <span style={{ color: '#2F7619', textTransform: 'uppercase' }}>
+          <span style={{ color: status === 'canceled' ? '#DD6956' : '#29AC80', textTransform: 'uppercase' }}>
             {status.replace(/_/g, ' ')}
           </span>
         ) : (
-          '-'
-        ),
+            '-'
+          ),
         contentToSort: status,
       },
       date: {
@@ -408,12 +375,7 @@ export const combineTradeHistoryTable = (
       pair: {
         render: (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {pair[0]}
-            <Arrow
-              color={'inherit'}
-              style={{ color: '#2F7619', width: '1.5rem' }}
-            />
-            {pair[1]}
+            {pair[0]}/{pair[1]}
           </div>
         ),
         contentToSort: symbol,
@@ -425,7 +387,7 @@ export const combineTradeHistoryTable = (
               style={{
                 display: 'block',
                 textTransform: 'uppercase',
-                color: side === 'buy' ? '#2F7619' : '#B93B2B',
+                color: side === 'buy' ? '#29AC80' : '#DD6956',
               }}
             >
               {side}
@@ -444,44 +406,28 @@ export const combineTradeHistoryTable = (
         contentToSort: side,
       },
       price: {
-        render: `${price} ${pair[1]}`,
+        render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
         style: { textAlign: 'left', whiteSpace: 'nowrap' },
         contentToSort: price,
       },
       quantity: {
-        render: (
-          <div>
-            <span
-              style={{
-                color: '#2F7619',
-                fontSize: '1.3rem',
-                display: 'block',
-                whiteSpace: 'nowrap',
-              }}
-            >{`${+amount} ${pair[0]}`}</span>
-            <span style={{ color: '#7284A0', fontSize: '.9rem' }}>{`${+(
-              amount * price
-            ).toFixed(8)} ${pair[1]}`}</span>
-          </div>
-        ),
-
-        contentToSort: amount,
+        render: `${stripDigitPlaces(amount, 8)} ${pair[0]}`,
+        contentToSort: +amount,
       },
       // TODO: We should change "total" to total param from backend when it will be ready
-      total: {
+      amount: {
         // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-        render: '-',
-
-        contentToSort: 0,
+        render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
+        contentToSort: amount * price,
       },
       fee: {
-        render: `${cost} ${currency}`,
+        render: `${stripDigitPlaces(cost, 8)} ${currency}`,
 
         contentToSort: cost,
       },
       status: {
         render: (
-          <span style={{ color: '#2F7619', textTransform: 'uppercase' }}>
+          <span style={{ color: '#29AC80', textTransform: 'uppercase' }}>
             succesful
           </span>
         ),
@@ -517,8 +463,8 @@ export const combineFundsTable = (
 ) => {
   const filtredFundsData = hideSmallAssets
     ? fundsData.filter(
-        (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
-      )
+      (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
+    )
     : fundsData
 
   const processedFundsData = filtredFundsData.map((el: FundsType) => {

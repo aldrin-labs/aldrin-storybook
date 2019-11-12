@@ -46,7 +46,7 @@ export const PanelCard = styled.div`
 
 export const PanelCardTitle = styled.span`
   display: block;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0.1rem;
   color: #7284a0;
 
@@ -57,17 +57,17 @@ export const PanelCardTitle = styled.span`
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  font-size: 1.3rem;
+  font-size: 1rem;
   color: ${(props) => props.color};
 
   @media (min-width: 1400px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `
 
 export const PanelCardSubValue = styled.span`
   padding-left: 0.4rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: ${(props) => props.color};
 `
 
@@ -219,7 +219,7 @@ export const Toggler = styled.div`
   min-height: 100%;
   background: #f9fbfd;
   font-weight: bold;
-  font-family: Trebuchet MS;
+  
   text-transform: uppercase;
   display: flex;
   flex-grow: 100;
@@ -247,6 +247,7 @@ export const Container = styled(Grid)`
   width: 100%;
   padding: 1rem;
   margin: 0;
+  font-family: DM Sans;
   background-color: #f9fbfd;
 `
 
@@ -281,6 +282,6 @@ export const WatchLabel = styled(CardTitle)`
 `
 
 export const WatchSubvalue = styled.span`
-  font-family: Trebuchet MS;
+  
   color: ${(props) => props.color};
 `
