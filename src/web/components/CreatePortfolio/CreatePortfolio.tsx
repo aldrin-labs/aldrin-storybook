@@ -4,7 +4,7 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import { withTheme } from '@material-ui/styles'
 
@@ -34,7 +34,7 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent)
 
-@withTheme()
+@withTheme
 class CreatePortfolio extends React.Component<IProps, IState> {
   state: IState = {
     open: false,

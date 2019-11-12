@@ -1,5 +1,5 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 // import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 // import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -36,7 +36,7 @@ const styles = (theme) => ({
   },
 })
 
-@withTheme()
+@withTheme
 class AccordionTable extends React.Component<IProps, IState> {
   state: IState = {
     expanded: 'panel1',

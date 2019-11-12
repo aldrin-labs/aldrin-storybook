@@ -1,6 +1,6 @@
 import React from 'react'
 import { IProps } from './ProgressBarWrapper.types'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import { Grid } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {

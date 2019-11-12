@@ -1,8 +1,8 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import { withTheme } from '@material-ui/styles'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import { ExpansionPanelDetails } from '@material-ui/core'
+import { ExpansionPanelSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import TablePanelSummary from './TablePanelSummary'
@@ -25,7 +25,7 @@ const styles = (theme) => ({
   },
 })
 
-@withTheme()
+@withTheme
 class RebalanceAccordionIndex extends React.Component {
   state = {
     // change it after we'll do indexes and social portfolios at rebalance

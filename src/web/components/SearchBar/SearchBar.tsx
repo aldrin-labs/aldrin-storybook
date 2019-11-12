@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-//import { withStyles } from '@material-ui/core/styles';
-// import { IProps, IState } from './RebalanceDialogAdd.types'
 
 import { SearchBarPanel, SearchBarIcon, SearchInputBase  } from "./SearchBar.styles";
 

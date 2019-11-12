@@ -97,7 +97,7 @@ const MemoizedHead = memo(() => (
   </>
 ))
 
-@withTheme()
+@withTheme
 class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
     const {

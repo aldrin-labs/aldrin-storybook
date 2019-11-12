@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, withWidth } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { GridFlex, TypographyCustom } from './ProgressBar.styles'
 
 import {

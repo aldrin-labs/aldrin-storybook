@@ -161,5 +161,5 @@ class BarChartComponent extends Component<IProps, IState> {
   }
 }
 
-export const BarChart = withTheme()(BarChartComponent)
+export const BarChart = withTheme(BarChartComponent)
 export default BarChart

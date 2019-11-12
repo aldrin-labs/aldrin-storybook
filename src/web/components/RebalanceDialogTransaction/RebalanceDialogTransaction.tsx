@@ -1,5 +1,5 @@
 import React from 'react'
-// import { withStyles } from '@material-ui/core/styles'
+// import { withStyles } from '@material-ui/styles'
 // import MuiDialogContent from '@material-ui/core/DialogContent'
 // import Timer from 'react-compound-timer'
 
@@ -27,7 +27,7 @@ import AccordionTable from './AccordionTable'
 import * as UTILS from './utils'
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
-@withTheme()
+@withTheme
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   state: IState = {
     isFinished: false,

@@ -34,4 +34,4 @@ const TradingTabs = ({ tab, handleTabChange }: IProps) => (
   </>
 )
 
-export default withTheme()(TradingTabs)
+export default withTheme(TradingTabs)

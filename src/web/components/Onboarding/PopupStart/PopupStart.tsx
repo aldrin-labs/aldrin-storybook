@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import CubeLogo from '@icons/auth0Logo.png'
 
@@ -24,7 +24,7 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent)
 
-@withTheme()
+@withTheme
 class PopupStart extends React.Component<IProps, IState> {
   state: IState = {
     isSelected: true,

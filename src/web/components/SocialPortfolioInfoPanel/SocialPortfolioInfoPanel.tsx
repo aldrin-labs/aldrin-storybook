@@ -10,7 +10,7 @@ import {
   Link,
 } from './SocialPortfolioInfoPanel.styles'
 import { Grid } from '@material-ui/core'
-import { withTheme } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 
 const getOwner = (str: string) => {
   if (!str) {
@@ -22,7 +22,7 @@ const getOwner = (str: string) => {
   return (b && b[0]) || 'public'
 }
 
-@withTheme()
+@withTheme
 class SocialPortfolioInfoPanel extends Component {
   state = {
     rating: 0,
