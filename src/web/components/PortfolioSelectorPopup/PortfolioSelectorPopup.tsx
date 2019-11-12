@@ -15,7 +15,7 @@ import {
   PortfolioSelectorPopupMask,
 } from './PortfolioSelectorPopup.styles'
 
-@withTheme()
+@withTheme
 class PortfolioSelectorPopup extends Component {
   state = {
     isPopupOpen: false,

@@ -12,7 +12,7 @@ import { SWrapper } from './Login.styles'
 import { withTheme } from '@material-ui/styles'
 import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInProcessOfLoginin } from '@core/utils/errorsConfig'
 
-@withTheme()
+@withTheme
 class LoginQuery extends React.Component<Props> {
   lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
     ...auth0Options,

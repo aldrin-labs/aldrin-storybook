@@ -16,7 +16,7 @@ import { updateTooltipSettings } from '@core/graphql/mutations/user/updateToolti
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
-@withTheme()
+@withTheme
 class PortfolioTableIndustries extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,

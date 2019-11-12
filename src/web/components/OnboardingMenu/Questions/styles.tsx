@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core'
 
 import styled from 'styled-components'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 
 const styles = theme => ({

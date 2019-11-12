@@ -151,7 +151,7 @@ const signalsSortOptions = [
   },
 ]
 
-@withTheme()
+@withTheme
 class SocialPage extends React.Component {
   state = {
     selectedSignal: 0,

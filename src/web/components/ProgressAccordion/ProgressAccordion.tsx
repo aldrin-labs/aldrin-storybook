@@ -1,7 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
-import classNames from 'classnames'
+import { withStyles } from '@material-ui/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 
@@ -167,4 +166,4 @@ function ProgressAccordion(props) {
   )
 }
 
-export default compose(withStyles(styles), withWidth())(ProgressAccordion)
+export default compose(withStyles(styles), withWidth(), )(ProgressAccordion)

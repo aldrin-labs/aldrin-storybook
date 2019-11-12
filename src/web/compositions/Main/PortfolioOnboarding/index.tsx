@@ -103,7 +103,7 @@ const Onboarding = ({
 }
 
 export default compose(
-  withTheme(),
+  withTheme,
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',

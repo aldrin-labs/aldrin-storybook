@@ -214,4 +214,4 @@ class LayoutSelectorComponent extends Component {
   }
 }
 
-export default withTheme()(LayoutSelectorComponent)
+export default withTheme(LayoutSelectorComponent)

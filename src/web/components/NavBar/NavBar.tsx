@@ -241,4 +241,4 @@ const NavBarRaw: SFC<Props> = ({
   )
 }
 
-export const NavBar = compose(withTheme())(NavBarRaw)
+export const NavBar = withTheme(NavBarRaw)

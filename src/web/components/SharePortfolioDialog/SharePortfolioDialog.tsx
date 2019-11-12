@@ -47,7 +47,7 @@ const tradeFrequencies = [
   'Hourly',
 ]
 
-@withTheme()
+@withTheme
 export default class SharePortfolioDialog extends React.Component<
   IProps,
   IState

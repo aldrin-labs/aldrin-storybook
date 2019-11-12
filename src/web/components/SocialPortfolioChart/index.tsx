@@ -37,4 +37,4 @@ class SocialPortfolioChart extends Component {
     }
 }
 
-export default withTheme()(SocialPortfolioChart)
+export default withTheme(SocialPortfolioChart)

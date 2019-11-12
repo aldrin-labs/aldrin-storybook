@@ -53,9 +53,9 @@
   },
   "dependencies": {
     "@material-ui/core": "^3.9.1",
-    "@material-ui/icons": "^3.0.1",
+    "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^3.0.0-alpha.23",
-    "@material-ui/styles": "^3.0.0-alpha.3",
+    "@material-ui/styles": "^4.6.0",
     "@types/react": "16.4.18",
     "@types/react-dom": "^16.0.9",
     "@types/react-select": "^2.0.6",
