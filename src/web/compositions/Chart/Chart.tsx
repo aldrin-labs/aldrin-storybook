@@ -90,7 +90,7 @@ const WatchItem = ({
   )
 }
 
-@withTheme()
+@withTheme
 class Chart extends React.Component<IProps, IState> {
   state: IState = {
     aggregation: 0.01,

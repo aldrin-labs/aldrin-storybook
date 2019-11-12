@@ -74,7 +74,7 @@ const MemoizedRow = memo(
   (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
 )
 
-@withTheme()
+@withTheme
 class SpreadTable extends PureComponent<IProps> {
   render() {
     const {

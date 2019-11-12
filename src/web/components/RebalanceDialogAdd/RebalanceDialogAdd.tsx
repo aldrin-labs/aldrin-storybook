@@ -1,5 +1,5 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import MuiDialogActions from '@material-ui/core/DialogActions'
@@ -73,7 +73,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions)
 
-@withTheme()
+@withTheme
 class RebalanceDialogAdd extends React.Component<IProps, IState> {
   state: IState = {
     open: false,

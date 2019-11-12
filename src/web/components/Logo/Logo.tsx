@@ -21,4 +21,4 @@ const Logo = ({
   )
 }
 
-export default withTheme()(Logo)
+export default withTheme(Logo)

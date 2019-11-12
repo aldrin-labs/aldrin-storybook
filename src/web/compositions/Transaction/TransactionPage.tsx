@@ -61,7 +61,7 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 import { transactionsPageSteps } from '@sb/config/joyrideSteps'
 import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
 
-@withTheme()
+@withTheme
 class TransactionPage extends React.PureComponent {
   state = {
     includeExchangeTransactions: true,

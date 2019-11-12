@@ -44,7 +44,7 @@ const MemoHead = memo(() => (
   </>
 ))
 
-@withTheme()
+@withTheme
 class OrderBookTable extends PureComponent<IProps> {
   render() {
     const {

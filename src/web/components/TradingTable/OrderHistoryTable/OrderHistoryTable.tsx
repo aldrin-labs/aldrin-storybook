@@ -17,7 +17,7 @@ import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme()
+@withTheme
 class OrderHistoryTable extends React.PureComponent<IProps> {
   state: IState = {
     orderHistoryProcessedData: [],

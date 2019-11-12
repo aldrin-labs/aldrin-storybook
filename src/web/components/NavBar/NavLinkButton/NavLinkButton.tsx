@@ -1,5 +1,5 @@
 import React from 'react'
-import { withTheme } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 import { Theme } from '@material-ui/core/styles'
 
 import { SButton } from './NavLinkButton.styles'
@@ -35,4 +35,4 @@ const NavLinkButton = ({
   )
 }
 
-export default withTheme()(NavLinkButton)
+export default withTheme(NavLinkButton)
