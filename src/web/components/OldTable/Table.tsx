@@ -8,7 +8,7 @@ export const Table = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  max-height: calc(100vh - 59px - 80px);
+  max-height: 100%;
   overflow-y: hidden;
 
   @media (max-width: 1080px) {
@@ -34,7 +34,7 @@ export const Title = styled.div`
 
   @media (max-width: 1080px) {
     justify-content: space-between;
-}
+  }
 `
 
 export const Body = styled.ul`

@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { CSSProperties } from 'jss/css'
 
 const Container = styled.div`
+  display: flex;
   margin: 0 1rem;
 `
 
@@ -19,6 +21,7 @@ const StyledButton = styled(({ isDisabled, ...rest }) => (
     {...rest}
   />
 ))`
+  white-space: nowrap;
   cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};
   letter-spacing: 0.15rem;
 
@@ -39,12 +42,14 @@ const FirstHalfButton = styled(StyledButton)`
   border-top-left-radius: 1.3rem;
   border-bottom-left-radius: 1.3rem;
   padding-left: 0.8rem;
+  ${(props) => props.buttonAdditionalStyle}
 `
 
 const SecondHalfButton = styled(StyledButton)`
   border-top-right-radius: 1.3rem;
   border-bottom-right-radius: 1.3rem;
   padding-right: 0.5rem;
+  ${(props) => props.buttonAdditionalStyle}
 `
 
 const PillowButton = ({
@@ -52,11 +57,13 @@ const PillowButton = ({
   secondHalfText,
   activeHalf,
   changeHalf,
+  buttonAdditionalStyle,
 }: {
   firstHalfText: string
   secondHalfText: string
   activeHalf: string
   changeHalf: () => void
+  buttonAdditionalStyle: CSSProperties
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
@@ -65,12 +72,14 @@ const PillowButton = ({
       <FirstHalfButton
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
+        buttonAdditionalStyle={buttonAdditionalStyle}
       >
         {firstHalfText}
       </FirstHalfButton>
       <SecondHalfButton
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
+        buttonAdditionalStyle={buttonAdditionalStyle}
       >
         {secondHalfText}
       </SecondHalfButton>
