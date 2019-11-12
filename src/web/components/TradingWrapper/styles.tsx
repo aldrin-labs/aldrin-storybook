@@ -108,13 +108,19 @@ export const BalanceValues = styled.div`
   align-items: flex-end;
   margin-top: 2.5rem;
   padding: 0 1rem;
+  text-align: center;
 `
 
 export const BalanceQuantity = styled.span`
   color: #16253D;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: 0.075rem;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
 `
 
 export const BalanceValue = styled.span`

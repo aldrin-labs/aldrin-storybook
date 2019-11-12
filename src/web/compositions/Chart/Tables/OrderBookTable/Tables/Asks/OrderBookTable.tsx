@@ -23,18 +23,18 @@ const MemoHead = memo(() => (
           </StyledTitle>
         </StyledHeadCell>
 
-        <StyledHeadCell isCenter={true}>
+        <StyledHeadCell>
           <StyledTitle variant="body2" color="default" align="left">
             Size
           </StyledTitle>
         </StyledHeadCell>
 
-        <StyledHeadCell>
+        <StyledHeadCell isCenter={true}>
           <StyledTitle
             variant="body2"
             color="default"
-            align="right"
-            style={{ paddingRight: 0 }}
+            align="left"
+          // style={{ paddingRight: 0 }}
           >
             Total
           </StyledTitle>

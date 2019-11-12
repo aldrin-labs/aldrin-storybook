@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { CSSProperties } from 'jss/css'
 
 const Container = styled.div`
   display: flex;

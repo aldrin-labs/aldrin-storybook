@@ -46,7 +46,7 @@ export const PanelCard = styled.div`
 
 export const PanelCardTitle = styled.span`
   display: block;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0.1rem;
   color: #7284a0;
 
@@ -57,17 +57,17 @@ export const PanelCardTitle = styled.span`
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  font-size: 1.3rem;
+  font-size: 1rem;
   color: ${(props) => props.color};
 
   @media (min-width: 1400px) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `
 
 export const PanelCardSubValue = styled.span`
   padding-left: 0.4rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: ${(props) => props.color};
 `
 

@@ -208,6 +208,7 @@ export const combineOpenOrdersTable = (
               key={i}
               variant="outlined"
               size={`small`}
+              style={{ color: '#DD6956', borderColor: '#DD6956' }}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
             >
               Cancel

@@ -4,6 +4,8 @@ import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
 
+import Slider from '@sb/components/Slider/Slider'
+
 import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
 import Yup from 'yup'
@@ -42,11 +44,10 @@ import {
   PriceContainer,
 } from './styles'
 
-import Slider from '@material-ui/lab/Slider'
 
-const TradeInputContainer = ({ title, value, onChange, coin }) => {
+const TradeInputContainer = ({ title, value, onChange, coin, style }) => {
   return (
-    <TradeInputBlock>
+    <TradeInputBlock style={style}>
       <InputTitle>{title}:</InputTitle>
       <InputWrapper>
         <TradeInput value={value} onChange={onChange} type="number" />
@@ -90,13 +91,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
 
-    console.log('value', numberValue)
-    console.log('formatted', toFixedTrunc(numberValue, decimals[index]))
-    console.log(
-      'condition',
-      value.toString().split('.')[1] &&
-      value.toString().split('.')[1].length > decimals[index]
-    )
+    // console.log('value', numberValue)
+    // console.log('formatted', toFixedTrunc(numberValue, decimals[index]))
+    // console.log(
+    //   'condition',
+    //   value.toString().split('.')[1] &&
+    //   value.toString().split('.')[1].length > decimals[index]
+    // )
 
     if (value === '') setFieldValue(fild, '', false)
     else if (numberValue.toString().includes('e')) {
@@ -236,6 +237,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       pair,
       funds,
+      percentage,
       changePercentage,
       operationType,
       priceType,
@@ -246,6 +248,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       errors,
       validateForm,
     } = this.props
+
 
     const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
@@ -316,20 +319,39 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             </PriceContainer>
           ) : null}
 
-          <PriceContainer item container xs={12}>
+          <Grid item container direction="column" justify="flex-end" xs={12}>
             <TradeInputContainer
               title={`Amount`}
               value={values.amount}
               onChange={this.onAmountChange}
               coin={pair[0]}
+              style={{ paddingBottom: '.8rem' }}
             />
-          </PriceContainer>
-          {/* 
-          <Grid xs={12}>
-            <Slider
 
+            <Slider
+              style={{ margin: '0 0 0 auto' }}
+              thumbWidth="1rem !important"
+              thumbHeight="1rem !important"
+              sliderWidth="70%"
+              sliderHeight=".2rem !important"
+              sliderHeightAfter=".2rem !important"
+              borderRadius="0"
+              borderRadiusAfter="0"
+              thumbBackground="#0B1FD1"
+              borderThumb={`0`}
+              trackAfterBackground="#E0E5EC"
+              trackBeforeBackground={'#5C8CEA'}
+              value={percentage}
+              onChange={(e, value) => {
+                changePercentage(value)
+                this.onPercentageClick(value / 100)
+              }}
+              min={0}
+              max={100}
+              step={25}
+              marks={[{ value: 0 }, { value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }]}
             />
-          </Grid> */}
+          </Grid>
 
           <TotalGrid xs={12} item container direction="column">
             <TradeInputContainer
@@ -346,37 +368,40 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             </FormError>
           </Grid>
 
-          <Grid xs={12}>
-            <PlaseOrderDialog
-              typeIsBuy={isBuyType}
-              handleSubmit={handleSubmit}
-              errors={errors}
-              pairsErrors={pairsErrors}
-              touched={touched}
-              amount={values.amount}
-              validateForm={validateForm}
-              battonText={`send ${operationType} order`}
-              text={
-                priceType === 'stop-limit'
-                  ? `If the last price drops to or below ${values.stop} ${
-                  pair[1]
-                  },
+          <Grid xs={12} container>
+            <Grid xs={1} item />
+            <Grid xs={11} item >
+              <PlaseOrderDialog
+                typeIsBuy={isBuyType}
+                handleSubmit={handleSubmit}
+                errors={errors}
+                pairsErrors={pairsErrors}
+                touched={touched}
+                amount={values.amount}
+                validateForm={validateForm}
+                battonText={`${operationType} ${pair[0]}`}
+                text={
+                  priceType === 'stop-limit'
+                    ? `If the last price drops to or below ${values.stop} ${
+                    pair[1]
+                    },
                   an order to ${isBuyType ? 'Buy' : 'Sell'} ${values.amount} ${
-                  pair[0]
-                  } at a price of ${values.limit} ${
-                  pair[1]
-                  } will be placed.`
-                  : priceType === 'limit'
-                    ? `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
-                    values.amount
-                    } ${pair[0]} at a price of ${values.price} ${
+                    pair[0]
+                    } at a price of ${values.limit} ${
                     pair[1]
                     } will be placed.`
-                    : `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
-                    values.amount
-                    } ${pair[0]} at a market price will be placed.`
-              }
-            />
+                    : priceType === 'limit'
+                      ? `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
+                      values.amount
+                      } ${pair[0]} at a price of ${values.price} ${
+                      pair[1]
+                      } will be placed.`
+                      : `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
+                      values.amount
+                      } ${pair[0]} at a market price will be placed.`
+                }
+              />
+            </Grid>
           </Grid>
         </GridContainer>
       </Container >

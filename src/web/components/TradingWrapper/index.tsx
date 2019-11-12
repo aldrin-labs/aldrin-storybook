@@ -36,7 +36,8 @@ class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
     mode: 'market',
-    percentage: '100',
+    percentageBuy: '0',
+    percentageSell: '0',
   }
 
   handleChangeMode = (mode: string) => {
@@ -47,12 +48,12 @@ class SimpleTabs extends React.Component {
     this.setState({ operation })
   }
 
-  handleChangePercentage = (percentage: string) => {
-    this.setState({ percentage })
+  handleChangePercentage = (percentage: string, mode: string) => {
+    this.setState({ [`percentage${mode}`]: percentage })
   }
 
   render() {
-    const { mode, percentage } = this.state
+    const { mode, percentageBuy, percentageSell } = this.state
     const {
       pair,
       funds,
@@ -170,8 +171,8 @@ class SimpleTabs extends React.Component {
                     byType={'buy'}
                     operationType={'buy'}
                     priceType={mode}
-                    percentage={percentage}
-                    changePercentage={this.handleChangePercentage}
+                    percentage={percentageBuy}
+                    changePercentage={(value) => this.handleChangePercentage(value, 'Buy')}
                     pair={pair}
                     funds={funds}
                     key={[pair, funds]}
@@ -191,8 +192,8 @@ class SimpleTabs extends React.Component {
                     byType={'sell'}
                     operationType={'sell'}
                     priceType={mode}
-                    percentage={percentage}
-                    changePercentage={this.handleChangePercentage}
+                    percentage={percentageSell}
+                    changePercentage={(value) => this.handleChangePercentage(value, 'Sell')}
                     pair={pair}
                     funds={funds}
                     key={[pair, funds]}

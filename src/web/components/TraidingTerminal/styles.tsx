@@ -155,6 +155,7 @@ export const PaddingGrid = styled(Grid)`
 
 export const TotalGrid = styled(PaddingGrid)`
   padding-bottom: 0;
+  padding-top: 1.2rem;
 `
 
 export const TradeBlock = styled(BalanceGrid)`
@@ -167,14 +168,15 @@ export const TradeBlock = styled(BalanceGrid)`
 
 export const TradeInput = styled.input`
   position: relative;
+  bottom: .2rem;
   width: 100%;
-  min-height: 3rem;
+  min-height: 2.5rem;
   border: 1px solid #e0e5ec;
   border-radius: 4px;
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
   margin-top: 0.2rem;
   color: #16253d;
-  font-size: 1.2rem;
+  font-size: 1rem;
   
   font-weight: bold;
   padding-left: 0.6rem;
@@ -195,7 +197,7 @@ export const InputWrapper = styled.div`
 
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
-  top: 52.5%;
+  top: 50%;
   right: 20px;
   transform: translateY(-50%);
 `
@@ -217,14 +219,18 @@ export const PercentageItem = styled(StyledTab)`
 
 export const SendButton = styled(StyledTab)`
   width: 100%;
-  background: #fff;
-  color: ${(props) => (props.type === 'buy' ? '#2F7619' : '#b93b2b')};
-  border: 1px solid ${(props) => (props.type === 'buy' ? '#2F7619' : '#b93b2b')};
+  color: #fff;
+  background-color: ${(props) => (props.type === 'buy' ? '#29AC80' : '#DD6956')};
+  box-shadow: 0px .4rem .6rem rgba(8, 22, 58, 0.3);
+  border-radius: .75rem;
+  border: none;
+
+
+  // border: 1px solid ${(props) => (props.type === 'buy' ? '#2F7619' : '#b93b2b')};
 
   &:hover {
     color: #fff;
-    background-color: ${(props) =>
-    props.type === 'buy' ? '#2F7619' : '#b93b2b'};
+    background-color: ${(props) => (props.type === 'buy' ? '#29AC80' : '#DD6956')};
   }
 `
 
