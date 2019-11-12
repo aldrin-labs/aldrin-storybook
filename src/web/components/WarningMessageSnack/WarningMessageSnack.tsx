@@ -10,7 +10,7 @@ import amber from '@material-ui/core/colors/amber'
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 const variantIcon = {
   warning: MdWarning,

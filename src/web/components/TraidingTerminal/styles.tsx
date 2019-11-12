@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { StyledTab } from '@sb/components/TradingWrapper/styles'
 import { Button, TextField, Grid } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 

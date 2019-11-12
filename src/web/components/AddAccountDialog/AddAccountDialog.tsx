@@ -1,5 +1,5 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
 
@@ -52,7 +52,7 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent)
 
-@withTheme()
+@withTheme
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,

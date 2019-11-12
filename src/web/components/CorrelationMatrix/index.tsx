@@ -15,7 +15,7 @@ import { IProps } from './types'
 import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
 
-@withTheme()
+@withTheme
 class CorrelationMatrixComponent extends PureComponent<IProps> {
   state = {
     isFullscreenEnabled: false,

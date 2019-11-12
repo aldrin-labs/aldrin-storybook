@@ -28,7 +28,7 @@ import {
 import CardHeader from '../CardHeader'
 import { withTheme } from '@material-ui/styles'
 
-@withTheme()
+@withTheme
 export default class PortfolioChart extends Component<Props> {
   state: Partial<Props> = {
     activeChart: '1Y',

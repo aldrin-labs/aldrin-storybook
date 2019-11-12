@@ -36,4 +36,4 @@ class AuthErrorCard extends PureComponent<IProps> {
   }
 }
 
-export default withTheme()(AuthErrorCard)
+export default withTheme(AuthErrorCard)

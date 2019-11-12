@@ -17,7 +17,7 @@ import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
 import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme()
+@withTheme
 class TradeHistoryTable extends React.PureComponent<IProps> {
   state: IState = {
     tradeHistoryProcessedData: [],

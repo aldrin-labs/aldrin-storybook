@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { SnackbarProvider, withSnackbar } from 'notistack'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 import { orderError } from '@core/utils/errorsConfig'
 

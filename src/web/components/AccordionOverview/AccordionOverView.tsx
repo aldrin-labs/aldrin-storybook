@@ -1,5 +1,5 @@
 import React from 'react'
-import { withTheme } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
@@ -72,7 +72,6 @@ const gridBorder = `
   background-color: #e0e5ec;
 }`
 
-@withTheme()
 class DetailedExpansionPanel extends React.Component {
   render() {
     const {
@@ -298,4 +297,4 @@ class DetailedExpansionPanel extends React.Component {
   }
 }
 
-export default DetailedExpansionPanel
+export default withTheme(DetailedExpansionPanel)

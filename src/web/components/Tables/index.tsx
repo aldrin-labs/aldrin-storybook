@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { withStyles, createStyles } from '@material-ui/styles'
+import { Theme } from '@material-ui/core/styles'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell, { Padding } from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'

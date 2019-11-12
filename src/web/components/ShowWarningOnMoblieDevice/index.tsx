@@ -8,7 +8,7 @@ import {
   DialogActions,
   DialogContent,
 } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import CloseIcon from '@material-ui/icons/Close'
 
 const styles = (theme) => ({

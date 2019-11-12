@@ -12,7 +12,7 @@ import {
 import { IProps } from './TradingTitle.types'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme()
+@withTheme
 export default class TradingTitle extends React.PureComponent<IProps> {
   render() {
     const {

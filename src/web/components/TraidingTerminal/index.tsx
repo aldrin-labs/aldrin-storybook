@@ -70,7 +70,7 @@ const toFixedTrunc = (value, n) => {
   return `${v[0]}.${f}`
 }
 
-@withTheme()
+@withTheme
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   componentDidUpdate(prevProps) {
     if (prevProps.priceType !== this.props.priceType) {

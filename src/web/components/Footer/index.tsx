@@ -124,7 +124,7 @@ const Block = styled.div`
 `
 
 export default compose(
-  withTheme(),
+  withTheme,
   queryRendererHoc({
     query: GET_THEME_MODE,
     name: 'getThemeModeQuery',

@@ -29,7 +29,7 @@ const RawLoading = ({
   </SpinnerContainer>
 )
 
-export const Loading = withTheme()(RawLoading)
+export const Loading = withTheme(RawLoading)
 
 const SpinnerContainer = styled.div`
   z-index: 10000;
