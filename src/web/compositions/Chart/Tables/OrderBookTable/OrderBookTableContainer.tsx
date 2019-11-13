@@ -47,6 +47,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // when get data from subscr
     // console.log(newProps.data.marketOrders)
+    console.log('data for orderbook', newProps.data)
 
     return transformOrderbookData(newProps.data)
 

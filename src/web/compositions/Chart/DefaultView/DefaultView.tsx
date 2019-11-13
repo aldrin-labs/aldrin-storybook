@@ -78,7 +78,7 @@ export const DefaultView = (props: any) => {
           }}
         >
           <ChartsContainer item xs={12}>
-            <CustomCard>
+            {/* <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
                   additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`}
@@ -96,7 +96,7 @@ export const DefaultView = (props: any) => {
                     </DepthChartContainer>
                   </Fade>
                 )}
-            </CustomCard>
+            </CustomCard> */}
           </ChartsContainer>
           <TradingTabelContainer item xs={12}>
             {/*{MASTER_BUILD && <ComingSoon />}*/}
