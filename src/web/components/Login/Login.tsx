@@ -6,6 +6,7 @@ import { Props } from './Login.types'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import MainLogo from '@icons/AuthLogo.png'
 import auth0Logo from '@icons/auth0Logo.png'
+import { Auth0Lock } from 'auth0-lock'
 
 import { MASTER_BUILD } from '@core/utils/config'
 import { SWrapper } from './Login.styles'
@@ -14,14 +15,7 @@ import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInPro
 
 @withTheme
 class LoginQuery extends React.Component<Props> {
-  lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
-    ...auth0Options,
-    theme: {
-      ...auth0Options.theme,
-      primaryColor: this.props.theme.palette.secondary.main,
-      logo: auth0Logo,
-    },
-  })
+  lock = null
 
   componentDidUpdate = async (prevProps: Props) => {
     if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
@@ -31,6 +25,15 @@ class LoginQuery extends React.Component<Props> {
   }
 
   componentDidMount = async () => {
+    this.lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
+      ...auth0Options,
+      theme: {
+        ...auth0Options.theme,
+        primaryColor: this.props.theme.palette.secondary.main,
+        logo: auth0Logo,
+      },
+    })
+
     this.setLockListeners()
     if (this.props.loginStatus) this.addFSIdentify(this.props.user)
     if (this.props.modalIsOpen) {
