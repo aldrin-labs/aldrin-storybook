@@ -17,13 +17,6 @@ import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInPro
 class LoginQuery extends React.Component<Props> {
   lock = null
 
-  componentDidUpdate = async (prevProps: Props) => {
-    if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
-      await this.onModalChanges(true)
-      this.showLoginAfterDelay()
-    }
-  }
-
   componentDidMount = async () => {
     this.lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
       ...auth0Options,
@@ -38,6 +31,13 @@ class LoginQuery extends React.Component<Props> {
     if (this.props.loginStatus) this.addFSIdentify(this.props.user)
     if (this.props.modalIsOpen) {
       await this.onModalChanges(false)
+    }
+  }
+
+  componentDidUpdate = async (prevProps: Props) => {
+    if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
+      await this.onModalChanges(true)
+      this.showLoginAfterDelay()
     }
   }
 
