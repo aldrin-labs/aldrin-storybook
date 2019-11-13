@@ -22,12 +22,12 @@ const OptimizedRow = memo(
       <StyledRow background={'#fff'}>
         <StyledCell style={{ minWidth: '30%' }}>
           <StyledTypography
-            textColor={ticker.fall ? '#b93b2b' : '#2F7619'}
+            textColor={ticker.fall ? '#DD6956' : '#29AC80'}
             variant="caption"
             align="left"
           >
             {(+ticker.price).toFixed(2)
-            // .toFixed(numbersAfterDecimalForPrice)
+              // .toFixed(numbersAfterDecimalForPrice)
             }
           </StyledTypography>
         </StyledCell>
@@ -35,7 +35,7 @@ const OptimizedRow = memo(
         <StyledCell style={{ minWidth: '30%' }}>
           <TypographyFullWidth
             variant="caption"
-            textColor={'#7284A0'}
+            textColor={'#16253D'}
             align="left"
           >
             {(+ticker.size).toFixed(4)}
@@ -44,10 +44,10 @@ const OptimizedRow = memo(
 
         <StyledCell style={{ minWidth: '40%' }}>
           <TypographyFullWidth
-            style={{ paddingRight: 0 }}
-            textColor={'#7284A0'}
+            // style={{ paddingRight: 0 }}
+            textColor={'#16253D'}
             variant="caption"
-            align="right"
+            align="left"
           >
             {ticker.time}
           </TypographyFullWidth>
@@ -86,7 +86,7 @@ const MemoizedHead = memo(() => (
         <StyledHeadCell style={{ minWidth: '40%' }}>
           <StyledTitle
             variant="body2"
-            align="right"
+            align="left"
             style={{ paddingRight: 0 }}
           >
             Time
@@ -122,14 +122,14 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
         />
         <Body
           data-e2e="tradeHistory__body"
-          background={background.default}
+          background={'#fff'}
           height="45vh"
         >
           {data.map((ticker: ITicker, i: number) => (
             <OptimizedRow
               key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${
                 ticker.fall
-              }`}
+                }`}
               {...{
                 ticker,
                 background,

@@ -14,7 +14,7 @@ const OptimizedRow = memo(
   ({ order }) => (
     <StyledRow background={'transparent'}>
       <StyledCell style={{ minWidth: '30%' }}>
-        <TypographyFullWidth textColor={'#b93b2b'} variant="body1" align="left">
+        <TypographyFullWidth textColor={'#DD6956'} variant="body1" align="left">
           {
             order.price
             // .toFixed(digitsAfterDecimalForAsksPrice)
@@ -23,7 +23,7 @@ const OptimizedRow = memo(
       </StyledCell>
 
       <StyledCell style={{ minWidth: '30%' }}>
-        <TypographyFullWidth textColor={'#7284A0'} variant="body2" align="left">
+        <TypographyFullWidth textColor={'#16253D;'} variant="body2" align="left">
           {
             order.size
             // .toFixed(digitsAfterDecimalForAsksSize)
@@ -33,13 +33,13 @@ const OptimizedRow = memo(
 
       <StyledCell style={{ minWidth: '40%' }}>
         <TypographyFullWidth
-          textColor={'#7284A0'}
+          textColor={'#16253D;'}
           variant="body1"
-          align="right"
-          style={{ paddingRight: 0 }}
+          align="left"
+        // style={{ paddingRight: 0 }}
         >
           {order.total.toFixed(0)
-          // .toFixed(digitsAfterDecimalForAsksPrice)
+            // .toFixed(digitsAfterDecimalForAsksPrice)
           }
         </TypographyFullWidth>
       </StyledCell>
@@ -77,14 +77,14 @@ class ClassBody extends PureComponent<IProps> {
             },
             i: number
           ) => (
-            <OptimizedRow
-              key={`${order.price}${order.size}${order.total}`}
-              {...{
-                order,
-                data,
-              }}
-            />
-          )
+              <OptimizedRow
+                key={`${order.price}${order.size}${order.total}`}
+                {...{
+                  order,
+                  data,
+                }}
+              />
+            )
         )}
       </Body>
     )

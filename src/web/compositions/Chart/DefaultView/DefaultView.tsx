@@ -9,14 +9,13 @@ import { SingleChart } from '@sb/components/Chart'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 // import ComingSoon from '@sb/components/ComingSoon'
-import { TradeHistory, OrderBook, DepthChart } from '../Chart'
+import { TradeHistory, OrderBook, DepthChart } from '../components'
 
 import {
   Container,
   ChartsContainer,
   DepthChartContainer,
   // RangesContainer,
-  TablesContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
   ChartGridContainer,
@@ -34,7 +33,6 @@ export const DefaultView = (props: any) => {
     activeChart,
     renderTogglerBody,
     aggregation,
-    // MASTER_BUILD,
     changeTable,
     showOrderResult,
     showCancelResult,
@@ -86,18 +84,18 @@ export const DefaultView = (props: any) => {
                   additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`}
                 />
               ) : (
-                <Fade timeout={1000} in={activeChart === 'depth'}>
-                  <DepthChartContainer data-e2e="mainDepthChart">
-                    <MainDepthChart
-                      {...{
-                        base,
-                        quote,
-                        animated: false,
-                      }}
-                    />
-                  </DepthChartContainer>
-                </Fade>
-              )}
+                  <Fade timeout={1000} in={activeChart === 'depth'}>
+                    <DepthChartContainer data-e2e="mainDepthChart">
+                      <MainDepthChart
+                        {...{
+                          base,
+                          quote,
+                          animated: false,
+                        }}
+                      />
+                    </DepthChartContainer>
+                  </Fade>
+                )}
             </CustomCard>
           </ChartsContainer>
           <TradingTabelContainer item xs={12}>
@@ -117,7 +115,6 @@ export const DefaultView = (props: any) => {
             padding: '.4rem 0 0 .4rem',
           }}
         >
-          {/*{MASTER_BUILD && <ComingSoon />}*/}
           <Grid item container style={{ height: '60%' }}>
             <Grid
               item

@@ -38,7 +38,7 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
   }
 
   return (
-    <div>
+    <>
       <SendButton type={typeIsBuy ? 'buy' : 'sell'} onClick={handleOpen}>
         {battonText}
       </SendButton>
@@ -55,7 +55,7 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
           <TradeButton onClick={handleClick}>Place Order</TradeButton>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   )
 }
 
