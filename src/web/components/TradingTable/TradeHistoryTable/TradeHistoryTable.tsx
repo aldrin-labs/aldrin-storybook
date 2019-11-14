@@ -23,6 +23,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     tradeHistoryProcessedData: [],
   }
 
+  unsubscribeFunction : null | Function = null
+
   componentDidMount() {
     const { getTradeHistoryQuery, subscribeToMore, theme } = this.props
 
@@ -34,7 +36,14 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       tradeHistoryProcessedData,
     })
 
-    subscribeToMore()
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps) {

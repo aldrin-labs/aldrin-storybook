@@ -26,6 +26,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     openOrdersProcessedData: [],
   }
 
+  unsubscribeFunction : null | Function = null
+
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
     const { cancelOrderMutation } = this.props
 
@@ -77,7 +79,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       openOrdersProcessedData,
     })
 
-    subscribeToMore()
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
