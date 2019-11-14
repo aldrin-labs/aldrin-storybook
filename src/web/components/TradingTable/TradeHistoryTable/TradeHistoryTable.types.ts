@@ -24,7 +24,7 @@ export interface IProps extends WithTheme<Theme> {
   }) => void
   onFocusChange: (focusedInput: string) => void
   onClearDateButtonClick: () => void
-  subscribeToMore: () => void
+  subscribeToMore: () => () => void
   theme: Theme
   getTradeHistoryQuery: {
     getTradeHistory: TradeType[]

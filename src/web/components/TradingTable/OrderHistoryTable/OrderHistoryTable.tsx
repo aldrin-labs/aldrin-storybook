@@ -23,6 +23,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     orderHistoryProcessedData: [],
   }
 
+  unsubscribeFunction : null | Function = null
+
   componentDidMount() {
     const { getOrderHistoryQuery, subscribeToMore, theme } = this.props
 
@@ -34,7 +36,14 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       orderHistoryProcessedData,
     })
 
-    subscribeToMore()
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
