@@ -11,7 +11,7 @@ export interface IProps extends WithTheme<Theme> {
   getFundsQuery: {
     getFunds: FundsType[]
   }
-  subscribeToMore: () => void
+  subscribeToMore: () => () => void
   theme: Theme
   selectedKey: Key
 }

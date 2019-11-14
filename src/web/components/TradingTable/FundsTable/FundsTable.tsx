@@ -22,6 +22,8 @@ class FundsTable extends React.PureComponent<IProps> {
     hideSmallAssets: false,
   }
 
+  unsubscribeFunction : null | Function = null
+
   handleSmallAssetsCheckboxChange = (event, checked) => {
     this.setState({
       hideSmallAssets: checked,
@@ -44,7 +46,14 @@ class FundsTable extends React.PureComponent<IProps> {
       fundsProcessedData,
     })
 
-    subscribeToMore()
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
