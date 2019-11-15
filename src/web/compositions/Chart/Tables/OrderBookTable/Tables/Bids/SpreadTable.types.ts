@@ -9,6 +9,7 @@ export interface IProps {
   theme: Theme
   quote: string
   data: any
+  digits: number
   digitsAfterDecimalForSpread: number
   digitsAfterDecimalForBidsSize: number
   digitsAfterDecimalForBidsPrice: number

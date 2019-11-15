@@ -12,4 +12,5 @@ export interface IProps {
   tableExpanded: boolean
   activeExchange: IExchange
   currencyPair: string
+  digits: number
 }

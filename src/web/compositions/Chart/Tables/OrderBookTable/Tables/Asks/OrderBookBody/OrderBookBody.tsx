@@ -11,12 +11,15 @@ import {
 let objDiv: HTMLElement | null
 
 const OptimizedRow = memo(
-  ({ order }) => (
-    <StyledRow background={'transparent'}>
+  ({ order, digits }) => {
+    const [price, values] = order
+    const [size, total] = values
+
+    return <StyledRow background={'transparent'}>
       <StyledCell style={{ minWidth: '30%' }}>
         <TypographyFullWidth textColor={'#DD6956'} variant="body1" align="left">
           {
-            order.price
+            Number(price).toFixed(digits)
             // .toFixed(digitsAfterDecimalForAsksPrice)
           }
         </TypographyFullWidth>
@@ -25,7 +28,7 @@ const OptimizedRow = memo(
       <StyledCell style={{ minWidth: '30%' }}>
         <TypographyFullWidth textColor={'#16253D;'} variant="body2" align="left">
           {
-            order.size
+            size
             // .toFixed(digitsAfterDecimalForAsksSize)
           }
         </TypographyFullWidth>
@@ -36,15 +39,14 @@ const OptimizedRow = memo(
           textColor={'#16253D;'}
           variant="body1"
           align="left"
-        // style={{ paddingRight: 0 }}
         >
-          {order.total.toFixed(0)
+          {Number(price * size).toFixed(digits)
             // .toFixed(digitsAfterDecimalForAsksPrice)
           }
         </TypographyFullWidth>
       </StyledCell>
     </StyledRow>
-  ),
+  },
   (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
 )
 
@@ -64,27 +66,27 @@ class ClassBody extends PureComponent<IProps> {
   }
 
   render() {
-    const { data } = this.props
+    const { data, digits } = this.props
 
     return (
       <Body id="body" height={'calc(100% - 44px)'}>
-        {data.map(
+        {[...data.entries()].map(
           (
-            order: {
-              size: number | string
-              price: number | string
-              total: number | string
-            },
+            order,
             i: number
-          ) => (
-              <OptimizedRow
-                key={`${order.price}${order.size}${order.total}`}
-                {...{
-                  order,
-                  data,
-                }}
-              />
-            )
+          ) => {
+            const [price, values] = order
+            const [size, total] = values
+
+            return <OptimizedRow
+              key={`${price}${size}${total}`}
+              {...{
+                digits,
+                order,
+                data,
+              }}
+            />
+          }
         )}
       </Body>
     )

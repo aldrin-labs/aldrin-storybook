@@ -1,83 +1,50 @@
-import React, { memo, PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import { Column, Table } from 'react-virtualized';
+import 'react-virtualized/styles.css';
+
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { Row, Head } from '@sb/components/OldTable/Table'
-import OrderBookBody from './OrderBookBody/OrderBookBody'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
-
 import { IProps } from './OrderBookTable.types'
-import { AsksTable, StyledHeadCell } from './OrderBookTable.styles'
 
-import { StyledTitle } from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+import { sortDesc, getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
 
-const MemoHead = memo(() => (
-  <>
-    <ChartCardHeader>Orderbook</ChartCardHeader>
-    <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-      <Row style={{ height: 'auto' }}>
-        <StyledHeadCell>
-          <StyledTitle variant="body2" color="default" align="left">
-            Price
-            {/* {quote || 'Fiat'} */}
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell>
-          <StyledTitle variant="body2" color="default" align="left">
-            Size
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell isCenter={true}>
-          <StyledTitle
-            variant="body2"
-            color="default"
-            align="left"
-          // style={{ paddingRight: 0 }}
-          >
-            Total
-          </StyledTitle>
-        </StyledHeadCell>
-      </Row>
-    </Head>
-  </>
-))
+import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
 class OrderBookTable extends PureComponent<IProps> {
   render() {
     const {
-      onButtonClick,
-      quote,
-      theme: { palette },
+      data,
+      digits,
     } = this.props
 
-    const { background, action, type, primary } = palette
+    const tableData = getDataForTable(data, digits)
+    const sortedData = sortDesc(tableData)
 
     return (
-      <AsksTable>
-        <MemoHead
-          {...{
-            palette,
-            primary,
-            type,
-            onButtonClick,
-            background,
-            quote,
-            key: 'asks_headrow',
-          }}
-        />
-        {/* hack to autoscroll to bottom */}
-        <OrderBookBody
-          {...{
-            background,
-            action,
-            ...this.props,
-            key: 'asks_body',
-          }}
-        />
-      </AsksTable>
+      <TableWrapper>
+        <AutoSizer>
+          {
+            (({ width, height }: { width: number, height: number }) =>
+              <Table
+                width={width}
+                height={height}
+                rowCount={sortedData.length}
+                headerHeight={window.outerHeight / 60}
+                headerStyle={{ paddingLeft: '.5rem', paddingTop: '.25rem', letterSpacing: '.075rem' }}
+                rowHeight={window.outerHeight / 60}
+                scrollToIndex={sortedData.length - 1}
+                rowGetter={({ index }) => sortedData[index]}>
+                <Column label="Price" dataKey="price" width={width} style={{ ...rowStyles, color: '#DD6956' }} />
+                <Column label="Size" dataKey="size" width={width} style={rowStyles} />
+                <Column label="Total" dataKey="total" width={width} style={rowStyles} />
+              </Table>
+            )
+          }
+        </AutoSizer>
+      </TableWrapper>
     )
   }
 }

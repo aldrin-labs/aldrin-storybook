@@ -7,6 +7,7 @@ import {
   updateOrderBookQuerryFunction,
 } from '@core/utils/chartPageUtils'
 
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { OrderBookTable } from '../Tables/Tables'
 
 import {
@@ -24,6 +25,7 @@ export const OrderBook = ({
   quote,
 }) => (
     <OrderbookContainer key={`orderbook_table`}>
+      <ChartCardHeader>Orderbook</ChartCardHeader>
       <QueryRenderer
         component={OrderBookTable}
         withOutSpinner
