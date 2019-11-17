@@ -13,7 +13,7 @@ export interface IProps extends WithTheme<Theme> {
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory: OrderType[]
   }
-  subscribeToMore: () => void
+  subscribeToMore: () => () => void
   showCancelResult: ({
     status,
     message,
