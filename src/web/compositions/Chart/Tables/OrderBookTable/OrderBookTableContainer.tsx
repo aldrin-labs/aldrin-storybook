@@ -1,14 +1,9 @@
 import React, { Component, ChangeEvent } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
-import { uniqBy } from 'lodash-es'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import {
-  maximumItemsInArray,
-  findSpread,
-  getNumberOfDigitsAfterDecimal,
-  reduceArrayLength,
   transformOrderbookData,
   addOrderToOrderbook,
 } from '@core/utils/chartPageUtils'
@@ -18,8 +13,9 @@ import SpreadTable from './Tables/Bids/SpreadTable'
 import LastTrade from './Tables/LastTrade/LastTrade'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 
-import SvgIcon from '@sb/components/SvgIcon'
-import ExchangeLogo from '@icons/ExchangeLogo.svg'
+import SortByBoth from '@icons/SortByBoth.svg'
+import SortByAsks from '@icons/SortByAsks.svg'
+import SortByBids from '@icons/SortByBids.svg'
 
 import ComingSoon from '@sb/components/ComingSoon'
 import {
@@ -29,6 +25,7 @@ import {
   OrderbookGroup,
   OrderbookGroupOptions,
 } from './OrderBookTableContainer.types'
+import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import { MASTER_BUILD } from '@core/utils/config'
 
 import { GET_ORDERS } from '@core/graphql/queries/chart/getOrders'
@@ -141,80 +138,39 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         {MASTER_BUILD && <ComingSoon />}
 
         <ChartCardHeader
-          style={{ display: 'flex', justifyContent: 'space-between' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
         >
           <span>Orderbook</span>
-          <div>
-            {/* separate to one component */}
-            <SvgIcon
-              src={ExchangeLogo}
+          <ModesContainer>
+            <SvgMode
+              src={SortByBoth}
+              isActive={mode === 'both'}
               onClick={() => this.setOrderbookMode('both')}
-              width='1rem'
-              height='auto'
-              style={{
-                marginRight: '.8rem',
-              }}
             />
-            <SvgIcon
-              src={ExchangeLogo}
+            <SvgMode
+              src={SortByBids}
+              isActive={mode === 'bids'}
               onClick={() => this.setOrderbookMode('bids')}
-              width='1rem'
-              height='auto'
-              style={{
-                marginRight: '.8rem',
-              }}
             />
-            <SvgIcon
-              src={ExchangeLogo}
+            <SvgMode
+              src={SortByAsks}
+              isActive={mode === 'asks'}
               onClick={() => this.setOrderbookMode('asks')}
-              width='1rem'
-              height='auto'
-              style={{
-                marginRight: '.8rem',
-              }}
             />
             <select
-              // value={[group]}
               onChange={(e: ChangeEvent) =>
                 this.setOrderbookGroup(e.target.value)
               }
-              // options={OrderbookGroupOptions}
-              // isSearchable={false}
-              // isClearable={false}
-              // menuIsOpen={true}
-              // singleValueStyles={{
-              //   color: '#165BE0',
-              //   fontSize: '.8rem',
-              //   padding: '0',
-              // }}
-              // controlStyles={{
-              //   background: 'transparent',
-              //   border: 'none',
-              // }}
-              // menuStyles={{
-              //   padding: '5px 8px',
-              //   borderRadius: '14px',
-              //   textAlign: 'center',
-              //   marginLeft: '3rem',
-              //   zIndex: 1000,
-              // }}
-              // optionStyles={{
-              //   color: '#7284A0',
-              //   background: 'transparent',
-              //   textAlign: 'center',
-              //   fontSize: '0.8rem',
-              //   '&:hover': {
-              //     borderRadius: '14px',
-              //     color: '#16253D',
-              //     background: '#E7ECF3',
-              //   },
-              // }}
             >
               {OrderbookGroupOptions.map((option) => (
                 <option key={option.value}>{option.value}</option>
               ))}
             </select>
-          </div>
+          </ModesContainer>
         </ChartCardHeader>
 
         <OrderBookTable

@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
 
@@ -21,6 +22,9 @@ export const LastTradeValue = styled.div`
 `
 
 export const LastTradePrice = styled.span`
+  position: relative;
+  top: 0.4rem;
+
   font-size: 1rem;
   font-weight: bold;
   color: #16253d;
@@ -28,7 +32,12 @@ export const LastTradePrice = styled.span`
   padding-left: 1rem;
 `
 
-export const ArrowIcon = styled(ArrowRightAltIcon)`
-  width: 0.5rem;
+export const ArrowIcon = styled(({ fall, ...rest }: { fall: boolean }) => (
+  <ArrowRightAltIcon {...rest} />
+))`
+  position: relative;
+  top: 0.4rem;
+  width: 2rem;
   height: 2rem;
+  transform: rotate(${(props) => (props.fall ? '90deg' : '-90deg')});
 `

@@ -20,16 +20,16 @@ const LastTrade = ({
   group: number
   mode: OrderbookMode
 }) => {
-  if (
-    !(
-      lastTradeData &&
-      lastTradeData.marketTickers &&
-      lastTradeData.marketTickers.length > 0
-    ) ||
-    mode !== 'both'
-  ) {
+  if (mode !== 'both') {
     return null
   }
+
+  lastTradeData =
+    lastTradeData.marketTickers.length > 0
+      ? lastTradeData
+      : {
+          marketTickers: [JSON.stringify([0, 0, 0, 0])],
+        }
 
   const currentTrade = JSON.parse(lastTradeData.marketTickers[0])
   const currentTradePrice = currentTrade[3]
@@ -44,7 +44,7 @@ const LastTrade = ({
   return (
     <LastTradeContainer>
       <LastTradeValue fall={fall}>
-        <ArrowIcon />
+        <ArrowIcon fall={fall} />
         {addMainSymbol(stripDigitPlaces(currentTrade[3], 2), true)}
       </LastTradeValue>
       <LastTradePrice>

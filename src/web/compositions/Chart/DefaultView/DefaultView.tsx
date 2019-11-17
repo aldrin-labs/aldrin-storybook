@@ -79,25 +79,25 @@ export const DefaultView = (props: any) => {
           }}
         >
           <ChartsContainer item xs={12}>
-            {/* <CustomCard>
+            <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
                   additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`}
                 />
               ) : (
-                  <Fade timeout={1000} in={activeChart === 'depth'}>
-                    <DepthChartContainer data-e2e="mainDepthChart">
-                      <MainDepthChart
-                        {...{
-                          base,
-                          quote,
-                          animated: false,
-                        }}
-                      />
-                    </DepthChartContainer>
-                  </Fade>
-                )}
-            </CustomCard> */}
+                <Fade timeout={1000} in={activeChart === 'depth'}>
+                  <DepthChartContainer data-e2e='mainDepthChart'>
+                    <MainDepthChart
+                      {...{
+                        base,
+                        quote,
+                        animated: false,
+                      }}
+                    />
+                  </DepthChartContainer>
+                </Fade>
+              )}
+            </CustomCard>
           </ChartsContainer>
           <TradingTabelContainer item xs={12}>
             {/*{MASTER_BUILD && <ComingSoon />}*/}
