@@ -331,7 +331,7 @@ export default class ThemeWrapper extends Component<Props> {
             },
           }
     )
-    if (window) window.theme = theme
+    // if (window) window.theme = theme
 
     return (
       <MuiThemeProvider theme={theme}>

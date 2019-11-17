@@ -48,7 +48,7 @@ class PortfolioTable extends Component<IProps, IState> {
           toggleWallets={this.props.toggleWallets}
           isUSDCurrently={isUSDCurrently}
         />
-        <Suspense fallback={<Loading centerAligned />}>
+        {/* <Suspense fallback={<Loading centerAligned />}> */}
           <Switch>
             <Route
               exact
@@ -138,7 +138,7 @@ class PortfolioTable extends Component<IProps, IState> {
               )}
             />
           </Switch>
-        </Suspense>
+        {/* </Suspense> */}
       </>
     )
   }

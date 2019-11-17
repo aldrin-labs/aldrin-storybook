@@ -36,7 +36,7 @@ export default (WrappedComponent: React.ReactType) => {
         localStorage.setItem('CCAItablesSettingsBorder', 'true')
       }
 
-      window.location.reload()
+      window && window.location.reload()
     }
 
     downloadData = () => {

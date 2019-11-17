@@ -152,7 +152,7 @@ class Optimization extends Component<IProps, IState> {
 
   openLink = (link: string = '') => {
     this.hideWarning()
-    window.open(link, 'CCAI Feedback')
+    window && window.open(link, 'CCAI Feedback')
   }
 
   renderInput = (

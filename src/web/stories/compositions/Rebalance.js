@@ -10,9 +10,9 @@ import { App } from '@sb/compositions/App/App'
 import ThemeWrapper from '@sb/compositions/App/ThemeWrapper/ThemeWrapper'
 
 import { client } from '@core/graphql/apolloClient'
-import createHistory from 'history/createBrowserHistory'
+// import createHistory from 'history/createBrowserHistory'
 
-const history = createHistory()
+// const history = createHistory()
 
 storiesOf('Compositions/Rebalance', module).add('Rebalance', () => (
   <ApolloProvider client={client}>

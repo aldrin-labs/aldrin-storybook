@@ -13,7 +13,7 @@ const firebaseConfig = {
 // Initialize Firebase
 // why we need to check
 // https://stackoverflow.com/questions/46071657/firebase-cloud-messaging-doesnt-work-on-chrome-ios
-const isSupportedFirebase = firebase.messaging.isSupported()
+const isSupportedFirebase = process.browser ? firebase.messaging.isSupported() : false
 let messaging
 
 if (isSupportedFirebase) {
@@ -23,6 +23,8 @@ if (isSupportedFirebase) {
     'BOX1uR6f54au3dbb8rpYkP25wFkO8oH9vcr_3PGekTQiuMD3JSfdONLy0-1lLQIM0p2NafPLRPf6o4NiXXNMNVA'
   )
 }
+
+if (process.browser) {
 
 // https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
 navigator.sayswho = (function() {
@@ -48,6 +50,7 @@ navigator.sayswho = (function() {
   if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1])
   return M.join(' ')
 })()
+}
 
 const getFcmToken = async () => {
   return Notification.requestPermission().then((permission) => {

@@ -25,7 +25,7 @@ export default class Feedback extends Component<Props> {
 
   openLink = (link: string = '') => {
     this.handleClose()
-    window.open(link, 'CCAI Feedback')
+    window && window.open(link, 'CCAI Feedback')
   }
 
   render() {
