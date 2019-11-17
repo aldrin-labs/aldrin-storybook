@@ -11,8 +11,10 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
-import { transformOrderbookData } from '../utils'
 import { red, green } from '@material-ui/core/colors'
+import {
+  transformOrderbookData
+} from '@core/utils/chartPageUtils'
 
 import { Loading } from '@sb/components/Loading/Loading'
 import { abbrNum } from '../DepthChart/depthChartUtil'
@@ -40,21 +42,21 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     const objData = transformOrderbookData(props.data)
 
     let totalVolumeAsks = 0
-    let transformedAsksData = objData.asks.map((el) => {
-      totalVolumeAsks = totalVolumeAsks + +el.size
+    let transformedAsksData = [...objData.asks.entries()].map(([price, [size, total]]) => {
+      totalVolumeAsks = totalVolumeAsks + Number(size)
 
       return {
-        y: +el.price,
+        y: +price,
         x: totalVolumeAsks,
       }
     })
 
     let totalVolumeBids = 0
-    let transformedBidsData = objData.bids.reverse().map((el) => {
-      totalVolumeBids = totalVolumeBids + +el.size
+    let transformedBidsData = [...objData.bids.entries()].map(([price, [size, total]]) => {
+      totalVolumeBids = totalVolumeBids + Number(size)
 
       return {
-        y: +el.price,
+        y: +price,
         x: totalVolumeBids,
       }
     })
@@ -202,7 +204,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
           <FlexibleXYPlot
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
-            style={{ transform: 'scale(1, -1)' }}
+            style={{ transform: 'scale(-1, -1)' }}
           // xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
           // style={{ transform: 'scale(1, -1)' }}
           >
@@ -360,6 +362,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
           <FlexibleXYPlot
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
+            style={{ transform: 'scale(-1, 1)' }}
           // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
           >
             {/* <ScaleWrapper>

@@ -11,6 +11,7 @@ export const StyledTypography = styled(
   )
 )`
   && {
+    font-size: 1rem;
     color: ${(props) => props.textColor};
     font-variant-numeric: lining-nums tabular-nums;
   }
@@ -33,7 +34,7 @@ export const StyledCell = styled(Cell)`
 
   & span,
   & p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: bold;
     padding-left: 0;
   }

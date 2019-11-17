@@ -1,10 +1,14 @@
-import React, { memo, PureComponent } from 'react'
+import React, { memo, PureComponent, CSSProperties } from 'react'
 import { withTheme } from '@material-ui/styles'
 
 import { Row, Body, Head } from '@sb/components/OldTable/Table'
 import { IProps, IState, ITicker } from './TradeHistoryTable.types'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+
+// import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+// import { Column, Table } from 'react-virtualized';
+// import 'react-virtualized/styles.css';
 
 import {
   StyledTypography,
@@ -106,10 +110,34 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
       data,
       theme: { palette, customPalette },
     } = this.props
+
     const { background, primary, type } = palette
     const { red, green } = customPalette
 
+    // const updatedData = data.map(el => ({ ...el, price: <span>hello span</span> }))
+
     return (
+      // <div style={{ height: "100%" }}>
+      //   <AutoSizer>
+      //     {
+      //       (({ width, height }: { width: number, height: number }) =>
+      //         <Table
+      //           headerHeight={window.outerHeight / 60}
+      //           headerStyle={{ paddingLeft: '.5rem', paddingTop: '.25rem' }}
+      //           width={width}
+      //           height={height}
+      //           rowCount={data.length}
+      //           rowHeight={window.outerHeight / 60}
+      //           sortBy={'price'}
+      //           rowGetter={({ index }) => updatedData[index]}>
+      //           <Column label="Price" dataKey="price" width={width} style={rowStyle} />
+      //           <Column label="Size" dataKey="size" width={width} style={rowStyle} />
+      //           <Column label="Total" dataKey="time" width={width} style={rowStyle} />
+      //         </Table>
+      //       )
+      //     }
+      //   </AutoSizer>
+      // </div>
       <TradeHistoryTableCollapsible key={`trade_history_table-collapsible`}>
         <MemoizedHead
           {...{

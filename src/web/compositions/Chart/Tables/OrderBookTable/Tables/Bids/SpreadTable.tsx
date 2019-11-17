@@ -1,117 +1,63 @@
-import React, { memo, PureComponent } from 'react'
+import React, { PureComponent } from 'react'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { Column, Table } from 'react-virtualized'
+import 'react-virtualized/styles.css'
 
-// import { calculatePercentagesOfOrderSize } from '@core/utils/chartPageUtils'
-import { Body } from '@sb/components/OldTable/Table'
-import { SpreadreadTableWrapper } from './SpreadTable.styles'
-// import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
-// import {
-//   EmptyCell,
-//   StyledTypography,
-//   RowWithVolumeChart,
-// } from '../../../SharedStyles'
 import { IProps } from './SpreadTable.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-// import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { withTheme } from '@material-ui/styles'
-import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
-import {
-  // StyledTypography,
-  // StyledArrow,
-  // StyledTitle,
-  // TradeHistoryTableCollapsible,
-  // TriggerTitle,
-  // CardTitle,
-  StyledCell,
-  StyledRow,
-} from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+import { getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
 
-const RowFunc = ({
-  order,
-  data,
-  action,
-  background,
-  digitsAfterDecimalForBidsSize,
-  green,
-  digitsAfterDecimalForBidsPrice,
-}) => (
-    <StyledRow background={'transparent'}>
-      <StyledCell style={{ minWidth: '30%' }}>
-        <TypographyFullWidth textColor={'#29AC80'} variant="body1" align="left">
-          {
-            order.price
-            // .toFixed(digitsAfterDecimalForAsksPrice)
-          }
-        </TypographyFullWidth>
-      </StyledCell>
-
-      <StyledCell style={{ minWidth: '30%' }}>
-        <TypographyFullWidth textColor={'#16253D;'} variant="body2" align="left">
-          {
-            order.size
-            // .toFixed(digitsAfterDecimalForAsksSize)
-          }
-        </TypographyFullWidth>
-      </StyledCell>
-
-      <StyledCell style={{ minWidth: '40%' }}>
-        <TypographyFullWidth
-          textColor={'#16253D;'}
-          variant="body1"
-          align="left"
-        // style={{ paddingRight: 0 }}
-        >
-          {order.total.toFixed(0)
-            // .toFixed(digitsAfterDecimalForAsksPrice)
-          }
-        </TypographyFullWidth>
-      </StyledCell>
-    </StyledRow>
-  )
-
-const MemoizedRow = memo(
-  RowFunc,
-  (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
-)
+import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
 class SpreadTable extends PureComponent<IProps> {
   render() {
-    const {
-      data,
-      digitsAfterDecimalForBidsSize,
-      digitsAfterDecimalForBidsPrice,
-      theme: { palette, customPalette },
-    } = this.props
-
-    const { background, action, type } = palette
-    const { green } = customPalette
+    const { data, group, mode } = this.props
+    const tableData = getDataForTable(data, group, 'bids')
 
     return (
-      <SpreadreadTableWrapper>
-        <Body height="calc(100% - 4rem)">
-          {data.map(
-            (
-              order: { size: number; price: number; type: string },
-              i: number
-            ) => (
-                <MemoizedRow
-                  key={`${order.price}${order.size}${order.type}`}
-                  {...{
-                    type,
-                    order,
-                    data,
-                    action,
-                    background,
-                    digitsAfterDecimalForBidsSize,
-                    green,
-                    digitsAfterDecimalForBidsPrice,
-                  }}
-                />
-              )
+      <TableWrapper mode={mode} isFullHeight={mode === 'bids'}>
+        <AutoSizer>
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              disableHeader={mode !== 'bids'}
+              width={width}
+              height={height}
+              headerHeight={window.outerHeight / 60}
+              headerStyle={{
+                color: '#7284A0',
+                paddingLeft: '.5rem',
+                marginLeft: 0,
+                marginRight: 0,
+                paddingTop: '.25rem',
+                letterSpacing: '.075rem',
+                borderBottom: '.1rem solid #e0e5ec',
+              }}
+              rowCount={tableData.length}
+              rowHeight={window.outerHeight / 60}
+              // rowStyle={{ backgroundColor: '#000' }}
+              rowGetter={({ index }) => tableData[index]}
+            >
+              <Column
+                label=''
+                dataKey='price'
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
+                width={width}
+                style={{ ...rowStyles, color: '#29AC80' }}
+              />
+              <Column label='' dataKey='size' width={width} style={rowStyles} />
+              <Column
+                label=''
+                dataKey='total'
+                width={width}
+                style={rowStyles}
+              />
+            </Table>
           )}
-        </Body>
-      </SpreadreadTableWrapper>
+        </AutoSizer>
+      </TableWrapper>
     )
   }
 }

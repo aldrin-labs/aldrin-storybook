@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
@@ -31,10 +31,18 @@ export const TriggerTitle = styled(Title)`
   }
 `
 
-const ChartCardHeader = ({ children }: { children: string }) => {
+const ChartCardHeader = ({
+  children,
+  style,
+}: {
+  children: string
+  style: CSSProperties
+}) => {
   return (
     <TriggerTitle>
-      <CardTitle variant="subtitle2">{children}</CardTitle>
+      <CardTitle style={style} variant='subtitle2'>
+        {children}
+      </CardTitle>
     </TriggerTitle>
   )
 }
