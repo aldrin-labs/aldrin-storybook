@@ -10,8 +10,7 @@ import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 
 // import ComingSoon from '@sb/components/ComingSoon'
-import { TradeHistory, OrderBook, DepthChart, TradeHistoryAndOrderbook } from '../components'
-
+import { DepthChart, TradeHistoryAndOrderbook } from '../components'
 
 import {
   Container,
@@ -72,7 +71,7 @@ export const DefaultView = (props: any) => {
         <Grid
           item
           container
-          direction="column"
+          direction='column'
           xs={6}
           style={{
             height: '100%',
@@ -111,7 +110,7 @@ export const DefaultView = (props: any) => {
           item
           container
           xs={6}
-          direction="column"
+          direction='column'
           style={{
             height: '100%',
             padding: '.4rem 0 0 .4rem',
@@ -147,37 +146,6 @@ export const DefaultView = (props: any) => {
                 chartProps,
               }}
             />
-
-            {/* <Grid
-              item
-              xs={4}
-              style={{ height: '100%', padding: '0 .4rem .4rem .4rem' }}
-            >
-              <OrderBook
-                activeExchange={activeExchange}
-                aggregation={aggregation}
-                chartProps={chartProps}
-                changeTable={changeTable}
-                exchange={exchange}
-                symbol={currencyPair}
-                pair={currencyPair}
-                quote={quote}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={4}
-              style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
-            >
-              <TradeHistory
-                showTableOnMobile={showTableOnMobile}
-                activeExchange={activeExchange}
-                exchange={exchange}
-                symbol={currencyPair}
-                pair={currencyPair}
-                quote={quote}
-              />
-            </Grid> */}
           </Grid>
 
           <TradingComponent
@@ -187,7 +155,6 @@ export const DefaultView = (props: any) => {
             showOrderResult={showOrderResult}
             showCancelResult={showCancelResult}
           />
-          {/* <RangesContainer>ranges</RangesContainer> */}
         </TradingTerminalContainer>
       </Grid>
     </Container>

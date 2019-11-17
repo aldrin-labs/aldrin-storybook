@@ -1,48 +1,61 @@
 import React, { PureComponent } from 'react'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import { Column, Table } from 'react-virtualized';
-import 'react-virtualized/styles.css';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { Column, Table } from 'react-virtualized'
+import 'react-virtualized/styles.css'
 
 import { IProps } from './SpreadTable.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
 
-import { getDataForTable, sortDesc, rowStyles } from '@core/utils/chartPageUtils'
+import { getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
 
 import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
 class SpreadTable extends PureComponent<IProps> {
   render() {
-    const {
-      data,
-      digits,
-    } = this.props
-
-    const tableData = getDataForTable(data, digits)
-    const sortedData = sortDesc(tableData)
+    const { data, group, mode } = this.props
+    const tableData = getDataForTable(data, group, 'bids')
 
     return (
-      <TableWrapper>
+      <TableWrapper mode={mode} isFullHeight={mode === 'bids'}>
         <AutoSizer>
-          {
-            (({ width, height }: { width: number, height: number }) =>
-              <Table
-                disableHeader
-                headerHeight={0}
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              disableHeader={mode !== 'bids'}
+              width={width}
+              height={height}
+              headerHeight={window.outerHeight / 60}
+              headerStyle={{
+                color: '#7284A0',
+                paddingLeft: '.5rem',
+                marginLeft: 0,
+                marginRight: 0,
+                paddingTop: '.25rem',
+                letterSpacing: '.075rem',
+                borderBottom: '.1rem solid #e0e5ec',
+              }}
+              rowCount={tableData.length}
+              rowHeight={window.outerHeight / 60}
+              // rowStyle={{ backgroundColor: '#000' }}
+              rowGetter={({ index }) => tableData[index]}
+            >
+              <Column
+                label=''
+                dataKey='price'
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
-                height={height}
-                rowCount={sortedData.length}
-                rowHeight={window.outerHeight / 60}
-                // rowStyle={{ backgroundColor: '#000' }}
-                rowGetter={({ index }) => sortedData[index]}>
-
-                <Column label="Price" dataKey="price" width={width} style={{ ...rowStyles, color: '#29AC80' }} />
-                <Column label="Size" dataKey="size" width={width} style={rowStyles} />
-                <Column label="Total" dataKey="total" width={width} style={rowStyles} />
-              </Table>
-            )
-          }
+                style={{ ...rowStyles, color: '#29AC80' }}
+              />
+              <Column label='' dataKey='size' width={width} style={rowStyles} />
+              <Column
+                label=''
+                dataKey='total'
+                width={width}
+                style={rowStyles}
+              />
+            </Table>
+          )}
         </AutoSizer>
       </TableWrapper>
     )
