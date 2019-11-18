@@ -11,9 +11,12 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
+import { testJSON, sortAsc, sortDesc } from '@core/utils/chartPageUtils'
+
 import { red, green } from '@material-ui/core/colors'
 import {
-  transformOrderbookData
+  transformOrderbookData,
+  addOrderToOrderbook,
 } from '@core/utils/chartPageUtils'
 
 import { Loading } from '@sb/components/Loading/Loading'
@@ -31,6 +34,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     crosshairValuesForOrder: [],
     nearestOrderXIndex: null,
     nearestSpreadXIndex: null,
+    asks: new Map(),
+    bids: new Map(),
     transformedAsksData: [],
     transformedBidsData: [],
   }
@@ -39,27 +44,58 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     props: IDepthChartProps,
     state: IDepthChartState
   ) {
-    const objData = transformOrderbookData(props.data)
+    const { marketOrders } = props.data
+    const { asks, bids } = state
+
+    let updatedData = null
+
+    // first get data from query
+    if (
+      asks.size === 0 &&
+      bids.size === 0 &&
+      marketOrders.asks &&
+      marketOrders.bids &&
+      testJSON(marketOrders.asks) &&
+      testJSON(marketOrders.bids)
+    ) {
+      updatedData = transformOrderbookData({ marketOrders })
+    }
+
+    if (
+      !(typeof marketOrders.asks === 'string') ||
+      !(typeof marketOrders.bids === 'string')
+    ) {
+      const orderData = props.data.marketOrders
+      const orderbookData = updatedData || { asks, bids }
+
+      updatedData = addOrderToOrderbook(orderbookData, orderData)
+    }
+
+    updatedData = updatedData || { asks, bids }
 
     let totalVolumeAsks = 0
-    let transformedAsksData = [...objData.asks.entries()].map(([price, [size, total]]) => {
-      totalVolumeAsks = totalVolumeAsks + Number(size)
+    let transformedAsksData = sortDesc([...updatedData.asks.entries()]).map(
+      ([price, [size, total]]) => {
+        totalVolumeAsks = totalVolumeAsks + Number(size)
 
-      return {
-        y: +price,
-        x: totalVolumeAsks,
+        return {
+          y: +price,
+          x: totalVolumeAsks,
+        }
       }
-    })
+    )
 
     let totalVolumeBids = 0
-    let transformedBidsData = [...objData.bids.entries()].map(([price, [size, total]]) => {
-      totalVolumeBids = totalVolumeBids + Number(size)
+    let transformedBidsData = sortDesc([...updatedData.bids.entries()]).map(
+      ([price, [size, total]]) => {
+        totalVolumeBids = totalVolumeBids + Number(size)
 
-      return {
-        y: +price,
-        x: totalVolumeBids,
+        return {
+          y: +price,
+          x: totalVolumeBids,
+        }
       }
-    })
+    )
 
     //  if arrays of dada not equal crosshair not worhing correctly
     if (transformedBidsData.length > transformedAsksData.length) {
@@ -78,6 +114,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       transformedBidsData,
       transformedAsksData,
       MAX_DOMAIN_PLOT: totalVolumeAsks,
+      ...updatedData,
     }
   }
 
@@ -205,8 +242,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
             style={{ transform: 'scale(-1, -1)' }}
-          // xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
-          // style={{ transform: 'scale(1, -1)' }}
+            // xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
+            // style={{ transform: 'scale(1, -1)' }}
           >
             {/* <ScaleWrapper>
             <MidPriceContainer
@@ -272,7 +309,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 transform: 'translate(0)',
               }}
               animation={animated}
-              key="chart"
+              key='chart'
               data={ordersData}
             />
             {/* <AreaSeries
@@ -363,7 +400,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
             style={{ transform: 'scale(-1, 1)' }}
-          // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
+            // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
           >
             {/* <ScaleWrapper>
             <MidPriceContainer
@@ -429,7 +466,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 transform: 'translate(0)',
               }}
               animation={animated}
-              key="chardt"
+              key='chardt'
               data={spreadData}
             />
           </FlexibleXYPlot>

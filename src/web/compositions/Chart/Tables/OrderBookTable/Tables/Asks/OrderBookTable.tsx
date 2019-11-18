@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
@@ -13,7 +13,7 @@ import { getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
 import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
-class OrderBookTable extends PureComponent<IProps> {
+class OrderBookTable extends Component<IProps> {
   render() {
     const { data, mode, group } = this.props
     const tableData = getDataForTable(data, group, 'asks')
@@ -37,7 +37,7 @@ class OrderBookTable extends PureComponent<IProps> {
                 borderBottom: '.1rem solid #e0e5ec',
               }}
               rowHeight={window.outerHeight / 60}
-              scrollToIndex={tableData.length - 1}
+              // scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
             >
               <Column

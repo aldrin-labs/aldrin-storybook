@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
@@ -12,7 +12,7 @@ import { getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
 import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
-class SpreadTable extends PureComponent<IProps> {
+class SpreadTable extends Component<IProps> {
   render() {
     const { data, group, mode } = this.props
     const tableData = getDataForTable(data, group, 'bids')
