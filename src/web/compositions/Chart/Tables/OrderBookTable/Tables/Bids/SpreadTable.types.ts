@@ -1,5 +1,6 @@
 import { Theme } from '@material-ui/core'
-import { IExchange } from '@core/types/ChartTypes'
+import { OrderbookMode } from '../../OrderBookTableContainer.types'
+import { IExchange, OrderbookSide } from '@core/types/ChartTypes'
 
 export interface IProps {
   activeExchange: IExchange
@@ -8,7 +9,9 @@ export interface IProps {
   spread: number
   theme: Theme
   quote: string
-  data: any
+  data: OrderbookSide
+  mode: OrderbookMode
+  group: number
   digitsAfterDecimalForSpread: number
   digitsAfterDecimalForBidsSize: number
   digitsAfterDecimalForBidsPrice: number

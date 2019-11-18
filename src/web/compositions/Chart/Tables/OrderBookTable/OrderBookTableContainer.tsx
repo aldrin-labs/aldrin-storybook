@@ -1,30 +1,32 @@
-import React, { Component } from 'react'
+import React, { Component, ChangeEvent } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
-import { uniqBy } from 'lodash-es'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import {
-  maximumItemsInArray,
-  findSpread,
-  getNumberOfDigitsAfterDecimal,
-  sortAndFilterOrders,
-  bidsPriceFiltering,
-  testJSON,
-  sortAsc,
-  sortDesc,
-  removeZeroSizeOrders,
-  reduceArrayLength,
+  transformOrderbookData,
+  addOrderToOrderbook,
 } from '@core/utils/chartPageUtils'
 
-import { transformOrderbookData } from '../../utils'
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
-import { LastTradeContainer, LastTradeValue } from './Tables/Bids/MiddlePrice'
+import LastTrade from './Tables/LastTrade/LastTrade'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
+
+import SortByBoth from '@icons/SortByBoth.svg'
+import SortByAsks from '@icons/SortByAsks.svg'
+import SortByBids from '@icons/SortByBids.svg'
+
 import ComingSoon from '@sb/components/ComingSoon'
-import { IProps, IState } from './OrderBookTableContainer.types'
+import {
+  IProps,
+  IState,
+  OrderbookMode,
+  OrderbookGroup,
+  OrderbookGroupOptions,
+} from './OrderBookTableContainer.types'
+import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import { MASTER_BUILD } from '@core/utils/config'
-import { IOrder } from '@core/types/ChartTypes'
 
 import { GET_ORDERS } from '@core/graphql/queries/chart/getOrders'
 import { SET_ORDERS } from '@core/graphql/mutations/chart/setOrders'
@@ -35,90 +37,66 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
     asks: [],
     bids: [],
-    spread: null,
-    digitsAfterDecimalForAsksPrice: 0,
-    digitsAfterDecimalForAsksSize: 0,
-    digitsAfterDecimalForBidsPrice: 0,
-    digitsAfterDecimalForBidsSize: 0,
+    // will use to compare data and update from query
+    lastQueryData: null,
+    group: 0.01,
+    mode: 'both',
     i: 0,
   }
 
   // transforming data
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-    // when get data from subscr
-    // console.log(newProps.data.marketOrders)
+    const { asks, bids } = state
+    const { marketOrders } = newProps.data
 
-    return transformOrderbookData(newProps.data)
+    let updatedData = null
+    const newOrder = JSON.parse(
+      '{"pair":"MATIC_BTC","exchange":"binance","id":"1573672480969MATIC_BTC3471028.000000000.00000170","size":"3471028","price":"10000.00000170","side":"bid","timestamp":1573672480.969}'
+    )
 
-    const orderData = newProps.data.marketOrders[0]
-    const order: IOrder = {
-      price: +(+orderData.price).toFixed(8),
-      size: +(+orderData.size).toFixed(8),
-      type: orderData.side,
+    // first get data from query
+    if (
+      asks.length === 0 &&
+      bids.length === 0 &&
+      marketOrders.asks &&
+      marketOrders.bids
+    ) {
+      updatedData = transformOrderbookData({ marketOrders })
     }
 
-    const asks =
-      order.type === 'ask'
-        ? sortDesc(
-          removeZeroSizeOrders(uniqBy([order].concat(state.asks), 'price'))
-        )
-        : state.asks
+    if (
+      newOrder
+      // newProps &&
+      // newProps.marketOrder
+    ) {
+      const orderData = newOrder
+      const orderbookData = updatedData || { asks, bids }
 
-    let bids =
-      order.type === 'bid'
-        ? sortDesc(
-          removeZeroSizeOrders(uniqBy([order].concat(state.bids), 'price'))
-        )
-        : state.bids
+      // testJSON(newProps.marketOrder)
+      //   ? JSON.parse(newProps.marketOrder)
+      //   : newProps.data.marketOrders
 
-    console.log('statefrom', asks, bids)
-    // find spread
-    const spread = findSpread(asks, bids)
-    //  you must remove zero orders here after merge new order to orderbook
-    bids = bidsPriceFiltering(asks, bids)
-
-    // update depth chart every 100 iterations
-    if (iterator === 100) {
-      newProps.setOrdersMutation({
-        variables: {
-          setOrdersInput: {
-            bids,
-            asks,
-          },
-        },
-      })
-      iterator = 0
-    } else {
-      iterator += 1
+      updatedData = addOrderToOrderbook(orderbookData, orderData)
     }
 
     return {
-      spread,
-      asks:
-        order.type === 'ask'
-          ? maximumItemsInArray(asks, 100, 40, true)
-          : state.asks,
-      bids: reduceArrayLength(bids),
-      // bids: [],
-      // asks: [],
-      i: iterator,
-      digitsAfterDecimalForAsksPrice: getNumberOfDigitsAfterDecimal(
-        asks,
-        'price'
-      ),
-      digitsAfterDecimalForAsksSize: getNumberOfDigitsAfterDecimal(
-        asks,
-        'size'
-      ),
-      digitsAfterDecimalForBidsPrice: getNumberOfDigitsAfterDecimal(
-        bids,
-        'price'
-      ),
-      digitsAfterDecimalForBidsSize: getNumberOfDigitsAfterDecimal(
-        bids,
-        'size'
-      ),
+      ...updatedData,
     }
+
+    // update depth chart every 100 iterations
+    // if (iterator === 100) {
+    //   newProps.setOrdersMutation({
+    //     variables: {
+    //       setOrdersInput: {
+    //         bids,
+    //         asks,
+    //       },
+    //     },
+    //   })
+    //   iterator = 0
+    // } else {
+    //   iterator += 1
+    // }
   }
 
   componentDidMount() {
@@ -146,59 +124,66 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     }
   }
 
-  render() {
-    const {
-      quote,
-      theme: { palette },
-      onButtonClick,
-    } = this.props
-    const {
-      bids,
-      asks,
-      spread,
-      digitsAfterDecimalForAsksPrice,
-      digitsAfterDecimalForAsksSize,
-      digitsAfterDecimalForBidsPrice,
-      digitsAfterDecimalForBidsSize,
-    } = this.state
+  setOrderbookMode = (mode: OrderbookMode) => this.setState({ mode })
 
-    const { primary, type } = palette
+  setOrderbookGroup = (group: OrderbookGroup) => this.setState({ group })
+
+  render() {
+    const { quote, lastTradeData, onButtonClick } = this.props
+
+    const { bids, asks, mode, group } = this.state
 
     return (
       <>
         {MASTER_BUILD && <ComingSoon />}
+
+        <ChartCardHeader
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <span>Orderbook</span>
+          <ModesContainer>
+            <SvgMode
+              src={SortByBoth}
+              isActive={mode === 'both'}
+              onClick={() => this.setOrderbookMode('both')}
+            />
+            <SvgMode
+              src={SortByBids}
+              isActive={mode === 'bids'}
+              onClick={() => this.setOrderbookMode('bids')}
+            />
+            <SvgMode
+              src={SortByAsks}
+              isActive={mode === 'asks'}
+              onClick={() => this.setOrderbookMode('asks')}
+            />
+            <select
+              onChange={(e: ChangeEvent) =>
+                this.setOrderbookGroup(e.target.value)
+              }
+            >
+              {OrderbookGroupOptions.map((option) => (
+                <option key={option.value}>{option.value}</option>
+              ))}
+            </select>
+          </ModesContainer>
+        </ChartCardHeader>
+
         <OrderBookTable
-          digitsAfterDecimalForAsksSize={digitsAfterDecimalForAsksSize}
-          digitsAfterDecimalForAsksPrice={digitsAfterDecimalForAsksPrice}
           data={asks}
+          mode={mode}
+          group={group}
           onButtonClick={onButtonClick}
           quote={quote}
         />
 
-        {/* <HeadRow
-          {...{
-            primary,
-            type,
-            palette,
-            quote,
-            spread,
-            digitsAfterDecimalForSpread: Math.max(
-              digitsAfterDecimalForBidsPrice,
-              digitsAfterDecimalForAsksPrice
-            ),
-            key: 'bids_headrow',
-          }}
-        /> */}
+        <LastTrade mode={mode} lastTradeData={lastTradeData} group={group} />
 
-        <LastTradeContainer>
-          <LastTradeValue>$10801.00</LastTradeValue></LastTradeContainer>
-
-        <SpreadTable
-          data={bids}
-          digitsAfterDecimalForBidsSize={digitsAfterDecimalForBidsSize}
-          digitsAfterDecimalForBidsPrice={digitsAfterDecimalForBidsPrice}
-          quote={quote}
-        />
+        <SpreadTable data={bids} mode={mode} group={group} quote={quote} />
       </>
     )
   }

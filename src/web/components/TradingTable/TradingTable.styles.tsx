@@ -26,6 +26,11 @@ export const TitleButton = styled(
   padding: 0px .4rem;
   border-radius: 1rem;
   min-width: 4rem;
+
+  &:hover {
+    background-color: ${(props: { isActive?: boolean }) =>
+    props.isActive && '#165BE0'};
+  }
 `
 
 export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`
