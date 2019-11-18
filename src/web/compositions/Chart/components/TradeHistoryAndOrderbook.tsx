@@ -19,6 +19,7 @@ const TradeHistoryAndOrderbook = ({
   exchange,
   quote,
   data,
+  ...rest
 }) => {
   return (
     <>
@@ -42,6 +43,7 @@ const TradeHistoryAndOrderbook = ({
       </Grid>
       <Grid item xs={4} style={{ height: '100%', padding: '0 0 .4rem .4rem' }}>
         <TradeHistory
+          {...rest}
           showTableOnMobile={showTableOnMobile}
           activeExchange={activeExchange}
           pair={currencyPair}
@@ -64,6 +66,7 @@ const APIWrapper = ({
   aggregation,
   changeTable,
   chartProps,
+  ...rest
 }) => {
   return (
     <QueryRenderer
@@ -86,6 +89,7 @@ const APIWrapper = ({
         changeTable,
         chartProps,
         key: 'tradeyistory_table_query_render',
+        ...rest,
       }}
     />
   )

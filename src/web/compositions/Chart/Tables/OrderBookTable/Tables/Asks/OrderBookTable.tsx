@@ -37,7 +37,7 @@ class OrderBookTable extends Component<IProps> {
                 borderBottom: '.1rem solid #e0e5ec',
               }}
               rowHeight={window.outerHeight / 60}
-              // scrollToIndex={tableData.length - 1}
+              scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
             >
               <Column
