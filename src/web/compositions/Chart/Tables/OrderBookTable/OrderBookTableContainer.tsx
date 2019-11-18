@@ -2,12 +2,17 @@ import React, { Component, ChangeEvent } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import {
   transformOrderbookData,
   addOrderToOrderbook,
   testJSON,
 } from '@core/utils/chartPageUtils'
+
+import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
+import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
 
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
@@ -26,6 +31,7 @@ import {
   OrderbookGroup,
   OrderbookGroupOptions,
 } from './OrderBookTableContainer.types'
+
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -95,6 +101,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    console.log('props', this.props)
+
     if (this.props.subscribeToMore) {
       //  unsubscribe from old exchange when you first time change exchange
       unsubscribe && unsubscribe()
@@ -183,6 +191,35 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   }
 }
 
+const APIWrapper = (props) => {
+  return (
+    <QueryRenderer
+      component={OrderBookTableContainer}
+      variables={{
+        openOrderInput: {
+          activeExchangeKey: props.getSelectedKeyQuery.chart.selectedKey.keyId,
+        },
+      }}
+      withOutSpinner={true}
+      withTableLoader={false}
+      query={getOpenOrderHistory}
+      name={`getOpenOrderHistoryQuery`}
+      fetchPolicy='network-only'
+      subscriptionArgs={{
+        subscription: OPEN_ORDER_HISTORY,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey:
+              props.getSelectedKeyQuery.chart.selectedKey.keyId,
+          },
+        },
+        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+      }}
+      {...props}
+    />
+  )
+}
+
 export default compose(
   queryRendererHoc({
     query: GET_ORDERS,
@@ -190,5 +227,9 @@ export default compose(
   }),
   graphql(SET_ORDERS, {
     name: 'setOrdersMutation',
+  }),
+  queryRendererHoc({
+    query: getSelectedKey,
+    name: 'getSelectedKeyQuery',
   })
-)(OrderBookTableContainer)
+)(APIWrapper)

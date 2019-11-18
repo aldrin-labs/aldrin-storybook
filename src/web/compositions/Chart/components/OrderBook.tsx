@@ -26,7 +26,6 @@ export const OrderBook = ({
       withOutSpinner
       query={ORDERS_MARKET_QUERY}
       variables={{ symbol, exchange }}
-      //fetchPolicy='network-only'
       subscriptionArgs={{
         subscription: ORDERBOOK,
         variables: { symbol, exchange },
