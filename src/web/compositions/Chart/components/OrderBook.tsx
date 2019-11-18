@@ -2,7 +2,7 @@ import React from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-import { MARKET_ORDERS } from '@core/graphql/subscriptions/MARKET_ORDERS'
+import { ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
 import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
 
 import { OrderBookTable } from '../Tables/Tables'
@@ -26,8 +26,9 @@ export const OrderBook = ({
       withOutSpinner
       query={ORDERS_MARKET_QUERY}
       variables={{ symbol, exchange }}
+      //fetchPolicy='network-only'
       subscriptionArgs={{
-        subscription: MARKET_ORDERS,
+        subscription: ORDERBOOK,
         variables: { symbol, exchange },
         updateQueryFunction: updateOrderBookQuerryFunction,
       }}

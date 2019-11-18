@@ -6,6 +6,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import {
   transformOrderbookData,
   addOrderToOrderbook,
+  testJSON,
 } from '@core/utils/chartPageUtils'
 
 import OrderBookTable from './Tables/Asks/OrderBookTable'
@@ -35,8 +36,8 @@ let unsubscribe: Function | undefined
 
 class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
-    asks: [],
-    bids: [],
+    asks: new Map(),
+    bids: new Map(),
     // will use to compare data and update from query
     lastQueryData: null,
     group: 0.01,
@@ -50,31 +51,25 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const { marketOrders } = newProps.data
 
     let updatedData = null
-    const newOrder = JSON.parse(
-      '{"pair":"MATIC_BTC","exchange":"binance","id":"1573672480969MATIC_BTC3471028.000000000.00000170","size":"3471028","price":"10000.00000170","side":"bid","timestamp":1573672480.969}'
-    )
 
     // first get data from query
     if (
-      asks.length === 0 &&
-      bids.length === 0 &&
+      asks.size === 0 &&
+      bids.size === 0 &&
       marketOrders.asks &&
-      marketOrders.bids
+      marketOrders.bids &&
+      testJSON(marketOrders.asks) &&
+      testJSON(marketOrders.bids)
     ) {
       updatedData = transformOrderbookData({ marketOrders })
     }
 
     if (
-      newOrder
-      // newProps &&
-      // newProps.marketOrder
+      !(typeof marketOrders.asks === 'string') ||
+      !(typeof marketOrders.bids === 'string')
     ) {
-      const orderData = newOrder
+      const orderData = newProps.data.marketOrders
       const orderbookData = updatedData || { asks, bids }
-
-      // testJSON(newProps.marketOrder)
-      //   ? JSON.parse(newProps.marketOrder)
-      //   : newProps.data.marketOrders
 
       updatedData = addOrderToOrderbook(orderbookData, orderData)
     }
@@ -130,7 +125,6 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
   render() {
     const { quote, lastTradeData, onButtonClick } = this.props
-
     const { bids, asks, mode, group } = this.state
 
     return (
