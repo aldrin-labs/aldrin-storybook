@@ -69,8 +69,6 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('this.props', this.props)
-
     if (this.props.subscribeToMore) {
       //  unsubscribe from old exchange when you first time change exchange
       unsubscribe && unsubscribe()
