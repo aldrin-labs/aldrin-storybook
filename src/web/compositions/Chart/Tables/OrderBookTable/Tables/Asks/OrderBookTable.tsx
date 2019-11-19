@@ -16,8 +16,7 @@ import { TableWrapper } from '../../OrderBookTableContainer.styles'
 class OrderBookTable extends Component<IProps> {
   render() {
     const { data, mode, group } = this.props
-    // const tableData = getDataForTable(data, group, 'asks')
-    const tableData = []
+    const tableData = getDataForTable(data, group, 'asks').reverse()
 
     return (
       <TableWrapper mode={mode} isFullHeight={mode === 'asks'}>
@@ -26,8 +25,7 @@ class OrderBookTable extends Component<IProps> {
             <Table
               width={width}
               height={height}
-              rowCount={0}
-              // rowCount={tableData.length <= 20 ? tableData.length : 20}
+              rowCount={tableData.length}
               headerHeight={window.outerHeight / 60}
               headerStyle={{
                 color: '#7284A0',
@@ -39,7 +37,7 @@ class OrderBookTable extends Component<IProps> {
                 borderBottom: '.1rem solid #e0e5ec',
               }}
               rowHeight={window.outerHeight / 60}
-              scrollToIndex={tableData.length <= 20 ? tableData.length - 1 : 19}
+              scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
             >
               <Column

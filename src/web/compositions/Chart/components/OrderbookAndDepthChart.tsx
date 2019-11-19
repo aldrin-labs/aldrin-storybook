@@ -1,5 +1,5 @@
 import React from 'react'
-
+import 'treemap-js'
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
@@ -17,12 +17,13 @@ let unsubscribe = Function
 
 class OrderbookAndDepthChart extends React.Component {
   state = {
-    asks: new Map(),
-    bids: new Map(),
+    asks: new TreeMap(),
+    bids: new TreeMap(),
+    readyForNewOrder: true,
   }
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
-    const { asks, bids } = state
+    const { asks, bids, readyForNewOrder } = state
     const {
       data: { marketOrders },
     } = newProps
@@ -52,9 +53,20 @@ class OrderbookAndDepthChart extends React.Component {
     }
 
     return {
+      readyForNewOrder:
+        readyForNewOrder === undefined ? true : readyForNewOrder,
       ...updatedData,
     }
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.readyForNewOrder) {
+      return true
+    }
+
+    return false
+  }
+
   componentDidMount() {
     if (this.props.subscribeToMore) {
       //  unsubscribe from old exchange when you first time change exchange
@@ -70,13 +82,19 @@ class OrderbookAndDepthChart extends React.Component {
       prevProps.currencyPair !== this.props.currencyPair
     ) {
       // when change exchange delete all data and...
-      this.setState({ asks: [], bids: [] })
+      this.setState({ asks: new TreeMap(), bids: new TreeMap() })
 
       //  unsubscribe from old exchange
       unsubscribe && unsubscribe()
 
       //  subscribe to new exchange and create new unsub link
       unsubscribe = this.props.subscribeToMore()
+    }
+
+    if (this.state.readyForNewOrder) {
+      this.setState({ readyForNewOrder: false }, () =>
+        setTimeout(() => this.setState({ readyForNewOrder: true }), 100)
+      )
     }
   }
 

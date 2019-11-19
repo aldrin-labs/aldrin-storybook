@@ -11,7 +11,12 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
-import { testJSON, sortAsc, sortDesc } from '@core/utils/chartPageUtils'
+import {
+  testJSON,
+  sortAsc,
+  sortDesc,
+  getArrayFromTree,
+} from '@core/utils/chartPageUtils'
 
 import { red, green } from '@material-ui/core/colors'
 import {
@@ -45,30 +50,30 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = sortDesc(
-      [...data.asks.entries()].slice(0, 30)
-    ).map(([price, [size, total]]) => {
-      totalVolumeAsks = totalVolumeAsks + Number(size)
+    let transformedAsksData = getArrayFromTree(data.asks)
+      .reverse()
+      .map(({ price, size }) => {
+        totalVolumeAsks = totalVolumeAsks + Number(size)
 
-      return {
-        y: +price,
-        x: totalVolumeAsks,
-      }
-    })
+        return {
+          y: +price,
+          x: totalVolumeAsks,
+        }
+      })
 
     let totalVolumeBids = 0
-    let transformedBidsData = sortDesc(
-      [...data.bids.entries()].slice(0, 30)
-    ).map(([price, [size, total]]) => {
-      totalVolumeBids = totalVolumeBids + Number(size)
+    let transformedBidsData = getArrayFromTree(data.bids)
+      .reverse()
+      .map(({ price, size }) => {
+        totalVolumeBids = totalVolumeBids + Number(size)
 
-      return {
-        y: +price,
-        x: totalVolumeBids,
-      }
-    })
+        return {
+          y: +price,
+          x: totalVolumeBids,
+        }
+      })
 
-    //  if arrays of dada not equal crosshair not worhing correctly
+    // if arrays of dada not equal crosshair not worhing correctly
     if (transformedBidsData.length > transformedAsksData.length) {
       transformedBidsData = transformedBidsData.slice(
         0,
@@ -84,7 +89,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     return {
       transformedBidsData,
       transformedAsksData,
-      MAX_DOMAIN_PLOT: totalVolumeAsks,
+      MAX_DOMAIN_PLOT: Math.max(totalVolumeAsks, totalVolumeBids),
     }
   }
 

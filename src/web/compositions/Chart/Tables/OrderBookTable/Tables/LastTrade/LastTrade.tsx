@@ -62,7 +62,6 @@ class LastTrade extends React.Component<IProps> {
 
     const { prevTradePrice, currentTradePrice } = this.state
     const fall = prevTradePrice > currentTradePrice
-    console.log('this.props', this.props)
 
     return (
       <LastTradeContainer>
