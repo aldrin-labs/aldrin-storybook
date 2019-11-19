@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import {
   LastTradeContainer,
@@ -11,47 +11,87 @@ import { OrderbookMode } from '../../OrderBookTableContainer.types'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components/index'
 
-const LastTrade = ({
-  lastTradeData,
-  group,
-  mode,
-}: {
-  lastTradeData: { marketTickers: [string] }
+import QueryRenderer from '@core/components/QueryRenderer'
+import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
+
+import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
+
+import { getPriceFromLastTrade } from '@core/utils/chartPageUtils'
+
+interface IProps {
+  data: { marketTickers: [string] }
   group: number
   mode: OrderbookMode
-}) => {
-  if (mode !== 'both') {
-    return null
+}
+
+class LastTrade extends React.Component<IProps> {
+  state = {
+    prevTradePrice: 0,
+    currentTradePrice: 0,
   }
 
-  lastTradeData =
-    lastTradeData.marketTickers.length > 0
-      ? lastTradeData
-      : {
-          marketTickers: [JSON.stringify([0, 0, 0, 0])],
-        }
+  unsubscribeFunction: null | Function = null
 
-  const currentTrade = JSON.parse(lastTradeData.marketTickers[0])
-  const currentTradePrice = currentTrade[3]
+  static getDerivedStateFromProps(props: IProps, state) {
+    const { data } = props
+    const lastTradePrice = getPriceFromLastTrade(data)
 
-  const [prevTradePrice, updatePrevPrice] = useState(currentTrade[3])
-  const fall = prevTradePrice > currentTradePrice
+    return {
+      prevTradePrice: state.currentTradePrice,
+      currentTradePrice: lastTradePrice,
+    }
+  }
 
-  useEffect(() => {
-    updatePrevPrice(currentTradePrice)
-  }, [currentTradePrice])
+  componentDidMount() {
+    this.unsubscribeFunction = this.props.subscribeToMore()
+  }
 
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
+  }
+  render() {
+    const { mode } = this.props
+
+    if (mode !== 'both') {
+      return null
+    }
+
+    const { prevTradePrice, currentTradePrice } = this.state
+    const fall = prevTradePrice > currentTradePrice
+
+    return (
+      <LastTradeContainer>
+        <LastTradeValue fall={fall}>
+          <ArrowIcon fall={fall} />
+          {addMainSymbol(stripDigitPlaces(currentTradePrice, 2), true)}
+        </LastTradeValue>
+        <LastTradePrice>
+          {addMainSymbol(stripDigitPlaces(currentTradePrice, 2), true)}
+        </LastTradePrice>
+      </LastTradeContainer>
+    )
+  }
+}
+
+const APIWrapper = (props) => {
   return (
-    <LastTradeContainer>
-      <LastTradeValue fall={fall}>
-        <ArrowIcon fall={fall} />
-        {addMainSymbol(stripDigitPlaces(currentTrade[3], 2), true)}
-      </LastTradeValue>
-      <LastTradePrice>
-        {addMainSymbol(stripDigitPlaces(currentTrade[3], 2), true)}
-      </LastTradePrice>
-    </LastTradeContainer>
+    <QueryRenderer
+      component={LastTrade}
+      withOutSpinner
+      query={MARKET_QUERY}
+      variables={{ symbol: props.symbol, exchange: props.exchange }}
+      subscriptionArgs={{
+        subscription: MARKET_TICKERS,
+        variables: { symbol: props.symbol, exchange: props.exchange },
+        updateQueryFunction: updateTradeHistoryQuerryFunction,
+      }}
+      {...props}
+    />
   )
 }
 
-export default LastTrade
+export default APIWrapper

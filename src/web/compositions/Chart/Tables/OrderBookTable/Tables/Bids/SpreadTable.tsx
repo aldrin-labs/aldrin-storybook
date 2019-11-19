@@ -15,7 +15,7 @@ import { TableWrapper } from '../../OrderBookTableContainer.styles'
 class SpreadTable extends Component<IProps> {
   render() {
     const { data, group, mode } = this.props
-    const tableData = getDataForTable(data, group, 'bids')
+    const tableData = getDataForTable(data, group, 'bids').reverse()
 
     return (
       <TableWrapper mode={mode} isFullHeight={mode === 'bids'}>

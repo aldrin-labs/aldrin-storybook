@@ -9,7 +9,7 @@ export interface IProps {
   digitsAfterDecimalForBidsPrice: number
   digitsAfterDecimalForBidsSize: number
   data: { marketOrders: { bids: string; asks: string } }
-  marketOrder: string
+  lastTradeData: { marketTickers: [string] }
 }
 
 export type OrderbookMode = 'both' | 'bids' | 'asks'

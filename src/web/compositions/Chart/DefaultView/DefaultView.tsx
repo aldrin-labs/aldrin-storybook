@@ -10,7 +10,12 @@ import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 
 // import ComingSoon from '@sb/components/ComingSoon'
-import { DepthChart, TradeHistoryAndOrderbook } from '../components'
+import {
+  OrderBook,
+  DepthChart,
+  TradeHistory,
+  OrderbookAndDepthChart,
+} from '../components'
 
 import {
   Container,
@@ -117,23 +122,7 @@ export const DefaultView = (props: any) => {
           }}
         >
           <Grid item container style={{ height: '60%' }}>
-            <Grid
-              item
-              xs={4}
-              style={{
-                height: '100%',
-                padding: '0 .4rem .4rem 0',
-              }}
-            >
-              <DepthChart
-                chartProps={chartProps}
-                changeTable={changeTable}
-                exchange={exchange}
-                symbol={currencyPair}
-              />
-            </Grid>
-
-            <TradeHistoryAndOrderbook
+            <OrderbookAndDepthChart
               {...{
                 symbol: currencyPair,
                 pair: currencyPair,
@@ -146,6 +135,26 @@ export const DefaultView = (props: any) => {
                 chartProps,
               }}
             />
+
+            <Grid
+              item
+              xs={4}
+              style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
+            >
+              <TradeHistory
+                {...{
+                  symbol: currencyPair,
+                  pair: currencyPair,
+                  exchange,
+                  quote,
+                  activeExchange,
+                  showTableOnMobile,
+                  aggregation,
+                  changeTable,
+                  chartProps,
+                }}
+              />
+            </Grid>
           </Grid>
 
           <TradingComponent

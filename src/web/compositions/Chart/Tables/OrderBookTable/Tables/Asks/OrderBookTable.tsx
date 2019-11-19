@@ -16,7 +16,7 @@ import { TableWrapper } from '../../OrderBookTableContainer.styles'
 class OrderBookTable extends Component<IProps> {
   render() {
     const { data, mode, group } = this.props
-    const tableData = getDataForTable(data, group, 'asks')
+    const tableData = getDataForTable(data, group, 'asks').reverse()
 
     return (
       <TableWrapper mode={mode} isFullHeight={mode === 'asks'}>
