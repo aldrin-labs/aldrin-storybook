@@ -59,7 +59,7 @@ const AppRaw = ({
   const isChartPage = currentPage === '/chart'
 
   return (
-    <JssProvider jss={jss} generateClassName={generateClassName}>
+    <JssProvider jss={jss}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
         <AppGridLayout
