@@ -1,16 +1,24 @@
 import React from 'react'
 
-import { TradeHistoryTable } from '../Tables/Tables'
+import QueryRenderer from '@core/components/QueryRenderer'
+import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
+import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
+
+import { TradeHistoryTable } from '../Tables/Tables'
 import { TradeHistoryWrapper } from '../Chart.styles'
 
 export const TradeHistory = ({
   showTableOnMobile,
-  quote,
   activeExchange,
+  aggregation,
+  changeTable,
+  chartProps,
+  exchange,
+  symbol,
+  quote,
   pair,
-  data,
-  ...rest
 }) => (
   <TradeHistoryWrapper
     key={`tradehistory_table`}
@@ -19,14 +27,26 @@ export const TradeHistory = ({
       show: showTableOnMobile === 'TRADE',
     }}
   >
-    <TradeHistoryTable
+    <QueryRenderer
+      component={TradeHistoryTable}
+      withOutSpinner
+      query={MARKET_QUERY}
+      variables={{ symbol, exchange }}
+      subscriptionArgs={{
+        subscription: MARKET_TICKERS,
+        variables: { symbol, exchange },
+        updateQueryFunction: updateTradeHistoryQuerryFunction,
+      }}
       {...{
-        data,
         quote,
         activeExchange,
+        exchange,
         currencyPair: pair,
+        showTableOnMobile,
+        aggregation,
+        changeTable,
+        chartProps,
         key: 'tradeyistory_table_query_render',
-        ...rest,
       }}
     />
   </TradeHistoryWrapper>

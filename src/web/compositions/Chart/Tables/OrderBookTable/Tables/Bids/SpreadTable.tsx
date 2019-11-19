@@ -15,7 +15,8 @@ import { TableWrapper } from '../../OrderBookTableContainer.styles'
 class SpreadTable extends Component<IProps> {
   render() {
     const { data, group, mode } = this.props
-    const tableData = getDataForTable(data, group, 'bids')
+    // const tableData = getDataForTable(data, group, 'bids')
+    const tableData = []
 
     return (
       <TableWrapper mode={mode} isFullHeight={mode === 'bids'}>
@@ -35,7 +36,8 @@ class SpreadTable extends Component<IProps> {
                 letterSpacing: '.075rem',
                 borderBottom: '.1rem solid #e0e5ec',
               }}
-              rowCount={tableData.length}
+              rowCount={0}
+              //rowCount={tableData.length <= 20 ? tableData.length : 20}
               rowHeight={window.outerHeight / 60}
               // rowStyle={{ backgroundColor: '#000' }}
               rowGetter={({ index }) => tableData[index]}

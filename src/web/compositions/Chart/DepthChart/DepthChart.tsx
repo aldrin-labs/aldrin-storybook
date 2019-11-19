@@ -34,8 +34,6 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     crosshairValuesForOrder: [],
     nearestOrderXIndex: null,
     nearestSpreadXIndex: null,
-    asks: new Map(),
-    bids: new Map(),
     transformedAsksData: [],
     transformedBidsData: [],
   }
@@ -44,58 +42,31 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     props: IDepthChartProps,
     state: IDepthChartState
   ) {
-    const { marketOrders } = props.data
-    const { asks, bids } = state
-
-    let updatedData = null
-
-    // first get data from query
-    if (
-      asks.size === 0 &&
-      bids.size === 0 &&
-      marketOrders.asks &&
-      marketOrders.bids &&
-      testJSON(marketOrders.asks) &&
-      testJSON(marketOrders.bids)
-    ) {
-      updatedData = transformOrderbookData({ marketOrders })
-    }
-
-    if (
-      !(typeof marketOrders.asks === 'string') ||
-      !(typeof marketOrders.bids === 'string')
-    ) {
-      const orderData = props.data.marketOrders
-      const orderbookData = updatedData || { asks, bids }
-
-      updatedData = addOrderToOrderbook(orderbookData, orderData)
-    }
-
-    updatedData = updatedData || { asks, bids }
+    const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = sortDesc([...updatedData.asks.entries()]).map(
-      ([price, [size, total]]) => {
-        totalVolumeAsks = totalVolumeAsks + Number(size)
+    let transformedAsksData = sortDesc(
+      [...data.asks.entries()].slice(0, 30)
+    ).map(([price, [size, total]]) => {
+      totalVolumeAsks = totalVolumeAsks + Number(size)
 
-        return {
-          y: +price,
-          x: totalVolumeAsks,
-        }
+      return {
+        y: +price,
+        x: totalVolumeAsks,
       }
-    )
+    })
 
     let totalVolumeBids = 0
-    let transformedBidsData = sortDesc([...updatedData.bids.entries()]).map(
-      ([price, [size, total]]) => {
-        totalVolumeBids = totalVolumeBids + Number(size)
+    let transformedBidsData = sortDesc(
+      [...data.bids.entries()].slice(0, 30)
+    ).map(([price, [size, total]]) => {
+      totalVolumeBids = totalVolumeBids + Number(size)
 
-        return {
-          y: +price,
-          x: totalVolumeBids,
-        }
+      return {
+        y: +price,
+        x: totalVolumeBids,
       }
-    )
+    })
 
     //  if arrays of dada not equal crosshair not worhing correctly
     if (transformedBidsData.length > transformedAsksData.length) {
@@ -114,7 +85,6 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       transformedBidsData,
       transformedAsksData,
       MAX_DOMAIN_PLOT: totalVolumeAsks,
-      ...updatedData,
     }
   }
 
