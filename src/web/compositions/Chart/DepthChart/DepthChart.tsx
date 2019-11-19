@@ -11,7 +11,12 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
-import { testJSON, sortAsc, sortDesc } from '@core/utils/chartPageUtils'
+import {
+  testJSON,
+  sortAsc,
+  sortDesc,
+  getArrayFromTree,
+} from '@core/utils/chartPageUtils'
 
 import { red, green } from '@material-ui/core/colors'
 import {
@@ -34,8 +39,6 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     crosshairValuesForOrder: [],
     nearestOrderXIndex: null,
     nearestSpreadXIndex: null,
-    asks: new Map(),
-    bids: new Map(),
     transformedAsksData: [],
     transformedBidsData: [],
   }
@@ -44,60 +47,33 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     props: IDepthChartProps,
     state: IDepthChartState
   ) {
-    const { marketOrders } = props.data
-    const { asks, bids } = state
-
-    let updatedData = null
-
-    // first get data from query
-    if (
-      asks.size === 0 &&
-      bids.size === 0 &&
-      marketOrders.asks &&
-      marketOrders.bids &&
-      testJSON(marketOrders.asks) &&
-      testJSON(marketOrders.bids)
-    ) {
-      updatedData = transformOrderbookData({ marketOrders })
-    }
-
-    if (
-      !(typeof marketOrders.asks === 'string') ||
-      !(typeof marketOrders.bids === 'string')
-    ) {
-      const orderData = props.data.marketOrders
-      const orderbookData = updatedData || { asks, bids }
-
-      updatedData = addOrderToOrderbook(orderbookData, orderData)
-    }
-
-    updatedData = updatedData || { asks, bids }
+    const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = sortDesc([...updatedData.asks.entries()]).map(
-      ([price, [size, total]]) => {
+    let transformedAsksData = getArrayFromTree(data.asks)
+      .reverse()
+      .map(({ price, size }) => {
         totalVolumeAsks = totalVolumeAsks + Number(size)
 
         return {
           y: +price,
           x: totalVolumeAsks,
         }
-      }
-    )
+      })
 
     let totalVolumeBids = 0
-    let transformedBidsData = sortDesc([...updatedData.bids.entries()]).map(
-      ([price, [size, total]]) => {
+    let transformedBidsData = getArrayFromTree(data.bids)
+      .reverse()
+      .map(({ price, size }) => {
         totalVolumeBids = totalVolumeBids + Number(size)
 
         return {
           y: +price,
           x: totalVolumeBids,
         }
-      }
-    )
+      })
 
-    //  if arrays of dada not equal crosshair not worhing correctly
+    // if arrays of dada not equal crosshair not worhing correctly
     if (transformedBidsData.length > transformedAsksData.length) {
       transformedBidsData = transformedBidsData.slice(
         0,
@@ -113,8 +89,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     return {
       transformedBidsData,
       transformedAsksData,
-      MAX_DOMAIN_PLOT: totalVolumeAsks,
-      ...updatedData,
+      MAX_DOMAIN_PLOT: Math.max(totalVolumeAsks, totalVolumeBids),
     }
   }
 
