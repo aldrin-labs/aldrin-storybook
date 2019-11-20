@@ -38,23 +38,22 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
     // will use to compare data and update from query
     lastQueryData: null,
-    group: 0.01,
     mode: 'both',
     i: 0,
   }
 
   setOrderbookMode = (mode: OrderbookMode) => this.setState({ mode })
 
-  setOrderbookGroup = (group: OrderbookGroup) => this.setState({ group })
-
   render() {
     const {
       quote,
+      aggregation,
       currencyPair,
       onButtonClick,
-      data: { bids, asks },
+      setOrderbookAggregation,
+      data,
     } = this.props
-    const { mode, group } = this.state
+    const { mode } = this.state
 
     return (
       <>
@@ -86,7 +85,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             />
             <select
               onChange={(e: ChangeEvent) =>
-                this.setOrderbookGroup(e.target.value)
+                setOrderbookAggregation(e.target.value)
               }
             >
               {OrderbookGroupOptions.map((option) => (
@@ -97,21 +96,26 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         </ChartCardHeader>
 
         <OrderBookTable
-          data={asks}
+          data={data}
           mode={mode}
-          group={group}
+          aggregation={aggregation}
           onButtonClick={onButtonClick}
           quote={quote}
         />
 
         <LastTrade
           mode={mode}
-          group={group}
+          aggregation={aggregation}
           symbol={currencyPair}
           exchange={this.props.activeExchange.symbol}
         />
 
-        <SpreadTable data={bids} mode={mode} group={group} quote={quote} />
+        <SpreadTable
+          data={data}
+          mode={mode}
+          aggregation={aggregation}
+          quote={quote}
+        />
       </>
     )
   }
