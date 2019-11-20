@@ -34,7 +34,7 @@ export const TradeHistory = ({
       variables={{ symbol, exchange }}
       subscriptionArgs={{
         subscription: MARKET_TICKERS,
-        variables: { symbol, exchange },
+        variables: { symbol, exchange, marketType: '0' },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...{
