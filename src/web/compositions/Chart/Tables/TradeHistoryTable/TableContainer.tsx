@@ -39,18 +39,18 @@ class TableContainer extends Component<IProps, IState> {
         ? JSON.parse(newProps.data.marketTickers[0])
         : newProps.data.marketTickers[0]
 
-      if (state.data.length > 0 && tickerData[5] === state.data[0].id) {
+      if (state.data.length > 0 && tickerData[6] === state.data[0].id) {
         return null
       }
 
       const fall =
-        state.data.length > 0 ? state.data[0].price > tickerData[3] : false
+        state.data.length > 0 ? state.data[0].price > tickerData[4] : false
       const ticker = {
         fall,
-        id: tickerData[5],
-        size: tickerData[4],
-        price: tickerData[3],
-        time: new Date(tickerData[7]).toLocaleTimeString(),
+        id: tickerData[6],
+        size: tickerData[5],
+        price: tickerData[4],
+        time: new Date(tickerData[8]).toLocaleTimeString(),
       }
 
       const updatedData = [ticker].concat(state.data)

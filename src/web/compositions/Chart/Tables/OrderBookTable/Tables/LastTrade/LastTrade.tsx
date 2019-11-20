@@ -86,7 +86,11 @@ const APIWrapper = (props) => {
       variables={{ symbol: props.symbol, exchange: props.exchange }}
       subscriptionArgs={{
         subscription: MARKET_TICKERS,
-        variables: { symbol: props.symbol, exchange: props.exchange },
+        variables: {
+          symbol: props.symbol,
+          exchange: props.exchange,
+          marketType: '0',
+        },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...props}

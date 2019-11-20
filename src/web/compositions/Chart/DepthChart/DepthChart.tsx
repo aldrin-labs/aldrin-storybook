@@ -50,7 +50,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = getArrayFromTree(data.asks)
+    let transformedAsksData = getArrayFromTree(data, 'asks')
       .reverse()
       .map(({ price, size }) => {
         totalVolumeAsks = totalVolumeAsks + Number(size)
@@ -62,7 +62,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       })
 
     let totalVolumeBids = 0
-    let transformedBidsData = getArrayFromTree(data.bids)
+    let transformedBidsData = getArrayFromTree(data, 'bids')
       .reverse()
       .map(({ price, size }) => {
         totalVolumeBids = totalVolumeBids + Number(size)

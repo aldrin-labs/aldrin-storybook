@@ -6,6 +6,10 @@ import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_Q
 import { ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
 import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
 import { OrderBook, DepthChart } from '../components'
+import {
+  IProps,
+  OrderbookGroup,
+} from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
 import {
   transformOrderbookData,
@@ -17,10 +21,16 @@ let unsubscribe = Function
 
 class OrderbookAndDepthChart extends React.Component {
   state = {
+    readyForNewOrder: true,
+    aggregation: 0.01,
     asks: new TreeMap(),
     bids: new TreeMap(),
-    readyForNewOrder: true,
+    aggregatedData: {
+      asks: new TreeMap(),
+      bids: new TreeMap(),
+    },
   }
+
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
     const { asks, bids, readyForNewOrder } = state
@@ -98,6 +108,11 @@ class OrderbookAndDepthChart extends React.Component {
     }
   }
 
+  setOrderbookAggregation = (aggregation: OrderbookGroup) => {
+    this.setState({ aggregation })
+    // update aggregatedData
+  }
+
   render() {
     const {
       chartProps,
@@ -144,6 +159,7 @@ class OrderbookAndDepthChart extends React.Component {
             chartProps={chartProps}
             changeTable={changeTable}
             currencyPair={currencyPair}
+            setOrderbookAggregation={this.setOrderbookAggregation}
             quote={quote}
             data={{
               asks,
@@ -171,9 +187,10 @@ export const APIWrapper = ({
     withOutSpinner
     query={ORDERS_MARKET_QUERY}
     variables={{ symbol, exchange }}
+    fetchPolicy='network-only'
     subscriptionArgs={{
       subscription: ORDERBOOK,
-      variables: { symbol, exchange },
+      variables: { symbol: `${symbol}_0`, exchange },
       updateQueryFunction: updateOrderBookQuerryFunction,
     }}
     {...{
