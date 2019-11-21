@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
+import dynamic from 'next/dynamic'
 
 import { compose } from 'recompose'
 
@@ -13,18 +14,18 @@ export const ComingSoonBlock = () => (
   </CenterContainer>
 )
 
-const Accounts = React.lazy(() =>
+const Accounts = dynamic(() =>
   import(/* webpackPrefetch: true */ '@core/containers/Profile/ProfileAccounts/ProfileAccounts')
 )
 
-const Settings = React.lazy(() =>
+const Settings = dynamic(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/ProfileSettings/ProfileSettings')
 )
 
 const ProfileRouter = () => {
   return (
     <MainContainer>
-      <Suspense fallback={<Loading centerAligned />}>
+      {/* <Suspense fallback={<Loading centerAligned />}> */}
         <Switch>
           <Route
             exact
@@ -52,7 +53,7 @@ const ProfileRouter = () => {
             render={(...rest) => <ComingSoonBlock />}
           />
         </Switch>
-      </Suspense>
+      {/* </Suspense> */}
     </MainContainer>
   )
 }

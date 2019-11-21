@@ -1,28 +1,29 @@
 import React, { Component, lazy, Suspense, memo } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
+import dynamic from 'next/dynamic'
 
 import { Loading } from '@sb/components/index'
 import { IProps, IState } from './PortfolioTable.types'
 
 import PortfolioMain from '@core/compositions/PortfolioMain'
-const PortfolioTableIndustries = React.lazy(() =>
+const PortfolioTableIndustries = dynamic(() =>
   import(/* webpackPrefetch: true */ '@core/compositions/PortfolioIndustry')
 )
 import Rebalance from '@core/compositions/PortfolioRebalance'
-const Optimization = React.lazy(() =>
+const Optimization = dynamic(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Optimization/Optimization')
 )
-const Correlation = React.lazy(() =>
+const Correlation = dynamic(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Correlation/Correlation')
 )
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
-const Social = React.lazy(() =>
+const Social = dynamic(() =>
   import(/* webpackPrefetch: true */ '@core/containers/Social/Social')
 )
 
-const Transaction = React.lazy(() =>
+const Transaction = dynamic(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Transaction/TransactionPage')
 )
 
