@@ -12,10 +12,7 @@ import {
 } from '@material-ui/core'
 
 import {
-  testJSON,
-  sortAsc,
-  sortDesc,
-  getArrayFromTree,
+  getUpdatedArray,
 } from '@core/utils/chartPageUtils'
 
 import { red, green } from '@material-ui/core/colors'
@@ -50,7 +47,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = getArrayFromTree(data, 'asks')
+    let transformedAsksData = getUpdatedArray(data, 'asks')
       .reverse()
       .map(({ price, size }) => {
         totalVolumeAsks = totalVolumeAsks + Number(size)
@@ -62,7 +59,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       })
 
     let totalVolumeBids = 0
-    let transformedBidsData = getArrayFromTree(data, 'bids')
+    let transformedBidsData = getUpdatedArray(data, 'bids')
       .reverse()
       .map(({ price, size }) => {
         totalVolumeBids = totalVolumeBids + Number(size)

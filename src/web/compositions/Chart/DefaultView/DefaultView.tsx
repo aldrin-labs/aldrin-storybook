@@ -76,7 +76,7 @@ export const DefaultView = (props: any) => {
         <Grid
           item
           container
-          direction='column'
+          direction="column"
           xs={6}
           style={{
             height: '100%',
@@ -91,7 +91,7 @@ export const DefaultView = (props: any) => {
                 />
               ) : (
                 <Fade timeout={1000} in={activeChart === 'depth'}>
-                  <DepthChartContainer data-e2e='mainDepthChart'>
+                  <DepthChartContainer data-e2e="mainDepthChart">
                     <MainDepthChart
                       {...{
                         base,
@@ -115,27 +115,28 @@ export const DefaultView = (props: any) => {
           item
           container
           xs={6}
-          direction='column'
+          direction="column"
           style={{
             height: '100%',
             padding: '.4rem 0 0 .4rem',
           }}
         >
           <Grid item container style={{ height: '60%' }}>
-            <OrderbookAndDepthChart
-              {...{
-                symbol: currencyPair,
-                pair: currencyPair,
-                exchange,
-                quote,
-                activeExchange,
-                showTableOnMobile,
-                aggregation,
-                changeTable,
-                chartProps,
-              }}
-            />
-
+            <Grid item container xs={8} style={{ height: '100%' }}>
+              <OrderbookAndDepthChart
+                {...{
+                  symbol: currencyPair,
+                  pair: currencyPair,
+                  exchange,
+                  quote,
+                  activeExchange,
+                  showTableOnMobile,
+                  aggregation,
+                  changeTable,
+                  chartProps,
+                }}
+              />
+            </Grid>
             <Grid
               item
               xs={4}

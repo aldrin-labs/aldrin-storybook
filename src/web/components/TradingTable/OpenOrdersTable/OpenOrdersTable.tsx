@@ -26,7 +26,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     openOrdersProcessedData: [],
   }
 
-  unsubscribeFunction : null | Function = null
+  unsubscribeFunction: null | Function = null
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
     const { cancelOrderMutation } = this.props
@@ -120,12 +120,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
             backgroundColor: '#fff',
             color: '#16253D',
+            boxShadow: 'none',
           },
           cell: {
             color: '#7284A0',
@@ -133,9 +135,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           tab: {
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
@@ -164,7 +168,7 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy='network-only'
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {
