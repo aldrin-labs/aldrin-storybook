@@ -59,6 +59,7 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
       theme: {
         palette: { blue, red, green, grey, secondary },
       },
+      theme,
       rebalanceTimePeriod,
       onRebalanceTimerChange,
       width,
