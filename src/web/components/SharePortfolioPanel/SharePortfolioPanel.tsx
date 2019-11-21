@@ -4,9 +4,11 @@ import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import { IProps } from './SharePortfolio.types'
 import { MASTER_BUILD } from '@core/utils/config'
+import { withTheme } from '@material-ui/styles'
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 
+@withTheme
 class SharePortfolioPanel extends Component<IProps> {
   render() {
     const {
@@ -17,6 +19,7 @@ class SharePortfolioPanel extends Component<IProps> {
       isSPOTCurrently,
       setPageType,
       choosePeriod,
+      theme,
     } = this.props
 
     return (
