@@ -1,83 +1,68 @@
-import React, { memo, PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { Column, Table } from 'react-virtualized'
+import 'react-virtualized/styles.css'
+
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { Row, Head } from '@sb/components/OldTable/Table'
-import OrderBookBody from './OrderBookBody/OrderBookBody'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
-
 import { IProps } from './OrderBookTable.types'
-import { AsksTable, StyledHeadCell } from './OrderBookTable.styles'
 
-import { StyledTitle } from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+import { getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
 
-const MemoHead = memo(() => (
-  <>
-    <ChartCardHeader>Orderbook</ChartCardHeader>
-    <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-      <Row style={{ height: 'auto' }}>
-        <StyledHeadCell>
-          <StyledTitle variant="body2" color="default" align="left">
-            Price
-            {/* {quote || 'Fiat'} */}
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell>
-          <StyledTitle variant="body2" color="default" align="left">
-            Size
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell isCenter={true}>
-          <StyledTitle
-            variant="body2"
-            color="default"
-            align="left"
-          // style={{ paddingRight: 0 }}
-          >
-            Total
-          </StyledTitle>
-        </StyledHeadCell>
-      </Row>
-    </Head>
-  </>
-))
+import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
-class OrderBookTable extends PureComponent<IProps> {
+class OrderBookTable extends Component<IProps> {
   render() {
-    const {
-      onButtonClick,
-      quote,
-      theme: { palette },
-    } = this.props
-
-    const { background, action, type, primary } = palette
+    const { data, mode, group } = this.props
+    const tableData = getDataForTable(data, group, 'asks').reverse()
 
     return (
-      <AsksTable>
-        <MemoHead
-          {...{
-            palette,
-            primary,
-            type,
-            onButtonClick,
-            background,
-            quote,
-            key: 'asks_headrow',
-          }}
-        />
-        {/* hack to autoscroll to bottom */}
-        <OrderBookBody
-          {...{
-            background,
-            action,
-            ...this.props,
-            key: 'asks_body',
-          }}
-        />
-      </AsksTable>
+      <TableWrapper mode={mode} isFullHeight={mode === 'asks'}>
+        <AutoSizer>
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              width={width}
+              height={height}
+              rowCount={tableData.length}
+              headerHeight={window.outerHeight / 60}
+              headerStyle={{
+                color: '#7284A0',
+                paddingLeft: '.5rem',
+                paddingTop: '.25rem',
+                marginLeft: 0,
+                marginRight: 0,
+                letterSpacing: '.075rem',
+                borderBottom: '.1rem solid #e0e5ec',
+              }}
+              rowHeight={window.outerHeight / 60}
+              scrollToIndex={tableData.length - 1}
+              rowGetter={({ index }) => tableData[index]}
+            >
+              <Column
+                label='Price'
+                dataKey='price'
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
+                width={width}
+                style={{ ...rowStyles, color: '#DD6956' }}
+              />
+              <Column
+                label='Size'
+                dataKey='size'
+                width={width}
+                style={rowStyles}
+              />
+              <Column
+                label='Total'
+                dataKey='total'
+                width={width}
+                style={rowStyles}
+              />
+            </Table>
+          )}
+        </AutoSizer>
+      </TableWrapper>
     )
   }
 }

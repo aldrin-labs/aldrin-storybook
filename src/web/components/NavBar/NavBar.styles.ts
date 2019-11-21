@@ -18,7 +18,7 @@ export const Nav = styled(AppBar)`
   && {
     box-shadow: none;
     padding: 0 3rem 0 6rem;
-
+    background-color: ${(props) => props.variant.background};
     @media only screen and (max-width: 1024px) {
       padding: 0 2rem 0 4rem;
     }

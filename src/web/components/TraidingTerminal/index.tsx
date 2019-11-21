@@ -58,7 +58,7 @@ const TradeInputContainer = ({ title, value, onChange, coin, style }) => {
 }
 
 const FormError = ({ children }: any) => (
-  <Typography color="error">{children}</Typography>
+  <Typography color="error" style={{ textAlign: 'right' }}>{children}</Typography>
 )
 
 // function is removing all decimals after set number without rounding
@@ -340,6 +340,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               thumbBackground="#0B1FD1"
               borderThumb={`0`}
               trackAfterBackground="#E0E5EC"
+              trackAfterOpacity={'1'}
               trackBeforeBackground={'#5C8CEA'}
               value={percentage}
               onChange={(e, value) => {
@@ -349,7 +350,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               min={0}
               max={100}
               step={25}
-              marks={[{ value: 0 }, { value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }]}
+              // marks={[{ value: 0 }, { value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }]}
+              marks
             />
           </Grid>
 
