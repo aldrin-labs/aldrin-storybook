@@ -5,7 +5,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { OrderbookMode } from './OrderBookTableContainer.types'
 
 export const TableWrapper = styled.div`
-  height: ${({
+  ${({
     mode,
     isFullHeight,
   }: {
@@ -13,10 +13,10 @@ export const TableWrapper = styled.div`
     isFullHeight: boolean
   }) =>
     mode === 'both'
-      ? 'calc(50% - 3.5rem)'
+      ? 'height: calc(50% - 3.5rem)'
       : isFullHeight
-      ? 'calc(100% - 2rem)'
-      : '0'};
+      ? 'height: calc(100% - 2rem)'
+      : 'display: none'};
 `
 
 export const SvgMode = styled(({ isActive, ...rest }) => (

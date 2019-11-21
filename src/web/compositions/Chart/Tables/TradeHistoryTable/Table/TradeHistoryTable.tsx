@@ -46,7 +46,7 @@ const OptimizedRow = memo(
           </TypographyFullWidth>
         </StyledCell>
 
-        <StyledCell style={{ minWidth: '40%' }}>
+        <StyledCell style={{ minWidth: '45%' }}>
           <TypographyFullWidth
             // style={{ paddingRight: 0 }}
             textColor={'#16253D'}

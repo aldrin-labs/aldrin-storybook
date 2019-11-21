@@ -14,6 +14,7 @@ import {
 import {
   transformOrderbookData,
   addOrderToOrderbook,
+  getAggregatedData,
   testJSON,
 } from '@core/utils/chartPageUtils'
 
@@ -33,17 +34,18 @@ class OrderbookAndDepthChart extends React.Component {
 
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
-    const { asks, bids, readyForNewOrder } = state
+    const { asks, bids, readyForNewOrder, aggregation } = state
     const {
       data: { marketOrders },
     } = newProps
 
     let updatedData = null
+    let updatedAggregatedData = state.aggregatedData
 
     // first get data from query
     if (
-      asks.size === 0 &&
-      bids.size === 0 &&
+      asks.getLength() === 0 &&
+      bids.getLength() === 0 &&
       marketOrders.asks &&
       marketOrders.bids &&
       testJSON(marketOrders.asks) &&
@@ -58,13 +60,21 @@ class OrderbookAndDepthChart extends React.Component {
     ) {
       const orderData = newProps.data.marketOrders
       const orderbookData = updatedData || { asks, bids }
-
       updatedData = addOrderToOrderbook(orderbookData, orderData)
+
+      if (aggregation !== 0.01) {
+        updatedAggregatedData = addOrderToOrderbook(
+          updatedAggregatedData,
+          orderData,
+          aggregation
+        )
+      }
     }
 
     return {
       readyForNewOrder:
         readyForNewOrder === undefined ? true : readyForNewOrder,
+      aggregatedData: updatedAggregatedData,
       ...updatedData,
     }
   }
@@ -108,28 +118,38 @@ class OrderbookAndDepthChart extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    unsubscribe && unsubscribe()
+  }
+
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
-    this.setState({ aggregation })
-    // update aggregatedData
+    this.setState({
+      aggregation,
+      aggregatedData: {
+        asks: getAggregatedData(this.state.asks, aggregation, 'asks'),
+        bids: getAggregatedData(this.state.bids, aggregation, 'bids'),
+      },
+    })
   }
 
   render() {
     const {
       chartProps,
       changeTable,
-      aggregation,
       currencyPair,
       activeExchange,
       exchange,
       quote,
     } = this.props
-    const { asks, bids } = this.state
+    const { asks, bids, aggregation, aggregatedData } = this.state
+
+    const dataToSend = aggregation === 0.01 ? { asks, bids } : aggregatedData
 
     return (
       <>
         <Grid
           item
-          xs={4}
+          xs={6}
           style={{
             height: '100%',
             padding: '0 .4rem .4rem 0',
@@ -149,8 +169,8 @@ class OrderbookAndDepthChart extends React.Component {
 
         <Grid
           item
-          xs={4}
-          id='orderbook'
+          xs={6}
+          id="orderbook"
           style={{ height: '100%', padding: '0 .4rem .4rem .4rem' }}
         >
           <OrderBook
@@ -161,10 +181,7 @@ class OrderbookAndDepthChart extends React.Component {
             currencyPair={currencyPair}
             setOrderbookAggregation={this.setOrderbookAggregation}
             quote={quote}
-            data={{
-              asks,
-              bids,
-            }}
+            data={dataToSend}
           />
         </Grid>
       </>
@@ -185,9 +202,10 @@ export const APIWrapper = ({
   <QueryRenderer
     component={OrderbookAndDepthChart}
     withOutSpinner
+    withTableLoader={true}
+    fetchPolicy="network-only"
     query={ORDERS_MARKET_QUERY}
-    variables={{ symbol, exchange }}
-    fetchPolicy='network-only'
+    variables={{ symbol: `${symbol}_0`, exchange }}
     subscriptionArgs={{
       subscription: ORDERBOOK,
       variables: { symbol: `${symbol}_0`, exchange },

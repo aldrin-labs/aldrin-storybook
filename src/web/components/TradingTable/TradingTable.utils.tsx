@@ -18,9 +18,7 @@ import {
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
-import {
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
@@ -29,43 +27,43 @@ export const getTableBody = (tab: string) =>
   tab === 'openOrders'
     ? openOrdersBody
     : tab === 'orderHistory'
-      ? orderHistoryBody
-      : tab === 'tradeHistory'
-        ? tradeHistoryBody
-        : tab === 'funds'
-          ? fundsBody
-          : []
+    ? orderHistoryBody
+    : tab === 'tradeHistory'
+    ? tradeHistoryBody
+    : tab === 'funds'
+    ? fundsBody
+    : []
 
 export const getTableHead = (tab: string): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames
     : tab === 'orderHistory'
-      ? orderHistoryColumnNames
-      : tab === 'tradeHistory'
-        ? tradeHistoryColumnNames
-        : tab === 'funds'
-          ? fundsColumnNames
-          : []
+    ? orderHistoryColumnNames
+    : tab === 'tradeHistory'
+    ? tradeHistoryColumnNames
+    : tab === 'funds'
+    ? fundsColumnNames
+    : []
 
 export const getEndDate = (stringDate: string) =>
   stringDate === '1Day'
     ? moment().subtract(1, 'days')
     : stringDate === '1Week'
-      ? moment().subtract(1, 'weeks')
-      : stringDate === '1Month'
-        ? moment().subtract(1, 'months')
-        : moment().subtract(3, 'months')
+    ? moment().subtract(1, 'weeks')
+    : stringDate === '1Month'
+    ? moment().subtract(1, 'months')
+    : moment().subtract(3, 'months')
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
     ? 'You have no open orders.'
     : tab === 'orderHistory'
-      ? 'You have no order history.'
-      : tab === 'tradeHistory'
-        ? 'You have no trades.'
-        : tab === 'funds'
-          ? 'You have no Funds.'
-          : 'You have no assets'
+    ? 'You have no order history.'
+    : tab === 'tradeHistory'
+    ? 'You have no trades.'
+    : tab === 'funds'
+    ? 'You have no Funds.'
+    : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
   /buy/i.test(orderStringType)
@@ -206,7 +204,7 @@ export const combineOpenOrdersTable = (
           render: (
             <TableButton
               key={i}
-              variant="outlined"
+              variant='outlined'
               size={`small`}
               style={{ color: '#DD6956', borderColor: '#DD6956' }}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
@@ -324,12 +322,17 @@ export const combineOrderHistoryTable = (
       },
       status: {
         render: status ? (
-          <span style={{ color: status === 'canceled' ? '#DD6956' : '#29AC80', textTransform: 'uppercase' }}>
+          <span
+            style={{
+              color: status === 'canceled' ? '#DD6956' : '#29AC80',
+              textTransform: 'uppercase',
+            }}
+          >
             {status.replace(/_/g, ' ')}
           </span>
         ) : (
-            '-'
-          ),
+          '-'
+        ),
         contentToSort: status,
       },
       date: {
@@ -461,10 +464,14 @@ export const combineFundsTable = (
   fundsData: FundsType[],
   hideSmallAssets: boolean
 ) => {
+  if (!fundsData && !Array.isArray(fundsData)) {
+    return []
+  }
+
   const filtredFundsData = hideSmallAssets
     ? fundsData.filter(
-      (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
-    )
+        (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
+      )
     : fundsData
 
   const processedFundsData = filtredFundsData.map((el: FundsType) => {

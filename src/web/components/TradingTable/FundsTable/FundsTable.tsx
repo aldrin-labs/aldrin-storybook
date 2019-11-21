@@ -22,7 +22,7 @@ class FundsTable extends React.PureComponent<IProps> {
     hideSmallAssets: false,
   }
 
-  unsubscribeFunction : null | Function = null
+  unsubscribeFunction: null | Function = null
 
   handleSmallAssetsCheckboxChange = (event, checked) => {
     this.setState({
@@ -84,12 +84,14 @@ class FundsTable extends React.PureComponent<IProps> {
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
             backgroundColor: '#fff',
             color: '#16253D',
+            boxShadow: 'none',
           },
           cell: {
             color: '#7284A0',
@@ -97,9 +99,11 @@ class FundsTable extends React.PureComponent<IProps> {
             fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           tab: {
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
@@ -155,7 +159,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy='network-only'
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {
