@@ -46,15 +46,19 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
   render() {
     const {
+      data,
       quote,
       aggregation,
       currencyPair,
       onButtonClick,
       setOrderbookAggregation,
-      data,
+      getOpenOrderHistoryQuery: {
+        getOpenOrderHistory
+      },
+      
     } = this.props
     const { mode } = this.state
-
+    
     return (
       <>
         {MASTER_BUILD && <ComingSoon />}
@@ -85,7 +89,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             />
             <select
               onChange={(e: ChangeEvent) =>
-                setOrderbookAggregation(e.target.value)
+                setOrderbookAggregation(+e.target.value)
               }
             >
               {OrderbookGroupOptions.map((option) => (
@@ -100,6 +104,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           mode={mode}
           aggregation={aggregation}
           onButtonClick={onButtonClick}
+          openOrderHistory={getOpenOrderHistory}
           quote={quote}
         />
 
@@ -114,6 +119,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           data={data}
           mode={mode}
           aggregation={aggregation}
+          openOrderHistory={getOpenOrderHistory}
           quote={quote}
         />
       </>

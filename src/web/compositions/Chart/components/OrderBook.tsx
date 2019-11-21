@@ -12,6 +12,7 @@ export const OrderBook = ({
   symbol,
   quote,
   data,
+  setOrderbookAggregation,
 }) => (
   <OrderbookContainer key={`orderbook_table`}>
     <OrderBookTable
@@ -21,6 +22,7 @@ export const OrderBook = ({
         activeExchange,
         currencyPair,
         aggregation,
+        setOrderbookAggregation,
         onButtonClick: changeTable,
         ...chartProps,
         data,

@@ -8,15 +8,23 @@ import 'react-virtualized/styles.css'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { IProps } from './OrderBookTable.types'
 
-import { getDataForTable, rowStyles } from '@core/utils/chartPageUtils'
+import {
+  getDataForTable,
+  getArrayFromAggregatedTree,
+  rowStyles,
+} from '@core/utils/chartPageUtils'
 
+import defaultRowRenderer from '../../utils'
 import { TableWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
 class OrderBookTable extends Component<IProps> {
   render() {
-    const { data, mode, group } = this.props
-    const tableData = getDataForTable(data, group, 'asks').reverse()
+    const { data, mode, aggregation, openOrderHistory } = this.props
+    const tableData =
+      aggregation === 0.01
+        ? getDataForTable(data, aggregation, 'asks').reverse()
+        : getArrayFromAggregatedTree(data.asks, 'asks').reverse()
 
     return (
       <TableWrapper mode={mode} isFullHeight={mode === 'asks'}>
@@ -35,27 +43,34 @@ class OrderBookTable extends Component<IProps> {
                 marginRight: 0,
                 letterSpacing: '.075rem',
                 borderBottom: '.1rem solid #e0e5ec',
+                fontSize: '1rem',
+              }}
+              gridStyle={{
+                overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
               }}
               rowHeight={window.outerHeight / 60}
               scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({ ...rest[0], openOrderHistory })
+              }
             >
               <Column
-                label='Price'
-                dataKey='price'
+                label="Price"
+                dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
                 style={{ ...rowStyles, color: '#DD6956' }}
               />
               <Column
-                label='Size'
-                dataKey='size'
+                label="Size"
+                dataKey="size"
                 width={width}
                 style={rowStyles}
               />
               <Column
-                label='Total'
-                dataKey='total'
+                label="Total"
+                dataKey="total"
                 width={width}
                 style={rowStyles}
               />

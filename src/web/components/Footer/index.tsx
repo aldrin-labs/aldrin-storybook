@@ -36,24 +36,24 @@ const Footer = ({
 
   return (
     <Container
-      position="static"
-      color="default"
+      position='static'
+      color='default'
       fullscreenMode={fullscreenMode}
       isChartPage={isChartPage}
     >
       <Block>
-        <StyledTypography color="default">
+        <StyledTypography color='default'>
           Cryptocurrencies Ai, 2018{' '}
         </StyledTypography>
 
-        <Typography variant="h6" color="secondary">
+        <Typography variant='h6' color='secondary'>
           •
         </Typography>
 
         <StyledButton
-          size="small"
+          size='small'
           onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
-          color="default"
+          color='default'
         >
           Privacy Policy
         </StyledButton>
@@ -61,20 +61,20 @@ const Footer = ({
 
       <Block>
         <IconButton href={'https://t.me/CryptocurrenciesAi'}>
-          <Telegram color="secondary" width={32} height={32} />
+          <Telegram color='secondary' width={32} height={32} />
         </IconButton>
       </Block>
 
       {!MASTER_BUILD && (
         <Block>
-          <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
+          <StyledTypography color='textPrimary'>NIGHT MODE</StyledTypography>
           <Switch
             checked={themeMode === 'dark'}
             onChange={async () => {
               await toggleThemeModeMutation()
             }}
-            value="theme"
-            color="default"
+            value='theme'
+            color='default'
           />
         </Block>
       )}
@@ -102,6 +102,7 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 
   && {
     flex-direction: row;
+    background-color: #fefefe;
   }
 
   height: 6.4vh;

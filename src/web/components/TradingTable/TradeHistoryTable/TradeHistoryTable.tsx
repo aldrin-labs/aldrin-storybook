@@ -23,7 +23,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     tradeHistoryProcessedData: [],
   }
 
-  unsubscribeFunction : null | Function = null
+  unsubscribeFunction: null | Function = null
 
   componentDidMount() {
     const { getTradeHistoryQuery, subscribeToMore, theme } = this.props
@@ -91,12 +91,14 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
             backgroundColor: '#fff',
             color: '#16253D',
+            boxShadow: 'none',
           },
           cell: {
             color: '#7284A0',
@@ -104,9 +106,11 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
             fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           tab: {
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
@@ -149,7 +153,7 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy='network-only'
       variables={{
         tradeHistoryInput: {
           startDate,
