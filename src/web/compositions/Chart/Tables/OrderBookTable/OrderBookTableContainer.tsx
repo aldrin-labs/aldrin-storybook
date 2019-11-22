@@ -52,13 +52,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       currencyPair,
       onButtonClick,
       setOrderbookAggregation,
-      getOpenOrderHistoryQuery: {
-        getOpenOrderHistory
-      },
-      
+      getOpenOrderHistoryQuery: { getOpenOrderHistory },
     } = this.props
     const { mode } = this.state
-    
+
     return (
       <>
         {MASTER_BUILD && <ComingSoon />}
@@ -137,10 +134,10 @@ const APIWrapper = (props) => {
         },
       }}
       withOutSpinner={true}
-      withTableLoader={false}
+      withTableLoader={true}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy='network-only'
+      fetchPolicy="network-only"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {

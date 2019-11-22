@@ -65,7 +65,6 @@ const NavBarRaw: SFC<Props> = ({
 
   return (
     <Nav
-      position="static"
       variant={{ hide: $hide, background: primary.main }}
       color="default"
       className="Navbar"

@@ -41,13 +41,13 @@ export default class Dropdown extends React.Component<IProps> {
           disableRipple={false}
           aria-controls={this.props.id}
           aria-haspopup="true"
+          id={id}
           onClick={this.handleToggle}
         >
           {this.props.buttonText}
         </StyledButton>
 
         <StyledPaper
-          id={id}
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
           <MenuList>
