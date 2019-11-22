@@ -15,6 +15,7 @@ export const TradeHistory = ({
   aggregation,
   changeTable,
   chartProps,
+  marketType,
   exchange,
   symbol,
   quote,
@@ -22,7 +23,7 @@ export const TradeHistory = ({
 }) => (
   <TradeHistoryWrapper
     key={`tradehistory_table`}
-    className='ExchangesTable'
+    className="ExchangesTable"
     variant={{
       show: showTableOnMobile === 'TRADE',
     }}
@@ -34,7 +35,7 @@ export const TradeHistory = ({
       variables={{ symbol, exchange }}
       subscriptionArgs={{
         subscription: MARKET_TICKERS,
-        variables: { symbol, exchange, marketType: '0' },
+        variables: { symbol, exchange, marketType: String(marketType) },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...{

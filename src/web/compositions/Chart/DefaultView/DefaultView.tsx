@@ -10,12 +10,7 @@ import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 
 // import ComingSoon from '@sb/components/ComingSoon'
-import {
-  OrderBook,
-  DepthChart,
-  TradeHistory,
-  OrderbookAndDepthChart,
-} from '../components'
+import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
 
 import {
   Container,
@@ -34,17 +29,18 @@ export const DefaultView = (props: any) => {
     currencyPair,
     // theme,
     id,
+    view,
+    marketType,
     themeMode,
     activeExchange,
     activeChart,
-    renderTogglerBody,
-    aggregation,
     changeTable,
     showOrderResult,
     showCancelResult,
     showTableOnMobile,
     selectedKey,
     chartProps,
+    changeActiveExchangeMutation,
   } = props
 
   if (!currencyPair) {
@@ -58,7 +54,16 @@ export const DefaultView = (props: any) => {
   return (
     <Container container spacing={8}>
       <ChartGridContainer item xs={12}>
-        {renderTogglerBody()}
+        <CardsPanel
+          {...{
+            _id: id,
+            pair: currencyPair,
+            view,
+            themeMode,
+            activeExchange,
+            changeActiveExchangeMutation,
+          }}
+        />
       </ChartGridContainer>
 
       <Grid
@@ -87,7 +92,7 @@ export const DefaultView = (props: any) => {
             <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
-                  additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`}
+                  additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}&marketType=${marketType}`}
                 />
               ) : (
                 <Fade timeout={1000} in={activeChart === 'depth'}>
@@ -121,7 +126,7 @@ export const DefaultView = (props: any) => {
             padding: '.4rem 0 0 .4rem',
           }}
         >
-          <Grid item container style={{ height: '60%' }}>
+          <Grid item container style={{ height: '50%' }}>
             <Grid item container xs={8} style={{ height: '100%' }}>
               <OrderbookAndDepthChart
                 {...{
@@ -131,9 +136,9 @@ export const DefaultView = (props: any) => {
                   quote,
                   activeExchange,
                   showTableOnMobile,
-                  aggregation,
                   changeTable,
                   chartProps,
+                  marketType,
                 }}
               />
             </Grid>
@@ -148,9 +153,9 @@ export const DefaultView = (props: any) => {
                   pair: currencyPair,
                   exchange,
                   quote,
+                  marketType,
                   activeExchange,
                   showTableOnMobile,
-                  aggregation,
                   changeTable,
                   chartProps,
                 }}
@@ -162,6 +167,7 @@ export const DefaultView = (props: any) => {
             selectedKey={selectedKey}
             activeExchange={activeExchange}
             pair={baseQuoteArr}
+            marketType={marketType}
             showOrderResult={showOrderResult}
             showCancelResult={showCancelResult}
           />
