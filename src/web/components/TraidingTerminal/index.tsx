@@ -4,7 +4,7 @@ import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
 
-import Slider from '@sb/components/Slider/Slider'
+import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
@@ -44,7 +44,6 @@ import {
   PriceContainer,
 } from './styles'
 
-
 const TradeInputContainer = ({ title, value, onChange, coin, style }) => {
   return (
     <TradeInputBlock style={style}>
@@ -58,7 +57,9 @@ const TradeInputContainer = ({ title, value, onChange, coin, style }) => {
 }
 
 const FormError = ({ children }: any) => (
-  <Typography color="error" style={{ textAlign: 'right' }}>{children}</Typography>
+  <Typography color="error" style={{ textAlign: 'right' }}>
+    {children}
+  </Typography>
 )
 
 // function is removing all decimals after set number without rounding
@@ -236,19 +237,16 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   render() {
     const {
       pair,
-      funds,
       percentage,
       changePercentage,
       operationType,
       priceType,
-      theme: { palette },
       values,
       handleSubmit,
       touched,
       errors,
       validateForm,
     } = this.props
-
 
     const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
@@ -257,45 +255,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={pair}>
           {priceType !== 'stop-limit' && <Grid xs={12} />}
-          { /*
-            <PaddingGrid item container xs={12}>
-              <PercentageItem
-                // active={percentage === '25'}
-                onClick={() => {
-                  changePercentage('25')
-                  this.onPercentageClick(0.25)
-                }}
-              >
-                25%
-                </PercentageItem>
-              <PercentageItem
-                // active={percentage === '50'}
-                onClick={() => {
-                  changePercentage('50')
-                  this.onPercentageClick(0.5)
-                }}
-              >
-                50%
-                </PercentageItem>
-              <PercentageItem
-                // active={percentage === '75'}
-                onClick={() => {
-                  changePercentage('75')
-                  this.onPercentageClick(0.75)
-                }}
-              >
-                75%
-                </PercentageItem>
-              <PercentageItem
-                // active={percentage === '100'}
-                onClick={() => {
-                  changePercentage('100')
-                  this.onPercentageClick(1)
-                }}
-              >
-                100%
-                </PercentageItem>
-            </PaddingGrid> */}
 
           {priceType === 'stop-limit' ? (
             <PaddingGrid xs={12} key={'stop-limit'}>
@@ -328,30 +287,33 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               style={{ paddingBottom: '.8rem' }}
             />
 
-            <Slider
-              style={{ margin: '0 0 0 auto' }}
-              thumbWidth="1rem !important"
-              thumbHeight="1rem !important"
-              sliderWidth="70%"
-              sliderHeight=".2rem !important"
-              sliderHeightAfter=".2rem !important"
-              borderRadius="0"
-              borderRadiusAfter="0"
-              thumbBackground="#0B1FD1"
-              borderThumb={`0`}
-              trackAfterBackground="#E0E5EC"
-              trackAfterOpacity={'1'}
-              trackBeforeBackground={'#5C8CEA'}
+            <SmallSlider
+              min={0}
+              max={100}
               value={percentage}
-              onChange={(e, value) => {
+              valueSymbol={'%'}
+              marks={{
+                0: { label: '0%' },
+                25: { label: '25%' },
+                50: { label: '50%' },
+                75: { label: '75%' },
+                100: { label: '100%' },
+              }}
+              onChange={(value) => {
                 changePercentage(value)
                 this.onPercentageClick(value / 100)
               }}
-              min={0}
-              max={100}
-              step={25}
-              // marks={[{ value: 0 }, { value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }]}
-              marks
+              sliderContainerStyles={{
+                width: '70%',
+                margin: '0 0 0 auto',
+              }}
+              handleStyles={{
+                width: '1.2rem',
+                height: '1.2rem',
+                border: 'none',
+                backgroundColor: '#0B1FD1',
+                marginTop: '-.5rem',
+              }}
             />
           </Grid>
 
@@ -372,7 +334,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
           <Grid xs={12} container>
             <Grid xs={1} item />
-            <Grid xs={11} item >
+            <Grid xs={11} item>
               <PlaseOrderDialog
                 typeIsBuy={isBuyType}
                 handleSubmit={handleSubmit}
@@ -385,28 +347,28 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 text={
                   priceType === 'stop-limit'
                     ? `If the last price drops to or below ${values.stop} ${
-                    pair[1]
-                    },
+                        pair[1]
+                      },
                   an order to ${isBuyType ? 'Buy' : 'Sell'} ${values.amount} ${
-                    pair[0]
-                    } at a price of ${values.limit} ${
-                    pair[1]
-                    } will be placed.`
-                    : priceType === 'limit'
-                      ? `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
-                      values.amount
-                      } ${pair[0]} at a price of ${values.price} ${
-                      pair[1]
+                        pair[0]
+                      } at a price of ${values.limit} ${
+                        pair[1]
                       } will be placed.`
-                      : `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
-                      values.amount
+                    : priceType === 'limit'
+                    ? `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
+                        values.amount
+                      } ${pair[0]} at a price of ${values.price} ${
+                        pair[1]
+                      } will be placed.`
+                    : `An order to ${isBuyType ? 'Buy' : 'Sell'} ${
+                        values.amount
                       } ${pair[0]} at a market price will be placed.`
                 }
               />
             </Grid>
           </Grid>
         </GridContainer>
-      </Container >
+      </Container>
     )
   }
 }
@@ -417,59 +379,59 @@ const validate = (values: FormValues, props: IProps) => {
   const validationSchema =
     priceType === 'limit'
       ? Yup.object().shape({
-        price: Yup.number()
-          .nullable(true)
-          .required(traidingErrorMessages[0])
-          .moreThan(0, traidingErrorMessages[0]),
-        amount:
-          byType === 'sell'
-            ? Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0])
-              .max(funds[0].quantity, traidingErrorMessages[1])
-            : Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0]),
-        total:
-          byType === 'buy'
-            ? Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0])
-              .max(funds[1].quantity, traidingErrorMessages[1])
-            : Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0]),
-      })
-      : priceType === 'market'
-        ? Yup.object().shape({
+          price: Yup.number()
+            .nullable(true)
+            .required(traidingErrorMessages[0])
+            .moreThan(0, traidingErrorMessages[0]),
           amount:
             byType === 'sell'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
-                .max(funds[0].quantity, traidingErrorMessages[1])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+                  .max(funds[0].quantity, traidingErrorMessages[1])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
           total:
             byType === 'buy'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
-                .max(funds[1].quantity, traidingErrorMessages[1])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
         })
-        : Yup.object().shape({
+      : priceType === 'market'
+      ? Yup.object().shape({
+          amount:
+            byType === 'sell'
+              ? Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+                  .max(funds[0].quantity, traidingErrorMessages[1])
+              : Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
+          total:
+            byType === 'buy'
+              ? Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+                  .max(funds[1].quantity, traidingErrorMessages[1])
+              : Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
+        })
+      : Yup.object().shape({
           stop: Yup.number()
             .nullable(true)
             .required(traidingErrorMessages[0])
@@ -481,25 +443,25 @@ const validate = (values: FormValues, props: IProps) => {
           amount:
             byType === 'sell'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
-                .max(funds[0].quantity, traidingErrorMessages[1])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+                  .max(funds[0].quantity, traidingErrorMessages[1])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
           total:
             byType === 'buy'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
-                .max(funds[1].quantity, traidingErrorMessages[1])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
         })
 
   try {
@@ -527,8 +489,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         priceType === 'limit'
           ? { limit: values.limit, price: values.price, amount: values.amount }
           : priceType === 'market'
-            ? { amount: values.amount }
-            : {
+          ? { amount: values.amount }
+          : {
               stop: values.stop,
               limit: values.limit,
               amount: values.amount,

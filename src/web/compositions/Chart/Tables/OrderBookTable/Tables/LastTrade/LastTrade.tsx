@@ -89,7 +89,7 @@ const APIWrapper = (props) => {
         variables: {
           symbol: props.symbol,
           exchange: props.exchange,
-          marketType: '0',
+          marketType: String(props.marketType),
         },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}

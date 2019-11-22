@@ -162,16 +162,43 @@ const NavBarRaw: SFC<Props> = ({
 
               {!MASTER_BUILD && (
                 <>
-                  <NavLinkButtonWrapper key="chart-wrapper">
-                    <NavLinkButton
-                      key="chart"
-                      page={`chart`}
-                      component={Chart}
-                      pathname={pathname}
-                    >
-                      Chart
-                    </NavLinkButton>
-                  </NavLinkButtonWrapper>
+                  <Dropdown
+                    id="chart-page"
+                    key="chart-page"
+                    buttonText="Trading"
+                    selectedMenu={selectedMenu}
+                    selectActiveMenu={selectMenu}
+                    items={[
+                      {
+                        text: 'Spot market',
+                        to: '/chart',
+                        onClick: () => {
+                          client.writeData({
+                            data: {
+                              chart: {
+                                __typename: 'chart',
+                                marketType: 0,
+                              },
+                            },
+                          })
+                        },
+                      },
+                      {
+                        text: 'Futures market',
+                        to: '/chart',
+                        onClick: () => {
+                          client.writeData({
+                            data: {
+                              chart: {
+                                __typename: 'chart',
+                                marketType: 1,
+                              },
+                            },
+                          })
+                        },
+                      },
+                    ]}
+                  />
 
                   <NavLinkButton
                     key="market"
