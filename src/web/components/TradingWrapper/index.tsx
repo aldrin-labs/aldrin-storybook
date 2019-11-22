@@ -26,9 +26,7 @@ import {
   BalanceValue,
 } from './styles'
 
-import {
-  addMainSymbol,
-} from '@sb/components/index'
+import { addMainSymbol } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
@@ -79,7 +77,7 @@ class SimpleTabs extends React.Component {
         item
         container
         style={{
-          height: '40%',
+          height: '50%',
           padding: '.4rem 0 0 0',
         }}
       >
@@ -157,7 +155,7 @@ class SimpleTabs extends React.Component {
                 isActive={mode === 'stop-limit'}
                 onClick={() => this.handleChangeMode('stop-limit')}
               >
-                stop
+                stop-limit
               </TerminalModeButton>
               <TerminalModeButton isActive={mode === 'safe'}>
                 safe
@@ -172,7 +170,9 @@ class SimpleTabs extends React.Component {
                     operationType={'buy'}
                     priceType={mode}
                     percentage={percentageBuy}
-                    changePercentage={(value) => this.handleChangePercentage(value, 'Buy')}
+                    changePercentage={(value) =>
+                      this.handleChangePercentage(value, 'Buy')
+                    }
                     pair={pair}
                     funds={funds}
                     key={[pair, funds]}
@@ -193,7 +193,9 @@ class SimpleTabs extends React.Component {
                     operationType={'sell'}
                     priceType={mode}
                     percentage={percentageSell}
-                    changePercentage={(value) => this.handleChangePercentage(value, 'Sell')}
+                    changePercentage={(value) =>
+                      this.handleChangePercentage(value, 'Sell')
+                    }
                     pair={pair}
                     funds={funds}
                     key={[pair, funds]}

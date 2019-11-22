@@ -67,10 +67,10 @@ export const Container = styled.div`
 export const GridContainer = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   height: 100%;
   padding: 0 2.5rem 0 0;
-  border-right: ${props => props.isBuyType && '.1rem solid #e0e5ec;'}
+  border-right: ${(props) => props.isBuyType && '.1rem solid #e0e5ec;'};
 `
 
 export const NameHeader = styled.div`
@@ -105,7 +105,7 @@ export const BalanceTitle = styled(BalanceGrid)`
   background: #e0e5ec;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  
+
   font-size: 1.3rem;
 `
 
@@ -121,12 +121,12 @@ export const TradingItemTitle = styled.span`
   display: block;
   color: #7284a0;
   font-size: 1.2rem;
-  
+
   font-weight: bold;
 `
 
 export const InputTitle = styled(TradingItemTitle)`
-  color: #7284A0;
+  color: #7284a0;
   font-size: 1rem;
   text-transform: uppercase;
   padding: 0 1rem;
@@ -137,7 +137,7 @@ export const InputTitle = styled(TradingItemTitle)`
 export const TradingItemValue = styled.span`
   color: #16253d;
   font-size: 1.2rem;
-  
+
   font-weight: bold;
 `
 
@@ -150,12 +150,12 @@ export const TradingItemSubValue = styled(TradingItemValue)`
 // input with coin inset
 
 export const PaddingGrid = styled(Grid)`
-  padding: .8rem 0;
+  padding: 0.8rem 0;
 `
 
 export const TotalGrid = styled(PaddingGrid)`
   padding-bottom: 0;
-  padding-top: 1.2rem;
+  padding-top: 2.4rem;
 `
 
 export const TradeBlock = styled(BalanceGrid)`
@@ -220,22 +220,25 @@ export const PercentageItem = styled(StyledTab)`
 export const SendButton = styled(StyledTab)`
   width: 100%;
   color: #fff;
-  background-color: ${(props) => (props.type === 'buy' ? '#29AC80' : '#DD6956')};
+  background-color: ${(props) =>
+    props.type === 'buy' ? '#29AC80' : '#DD6956'};
   box-shadow: 0px .4rem .6rem rgba(8, 22, 58, 0.3);
   border-radius: .75rem;
   border: none;
 
 
-  // border: 1px solid ${(props) => (props.type === 'buy' ? '#2F7619' : '#b93b2b')};
+  // border: 1px solid ${(props) =>
+    props.type === 'buy' ? '#2F7619' : '#b93b2b'};
 
   &:hover {
     color: #fff;
-    background-color: ${(props) => (props.type === 'buy' ? '#29AC80' : '#DD6956')};
+    background-color: ${(props) =>
+      props.type === 'buy' ? '#29AC80' : '#DD6956'};
   }
 `
 
 export const PriceContainer = styled(Grid)`
-  padding-bottom: .8rem;
+  padding-bottom: 0.8rem;
 `
 
 export const TradeInputBlock = styled.div`

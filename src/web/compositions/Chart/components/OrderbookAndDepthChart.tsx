@@ -137,6 +137,7 @@ class OrderbookAndDepthChart extends React.Component {
       chartProps,
       changeTable,
       currencyPair,
+      marketType,
       activeExchange,
       exchange,
       quote,
@@ -179,6 +180,7 @@ class OrderbookAndDepthChart extends React.Component {
             chartProps={chartProps}
             changeTable={changeTable}
             currencyPair={currencyPair}
+            marketType={marketType}
             setOrderbookAggregation={this.setOrderbookAggregation}
             quote={quote}
             data={dataToSend}
@@ -194,6 +196,7 @@ export const APIWrapper = ({
   changeTable,
   aggregation,
   pair,
+  marketType,
   activeExchange,
   exchange,
   symbol,
@@ -205,10 +208,10 @@ export const APIWrapper = ({
     withTableLoader={true}
     fetchPolicy="network-only"
     query={ORDERS_MARKET_QUERY}
-    variables={{ symbol: `${symbol}_0`, exchange }}
+    variables={{ symbol: `${symbol}_${marketType}`, exchange }}
     subscriptionArgs={{
       subscription: ORDERBOOK,
-      variables: { symbol: `${symbol}_0`, exchange },
+      variables: { symbol: `${symbol}_${marketType}`, exchange },
       updateQueryFunction: updateOrderBookQuerryFunction,
     }}
     {...{

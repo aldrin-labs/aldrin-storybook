@@ -6,13 +6,11 @@ import { graphql } from 'react-apollo'
 
 import { Grid, Hidden } from '@material-ui/core'
 
-// import { Aggregation } from './Tables/Tables'
-import AutoSuggestSelect from './Inputs/AutoSuggestSelect/AutoSuggestSelect'
+import { CardsPanel } from './components'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 
 // import { singleChartSteps } from '@sb/config/joyrideSteps'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 // import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 // import { SingleChart } from '@sb/components/Chart'
 
@@ -28,28 +26,16 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import withAuth from '@core/hoc/withAuth'
-import LayoutSelector from '@core/components/LayoutSelector'
-import KeySelector from '@core/components/KeySelector'
-import SelectExchange from './Inputs/SelectExchange/SelectExchange'
-
 import {
   MainContainer,
   TablesContainer,
   TogglerContainer,
-  PanelWrapper,
-  PanelCard,
-  PanelCardTitle,
-  PanelCardValue,
-  PanelCardSubValue,
-  CustomCard,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
-
 
 @withTheme
 class Chart extends React.Component<IProps, IState> {
   state: IState = {
-    aggregation: 0.01,
     showTableOnMobile: 'ORDER',
     activeChart: 'candle',
     joyride: false,
@@ -80,40 +66,6 @@ class Chart extends React.Component<IProps, IState> {
       showTableOnMobile:
         prevState.showTableOnMobile === 'ORDER' ? 'TRADE' : 'ORDER',
     }))
-  }
-
-  setAggregation = () => {
-    const { aggregation } = this.state
-    switch (aggregation) {
-      case 0.01:
-        this.setState({ aggregation: 0.05 })
-        break
-      case 0.05:
-        this.setState({ aggregation: 0.1 })
-        break
-      case 0.1:
-        this.setState({ aggregation: 0.5 })
-        break
-      case 0.5:
-        this.setState({ aggregation: 1 })
-        break
-      case 1:
-        this.setState({ aggregation: 2.5 })
-        break
-      case 2.5:
-        this.setState({ aggregation: 5 })
-        break
-      case 5:
-        this.setState({ aggregation: 10 })
-        break
-      case 10:
-        this.setState({ aggregation: 0.01 })
-        break
-      default:
-        this.setState({ aggregation: 0.01 })
-
-        break
-    }
   }
 
   handleJoyrideCallback = async (data: any) => {
@@ -180,15 +132,6 @@ class Chart extends React.Component<IProps, IState> {
             },
           }}
         /> */}
-
-        {/* <Aggregation
-            {...{
-              theme,
-              aggregation: this.state.aggregation,
-              onButtonClick: this.setAggregation,
-              key: 'aggregation_component',
-            }}
-          /> */}
       </TablesContainer>
     )
   }
@@ -220,6 +163,7 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   renderToggler = () => {
+    // i'll delete it with updating multichart, maybe it'll help me
     // <Toggler>
     //   <StyledSwitch
     //     data-e2e="switchChartPageMode"
@@ -232,7 +176,6 @@ class Chart extends React.Component<IProps, IState> {
     //           },
     //         })
     //       }
-
     //       await changeViewModeMutation({
     //         variables: {
     //           view: 'default',
@@ -243,7 +186,6 @@ class Chart extends React.Component<IProps, IState> {
     //   >
     //     Single Chart
     //   </StyledSwitch>
-
     //   <StyledSwitch
     //     data-e2e="switchChartPageMode"
     //     isActive={!isSingleChart}
@@ -261,151 +203,8 @@ class Chart extends React.Component<IProps, IState> {
     // </Toggler>
   }
 
-  renderTogglerBody = () => {
-    const {
-      getChartDataQuery: {
-        getMyProfile: { _id },
-        chart: {
-          activeExchange,
-          currencyPair: { pair },
-          view,
-        },
-        app: { themeMode },
-      },
-      changeActiveExchangeMutation,
-    } = this.props
-    // const { activeChart } = this.state
-
-    const selectStyles = {
-      height: '100%',
-      background: '#FFFFFF',
-      marginRight: '.8rem',
-      cursor: 'pointer',
-      padding: 0,
-      backgroundColor: '#fff',
-      border: '0.1rem solid #e0e5ec',
-      borderRadius: '0.75rem',
-      boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
-      width: '8.5%',
-      '& div': {
-        cursor: 'pointer',
-        color: '#16253D',
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-      },
-      '& svg': {
-        color: '#7284A0',
-      },
-      '.custom-select-box__control': {
-        padding: '0 .75rem',
-      },
-      '.custom-select-box__menu': {
-        minWidth: '130px',
-        marginTop: '0',
-        borderRadius: '0',
-        boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
-      },
-    }
-
-    return (
-      <>
-        <PanelWrapper>
-          {view === 'onlyCharts' && (
-            <LayoutSelector userId={_id} themeMode={themeMode} />
-          )}
-
-          <SelectExchange
-            style={{ height: '100%' }}
-            changeActiveExchangeMutation={changeActiveExchangeMutation}
-            activeExchange={activeExchange}
-            currencyPair={pair}
-            selectStyles={selectStyles}
-          />
-
-          {view === 'default' && (
-            <KeySelector
-              exchange={activeExchange}
-              selectStyles={{ ...selectStyles, width: '17%' }}
-              isAccountSelect={true}
-            />
-          )}
-
-          <AutoSuggestSelect
-            value={view === 'default' && pair}
-            id={'currencyPair'}
-            view={view}
-            activeExchange={activeExchange}
-            selectStyles={selectStyles}
-          />
-
-          <CustomCard style={{ display: 'flex', width: '50%' }}>
-            <PanelCard first>
-              <PanelCardTitle>Last price</PanelCardTitle>
-              <span>
-                <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
-                <PanelCardSubValue>$9964.01</PanelCardSubValue>
-              </span>
-            </PanelCard>
-
-            <PanelCard>
-              <PanelCardTitle>24h change</PanelCardTitle>
-              <span>
-                <PanelCardValue color="#2F7619">101.12</PanelCardValue>
-                <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
-              </span>
-            </PanelCard>
-
-            <PanelCard>
-              <PanelCardTitle>24h high</PanelCardTitle>
-              <PanelCardValue>10,364.01</PanelCardValue>
-            </PanelCard>
-
-            <PanelCard>
-              <PanelCardTitle>24h low</PanelCardTitle>
-              <PanelCardValue>9,525.00</PanelCardValue>
-            </PanelCard>
-
-            <PanelCard>
-              <PanelCardTitle>24h volume</PanelCardTitle>
-              <PanelCardValue>427,793,139.70</PanelCardValue>
-            </PanelCard>
-
-            <PanelCard style={{ borderRight: '0' }}>
-              <PanelCardTitle>24h change</PanelCardTitle>
-              <span>
-                <PanelCardValue color="#2F7619">101.12</PanelCardValue>
-                <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
-              </span>
-            </PanelCard>
-          </CustomCard>
-
-          <PillowButton
-            firstHalfText={'single chart'}
-            secondHalfText={'multichart'}
-            activeHalf={'first'}
-            changeHalf={() => { }}
-            buttonAdditionalStyle={{ height: '100%', padding: '0 1rem' }}
-          />
-
-          {/* {view === 'default' && (
-          <TransparentExtendedFAB
-            onClick={() => {
-              this.setState((prevState) => ({
-                activeChart:
-                  prevState.activeChart === 'candle' ? 'depth' : 'candle',
-              }))
-            }}
-          >
-            {activeChart === 'candle' ? 'orderbook' : 'chart'}
-          </TransparentExtendedFAB>
-        )} */}
-        </PanelWrapper>
-      </>
-    )
-  }
-
   render() {
-    const { aggregation, showTableOnMobile } = this.state
+    const { showTableOnMobile } = this.state
 
     const {
       getChartDataQuery: {
@@ -415,9 +214,11 @@ class Chart extends React.Component<IProps, IState> {
           activeExchange,
           currencyPair: { pair },
           view,
+          marketType,
         },
         app: { themeMode },
       },
+      changeActiveExchangeMutation,
     } = this.props
 
     if (!pair) {
@@ -437,23 +238,33 @@ class Chart extends React.Component<IProps, IState> {
               alignItems="left"
               justify="flex-end"
             >
-              {this.renderTogglerBody()}
+              <CardsPanel
+                {...{
+                  _id,
+                  pair,
+                  view,
+                  themeMode,
+                  activeExchange,
+                  changeActiveExchangeMutation,
+                }}
+              />
             </Grid>
           </TogglerContainer>
         )}
         {view === 'default' && (
           <DefaultView
             id={_id}
+            view={view}
+            marketType={marketType}
             currencyPair={pair}
             themeMode={themeMode}
             selectedKey={selectedKey}
-            aggregation={aggregation}
             activeExchange={activeExchange}
             showTableOnMobile={showTableOnMobile}
             activeChart={this.state.activeChart}
             changeTable={this.changeTable}
-            renderTogglerBody={this.renderTogglerBody}
             chartProps={this.props}
+            changeActiveExchangeMutation={changeActiveExchangeMutation}
             MASTER_BUILD={MASTER_BUILD}
           />
         )}
