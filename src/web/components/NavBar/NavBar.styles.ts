@@ -16,6 +16,7 @@ export const Nav = styled(AppBar)`
   height: 100%;
 
   && {
+    position: unset;
     box-shadow: none;
     padding: 0 3rem 0 6rem;
     background-color: ${(props) => props.variant.background};

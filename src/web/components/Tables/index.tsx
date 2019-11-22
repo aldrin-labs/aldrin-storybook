@@ -721,7 +721,7 @@ const CustomTable = (props: Props) => {
                               )}`,
                               cursor: 'pointer',
                             }
-                          : { cursor: 'pointer' }
+                          : { cursor: 'pointer', boxShadow: 'none' }
                       }
                       className={rowHoverClassName}
                       onClick={() =>
