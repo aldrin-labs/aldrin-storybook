@@ -67,17 +67,20 @@ export const StyledDropdown = styled.div`
 `
 
 export const StyledPaper = styled(Paper)`
-  position: absolute;
-  top: 7.25vh;
-  left: 50%;
-  box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
-  border: 1px solid #e0e5ec;
-  transform: translateX(-50%);
-  border-radius: 2rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  padding-left: 8px;
-  padding-right: 8px;
+  && {
+    position: absolute;
+    top: 7.25vh;
+    left: 50%;
+    box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
+    border: 1px solid #e0e5ec;
+    background: #fefefe;
+    transform: translateX(-50%);
+    border-radius: 2rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 `
 
 export const StyledMenuItem = styled(MenuItem)`
