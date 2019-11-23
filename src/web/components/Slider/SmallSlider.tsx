@@ -31,6 +31,18 @@ const StyledSlider = styled(
       &-handle {
         ${(props) => props.handleStyles}
       }
+
+      &-dot {
+        ${(props) => props.dotStyles}
+      }
+
+      &-dot-active {
+        ${(props) => props.activeDotStyles}
+      }
+
+      &-mark-text {
+        ${(props) => props.markTextSlyles}
+      }
     }
   }
 `

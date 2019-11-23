@@ -128,6 +128,7 @@ export const TradingItemTitle = styled.span`
 export const InputTitle = styled(TradingItemTitle)`
   color: #7284a0;
   font-size: 1rem;
+  white-space: nowrap;
   text-transform: uppercase;
   padding: 0 1rem;
   width: 30%;
@@ -150,7 +151,7 @@ export const TradingItemSubValue = styled(TradingItemValue)`
 // input with coin inset
 
 export const PaddingGrid = styled(Grid)`
-  padding: 0.8rem 0;
+  display: flex;
 `
 
 export const TotalGrid = styled(PaddingGrid)`

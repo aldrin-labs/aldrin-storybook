@@ -4,6 +4,9 @@ import { Grid } from '@material-ui/core'
 import { compose } from 'recompose'
 
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
+
+import { isSPOTMarketType } from '@core/utils/chartPageUtils'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -11,6 +14,13 @@ import {
 
 import TraidingTerminal from '../TraidingTerminal'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+import SmallSlider from '@sb/components/Slider/SmallSlider'
+
+import {
+  SRadio,
+  SCheckbox,
+  FormInputTemplate,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import {
   TablesBlockWrapper,
@@ -36,6 +46,11 @@ class SimpleTabs extends React.Component {
     mode: 'market',
     percentageBuy: '0',
     percentageSell: '0',
+    leverage: 1,
+    reduceOnly: true,
+    orderMode: 'TIF',
+    TIFMode: 'GTC',
+    trigger: 'last price',
   }
 
   handleChangeMode = (mode: string) => {
@@ -51,7 +66,14 @@ class SimpleTabs extends React.Component {
   }
 
   render() {
-    const { mode, percentageBuy, percentageSell } = this.state
+    const {
+      mode,
+      percentageBuy,
+      percentageSell,
+      leverage,
+      reduceOnly,
+      orderMode,
+    } = this.state
     const {
       pair,
       funds,
@@ -60,6 +82,7 @@ class SimpleTabs extends React.Component {
       decimals,
       showOrderResult,
       cancelOrder,
+      marketType,
     } = this.props
 
     const firstValuePair =
@@ -71,6 +94,8 @@ class SimpleTabs extends React.Component {
       stripDigitPlaces(funds[1].value) === null
         ? funds[1].value
         : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
+
+    const isSPOTMarket = isSPOTMarketType(marketType)
 
     return (
       <TablesBlockWrapper
@@ -153,7 +178,10 @@ class SimpleTabs extends React.Component {
               </TerminalModeButton>
               <TerminalModeButton
                 isActive={mode === 'stop-limit'}
-                onClick={() => this.handleChangeMode('stop-limit')}
+                onClick={() => {
+                  this.handleChangeMode('stop-limit')
+                  this.setState({ orderMode: 'TIF' })
+                }}
               >
                 stop-limit
               </TerminalModeButton>
@@ -162,6 +190,143 @@ class SimpleTabs extends React.Component {
               </TerminalModeButton>
             </TerminalHeader>
 
+            {!isSPOTMarket && (
+              <TerminalHeader style={{ display: 'flex' }}>
+                <div
+                  style={{
+                    width: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    paddingLeft: '1rem',
+                  }}
+                >
+                  {mode === 'limit' && (
+                    <>
+                      <SRadio
+                        id="postOnly"
+                        checked={orderMode === 'postOnly'}
+                        style={{ padding: '0 1rem' }}
+                        onChange={() =>
+                          this.setState({
+                            orderMode: 'postOnly',
+                          })
+                        }
+                      />
+                      <label for="postOnly">post only</label>
+                    </>
+                  )}
+
+                  {mode !== 'market' && (
+                    <>
+                      <SRadio
+                        id="TIF"
+                        checked={orderMode === 'TIF'}
+                        style={{ padding: '0 1rem' }}
+                        onChange={() =>
+                          this.setState({
+                            orderMode: 'TIF',
+                          })
+                        }
+                      />
+                      <label for="TIF">TIF</label>
+                      <select
+                        disabled={orderMode !== 'TIF'}
+                        onChange={(e) =>
+                          this.setState({ TIFMode: e.target.value })
+                        }
+                      >
+                        <option>GTC</option>
+                        <option>IOK</option>
+                        <option>FOK</option>
+                      </select>
+                    </>
+                  )}
+
+                  {mode !== 'stop-limit' && (
+                    <>
+                      <SCheckbox
+                        id="reduceOnly"
+                        checked={reduceOnly}
+                        style={{ padding: '0 1rem' }}
+                        onChange={() =>
+                          this.setState((prev) => ({
+                            reduceOnly: !prev.reduceOnly,
+                          }))
+                        }
+                      />
+                      <label for="reduceOnly">reduce only</label>
+                    </>
+                  )}
+
+                  {mode === 'stop-limit' && (
+                    <>
+                      <span>trigger</span>
+                      <select
+                        onChange={(e) =>
+                          this.setState({ trigger: e.target.value })
+                        }
+                      >
+                        <option>last price</option>
+                        <option>mark price</option>
+                      </select>
+                    </>
+                  )}
+                </div>
+                <div
+                  style={{
+                    width: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    margin: '.8rem 0',
+                    paddingRight: '.5rem',
+                  }}
+                >
+                  <span>leverage:</span>
+                  <SmallSlider
+                    min={1}
+                    max={125}
+                    defaultValue={1}
+                    value={leverage}
+                    valueSymbol={'X'}
+                    marks={{
+                      1: {},
+                      25: {},
+                      50: {},
+                      75: {},
+                      100: {},
+                      125: {},
+                    }}
+                    onChange={(leverage) => {
+                      this.setState({ leverage })
+                    }}
+                    sliderContainerStyles={{
+                      width: '70%',
+                      margin: '0 auto',
+                    }}
+                    handleStyles={{
+                      width: '1.2rem',
+                      height: '1.2rem',
+                      border: 'none',
+                      backgroundColor: '#0B1FD1',
+                      marginTop: '-.45rem',
+                    }}
+                    dotStyles={{
+                      border: 'none',
+                      backgroundColor: '#ABBAD1',
+                    }}
+                    activeDotStyles={{
+                      backgroundColor: '#5C8CEA',
+                    }}
+                    markTextSlyles={{
+                      color: '#7284A0;',
+                      fontSize: '1rem',
+                    }}
+                  />
+                  <span>{leverage}x</span>
+                </div>
+              </TerminalHeader>
+            )}
+
             <TerminalMainGrid xs={12} container>
               <FullHeightGrid xs={6} item>
                 <TerminalContainer>
@@ -169,6 +334,7 @@ class SimpleTabs extends React.Component {
                     byType={'buy'}
                     operationType={'buy'}
                     priceType={mode}
+                    isSPOTMarket={isSPOTMarket}
                     percentage={percentageBuy}
                     changePercentage={(value) =>
                       this.handleChangePercentage(value, 'Buy')
@@ -192,6 +358,7 @@ class SimpleTabs extends React.Component {
                     byType={'sell'}
                     operationType={'sell'}
                     priceType={mode}
+                    isSPOTMarket={isSPOTMarket}
                     percentage={percentageSell}
                     changePercentage={(value) =>
                       this.handleChangePercentage(value, 'Sell')
