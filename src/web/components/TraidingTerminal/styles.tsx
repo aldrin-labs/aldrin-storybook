@@ -70,7 +70,6 @@ export const GridContainer = styled.div`
 
   height: 100%;
   padding: 0 2.5rem 0 0;
-  border-right: ${(props) => props.isBuyType && '.1rem solid #e0e5ec;'};
 `
 
 export const NameHeader = styled.div`

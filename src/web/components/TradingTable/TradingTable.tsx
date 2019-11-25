@@ -10,6 +10,7 @@ import { IProps, IState } from './TradingTable.types'
 import { tradingTableTabConfig } from './TradingTable.mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
@@ -40,6 +41,15 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 
     return (
       <>
+        <PositionsTable
+          {...{
+            tab,
+            selectedKey,
+            show: tab === 'positions',
+            handleTabChange: this.handleTabChange,
+            showCancelResult: this.props.showCancelResult,
+          }}
+        />
         <OpenOrdersTable
           {...{
             tab,

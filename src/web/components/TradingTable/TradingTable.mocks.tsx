@@ -11,7 +11,51 @@ export const tradingTableTabConfig = [
   'orderHistory',
   'tradeHistory',
   'funds',
+  'positions',
 ]
+
+export const positionsColumnNames = [
+  { label: 'Pair', id: 'pair' },
+  // { label: 'Type', id: 'type' },
+  { label: 'Side/Type', id: 'side' },
+  { label: 'Price', id: 'price' },
+  { label: 'Quantity', id: 'quantity' },
+  // { label: 'Filled %', id: 'filled',  },
+  { label: 'Amount', id: 'amount' },
+  { label: 'Trigger', id: 'triggerConditions' },
+  { label: 'Date', id: 'date' },
+  {
+    label:
+      // <TableButton size="small" variant="outlined">
+      //   Cancel all
+      // </TableButton>
+      '',
+    id: 'cancel',
+    isSortable: false,
+  },
+]
+
+export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
+  id: i,
+  date: new Date().toDateString(),
+  pair: `BTC_${String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80))}`,
+  type: arrayOfOrdersType[getRandomInt(0, 3)],
+  side: arrayOfSides[getRandomInt(0, 2)],
+  price: getRandomInt(100, 3000),
+  amount: getRandomInt(100, 8000),
+  filled: { render: '100%' },
+  total: 100,
+  triggerConditions: '-',
+  cancel: {
+    render: (
+      <TableButton key={i} variant="outlined" size={`small`}>
+        Cancel
+      </TableButton>
+    ),
+  },
+}))
 
 export const openOrdersColumnNames = [
   { label: 'Pair', id: 'pair' },

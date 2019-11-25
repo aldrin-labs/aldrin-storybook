@@ -179,7 +179,7 @@ export const TradingTerminalContainer = styled(Grid)`
 export const ChartsContainer = styled(TablesContainer)`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   margin-bottom: .4rem;
-  height: calc(50% - .4rem);
+  height: calc(55% - .4rem);
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -192,8 +192,9 @@ export const ChartsContainer = styled(TablesContainer)`
 `
 
 export const TradingTabelContainer = styled(TablesContainer)`
-  height: calc(50% - 0.4rem); // 32vh was
+  // 32vh was
   margin-top: 0.4rem;
+  padding-right: 0.4rem;
   width: 100%;
   justify-content: flex-start;
   flex-direction: column;
@@ -219,7 +220,7 @@ export const Toggler = styled.div`
   min-height: 100%;
   background: #f9fbfd;
   font-weight: bold;
-  
+
   text-transform: uppercase;
   display: flex;
   flex-grow: 100;
@@ -282,6 +283,5 @@ export const WatchLabel = styled(CardTitle)`
 `
 
 export const WatchSubvalue = styled.span`
-  
   color: ${(props) => props.color};
 `

@@ -7,6 +7,12 @@ const TradingTabs = ({ tab, handleTabChange }: IProps) => (
   <>
     <TitleTabsGroup>
       <TitleTab
+        active={tab === 'positions'}
+        onClick={() => handleTabChange('positions')}
+      >
+        Positions
+      </TitleTab>
+      <TitleTab
         active={tab === 'openOrders'}
         onClick={() => handleTabChange('openOrders')}
       >

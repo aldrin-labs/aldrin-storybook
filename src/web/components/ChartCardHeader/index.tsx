@@ -35,12 +35,12 @@ const ChartCardHeader = ({
   children,
   style,
 }: {
-  children: string
-  style: CSSProperties
+  children?: string
+  style?: CSSProperties
 }) => {
   return (
     <TriggerTitle>
-      <CardTitle style={style} variant='subtitle2'>
+      <CardTitle style={style} variant="subtitle2">
         {children}
       </CardTitle>
     </TriggerTitle>

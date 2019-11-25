@@ -286,7 +286,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               style={{ paddingBottom: '2rem', marginTop: '-1rem' }}
             >
               <TradeInputContainer
-                title={`Amount`}
+                title={isSPOTMarket ? `Amount` : 'qtty'}
                 value={values.amount}
                 onChange={this.onAmountChange}
                 coin={pair[0]}
@@ -346,7 +346,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               </TotalGrid>
             )}
 
-            <Grid xs={12} container>
+            <Grid xs={12} container justify="flex-end">
               {pairsErrors.length > 0 && (
                 <FormError>
                   {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
