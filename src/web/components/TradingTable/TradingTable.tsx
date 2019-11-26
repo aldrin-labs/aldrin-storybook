@@ -37,6 +37,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       getSelectedKeyQuery: {
         chart: { selectedKey },
       },
+      marketType,
     } = this.props
 
     return (
@@ -45,6 +46,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'positions',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -54,6 +56,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -63,6 +66,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -71,6 +75,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -79,6 +84,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'funds',
             handleTabChange: this.handleTabChange,
           }}

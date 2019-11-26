@@ -219,6 +219,9 @@ export const Balances = ({ getFundsQuery, pair, marketType }) => {
                 borderRadius=".8rem"
                 btnColor={'#0B1FD1'}
                 backgroundColor={'#fff'}
+                hoverColor={'#fff'}
+                hoverBackground={'#0B1FD1'}
+                transition={'all .4s ease-out'}
               >
                 transfer in
               </BtnCustom>
@@ -230,6 +233,9 @@ export const Balances = ({ getFundsQuery, pair, marketType }) => {
                 borderRadius=".8rem"
                 btnColor={'#0B1FD1'}
                 backgroundColor={'#fff'}
+                hoverColor={'#fff'}
+                hoverBackground={'#0B1FD1'}
+                transition={'all .4s ease-out'}
               >
                 transfer out
               </BtnCustom>

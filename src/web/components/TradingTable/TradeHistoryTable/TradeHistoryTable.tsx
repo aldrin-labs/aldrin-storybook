@@ -73,11 +73,14 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
+      marketType,
     } = this.props
 
     if (!show) {
       return null
     }
+
+    console.log('marketType tradehistory', marketType)
 
     return (
       <TableWithSort
@@ -116,7 +119,11 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
+            <TradingTabs
+              tab={tab}
+              handleTabChange={handleTabChange}
+              marketType={marketType}
+            />
             <TradingTitle
               {...{
                 startDate,
@@ -153,7 +160,7 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
-      fetchPolicy='network-only'
+      fetchPolicy="network-only"
       variables={{
         tradeHistoryInput: {
           startDate,

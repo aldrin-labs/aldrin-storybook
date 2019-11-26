@@ -49,7 +49,14 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
 
   render() {
-    const { tab, tabIndex, show, handleTabChange, selectedKey } = this.props
+    const {
+      tab,
+      tabIndex,
+      show,
+      handleTabChange,
+      selectedKey,
+      marketType,
+    } = this.props
     const { focusedInput, endDate, activeDateButton, startDate } = this.state
 
     const maximumDate = moment().endOf('day')
@@ -62,6 +69,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           tabIndex,
           selectedKey,
           show,
+          marketType,
           handleTabChange,
           focusedInput,
           endDate,

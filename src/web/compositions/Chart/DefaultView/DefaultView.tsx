@@ -119,7 +119,10 @@ export const DefaultView = (props: any) => {
             <TradingTabelContainer item xs={10}>
               {/*{MASTER_BUILD && <ComingSoon />}*/}
               <CustomCard style={{ overflow: 'hidden scroll' }}>
-                <TradingTable showCancelResult={showCancelResult} />
+                <TradingTable
+                  showCancelResult={showCancelResult}
+                  marketType={marketType}
+                />
               </CustomCard>
             </TradingTabelContainer>
             <Grid
