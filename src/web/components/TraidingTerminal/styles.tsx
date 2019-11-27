@@ -170,7 +170,7 @@ export const TradeInput = styled.input`
   position: relative;
   bottom: .2rem;
   width: 100%;
-  min-height: 2.5rem;
+  min-height: 3rem;
   border: 1px solid #e0e5ec;
   border-radius: 4px;
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
