@@ -27,6 +27,8 @@ import {
   SettingsLabel,
   StyledSelect,
   StyledOption,
+  StyledZoomIcon,
+  SmartOrderModeButton,
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -74,6 +76,7 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      updateTerminalViewMode,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -82,9 +85,9 @@ class SimpleTabs extends React.Component {
       <TablesBlockWrapper
         item
         container
+        xs={5}
         style={{
-          height: '50%',
-          padding: '.4rem 0 0 0',
+          padding: '.4rem 0 0 .4rem',
         }}
       >
         <Grid item xs={12} style={{ height: '100%', padding: '0 0 0 0' }}>
@@ -111,9 +114,18 @@ class SimpleTabs extends React.Component {
               >
                 stop-limit
               </TerminalModeButton>
-              <TerminalModeButton isActive={mode === 'safe'}>
-                safe
-              </TerminalModeButton>
+              <SmartOrderModeButton
+                isActive={mode === 'smart'}
+                onClick={() => {
+                  this.handleChangeMode('smart')
+                  updateTerminalViewMode('smartOrderMode')
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                  <span style={{ paddingRight: '1rem' }}>smart order</span>
+                  <StyledZoomIcon />
+                </div>
+              </SmartOrderModeButton>
             </TerminalHeader>
 
             {!isSPOTMarket && (

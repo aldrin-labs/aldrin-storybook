@@ -5,10 +5,9 @@ import { withTheme } from '@material-ui/styles'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps, IState } from './OpenOrdersTable.types'
 import {
   updateOpenOrderHistoryQuerryFunction,
-  combineOpenOrdersTable,
+  combinePositionsTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
@@ -21,7 +20,7 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
-class OpenOrdersTable extends React.PureComponent<IProps> {
+class PositionsTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],
   }
@@ -70,7 +69,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   componentDidMount() {
     const { getOpenOrderHistoryQuery, subscribeToMore, theme } = this.props
 
-    const openOrdersProcessedData = combineOpenOrdersTable(
+    const openOrdersProcessedData = combinePositionsTable(
       getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
       theme
@@ -90,7 +89,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    const openOrdersProcessedData = combineOpenOrdersTable(
+    const openOrdersProcessedData = combinePositionsTable(
       nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
       nextProps.theme
@@ -162,7 +161,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
-      component={OpenOrdersTable}
+      component={PositionsTable}
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,

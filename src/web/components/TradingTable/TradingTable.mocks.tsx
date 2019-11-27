@@ -15,24 +15,25 @@ export const tradingTableTabConfig = [
 ]
 
 export const positionsColumnNames = [
+  { label: '#', id: 'index' },
   { label: 'Pair', id: 'pair' },
   // { label: 'Type', id: 'type' },
-  { label: 'Side/Type', id: 'side' },
-  { label: 'Price', id: 'price' },
-  { label: 'Quantity', id: 'quantity' },
+  { label: 'Side', id: 'side' },
+  { label: 'Size', id: 'size' },
+  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Market Price', id: 'marketPrice' },
+  { label: 'Liq. Price', id: 'liqPrice' },
+  { label: 'Pnl/Roe', id: 'pnlRoe' },
   // { label: 'Filled %', id: 'filled',  },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Trigger', id: 'triggerConditions' },
-  { label: 'Date', id: 'date' },
-  {
-    label:
-      // <TableButton size="small" variant="outlined">
-      //   Cancel all
-      // </TableButton>
-      '',
-    id: 'cancel',
-    isSortable: false,
-  },
+  // {
+  //   label:
+  //     // <TableButton size="small" variant="outlined">
+  //     //   Cancel all
+  //     // </TableButton>
+  //     '',
+  //   id: 'cancel',
+  //   isSortable: false,
+  // },
 ]
 
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({

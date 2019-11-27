@@ -161,15 +161,17 @@ export const TablesContainer = styled(Grid)`
   @media (max-width: 1080px) {
     flex-wrap: wrap;
   }
-  flex: auto;
 `
 
 export const TradingTerminalContainer = styled(Grid)`
   position: relative;
   display: flex;
 
-  height: 100%;
+  height: 50%;
   overflow: hidden;
+
+  flex-direction: column;
+  padding: 0 0 0 0.4rem;
 
   @media (max-width: 1080px) {
     flex-wrap: wrap;
@@ -178,28 +180,27 @@ export const TradingTerminalContainer = styled(Grid)`
 
 export const ChartsContainer = styled(TablesContainer)`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  margin-bottom: .4rem;
-  height: calc(55% - .4rem);
+  height: calc(50%);
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
-  box-shadow: 0px 0px 1.2rem rgba(8,22,58,0.1);
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
-  flex: auto;
+
+  padding: 0 .4rem .4rem 0;
+  background-color: #f9fbfd;
 `
 
 export const TradingTabelContainer = styled(TablesContainer)`
   // 32vh was
-  margin-top: 0.4rem;
-  padding-right: 0.4rem;
-  width: 100%;
+  background-color: #f9fbfd;
+  padding: 0.4rem 0.4rem 0 0;
+  height: 50%;
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0px 0px 1.2rem rgba(8, 22, 58, 0.1);
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
@@ -284,4 +285,18 @@ export const WatchLabel = styled(CardTitle)`
 
 export const WatchSubvalue = styled.span`
   color: ${(props) => props.color};
+`
+
+export const BalancesContainer = styled(Grid)`
+  height: 50%;
+  padding: ${({
+    isDefaultTerminalViewMode,
+  }: {
+    isDefaultTerminalViewMode: boolean
+  }) =>
+    isDefaultTerminalViewMode ? '.4rem .4rem 0 .4rem' : '.4rem .4rem 0 0'};
+`
+
+export const SmartTerminalContainer = styled(Grid)`
+  padding: 0.4rem 0 0 0.4rem;
 `

@@ -36,7 +36,7 @@ export interface IProps extends TooltipMutationType {
   selectCurrencies: Function
   theme: any
   themeMode: 'dark' | 'light'
-  getChartDataQuery:  GetChartDataQueryInterface
+  getChartDataQuery: GetChartDataQueryInterface
   addChartMutation: (queryObject: any) => Promise<any>
   changeActiveExchangeMutation: ({
     variables: exchange,
@@ -51,8 +51,8 @@ export interface IProps extends TooltipMutationType {
 }
 
 export interface IState {
-  aggregation: number
   showTableOnMobile: string
   activeChart: string
   joyride: boolean
+  terminalViewMode: string
 }
