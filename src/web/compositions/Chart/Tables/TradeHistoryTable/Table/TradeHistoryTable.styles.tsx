@@ -46,6 +46,7 @@ export const StyledCell = styled(Cell)`
   }
 
   @media (min-width: 1921px) {
+    & span,
     & p {
       font-size: 0.8rem;
     }

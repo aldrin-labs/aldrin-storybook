@@ -36,15 +36,16 @@ export const TableWrapper = styled(Card as React.SFC<
   CardProps & { className?: string }
 >)`
   ${borderRadiusScrollBar}
-
-  position: relative;
-  height: calc(68.2vh - 2rem);
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #e0e5ec;
-  border-radius: 1.5rem;
-  box-shadow: 0px 0px 12px rgba(10, 19, 43, 0.1);
+  && {
+    position: relative;
+    height: calc(68.2vh - 2rem);
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e0e5ec;
+    border-radius: 1.5rem;
+    box-shadow: 0px 0px 12px rgba(10, 19, 43, 0.1);
+  }
 `
 
 // @media only screen and (min-width: 1025px) and (max-width: 1400px) {

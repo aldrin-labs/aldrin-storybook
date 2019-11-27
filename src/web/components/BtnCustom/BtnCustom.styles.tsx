@@ -34,6 +34,8 @@ export const BtnCustom = styled(
   background: ${(props) => props.backgroundColor || 'transparent'};
 
   &:hover {
-    background: ${(props) => props.backgroundColor};
+    color: ${(props) => props.hoverColor};
+    background: ${(props) => props.hoverBackground || props.backgroundColor};
+    transition: ${(props) => props.transition || 'all .3s ease-out'};
   }
 `

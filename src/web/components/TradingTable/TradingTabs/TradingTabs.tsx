@@ -2,10 +2,20 @@ import React from 'react'
 import { IProps } from './TradingTabs.types'
 import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
 import { withTheme } from '@material-ui/styles'
+import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 
-const TradingTabs = ({ tab, handleTabChange }: IProps) => (
+const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
   <>
     <TitleTabsGroup>
+      {!isSPOTMarketType(marketType) && (
+        <TitleTab
+          active={tab === 'positions'}
+          onClick={() => handleTabChange('positions')}
+        >
+          Positions
+        </TitleTab>
+      )}
+
       <TitleTab
         active={tab === 'openOrders'}
         onClick={() => handleTabChange('openOrders')}
@@ -24,12 +34,15 @@ const TradingTabs = ({ tab, handleTabChange }: IProps) => (
       >
         Trade history
       </TitleTab>
-      <TitleTab
-        active={tab === 'funds'}
-        onClick={() => handleTabChange('funds')}
-      >
-        Funds
-      </TitleTab>
+
+      {isSPOTMarketType(marketType) && (
+        <TitleTab
+          active={tab === 'funds'}
+          onClick={() => handleTabChange('funds')}
+        >
+          Funds
+        </TitleTab>
+      )}
     </TitleTabsGroup>
   </>
 )

@@ -71,6 +71,7 @@ export const StyledPaper = styled(Paper)`
     position: absolute;
     top: 7.25vh;
     left: 50%;
+    height: auto;
     box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
     border: 1px solid #e0e5ec;
     background: #fefefe;

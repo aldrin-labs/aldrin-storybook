@@ -10,7 +10,9 @@ import {
   openOrdersColumnNames,
   orderHistoryColumnNames,
   tradeHistoryColumnNames,
+  positionsColumnNames,
   fundsBody,
+  positionsBody,
   openOrdersBody,
   orderHistoryBody,
   tradeHistoryBody,
@@ -32,6 +34,8 @@ export const getTableBody = (tab: string) =>
     ? tradeHistoryBody
     : tab === 'funds'
     ? fundsBody
+    : tab === 'positions'
+    ? positionsBody
     : []
 
 export const getTableHead = (tab: string): any[] =>
@@ -43,6 +47,8 @@ export const getTableHead = (tab: string): any[] =>
     ? tradeHistoryColumnNames
     : tab === 'funds'
     ? fundsColumnNames
+    : tab === 'positions'
+    ? positionsColumnNames
     : []
 
 export const getEndDate = (stringDate: string) =>
@@ -63,6 +69,8 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     ? 'You have no trades.'
     : tab === 'funds'
     ? 'You have no Funds.'
+    : tab === 'positions'
+    ? 'You have no open positions'
     : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
@@ -204,7 +212,7 @@ export const combineOpenOrdersTable = (
           render: (
             <TableButton
               key={i}
-              variant='outlined'
+              variant="outlined"
               size={`small`}
               style={{ color: '#DD6956', borderColor: '#DD6956' }}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
