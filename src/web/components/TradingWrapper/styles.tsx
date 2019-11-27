@@ -47,7 +47,7 @@ export const StyledTab = styled(Button)`
   min-height: 3rem;
   font-size: 1.3rem;
   font-weight: bold;
-  
+
   letter-spacing: 1.5px;
   transition: 0.3s all;
 
@@ -92,53 +92,13 @@ export const TerminalHeader = styled.div`
   border-bottom: 0.1rem solid #e0e5ec;
 `
 
-export const BalanceTitle = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: .8rem;
-  padding: .5rem .8rem;
-  border-radius: .8rem;
-  background-color: #e0e5ec;
-`
-
-export const BalanceValues = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-top: 2.5rem;
-  padding: 0 1rem;
-  text-align: center;
-`
-
-export const BalanceQuantity = styled.span`
-  color: #16253D;
-  font-size: 1.3rem;
-  font-weight: bold;
-  letter-spacing: 0.075rem;
-
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
-`
-
-export const BalanceValue = styled.span`
-  font-size: 1rem;
-  color: #29AC80;
-`
-
-export const BalanceSymbol = styled.span`
-  color: #7284A0;
-  font-size: 1.2rem;
-`
-
 export const TerminalMainGrid = styled(Grid)`
   height: calc(100% - 3.5rem);
 `
 
 export const FullHeightGrid = styled(Grid)`
   height: 100%;
+  border-right: ${(props) => props.needBorderRight && '.1rem solid #e0e5ec;'};
 `
 
 export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
@@ -158,3 +118,55 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   </BtnCustom>
 ))``
 
+export const TradingMenuContainer = styled.div`
+  width: 50%;
+  display: flex;
+  align-items: center;
+`
+
+export const LeverageContainer = styled(TradingMenuContainer)`
+  margin: 0.2rem 0;
+  padding: 0.5rem;
+  border-left: 0.1rem solid #e0e5ec;
+`
+
+export const LeverageLabel = styled.label`
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 0.05rem;
+  color: #16253d;
+`
+
+export const LeverageTitle = styled(LeverageLabel)`
+  width: 22.5%;
+  margin-left: -0.5rem;
+`
+
+export const SettingsContainer = styled(TradingMenuContainer)`
+  width: calc(50% - 1px);
+`
+
+export const SettingsLabel = styled(LeverageLabel)`
+  color: #7284a0;
+`
+
+export const StyledSelect = styled.select`
+  background: ${(props) => !props.disabled && '#ffffff'};
+  border: 0.1rem solid #e0e5ec;
+  border-radius: 0.2rem;
+  padding: 0.2rem;
+  margin: 0 0.5rem;
+  color: #7284a0;
+  font-weight: bold;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+`
+
+export const StyledOption = styled.option`
+  font-size: 1.1rem;
+  padding: 0.3rem 0;
+`

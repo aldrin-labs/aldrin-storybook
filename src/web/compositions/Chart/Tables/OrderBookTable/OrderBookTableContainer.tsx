@@ -14,6 +14,10 @@ import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
 import LastTrade from './Tables/LastTrade/LastTrade'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+import {
+  StyledSelect,
+  StyledOption,
+} from '@sb/components/TradingWrapper/styles'
 
 import SortByBoth from '@icons/SortByBoth.svg'
 import SortByAsks from '@icons/SortByAsks.svg'
@@ -85,15 +89,15 @@ class OrderBookTableContainer extends Component<IProps, IState> {
               isActive={mode === 'asks'}
               onClick={() => this.setOrderbookMode('asks')}
             />
-            <select
+            <StyledSelect
               onChange={(e: ChangeEvent) =>
                 setOrderbookAggregation(+e.target.value)
               }
             >
               {OrderbookGroupOptions.map((option) => (
-                <option key={option.value}>{option.value}</option>
+                <StyledOption key={option.value}>{option.value}</StyledOption>
               ))}
-            </select>
+            </StyledSelect>
           </ModesContainer>
         </ChartCardHeader>
 

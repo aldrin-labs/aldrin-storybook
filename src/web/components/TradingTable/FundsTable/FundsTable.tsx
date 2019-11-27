@@ -70,7 +70,7 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const { tab, handleTabChange, show } = this.props
+    const { tab, handleTabChange, show, marketType } = this.props
 
     if (!show) {
       return null
@@ -111,6 +111,7 @@ class FundsTable extends React.PureComponent<IProps> {
           <div>
             <TradingTabs
               tab={tab}
+              marketType={marketType}
               hideSmallAssets={hideSmallAssets}
               handleTabChange={handleTabChange}
               handleSmallAssetsCheckboxChange={
@@ -159,7 +160,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}
-      fetchPolicy='network-only'
+      fetchPolicy="network-only"
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {

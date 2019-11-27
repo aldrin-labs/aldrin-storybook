@@ -18,10 +18,6 @@ import { traidingErrorMessages } from '@core/config/errorMessages'
 
 import { PlaseOrderDialog } from '../PlaseOrderDialog'
 
-import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
-
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
 import {
@@ -38,8 +34,6 @@ import {
   InputWrapper,
   TradeInputBlock,
   TradeInput,
-  PercentageGrid,
-  PercentageItem,
   TotalGrid,
   PriceContainer,
 } from './styles'
@@ -241,6 +235,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       changePercentage,
       operationType,
       priceType,
+      isSPOTMarket,
       values,
       handleSubmit,
       touched,
@@ -254,85 +249,142 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={pair}>
-          {priceType !== 'stop-limit' && <Grid xs={12} />}
+          <Grid container item xs={9} style={{ maxWidth: '100%' }}>
+            {priceType === 'stop-limit' ? (
+              <PaddingGrid xs={12} conatiner key={'stop-limit'}>
+                <TradeInputContainer
+                  title={'Stop'}
+                  coin={pair[1]}
+                  value={values.stop}
+                  onChange={this.onStopChange}
+                />
+              </PaddingGrid>
+            ) : null}
 
-          {priceType === 'stop-limit' ? (
-            <PaddingGrid xs={12} key={'stop-limit'}>
+            {priceType !== 'market' ? (
+              <PriceContainer
+                alignItems={priceType !== 'stop-limit' && 'flex-end'}
+                xs={12}
+                container
+                key={'limit-price'}
+              >
+                <TradeInputContainer
+                  title={'Price'}
+                  value={values.limit}
+                  onChange={this.onLimitChange}
+                  coin={pair[1]}
+                />
+              </PriceContainer>
+            ) : null}
+
+            <Grid
+              item
+              container
+              direction="column"
+              justify="flex-end"
+              xs={12}
+              style={{ paddingBottom: '2rem', marginTop: '-1rem' }}
+            >
               <TradeInputContainer
-                title={'Stop price'}
-                coin={pair[1]}
-                value={values.stop}
-                onChange={this.onStopChange}
+                title={isSPOTMarket ? `Amount` : 'qtty'}
+                value={values.amount}
+                onChange={this.onAmountChange}
+                coin={pair[0]}
+                style={{ paddingBottom: '.8rem' }}
               />
-            </PaddingGrid>
-          ) : null}
 
-          {priceType !== 'market' ? (
-            <PriceContainer xs={12} key={'limit-price'}>
-              <TradeInputContainer
-                title={'Price'}
-                value={values.limit}
-                onChange={this.onLimitChange}
-                coin={pair[1]}
+              <SmallSlider
+                min={0}
+                max={100}
+                defaultValue={0}
+                value={percentage}
+                valueSymbol={'%'}
+                marks={{
+                  0: { label: '0%' },
+                  25: { label: '25%' },
+                  50: { label: '50%' },
+                  75: { label: '75%' },
+                  100: { label: '100%' },
+                }}
+                onChange={(value) => {
+                  changePercentage(value)
+                  this.onPercentageClick(value / 100)
+                }}
+                sliderContainerStyles={{
+                  width: '70%',
+                  margin: '0 0 0 auto',
+                }}
+                handleStyles={{
+                  width: '1.2rem',
+                  height: '1.2rem',
+                  border: 'none',
+                  backgroundColor: '#0B1FD1',
+                  marginTop: '-.45rem',
+                }}
+                dotStyles={{
+                  border: 'none',
+                  backgroundColor: '#ABBAD1',
+                }}
+                activeDotStyles={{
+                  backgroundColor: '#5C8CEA',
+                }}
+                markTextSlyles={{
+                  color: '#7284A0;',
+                  fontSize: '1rem',
+                }}
               />
-            </PriceContainer>
-          ) : null}
+            </Grid>
 
-          <Grid item container direction="column" justify="flex-end" xs={12}>
-            <TradeInputContainer
-              title={`Amount`}
-              value={values.amount}
-              onChange={this.onAmountChange}
-              coin={pair[0]}
-              style={{ paddingBottom: '.8rem' }}
-            />
+            {isSPOTMarket && (
+              <TotalGrid xs={12} item container direction="column">
+                <TradeInputContainer
+                  title={`Total`}
+                  value={values.total}
+                  onChange={this.onTotalChange}
+                  coin={pair[1]}
+                />
+              </TotalGrid>
+            )}
 
-            <SmallSlider
-              min={0}
-              max={100}
-              value={percentage}
-              valueSymbol={'%'}
-              marks={{
-                0: { label: '0%' },
-                25: { label: '25%' },
-                50: { label: '50%' },
-                75: { label: '75%' },
-                100: { label: '100%' },
-              }}
-              onChange={(value) => {
-                changePercentage(value)
-                this.onPercentageClick(value / 100)
-              }}
-              sliderContainerStyles={{
-                width: '70%',
-                margin: '0 0 0 auto',
-              }}
-              handleStyles={{
-                width: '1.2rem',
-                height: '1.2rem',
-                border: 'none',
-                backgroundColor: '#0B1FD1',
-                marginTop: '-.5rem',
-              }}
-            />
+            <Grid xs={12} container justify="flex-end">
+              {pairsErrors.length > 0 && (
+                <FormError>
+                  {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
+                </FormError>
+              )}
+
+              {!pairsErrors.length && !isSPOTMarket && (
+                <>
+                  <Grid xs={1} item />
+                  <Grid xs={11} item>
+                    <Grid
+                      container
+                      justify="space-between"
+                      style={{ padding: '.6rem 0' }}
+                    >
+                      <InputTitle>cost:</InputTitle>
+                      <InputTitle style={{ color: '#16253D', width: 'auto' }}>
+                        (qtty / lev) * price
+                      </InputTitle>
+                    </Grid>
+
+                    <Grid
+                      container
+                      justify="space-between"
+                      style={{ padding: '.6rem 0' }}
+                    >
+                      <InputTitle>max buy:</InputTitle>
+                      <InputTitle style={{ color: '#16253D', width: 'auto' }}>
+                        value
+                      </InputTitle>
+                    </Grid>
+                  </Grid>
+                </>
+              )}
+            </Grid>
           </Grid>
 
-          <TotalGrid xs={12} item container direction="column">
-            <TradeInputContainer
-              title={`Total`}
-              value={values.total}
-              onChange={this.onTotalChange}
-              coin={pair[1]}
-            />
-          </TotalGrid>
-
-          <Grid xs={12}>
-            <FormError hidden={!pairsErrors.length}>
-              {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
-            </FormError>
-          </Grid>
-
-          <Grid xs={12} container>
+          <Grid xs={3} item container style={{ maxWidth: '100%' }}>
             <Grid xs={1} item />
             <Grid xs={11} item>
               <PlaseOrderDialog

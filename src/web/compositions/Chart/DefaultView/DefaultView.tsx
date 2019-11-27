@@ -6,6 +6,7 @@ import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 
 import { SingleChart } from '@sb/components/Chart'
 
+import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 
@@ -82,7 +83,7 @@ export const DefaultView = (props: any) => {
           item
           container
           direction="column"
-          xs={6}
+          xs={7}
           style={{
             height: '100%',
             padding: '.4rem .4rem 0 0',
@@ -109,17 +110,38 @@ export const DefaultView = (props: any) => {
               )}
             </CustomCard>
           </ChartsContainer>
-          <TradingTabelContainer item xs={12}>
-            {/*{MASTER_BUILD && <ComingSoon />}*/}
-            <CustomCard style={{ overflow: 'hidden scroll' }}>
-              <TradingTable showCancelResult={showCancelResult} />
-            </CustomCard>
-          </TradingTabelContainer>
+          <Grid
+            item
+            xs={12}
+            container
+            style={{ flex: 'auto', height: 'calc(45% - 0.4rem)' }}
+          >
+            <TradingTabelContainer item xs={10}>
+              {/*{MASTER_BUILD && <ComingSoon />}*/}
+              <CustomCard style={{ overflow: 'hidden scroll' }}>
+                <TradingTable
+                  showCancelResult={showCancelResult}
+                  marketType={marketType}
+                />
+              </CustomCard>
+            </TradingTabelContainer>
+            <Grid
+              item
+              xs={2}
+              style={{ paddingLeft: '.4rem', marginTop: '.4rem' }}
+            >
+              <Balances
+                pair={currencyPair.split('_')}
+                selectedKey={selectedKey}
+                marketType={marketType}
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <TradingTerminalContainer
           item
           container
-          xs={6}
+          xs={5}
           direction="column"
           style={{
             height: '100%',
@@ -127,7 +149,7 @@ export const DefaultView = (props: any) => {
           }}
         >
           <Grid item container style={{ height: '50%' }}>
-            <Grid item container xs={8} style={{ height: '100%' }}>
+            <Grid item container xs={7} style={{ height: '100%' }}>
               <OrderbookAndDepthChart
                 {...{
                   symbol: currencyPair,
@@ -144,7 +166,7 @@ export const DefaultView = (props: any) => {
             </Grid>
             <Grid
               item
-              xs={4}
+              xs={5}
               style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
             >
               <TradeHistory

@@ -10,6 +10,7 @@ import { IProps, IState } from './TradingTable.types'
 import { tradingTableTabConfig } from './TradingTable.mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
@@ -36,14 +37,26 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       getSelectedKeyQuery: {
         chart: { selectedKey },
       },
+      marketType,
     } = this.props
 
     return (
       <>
+        <PositionsTable
+          {...{
+            tab,
+            selectedKey,
+            marketType,
+            show: tab === 'positions',
+            handleTabChange: this.handleTabChange,
+            showCancelResult: this.props.showCancelResult,
+          }}
+        />
         <OpenOrdersTable
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -53,6 +66,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -61,6 +75,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -69,6 +84,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'funds',
             handleTabChange: this.handleTabChange,
           }}
