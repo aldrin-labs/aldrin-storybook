@@ -156,6 +156,9 @@ const styles = (theme: Theme) =>
       '&:hover': {
         backgroundColor: theme.palette.action.hover,
       },
+      '&:hover td': {
+        backgroundColor: `${theme.palette.hover[theme.palette.type]} !important`,
+      }
     },
     indeterminateCheckbox: {
       color: theme.palette.primary.main,
@@ -193,12 +196,20 @@ const styles = (theme: Theme) =>
         theme.transitions.easing.easeOut
       }`,
       borderBottom: '0',
+      '&:hover td': {
+        transition: `background-color ${theme.transitions.duration.short}ms  ${
+          theme.transitions.easing.easeOut
+        }`,
+      },
     },
     rowWithHover: {
       '&:hover': {
         borderRadius: '32px',
         backgroundColor: theme.palette.hover[theme.palette.type], //TODO theme.palette.action.hover,
       },
+      '&:hover td': {
+        backgroundColor: `${theme.palette.hover[theme.palette.type]} !important`, //TODO theme.palette.action.hover,
+      }
     },
     rowWithHoverBorderRadius: {
       '& td:first-child': {
@@ -734,7 +745,7 @@ const CustomTable = (props: Props) => {
                     >
                       {row.expandableContent &&
                       row.expandableContent.length > 0 ? (
-                        <CustomTableCell padding="checkbox">
+                        <CustomTableCell padding="checkbox" style={{ backgroundColor: tableStyles.cell.backgroundColor }}>
                           {renderCheckBox({
                             onChange,
                             id: row.id,
@@ -754,7 +765,7 @@ const CustomTable = (props: Props) => {
                         </CustomTableCell>
                       ) : (
                         typeOfCheckbox !== null && (
-                          <CustomTableCell padding="checkbox">
+                          <CustomTableCell style={{ backgroundColor: tableStyles.cell.backgroundColor }} padding="checkbox">
                             {' '}
                           </CustomTableCell>
                         )
