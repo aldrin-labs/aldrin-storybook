@@ -28,12 +28,12 @@ export default (WrappedComponent: React.ReactType) => {
 
     toggleBorder = () => {
       const borderBottomTrue =
-        localStorage.getItem('CCAItablesSettingsBorder') === 'true'
+        process.browser ? localStorage.getItem('CCAItablesSettingsBorder') === 'true' : false
 
       if (borderBottomTrue) {
-        localStorage.setItem('CCAItablesSettingsBorder', 'false')
+        process.browser ? localStorage.setItem('CCAItablesSettingsBorder', 'false') : false
       } else {
-        localStorage.setItem('CCAItablesSettingsBorder', 'true')
+        process.browser ? localStorage.setItem('CCAItablesSettingsBorder', 'true') : false
       }
 
       window && window.location.reload()
@@ -57,7 +57,7 @@ export default (WrappedComponent: React.ReactType) => {
       const { anchorEl } = this.state
       const actions = this.props.actions ? this.props.actions : []
       const borderBottom =
-        localStorage.getItem('CCAItablesSettingsBorder') === 'true'
+      process.browser ? localStorage.getItem('CCAItablesSettingsBorder') === 'true' : false
       return (
         <>
           <WrappedComponent
