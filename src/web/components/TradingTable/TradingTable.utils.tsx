@@ -49,12 +49,12 @@ export const getTableHead = (tab: string): any[] =>
 
 export const getEndDate = (stringDate: string) =>
   stringDate === '1Day'
-    ? moment().subtract(1, 'days')
+    ? moment().startOf('day').subtract(1, 'days')
     : stringDate === '1Week'
-      ? moment().subtract(1, 'weeks')
+      ? moment().startOf('day').subtract(1, 'weeks')
       : stringDate === '1Month'
-        ? moment().subtract(1, 'months')
-        : moment().subtract(3, 'months')
+        ? moment().startOf('day').subtract(1, 'months')
+        : moment().startOf('day').subtract(3, 'months')
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
