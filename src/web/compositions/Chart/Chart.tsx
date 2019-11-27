@@ -66,13 +66,14 @@ class Chart extends React.Component<IProps, IState> {
 
     const [base, quote] = pair.split('_')
     /* tslint:disable-next-line:no-object-mutation */
-    document.title = `${base} to ${quote} | CCAI`
+    process.browser ? document.title = `${base} to ${quote} | CCAI` : null
+
     return null
   }
 
   componentWillUnmount() {
     /* tslint:disable-next-line:no-object-mutation */
-    document.title = 'Cryptocurrencies AI'
+    process.browser ? document.title = 'Cryptocurrencies AI' : null
   }
 
   changeTable = () => {
@@ -201,7 +202,7 @@ class Chart extends React.Component<IProps, IState> {
           currencyPair: { pair },
           view,
         },
-        app: { themeMode },
+        app: { themeMode } = { themeMode: 'light' },
       },
       theme,
     } = this.props
@@ -270,7 +271,7 @@ class Chart extends React.Component<IProps, IState> {
           currencyPair: { pair },
           view,
         },
-        app: { themeMode },
+        app: { themeMode } = { themeMode: 'light' },
       },
       changeActiveExchangeMutation,
     } = this.props
@@ -416,7 +417,7 @@ class Chart extends React.Component<IProps, IState> {
           currencyPair: { pair },
           view,
         },
-        app: { themeMode },
+        app: { themeMode } = { themeMode: 'light' },
       },
     } = this.props
 
@@ -463,7 +464,7 @@ class Chart extends React.Component<IProps, IState> {
   }
 }
 
-export default withAuth(
+export default 
   compose(
     queryRendererHoc({
       query: getChartData,
@@ -480,4 +481,3 @@ export default withAuth(
     }),
     graphql(ADD_CHART, { name: 'addChartMutation' })
   )(withErrorFallback(Chart))
-)
