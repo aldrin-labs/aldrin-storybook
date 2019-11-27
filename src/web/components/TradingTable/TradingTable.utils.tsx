@@ -94,6 +94,120 @@ export const getCurrentCurrencySymbol = (
   return isBuyTypeOrder(tradeType) ? quote : base
 }
 
+export const combinePositionsTable = (
+  positionsData: OrderType[],
+  cancelOrderFunc: (
+    keyId: string,
+    orderId: string,
+    pair: string
+  ) => Promise<any>,
+  theme: Theme
+) => {
+  if (!positionsData && !Array.isArray(positionsData)) {
+    return []
+  }
+
+  const processedPositionsData = positionsData
+    .filter((el) => el.status === 'open')
+    .map((el: OrderType, i: number) => {
+      const {
+        keyId,
+        symbol,
+        timestamp,
+        type,
+        side,
+        price,
+        filled,
+        info: { orderId, stopPrice = 0, origQty = '0' },
+      } = el
+
+      const triggerConditions = +stopPrice ? stopPrice : '-'
+      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+      const pair = symbol.split('_')
+
+      return {
+        index: i,
+        pair: {
+          render: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {pair[0]}/{pair[1]}
+            </div>
+          ),
+          contentToSort: symbol,
+        },
+        // type: type,
+        side: {
+          render: (
+            <div>
+              <span
+                style={{
+                  display: 'block',
+                  textTransform: 'uppercase',
+                  color: side === 'buy' ? '#29AC80' : '#DD6956',
+                }}
+              >
+                {side}
+              </span>
+              <span
+                style={{
+                  textTransform: 'capitalize',
+                  color: '#7284A0',
+                  letterSpacing: '1px',
+                }}
+              >
+                {type}
+              </span>
+            </div>
+          ),
+          style: {
+            color: isBuyTypeOrder(side)
+              ? theme.customPalette.green.main
+              : theme.customPalette.red.main,
+          },
+        },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        size: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+          contentToSort: origQty * price,
+        },
+        entryPrice: {
+          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          contentToSort: price,
+        },
+        marketPrice: {
+          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          contentToSort: price,
+        },
+        liqPrice: {
+          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          contentToSort: price,
+        },
+        pnlRoe: {
+          render: '-',
+        },
+        // cancel: {
+        //   render: (
+        //     <TableButton
+        //       key={i}
+        //       variant="outlined"
+        //       size={`small`}
+        //       style={{ color: '#DD6956', borderColor: '#DD6956' }}
+        //       onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
+        //     >
+        //       Cancel
+        //     </TableButton>
+        //   ),
+        // },
+      }
+    })
+
+  return processedPositionsData
+}
+
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
   cancelOrderFunc: (

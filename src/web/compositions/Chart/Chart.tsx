@@ -39,6 +39,7 @@ class Chart extends React.Component<IProps, IState> {
     showTableOnMobile: 'ORDER',
     activeChart: 'candle',
     joyride: false,
+    terminalViewMode: 'default',
   }
 
   static getDerivedStateFromProps(nextProps: IProps) {
@@ -62,10 +63,14 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   changeTable = () => {
-    this.setState((prevState: IProps) => ({
+    this.setState((prevState: IState) => ({
       showTableOnMobile:
         prevState.showTableOnMobile === 'ORDER' ? 'TRADE' : 'ORDER',
     }))
+  }
+
+  updateTerminalViewMode = (terminalViewMode: string) => {
+    this.setState({ terminalViewMode })
   }
 
   handleJoyrideCallback = async (data: any) => {
@@ -88,52 +93,6 @@ class Chart extends React.Component<IProps, IState> {
         },
       })
     }
-  }
-
-  renderTables: any = () => {
-    const { aggregation, showTableOnMobile } = this.state
-    const {
-      getChartDataQuery: {
-        chart: {
-          activeExchange,
-          currencyPair: { pair },
-        },
-      },
-      theme,
-    } = this.props
-
-    let quote
-    if (pair) {
-      quote = pair.split('_')[1]
-    }
-
-    const symbol = pair || ''
-    const exchange = activeExchange.symbol
-
-    return (
-      <TablesContainer item container direction="column" xs={7}>
-        {/* <Joyride
-          showProgress={true}
-          showSkipButton={true}
-          continuous={true}
-          steps={singleChartSteps}
-          run={this.state.joyride && getTooltipSettings.chartPage}
-          run={false}
-          callback={this.handleJoyrideCallback}
-          styles={{
-            options: {
-              backgroundColor: theme.palette.common.white,
-              primaryColor: theme.palette.secondary.main,
-              textColor: theme.palette.common.black,
-            },
-            tooltip: {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-            },
-          }}
-        /> */}
-      </TablesContainer>
-    )
   }
 
   renderOnlyCharts = () => {
@@ -204,7 +163,7 @@ class Chart extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { showTableOnMobile } = this.state
+    const { showTableOnMobile, terminalViewMode } = this.state
 
     const {
       getChartDataQuery: {
@@ -260,6 +219,8 @@ class Chart extends React.Component<IProps, IState> {
             themeMode={themeMode}
             selectedKey={selectedKey}
             activeExchange={activeExchange}
+            terminalViewMode={terminalViewMode}
+            updateTerminalViewMode={this.updateTerminalViewMode}
             showTableOnMobile={showTableOnMobile}
             activeChart={this.state.activeChart}
             changeTable={this.changeTable}

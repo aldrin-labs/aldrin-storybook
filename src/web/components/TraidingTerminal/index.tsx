@@ -347,13 +347,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             )}
 
             <Grid xs={12} container justify="flex-end">
-              {pairsErrors.length > 0 && (
+              {/* {pairsErrors.length > 0 && (
                 <FormError>
                   {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
                 </FormError>
-              )}
+              )} */}
 
-              {!pairsErrors.length && !isSPOTMarket && (
+              {!isSPOTMarket && (
                 <>
                   <Grid xs={1} item />
                   <Grid xs={11} item>
@@ -386,7 +386,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
           <Grid xs={3} item container style={{ maxWidth: '100%' }}>
             <Grid xs={1} item />
-            <Grid xs={11} item>
+            <Grid xs={11} item container alignItems="center">
               <PlaseOrderDialog
                 typeIsBuy={isBuyType}
                 handleSubmit={handleSubmit}

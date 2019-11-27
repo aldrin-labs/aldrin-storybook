@@ -1,12 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, Tabs, Tab, Button, Grid } from '@material-ui/core'
+import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { customAquaScrollBar } from '../cssUtils'
 
 export const TablesBlockWrapper = styled(Grid)`
-  width: 100%;
-  height: 100%;
   border-radius: 0;
   padding-right: 0;
   border: none;
@@ -44,7 +43,7 @@ export const TabsTypeContainer = styled(TabsContainer)`
 export const StyledTab = styled(Button)`
   min-width: auto;
   width: 30%;
-  min-height: 3rem;
+  height: 3.5rem;
   font-size: 1.3rem;
   font-weight: bold;
 
@@ -88,12 +87,13 @@ export const SellTab = styled(StyledTab)`
 `
 
 export const TerminalHeader = styled.div`
+  position: relative;
   background-color: #f2f4f6;
   border-bottom: 0.1rem solid #e0e5ec;
 `
 
 export const TerminalMainGrid = styled(Grid)`
-  height: calc(100% - 3.5rem);
+  height: calc(100% - 5.2rem);
 `
 
 export const FullHeightGrid = styled(Grid)`
@@ -104,7 +104,7 @@ export const FullHeightGrid = styled(Grid)`
 export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   <BtnCustom
     fontSize="1.3rem"
-    padding=".35rem 4rem .1rem 4rem"
+    padding=".35rem 3.5rem .1rem 3.5rem"
     btnWidth="auto"
     height="auto"
     btnColor={isActive ? '#fff' : '#16253D'}
@@ -169,4 +169,15 @@ export const StyledSelect = styled.select`
 export const StyledOption = styled.option`
   font-size: 1.1rem;
   padding: 0.3rem 0;
+`
+
+export const StyledZoomIcon = styled(ZoomOutMapIcon)`
+  height: 2rem;
+  width: 2rem;
+`
+
+export const SmartOrderModeButton = styled(TerminalModeButton)`
+  padding-right: 1rem;
+  position: absolute;
+  right: 0;
 `
