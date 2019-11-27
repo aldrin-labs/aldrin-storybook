@@ -1,6 +1,8 @@
 import React, { Component, ChangeEvent } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
+import dynamic from 'next/dynamic'
+
 
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 
@@ -10,8 +12,10 @@ import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHis
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
 
-import OrderBookTable from './Tables/Asks/OrderBookTable'
-import SpreadTable from './Tables/Bids/SpreadTable'
+// import OrderBookTable from './Tables/Asks/OrderBookTable'
+const OrderBookTable = dynamic(() => import('./Tables/Asks/OrderBookTable'), { ssr: false })
+const SpreadTable = dynamic(() => import('./Tables/Bids/SpreadTable'), { ssr: false })
+// import SpreadTable from './Tables/Bids/SpreadTable'
 import LastTrade from './Tables/LastTrade/LastTrade'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 
