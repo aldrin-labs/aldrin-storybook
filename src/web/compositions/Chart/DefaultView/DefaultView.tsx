@@ -9,19 +9,23 @@ import { SingleChart } from '@sb/components/Chart'
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
-
-// import ComingSoon from '@sb/components/ComingSoon'
-import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
+import {
+  TradeHistory,
+  OrderbookAndDepthChart,
+  CardsPanel,
+  SmartOrderTerminal,
+} from '../components'
 
 import {
   Container,
   ChartsContainer,
   DepthChartContainer,
-  // RangesContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
   ChartGridContainer,
   CustomCard,
+  BalancesContainer,
+  SmartTerminalContainer,
 } from '../Chart.styles'
 
 // fix props type
@@ -42,6 +46,8 @@ export const DefaultView = (props: any) => {
     selectedKey,
     chartProps,
     changeActiveExchangeMutation,
+    terminalViewMode,
+    updateTerminalViewMode,
   } = props
 
   if (!currencyPair) {
@@ -51,6 +57,7 @@ export const DefaultView = (props: any) => {
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
+  const isDefaultTerminalViewMode = terminalViewMode === 'default'
 
   return (
     <Container container spacing={8}>
@@ -77,19 +84,19 @@ export const DefaultView = (props: any) => {
           marginLeft: 0,
           marginRight: 0,
         }}
+        direction="column"
         spacing={8}
       >
         <Grid
           item
           container
-          direction="column"
-          xs={7}
+          xs={12}
           style={{
             height: '100%',
             padding: '.4rem .4rem 0 0',
           }}
         >
-          <ChartsContainer item xs={12}>
+          <ChartsContainer item xs={7}>
             <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
@@ -110,14 +117,46 @@ export const DefaultView = (props: any) => {
               )}
             </CustomCard>
           </ChartsContainer>
-          <Grid
-            item
-            xs={12}
-            container
-            style={{ flex: 'auto', height: 'calc(45% - 0.4rem)' }}
-          >
-            <TradingTabelContainer item xs={10}>
-              {/*{MASTER_BUILD && <ComingSoon />}*/}
+          <TradingTerminalContainer item xs={5}>
+            <Grid item container style={{ height: '100%' }}>
+              <Grid item container xs={7} style={{ height: '100%' }}>
+                <OrderbookAndDepthChart
+                  {...{
+                    symbol: currencyPair,
+                    pair: currencyPair,
+                    exchange,
+                    quote,
+                    activeExchange,
+                    showTableOnMobile,
+                    changeTable,
+                    chartProps,
+                    marketType,
+                  }}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={5}
+                style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
+              >
+                <TradeHistory
+                  {...{
+                    symbol: currencyPair,
+                    pair: currencyPair,
+                    exchange,
+                    quote,
+                    marketType,
+                    activeExchange,
+                    showTableOnMobile,
+                    changeTable,
+                    chartProps,
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </TradingTerminalContainer>
+          {isDefaultTerminalViewMode && (
+            <TradingTabelContainer item xs={6}>
               <CustomCard style={{ overflow: 'hidden scroll' }}>
                 <TradingTable
                   showCancelResult={showCancelResult}
@@ -125,75 +164,36 @@ export const DefaultView = (props: any) => {
                 />
               </CustomCard>
             </TradingTabelContainer>
-            <Grid
-              item
-              xs={2}
-              style={{ paddingLeft: '.4rem', marginTop: '.4rem' }}
-            >
-              <Balances
-                pair={currencyPair.split('_')}
-                selectedKey={selectedKey}
-                marketType={marketType}
+          )}
+          <BalancesContainer
+            item
+            xs={1}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <Balances
+              pair={currencyPair.split('_')}
+              selectedKey={selectedKey}
+              marketType={marketType}
+            />
+          </BalancesContainer>
+          {isDefaultTerminalViewMode ? (
+            <TradingComponent
+              selectedKey={selectedKey}
+              activeExchange={activeExchange}
+              pair={baseQuoteArr}
+              marketType={marketType}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              updateTerminalViewMode={updateTerminalViewMode}
+            />
+          ) : (
+            <SmartTerminalContainer xs={11} item container>
+              <SmartOrderTerminal
+                updateTerminalViewMode={updateTerminalViewMode}
               />
-            </Grid>
-          </Grid>
+            </SmartTerminalContainer>
+          )}
         </Grid>
-        <TradingTerminalContainer
-          item
-          container
-          xs={5}
-          direction="column"
-          style={{
-            height: '100%',
-            padding: '.4rem 0 0 .4rem',
-          }}
-        >
-          <Grid item container style={{ height: '50%' }}>
-            <Grid item container xs={7} style={{ height: '100%' }}>
-              <OrderbookAndDepthChart
-                {...{
-                  symbol: currencyPair,
-                  pair: currencyPair,
-                  exchange,
-                  quote,
-                  activeExchange,
-                  showTableOnMobile,
-                  changeTable,
-                  chartProps,
-                  marketType,
-                }}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={5}
-              style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
-            >
-              <TradeHistory
-                {...{
-                  symbol: currencyPair,
-                  pair: currencyPair,
-                  exchange,
-                  quote,
-                  marketType,
-                  activeExchange,
-                  showTableOnMobile,
-                  changeTable,
-                  chartProps,
-                }}
-              />
-            </Grid>
-          </Grid>
-
-          <TradingComponent
-            selectedKey={selectedKey}
-            activeExchange={activeExchange}
-            pair={baseQuoteArr}
-            marketType={marketType}
-            showOrderResult={showOrderResult}
-            showCancelResult={showCancelResult}
-          />
-        </TradingTerminalContainer>
       </Grid>
     </Container>
   )
