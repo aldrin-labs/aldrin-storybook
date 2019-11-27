@@ -1,5 +1,5 @@
 import React from 'react'
-import 'treemap-js'
+import TreeMap from 'treemap-js'
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
