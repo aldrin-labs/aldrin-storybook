@@ -1,5 +1,6 @@
 import React from 'react'
-import TreeMap from 'treemap-js'
+const TreeMap = require("treemap-js")
+
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
@@ -19,15 +20,17 @@ import {
 
 let unsubscribe = Function
 
+const TreeMapClass = process.browser ? window.TreeMap : TreeMap
+
 class OrderbookAndDepthChart extends React.Component {
   state = {
     readyForNewOrder: true,
     aggregation: 0.01,
-    asks: new TreeMap(),
-    bids: new TreeMap(),
+    asks: new TreeMapClass(),
+    bids: new TreeMapClass(),
     aggregatedData: {
-      asks: new TreeMap(),
-      bids: new TreeMap(),
+      asks: new TreeMapClass(),
+      bids: new TreeMapClass(),
     },
   }
 
@@ -92,7 +95,7 @@ class OrderbookAndDepthChart extends React.Component {
       prevProps.currencyPair !== this.props.currencyPair
     ) {
       // when change exchange delete all data and...
-      this.setState({ asks: new TreeMap(), bids: new TreeMap() })
+      this.setState({ asks: new TreeMapClass(), bids: new TreeMapClass() })
 
       //  unsubscribe from old exchange
       unsubscribe && unsubscribe()
