@@ -37,18 +37,20 @@ const StyledButton = styled(({ isDisabled, ...rest }) => (
   }
 `
 
-const FirstHalfButton = styled(StyledButton)`
+export const FirstHalfButton = styled(StyledButton)`
   border-top-left-radius: 1.3rem;
   border-bottom-left-radius: 1.3rem;
   padding-left: 0.8rem;
   ${(props) => props.buttonAdditionalStyle}
+  ${(props) => props.firstHalfAdditionalStyle}
 `
 
-const SecondHalfButton = styled(StyledButton)`
+export const SecondHalfButton = styled(StyledButton)`
   border-top-right-radius: 1.3rem;
   border-bottom-right-radius: 1.3rem;
   padding-right: 0.5rem;
   ${(props) => props.buttonAdditionalStyle}
+  ${(props) => props.secondHalfAdditionalStyle}
 `
 
 const PillowButton = ({
@@ -57,12 +59,16 @@ const PillowButton = ({
   activeHalf,
   changeHalf,
   buttonAdditionalStyle,
+  firstHalfAdditionalStyle,
+  secondHalfAdditionalStyle,
 }: {
   firstHalfText: string
   secondHalfText: string
   activeHalf: string
   changeHalf: () => void
-  buttonAdditionalStyle: CSSProperties
+  buttonAdditionalStyle?: CSSProperties
+  firstHalfAdditionalStyle?: CSSProperties
+  secondHalfAdditionalStyle?: CSSProperties
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
@@ -71,6 +77,7 @@ const PillowButton = ({
       <FirstHalfButton
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
+        firstHalfAdditionalStyle={firstHalfAdditionalStyle}
         buttonAdditionalStyle={buttonAdditionalStyle}
       >
         {firstHalfText}
@@ -78,6 +85,7 @@ const PillowButton = ({
       <SecondHalfButton
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
+        secondHalfAdditionalStyle={secondHalfAdditionalStyle}
         buttonAdditionalStyle={buttonAdditionalStyle}
       >
         {secondHalfText}

@@ -176,6 +176,7 @@ export const TradeInput = styled.input`
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
   margin-top: 0.2rem;
   color: #16253d;
+  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
   font-size: 1rem;
   
   font-weight: bold;
@@ -198,7 +199,7 @@ export const InputWrapper = styled.div`
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
   top: 50%;
-  right: 20px;
+  right: ${(props) => props.right || '20px'};
   transform: translateY(-50%);
 `
 // percentages
