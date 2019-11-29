@@ -107,6 +107,57 @@ const FormInputContainer = ({ title, children }) => {
   )
 }
 
+const BlueSlider = ({
+  value = 0,
+  valueSymbol = '',
+  disabled = false,
+  sliderContainerStyles,
+  onChange,
+}) => {
+  return (
+    <SmallSlider
+      defaultValue={0}
+      min={0}
+      max={100}
+      disabled={disabled}
+      // amount / (max amount / 100 )
+      value={value}
+      valueSymbol={valueSymbol || '%'}
+      marks={{
+        0: {},
+        25: {},
+        50: {},
+        75: {},
+        100: {},
+      }}
+      onChange={onChange}
+      sliderContainerStyles={{
+        width: 'calc(70% - .8rem)',
+        margin: '0 .8rem 0 auto',
+        ...sliderContainerStyles,
+      }}
+      handleStyles={{
+        width: '1.2rem',
+        height: '1.2rem',
+        border: 'none',
+        backgroundColor: '#0B1FD1',
+        marginTop: '-.45rem',
+      }}
+      dotStyles={{
+        border: 'none',
+        backgroundColor: '#ABBAD1',
+      }}
+      activeDotStyles={{
+        backgroundColor: '#5C8CEA',
+      }}
+      markTextSlyles={{
+        color: '#7284A0;',
+        fontSize: '1rem',
+      }}
+    />
+  )
+}
+
 export class SmartOrderTerminal extends React.Component<IProps, IState> {
   state: IState = {
     entryPoint: {
@@ -201,7 +252,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
     blockName: string,
     subBlockName: string,
     valueName: string,
-    newValue: string | number
+    newValue: string | number | boolean
   ) => {
     this.setState((prev) => ({
       [blockName]: {
@@ -298,6 +349,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
             />
 
             <FieldsContainer>
+              {/* first half of entry point */}
               <SubBlocksContainer needBorder>
                 <div style={{ paddingBottom: '.8rem' }}>
                   <HeaderTitle>{entryPoint.order.side} coin</HeaderTitle>
@@ -307,9 +359,23 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                   <FormInputContainer title={'price'}>
                     <Input
                       symbol={'USDT'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.order.price}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'price',
+                          e.target.value
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          e.target.value * entryPoint.order.amount
+                        )
+                      }}
+                      isDisabled={entryPoint.order.type === 'market'}
                     />
                   </FormInputContainer>
                 </InputRowContainer>
@@ -318,52 +384,45 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                   <FormInputContainer title={'amount'}>
                     <Input
                       symbol={'BTC'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.order.amount}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'amount',
+                          e.target.value
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          e.target.value * entryPoint.order.price
+                        )
+                      }}
                     />
                   </FormInputContainer>
                 </InputRowContainer>
 
                 <InputRowContainer>
-                  <SmallSlider
-                    min={0}
-                    max={100}
-                    defaultValue={0}
-                    value={0}
-                    valueSymbol={'%'}
-                    marks={{
-                      0: {},
-                      25: {},
-                      50: {},
-                      75: {},
-                      100: {},
-                    }}
+                  <BlueSlider
+                    // amount / (max amount / 100 )
+                    value={entryPoint.order.amount}
                     onChange={(value) => {
-                      // changePercentage(value)
-                      // this.onPercentageClick(value / 100)
-                    }}
-                    sliderContainerStyles={{
-                      width: 'calc(70% - .8rem)',
-                      margin: '0 .8rem 0 auto',
-                    }}
-                    handleStyles={{
-                      width: '1.2rem',
-                      height: '1.2rem',
-                      border: 'none',
-                      backgroundColor: '#0B1FD1',
-                      marginTop: '-.45rem',
-                    }}
-                    dotStyles={{
-                      border: 'none',
-                      backgroundColor: '#ABBAD1',
-                    }}
-                    activeDotStyles={{
-                      backgroundColor: '#5C8CEA',
-                    }}
-                    markTextSlyles={{
-                      color: '#7284A0;',
-                      fontSize: '1rem',
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'amount',
+                        // (max amount / 100) * value
+                        value
+                      )
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'total',
+                        value * entryPoint.order.price
+                      )
                     }}
                   />
                 </InputRowContainer>
@@ -372,9 +431,22 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                   <FormInputContainer title={'total'}>
                     <Input
                       symbol={'USDT'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.order.total}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          e.target.value
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'amount',
+                          e.target.value / entryPoint.order.price
+                        )
+                      }}
                     />
                   </FormInputContainer>
                 </InputRowContainer>
@@ -385,20 +457,45 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       padding="0 .6rem 0 0"
                       width={'calc(35% - .8rem)'}
                       symbol={'%'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.order.hedgePercentage}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'hedgePercentage',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={!entryPoint.order.isHedgeOn}
                     />
                     <Input
                       width={'25%'}
                       symbol={'X'}
-                      value={0}
                       type="text"
                       pattern="[0-9]{3}"
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.order.hedgeIncrease}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'hedgeIncrease',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={!entryPoint.order.isHedgeOn}
                     />
-                    <SCheckbox style={{ padding: '0 0 0 .4rem' }} />
+                    <SCheckbox
+                      checked={entryPoint.order.isHedgeOn}
+                      onChange={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'isHedgeOn',
+                          !entryPoint.order.isHedgeOn
+                        )
+                      }}
+                      style={{ padding: '0 0 0 .4rem' }}
+                    />
                   </FormInputContainer>
                 </InputRowContainer>
                 <SwitcherType
@@ -424,13 +521,19 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                 />
               </SubBlocksContainer>
 
-              <SubBlocksContainer style={{ width: '50%' }}>
+              {/* second half of entry point */}
+              <SubBlocksContainer>
                 <SubBlockHeader>
                   <HeaderTitle>trailing {entryPoint.order.side}</HeaderTitle>
                   <GreenSwitcher
-                    checked={takeProfit.isTakeProfitOn}
+                    checked={entryPoint.trailing.isTrailingOn}
                     handleToggle={() =>
-                      this.toggleBlock('takeProfit', 'isTakeProfitOn')
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'trailing',
+                        'isTrailingOn',
+                        !entryPoint.trailing.isTrailingOn
+                      )
                     }
                   />
                 </SubBlockHeader>
@@ -439,9 +542,19 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                   <FormInputContainer title={'price'}>
                     <Input
                       symbol={'USDT'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.trailing.price}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'price',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={
+                        !entryPoint.trailing.isTrailingOn ||
+                        entryPoint.order.type === 'market'
+                      }
                     />
                   </FormInputContainer>
                 </InputRowContainer>
@@ -450,75 +563,88 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                   <FormInputContainer title={'deviation'}>
                     <Input
                       symbol={'%'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.trailing.deviationPercentage}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'deviationPercentage',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={!entryPoint.trailing.isTrailingOn}
                     />
                   </FormInputContainer>
                 </InputRowContainer>
 
                 <InputRowContainer>
-                  <SmallSlider
-                    min={0}
-                    max={100}
-                    defaultValue={0}
-                    value={0}
-                    valueSymbol={'%'}
-                    marks={{
-                      0: {},
-                      25: {},
-                      50: {},
-                      75: {},
-                      100: {},
-                    }}
+                  <BlueSlider
+                    disabled={!entryPoint.trailing.isTrailingOn}
+                    value={entryPoint.trailing.deviationPercentage}
                     onChange={(value) => {
-                      // changePercentage(value)
-                      // this.onPercentageClick(value / 100)
-                    }}
-                    sliderContainerStyles={{
-                      width: 'calc(70% - .8rem)',
-                      margin: '0 .8rem 0 auto',
-                    }}
-                    handleStyles={{
-                      width: '1.2rem',
-                      height: '1.2rem',
-                      border: 'none',
-                      backgroundColor: '#0B1FD1',
-                      marginTop: '-.45rem',
-                    }}
-                    dotStyles={{
-                      border: 'none',
-                      backgroundColor: '#ABBAD1',
-                    }}
-                    activeDotStyles={{
-                      backgroundColor: '#5C8CEA',
-                    }}
-                    markTextSlyles={{
-                      color: '#7284A0;',
-                      fontSize: '1rem',
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'trailing',
+                        'deviationPercentage',
+                        value
+                      )
                     }}
                   />
                 </InputRowContainer>
+
+                {/* entry point trailing hedge */}
                 <InputRowContainer>
                   <FormInputContainer title={'hedge'}>
                     <Input
                       padding="0 .6rem 0 0"
                       width={'calc(35% - .8rem)'}
                       symbol={'%'}
-                      value={0}
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.trailing.hedgePercentage}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'hedgePercentage',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={
+                        !entryPoint.trailing.isHedgeOn ||
+                        !entryPoint.trailing.isTrailingOn
+                      }
                     />
                     <Input
                       width={'25%'}
                       symbol={'X'}
-                      value={0}
                       type="text"
                       pattern="[0-9]{3}"
-                      onChange={() => {}}
-                      isDisabled={false}
+                      value={entryPoint.trailing.hedgeIncrease}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'hedgeIncrease',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={
+                        !entryPoint.trailing.isHedgeOn ||
+                        !entryPoint.trailing.isTrailingOn
+                      }
                     />
-                    <SCheckbox style={{ padding: '0 0 0 .4rem' }} />
+                    <SCheckbox
+                      checked={entryPoint.trailing.isHedgeOn}
+                      onChange={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'isHedgeOn',
+                          !entryPoint.trailing.isHedgeOn
+                        )
+                      }}
+                      disabled={!entryPoint.trailing.isTrailingOn}
+                      style={{ padding: '0 0 0 .4rem' }}
+                    />
                   </FormInputContainer>
                 </InputRowContainer>
                 <SwitcherType
@@ -532,27 +658,239 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                   }}
                   firstHalfStyleProperties={GreenSwitcherStyles}
                   secondHalfStyleProperties={RedSwitcherStyles}
-                  firstHalfIsActive={entryPoint.order.hedgeSide === 'long'}
+                  firstHalfIsActive={entryPoint.trailing.hedgeSide === 'long'}
                   changeHalf={() =>
                     this.updateSubBlockValue(
                       'entryPoint',
-                      'order',
+                      'trailing',
                       'hedgeSide',
-                      getSecondValueFromFirst(entryPoint.order.hedgeSide)
+                      getSecondValueFromFirst(entryPoint.trailing.hedgeSide)
                     )
                   }
                 />
               </SubBlocksContainer>
             </FieldsContainer>
             <InputRowContainer
-              style={{ width: '50%', margin: '0 auto', paddingTop: '.4rem' }}
+              style={{ width: '50%', margin: '0 auto', paddingTop: '.8rem' }}
             >
               <SendButton type={entryPoint.order.side ? 'buy' : 'sell'}>
                 create trade
               </SendButton>
             </InputRowContainer>
           </TerminalBlock>
-          <TerminalBlock width={'calc(31% + 1%)'}>block2</TerminalBlock>
+          <TerminalBlock
+            width={'calc(31% + 1%)'}
+            padding={'0rem 1rem 0rem 1.2rem'}
+          >
+            <InputRowContainer justify="center">
+              <SwitcherType
+                firstHalfText={'limit'}
+                secondHalfText={'market'}
+                buttonHeight={'2.5rem'}
+                containerStyles={{ width: '50%' }}
+                firstHalfStyleProperties={BlueSwitcherStyles}
+                secondHalfStyleProperties={BlueSwitcherStyles}
+                firstHalfIsActive={takeProfit.type === 'limit'}
+                changeHalf={() =>
+                  this.updateBlockValue(
+                    'takeProfit',
+                    'type',
+                    getSecondValueFromFirst(takeProfit.type)
+                  )
+                }
+              />
+            </InputRowContainer>
+            <FieldsContainer>
+              <SubBlocksContainer needBorder>
+                <SubBlockHeader>
+                  <HeaderTitle>split target</HeaderTitle>
+                  <GreenSwitcher
+                    checked={entryPoint.trailing.isTrailingOn}
+                    handleToggle={() =>
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'trailing',
+                        'isTrailingOn',
+                        !entryPoint.trailing.isTrailingOn
+                      )
+                    }
+                  />
+                </SubBlockHeader>
+
+                <InputRowContainer>
+                  <FormInputContainer title={'price'}>
+                    <BlueSlider
+                      disabled={!entryPoint.trailing.isTrailingOn}
+                      value={entryPoint.trailing.deviationPercentage}
+                      sliderContainerStyles={{
+                        width: '40%',
+                        margin: '0 1.6rem 0 .8rem',
+                      }}
+                      onChange={(value) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'deviationPercentage',
+                          value
+                        )
+                      }}
+                    />
+                    <Input
+                      padding="0 .6rem 0 0"
+                      width={'calc(30% - .8rem)'}
+                      symbol={'%'}
+                      value={entryPoint.trailing.hedgePercentage}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'hedgePercentage',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={
+                        !entryPoint.trailing.isHedgeOn ||
+                        !entryPoint.trailing.isTrailingOn
+                      }
+                    />
+                  </FormInputContainer>
+                </InputRowContainer>
+
+                <InputRowContainer>
+                  <FormInputContainer title={'volume'}>
+                    <BlueSlider
+                      disabled={!entryPoint.trailing.isTrailingOn}
+                      value={entryPoint.trailing.deviationPercentage}
+                      sliderContainerStyles={{
+                        width: '40%',
+                        margin: '0 1.6rem 0 .8rem',
+                      }}
+                      onChange={(value) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'deviationPercentage',
+                          value
+                        )
+                      }}
+                    />
+                    <Input
+                      padding="0 .6rem 0 0"
+                      width={'calc(30% - .8rem)'}
+                      symbol={'%'}
+                      value={entryPoint.trailing.hedgePercentage}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'hedgePercentage',
+                          e.target.value
+                        )
+                      }}
+                      isDisabled={
+                        !entryPoint.trailing.isHedgeOn ||
+                        !entryPoint.trailing.isTrailingOn
+                      }
+                    />
+                  </FormInputContainer>
+                </InputRowContainer>
+                <InputRowContainer />
+              </SubBlocksContainer>
+
+              <SubBlocksContainer>
+                <SubBlockHeader>
+                  <HeaderTitle>timeout</HeaderTitle>
+                  <GreenSwitcher
+                    checked={entryPoint.trailing.isTrailingOn}
+                    handleToggle={() =>
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'trailing',
+                        'isTrailingOn',
+                        !entryPoint.trailing.isTrailingOn
+                      )
+                    }
+                  />
+                </SubBlockHeader>
+
+                <InputRowContainer>
+                  <FieldsContainer padding={'.4rem 0 0 .8rem'}>
+                    <SubBlocksContainer>
+                      <InputRowContainer>When profit</InputRowContainer>
+                      <InputRowContainer>
+                        <SCheckbox
+                          checked={entryPoint.trailing.isHedgeOn}
+                          onChange={() => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'trailing',
+                              'isHedgeOn',
+                              !entryPoint.trailing.isHedgeOn
+                            )
+                          }}
+                          disabled={!entryPoint.trailing.isTrailingOn}
+                          style={{ padding: '0 .4rem 0 0' }}
+                        />
+                        <Input
+                          width={'calc(70% - .4rem)'}
+                          symbol={'%'}
+                          value={entryPoint.trailing.hedgePercentage}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'trailing',
+                              'hedgePercentage',
+                              e.target.value
+                            )
+                          }}
+                          isDisabled={
+                            !entryPoint.trailing.isHedgeOn ||
+                            !entryPoint.trailing.isTrailingOn
+                          }
+                        />
+                      </InputRowContainer>
+                    </SubBlocksContainer>
+
+                    <SubBlocksContainer>
+                      <InputRowContainer>When profit</InputRowContainer>
+                      <InputRowContainer>
+                        <SCheckbox
+                          checked={entryPoint.trailing.isHedgeOn}
+                          onChange={() => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'trailing',
+                              'isHedgeOn',
+                              !entryPoint.trailing.isHedgeOn
+                            )
+                          }}
+                          disabled={!entryPoint.trailing.isTrailingOn}
+                          style={{ padding: '0 .4rem 0 0' }}
+                        />
+                        <Input
+                          width={'calc(70% - .4rem)'}
+                          symbol={'%'}
+                          value={entryPoint.trailing.hedgePercentage}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'trailing',
+                              'hedgePercentage',
+                              e.target.value
+                            )
+                          }}
+                          isDisabled={
+                            !entryPoint.trailing.isHedgeOn ||
+                            !entryPoint.trailing.isTrailingOn
+                          }
+                        />
+                      </InputRowContainer>
+                    </SubBlocksContainer>
+                  </FieldsContainer>
+                </InputRowContainer>
+              </SubBlocksContainer>
+            </FieldsContainer>
+          </TerminalBlock>
           <TerminalBlock width={'calc(31% + 1%)'}>block3</TerminalBlock>
         </TerminalBlocksContainer>
       </CustomCard>

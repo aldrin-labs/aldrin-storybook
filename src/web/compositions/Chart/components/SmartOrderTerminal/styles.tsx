@@ -112,7 +112,7 @@ export const SwitcherHalf = styled(
 
 export const FieldsContainer = styled.div`
   display: flex;
-  padding-top: 0.9rem;
+  padding: ${(props) => props.padding || '0.9rem 0 0 0'};
 `
 
 export const SubBlocksContainer = styled.div`
@@ -131,6 +131,7 @@ export const SubBlockHeader = styled.div`
 export const InputRowContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: ${(props) => props.justify};
   padding-bottom: ${(props) => props.paddingBottom || '.6rem'};
 
   @media (min-width: 1921px) {

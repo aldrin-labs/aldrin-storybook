@@ -17,31 +17,38 @@ const StyledSlider = styled(
 )`
   && {
     ${(props) => props.sliderContainerStyles}
+    background-color: ${(props) => props.disabled && 'inherit;'};
 
     .rc-slider {
       &-rail {
         background-color: ${(props) => props.trackAfterBackground || '#E0E5EC'};
+        background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
       &-track {
         background-color: ${(props) =>
           props.trackBeforeBackground || '#5C8CEA'};
+          background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
       &-handle {
         ${(props) => props.handleStyles}
+        background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
       &-dot {
         ${(props) => props.dotStyles}
+        background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
       &-dot-active {
         ${(props) => props.activeDotStyles}
+        background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
       &-mark-text {
         ${(props) => props.markTextSlyles}
+        background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
     }
   }
