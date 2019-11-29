@@ -19,6 +19,11 @@ import {
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Plus from '@icons/Plus.svg'
+import CcaiBinanceLogo from '@icons/ccai&binance.svg'
+
+import free from '@icons/free.svg'
+import useful from '@icons/useful.svg'
+import secure from '@icons/secure.svg'
 
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
@@ -64,6 +69,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     secretOfApiKey: '',
     exchange: '',
     error: '',
+  }
+
+  handleGenerateBrokerKey = async () => {
+    const { generateBrokerKeyMutation, setCurrentStep } = this.props
+    
+    // uncomment when backend will be done
+    // await generateBrokerKeyMutation()
+
+    setCurrentStep('binanceAccountCreated')
+    this.handleClose()
   }
 
   handleSubmit = async () => {
@@ -156,6 +171,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       },
       open,
       onboarding = undefined,
+      addBinanceBrokeyKey = false,
       setCurrentStep,
       existCustomButton = false,
       CustomButton,
@@ -259,6 +275,46 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             >
               <Grid>
                 <GridCustom>
+                  <SvgIcon src={CcaiBinanceLogo} width="100%" height="auto" />
+                  <Typography>Official broker</Typography>
+                </GridCustom>
+                <GridCustom>
+                  <Grid>
+                    <Grid>
+                      <Typography>Free</Typography>
+                      <SvgIcon src={free} width="100%" height="auto" />
+                      <Typography>
+                        No extra fee, pay only Binance fee
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <Typography>Useful</Typography>
+                      <SvgIcon src={useful} width="100%" height="auto" />
+                      <Typography>
+                        All features availiable with no limits
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <Typography>Secure</Typography>
+                      <SvgIcon src={secure} width="100%" height="auto" />
+                      <Typography>
+                        All user funds custody remain with Binance at all times
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid>
+                    <BtnCustom
+                      btnWidth={'85px'}
+                      borderRadius={'32px'}
+                      btnColor={'#165BE0'}
+                      onClick={this.handleGenerateBrokerKey}
+                    >
+                      Generate free binance account
+                    </BtnCustom>
+                  </Grid>
+                </GridCustom>
+                {addBinanceBrokeyKey && (
+                <GridCustom>
                   <Legend>Exchange</Legend>
                   <SelectExchangeList
                     isClearable={true}
@@ -330,6 +386,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     // margin="dense"
                   />
                 </GridCustom>
+                )}
               </Grid>
 
               <Grid container justify="space-between" alignItems="center">
@@ -349,7 +406,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   btnColor={'#165BE0'}
                   type="submit"
                 >
-                  {onboarding ? 'FINISH' : 'ADD'}
+                  {onboarding ? 'ADD KEY' : 'ADD'}
                 </BtnCustom>
               </Grid>
             </form>
