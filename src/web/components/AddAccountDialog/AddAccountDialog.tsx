@@ -171,7 +171,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       },
       open,
       onboarding = undefined,
-      addBinanceBrokeyKey = false,
+      includeCommonBinanceKey = false,
       setCurrentStep,
       existCustomButton = false,
       CustomButton,
@@ -313,7 +313,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     </BtnCustom>
                   </Grid>
                 </GridCustom>
-                {addBinanceBrokeyKey && (
+                {includeCommonBinanceKey && (
                 <GridCustom>
                   <Legend>Exchange</Legend>
                   <SelectExchangeList
