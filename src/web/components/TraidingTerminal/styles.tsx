@@ -155,7 +155,6 @@ export const PaddingGrid = styled(Grid)`
 
 export const TotalGrid = styled(PaddingGrid)`
   padding-bottom: 0;
-  padding-top: 2.4rem;
 `
 
 export const TradeBlock = styled(BalanceGrid)`
@@ -238,9 +237,7 @@ export const SendButton = styled(StyledTab)`
   }
 `
 
-export const PriceContainer = styled(Grid)`
-  padding-bottom: 0.8rem;
-`
+export const PriceContainer = styled(Grid)``
 
 export const TradeInputBlock = styled.div`
   display: flex;

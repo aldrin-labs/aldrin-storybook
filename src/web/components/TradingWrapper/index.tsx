@@ -253,7 +253,7 @@ class SimpleTabs extends React.Component {
               </TerminalHeader>
             )}
 
-            <TerminalMainGrid xs={12} container>
+            <TerminalMainGrid xs={12} container marketType={marketType}>
               <FullHeightGrid xs={6} item needBorderRight>
                 <TerminalContainer>
                   <TraidingTerminal

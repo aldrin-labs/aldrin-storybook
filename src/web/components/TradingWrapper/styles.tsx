@@ -93,7 +93,9 @@ export const TerminalHeader = styled.div`
 `
 
 export const TerminalMainGrid = styled(Grid)`
-  height: calc(100% - 5.2rem);
+  height: calc(
+    100% - ${(props) => (props.marketType === 0 ? '3rem' : '5.2rem')}
+  );
 `
 
 export const FullHeightGrid = styled(Grid)`
