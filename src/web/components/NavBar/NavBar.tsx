@@ -200,14 +200,14 @@ const NavBarRaw: SFC<Props> = ({
                     ]}
                   />
 
-                  <NavLinkButton
+                  {/* <NavLinkButton
                     key="market"
                     page={`market`}
                     component={Market}
                     pathname={pathname}
                   >
                     Strategy
-                  </NavLinkButton>
+                  </NavLinkButton> */}
                 </>
               )}
 

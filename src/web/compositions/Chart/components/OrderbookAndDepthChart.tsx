@@ -60,15 +60,18 @@ class OrderbookAndDepthChart extends React.Component {
     ) {
       const orderData = newProps.data.marketOrders
       const orderbookData = updatedData || { asks, bids }
-      updatedData = addOrderToOrderbook(orderbookData, orderData)
 
       if (aggregation !== 0.01) {
         updatedAggregatedData = addOrderToOrderbook(
           updatedAggregatedData,
           orderData,
-          aggregation
+          aggregation,
+          { asks, bids },
+          true
         )
       }
+
+      updatedData = addOrderToOrderbook(orderbookData, orderData)
     }
 
     return {
