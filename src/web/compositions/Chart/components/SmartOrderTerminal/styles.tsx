@@ -111,7 +111,6 @@ export const SwitcherHalf = styled(
 `
 
 export const FieldsContainer = styled.div`
-  display: flex;
   padding: ${(props) => props.padding || '0.9rem 0 0 0'};
 `
 
@@ -121,20 +120,14 @@ export const SubBlocksContainer = styled.div`
   padding-right: 0.4rem;
 `
 
-export const SubBlockHeader = styled.div`
-  padding: 0 0 0.8rem 0.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
-
 export const InputRowContainer = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
   justify-content: ${(props) => props.justify};
-  padding-bottom: ${(props) => props.paddingBottom || '.6rem'};
+  padding: ${(props) => props.padding || '0 0 .6rem 0'};
 
   @media (min-width: 1921px) {
-    padding-bottom: ${(props) => props.paddingBottom || '.8rem'};
+    padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
   }
 `

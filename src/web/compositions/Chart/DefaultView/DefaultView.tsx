@@ -176,23 +176,25 @@ export const DefaultView = (props: any) => {
               marketType={marketType}
             />
           </BalancesContainer>
-          {isDefaultTerminalViewMode ? (
-            <TradingComponent
-              selectedKey={selectedKey}
-              activeExchange={activeExchange}
-              pair={baseQuoteArr}
-              marketType={marketType}
-              showOrderResult={showOrderResult}
-              showCancelResult={showCancelResult}
-              updateTerminalViewMode={updateTerminalViewMode}
-            />
-          ) : (
-            <SmartTerminalContainer xs={11} item container>
-              <SmartOrderTerminal
-                updateTerminalViewMode={updateTerminalViewMode}
-              />
-            </SmartTerminalContainer>
-          )}
+          {/* {isDefaultTerminalViewMode ? ( */}
+          <TradingComponent
+            selectedKey={selectedKey}
+            activeExchange={activeExchange}
+            pair={baseQuoteArr}
+            marketType={marketType}
+            showOrderResult={showOrderResult}
+            showCancelResult={showCancelResult}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            updateTerminalViewMode={updateTerminalViewMode}
+          />
+
+          {/*  ) : (
+             <SmartTerminalContainer xs={11} item container>
+               <SmartOrderTerminal
+                 updateTerminalViewMode={updateTerminalViewMode}
+               />
+             </SmartTerminalContainer>
+           )} */}
         </Grid>
       </Grid>
     </Container>
