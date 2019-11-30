@@ -25,6 +25,10 @@ const Deposit = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/Deposit/Deposit')
 )
 
+const Withdrawal = React.lazy(() => 
+  import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/Withdrawal/Withdrawal')
+)
+
 const ProfileRouter = () => {
   return (
     <MainContainer>
@@ -59,6 +63,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/deposit"
             render={(...rest) => <Deposit />}
+          />
+          <Route
+            exact
+            path="/profile/withdrawal"
+            render={(...rest) => <Withdrawal />}
           />
         </Switch>
       </Suspense>

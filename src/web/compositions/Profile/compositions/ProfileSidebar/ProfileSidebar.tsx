@@ -18,7 +18,8 @@ const LINKS = [
   // { path: '/profile/settings', text: 'Settings' },
   // { path: '/profile/billing', text: 'Billing' },
   // { path: '/profile/notifications', text: 'Notifications' },
-  { path: '/profile/deposit', text: 'Deposit/Withdrawal' },
+  { path: '/profile/deposit', text: 'Deposit' },
+  { path: '/profile/withdrawal', text: 'Withdrawal' },
 ]
 
 const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {

@@ -5,6 +5,8 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 const Container = styled.div`
   display: flex;
   margin: 0 1rem;
+
+  ${(props) => props.containerStyle}
 `
 
 const StyledButton = styled(({ isDisabled, ...rest }) => (
@@ -57,17 +59,19 @@ const PillowButton = ({
   activeHalf,
   changeHalf,
   buttonAdditionalStyle,
+  containerStyle,
 }: {
   firstHalfText: string
   secondHalfText: string
   activeHalf: string
   changeHalf: () => void
   buttonAdditionalStyle: CSSProperties
+  containerStyle: CSSProperties
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
   return (
-    <Container>
+    <Container containerStyle={containerStyle}>
       <FirstHalfButton
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
