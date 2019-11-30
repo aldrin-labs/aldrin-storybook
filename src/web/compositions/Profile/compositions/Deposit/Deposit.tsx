@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Typography, Input, Table } from '@material-ui/core'
+import { Grid, Typography, Table } from '@material-ui/core'
 
 import exclamationMark from '@icons/exclamationMark.svg'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
@@ -7,7 +7,21 @@ import SvgIcon from '@sb/components/SvgIcon'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
+import { StyledInput, StyledTypography, StyledTable } from './Deposit.styles'
 import { IProps } from './Deposit.types'
+
+const columnNames = [
+  {
+    isNumber: false,
+    label: 'Status',
+    id: 'status',
+  },
+  { isNumber: false, label: 'Coin', id: 'coin' },
+  { isNumber: true, label: 'Amount', id: 'amount' },
+  { isNumber: true, label: 'Date', id: 'date' },
+  { isNumber: true, label: 'Address', id: 'address' },
+  { isNumber: false, label: 'Txid', id: 'txid' },
+]
 
 const Deposits = ({  }: IProps) => {
   const totalBalance = 0.000003241
@@ -18,7 +32,18 @@ const Deposits = ({  }: IProps) => {
 
   return (
     <>
-      <Grid container style={{ height: '70%', padding: '10% 0 0 0' }}>
+      <Grid
+        container
+        justify="center"
+        style={{
+          height: '67%',
+          padding: '5% 1%',
+          border: '2px solid #E0E5EC',
+          boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
+          borderRadius: '32px',
+          marginBottom: '2%',
+        }}
+      >
         <Grid
           id="left_block"
           container
@@ -27,7 +52,7 @@ const Deposits = ({  }: IProps) => {
           spacing={32}
         >
           <Grid item id="accounts_block">
-            <Typography>Account</Typography>
+            <StyledTypography>Account</StyledTypography>
             <SelectCoinList
               classNamePrefix="custom-select-box"
               isSearchable={true}
@@ -54,8 +79,7 @@ const Deposits = ({  }: IProps) => {
               // this.setState({ selectedValue: optionSelected.value })
               // }}
               menuStyles={{
-                fontSize: '1.2rem',
-                minWidth: '150px',
+                fontSize: '1.4rem',
                 padding: '0 1.5rem 0 1.5rem',
                 borderRadius: '1.5rem',
                 textAlign: 'center',
@@ -70,46 +94,45 @@ const Deposits = ({  }: IProps) => {
                 overflowY: '',
               }}
               optionStyles={{
-                color: '#7284A0',
                 background: 'transparent',
-                textAlign: 'left',
-                fontSize: '1.2rem',
-                borderBottom: '.1rem solid #e0e5ec',
-                position: 'relative',
+                fontSize: '1.4rem',
                 padding: '0',
 
                 '&:hover': {
-                  borderRadius: '1rem',
+                  borderRadius: '0.8rem',
                   color: '#16253D',
                   background: '#E7ECF3',
                 },
               }}
               controlStyles={{
-                padding: '1rem 1.5rem 0 1.5rem',
+                padding: '1rem 0 0 0',
               }}
               clearIndicatorStyles={{
                 padding: '2px',
               }}
               inputStyles={{
+                fontSize: '1.4rem',
                 marginLeft: '0',
               }}
-              dropdownIndicatorStyles={{
-                display: 'none',
-              }}
-              // noOptionsMessage={() => `No such coin in our DB found`}
               valueContainerStyles={{
-                border: '1px solid #E7ECF3',
-                borderRadius: '3rem',
-                background: '#F2F4F6',
+                border: '2px solid #E0E5EC',
+                borderRadius: '8px',
+                background: '#fff',
                 paddingLeft: '15px',
+                height: '5rem',
               }}
               noOptionsMessageStyles={{
                 textAlign: 'left',
               }}
+              singleValueStyles={{
+                color: '#16253D',
+                fontSize: '1.4rem',
+                fontWeight: 'bold',
+              }}
             />
           </Grid>
           <Grid item id="coins_block">
-            <Typography>Coin</Typography>
+            <StyledTypography>Coin</StyledTypography>
             <SelectCoinList
               classNamePrefix="custom-select-box"
               isSearchable={true}
@@ -139,8 +162,8 @@ const Deposits = ({  }: IProps) => {
               // }}
               // noOptionsMessage={() => `No such coin in our DB found`}
               menuStyles={{
-                fontSize: '1.2rem',
-                minWidth: '150px',
+                minWidth: '100px',
+                fontSize: '1.4rem',
                 padding: '0 1.5rem 0 1.5rem',
                 borderRadius: '1.5rem',
                 textAlign: 'center',
@@ -155,60 +178,66 @@ const Deposits = ({  }: IProps) => {
                 overflowY: '',
               }}
               optionStyles={{
-                color: '#7284A0',
                 background: 'transparent',
-                textAlign: 'left',
-                fontSize: '1.2rem',
-                borderBottom: '.1rem solid #e0e5ec',
-                position: 'relative',
+                fontSize: '1.4rem',
                 padding: '0',
 
                 '&:hover': {
-                  borderRadius: '1rem',
+                  borderRadius: '0.8rem',
                   color: '#16253D',
                   background: '#E7ECF3',
                 },
               }}
               controlStyles={{
-                padding: '1rem 1.5rem 0 1.5rem',
+                padding: '1rem 0 0 0',
               }}
               clearIndicatorStyles={{
                 padding: '2px',
               }}
               inputStyles={{
+                fontSize: '1.4rem',
                 marginLeft: '0',
               }}
-              dropdownIndicatorStyles={{
-                display: 'none',
-              }}
               valueContainerStyles={{
-                border: '1px solid #E7ECF3',
-                borderRadius: '3rem',
-                background: '#F2F4F6',
+                border: '2px solid #E0E5EC',
+                borderRadius: '8px',
+                background: '#fff',
                 paddingLeft: '15px',
+                height: '5rem',
               }}
               noOptionsMessageStyles={{
                 textAlign: 'left',
               }}
+              singleValueStyles={{
+                color: '#16253D',
+                fontSize: '1.4rem',
+                fontWeight: 'bold',
+              }}
             />
           </Grid>
-          <Grid item id="balances_block" style={{ padding: '3rem 5rem' }}>
+          <Grid item id="balances_block" style={{ padding: '3rem 7rem' }}>
             <Grid container justify="space-between">
-              <Typography>Total balance</Typography>
-              <Typography>{totalBalance}</Typography>
+              <StyledTypography>Total balance:</StyledTypography>
+              <StyledTypography style={{ color: '#16253D' }}>
+                {totalBalance}
+              </StyledTypography>
             </Grid>
             <Grid container justify="space-between">
-              <Typography>In order</Typography>
-              <Typography>{inOrder}</Typography>
+              <StyledTypography>In order:</StyledTypography>
+              <StyledTypography style={{ color: '#16253D' }}>
+                {inOrder}
+              </StyledTypography>
             </Grid>
             <Grid container justify="space-between">
-              <Typography>Available balance</Typography>
-              <Typography>{availableBalance}</Typography>
+              <StyledTypography>Available balance:</StyledTypography>
+              <StyledTypography style={{ color: '#16253D' }}>
+                {availableBalance}
+              </StyledTypography>
             </Grid>
           </Grid>
           <Grid item id="description_block">
             <Typography>
-              Coins will be deposited after 1 network confirmations.
+              Coins will be deposited after <b>1</b> network confirmations.
             </Typography>
           </Grid>
         </Grid>
@@ -217,7 +246,7 @@ const Deposits = ({  }: IProps) => {
           container
           direction="column"
           alignItems="center"
-          style={{ width: '65%' }}
+          style={{ width: '65%', paddingLeft: '20%' }}
         >
           <Grid
             container
@@ -226,9 +255,9 @@ const Deposits = ({  }: IProps) => {
             style={{ width: 'auto' }}
           >
             <Grid item>
-              <Typography style={{ paddingBottom: '1rem' }}>
+              <StyledTypography style={{ paddingBottom: '1rem' }}>
                 Select network
-              </Typography>
+              </StyledTypography>
               <PillowButton
                 firstHalfText={'BTC'}
                 secondHalfText={'BEP2'}
@@ -236,39 +265,53 @@ const Deposits = ({  }: IProps) => {
                 changeHalf={networkChange}
                 buttonAdditionalStyle={{
                   width: '40%',
+                  borderWidth: '2px',
+                }}
+                containerStyle={{
+                  margin: 0,
                 }}
               />
             </Grid>
             <Grid item>
-              <Typography>BTC address</Typography>
-              <Input
-                style={{ width: '80%' }}
-                value="x02376g6tgasd62321313123"
-              />
+              <StyledTypography style={{ paddingBottom: '1rem' }}>
+                BTC address
+              </StyledTypography>
+              <StyledInput value="x02376g6tgasd62321313123" />
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
-                  btnWidth={'40%'}
-                  borderRadius={'32px'}
+                  btnWidth={'38%'}
+                  borderRadius={'8px'}
                   btnColor={'#165BE0'}
+                  borderWidth={'2px'}
+                  fontWeight={'bold'}
+                  margin={'0 2rem 0 0'}
+                  height={'4rem'}
+                  fontSize={'1.2rem'}
                 >
                   Show qr code
                 </BtnCustom>
                 <BtnCustom
-                  btnWidth={'40%'}
-                  borderRadius={'32px'}
+                  btnWidth={'38%'}
+                  borderRadius={'8px'}
                   btnColor={'#165BE0'}
+                  borderWidth={'2px'}
+                  fontWeight={'bold'}
+                  fontSize={'1.2rem'}
+                  height={'4rem'}
                 >
                   Copy adress
                 </BtnCustom>
               </Grid>
             </Grid>
             <Grid item>
-              <Grid container>
+              <Grid container justify="space-between" style={{ width: '80%' }}>
                 <Grid>
                   <SvgIcon src={exclamationMark} width="9.5px" height="auto" />
                 </Grid>
-                <Grid>
-                  <Typography>
+                <Grid style={{ width: '89%' }}>
+                  <Typography
+                    style={{ color: '#16253D', paddingBottom: '1rem' }}
+                  >
                     Send only BTC to this deposit address.
                   </Typography>
                   <Typography>
@@ -283,7 +326,44 @@ const Deposits = ({  }: IProps) => {
       </Grid>
 
       <Grid style={{ height: '30%' }}>
-        <Table />
+        <StyledTable
+          style={{
+            height: '100%',
+            position: 'relative',
+            overflowY: 'scroll',
+            overflowX: 'hidden',
+            borderTopLeftRadius: '0',
+            borderTopRightRadius: '0',
+          }}
+          id="Deposits"
+          padding="dense"
+          data={{ body: [] }}
+          columnNames={columnNames}
+          emptyTableText="No history"
+          tableStyles={{
+            heading: {
+              top: '-1px',
+              padding: '.6rem 1.6rem .6rem 1.2rem',
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              letterSpacing: 0.5,
+              borderBottom: '2px solid #e0e5ec',
+              whiteSpace: 'nowrap',
+              color: '#7284A0',
+              background: '#F2F4F6',
+            },
+            cell: {
+              padding: '1.2rem 1.6rem 1.2rem 1.2rem',
+              fontFamily: "'DM Sans Bold', sans-serif",
+              fontSize: '1.1rem',
+              fontWeight: 500,
+              textTransform: 'uppercase',
+              letterSpacing: 0.5,
+              color: '#7284A0',
+            },
+          }}
+        />
       </Grid>
     </>
   )
