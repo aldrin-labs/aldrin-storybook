@@ -155,7 +155,6 @@ export const PaddingGrid = styled(Grid)`
 
 export const TotalGrid = styled(PaddingGrid)`
   padding-bottom: 0;
-  padding-top: 2.4rem;
 `
 
 export const TradeBlock = styled(BalanceGrid)`
@@ -173,10 +172,11 @@ export const TradeInput = styled.input`
   min-height: 3rem;
   border: 1px solid #e0e5ec;
   border-radius: 4px;
-  box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0px 0px .2rem rgba(0, 0, 0, 0.15);
   margin-top: 0.2rem;
   color: #16253d;
-  font-size: 1rem;
+  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
+  font-size: 1.1rem;
   
   font-weight: bold;
   padding-left: 0.6rem;
@@ -198,7 +198,7 @@ export const InputWrapper = styled.div`
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
   top: 50%;
-  right: 20px;
+  right: ${(props) => props.right || '20px'};
   transform: translateY(-50%);
 `
 // percentages
@@ -237,9 +237,7 @@ export const SendButton = styled(StyledTab)`
   }
 `
 
-export const PriceContainer = styled(Grid)`
-  padding-bottom: 0.8rem;
-`
+export const PriceContainer = styled(Grid)``
 
 export const TradeInputBlock = styled.div`
   display: flex;

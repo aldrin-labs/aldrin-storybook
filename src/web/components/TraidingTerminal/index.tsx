@@ -114,9 +114,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   onTotalChange = (e: SyntheticEvent<Element>) => {
     const {
       priceType,
+      byType,
       values: { limit, price, total },
       setFieldTouched,
       errors,
+      funds,
       decimals,
     } = this.props
     if (
@@ -135,7 +137,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     if (priceForCalculate) {
       const amount =
         toFixedTrunc(e.target.value, decimals[1]) / priceForCalculate
+      const maxAmount = byType === 'buy' ? funds[1].quantity : funds[0].quantity
+      const percentageAmount = Math.floor(
+        (amount * priceForCalculate) / ((maxAmount * priceForCalculate) / 100)
+      )
 
+      // todo: fix this, in amount i have btc amount
+      console.log('pre', amount, priceForCalculate, maxAmount)
+
+      this.props.changePercentage(percentageAmount)
       this.setFormatted('amount', amount, 0)
       setFieldTouched('amount', true)
     }
@@ -281,9 +291,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               item
               container
               direction="column"
-              justify="flex-end"
+              justify={priceType === 'market' ? 'flex-end' : 'center'}
               xs={12}
-              style={{ paddingBottom: '2rem', marginTop: '-1rem' }}
             >
               <TradeInputContainer
                 title={isSPOTMarket ? `Amount` : 'qtty'}
@@ -336,7 +345,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             </Grid>
 
             {isSPOTMarket && (
-              <TotalGrid xs={12} item container direction="column">
+              <TotalGrid
+                xs={12}
+                item
+                container
+                direction="column"
+                justify="center"
+              >
                 <TradeInputContainer
                   title={`Total`}
                   value={values.total}
@@ -346,42 +361,46 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               </TotalGrid>
             )}
 
-            <Grid xs={12} container justify="flex-end">
-              {/* {pairsErrors.length > 0 && (
+            {/* {pairsErrors.length > 0 && (
                 <FormError>
                   {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
                 </FormError>
               )} */}
 
-              {!isSPOTMarket && (
-                <>
-                  <Grid xs={1} item />
-                  <Grid xs={11} item>
-                    <Grid
-                      container
-                      justify="space-between"
-                      style={{ padding: '.6rem 0' }}
-                    >
-                      <InputTitle>cost:</InputTitle>
-                      <InputTitle style={{ color: '#16253D', width: 'auto' }}>
-                        (qtty / lev) * price
-                      </InputTitle>
-                    </Grid>
-
-                    <Grid
-                      container
-                      justify="space-between"
-                      style={{ padding: '.6rem 0' }}
-                    >
-                      <InputTitle>max buy:</InputTitle>
-                      <InputTitle style={{ color: '#16253D', width: 'auto' }}>
-                        value
-                      </InputTitle>
-                    </Grid>
+            {!isSPOTMarket && (
+              <Grid xs={12} container justify="flex-end">
+                <Grid xs={1} item />
+                <Grid
+                  xs={11}
+                  item
+                  container
+                  direction="column"
+                  justify={priceType === 'stop-limit' ? 'flex-end' : 'center'}
+                >
+                  <Grid
+                    container
+                    justify="space-between"
+                    style={{ padding: '.6rem 0' }}
+                  >
+                    <InputTitle>cost:</InputTitle>
+                    <InputTitle style={{ color: '#16253D', width: 'auto' }}>
+                      (qtty / lev) * price
+                    </InputTitle>
                   </Grid>
-                </>
-              )}
-            </Grid>
+
+                  <Grid
+                    container
+                    justify="space-between"
+                    style={{ padding: '.6rem 0' }}
+                  >
+                    <InputTitle>max buy:</InputTitle>
+                    <InputTitle style={{ color: '#16253D', width: 'auto' }}>
+                      value
+                    </InputTitle>
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
           </Grid>
 
           <Grid xs={3} item container style={{ maxWidth: '100%' }}>
