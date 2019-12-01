@@ -9,6 +9,7 @@ export const TablesBlockWrapper = styled(Grid)`
   border-radius: 0;
   padding-right: 0;
   border: none;
+  position: relative;
 
   && {
     box-shadow: none !important;

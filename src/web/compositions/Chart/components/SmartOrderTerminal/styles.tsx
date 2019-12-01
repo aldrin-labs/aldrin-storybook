@@ -1,11 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { Grid } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { HeaderProperties, BlockProperties } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
+  min-height: 90%;
 `
 
 export const TerminalHeaders = styled.div`
@@ -40,6 +41,21 @@ export const InputTitle = styled(HeaderTitle)`
   margin-right: 1rem;
 `
 
+export const TimeoutTitle = styled(HeaderTitle)`
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  border: none;
+  color: #7284a0;
+`
+
+export const TargetValue = styled(HeaderTitle)`
+  border: 0;
+`
+
+export const TargetTitle = styled(TargetValue)`
+  color: #7284a0;
+`
+
 export const CloseHeader = styled(TerminalHeader)`
   position: absolute;
   right: 0;
@@ -48,9 +64,9 @@ export const CloseHeader = styled(TerminalHeader)`
 
 export const TerminalBlock = styled(Grid)`
   width: ${(props: BlockProperties) => props.width};
-  padding: ${(props) => props.padding};
+  padding: ${(props) => props.padding || '0rem 1rem 0rem 1.2rem'};
+  border-right: ${(props) => props.borderRight || '0.1rem solid #abbad1'};
   position: relative;
-  border-right: 0.1rem solid #abbad1;
 `
 
 export const SwitcherHalf = styled(
@@ -83,6 +99,7 @@ export const SwitcherHalf = styled(
   white-space: nowrap;
   cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};
   letter-spacing: 0.15rem;
+  min-width: 0;
 
   &:hover {
     color: ${(props) => props.isDisabled && props.activeColor};
@@ -124,6 +141,7 @@ export const InputRowContainer = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  flex-direction: ${(props) => props.direction || 'row'};
   justify-content: ${(props) => props.justify};
   padding: ${(props) => props.padding || '0 0 .6rem 0'};
 

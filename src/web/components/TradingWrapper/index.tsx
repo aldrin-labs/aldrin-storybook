@@ -82,229 +82,218 @@ class SimpleTabs extends React.Component {
     const isSPOTMarket = isSPOTMarketType(marketType)
 
     return (
-      <TablesBlockWrapper
-        item
-        container
-        xs={5}
-        style={{
-          padding: '.4rem 0 0 .4rem',
-        }}
-      >
-        <Grid item xs={12} style={{ height: '100%', padding: '0 0 0 0' }}>
-          <CustomCard>
-            <TerminalHeader>
-              <TerminalModeButton
-                isActive={mode === 'limit'}
-                onClick={() => this.handleChangeMode('limit')}
-              >
-                limit
-              </TerminalModeButton>
-              <TerminalModeButton
-                isActive={mode === 'market'}
-                onClick={() => this.handleChangeMode('market')}
-              >
-                market
-              </TerminalModeButton>
-              <TerminalModeButton
-                isActive={mode === 'stop-limit'}
-                onClick={() => {
-                  this.handleChangeMode('stop-limit')
-                  this.setState({ orderMode: 'TIF' })
-                }}
-              >
-                stop-limit
-              </TerminalModeButton>
-              <SmartOrderModeButton
-                isActive={mode === 'smart'}
-                onClick={() => {
-                  this.handleChangeMode('smart')
-                  updateTerminalViewMode('smartOrderMode')
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ paddingRight: '1rem' }}>smart order</span>
-                  <StyledZoomIcon />
-                </div>
-              </SmartOrderModeButton>
+      <Grid item xs={12} style={{ height: '100%', padding: '0 0 0 0' }}>
+        <CustomCard>
+          <TerminalHeader>
+            <TerminalModeButton
+              isActive={mode === 'limit'}
+              onClick={() => this.handleChangeMode('limit')}
+            >
+              limit
+            </TerminalModeButton>
+            <TerminalModeButton
+              isActive={mode === 'market'}
+              onClick={() => this.handleChangeMode('market')}
+            >
+              market
+            </TerminalModeButton>
+            <TerminalModeButton
+              isActive={mode === 'stop-limit'}
+              onClick={() => {
+                this.handleChangeMode('stop-limit')
+                this.setState({ orderMode: 'TIF' })
+              }}
+            >
+              stop-limit
+            </TerminalModeButton>
+            <SmartOrderModeButton
+              isActive={mode === 'smart'}
+              onClick={() => {
+                this.handleChangeMode('smart')
+                updateTerminalViewMode('smartOrderMode')
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ paddingRight: '1rem' }}>smart order</span>
+                <StyledZoomIcon />
+              </div>
+            </SmartOrderModeButton>
+          </TerminalHeader>
+
+          {!isSPOTMarket && (
+            <TerminalHeader style={{ display: 'flex' }}>
+              <SettingsContainer>
+                {mode === 'limit' && (
+                  <>
+                    <SRadio
+                      id="postOnly"
+                      checked={orderMode === 'postOnly'}
+                      style={{ padding: '0 1rem' }}
+                      onChange={() =>
+                        this.setState({
+                          orderMode: 'postOnly',
+                        })
+                      }
+                    />
+                    <SettingsLabel for="postOnly">post only</SettingsLabel>
+                  </>
+                )}
+
+                {mode !== 'market' && (
+                  <>
+                    <SRadio
+                      id="TIF"
+                      checked={orderMode === 'TIF'}
+                      style={{ padding: '0 1rem' }}
+                      onChange={() =>
+                        this.setState({
+                          orderMode: 'TIF',
+                        })
+                      }
+                    />
+                    <SettingsLabel for="TIF">TIF</SettingsLabel>
+                    <StyledSelect
+                      disabled={orderMode !== 'TIF'}
+                      value={this.state.TIFMode}
+                      onChange={(e) =>
+                        this.setState({ TIFMode: e.target.value })
+                      }
+                    >
+                      <StyledOption>GTC</StyledOption>
+                      <StyledOption>IOK</StyledOption>
+                      <StyledOption>FOK</StyledOption>
+                    </StyledSelect>
+                  </>
+                )}
+
+                {mode !== 'stop-limit' && (
+                  <>
+                    <SCheckbox
+                      id="reduceOnly"
+                      checked={reduceOnly}
+                      style={{ padding: '0 1rem' }}
+                      onChange={() =>
+                        this.setState((prev) => ({
+                          reduceOnly: !prev.reduceOnly,
+                        }))
+                      }
+                    />
+                    <SettingsLabel for="reduceOnly">reduce only</SettingsLabel>
+                  </>
+                )}
+
+                {mode === 'stop-limit' && (
+                  <>
+                    <SettingsLabel for="trigger">trigger</SettingsLabel>
+                    <StyledSelect
+                      id="trigger"
+                      onChange={(e) =>
+                        this.setState({ trigger: e.target.value })
+                      }
+                    >
+                      <StyledOption>last price</StyledOption>
+                      <StyledOption>mark price</StyledOption>
+                    </StyledSelect>
+                  </>
+                )}
+              </SettingsContainer>
+              <LeverageContainer>
+                <LeverageTitle>leverage:</LeverageTitle>
+                <SmallSlider
+                  min={1}
+                  max={125}
+                  defaultValue={1}
+                  value={leverage}
+                  valueSymbol={'X'}
+                  marks={{
+                    1: {},
+                    25: {},
+                    50: {},
+                    75: {},
+                    100: {},
+                    125: {},
+                  }}
+                  onChange={(leverage) => {
+                    this.setState({ leverage })
+                  }}
+                  sliderContainerStyles={{
+                    width: '65%',
+                    margin: '0 auto',
+                  }}
+                  trackBeforeBackground={'#29AC80;'}
+                  handleStyles={{
+                    width: '1.2rem',
+                    height: '1.2rem',
+                    border: 'none',
+                    backgroundColor: '#036141',
+                    marginTop: '-.45rem',
+                  }}
+                  dotStyles={{
+                    border: 'none',
+                    backgroundColor: '#ABBAD1',
+                  }}
+                  activeDotStyles={{
+                    backgroundColor: '#29AC80',
+                  }}
+                />
+                <LeverageLabel style={{ width: '12.5%' }}>
+                  {leverage}x
+                </LeverageLabel>
+              </LeverageContainer>
             </TerminalHeader>
+          )}
 
-            {!isSPOTMarket && (
-              <TerminalHeader style={{ display: 'flex' }}>
-                <SettingsContainer>
-                  {mode === 'limit' && (
-                    <>
-                      <SRadio
-                        id="postOnly"
-                        checked={orderMode === 'postOnly'}
-                        style={{ padding: '0 1rem' }}
-                        onChange={() =>
-                          this.setState({
-                            orderMode: 'postOnly',
-                          })
-                        }
-                      />
-                      <SettingsLabel for="postOnly">post only</SettingsLabel>
-                    </>
-                  )}
+          <TerminalMainGrid xs={12} container marketType={marketType}>
+            <FullHeightGrid xs={6} item needBorderRight>
+              <TerminalContainer>
+                <TraidingTerminal
+                  byType={'buy'}
+                  operationType={'buy'}
+                  priceType={mode}
+                  isSPOTMarket={isSPOTMarket}
+                  percentage={percentageBuy}
+                  changePercentage={(value) =>
+                    this.handleChangePercentage(value, 'Buy')
+                  }
+                  pair={pair}
+                  funds={funds}
+                  key={[pair, funds]}
+                  walletValue={funds && funds[1]}
+                  marketPrice={price}
+                  confirmOperation={placeOrder}
+                  cancelOrder={cancelOrder}
+                  decimals={decimals}
+                  showOrderResult={showOrderResult}
+                />
+              </TerminalContainer>
+            </FullHeightGrid>
 
-                  {mode !== 'market' && (
-                    <>
-                      <SRadio
-                        id="TIF"
-                        checked={orderMode === 'TIF'}
-                        style={{ padding: '0 1rem' }}
-                        onChange={() =>
-                          this.setState({
-                            orderMode: 'TIF',
-                          })
-                        }
-                      />
-                      <SettingsLabel for="TIF">TIF</SettingsLabel>
-                      <StyledSelect
-                        disabled={orderMode !== 'TIF'}
-                        value={this.state.TIFMode}
-                        onChange={(e) =>
-                          this.setState({ TIFMode: e.target.value })
-                        }
-                      >
-                        <StyledOption>GTC</StyledOption>
-                        <StyledOption>IOK</StyledOption>
-                        <StyledOption>FOK</StyledOption>
-                      </StyledSelect>
-                    </>
-                  )}
-
-                  {mode !== 'stop-limit' && (
-                    <>
-                      <SCheckbox
-                        id="reduceOnly"
-                        checked={reduceOnly}
-                        style={{ padding: '0 1rem' }}
-                        onChange={() =>
-                          this.setState((prev) => ({
-                            reduceOnly: !prev.reduceOnly,
-                          }))
-                        }
-                      />
-                      <SettingsLabel for="reduceOnly">
-                        reduce only
-                      </SettingsLabel>
-                    </>
-                  )}
-
-                  {mode === 'stop-limit' && (
-                    <>
-                      <SettingsLabel for="trigger">trigger</SettingsLabel>
-                      <StyledSelect
-                        id="trigger"
-                        onChange={(e) =>
-                          this.setState({ trigger: e.target.value })
-                        }
-                      >
-                        <StyledOption>last price</StyledOption>
-                        <StyledOption>mark price</StyledOption>
-                      </StyledSelect>
-                    </>
-                  )}
-                </SettingsContainer>
-                <LeverageContainer>
-                  <LeverageTitle>leverage:</LeverageTitle>
-                  <SmallSlider
-                    min={1}
-                    max={125}
-                    defaultValue={1}
-                    value={leverage}
-                    valueSymbol={'X'}
-                    marks={{
-                      1: {},
-                      25: {},
-                      50: {},
-                      75: {},
-                      100: {},
-                      125: {},
-                    }}
-                    onChange={(leverage) => {
-                      this.setState({ leverage })
-                    }}
-                    sliderContainerStyles={{
-                      width: '65%',
-                      margin: '0 auto',
-                    }}
-                    trackBeforeBackground={'#29AC80;'}
-                    handleStyles={{
-                      width: '1.2rem',
-                      height: '1.2rem',
-                      border: 'none',
-                      backgroundColor: '#036141',
-                      marginTop: '-.45rem',
-                    }}
-                    dotStyles={{
-                      border: 'none',
-                      backgroundColor: '#ABBAD1',
-                    }}
-                    activeDotStyles={{
-                      backgroundColor: '#29AC80',
-                    }}
-                  />
-                  <LeverageLabel style={{ width: '12.5%' }}>
-                    {leverage}x
-                  </LeverageLabel>
-                </LeverageContainer>
-              </TerminalHeader>
-            )}
-
-            <TerminalMainGrid xs={12} container marketType={marketType}>
-              <FullHeightGrid xs={6} item needBorderRight>
-                <TerminalContainer>
-                  <TraidingTerminal
-                    byType={'buy'}
-                    operationType={'buy'}
-                    priceType={mode}
-                    isSPOTMarket={isSPOTMarket}
-                    percentage={percentageBuy}
-                    changePercentage={(value) =>
-                      this.handleChangePercentage(value, 'Buy')
-                    }
-                    pair={pair}
-                    funds={funds}
-                    key={[pair, funds]}
-                    walletValue={funds && funds[1]}
-                    marketPrice={price}
-                    confirmOperation={placeOrder}
-                    cancelOrder={cancelOrder}
-                    decimals={decimals}
-                    showOrderResult={showOrderResult}
-                  />
-                </TerminalContainer>
-              </FullHeightGrid>
-
-              <FullHeightGrid xs={6} item>
-                <TerminalContainer>
-                  <TraidingTerminal
-                    byType={'sell'}
-                    operationType={'sell'}
-                    priceType={mode}
-                    isSPOTMarket={isSPOTMarket}
-                    percentage={percentageSell}
-                    changePercentage={(value) =>
-                      this.handleChangePercentage(value, 'Sell')
-                    }
-                    pair={pair}
-                    funds={funds}
-                    key={[pair, funds]}
-                    walletValue={funds && funds[1]}
-                    marketPrice={price}
-                    confirmOperation={placeOrder}
-                    cancelOrder={cancelOrder}
-                    decimals={decimals}
-                    showOrderResult={showOrderResult}
-                  />
-                </TerminalContainer>
-              </FullHeightGrid>
-            </TerminalMainGrid>
-          </CustomCard>
-        </Grid>
-      </TablesBlockWrapper>
+            <FullHeightGrid xs={6} item>
+              <TerminalContainer>
+                <TraidingTerminal
+                  byType={'sell'}
+                  operationType={'sell'}
+                  priceType={mode}
+                  isSPOTMarket={isSPOTMarket}
+                  percentage={percentageSell}
+                  changePercentage={(value) =>
+                    this.handleChangePercentage(value, 'Sell')
+                  }
+                  pair={pair}
+                  funds={funds}
+                  key={[pair, funds]}
+                  walletValue={funds && funds[1]}
+                  marketPrice={price}
+                  confirmOperation={placeOrder}
+                  cancelOrder={cancelOrder}
+                  decimals={decimals}
+                  showOrderResult={showOrderResult}
+                />
+              </TerminalContainer>
+            </FullHeightGrid>
+          </TerminalMainGrid>
+        </CustomCard>
+      </Grid>
     )
   }
 }

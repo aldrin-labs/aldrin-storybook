@@ -11,27 +11,21 @@ export interface IState {
       amount: number
       total: number
       isHedgeOn: boolean
-      hedgePercentage: number
-      // X20
-      hedgeIncrease: number
+      hedgePrice: number
+      hedgeIncrease: number | string
       hedgeSide: 'short' | 'long'
     }
     trailing: {
       isTrailingOn: boolean
-      price: number
       deviationPercentage: number
-      isHedgeOn: boolean
-      hedgePercentage: number
-      // X20
-      hedgeIncrease: number
-      hedgeSide: 'short' | 'long'
     }
   }
   takeProfit: {
     isTakeProfitOn: boolean
     type: 'market' | 'limit'
-    splitTarget: {
-      pricePercentage: number
+    price: number
+    splitTargets: {
+      isSplitTargetsOn: boolean
       volumePercentage: number
       targets: {
         price: number
@@ -45,13 +39,9 @@ export interface IState {
       whenProfitableOn: boolean
       whenProfitableSec: number
     }
-    trailing: {
+    trailingTAP: {
       isTrailingOn: boolean
       deviationPercentage: number
-    }
-    opposite: {
-      percentage: number
-      side: 'buy' | 'sell'
     }
   }
   stopLoss: {
@@ -60,17 +50,14 @@ export interface IState {
     pricePercentage: number
     timeout: {
       isTimeoutOn: boolean
-      whenProfitOn: boolean
-      whenProfitSec: number
-      whenProfitableOn: boolean
-      whenProfitableSec: number
+      whenLossOn: boolean
+      whenLossSec: number
+      whenLossableOn: boolean
+      whenLossableSec: number
     }
     forcedStop: {
+      isForcedStopOn: boolean
       pricePercentage: number
-    }
-    trailing: {
-      isTrailingOn: boolean
-      deviationPercentage: number
     }
   }
 }
