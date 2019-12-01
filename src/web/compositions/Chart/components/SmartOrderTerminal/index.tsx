@@ -189,7 +189,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
     takeProfit: {
       isTakeProfitOn: false,
       type: 'market',
-      price: 0,
+      pricePercentage: 0,
       splitTargets: {
         isSplitTargetsOn: false,
         volumePercentage: 100,
@@ -824,24 +824,28 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                     padding={'0 .8rem 0 0'}
                     width={'calc(35%)'}
                     symbol={'%'}
-                    value={takeProfit.price}
+                    value={takeProfit.pricePercentage}
                     onChange={(e) => {
                       this.updateBlockValue(
                         'takeProfit',
-                        'price',
+                        'pricePercentage',
                         e.target.value
                       )
                     }}
                   />
 
                   <BlueSlider
-                    value={takeProfit.price}
+                    value={takeProfit.pricePercentage}
                     sliderContainerStyles={{
                       width: '50%',
                       margin: '0 .8rem 0 .8rem',
                     }}
                     onChange={(value) => {
-                      this.updateBlockValue('takeProfit', 'price', value)
+                      this.updateBlockValue(
+                        'takeProfit',
+                        'pricePercentage',
+                        value
+                      )
                     }}
                   />
                 </FormInputContainer>
