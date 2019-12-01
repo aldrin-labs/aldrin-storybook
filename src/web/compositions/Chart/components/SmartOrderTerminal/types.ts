@@ -23,7 +23,7 @@ export interface IState {
   takeProfit: {
     isTakeProfitOn: boolean
     type: 'market' | 'limit'
-    price: number
+    pricePercentage: number
     splitTargets: {
       isSplitTargetsOn: boolean
       volumePercentage: number
