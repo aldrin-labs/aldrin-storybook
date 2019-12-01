@@ -17,6 +17,7 @@ const Deposits = ({  }: IProps) => {
   const inOrder = 0.000003241
   const availableBalance = 0.000003241
 
+  const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
 
   const copyCoinAddress = () => {
@@ -43,6 +44,9 @@ const Deposits = ({  }: IProps) => {
           totalBalance={totalBalance}
           inOrder={inOrder}
           availableBalance={availableBalance}
+          selectedCoin={selectedCoin}
+          setSelectedCoin={setSelectedCoin}
+
         />
 
         <Grid

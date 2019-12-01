@@ -10,6 +10,8 @@ const AccountBlock = ({
   totalBalance,
   inOrder,
   availableBalance,
+  selectedCoin,
+  setSelectedCoin,
 }: IProps) => (
   <Grid
     id="left_block"
@@ -96,6 +98,11 @@ const AccountBlock = ({
           fontSize: '1.4rem',
           fontWeight: 'bold',
         }}
+        placeholderStyles={{
+          color: '#16253D',
+          fontSize: '1.4rem',
+          fontWeight: 'bold',
+        }}
       />
     </Grid>
     <Grid item id="coins_block">
@@ -108,26 +115,16 @@ const AccountBlock = ({
           zIndex: 11111,
         }}
         placeholder={'BTC'}
-        defaultOptions={[{ label: 'BTC', value: 'BTC' }]}
-        // additionalMapping={this.addExistCoinsLighting}
-        // changeRowToShow={this.changeRowToShow}
-        // inputValue={this.state.inputValue}
-        // onInputChange={this.onInputChange}
-        // onChange={(
-        //   optionSelected: {
-        //     label: string
-        //     value: string
-        //     priceUSD: string | number
-        //   } | null
-        // ) => {
-        // this.handleSelectChange(
-        //   optionSelected.value || '',
-        //   optionSelected.priceUSD,
-        //   optionSelected.priceBTC
-        // )
-        // this.setState({ selectedValue: optionSelected.value })
-        // }}
-        // noOptionsMessage={() => `No such coin in our DB found`}
+        onChange={(
+          optionSelected: {
+            label: string
+            value: string
+            priceUSD: string | number
+          } | null
+        ) => {
+          setSelectedCoin(optionSelected.value)
+        }}
+        noOptionsMessage={() => `No such coin in our DB found`}
         menuStyles={{
           minWidth: '100px',
           fontSize: '1.4rem',
@@ -180,25 +177,30 @@ const AccountBlock = ({
           fontSize: '1.4rem',
           fontWeight: 'bold',
         }}
+        placeholderStyles={{
+          color: '#16253D',
+          fontSize: '1.4rem',
+          fontWeight: 'bold',
+        }}
       />
     </Grid>
     <Grid item id="balances_block" style={{ padding: '3rem 7rem' }}>
       <Grid container justify="space-between">
         <StyledTypography>Total balance:</StyledTypography>
         <StyledTypography style={{ color: '#16253D' }}>
-          {totalBalance}
+          {`${totalBalance} ${selectedCoin}`}
         </StyledTypography>
       </Grid>
       <Grid container justify="space-between">
         <StyledTypography>In order:</StyledTypography>
         <StyledTypography style={{ color: '#16253D' }}>
-          {inOrder}
+          {`${inOrder} ${selectedCoin}`}
         </StyledTypography>
       </Grid>
       <Grid container justify="space-between">
         <StyledTypography>Available balance:</StyledTypography>
         <StyledTypography style={{ color: '#16253D' }}>
-          {availableBalance}
+          {`${availableBalance} ${selectedCoin}`}
         </StyledTypography>
       </Grid>
     </Grid>

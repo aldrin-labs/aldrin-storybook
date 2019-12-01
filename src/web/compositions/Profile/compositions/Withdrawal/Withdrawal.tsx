@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Grid } from '@material-ui/core'
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
@@ -13,6 +13,10 @@ const Withdrawal = ({  }: IProps) => {
   const totalBalance = 0.000003241
   const inOrder = 0.000003241
   const availableBalance = 0.000003241
+
+  const [selectedCoin, setSelectedCoin] = useState('BTC')
+  const [coinAddress, setCoinAddress] = useState('')
+  const [coinAmount, setCoinAmount] = useState('')
 
   const networkChange = () => {}
 
@@ -35,6 +39,8 @@ const Withdrawal = ({  }: IProps) => {
           totalBalance={totalBalance}
           inOrder={inOrder}
           availableBalance={availableBalance}
+          selectedCoin={selectedCoin}
+          setSelectedCoin={setSelectedCoin}
         />
 
         <Grid
@@ -72,13 +78,13 @@ const Withdrawal = ({  }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 BTC address
               </StyledTypography>
-              <StyledInput value="x02376g6tgasd62321313123" />
+              <StyledInput value={coinAddress} onChange={(e) => setCoinAddress(e.target.value)} />
               <StyledTypography
                 style={{ paddingBottom: '1rem', paddingTop: '1rem' }}
               >
                 Amount
               </StyledTypography>
-              <StyledInput value="100" />
+              <StyledInput value={coinAmount} onChange={(e) => setCoinAmount(e.target.value)} />
               <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
                 <Grid container>
                   <StyledTypography>Transaction fee:</StyledTypography>
