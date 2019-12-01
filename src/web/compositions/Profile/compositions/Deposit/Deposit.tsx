@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Grid, Typography } from '@material-ui/core'
+import copy from 'clipboard-copy'
 
 import exclamationMark from '@icons/exclamationMark.svg'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -16,6 +17,11 @@ const Deposits = ({  }: IProps) => {
   const inOrder = 0.000003241
   const availableBalance = 0.000003241
 
+  const [coinAddress, setCoinAddress] = useState('')
+
+  const copyCoinAddress = () => {
+    copy(coinAddress)
+  }
   const networkChange = () => {}
 
   return (
@@ -74,7 +80,7 @@ const Deposits = ({  }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 BTC address
               </StyledTypography>
-              <StyledInput value="x02376g6tgasd62321313123" />
+              <StyledInput value={coinAddress} onChange={(e) => setCoinAddress(e.target.value)} />
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
                   btnWidth={'38%'}
@@ -96,6 +102,7 @@ const Deposits = ({  }: IProps) => {
                   fontWeight={'bold'}
                   fontSize={'1.2rem'}
                   height={'4rem'}
+                  onClick={copyCoinAddress}
                 >
                   Copy adress
                 </BtnCustom>
