@@ -8,6 +8,7 @@ import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccountBlock from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock'
 import RecentHistoryTable from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/RecentHistoryTable'
+import QRCodePopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/QRCodePopup'
 
 import { StyledInput, StyledTypography } from './Deposit.styles'
 import { IProps } from './Deposit.types'
@@ -17,6 +18,7 @@ const Deposits = ({  }: IProps) => {
   const inOrder = 0.000003241
   const availableBalance = 0.000003241
 
+  const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
 
@@ -27,6 +29,11 @@ const Deposits = ({  }: IProps) => {
 
   return (
     <>
+      <QRCodePopup
+        open={popupOpened}
+        coinAddress={coinAddress}
+        handleClose={() => togglePopup(false)}
+      />
       <Grid
         container
         justify="center"
@@ -46,7 +53,6 @@ const Deposits = ({  }: IProps) => {
           availableBalance={availableBalance}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
-
         />
 
         <Grid
@@ -84,7 +90,10 @@ const Deposits = ({  }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 BTC address
               </StyledTypography>
-              <StyledInput value={coinAddress} onChange={(e) => setCoinAddress(e.target.value)} />
+              <StyledInput
+                value={coinAddress}
+                onChange={(e) => setCoinAddress(e.target.value)}
+              />
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
                   btnWidth={'38%'}
@@ -95,6 +104,7 @@ const Deposits = ({  }: IProps) => {
                   margin={'0 2rem 0 0'}
                   height={'4rem'}
                   fontSize={'1.2rem'}
+                  onClick={() => togglePopup(true)}
                 >
                   Show qr code
                 </BtnCustom>

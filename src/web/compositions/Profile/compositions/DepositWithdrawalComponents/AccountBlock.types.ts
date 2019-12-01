@@ -3,5 +3,6 @@ export interface IProps {
     totalBalance: number
     inOrder: number
     availableBalance: number
-    setSelectedCoin: 
+    selectedCoin: string
+    setSelectedCoin: (selectedCoin: string) => void
 }
