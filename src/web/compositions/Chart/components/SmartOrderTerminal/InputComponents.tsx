@@ -27,10 +27,13 @@ export const Input = ({
   pattern = '',
   type = 'number',
   list = '',
+  min = '0',
   needCharacter = false,
   beforeSymbol = '',
   onChange,
   isDisabled = false,
+  isValid = true,
+  showErrors = false,
 }: InputProps) => {
   return (
     <div
@@ -46,8 +49,10 @@ export const Input = ({
         pattern={pattern}
         type={type}
         list={list}
+        min={min}
         needCharacter={needCharacter}
         step={symbol === '%' ? 1 : undefined}
+        isValid={showErrors ? isValid : true}
       />
       <Coin right={type !== 'number' ? '12px' : ''}>{symbol}</Coin>
     </div>

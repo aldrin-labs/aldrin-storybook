@@ -5,6 +5,7 @@ export interface IProps {
 }
 
 export interface IState {
+  showErrors: boolean
   entryPoint: {
     order: {
       type: 'market' | 'limit'
@@ -83,8 +84,11 @@ export type InputProps = {
   pattern: string
   type: string
   list: string
+  min: string
   needCharacter: boolean
   beforeSymbol: string
   onChange: (e: ChangeEvent) => void
   isDisabled: boolean
+  isValid: boolean
+  showErrors: boolean
 }

@@ -43,7 +43,12 @@ const TradeInputContainer = ({ title, value, onChange, coin, style }) => {
     <TradeInputBlock style={style}>
       <InputTitle>{title}:</InputTitle>
       <InputWrapper>
-        <TradeInput value={value} onChange={onChange} type="number" />
+        <TradeInput
+          isValid={true}
+          value={value}
+          onChange={onChange}
+          type="number"
+        />
         <Coin>{coin}</Coin>
       </InputWrapper>
     </TradeInputBlock>

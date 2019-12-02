@@ -26,12 +26,20 @@ export const TerminalHeader = styled.div`
   border-radius: 0.2rem;
 `
 
-export const HeaderTitle = styled.span`
+export const HeaderLabel = styled.label`
   font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
   color: #16253d;
   border-bottom: 0.1rem dashed #5c8cea;
+  cursor: pointer;
+`
+
+export const HeaderTitle = styled.span`
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #16253d;
 `
 
 export const InputTitle = styled(HeaderTitle)`

@@ -19,17 +19,21 @@ export const StyledSwitcher = styled(Switch)`
     opacity: 1;
     background-color: ${(props) => (props.checked ? '#29AC80' : '#F2F4F6;')};
     border: 0.1rem solid #e0e5ec;
+    height: 16px;
+    width: 32px;
   }
 `
 
 const GreenSwitcher = ({
   checked,
   handleToggle,
+  id,
 }: {
   checked: boolean
   handleToggle: () => void
+  id?: string
 }) => {
-  return <StyledSwitcher checked={checked} onChange={handleToggle} />
+  return <StyledSwitcher checked={checked} onChange={handleToggle} id={id} />
 }
 
 export default GreenSwitcher

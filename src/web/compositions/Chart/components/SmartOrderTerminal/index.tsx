@@ -13,7 +13,11 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { CustomCard } from '../../Chart.styles'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
-import { StyledZoomIcon } from '@sb/components/TradingWrapper/styles'
+import {
+  StyledZoomIcon,
+  LeverageLabel,
+  LeverageTitle,
+} from '@sb/components/TradingWrapper/styles'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
 
@@ -22,6 +26,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Input } from './InputComponents'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
+import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 import {
   TerminalBlocksContainer,
@@ -29,6 +34,7 @@ import {
   TerminalBlock,
   TerminalHeader,
   HeaderTitle,
+  HeaderLabel,
   CloseHeader,
   SubBlocksContainer,
   InputRowContainer,
@@ -38,8 +44,9 @@ import {
   BluredBackground,
 } from './styles'
 
-export class SmartOrderTerminal extends React.Component<IProps, IState> {
+export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
+    showErrors: false,
     entryPoint: {
       order: {
         type: 'limit',
@@ -47,6 +54,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
         price: 0,
         amount: 0,
         total: 0,
+        leverage: 1,
         isHedgeOn: false,
         hedgePrice: 0,
         // X20,
@@ -188,17 +196,84 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
     }))
   }
 
+  validateField = (enabled: boolean, value: string | number) => {
+    if (enabled) {
+      if (!value || value <= 0 || value === '') {
+        return false
+      }
+
+      return true
+    }
+
+    return true
+  }
+
   render() {
-    const { updateTerminalViewMode, pair, funds } = this.props
-    const { entryPoint, takeProfit, stopLoss } = this.state
+    const { updateTerminalViewMode, pair, funds, marketType } = this.props
+    const { entryPoint, takeProfit, stopLoss, showErrors } = this.state
     const maxAmount =
       entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
 
     return (
       <CustomCard>
         <TerminalHeaders>
-          <TerminalHeader width={'33%'}>
-            <HeaderTitle>entry point</HeaderTitle>
+          <TerminalHeader
+            width={'33%'}
+            justify={marketType === 0 ? 'flex-start' : 'space-between'}
+          >
+            <HeaderLabel>entry point</HeaderLabel>
+            {marketType === 1 && (
+              <div
+                style={{ display: 'flex', width: '60%', alignItems: 'center' }}
+              >
+                <LeverageTitle>leverage:</LeverageTitle>
+                <SmallSlider
+                  min={1}
+                  max={125}
+                  defaultValue={1}
+                  value={entryPoint.order.leverage}
+                  valueSymbol={'X'}
+                  marks={{
+                    1: {},
+                    25: {},
+                    50: {},
+                    75: {},
+                    100: {},
+                    125: {},
+                  }}
+                  onChange={(leverage) => {
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'leverage',
+                      leverage
+                    )
+                  }}
+                  sliderContainerStyles={{
+                    width: '65%',
+                    margin: '0 auto',
+                  }}
+                  trackBeforeBackground={'#29AC80;'}
+                  handleStyles={{
+                    width: '1.2rem',
+                    height: '1.2rem',
+                    border: 'none',
+                    backgroundColor: '#036141',
+                    marginTop: '-.45rem',
+                  }}
+                  dotStyles={{
+                    border: 'none',
+                    backgroundColor: '#ABBAD1',
+                  }}
+                  activeDotStyles={{
+                    backgroundColor: '#29AC80',
+                  }}
+                />
+                <LeverageLabel style={{ width: '12.5%' }}>
+                  {entryPoint.order.leverage}x
+                </LeverageLabel>
+              </div>
+            )}
           </TerminalHeader>
           <TerminalHeader
             width={'31%'}
@@ -206,24 +281,26 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
             padding={'0rem 1.5rem'}
             justify={'space-between'}
           >
+            <HeaderLabel for="isTakeProfitOn">take a profit</HeaderLabel>
             <GreenSwitcher
+              id="isTakeProfitOn"
               checked={takeProfit.isTakeProfitOn}
               handleToggle={() =>
                 this.toggleBlock('takeProfit', 'isTakeProfitOn')
               }
             />
-            <HeaderTitle>take a profit</HeaderTitle>
           </TerminalHeader>
           <TerminalHeader
             width={'31%'}
             padding={'0rem 1.5rem'}
             justify={'space-between'}
           >
+            <HeaderLabel for="isStopLossOn">stop loss</HeaderLabel>
             <GreenSwitcher
+              id="isStopLossOn"
               checked={stopLoss.isStopLossOn}
               handleToggle={() => this.toggleBlock('stopLoss', 'isStopLossOn')}
             />
-            <HeaderTitle>stop loss</HeaderTitle>
           </TerminalHeader>
           <CloseHeader
             padding={'.3rem .5rem'}
@@ -289,6 +366,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               >
                 <div>
                   <GreenSwitcher
+                    id="entryPointTrailingOn"
                     checked={entryPoint.trailing.isTrailingOn}
                     handleToggle={() => {
                       this.updateSubBlockValue(
@@ -302,11 +380,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                         'entryPoint',
                         'order',
                         'type',
-                        !entryPoint.trailing.isTrailingOn ? 'market' : 'false'
+                        'market'
                       )
                     }}
                   />
-                  <HeaderTitle>
+                  <HeaderLabel for="entryPointTrailingOn">
                     trailing{' '}
                     <span
                       style={{
@@ -318,10 +396,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                     >
                       {entryPoint.order.side}
                     </span>
-                  </HeaderTitle>
+                  </HeaderLabel>
                 </div>
                 <div>
                   <GreenSwitcher
+                    id="isHedgeOn"
                     checked={entryPoint.order.isHedgeOn}
                     handleToggle={() =>
                       this.updateSubBlockValue(
@@ -332,7 +411,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderTitle>hedge</HeaderTitle>
+                  <HeaderLabel for="isHedgeOn">hedge</HeaderLabel>
                 </div>
               </InputRowContainer>
 
@@ -354,6 +433,8 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                         ? entryPoint.order.price
                         : 'MARKET'
                     }
+                    showErrors={showErrors}
+                    isValid={this.validateField(true, entryPoint.order.price)}
                     onChange={(e) => {
                       this.updateSubBlockValue(
                         'entryPoint',
@@ -374,10 +455,6 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                         )
                       )
                     }}
-                    isDisabled={
-                      entryPoint.order.type === 'market' &&
-                      !entryPoint.trailing.isTrailingOn
-                    }
                   />
                 </FormInputContainer>
               </InputRowContainer>
@@ -390,6 +467,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       width={'calc(35%)'}
                       symbol={'%'}
                       value={entryPoint.trailing.deviationPercentage}
+                      showErrors={showErrors}
+                      isValid={this.validateField(
+                        entryPoint.trailing.isTrailingOn,
+                        entryPoint.trailing.deviationPercentage
+                      )}
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'entryPoint',
@@ -423,10 +505,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               <InputRowContainer>
                 <FormInputContainer title={'amount'}>
                   <Input
-                    type={'text'}
-                    pattern="[0-9]+([\.][0-9]+)?"
+                    type={'number'}
                     symbol={pair[0]}
                     value={entryPoint.order.amount}
+                    showErrors={showErrors}
+                    isValid={this.validateField(true, entryPoint.order.amount)}
                     onChange={(e) => {
                       const newTotal = e.target.value * entryPoint.order.price
 
@@ -434,15 +517,17 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                         'entryPoint',
                         'order',
                         'amount',
-                        Number(stripDigitPlaces(e.target.value, 8))
+                        e.target.value
                       )
 
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        Number(stripDigitPlaces(newTotal, 8))
-                      )
+                      if (newTotal) {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          Number(stripDigitPlaces(newTotal, 8))
+                        )
+                      }
                     }}
                   />
                 </FormInputContainer>
@@ -539,6 +624,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       width={'calc(40% - 1.6rem)'}
                       symbol={pair[1]}
                       value={entryPoint.order.hedgePrice}
+                      showErrors={showErrors}
+                      isValid={this.validateField(
+                        entryPoint.order.isHedgeOn,
+                        entryPoint.order.hedgePrice
+                      )}
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'entryPoint',
@@ -555,6 +645,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       pattern="[0-9]+([\.,][0-9]+)?"
                       list="leverageOptions"
                       value={entryPoint.order.hedgeIncrease}
+                      showErrors={showErrors}
+                      isValid={this.validateField(
+                        entryPoint.order.isHedgeOn,
+                        entryPoint.order.hedgeIncrease
+                      )}
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'entryPoint',
@@ -587,15 +682,19 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
             >
               <SendButton
                 type={entryPoint.order.side ? 'buy' : 'sell'}
-                onClick={() =>
-                  this.props.placeOrder(
-                    entryPoint.order.side,
-                    entryPoint.order.type,
-                    {},
-                    'smart',
-                    this.state
-                  )
-                }
+                onClick={() => {
+                  if (this.state.isValidForm) {
+                    this.props.placeOrder(
+                      entryPoint.order.side,
+                      entryPoint.order.type,
+                      {},
+                      'smart',
+                      this.state
+                    )
+                  } else {
+                    this.setState({ showErrors: true })
+                  }
+                }}
               >
                 create trade
               </SendButton>
@@ -637,6 +736,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               >
                 <div>
                   <GreenSwitcher
+                    id="takeProfitTrailingOn"
                     checked={takeProfit.trailingTAP.isTrailingOn}
                     handleToggle={() => {
                       this.updateSubBlockValue(
@@ -656,12 +756,13 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       this.updateBlockValue('takeProfit', 'type', 'market')
                     }}
                   />
-                  <HeaderTitle>
+                  <HeaderLabel for="takeProfitTrailingOn">
                     trailing <span style={{ color: '#29AC80' }}>t-a-p</span>
-                  </HeaderTitle>
+                  </HeaderLabel>
                 </div>
                 <div>
                   <GreenSwitcher
+                    if="isSplitTargetsOn"
                     checked={takeProfit.splitTargets.isSplitTargetsOn}
                     handleToggle={() => {
                       this.updateSubBlockValue(
@@ -679,10 +780,13 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       )
                     }}
                   />
-                  <HeaderTitle>split targets</HeaderTitle>
+                  <HeaderLabel for="isSplitTargetsOn">
+                    split targets
+                  </HeaderLabel>
                 </div>
                 <div>
                   <GreenSwitcher
+                    id="takeProfitTimeout"
                     checked={takeProfit.timeout.isTimeoutOn}
                     handleToggle={() =>
                       this.updateSubBlockValue(
@@ -693,7 +797,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderTitle>timeout</HeaderTitle>
+                  <HeaderLabel for="takeProfitTimeout">timeout</HeaderLabel>
                 </div>
               </InputRowContainer>
 
@@ -706,6 +810,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                     width={'calc(35%)'}
                     symbol={'%'}
                     value={takeProfit.pricePercentage}
+                    showErrors={showErrors && takeProfit.isTakeProfitOn}
+                    isValid={this.validateField(
+                      true,
+                      takeProfit.pricePercentage
+                    )}
                     onChange={(e) => {
                       this.updateBlockValue(
                         'takeProfit',
@@ -740,6 +849,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       width={'calc(35%)'}
                       symbol={'%'}
                       value={takeProfit.trailingTAP.deviationPercentage}
+                      showErrors={showErrors && takeProfit.isTakeProfitOn}
+                      isValid={this.validateField(
+                        takeProfit.trailingTAP.isTrailingOn,
+                        takeProfit.trailingTAP.deviationPercentage
+                      )}
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'takeProfit',
@@ -898,6 +1012,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                           width={'calc(85% - .4rem)'}
                           symbol={'SEC'}
                           value={takeProfit.timeout.whenProfitSec}
+                          showErrors={showErrors && takeProfit.isTakeProfitOn}
+                          isValid={this.validateField(
+                            takeProfit.timeout.whenProfitOn,
+                            takeProfit.timeout.whenProfitSec
+                          )}
                           onChange={(e) => {
                             this.updateSubBlockValue(
                               'takeProfit',
@@ -932,6 +1051,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                           width={'calc(85% - .4rem)'}
                           symbol={'SEC'}
                           value={takeProfit.timeout.whenProfitableSec}
+                          showErrors={showErrors && takeProfit.isTakeProfitOn}
+                          isValid={this.validateField(
+                            takeProfit.timeout.whenProfitableOn,
+                            takeProfit.timeout.whenProfitableSec
+                          )}
                           onChange={(e) => {
                             this.updateSubBlockValue(
                               'takeProfit',
@@ -995,6 +1119,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               >
                 <div>
                   <GreenSwitcher
+                    id="stopLossTimeout"
                     checked={stopLoss.timeout.isTimeoutOn}
                     handleToggle={() =>
                       this.updateSubBlockValue(
@@ -1005,10 +1130,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderTitle>timeout</HeaderTitle>
+                  <HeaderLabel for="stopLossTimeout">timeout</HeaderLabel>
                 </div>
                 <div>
                   <GreenSwitcher
+                    id="forcedStop"
                     checked={stopLoss.forcedStop.isForcedStopOn}
                     handleToggle={() =>
                       this.updateSubBlockValue(
@@ -1019,9 +1145,9 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderTitle>
+                  <HeaderLabel for="forcedStop">
                     forced <span style={{ color: '#DD6956' }}>stop</span>
-                  </HeaderTitle>
+                  </HeaderLabel>
                 </div>
               </InputRowContainer>
 
@@ -1034,6 +1160,8 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                     width={'calc(35%)'}
                     symbol={'%'}
                     value={stopLoss.pricePercentage}
+                    showErrors={showErrors && stopLoss.isStopLossOn}
+                    isValid={this.validateField(true, stopLoss.pricePercentage)}
                     onChange={(e) => {
                       this.updateBlockValue(
                         'stopLoss',
@@ -1087,6 +1215,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                           width={'calc(85% - .4rem)'}
                           symbol={'SEC'}
                           value={stopLoss.timeout.whenLossSec}
+                          showErrors={showErrors && stopLoss.isStopLossOn}
+                          isValid={this.validateField(
+                            stopLoss.timeout.whenLossOn,
+                            stopLoss.timeout.whenLossSec
+                          )}
                           onChange={(e) => {
                             this.updateSubBlockValue(
                               'stopLoss',
@@ -1120,6 +1253,11 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                         <Input
                           width={'calc(85% - .4rem)'}
                           symbol={'SEC'}
+                          showErrors={showErrors && stopLoss.isStopLossOn}
+                          isValid={this.validateField(
+                            stopLoss.timeout.whenLossableOn,
+                            stopLoss.timeout.whenLossableSec
+                          )}
                           value={stopLoss.timeout.whenLossableSec}
                           onChange={(e) => {
                             this.updateSubBlockValue(
@@ -1138,42 +1276,52 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               )}
 
               {stopLoss.forcedStop.isForcedStopOn && (
-                <InputRowContainer>
-                  <FormInputContainer title={'volume'}>
-                    <Input
-                      needCharacter
-                      beforeSymbol={'-'}
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(35%)'}
-                      symbol={'%'}
-                      value={stopLoss.forcedStop.pricePercentage}
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'stopLoss',
-                          'forcedStop',
-                          'pricePercentage',
-                          e.target.value
-                        )
-                      }}
-                    />
+                <>
+                  <InputRowContainer>
+                    <HeaderTitle>forced stop</HeaderTitle>
+                  </InputRowContainer>
+                  <InputRowContainer>
+                    <FormInputContainer title={'price'}>
+                      <Input
+                        needCharacter
+                        showErrors={showErrors && stopLoss.isStopLossOn}
+                        isValid={this.validateField(
+                          stopLoss.forcedStop.isForcedStopOn,
+                          stopLoss.forcedStop.pricePercentage
+                        )}
+                        beforeSymbol={'-'}
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(35%)'}
+                        symbol={'%'}
+                        value={stopLoss.forcedStop.pricePercentage}
+                        onChange={(e) => {
+                          this.updateSubBlockValue(
+                            'stopLoss',
+                            'forcedStop',
+                            'pricePercentage',
+                            e.target.value
+                          )
+                        }}
+                      />
 
-                    <BlueSlider
-                      value={stopLoss.forcedStop.pricePercentage}
-                      sliderContainerStyles={{
-                        width: '50%',
-                        margin: '0 .8rem 0 .8rem',
-                      }}
-                      onChange={(value) => {
-                        this.updateSubBlockValue(
-                          'stopLoss',
-                          'forcedStop',
-                          'pricePercentage',
-                          value
-                        )
-                      }}
-                    />
-                  </FormInputContainer>
-                </InputRowContainer>
+                      <BlueSlider
+                        value={stopLoss.forcedStop.pricePercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.updateSubBlockValue(
+                            'stopLoss',
+                            'forcedStop',
+                            'pricePercentage',
+                            value
+                          )
+                        }}
+                      />
+                    </FormInputContainer>
+                  </InputRowContainer>
+                </>
               )}
             </div>
 
