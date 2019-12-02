@@ -2,6 +2,8 @@ import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
 
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
+import SelectKeyList from '@core/components/SelectKeyList/SelectKeyList'
+
 import { StyledTypography } from './AccountBlock.styles'
 import { IProps } from './AccountBlock.types'
 
@@ -22,9 +24,9 @@ const AccountBlock = ({
   >
     <Grid item id="accounts_block">
       <StyledTypography>Account</StyledTypography>
-      <SelectCoinList
+      <SelectKeyList
         classNamePrefix="custom-select-box"
-        isSearchable={true}
+        isSearchable={false}
         menuPortalTarget={document.body}
         menuPortalStyles={{
           zIndex: 11111,
@@ -65,6 +67,7 @@ const AccountBlock = ({
         optionStyles={{
           background: 'transparent',
           fontSize: '1.4rem',
+          textTransform: 'uppercase',
           padding: '0',
 
           '&:hover': {
@@ -97,11 +100,13 @@ const AccountBlock = ({
           color: '#16253D',
           fontSize: '1.4rem',
           fontWeight: 'bold',
+          textTransform: 'uppercase',
         }}
         placeholderStyles={{
           color: '#16253D',
           fontSize: '1.4rem',
           fontWeight: 'bold',
+          textTransform: 'uppercase',
         }}
       />
     </Grid>
