@@ -143,7 +143,7 @@ const Deposits = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable />
+      <RecentHistoryTable isDepositPage={true} />
     </>
   )
 }

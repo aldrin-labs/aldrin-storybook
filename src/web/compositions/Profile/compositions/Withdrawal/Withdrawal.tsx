@@ -78,13 +78,19 @@ const Withdrawal = ({  }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 BTC address
               </StyledTypography>
-              <StyledInput value={coinAddress} onChange={(e) => setCoinAddress(e.target.value)} />
+              <StyledInput
+                value={coinAddress}
+                onChange={(e) => setCoinAddress(e.target.value)}
+              />
               <StyledTypography
                 style={{ paddingBottom: '1rem', paddingTop: '1rem' }}
               >
                 Amount
               </StyledTypography>
-              <StyledInput value={coinAmount} onChange={(e) => setCoinAmount(e.target.value)} />
+              <StyledInput
+                value={coinAmount}
+                onChange={(e) => setCoinAmount(e.target.value)}
+              />
               <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
                 <Grid container>
                   <StyledTypography>Transaction fee:</StyledTypography>
@@ -139,7 +145,7 @@ const Withdrawal = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable />
+      <RecentHistoryTable isDepositPage={false} />
     </>
   )
 }

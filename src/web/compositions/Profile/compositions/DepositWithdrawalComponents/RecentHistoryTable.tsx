@@ -8,11 +8,8 @@ import { combineRecentHistoryTable } from './RecentHistoryTable.utils'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getTransactionsInfo } from '@core/graphql/queries/portfolio/getTransactionsInfo'
 
-const RecentHistoryTable = ({ getTransactionsInfo }) => {
-
-  console.log('getTransactionsInfo', getTransactionsInfo)
-  const body = combineRecentHistoryTable(getTransactionsInfo.myPortfolios[0].portfolioActions)
-  console.log('body', body)
+const RecentHistoryTable = ({ getTransactionsInfo, isDepositPage }) => {
+  const body = combineRecentHistoryTable(getTransactionsInfo.myPortfolios[0].portfolioActions, isDepositPage)
 
   return (
     <Grid style={{ height: '30%' }}>

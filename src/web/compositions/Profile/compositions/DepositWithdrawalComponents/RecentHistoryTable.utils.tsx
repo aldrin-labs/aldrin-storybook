@@ -46,15 +46,20 @@ export const columnNames = [
 
 export const combineRecentHistoryTable = (
   transactionsData: PortfolioAction,
-  theme: Theme
+  isDepositPage: boolean,
+  theme?: Theme
 ) => {
   if (!transactionsData.trades && !Array.isArray(transactionsData.trades)) {
     return []
   }
 
-  const getStatusColor = (status: string) => (status === 'ok' ? 'red' : 'green')
+  const getStatusColor = (status: string) => (status === 'ok' ? 'green' : 'green')
+  const getStatusText = (status: string) => status === 'ok' ? 'Completed' : 'In Process'
 
-  const processedOpenOrdersData = transactionsData.trades.map(
+  const filtredTransactions = transactionsData.trades
+  .filter(el => isDepositPage ? el.type === 'deposit' : el.type === 'withdrawal')
+
+  const processedOpenOrdersData = filtredTransactions.map(
     (el: ActionType, i: number) => {
       const { _id, type, base, amount, date, status, address, txId } = el
 
@@ -63,10 +68,7 @@ export const combineRecentHistoryTable = (
       return {
         id: _id,
         status: {
-          render: status,
-          style: {
-            color: statusColor,
-          },
+        render: <Grid style={{ color: statusColor }}>{getStatusText(status)}</Grid>,
           contentToSort: status,
         },
         coin: base,
