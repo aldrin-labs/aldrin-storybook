@@ -296,7 +296,7 @@ class TransactionPage extends React.PureComponent {
     const login = true
     const isSideNavOpen = true
 
-    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+    const { totalKeyAssetsData, portfolioAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
       portfolioKeys.myPortfolios
         ? portfolioKeys.myPortfolios[0].portfolioAssets
         : [],
@@ -375,6 +375,7 @@ class TransactionPage extends React.PureComponent {
                         keys,
                         isTransactions: true,
                         portfolioAssetsData: portfolioAssetsData,
+                        portfolioAssetsMap,
                         isRebalance: false,
                         onKeysSelectAll: this.onKeysSelectAll,
                         onKeyToggle: this.onKeyToggle,

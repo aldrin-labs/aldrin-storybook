@@ -387,7 +387,7 @@ class PortfolioSelector extends React.Component<IProps> {
         )
       : assets
 
-    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+    const { totalKeyAssetsData, portfolioAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
       filteredData,
       isTransactions ? 'USDT' : baseCoin
     )
@@ -481,6 +481,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 baseCoin,
                 isSideNavOpen,
                 portfolioAssetsData,
+                portfolioAssetsMap,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,
