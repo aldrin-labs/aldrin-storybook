@@ -1,7 +1,5 @@
-import React from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { HeaderProperties, BlockProperties } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
@@ -69,64 +67,6 @@ export const TerminalBlock = styled(Grid)`
   position: relative;
 `
 
-export const SwitcherHalf = styled(
-  ({
-    isDisabled,
-    activeBackgroundColor,
-    activeColor,
-    activeBorderColor,
-    isFirstHalf,
-    borderRadius,
-    width,
-    height,
-    padding,
-    ...rest
-  }) => (
-    <BtnCustom
-      btnWidth={width}
-      fontSize="1.3rem"
-      padding={padding}
-      btnColor={isDisabled ? '#7284A0' : activeColor}
-      backgroundColor={isDisabled ? '#fff' : activeBackgroundColor}
-      borderColor={isDisabled ? '#e0e5ec' : activeBorderColor}
-      {...rest}
-    />
-  )
-)`
-  height: ${(props) => props.height};
-  font-weight: normal;
-  text-transform: capitalize;
-  white-space: nowrap;
-  cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};
-  letter-spacing: 0.15rem;
-  min-width: 0;
-
-  &:hover {
-    color: ${(props) => props.isDisabled && props.activeColor};
-    background-color: ${(props) =>
-      props.isDisabled && props.activeBackgroundColor};
-    border: ${(props) =>
-      props.isDisabled && `0.1rem solid ${props.activeBorderColor}`};
-    cursor: ${(props) => props.isDisabled && 'pointer'};
-  }
-
-  border-radius: ${(props) =>
-    props.isFirstHalf
-      ? `${props.borderRadius} 0 0 ${props.borderRadius}`
-      : `0 ${props.borderRadius} ${props.borderRadius} 0`};
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
-  @media (min-width: 1921px) {
-    height: ${(props) => `calc(${props.height} - .5rem)`};
-    font-size: 1.1rem;
-    padding-top: 0.2rem;
-  }
-
-  & span {
-    line-height: normal;
-  }
-`
-
 export const FieldsContainer = styled.div`
   padding: ${(props) => props.padding || '0.9rem 0 0 0'};
 `
@@ -148,4 +88,30 @@ export const InputRowContainer = styled.div`
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
   }
+`
+
+export const BluredBackground = styled.div`
+  position: absolute;
+  z-index: 11;
+  top: -0.5rem;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(0.4rem);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const BeforeCharacter = styled.span`
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  z-index: 10;
+  transform: translateY(-55%);
+  display: ${(props) => (props.needCharacter ? 'block' : 'none')};
+  font-size: 1.2rem;
+  color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
 `

@@ -179,7 +179,7 @@ export const TradeInput = styled.input`
   font-size: 1.1rem;
   
   font-weight: bold;
-  padding-left: 0.6rem;
+  padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   outline: none;
 
   &::after {
@@ -198,7 +198,7 @@ export const InputWrapper = styled.div`
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
   top: 50%;
-  right: ${(props) => props.right || '20px'};
+  right: ${({ right }: { right: string }) => right || '20px'};
   transform: translateY(-50%);
 `
 // percentages
