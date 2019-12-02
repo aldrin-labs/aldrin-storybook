@@ -14,6 +14,7 @@ const AccountBlock = ({
   availableBalance,
   selectedCoin,
   setSelectedCoin,
+  setSeletedAccount
 }: IProps) => (
   <Grid
     id="left_block"
@@ -31,24 +32,15 @@ const AccountBlock = ({
         menuPortalStyles={{
           zIndex: 11111,
         }}
-        // additionalMapping={this.addExistCoinsLighting}
-        // changeRowToShow={this.changeRowToShow}
-        // inputValue={this.state.inputValue}
-        // onInputChange={this.onInputChange}
-        // onChange={(
-        //   optionSelected: {
-        //     label: string
-        //     value: string
-        //     priceUSD: string | number
-        //   } | null
-        // ) => {
-        // this.handleSelectChange(
-        //   optionSelected.value || '',
-        //   optionSelected.priceUSD,
-        //   optionSelected.priceBTC
-        // )
-        // this.setState({ selectedValue: optionSelected.value })
-        // }}
+        onChange={(
+          optionSelected: {
+            label: string
+            value: number
+            keyId: string
+          }
+        ) => {
+          setSeletedAccount(optionSelected.keyId)
+        }}
         menuStyles={{
           fontSize: '1.4rem',
           padding: '0 1.5rem 0 1.5rem',
@@ -125,7 +117,7 @@ const AccountBlock = ({
             label: string
             value: string
             priceUSD: string | number
-          } | null
+          }
         ) => {
           setSelectedCoin(optionSelected.value)
         }}
