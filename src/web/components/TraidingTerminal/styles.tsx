@@ -179,7 +179,7 @@ export const TradeInput = styled.input`
   font-size: 1.1rem;
   
   font-weight: bold;
-  padding-left: 0.6rem;
+  padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   outline: none;
 
   &::after {

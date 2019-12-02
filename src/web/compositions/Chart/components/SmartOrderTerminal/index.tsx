@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { IProps, IState } from './types'
 import {
@@ -19,11 +19,12 @@ import {
 
 import { StyledZoomIcon } from '@sb/components/TradingWrapper/styles'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
-import SmallSlider from '@sb/components/Slider/SmallSlider'
 import CloseIcon from '@material-ui/icons/Close'
 
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import {
   TerminalBlocksContainer,
@@ -32,47 +33,27 @@ import {
   TerminalHeader,
   HeaderTitle,
   CloseHeader,
-  SwitcherHalf,
   InputTitle,
   SubBlocksContainer,
   InputRowContainer,
   TimeoutTitle,
   TargetTitle,
   TargetValue,
+  BeforeCharacter,
+  BluredBackground,
 } from './styles'
 
-const SwitcherType = ({
-  firstHalfIsActive,
-  changeHalf,
-  firstHalfText,
-  firstHalfStyleProperties,
-  secondHalfText,
-  secondHalfStyleProperties,
-  buttonHeight,
-  containerStyles,
+const Character = ({
+  needCharacter,
+  symbol,
+}: {
+  needCharacter: boolean
+  symbol: '+' | '-'
 }) => {
   return (
-    <div style={{ display: 'inline-block', ...containerStyles }}>
-      <SwitcherHalf
-        isFirstHalf
-        isDisabled={!firstHalfIsActive}
-        onClick={() => !firstHalfIsActive && changeHalf()}
-        height={buttonHeight}
-        width={'50%'}
-        {...firstHalfStyleProperties}
-      >
-        {firstHalfText}
-      </SwitcherHalf>
-      <SwitcherHalf
-        isDisabled={firstHalfIsActive}
-        onClick={() => firstHalfIsActive && changeHalf()}
-        height={buttonHeight}
-        width={'50%'}
-        {...secondHalfStyleProperties}
-      >
-        {secondHalfText}
-      </SwitcherHalf>
-    </div>
+    <BeforeCharacter needCharacter={needCharacter} symbol={symbol}>
+      {symbol}
+    </BeforeCharacter>
   )
 }
 
@@ -84,13 +65,18 @@ const Input = ({
   pattern = '',
   type = 'number',
   list = '',
+  needCharacter = false,
+  beforeSymbol = '',
   onChange,
-  isDisabled,
+  isDisabled = false,
 }) => {
   return (
     <div
       style={{ width, padding, position: 'relative', display: 'inline-block' }}
     >
+      <Character needCharacter={needCharacter} beforeSymbol={beforeSymbol}>
+        {beforeSymbol}
+      </Character>
       <TradeInput
         value={value}
         onChange={onChange}
@@ -98,6 +84,7 @@ const Input = ({
         pattern={pattern}
         type={type}
         list={list}
+        needCharacter={needCharacter}
         step={symbol === '%' && 1}
       />
       <Coin right={type !== 'number' && '12px'}>{symbol}</Coin>
@@ -105,7 +92,13 @@ const Input = ({
   )
 }
 
-const FormInputContainer = ({ title, children }) => {
+const FormInputContainer = ({
+  title,
+  children,
+}: {
+  title: string
+  children: ReactNode
+}) => {
   return (
     <>
       <div style={{ width: '15%', textAlign: 'right' }}>
@@ -113,56 +106,6 @@ const FormInputContainer = ({ title, children }) => {
       </div>
       {children}
     </>
-  )
-}
-
-const BlueSlider = ({
-  value = 0,
-  valueSymbol = '',
-  disabled = false,
-  sliderContainerStyles,
-  onChange,
-}) => {
-  return (
-    <SmallSlider
-      defaultValue={0}
-      min={0}
-      max={100}
-      disabled={disabled}
-      value={value}
-      valueSymbol={valueSymbol || '%'}
-      marks={{
-        0: {},
-        25: {},
-        50: {},
-        75: {},
-        100: {},
-      }}
-      onChange={onChange}
-      sliderContainerStyles={{
-        width: 'calc(85% - .8rem)',
-        margin: '0 .8rem 0 auto',
-        ...sliderContainerStyles,
-      }}
-      handleStyles={{
-        width: '1.2rem',
-        height: '1.2rem',
-        border: 'none',
-        backgroundColor: '#0B1FD1',
-        marginTop: '-.45rem',
-      }}
-      dotStyles={{
-        border: 'none',
-        backgroundColor: '#ABBAD1',
-      }}
-      activeDotStyles={{
-        backgroundColor: '#5C8CEA',
-      }}
-      markTextSlyles={{
-        color: '#7284A0;',
-        fontSize: '1rem',
-      }}
-    />
   )
 }
 
@@ -242,19 +185,22 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
 
   addTarget = () => {
     const {
-      price,
+      pricePercentage,
       splitTargets: { volumePercentage, targets },
     } = this.state.takeProfit
 
-    if (price !== 0 && volumePercentage !== 0) {
+    if (pricePercentage !== 0 && volumePercentage !== 0) {
       this.setState((prev) => ({
         takeProfit: {
           ...prev.takeProfit,
-          price: 0,
+          pricePercentage: 0,
           splitTargets: {
             ...prev.takeProfit.splitTargets,
             volumePercentage: 0,
-            targets: [...targets, { price, quantity: volumePercentage }],
+            targets: [
+              ...targets,
+              { price: pricePercentage, quantity: volumePercentage },
+            ],
           },
         },
       }))
@@ -362,7 +308,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
           {/* ENTRY POINT */}
 
           <TerminalBlock width={'calc(33% + 0.5%)'}>
-            <SwitcherType
+            <CustomSwitcher
               firstHalfText={'buy'}
               secondHalfText={'sell'}
               buttonHeight={'2.5rem'}
@@ -380,7 +326,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               }
             />
 
-            <SwitcherType
+            <CustomSwitcher
               firstHalfText={'limit'}
               secondHalfText={'market'}
               buttonHeight={'2.5rem'}
@@ -577,6 +523,10 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                 <BlueSlider
                   // amount / (max amount / 100 )
                   value={entryPoint.order.total / (maxAmount / 100)}
+                  sliderContainerStyles={{
+                    width: 'calc(85% - .8rem)',
+                    margin: '0 .8rem 0 auto',
+                  }}
                   onChange={(value) => {
                     const newTotal = maxAmount * (value / 100)
                     const newAmount =
@@ -634,7 +584,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               {entryPoint.order.isHedgeOn && (
                 <InputRowContainer>
                   <FormInputContainer title={'hedge'}>
-                    <SwitcherType
+                    <CustomSwitcher
                       firstHalfText={'long'}
                       secondHalfText={'short'}
                       buttonHeight={'2.5rem'}
@@ -727,7 +677,7 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
 
           <TerminalBlock width={'calc(31% + 1%)'}>
             <InputRowContainer justify="center">
-              <SwitcherType
+              <CustomSwitcher
                 firstHalfText={'limit'}
                 secondHalfText={'market'}
                 buttonHeight={'2.5rem'}
@@ -821,6 +771,8 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               <InputRowContainer>
                 <FormInputContainer title={'price'}>
                   <Input
+                    needCharacter
+                    beforeSymbol={'+'}
                     padding={'0 .8rem 0 0'}
                     width={'calc(35%)'}
                     symbol={'%'}
@@ -1067,11 +1019,30 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                 </>
               )}
             </div>
+
+            {!takeProfit.isTakeProfitOn && (
+              <BluredBackground>
+                <div
+                  style={{
+                    width: '50%',
+                  }}
+                >
+                  <SendButton
+                    type={'buy'}
+                    onClick={() =>
+                      this.toggleBlock('takeProfit', 'isTakeProfitOn')
+                    }
+                  >
+                    Enable take a profit
+                  </SendButton>
+                </div>
+              </BluredBackground>
+            )}
           </TerminalBlock>
           {/* STOP LOSS */}
           <TerminalBlock width={'calc(31% + 1%)'} borderRight="0">
             <InputRowContainer justify="center">
-              <SwitcherType
+              <CustomSwitcher
                 firstHalfText={'limit'}
                 secondHalfText={'market'}
                 buttonHeight={'2.5rem'}
@@ -1128,6 +1099,8 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
               <InputRowContainer padding={'0 0 1.6rem 0'}>
                 <FormInputContainer title={'price'}>
                   <Input
+                    needCharacter
+                    beforeSymbol={'-'}
                     padding={'0 .8rem 0 0'}
                     width={'calc(35%)'}
                     symbol={'%'}
@@ -1239,6 +1212,8 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                 <InputRowContainer>
                   <FormInputContainer title={'volume'}>
                     <Input
+                      needCharacter
+                      beforeSymbol={'-'}
                       padding={'0 .8rem 0 0'}
                       width={'calc(35%)'}
                       symbol={'%'}
@@ -1272,6 +1247,23 @@ export class SmartOrderTerminal extends React.Component<IProps, IState> {
                 </InputRowContainer>
               )}
             </div>
+
+            {!stopLoss.isStopLossOn && (
+              <BluredBackground>
+                <div
+                  style={{
+                    width: '50%',
+                  }}
+                >
+                  <SendButton
+                    type={'buy'}
+                    onClick={() => this.toggleBlock('stopLoss', 'isStopLossOn')}
+                  >
+                    Enable stop loss
+                  </SendButton>
+                </div>
+              </BluredBackground>
+            )}
           </TerminalBlock>
         </TerminalBlocksContainer>
       </CustomCard>
