@@ -83,6 +83,7 @@ const CustomSwitcher = ({
     <div style={{ display: 'inline-block', ...containerStyles }}>
       <SwitcherHalf
         isFirstHalf
+        key={'firstHalf'}
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
@@ -92,6 +93,7 @@ const CustomSwitcher = ({
         {firstHalfText}
       </SwitcherHalf>
       <SwitcherHalf
+        key={'secondHalf'}
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}

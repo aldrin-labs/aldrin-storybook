@@ -170,7 +170,8 @@ export const TradeInput = styled.input`
   bottom: .2rem;
   width: 100%;
   min-height: 3rem;
-  border: 1px solid #e0e5ec;
+  border: ${(props) =>
+    props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
   border-radius: 4px;
   box-shadow: inset 0px 0px .2rem rgba(0, 0, 0, 0.15);
   margin-top: 0.2rem;
