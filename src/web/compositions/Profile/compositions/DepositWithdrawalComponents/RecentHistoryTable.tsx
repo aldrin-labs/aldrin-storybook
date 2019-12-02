@@ -57,7 +57,7 @@ const RecentHistoryTable = ({ getTransactionsInfo, isDepositPage }) => {
 
 const TableDataWrapper = ({ ...props }) => {
   let {
-    specificKey = '5db71b04910cb9001a144a17',
+    specificKey = '',
     page = 0,
     perPage = 20,
     includeExchangeTransactions = true,

@@ -17,6 +17,8 @@ const Withdrawal = ({  }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
+  const [seletedAccount, setSeletedAccount] = useState('#')
+
 
   const networkChange = () => {}
 
@@ -41,6 +43,7 @@ const Withdrawal = ({  }: IProps) => {
           availableBalance={availableBalance}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
+          setSeletedAccount={setSeletedAccount}
         />
 
         <Grid
@@ -145,7 +148,7 @@ const Withdrawal = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable isDepositPage={false} />
+      <RecentHistoryTable isDepositPage={false} specificKey={seletedAccount} />
     </>
   )
 }
