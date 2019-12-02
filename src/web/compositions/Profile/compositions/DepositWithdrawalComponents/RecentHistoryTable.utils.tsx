@@ -3,7 +3,7 @@ import copy from 'clipboard-copy'
 import moment from 'moment'
 import { Theme, Grid } from '@material-ui/core'
 
-import copyIcon from '@icons/free.svg'
+import copyIcon from '@icons/copy.svg'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -75,10 +75,10 @@ export const combineRecentHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block' }}>
-                {String(moment(date).format('DD-MM-YYYY')).replace(/-/g, '.')}
+                {String(moment(date * 1000).format('DD-MM-YYYY')).replace(/-/g, '.')}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {moment(date).format('LT')}
+                {moment(date * 1000).format('LT')}
               </span>
             </div>
           ),
@@ -87,10 +87,10 @@ export const combineRecentHistoryTable = (
         },
         address: {
           render: (
-            <Grid container justify="space-between">
+            <Grid container>
               <Grid item>{address}</Grid>
-              <Grid item>
-                <SvgIcon src={copyIcon} width="12px" height="auto" onClick={() => copy(address)} />
+              <Grid item style={{ cursor: 'pointer', paddingLeft: '0.1rem' }}>
+                <SvgIcon src={copyIcon} width="11px" height="auto" onClick={() => copy(address)} />
               </Grid>
             </Grid>
           ),
@@ -98,9 +98,9 @@ export const combineRecentHistoryTable = (
         },
         txId: {
           render: (
-            <Grid container justify="space-between">
+            <Grid container>
               <Grid item>{txId}</Grid>
-              <Grid item>
+              <Grid item style={{ cursor: 'pointer', paddingLeft: '0.1rem' }}>
                 <SvgIcon src={copyIcon} width="12px" height="auto" onClick={() => copy(txId)} />
               </Grid>
             </Grid>

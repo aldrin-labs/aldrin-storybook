@@ -10,7 +10,9 @@ import { getTransactionsInfo } from '@core/graphql/queries/portfolio/getTransact
 
 const RecentHistoryTable = ({ getTransactionsInfo }) => {
 
-  // const body = combineRecentHistoryTable(getTransactionsInfo.myPortfolios[0].portfolioActions)
+  console.log('getTransactionsInfo', getTransactionsInfo)
+  const body = combineRecentHistoryTable(getTransactionsInfo.myPortfolios[0].portfolioActions)
+  console.log('body', body)
 
   return (
     <Grid style={{ height: '30%' }}>
@@ -25,7 +27,7 @@ const RecentHistoryTable = ({ getTransactionsInfo }) => {
         }}
         id="Deposits"
         padding="dense"
-        data={{ body: [] }}
+        data={{ body: body }}
         columnNames={columnNames}
         emptyTableText="No history"
         tableStyles={{
