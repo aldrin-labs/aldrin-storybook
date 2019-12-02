@@ -1,3 +1,5 @@
+import { ChangeEvent } from 'react'
+
 export interface IProps {
   updateTerminalViewMode: (mode: string) => void
 }
@@ -71,4 +73,18 @@ export type HeaderProperties = {
 
 export type BlockProperties = {
   width?: string
+}
+
+export type InputProps = {
+  symbol: string
+  value: number | string
+  width: string
+  padding: string
+  pattern: string
+  type: string
+  list: string
+  needCharacter: boolean
+  beforeSymbol: string
+  onChange: (e: ChangeEvent) => void
+  isDisabled: boolean
 }
