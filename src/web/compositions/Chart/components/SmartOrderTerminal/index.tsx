@@ -517,7 +517,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     symbol={pair[0]}
                     value={entryPoint.order.amount}
                     showErrors={showErrors}
-                    isValid={this.validateField(true, entryPoint.order.amount)}
+                    isValid={this.validateField(true, +entryPoint.order.amount)}
                     onChange={(e) => {
                       const newTotal = e.target.value * entryPoint.order.price
 
@@ -528,14 +528,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         e.target.value
                       )
 
-                      if (newTotal) {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          Number(stripDigitPlaces(newTotal, 8))
-                        )
-                      }
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'total',
+                        newTotal ? newTotal.toFixed(8) : 0
+                      )
                     }}
                   />
                 </FormInputContainer>
@@ -565,8 +563,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         ? newValue
                         : newValue * entryPoint.order.price
 
-                    console.log(newValue, newAmount, newTotal)
-
                     this.updateSubBlockValue(
                       'entryPoint',
                       'order',
@@ -578,7 +574,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       'entryPoint',
                       'order',
                       'total',
-                      Number(newTotal.toFixed(8))
+                      newTotal.toFixed(8)
                     )
                   }}
                 />
@@ -594,19 +590,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'entryPoint',
                         'order',
                         'total',
-                        Number(stripDigitPlaces(e.target.value, 8))
+                        stripDigitPlaces(e.target.value, 8)
                       )
 
                       this.updateSubBlockValue(
                         'entryPoint',
                         'order',
                         'amount',
-                        Number(
-                          stripDigitPlaces(
-                            e.target.value / entryPoint.order.price,
-                            8
-                          )
-                        )
+                        (+(e.target.value / entryPoint.order.price)).toFixed(8)
                       )
                     }}
                   />
