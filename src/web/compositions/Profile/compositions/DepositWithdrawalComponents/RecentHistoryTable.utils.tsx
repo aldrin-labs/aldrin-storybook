@@ -1,8 +1,9 @@
+import React from 'react'
 import copy from 'clipboard-copy'
 import moment from 'moment'
 import { Theme, Grid } from '@material-ui/core'
 
-import copyIcon from '@icons/copy.svg'
+import copyIcon from '@icons/free.svg'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -89,7 +90,7 @@ export const combineRecentHistoryTable = (
             <Grid container justify="space-between">
               <Grid item>{address}</Grid>
               <Grid item>
-                <SvgIcon src={copyIcon} width="48px" height="auto" onClick={() => copy(address)} />
+                <SvgIcon src={copyIcon} width="12px" height="auto" onClick={() => copy(address)} />
               </Grid>
             </Grid>
           ),
@@ -100,7 +101,7 @@ export const combineRecentHistoryTable = (
             <Grid container justify="space-between">
               <Grid item>{txId}</Grid>
               <Grid item>
-                <SvgIcon src={copyIcon} width="48px" height="auto" onClick={() => copy(txId)} />
+                <SvgIcon src={copyIcon} width="12px" height="auto" onClick={() => copy(txId)} />
               </Grid>
             </Grid>
           ),
