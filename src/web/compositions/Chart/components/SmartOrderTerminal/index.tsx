@@ -8,6 +8,7 @@ import {
   BlueSwitcherStyles,
 } from './utils'
 
+import { validateSmartOrders } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { CustomCard } from '../../Chart.styles'
@@ -270,7 +271,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   }}
                 />
                 <LeverageLabel style={{ width: '12.5%' }}>
-                  {entryPoint.order.leverage}x
+                  {entryPoint.order.leverage || 1}x
                 </LeverageLabel>
               </div>
             )}
@@ -322,14 +323,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               firstHalfStyleProperties={GreenSwitcherStyles}
               secondHalfStyleProperties={RedSwitcherStyles}
               firstHalfIsActive={entryPoint.order.side === 'buy'}
-              changeHalf={() =>
+              changeHalf={() => {
                 this.updateSubBlockValue(
                   'entryPoint',
                   'order',
                   'side',
                   getSecondValueFromFirst(entryPoint.order.side)
                 )
-              }
+
+                this.updateSubBlockValue('entryPoint', 'order', 'amount', '')
+                this.updateSubBlockValue('entryPoint', 'order', 'total', '')
+              }}
             />
 
             <CustomSwitcher
@@ -435,6 +439,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                     showErrors={showErrors}
                     isValid={this.validateField(true, entryPoint.order.price)}
+                    isDisabled={
+                      entryPoint.order.type === 'market' &&
+                      !entryPoint.trailing.isTrailingOn
+                    }
                     onChange={(e) => {
                       this.updateSubBlockValue(
                         'entryPoint',
@@ -535,32 +543,42 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
               <InputRowContainer>
                 <BlueSlider
-                  // amount / (max amount / 100 )
-                  value={entryPoint.order.total / (maxAmount / 100)}
+                  value={
+                    entryPoint.order.side === 'buy'
+                      ? entryPoint.order.total / (maxAmount / 100)
+                      : entryPoint.order.amount / (maxAmount / 100)
+                  }
                   sliderContainerStyles={{
                     width: 'calc(85% - .8rem)',
                     margin: '0 .8rem 0 auto',
                   }}
                   onChange={(value) => {
-                    const newTotal = maxAmount * (value / 100)
+                    const newValue = (maxAmount / 100) * value
+
                     const newAmount =
                       entryPoint.order.side === 'buy'
-                        ? newTotal / entryPoint.order.price
-                        : newTotal * entryPoint.order.price
+                        ? newValue / entryPoint.order.price
+                        : newValue
+
+                    const newTotal =
+                      entryPoint.order.side === 'buy'
+                        ? newValue
+                        : newValue * entryPoint.order.price
+
+                    console.log(newValue, newAmount, newTotal)
 
                     this.updateSubBlockValue(
                       'entryPoint',
                       'order',
                       'amount',
-                      // (max amount / 100) * value
-                      Number(stripDigitPlaces(newAmount, 8))
+                      newAmount.toFixed(8)
                     )
 
                     this.updateSubBlockValue(
                       'entryPoint',
                       'order',
                       'total',
-                      Number(stripDigitPlaces(newTotal, 8))
+                      Number(newTotal.toFixed(8))
                     )
                   }}
                 />
@@ -683,7 +701,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               <SendButton
                 type={entryPoint.order.side ? 'buy' : 'sell'}
                 onClick={() => {
-                  if (this.state.isValidForm) {
+                  const isValid = validateSmartOrders(this.state)
+
+                  if (isValid) {
                     this.props.placeOrder(
                       entryPoint.order.side,
                       entryPoint.order.type,

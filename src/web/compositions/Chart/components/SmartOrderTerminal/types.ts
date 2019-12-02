@@ -13,6 +13,7 @@ export interface IState {
       price: number
       amount: number
       total: number
+      leverage: number
       isHedgeOn: boolean
       hedgePrice: number
       hedgeIncrease: number | string
