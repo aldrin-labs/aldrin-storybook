@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 
 import { IProps, IState } from './types'
 import {
@@ -11,11 +11,7 @@ import {
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { CustomCard } from '../../Chart.styles'
-import {
-  TradeInput,
-  Coin,
-  SendButton,
-} from '@sb/components/TraidingTerminal/styles'
+import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 import { StyledZoomIcon } from '@sb/components/TradingWrapper/styles'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
@@ -23,6 +19,7 @@ import CloseIcon from '@material-ui/icons/Close'
 
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { FormInputContainer, Input } from './InputComponents'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
@@ -33,81 +30,13 @@ import {
   TerminalHeader,
   HeaderTitle,
   CloseHeader,
-  InputTitle,
   SubBlocksContainer,
   InputRowContainer,
   TimeoutTitle,
   TargetTitle,
   TargetValue,
-  BeforeCharacter,
   BluredBackground,
 } from './styles'
-
-const Character = ({
-  needCharacter,
-  symbol,
-}: {
-  needCharacter: boolean
-  symbol: '+' | '-'
-}) => {
-  return (
-    <BeforeCharacter needCharacter={needCharacter} symbol={symbol}>
-      {symbol}
-    </BeforeCharacter>
-  )
-}
-
-const Input = ({
-  symbol,
-  value,
-  width = '85%',
-  padding = '0',
-  pattern = '',
-  type = 'number',
-  list = '',
-  needCharacter = false,
-  beforeSymbol = '',
-  onChange,
-  isDisabled = false,
-}) => {
-  return (
-    <div
-      style={{ width, padding, position: 'relative', display: 'inline-block' }}
-    >
-      <Character needCharacter={needCharacter} beforeSymbol={beforeSymbol}>
-        {beforeSymbol}
-      </Character>
-      <TradeInput
-        value={value}
-        onChange={onChange}
-        disabled={isDisabled}
-        pattern={pattern}
-        type={type}
-        list={list}
-        needCharacter={needCharacter}
-        step={symbol === '%' && 1}
-      />
-      <Coin right={type !== 'number' && '12px'}>{symbol}</Coin>
-    </div>
-  )
-}
-
-const FormInputContainer = ({
-  title,
-  children,
-}: {
-  title: string
-  children: ReactNode
-}) => {
-  return (
-    <>
-      <div style={{ width: '15%', textAlign: 'right' }}>
-        <InputTitle>{title}</InputTitle>
-      </div>
-      {children}
-    </>
-  )
-}
 
 export class SmartOrderTerminal extends React.Component<IProps, IState> {
   state: IState = {

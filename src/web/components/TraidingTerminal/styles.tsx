@@ -198,7 +198,7 @@ export const InputWrapper = styled.div`
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
   top: 50%;
-  right: ${(props) => props.right || '20px'};
+  right: ${({ right }: { right: string }) => right || '20px'};
   transform: translateY(-50%);
 `
 // percentages
