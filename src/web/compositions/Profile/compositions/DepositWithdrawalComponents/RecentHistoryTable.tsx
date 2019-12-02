@@ -4,6 +4,9 @@ import { Grid } from '@material-ui/core'
 import { StyledTable } from './RecentHistoryTable.styles'
 import { columnNames } from './RecentHistoryTable.utils'
 
+import QueryRenderer from '@core/components/QueryRenderer'
+import { getTransactionsInfo } from '@core/graphql/queries/portfolio/getTransactionsInfo'
+
 const RecentHistoryTable = ({}) => (
   <Grid style={{ height: '30%' }}>
     <StyledTable
@@ -47,4 +50,36 @@ const RecentHistoryTable = ({}) => (
   </Grid>
 )
 
-export default RecentHistoryTable
+const TableDataWrapper = ({ ...props }) => {
+  let {
+    specificKey = '5db71b04910cb9001a144a17',
+    page = 0,
+    perPage = 20,
+    includeExchangeTransactions = true,
+    includeTrades = false,
+    includeFutures = false,
+  } = props
+
+  return (
+    <QueryRenderer
+      component={RecentHistoryTable}
+      withOutSpinner={true}
+      withTableLoader={true}
+      query={getTransactionsInfo}
+      name={`myTrades`}
+      variables={{
+        input: {
+          specificKey,
+          page,
+          perPage,
+          includeExchangeTransactions,
+          includeTrades,
+          includeFutures,
+        },
+      }}
+      {...props}
+    />
+  )
+}
+
+export default TableDataWrapper
