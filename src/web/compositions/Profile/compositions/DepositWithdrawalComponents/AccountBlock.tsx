@@ -3,7 +3,7 @@ import { Grid, Typography } from '@material-ui/core'
 
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import SelectKeyList from '@core/components/SelectKeyList/SelectKeyList'
-
+import Balances from './Balances'
 import { StyledTypography } from './AccountBlock.styles'
 import { IProps } from './AccountBlock.types'
 
@@ -14,7 +14,8 @@ const AccountBlock = ({
   availableBalance,
   selectedCoin,
   setSelectedCoin,
-  setSeletedAccount
+  selectedAccount,
+  setSelectedAccount,
 }: IProps) => (
   <Grid
     id="left_block"
@@ -39,7 +40,7 @@ const AccountBlock = ({
             keyId: string
           }
         ) => {
-          setSeletedAccount(optionSelected.keyId)
+          setSelectedAccount(optionSelected.keyId)
         }}
         menuStyles={{
           fontSize: '1.4rem',
@@ -181,26 +182,7 @@ const AccountBlock = ({
         }}
       />
     </Grid>
-    <Grid item id="balances_block" style={{ padding: '3rem 7rem' }}>
-      <Grid container justify="space-between">
-        <StyledTypography>Total balance:</StyledTypography>
-        <StyledTypography style={{ color: '#16253D' }}>
-          {`${totalBalance} ${selectedCoin}`}
-        </StyledTypography>
-      </Grid>
-      <Grid container justify="space-between">
-        <StyledTypography>In order:</StyledTypography>
-        <StyledTypography style={{ color: '#16253D' }}>
-          {`${inOrder} ${selectedCoin}`}
-        </StyledTypography>
-      </Grid>
-      <Grid container justify="space-between">
-        <StyledTypography>Available balance:</StyledTypography>
-        <StyledTypography style={{ color: '#16253D' }}>
-          {`${availableBalance} ${selectedCoin}`}
-        </StyledTypography>
-      </Grid>
-    </Grid>
+    <Balances selectedCoin={selectedCoin} selectedAccount={selectedAccount} />
     <Grid item id="description_block">
       {isDepositPage && (
         <Typography>

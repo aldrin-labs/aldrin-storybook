@@ -5,4 +5,6 @@ export interface IProps {
     availableBalance: number
     selectedCoin: string
     setSelectedCoin: (selectedCoin: string) => void
+    selectedAccount: string
+    setSelectedAccount: (selectedAccount: string) => void
 }
