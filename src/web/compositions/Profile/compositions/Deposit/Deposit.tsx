@@ -21,7 +21,7 @@ const Deposits = ({  }: IProps) => {
   const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
-  const [seletedAccount, setSeletedAccount] = useState('#')
+  const [selectedAccount, setSelectedAccount] = useState('#')
 
 
   const copyCoinAddress = () => {
@@ -55,8 +55,8 @@ const Deposits = ({  }: IProps) => {
           availableBalance={availableBalance}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
-          seletedAccount={seletedAccount}
-          setSeletedAccount={setSeletedAccount}
+          selectedAccount={selectedAccount}
+          setSelectedAccount={setSelectedAccount}
         />
 
         <Grid
@@ -147,7 +147,7 @@ const Deposits = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable isDepositPage={true} specificKey={seletedAccount} />
+      <RecentHistoryTable isDepositPage={true} specificKey={selectedAccount} />
     </>
   )
 }
