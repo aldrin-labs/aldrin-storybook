@@ -20,8 +20,8 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
-class PositionsTable extends React.PureComponent<IProps> {
-  state: IState = {
+class PositionsTable extends React.PureComponent {
+  state = {
     openOrdersProcessedData: [],
   }
 
@@ -127,18 +127,25 @@ class PositionsTable extends React.PureComponent<IProps> {
             backgroundColor: '#fff',
             color: '#16253D',
             boxShadow: 'none',
+            top: '0',
           },
           cell: {
-            color: '#7284A0',
+            color: '#16253D',
             fontSize: '1rem', // 1.2 if bold
             fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
             boxShadow: 'none',
+            paddingTop: '.5rem',
+            paddingBottom: '.5rem',
           },
           tab: {
             padding: 0,
             boxShadow: 'none',
+          },
+          row: {
+            height: '4.5rem',
+            cursor: 'initial',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
@@ -151,6 +158,7 @@ class PositionsTable extends React.PureComponent<IProps> {
             />
           </div>
         }
+        rowsWithHover={false}
         data={{ body: openOrdersProcessedData }}
         columnNames={getTableHead(tab)}
       />

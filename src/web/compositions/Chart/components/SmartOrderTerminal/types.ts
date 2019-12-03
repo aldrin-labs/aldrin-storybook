@@ -82,19 +82,20 @@ export type BlockProperties = {
 }
 
 export type InputProps = {
-  symbol: string
+  symbol?: string
   value: number | string
   width: string
-  padding: string
-  pattern: string
-  type: string
-  list: string
-  min: string
-  needCharacter: boolean
-  beforeSymbol: string
+  padding?: string
+  placeholder?: string
+  pattern?: string
+  type?: string
+  list?: string
+  min?: string
+  needCharacter?: boolean
+  beforeSymbol?: string
   onChange: (e: ChangeEvent) => void
-  isDisabled: boolean
-  isValid: boolean
-  showErrors: boolean
-  inputStyles: CSSProperties
+  isDisabled?: boolean
+  isValid?: boolean
+  showErrors?: boolean
+  inputStyles?: CSSProperties
 }
