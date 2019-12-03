@@ -30,6 +30,7 @@ import {
   MainContainer,
   TablesContainer,
   TogglerContainer,
+  GlobalStyles,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
@@ -186,6 +187,7 @@ class Chart extends React.Component<IProps, IState> {
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
+        <GlobalStyles />
         {view === 'onlyCharts' && (
           <TogglerContainer container>
             <Grid

@@ -9,6 +9,33 @@ export const MainContainer = styled.div`
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
 
+export const GlobalStyles = createGlobalStyle`
+
+@media only screen and (max-width: 1400px) {
+  html {
+    font-size: 8px;
+  }
+}
+
+  @media only screen and (max-width: 1720px) {
+    html {
+      font-size: 9px;
+    }
+  }
+
+  @media only screen and (min-width: 1921px) {
+    html {
+      font-size: 12px;
+    }
+  }
+
+  @media only screen and (min-width: 2560px) {
+    html {
+      font-size: 15px;
+    }
+  }
+`
+
 export const PanelWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -298,5 +325,6 @@ export const BalancesContainer = styled(Grid)`
 `
 
 export const SmartTerminalContainer = styled(Grid)`
+  position: relative;
   padding: 0.4rem 0 0 0.4rem;
 `

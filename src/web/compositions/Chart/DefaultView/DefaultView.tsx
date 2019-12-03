@@ -9,12 +9,26 @@ import { SingleChart } from '@sb/components/Chart'
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
-import {
-  TradeHistory,
-  OrderbookAndDepthChart,
-  CardsPanel,
-  SmartOrderTerminal,
-} from '../components'
+import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
+import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
+
+const TerminalContainer = ({ isDefaultTerminalViewMode, children }) =>
+  isDefaultTerminalViewMode ? (
+    <TablesBlockWrapper
+      item
+      container
+      xs={5}
+      style={{
+        padding: '.4rem 0 0 .4rem',
+      }}
+    >
+      {children}
+    </TablesBlockWrapper>
+  ) : (
+    <SmartTerminalContainer xs={11} item container>
+      {children}
+    </SmartTerminalContainer>
+  )
 
 import {
   Container,
@@ -176,7 +190,10 @@ export const DefaultView = (props: any) => {
               marketType={marketType}
             />
           </BalancesContainer>
-          {isDefaultTerminalViewMode ? (
+
+          <TerminalContainer
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
             <TradingComponent
               selectedKey={selectedKey}
               activeExchange={activeExchange}
@@ -184,15 +201,10 @@ export const DefaultView = (props: any) => {
               marketType={marketType}
               showOrderResult={showOrderResult}
               showCancelResult={showCancelResult}
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
             />
-          ) : (
-            <SmartTerminalContainer xs={11} item container>
-              <SmartOrderTerminal
-                updateTerminalViewMode={updateTerminalViewMode}
-              />
-            </SmartTerminalContainer>
-          )}
+          </TerminalContainer>
         </Grid>
       </Grid>
     </Container>
