@@ -24,7 +24,8 @@ import CloseIcon from '@material-ui/icons/Close'
 
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { FormInputContainer, Input } from './InputComponents'
+import { FormInputContainer, Input, Select } from './InputComponents'
+
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
@@ -79,8 +80,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       timeout: {
         isTimeoutOn: false,
         whenProfitOn: false,
+        whenProfitMode: 'sec',
         whenProfitSec: 0,
         whenProfitableOn: false,
+        whenProfitableMode: 'sec',
         whenProfitableSec: 0,
       },
       trailingTAP: {
@@ -95,8 +98,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       timeout: {
         isTimeoutOn: false,
         whenLossOn: false,
+        whenLossMode: 'sec',
         whenLossSec: 0,
         whenLossableOn: false,
+        whenLossableMode: 'sec',
         whenLossableSec: 0,
       },
       forcedStop: {
@@ -125,6 +130,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const {
       pricePercentage,
       splitTargets: { volumePercentage, targets },
+      type,
     } = this.state.takeProfit
 
     if (pricePercentage !== 0 && volumePercentage !== 0) {
@@ -137,7 +143,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             volumePercentage: 0,
             targets: [
               ...targets,
-              { price: pricePercentage, quantity: volumePercentage },
+              { price: pricePercentage, quantity: volumePercentage, type },
             ],
           },
         },
@@ -261,6 +267,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     border: 'none',
                     backgroundColor: '#036141',
                     marginTop: '-.45rem',
+                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
                   }}
                   dotStyles={{
                     border: 'none',
@@ -304,7 +311,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             />
           </TerminalHeader>
           <CloseHeader
-            padding={'.3rem .5rem'}
+            padding={'.55rem .5rem'}
             onClick={() => updateTerminalViewMode('default')}
           >
             <StyledZoomIcon />
@@ -1020,8 +1027,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           style={{ padding: '0 .4rem 0 0' }}
                         />
                         <Input
-                          width={'calc(85% - .4rem)'}
-                          symbol={'SEC'}
+                          width={'calc(55% - .4rem)'}
                           value={takeProfit.timeout.whenProfitSec}
                           showErrors={showErrors && takeProfit.isTakeProfitOn}
                           isValid={this.validateField(
@@ -1036,8 +1042,32 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               e.target.value
                             )
                           }}
+                          inputStyles={{
+                            borderTopRightRadius: 0,
+                            borderBottomRightRadius: 0,
+                          }}
                           isDisabled={!takeProfit.timeout.whenProfitOn}
                         />
+                        <Select
+                          width={'calc(30% - .4rem)'}
+                          value={takeProfit.timeout.whenProfitMode}
+                          inputStyles={{
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'timeout',
+                              'whenProfitMode',
+                              e.target.value
+                            )
+                          }}
+                          isDisabled={!takeProfit.timeout.whenProfitOn}
+                        >
+                          <option>sec</option>
+                          <option>min</option>
+                        </Select>
                       </InputRowContainer>
                     </SubBlocksContainer>
 
@@ -1059,8 +1089,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           style={{ padding: '0 .4rem 0 0' }}
                         />
                         <Input
-                          width={'calc(85% - .4rem)'}
-                          symbol={'SEC'}
+                          width={'calc(55% - .4rem)'}
                           value={takeProfit.timeout.whenProfitableSec}
                           showErrors={showErrors && takeProfit.isTakeProfitOn}
                           isValid={this.validateField(
@@ -1075,8 +1104,32 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               e.target.value
                             )
                           }}
+                          inputStyles={{
+                            borderTopRightRadius: 0,
+                            borderBottomRightRadius: 0,
+                          }}
                           isDisabled={!takeProfit.timeout.whenProfitableOn}
                         />
+                        <Select
+                          width={'calc(30% - .4rem)'}
+                          value={takeProfit.timeout.whenProfitableMode}
+                          inputStyles={{
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'timeout',
+                              'whenProfitableMode',
+                              e.target.value
+                            )
+                          }}
+                          isDisabled={!takeProfit.timeout.whenProfitableOn}
+                        >
+                          <option>sec</option>
+                          <option>min</option>
+                        </Select>
                       </InputRowContainer>
                     </SubBlocksContainer>
                   </InputRowContainer>
@@ -1223,8 +1276,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           style={{ padding: '0 .4rem 0 0' }}
                         />
                         <Input
-                          width={'calc(85% - .4rem)'}
-                          symbol={'SEC'}
+                          width={'calc(55% - .4rem)'}
                           value={stopLoss.timeout.whenLossSec}
                           showErrors={showErrors && stopLoss.isStopLossOn}
                           isValid={this.validateField(
@@ -1239,8 +1291,32 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               e.target.value
                             )
                           }}
+                          inputStyles={{
+                            borderTopRightRadius: 0,
+                            borderBottomRightRadius: 0,
+                          }}
                           isDisabled={!stopLoss.timeout.whenLossOn}
                         />
+                        <Select
+                          width={'calc(30% - .4rem)'}
+                          value={stopLoss.timeout.whenLossMode}
+                          inputStyles={{
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'stopLoss',
+                              'timeout',
+                              'whenLossMode',
+                              e.target.value
+                            )
+                          }}
+                          isDisabled={!stopLoss.timeout.whenLossOn}
+                        >
+                          <option>sec</option>
+                          <option>min</option>
+                        </Select>
                       </InputRowContainer>
                     </SubBlocksContainer>
 
@@ -1262,8 +1338,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           style={{ padding: '0 .4rem 0 0' }}
                         />
                         <Input
-                          width={'calc(85% - .4rem)'}
-                          symbol={'SEC'}
+                          width={'calc(55% - .4rem)'}
                           showErrors={showErrors && stopLoss.isStopLossOn}
                           isValid={this.validateField(
                             stopLoss.timeout.whenLossableOn,
@@ -1278,8 +1353,32 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               e.target.value
                             )
                           }}
+                          inputStyles={{
+                            borderTopRightRadius: 0,
+                            borderBottomRightRadius: 0,
+                          }}
                           isDisabled={!stopLoss.timeout.whenLossableOn}
                         />
+                        <Select
+                          width={'calc(30% - .4rem)'}
+                          value={stopLoss.timeout.whenLossableMode}
+                          inputStyles={{
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'stopLoss',
+                              'timeout',
+                              'whenLossableMode',
+                              e.target.value
+                            )
+                          }}
+                          isDisabled={!stopLoss.timeout.whenLossableOn}
+                        >
+                          <option>sec</option>
+                          <option>min</option>
+                        </Select>
                       </InputRowContainer>
                     </SubBlocksContainer>
                   </InputRowContainer>

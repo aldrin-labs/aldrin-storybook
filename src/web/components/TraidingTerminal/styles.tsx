@@ -191,6 +191,26 @@ export const TradeInput = styled.input`
   }
 `
 
+export const TradeSelect = styled.select`
+  position: relative;
+  bottom: 0.2rem;
+  width: 100%;
+  min-height: 3rem;
+  border: ${(props) =>
+    props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
+  border-radius: 4px;
+  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
+  margin-top: 0.2rem;
+  color: #7284a0;
+  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
+  font-size: 1.1rem;
+
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
+  outline: none;
+`
+
 export const InputWrapper = styled.div`
   position: relative;
   width: 70%;
