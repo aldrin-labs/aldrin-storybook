@@ -21,19 +21,24 @@ const DialogContent = withStyles((theme) => ({
   },
 }))(MuiDialogContent)
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
 interface IProps {
-    selectedAccount: string
-    transferFromSpot: boolean
-    transferMutation: (any:any) => Promise<any>
-    open: boolean
-    handleClose: () => void
+  selectedAccount: string
+  transferFromSpotToFutures: boolean
+  transferMutation?: (any: any) => Promise<any>
+  open: boolean
+  handleClose: () => void
 }
 
-export const TransferPopup = ({ selectedAccount, transferFromSpot, open, handleClose }: IProps) => {
+export const TransferPopup = ({
+  selectedAccount,
+  transferFromSpotToFutures,
+  open,
+  handleClose,
+}: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAmount, setCoinAmount] = useState('')
+
+  console.log('selectedCoin', selectedCoin)
 
   const transferHandler = () => {
     // TODO add mutation for this popup
@@ -68,7 +73,7 @@ export const TransferPopup = ({ selectedAccount, transferFromSpot, open, handleC
               color: '#16253D',
             }}
           >
-            {transferFromSpot
+            {transferFromSpotToFutures
               ? `Trasfer from spot to futures account`
               : `Trasfer from futures to spot account`}
           </TypographyCustomHeading>
@@ -80,16 +85,16 @@ export const TransferPopup = ({ selectedAccount, transferFromSpot, open, handleC
           }}
         >
           <Grid>
-            <Grid>
+            <Grid style={{ paddingBottom: '2rem' }}>
               <StyledTypography>Coin:</StyledTypography>
               <SelectCoinList
                 classNamePrefix="custom-select-box"
                 isSearchable={true}
+                placeholder={selectedCoin}
                 menuPortalTarget={document.body}
                 menuPortalStyles={{
                   zIndex: 11111,
                 }}
-                placeholder={'BTC'}
                 onChange={(optionSelected: {
                   label: string
                   value: string
@@ -98,6 +103,9 @@ export const TransferPopup = ({ selectedAccount, transferFromSpot, open, handleC
                   setSelectedCoin(optionSelected.value)
                 }}
                 noOptionsMessage={() => `No such coin in our DB found`}
+                dropdownIndicatorStyles={{
+                  display: 'none',
+                }}
                 menuStyles={{
                   minWidth: '100px',
                   fontSize: '1.4rem',
@@ -157,16 +165,17 @@ export const TransferPopup = ({ selectedAccount, transferFromSpot, open, handleC
                 }}
               />
             </Grid>
-            <Grid>
-              <Typography>Amount:</Typography>
+            <Grid style={{ paddingBottom: '4rem' }}>
+              <StyledTypography>Amount:</StyledTypography>
               <InputAmount
                 selectedCoin={selectedCoin}
                 selectedAccount={selectedAccount}
                 value={coinAmount}
                 onChange={(e) => setCoinAmount(e.target.value)}
+                style={{ width: "100%" }}
               />
             </Grid>
-            <Grid style={{ paddingTop: '16px' }}>
+            <Grid container justify="space-between">
               <BtnCustom
                 btnWidth={'38%'}
                 borderRadius={'8px'}
