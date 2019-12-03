@@ -1,7 +1,11 @@
 import React, { ReactNode } from 'react'
 
 import { InputProps } from './types'
-import { TradeInput, Coin } from '@sb/components/TraidingTerminal/styles'
+import {
+  TradeInput,
+  TradeSelect,
+  Coin,
+} from '@sb/components/TraidingTerminal/styles'
 
 import { InputTitle, BeforeCharacter } from './styles'
 
@@ -34,6 +38,7 @@ export const Input = ({
   isDisabled = false,
   isValid = true,
   showErrors = false,
+  inputStyles,
 }: InputProps) => {
   return (
     <div
@@ -51,10 +56,40 @@ export const Input = ({
         list={list}
         min={min}
         needCharacter={needCharacter}
-        step={symbol === '%' ? 1 : undefined}
+        step={symbol === '%' ? 1 : ''}
         isValid={showErrors ? isValid : true}
+        style={inputStyles}
       />
       <Coin right={type !== 'number' ? '12px' : ''}>{symbol}</Coin>
+    </div>
+  )
+}
+
+export const Select = ({
+  value,
+  width = '85%',
+  padding = '0',
+  onChange,
+  isDisabled = false,
+  isValid = true,
+  showErrors = false,
+  inputStyles,
+  children,
+}: InputProps) => {
+  return (
+    <div
+      style={{ width, padding, position: 'relative', display: 'inline-block' }}
+    >
+      <TradeSelect
+        value={value}
+        onChange={onChange}
+        disabled={isDisabled}
+        style={inputStyles}
+        isValid={isValid}
+        showErrors={showErrors}
+      >
+        {children}
+      </TradeSelect>
     </div>
   )
 }
