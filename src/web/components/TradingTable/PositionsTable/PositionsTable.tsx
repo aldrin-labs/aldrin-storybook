@@ -20,8 +20,8 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
-class PositionsTable extends React.PureComponent<IProps> {
-  state: IState = {
+class PositionsTable extends React.PureComponent {
+  state = {
     openOrdersProcessedData: [],
   }
 
