@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles, withTheme } from '@material-ui/styles'
+import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
@@ -23,7 +23,15 @@ const DialogContent = withStyles((theme) => ({
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-export const TransferPopup = ({ selectedAccount, transferFromSpot, transferMutation, open, togglePopup, handleClose, theme }) => {
+interface IProps {
+    selectedAccount: string
+    transferFromSpot: boolean
+    transferMutation: (any:any) => Promise<any>
+    open: boolean
+    handleClose: () => void
+}
+
+export const TransferPopup = ({ selectedAccount, transferFromSpot, open, handleClose }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAmount, setCoinAmount] = useState('')
 
@@ -48,7 +56,7 @@ export const TransferPopup = ({ selectedAccount, transferFromSpot, transferMutat
         <DialogTitleCustom
           id="customized-dialog-title"
           style={{
-            backgroundColor: theme.palette.background.default,
+            backgroundColor: '#fff',
           }}
         >
           <TypographyCustomHeading
