@@ -189,6 +189,10 @@ export const TradeInput = styled.input`
     right: 20px;
     top: 50%;
   }
+
+  &::placeholder {
+    color: #ABBAD1;
+  }
 `
 
 export const TradeSelect = styled.select`

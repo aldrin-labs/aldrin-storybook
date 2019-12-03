@@ -47,6 +47,7 @@ export const TradeHistory = ({
         aggregation,
         changeTable,
         chartProps,
+        marketType,
         key: 'tradeyistory_table_query_render',
       }}
     />

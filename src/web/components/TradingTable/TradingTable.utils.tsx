@@ -17,6 +17,8 @@ import {
   orderHistoryBody,
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
+
+import SubRow from './PositionsTable/SubRow'
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
@@ -103,16 +105,18 @@ export const combinePositionsTable = (
   ) => Promise<any>,
   theme: Theme
 ) => {
+  const positions: OrderType[] = []
   const positionsData = [
     {
       symbol: 'BTC_USDT',
       type: 'market',
       side: 'buy',
+      leverage: 20,
       price: 8704.01,
       entryPrice: 8604.01,
       marketPrice: 8504.01,
       liqPrice: 8404.01,
-      pnl: 3,
+      realizedPnl: 3,
       info: {
         origQty: 0.05,
       },
@@ -123,6 +127,8 @@ export const combinePositionsTable = (
     return []
   }
 
+  const { green, red } = theme.palette
+
   const processedPositionsData = positionsData.map(
     (el: OrderType, i: number) => {
       const {
@@ -132,7 +138,8 @@ export const combinePositionsTable = (
         entryPrice,
         marketPrice,
         liqPrice,
-        pnl,
+        leverage,
+        realizedPnl,
         info: { origQty = '0' },
       } = el
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
@@ -143,6 +150,7 @@ export const combinePositionsTable = (
           index: {
             render: i + 1,
             rowspan: 2,
+            color: '#7284A0',
           },
           pair: {
             render: (
@@ -160,14 +168,13 @@ export const combinePositionsTable = (
                   style={{
                     display: 'block',
                     textTransform: 'uppercase',
-                    color: side === 'buy' ? '#29AC80' : '#DD6956',
+                    color: side === 'buy' ? green.new : red.new,
                   }}
                 >
                   {side}
                 </span>
                 <span
                   style={{
-                    textTransform: 'capitalize',
                     color: '#7284A0',
                     letterSpacing: '1px',
                   }}
@@ -177,10 +184,12 @@ export const combinePositionsTable = (
               </div>
             ),
             style: {
-              color: isBuyTypeOrder(side)
-                ? theme.customPalette.green.main
-                : theme.customPalette.red.main,
+              color: isBuyTypeOrder(side) ? green.new : red.new,
             },
+          },
+          leverage: {
+            render: `X${leverage}`,
+            contentToSort: leverage,
           },
           // TODO: We should change "total" to total param from backend when it will be ready
           size: {
@@ -204,8 +213,15 @@ export const combinePositionsTable = (
             contentToSort: liqPrice,
           },
           pnlRoe: {
-            render: pnl,
-            contentToSort: pnl,
+            render:
+              realizedPnl !== null ? (
+                <span style={{ color: realizedPnl > 0 ? green.new : red.new }}>
+                  {addMainSymbol(realizedPnl, true)}
+                </span>
+              ) : (
+                '-'
+              ),
+            contentToSort: realizedPnl,
           },
           // cancel: {
           //   render: (
@@ -222,19 +238,24 @@ export const combinePositionsTable = (
           // },
         },
         {
-          index: '',
           pair: {
-            render: <div>lots of buttons </div>,
-            colspan: 7,
+            render: (
+              <div>
+                <SubRow />
+              </div>
+            ),
+            colspan: 8,
           },
         },
       ]
     }
   )
 
-  return processedPositionsData.map((position) => {
-    return position.map((obj) => obj)
+  processedPositionsData.forEach((position) => {
+    position.forEach((obj) => positions.push(obj))
   })
+
+  return positions
 }
 
 export const combineOpenOrdersTable = (
