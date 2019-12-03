@@ -5,8 +5,12 @@ import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccountBlock from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock'
 import RecentHistoryTable from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/RecentHistoryTable'
-
-import { StyledInput, StyledTypography } from './Withdrawal.styles'
+import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
+import {
+  StyledInput,
+  StyledTypography,
+  StyledTypographyCaption,
+} from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
 
 const Withdrawal = ({  }: IProps) => {
@@ -18,7 +22,6 @@ const Withdrawal = ({  }: IProps) => {
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
   const [selectedAccount, setSelectedAccount] = useState('#')
-
 
   const networkChange = () => {}
 
@@ -91,10 +94,15 @@ const Withdrawal = ({  }: IProps) => {
               >
                 Amount
               </StyledTypography>
-              <StyledInput
+              <InputAmount
+                selectedCoin={selectedCoin}
+                selectedAccount={selectedAccount}
                 value={coinAmount}
                 onChange={(e) => setCoinAmount(e.target.value)}
               />
+              <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
+                Minimum Withdrawal: 0.00100000 BTC
+              </StyledTypographyCaption>
               <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
                 <Grid container>
                   <StyledTypography>Transaction fee:</StyledTypography>
