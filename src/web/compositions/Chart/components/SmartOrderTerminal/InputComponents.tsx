@@ -34,6 +34,7 @@ export const Input = ({
   min = '0',
   needCharacter = false,
   beforeSymbol = '',
+  placeholder = '',
   onChange,
   isDisabled = false,
   isValid = true,
@@ -52,6 +53,7 @@ export const Input = ({
         onChange={onChange}
         disabled={isDisabled}
         pattern={pattern}
+        placeholder={placeholder}
         type={type}
         list={list}
         min={min}

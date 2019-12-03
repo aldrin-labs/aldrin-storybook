@@ -157,8 +157,10 @@ const styles = (theme: Theme) =>
         backgroundColor: theme.palette.action.hover,
       },
       '&:hover td': {
-        backgroundColor: `${theme.palette.hover[theme.palette.type]} !important`,
-      }
+        backgroundColor: `${
+          theme.palette.hover[theme.palette.type]
+        } !important`,
+      },
     },
     indeterminateCheckbox: {
       color: theme.palette.primary.main,
@@ -208,8 +210,10 @@ const styles = (theme: Theme) =>
         backgroundColor: theme.palette.hover[theme.palette.type], //TODO theme.palette.action.hover,
       },
       '&:hover td': {
-        backgroundColor: `${theme.palette.hover[theme.palette.type]} !important`, //TODO theme.palette.action.hover,
-      }
+        backgroundColor: `${
+          theme.palette.hover[theme.palette.type]
+        } !important`, //TODO theme.palette.action.hover,
+      },
     },
     rowWithHoverBorderRadius: {
       '& td:first-child': {
@@ -330,6 +334,8 @@ const renderCell = ({
         variant={variant}
         style={{ color: cell.color, ...cell.style, ...tableStyles.cell }}
         key={id}
+        rowSpan={cell.rowspan}
+        colSpan={cell.colspan}
         padding={padding}
         align={align}
       >
@@ -540,6 +546,7 @@ const CustomTable = (props: Props) => {
     emptyTableText = 'no data',
     tableStyles = {
       heading: {},
+      row: {},
       title: {},
       footer: {},
       cell: {},
@@ -731,8 +738,13 @@ const CustomTable = (props: Props) => {
                                 0.5
                               )}`,
                               cursor: 'pointer',
+                              ...tableStyles.row,
                             }
-                          : { cursor: 'pointer', boxShadow: 'none' }
+                          : {
+                              cursor: 'pointer',
+                              boxShadow: 'none',
+                              ...tableStyles.row,
+                            }
                       }
                       className={rowHoverClassName}
                       onClick={() =>
@@ -745,7 +757,12 @@ const CustomTable = (props: Props) => {
                     >
                       {row.expandableContent &&
                       row.expandableContent.length > 0 ? (
-                        <CustomTableCell padding="checkbox" style={{ backgroundColor: tableStyles.cell.backgroundColor }}>
+                        <CustomTableCell
+                          padding="checkbox"
+                          style={{
+                            backgroundColor: tableStyles.cell.backgroundColor,
+                          }}
+                        >
                           {renderCheckBox({
                             onChange,
                             id: row.id,
@@ -765,7 +782,12 @@ const CustomTable = (props: Props) => {
                         </CustomTableCell>
                       ) : (
                         typeOfCheckbox !== null && (
-                          <CustomTableCell style={{ backgroundColor: tableStyles.cell.backgroundColor }} padding="checkbox">
+                          <CustomTableCell
+                            style={{
+                              backgroundColor: tableStyles.cell.backgroundColor,
+                            }}
+                            padding="checkbox"
+                          >
                             {' '}
                           </CustomTableCell>
                         )

@@ -80,7 +80,8 @@ class TableContainer extends Component<IProps, IState> {
   componentDidUpdate(prevProps: IProps) {
     if (
       prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
-      prevProps.currencyPair !== this.props.currencyPair
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType
     ) {
       // when change exchange delete all data and...
       this.setState({ data: [] })
@@ -91,6 +92,10 @@ class TableContainer extends Component<IProps, IState> {
       //  subscribe to new exchange and create new unsub link
       unsubscribe = this.props.subscribeToMore()
     }
+  }
+
+  componentWillUnmount() {
+    unsubscribe && unsubscribe()
   }
 
   render() {
