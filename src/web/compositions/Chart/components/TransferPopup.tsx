@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 
