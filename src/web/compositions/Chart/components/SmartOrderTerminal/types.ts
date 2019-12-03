@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react'
+import { ChangeEvent, CSSProperties } from 'react'
 
 export interface IProps {
   updateTerminalViewMode: (mode: string) => void
@@ -39,8 +39,10 @@ export interface IState {
     timeout: {
       isTimeoutOn: boolean
       whenProfitOn: boolean
+      whenProfitMode: 'sec' | 'min'
       whenProfitSec: number
       whenProfitableOn: boolean
+      whenProfitableMode: 'sec' | 'min'
       whenProfitableSec: number
     }
     trailingTAP: {
@@ -55,8 +57,10 @@ export interface IState {
     timeout: {
       isTimeoutOn: boolean
       whenLossOn: boolean
+      whenLossMode: 'sec' | 'min'
       whenLossSec: number
       whenLossableOn: boolean
+      whenLossableMode: 'sec' | 'min'
       whenLossableSec: number
     }
     forcedStop: {
@@ -78,18 +82,20 @@ export type BlockProperties = {
 }
 
 export type InputProps = {
-  symbol: string
+  symbol?: string
   value: number | string
   width: string
-  padding: string
-  pattern: string
-  type: string
-  list: string
-  min: string
-  needCharacter: boolean
-  beforeSymbol: string
+  padding?: string
+  placeholder?: string
+  pattern?: string
+  type?: string
+  list?: string
+  min?: string
+  needCharacter?: boolean
+  beforeSymbol?: string
   onChange: (e: ChangeEvent) => void
-  isDisabled: boolean
-  isValid: boolean
-  showErrors: boolean
+  isDisabled?: boolean
+  isValid?: boolean
+  showErrors?: boolean
+  inputStyles?: CSSProperties
 }

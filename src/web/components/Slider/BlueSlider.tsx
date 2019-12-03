@@ -37,6 +37,7 @@ const BlueSlider = ({
         border: 'none',
         backgroundColor: '#0B1FD1',
         marginTop: '-.45rem',
+        boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
       }}
       dotStyles={{
         border: 'none',

@@ -20,6 +20,8 @@ export type TObj = {
   variant?: 'body' | 'head' | 'footer'
   isNumber?: boolean
   style?: any
+  rowspan?: number
+  colspan?: number
   // if you wrap you render with JSX but still want to use
   //  out-of-the-box sort put value to sort into content
   contentToSort?: string | number
@@ -96,6 +98,7 @@ export type TableStyles = {
   cell?: CSSProperties
   tab?: CSSProperties
   headRow?: CSSProperties
+  row?: CSSProperties
 }
 
 export interface Props {

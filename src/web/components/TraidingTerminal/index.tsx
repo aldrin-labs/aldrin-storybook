@@ -306,7 +306,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 coin={pair[0]}
                 style={{ paddingBottom: '.8rem' }}
               />
-
+              {/* todo: replace it with blueslider component */}
               <SmallSlider
                 min={0}
                 max={100}
@@ -334,6 +334,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   border: 'none',
                   backgroundColor: '#0B1FD1',
                   marginTop: '-.45rem',
+                  boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
                 }}
                 dotStyles={{
                   border: 'none',

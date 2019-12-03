@@ -20,6 +20,7 @@ export const positionsColumnNames = [
   // { label: 'Type', id: 'type' },
   { label: 'Side', id: 'side' },
   { label: 'Size', id: 'size' },
+  { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
   { label: 'Market Price', id: 'marketPrice' },
   { label: 'Liq. Price', id: 'liqPrice' },
