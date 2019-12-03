@@ -3,14 +3,16 @@ import { Grid, Typography } from '@material-ui/core'
 import { withStyles, withTheme } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 
+import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import {
   GridCustom,
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { IProps } from './BinanceAccountCreated.types'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -46,7 +48,14 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
             backgroundColor: '#fff',
           }}
         >
-        <div>logo</div>    
+          <GridCustom
+            container
+            direction={'column'}
+            alignItems={'center'}
+            justify={'center'}
+          >
+            <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
+          </GridCustom>{' '}
         </DialogTitleCustom>
         <DialogContent
           justify="center"
@@ -81,7 +90,7 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
                   paddingTop: '15px',
                 }}
               >
-                profile > Binance account > deposit/withdrawal
+                profile > Hybrid account > Deposit/withdrawal
               </Typography>
             </GridCustom>
           </Grid>

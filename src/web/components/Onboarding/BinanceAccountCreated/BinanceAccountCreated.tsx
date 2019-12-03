@@ -9,9 +9,12 @@ import {
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-
-import { IProps } from './BinanceAccountCreated.types'
+import SvgIcon from '@sb/components/SvgIcon'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+
+import CcaiBinanceLogo from '@icons/ccai&binance.svg'
+import { IProps } from './BinanceAccountCreated.types'
+
 
 const DialogContent = withStyles((theme) => ({
   root: {
@@ -54,9 +57,10 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
             color={black.custom}
             style={{
               textAlign: 'center',
+              textTransform: 'uppercase',
             }}
           >
-            Your binance account created
+            Your hybrid account created
           </TypographyCustomHeading>
         </DialogTitleCustom>
         <DialogContent

@@ -171,7 +171,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       },
       open,
       onboarding = undefined,
-      includeCommonBinanceKey = false,
+      includeCommonBinanceKey = true,
       setCurrentStep,
       existCustomButton = false,
       CustomButton,
@@ -224,7 +224,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         )}
 
         <DialogWrapper
-          maxWidth="xl"
+          maxWidth="md"
           style={{ borderRadius: '50%' }}
           onClose={() => {
             if (!onboarding) {
@@ -280,8 +280,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   alignItems={'center'}
                   justify={'center'}
                 >
-                  <SvgIcon src={CcaiBinanceLogo} width="100%" height="auto" />
-                  <Typography>Official broker</Typography>
+                  <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
                 </GridCustom>
                 <GridCustom>
                   <Grid
@@ -298,6 +297,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     >
                       <Typography
                         style={{
+                          paddingBottom: '0.5rem',
                           fontWeight: 'bold',
                           color: 'black',
                           textTransform: 'uppercase',
@@ -305,8 +305,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       >
                         Free
                       </Typography>
-                      <SvgIcon src={free} width="48px" height="auto" />
-                      <Typography align={`center`}>
+                      <SvgIcon src={free} width="40px" height="auto" />
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem' }}
+                      >
                         No extra fee, pay only Binance fee
                       </Typography>
                     </Grid>
@@ -319,6 +322,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     >
                       <Typography
                         style={{
+                          paddingBottom: '0.5rem',
                           fontWeight: 'bold',
                           color: 'black',
                           textTransform: 'uppercase',
@@ -326,9 +330,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       >
                         Useful
                       </Typography>
-                      <SvgIcon src={useful} width="48px" height="auto" />
-                      <Typography align={`center`}>
-                        > All features availiable with no limits
+                      <SvgIcon src={useful} width="40px" height="auto" />
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem' }}
+                      >
+                        All features availiable with no limits
                       </Typography>
                     </Grid>
                     <Grid
@@ -340,6 +347,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     >
                       <Typography
                         style={{
+                          paddingBottom: '0.2rem',
                           fontWeight: 'bold',
                           color: 'black',
                           textTransform: 'uppercase',
@@ -347,10 +355,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       >
                         Secure
                       </Typography>
-                      <SvgIcon src={secure} width="48px" height="auto" />
-                      <Typography align={`center`}>
-                        > All user funds custody remain with Binance at all
-                        times
+                      <SvgIcon src={secure} width="40px" height="auto" />
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem' }}
+                      >
+                        All user funds custody remain with Binance at all times
                       </Typography>
                     </Grid>
                   </Grid>
@@ -358,18 +368,25 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <BtnCustom
                       btnWidth={'45%'}
                       borderRadius={'32px'}
-                      btnColor={'#F3BA2F'}
-                      borderColor={'#F3BA2F'}
+                      btnColor={'#165BE0'}
+                      borderColor={'#165BE0'}
                       padding={'1.5rem'}
                       height={'auto'}
                       borderWidth={'2px'}
                       fontSize={'1.2rem'}
                       onClick={this.handleGenerateBrokerKey}
                     >
-                      Generate free binance account
+                      Create hybrid account
                     </BtnCustom>
                   </Grid>
                 </GridCustom>
+                <Grid container justify="center" alignItems="center">
+                    <Typography>
+                      {onboarding
+                        ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
+                        : `Or add another exchange key`}
+                    </Typography>
+                  </Grid>
                 {includeCommonBinanceKey && (
                   <>
                     <GridCustom>
@@ -449,26 +466,26 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               </Grid>
 
               {includeCommonBinanceKey && (
-              <Grid container justify="space-between" alignItems="center">
-                <LinkCustom
-                  href={'#'}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    this.handleClickOpenGetKeys()
-                  }}
-                >
-                  How to get keys?
-                </LinkCustom>
+                <Grid container justify="space-between" alignItems="center">
+                  <LinkCustom
+                    href={'#'}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.handleClickOpenGetKeys()
+                    }}
+                  >
+                    How to get keys?
+                  </LinkCustom>
 
-                <BtnCustom
-                  btnWidth={'85px'}
-                  borderRadius={'32px'}
-                  btnColor={'#165BE0'}
-                  type="submit"
-                >
-                  {onboarding ? 'ADD KEY' : 'ADD'}
-                </BtnCustom>
-              </Grid>
+                  <BtnCustom
+                    btnWidth={'85px'}
+                    borderRadius={'32px'}
+                    btnColor={'#165BE0'}
+                    type="submit"
+                  >
+                    {onboarding ? 'ADD KEY' : 'ADD'}
+                  </BtnCustom>
+                </Grid>
               )}
             </form>
           </DialogContent>
