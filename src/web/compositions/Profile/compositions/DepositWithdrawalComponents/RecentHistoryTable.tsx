@@ -18,9 +18,13 @@ const RecentHistoryTable = ({ getTransactionsInfo, isDepositPage }) => {
           height: '100%',
           position: 'relative',
           overflowY: 'scroll',
-          overflowX: 'hidden',
+          // overflowX: 'hidden',
           borderTopLeftRadius: '0',
           borderTopRightRadius: '0',
+          borderBottomLeftRadius: '0',
+          borderBottomRightRadius: '0',
+          border: '2px solid rgb(224, 229, 236)',
+          boxShadow: 'rgba(8, 22, 58, 0.1) 0px 0px 32px',
         }}
         id="Deposits"
         padding="dense"
