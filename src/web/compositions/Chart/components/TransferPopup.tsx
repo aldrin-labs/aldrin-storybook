@@ -129,7 +129,7 @@ export const TransferPopup = ({
                 }}
                 menuListStyles={{
                   height: '16rem',
-                  overflowY: '',
+                  // overflowY: '',
                 }}
                 optionStyles={{
                   height: '4rem',

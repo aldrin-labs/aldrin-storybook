@@ -50,13 +50,13 @@ const AccountBlock = ({
           textAlign: 'center',
           background: 'white',
           position: 'relative',
-          overflowY: 'auto',
+          // overflowY: 'auto',
           boxShadow: 'none',
           border: 'none',
         }}
         menuListStyles={{
           height: '16rem',
-          overflowY: '',
+          // overflowY: '',
         }}
         optionStyles={{
           height: '4rem',
