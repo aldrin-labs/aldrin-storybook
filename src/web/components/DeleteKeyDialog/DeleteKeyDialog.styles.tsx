@@ -8,4 +8,5 @@ export const OpenDeleteButton = styled(OpenRenameButton)`
   border-radius: 0;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
+  display: block;
 `

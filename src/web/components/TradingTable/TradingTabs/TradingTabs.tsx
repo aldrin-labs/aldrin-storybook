@@ -7,6 +7,12 @@ import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
   <>
     <TitleTabsGroup>
+      <TitleTab
+        active={tab === 'activeTrades'}
+        onClick={() => handleTabChange('activeTrades')}
+      >
+        Active trades
+      </TitleTab>
       {!isSPOTMarketType(marketType) && (
         <TitleTab
           active={tab === 'positions'}

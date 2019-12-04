@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Checkbox, Radio } from '@material-ui/core'
 
 import { IProps } from './Accounts.types'
@@ -147,7 +148,7 @@ class Accounts extends React.PureComponent<IProps> {
 
             return (
               <AccountsListItem
-                key={key._id}
+                key={`${key._id}${i}`}
                 color={color}
                 style={{
                   display: 'flex',
@@ -174,7 +175,7 @@ class Accounts extends React.PureComponent<IProps> {
                   fontSize={'1.4rem'}
                   textColor={'#7284A0'}
                   letterSpacing="1px"
-                  style={{ paddingLeft: '1rem'}}
+                  style={{ paddingLeft: '1rem' }}
                 >
                   {key.name}
                   <TypographyTitle lineHeight="122.5%">
@@ -200,6 +201,9 @@ class Accounts extends React.PureComponent<IProps> {
                 />
                 {isSidebar && (
                   <PortfolioSelectorPopup
+                    id={`popup${key._id}${i}`}
+                    needPortalPopup={true}
+                    needPortalMask={true}
                     data={key}
                     baseCoin={baseCoin}
                     isSideNavOpen={isSideNavOpen}

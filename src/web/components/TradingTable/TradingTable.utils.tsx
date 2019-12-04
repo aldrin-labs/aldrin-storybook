@@ -3,6 +3,7 @@ import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { cloneDeep } from 'lodash-es'
 
 import {
@@ -11,6 +12,7 @@ import {
   orderHistoryColumnNames,
   tradeHistoryColumnNames,
   positionsColumnNames,
+  activeTradesColumnNames,
   fundsBody,
   positionsBody,
   openOrdersBody,
@@ -19,6 +21,7 @@ import {
 } from '@sb/components/TradingTable/TradingTable.mocks'
 
 import SubRow from './PositionsTable/SubRow'
+import { StopLossColumn, TakeProfitColumn } from './ActiveTrades/Columns'
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
@@ -51,6 +54,8 @@ export const getTableHead = (tab: string): any[] =>
     ? fundsColumnNames
     : tab === 'positions'
     ? positionsColumnNames
+    : tab === 'activeTrades'
+    ? activeTradesColumnNames
     : []
 
 export const getEndDate = (stringDate: string) =>
@@ -187,16 +192,16 @@ export const combinePositionsTable = (
               color: isBuyTypeOrder(side) ? green.new : red.new,
             },
           },
-          leverage: {
-            render: `X${leverage}`,
-            contentToSort: leverage,
-          },
-          // TODO: We should change "total" to total param from backend when it will be ready
           size: {
             // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
             render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
             contentToSort: origQty,
           },
+          leverage: {
+            render: `X${leverage}`,
+            contentToSort: leverage,
+          },
+          // TODO: We should change "total" to total param from backend when it will be ready
           entryPrice: {
             render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
             style: { textAlign: 'left', whiteSpace: 'nowrap' },
@@ -256,6 +261,148 @@ export const combinePositionsTable = (
   })
 
   return positions
+}
+
+export const combineActiveTradesTable = (
+  data: OrderType[],
+  cancelOrderFunc: (
+    keyId: string,
+    orderId: string,
+    pair: string
+  ) => Promise<any>,
+  theme: Theme
+) => {
+  const activeTradesData = [
+    {
+      symbol: 'BTC_USDT',
+      type: 'market',
+      side: 'buy',
+      leverage: 20,
+      price: 8704.01,
+      entryPrice: 8604.01,
+      marketPrice: 8504.01,
+      liqPrice: 8404.01,
+      realizedPnl: 3,
+      info: {
+        origQty: 0.05,
+      },
+    },
+  ]
+
+  if (!activeTradesData && !Array.isArray(activeTradesData)) {
+    return []
+  }
+
+  const { green, red, blue } = theme.palette
+
+  const processedActiveTradesData = activeTradesData.map(
+    (el: OrderType, i: number) => {
+      const {
+        symbol,
+        side,
+        entryPrice,
+        marketPrice,
+        liqPrice,
+        info: { origQty = '0' },
+      } = el
+      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+      const pair = symbol.split('_')
+
+      return {
+        pair: {
+          render: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {pair[0]}/{pair[1]}
+            </div>
+          ),
+          contentToSort: symbol,
+        },
+        // type: type,
+        side: {
+          render: (
+            <div>
+              <span
+                style={{
+                  display: 'block',
+                  textTransform: 'uppercase',
+                  color: side === 'buy' ? green.new : red.new,
+                }}
+              >
+                {side}
+              </span>
+            </div>
+          ),
+          style: {
+            color: isBuyTypeOrder(side) ? green.new : red.new,
+          },
+        },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        amount: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
+          contentToSort: origQty,
+        },
+        total: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: `${+stripDigitPlaces(origQty * entryPrice, 8)} ${pair[1]}`,
+          contentToSort: origQty,
+        },
+        entryPrice: {
+          render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          contentToSort: entryPrice,
+        },
+        takeProfit: {
+          render: (
+            <TakeProfitColumn
+              price={32}
+              order={'market'}
+              targets={2}
+              timeoutProfit={30}
+              trailing={true}
+              red={red.new}
+              green={green.new}
+              blue={blue}
+            />
+          ),
+        },
+        stopLoss: {
+          render: (
+            <StopLossColumn
+              price={-32}
+              order={'market'}
+              forced={true}
+              timeoutLoss={30}
+              trailing={true}
+              red={red.new}
+              green={green.new}
+              blue={blue}
+            />
+          ),
+        },
+        close: {
+          render: (
+            <BtnCustom
+              btnWidth="100%"
+              height="auto"
+              fontSize="1.3rem"
+              padding=".5rem 0 .4rem 0"
+              borderRadius=".8rem"
+              btnColor={red.new}
+              backgroundColor={'#fff'}
+              hoverColor={'#fff'}
+              hoverBackground={red.new}
+              transition={'all .4s ease-out'}
+            >
+              market
+            </BtnCustom>
+          ),
+        },
+      }
+    }
+  )
+
+  return processedActiveTradesData
 }
 
 export const combineOpenOrdersTable = (

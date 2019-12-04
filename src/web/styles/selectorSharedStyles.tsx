@@ -31,6 +31,9 @@ export const AccountsList = styled.ul`
   padding: ${(props) =>
     props.isTransactions ? '0rem 0.3rem' : '0 2.4rem 0 2rem'};
   margin: 0;
+
+  height: 75%;
+  overflow: hidden scroll;
 `
 
 export const AccountsWalletsHeadingWrapper = styled.div`

@@ -139,6 +139,8 @@ export default class ThemeWrapper extends Component<Props> {
               blue: {
                 custom: '#5085EC',
                 light: '#165BE0',
+                first: '#0B1FD1',
+                second: '#5C8CEA',
               },
               green: {
                 dark: '#377E21',
@@ -290,6 +292,8 @@ export default class ThemeWrapper extends Component<Props> {
               blue: {
                 custom: '#5085EC',
                 light: '#165BE0',
+                first: '#0B1FD1',
+                second: '#5C8CEA',
               },
               green: {
                 dark: '#377E21',
