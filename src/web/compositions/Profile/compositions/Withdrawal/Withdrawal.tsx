@@ -32,7 +32,7 @@ const Withdrawal = ({  }: IProps) => {
         justify="center"
         style={{
           height: '67%',
-          padding: '3% 1%',
+          padding: '1.5rem 1rem',
           border: '2px solid #E0E5EC',
           boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
           borderRadius: '32px',
