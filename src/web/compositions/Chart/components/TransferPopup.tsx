@@ -6,6 +6,10 @@ import MuiDialogContent from '@material-ui/core/DialogContent'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
 import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
+import {
+  CoinOption,
+  CoinSingleValue,
+} from '@sb/components/ReactSelectComponents/CoinOption'
 
 import {
   TypographyCustomHeading,
@@ -89,6 +93,11 @@ export const TransferPopup = ({
               <StyledTypography>Coin:</StyledTypography>
               <SelectCoinList
                 classNamePrefix="custom-select-box"
+                components={{
+                  Option: CoinOption,
+                  SingleValue: CoinSingleValue,
+                  DropdownIndicator: undefined,
+                }}
                 isSearchable={true}
                 placeholder={selectedCoin}
                 menuPortalTarget={document.body}
@@ -107,9 +116,9 @@ export const TransferPopup = ({
                   display: 'none',
                 }}
                 menuStyles={{
-                  minWidth: '100px',
                   fontSize: '1.4rem',
-                  padding: '0 1.5rem 0 1.5rem',
+                  fontWeight: 'bold',
+                  padding: '0',
                   borderRadius: '1.5rem',
                   textAlign: 'center',
                   background: 'white',
@@ -123,8 +132,10 @@ export const TransferPopup = ({
                   overflowY: '',
                 }}
                 optionStyles={{
+                  height: '4rem',
                   background: 'transparent',
                   fontSize: '1.4rem',
+                  textTransform: 'uppercase',
                   padding: '0',
 
                   '&:hover': {
@@ -149,6 +160,9 @@ export const TransferPopup = ({
                   background: '#fff',
                   paddingLeft: '15px',
                   height: '5rem',
+                  '&:hover': {
+                    borderColor: '#165BE0',
+                  },
                 }}
                 noOptionsMessageStyles={{
                   textAlign: 'left',
@@ -157,11 +171,15 @@ export const TransferPopup = ({
                   color: '#16253D',
                   fontSize: '1.4rem',
                   fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                  height: '100%',
+                  padding: '0.5rem 0',
                 }}
                 placeholderStyles={{
                   color: '#16253D',
                   fontSize: '1.4rem',
                   fontWeight: 'bold',
+                  textTransform: 'uppercase',
                 }}
               />
             </Grid>
@@ -172,7 +190,7 @@ export const TransferPopup = ({
                 selectedAccount={selectedAccount}
                 value={coinAmount}
                 onChange={(e) => setCoinAmount(e.target.value)}
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
               />
             </Grid>
             <Grid container justify="space-between">
