@@ -9,4 +9,5 @@ export const OpenRenameButton = styled(Button)`
   padding: 1rem 8rem;
   margin: 0 1rem;
   text-transform: capitalize;
+  display: block;
 `

@@ -170,7 +170,7 @@ export const transformData = (data: AccountData[]) => {
         render: (
           <PortfolioSelectorPopup
             popupStyle={{ transform: 'translateX(-95%)' }}
-            needPortal={true}
+            needPortalMask={true}
             dotsColor={'#7284A0'}
             data={row}
           />

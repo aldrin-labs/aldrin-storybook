@@ -452,8 +452,11 @@ class PortfolioSelector extends React.Component<IProps> {
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
                   baseCoin={baseCoin}
+                  id={'renamePortfolio'}
                   isSideNavOpen={isSideNavOpen}
                   isPortfolio={true}
+                  needPortalMask={true}
+                  needPortalPopup={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
                 />
               </Grid>
