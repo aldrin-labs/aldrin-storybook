@@ -1,6 +1,8 @@
 import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
 
+import { AccountOption, AccountSingleValue } from '@sb/components/ReactSelectComponents/AccountOption'
+import { CoinOption, CoinSingleValue } from '@sb/components/ReactSelectComponents/CoinOption'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import SelectKeyList from '@core/components/SelectKeyList/SelectKeyList'
 import Balances from './Balances'
@@ -9,9 +11,6 @@ import { IProps } from './AccountBlock.types'
 
 const AccountBlock = ({
   isDepositPage,
-  totalBalance,
-  inOrder,
-  availableBalance,
   selectedCoin,
   setSelectedCoin,
   selectedAccount,
@@ -21,13 +20,14 @@ const AccountBlock = ({
     id="left_block"
     container
     direction="column"
-    style={{ width: '35%' }}
+    style={{ width: '35%', borderRight: '1px solid #E0E5EC' }}
     spacing={32}
   >
     <Grid item id="accounts_block">
       <StyledTypography>Account</StyledTypography>
       <SelectKeyList
         classNamePrefix="custom-select-box"
+        components={{ Option: AccountOption, SingleValue: AccountSingleValue, DropdownIndicator: undefined }}
         isSearchable={false}
         menuPortalTarget={document.body}
         menuPortalStyles={{
@@ -44,7 +44,8 @@ const AccountBlock = ({
         }}
         menuStyles={{
           fontSize: '1.4rem',
-          padding: '0 1.5rem 0 1.5rem',
+          fontWeight: 'bold',
+          padding: '0',
           borderRadius: '1.5rem',
           textAlign: 'center',
           background: 'white',
@@ -58,6 +59,7 @@ const AccountBlock = ({
           overflowY: '',
         }}
         optionStyles={{
+          height: '4rem',
           background: 'transparent',
           fontSize: '1.4rem',
           textTransform: 'uppercase',
@@ -97,6 +99,8 @@ const AccountBlock = ({
           fontSize: '1.4rem',
           fontWeight: 'bold',
           textTransform: 'uppercase',
+          height: '100%',
+          padding: '0.5rem 0',
         }}
         placeholderStyles={{
           color: '#16253D',
@@ -111,6 +115,8 @@ const AccountBlock = ({
       <SelectCoinList
         classNamePrefix="custom-select-box"
         isSearchable={true}
+        menuIsOpen={true}
+        components={{ Option: CoinOption, SingleValue: CoinSingleValue, DropdownIndicator: undefined }}
         menuPortalTarget={document.body}
         menuPortalStyles={{
           zIndex: 11111,
@@ -127,9 +133,9 @@ const AccountBlock = ({
         }}
         noOptionsMessage={() => `No such coin in our DB found`}
         menuStyles={{
-          minWidth: '100px',
           fontSize: '1.4rem',
-          padding: '0 1.5rem 0 1.5rem',
+          fontWeight: 'bold',
+          padding: '0',
           borderRadius: '1.5rem',
           textAlign: 'center',
           background: 'white',
@@ -143,8 +149,10 @@ const AccountBlock = ({
           overflowY: '',
         }}
         optionStyles={{
+          height: '4rem',
           background: 'transparent',
           fontSize: '1.4rem',
+          textTransform: 'uppercase',
           padding: '0',
 
           '&:hover': {
@@ -169,6 +177,9 @@ const AccountBlock = ({
           background: '#fff',
           paddingLeft: '15px',
           height: '5rem',
+          '&:hover': {
+            borderColor: '#165BE0',
+          }
         }}
         noOptionsMessageStyles={{
           textAlign: 'left',
@@ -177,11 +188,15 @@ const AccountBlock = ({
           color: '#16253D',
           fontSize: '1.4rem',
           fontWeight: 'bold',
+          textTransform: 'uppercase',
+          height: '100%',
+          padding: '0.5rem 0',
         }}
         placeholderStyles={{
           color: '#16253D',
           fontSize: '1.4rem',
           fontWeight: 'bold',
+          textTransform: 'uppercase',
         }}
       />
     </Grid>
