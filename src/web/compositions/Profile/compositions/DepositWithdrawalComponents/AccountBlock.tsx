@@ -115,7 +115,6 @@ const AccountBlock = ({
       <SelectCoinList
         classNamePrefix="custom-select-box"
         isSearchable={true}
-        menuIsOpen={true}
         components={{ Option: CoinOption, SingleValue: CoinSingleValue, DropdownIndicator: undefined }}
         menuPortalTarget={document.body}
         menuPortalStyles={{
