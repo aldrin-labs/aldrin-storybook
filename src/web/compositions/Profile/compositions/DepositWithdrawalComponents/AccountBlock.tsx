@@ -85,6 +85,9 @@ const AccountBlock = ({
           background: '#fff',
           paddingLeft: '15px',
           height: '5rem',
+          '&:hover': {
+            borderColor: '#165BE0',
+          }
         }}
         noOptionsMessageStyles={{
           textAlign: 'left',
