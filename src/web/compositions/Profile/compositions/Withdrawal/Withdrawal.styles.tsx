@@ -11,7 +11,7 @@ export const StyledInput = styled(OutlinedInput)`
     text-align: center;
   }
   & fieldset {
-    border-color: rgb(224, 229, 236);
+    border-color: #E0E5EC;
     border-width: 2px;
     border-radius: 8px;
   }
