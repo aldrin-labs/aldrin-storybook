@@ -35,7 +35,7 @@ export const StyledInput = styled(Outlined)`
     font-size: 1.4rem;
     font-weight: bold;
     color: #16253d;
-    text-align: center;
+    text-align: left;
   }
 `
 
