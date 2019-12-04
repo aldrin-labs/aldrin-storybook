@@ -1,7 +1,34 @@
+import React from 'react'
 import styled from 'styled-components'
-import { OutlinedInput, Typography, InputAdornment } from '@material-ui/core'
+import { OutlinedInput, Typography } from '@material-ui/core'
+import { withStyles } from '@material-ui/styles'
 
-export const StyledInput = styled(OutlinedInput)`
+const styles = theme => ({
+  root: {
+    "&:not(hover):not($disabled):not($focused):not($error) $notchedOutline": {
+      borderColor: "#E0E5EC"
+    },
+    "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+      borderColor: "#165BE0"
+    },
+    "&$focused:not($disabled):not($error) $notchedOutline": {
+      borderColor: "#165BE0"
+    }
+  },
+  notchedOutline: {
+    borderRadius: "8px",
+    borderWidth: "2px"
+  },
+  disabled: {},
+  focused: {},
+  error: {}
+});
+
+export const OutlinedInputMUI = (props: any) => <OutlinedInput InputProps={{ classes: props.classes }} {...props} />
+
+export const Outlined = withStyles(styles)(OutlinedInputMUI)
+
+export const StyledInput = styled(Outlined)`
   height: 5rem;
   width: 80%;
   & input {
@@ -9,11 +36,6 @@ export const StyledInput = styled(OutlinedInput)`
     font-weight: bold;
     color: #16253d;
     text-align: center;
-  }
-  & fieldset {
-    border-color: #E0E5EC;
-    border-width: 2px;
-    border-radius: 8px;
   }
 `
 

@@ -10,7 +10,7 @@ import AccountBlock from '@sb/compositions/Profile/compositions/DepositWithdrawa
 import RecentHistoryTable from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/RecentHistoryTable'
 import QRCodePopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/QRCodePopup'
 
-import { StyledInput, StyledTypography } from './Deposit.styles'
+import { StyledInput, StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 
 const Deposits = ({  }: IProps) => {
