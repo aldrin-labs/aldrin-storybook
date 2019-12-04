@@ -389,7 +389,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     style={{ padding: '.6rem 0' }}
                   >
                     <InputTitle>cost:</InputTitle>
-                    <InputTitle style={{ color: '#16253D', width: 'auto' }}>
+                    <InputTitle color="#16253D" style={{ width: 'auto' }}>
                       (qtty / lev) * price
                     </InputTitle>
                   </Grid>
@@ -400,7 +400,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     style={{ padding: '.6rem 0' }}
                   >
                     <InputTitle>max buy:</InputTitle>
-                    <InputTitle style={{ color: '#16253D', width: 'auto' }}>
+                    <InputTitle color="#16253D" style={{ width: 'auto' }}>
                       value
                     </InputTitle>
                   </Grid>

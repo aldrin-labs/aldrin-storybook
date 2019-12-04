@@ -25,16 +25,17 @@ export const positionsColumnNames = [
   { label: 'Market Price', id: 'marketPrice' },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
-  // { label: 'Filled %', id: 'filled',  },
-  // {
-  //   label:
-  //     // <TableButton size="small" variant="outlined">
-  //     //   Cancel all
-  //     // </TableButton>
-  //     '',
-  //   id: 'cancel',
-  //   isSortable: false,
-  // },
+]
+
+export const activeTradesColumnNames = [
+  { label: 'Pair', id: 'pair' },
+  { label: 'Side', id: 'side' },
+  { label: 'Amount', id: 'amount' },
+  { label: 'Total', id: 'total' },
+  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Take a profit', id: 'takeProfit' },
+  { label: 'Stop loss', id: 'stopLoss' },
+  { label: 'close', id: 'close' },
 ]
 
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
