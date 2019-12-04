@@ -89,7 +89,7 @@ export const combineRecentHistoryTable = (
         },
         address: {
           render: (
-            <Grid container>
+            <Grid container direction="column">
               <Grid item>{address}</Grid>
               <Grid item style={{ cursor: 'pointer', paddingLeft: '0.1rem' }}>
                 <SvgIcon src={copyIcon} width="11px" height="auto" onClick={() => copy(address)} />
@@ -100,7 +100,7 @@ export const combineRecentHistoryTable = (
         },
         txId: {
           render: (
-            <Grid container>
+            <Grid container direction="column">
               <Grid item>{txId}</Grid>
               <Grid item style={{ cursor: 'pointer', paddingLeft: '0.1rem' }}>
                 <SvgIcon src={copyIcon} width="12px" height="auto" onClick={() => copy(txId)} />
