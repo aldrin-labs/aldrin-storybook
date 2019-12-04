@@ -10,6 +10,10 @@ export const StyledInput = styled(OutlinedInput)`
     color: #16253d;
     text-align: center;
   }
+  & fieldset {
+    border-width: 2px;
+    border-radius: 8px;
+  }
 `
 
 export const StyledTypography = styled(Typography)`
