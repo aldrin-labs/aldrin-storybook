@@ -29,6 +29,7 @@ const AccountBlock = ({
         classNamePrefix="custom-select-box"
         components={{ Option: AccountOption, SingleValue: AccountSingleValue, DropdownIndicator: undefined }}
         isSearchable={false}
+        setDefaultValue={true}
         menuPortalTarget={document.body}
         menuPortalStyles={{
           zIndex: 11111,
@@ -40,8 +41,9 @@ const AccountBlock = ({
             keyId: string
           }
         ) => {
-          setSelectedAccount(optionSelected.keyId)
+          setSelectedAccount(optionSelected)
         }}
+        value={selectedAccount}
         menuStyles={{
           fontSize: '1.4rem',
           fontWeight: 'bold',
@@ -199,7 +201,7 @@ const AccountBlock = ({
         }}
       />
     </Grid>
-    <Balances selectedCoin={selectedCoin} selectedAccount={selectedAccount} />
+    <Balances selectedCoin={selectedCoin} selectedAccount={selectedAccount.keyId} />
     <Grid item id="description_block">
       {isDepositPage && (
         <Typography>

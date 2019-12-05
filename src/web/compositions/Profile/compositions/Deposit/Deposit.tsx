@@ -21,7 +21,7 @@ const Deposits = ({  }: IProps) => {
   const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
-  const [selectedAccount, setSelectedAccount] = useState('#')
+  const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: '' })
 
 
   const copyCoinAddress = () => {
@@ -147,7 +147,7 @@ const Deposits = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable isDepositPage={true} specificKey={selectedAccount} />
+      <RecentHistoryTable isDepositPage={true} specificKey={selectedAccount.keyId} />
     </>
   )
 }
