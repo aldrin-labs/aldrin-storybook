@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { Grid } from '@material-ui/core'
@@ -14,6 +14,7 @@ import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
 
+import { TransferPopup } from '@sb/compositions/Chart/components/TransferPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -92,7 +93,12 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
   color: #7284a0;
 `
 
-export const Balances = ({ getFundsQuery, pair, marketType }) => {
+export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
+
+  const [open, togglePopup] = useState(false)
+  const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(false)
+
+
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
     const asset = getFundsQuery.getFunds.find(
@@ -117,6 +123,13 @@ export const Balances = ({ getFundsQuery, pair, marketType }) => {
       : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
 
   return (
+    <>
+    <TransferPopup 
+      open={open}
+      handleClose={() => togglePopup(false)}
+      transferFromSpotToFutures={transferFromSpotToFutures}
+      selectedAccount={selectedKey.keyId}
+    />
     <CustomCard>
       <ChartCardHeader>Balances</ChartCardHeader>
       <Grid
@@ -222,6 +235,10 @@ export const Balances = ({ getFundsQuery, pair, marketType }) => {
                 hoverColor={'#fff'}
                 hoverBackground={'#0B1FD1'}
                 transition={'all .4s ease-out'}
+                onClick={() => {
+                  setTransferFromSpotToFutures(true)
+                  togglePopup(true)
+                }}
               >
                 transfer in
               </BtnCustom>
@@ -236,6 +253,10 @@ export const Balances = ({ getFundsQuery, pair, marketType }) => {
                 hoverColor={'#fff'}
                 hoverBackground={'#0B1FD1'}
                 transition={'all .4s ease-out'}
+                onClick={() => {
+                  setTransferFromSpotToFutures(false)
+                  togglePopup(true)
+                }}
               >
                 transfer out
               </BtnCustom>
@@ -244,5 +265,6 @@ export const Balances = ({ getFundsQuery, pair, marketType }) => {
         )}
       </Grid>
     </CustomCard>
+    </>
   )
 }

@@ -52,6 +52,7 @@ class Accounts extends React.PureComponent<IProps> {
       color,
       keys = [],
       portfolioAssetsData,
+      portfolioAssetsMap,
       onKeyToggle,
       login,
       isRebalance,
@@ -132,14 +133,9 @@ class Accounts extends React.PureComponent<IProps> {
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = key.selected
 
-            // TODO: filter by account id in portfolio asset
-            const assetData = portfolioAssetsData.filter((asset) => {
-              return asset.name === key.name
-            })
-
             const formattedValue = addMainSymbol(
               roundAndFormatNumber(
-                assetData[0] ? assetData[0].value : 0,
+                portfolioAssetsMap.get(key._id) ? portfolioAssetsMap.get(key._id).value : 0,
                 roundNumber,
                 true
               ),

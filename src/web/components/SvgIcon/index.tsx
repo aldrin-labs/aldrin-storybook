@@ -7,6 +7,7 @@ interface Props {
   style?: Object
   width?: number | string
   height?: number | string
+  onClick?: (any: any) => any
 }
 
 export default class SvgIcon extends React.Component<Props, {}> {

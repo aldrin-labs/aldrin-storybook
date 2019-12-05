@@ -142,7 +142,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       isUSDCurrently
     )
 
-    const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
+    const { portfolioAssetsData, totalKeyAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
       filteredData,
       baseCoin
     )
@@ -166,6 +166,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               isUSDCurrently={isUSDCurrently}
               getFuturesOverview={getFuturesOverview}
               portfolioAssetsData={portfolioAssetsData}
+              portfolioAssetsMap={portfolioAssetsMap}
               totalKeyAssetsData={totalKeyAssetsData}
             />
           </div>
