@@ -1,0 +1,81 @@
+import React, { Ref } from 'react'
+import { components } from 'react-select'
+import { Grid } from '@material-ui/core'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import { importCoinIcon } from '@core/utils/MarketCapUtils'
+
+type ComponentData = {
+  label: string
+  name: string
+}
+
+interface ComponentIProps {
+  data: ComponentData
+  innerProps: any
+  innerRef: any
+}
+
+const CoinContent = ({ data }: { data: ComponentData }) => (
+  <>
+    <Grid item style={{ alignSelf: 'center' }}>
+      <SvgIcon
+        style={{
+          marginRight: '.5rem',
+          position: 'relative',
+          top: '0.275rem',
+        }}
+        width={`1.7rem`}
+        src={importCoinIcon(data.label)}
+      />
+    </Grid>
+    <Grid item style={{ alignSelf: 'center' }}>
+      {data.label}
+    </Grid>
+    <Grid
+      item
+      style={{
+        alignSelf: 'flex-end',
+        color: '#7284A0',
+        fontSize: '1.2rem',
+        paddingLeft: '1rem',
+      }}
+    >
+      {data.name}
+    </Grid>
+  </>
+)
+
+export const CoinOption = ({
+  data,
+  innerProps,
+  innerRef,
+  ...otherProps
+}: ComponentIProps) => {
+  return (
+    <components.Option ref={innerRef} {...otherProps} {...data}>
+      <Grid
+        container
+        {...innerProps}
+        style={{ padding: '0 2rem', height: '100%' }}
+      >
+        <CoinContent data={data} />
+      </Grid>
+    </components.Option>
+  )
+}
+
+export const CoinSingleValue = ({
+  data,
+  innerProps,
+  innerRef,
+  ...otherProps
+}: ComponentIProps) => {
+  return (
+    <components.SingleValue ref={innerRef} {...otherProps} {...data}>
+      <Grid container {...innerProps} style={{ height: '100%' }}>
+        <CoinContent data={data} />
+      </Grid>
+    </components.SingleValue>
+  )
+}

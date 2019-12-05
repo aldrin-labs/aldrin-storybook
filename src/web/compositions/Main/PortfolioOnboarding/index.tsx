@@ -15,6 +15,8 @@ import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
+import BinanceAccountCreated from '@sb/components/Onboarding/BinanceAccountCreated/BinanceAccountCreated'
+import BinanceAccountCreatedLater from '@sb/components/Onboarding/BinanceAccountCreatedLater/BinanceAccountCreatedLater'
 
 import { demoKeyId } from '@core/utils/config'
 
@@ -97,6 +99,21 @@ const Onboarding = ({
 
       {currentStep === 'congratulations' && (
         <Congratulations open={true} completeOnboarding={completeOnboarding} />
+      )}
+
+      {currentStep === 'binanceAccountCreated' && (
+        <BinanceAccountCreated
+          open={true}
+          setCurrentStep={setCurrentStep}
+          completeOnboarding={completeOnboarding}
+        />
+      )}
+
+      {currentStep === 'binanceAccountCreatedLater' && (
+        <BinanceAccountCreatedLater
+          open={true}
+          completeOnboarding={completeOnboarding}
+        />
       )}
     </>
   )

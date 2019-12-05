@@ -19,6 +19,11 @@ import {
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Plus from '@icons/Plus.svg'
+import CcaiBinanceLogo from '@icons/ccai&binance.svg'
+
+import free from '@icons/free.svg'
+import useful from '@icons/useful.svg'
+import secure from '@icons/secure.svg'
 
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
@@ -64,6 +69,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     secretOfApiKey: '',
     exchange: '',
     error: '',
+  }
+
+  handleGenerateBrokerKey = async () => {
+    const { generateBrokerKeyMutation, setCurrentStep } = this.props
+
+    // uncomment when backend will be done
+    // await generateBrokerKeyMutation()
+
+    setCurrentStep('binanceAccountCreated')
+    this.handleClose()
   }
 
   handleSubmit = async () => {
@@ -156,6 +171,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       },
       open,
       onboarding = undefined,
+      includeCommonBinanceKey = true,
       setCurrentStep,
       existCustomButton = false,
       CustomButton,
@@ -208,7 +224,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         )}
 
         <DialogWrapper
-          maxWidth="xl"
+          maxWidth="md"
           style={{ borderRadius: '50%' }}
           onClose={() => {
             if (!onboarding) {
@@ -258,100 +274,219 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               style={{ minWidth: '440px' }}
             >
               <Grid>
-                <GridCustom>
-                  <Legend>Exchange</Legend>
-                  <SelectExchangeList
-                    isClearable={true}
-                    inputValue={exchange}
-                    placeholder={exchange}
-                    onChange={(e) => this.handleSelectExchange(e)}
-                    controlStyles={{
-                      border: '1px solid #e0e5ec',
-                      borderRadius: '1rem',
-                      padding: '0 1rem',
-                      background: '#fff',
-                    }}
-                    inputStyles={{
-                      marginLeft: '0',
-                      color: '#16253d',
-                      opacity: '1',
-                    }}
-                    singleValueStyles={{
-                      height: 'auto',
-                      width: 'auto',
-                      color: '#16253d',
-                      overflow: 'auto',
-                    }}
-                    optionStyles={{
-                      color: '#16253d',
-                      fontSize: '1.3rem',
-                    }}
-                  />
+                <GridCustom
+                  container
+                  direction={'column'}
+                  alignItems={'center'}
+                  justify={'center'}
+                >
+                  <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
                 </GridCustom>
                 <GridCustom>
-                  <Legend>Account name</Legend>
-                  <InputBaseCustom
-                    id="name"
-                    name="name"
-                    label="Name"
-                    value={name}
-                    onChange={(e) => this.handleChange(e)}
-                    placeholder="Type name..."
-                    type="text"
-                    // margin="normal"
-                  />
-                  {error && <FormError>{error}</FormError>}
+                  <Grid
+                    container
+                    justify={'space-between'}
+                    style={{ padding: '3rem 0' }}
+                  >
+                    <Grid
+                      container
+                      direction={'column'}
+                      justify={'center'}
+                      alignItems={'center'}
+                      style={{ maxWidth: '33%' }}
+                    >
+                      <Typography
+                        style={{
+                          paddingBottom: '0.5rem',
+                          fontWeight: 'bold',
+                          color: 'black',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Free
+                      </Typography>
+                      <SvgIcon src={free} width="40px" height="auto" />
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem' }}
+                      >
+                        No extra fee, pay only Binance fee
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      container
+                      direction={'column'}
+                      justify={'center'}
+                      alignItems={'center'}
+                      style={{ maxWidth: '33%' }}
+                    >
+                      <Typography
+                        style={{
+                          paddingBottom: '0.5rem',
+                          fontWeight: 'bold',
+                          color: 'black',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Useful
+                      </Typography>
+                      <SvgIcon src={useful} width="40px" height="auto" />
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem' }}
+                      >
+                        All features availiable with no limits
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      container
+                      direction={'column'}
+                      justify={'center'}
+                      alignItems={'center'}
+                      style={{ maxWidth: '33%' }}
+                    >
+                      <Typography
+                        style={{
+                          paddingBottom: '0.2rem',
+                          fontWeight: 'bold',
+                          color: 'black',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Secure
+                      </Typography>
+                      <SvgIcon src={secure} width="40px" height="auto" />
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem' }}
+                      >
+                        All user funds custody remain with Binance at all times
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container justify={'center'}>
+                    <BtnCustom
+                      btnWidth={'45%'}
+                      borderRadius={'32px'}
+                      btnColor={'#165BE0'}
+                      borderColor={'#165BE0'}
+                      padding={'1.5rem'}
+                      height={'auto'}
+                      borderWidth={'2px'}
+                      fontSize={'1.2rem'}
+                      onClick={this.handleGenerateBrokerKey}
+                    >
+                      Create hybrid account
+                    </BtnCustom>
+                  </Grid>
                 </GridCustom>
-                <GridCustom>
-                  <Legend>Api key</Legend>
-                  <InputBaseCustom
-                    id="apiKey"
-                    type="text"
-                    name="apiKey"
-                    label="API Key"
-                    value={apiKey}
-                    autoComplete={'off'}
-                    onChange={(e) => this.handleChange(e)}
-                    placeholder="Enter API key here..."
-                    // margin="normal"
-                  />
-                </GridCustom>
-                <GridCustom>
-                  <Legend>Secret key</Legend>
-                  <InputBaseCustom
-                    id="secretOfApiKey"
-                    name="secretOfApiKey"
-                    label="Secret"
-                    value={secretOfApiKey}
-                    autoComplete={'off'}
-                    onChange={(e) => this.handleChange(e)}
-                    placeholder="Enter secret key here..."
-                    type="text"
-                    // margin="dense"
-                  />
-                </GridCustom>
+                <Grid container justify="center" alignItems="center">
+                    <Typography>
+                      {onboarding
+                        ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
+                        : `Or add another exchange key`}
+                    </Typography>
+                  </Grid>
+                {includeCommonBinanceKey && (
+                  <>
+                    <GridCustom>
+                      <Legend>Exchange</Legend>
+                      <SelectExchangeList
+                        isClearable={true}
+                        inputValue={exchange}
+                        placeholder={exchange}
+                        onChange={(e) => this.handleSelectExchange(e)}
+                        controlStyles={{
+                          border: '1px solid #e0e5ec',
+                          borderRadius: '1rem',
+                          padding: '0 1rem',
+                          background: '#fff',
+                        }}
+                        inputStyles={{
+                          marginLeft: '0',
+                          color: '#16253d',
+                          opacity: '1',
+                        }}
+                        singleValueStyles={{
+                          height: 'auto',
+                          width: 'auto',
+                          color: '#16253d',
+                          overflow: 'auto',
+                        }}
+                        optionStyles={{
+                          color: '#16253d',
+                          fontSize: '1.3rem',
+                        }}
+                      />
+                    </GridCustom>
+                    <GridCustom>
+                      <Legend>Account name</Legend>
+                      <InputBaseCustom
+                        id="name"
+                        name="name"
+                        label="Name"
+                        value={name}
+                        onChange={(e) => this.handleChange(e)}
+                        placeholder="Type name..."
+                        type="text"
+                        // margin="normal"
+                      />
+                      {error && <FormError>{error}</FormError>}
+                    </GridCustom>
+                    <GridCustom>
+                      <Legend>Api key</Legend>
+                      <InputBaseCustom
+                        id="apiKey"
+                        type="text"
+                        name="apiKey"
+                        label="API Key"
+                        value={apiKey}
+                        autoComplete={'off'}
+                        onChange={(e) => this.handleChange(e)}
+                        placeholder="Enter API key here..."
+                        // margin="normal"
+                      />
+                    </GridCustom>
+                    <GridCustom>
+                      <Legend>Secret key</Legend>
+                      <InputBaseCustom
+                        id="secretOfApiKey"
+                        name="secretOfApiKey"
+                        label="Secret"
+                        value={secretOfApiKey}
+                        autoComplete={'off'}
+                        onChange={(e) => this.handleChange(e)}
+                        placeholder="Enter secret key here..."
+                        type="text"
+                        // margin="dense"
+                      />
+                    </GridCustom>
+                  </>
+                )}
               </Grid>
 
-              <Grid container justify="space-between" alignItems="center">
-                <LinkCustom
-                  href={'#'}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    this.handleClickOpenGetKeys()
-                  }}
-                >
-                  How to get keys?
-                </LinkCustom>
+              {includeCommonBinanceKey && (
+                <Grid container justify="space-between" alignItems="center">
+                  <LinkCustom
+                    href={'#'}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.handleClickOpenGetKeys()
+                    }}
+                  >
+                    How to get keys?
+                  </LinkCustom>
 
-                <BtnCustom
-                  btnWidth={'85px'}
-                  borderRadius={'32px'}
-                  btnColor={'#165BE0'}
-                  type="submit"
-                >
-                  {onboarding ? 'FINISH' : 'ADD'}
-                </BtnCustom>
-              </Grid>
+                  <BtnCustom
+                    btnWidth={'85px'}
+                    borderRadius={'32px'}
+                    btnColor={'#165BE0'}
+                    type="submit"
+                  >
+                    {onboarding ? 'ADD KEY' : 'ADD'}
+                  </BtnCustom>
+                </Grid>
+              )}
             </form>
           </DialogContent>
         </DialogWrapper>

@@ -5,6 +5,8 @@ export type ICurrentStep =
   | 'createPortfolio'
   | 'addAccount'
   | 'congratulations'
+  | 'binanceAccountCreated'
+  | 'binanceAccountCreatedLater'
 
 export type ITooltip = {
   getTooltipSettings: {
