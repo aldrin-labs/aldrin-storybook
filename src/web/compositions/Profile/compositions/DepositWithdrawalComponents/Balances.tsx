@@ -52,7 +52,7 @@ const Balances = ({ selectedCoin, getFundsQuery }: IProps) => {
   )
 }
 
-const BalancesWrapper = (props) => {
+const BalancesWrapper = ({...props}) => {
   return (
     <QueryRenderer
       component={Balances}

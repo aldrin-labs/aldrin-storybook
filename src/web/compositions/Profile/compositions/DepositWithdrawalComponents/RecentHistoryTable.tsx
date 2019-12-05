@@ -4,12 +4,26 @@ import { Grid } from '@material-ui/core'
 import { StyledTable } from './RecentHistoryTable.styles'
 import { columnNames } from './RecentHistoryTable.utils'
 import { combineRecentHistoryTable } from './RecentHistoryTable.utils'
+import { PortfolioAction } from './RecentHistoryTable.types'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getTransactionsInfo } from '@core/graphql/queries/portfolio/getTransactionsInfo'
 
-const RecentHistoryTable = ({ getTransactionsInfo, isDepositPage }) => {
-  const body = combineRecentHistoryTable(getTransactionsInfo.myPortfolios[0].portfolioActions, isDepositPage)
+const RecentHistoryTable = ({
+  getTransactionsInfo,
+  isDepositPage,
+}: {
+  getTransactionsInfo: {
+    myPortfolios: {
+      portfolioActions: PortfolioAction
+    }[]
+  }
+  isDepositPage: true
+}) => {
+  const body = combineRecentHistoryTable(
+    getTransactionsInfo.myPortfolios[0].portfolioActions,
+    isDepositPage
+  )
 
   return (
     <Grid style={{ height: '30%' }}>
