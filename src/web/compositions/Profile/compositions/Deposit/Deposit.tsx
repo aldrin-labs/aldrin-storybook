@@ -14,14 +14,10 @@ import { StyledInput, StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 
 const Deposits = ({  }: IProps) => {
-  const totalBalance = 0.000003241
-  const inOrder = 0.000003241
-  const availableBalance = 0.000003241
-
   const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
-  const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: '' })
+  const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: 0 })
 
 
   const copyCoinAddress = () => {
@@ -50,9 +46,6 @@ const Deposits = ({  }: IProps) => {
       >
         <AccountBlock
           isDepositPage={true}
-          totalBalance={totalBalance}
-          inOrder={inOrder}
-          availableBalance={availableBalance}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
           selectedAccount={selectedAccount}
@@ -96,7 +89,7 @@ const Deposits = ({  }: IProps) => {
               </StyledTypography>
               <StyledInput
                 value={coinAddress}
-                onChange={(e) => setCoinAddress(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCoinAddress(e.target.value)}
               />
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
