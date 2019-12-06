@@ -43,10 +43,8 @@ class TableContainer extends Component<IProps, IState> {
         return null
       }
 
-      const fall =
-        state.data.length > 0 ? state.data[0].price > tickerData[4] : false
       const ticker = {
-        fall,
+        fall: tickerData[9],
         id: tickerData[6],
         size: tickerData[5],
         price: tickerData[4],

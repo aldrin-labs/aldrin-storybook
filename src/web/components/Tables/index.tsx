@@ -45,7 +45,7 @@ import CustomPlaceholder from '@sb/components/CustomPlaceholder'
 const CustomTableCell = withStyles((theme) => ({
   head: {
     position: 'sticky',
-    top: theme.spacing.unit * 4,
+    top: '3rem',
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.text.primary,
     textTransform: 'uppercase',

@@ -33,7 +33,7 @@ class SpreadTable extends Component<IProps> {
               disableHeader={mode !== 'bids'}
               width={width}
               height={height}
-              headerHeight={window.outerHeight / 60}
+              headerHeight={window.outerHeight / 50}
               headerStyle={{
                 color: '#7284A0',
                 paddingLeft: '.5rem',

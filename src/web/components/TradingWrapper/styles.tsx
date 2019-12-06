@@ -10,6 +10,8 @@ export const TablesBlockWrapper = styled(Grid)`
   padding-right: 0;
   border: none;
   position: relative;
+  height: 50%;
+  bottom: 5%;
 
   && {
     box-shadow: none !important;
@@ -41,7 +43,7 @@ export const TabsTypeContainer = styled(TabsContainer)`
   border: none;
 `
 
-export const StyledTab = styled(Button)`
+export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   min-width: auto;
   width: 30%;
   height: 3.5rem;
@@ -93,13 +95,17 @@ export const TerminalHeader = styled.div`
   border-bottom: 0.1rem solid #e0e5ec;
 `
 
-export const TerminalMainGrid = styled(Grid)`
+export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
+  <Grid {...rest} />
+))`
   height: calc(
     100% - ${(props) => (props.marketType === 0 ? '3rem' : '5.2rem')}
   );
 `
 
-export const FullHeightGrid = styled(Grid)`
+export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
+  <Grid {...rest} />
+))`
   height: 100%;
   border-right: ${(props) => props.needBorderRight && '.1rem solid #e0e5ec;'};
 `

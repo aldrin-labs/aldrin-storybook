@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import { HeaderProperties, BlockProperties } from './types'
@@ -68,7 +69,9 @@ export const CloseHeader = styled(TerminalHeader)`
   cursor: pointer;
 `
 
-export const TerminalBlock = styled(Grid)`
+export const TerminalBlock = styled(({ borderRight, ...rest }) => (
+  <Grid {...rest} />
+))`
   width: ${(props: BlockProperties) => props.width};
   padding: ${(props) => props.padding || '0rem 1rem 0rem 1.2rem'};
   border-right: ${(props) => props.borderRight || '0.1rem solid #abbad1'};
