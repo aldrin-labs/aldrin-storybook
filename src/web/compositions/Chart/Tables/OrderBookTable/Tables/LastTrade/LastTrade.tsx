@@ -26,22 +26,8 @@ interface IProps {
 }
 
 class LastTrade extends React.Component<IProps> {
-  state = {
-    prevTradePrice: 0,
-    currentTradePrice: 0,
-  }
 
   unsubscribeFunction: null | Function = null
-
-  static getDerivedStateFromProps(props: IProps, state) {
-    const { data } = props
-    const lastTradePrice = getPriceFromLastTrade(data)
-
-    return {
-      prevTradePrice: state.currentTradePrice,
-      currentTradePrice: lastTradePrice,
-    }
-  }
 
   componentDidMount() {
     this.unsubscribeFunction = this.props.subscribeToMore()
@@ -60,17 +46,18 @@ class LastTrade extends React.Component<IProps> {
       return null
     }
 
-    const { prevTradePrice, currentTradePrice } = this.state
-    const fall = prevTradePrice > currentTradePrice
+    const data = JSON.parse(this.props.data.marketTickers[0])
+    const price = data[4]
+    const fall = data[9]
 
     return (
       <LastTradeContainer>
         <LastTradeValue fall={fall}>
           <ArrowIcon fall={fall} />
-          {addMainSymbol(stripDigitPlaces(currentTradePrice, 2), true)}
+          {addMainSymbol(stripDigitPlaces(price, 2), true)}
         </LastTradeValue>
         <LastTradePrice>
-          {addMainSymbol(stripDigitPlaces(currentTradePrice, 2), true)}
+          {addMainSymbol(stripDigitPlaces(price, 2), true)}
         </LastTradePrice>
       </LastTradeContainer>
     )

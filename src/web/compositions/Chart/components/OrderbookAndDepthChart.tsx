@@ -211,10 +211,10 @@ export const APIWrapper = ({
     withTableLoader={true}
     fetchPolicy="network-only"
     query={ORDERS_MARKET_QUERY}
-    variables={{ symbol: `${symbol}_${marketType}`, exchange }}
+    variables={{ symbol: symbol, exchange, marketType }}
     subscriptionArgs={{
       subscription: ORDERBOOK,
-      variables: { symbol: `${symbol}_${marketType}`, exchange },
+      variables: { symbol: symbol, exchange, marketType },
       updateQueryFunction: updateOrderBookQuerryFunction,
     }}
     {...{

@@ -9,8 +9,6 @@ const Handle = Slider.Handle
 
 const StyledSlider = styled(
   ({
-    trackAfterBackground,
-    trackBeforeBackground,
     sliderContainerStyles,
     ...rest
   }) => <Slider {...rest} />
@@ -56,13 +54,21 @@ const StyledSlider = styled(
 
 const TooltipStyles = createGlobalStyle`
   .rc-tooltip-inner.rc-tooltip-inner {
-    background-color: ${(props) => props.trackBeforeBackground || '#fff'};
+    background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'};
+    border: .1rem solid #e0e5ec;
+    min-height: auto;
+    font-family: DM Sans;
+    padding: .2rem .4rem;
+    font-size: 1.2rem;
+  }
+
+  .rc-tooltip-arrow.rc-tooltip-arrow {
+    display: none;
   }
 `
 
 const handle = (props) => {
   const { value, valueSymbol, dragging, index, ...restProps } = props
-
   return (
     <>
       <Tooltip
@@ -71,9 +77,8 @@ const handle = (props) => {
             {value} {valueSymbol}
           </span>
         }
-        visible={true}
         placement="top"
-        trigger={['click']}
+        visible={dragging}
         key={index}
       >
         <Handle value={value} {...restProps} />
@@ -90,6 +95,7 @@ const RCSlider = ({
   valueSymbol,
   value,
   onChange,
+  trackBeforeBackground,
   ...rest
 }) => {
   return (
@@ -99,7 +105,8 @@ const RCSlider = ({
       value={value}
       defaultValue={defaultValue}
       onChange={onChange}
-      handle={(props) => handle({ ...props, valueSymbol })}
+      trackBeforeBackground={trackBeforeBackground}
+      handle={(props) => handle({ ...props, valueSymbol, trackBeforeBackground })}
       {...rest}
     />
   )

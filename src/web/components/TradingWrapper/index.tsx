@@ -222,7 +222,7 @@ class SimpleTabs extends React.Component {
                     width: '65%',
                     margin: '0 auto',
                   }}
-                  trackBeforeBackground={'#29AC80;'}
+                  trackBeforeBackground={'#29AC80'}
                   handleStyles={{
                     width: '1.2rem',
                     height: '1.2rem',
