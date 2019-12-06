@@ -1,18 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Typography, Fade } from '@material-ui/core'
+import { Fade } from '@material-ui/core'
 
 export default ({ show = true, text, containerHeight = '' }) => (
   <Container containerHeight={containerHeight}>
     <Fade timeout={1000} in={show}>
-      <Typography variant="h3" color="textPrimary">
-        {text}
-      </Typography>
+      <Typography>{text}</Typography>
     </Fade>
   </Container>
 )
 
-const Container = styled.div`
+const Container = styled.tr`
   height: ${({ containerHeight }: { containerHeight: string }) =>
     containerHeight};
   padding: 3.2rem;
@@ -26,4 +24,9 @@ const Container = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
+`
+
+const Typography = styled.td`
+  color: rgba(65, 73, 94, 0.69);
+  font-size: 3rem;
 `

@@ -31,7 +31,7 @@ const OptimizedRow = memo(
             align="left"
           >
             {(+ticker.price).toFixed(2)
-              // .toFixed(numbersAfterDecimalForPrice)
+            // .toFixed(numbersAfterDecimalForPrice)
             }
           </StyledTypography>
         </StyledCell>
@@ -73,6 +73,7 @@ const MemoizedHead = memo(() => (
         style={{
           height: 'auto',
           padding: '0',
+          borderBottom: '.1rem solid #e0e5ec'
         }}
       >
         <StyledHeadCell style={{ minWidth: '30%' }}>
@@ -88,11 +89,7 @@ const MemoizedHead = memo(() => (
         </StyledHeadCell>
 
         <StyledHeadCell style={{ minWidth: '40%' }}>
-          <StyledTitle
-            variant="body2"
-            align="left"
-            style={{ paddingRight: 0 }}
-          >
+          <StyledTitle variant="body2" align="left" style={{ paddingRight: 0 }}>
             Time
           </StyledTitle>
         </StyledHeadCell>
@@ -148,16 +145,12 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
             key: 'tradehistory_head',
           }}
         />
-        <Body
-          data-e2e="tradeHistory__body"
-          background={'#fff'}
-          height="45vh"
-        >
+        <Body data-e2e="tradeHistory__body" background={'#fff'} height="37vh">
           {data.map((ticker: ITicker, i: number) => (
             <OptimizedRow
               key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${
                 ticker.fall
-                }`}
+              }`}
               {...{
                 ticker,
                 background,

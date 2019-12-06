@@ -37,8 +37,8 @@ class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
     mode: 'market',
-    percentageBuy: '0',
-    percentageSell: '0',
+    percentageBuy: 0,
+    percentageSell: 0,
     leverage: 1,
     reduceOnly: true,
     orderMode: 'TIF',
@@ -84,7 +84,7 @@ class SimpleTabs extends React.Component {
     return (
       <Grid item xs={12} style={{ height: '100%', padding: '0 0 0 0' }}>
         <CustomCard>
-          <TerminalHeader>
+          <TerminalHeader key={'spotTerminal'}>
             <TerminalModeButton
               isActive={mode === 'limit'}
               onClick={() => this.handleChangeMode('limit')}
@@ -121,10 +121,10 @@ class SimpleTabs extends React.Component {
           </TerminalHeader>
 
           {!isSPOTMarket && (
-            <TerminalHeader style={{ display: 'flex' }}>
+            <TerminalHeader key={'futuresTerminal'} style={{ display: 'flex' }}>
               <SettingsContainer>
                 {mode === 'limit' && (
-                  <>
+                  <div style="postOnlyTerminalController">
                     <SRadio
                       id="postOnly"
                       checked={orderMode === 'postOnly'}
@@ -135,12 +135,12 @@ class SimpleTabs extends React.Component {
                         })
                       }
                     />
-                    <SettingsLabel for="postOnly">post only</SettingsLabel>
-                  </>
+                    <SettingsLabel htmlFor="postOnly">post only</SettingsLabel>
+                  </div>
                 )}
 
                 {mode !== 'market' && (
-                  <>
+                  <div key="TIFTerminalController">
                     <SRadio
                       id="TIF"
                       checked={orderMode === 'TIF'}
@@ -151,7 +151,7 @@ class SimpleTabs extends React.Component {
                         })
                       }
                     />
-                    <SettingsLabel for="TIF">TIF</SettingsLabel>
+                    <SettingsLabel htmlFor="TIF">TIF</SettingsLabel>
                     <StyledSelect
                       disabled={orderMode !== 'TIF'}
                       value={this.state.TIFMode}
@@ -163,11 +163,11 @@ class SimpleTabs extends React.Component {
                       <StyledOption>IOK</StyledOption>
                       <StyledOption>FOK</StyledOption>
                     </StyledSelect>
-                  </>
+                  </div>
                 )}
 
                 {mode !== 'stop-limit' && (
-                  <>
+                  <div key="reduceTerminalController">
                     <SCheckbox
                       id="reduceOnly"
                       checked={reduceOnly}
@@ -178,13 +178,15 @@ class SimpleTabs extends React.Component {
                         }))
                       }
                     />
-                    <SettingsLabel for="reduceOnly">reduce only</SettingsLabel>
-                  </>
+                    <SettingsLabel htmlFor="reduceOnly">
+                      reduce only
+                    </SettingsLabel>
+                  </div>
                 )}
 
                 {mode === 'stop-limit' && (
-                  <>
-                    <SettingsLabel for="trigger">trigger</SettingsLabel>
+                  <div key="triggerTerminalController">
+                    <SettingsLabel htmlFor="trigger">trigger</SettingsLabel>
                     <StyledSelect
                       id="trigger"
                       onChange={(e) =>
@@ -194,7 +196,7 @@ class SimpleTabs extends React.Component {
                       <StyledOption>last price</StyledOption>
                       <StyledOption>mark price</StyledOption>
                     </StyledSelect>
-                  </>
+                  </div>
                 )}
               </SettingsContainer>
               <LeverageContainer>
@@ -244,7 +246,7 @@ class SimpleTabs extends React.Component {
             </TerminalHeader>
           )}
 
-          <TerminalMainGrid xs={12} container marketType={marketType}>
+          <TerminalMainGrid item xs={12} container marketType={marketType}>
             <FullHeightGrid xs={6} item needBorderRight>
               <TerminalContainer>
                 <TraidingTerminal

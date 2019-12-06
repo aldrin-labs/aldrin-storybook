@@ -19,6 +19,7 @@ export const LastTradeValue = styled.div`
   letter-spacing: 0.075rem;
   color: ${({ fall }: { fall: boolean }) => (fall ? '#DD6956' : '#29AC80')};
   font-size: 1.6rem;
+  font-weight: bold;
 `
 
 export const LastTradePrice = styled.span`

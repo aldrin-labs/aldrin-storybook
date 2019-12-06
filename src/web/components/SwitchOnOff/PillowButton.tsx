@@ -37,7 +37,11 @@ const StyledButton = styled(({ isDisabled, ...rest }) => (
   }
 `
 
-export const FirstHalfButton = styled(StyledButton)`
+export const FirstHalfButton = styled(
+  ({ firstHalfAdditionalStyle, buttonAdditionalStyle, ...rest }) => (
+    <StyledButton {...rest} />
+  )
+)`
   border-top-left-radius: 1.3rem;
   border-bottom-left-radius: 1.3rem;
   padding-left: 0.8rem;
@@ -45,7 +49,11 @@ export const FirstHalfButton = styled(StyledButton)`
   ${(props) => props.firstHalfAdditionalStyle}
 `
 
-export const SecondHalfButton = styled(StyledButton)`
+export const SecondHalfButton = styled(
+  ({ secondHalfAdditionalStyle, buttonAdditionalStyle, ...rest }) => (
+    <StyledButton {...rest} />
+  )
+)`
   border-top-right-radius: 1.3rem;
   border-bottom-right-radius: 1.3rem;
   padding-right: 0.5rem;

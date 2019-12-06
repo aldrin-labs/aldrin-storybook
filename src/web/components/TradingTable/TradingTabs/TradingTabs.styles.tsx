@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button } from '@material-ui/core'
 
-export const TitleTab = styled(Button)`
+export const TitleTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   &&& {
     color: ${(props: { active: boolean }) =>
       props.active ? '#fff' : '#7284A0;'};

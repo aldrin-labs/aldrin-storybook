@@ -2,7 +2,7 @@ import 'rc-slider/assets/index.css'
 import 'rc-tooltip/assets/bootstrap.css'
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import Tooltip from 'rc-tooltip'
 import Slider from 'rc-slider'
 const Handle = Slider.Handle
@@ -54,23 +54,32 @@ const StyledSlider = styled(
   }
 `
 
+const TooltipStyles = createGlobalStyle`
+  .rc-tooltip-inner.rc-tooltip-inner {
+    background-color: ${(props) => props.trackBeforeBackground || '#fff'};
+  }
+`
+
 const handle = (props) => {
   const { value, valueSymbol, dragging, index, ...restProps } = props
 
   return (
-    <Tooltip
-      prefixCls="rc-slider-tooltip"
-      overlay={
-        <span>
-          {value} {valueSymbol}
-        </span>
-      }
-      visible={dragging}
-      placement="top"
-      key={index}
-    >
-      <Handle value={value} {...restProps} />
-    </Tooltip>
+    <>
+      <Tooltip
+        overlay={
+          <span>
+            {value} {valueSymbol}
+          </span>
+        }
+        visible={true}
+        placement="top"
+        trigger={['click']}
+        key={index}
+      >
+        <Handle value={value} {...restProps} />
+      </Tooltip>
+      <TooltipStyles trackBeforeBackground={restProps.trackBeforeBackground} />
+    </>
   )
 }
 
