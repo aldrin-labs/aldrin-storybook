@@ -40,7 +40,7 @@ const SubRow = ({}) => {
           inputStyles={{ textTransform: 'uppercase', color: '#ABBAD1' }}
         />
         <BtnCustom
-          btnWidth="15%"
+          btnWidth="30%"
           height="3rem"
           fontSize="1rem"
           padding=".5rem 0 .4rem 0"
@@ -55,7 +55,7 @@ const SubRow = ({}) => {
           limit
         </BtnCustom>
         <BtnCustom
-          btnWidth="15%"
+          btnWidth="30%"
           height="3rem"
           fontSize="1rem"
           padding=".5rem 0 .4rem 0"

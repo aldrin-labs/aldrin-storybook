@@ -807,7 +807,7 @@ export const combineFundsTable = (
     )
 
     return {
-      id: symbol,
+      id: `${symbol}${quantity}`,
       coin: symbol || 'unknown',
       totalBalance: {
         render:

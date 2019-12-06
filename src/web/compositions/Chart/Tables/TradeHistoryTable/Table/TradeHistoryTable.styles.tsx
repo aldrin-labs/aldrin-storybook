@@ -28,11 +28,11 @@ export const StyledRow = styled(Row)`
 `
 
 export const StyledTitle = styled(TypographyFullWidth)`
-  line-height: 18px;
+  line-height: 1;
   font-size: 1rem;
-  color: #16253d;
+  color: #7284a0;
   font-weight: bold;
-  padding: 6px 0 0 1rem;
+  padding: 0.5rem 0 0.5rem 1rem;
 `
 
 export const StyledCell = styled(Cell)`
