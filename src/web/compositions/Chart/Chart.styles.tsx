@@ -190,11 +190,13 @@ export const TablesContainer = styled(Grid)`
   }
 `
 
-export const TradingTerminalContainer = styled(Grid)`
+export const TradingTerminalContainer = styled(
+  ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
+)`
   position: relative;
   display: flex;
 
-  height: 50%;
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '50%' : '50%')};
   overflow: hidden;
 
   flex-direction: column;
@@ -205,9 +207,11 @@ export const TradingTerminalContainer = styled(Grid)`
   }
 `
 
-export const ChartsContainer = styled(TablesContainer)`
+export const ChartsContainer = styled(
+  ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
+)`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  height: calc(50%);
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '55%' : '50%')};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -220,11 +224,13 @@ export const ChartsContainer = styled(TablesContainer)`
   background-color: #f9fbfd;
 `
 
-export const TradingTabelContainer = styled(TablesContainer)`
+export const TradingTabelContainer = styled(
+  ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
+)`
   // 32vh was
   background-color: #f9fbfd;
   padding: 0.4rem 0.4rem 0 0;
-  height: 50%;
+  height: ${(props) => props.isDefaultTerminalViewMode && '45%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -256,7 +262,7 @@ export const Toggler = styled.div`
   justify-content: flex-end;
 `
 
-export const StyledSwitch = styled(Button)`
+export const StyledSwitch = styled(({ isActive, ...rest }) => <Button {...rest} />)`
   background: ${(props) => (props.isActive ? '#4152AF' : '#F9FBFD')};
   color: ${(props) => (props.isActive ? '#fff' : '#4152AF')};
   border: 1px solid #4152af;
@@ -314,8 +320,10 @@ export const WatchSubvalue = styled.span`
   color: ${(props) => props.color};
 `
 
-export const BalancesContainer = styled(Grid)`
-  height: 50%;
+export const BalancesContainer = styled(
+  ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
+)`
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '45%' : '50%')};
   padding: ${({
     isDefaultTerminalViewMode,
   }: {
@@ -326,5 +334,6 @@ export const BalancesContainer = styled(Grid)`
 
 export const SmartTerminalContainer = styled(Grid)`
   position: relative;
+  height: 50%;
   padding: 0.4rem 0 0 0.4rem;
 `

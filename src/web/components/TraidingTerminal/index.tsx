@@ -38,7 +38,7 @@ import {
   PriceContainer,
 } from './styles'
 
-const TradeInputContainer = ({ title, value, onChange, coin, style }) => {
+const TradeInputContainer = ({ title, value = '', onChange, coin, style }) => {
   return (
     <TradeInputBlock style={style}>
       <InputTitle>{title}:</InputTitle>
@@ -270,22 +270,17 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <TradeInputContainer
                   title={'Stop'}
                   coin={pair[1]}
-                  value={values.stop}
+                  value={values.stop || ''}
                   onChange={this.onStopChange}
                 />
               </PaddingGrid>
             ) : null}
 
             {priceType !== 'market' ? (
-              <PriceContainer
-                alignItems={priceType !== 'stop-limit' && 'flex-end'}
-                xs={12}
-                container
-                key={'limit-price'}
-              >
+              <PriceContainer xs={12} item container key={'limit-price'}>
                 <TradeInputContainer
                   title={'Price'}
-                  value={values.limit}
+                  value={values.limit || ''}
                   onChange={this.onLimitChange}
                   coin={pair[1]}
                 />
@@ -301,7 +296,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             >
               <TradeInputContainer
                 title={isSPOTMarket ? `Amount` : 'qtty'}
-                value={values.amount}
+                value={values.amount || ''}
                 onChange={this.onAmountChange}
                 coin={pair[0]}
                 style={{ paddingBottom: '.8rem' }}
@@ -360,7 +355,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               >
                 <TradeInputContainer
                   title={`Total`}
-                  value={values.total}
+                  value={values.total || ''}
                   onChange={this.onTotalChange}
                   coin={pair[1]}
                 />

@@ -2,15 +2,13 @@ import 'rc-slider/assets/index.css'
 import 'rc-tooltip/assets/bootstrap.css'
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import Tooltip from 'rc-tooltip'
 import Slider from 'rc-slider'
 const Handle = Slider.Handle
 
 const StyledSlider = styled(
   ({
-    trackAfterBackground,
-    trackBeforeBackground,
     sliderContainerStyles,
     ...rest
   }) => <Slider {...rest} />
@@ -54,23 +52,39 @@ const StyledSlider = styled(
   }
 `
 
+const TooltipStyles = createGlobalStyle`
+  .rc-tooltip-inner.rc-tooltip-inner {
+    background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'};
+    border: .1rem solid #e0e5ec;
+    min-height: auto;
+    font-family: DM Sans;
+    padding: .2rem .4rem;
+    font-size: 1.2rem;
+  }
+
+  .rc-tooltip-arrow.rc-tooltip-arrow {
+    display: none;
+  }
+`
+
 const handle = (props) => {
   const { value, valueSymbol, dragging, index, ...restProps } = props
-
   return (
-    <Tooltip
-      prefixCls="rc-slider-tooltip"
-      overlay={
-        <span>
-          {value} {valueSymbol}
-        </span>
-      }
-      visible={dragging}
-      placement="top"
-      key={index}
-    >
-      <Handle value={value} {...restProps} />
-    </Tooltip>
+    <>
+      <Tooltip
+        overlay={
+          <span>
+            {value} {valueSymbol}
+          </span>
+        }
+        placement="top"
+        visible={dragging}
+        key={index}
+      >
+        <Handle value={value} {...restProps} />
+      </Tooltip>
+      <TooltipStyles trackBeforeBackground={restProps.trackBeforeBackground} />
+    </>
   )
 }
 
@@ -81,6 +95,7 @@ const RCSlider = ({
   valueSymbol,
   value,
   onChange,
+  trackBeforeBackground,
   ...rest
 }) => {
   return (
@@ -90,7 +105,8 @@ const RCSlider = ({
       value={value}
       defaultValue={defaultValue}
       onChange={onChange}
-      handle={(props) => handle({ ...props, valueSymbol })}
+      trackBeforeBackground={trackBeforeBackground}
+      handle={(props) => handle({ ...props, valueSymbol, trackBeforeBackground })}
       {...rest}
     />
   )

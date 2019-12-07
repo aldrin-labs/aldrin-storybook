@@ -225,6 +225,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       <CustomCard>
         <TerminalHeaders>
           <TerminalHeader
+            key={'entryPoint'}
             width={'33%'}
             justify={marketType === 0 ? 'flex-start' : 'space-between'}
           >
@@ -284,12 +285,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             )}
           </TerminalHeader>
           <TerminalHeader
+            key={'takeProfit'}
             width={'31%'}
             margin={'0 1%'}
             padding={'0rem 1.5rem'}
             justify={'space-between'}
           >
-            <HeaderLabel for="isTakeProfitOn">take a profit</HeaderLabel>
+            <HeaderLabel htmlFor="isTakeProfitOn">take a profit</HeaderLabel>
             <GreenSwitcher
               id="isTakeProfitOn"
               checked={takeProfit.isTakeProfitOn}
@@ -302,8 +304,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             width={'31%'}
             padding={'0rem 1.5rem'}
             justify={'space-between'}
+            key={'stopLoss'}
           >
-            <HeaderLabel for="isStopLossOn">stop loss</HeaderLabel>
+            <HeaderLabel htmlFor="isStopLossOn">stop loss</HeaderLabel>
             <GreenSwitcher
               id="isStopLossOn"
               checked={stopLoss.isStopLossOn}
@@ -311,6 +314,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             />
           </TerminalHeader>
           <CloseHeader
+            key={'buttonToggleTerminalView'}
             padding={'.55rem .5rem'}
             onClick={() => updateTerminalViewMode('default')}
           >
@@ -395,7 +399,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }}
                   />
-                  <HeaderLabel for="entryPointTrailingOn">
+                  <HeaderLabel htmlFor="entryPointTrailingOn">
                     trailing{' '}
                     <span
                       style={{
@@ -422,7 +426,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderLabel for="isHedgeOn">hedge</HeaderLabel>
+                  <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
                 </div>
               </InputRowContainer>
 
@@ -774,7 +778,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       this.updateBlockValue('takeProfit', 'type', 'market')
                     }}
                   />
-                  <HeaderLabel for="takeProfitTrailingOn">
+                  <HeaderLabel htmlFor="takeProfitTrailingOn">
                     trailing <span style={{ color: '#29AC80' }}>t-a-p</span>
                   </HeaderLabel>
                 </div>
@@ -798,7 +802,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }}
                   />
-                  <HeaderLabel for="isSplitTargetsOn">
+                  <HeaderLabel htmlFor="isSplitTargetsOn">
                     split targets
                   </HeaderLabel>
                 </div>
@@ -815,7 +819,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderLabel for="takeProfitTimeout">timeout</HeaderLabel>
+                  <HeaderLabel htmlFor="takeProfitTimeout">timeout</HeaderLabel>
                 </div>
               </InputRowContainer>
 
@@ -1194,7 +1198,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderLabel for="stopLossTimeout">timeout</HeaderLabel>
+                  <HeaderLabel htmlFor="stopLossTimeout">timeout</HeaderLabel>
                 </div>
                 <div>
                   <GreenSwitcher
@@ -1209,7 +1213,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }
                   />
-                  <HeaderLabel for="forcedStop">
+                  <HeaderLabel htmlFor="forcedStop">
                     forced <span style={{ color: '#DD6956' }}>stop</span>
                   </HeaderLabel>
                 </div>

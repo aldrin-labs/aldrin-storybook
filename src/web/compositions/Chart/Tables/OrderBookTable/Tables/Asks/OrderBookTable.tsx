@@ -34,7 +34,7 @@ class OrderBookTable extends Component<IProps> {
               width={width}
               height={height}
               rowCount={tableData.length}
-              headerHeight={window.outerHeight / 60}
+              headerHeight={window.outerHeight / 50}
               headerStyle={{
                 color: '#7284A0',
                 paddingLeft: '.5rem',

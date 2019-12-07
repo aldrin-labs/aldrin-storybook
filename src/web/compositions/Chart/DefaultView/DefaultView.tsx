@@ -3,7 +3,7 @@ import React from 'react'
 import { Fade, Grid } from '@material-ui/core'
 
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
-
+import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { SingleChart } from '@sb/components/Chart'
 
 import Balances from '@core/components/Balances'
@@ -110,7 +110,11 @@ export const DefaultView = (props: any) => {
             padding: '.4rem .4rem 0 0',
           }}
         >
-          <ChartsContainer item xs={7}>
+          <ChartsContainer
+            item
+            xs={7}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
             <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
@@ -131,7 +135,11 @@ export const DefaultView = (props: any) => {
               )}
             </CustomCard>
           </ChartsContainer>
-          <TradingTerminalContainer item xs={5}>
+          <TradingTerminalContainer
+            item
+            xs={5}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
             <Grid item container style={{ height: '100%' }}>
               <Grid item container xs={7} style={{ height: '100%' }}>
                 <OrderbookAndDepthChart
@@ -170,7 +178,11 @@ export const DefaultView = (props: any) => {
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (
-            <TradingTabelContainer item xs={6}>
+            <TradingTabelContainer
+              item
+              xs={6}
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            >
               <CustomCard style={{ overflow: 'hidden scroll' }}>
                 <TradingTable
                   showCancelResult={showCancelResult}

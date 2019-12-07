@@ -58,6 +58,7 @@ export const BalanceValue = styled.span`
 export const BalanceSymbol = styled.span`
   color: #7284a0;
   font-size: 1.2rem;
+  font-weight: bold;
 `
 
 export const BalanceFuturesContainer = styled.div`
@@ -142,6 +143,9 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
           <>
             <Grid
               item
+              container
+              direction="column"
+              justify="center"
               xs={6}
               style={{
                 borderBottom: '.1rem solid #e0e5ec',
@@ -165,7 +169,14 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
                 </BalanceValue>
               </BalanceValues>
             </Grid>
-            <Grid item xs={6} style={{ maxWidth: '100%' }}>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              item
+              xs={6}
+              style={{ maxWidth: '100%' }}
+            >
               <BalanceTitle>
                 <BalanceSymbol>{pair[1]}</BalanceSymbol>
                 <SvgIcon
