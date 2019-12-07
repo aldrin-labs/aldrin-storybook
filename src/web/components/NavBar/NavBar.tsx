@@ -3,7 +3,7 @@ import { withApollo } from 'react-apollo'
 import { compose } from 'recompose'
 
 import { client } from '@core/graphql/apolloClient'
-import { Login } from '@core/containers/Login'
+import { LoginComponent as Login} from '@sb/components/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -57,7 +57,6 @@ const NavBarRaw: SFC<Props> = ({
   theme,
   pathname,
   $hide = false,
-  push,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
@@ -257,7 +256,7 @@ const NavBarRaw: SFC<Props> = ({
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden>
               <Hidden only="xs">
-                <Login push={push} />
+                <Login />
               </Hidden>
             </Grid>
           </Grid>
