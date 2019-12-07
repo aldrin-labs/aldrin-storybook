@@ -40,6 +40,9 @@ class LoginClassComponent extends React.Component<{}> {
     if (this.props.modalIsOpen) {
       await this.onModalChanges(false)
     }
+
+    // temporary not stable
+    await this.showLogin()
   }
 
   componentDidUpdate = async (prevProps: Props) => {
