@@ -42,7 +42,7 @@ class LoginClassComponent extends React.Component<{}> {
     }
 
     // temporary not stable
-    await this.showLogin()
+    // await this.showLogin()
   }
 
   componentDidUpdate = async (prevProps: Props) => {
