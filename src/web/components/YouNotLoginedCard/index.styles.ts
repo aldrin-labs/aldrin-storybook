@@ -4,7 +4,7 @@ import { Card } from '@material-ui/core'
 
 export const StyledDialog = styled.div`
   && {
-    z-index: -10;
+    z-index: 1;
   }
 
   outline: none;

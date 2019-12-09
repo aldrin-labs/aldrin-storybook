@@ -69,7 +69,6 @@ const AppRaw = ({
             <AnimatedNavBar
               pathname={currentPage}
               hide={fullscreen}
-              push={push}
             />
           )}
           {children}
