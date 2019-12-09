@@ -110,13 +110,13 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           quote={quote}
         />
 
-        <LastTrade
+        {/* <LastTrade
           mode={mode}
           marketType={marketType}
           aggregation={aggregation}
           symbol={currencyPair}
           exchange={this.props.activeExchange.symbol}
-        />
+        /> */}
 
         <SpreadTable
           data={data}
