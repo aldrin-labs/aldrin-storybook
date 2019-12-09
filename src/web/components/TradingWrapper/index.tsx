@@ -79,6 +79,7 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      
       updateTerminalViewMode,
     } = this.props
 
@@ -261,6 +262,7 @@ class SimpleTabs extends React.Component {
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Buy')
                   }
+
                   pair={pair}
                   funds={funds}
                   key={[pair, funds]}

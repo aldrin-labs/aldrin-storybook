@@ -256,11 +256,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       touched,
       errors,
       validateForm,
-      leverage,
-      reduceOnly,
-      orderMode,
-      TIFMode,
-      trigger,
     } = this.props
 
     const pairsErrors = toPairs(errors)
@@ -420,11 +415,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 touched={touched}
                 amount={values.amount}
                 validateForm={validateForm}
-                leverage={leverage}
-                reduceOnly={reduceOnly}
-                orderMode={orderMode}
-                TIFMode={TIFMode}
-                trigger={trigger}
                 battonText={`${operationType} ${pair[0]}`}
                 text={
                   priceType === 'stop-limit'
@@ -456,7 +446,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 }
 
 const validate = (values: FormValues, props: IProps) => {
-  const { priceType, byType, funds, marketPrice } = props
+  const { priceType, byType, funds } = props
 
   const validationSchema =
     priceType === 'limit'
@@ -565,7 +555,16 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     total: null,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
-    const { byType, priceType } = props
+    const {
+      byType,
+      priceType,
+      isSPOTMarket,
+      leverage,
+      reduceOnly,
+      orderMode,
+      TIFMode,
+      trigger,
+    } = props
     if (priceType || byType) {
       const filtredValues =
         priceType === 'limit'
@@ -577,10 +576,29 @@ const formikEnhancer = withFormik<IProps, FormValues>({
               limit: values.limit,
               amount: values.amount,
             }
+
       const result = await props.confirmOperation(
         byType,
         priceType,
-        filtredValues
+        filtredValues,
+        'default',
+        {},
+        {
+          leverage,
+          marketType: isSPOTMarket ? 0 : 1,
+          ...(priceType !== 'market'
+            ? orderMode === 'TIF'
+              ? { timeInForce: TIFMode, postOnly: false }
+              : { postOnly: true }
+            : {}),
+          ...(priceType === 'stop-limit'
+            ? {
+                workingType:
+                  trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
+              }
+            : {}),
+          ...(priceType !== 'stop-limit' ? { reduceOnly } : {}),
+        }
       )
 
       props.showOrderResult(result, props.cancelOrder)
