@@ -263,6 +263,18 @@ export const combinePositionsTable = (
   return positions
 }
 
+const getStatusFromState = (state: 'End' | 'WaitForEntry' | 'Cancel' | string) => {
+  if (state === 'End') {
+    return ['Closed', '#DD6956'];
+  } else if (state === 'Cancel') {
+    return ['Cancellled', '#DD6956'];
+  } else if (state === 'WaitForEntry') {
+    return ['Waiting', '#5C8CEA']
+  } else {
+    return ['Open', '#29AC80']
+  }
+}
+
 export const combineActiveTradesTable = (
   data: OrderType[],
   cancelOrderFunc: (
@@ -270,52 +282,45 @@ export const combineActiveTradesTable = (
     orderId: string,
     pair: string
   ) => Promise<any>,
-  theme: Theme
+  theme: Theme,
+  currentPrice
 ) => {
-  const activeTradesData = [
-    {
-      symbol: 'BTC_USDT',
-      type: 'market',
-      side: 'buy',
-      leverage: 20,
-      price: 8704.01,
-      entryPrice: 8604.01,
-      marketPrice: 8504.01,
-      liqPrice: 8404.01,
-      realizedPnl: 3,
-      info: {
-        origQty: 0.05,
-      },
-    },
-  ]
+  console.log('getActiveStrategiesQuery', data)
 
-  if (!activeTradesData && !Array.isArray(activeTradesData)) {
+  if (!data && !Array.isArray(data)) {
     return []
   }
 
   const { green, red, blue } = theme.palette
 
-  const processedActiveTradesData = activeTradesData.map(
+  const processedActiveTradesData = data.map(
     (el: OrderType, i: number) => {
       const {
-        symbol,
-        side,
-        entryPrice,
-        marketPrice,
-        liqPrice,
-        info: { origQty = '0' },
+        conditions: {
+          pair,
+          entryOrder: {
+            side,
+            orderType,
+            amount
+          }
+        },
+        state: {
+          entryPrice,
+          state,
+        }
       } = el
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-      const pair = symbol.split('_')
+      const pairArr = pair.split('_')
+      const profit = (currentPrice / entryPrice - 1) * 100
 
       return {
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {pair[0]}/{pair[1]}
+              {pairArr[0]}/{pairArr[1]}
             </div>
           ),
-          contentToSort: symbol,
+          contentToSort: pair,
         },
         // type: type,
         side: {
@@ -328,7 +333,7 @@ export const combineActiveTradesTable = (
                   color: side === 'buy' ? green.new : red.new,
                 }}
               >
-                {side}
+                {side} / {orderType}
               </span>
             </div>
           ),
@@ -336,19 +341,27 @@ export const combineActiveTradesTable = (
             color: isBuyTypeOrder(side) ? green.new : red.new,
           },
         },
+        status: {
+          render: <span style={{ color: getStatusFromState(state)[1]}}>{getStatusFromState(state)[0]}</span>,
+          contentToSort: status,
+        },
+        profit: {
+          render: <span style={{ color: profit > 0 ? green.new : red.new }}>{profit.toFixed(2)} %</span>,
+          contentToSort: profit,
+        },
         // TODO: We should change "total" to total param from backend when it will be ready
         amount: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
-          contentToSort: origQty,
+          render: `${stripDigitPlaces(amount, 8)} ${pairArr[0]}`,
+          contentToSort: amount,
         },
         total: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${+stripDigitPlaces(origQty * entryPrice, 8)} ${pair[1]}`,
-          contentToSort: origQty,
+          render: `${+stripDigitPlaces(amount * entryPrice, 8)} ${pairArr[1]}`,
+          contentToSort: amount * entryPrice,
         },
         entryPrice: {
-          render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
+          render: `${stripDigitPlaces(entryPrice, 8)} ${pairArr[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: entryPrice,
         },
@@ -853,6 +866,42 @@ export const combineFundsTable = (
 
 // Update queries functions ->>
 // TODO: Make it one function
+
+export const updateActiveStrategiesQuerryFunction = (previous, { subscriptionData }) => {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
+
+  if (isEmptySubscription) {
+    return previous
+  }
+
+  const prev = cloneDeep(previous)
+
+  const strategyHasTheSameIndex = prev.getActiveStrategies.findIndex(
+    (el: TradeType) => el._id === subscriptionData.data.listenActiveStrategies._id
+  )
+  const tradeAlreadyExists = strategyHasTheSameIndex !== -1
+
+  let result
+
+  if (tradeAlreadyExists) {
+    prev.getActiveStrategies[strategyHasTheSameIndex] = {
+      ...prev.getActiveStrategies[strategyHasTheSameIndex],
+      ...subscriptionData.data.listenActiveStrategies,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getActiveStrategies = [
+      { ...subscriptionData.data.listenActiveStrategies },
+      ...prev.getActiveStrategies,
+    ]
+
+    result = { ...prev }
+  }
+
+  return result
+}
 
 export const updateOpenOrderHistoryQuerryFunction = (
   previous,
