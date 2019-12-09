@@ -39,6 +39,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         chart: { selectedKey },
       },
       marketType,
+      exchange,
+      currencyPair
     } = this.props
 
     return (
@@ -48,6 +50,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             selectedKey,
             marketType,
+            exchange,
+            currencyPair,
             show: tab === 'activeTrades',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,

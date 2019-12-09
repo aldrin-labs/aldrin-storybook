@@ -17,8 +17,6 @@ import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
 
-import { getPriceFromLastTrade } from '@core/utils/chartPageUtils'
-
 interface IProps {
   data: { marketTickers: [string] }
   group: number
@@ -42,7 +40,7 @@ class LastTrade extends React.Component<IProps> {
   render() {
     const { mode } = this.props
 
-    if (mode !== 'both') {
+    if (mode !== 'both' && this.props.data.marketTickers.length > 0) {
       return null
     }
 
@@ -70,6 +68,7 @@ const APIWrapper = (props) => {
       component={LastTrade}
       withOutSpinner
       query={MARKET_QUERY}
+      fetchPolicy="cache-only"
       variables={{ symbol: props.symbol, exchange: props.exchange }}
       subscriptionArgs={{
         subscription: MARKET_TICKERS,
