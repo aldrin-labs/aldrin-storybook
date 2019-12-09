@@ -187,6 +187,8 @@ export const DefaultView = (props: any) => {
                 <TradingTable
                   showCancelResult={showCancelResult}
                   marketType={marketType}
+                  exchange={exchange}
+                  currencyPair={currencyPair}
                 />
               </CustomCard>
             </TradingTabelContainer>
