@@ -100,19 +100,21 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const data = JSON.parse(this.props.marketTickers.marketTickers[0])
-    const price = data[4]
+    if (this.props.marketTickers.marketTickers > 0) {
+      const data = JSON.parse(this.props.marketTickers.marketTickers[0])
+      const price = data[4]
 
-    const activeStrategiesProcessedData = combineActiveTradesTable(
-      nextProps.getActiveStrategiesQuery.getActiveStrategies,
-      this.cancelOrderWithStatus,
-      nextProps.theme,
-      price
-    )
+      const activeStrategiesProcessedData = combineActiveTradesTable(
+        nextProps.getActiveStrategiesQuery.getActiveStrategies,
+        this.cancelOrderWithStatus,
+        nextProps.theme,
+        price
+      )
 
-    this.setState({
-      activeStrategiesProcessedData,
-    })
+      this.setState({
+        activeStrategiesProcessedData,
+      })
+    }
   }
 
   render() {
