@@ -14,7 +14,7 @@ import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
 
-import { TransferPopup } from '@sb/compositions/Chart/components/TransferPopup'
+import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
