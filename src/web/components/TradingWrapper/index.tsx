@@ -66,7 +66,10 @@ class SimpleTabs extends React.Component {
       leverage,
       reduceOnly,
       orderMode,
+      TIFMode,
+      trigger
     } = this.state
+
     const {
       pair,
       funds,
@@ -124,7 +127,7 @@ class SimpleTabs extends React.Component {
             <TerminalHeader key={'futuresTerminal'} style={{ display: 'flex' }}>
               <SettingsContainer>
                 {mode === 'limit' && (
-                  <div style="postOnlyTerminalController">
+                  <div key="postOnlyTerminalController">
                     <SRadio
                       id="postOnly"
                       checked={orderMode === 'postOnly'}
@@ -267,6 +270,11 @@ class SimpleTabs extends React.Component {
                   cancelOrder={cancelOrder}
                   decimals={decimals}
                   showOrderResult={showOrderResult}
+                  leverage={leverage}
+                  reduceOnly={reduceOnly}
+                  orderMode={orderMode}
+                  TIFMode={TIFMode}
+                  trigger={trigger}
                 />
               </TerminalContainer>
             </FullHeightGrid>
@@ -291,6 +299,11 @@ class SimpleTabs extends React.Component {
                   cancelOrder={cancelOrder}
                   decimals={decimals}
                   showOrderResult={showOrderResult}
+                  leverage={leverage}
+                  reduceOnly={reduceOnly}
+                  orderMode={orderMode}
+                  TIFMode={TIFMode}
+                  trigger={trigger}
                 />
               </TerminalContainer>
             </FullHeightGrid>

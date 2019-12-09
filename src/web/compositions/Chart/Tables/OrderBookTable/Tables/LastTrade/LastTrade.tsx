@@ -40,7 +40,7 @@ class LastTrade extends React.Component<IProps> {
   render() {
     const { mode } = this.props
 
-    if (mode !== 'both') {
+    if (mode !== 'both' && this.props.data.marketTickers.length > 0) {
       return null
     }
 

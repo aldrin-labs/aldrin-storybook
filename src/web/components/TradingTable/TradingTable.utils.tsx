@@ -285,8 +285,6 @@ export const combineActiveTradesTable = (
   theme: Theme,
   currentPrice
 ) => {
-  console.log('getActiveStrategiesQuery', data)
-
   if (!data && !Array.isArray(data)) {
     return []
   }

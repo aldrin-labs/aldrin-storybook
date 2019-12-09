@@ -256,6 +256,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       touched,
       errors,
       validateForm,
+      leverage,
+      reduceOnly,
+      orderMode,
+      TIFMode,
+      trigger,
     } = this.props
 
     const pairsErrors = toPairs(errors)
@@ -415,6 +420,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 touched={touched}
                 amount={values.amount}
                 validateForm={validateForm}
+                leverage={leverage}
+                reduceOnly={reduceOnly}
+                orderMode={orderMode}
+                TIFMode={TIFMode}
+                trigger={trigger}
                 battonText={`${operationType} ${pair[0]}`}
                 text={
                   priceType === 'stop-limit'
