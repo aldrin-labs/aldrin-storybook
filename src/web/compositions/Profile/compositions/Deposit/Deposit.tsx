@@ -9,16 +9,20 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import AccountBlock from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock'
 import RecentHistoryTable from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/RecentHistoryTable'
 import QRCodePopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/QRCodePopup'
+import InputAddress from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAddress'
 
-import { StyledInput, StyledTypography } from '../Withdrawal/Withdrawal.styles'
+import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 
 const Deposits = ({  }: IProps) => {
   const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAddress, setCoinAddress] = useState('')
-  const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: 0 })
-
+  const [selectedAccount, setSelectedAccount] = useState({
+    keyId: '#',
+    label: '',
+    value: 0,
+  })
 
   const copyCoinAddress = () => {
     copy(coinAddress)
@@ -85,12 +89,15 @@ const Deposits = ({  }: IProps) => {
             </Grid>
             <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
-                BTC address
+                {selectedCoin} address
               </StyledTypography>
-              <StyledInput
+              <InputAddress value={coinAddress} setCoinAddress={setCoinAddress} selectedAccount={selectedAccount.keyId}/>
+              {/* <StyledInput
                 value={coinAddress}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCoinAddress(e.target.value)}
-              />
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCoinAddress(e.target.value)
+                }
+              /> */}
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
                   btnWidth={'38%'}
@@ -128,11 +135,11 @@ const Deposits = ({  }: IProps) => {
                   <Typography
                     style={{ color: '#16253D', paddingBottom: '1rem' }}
                   >
-                    Send only BTC to this deposit address.
+                    Send only {selectedCoin} to this deposit address.
                   </Typography>
                   <Typography>
-                    Sending coin or token other than BTC to this address may
-                    result in the loss of your deposit.
+                    Sending coin or token other than {selectedCoin} to this
+                    address may result in the loss of your deposit.
                   </Typography>
                 </Grid>
               </Grid>
@@ -140,7 +147,10 @@ const Deposits = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable isDepositPage={true} specificKey={selectedAccount.keyId} />
+      <RecentHistoryTable
+        isDepositPage={true}
+        specificKey={selectedAccount.keyId}
+      />
     </>
   )
 }
