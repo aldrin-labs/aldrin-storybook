@@ -4,7 +4,7 @@ import { CardContent, Typography } from '@material-ui/core'
 import { StyledDialog, StyledCard, MdLockStyled } from './index.styles'
 import { IProps } from './index.types'
 
-const LoginCard = ({ open }: IProps) => (
+const LoginCard = ({ open, children }: IProps) => (
   <StyledDialog open={open} BackdropProps={{ style: { display: 'none' } }}>
     <StyledCard>
       <CardContent>
@@ -27,6 +27,7 @@ const LoginCard = ({ open }: IProps) => (
         >
           You must login to view this page
         </Typography>
+        {children}
       </CardContent>
     </StyledCard>
   </StyledDialog>
