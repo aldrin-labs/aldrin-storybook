@@ -111,6 +111,9 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
     return { quantity, value }
   })
 
+  const [USDTFuturesFund] = getFundsQuery.getFunds
+  .filter(el => el.assetType === 1 && el.asset.symbol === 'USDT')
+
   const isSPOTMarket = isSPOTMarketType(marketType)
 
   const firstValuePair =
@@ -209,19 +212,19 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
                 <BalanceFuturesContainer>
                   <BalanceFuturesTitle>Total</BalanceFuturesTitle>
                   <BalanceFuturesValue>
-                    30 <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    {stripDigitPlaces(USDTFuturesFund.quantity)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                   </BalanceFuturesValue>
                 </BalanceFuturesContainer>
                 <BalanceFuturesContainer needBorder>
                   <BalanceFuturesTitle>In order</BalanceFuturesTitle>
                   <BalanceFuturesValue>
-                    30 <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    {stripDigitPlaces(USDTFuturesFund.locked)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                   </BalanceFuturesValue>
                 </BalanceFuturesContainer>
                 <BalanceFuturesContainer>
                   <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
                   <BalanceFuturesValue>
-                    30 <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    {stripDigitPlaces(USDTFuturesFund.free)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                   </BalanceFuturesValue>
                 </BalanceFuturesContainer>
               </div>
