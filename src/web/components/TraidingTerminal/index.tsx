@@ -41,7 +41,14 @@ import {
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
-const TradeInputContainer = ({ title, value = '', onChange, coin, style }) => {
+const TradeInputContainer = ({
+  title,
+  value = '',
+  step,
+  onChange,
+  coin,
+  style,
+}) => {
   return (
     <TradeInputBlock style={style}>
       <InputTitle>{title}:</InputTitle>
@@ -51,6 +58,8 @@ const TradeInputContainer = ({ title, value = '', onChange, coin, style }) => {
           value={value}
           onChange={onChange}
           type="number"
+          step={step}
+          min={0}
         />
         <Coin>{coin}</Coin>
       </InputWrapper>
@@ -154,6 +163,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   onAmountChange = (e: SyntheticEvent<Element>) => {
     const {
       priceType,
+      isSPOTMarket,
       values: { amount, price, limit },
       setFieldTouched,
       errors,
@@ -172,7 +182,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const total = toFixedTrunc(e.target.value, decimals[0]) * priceForCalculate
 
-    this.setFormatted('amount', e.target.value, 0)
+    this.setFormatted(
+      'amount',
+      isSPOTMarket ? e.target.value : +Number(e.target.value).toFixed(3),
+      0
+    )
     setFieldTouched('amount', true)
 
     this.setFormatted('total', total, 1)
@@ -208,6 +222,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       validateForm,
       priceType,
       byType,
+      isSPOTMarket,
     } = this.props
 
     const priceForCalculate =
@@ -221,7 +236,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       })
 
       this.setFormatted('total', funds[1].quantity * value, 1)
-      this.setFormatted('amount', baseQuantity, 0)
+      this.setFormatted(
+        'amount',
+        isSPOTMarket ? baseQuantity : +Number(baseQuantity).toFixed(3),
+        0
+      )
     } else {
       const quoteQuantity = getQuoteQuantityFromBase({
         baseQuantity: funds[0].quantity,
@@ -229,8 +248,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         percentage: value,
       })
 
+      const amount = funds[0].quantity * value
+
       this.setFormatted('total', quoteQuantity, 1)
-      this.setFormatted('amount', funds[0].quantity * value, 0)
+      this.setFormatted('amount', isSPOTMarket ? amount : +amount.toFixed(3), 0)
     }
 
     setFieldTouched('amount', true)
@@ -292,6 +313,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   value={values.amount || ''}
                   onChange={this.onAmountChange}
                   coin={pair[0]}
+                  step={!isSPOTMarket && 0.001}
                   style={{ paddingBottom: '.8rem' }}
                 />
 
@@ -373,7 +395,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 touched={touched}
                 amount={values.amount}
                 validateForm={validateForm}
-                battonText={`${operationType} ${pair[0]}`}
+                battonText={
+                  isSPOTMarket
+                    ? `${operationType} ${pair[0]}`
+                    : `${operationType === 'buy' ? 'buy long' : 'sell short'}`
+                }
                 text={
                   priceType === 'stop-limit'
                     ? `If the last price drops to or below ${values.stop} ${
@@ -542,7 +568,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         'default',
         {},
         {
-          leverage,
+          // leverage,
           marketType: isSPOTMarket ? 0 : 1,
           ...(priceType !== 'market'
             ? orderMode === 'TIF'
@@ -555,7 +581,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
               }
             : {}),
-          ...(priceType !== 'stop-limit' ? { reduceOnly } : {}),
+          // ...(priceType !== 'stop-limit' ? { reduceOnly } : {}),
         }
       )
 

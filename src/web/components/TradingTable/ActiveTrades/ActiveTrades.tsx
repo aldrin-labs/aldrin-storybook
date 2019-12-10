@@ -22,7 +22,6 @@ import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
 
-
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
@@ -73,23 +72,30 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme, marketTickers } = this.props
-
-    const data = JSON.parse(marketTickers.marketTickers[0])
-    const price = data[4]
-
-    const openOrdersProcessedData = combineActiveTradesTable(
-      getActiveStrategiesQuery.getActiveStrategies,
-      this.cancelOrderWithStatus,
+    const {
+      getActiveStrategiesQuery,
+      subscribeToMore,
       theme,
-      price
-    )
+      marketTickers,
+    } = this.props
 
-    this.setState({
-      openOrdersProcessedData,
-    })
+    if (this.props.marketTickers.marketTickers > 0) {
+      const data = JSON.parse(marketTickers.marketTickers[0])
+      const price = data[4]
 
-    this.unsubscribeFunction = subscribeToMore()
+      const openOrdersProcessedData = combineActiveTradesTable(
+        getActiveStrategiesQuery.getActiveStrategies,
+        this.cancelOrderWithStatus,
+        theme,
+        price
+      )
+
+      this.setState({
+        openOrdersProcessedData,
+      })
+
+      this.unsubscribeFunction = subscribeToMore()
+    }
   }
 
   componentWillUnmount = () => {
@@ -187,7 +193,9 @@ class ActiveTradesTable extends React.PureComponent {
 const LastTradeWrapper = ({ ...props }) => {
   useEffect(() => {
     const unsubscribeFunction = props.subscribeToMore()
-    return () => { unsubscribeFunction() }
+    return () => {
+      unsubscribeFunction()
+    }
   }, [])
 
   return (
@@ -216,7 +224,6 @@ const LastTradeWrapper = ({ ...props }) => {
     />
   )
 }
-
 
 const TableDataWrapper = ({ ...props }) => {
   return (
