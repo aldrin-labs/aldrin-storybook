@@ -48,4 +48,5 @@ export interface IProps {
     }
   }
   addExchangeKey(variables: Variables): Response
+  generateBrokerKeyMutation: () => Promise<any>
 }

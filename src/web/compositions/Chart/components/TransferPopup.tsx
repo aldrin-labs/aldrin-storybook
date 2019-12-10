@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import { graphql } from 'react-apollo'
 import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 
+import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
 import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
@@ -28,25 +30,45 @@ const DialogContent = withStyles((theme) => ({
 interface IProps {
   selectedAccount: string
   transferFromSpotToFutures: boolean
-  transferMutation?: (any: any) => Promise<any>
+  futuresTransferMutation?: (mutationObj: {
+    variables: {
+      input: {
+        keyId: string
+        asset: string
+        amount: number
+        type: number
+      }
+    }
+  }) => Promise<any>
   open: boolean
   handleClose: () => void
 }
 
-export const TransferPopup = ({
+const TransferPopup = ({
   selectedAccount,
   transferFromSpotToFutures,
   open,
   handleClose,
+  futuresTransferMutation,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAmount, setCoinAmount] = useState('')
 
   console.log('selectedCoin', selectedCoin)
 
-  const transferHandler = () => {
-    // TODO add mutation for this popup
-    // transferMutation()
+  const transferHandler = async () => {
+    const response = await futuresTransferMutation({
+      variables: {
+        input: {
+          keyId: selectedAccount,
+          asset: selectedCoin,
+          amount: +coinAmount,
+          type: transferFromSpotToFutures ? 1 : 2,
+        },
+      },
+    })
+
+    console.log('transferHandler response', response)
     // closing popup
     handleClose()
   }
@@ -226,3 +248,7 @@ export const TransferPopup = ({
     </>
   )
 }
+
+export default graphql(futuresTransfer, {
+  name: 'futuresTransferMutation',
+})(TransferPopup)

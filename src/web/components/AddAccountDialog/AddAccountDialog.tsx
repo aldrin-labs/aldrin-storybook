@@ -32,6 +32,8 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
+import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
+
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
@@ -72,13 +74,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }
 
   handleGenerateBrokerKey = async () => {
-    const { generateBrokerKeyMutation, setCurrentStep } = this.props
+    const { generateBrokerKeyMutation, setCurrentStep, onboarding } = this.props
 
-    // uncomment when backend will be done
-    // await generateBrokerKeyMutation()
+    const resp = await generateBrokerKeyMutation()
+    console.log('handleGenerateBrokerKey response', resp)
 
-    setCurrentStep('binanceAccountCreated')
-    this.handleClose()
+    onboarding ? setCurrentStep('binanceAccountCreated') : this.handleClose()
   }
 
   handleSubmit = async () => {
@@ -381,12 +382,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   </Grid>
                 </GridCustom>
                 <Grid container justify="center" alignItems="center">
-                    <Typography>
-                      {onboarding
-                        ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
-                        : `Or add another exchange key`}
-                    </Typography>
-                  </Grid>
+                  <Typography>
+                    {onboarding
+                      ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
+                      : `Or add another exchange key`}
+                  </Typography>
+                </Grid>
                 {includeCommonBinanceKey && (
                   <>
                     <GridCustom>
@@ -512,6 +513,35 @@ export default compose(
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
+  }),
+  graphql(generateBrokerKey, {
+    name: 'generateBrokerKeyMutation',
+    options: ({
+      baseData: {
+        portfolio: { baseCoin },
+      },
+      onboarding,
+    }: {
+      baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
+      onboarding: boolean
+    }) => ({
+      refetchQueries: !onboarding
+        ? [
+            {
+              query: portfolioKeyAndWalletsQuery,
+              variables: { baseCoin },
+            },
+            { query: getKeysQuery },
+            { query: keysNames },
+            {
+              query: getPortfolioAssets,
+              variables: { baseCoin, innerSettings: true },
+            },
+            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
+            { query: getCurrentPortfolio },
+          ]
+        : [],
+    }),
   }),
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
