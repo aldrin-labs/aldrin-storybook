@@ -110,7 +110,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       value.toString().split('.')[1] &&
       value.toString().split('.')[1].length > decimals[index]
     ) {
-      setFieldValue(fild, toFixedTrunc(numberValue, decimals[index]), false)
+      setFieldValue(
+        fild,
+        toFixedTrunc(numberValue, decimals[index]) || 0,
+        false
+      )
     } else setFieldValue(fild, numberValue, false)
   }
 

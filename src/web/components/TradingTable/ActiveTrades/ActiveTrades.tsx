@@ -79,23 +79,24 @@ class ActiveTradesTable extends React.PureComponent {
       marketTickers,
     } = this.props
 
-    if (this.props.marketTickers.marketTickers > 0) {
-      const data = JSON.parse(marketTickers.marketTickers[0])
-      const price = data[4]
+    let price
 
-      const openOrdersProcessedData = combineActiveTradesTable(
-        getActiveStrategiesQuery.getActiveStrategies,
-        this.cancelOrderWithStatus,
-        theme,
-        price
-      )
+    try {
+      const data = JSON.parse(this.props.marketTickers.marketTickers[0])
+      price = data[4]
+    } catch (e) {}
+    const openOrdersProcessedData = combineActiveTradesTable(
+      getActiveStrategiesQuery.getActiveStrategies,
+      this.cancelOrderWithStatus,
+      theme,
+      price
+    )
 
-      this.setState({
-        openOrdersProcessedData,
-      })
+    this.setState({
+      openOrdersProcessedData,
+    })
 
-      this.unsubscribeFunction = subscribeToMore()
-    }
+    this.unsubscribeFunction = subscribeToMore()
   }
 
   componentWillUnmount = () => {
@@ -106,21 +107,23 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.marketTickers.marketTickers > 0) {
+    let price
+
+    try {
       const data = JSON.parse(this.props.marketTickers.marketTickers[0])
-      const price = data[4]
+      price = data[4]
+    } catch (e) {}
 
-      const activeStrategiesProcessedData = combineActiveTradesTable(
-        nextProps.getActiveStrategiesQuery.getActiveStrategies,
-        this.cancelOrderWithStatus,
-        nextProps.theme,
-        price
-      )
+    const activeStrategiesProcessedData = combineActiveTradesTable(
+      nextProps.getActiveStrategiesQuery.getActiveStrategies,
+      this.cancelOrderWithStatus,
+      nextProps.theme,
+      price
+    )
 
-      this.setState({
-        activeStrategiesProcessedData,
-      })
-    }
+    this.setState({
+      activeStrategiesProcessedData,
+    })
   }
 
   render() {
