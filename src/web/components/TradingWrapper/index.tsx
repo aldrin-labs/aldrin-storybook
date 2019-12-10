@@ -28,6 +28,7 @@ import {
   StyledSelect,
   StyledOption,
   StyledZoomIcon,
+  FuturesSettings,
   SmartOrderModeButton,
 } from './styles'
 
@@ -67,7 +68,7 @@ class SimpleTabs extends React.Component {
       reduceOnly,
       orderMode,
       TIFMode,
-      trigger
+      trigger,
     } = this.state
 
     const {
@@ -79,7 +80,7 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
-      
+
       updateTerminalViewMode,
     } = this.props
 
@@ -128,7 +129,7 @@ class SimpleTabs extends React.Component {
             <TerminalHeader key={'futuresTerminal'} style={{ display: 'flex' }}>
               <SettingsContainer>
                 {mode === 'limit' && (
-                  <div key="postOnlyTerminalController">
+                  <FuturesSettings key="postOnlyTerminalController">
                     <SRadio
                       id="postOnly"
                       checked={orderMode === 'postOnly'}
@@ -140,11 +141,11 @@ class SimpleTabs extends React.Component {
                       }
                     />
                     <SettingsLabel htmlFor="postOnly">post only</SettingsLabel>
-                  </div>
+                  </FuturesSettings>
                 )}
 
                 {mode !== 'market' && (
-                  <div key="TIFTerminalController">
+                  <FuturesSettings key="TIFTerminalController">
                     <SRadio
                       id="TIF"
                       checked={orderMode === 'TIF'}
@@ -167,11 +168,11 @@ class SimpleTabs extends React.Component {
                       <StyledOption>IOK</StyledOption>
                       <StyledOption>FOK</StyledOption>
                     </StyledSelect>
-                  </div>
+                  </FuturesSettings>
                 )}
 
                 {mode !== 'stop-limit' && (
-                  <div key="reduceTerminalController">
+                  <FuturesSettings key="reduceTerminalController">
                     <SCheckbox
                       id="reduceOnly"
                       checked={reduceOnly}
@@ -185,11 +186,11 @@ class SimpleTabs extends React.Component {
                     <SettingsLabel htmlFor="reduceOnly">
                       reduce only
                     </SettingsLabel>
-                  </div>
+                  </FuturesSettings>
                 )}
 
                 {mode === 'stop-limit' && (
-                  <div key="triggerTerminalController">
+                  <FuturesSettings key="triggerTerminalController">
                     <SettingsLabel htmlFor="trigger">trigger</SettingsLabel>
                     <StyledSelect
                       id="trigger"
@@ -200,7 +201,7 @@ class SimpleTabs extends React.Component {
                       <StyledOption>last price</StyledOption>
                       <StyledOption>mark price</StyledOption>
                     </StyledSelect>
-                  </div>
+                  </FuturesSettings>
                 )}
               </SettingsContainer>
               <LeverageContainer>
@@ -262,7 +263,6 @@ class SimpleTabs extends React.Component {
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Buy')
                   }
-
                   pair={pair}
                   funds={funds}
                   key={[pair, funds]}

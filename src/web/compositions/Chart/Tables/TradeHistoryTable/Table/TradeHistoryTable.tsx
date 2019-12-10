@@ -1,167 +1,57 @@
-import React, { memo, PureComponent, CSSProperties } from 'react'
+import React, { PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
+import { IProps, IState } from './TradeHistoryTable.types'
 
-import { Row, Body, Head } from '@sb/components/OldTable/Table'
-import { IProps, IState, ITicker } from './TradeHistoryTable.types'
-import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
-
-// import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-// import { Column, Table } from 'react-virtualized';
-// import 'react-virtualized/styles.css';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import { Column, Table } from 'react-virtualized';
+import 'react-virtualized/styles.css';
 
 import {
-  StyledTypography,
-  StyledTitle,
-  TradeHistoryTableCollapsible,
-  StyledCell,
-  StyledRow,
-} from './TradeHistoryTable.styles'
+  rowStyles,
+} from '@core/utils/chartPageUtils'
 
-import { StyledHeadCell } from '../../OrderBookTable/Tables/Asks/OrderBookTable.styles'
-
-const OptimizedRow = memo(
-  ({ ticker, numbersAfterDecimalForPrice }) => {
-    return (
-      <StyledRow background={'#fff'}>
-        <StyledCell style={{ minWidth: '30%' }}>
-          <StyledTypography
-            textColor={ticker.fall ? '#DD6956' : '#29AC80'}
-            variant="caption"
-            align="left"
-          >
-            {(+ticker.price).toFixed(2)
-            // .toFixed(numbersAfterDecimalForPrice)
-            }
-          </StyledTypography>
-        </StyledCell>
-
-        <StyledCell style={{ minWidth: '30%' }}>
-          <TypographyFullWidth
-            variant="caption"
-            textColor={'#16253D'}
-            align="left"
-          >
-            {(+ticker.size).toFixed(4)}
-          </TypographyFullWidth>
-        </StyledCell>
-
-        <StyledCell style={{ minWidth: '45%' }}>
-          <TypographyFullWidth
-            // style={{ paddingRight: 0 }}
-            textColor={'#16253D'}
-            variant="caption"
-            align="left"
-          >
-            {ticker.time}
-          </TypographyFullWidth>
-        </StyledCell>
-      </StyledRow>
-    )
-  },
-  (prevProps, nextProps) =>
-    nextProps.ticker.id === prevProps.ticker.id &&
-    nextProps.background === prevProps.background
-)
-
-const MemoizedHead = memo(() => (
-  <>
-    <ChartCardHeader>Trade history</ChartCardHeader>
-    <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-      <Row
-        background={'#fff'}
-        style={{
-          height: 'auto',
-          padding: '0',
-          borderBottom: '.1rem solid #e0e5ec'
-        }}
-      >
-        <StyledHeadCell style={{ minWidth: '30%' }}>
-          <StyledTitle variant="body2" align="left">
-            Price
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell style={{ minWidth: '30%' }}>
-          <StyledTitle variant="body2" align="left">
-            Size
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell style={{ minWidth: '40%' }}>
-          <StyledTitle variant="body2" align="left" style={{ paddingRight: 0 }}>
-            Time
-          </StyledTitle>
-        </StyledHeadCell>
-      </Row>
-    </Head>
-  </>
-))
+import defaultRowRenderer from '../../OrderBookTable/utils'
 
 @withTheme
 class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
     const {
-      numbersAfterDecimalForPrice,
-      quote,
       data,
-      theme: { palette, customPalette },
     } = this.props
 
-    const { background, primary, type } = palette
-    const { red, green } = customPalette
-
-    // const updatedData = data.map(el => ({ ...el, price: <span>hello span</span> }))
-
     return (
-      // <div style={{ height: "100%" }}>
-      //   <AutoSizer>
-      //     {
-      //       (({ width, height }: { width: number, height: number }) =>
-      //         <Table
-      //           headerHeight={window.outerHeight / 60}
-      //           headerStyle={{ paddingLeft: '.5rem', paddingTop: '.25rem' }}
-      //           width={width}
-      //           height={height}
-      //           rowCount={data.length}
-      //           rowHeight={window.outerHeight / 60}
-      //           sortBy={'price'}
-      //           rowGetter={({ index }) => updatedData[index]}>
-      //           <Column label="Price" dataKey="price" width={width} style={rowStyle} />
-      //           <Column label="Size" dataKey="size" width={width} style={rowStyle} />
-      //           <Column label="Total" dataKey="time" width={width} style={rowStyle} />
-      //         </Table>
-      //       )
-      //     }
-      //   </AutoSizer>
-      // </div>
-      <TradeHistoryTableCollapsible key={`trade_history_table-collapsible`}>
-        <MemoizedHead
-          {...{
-            primary,
-            type,
-            palette,
-            quote,
-            key: 'tradehistory_head',
-          }}
-        />
-        <Body data-e2e="tradeHistory__body" background={'#fff'} height="37vh">
-          {data.map((ticker: ITicker, i: number) => (
-            <OptimizedRow
-              key={`${ticker.time}${ticker.id}${ticker.price}${ticker.size}${
-                ticker.fall
-              }`}
-              {...{
-                ticker,
-                background,
-                numbersAfterDecimalForPrice,
-                red,
-                green,
-              }}
-            />
-          ))}
-        </Body>
-      </TradeHistoryTableCollapsible>
+      <div style={{ height: "calc(100% - 3rem)" }}>
+        <AutoSizer>
+          {
+            (({ width, height }: { width: number, height: number }) =>
+              <Table
+                headerHeight={window.outerHeight / 50}
+                headerStyle={{
+                  color: '#7284A0',
+                  paddingLeft: '.5rem',
+                  marginLeft: 0,
+                  marginRight: 0,
+                  paddingTop: '.25rem',
+                  letterSpacing: '.075rem',
+                  borderBottom: '.1rem solid #e0e5ec',
+                  fontSize: '1rem',
+                }}
+                width={width}
+                height={height}
+                rowCount={data.length}
+                rowHeight={window.outerHeight / 60}
+                rowGetter={({ index }) => data[index]}
+                rowRenderer={(...rest) =>
+                  defaultRowRenderer({ ...rest[0] })
+                }>
+                <Column label="Price" dataKey="price" width={width} style={{...rowStyles, color: ''}} headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}  />
+                <Column label="Size" dataKey="size" width={width} style={{ ...rowStyles }} />
+                <Column label="Total" dataKey="time" width={width} style={{ ...rowStyles }} />
+              </Table>
+            )
+          }
+        </AutoSizer>
+      </div>
     )
   }
 }

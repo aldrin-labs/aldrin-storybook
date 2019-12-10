@@ -296,7 +296,11 @@ class TransactionPage extends React.PureComponent {
     const login = true
     const isSideNavOpen = true
 
-    const { totalKeyAssetsData, portfolioAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
+    const {
+      totalKeyAssetsData,
+      portfolioAssetsData,
+      portfolioAssetsMap,
+    } = getPortfolioAssetsData(
       portfolioKeys.myPortfolios
         ? portfolioKeys.myPortfolios[0].portfolioAssets
         : [],
@@ -364,7 +368,7 @@ class TransactionPage extends React.PureComponent {
                     />
                   </PortfolioSelectorWrapper>
 
-                  <Grid>
+                  <Grid style={{ height: '60vh' }}>
                     <Accounts
                       {...{
                         color,

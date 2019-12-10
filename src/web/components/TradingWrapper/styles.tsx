@@ -190,3 +190,8 @@ export const SmartOrderModeButton = styled(TerminalModeButton)`
   position: absolute;
   right: 0;
 `
+
+export const FuturesSettings = styled.div`
+  display: flex;
+  align-items: center;
+`

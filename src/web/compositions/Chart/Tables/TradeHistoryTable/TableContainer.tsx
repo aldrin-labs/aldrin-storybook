@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 
 import TradeHistoryTable from './Table/TradeHistoryTable'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
+
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
   testJSON,
 } from '@core/utils/chartPageUtils'
+
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -46,8 +50,8 @@ class TableContainer extends Component<IProps, IState> {
       const ticker = {
         fall: tickerData[9],
         id: tickerData[6],
-        size: tickerData[5],
-        price: tickerData[4],
+        size: stripDigitPlaces(tickerData[5], 8),
+        price: stripDigitPlaces(tickerData[4], 2),
         time: new Date(tickerData[8]).toLocaleTimeString(),
       }
 
@@ -100,12 +104,15 @@ class TableContainer extends Component<IProps, IState> {
     const { quote, currencyPair } = this.props
     const { data, numbersAfterDecimalForPrice } = this.state
     return (
-      <TradeHistoryTable
-        data={data}
-        numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
-        quote={quote}
-        currencyPair={currencyPair}
-      />
+      <>
+        <ChartCardHeader>Trade history</ChartCardHeader>
+        <TradeHistoryTable
+          data={data}
+          numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
+          quote={quote}
+          currencyPair={currencyPair}
+        />
+      </>
     )
   }
 }
