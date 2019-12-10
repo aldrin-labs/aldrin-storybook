@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
-import { HeaderProperties, BlockProperties } from './types'
+import { HeaderProperties, BlockProperties, InputRowProps } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
@@ -92,9 +92,9 @@ export const InputRowContainer = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  flex-direction: ${(props) => props.direction || 'row'};
-  justify-content: ${(props) => props.justify};
-  padding: ${(props) => props.padding || '0 0 .6rem 0'};
+  flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
+  justify-content: ${(props: InputRowProps) => props.justify};
+  padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};
 
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};

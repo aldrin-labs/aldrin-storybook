@@ -76,6 +76,7 @@ export default function defaultRowRenderer({
   openOrderHistory,
 }: IProps) {
   const a11yProps = { 'aria-rowindex': index + 1 }
+  const colorStyles = rowData.fall !== undefined ? { color: rowData.fall ? '#DD6956' : '#29AC80'} : {}
   let needHighlight = false
 
   if (openOrderHistory && openOrderHistory.length > 0) {
@@ -121,7 +122,7 @@ export default function defaultRowRenderer({
       className={className}
       key={key}
       role="row"
-      style={{ ...style, backgroundColor: needHighlight ? '#e0e5ec' : '' }}
+      style={{ ...style, ...colorStyles, backgroundColor: needHighlight ? '#e0e5ec' : '' }}
     >
       {columns}
     </div>

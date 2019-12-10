@@ -3,15 +3,15 @@ import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 const BlueSlider = ({
   value = 0,
-  valueSymbol = '',
+  valueSymbol = '%',
   disabled = false,
   sliderContainerStyles,
   onChange,
 }: {
   value: number
-  valueSymbol: string
-  disabled: boolean
-  sliderContainerStyles: CSSProperties
+  valueSymbol?: string
+  disabled?: boolean
+  sliderContainerStyles?: CSSProperties
   onChange: (value: number) => void
 }) => {
   return (
@@ -21,7 +21,7 @@ const BlueSlider = ({
       max={100}
       disabled={disabled}
       value={value}
-      valueSymbol={valueSymbol || '%'}
+      valueSymbol={valueSymbol}
       marks={{
         0: {},
         25: {},
