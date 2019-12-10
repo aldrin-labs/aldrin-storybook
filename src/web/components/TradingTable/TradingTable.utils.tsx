@@ -263,11 +263,13 @@ export const combinePositionsTable = (
   return positions
 }
 
-const getStatusFromState = (state: 'End' | 'WaitForEntry' | 'Cancel' | string) => {
+const getStatusFromState = (
+  state: 'End' | 'WaitForEntry' | 'Cancel' | string
+) => {
   if (state === 'End') {
-    return ['Closed', '#DD6956'];
+    return ['Closed', '#DD6956']
   } else if (state === 'Cancel') {
-    return ['Cancellled', '#DD6956'];
+    return ['Cancellled', '#DD6956']
   } else if (state === 'WaitForEntry') {
     return ['Waiting', '#5C8CEA']
   } else {
@@ -291,127 +293,148 @@ export const combineActiveTradesTable = (
 
   const { green, red, blue } = theme.palette
 
-  const processedActiveTradesData = data.map(
-    (el: OrderType, i: number) => {
-      const {
-        conditions: {
-          pair,
-          entryOrder: {
-            side,
-            orderType,
-            amount
-          }
+  const processedActiveTradesData = data.map((el: OrderType, i: number) => {
+    const {
+      conditions: {
+        pair,
+        entryOrder: { side, orderType, amount },
+        exitLevels,
+        stopLoss,
+        stopLossType,
+        forcedLoss,
+      } = {
+        pair: '-',
+        entryOrder: {
+          side: '-',
+          orderType: '-',
+          amount: '-',
         },
-        state: {
-          entryPrice,
-          state,
-        }
-      } = el
-      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-      const pairArr = pair.split('_')
-      const profit = (currentPrice / entryPrice - 1) * 100
+        exitLevels: [],
+        stopLoss: '-',
+        stopLossType: '-',
+        forcedLoss: false,
+      },
+    } = el
 
-      return {
-        pair: {
-          render: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {pairArr[0]}/{pairArr[1]}
-            </div>
-          ),
-          contentToSort: pair,
-        },
-        // type: type,
-        side: {
-          render: (
-            <div>
-              <span
-                style={{
-                  display: 'block',
-                  textTransform: 'uppercase',
-                  color: side === 'buy' ? green.new : red.new,
-                }}
-              >
-                {side} / {orderType}
-              </span>
-            </div>
-          ),
-          style: {
-            color: isBuyTypeOrder(side) ? green.new : red.new,
-          },
-        },
-        status: {
-          render: <span style={{ color: getStatusFromState(state)[1]}}>{getStatusFromState(state)[0]}</span>,
-          contentToSort: status,
-        },
-        profit: {
-          render: <span style={{ color: profit > 0 ? green.new : red.new }}>{profit.toFixed(2)} %</span>,
-          contentToSort: profit,
-        },
-        // TODO: We should change "total" to total param from backend when it will be ready
-        amount: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${stripDigitPlaces(amount, 8)} ${pairArr[0]}`,
-          contentToSort: amount,
-        },
-        total: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${+stripDigitPlaces(amount * entryPrice, 8)} ${pairArr[1]}`,
-          contentToSort: amount * entryPrice,
-        },
-        entryPrice: {
-          render: `${stripDigitPlaces(entryPrice, 8)} ${pairArr[1]}`,
-          style: { textAlign: 'left', whiteSpace: 'nowrap' },
-          contentToSort: entryPrice,
-        },
-        takeProfit: {
-          render: (
-            <TakeProfitColumn
-              price={32}
-              order={'market'}
-              targets={2}
-              timeoutProfit={30}
-              trailing={true}
-              red={red.new}
-              green={green.new}
-              blue={blue}
-            />
-          ),
-        },
-        stopLoss: {
-          render: (
-            <StopLossColumn
-              price={-32}
-              order={'market'}
-              forced={true}
-              timeoutLoss={30}
-              trailing={true}
-              red={red.new}
-              green={green.new}
-              blue={blue}
-            />
-          ),
-        },
-        close: {
-          render: (
-            <BtnCustom
-              btnWidth="100%"
-              height="auto"
-              fontSize="1.3rem"
-              padding=".5rem 0 .4rem 0"
-              borderRadius=".8rem"
-              btnColor={red.new}
-              backgroundColor={'#fff'}
-              hoverColor={'#fff'}
-              hoverBackground={red.new}
-              transition={'all .4s ease-out'}
-            >
-              market
-            </BtnCustom>
-          ),
-        },
-      }
+    const { entryPrice, state } = el.conditions.state || {
+      entryPrice: 0,
+      state: '-',
     }
-  )
+
+    console.log('e', el)
+    // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+
+    const pairArr = pair.split('_')
+    const profit = (currentPrice / entryPrice - 1) * 100
+
+    return {
+      pair: {
+        render: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {pairArr[0]}/{pairArr[1]}
+          </div>
+        ),
+        contentToSort: pair,
+      },
+      // type: type,
+      side: {
+        render: (
+          <div>
+            <span
+              style={{
+                display: 'block',
+                textTransform: 'uppercase',
+                color: side === 'buy' ? green.new : red.new,
+              }}
+            >
+              {side} / {orderType}
+            </span>
+          </div>
+        ),
+        style: {
+          color: isBuyTypeOrder(side) ? green.new : red.new,
+        },
+      },
+      status: {
+        render: (
+          <span style={{ color: getStatusFromState(state)[1] }}>
+            {getStatusFromState(state)[0]}
+          </span>
+        ),
+        contentToSort: status,
+      },
+      profit: {
+        render: (
+          <span style={{ color: profit > 0 ? green.new : red.new }}>
+            {profit.toFixed(2)} %
+          </span>
+        ),
+        contentToSort: profit,
+      },
+      // TODO: We should change "total" to total param from backend when it will be ready
+      amount: {
+        // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+        render: `${stripDigitPlaces(amount, 8)} ${pairArr[0]}`,
+        contentToSort: amount,
+      },
+      total: {
+        // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+        render: `${+stripDigitPlaces(amount * entryPrice, 8)} ${pairArr[1]}`,
+        contentToSort: amount * entryPrice,
+      },
+      entryPrice: {
+        render: `${stripDigitPlaces(entryPrice, 8)} ${pairArr[1]}`,
+        style: { textAlign: 'left', whiteSpace: 'nowrap' },
+        contentToSort: entryPrice,
+      },
+      takeProfit: {
+        render: (
+          <TakeProfitColumn
+            price={exitLevels.length > 0 && exitLevels[0].price}
+            order={exitLevels.length > 0 && exitLevels[0].orderType}
+            targets={(exitLevels && exitLevels.length) || 0}
+            timeoutProfit={30}
+            trailing={exitLevels && exitLevels.length === 1}
+            red={red.new}
+            green={green.new}
+            blue={blue}
+          />
+        ),
+      },
+      stopLoss: {
+        render: (
+          <StopLossColumn
+            price={stopLoss}
+            order={stopLossType}
+            forced={!!forcedLoss}
+            timeoutLoss={30}
+            trailing={true}
+            red={red.new}
+            green={green.new}
+            blue={blue}
+          />
+        ),
+      },
+      close: {
+        render: (
+          <BtnCustom
+            btnWidth="100%"
+            height="auto"
+            fontSize="1.3rem"
+            padding=".5rem 0 .4rem 0"
+            borderRadius=".8rem"
+            btnColor={red.new}
+            backgroundColor={'#fff'}
+            hoverColor={'#fff'}
+            hoverBackground={red.new}
+            transition={'all .4s ease-out'}
+          >
+            market
+          </BtnCustom>
+        ),
+      },
+    }
+  })
 
   return processedActiveTradesData
 }
@@ -865,7 +888,10 @@ export const combineFundsTable = (
 // Update queries functions ->>
 // TODO: Make it one function
 
-export const updateActiveStrategiesQuerryFunction = (previous, { subscriptionData }) => {
+export const updateActiveStrategiesQuerryFunction = (
+  previous,
+  { subscriptionData }
+) => {
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
 
@@ -876,7 +902,8 @@ export const updateActiveStrategiesQuerryFunction = (previous, { subscriptionDat
   const prev = cloneDeep(previous)
 
   const strategyHasTheSameIndex = prev.getActiveStrategies.findIndex(
-    (el: TradeType) => el._id === subscriptionData.data.listenActiveStrategies._id
+    (el: TradeType) =>
+      el._id === subscriptionData.data.listenActiveStrategies._id
   )
   const tradeAlreadyExists = strategyHasTheSameIndex !== -1
 
