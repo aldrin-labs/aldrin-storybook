@@ -30,12 +30,14 @@ const DialogContent = withStyles((theme) => ({
 interface IProps {
   selectedAccount: string
   transferFromSpotToFutures: boolean
-  futuresTransferMutation?: (variables: {
-    input: {
-      keyId: string,
-      asset: string,
-      amount: number,
-      type: number
+  futuresTransferMutation?: (mutationObj: {
+    variables: {
+      input: {
+        keyId: string
+        asset: string
+        amount: number
+        type: number
+      }
     }
   }) => Promise<any>
   open: boolean
@@ -47,6 +49,7 @@ const TransferPopup = ({
   transferFromSpotToFutures,
   open,
   handleClose,
+  futuresTransferMutation,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState('BTC')
   const [coinAmount, setCoinAmount] = useState('')
@@ -54,16 +57,15 @@ const TransferPopup = ({
   console.log('selectedCoin', selectedCoin)
 
   const transferHandler = async () => {
-
     const response = await futuresTransferMutation({
       variables: {
         input: {
           keyId: selectedAccount,
           asset: selectedCoin,
-          amount: coinAmount,
-          type: transferFromSpotToFutures ? 1 : 2
+          amount: +coinAmount,
+          type: transferFromSpotToFutures ? 1 : 2,
         },
-      }
+      },
     })
 
     console.log('transferHandler response', response)
@@ -246,7 +248,6 @@ const TransferPopup = ({
     </>
   )
 }
-
 
 export default graphql(futuresTransfer, {
   name: 'futuresTransferMutation',
