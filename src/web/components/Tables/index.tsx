@@ -55,12 +55,14 @@ const CustomTableCell = withStyles((theme) => ({
     whiteSpace: 'nowrap',
     zIndex: 100,
     padding: '0.2rem 1.6rem 0.2rem  0.6rem',
+    boxShadow: 'none',
   },
   body: {
     color: theme.palette.text.primary,
     borderBottom: 'none',
     fontSize: 14,
     padding: '0.2rem 1.6rem 0.2rem 0.6rem',
+    boxShadow: 'none',
   },
   footer: {
     fontSize: 14,
@@ -188,12 +190,14 @@ const styles = (theme: Theme) =>
     },
     headRow: {
       height: '2rem',
+      boxShadow: 'none',
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
     },
     row: {
       height: '2rem',
+      boxShadow: 'none',
       transition: `background-color ${theme.transitions.duration.short}ms  ${
         theme.transitions.easing.easeOut
       }`,
