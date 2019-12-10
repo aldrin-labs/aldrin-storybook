@@ -702,17 +702,19 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             >
               <SendButton
                 type={entryPoint.order.side ? 'buy' : 'sell'}
-                onClick={() => {
+                onClick={async () => {
                   const isValid = validateSmartOrders(this.state)
 
                   if (isValid) {
-                    this.props.placeOrder(
+                    const result = await this.props.placeOrder(
                       entryPoint.order.side,
                       entryPoint.order.type,
                       {},
                       'smart',
                       this.state
                     )
+
+                    this.props.showOrderResult(result, this.props.cancelOrder)
                   } else {
                     this.setState({ showErrors: true })
                   }
