@@ -92,8 +92,21 @@ export default class ThemeWrapper extends Component<Props> {
                 },
               },
               MuiTableCell: {
+                root: {
+                  boxShadow: '0',
+                },
                 body: {
                   fontSize: '1.3rem',
+                },
+              },
+              MuiTableHead: {
+                root: {
+                  boxShadow: '0',
+                },
+              },
+              MuiTableRow: {
+                root: {
+                  boxShadow: '0',
                 },
               },
               MuiFab: {

@@ -38,6 +38,9 @@ import {
   PriceContainer,
 } from './styles'
 
+import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import BlueSlider from '@sb/components/Slider/BlueSlider'
+
 const TradeInputContainer = ({ title, value = '', onChange, coin, style }) => {
   return (
     <TradeInputBlock style={style}>
@@ -90,14 +93,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   setFormatted = (fild: priceType, value: any, index: number) => {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
-
-    // console.log('value', numberValue)
-    // console.log('formatted', toFixedTrunc(numberValue, decimals[index]))
-    // console.log(
-    //   'condition',
-    //   value.toString().split('.')[1] &&
-    //   value.toString().split('.')[1].length > decimals[index]
-    // )
 
     if (value === '') setFieldValue(fild, '', false)
     else if (numberValue.toString().includes('e')) {
@@ -264,144 +259,107 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={pair}>
-          <Grid container item xs={9} style={{ maxWidth: '100%' }}>
-            {priceType === 'stop-limit' ? (
-              <PaddingGrid xs={12} conatiner key={'stop-limit'}>
-                <TradeInputContainer
-                  title={'Stop'}
-                  coin={pair[1]}
-                  value={values.stop || ''}
-                  onChange={this.onStopChange}
-                />
-              </PaddingGrid>
-            ) : null}
+          <Grid item container xs={9} style={{ maxWidth: '100%' }}>
+            <div style={{ margin: 'auto 0', width: '100%' }}>
+              {priceType === 'stop-limit' ? (
+                <InputRowContainer key={'stop-limit'}>
+                  <TradeInputContainer
+                    title={'Stop'}
+                    coin={pair[1]}
+                    value={values.stop || ''}
+                    onChange={this.onStopChange}
+                  />
+                </InputRowContainer>
+              ) : null}
 
-            {priceType !== 'market' ? (
-              <PriceContainer xs={12} item container key={'limit-price'}>
-                <TradeInputContainer
-                  title={'Price'}
-                  value={values.limit || ''}
-                  onChange={this.onLimitChange}
-                  coin={pair[1]}
-                />
-              </PriceContainer>
-            ) : null}
+              {priceType !== 'market' ? (
+                <InputRowContainer key={'limit-price'}>
+                  <TradeInputContainer
+                    title={'Price'}
+                    value={values.limit || ''}
+                    onChange={this.onLimitChange}
+                    coin={pair[1]}
+                  />
+                </InputRowContainer>
+              ) : null}
 
-            <Grid
-              item
-              container
-              direction="column"
-              justify={priceType === 'market' ? 'flex-end' : 'center'}
-              xs={12}
-            >
-              <TradeInputContainer
-                title={isSPOTMarket ? `Amount` : 'qtty'}
-                value={values.amount || ''}
-                onChange={this.onAmountChange}
-                coin={pair[0]}
-                style={{ paddingBottom: '.8rem' }}
-              />
-              {/* todo: replace it with blueslider component */}
-              <SmallSlider
-                min={0}
-                max={100}
-                defaultValue={0}
-                value={percentage}
-                valueSymbol={'%'}
-                marks={{
-                  0: { label: '0%' },
-                  25: { label: '25%' },
-                  50: { label: '50%' },
-                  75: { label: '75%' },
-                  100: { label: '100%' },
-                }}
-                onChange={(value) => {
-                  changePercentage(value)
-                  this.onPercentageClick(value / 100)
-                }}
-                sliderContainerStyles={{
-                  width: '70%',
-                  margin: '0 0 0 auto',
-                }}
-                handleStyles={{
-                  width: '1.2rem',
-                  height: '1.2rem',
-                  border: 'none',
-                  backgroundColor: '#0B1FD1',
-                  marginTop: '-.45rem',
-                  boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                }}
-                dotStyles={{
-                  border: 'none',
-                  backgroundColor: '#ABBAD1',
-                }}
-                activeDotStyles={{
-                  backgroundColor: '#5C8CEA',
-                }}
-                markTextSlyles={{
-                  color: '#7284A0;',
-                  fontSize: '1rem',
-                }}
-              />
-            </Grid>
-
-            {isSPOTMarket && (
-              <TotalGrid
-                xs={12}
-                item
-                container
+              <InputRowContainer
                 direction="column"
-                justify="center"
+                justify={priceType === 'market' ? 'flex-end' : 'center'}
               >
                 <TradeInputContainer
-                  title={`Total`}
-                  value={values.total || ''}
-                  onChange={this.onTotalChange}
-                  coin={pair[1]}
+                  title={isSPOTMarket ? `Amount` : 'qtty'}
+                  value={values.amount || ''}
+                  onChange={this.onAmountChange}
+                  coin={pair[0]}
+                  style={{ paddingBottom: '.8rem' }}
                 />
-              </TotalGrid>
-            )}
 
-            {/* {pairsErrors.length > 0 && (
-                <FormError>
-                  {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
-                </FormError>
-              )} */}
+                <BlueSlider
+                  value={percentage}
+                  sliderContainerStyles={{
+                    width: '70%',
+                    margin: '0 0 0 auto',
+                  }}
+                  onChange={(value) => {
+                    changePercentage(value)
+                    this.onPercentageClick(value / 100)
+                  }}
+                />
+              </InputRowContainer>
 
-            {!isSPOTMarket && (
-              <Grid xs={12} container justify="flex-end">
-                <Grid xs={1} item />
-                <Grid
-                  xs={11}
-                  item
-                  container
-                  direction="column"
-                  justify={priceType === 'stop-limit' ? 'flex-end' : 'center'}
-                >
+              {isSPOTMarket && (
+                <InputRowContainer direction="column" justify="center">
+                  <TradeInputContainer
+                    title={`Total`}
+                    value={values.total || ''}
+                    onChange={this.onTotalChange}
+                    coin={pair[1]}
+                  />
+                </InputRowContainer>
+              )}
+
+              {/* {pairsErrors.length > 0 && (
+                  <FormError>
+                    {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
+                  </FormError>
+                )} */}
+
+              {!isSPOTMarket && (
+                <InputRowContainer justify="flex-end">
+                  <Grid xs={1} item />
                   <Grid
+                    xs={11}
+                    item
                     container
-                    justify="space-between"
-                    style={{ padding: '.6rem 0' }}
+                    direction="column"
+                    justify={priceType === 'stop-limit' ? 'flex-end' : 'center'}
                   >
-                    <InputTitle>cost:</InputTitle>
-                    <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                      (qtty / lev) * price
-                    </InputTitle>
-                  </Grid>
+                    <Grid
+                      container
+                      justify="space-between"
+                      style={{ padding: '.6rem 0' }}
+                    >
+                      <InputTitle>cost:</InputTitle>
+                      <InputTitle color="#16253D" style={{ width: 'auto' }}>
+                        (qtty / lev) * price
+                      </InputTitle>
+                    </Grid>
 
-                  <Grid
-                    container
-                    justify="space-between"
-                    style={{ padding: '.6rem 0' }}
-                  >
-                    <InputTitle>max buy:</InputTitle>
-                    <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                      value
-                    </InputTitle>
+                    <Grid
+                      container
+                      justify="space-between"
+                      style={{ padding: '.6rem 0' }}
+                    >
+                      <InputTitle>max buy:</InputTitle>
+                      <InputTitle color="#16253D" style={{ width: 'auto' }}>
+                        value
+                      </InputTitle>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Grid>
-            )}
+                </InputRowContainer>
+              )}
+            </div>
           </Grid>
 
           <Grid xs={3} item container style={{ maxWidth: '100%' }}>

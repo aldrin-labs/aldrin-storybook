@@ -7,12 +7,9 @@ import Tooltip from 'rc-tooltip'
 import Slider from 'rc-slider'
 const Handle = Slider.Handle
 
-const StyledSlider = styled(
-  ({
-    sliderContainerStyles,
-    ...rest
-  }) => <Slider {...rest} />
-)`
+const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
+  <Slider {...rest} />
+))`
   && {
     ${(props) => props.sliderContainerStyles}
     background-color: ${(props) => props.disabled && 'inherit;'};
@@ -97,6 +94,14 @@ const RCSlider = ({
   onChange,
   trackBeforeBackground,
   ...rest
+}: {
+  min: number
+  max: number
+  defaultValue?: number
+  valueSymbol: string
+  value: number
+  onChange: any
+  trackBeforeBackground?: string
 }) => {
   return (
     <StyledSlider
@@ -106,7 +111,9 @@ const RCSlider = ({
       defaultValue={defaultValue}
       onChange={onChange}
       trackBeforeBackground={trackBeforeBackground}
-      handle={(props) => handle({ ...props, valueSymbol, trackBeforeBackground })}
+      handle={(props) =>
+        handle({ ...props, valueSymbol, trackBeforeBackground })
+      }
       {...rest}
     />
   )

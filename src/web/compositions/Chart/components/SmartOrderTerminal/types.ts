@@ -99,3 +99,9 @@ export type InputProps = {
   showErrors?: boolean
   inputStyles?: CSSProperties
 }
+
+export type InputRowProps = {
+  direction?: string
+  justify?: string
+  padding?: string
+}

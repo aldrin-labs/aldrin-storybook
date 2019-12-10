@@ -118,7 +118,9 @@ export const DefaultView = (props: any) => {
             <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
-                  additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}&marketType=${marketType}`}
+                  additionalUrl={`/?symbol=${base}/${quote}_${String(
+                    marketType
+                  )}&user_id=${id}&theme=${themeMode}`}
                 />
               ) : (
                 <Fade timeout={1000} in={activeChart === 'depth'}>
