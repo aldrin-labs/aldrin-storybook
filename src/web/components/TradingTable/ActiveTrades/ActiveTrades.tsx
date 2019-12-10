@@ -77,7 +77,11 @@ class ActiveTradesTable extends React.PureComponent {
     let price
 
     try {
-      if (this.props.marketTickers && this.props.marketTickers.marketTickers) {
+      if (
+        this.props.marketTickers &&
+        this.props.marketTickers.marketTickers &&
+        this.props.marketTickers.marketTickers.length > 0
+      ) {
         const data = JSON.parse(this.props.marketTickers.marketTickers[0])
         price = data[4]
       }
