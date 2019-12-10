@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { Grid } from '@material-ui/core'
@@ -94,7 +94,11 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
   color: #7284a0;
 `
 
-export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
+export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscribeToMore }) => {
+  useEffect(() => {
+    const unsubscribeFunction = subscribeToMore()
+    return () => { unsubscribeFunction() }
+  }, [])
 
   const [open, togglePopup] = useState(false)
   const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(false)

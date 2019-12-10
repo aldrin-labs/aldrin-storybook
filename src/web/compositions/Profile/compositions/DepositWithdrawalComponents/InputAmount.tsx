@@ -13,16 +13,17 @@ import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { FundsType } from '@core/types/ChartTypes'
 
 interface IProps {
+  marketType: 0 | 1
   selectedCoin: string
   getFundsQuery: {
     getFunds: FundsType[]
   }
 }
 
-const Balances = ({ selectedCoin, getFundsQuery, ...inputProps }: IProps) => {
+const Balances = ({ selectedCoin, getFundsQuery, marketType = 0, ...inputProps }: IProps) => {
   const { getFunds } = getFundsQuery
   const [currentElement] = getFunds.filter(
-    (el: FundsType) => el.asset.symbol === selectedCoin
+    (el: FundsType) => el.asset.symbol === selectedCoin && el.assetType === marketType
   )
 
   const { quantity, locked, free } = currentElement || {
@@ -39,7 +40,7 @@ const Balances = ({ selectedCoin, getFundsQuery, ...inputProps }: IProps) => {
           disableTypography={true}
           position="end"
         >
-          <StyledTypographyCaption>{`AVAILABLE: ${free} ${selectedCoin}`}</StyledTypographyCaption>
+          <StyledTypographyCaption>{`AVAILABLE: ${marketType === 0 ? free : quantity} ${selectedCoin}`}</StyledTypographyCaption>
         </InputAdornment>
       }
       {...inputProps}

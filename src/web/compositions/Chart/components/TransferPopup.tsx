@@ -51,7 +51,7 @@ const TransferPopup = ({
   handleClose,
   futuresTransferMutation,
 }: IProps) => {
-  const [selectedCoin, setSelectedCoin] = useState('BTC')
+  const [selectedCoin, setSelectedCoin] = useState({ label: 'USDT', name: 'Tether' })
   const [coinAmount, setCoinAmount] = useState('')
 
   console.log('selectedCoin', selectedCoin)
@@ -61,7 +61,7 @@ const TransferPopup = ({
       variables: {
         input: {
           keyId: selectedAccount,
-          asset: selectedCoin,
+          asset: selectedCoin.label,
           amount: +coinAmount,
           type: transferFromSpotToFutures ? 1 : 2,
         },
@@ -121,18 +121,19 @@ const TransferPopup = ({
                   DropdownIndicator: undefined,
                 }}
                 isSearchable={true}
-                placeholder={selectedCoin}
+                value={selectedCoin}
+                // placeholder={selectedCoin}
                 menuPortalTarget={document.body}
                 menuPortalStyles={{
                   zIndex: 11111,
                 }}
-                onChange={(optionSelected: {
-                  label: string
-                  value: string
-                  priceUSD: string | number
-                }) => {
-                  setSelectedCoin(optionSelected.value)
-                }}
+                // onChange={(optionSelected: {
+                //   label: string
+                //   value: string
+                //   priceUSD: string | number
+                // }) => {
+                //   setSelectedCoin(optionSelected.value)
+                // }}
                 noOptionsMessage={() => `No such coin in our DB found`}
                 dropdownIndicatorStyles={{
                   display: 'none',
@@ -208,8 +209,9 @@ const TransferPopup = ({
             <Grid style={{ paddingBottom: '4rem' }}>
               <StyledTypography>Amount:</StyledTypography>
               <InputAmount
-                selectedCoin={selectedCoin}
+                selectedCoin={selectedCoin.label}
                 selectedAccount={selectedAccount}
+                marketType={transferFromSpotToFutures ? 0 : 1}
                 value={coinAmount}
                 onChange={(e) => setCoinAmount(e.target.value)}
                 style={{ width: '100%' }}
