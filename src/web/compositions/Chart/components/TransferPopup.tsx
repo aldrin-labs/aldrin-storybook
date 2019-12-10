@@ -53,35 +53,33 @@ const TransferPopup = ({
   futuresTransferMutation,
   showFuturesTransfer,
 }: IProps) => {
-  const [selectedCoin, setSelectedCoin] = useState({ label: 'USDT', name: 'Tether' })
+  const [selectedCoin, setSelectedCoin] = useState({
+    label: 'USDT',
+    name: 'Tether',
+  })
   const [coinAmount, setCoinAmount] = useState('')
 
   console.log('selectedCoin', selectedCoin)
 
   const transferHandler = async () => {
+    handleClose()
 
     try {
-    const response = await futuresTransferMutation({
-      variables: {
-        input: {
-          keyId: selectedAccount,
-          asset: selectedCoin.label,
-          amount: +coinAmount,
-          type: transferFromSpotToFutures ? 1 : 2,
+      const response = await futuresTransferMutation({
+        variables: {
+          input: {
+            keyId: selectedAccount,
+            asset: selectedCoin.label,
+            amount: +coinAmount,
+            type: transferFromSpotToFutures ? 1 : 2,
+          },
         },
-      },
-    })
+      })
 
-    showFuturesTransfer(response.data.futuresTransfer)
-  } catch(e) {
-    showFuturesTransfer({status: "ERR"})
-  }
-
-    handleClose()
-    // showFuturesTransfer(response.data.futuresTransfer)
-
-    // console.log('transferHandler response', response)
-    // closing popup
+      showFuturesTransfer(response.data.futuresTransfer)
+    } catch (e) {
+      showFuturesTransfer({ status: 'ERR' })
+    }
   }
 
   return (
