@@ -14,7 +14,7 @@ import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
 
-import { TransferPopup } from '@sb/compositions/Chart/components/TransferPopup'
+import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -110,6 +110,9 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
 
     return { quantity, value }
   })
+
+  const [USDTFuturesFund = { free: 0, locked: 0, quantity: 0 }] = getFundsQuery.getFunds
+  .filter(el => el.assetType === 1 && el.asset.symbol === 'USDT')
 
   const isSPOTMarket = isSPOTMarketType(marketType)
 
@@ -209,19 +212,19 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey }) => {
                 <BalanceFuturesContainer>
                   <BalanceFuturesTitle>Total</BalanceFuturesTitle>
                   <BalanceFuturesValue>
-                    30 <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    {stripDigitPlaces(USDTFuturesFund.quantity)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                   </BalanceFuturesValue>
                 </BalanceFuturesContainer>
                 <BalanceFuturesContainer needBorder>
                   <BalanceFuturesTitle>In order</BalanceFuturesTitle>
                   <BalanceFuturesValue>
-                    30 <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    {stripDigitPlaces(USDTFuturesFund.locked)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                   </BalanceFuturesValue>
                 </BalanceFuturesContainer>
                 <BalanceFuturesContainer>
                   <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
                   <BalanceFuturesValue>
-                    30 <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    {stripDigitPlaces(USDTFuturesFund.free)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                   </BalanceFuturesValue>
                 </BalanceFuturesContainer>
               </div>
