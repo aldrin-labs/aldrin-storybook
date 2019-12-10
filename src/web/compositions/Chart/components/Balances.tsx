@@ -94,7 +94,7 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
   color: #7284a0;
 `
 
-export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscribeToMore }) => {
+export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscribeToMore, showFuturesTransfer }) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
     return () => { unsubscribeFunction() }
@@ -137,6 +137,7 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscri
       handleClose={() => togglePopup(false)}
       transferFromSpotToFutures={transferFromSpotToFutures}
       selectedAccount={selectedKey.keyId}
+      showFuturesTransfer={showFuturesTransfer}
     />
     <CustomCard>
       <ChartCardHeader>Balances</ChartCardHeader>

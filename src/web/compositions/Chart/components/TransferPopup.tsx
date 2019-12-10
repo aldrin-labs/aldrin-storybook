@@ -42,6 +42,7 @@ interface IProps {
   }) => Promise<any>
   open: boolean
   handleClose: () => void
+  showFuturesTransfer: (result: any) => void
 }
 
 const TransferPopup = ({
@@ -50,6 +51,7 @@ const TransferPopup = ({
   open,
   handleClose,
   futuresTransferMutation,
+  showFuturesTransfer,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({ label: 'USDT', name: 'Tether' })
   const [coinAmount, setCoinAmount] = useState('')
@@ -57,6 +59,8 @@ const TransferPopup = ({
   console.log('selectedCoin', selectedCoin)
 
   const transferHandler = async () => {
+
+    try {
     const response = await futuresTransferMutation({
       variables: {
         input: {
@@ -68,9 +72,16 @@ const TransferPopup = ({
       },
     })
 
-    console.log('transferHandler response', response)
-    // closing popup
+    showFuturesTransfer(response.data.futuresTransfer)
+  } catch(e) {
+    showFuturesTransfer({status: "ERR"})
+  }
+
     handleClose()
+    // showFuturesTransfer(response.data.futuresTransfer)
+
+    // console.log('transferHandler response', response)
+    // closing popup
   }
 
   return (

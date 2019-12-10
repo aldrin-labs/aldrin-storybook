@@ -54,6 +54,23 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
+  showFuturesTransfer = (result) => {
+    if (result.status === 'OK' && result.data && result.data.tranId) {
+      this.props.enqueueSnackbar(
+        'Funds transfered!', {
+          variant: 'success',
+          action: (
+            <CloseButton />
+          ),
+        }
+      )
+    }
+    else {
+      this.props.enqueueSnackbar('Something went wrong during transfering funds', { variant: 'error' })
+    }
+
+  }
+
   showCancelResult = (result) => {
     if (result.status === 'success' && result.message) {
       this.props.enqueueSnackbar(result.message, {
@@ -75,6 +92,7 @@ class OrderStatusWrapper extends React.Component {
       <DefaultView
         showOrderResult={this.showOrderResult}
         showCancelResult={this.showCancelResult}
+        showFuturesTransfer={this.showFuturesTransfer}
         {...this.props}
       />
     )

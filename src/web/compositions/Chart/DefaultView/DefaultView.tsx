@@ -56,6 +56,7 @@ export const DefaultView = (props: any) => {
     changeTable,
     showOrderResult,
     showCancelResult,
+    showFuturesTransfer,
     showTableOnMobile,
     selectedKey,
     chartProps,
@@ -204,6 +205,7 @@ export const DefaultView = (props: any) => {
               pair={currencyPair.split('_')}
               selectedKey={selectedKey}
               marketType={marketType}
+              showFuturesTransfer={showFuturesTransfer}
             />
           </BalancesContainer>
 
