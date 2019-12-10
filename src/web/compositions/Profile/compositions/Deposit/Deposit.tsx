@@ -91,7 +91,7 @@ const Deposits = ({  }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 {selectedCoin} address
               </StyledTypography>
-              <InputAddress value={coinAddress} setCoinAddress={setCoinAddress} selectedAccount={selectedAccount.keyId}/>
+              <InputAddress value={coinAddress} selectedCoin={selectedCoin} setCoinAddress={setCoinAddress} selectedAccount={selectedAccount.keyId}/>
               {/* <StyledInput
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
