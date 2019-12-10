@@ -22,7 +22,6 @@ import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
 
-
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
@@ -73,11 +72,19 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme, marketTickers } = this.props
+    const {
+      getActiveStrategiesQuery,
+      subscribeToMore,
+      theme,
+      marketTickers,
+    } = this.props
 
-    const data = JSON.parse(marketTickers.marketTickers[0])
-    const price = data[4]
+    let price
 
+    try {
+      const data = JSON.parse(this.props.marketTickers.marketTickers[0])
+      price = data[4]
+    } catch (e) {}
     const openOrdersProcessedData = combineActiveTradesTable(
       getActiveStrategiesQuery.getActiveStrategies,
       this.cancelOrderWithStatus,
@@ -100,21 +107,23 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.marketTickers.marketTickers > 0) {
+    let price
+
+    try {
       const data = JSON.parse(this.props.marketTickers.marketTickers[0])
-      const price = data[4]
+      price = data[4]
+    } catch (e) {}
 
-      const activeStrategiesProcessedData = combineActiveTradesTable(
-        nextProps.getActiveStrategiesQuery.getActiveStrategies,
-        this.cancelOrderWithStatus,
-        nextProps.theme,
-        price
-      )
+    const activeStrategiesProcessedData = combineActiveTradesTable(
+      nextProps.getActiveStrategiesQuery.getActiveStrategies,
+      this.cancelOrderWithStatus,
+      nextProps.theme,
+      price
+    )
 
-      this.setState({
-        activeStrategiesProcessedData,
-      })
-    }
+    this.setState({
+      activeStrategiesProcessedData,
+    })
   }
 
   render() {
@@ -187,7 +196,9 @@ class ActiveTradesTable extends React.PureComponent {
 const LastTradeWrapper = ({ ...props }) => {
   useEffect(() => {
     const unsubscribeFunction = props.subscribeToMore()
-    return () => { unsubscribeFunction() }
+    return () => {
+      unsubscribeFunction()
+    }
   }, [])
 
   return (
@@ -216,7 +227,6 @@ const LastTradeWrapper = ({ ...props }) => {
     />
   )
 }
-
 
 const TableDataWrapper = ({ ...props }) => {
   return (

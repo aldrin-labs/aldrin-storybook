@@ -24,7 +24,6 @@ interface IProps {
 }
 
 class LastTrade extends React.Component<IProps> {
-
   unsubscribeFunction: null | Function = null
 
   componentDidMount() {
@@ -44,9 +43,14 @@ class LastTrade extends React.Component<IProps> {
       return null
     }
 
-    const data = JSON.parse(this.props.data.marketTickers[0])
-    const price = data[4]
-    const fall = data[9]
+    let price = 0
+    let fall = false
+
+    try {
+      const data = JSON.parse(this.props.data.marketTickers[0])
+      price = data[4]
+      fall = data[9]
+    } catch (e) {}
 
     return (
       <LastTradeContainer>
