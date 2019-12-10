@@ -30,6 +30,8 @@ export const positionsColumnNames = [
 export const activeTradesColumnNames = [
   { label: 'Pair', id: 'pair' },
   { label: 'Side', id: 'side' },
+  { label: 'Status', id: 'status'},
+  { label: 'Profit', id: 'profit' },
   { label: 'Amount', id: 'amount' },
   { label: 'Total', id: 'total' },
   { label: 'Entry Price', id: 'entryPrice' },

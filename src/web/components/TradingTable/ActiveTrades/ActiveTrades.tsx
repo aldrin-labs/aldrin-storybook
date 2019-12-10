@@ -1,28 +1,34 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { graphql } from 'react-apollo'
+import { client } from '@core/graphql/apolloClient'
+
 import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
+  updateActiveStrategiesQuerryFunction,
   combineActiveTradesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
+import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
+import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
+
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
 class ActiveTradesTable extends React.PureComponent {
   state = {
-    openOrdersProcessedData: [],
+    activeStrategiesProcessedData: [],
   }
 
   unsubscribeFunction: null | Function = null
@@ -67,13 +73,18 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getOpenOrderHistoryQuery, subscribeToMore, theme } = this.props
+    const { getActiveStrategiesQuery, subscribeToMore, theme, marketTickers } = this.props
+
+    const data = JSON.parse(marketTickers.marketTickers[0])
+    const price = data[4]
 
     const openOrdersProcessedData = combineActiveTradesTable(
-      getOpenOrderHistoryQuery.getOpenOrderHistory,
+      getActiveStrategiesQuery.getActiveStrategies,
       this.cancelOrderWithStatus,
-      theme
+      theme,
+      price
     )
+
     this.setState({
       openOrdersProcessedData,
     })
@@ -89,18 +100,25 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const openOrdersProcessedData = combineActiveTradesTable(
-      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
-      this.cancelOrderWithStatus,
-      nextProps.theme
-    )
-    this.setState({
-      openOrdersProcessedData,
-    })
+    if (this.props.marketTickers.marketTickers > 0) {
+      const data = JSON.parse(this.props.marketTickers.marketTickers[0])
+      const price = data[4]
+
+      const activeStrategiesProcessedData = combineActiveTradesTable(
+        nextProps.getActiveStrategiesQuery.getActiveStrategies,
+        this.cancelOrderWithStatus,
+        nextProps.theme,
+        price
+      )
+
+      this.setState({
+        activeStrategiesProcessedData,
+      })
+    }
   }
 
   render() {
-    const { openOrdersProcessedData } = this.state
+    const { activeStrategiesProcessedData } = this.state
     const { tab, handleTabChange, show, marketType } = this.props
 
     if (!show) {
@@ -159,35 +177,65 @@ class ActiveTradesTable extends React.PureComponent {
           </div>
         }
         rowsWithHover={false}
-        data={{ body: openOrdersProcessedData }}
+        data={{ body: activeStrategiesProcessedData }}
         columnNames={getTableHead(tab)}
       />
     )
   }
 }
 
-const TableDataWrapper = ({ ...props }) => {
+const LastTradeWrapper = ({ ...props }) => {
+  useEffect(() => {
+    const unsubscribeFunction = props.subscribeToMore()
+    return () => { unsubscribeFunction() }
+  }, [])
+
   return (
     <QueryRenderer
+      {...props}
       component={ActiveTradesTable}
       variables={{
-        openOrderInput: {
+        activeStrategiesInput: {
           activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
-      query={getOpenOrderHistory}
-      name={`getOpenOrderHistoryQuery`}
+      query={getActiveStrategies}
+      name={`getActiveStrategiesQuery`}
       fetchPolicy="network-only"
       subscriptionArgs={{
-        subscription: OPEN_ORDER_HISTORY,
+        subscription: ACTIVE_STRATEGIES,
         variables: {
-          openOrderInput: {
+          activeStrategiesInput: {
             activeExchangeKey: props.selectedKey.keyId,
           },
         },
-        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+        updateQueryFunction: updateActiveStrategiesQuerryFunction,
+      }}
+    />
+  )
+}
+
+
+const TableDataWrapper = ({ ...props }) => {
+  return (
+    <QueryRenderer
+      component={LastTradeWrapper}
+      variables={{ symbol: props.currencyPair, exchange: props.exchange }}
+      withOutSpinner={true}
+      withTableLoader={true}
+      query={MARKET_QUERY}
+      name={`marketTickers`}
+      fetchPolicy="cache-only"
+      subscriptionArgs={{
+        subscription: MARKET_TICKERS,
+        variables: {
+          symbol: props.currencyPair,
+          exchange: props.exchange,
+          marketType: String(props.marketType),
+        },
+        updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...props}
     />
