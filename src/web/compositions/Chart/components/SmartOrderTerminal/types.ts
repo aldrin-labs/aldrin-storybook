@@ -5,6 +5,7 @@ export interface IProps {
 }
 
 export interface IState {
+  showConfirmationPopup: boolean
   showErrors: boolean
   entryPoint: {
     order: {
