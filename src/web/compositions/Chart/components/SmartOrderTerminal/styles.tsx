@@ -5,7 +5,7 @@ import { HeaderProperties, BlockProperties, InputRowProps } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
-  min-height: 90%;
+  height: 90%;
 `
 
 export const TerminalHeaders = styled.div`
@@ -76,6 +76,8 @@ export const TerminalBlock = styled(({ borderRight, ...rest }) => (
   padding: ${(props) => props.padding || '0rem 1rem 0rem 1.2rem'};
   border-right: ${(props) => props.borderRight || '0.1rem solid #abbad1'};
   position: relative;
+  overflow: hidden scroll;
+  height: 100%;
 `
 
 export const FieldsContainer = styled.div`
