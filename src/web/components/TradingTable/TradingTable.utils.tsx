@@ -477,9 +477,10 @@ export const combineOpenOrdersTable = (
         info: { orderId, stopPrice = 0, origQty = '0' },
       } = el
 
-      const triggerConditions = +stopPrice ? stopPrice : '-'
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
+      const triggerConditions =
+        el && el.info && +el.info.stopPrice ? el.info.stopPrice : '-'
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
