@@ -696,7 +696,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               style={{
                 width: 'calc(100% - 2.2rem)',
                 margin: '0 auto',
-                position: 'absolute',
+                position: 'relative',
                 bottom: '0',
               }}
             >
@@ -714,7 +714,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       this.state
                     )
 
-                    this.props.showOrderResult(result, this.props.cancelOrder)
+                    await this.props.showOrderResult(
+                      result,
+                      this.props.cancelOrder
+                    )
+
+                    if (result.status === 'success' && result.orderId)
+                      updateTerminalViewMode('default')
                   } else {
                     this.setState({ showErrors: true })
                   }
@@ -977,9 +983,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </InputRowContainer>
                     <div
                       style={{
-                        maxHeight: '5rem',
                         width: '100%',
-                        overflow: 'hidden scroll',
                       }}
                     >
                       {takeProfit.splitTargets.targets.map((target, i) => (
