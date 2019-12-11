@@ -479,8 +479,8 @@ export const combineOpenOrdersTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
-      // const triggerConditions =
-      //   el && el.info && +el.info.stopPrice ? el.info.stopPrice : '-'
+      const triggerConditions =
+        el && el.info && +el.info.stopPrice ? el.info.stopPrice : '-'
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -545,8 +545,8 @@ export const combineOpenOrdersTable = (
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
-          render: '-',
-          // contentToSort: +stopPrice,
+          render: triggerConditions,
+          contentToSort: +stopPrice,
         },
         date: {
           render: (
@@ -605,13 +605,14 @@ export const combineOrderHistoryTable = (
       info,
     } = el
 
-    const triggerConditions = +stopPrice ? stopPrice : '-'
     // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
     const pair = symbol.split('_')
 
     const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
       ? info
       : { orderId: 'id', stopPrice: 0, origQty: 0 }
+
+    const triggerConditions = +stopPrice ? stopPrice : '-'
 
     return {
       id: `${orderId}${timestamp}${origQty}`,
