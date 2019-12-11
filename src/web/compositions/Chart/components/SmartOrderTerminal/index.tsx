@@ -8,7 +8,13 @@ import {
   BlueSwitcherStyles,
 } from './utils'
 
-import { validateSmartOrders } from '@core/utils/chartPageUtils'
+import {
+  validateSmartOrders,
+  getTakeProfitObject,
+  transformTakeProfitProperties,
+  getStopLossObject,
+  transformStopLossProperties,
+} from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { CustomCard } from '../../Chart.styles'
@@ -25,6 +31,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Input, Select } from './InputComponents'
+import { EditTakeProfitPopup, EditStopLossPopup } from './EditOrderPopups'
 
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
@@ -49,6 +56,8 @@ import {
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
     showErrors: false,
+    editTAP: false,
+    editSL: false,
     entryPoint: {
       order: {
         type: 'limit',
@@ -722,7 +731,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     if (result.status === 'success' && result.orderId)
                       updateTerminalViewMode('default')
                   } else {
-                    this.setState({ showErrors: true })
+                    this.setState({ showErrors: true, editSL: true })
                   }
                 }}
               >
@@ -1463,6 +1472,33 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             )}
           </TerminalBlock>
         </TerminalBlocksContainer>
+        {this.state.editTAP && (
+          <EditTakeProfitPopup
+            open={this.state.editTAP}
+            handleClose={() => this.setState({ editTAP: false })}
+            updateState={(takeProfitProperties) =>
+              this.setState({
+                takeProfit: transformTakeProfitProperties(takeProfitProperties),
+              })
+            }
+            TAPState={getTakeProfitObject(this.state.takeProfit)}
+            validateField={this.validateField}
+          />
+        )}
+
+        {this.state.editSL && (
+          <EditStopLossPopup
+            open={this.state.editSL}
+            handleClose={() => this.setState({ editSL: false })}
+            updateState={(stopLossProperties) =>
+              this.setState({
+                stopLoss: transformStopLossProperties(stopLossProperties),
+              })
+            }
+            stopLossState={getStopLossObject(this.state.stopLoss)}
+            validateField={this.validateField}
+          />
+        )}
       </CustomCard>
     )
   }

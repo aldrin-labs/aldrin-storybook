@@ -6,6 +6,8 @@ export interface IProps {
 
 export interface IState {
   showErrors: boolean
+  editTAP: boolean
+  editSL: boolean
   entryPoint: {
     order: {
       type: 'market' | 'limit'
