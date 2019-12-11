@@ -12,7 +12,6 @@
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
     "alwaysStrict": false,
