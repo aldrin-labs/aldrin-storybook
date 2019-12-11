@@ -302,6 +302,11 @@ export const combineActiveTradesTable = (
         stopLoss,
         stopLossType,
         forcedLoss,
+        trailingExit,
+        timeoutIfProfitable,
+        timeoutLoss,
+        timeoutLossable,
+        timeoutWhenProfit,
       } = {
         pair: '-',
         entryOrder: {
@@ -313,6 +318,11 @@ export const combineActiveTradesTable = (
         stopLoss: '-',
         stopLossType: '-',
         forcedLoss: false,
+        trailingExit: false,
+        timeoutIfProfitable: '-',
+        timeoutLoss: '-',
+        timeoutLossable: '-',
+        timeoutWhenProfit: '-',
       },
     } = el
 
@@ -321,7 +331,6 @@ export const combineActiveTradesTable = (
       state: '-',
     }
 
-    console.log('e', el)
     // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
     const pairArr = pair.split('_')
@@ -393,8 +402,9 @@ export const combineActiveTradesTable = (
             price={exitLevels.length > 0 && exitLevels[0].price}
             order={exitLevels.length > 0 && exitLevels[0].orderType}
             targets={(exitLevels && exitLevels.length) || 0}
-            timeoutProfit={30}
-            trailing={exitLevels && exitLevels.length === 1}
+            timeoutProfit={timeoutWhenProfit}
+            timeoutProfitable={timeoutIfProfitable}
+            trailing={trailingExit}
             red={red.new}
             green={green.new}
             blue={blue}
@@ -407,8 +417,9 @@ export const combineActiveTradesTable = (
             price={stopLoss}
             order={stopLossType}
             forced={!!forcedLoss}
-            timeoutLoss={30}
-            trailing={true}
+            timeoutLoss={timeoutLoss}
+            trailing={false}
+            timeoutLossable={timeoutLossable}
             red={red.new}
             green={green.new}
             blue={blue}
@@ -466,9 +477,10 @@ export const combineOpenOrdersTable = (
         info: { orderId, stopPrice = 0, origQty = '0' },
       } = el
 
-      const triggerConditions = +stopPrice ? stopPrice : '-'
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
+      // const triggerConditions =
+      //   el && el.info && +el.info.stopPrice ? el.info.stopPrice : '-'
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -533,8 +545,8 @@ export const combineOpenOrdersTable = (
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
-          render: triggerConditions,
-          contentToSort: +stopPrice,
+          render: '-',
+          // contentToSort: +stopPrice,
         },
         date: {
           render: (
