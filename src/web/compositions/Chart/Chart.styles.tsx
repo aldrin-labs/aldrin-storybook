@@ -196,7 +196,7 @@ export const TradingTerminalContainer = styled(
   position: relative;
   display: flex;
 
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '50%' : '50%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '50%' : '45%')};
   overflow: hidden;
 
   flex-direction: column;
@@ -211,7 +211,7 @@ export const ChartsContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '55%' : '50%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '55%' : '45%')};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -262,7 +262,9 @@ export const Toggler = styled.div`
   justify-content: flex-end;
 `
 
-export const StyledSwitch = styled(({ isActive, ...rest }) => <Button {...rest} />)`
+export const StyledSwitch = styled(({ isActive, ...rest }) => (
+  <Button {...rest} />
+))`
   background: ${(props) => (props.isActive ? '#4152AF' : '#F9FBFD')};
   color: ${(props) => (props.isActive ? '#fff' : '#4152AF')};
   border: 1px solid #4152af;
@@ -323,7 +325,7 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '45%' : '50%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '45%' : '55%')};
   padding: ${({
     isDefaultTerminalViewMode,
   }: {
@@ -334,6 +336,6 @@ export const BalancesContainer = styled(
 
 export const SmartTerminalContainer = styled(Grid)`
   position: relative;
-  height: 50%;
+  height: 55%;
   padding: 0.4rem 0 0 0.4rem;
 `
