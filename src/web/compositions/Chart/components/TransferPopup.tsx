@@ -59,8 +59,6 @@ const TransferPopup = ({
   })
   const [coinAmount, setCoinAmount] = useState('')
 
-  console.log('selectedCoin', selectedCoin)
-
   const transferHandler = async () => {
     handleClose()
 
