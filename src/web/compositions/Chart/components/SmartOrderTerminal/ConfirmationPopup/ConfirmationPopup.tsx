@@ -126,11 +126,11 @@ export default ({
         >
           <Grid>
             <Grid id="entry">
-              <Grid container justify="space-between" alignItems="center">
+              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}> 
                 <TitleTypography>Entry point</TitleTypography>
                 <EditButton>edit</EditButton>
               </Grid>
-              <Grid container style={{ padding: '2rem 5.5rem' }}>
+              <Grid container style={{ padding: '1rem 5.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
                   <ItemTypography>Side:</ItemTypography>
                   <ItemTypography>price:</ItemTypography>
@@ -168,13 +168,13 @@ export default ({
               </Grid>
             </Grid>
             <Grid id="hedge">
-              <Grid container justify="space-between" alignItems="center">
+              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}>
                 <Grid
                   container
                   justify="space-between"
                   style={{ width: '18%' }}
                 >
-                  <TitleTypography>hedge</TitleTypography>
+                  <TitleTypography>hedge:</TitleTypography>
                   <TitleTypography
                     style={{ color: getColor(entryPoint.order.isHedgeOn) }}
                   >
@@ -183,7 +183,7 @@ export default ({
                 </Grid>
                 <EditButton>edit</EditButton>
               </Grid>
-              <Grid container style={{ padding: '2rem 4.5rem' }}>
+              <Grid container style={{ padding: '1rem 4.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
                   <ItemTypography>Side:</ItemTypography>
                   <ItemTypography>amount:</ItemTypography>
@@ -201,13 +201,13 @@ export default ({
               </Grid>
             </Grid>
             <Grid id="takeaprofit">
-              <Grid container justify="space-between" alignItems="center">
+              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}>
                 <Grid
                   container
                   justify="space-between"
                   style={{ width: '30%' }}
                 >
-                  <TitleTypography>take a profit</TitleTypography>
+                  <TitleTypography>take a profit:</TitleTypography>
                   <TitleTypography
                     style={{ color: getColor(takeProfit.isTakeProfitOn) }}
                   >
@@ -216,7 +216,7 @@ export default ({
                 </Grid>
                 <EditButton>edit</EditButton>
               </Grid>
-              <Grid container style={{ padding: '2rem 0.5rem' }}>
+              <Grid container style={{ padding: '1rem 0.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
                   <ItemTypography>split target:</ItemTypography>
                   <ItemTypography>Trailing:</ItemTypography>
@@ -256,13 +256,13 @@ export default ({
               </Grid>
             </Grid>
             <Grid id="stoploss">
-              <Grid container justify="space-between" alignItems="center">
+              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}>
                 <Grid
                   container
                   justify="space-between"
                   style={{ width: '25%' }}
                 >
-                  <TitleTypography>stop loss</TitleTypography>
+                  <TitleTypography>stop loss:</TitleTypography>
                   <TitleTypography
                     style={{ color: getColor(stopLoss.isStopLossOn) }}
                   >
@@ -271,7 +271,7 @@ export default ({
                 </Grid>
                 <EditButton>edit</EditButton>
               </Grid>
-              <Grid container style={{ padding: '2rem 1.6rem' }}>
+              <Grid container style={{ padding: '1rem 1.6rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
                   <ItemTypography>price:</ItemTypography>
                   <ItemTypography>timeout:</ItemTypography>
