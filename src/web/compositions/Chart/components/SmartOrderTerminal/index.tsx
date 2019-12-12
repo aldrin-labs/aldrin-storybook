@@ -38,6 +38,7 @@ import { EditTakeProfitPopup, EditStopLossPopup } from './EditOrderPopups'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
+import ConfirmationPopup from '@sb/compositions/Chart/components/SmartOrderTerminal/ConfirmationPopup/ConfirmationPopup'
 
 import {
   TerminalBlocksContainer,
@@ -57,6 +58,7 @@ import {
 
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
+    showConfirmationPopup: true,
     showErrors: false,
     editTAP: false,
     editSL: false,
@@ -135,6 +137,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
       }
     }
+  }
+
+  handleCloseConfirmationPopup = () => {
+    this.setState({
+      showConfirmationPopup: false
+    })
   }
 
   addTarget = () => {
@@ -228,11 +236,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
   render() {
     const { updateTerminalViewMode, pair, funds, marketType } = this.props
-    const { entryPoint, takeProfit, stopLoss, showErrors } = this.state
+    const { entryPoint, takeProfit, stopLoss, showErrors, showConfirmationPopup } = this.state
     const maxAmount =
       entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
 
     return (
+      <>
+      <ConfirmationPopup open={showConfirmationPopup} handleClose={this.handleCloseConfirmationPopup} entryPoint={entryPoint} takeProfit={takeProfit} stopLoss={stopLoss} pair={pair} />
       <CustomCard>
         <TerminalHeaders>
           <TerminalHeader
@@ -1506,6 +1516,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           />
         )}
       </CustomCard>
+      </>
     )
   }
 }
