@@ -28,6 +28,7 @@ export const TakeProfitColumn = ({
   green,
   red,
   blue,
+  editTrade,
 }: {
   price: number
   targets?: number
@@ -41,11 +42,12 @@ export const TakeProfitColumn = ({
     first: string
     second: string
   }
+  editTrade: () => void
 }) => {
   return (
     <>
-      <div>
-        <SubColumnTitle>
+      <div style={{ width: '100%' }}>
+        <SubColumnTitle style={{ width: '75%' }}>
           <BtnCustom
             needMinWidth={false}
             btnWidth="75%"
@@ -58,6 +60,7 @@ export const TakeProfitColumn = ({
             backgroundColor={blue.second}
             hoverBackground={blue.first}
             transition={'all .4s ease-out'}
+            onClick={editTrade}
           >
             edit
           </BtnCustom>
@@ -105,6 +108,7 @@ export const StopLossColumn = ({
   green,
   red,
   blue,
+  editTrade,
 }: {
   price: number
   forced?: boolean
@@ -118,11 +122,12 @@ export const StopLossColumn = ({
     first: string
     second: string
   }
+  editTrade: () => void
 }) => {
   return (
     <>
-      <div>
-        <SubColumnTitle>
+      <div style={{ width: '100%' }}>
+        <SubColumnTitle style={{ width: '75%' }}>
           <BtnCustom
             needMinWidth={false}
             btnWidth="75%"
@@ -135,6 +140,7 @@ export const StopLossColumn = ({
             backgroundColor={blue.second}
             hoverBackground={blue.first}
             transition={'all .4s ease-out'}
+            onClick={editTrade}
           >
             edit
           </BtnCustom>

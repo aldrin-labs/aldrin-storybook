@@ -1133,7 +1133,7 @@ export class EditEntryOrderPopup extends React.Component<
                   isDisabled={type === 'market' && !isTrailingOn}
                   onChange={(e) => {
                     this.setState({
-                      price: Number(stripDigitPlaces(e.target.value, 8)),
+                      price: e.target.value,
                       total: Number(
                         stripDigitPlaces(e.target.value * amount, 8)
                       ),

@@ -20,6 +20,7 @@ import {
   validateTakeProfit,
   validateEntryOrder,
 } from '@core/utils/chartPageUtils'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { CustomCard } from '../../Chart.styles'
@@ -539,18 +540,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           'entryPoint',
                           'order',
                           'price',
-                          Number(stripDigitPlaces(e.target.value, 8))
+                          e.target.value
                         )
 
                         this.updateSubBlockValue(
                           'entryPoint',
                           'order',
                           'total',
-                          Number(
-                            stripDigitPlaces(
-                              e.target.value * entryPoint.order.amount,
-                              8
-                            )
+                          stripDigitPlaces(
+                            e.target.value * entryPoint.order.amount,
+                            8
                           )
                         )
                       }}
