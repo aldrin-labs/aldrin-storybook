@@ -13,6 +13,8 @@ import {
   getTakeProfitObject,
   transformTakeProfitProperties,
   getStopLossObject,
+  validateStopLoss,
+  validateTakeProfit,
   transformStopLossProperties,
 } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -1482,6 +1484,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               })
             }
             TAPState={getTakeProfitObject(this.state.takeProfit)}
+            validateTakeProfit={validateTakeProfit}
+            transformTakeProfitProperties={transformTakeProfitProperties}
             validateField={this.validateField}
           />
         )}
@@ -1495,6 +1499,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 stopLoss: transformStopLossProperties(stopLossProperties),
               })
             }
+            transformStopLossProperties={transformStopLossProperties}
+            validateStopLoss={validateStopLoss}
             stopLossState={getStopLossObject(this.state.stopLoss)}
             validateField={this.validateField}
           />

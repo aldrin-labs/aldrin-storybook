@@ -4,10 +4,6 @@ import { Dialog, Paper } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 
 import { getSecondValueFromFirst, BlueSwitcherStyles } from './utils'
-import {
-  transformStopLossProperties,
-  validateStopLoss,
-} from '@core/utils/chartPageUtils'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
@@ -47,8 +43,12 @@ type IProps = {
   validateField: (a: boolean, b: number | string) => boolean
   handleClose: () => void
   updateState: (obj: ITAPState | ISLState) => void
-  TAPState?: object
-  stopLossState?: object
+  validateStopLoss?: (obj: any, isValid: boolean) => boolean
+  validateTakeProfit?: (obj: any, isValid: boolean) => boolean
+  transformTakeProfitProperties?: (obj: any) => any
+  transformStopLossProperties?: (obj: any) => any
+  TAPState?: any
+  stopLossState?: any
 }
 
 type ITAPState = {
@@ -113,7 +113,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
   }
 
   render() {
-    const { open, handleClose, updateState } = this.props
+    const {
+      open,
+      handleClose,
+      updateState,
+      validateTakeProfit,
+      transformTakeProfitProperties,
+    } = this.props
     return (
       <Dialog
         PaperComponent={StyledPaper}
@@ -532,7 +538,13 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
   }
 
   render() {
-    const { open, handleClose, updateState } = this.props
+    const {
+      open,
+      handleClose,
+      updateState,
+      transformStopLossProperties,
+      validateStopLoss,
+    } = this.props
     return (
       <Dialog
         PaperComponent={StyledPaper}
