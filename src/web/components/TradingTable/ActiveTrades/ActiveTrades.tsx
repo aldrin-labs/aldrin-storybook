@@ -1,10 +1,24 @@
 import React, { useEffect } from 'react'
 import { graphql } from 'react-apollo'
-import { client } from '@core/graphql/apolloClient'
 
 import { withTheme } from '@material-ui/styles'
 
+import {
+  getTakeProfitFromStrategy,
+  getStopLossFromStrategy,
+  transformTakeProfitProperties,
+  transformStopLossProperties,
+  validateStopLoss,
+  validateTakeProfit,
+  getTakeProfitArgsForUpdate,
+  getStopLossArgsForUpdate,
+} from '@core/utils/chartPageUtils'
+
 import QueryRenderer from '@core/components/QueryRenderer'
+import {
+  EditTakeProfitPopup,
+  EditStopLossPopup,
+} from '@sb/compositions/Chart/components/SmartOrderTerminal/EditOrderPopups'
 import { TableWithSort } from '@sb/components'
 
 import {
@@ -15,6 +29,8 @@ import {
 } from '@sb/components/TradingTable/TradingTable.utils'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { updateStopLossStrategy } from '@core/graphql/mutations/chart/updateStopLossStrategy'
+import { updateTakeProfitStrategy } from '@core/graphql/mutations/chart/updateTakeProfitStrategy'
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
 import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 
@@ -23,10 +39,13 @@ import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
+import { compose } from 'recompose'
 
 @withTheme
 class ActiveTradesTable extends React.PureComponent {
   state = {
+    editTrade: null,
+    selectedTrade: {},
     activeStrategiesProcessedData: [],
   }
 
@@ -51,19 +70,33 @@ class ActiveTradesTable extends React.PureComponent {
     }
   }
 
+  editTrade = (block, selectedTrade) => {
+    console.log('selectedTrade', selectedTrade)
+    this.setState({ editTrade: block, selectedTrade })
+  }
+
   cancelOrderWithStatus = async (strategyId: string) => {
-    const { showCancelResult, selectedKey: { keyId } } = this.props
+    const {
+      showCancelResult,
+      selectedKey: { keyId },
+    } = this.props
 
     const result = await this.onCancelOrder(keyId, strategyId)
 
     // TODO: move to utils
-    const statusResult = (result && result.data && result.data.disableStrategy && result.data.disableStrategy.enabled === false) ? {
-      status: 'success',
-      message: 'Smart order disabled'
-    } : {
-      status: 'error',
-      message: 'Smart order disabling failed'
-    }
+    const statusResult =
+      result &&
+      result.data &&
+      result.data.disableStrategy &&
+      result.data.disableStrategy.enabled === false
+        ? {
+            status: 'success',
+            message: 'Smart order disabled',
+          }
+        : {
+            status: 'error',
+            message: 'Smart order disabling failed',
+          }
 
     showCancelResult(statusResult)
   }
@@ -77,7 +110,7 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme  } = this.props
+    const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
 
     let price
 
@@ -94,6 +127,7 @@ class ActiveTradesTable extends React.PureComponent {
     const activeStrategiesProcessedData = combineActiveTradesTable(
       getActiveStrategiesQuery.getActiveStrategies,
       this.cancelOrderWithStatus,
+      this.editTrade,
       theme,
       price
     )
@@ -129,6 +163,7 @@ class ActiveTradesTable extends React.PureComponent {
     const activeStrategiesProcessedData = combineActiveTradesTable(
       nextProps.getActiveStrategiesQuery.getActiveStrategies,
       this.cancelOrderWithStatus,
+      this.editTrade,
       nextProps.theme,
       price
     )
@@ -139,7 +174,11 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   render() {
-    const { activeStrategiesProcessedData } = this.state
+    const {
+      activeStrategiesProcessedData,
+      editTrade,
+      selectedTrade,
+    } = this.state
     const { tab, handleTabChange, show, marketType } = this.props
 
     if (!show) {
@@ -147,59 +186,106 @@ class ActiveTradesTable extends React.PureComponent {
     }
 
     return (
-      <TableWithSort
-        style={{ borderRadius: 0, height: '100%' }}
-        stylesForTable={{ backgroundColor: '#fff' }}
-        defaultSort={{
-          sortColumn: 'date',
-          sortDirection: 'desc',
-        }}
-        withCheckboxes={false}
-        tableStyles={{
-          headRow: {
-            borderBottom: '1px solid #e0e5ec',
-            boxShadow: 'none',
-          },
-          heading: {
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            backgroundColor: '#fff',
-            color: '#16253D',
-            boxShadow: 'none',
-          },
-          cell: {
-            color: '#16253D',
-            fontSize: '1rem', // 1.2 if bold
-            fontWeight: 'bold',
-            letterSpacing: '1px',
-            borderBottom: '1px solid #e0e5ec',
-            boxShadow: 'none',
-            paddingTop: '.5rem',
-            paddingBottom: '.5rem',
-          },
-          tab: {
-            padding: 0,
-            boxShadow: 'none',
-          },
-          row: {
-            height: '4.5rem',
-            cursor: 'initial',
-          },
-        }}
-        emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTabs
-              tab={tab}
-              handleTabChange={handleTabChange}
-              marketType={marketType}
+      <>
+        {editTrade === 'takeProfit' &&
+          selectedTrade &&
+          selectedTrade.conditions && (
+            <EditTakeProfitPopup
+              open={editTrade === 'takeProfit'}
+              handleClose={() => this.setState({ editTrade: null })}
+              updateState={(takeProfitProperties) => {
+                const takeProfit = getTakeProfitArgsForUpdate(
+                  takeProfitProperties
+                )
+                console.log(
+                  'takeProfit',
+                  takeProfit,
+                  selectedTrade._id,
+                  this.props.selectedKey.keyId
+                )
+              }}
+              derivedState={getTakeProfitFromStrategy(selectedTrade)}
+              validate={validateTakeProfit}
+              transformProperties={transformTakeProfitProperties}
+              validateField={(v) => !!v}
             />
-          </div>
-        }
-        rowsWithHover={false}
-        data={{ body: activeStrategiesProcessedData }}
-        columnNames={getTableHead(tab)}
-      />
+          )}
+
+        {editTrade === 'stopLoss' && selectedTrade && selectedTrade.conditions && (
+          <EditStopLossPopup
+            open={editTrade === 'stopLoss'}
+            pair={selectedTrade.conditions.pair}
+            handleClose={() => this.setState({ editTrade: null })}
+            updateState={(stopLossProperties) => {
+              const stopLoss = getStopLossArgsForUpdate(stopLossProperties)
+
+              console.log(
+                'stopLoss',
+                stopLoss,
+                selectedTrade._id,
+                this.props.selectedKey.keyId
+              )
+            }}
+            transformProperties={transformStopLossProperties}
+            validate={validateStopLoss}
+            derivedState={getStopLossFromStrategy(selectedTrade)}
+            validateField={(v) => !!v}
+          />
+        )}
+        <TableWithSort
+          style={{ borderRadius: 0, height: '100%' }}
+          stylesForTable={{ backgroundColor: '#fff' }}
+          defaultSort={{
+            sortColumn: 'date',
+            sortDirection: 'desc',
+          }}
+          withCheckboxes={false}
+          tableStyles={{
+            headRow: {
+              borderBottom: '1px solid #e0e5ec',
+              boxShadow: 'none',
+            },
+            heading: {
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              backgroundColor: '#fff',
+              color: '#16253D',
+              boxShadow: 'none',
+            },
+            cell: {
+              color: '#16253D',
+              fontSize: '1rem', // 1.2 if bold
+              fontWeight: 'bold',
+              letterSpacing: '1px',
+              borderBottom: '1px solid #e0e5ec',
+              boxShadow: 'none',
+              paddingTop: '.5rem',
+              paddingBottom: '.5rem',
+            },
+            tab: {
+              padding: 0,
+              boxShadow: 'none',
+            },
+            row: {
+              height: '4.5rem',
+              cursor: 'initial',
+            },
+          }}
+          emptyTableText={getEmptyTextPlaceholder(tab)}
+          title={
+            <div>
+              <TradingTabs
+                tab={tab}
+                handleTabChange={handleTabChange}
+                marketType={marketType}
+              />
+            </div>
+          }
+          rowsWithHover={false}
+          data={{ body: activeStrategiesProcessedData }}
+          columnNames={getTableHead(tab)}
+        />
+      </>
     )
   }
 }
@@ -263,6 +349,8 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default graphql(disableStrategy, { name: 'disableStrategyMutation' })(
-  TableDataWrapper
-)
+export default compose(
+  graphql(disableStrategy, { name: 'disableStrategyMutation' })
+  // graphql(updateStopLossStrategy, { name: 'updateStopLossStrategy' }),
+  // graphql(updateTakeProfitStrategy, { name: 'updateStopLossStrategy' })
+)(TableDataWrapper)

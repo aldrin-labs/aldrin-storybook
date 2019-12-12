@@ -281,6 +281,7 @@ const getStatusFromState = (
 export const combineActiveTradesTable = (
   data: OrderType[],
   cancelOrderFunc: (strategyId: string) => Promise<any>,
+  editTrade: (block: string, trade: any) => void,
   theme: Theme,
   currentPrice
 ) => {
@@ -407,6 +408,7 @@ export const combineActiveTradesTable = (
               red={red.new}
               green={green.new}
               blue={blue}
+              editTrade={() => editTrade('takeProfit', el)}
             />
           ),
         },
@@ -422,6 +424,7 @@ export const combineActiveTradesTable = (
               red={red.new}
               green={green.new}
               blue={blue}
+              editTrade={() => editTrade('stopLoss', el)}
             />
           ),
         },
