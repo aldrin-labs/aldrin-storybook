@@ -146,16 +146,20 @@ export default ({
                 style={{ padding: '1rem 0' }}
               >
                 <TitleTypography>Entry point</TitleTypography>
-                <EditButton>edit</EditButton>
+                <EditButton onClick={() => handleOpenEditPopup('entryOrder')}>
+                  edit
+                </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 5.5rem' }}>
-                <Grid style={{ textAlign: 'right' }}>
+                <Grid style={{ textAlign: 'right', position: 'relative' }}>
                   <ItemTypography>Side:</ItemTypography>
                   <ItemTypography>price:</ItemTypography>
                   <ItemTypography>amount:</ItemTypography>
-                  <ItemTypography>Trailing:</ItemTypography>
+                  <ItemTypography style={{ position: 'absolute', bottom: '0' }}>
+                    Trailing:
+                  </ItemTypography>
                 </Grid>
-                <Grid style={{ paddingLeft: '4rem', width: '57%' }}>
+                <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
                   <ItemTypography color={getColor(order.side === 'buy')}>
                     {order.side}
                   </ItemTypography>
@@ -175,14 +179,25 @@ export default ({
                       true
                     )}
                   </ItemTypography>
-                  <Grid container justify="space-between">
+                  <Grid container justify="space-between" wrap={'nowrap'}>
                     <ItemTypography color={getColor(trailing.isTrailingOn)}>
                       {getOnOffText(trailing.isTrailingOn)}
                     </ItemTypography>
-                    <ItemTypography>Deviation:</ItemTypography>
-                    <ItemTypography color="#16253D">
-                      {trailing.deviationPercentage} %
-                    </ItemTypography>
+                    {trailing.isTrailingOn && (
+                      <>
+                        <ItemTypography
+                          style={{ padding: '0 .5rem .65rem .5rem' }}
+                        >
+                          Deviation:
+                        </ItemTypography>
+                        <ItemTypography
+                          color="#16253D"
+                          style={{ whiteSpace: 'nowrap' }}
+                        >
+                          {trailing.deviationPercentage}%
+                        </ItemTypography>
+                      </>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
@@ -206,7 +221,9 @@ export default ({
                     {getOnOffText(entryPoint.order.isHedgeOn)}
                   </TitleTypography>
                 </Grid>
-                <EditButton>edit</EditButton>
+                <EditButton onClick={() => handleOpenEditPopup('hedge')}>
+                  edit
+                </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 4.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
@@ -214,15 +231,17 @@ export default ({
                   <ItemTypography>amount:</ItemTypography>
                   <ItemTypography>leverage:</ItemTypography>
                 </Grid>
-                <Grid style={{ paddingLeft: '4rem' }}>
+                <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
                   <ItemTypography
                     color={getColor(entryPoint.order.hedgeSide !== 'short')}
                   >
                     {entryPoint.order.hedgeSide}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">{`-`}</ItemTypography>
                   <ItemTypography color="#16253D">
-                    X{entryPoint.order.leverage}
+                    {entryPoint.order.hedgePrice}
+                  </ItemTypography>
+                  <ItemTypography color="#16253D">
+                    X{entryPoint.order.hedgeIncrease}
                   </ItemTypography>
                 </Grid>
               </Grid>
@@ -250,7 +269,7 @@ export default ({
                   edit
                 </EditButton>
               </Grid>
-              <Grid container style={{ padding: '1rem 0.5rem' }}>
+              <Grid container style={{ padding: '1rem 0.5rem 1rem 2.8rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
                   {!takeProfit.trailingTAP.isTrailingOn && (
                     <>
@@ -412,11 +431,9 @@ export default ({
                   )}
                   <ItemTypography>forced stop:</ItemTypography>
                 </Grid>
-                <Grid style={{ paddingLeft: '4rem' }}>
-                  <ItemTypography
-                    color={getColor(stopLoss.pricePercentage >= 0)}
-                  >
-                    {stopLoss.pricePercentage} %
+                <Grid style={{ paddingLeft: '5rem' }}>
+                  <ItemTypography color={getColor(false)}>
+                    -{stopLoss.pricePercentage}%
                   </ItemTypography>
                   <ItemTypography
                     color={getColor(stopLoss.timeout.isTimeoutOn)}
@@ -446,19 +463,6 @@ export default ({
               </Grid>
             </Grid>
             <Grid container justify="center">
-              {/* <BtnCustom
-                btnWidth={'100%'}
-                borderRadius={'8px'}
-                backgroundColor={'#29AC80'}
-                btnColor={'#fff'}
-                borderWidth={'0px'}
-                fontWeight={'bold'}
-                fontSize={'1.6rem'}
-                height={'4rem'}
-                onClick={() => confirmTrade()}
-              >
-                Confirm
-              </BtnCustom> */}
               <SendButton type={'buy'} onClick={() => confirmTrade()}>
                 confirm
               </SendButton>
