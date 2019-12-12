@@ -317,8 +317,10 @@ export default ({
                   >
                     {stopLoss.pricePercentage} %
                   </ItemTypography>
-                  <ItemTypography color={getColor(stopLoss.isTimeoutOn)}>
-                    {getOnOffText(stopLoss.isTimeoutOn)}
+                  <ItemTypography
+                    color={getColor(stopLoss.timeout.isTimeoutOn)}
+                  >
+                    {getOnOffText(stopLoss.timeout.isTimeoutOn)}
                   </ItemTypography>
                   <ItemTypography color="#16253D">
                     {`${stopLoss.timeout.whenLossSec} ${
