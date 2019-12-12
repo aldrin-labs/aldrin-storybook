@@ -266,7 +266,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   render() {
-    const { pair, funds, marketType } = this.props
+    const { updateTerminalViewMode, pair, funds, marketType } = this.props
     const { entryPoint, takeProfit, stopLoss, showErrors, showConfirmationPopup, editTAP, editSL } = this.state
     const maxAmount =
       entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
