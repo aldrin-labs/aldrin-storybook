@@ -27,13 +27,13 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 import { updateStopLossStrategy } from '@core/graphql/mutations/chart/updateStopLossStrategy'
 import { updateTakeProfitStrategy } from '@core/graphql/mutations/chart/updateTakeProfitStrategy'
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
-import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
+import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
+
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
@@ -51,16 +51,15 @@ class ActiveTradesTable extends React.PureComponent {
 
   unsubscribeFunction: null | Function = null
 
-  onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation } = this.props
+  onCancelOrder = async (keyId: string, strategyId: string) => {
+    const { disableStrategyMutation } = this.props
 
     try {
-      const responseResult = await cancelOrderMutation({
+      const responseResult = await disableStrategyMutation({
         variables: {
-          cancelOrderInput: {
+          input: {
             keyId,
-            orderId,
-            pair,
+            strategyId,
           },
         },
       })
@@ -76,15 +75,21 @@ class ActiveTradesTable extends React.PureComponent {
     this.setState({ editTrade: block, selectedTrade })
   }
 
-  cancelOrderWithStatus = async (
-    keyId: string,
-    orderId: string,
-    pair: string
-  ) => {
-    const { showCancelResult } = this.props
+  cancelOrderWithStatus = async (strategyId: string) => {
+    const { showCancelResult, selectedKey: { keyId } } = this.props
 
-    const result = await this.onCancelOrder(keyId, orderId, pair)
-    showCancelResult(cancelOrderStatus(result))
+    const result = await this.onCancelOrder(keyId, strategyId)
+
+    // TODO: move to utils
+    const statusResult = (result && result.data && result.data.disableStrategy && result.data.disableStrategy.enabled === false) ? {
+      status: 'success',
+      message: 'Smart order disabled'
+    } : {
+      status: 'error',
+      message: 'Smart order disabling failed'
+    }
+
+    showCancelResult(statusResult)
   }
 
   // TODO: here should be a mutation order to cancel a specific order
@@ -96,7 +101,7 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
+    const { getActiveStrategiesQuery, subscribeToMore, theme  } = this.props
 
     let price
 
@@ -335,8 +340,14 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
+<<<<<<< HEAD
 export default compose(
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })
   // graphql(updateStopLossStrategy, { name: 'updateStopLossStrategy' }),
   // graphql(updateTakeProfitStrategy, { name: 'updateStopLossStrategy' })
 )(TableDataWrapper)
+=======
+export default graphql(disableStrategy, { name: 'disableStrategyMutation' })(
+  TableDataWrapper
+)
+>>>>>>> develop
