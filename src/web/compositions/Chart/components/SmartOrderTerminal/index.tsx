@@ -8,7 +8,15 @@ import {
   BlueSwitcherStyles,
 } from './utils'
 
-import { validateSmartOrders } from '@core/utils/chartPageUtils'
+import {
+  validateSmartOrders,
+  getTakeProfitObject,
+  transformTakeProfitProperties,
+  getStopLossObject,
+  validateStopLoss,
+  validateTakeProfit,
+  transformStopLossProperties,
+} from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { CustomCard } from '../../Chart.styles'
@@ -25,10 +33,12 @@ import CloseIcon from '@material-ui/icons/Close'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Input, Select } from './InputComponents'
+import { EditTakeProfitPopup, EditStopLossPopup } from './EditOrderPopups'
 
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
+import ConfirmationPopup from '@sb/compositions/Chart/components/SmartOrderTerminal/ConfirmationPopup/ConfirmationPopup'
 
 import {
   TerminalBlocksContainer,
@@ -48,7 +58,10 @@ import {
 
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
+    showConfirmationPopup: false,
     showErrors: false,
+    editTAP: false,
+    editSL: false,
     entryPoint: {
       order: {
         type: 'limit',
@@ -125,6 +138,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       }
     }
   }
+
+  handleCloseConfirmationPopup = () => {
+    this.setState({
+      showConfirmationPopup: false
+    })
+  }
+
+  handleOpenEditPopup = (popup: string) => {
+    const popupName = popup === 'takeProfit' ? 'editTAP' : 'editSL'
+
+    this.setState({
+      [popupName]: true
+    })
+  } 
 
   addTarget = () => {
     const {
@@ -215,13 +242,42 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     return true
   }
 
+  confirmTrade = async () => {
+    const { entryPoint } = this.state
+    const { placeOrder, showOrderResult, cancelOrder, updateTerminalViewMode } = this.props
+
+    const result = await placeOrder(
+      entryPoint.order.side,
+      entryPoint.order.type,
+      {},
+      'smart',
+      this.state
+    )
+
+    await showOrderResult(
+      result,
+      cancelOrder
+    )
+
+    await this.handleCloseConfirmationPopup()
+
+    if (result.status === 'success' && result.orderId)
+      updateTerminalViewMode('default')
+  }
+
   render() {
-    const { updateTerminalViewMode, pair, funds, marketType } = this.props
-    const { entryPoint, takeProfit, stopLoss, showErrors } = this.state
+    const { pair, funds, marketType } = this.props
+    const { entryPoint, takeProfit, stopLoss, showErrors, showConfirmationPopup, editTAP, editSL } = this.state
     const maxAmount =
       entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
 
     return (
+      <>
+      {
+        showConfirmationPopup && !editTAP && !editSL && (
+          <ConfirmationPopup confirmTrade={this.confirmTrade} handleOpenEditPopup={this.handleOpenEditPopup} open={showConfirmationPopup} handleClose={this.handleCloseConfirmationPopup} entryPoint={entryPoint} takeProfit={takeProfit} stopLoss={stopLoss} pair={pair} />
+        )
+      }
       <CustomCard>
         <TerminalHeaders>
           <TerminalHeader
@@ -706,21 +762,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   const isValid = validateSmartOrders(this.state)
 
                   if (isValid) {
-                    const result = await this.props.placeOrder(
-                      entryPoint.order.side,
-                      entryPoint.order.type,
-                      {},
-                      'smart',
-                      this.state
-                    )
-
-                    await this.props.showOrderResult(
-                      result,
-                      this.props.cancelOrder
-                    )
-
-                    if (result.status === 'success' && result.orderId)
-                      updateTerminalViewMode('default')
+                    this.setState({ showConfirmationPopup: true })
                   } else {
                     this.setState({ showErrors: true })
                   }
@@ -1463,7 +1505,39 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             )}
           </TerminalBlock>
         </TerminalBlocksContainer>
+        {editTAP && (
+          <EditTakeProfitPopup
+            open={editTAP}
+            handleClose={() => this.setState({ editTAP: false })}
+            updateState={(takeProfitProperties) =>
+              this.setState({
+                takeProfit: transformTakeProfitProperties(takeProfitProperties),
+              })
+            }
+            TAPState={getTakeProfitObject(this.state.takeProfit)}
+            validateTakeProfit={validateTakeProfit}
+            transformTakeProfitProperties={transformTakeProfitProperties}
+            validateField={this.validateField}
+          />
+        )}
+
+        {editSL && (
+          <EditStopLossPopup
+            open={editSL}
+            handleClose={() => this.setState({ editSL: false })}
+            updateState={(stopLossProperties) =>
+              this.setState({
+                stopLoss: transformStopLossProperties(stopLossProperties),
+              })
+            }
+            transformStopLossProperties={transformStopLossProperties}
+            validateStopLoss={validateStopLoss}
+            stopLossState={getStopLossObject(this.state.stopLoss)}
+            validateField={this.validateField}
+          />
+        )}
       </CustomCard>
+      </>
     )
   }
 }
