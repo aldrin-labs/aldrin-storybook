@@ -2,14 +2,23 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
+import Clear from '@material-ui/icons/Clear'
 
+import { SendButton } from '@sb/components/TraidingTerminal/styles'
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
 
 import {
   TypographyCustomHeading,
   DialogWrapper,
-  DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+
+import {
+  ClearButton,
+  StyledDialogTitle,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+
+import { InputRowContainer, TargetTitle, TargetValue } from '../styles'
+
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { getArrowSymbol } from '@sb/components/AddArrowIcon/AddArrowIcon'
 
@@ -101,12 +110,7 @@ export default ({
           // paddingTop: 0,
         }}
       >
-        <DialogTitleCustom
-          id="customized-dialog-title"
-          //   style={{
-          // backgroundColor: '#fff',
-          //   }}
-        >
+        <StyledDialogTitle disableTypography id="customized-dialog-title">
           <TypographyCustomHeading
             fontWeight={'700'}
             style={{
@@ -118,7 +122,14 @@ export default ({
           >
             Confirm trade
           </TypographyCustomHeading>
-        </DialogTitleCustom>
+          <ClearButton>
+            <Clear
+              style={{ fontSize: '2rem' }}
+              color="inherit"
+              onClick={handleClose}
+            />
+          </ClearButton>
+        </StyledDialogTitle>
         <DialogContent
           justify="center"
           style={{
@@ -241,42 +252,128 @@ export default ({
               </Grid>
               <Grid container style={{ padding: '1rem 0.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
-                  <ItemTypography>split target:</ItemTypography>
-                  <ItemTypography>Trailing:</ItemTypography>
+                  {!takeProfit.trailingTAP.isTrailingOn && (
+                    <>
+                      <ItemTypography>split target:</ItemTypography>
+                      {takeProfit.splitTargets.isSplitTargetsOn && (
+                        <ItemTypography
+                          style={{
+                            paddingBottom: `${takeProfit.splitTargets.targets
+                              .length *
+                              1.8 +
+                              1}rem`,
+                          }}
+                        >
+                          targets
+                        </ItemTypography>
+                      )}
+                    </>
+                  )}
+                  {!takeProfit.splitTargets.isSplitTargetsOn && (
+                    <ItemTypography>trailing:</ItemTypography>
+                  )}
+                  {!takeProfit.splitTargets.isSplitTargetsOn &&
+                    takeProfit.trailingTAP.isTrailingOn && (
+                      <ItemTypography>deviation:</ItemTypography>
+                    )}
+                  {!takeProfit.splitTargets.isSplitTargetsOn &&
+                    !takeProfit.trailingTAP.isTrailingOn && (
+                      <ItemTypography>price:</ItemTypography>
+                    )}
                   <ItemTypography>timeout:</ItemTypography>
-                  <ItemTypography>deviation:</ItemTypography>
-                  <ItemTypography>when profit:</ItemTypography>
-                  <ItemTypography>when in profit:</ItemTypography>
+                  {takeProfit.timeout.isTimeoutOn && (
+                    <>
+                      <ItemTypography>when profit:</ItemTypography>
+                      <ItemTypography>when in profit:</ItemTypography>
+                    </>
+                  )}
                 </Grid>
-                <Grid style={{ paddingLeft: '4rem' }}>
-                  <ItemTypography
-                    color={getColor(takeProfit.splitTargets.isSplitTargetsOn)}
-                  >
-                    {getOnOffText(takeProfit.splitTargets.isSplitTargetsOn)}
-                  </ItemTypography>
-                  <ItemTypography
-                    color={getColor(takeProfit.trailingTAP.isTrailingOn)}
-                  >
-                    {getOnOffText(takeProfit.trailingTAP.isTrailingOn)}
-                  </ItemTypography>
+                <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
+                  {!takeProfit.trailingTAP.isTrailingOn && (
+                    <ItemTypography
+                      color={getColor(takeProfit.splitTargets.isSplitTargetsOn)}
+                    >
+                      {getOnOffText(takeProfit.splitTargets.isSplitTargetsOn)}
+                    </ItemTypography>
+                  )}
+
+                  {takeProfit.splitTargets.isSplitTargetsOn &&
+                    !takeProfit.trailingTAP.isTrailingOn && (
+                      <ItemTypography>
+                        <InputRowContainer padding=".2rem .5rem">
+                          <TargetTitle style={{ width: '50%' }}>
+                            price
+                          </TargetTitle>
+                          <TargetTitle style={{ width: '50%' }}>
+                            quantity
+                          </TargetTitle>
+                        </InputRowContainer>
+                        <div
+                          style={{
+                            width: '100%',
+                          }}
+                        >
+                          {takeProfit.splitTargets.targets.map((target, i) => (
+                            <InputRowContainer
+                              key={`${target.price}${target.quantity}${i}`}
+                              padding=".2rem .5rem"
+                              style={{ borderBottom: '.1rem solid #e0e5ec' }}
+                            >
+                              <TargetValue
+                                style={{ width: '50%', color: getColor(true) }}
+                              >
+                                +{target.price}%
+                              </TargetValue>
+                              <TargetValue style={{ width: '50%' }}>
+                                {target.quantity}%
+                              </TargetValue>
+                            </InputRowContainer>
+                          ))}
+                        </div>
+                      </ItemTypography>
+                    )}
+                  {!takeProfit.splitTargets.isSplitTargetsOn && (
+                    <ItemTypography
+                      color={getColor(takeProfit.trailingTAP.isTrailingOn)}
+                    >
+                      {getOnOffText(takeProfit.trailingTAP.isTrailingOn)}
+                    </ItemTypography>
+                  )}
+
+                  {!takeProfit.splitTargets.isSplitTargetsOn &&
+                    takeProfit.trailingTAP.isTrailingOn && (
+                      <ItemTypography color="#16253D">
+                        {takeProfit.trailingTAP.deviationPercentage} %
+                      </ItemTypography>
+                    )}
+
+                  {!takeProfit.splitTargets.isSplitTargetsOn &&
+                    !takeProfit.trailingTAP.isTrailingOn && (
+                      <ItemTypography color={getColor(true)}>
+                        {takeProfit.pricePercentage} %
+                      </ItemTypography>
+                    )}
+
                   <ItemTypography
                     color={getColor(takeProfit.timeout.isTimeoutOn)}
                   >
                     {getOnOffText(takeProfit.timeout.isTimeoutOn)}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">
-                    {takeProfit.trailingTAP.deviationPercentage} %
-                  </ItemTypography>
-                  <ItemTypography color="#16253D">
-                    {`${takeProfit.timeout.whenProfitSec} ${
-                      takeProfit.timeout.whenProfitMode
-                    }`}
-                  </ItemTypography>
-                  <ItemTypography color="#16253D">
-                    {`${takeProfit.timeout.whenProfitableSec} ${
-                      takeProfit.timeout.whenProfitableMode
-                    }`}
-                  </ItemTypography>
+
+                  {takeProfit.timeout.isTimeoutOn && (
+                    <>
+                      <ItemTypography color="#16253D">
+                        {`${takeProfit.timeout.whenProfitSec} ${
+                          takeProfit.timeout.whenProfitMode
+                        }`}
+                      </ItemTypography>
+                      <ItemTypography color="#16253D">
+                        {`${takeProfit.timeout.whenProfitableSec} ${
+                          takeProfit.timeout.whenProfitableMode
+                        }`}
+                      </ItemTypography>
+                    </>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -307,8 +404,12 @@ export default ({
                 <Grid style={{ textAlign: 'right' }}>
                   <ItemTypography>price:</ItemTypography>
                   <ItemTypography>timeout:</ItemTypography>
-                  <ItemTypography>when loss:</ItemTypography>
-                  <ItemTypography>when in loss:</ItemTypography>
+                  {stopLoss.timeout.isTimeoutOn && (
+                    <>
+                      <ItemTypography>when loss:</ItemTypography>
+                      <ItemTypography>when in loss:</ItemTypography>{' '}
+                    </>
+                  )}
                   <ItemTypography>forced stop:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem' }}>
@@ -322,16 +423,20 @@ export default ({
                   >
                     {getOnOffText(stopLoss.timeout.isTimeoutOn)}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">
-                    {`${stopLoss.timeout.whenLossSec} ${
-                      stopLoss.timeout.whenLossMode
-                    }`}
-                  </ItemTypography>
-                  <ItemTypography color="#16253D">
-                    {`${stopLoss.timeout.whenLossableSec} ${
-                      stopLoss.timeout.whenLossableMode
-                    }`}
-                  </ItemTypography>
+                  {stopLoss.timeout.isTimeoutOn && (
+                    <>
+                      <ItemTypography color="#16253D">
+                        {`${stopLoss.timeout.whenLossSec} ${
+                          stopLoss.timeout.whenLossMode
+                        }`}
+                      </ItemTypography>
+                      <ItemTypography color="#16253D">
+                        {`${stopLoss.timeout.whenLossableSec} ${
+                          stopLoss.timeout.whenLossableMode
+                        }`}
+                      </ItemTypography>
+                    </>
+                  )}
                   <ItemTypography
                     color={getColor(stopLoss.forcedStop.isForcedStopOn)}
                   >
@@ -341,7 +446,7 @@ export default ({
               </Grid>
             </Grid>
             <Grid container justify="center">
-              <BtnCustom
+              {/* <BtnCustom
                 btnWidth={'100%'}
                 borderRadius={'8px'}
                 backgroundColor={'#29AC80'}
@@ -353,7 +458,10 @@ export default ({
                 onClick={() => confirmTrade()}
               >
                 Confirm
-              </BtnCustom>
+              </BtnCustom> */}
+              <SendButton type={'buy'} onClick={() => confirmTrade()}>
+                confirm
+              </SendButton>
             </Grid>
           </Grid>
         </DialogContent>
