@@ -76,18 +76,27 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   cancelOrderWithStatus = async (strategyId: string) => {
-    const { showCancelResult, selectedKey: { keyId } } = this.props
+    const {
+      showCancelResult,
+      selectedKey: { keyId },
+    } = this.props
 
     const result = await this.onCancelOrder(keyId, strategyId)
 
     // TODO: move to utils
-    const statusResult = (result && result.data && result.data.disableStrategy && result.data.disableStrategy.enabled === false) ? {
-      status: 'success',
-      message: 'Smart order disabled'
-    } : {
-      status: 'error',
-      message: 'Smart order disabling failed'
-    }
+    const statusResult =
+      result &&
+      result.data &&
+      result.data.disableStrategy &&
+      result.data.disableStrategy.enabled === false
+        ? {
+            status: 'success',
+            message: 'Smart order disabled',
+          }
+        : {
+            status: 'error',
+            message: 'Smart order disabling failed',
+          }
 
     showCancelResult(statusResult)
   }
@@ -101,7 +110,7 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme  } = this.props
+    const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
 
     let price
 
@@ -340,14 +349,8 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-<<<<<<< HEAD
 export default compose(
-  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })
+  graphql(disableStrategy, { name: 'disableStrategyMutation' })
   // graphql(updateStopLossStrategy, { name: 'updateStopLossStrategy' }),
   // graphql(updateTakeProfitStrategy, { name: 'updateStopLossStrategy' })
 )(TableDataWrapper)
-=======
-export default graphql(disableStrategy, { name: 'disableStrategyMutation' })(
-  TableDataWrapper
-)
->>>>>>> develop
