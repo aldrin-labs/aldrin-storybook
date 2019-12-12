@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom'
 
 export const StyledDialogContent = styled(DialogContent)`
   padding: 0 2.4rem 2.4rem;
+  font-family: DM Sans;
 
   @media (min-width: 2560px) {
     padding: 0 2rem 2rem;
