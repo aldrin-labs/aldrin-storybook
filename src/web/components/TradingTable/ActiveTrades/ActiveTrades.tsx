@@ -161,7 +161,6 @@ class ActiveTradesTable extends React.PureComponent {
             backgroundColor: '#fff',
             color: '#16253D',
             boxShadow: 'none',
-            top: '0',
           },
           cell: {
             color: '#16253D',

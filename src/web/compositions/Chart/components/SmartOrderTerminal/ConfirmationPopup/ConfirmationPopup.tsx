@@ -71,6 +71,7 @@ interface IProps {
   handleClose: () => void
   confirmTrade: () => void
   editEntryPointHandle: () => void
+  handleOpenEditPopup: (popupName: string) => void
 }
 
 const getColor = (value: boolean) => (value ? '#29AC80' : '#DD6956')
@@ -81,6 +82,7 @@ export default ({
   handleClose,
   confirmTrade,
   editEntryPointHandle,
+  handleOpenEditPopup,
   entryPoint,
   stopLoss,
   takeProfit,
@@ -126,7 +128,12 @@ export default ({
         >
           <Grid>
             <Grid id="entry">
-              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}> 
+              <Grid
+                container
+                justify="space-between"
+                alignItems="center"
+                style={{ padding: '1rem 0' }}
+              >
                 <TitleTypography>Entry point</TitleTypography>
                 <EditButton>edit</EditButton>
               </Grid>
@@ -138,7 +145,9 @@ export default ({
                   <ItemTypography>Trailing:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '57%' }}>
-                  <ItemTypography color={getColor(order.side === 'buy')}>{order.side}</ItemTypography>
+                  <ItemTypography color={getColor(order.side === 'buy')}>
+                    {order.side}
+                  </ItemTypography>
                   <ItemTypography color="#16253D">
                     {`${
                       entryPoint.order.type === 'limit'
@@ -168,7 +177,12 @@ export default ({
               </Grid>
             </Grid>
             <Grid id="hedge">
-              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}>
+              <Grid
+                container
+                justify="space-between"
+                alignItems="center"
+                style={{ padding: '1rem 0' }}
+              >
                 <Grid
                   container
                   justify="space-between"
@@ -190,7 +204,9 @@ export default ({
                   <ItemTypography>leverage:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem' }}>
-                  <ItemTypography color={getColor(entryPoint.order.hedgeSide !== 'short')}>
+                  <ItemTypography
+                    color={getColor(entryPoint.order.hedgeSide !== 'short')}
+                  >
                     {entryPoint.order.hedgeSide}
                   </ItemTypography>
                   <ItemTypography color="#16253D">{`-`}</ItemTypography>
@@ -201,7 +217,12 @@ export default ({
               </Grid>
             </Grid>
             <Grid id="takeaprofit">
-              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}>
+              <Grid
+                container
+                justify="space-between"
+                alignItems="center"
+                style={{ padding: '1rem 0' }}
+              >
                 <Grid
                   container
                   justify="space-between"
@@ -214,7 +235,9 @@ export default ({
                     {getOnOffText(takeProfit.isTakeProfitOn)}
                   </TitleTypography>
                 </Grid>
-                <EditButton>edit</EditButton>
+                <EditButton onClick={() => handleOpenEditPopup('takeProfit')}>
+                  edit
+                </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 0.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
@@ -226,8 +249,10 @@ export default ({
                   <ItemTypography>when in profit:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem' }}>
-                  <ItemTypography color={getColor(takeProfit.isSplitTargetsOn)}>
-                    {getOnOffText(takeProfit.isSplitTargetsOn)}
+                  <ItemTypography
+                    color={getColor(takeProfit.splitTargets.isSplitTargetsOn)}
+                  >
+                    {getOnOffText(takeProfit.splitTargets.isSplitTargetsOn)}
                   </ItemTypography>
                   <ItemTypography
                     color={getColor(takeProfit.trailingTAP.isTrailingOn)}
@@ -256,7 +281,12 @@ export default ({
               </Grid>
             </Grid>
             <Grid id="stoploss">
-              <Grid container justify="space-between" alignItems="center" style={{ padding: '1rem 0' }}>
+              <Grid
+                container
+                justify="space-between"
+                alignItems="center"
+                style={{ padding: '1rem 0' }}
+              >
                 <Grid
                   container
                   justify="space-between"
@@ -269,7 +299,9 @@ export default ({
                     {getOnOffText(stopLoss.isStopLossOn)}
                   </TitleTypography>
                 </Grid>
-                <EditButton>edit</EditButton>
+                <EditButton onClick={() => handleOpenEditPopup('stopLoss')}>
+                  edit
+                </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 1.6rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
@@ -316,7 +348,7 @@ export default ({
                 fontWeight={'bold'}
                 fontSize={'1.6rem'}
                 height={'4rem'}
-                onClick={confirmTrade}
+                onClick={() => confirmTrade()}
               >
                 Confirm
               </BtnCustom>

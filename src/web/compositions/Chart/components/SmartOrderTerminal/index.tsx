@@ -58,7 +58,7 @@ import {
 
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
-    showConfirmationPopup: true,
+    showConfirmationPopup: false,
     showErrors: false,
     editTAP: false,
     editSL: false,
@@ -144,6 +144,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       showConfirmationPopup: false
     })
   }
+
+  handleOpenEditPopup = (popup: string) => {
+    const popupName = popup === 'takeProfit' ? 'editTAP' : 'editSL'
+
+    this.setState({
+      [popupName]: true
+    })
+  } 
 
   addTarget = () => {
     const {
@@ -234,15 +242,42 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     return true
   }
 
+  confirmTrade = async () => {
+    const { entryPoint } = this.state
+    const { placeOrder, showOrderResult, cancelOrder, updateTerminalViewMode } = this.props
+
+    const result = await placeOrder(
+      entryPoint.order.side,
+      entryPoint.order.type,
+      {},
+      'smart',
+      this.state
+    )
+
+    await showOrderResult(
+      result,
+      cancelOrder
+    )
+
+    await this.handleCloseConfirmationPopup()
+
+    if (result.status === 'success' && result.orderId)
+      updateTerminalViewMode('default')
+  }
+
   render() {
-    const { updateTerminalViewMode, pair, funds, marketType } = this.props
-    const { entryPoint, takeProfit, stopLoss, showErrors, showConfirmationPopup } = this.state
+    const { pair, funds, marketType } = this.props
+    const { entryPoint, takeProfit, stopLoss, showErrors, showConfirmationPopup, editTAP, editSL } = this.state
     const maxAmount =
       entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
 
     return (
       <>
-      <ConfirmationPopup open={showConfirmationPopup} handleClose={this.handleCloseConfirmationPopup} entryPoint={entryPoint} takeProfit={takeProfit} stopLoss={stopLoss} pair={pair} />
+      {
+        showConfirmationPopup && !editTAP && !editSL && (
+          <ConfirmationPopup confirmTrade={this.confirmTrade} handleOpenEditPopup={this.handleOpenEditPopup} open={showConfirmationPopup} handleClose={this.handleCloseConfirmationPopup} entryPoint={entryPoint} takeProfit={takeProfit} stopLoss={stopLoss} pair={pair} />
+        )
+      }
       <CustomCard>
         <TerminalHeaders>
           <TerminalHeader
@@ -727,23 +762,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   const isValid = validateSmartOrders(this.state)
 
                   if (isValid) {
-                    const result = await this.props.placeOrder(
-                      entryPoint.order.side,
-                      entryPoint.order.type,
-                      {},
-                      'smart',
-                      this.state
-                    )
-
-                    await this.props.showOrderResult(
-                      result,
-                      this.props.cancelOrder
-                    )
-
-                    if (result.status === 'success' && result.orderId)
-                      updateTerminalViewMode('default')
+                    this.setState({ showConfirmationPopup: true })
                   } else {
-                    this.setState({ showErrors: true, editSL: true })
+                    this.setState({ showErrors: true })
                   }
                 }}
               >
@@ -1484,9 +1505,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             )}
           </TerminalBlock>
         </TerminalBlocksContainer>
-        {this.state.editTAP && (
+        {editTAP && (
           <EditTakeProfitPopup
-            open={this.state.editTAP}
+            open={editTAP}
             handleClose={() => this.setState({ editTAP: false })}
             updateState={(takeProfitProperties) =>
               this.setState({
@@ -1500,9 +1521,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           />
         )}
 
-        {this.state.editSL && (
+        {editSL && (
           <EditStopLossPopup
-            open={this.state.editSL}
+            open={editSL}
             handleClose={() => this.setState({ editSL: false })}
             updateState={(stopLossProperties) =>
               this.setState({
