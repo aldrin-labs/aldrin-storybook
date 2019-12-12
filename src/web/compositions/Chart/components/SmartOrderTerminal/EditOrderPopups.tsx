@@ -321,7 +321,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         volumePercentage: 0,
                         pricePercentage: 0,
                         targets: [
-                          ...prev.target,
+                          ...prev.targets,
                           {
                             price: prev.pricePercentage,
                             quantity: prev.volumePercentage,
@@ -361,11 +361,11 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           {target.quantity}%
                         </TargetValue>
                         <CloseIcon
-                          onClick={(index) =>
+                          onClick={() =>
                             this.setState((prev) => ({
                               targets: [
-                                ...prev.targets.slice(0, index),
-                                ...prev.targets.slice(index + 1),
+                                ...prev.targets.slice(0, i),
+                                ...prev.targets.slice(i + 1),
                               ],
                             }))
                           }
