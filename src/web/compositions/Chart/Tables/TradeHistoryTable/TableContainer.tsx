@@ -74,7 +74,7 @@ class TableContainer extends Component<IProps, IState> {
     if (this.props.subscribeToMore) {
       //  unsubscribe from old exchange when you first time change exchange
       unsubscribe && unsubscribe()
-
+      console.log('subscribe on mount', this.props.marketType)
       unsubscribe = this.props.subscribeToMore()
     }
   }
@@ -85,6 +85,7 @@ class TableContainer extends Component<IProps, IState> {
       prevProps.currencyPair !== this.props.currencyPair ||
       prevProps.marketType !== this.props.marketType
     ) {
+      console.log('unsubscr on update', unsubscribe)
       // when change exchange delete all data and...
       this.setState({ data: [] })
 
@@ -96,9 +97,10 @@ class TableContainer extends Component<IProps, IState> {
     }
   }
 
-  componentWillUnmount() {
-    unsubscribe && unsubscribe()
-  }
+  // componentWillUnmount() {
+  //   console.log('unmount')
+  //   unsubscribe && unsubscribe()
+  // }
 
   render() {
     const { quote, currencyPair } = this.props

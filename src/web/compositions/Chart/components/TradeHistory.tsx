@@ -20,36 +20,38 @@ export const TradeHistory = ({
   symbol,
   quote,
   pair,
-}) => (
-  <TradeHistoryWrapper
-    key={`tradehistory_table`}
-    className="ExchangesTable"
-    variant={{
-      show: showTableOnMobile === 'TRADE',
-    }}
-  >
-    <QueryRenderer
-      component={TradeHistoryTable}
-      withOutSpinner
-      query={MARKET_QUERY}
-      variables={{ symbol, exchange }}
-      subscriptionArgs={{
-        subscription: MARKET_TICKERS,
-        variables: { symbol, exchange, marketType: String(marketType) },
-        updateQueryFunction: updateTradeHistoryQuerryFunction,
+}) => {
+  return (
+    <TradeHistoryWrapper
+      key={`tradehistory_table`}
+      className="ExchangesTable"
+      variant={{
+        show: showTableOnMobile === 'TRADE',
       }}
-      {...{
-        quote,
-        activeExchange,
-        exchange,
-        currencyPair: pair,
-        showTableOnMobile,
-        aggregation,
-        changeTable,
-        chartProps,
-        marketType,
-        key: 'tradeyistory_table_query_render',
-      }}
-    />
-  </TradeHistoryWrapper>
-)
+    >
+      <QueryRenderer
+        component={TradeHistoryTable}
+        withOutSpinner
+        query={MARKET_QUERY}
+        variables={{ symbol, exchange }}
+        subscriptionArgs={{
+          subscription: MARKET_TICKERS,
+          variables: { symbol, exchange, marketType: String(marketType) },
+          updateQueryFunction: updateTradeHistoryQuerryFunction,
+        }}
+        {...{
+          quote,
+          activeExchange,
+          exchange,
+          currencyPair: pair,
+          showTableOnMobile,
+          aggregation,
+          changeTable,
+          chartProps,
+          marketType,
+          key: 'tradeyistory_table_query_render',
+        }}
+      />
+    </TradeHistoryWrapper>
+  )
+}
