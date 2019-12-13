@@ -425,7 +425,7 @@ export default ({
                   edit
                 </EditButton>
               </Grid>
-              <Grid container style={{ padding: '1rem 1.6rem' }}>
+              <Grid container style={{ padding: '1rem 1.6rem 3rem 1.6rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
                   <ItemTypography>price:</ItemTypography>
                   <ItemTypography>timeout:</ItemTypography>
@@ -468,7 +468,15 @@ export default ({
                 </Grid>
               </Grid>
             </Grid>
-            <Grid container justify="center">
+            <Grid
+              container
+              justify="center"
+              style={{
+                position: 'absolute',
+                bottom: '1.5rem',
+                width: 'calc(100% - 6rem)',
+              }}
+            >
               <SendButton type={'buy'} onClick={() => confirmTrade()}>
                 confirm
               </SendButton>
