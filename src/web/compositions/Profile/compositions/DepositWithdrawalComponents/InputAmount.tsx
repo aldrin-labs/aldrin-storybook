@@ -40,7 +40,7 @@ const Balances = ({ selectedCoin, getFundsQuery, marketType = 0, ...inputProps }
           disableTypography={true}
           position="end"
         >
-          <StyledTypographyCaption>{`AVAILABLE: ${marketType === 0 ? free : quantity} ${selectedCoin}`}</StyledTypographyCaption>
+          <StyledTypographyCaption onClick={() => inputProps.onClickAbornment ? inputProps.onChange({ target: { value: marketType === 0 ? free : quantity }}): () => {}}>{`AVAILABLE: ${marketType === 0 ? free : quantity} ${selectedCoin}`}</StyledTypographyCaption>
         </InputAdornment>
       }
       {...inputProps}

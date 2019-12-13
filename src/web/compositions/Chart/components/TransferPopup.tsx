@@ -220,6 +220,7 @@ const TransferPopup = ({
                 selectedAccount={selectedAccount}
                 marketType={transferFromSpotToFutures ? 0 : 1}
                 value={coinAmount}
+                onClickAbornment={true}
                 onChange={(e) => setCoinAmount(e.target.value)}
                 style={{ width: '100%' }}
               />
