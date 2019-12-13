@@ -270,7 +270,7 @@ const getStatusFromState = (
     return ['Closed', '#DD6956']
   } else if (state === 'Cancel') {
     return ['Cancellled', '#DD6956']
-  } else if (state === 'WaitForEntry') {
+  } else if (state === 'WaitForEntry' || state === '-') {
     return ['Waiting', '#5C8CEA']
   } else {
     return ['Open', '#29AC80']
@@ -339,8 +339,9 @@ export const combineActiveTradesTable = (
       return {
         pair: {
           render: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {pairArr[0]}/{pairArr[1]}
+            <div>
+              <span style={{ display: 'block' }}>{pairArr[0]}</span>
+              <span>{pairArr[1]}</span>
             </div>
           ),
           contentToSort: pair,
@@ -348,15 +349,17 @@ export const combineActiveTradesTable = (
         // type: type,
         side: {
           render: (
-            <div>
+            <div style={{ textTransform: 'uppercase', }}>
               <span
                 style={{
                   display: 'block',
-                  textTransform: 'uppercase',
                   color: side === 'buy' ? green.new : red.new,
                 }}
               >
-                {side} / {orderType}
+                {side}
+              </span>
+              <span>
+                {orderType}
               </span>
             </div>
           ),
@@ -373,11 +376,11 @@ export const combineActiveTradesTable = (
           contentToSort: status,
         },
         profit: {
-          render: (
+          render: getStatusFromState(state)[0] !== 'Waiting' ? (
             <span style={{ color: profit > 0 ? green.new : red.new }}>
               {profit.toFixed(2)} %
             </span>
-          ),
+          ) : '-',
           contentToSort: profit,
         },
         // TODO: We should change "total" to total param from backend when it will be ready

@@ -67,8 +67,16 @@ export const TakeProfitColumn = ({
         </SubColumnTitle>
       </div>
       <div>
-        <SubColumnTitle>price</SubColumnTitle>
-        <SubColumnValue color={green}>+{price}%</SubColumnValue>
+        <SubColumnTitle>profit</SubColumnTitle>
+        <SubColumnValue color={green}>
+          {trailing
+            ? 'trailing'
+            : targets
+            ? 'split'
+            : price
+            ? `+${price}%`
+            : '-'}
+        </SubColumnValue>
       </div>
 
       <div>
@@ -147,7 +155,7 @@ export const StopLossColumn = ({
         </SubColumnTitle>
       </div>
       <div>
-        <SubColumnTitle>price</SubColumnTitle>
+        <SubColumnTitle>loss</SubColumnTitle>
         <SubColumnValue color={red}>-{price}%</SubColumnValue>
       </div>
 
