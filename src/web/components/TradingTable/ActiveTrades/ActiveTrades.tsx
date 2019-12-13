@@ -179,7 +179,15 @@ class ActiveTradesTable extends React.PureComponent {
       editTrade,
       selectedTrade,
     } = this.state
-    const { tab, handleTabChange, show, marketType } = this.props
+    const {
+      tab,
+      handleTabChange,
+      show,
+      marketType,
+      updateStopLossStrategyMutation,
+      updateTakeProfitStrategyMutation,
+      showCancelResult,
+    } = this.props
 
     if (!show) {
       return null
@@ -193,16 +201,48 @@ class ActiveTradesTable extends React.PureComponent {
             <EditTakeProfitPopup
               open={editTrade === 'takeProfit'}
               handleClose={() => this.setState({ editTrade: null })}
-              updateState={(takeProfitProperties) => {
+              updateState={async (takeProfitProperties) => {
+                this.setState({ editTrade: null })
+
                 const takeProfit = getTakeProfitArgsForUpdate(
                   takeProfitProperties
                 )
-                console.log(
-                  'takeProfit',
-                  takeProfit,
-                  selectedTrade._id,
-                  this.props.selectedKey.keyId
-                )
+
+                // TODO: move to separate function
+                let result
+                try {
+                  result = await updateTakeProfitStrategyMutation({
+                    variables: {
+                      input: {
+                        keyId: this.props.selectedKey.keyId,
+                        strategyId: selectedTrade._id,
+                        params: takeProfit,
+                      },
+                    },
+                  })
+                } catch (e) {
+                  result = {
+                    status: 'error',
+                    message: `${e}`,
+                  }
+                }
+
+                // TODO: move to utils
+                const statusResult =
+                  result &&
+                  result.data &&
+                  result.data.updateTakeProfitStrategy &&
+                  result.data.updateTakeProfitStrategy.enabled === true
+                    ? {
+                        status: 'success',
+                        message: 'Smart order edit successful',
+                      }
+                    : {
+                        status: 'error',
+                        message: 'Smart order edit failed',
+                      }
+
+                showCancelResult(statusResult)
               }}
               derivedState={getTakeProfitFromStrategy(selectedTrade)}
               validate={validateTakeProfit}
@@ -216,15 +256,43 @@ class ActiveTradesTable extends React.PureComponent {
             open={editTrade === 'stopLoss'}
             pair={selectedTrade.conditions.pair}
             handleClose={() => this.setState({ editTrade: null })}
-            updateState={(stopLossProperties) => {
+            updateState={async (stopLossProperties) => {
+              this.setState({ editTrade: null })
+
               const stopLoss = getStopLossArgsForUpdate(stopLossProperties)
 
-              console.log(
-                'stopLoss',
-                stopLoss,
-                selectedTrade._id,
-                this.props.selectedKey.keyId
-              )
+              let result
+              try {
+                result = await updateStopLossStrategyMutation({
+                  variables: {
+                    keyId: this.props.selectedKey.keyId,
+                    strategyId: selectedTrade._id,
+                    params: stopLoss,
+                  },
+                })
+              } catch (e) {
+                result = {
+                  status: 'error',
+                  message: `${e}`,
+                }
+              }
+
+              // TODO: move to utils
+              const statusResult =
+                result &&
+                result.data &&
+                result.data.updateStopLossStrategy &&
+                result.data.updateStopLossStrategy.enabled === true
+                  ? {
+                      status: 'success',
+                      message: 'Smart order edit successful',
+                    }
+                  : {
+                      status: 'error',
+                      message: 'Smart order edit failed',
+                    }
+
+              showCancelResult(statusResult)
             }}
             transformProperties={transformStopLossProperties}
             validate={validateStopLoss}
@@ -350,7 +418,9 @@ const TableDataWrapper = ({ ...props }) => {
 }
 
 export default compose(
-  graphql(disableStrategy, { name: 'disableStrategyMutation' })
-  // graphql(updateStopLossStrategy, { name: 'updateStopLossStrategy' }),
-  // graphql(updateTakeProfitStrategy, { name: 'updateStopLossStrategy' })
+  graphql(disableStrategy, { name: 'disableStrategyMutation' }),
+  graphql(updateStopLossStrategy, { name: 'updateStopLossStrategyMutation' }),
+  graphql(updateTakeProfitStrategy, {
+    name: 'updateTakeProfitStrategyMutation',
+  })
 )(TableDataWrapper)
