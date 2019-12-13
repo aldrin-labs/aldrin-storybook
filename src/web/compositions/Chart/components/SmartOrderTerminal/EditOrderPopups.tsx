@@ -685,7 +685,6 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
                 <BlueSlider
                   value={this.state.pricePercentage}
-                  max={50}
                   sliderContainerStyles={{
                     width: '50%',
                     margin: '0 .8rem 0 .8rem',
