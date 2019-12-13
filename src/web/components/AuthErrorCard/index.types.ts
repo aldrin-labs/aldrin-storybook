@@ -1,4 +1,4 @@
-import { WithTheme } from '@material-ui/core/styles'
+import { WithTheme } from '@material-ui/styles'
 
 export interface IProps extends WithTheme {
   open: boolean

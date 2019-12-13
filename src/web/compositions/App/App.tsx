@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
+import { createGenerateClassName, jssPreset } from '@material-ui/styles'
 
 const generateClassName = createGenerateClassName()
 const jss = create(jssPreset())
