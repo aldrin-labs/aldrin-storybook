@@ -145,8 +145,11 @@ export const combinePositionsTable = (
   }
 
   const { green, red } = theme.palette
+  let positions = []
 
-  const processedPositionsData = data.map(
+  const processedPositionsData = data
+  .filter((el) => el.positionAmt !== 0)
+  .map(
     (el: OrderType, i: number) => {
       const {
         symbol,
@@ -157,7 +160,7 @@ export const combinePositionsTable = (
         liquidationPrice,
         positionAmt,
         leverage = '-',
-        origQty = '-',        
+        // origQty = '-',        
         type = '-',
         // side,
         // marketPrice,
@@ -169,7 +172,8 @@ export const combinePositionsTable = (
       const realizedPnl = accRealized
       const marketPrice = markPrice
       const liqPrice = liquidationPrice
-      const side = positionAmt < 0 ? 'short' : 'long'
+      const side = positionAmt < 0 ? 'sell short' : 'buy long'
+      const origQty = positionAmt
 
       const pair = symbol.split('_')
 
@@ -196,7 +200,7 @@ export const combinePositionsTable = (
                   style={{
                     display: 'block',
                     textTransform: 'uppercase',
-                    color: side === 'buy' ? green.new : red.new,
+                    color: side === 'buy long' ? green.new : red.new,
                   }}
                 >
                   {side}
@@ -212,7 +216,7 @@ export const combinePositionsTable = (
               </div>
             ),
             style: {
-              color: isBuyTypeOrder(side) ? green.new : red.new,
+              color: side === 'buy long' ? green.new : red.new,
             },
           },
           size: {
@@ -984,6 +988,11 @@ export const updateActivePositionsQuerryFunction = (
     (el: TradeType) =>
       el._id === subscriptionData.data.listenFuturesPositions._id
   )
+
+  console.log('prev.getActivePositions', prev.getActivePositions)
+  console.log('subscriptionData.data.listenFuturesPositions', subscriptionData.data.listenFuturesPositions)
+  console.log('positionHasTheSameIndex', positionHasTheSameIndex)
+
   const positionAlreadyExists = positionHasTheSameIndex !== -1
 
   let result
