@@ -22,6 +22,8 @@ import { InputRowContainer, TargetTitle, TargetValue } from '../styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { getArrowSymbol } from '@sb/components/AddArrowIcon/AddArrowIcon'
 
+import { EntryPointType, StopLossType, TakeProfitType } from '../types'
+
 const DialogContent = withStyles((theme) => ({
   root: {
     margin: 0,
@@ -81,6 +83,10 @@ interface IProps {
   confirmTrade: () => void
   editEntryPointHandle: () => void
   handleOpenEditPopup: (popupName: string) => void
+  entryPoint: EntryPointType
+  stopLoss: StopLossType
+  takeProfit: TakeProfitType
+  pair: [string, string]
 }
 
 const getColor = (value: boolean) => (value ? '#29AC80' : '#DD6956')
