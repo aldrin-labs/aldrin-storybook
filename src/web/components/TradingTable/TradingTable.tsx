@@ -23,7 +23,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     tabIndex: 0,
-    tab: 'openOrders',
+    tab: 'activeTrades',
   }
 
   handleTabChange = (tab: string | any) => {

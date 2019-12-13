@@ -32,6 +32,7 @@ export const Input = ({
   type = 'number',
   list = '',
   min = '0',
+  max,
   needCharacter = false,
   beforeSymbol = '',
   placeholder = '',
@@ -57,6 +58,7 @@ export const Input = ({
         type={type}
         list={list}
         min={min}
+        max={max}
         needCharacter={needCharacter}
         step={symbol === '%' ? 1 : ''}
         isValid={showErrors ? isValid : true}

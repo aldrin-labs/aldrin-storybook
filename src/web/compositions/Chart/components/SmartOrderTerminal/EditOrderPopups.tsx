@@ -128,6 +128,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
   static getDerivedStateFromProps(props, state) {
     // get values from state if empty
+
     if (state.type === '') {
       return {
         ...props.derivedState,
@@ -234,37 +235,39 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               </div>
             </InputRowContainer>
 
-            <InputRowContainer>
-              <FormInputContainer title={'price'}>
-                <Input
-                  needCharacter
-                  beforeSymbol={'+'}
-                  padding={'0 .8rem 0 0'}
-                  width={'calc(35%)'}
-                  symbol={'%'}
-                  showErrors={true}
-                  value={this.state.pricePercentage}
-                  isValid={this.props.validateField(
-                    true,
-                    this.state.pricePercentage
-                  )}
-                  onChange={(e) => {
-                    this.setState({ pricePercentage: e.target.value })
-                  }}
-                />
+            {!this.state.isTrailingOn && (
+              <InputRowContainer>
+                <FormInputContainer title={'profit'}>
+                  <Input
+                    needCharacter
+                    beforeSymbol={'+'}
+                    padding={'0 .8rem 0 0'}
+                    width={'calc(35%)'}
+                    symbol={'%'}
+                    showErrors={!this.isSplitTargetsOn && !this.isTrailingOn}
+                    value={this.state.pricePercentage}
+                    isValid={this.props.validateField(
+                      true,
+                      this.state.pricePercentage
+                    )}
+                    onChange={(e) => {
+                      this.setState({ pricePercentage: e.target.value })
+                    }}
+                  />
 
-                <BlueSlider
-                  value={this.state.pricePercentage}
-                  sliderContainerStyles={{
-                    width: '50%',
-                    margin: '0 .8rem 0 .8rem',
-                  }}
-                  onChange={(value) => {
-                    this.setState({ pricePercentage: value })
-                  }}
-                />
-              </FormInputContainer>
-            </InputRowContainer>
+                  <BlueSlider
+                    value={this.state.pricePercentage}
+                    sliderContainerStyles={{
+                      width: '50%',
+                      margin: '0 .8rem 0 .8rem',
+                    }}
+                    onChange={(value) => {
+                      this.setState({ pricePercentage: value })
+                    }}
+                  />
+                </FormInputContainer>
+              </InputRowContainer>
+            )}
 
             {this.state.isTrailingOn && (
               <InputRowContainer>
@@ -308,7 +311,17 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       symbol={'%'}
                       value={this.state.volumePercentage}
                       onChange={(e) => {
-                        this.setState({ volumePercentage: e.target.value })
+                        const occupiedVolume = this.state.targets.reduce(
+                          (prev, curr) => prev + curr.quantity,
+                          0
+                        )
+
+                        this.setState({
+                          volumePercentage:
+                            occupiedVolume + e.target.value < 100
+                              ? e.target.value
+                              : 100 - occupiedVolume,
+                        })
                       }}
                     />
 
@@ -319,7 +332,17 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         margin: '0 .8rem 0 .8rem',
                       }}
                       onChange={(value) => {
-                        this.setState({ volumePercentage: value })
+                        const occupiedVolume = this.state.targets.reduce(
+                          (prev, curr) => prev + curr.quantity,
+                          0
+                        )
+
+                        this.setState({
+                          volumePercentage:
+                            occupiedVolume + value < 100
+                              ? value
+                              : 100 - occupiedVolume,
+                        })
                       }}
                     />
                   </FormInputContainer>
@@ -429,7 +452,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       <Input
                         width={'calc(55% - .4rem)'}
                         value={this.state.whenProfitSec}
-                        showErrors={true}
+                        showErrors={this.state.whenProfitOn}
                         isValid={this.props.validateField(
                           this.state.whenProfitOn,
                           this.state.whenProfitSec
@@ -478,7 +501,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       <Input
                         width={'calc(55% - .4rem)'}
                         value={this.state.whenProfitableSec}
-                        showErrors={true}
+                        showErrors={this.state.whenProfitableOn}
                         isValid={this.props.validateField(
                           this.state.whenProfitableOn,
                           this.state.whenProfitableSec
@@ -642,10 +665,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             </InputRowContainer>
 
             <InputRowContainer>
-              <FormInputContainer title={'price'}>
+              <FormInputContainer title={'loss'}>
                 <Input
                   needCharacter
-                  beforeSymbol={'+'}
+                  beforeSymbol={'-'}
                   padding={'0 .8rem 0 0'}
                   width={'calc(35%)'}
                   symbol={'%'}
@@ -662,6 +685,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
                 <BlueSlider
                   value={this.state.pricePercentage}
+                  max={50}
                   sliderContainerStyles={{
                     width: '50%',
                     margin: '0 .8rem 0 .8rem',
@@ -696,7 +720,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       <Input
                         width={'calc(55% - .4rem)'}
                         value={this.state.whenLossSec}
-                        showErrors={true}
+                        showErrors={this.state.whenLossOn}
                         isValid={this.props.validateField(
                           this.state.whenLossOn,
                           this.state.whenLossSec
@@ -745,7 +769,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       <Input
                         width={'calc(55% - .4rem)'}
                         value={this.state.whenLossableSec}
-                        showErrors={true}
+                        showErrors={this.state.whenLossableOn}
                         isValid={this.props.validateField(
                           this.state.whenLossableOn,
                           this.state.whenLossableSec

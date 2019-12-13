@@ -864,7 +864,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </div>
                   <div>
                     <GreenSwitcher
-                      if="isSplitTargetsOn"
+                      id="isSplitTargetsOn"
                       checked={takeProfit.splitTargets.isSplitTargetsOn}
                       handleToggle={() => {
                         this.updateSubBlockValue(
@@ -905,46 +905,52 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </div>
                 </InputRowContainer>
 
-                <InputRowContainer>
-                  <FormInputContainer title={'price'}>
-                    <Input
-                      needCharacter
-                      beforeSymbol={'+'}
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(35%)'}
-                      symbol={'%'}
-                      value={takeProfit.pricePercentage}
-                      showErrors={showErrors && takeProfit.isTakeProfitOn}
-                      isValid={this.validateField(
-                        true,
-                        takeProfit.pricePercentage
-                      )}
-                      onChange={(e) => {
-                        this.updateBlockValue(
-                          'takeProfit',
-                          'pricePercentage',
-                          e.target.value
-                        )
-                      }}
-                    />
+                {!takeProfit.trailingTAP.isTrailingOn && (
+                  <InputRowContainer>
+                    <FormInputContainer title={'profit'}>
+                      <Input
+                        needCharacter
+                        beforeSymbol={'+'}
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(35%)'}
+                        symbol={'%'}
+                        value={takeProfit.pricePercentage}
+                        showErrors={
+                          showErrors &&
+                          takeProfit.isTakeProfitOn &&
+                          !takeProfit.splitTargets.isSplitTargetsOn &&
+                          !takeProfit.trailingTAP.isTrailingOn
+                        }
+                        isValid={this.validateField(
+                          true,
+                          takeProfit.pricePercentage
+                        )}
+                        onChange={(e) => {
+                          this.updateBlockValue(
+                            'takeProfit',
+                            'pricePercentage',
+                            e.target.value
+                          )
+                        }}
+                      />
 
-                    <BlueSlider
-                      value={takeProfit.pricePercentage}
-                      sliderContainerStyles={{
-                        width: '50%',
-                        margin: '0 .8rem 0 .8rem',
-                      }}
-                      onChange={(value) => {
-                        this.updateBlockValue(
-                          'takeProfit',
-                          'pricePercentage',
-                          value
-                        )
-                      }}
-                    />
-                  </FormInputContainer>
-                </InputRowContainer>
-
+                      <BlueSlider
+                        value={takeProfit.pricePercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.updateBlockValue(
+                            'takeProfit',
+                            'pricePercentage',
+                            value
+                          )
+                        }}
+                      />
+                    </FormInputContainer>
+                  </InputRowContainer>
+                )}
                 {takeProfit.trailingTAP.isTrailingOn && (
                   <InputRowContainer>
                     <FormInputContainer title={'deviation'}>
@@ -997,11 +1003,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           symbol={'%'}
                           value={takeProfit.splitTargets.volumePercentage}
                           onChange={(e) => {
+                            const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+                              (prev, curr) => prev + curr.quantity,
+                              0
+                            )
+
                             this.updateSubBlockValue(
                               'takeProfit',
                               'splitTargets',
                               'volumePercentage',
-                              e.target.value
+                              occupiedVolume + e.target.value < 100
+                                ? e.target.value
+                                : 100 - occupiedVolume
                             )
                           }}
                         />
@@ -1013,11 +1026,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             margin: '0 .8rem 0 .8rem',
                           }}
                           onChange={(value) => {
+                            const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+                              (prev, curr) => prev + curr.quantity,
+                              0
+                            )
+
                             this.updateSubBlockValue(
                               'takeProfit',
                               'splitTargets',
                               'volumePercentage',
-                              value
+                              occupiedVolume + value < 100
+                                ? value
+                                : 100 - occupiedVolume
                             )
                           }}
                         />
@@ -1302,7 +1322,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 <InputRowContainer padding={'0 0 1.6rem 0'}>
-                  <FormInputContainer title={'price'}>
+                  <FormInputContainer title={'loss'}>
                     <Input
                       needCharacter
                       beforeSymbol={'-'}

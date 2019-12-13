@@ -3,6 +3,7 @@ import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 const BlueSlider = ({
   value = 0,
+  max = 100,
   valueSymbol = '%',
   disabled = false,
   sliderContainerStyles,
@@ -18,7 +19,7 @@ const BlueSlider = ({
     <SmallSlider
       defaultValue={0}
       min={0}
-      max={100}
+      max={max}
       disabled={disabled}
       value={value}
       valueSymbol={valueSymbol}
