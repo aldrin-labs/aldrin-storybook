@@ -6,15 +6,14 @@ import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
+  updateActivePositionsQuerryFunction,
   combinePositionsTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
+import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
@@ -67,10 +66,10 @@ class PositionsTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getOpenOrderHistoryQuery, subscribeToMore, theme } = this.props
+    const { getActivePositionsQuery, subscribeToMore, theme } = this.props
 
     const openOrdersProcessedData = combinePositionsTable(
-      getOpenOrderHistoryQuery.getOpenOrderHistory,
+      getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
       theme
     )
@@ -90,7 +89,7 @@ class PositionsTable extends React.PureComponent {
 
   componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combinePositionsTable(
-      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
+      nextProps.getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
       nextProps.theme
     )
@@ -171,23 +170,23 @@ const TableDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={PositionsTable}
       variables={{
-        openOrderInput: {
-          activeExchangeKey: props.selectedKey.keyId,
+        input: {
+          keyId: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
-      query={getOpenOrderHistory}
-      name={`getOpenOrderHistoryQuery`}
+      query={getActivePositions}
+      name={`getActivePositionsQuery`}
       fetchPolicy="network-only"
       subscriptionArgs={{
-        subscription: OPEN_ORDER_HISTORY,
+        subscription: FUTURES_POSITIONS,
         variables: {
-          openOrderInput: {
-            activeExchangeKey: props.selectedKey.keyId,
+          input: {
+            keyId: props.selectedKey.keyId,
           },
         },
-        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+        updateQueryFunction: updateActivePositionsQuerryFunction,
       }}
       {...props}
     />
