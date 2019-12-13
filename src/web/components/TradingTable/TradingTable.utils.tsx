@@ -349,7 +349,7 @@ export const combineActiveTradesTable = (
         // type: type,
         side: {
           render: (
-            <div style={{ textTransform: 'uppercase', }}>
+            <div style={{ textTransform: 'uppercase' }}>
               <span
                 style={{
                   display: 'block',
@@ -358,9 +358,7 @@ export const combineActiveTradesTable = (
               >
                 {side}
               </span>
-              <span>
-                {orderType}
-              </span>
+              <span>{orderType}</span>
             </div>
           ),
           style: {
@@ -376,11 +374,14 @@ export const combineActiveTradesTable = (
           contentToSort: status,
         },
         profit: {
-          render: getStatusFromState(state)[0] !== 'Waiting' ? (
-            <span style={{ color: profit > 0 ? green.new : red.new }}>
-              {profit.toFixed(2)} %
-            </span>
-          ) : '-',
+          render:
+            getStatusFromState(state)[0] !== 'Waiting' ? (
+              <span style={{ color: profit > 0 ? green.new : red.new }}>
+                {profit.toFixed(2)} %
+              </span>
+            ) : (
+              '-'
+            ),
           contentToSort: profit,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
@@ -404,7 +405,7 @@ export const combineActiveTradesTable = (
             <TakeProfitColumn
               price={exitLevels.length > 0 && exitLevels[0].price}
               order={exitLevels.length > 0 && exitLevels[0].orderType}
-              targets={(exitLevels && exitLevels.length) || 0}
+              targets={exitLevels ? exitLevels : []}
               timeoutProfit={timeoutWhenProfit}
               timeoutProfitable={timeoutIfProfitable}
               trailing={trailingExit}

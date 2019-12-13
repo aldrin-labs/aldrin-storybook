@@ -31,7 +31,7 @@ export const TakeProfitColumn = ({
   editTrade,
 }: {
   price: number
-  targets?: number
+  targets?: any
   order: string
   trailing: boolean
   timeoutProfit?: number
@@ -71,7 +71,7 @@ export const TakeProfitColumn = ({
         <SubColumnValue color={green}>
           {trailing
             ? 'trailing'
-            : targets[0].amount
+            : targets[0] && targets[0].amount
             ? 'split'
             : price
             ? `+${price}%`
@@ -81,7 +81,7 @@ export const TakeProfitColumn = ({
 
       <div>
         <SubColumnTitle>targets</SubColumnTitle>
-        <SubColumnValue>{targets || '-'}</SubColumnValue>
+        <SubColumnValue>{targets.length || '-'}</SubColumnValue>
       </div>
 
       <div>
