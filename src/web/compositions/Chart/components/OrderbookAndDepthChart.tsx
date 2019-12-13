@@ -122,6 +122,7 @@ class OrderbookAndDepthChart extends React.Component {
   }
 
   componentWillUnmount() {
+    this.setState({ readyForNewOrder: false })
     unsubscribe && unsubscribe()
   }
 
