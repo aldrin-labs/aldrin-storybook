@@ -3,7 +3,14 @@ import styled from 'styled-components'
 import { Dialog, Paper } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 
-import { getSecondValueFromFirst, BlueSwitcherStyles } from './utils'
+import {
+  getSecondValueFromFirst,
+  BlueSwitcherStyles,
+  GreenSwitcherStyles,
+  RedSwitcherStyles,
+} from './utils'
+
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
@@ -40,15 +47,14 @@ const StyledPaper = styled(Paper)`
 
 type IProps = {
   open: boolean
+  pair?: [string, string]
+  maxAmount?: number
   validateField: (a: boolean, b: number | string) => boolean
   handleClose: () => void
-  updateState: (obj: ITAPState | ISLState) => void
-  validateStopLoss?: (obj: any, isValid: boolean) => boolean
-  validateTakeProfit?: (obj: any, isValid: boolean) => boolean
-  transformTakeProfitProperties?: (obj: any) => any
-  transformStopLossProperties?: (obj: any) => any
-  TAPState?: any
-  stopLossState?: any
+  updateState: (obj: any) => void
+  validate: (obj: any, isValid: boolean) => boolean
+  transformProperties: (obj: any) => any
+  derivedState: any
 }
 
 type ITAPState = {
@@ -85,6 +91,23 @@ type ISLState = {
   forcedPercentage: number
 }
 
+type HedgeState = {
+  isHedgeOn: boolean
+  hedgeSide: string
+  hedgePrice: number
+  hedgeIncrease: number
+}
+
+type EntryOrderState = {
+  type: string
+  side: string
+  price: number
+  amount: number
+  total: number
+  isTrailingOn: boolean
+  deviationPercentage: number
+}
+
 export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
   state = {
     type: '',
@@ -107,7 +130,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
     // get values from state if empty
     if (state.type === '') {
       return {
-        ...props.TAPState,
+        ...props.derivedState,
       }
     }
   }
@@ -117,9 +140,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       open,
       handleClose,
       updateState,
-      validateTakeProfit,
-      transformTakeProfitProperties,
+      validate,
+      transformProperties,
     } = this.props
+
     return (
       <Dialog
         PaperComponent={StyledPaper}
@@ -492,10 +516,8 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               <SendButton
                 type={'buy'}
                 onClick={() => {
-                  const transformedState = transformTakeProfitProperties(
-                    this.state
-                  )
-                  const isValid = validateTakeProfit(transformedState, true)
+                  const transformedState = transformProperties(this.state)
+                  const isValid = validate(transformedState, true)
 
                   if (isValid) {
                     updateState(this.state)
@@ -532,7 +554,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     // get values from state if empty
     if (state.type === '') {
       return {
-        ...props.stopLossState,
+        ...props.derivedState,
       }
     }
   }
@@ -542,9 +564,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
       open,
       handleClose,
       updateState,
-      transformStopLossProperties,
-      validateStopLoss,
+      transformProperties,
+      validate,
     } = this.props
+
     return (
       <Dialog
         PaperComponent={StyledPaper}
@@ -800,13 +823,426 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               <SendButton
                 type={'buy'}
                 onClick={() => {
-                  const transformedState = transformStopLossProperties(
-                    this.state
-                  )
-                  const isValid = validateStopLoss(transformedState, true)
+                  const transformedState = transformProperties(this.state)
+                  const isValid = validate(transformedState, true)
 
                   if (isValid) {
                     updateState(this.state)
+                    handleClose()
+                  }
+                }}
+              >
+                confirm
+              </SendButton>
+            </InputRowContainer>
+          </div>
+        </StyledDialogContent>
+      </Dialog>
+    )
+  }
+}
+
+export class EditHedgePopup extends React.Component<IProps, HedgeState> {
+  state = {
+    isHedgeOn: true,
+    hedgeSide: '',
+    hedgePrice: 0,
+    hedgeIncrease: 1,
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    // get values from state if empty
+    if (state.hedgeSide === '') {
+      return {
+        ...props.derivedState,
+      }
+    }
+  }
+
+  render() {
+    const { open, pair, handleClose, updateState, validate } = this.props
+
+    return (
+      <Dialog
+        PaperComponent={StyledPaper}
+        style={{ width: '85rem', margin: 'auto' }}
+        fullScreen={false}
+        onClose={handleClose}
+        maxWidth={'md'}
+        open={open}
+        aria-labelledby="responsive-edit-hedge-dialog-title"
+      >
+        <StyledDialogTitle
+          disableTypography
+          id="responsive-edit-hedge-dialog-title"
+        >
+          <TypographyTitle>{`Edit hedge`}</TypographyTitle>
+          <ClearButton>
+            <Clear
+              style={{ fontSize: '2rem' }}
+              color="inherit"
+              onClick={handleClose}
+            />
+          </ClearButton>
+        </StyledDialogTitle>
+        <StyledDialogContent id="edit-hedge-dialog-content">
+          <InputRowContainer padding={'1rem 0 .6rem 0'}>
+            <div>
+              <GreenSwitcher
+                id="isHedgeDialogOn"
+                checked={this.state.isHedgeOn}
+                handleToggle={() =>
+                  this.setState((prev) => ({ isHedgeOn: !prev.isHedgeOn }))
+                }
+              />
+              <HeaderLabel htmlFor="isHedgeDialogOn">hedge</HeaderLabel>
+            </div>
+          </InputRowContainer>
+          <InputRowContainer>
+            <FormInputContainer title={'hedge'}>
+              <CustomSwitcher
+                firstHalfText={'long'}
+                secondHalfText={'short'}
+                buttonHeight={'2.5rem'}
+                containerStyles={{
+                  width: '30%',
+                  padding: '0 .4rem 0 0',
+                  whiteSpace: 'nowrap',
+                }}
+                firstHalfStyleProperties={GreenSwitcherStyles}
+                secondHalfStyleProperties={RedSwitcherStyles}
+                firstHalfIsActive={this.state.hedgeSide === 'long'}
+                changeHalf={() =>
+                  this.setState((prev) => ({
+                    hedgeSide: getSecondValueFromFirst(prev.hedgeSide),
+                  }))
+                }
+              />
+              <Input
+                padding="0 .8rem 0 .8rem"
+                width={'calc(40% - 1.6rem)'}
+                symbol={pair[1]}
+                value={this.state.hedgePrice}
+                showErrors={true}
+                isValid={this.props.validateField(
+                  this.state.isHedgeOn,
+                  this.state.hedgePrice
+                )}
+                onChange={(e) => {
+                  this.setState({ hedgePrice: e.target.value })
+                }}
+              />
+              <Input
+                width={'18%'}
+                symbol={'X   '}
+                type="text"
+                pattern="[0-9]+([\.,][0-9]+)?"
+                list="leverageOptions"
+                value={this.state.hedgeIncrease}
+                showErrors={true}
+                isValid={this.props.validateField(
+                  this.state.isHedgeOn,
+                  this.state.hedgeIncrease
+                )}
+                onChange={(e) => {
+                  this.setState({ hedgeIncrease: e.target.value })
+                }}
+              />
+
+              <datalist id="leverageOptions">
+                <option value="1" />
+                <option value="25" />
+                <option value="50" />
+                <option value="75" />
+                <option value="100" />
+                <option value="125" />
+              </datalist>
+            </FormInputContainer>
+          </InputRowContainer>
+          <InputRowContainer padding={'2rem 0 0 0'}>
+            <SendButton
+              type={'buy'}
+              onClick={() => {
+                const transformedState = this.state
+                const isValid = validate(transformedState, true)
+
+                if (isValid) {
+                  updateState(this.state)
+                  handleClose()
+                }
+              }}
+            >
+              confirm
+            </SendButton>
+          </InputRowContainer>
+        </StyledDialogContent>
+      </Dialog>
+    )
+  }
+}
+
+export class EditEntryOrderPopup extends React.Component<
+  IProps,
+  EntryOrderState
+> {
+  state = {
+    type: '',
+    side: '',
+    price: 0,
+    amount: 0,
+    total: 0,
+    isTrailingOn: false,
+    deviationPercentage: 0,
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    // get values from state if empty
+    if (state.side === '') {
+      return {
+        ...props.derivedState,
+      }
+    }
+  }
+
+  render() {
+    const {
+      open,
+      pair,
+      maxAmount,
+      transformProperties,
+      handleClose,
+      updateState,
+      validate,
+    } = this.props
+
+    const {
+      type,
+      side,
+      price,
+      amount,
+      total,
+      isTrailingOn,
+      deviationPercentage,
+    } = this.state
+
+    return (
+      <Dialog
+        PaperComponent={StyledPaper}
+        style={{ width: '85rem', margin: 'auto' }}
+        fullScreen={false}
+        onClose={handleClose}
+        maxWidth={'md'}
+        open={open}
+        aria-labelledby="responsive-edit-entry-order-dialog-title"
+      >
+        <StyledDialogTitle
+          disableTypography
+          id="responsive-edit-entry-order-dialog-title"
+        >
+          <TypographyTitle>{`Edit entry point`}</TypographyTitle>
+          <ClearButton>
+            <Clear
+              style={{ fontSize: '2rem' }}
+              color="inherit"
+              onClick={handleClose}
+            />
+          </ClearButton>
+        </StyledDialogTitle>
+        <StyledDialogContent id="edit-entry-order-dialog-content">
+          <CustomSwitcher
+            firstHalfText={'buy'}
+            secondHalfText={'sell'}
+            buttonHeight={'2.5rem'}
+            containerStyles={{ width: '100%', paddingBottom: '.4rem' }}
+            firstHalfStyleProperties={GreenSwitcherStyles}
+            secondHalfStyleProperties={RedSwitcherStyles}
+            firstHalfIsActive={side === 'buy'}
+            changeHalf={() => {
+              this.setState((prev) => ({
+                side: getSecondValueFromFirst(prev.side),
+              }))
+            }}
+          />
+
+          <CustomSwitcher
+            firstHalfText={'limit'}
+            secondHalfText={'market'}
+            buttonHeight={'2.5rem'}
+            containerStyles={{ width: '100%' }}
+            firstHalfStyleProperties={BlueSwitcherStyles}
+            secondHalfStyleProperties={BlueSwitcherStyles}
+            firstHalfIsActive={type === 'limit'}
+            changeHalf={() => {
+              this.setState((prev) => ({
+                type: getSecondValueFromFirst(prev.type),
+              }))
+
+              if (isTrailingOn) {
+                this.setState((prev) => ({
+                  isTrailingOn: getSecondValueFromFirst(prev.type) !== 'limit',
+                }))
+              }
+            }}
+          />
+
+          <div>
+            <InputRowContainer
+              justify="flex-start"
+              padding={'.8rem 0 1.2rem 0'}
+            >
+              <div>
+                <GreenSwitcher
+                  id="entryPointTrailingOn"
+                  checked={isTrailingOn}
+                  handleToggle={() => {
+                    this.setState((prev) => ({
+                      isTrailingOn: !prev.isTrailingOn,
+                      type: 'market',
+                    }))
+                  }}
+                />
+                <HeaderLabel htmlFor="entryPointTrailingOn">
+                  trailing{' '}
+                  <span
+                    style={{
+                      color: side === 'buy' ? '#29AC80' : '#DD6956',
+                    }}
+                  >
+                    {side}
+                  </span>
+                </HeaderLabel>
+              </div>
+            </InputRowContainer>
+
+            <InputRowContainer>
+              <FormInputContainer title={'price'}>
+                <Input
+                  symbol={pair[1]}
+                  type={
+                    type === 'limit'
+                      ? 'number'
+                      : isTrailingOn
+                      ? 'number'
+                      : 'text'
+                  }
+                  value={
+                    type === 'limit' ? price : isTrailingOn ? price : 'MARKET'
+                  }
+                  showErrors={true}
+                  isValid={this.props.validateField(true, price)}
+                  isDisabled={type === 'market' && !isTrailingOn}
+                  onChange={(e) => {
+                    this.setState({
+                      price: e.target.value,
+                      total: Number(
+                        stripDigitPlaces(e.target.value * amount, 8)
+                      ),
+                    })
+                  }}
+                />
+              </FormInputContainer>
+            </InputRowContainer>
+
+            {isTrailingOn && (
+              <InputRowContainer>
+                <FormInputContainer title={'deviation'}>
+                  <Input
+                    padding={'0 .8rem 0 0'}
+                    width={'calc(35%)'}
+                    symbol={'%'}
+                    value={deviationPercentage}
+                    showErrors={true}
+                    isValid={this.props.validateField(
+                      isTrailingOn,
+                      deviationPercentage
+                    )}
+                    onChange={(e) => {
+                      this.setState({ deviationPercentage: e.target.value })
+                    }}
+                  />
+
+                  <BlueSlider
+                    disabled={!isTrailingOn}
+                    value={deviationPercentage}
+                    sliderContainerStyles={{
+                      width: '50%',
+                      margin: '0 .8rem 0 .8rem',
+                    }}
+                    onChange={(value) => {
+                      this.setState({ deviationPercentage: value })
+                    }}
+                  />
+                </FormInputContainer>
+              </InputRowContainer>
+            )}
+
+            <InputRowContainer>
+              <FormInputContainer title={'amount'}>
+                <Input
+                  type={'number'}
+                  symbol={pair[0]}
+                  value={amount}
+                  showErrors={true}
+                  isValid={this.props.validateField(true, +amount)}
+                  onChange={(e) => {
+                    const newTotal = e.target.value * price
+
+                    this.setState({
+                      total: newTotal ? newTotal.toFixed(8) : 0,
+                      amount: e.target.value,
+                    })
+                  }}
+                />
+              </FormInputContainer>
+            </InputRowContainer>
+
+            <InputRowContainer>
+              <BlueSlider
+                value={
+                  side === 'buy'
+                    ? total / (maxAmount / 100)
+                    : amount / (maxAmount / 100)
+                }
+                sliderContainerStyles={{
+                  width: 'calc(85% - .8rem)',
+                  margin: '0 .8rem 0 auto',
+                }}
+                onChange={(value) => {
+                  const newValue = (maxAmount / 100) * value
+                  const newAmount = side === 'buy' ? newValue / price : newValue
+                  const newTotal = side === 'buy' ? newValue : newValue * price
+
+                  this.setState({
+                    total: newTotal.toFixed(8),
+                    amount: newAmount.toFixed(8),
+                  })
+                }}
+              />
+            </InputRowContainer>
+
+            <InputRowContainer>
+              <FormInputContainer title={'total'}>
+                <Input
+                  symbol={pair[1]}
+                  value={total}
+                  onChange={(e) => {
+                    this.setState({
+                      total: stripDigitPlaces(e.target.value, 8),
+                      amount: (+(e.target.value / price)).toFixed(8),
+                    })
+                  }}
+                />
+              </FormInputContainer>
+            </InputRowContainer>
+            <InputRowContainer padding={'2rem 0 0 0'}>
+              <SendButton
+                type={'buy'}
+                onClick={() => {
+                  const transformedState = transformProperties(this.state)
+                  const isValid = validate(transformedState, true)
+
+                  if (isValid) {
+                    updateState(transformedState)
                     handleClose()
                   }
                 }}
