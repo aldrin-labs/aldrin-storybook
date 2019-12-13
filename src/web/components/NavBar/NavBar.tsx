@@ -4,7 +4,7 @@ import { compose } from 'recompose'
 
 import { client } from '@core/graphql/apolloClient'
 import { LoginComponent as Login} from '@sb/components/Login'
-import { WithTheme } from '@material-ui/styles'
+import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
