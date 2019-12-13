@@ -265,9 +265,11 @@ class ActiveTradesTable extends React.PureComponent {
               try {
                 result = await updateStopLossStrategyMutation({
                   variables: {
-                    keyId: this.props.selectedKey.keyId,
-                    strategyId: selectedTrade._id,
-                    params: stopLoss,
+                    input: {
+                      keyId: this.props.selectedKey.keyId,
+                      strategyId: selectedTrade._id,
+                      params: stopLoss,
+                    }
                   },
                 })
               } catch (e) {
