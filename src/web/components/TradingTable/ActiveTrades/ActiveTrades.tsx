@@ -269,7 +269,7 @@ class ActiveTradesTable extends React.PureComponent {
                       keyId: this.props.selectedKey.keyId,
                       strategyId: selectedTrade._id,
                       params: stopLoss,
-                    }
+                    },
                   },
                 })
               } catch (e) {
@@ -361,12 +361,16 @@ class ActiveTradesTable extends React.PureComponent {
 }
 
 const LastTradeWrapper = ({ ...props }) => {
+  let unsubscribe = undefined
+
   useEffect(() => {
-    const unsubscribeFunction = props.subscribeToMore()
+    unsubscribe && unsubscribe()
+    unsubscribe = props.subscribeToMore()
+
     return () => {
-      unsubscribeFunction()
+      unsubscribe()
     }
-  }, [])
+  }, [props.marketType, props.exchange, props.currencyPair])
 
   return (
     <QueryRenderer

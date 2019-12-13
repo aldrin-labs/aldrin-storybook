@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
   LastTradeContainer,
@@ -23,47 +23,44 @@ interface IProps {
   mode: OrderbookMode
 }
 
-class LastTrade extends React.Component<IProps> {
-  unsubscribeFunction: null | Function = null
+const LastTrade = (props: IProps) => {
+  const { mode } = props
 
-  componentDidMount() {
-    this.unsubscribeFunction = this.props.subscribeToMore()
-  }
+  let unsubscribe = undefined
 
-  componentWillUnmount = () => {
-    // unsubscribe subscription
-    if (this.unsubscribeFunction !== null) {
-      this.unsubscribeFunction()
+  useEffect(() => {
+    unsubscribe && unsubscribe()
+    unsubscribe = props.subscribeToMore()
+
+    return () => {
+      unsubscribe()
     }
+  }, [props.marketType, props.exchange, props.currencyPair])
+
+  if (mode !== 'both' && props.data.marketTickers.length > 0) {
+    return null
   }
-  render() {
-    const { mode } = this.props
 
-    if (mode !== 'both' && this.props.data.marketTickers.length > 0) {
-      return null
-    }
+  let price = 0
+  let fall = false
 
-    let price = 0
-    let fall = false
+  try {
+    const data = JSON.parse(props.data.marketTickers[0])
+    price = data[4]
+    fall = data[9]
+  } catch (e) {}
 
-    try {
-      const data = JSON.parse(this.props.data.marketTickers[0])
-      price = data[4]
-      fall = data[9]
-    } catch (e) {}
-
-    return (
-      <LastTradeContainer>
-        <LastTradeValue fall={fall}>
-          <ArrowIcon fall={fall} />
-          {addMainSymbol(stripDigitPlaces(price, 2), true)}
-        </LastTradeValue>
-        <LastTradePrice>
-          {addMainSymbol(stripDigitPlaces(price, 2), true)}
-        </LastTradePrice>
-      </LastTradeContainer>
-    )
-  }
+  return (
+    <LastTradeContainer>
+      <LastTradeValue fall={fall}>
+        <ArrowIcon fall={fall} />
+        {addMainSymbol(stripDigitPlaces(price, 2), true)}
+      </LastTradeValue>
+      <LastTradePrice>
+        {addMainSymbol(stripDigitPlaces(price, 2), true)}
+      </LastTradePrice>
+    </LastTradeContainer>
+  )
 }
 
 const APIWrapper = (props) => {
