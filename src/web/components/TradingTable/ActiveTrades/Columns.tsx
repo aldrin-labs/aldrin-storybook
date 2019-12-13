@@ -71,7 +71,7 @@ export const TakeProfitColumn = ({
         <SubColumnValue color={green}>
           {trailing
             ? 'trailing'
-            : targets
+            : targets[0].amount
             ? 'split'
             : price
             ? `+${price}%`
