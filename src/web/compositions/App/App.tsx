@@ -3,15 +3,20 @@ import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 
 // https://material-ui.com/customization/css-in-js/#other-html-element
-import JssProvider from 'react-jss/lib/JssProvider'
+// import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
+console.log('create', create)
+import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/styles'
 
-const generateClassName = createGenerateClassName()
-const jss = create(jssPreset())
-// We define a custom insertion point that JSS will look for injecting the styles in the DOM.
-jss.options.insertionPoint = document.getElementById('jss-insertion-point')
-//
+// const generateClassName = createGenerateClassName()
+// const jss = create(jssPreset())
+// // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
+// jss.options.insertionPoint = document.getElementById('jss-insertion-point')
+// //
+
+// console.log('jss', jss)
+
+
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Footer from '@sb/components/Footer'
@@ -56,8 +61,12 @@ const AppRaw = ({
   const pageIsRegistration = currentPage.includes('regist')
   const isChartPage = currentPage === '/chart'
 
+
+  
+
+
   return (
-    <JssProvider jss={jss} generateClassName={generateClassName}>
+    <StylesProvider injectFirst={true}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
         <AppGridLayout
@@ -81,7 +90,7 @@ const AppRaw = ({
         {/* <ShowWarningOnMoblieDevice /> */}
         <GlobalStyle />
       </ThemeWrapper>
-    </JssProvider>
+    </StylesProvider>
   )
 }
 
