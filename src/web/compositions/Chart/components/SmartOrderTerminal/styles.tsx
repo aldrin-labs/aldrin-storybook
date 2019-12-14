@@ -103,6 +103,11 @@ export const InputRowContainer = styled.div`
   }
 `
 
+export const SwitcherContainer = styled.div`
+  align-items: center;
+  display: flex;
+`
+
 export const BluredBackground = styled.div`
   position: absolute;
   z-index: 11;

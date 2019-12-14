@@ -48,6 +48,8 @@ const TradeInputContainer = ({
   onChange,
   coin,
   style,
+  type,
+  pattern,
 }) => {
   return (
     <TradeInputBlock style={style}>
@@ -57,7 +59,8 @@ const TradeInputContainer = ({
           isValid={true}
           value={value}
           onChange={onChange}
-          type="number"
+          type={type || 'number'}
+          pattern={pattern}
           step={step}
           min={0}
         />
@@ -186,11 +189,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const total = toFixedTrunc(e.target.value, decimals[0]) * priceForCalculate
 
-    this.setFormatted(
-      'amount',
-      isSPOTMarket ? e.target.value : +Number(e.target.value).toFixed(3),
-      0
-    )
+    this.setFormatted('amount', e.target.value, 0)
     setFieldTouched('amount', true)
 
     this.setFormatted('total', total, 1)
@@ -314,6 +313,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               >
                 <TradeInputContainer
                   title={isSPOTMarket ? `Amount` : 'qtty'}
+                  type={'text'}
+                  pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
                   value={values.amount || ''}
                   onChange={this.onAmountChange}
                   coin={pair[0]}

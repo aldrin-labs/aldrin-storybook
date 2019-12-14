@@ -134,6 +134,8 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
         ...props.derivedState,
       }
     }
+
+    return null
   }
 
   render() {
@@ -244,7 +246,9 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     padding={'0 .8rem 0 0'}
                     width={'calc(35%)'}
                     symbol={'%'}
-                    showErrors={!this.isSplitTargetsOn && !this.isTrailingOn}
+                    showErrors={
+                      !this.state.isSplitTargetsOn && !this.state.isTrailingOn
+                    }
                     value={this.state.pricePercentage}
                     isValid={this.props.validateField(
                       true,
@@ -580,6 +584,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
         ...props.derivedState,
       }
     }
+    return null
   }
 
   render() {
@@ -880,6 +885,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
         ...props.derivedState,
       }
     }
+    return null
   }
 
   render() {
@@ -955,12 +961,9 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                   this.setState({ hedgePrice: e.target.value })
                 }}
               />
-              <Input
+              <Select
                 width={'18%'}
-                symbol={'X   '}
-                type="text"
-                pattern="[0-9]+([\.,][0-9]+)?"
-                list="leverageOptions"
+                symbol={'LVRG.'}
                 value={this.state.hedgeIncrease}
                 showErrors={true}
                 isValid={this.props.validateField(
@@ -970,16 +973,14 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                 onChange={(e) => {
                   this.setState({ hedgeIncrease: e.target.value })
                 }}
-              />
-
-              <datalist id="leverageOptions">
-                <option value="1" />
-                <option value="25" />
-                <option value="50" />
-                <option value="75" />
-                <option value="100" />
-                <option value="125" />
-              </datalist>
+              >
+                <option>1</option>
+                <option>25</option>
+                <option>50</option>
+                <option>75</option>
+                <option>100</option>
+                <option>125</option>
+              </Select>
             </FormInputContainer>
           </InputRowContainer>
           <InputRowContainer padding={'2rem 0 0 0'}>
@@ -1025,17 +1026,20 @@ export class EditEntryOrderPopup extends React.Component<
         ...props.derivedState,
       }
     }
+    return null
   }
 
   render() {
     const {
       open,
       pair,
-      maxAmount,
+      funds,
+      leverage,
       transformProperties,
       handleClose,
       updateState,
       validate,
+      marketType,
     } = this.props
 
     const {
@@ -1047,6 +1051,14 @@ export class EditEntryOrderPopup extends React.Component<
       isTrailingOn,
       deviationPercentage,
     } = this.state
+
+    let maxAmount = 0
+
+    if (marketType === 0) {
+      maxAmount = side === 'buy' ? funds[1].quantity : funds[0].quantity
+    } else if (marketType === 1) {
+      maxAmount = funds[1].quantity * leverage
+    }
 
     return (
       <Dialog
@@ -1081,6 +1093,32 @@ export class EditEntryOrderPopup extends React.Component<
             secondHalfStyleProperties={RedSwitcherStyles}
             firstHalfIsActive={side === 'buy'}
             changeHalf={() => {
+              if (marketType === 0) {
+                const newSide = getSecondValueFromFirst(side)
+                const amountPercentage =
+                  side === 'buy' || marketType === 1
+                    ? total / (maxAmount / 100)
+                    : amount / (maxAmount / 100)
+
+                const newMaxAmount =
+                  newSide === 'buy' ? funds[1].quantity : funds[0].quantity
+
+                const newAmount =
+                  newSide === 'buy'
+                    ? (
+                        ((amountPercentage / 100) * newMaxAmount) /
+                        price
+                      ).toFixed(8)
+                    : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+
+                const newTotal = newAmount * price
+
+                this.setState({
+                  amount: newAmount,
+                  total: newTotal,
+                })
+              }
+
               this.setState((prev) => ({
                 side: getSecondValueFromFirst(prev.side),
               }))
@@ -1202,7 +1240,10 @@ export class EditEntryOrderPopup extends React.Component<
             <InputRowContainer>
               <FormInputContainer title={'amount'}>
                 <Input
-                  type={'number'}
+                  type={'text'}
+                  pattern={
+                    marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                  }
                   symbol={pair[0]}
                   value={amount}
                   showErrors={true}
@@ -1222,7 +1263,7 @@ export class EditEntryOrderPopup extends React.Component<
             <InputRowContainer>
               <BlueSlider
                 value={
-                  side === 'buy'
+                  side === 'buy' || marketType === 1
                     ? total / (maxAmount / 100)
                     : amount / (maxAmount / 100)
                 }
@@ -1232,12 +1273,25 @@ export class EditEntryOrderPopup extends React.Component<
                 }}
                 onChange={(value) => {
                   const newValue = (maxAmount / 100) * value
-                  const newAmount = side === 'buy' ? newValue / price : newValue
-                  const newTotal = side === 'buy' ? newValue : newValue * price
+
+                  const newAmount =
+                    side === 'buy' || marketType === 1
+                      ? newValue / price
+                      : newValue
+
+                  const newTotal =
+                    side === 'buy' || marketType === 1
+                      ? newValue
+                      : newValue * price
+
+                  const fixedAmount =
+                    marketType === 0
+                      ? newAmount.toFixed(8)
+                      : newAmount.toFixed(3)
 
                   this.setState({
-                    total: newTotal.toFixed(8),
-                    amount: newAmount.toFixed(8),
+                    total: +newTotal.toFixed(8),
+                    amount: +fixedAmount,
                   })
                 }}
               />

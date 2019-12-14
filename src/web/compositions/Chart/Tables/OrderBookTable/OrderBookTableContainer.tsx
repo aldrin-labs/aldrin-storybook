@@ -72,7 +72,11 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             alignItems: 'center',
           }}
         >
-          <span>Orderbook</span>
+          <span
+            style={{ width: '40%', whiteSpace: 'pre-line', textAlign: 'left' }}
+          >
+            Order book
+          </span>
           <ModesContainer>
             <SvgMode
               src={SortByBoth}

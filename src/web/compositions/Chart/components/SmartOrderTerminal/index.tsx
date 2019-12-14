@@ -63,6 +63,7 @@ import {
   TargetTitle,
   TargetValue,
   BluredBackground,
+  SwitcherContainer,
 } from './styles'
 
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
@@ -81,7 +82,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         isHedgeOn: false,
         hedgePrice: 0,
         // X20,
-        hedgeIncrease: '',
+        hedgeIncrease: 1,
         hedgeSide: 'short',
       },
       trailing: {
@@ -283,8 +284,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       showConfirmationPopup,
       editPopup,
     } = this.state
-    const maxAmount =
-      entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
+
+    let maxAmount = 0
+
+    if (marketType === 0) {
+      maxAmount =
+        entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
+    } else if (marketType === 1) {
+      maxAmount = funds[1].quantity * entryPoint.order.leverage
+    }
 
     return (
       <>
@@ -419,6 +427,43 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 secondHalfStyleProperties={RedSwitcherStyles}
                 firstHalfIsActive={entryPoint.order.side === 'buy'}
                 changeHalf={() => {
+                  if (marketType === 0) {
+                    const newSide = getSecondValueFromFirst(
+                      entryPoint.order.side
+                    )
+                    const amountPercentage =
+                      entryPoint.order.side === 'buy' || marketType === 1
+                        ? entryPoint.order.total / (maxAmount / 100)
+                        : entryPoint.order.amount / (maxAmount / 100)
+
+                    const newMaxAmount =
+                      newSide === 'buy' ? funds[1].quantity : funds[0].quantity
+
+                    const amount =
+                      newSide === 'buy'
+                        ? (
+                            ((amountPercentage / 100) * newMaxAmount) /
+                            entryPoint.order.price
+                          ).toFixed(8)
+                        : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+
+                    const total = amount * entryPoint.order.price
+
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'amount',
+                      amount
+                    )
+
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'total',
+                      total
+                    )
+                  }
+
                   this.updateSubBlockValue(
                     'entryPoint',
                     'order',
@@ -460,7 +505,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   justify="flex-start"
                   padding={'.8rem 0 1.2rem 0'}
                 >
-                  <div>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="entryPointTrailingOn"
                       checked={entryPoint.trailing.isTrailingOn}
@@ -493,8 +538,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         {entryPoint.order.side}
                       </span>
                     </HeaderLabel>
-                  </div>
-                  <div>
+                  </SwitcherContainer>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="isHedgeOn"
                       checked={entryPoint.order.isHedgeOn}
@@ -508,7 +553,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     />
                     <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
-                  </div>
+                  </SwitcherContainer>
                 </InputRowContainer>
 
                 <InputRowContainer>
@@ -603,7 +648,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 <InputRowContainer>
                   <FormInputContainer title={'amount'}>
                     <Input
-                      type={'number'}
+                      type={'text'}
+                      pattern={
+                        marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                      }
                       symbol={pair[0]}
                       value={entryPoint.order.amount}
                       showErrors={showErrors}
@@ -613,12 +661,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )}
                       onChange={(e) => {
                         const newTotal = e.target.value * entryPoint.order.price
+                        const newAmount =
+                          marketType === 0 ? e.target.value : e.target.value
 
                         this.updateSubBlockValue(
                           'entryPoint',
                           'order',
                           'amount',
-                          e.target.value
+                          newAmount
                         )
 
                         this.updateSubBlockValue(
@@ -635,7 +685,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 <InputRowContainer>
                   <BlueSlider
                     value={
-                      entryPoint.order.side === 'buy'
+                      entryPoint.order.side === 'buy' || marketType === 1
                         ? entryPoint.order.total / (maxAmount / 100)
                         : entryPoint.order.amount / (maxAmount / 100)
                     }
@@ -647,20 +697,25 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       const newValue = (maxAmount / 100) * value
 
                       const newAmount =
-                        entryPoint.order.side === 'buy'
+                        entryPoint.order.side === 'buy' || marketType === 1
                           ? newValue / entryPoint.order.price
                           : newValue
 
                       const newTotal =
-                        entryPoint.order.side === 'buy'
+                        entryPoint.order.side === 'buy' || marketType === 1
                           ? newValue
                           : newValue * entryPoint.order.price
+
+                      const fixedAmount =
+                        marketType === 0
+                          ? newAmount.toFixed(8)
+                          : newAmount.toFixed(3)
 
                       this.updateSubBlockValue(
                         'entryPoint',
                         'order',
                         'amount',
-                        newAmount.toFixed(8)
+                        fixedAmount
                       )
 
                       this.updateSubBlockValue(
@@ -744,12 +799,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           )
                         }}
                       />
-                      <Input
+                      <Select
                         width={'18%'}
-                        symbol={'X   '}
-                        type="text"
-                        pattern="[0-9]+([\.,][0-9]+)?"
-                        list="leverageOptions"
+                        symbol={'LVRG.'}
                         value={entryPoint.order.hedgeIncrease}
                         showErrors={showErrors}
                         isValid={this.validateField(
@@ -764,16 +816,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             e.target.value
                           )
                         }}
-                      />
-
-                      <datalist id="leverageOptions">
-                        <option value="1" />
-                        <option value="25" />
-                        <option value="50" />
-                        <option value="75" />
-                        <option value="100" />
-                        <option value="125" />
-                      </datalist>
+                      >
+                        <option>1</option>
+                        <option>25</option>
+                        <option>50</option>
+                        <option>75</option>
+                        <option>100</option>
+                        <option>125</option>
+                      </Select>
                     </FormInputContainer>
                   </InputRowContainer>
                 )}
@@ -836,7 +886,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   justify="flex-start"
                   padding={'.8rem 0 1.2rem 0'}
                 >
-                  <div>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="takeProfitTrailingOn"
                       checked={takeProfit.trailingTAP.isTrailingOn}
@@ -861,8 +911,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <HeaderLabel htmlFor="takeProfitTrailingOn">
                       trailing <span style={{ color: '#29AC80' }}>t-a-p</span>
                     </HeaderLabel>
-                  </div>
-                  <div>
+                  </SwitcherContainer>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="isSplitTargetsOn"
                       checked={takeProfit.splitTargets.isSplitTargetsOn}
@@ -885,8 +935,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <HeaderLabel htmlFor="isSplitTargetsOn">
                       split targets
                     </HeaderLabel>
-                  </div>
-                  <div>
+                  </SwitcherContainer>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="takeProfitTimeout"
                       checked={takeProfit.timeout.isTimeoutOn}
@@ -902,7 +952,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <HeaderLabel htmlFor="takeProfitTimeout">
                       timeout
                     </HeaderLabel>
-                  </div>
+                  </SwitcherContainer>
                 </InputRowContainer>
 
                 {!takeProfit.trailingTAP.isTrailingOn && (
@@ -1263,7 +1313,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               )}
             </TerminalBlock>
             {/* STOP LOSS */}
-            <TerminalBlock width={'calc(31% + 1%)'} borderRight="0">
+            <TerminalBlock
+              width={'calc(31% + 1%)'}
+              borderRight="0"
+              style={{ overflow: 'hidden' }}
+            >
               <InputRowContainer justify="center">
                 <CustomSwitcher
                   firstHalfText={'limit'}
@@ -1287,7 +1341,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   justify="flex-start"
                   padding={'.8rem 0 1.2rem 0'}
                 >
-                  <div>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="stopLossTimeout"
                       checked={stopLoss.timeout.isTimeoutOn}
@@ -1301,8 +1355,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     />
                     <HeaderLabel htmlFor="stopLossTimeout">timeout</HeaderLabel>
-                  </div>
-                  <div>
+                  </SwitcherContainer>
+                  <SwitcherContainer>
                     <GreenSwitcher
                       id="forcedStop"
                       checked={stopLoss.forcedStop.isForcedStopOn}
@@ -1318,7 +1372,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <HeaderLabel htmlFor="forcedStop">
                       forced <span style={{ color: '#DD6956' }}>stop</span>
                     </HeaderLabel>
-                  </div>
+                  </SwitcherContainer>
                 </InputRowContainer>
 
                 <InputRowContainer padding={'0 0 1.6rem 0'}>
@@ -1626,7 +1680,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             <EditEntryOrderPopup
               open={editPopup === 'entryOrder'}
               pair={pair}
-              maxAmount={maxAmount}
+              marketType={marketType}
+              leverage={entryPoint.order.leverage}
+              funds={funds}
               transformProperties={transformEntryOrderProperties}
               handleClose={() => this.setState({ editPopup: null })}
               updateState={(entryOrderProperties) =>
