@@ -5,9 +5,9 @@ export interface Key {
 }
 
 export interface IProps {
-  selectedKey: Key
-  keys: [Key]
-  selectKey: (value: Key) => any
+  value: { value: string, label: string }
+  options: { value: string, label: string }[]
+  handleChange: (option: { value: string, label: string }) => Promise<any>
   selectStyles: object | undefined
   isAccountSelect: boolean | undefined
 }
