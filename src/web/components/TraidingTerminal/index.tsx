@@ -171,6 +171,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       priceType,
       isSPOTMarket,
+      leverage,
       values: { amount, price, limit },
       setFieldTouched,
       errors,
@@ -188,8 +189,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType !== 'market' && limit !== null ? limit : price
 
     const total = toFixedTrunc(e.target.value, decimals[0]) * priceForCalculate
+    const newAmount = isSPOTMarket ? e.target.value : e.target.value * leverage
 
-    this.setFormatted('amount', e.target.value, 0)
+    this.setFormatted('amount', newAmount, 0)
     setFieldTouched('amount', true)
 
     this.setFormatted('total', total, 1)
@@ -226,6 +228,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       byType,
       isSPOTMarket,
+      leverage,
     } = this.props
 
     const priceForCalculate =
@@ -241,20 +244,30 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', funds[1].quantity * value, 1)
       this.setFormatted(
         'amount',
-        isSPOTMarket ? baseQuantity : +Number(baseQuantity).toFixed(3),
+        isSPOTMarket
+          ? baseQuantity
+          : +Number(baseQuantity * leverage).toFixed(3),
         0
       )
     } else {
+      const necessaryFund = isSPOTMarket ? funds[0] : funds[1]
+
       const quoteQuantity = getQuoteQuantityFromBase({
-        baseQuantity: funds[0].quantity,
+        baseQuantity: necessaryFund.quantity,
         price: priceForCalculate,
         percentage: value,
       })
 
-      const amount = funds[0].quantity * value
+      const amount = isSPOTMarket
+        ? necessaryFund.quantity * value
+        : (necessaryFund.quantity / price) * value
 
       this.setFormatted('total', quoteQuantity, 1)
-      this.setFormatted('amount', isSPOTMarket ? amount : +amount.toFixed(3), 0)
+      this.setFormatted(
+        'amount',
+        isSPOTMarket ? amount : (amount * leverage).toFixed(3),
+        0
+      )
     }
 
     setFieldTouched('amount', true)
@@ -265,6 +278,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   render() {
     const {
       pair,
+      leverage,
       percentage,
       changePercentage,
       operationType,
@@ -285,17 +299,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         <GridContainer isBuyType={isBuyType} key={pair}>
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
             <div style={{ margin: 'auto 0', width: '100%' }}>
-              {priceType === 'stop-limit' ? (
-                <InputRowContainer key={'stop-limit'}>
-                  <TradeInputContainer
-                    title={'Stop'}
-                    coin={pair[1]}
-                    value={values.stop || ''}
-                    onChange={this.onStopChange}
-                  />
-                </InputRowContainer>
-              ) : null}
-
               {priceType !== 'market' ? (
                 <InputRowContainer key={'limit-price'}>
                   <TradeInputContainer
@@ -303,6 +306,17 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     value={values.limit || ''}
                     onChange={this.onLimitChange}
                     coin={pair[1]}
+                  />
+                </InputRowContainer>
+              ) : null}
+
+              {priceType === 'stop-limit' ? (
+                <InputRowContainer key={'stop-limit'}>
+                  <TradeInputContainer
+                    title={'Stop'}
+                    coin={pair[1]}
+                    value={values.stop || ''}
+                    onChange={this.onStopChange}
                   />
                 </InputRowContainer>
               ) : null}

@@ -1306,7 +1306,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         this.toggleBlock('takeProfit', 'isTakeProfitOn')
                       }
                     >
-                      Enable take a profit
+                      show take a profit
                     </SendButton>
                   </div>
                 </BluredBackground>
@@ -1611,7 +1611,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         this.toggleBlock('stopLoss', 'isStopLossOn')
                       }
                     >
-                      Enable stop loss
+                      show stop loss
                     </SendButton>
                   </div>
                 </BluredBackground>

@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react'
 import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
+import { client } from '@core/graphql/apolloClient'
+import QueryRenderer from '@core/components/QueryRenderer'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -8,16 +11,20 @@ import {
   getStopLossFromStrategy,
   transformTakeProfitProperties,
   transformStopLossProperties,
+  transformEntryOrderProperties,
   validateStopLoss,
   validateTakeProfit,
+  validateEntryOrder,
   getTakeProfitArgsForUpdate,
   getStopLossArgsForUpdate,
+  getEntryOrderArgsForUpdate,
+  getEntryOrderFromStrategy,
 } from '@core/utils/chartPageUtils'
 
-import QueryRenderer from '@core/components/QueryRenderer'
 import {
   EditTakeProfitPopup,
   EditStopLossPopup,
+  EditEntryOrderPopup,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/EditOrderPopups'
 import { TableWithSort } from '@sb/components'
 
@@ -29,24 +36,26 @@ import {
 } from '@sb/components/TradingTable/TradingTable.utils'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { updateEntryPointStrategy } from '@core/graphql/mutations/chart/updateEntryPointStrategy'
 import { updateStopLossStrategy } from '@core/graphql/mutations/chart/updateStopLossStrategy'
 import { updateTakeProfitStrategy } from '@core/graphql/mutations/chart/updateTakeProfitStrategy'
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
 import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 
+import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
-
-import { cancelOrderStatus } from '@core/utils/tradingUtils'
-import { compose } from 'recompose'
+import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 
 @withTheme
-class ActiveTradesTable extends React.PureComponent {
+class ActiveTradesTable extends React.Component {
   state = {
     editTrade: null,
     selectedTrade: {},
     activeStrategiesProcessedData: [],
+    marketPrice: 0,
   }
 
   unsubscribeFunction: null | Function = null
@@ -71,7 +80,6 @@ class ActiveTradesTable extends React.PureComponent {
   }
 
   editTrade = (block, selectedTrade) => {
-    console.log('selectedTrade', selectedTrade)
     this.setState({ editTrade: block, selectedTrade })
   }
 
@@ -111,25 +119,46 @@ class ActiveTradesTable extends React.PureComponent {
 
   componentDidMount() {
     const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
+    const that = this
 
-    let price
+    this.subscription = client
+      .subscribe({
+        query: MARKET_TICKERS,
+        variables: {
+          symbol: this.props.currencyPair,
+          exchange: this.props.exchange,
+          marketType: String(this.props.marketType),
+        },
+      })
+      .subscribe({
+        next: (data) => {
+          if (data && data.data && data.data.listenMarketTickers) {
+            const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
 
-    try {
-      if (
-        this.props.marketTickers &&
-        this.props.marketTickers.marketTickers &&
-        this.props.marketTickers.marketTickers.length > 0
-      ) {
-        const data = JSON.parse(this.props.marketTickers.marketTickers[0])
-        price = data[4]
-      }
-    } catch (e) {}
+            const activeStrategiesProcessedData = combineActiveTradesTable(
+              that.props.getActiveStrategiesQuery.getActiveStrategies,
+              that.cancelOrderWithStatus,
+              that.editTrade,
+              theme,
+              marketPrice,
+              that.props.marketType
+            )
+
+            that.setState({
+              activeStrategiesProcessedData,
+              marketPrice,
+            })
+          }
+        },
+      })
+
     const activeStrategiesProcessedData = combineActiveTradesTable(
       getActiveStrategiesQuery.getActiveStrategies,
-      this.cancelOrderWithStatus,
-      this.editTrade,
+      that.cancelOrderWithStatus,
+      that.editTrade,
       theme,
-      price
+      this.state.marketPrice,
+      this.props.marketType
     )
 
     this.setState({
@@ -144,28 +173,18 @@ class ActiveTradesTable extends React.PureComponent {
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
     }
+
+    this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps) {
-    let price
-
-    try {
-      if (
-        this.props.marketTickers &&
-        this.props.marketTickers.marketTickers &&
-        this.props.marketTickers.marketTickers.length > 0
-      ) {
-        const data = JSON.parse(this.props.marketTickers.marketTickers[0])
-        price = data[4]
-      }
-    } catch (e) {}
-
     const activeStrategiesProcessedData = combineActiveTradesTable(
       nextProps.getActiveStrategiesQuery.getActiveStrategies,
       this.cancelOrderWithStatus,
       this.editTrade,
       nextProps.theme,
-      price
+      this.state.marketPrice,
+      this.props.marketType
     )
 
     this.setState({
@@ -179,22 +198,108 @@ class ActiveTradesTable extends React.PureComponent {
       editTrade,
       selectedTrade,
     } = this.state
+
     const {
       tab,
+      currencyPair,
       handleTabChange,
       show,
       marketType,
+      updateEntryPointStrategyMutation,
       updateStopLossStrategyMutation,
       updateTakeProfitStrategyMutation,
       showCancelResult,
+      getFundsQuery,
     } = this.props
 
     if (!show) {
       return null
     }
 
+    const pair = currencyPair.split('_')
+
+    const funds = pair.map((coin, index) => {
+      const asset = getFundsQuery.getFunds.find(
+        (el) => el.asset.symbol === pair[index]
+      )
+      const quantity = asset !== undefined ? asset.free : 0
+      const value = asset !== undefined ? asset.free * asset.asset.priceUSD : 0
+
+      return { quantity, value }
+    })
+
+    const [
+      USDTFuturesFund = { quantity: 0, value: 0 },
+    ] = getFundsQuery.getFunds
+      .filter((el) => el.assetType === 1 && el.asset.symbol === 'USDT')
+      .map((el) => ({ quantity: el.quantity, value: el.quantity }))
+
+    const processedFunds =
+      marketType === 0 ? funds : [funds[0], USDTFuturesFund]
+
+    console.log('processedFunds', processedFunds)
+
     return (
       <>
+        {editTrade === 'entryOrder' &&
+          selectedTrade &&
+          selectedTrade.conditions && (
+            <EditEntryOrderPopup
+              funds={processedFunds}
+              open={editTrade === 'entryOrder'}
+              pair={selectedTrade.conditions.pair}
+              leverage={selectedTrade.conditions.leverage}
+              marketType={selectedTrade.conditions.marketType}
+              handleClose={() => this.setState({ editTrade: null })}
+              updateState={async (entryOrderProperties) => {
+                this.setState({ editTrade: null })
+
+                const entryOrder = getEntryOrderArgsForUpdate(
+                  entryOrderProperties
+                )
+
+                // TODO: move to separate function
+                let result
+                try {
+                  result = await updateEntryPointStrategyMutation({
+                    variables: {
+                      input: {
+                        keyId: this.props.selectedKey.keyId,
+                        strategyId: selectedTrade._id,
+                        params: entryOrder,
+                      },
+                    },
+                  })
+                } catch (e) {
+                  result = {
+                    status: 'error',
+                    message: `${e}`,
+                  }
+                }
+
+                // TODO: move to utils
+                const statusResult =
+                  result &&
+                  result.data &&
+                  result.data.updateEntryPoint &&
+                  result.data.updateEntryPoint.enabled === true
+                    ? {
+                        status: 'success',
+                        message: 'Smart order edit successful',
+                      }
+                    : {
+                        status: 'error',
+                        message: 'Smart order edit failed',
+                      }
+
+                showCancelResult(statusResult)
+              }}
+              derivedState={getEntryOrderFromStrategy(selectedTrade)}
+              validate={validateEntryOrder}
+              transformProperties={transformEntryOrderProperties}
+              validateField={(v) => !!v}
+            />
+          )}
         {editTrade === 'takeProfit' &&
           selectedTrade &&
           selectedTrade.conditions && (
@@ -361,14 +466,14 @@ class ActiveTradesTable extends React.PureComponent {
 }
 
 const LastTradeWrapper = ({ ...props }) => {
-  let unsubscribe = undefined
+  let unsubscribe: undefined | Function = undefined
 
   useEffect(() => {
     unsubscribe && unsubscribe()
     unsubscribe = props.subscribeToMore()
 
     return () => {
-      unsubscribe()
+      unsubscribe && unsubscribe()
     }
   }, [props.marketType, props.exchange, props.currencyPair])
 
@@ -403,20 +508,18 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={LastTradeWrapper}
-      variables={{ symbol: props.currencyPair, exchange: props.exchange }}
       withOutSpinner={true}
       withTableLoader={true}
-      query={MARKET_QUERY}
-      name={`marketTickers`}
-      fetchPolicy="cache-only"
+      query={getFunds}
+      variables={{ fundsInput: { activeExchangeKey: props.selectedKey.keyId } }}
+      name={`getFundsQuery`}
+      fetchPolicy="network-only"
       subscriptionArgs={{
-        subscription: MARKET_TICKERS,
+        subscription: FUNDS,
         variables: {
-          symbol: props.currencyPair,
-          exchange: props.exchange,
-          marketType: String(props.marketType),
+          listenFundsInput: { activeExchangeKey: props.selectedKey.keyId },
         },
-        updateQueryFunction: updateTradeHistoryQuerryFunction,
+        updateQueryFunction: updateFundsQuerryFunction,
       }}
       {...props}
     />
@@ -426,6 +529,9 @@ const TableDataWrapper = ({ ...props }) => {
 export default compose(
   graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(updateStopLossStrategy, { name: 'updateStopLossStrategyMutation' }),
+  graphql(updateEntryPointStrategy, {
+    name: 'updateEntryPointStrategyMutation',
+  }),
   graphql(updateTakeProfitStrategy, {
     name: 'updateTakeProfitStrategyMutation',
   })
