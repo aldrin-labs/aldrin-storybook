@@ -18,6 +18,92 @@ const SubColumnValue = styled(InputTitle)`
   color: ${(props) => props.color || '#16253D'};
 `
 
+export const EntryOrderColumn = ({
+  price,
+  pair,
+  side,
+  order,
+  trailing,
+  amount,
+  total,
+  green,
+  red,
+  blue,
+  enableEdit,
+  editTrade,
+}: {
+  price: number
+  pair: string
+  side: string
+  order: string
+  trailing: boolean
+  amount: number
+  total: number
+  green: string
+  red: string
+  enableEdit: boolean
+  blue: {
+    first: string
+    second: string
+  }
+  editTrade: () => void
+}) => {
+  return (
+    <>
+      <div style={{ width: '100%' }}>
+        <SubColumnTitle style={{ width: '75%' }}>
+          <BtnCustom
+            disable={!enableEdit}
+            needMinWidth={false}
+            btnWidth="40%"
+            height="auto"
+            fontSize=".9rem"
+            padding=".1rem 0 0 0"
+            borderRadius=".8rem"
+            borderColor={blue.first}
+            btnColor={'#fff'}
+            backgroundColor={blue.second}
+            hoverBackground={blue.first}
+            transition={'all .4s ease-out'}
+            onClick={editTrade}
+          >
+            edit
+          </BtnCustom>
+        </SubColumnTitle>
+      </div>
+
+      <div>
+        <SubColumnTitle>pair</SubColumnTitle>
+        <SubColumnValue>{pair}</SubColumnValue>
+      </div>
+
+      <div>
+        <SubColumnTitle>side</SubColumnTitle>
+        <SubColumnValue color={side === 'buy' ? green : red}>
+          {side}/{order}
+        </SubColumnValue>
+      </div>
+
+      <div>
+        <SubColumnTitle>price</SubColumnTitle>
+        <SubColumnValue>
+          {trailing ? `Trailing ${trailing}%` : price}
+        </SubColumnValue>
+      </div>
+
+      <div>
+        <SubColumnTitle>amount</SubColumnTitle>
+        <SubColumnValue>{amount}</SubColumnValue>
+      </div>
+
+      <div>
+        <SubColumnTitle>total</SubColumnTitle>
+        <SubColumnValue>{total.toFixed(2)}</SubColumnValue>
+      </div>
+    </>
+  )
+}
+
 export const TakeProfitColumn = ({
   price,
   targets,
@@ -50,7 +136,7 @@ export const TakeProfitColumn = ({
         <SubColumnTitle style={{ width: '75%' }}>
           <BtnCustom
             needMinWidth={false}
-            btnWidth="75%"
+            btnWidth="40%"
             height="auto"
             fontSize=".9rem"
             padding=".1rem 0 0 0"
@@ -138,7 +224,7 @@ export const StopLossColumn = ({
         <SubColumnTitle style={{ width: '75%' }}>
           <BtnCustom
             needMinWidth={false}
-            btnWidth="75%"
+            btnWidth="40%"
             height="auto"
             fontSize=".9rem"
             padding=".1rem 0 0 0"
@@ -182,6 +268,43 @@ export const StopLossColumn = ({
         <SubColumnTitle>timeout</SubColumnTitle>
         <SubColumnValue>
           {timeoutLoss || '-'} / {timeoutLossable || '-'}
+        </SubColumnValue>
+      </div>
+    </>
+  )
+}
+
+export const StatusColumn = ({
+  status,
+  profitAmount,
+  profitPercentage,
+  green,
+  red,
+  blue,
+}: {
+  status: string[]
+  profitAmount: number
+  profitPercentage: number
+  green: string
+  red: string
+  blue: {
+    first: string
+    second: string
+  }
+}) => {
+  return (
+    <>
+      <div>
+        <SubColumnTitle>status</SubColumnTitle>
+        <SubColumnValue color={status[1]}>{status[0]}</SubColumnValue>
+      </div>
+
+      <div>
+        <SubColumnTitle>pnl (roe)</SubColumnTitle>
+        <SubColumnValue color={profitPercentage > 0 ? green : red}>
+          {profitPercentage && profitAmount
+            ? `${+profitAmount.toFixed(8)} / ${+profitPercentage.toFixed(2)}%`
+            : '-'}
         </SubColumnValue>
       </div>
     </>

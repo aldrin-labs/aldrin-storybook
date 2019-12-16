@@ -16,13 +16,13 @@ const SubRow = ({}) => {
         alignItems: 'center',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      {/* <div style={{ display: 'flex', alignItems: 'center' }}>
         <Typography>enable edit:</Typography>
         <GreenSwitcher
           checked={enableEdit}
           handleToggle={() => updateEnableEdit(!enableEdit)}
         />
-      </div>
+      </div> */}
       <div
         style={{
           display: 'flex',

@@ -1060,6 +1060,8 @@ export class EditEntryOrderPopup extends React.Component<
       maxAmount = funds[1].quantity * leverage
     }
 
+    console.log('max', maxAmount)
+
     return (
       <Dialog
         PaperComponent={StyledPaper}

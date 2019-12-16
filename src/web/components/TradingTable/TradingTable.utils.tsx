@@ -21,7 +21,12 @@ import {
 } from '@sb/components/TradingTable/TradingTable.mocks'
 
 import SubRow from './PositionsTable/SubRow'
-import { StopLossColumn, TakeProfitColumn } from './ActiveTrades/Columns'
+import {
+  EntryOrderColumn,
+  StopLossColumn,
+  StatusColumn,
+  TakeProfitColumn,
+} from './ActiveTrades/Columns'
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
@@ -110,16 +115,14 @@ export const combinePositionsTable = (
   ) => Promise<any>,
   theme: Theme
 ) => {
-
-
   const positionsMockedData = {
-    "_id": "5df140cfcaf898d38cf277fd",
-    "symbol": "BTC_USDT",
-    "entryPrice": 1,
-    "accRealized": 40,
-    "markPrice": 888,
-    "positionAmt": 20,
-    "unrealizedProfit": 30,
+    _id: '5df140cfcaf898d38cf277fd',
+    symbol: 'BTC_USDT',
+    entryPrice: 1,
+    accRealized: 40,
+    markPrice: 888,
+    positionAmt: 20,
+    unrealizedProfit: 30,
   }
 
   // const positions: OrderType[] = []
@@ -148,9 +151,8 @@ export const combinePositionsTable = (
   let positions = []
 
   const processedPositionsData = data
-  .filter((el) => el.positionAmt !== 0)
-  .map(
-    (el: OrderType, i: number) => {
+    .filter((el) => el.positionAmt !== 0)
+    .map((el: OrderType, i: number) => {
       const {
         symbol,
         entryPrice,
@@ -160,7 +162,7 @@ export const combinePositionsTable = (
         liquidationPrice,
         positionAmt,
         leverage = '-',
-        // origQty = '-',        
+        // origQty = '-',
         type = '-',
         // side,
         // marketPrice,
@@ -280,8 +282,7 @@ export const combinePositionsTable = (
           },
         },
       ]
-    }
-  )
+    })
 
   processedPositionsData.forEach((position) => {
     position.forEach((obj) => positions.push(obj))
@@ -296,7 +297,7 @@ const getStatusFromState = (
   if (state === 'End') {
     return ['Closed', '#DD6956']
   } else if (state === 'Cancel') {
-    return ['Cancellled', '#DD6956']
+    return ['Cancelled', '#DD6956']
   } else if (state === 'WaitForEntry' || state === '-') {
     return ['Waiting', '#5C8CEA']
   } else {
@@ -310,7 +311,8 @@ export const combineActiveTradesTable = (
   cancelOrderFunc: (strategyId: string) => Promise<any>,
   editTrade: (block: string, trade: any) => void,
   theme: Theme,
-  currentPrice
+  currentPrice: number,
+  marketType: number
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -320,11 +322,20 @@ export const combineActiveTradesTable = (
 
   const processedActiveTradesData = data
     .filter((el) => el.enabled)
+    .filter((el) => el.conditions.marketType === marketType)
     .map((el: OrderType, i: number) => {
       const {
         conditions: {
           pair,
-          entryOrder: { side, orderType, amount },
+          marketType,
+          entryOrder: {
+            side,
+            orderType,
+            amount,
+            entryDeviation,
+            price,
+            activatePrice,
+          },
           exitLevels,
           stopLoss,
           stopLossType,
@@ -336,6 +347,7 @@ export const combineActiveTradesTable = (
           timeoutWhenProfit,
         } = {
           pair: '-',
+          marketType: 0,
           entryOrder: {
             side: '-',
             orderType: '-',
@@ -357,75 +369,40 @@ export const combineActiveTradesTable = (
         entryPrice: 0,
         state: '-',
       }
-
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
       const pairArr = pair.split('_')
-      const profit = (currentPrice / entryPrice - 1) * 100
+
+      const entryOrderPrice = !!entryPrice
+        ? entryPrice
+        : !!entryDeviation
+        ? activatePrice + (activatePrice / 100) * entryDeviation
+        : price
+
+      const profitPercentage = (currentPrice / entryOrderPrice - 1) * 100
+      const profitAmount = amount * (profitPercentage / 100)
 
       return {
-        pair: {
-          render: (
-            <div>
-              <span style={{ display: 'block' }}>{pairArr[0]}</span>
-              <span>{pairArr[1]}</span>
-            </div>
-          ),
-          contentToSort: pair,
-        },
-        // type: type,
-        side: {
-          render: (
-            <div style={{ textTransform: 'uppercase' }}>
-              <span
-                style={{
-                  display: 'block',
-                  color: side === 'buy' ? green.new : red.new,
-                }}
-              >
-                {side}
-              </span>
-              <span>{orderType}</span>
-            </div>
-          ),
-          style: {
-            color: isBuyTypeOrder(side) ? green.new : red.new,
-          },
-        },
-        status: {
-          render: (
-            <span style={{ color: getStatusFromState(state)[1] }}>
-              {getStatusFromState(state)[0]}
-            </span>
-          ),
-          contentToSort: status,
-        },
-        profit: {
-          render:
-            getStatusFromState(state)[0] !== 'Waiting' ? (
-              <span style={{ color: profit > 0 ? green.new : red.new }}>
-                {profit.toFixed(2)} %
-              </span>
-            ) : (
-              '-'
-            ),
-          contentToSort: profit,
-        },
         // TODO: We should change "total" to total param from backend when it will be ready
-        amount: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${stripDigitPlaces(amount, 8)} ${pairArr[0]}`,
-          contentToSort: amount,
-        },
-        total: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${+stripDigitPlaces(amount * entryPrice, 8)} ${pairArr[1]}`,
-          contentToSort: amount * entryPrice,
-        },
-        entryPrice: {
-          render: `${stripDigitPlaces(entryPrice, 8)} ${pairArr[1]}`,
-          style: { textAlign: 'left', whiteSpace: 'nowrap' },
-          contentToSort: entryPrice,
+        entryOrder: {
+          render: (
+            <EntryOrderColumn
+              enableEdit={!!entryPrice}
+              pair={`${pairArr[0]}/${pairArr[1]}`}
+              side={side}
+              price={entryOrderPrice}
+              order={orderType}
+              amount={
+                marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
+              }
+              total={entryOrderPrice * amount}
+              trailing={!entryPrice && entryDeviation}
+              red={red.new}
+              green={green.new}
+              blue={blue}
+              editTrade={() => editTrade('entryOrder', el)}
+            />
+          ),
         },
         takeProfit: {
           render: (
@@ -459,6 +436,18 @@ export const combineActiveTradesTable = (
             />
           ),
         },
+        status: {
+          render: (
+            <StatusColumn
+              status={getStatusFromState(state)}
+              profitPercentage={profitPercentage}
+              profitAmount={profitAmount}
+              red={red.new}
+              green={green.new}
+              blue={blue}
+            />
+          ),
+        },
         close: {
           render: (
             <BtnCustom
@@ -474,7 +463,7 @@ export const combineActiveTradesTable = (
               transition={'all .4s ease-out'}
               onClick={() => cancelOrderFunc(el._id)}
             >
-              market
+              close
             </BtnCustom>
           ),
         },
@@ -998,7 +987,10 @@ export const updateActivePositionsQuerryFunction = (
   )
 
   console.log('prev.getActivePositions', prev.getActivePositions)
-  console.log('subscriptionData.data.listenFuturesPositions', subscriptionData.data.listenFuturesPositions)
+  console.log(
+    'subscriptionData.data.listenFuturesPositions',
+    subscriptionData.data.listenFuturesPositions
+  )
   console.log('positionHasTheSameIndex', positionHasTheSameIndex)
 
   const positionAlreadyExists = positionHasTheSameIndex !== -1
