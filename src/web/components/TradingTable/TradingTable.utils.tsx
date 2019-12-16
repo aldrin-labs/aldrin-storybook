@@ -110,44 +110,71 @@ export const combinePositionsTable = (
   ) => Promise<any>,
   theme: Theme
 ) => {
-  const positions: OrderType[] = []
-  const positionsData = [
-    {
-      symbol: 'BTC_USDT',
-      type: 'market',
-      side: 'buy',
-      leverage: 20,
-      price: 8704.01,
-      entryPrice: 8604.01,
-      marketPrice: 8504.01,
-      liqPrice: 8404.01,
-      realizedPnl: 3,
-      info: {
-        origQty: 0.05,
-      },
-    },
-  ]
 
-  if (!positionsData && !Array.isArray(positionsData)) {
+
+  const positionsMockedData = {
+    "_id": "5df140cfcaf898d38cf277fd",
+    "symbol": "BTC_USDT",
+    "entryPrice": 1,
+    "accRealized": 40,
+    "markPrice": 888,
+    "positionAmt": 20,
+    "unrealizedProfit": 30,
+  }
+
+  // const positions: OrderType[] = []
+  // const positionsData = [
+  //   {
+  //     symbol: 'BTC_USDT',
+  //     type: 'market',
+  //     side: 'buy',
+  //     leverage: 20,
+  //     price: 8704.01,
+  //     entryPrice: 8604.01,
+  //     marketPrice: 8504.01,
+  //     liqPrice: 8404.01,
+  //     realizedPnl: 3,
+  //     info: {
+  //       origQty: 0.05,
+  //     },
+  //   },
+  // ]
+
+  if (!data && !Array.isArray(data)) {
     return []
   }
 
   const { green, red } = theme.palette
+  let positions = []
 
-  const processedPositionsData = positionsData.map(
+  const processedPositionsData = data
+  .filter((el) => el.positionAmt !== 0)
+  .map(
     (el: OrderType, i: number) => {
       const {
         symbol,
-        type,
-        side,
         entryPrice,
-        marketPrice,
-        liqPrice,
-        leverage,
-        realizedPnl,
-        info: { origQty = '0' },
+        markPrice,
+        unrealizedProfit,
+        accRealized,
+        liquidationPrice,
+        positionAmt,
+        leverage = '-',
+        // origQty = '-',        
+        type = '-',
+        // side,
+        // marketPrice,
+        // liqPrice,
+        // realizedPnl,
+        // info: { origQty = '-' },
       } = el
-      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+
+      const realizedPnl = accRealized
+      const marketPrice = markPrice
+      const liqPrice = liquidationPrice
+      const side = positionAmt < 0 ? 'sell short' : 'buy long'
+      const origQty = positionAmt
+
       const pair = symbol.split('_')
 
       return [
@@ -173,7 +200,7 @@ export const combinePositionsTable = (
                   style={{
                     display: 'block',
                     textTransform: 'uppercase',
-                    color: side === 'buy' ? green.new : red.new,
+                    color: side === 'buy long' ? green.new : red.new,
                   }}
                 >
                   {side}
@@ -189,7 +216,7 @@ export const combinePositionsTable = (
               </div>
             ),
             style: {
-              color: isBuyTypeOrder(side) ? green.new : red.new,
+              color: side === 'buy long' ? green.new : red.new,
             },
           },
           size: {
@@ -944,6 +971,51 @@ export const updateActiveStrategiesQuerryFunction = (
     prev.getActiveStrategies = [
       { ...subscriptionData.data.listenActiveStrategies },
       ...prev.getActiveStrategies,
+    ]
+
+    result = { ...prev }
+  }
+
+  return result
+}
+
+export const updateActivePositionsQuerryFunction = (
+  previous,
+  { subscriptionData }
+) => {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
+
+  if (isEmptySubscription) {
+    return previous
+  }
+
+  const prev = cloneDeep(previous)
+
+  const positionHasTheSameIndex = prev.getActivePositions.findIndex(
+    (el: TradeType) =>
+      el._id === subscriptionData.data.listenFuturesPositions._id
+  )
+
+  console.log('prev.getActivePositions', prev.getActivePositions)
+  console.log('subscriptionData.data.listenFuturesPositions', subscriptionData.data.listenFuturesPositions)
+  console.log('positionHasTheSameIndex', positionHasTheSameIndex)
+
+  const positionAlreadyExists = positionHasTheSameIndex !== -1
+
+  let result
+
+  if (positionAlreadyExists) {
+    prev.getActivePositions[positionHasTheSameIndex] = {
+      ...prev.getActivePositions[positionHasTheSameIndex],
+      ...subscriptionData.data.listenFuturesPositions,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getActivePositions = [
+      { ...subscriptionData.data.listenFuturesPositions },
+      ...prev.getActivePositions,
     ]
 
     result = { ...prev }
