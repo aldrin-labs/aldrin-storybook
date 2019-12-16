@@ -79,15 +79,24 @@ export const EntryOrderColumn = ({
 
       <div>
         <SubColumnTitle>side</SubColumnTitle>
-        <SubColumnValue color={side === 'buy' ? green : red}>
-          {side}/{order}
+        <SubColumnValue>
+          <span style={{ color: side === 'buy' ? green : red }}>{side}</span>/
+          {order}
         </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>price</SubColumnTitle>
         <SubColumnValue>
-          {trailing ? `Trailing ${trailing}%` : price}
+          {trailing ? (
+            <span>
+              Trailing <span style={{ color: green }}>{trailing}%</span>
+            </span>
+          ) : order === 'market' ? (
+            'market'
+          ) : (
+            price
+          )}
         </SubColumnValue>
       </div>
 
