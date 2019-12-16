@@ -41,7 +41,7 @@ class SimpleTabs extends React.Component {
     percentageBuy: 0,
     percentageSell: 0,
     leverage: 1,
-    reduceOnly: true,
+    reduceOnly: false,
     orderMode: 'TIF',
     TIFMode: 'GTC',
     trigger: 'last price',

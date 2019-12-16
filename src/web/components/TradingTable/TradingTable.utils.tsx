@@ -855,6 +855,10 @@ export const combineFundsTable = (
       asset: { symbol, priceBTC, priceUSD },
     } = el
 
+    if (!quantity || quantity === 0) {
+      return
+    }
+
     const btcValue = addMainSymbol(
       roundAndFormatNumber(quantity * priceBTC, 8, false),
       false
@@ -902,7 +906,7 @@ export const combineFundsTable = (
     }
   })
 
-  return processedFundsData
+  return processedFundsData.filter((el) => !!el)
 }
 
 // Update queries functions ->>
