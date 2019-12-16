@@ -169,6 +169,9 @@ class Chart extends React.Component<IProps, IState> {
     const {
       getChartDataQuery: {
         getMyProfile: { _id },
+        getTradingSettings: { selectedTradingKey } = {
+          selectedTradingKey: '',
+        },
         chart: {
           selectedKey,
           activeExchange,
@@ -219,7 +222,7 @@ class Chart extends React.Component<IProps, IState> {
             marketType={marketType}
             currencyPair={pair}
             themeMode={themeMode}
-            selectedKey={selectedKey}
+            selectedKey={selectedTradingKey ? { keyId: selectedTradingKey } : { keyId: '' }}
             activeExchange={activeExchange}
             terminalViewMode={terminalViewMode}
             updateTerminalViewMode={this.updateTerminalViewMode}
