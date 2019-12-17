@@ -33,6 +33,7 @@ import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
 import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
+import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
 import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
 
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
@@ -569,7 +570,8 @@ export default compose(
             },
             { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
             { query: getCurrentPortfolio },
-            { query: getAllUserKeys }
+            { query: getAllUserKeys },
+            { query: GET_TRADING_SETTINGS },
           ]
         : [],
     }),
