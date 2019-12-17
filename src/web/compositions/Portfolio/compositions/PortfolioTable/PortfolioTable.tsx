@@ -5,18 +5,23 @@ import { withTheme } from '@material-ui/styles'
 import { Loading } from '@sb/components/index'
 import { IProps, IState } from './PortfolioTable.types'
 
-import PortfolioMain from '@core/compositions/PortfolioMain'
+import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
+
+const PortfolioMain = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@core/compositions/PortfolioMain')
+)
 const PortfolioTableIndustries = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@core/compositions/PortfolioIndustry')
 )
-import Rebalance from '@core/compositions/PortfolioRebalance'
+const Rebalance = React.lazy(() =>
+  import(/* webpackPrefetch: true */ '@core/compositions/PortfolioRebalance')
+)
 const Optimization = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Optimization/Optimization')
 )
 const Correlation = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@sb/compositions/Correlation/Correlation')
 )
-import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
 const Social = React.lazy(() =>
   import(/* webpackPrefetch: true */ '@core/containers/Social/Social')
