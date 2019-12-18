@@ -195,6 +195,7 @@ export const DefaultView = (props: any) => {
             >
               <CustomCard style={{ overflow: 'hidden scroll' }}>
                 <TradingTable
+                  selectedKey={selectedKey}
                   showCancelResult={showCancelResult}
                   marketType={marketType}
                   exchange={exchange}

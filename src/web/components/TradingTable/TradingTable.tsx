@@ -35,9 +35,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   render() {
     const { tab } = this.state
     const {
-      getSelectedKeyQuery: {
-        chart: { selectedKey },
-      },
+      selectedKey,
       marketType,
       exchange,
       currencyPair
@@ -111,8 +109,4 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 
 export default compose(
   withErrorFallback,
-  queryRendererHoc({
-    query: getSelectedKey,
-    name: 'getSelectedKeyQuery',
-  })
 )(TradingTable)

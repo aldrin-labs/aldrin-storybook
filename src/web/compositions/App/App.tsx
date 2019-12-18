@@ -18,7 +18,7 @@ import Footer from '@sb/components/Footer'
 
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
-import { AppGridLayout } from './App.styles'
+import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/cssUtils'
 import 'react-dates/initialize'
@@ -60,6 +60,7 @@ const AppRaw = ({
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
+        <FontStyle/>
         <AppGridLayout
           showFooter={showFooter}
           isPNL={isPNL}
