@@ -57,6 +57,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       currencyPair,
       onButtonClick,
       setOrderbookAggregation,
+      updateTerminalPriceFromOrderbook,
       getOpenOrderHistoryQuery: { getOpenOrderHistory },
     } = this.props
     const { mode } = this.state
@@ -111,6 +112,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           aggregation={aggregation}
           onButtonClick={onButtonClick}
           openOrderHistory={getOpenOrderHistory}
+          currencyPair={currencyPair}
+          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
         />
 
@@ -120,6 +123,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           aggregation={aggregation}
           symbol={currencyPair}
           exchange={this.props.activeExchange.symbol}
+          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
         />
 
         <SpreadTable
@@ -127,6 +131,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           mode={mode}
           aggregation={aggregation}
           openOrderHistory={getOpenOrderHistory}
+          currencyPair={currencyPair}
+          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
         />
       </>

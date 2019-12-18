@@ -14,6 +14,7 @@ export const OrderBook = ({
   quote,
   data,
   setOrderbookAggregation,
+  updateTerminalPriceFromOrderbook,
 }) => (
   <OrderbookContainer key={`orderbook_table`}>
     <OrderBookTable
@@ -26,6 +27,7 @@ export const OrderBook = ({
         marketType,
         setOrderbookAggregation,
         onButtonClick: changeTable,
+        updateTerminalPriceFromOrderbook,
         ...chartProps,
         data,
         key: 'orderbook_table_query_render',

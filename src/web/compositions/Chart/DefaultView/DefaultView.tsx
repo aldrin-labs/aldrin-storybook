@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Fade, Grid } from '@material-ui/core'
 
@@ -69,6 +69,11 @@ export const DefaultView = (props: any) => {
     return
   }
 
+  console.log('re-render')
+
+  const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
+    null | number
+  >(null)
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
@@ -151,6 +156,7 @@ export const DefaultView = (props: any) => {
                     pair: currencyPair,
                     exchange,
                     quote,
+                    updateTerminalPriceFromOrderbook,
                     activeExchange,
                     showTableOnMobile,
                     changeTable,
@@ -170,6 +176,7 @@ export const DefaultView = (props: any) => {
                     pair: currencyPair,
                     exchange,
                     quote,
+                    updateTerminalPriceFromOrderbook,
                     marketType,
                     activeExchange,
                     showTableOnMobile,
@@ -216,6 +223,7 @@ export const DefaultView = (props: any) => {
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
+              priceFromOrderbook={priceFromOrderbook}
               marketType={marketType}
               showOrderResult={showOrderResult}
               showCancelResult={showCancelResult}

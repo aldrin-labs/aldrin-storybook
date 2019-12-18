@@ -37,7 +37,7 @@ import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
-    mode: 'market',
+    mode: 'limit',
     percentageBuy: 0,
     percentageSell: 0,
     leverage: 1,
@@ -80,7 +80,7 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
-
+      priceFromOrderbook,
       updateTerminalViewMode,
     } = this.props
 
@@ -258,6 +258,7 @@ class SimpleTabs extends React.Component {
                   byType={'buy'}
                   operationType={'buy'}
                   priceType={mode}
+                  priceFromOrderbook={priceFromOrderbook}
                   isSPOTMarket={isSPOTMarket}
                   percentage={percentageBuy}
                   changePercentage={(value) =>
@@ -287,6 +288,7 @@ class SimpleTabs extends React.Component {
                   byType={'sell'}
                   operationType={'sell'}
                   priceType={mode}
+                  priceFromOrderbook={priceFromOrderbook}
                   isSPOTMarket={isSPOTMarket}
                   percentage={percentageSell}
                   changePercentage={(value) =>

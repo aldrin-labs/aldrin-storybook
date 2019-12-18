@@ -237,8 +237,6 @@ class ActiveTradesTable extends React.Component {
     const processedFunds =
       marketType === 0 ? funds : [funds[0], USDTFuturesFund]
 
-    console.log('processedFunds', processedFunds)
-
     return (
       <>
         {editTrade === 'entryOrder' &&

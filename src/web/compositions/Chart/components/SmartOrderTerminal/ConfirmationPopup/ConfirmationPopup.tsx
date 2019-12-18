@@ -81,7 +81,6 @@ interface IProps {
   open: boolean
   handleClose: () => void
   confirmTrade: () => void
-  editEntryPointHandle: () => void
   handleOpenEditPopup: (popupName: string) => void
   entryPoint: EntryPointType
   stopLoss: StopLossType
@@ -96,7 +95,6 @@ export default ({
   open,
   handleClose,
   confirmTrade,
-  editEntryPointHandle,
   handleOpenEditPopup,
   entryPoint,
   stopLoss,
@@ -110,7 +108,7 @@ export default ({
       <DialogWrapper
         aria-labelledby="customized-dialog-title"
         onClose={handleClose}
-        open={true}
+        open={open}
         style={{
           borderRadius: '50%',
           // paddingTop: 0,

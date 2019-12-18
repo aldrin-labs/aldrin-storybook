@@ -1105,13 +1105,17 @@ export class EditEntryOrderPopup extends React.Component<
                 const newMaxAmount =
                   newSide === 'buy' ? funds[1].quantity : funds[0].quantity
 
-                const newAmount =
+                let newAmount =
                   newSide === 'buy'
                     ? (
                         ((amountPercentage / 100) * newMaxAmount) /
                         price
                       ).toFixed(8)
                     : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+
+                if (!+newAmount || +newAmount === NaN) {
+                  newAmount = 0
+                }
 
                 const newTotal = newAmount * price
 

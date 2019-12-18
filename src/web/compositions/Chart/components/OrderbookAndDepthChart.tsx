@@ -13,7 +13,7 @@ import {
 
 import {
   transformOrderbookData,
-  addOrderToOrderbook,
+  addOrdersToOrderbook,
   getAggregatedData,
   testJSON,
 } from '@core/utils/chartPageUtils'
@@ -62,7 +62,7 @@ class OrderbookAndDepthChart extends React.Component {
       const orderbookData = updatedData || { asks, bids }
 
       if (aggregation !== 0.01) {
-        updatedAggregatedData = addOrderToOrderbook(
+        updatedAggregatedData = addOrdersToOrderbook(
           updatedAggregatedData,
           orderData,
           aggregation,
@@ -71,7 +71,7 @@ class OrderbookAndDepthChart extends React.Component {
         )
       }
 
-      updatedData = addOrderToOrderbook(orderbookData, orderData)
+      updatedData = addOrdersToOrderbook(orderbookData, orderData)
     }
 
     return {
@@ -145,6 +145,7 @@ class OrderbookAndDepthChart extends React.Component {
       activeExchange,
       exchange,
       quote,
+      updateTerminalPriceFromOrderbook,
     } = this.props
     const { asks, bids, aggregation, aggregatedData } = this.state
 
@@ -185,6 +186,7 @@ class OrderbookAndDepthChart extends React.Component {
             changeTable={changeTable}
             currencyPair={currencyPair}
             marketType={marketType}
+            updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
             setOrderbookAggregation={this.setOrderbookAggregation}
             quote={quote}
             data={dataToSend}
@@ -203,6 +205,7 @@ export const APIWrapper = ({
   marketType,
   activeExchange,
   exchange,
+  updateTerminalPriceFromOrderbook,
   symbol,
   quote,
 }) => (
@@ -226,6 +229,7 @@ export const APIWrapper = ({
       aggregation,
       onButtonClick: changeTable,
       setOrders: chartProps.setOrders,
+      updateTerminalPriceFromOrderbook,
       ...chartProps,
     }}
   />

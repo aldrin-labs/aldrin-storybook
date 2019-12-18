@@ -133,7 +133,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     },
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props: IProps, state: IState) {
     if (state.entryPoint.order.price === 0) {
       return {
         ...state,
@@ -145,6 +145,27 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           },
         },
       }
+    }
+  }
+
+  componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.priceFromOrderbook !== this.props.priceFromOrderbook &&
+      this.props.priceFromOrderbook
+    ) {
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'price',
+        this.props.priceFromOrderbook
+      )
+
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'total',
+        this.props.priceFromOrderbook * this.state.entryPoint.order.amount
+      )
     }
   }
 
@@ -439,7 +460,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     const newMaxAmount =
                       newSide === 'buy' ? funds[1].quantity : funds[0].quantity
 
-                    const amount =
+                    let amount =
                       newSide === 'buy'
                         ? (
                             ((amountPercentage / 100) * newMaxAmount) /
@@ -447,7 +468,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           ).toFixed(8)
                         : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
 
+                    if (!+amount || +amount === NaN) {
+                      amount = 0
+                    }
+
                     const total = amount * entryPoint.order.price
+                    console.log('amount', amount)
 
                     this.updateSubBlockValue(
                       'entryPoint',

@@ -100,6 +100,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
       this.setFormatted('total', amount * priceForCalculate, 1)
     }
+
+    if (prevProps.priceFromOrderbook !== this.props.priceFromOrderbook) {
+      const {
+        priceFromOrderbook,
+        values: { amount },
+      } = this.props
+      this.setFormatted('limit', priceFromOrderbook, 1)
+      this.setFormatted('total', amount * priceFromOrderbook, 1)
+    }
   }
 
   setFormatted = (fild: priceType, value: any, index: number) => {
@@ -289,6 +298,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       touched,
       errors,
       validateForm,
+      priceFromOrderbook,
     } = this.props
 
     const pairsErrors = toPairs(errors)

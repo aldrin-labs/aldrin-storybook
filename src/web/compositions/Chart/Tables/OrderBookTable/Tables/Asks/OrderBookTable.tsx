@@ -15,25 +15,37 @@ import {
 } from '@core/utils/chartPageUtils'
 
 import defaultRowRenderer from '../../utils'
-import { TableWrapper } from '../../OrderBookTableContainer.styles'
+import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
 class OrderBookTable extends Component<IProps> {
   render() {
-    const { data, mode, aggregation, openOrderHistory } = this.props
+    const {
+      data,
+      mode,
+      aggregation,
+      openOrderHistory,
+      updateTerminalPriceFromOrderbook,
+      currencyPair,
+    } = this.props
     const tableData =
       aggregation === 0.01
         ? getDataForTable(data, aggregation, 'asks').reverse()
         : getArrayFromAggregatedTree(data.asks, 'asks').reverse()
 
+    const [base, quote] = currencyPair.split('_')
+
     return (
-      <TableWrapper mode={mode} isFullHeight={mode === 'asks'}>
+      <AsksWrapper mode={mode} isFullHeight={mode === 'asks'}>
         <AutoSizer>
           {({ width, height }: { width: number; height: number }) => (
             <Table
               width={width}
               height={height}
               rowCount={tableData.length}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
               headerHeight={window.outerHeight / 50}
               headerStyle={{
                 color: '#7284A0',
@@ -59,25 +71,33 @@ class OrderBookTable extends Component<IProps> {
                 label="Price"
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width}
+                width={width - width / 4}
                 style={{ ...rowStyles, color: '#DD6956' }}
               />
               <Column
-                label="Size"
+                label={`Size (${base})`}
                 dataKey="size"
-                width={width}
-                style={rowStyles}
+                headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
+                width={width + width / 4}
+                style={{
+                  ...rowStyles,
+                  textAlign: 'right',
+                }}
               />
               <Column
-                label="Total"
+                label={`Total (${quote})`}
                 dataKey="total"
+                headerStyle={{
+                  paddingRight: 'calc(.5rem + 10px)',
+                  textAlign: 'right',
+                }}
                 width={width}
-                style={rowStyles}
+                style={{ ...rowStyles, textAlign: 'right' }}
               />
             </Table>
           )}
         </AutoSizer>
-      </TableWrapper>
+      </AsksWrapper>
     )
   }
 }
