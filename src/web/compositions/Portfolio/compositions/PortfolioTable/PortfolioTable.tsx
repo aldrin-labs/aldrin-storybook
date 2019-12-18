@@ -11,20 +11,20 @@ const PortfolioMain = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "main" */ '@core/compositions/PortfolioMain')
 )
 const PortfolioTableIndustries = React.lazy(() =>
-  import(/* webpackPrefetch: true, webpackChunkName: "industry" */ '@core/compositions/PortfolioIndustry')
+  import(/* webpackChunkName: "industry" */ '@core/compositions/PortfolioIndustry')
 )
 const Rebalance = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "rebalance" */ '@core/compositions/PortfolioRebalance')
 )
 const Optimization = React.lazy(() =>
-  import(/* webpackPrefetch: true, webpackChunkName: "optimization" */ '@sb/compositions/Optimization/Optimization')
+  import(/* webpackChunkName: "optimization" */ '@sb/compositions/Optimization/Optimization')
 )
 const Correlation = React.lazy(() =>
-  import(/* webpackPrefetch: true, webpackChunkName: "correlation" */ '@sb/compositions/Correlation/Correlation')
+  import(/* webpackChunkName: "correlation" */ '@sb/compositions/Correlation/Correlation')
 )
 
 const Social = React.lazy(() =>
-  import(/* webpackPrefetch: true, webpackChunkName: "social" */ '@core/containers/Social/Social')
+  import(/* webpackChunkName: "social" */ '@core/containers/Social/Social')
 )
 
 const Transaction = React.lazy(() =>
