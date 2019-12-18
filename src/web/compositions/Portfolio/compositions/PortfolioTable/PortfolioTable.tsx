@@ -8,27 +8,27 @@ import { IProps, IState } from './PortfolioTable.types'
 import PortfolioTableTabs from '@sb/components/PortfolioTableTabs/PortfolioTableTabs'
 
 const PortfolioMain = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@core/compositions/PortfolioMain')
+  import(/* webpackPrefetch: true, webpackChunkName: "main" */ '@core/compositions/PortfolioMain')
 )
 const PortfolioTableIndustries = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@core/compositions/PortfolioIndustry')
+  import(/* webpackPrefetch: true, webpackChunkName: "industry" */ '@core/compositions/PortfolioIndustry')
 )
 const Rebalance = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@core/compositions/PortfolioRebalance')
+  import(/* webpackPrefetch: true, webpackChunkName: "rebalance" */ '@core/compositions/PortfolioRebalance')
 )
 const Optimization = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Optimization/Optimization')
+  import(/* webpackPrefetch: true, webpackChunkName: "optimization" */ '@sb/compositions/Optimization/Optimization')
 )
 const Correlation = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Correlation/Correlation')
+  import(/* webpackPrefetch: true, webpackChunkName: "correlation" */ '@sb/compositions/Correlation/Correlation')
 )
 
 const Social = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@core/containers/Social/Social')
+  import(/* webpackPrefetch: true, webpackChunkName: "social" */ '@core/containers/Social/Social')
 )
 
 const Transaction = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Transaction/TransactionPage')
+  import(/* webpackPrefetch: true, webpackChunkName: "transaction" */ '@sb/compositions/Transaction/TransactionPage')
 )
 
 @withRouter
