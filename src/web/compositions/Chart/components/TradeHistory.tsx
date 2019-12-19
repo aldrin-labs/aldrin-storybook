@@ -10,6 +10,7 @@ import { TradeHistoryTable } from '../Tables/Tables'
 import { TradeHistoryWrapper } from '../Chart.styles'
 
 export const TradeHistory = ({
+  updateTerminalPriceFromOrderbook,
   showTableOnMobile,
   activeExchange,
   aggregation,
@@ -49,6 +50,7 @@ export const TradeHistory = ({
           changeTable,
           chartProps,
           marketType,
+          updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}
       />

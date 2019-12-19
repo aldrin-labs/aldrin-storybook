@@ -17,6 +17,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
     const {
       data,
+      updateTerminalPriceFromOrderbook
     } = this.props
 
     return (
@@ -41,6 +42,9 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 rowCount={data.length}
                 rowHeight={window.outerHeight / 60}
                 rowGetter={({ index }) => data[index]}
+                onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
                 rowRenderer={(...rest) =>
                   defaultRowRenderer({ ...rest[0] })
                 }>

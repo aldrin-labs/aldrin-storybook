@@ -14,19 +14,29 @@ import {
 } from '@core/utils/chartPageUtils'
 
 import defaultRowRenderer from '../../utils'
-import { TableWrapper } from '../../OrderBookTableContainer.styles'
+import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 
 @withTheme
 class SpreadTable extends Component<IProps> {
   render() {
-    const { data, aggregation, openOrderHistory, mode } = this.props
+    const {
+      data,
+      aggregation,
+      openOrderHistory,
+      mode,
+      amountForBackground,
+      updateTerminalPriceFromOrderbook,
+      currencyPair,
+    } = this.props
     const tableData =
       aggregation === 0.01
         ? getDataForTable(data, aggregation, 'bids').reverse()
         : getArrayFromAggregatedTree(data.bids, 'bids').reverse()
 
+    const [base, quote] = currencyPair.split('_')
+
     return (
-      <TableWrapper mode={mode} isFullHeight={mode === 'bids'}>
+      <BidsWrapper mode={mode} isFullHeight={mode === 'bids'}>
         <AutoSizer>
           {({ width, height }: { width: number; height: number }) => (
             <Table
@@ -34,6 +44,9 @@ class SpreadTable extends Component<IProps> {
               width={width}
               height={height}
               headerHeight={window.outerHeight / 50}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
               headerStyle={{
                 color: '#7284A0',
                 paddingLeft: '.5rem',
@@ -51,32 +64,45 @@ class SpreadTable extends Component<IProps> {
               rowHeight={window.outerHeight / 60}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
-                defaultRowRenderer({ ...rest[0], openOrderHistory })
+                defaultRowRenderer({
+                  ...rest[0],
+                  side: 'bids',
+                  amountForBackground,
+                  openOrderHistory,
+                })
               }
             >
               <Column
-                label={mode === 'bids' ? 'price' : ''}
+                label={mode === 'bids' ? `price` : ''}
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width}
+                width={width - width / 4}
                 style={{ ...rowStyles, color: '#29AC80' }}
               />
               <Column
-                label={mode === 'bids' ? 'size' : ''}
+                label={mode === 'bids' ? `size (${base})` : ''}
                 dataKey="size"
-                width={width}
-                style={rowStyles}
+                width={width + width / 4}
+                headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
+                style={{
+                  ...rowStyles,
+                  textAlign: 'right',
+                }}
               />
               <Column
-                label={mode === 'bids' ? 'total' : ''}
+                label={mode === 'bids' ? `total (${quote})` : ''}
                 dataKey="total"
+                headerStyle={{
+                  paddingRight: 'calc(.5rem + 10px)',
+                  textAlign: 'right',
+                }}
                 width={width}
-                style={rowStyles}
+                style={{ ...rowStyles, textAlign: 'right' }}
               />
             </Table>
           )}
         </AutoSizer>
-      </TableWrapper>
+      </BidsWrapper>
     )
   }
 }
