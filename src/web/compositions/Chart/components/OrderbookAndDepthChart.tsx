@@ -1,5 +1,7 @@
 import React from 'react'
 import 'treemap-js'
+var SortedMap = require('collections/sorted-map')
+
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
@@ -13,7 +15,7 @@ import {
 
 import {
   transformOrderbookData,
-  addOrderToOrderbook,
+  addOrdersToOrderbook,
   getAggregatedData,
   testJSON,
 } from '@core/utils/chartPageUtils'
@@ -24,17 +26,19 @@ class OrderbookAndDepthChart extends React.Component {
   state = {
     readyForNewOrder: true,
     aggregation: 0.01,
+    amountsMap: new SortedMap(),
     asks: new TreeMap(),
     bids: new TreeMap(),
     aggregatedData: {
       asks: new TreeMap(),
       bids: new TreeMap(),
+      amountsMap: new SortedMap(),
     },
   }
 
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
-    const { asks, bids, readyForNewOrder, aggregation } = state
+    const { asks, bids, readyForNewOrder, aggregation, amountsMap } = state
     const {
       data: { marketOrders },
     } = newProps
@@ -51,7 +55,7 @@ class OrderbookAndDepthChart extends React.Component {
       testJSON(marketOrders.asks) &&
       testJSON(marketOrders.bids)
     ) {
-      updatedData = transformOrderbookData({ marketOrders })
+      updatedData = transformOrderbookData({ marketOrders, amountsMap })
     }
 
     if (
@@ -62,7 +66,7 @@ class OrderbookAndDepthChart extends React.Component {
       const orderbookData = updatedData || { asks, bids }
 
       if (aggregation !== 0.01) {
-        updatedAggregatedData = addOrderToOrderbook(
+        updatedAggregatedData = addOrdersToOrderbook(
           updatedAggregatedData,
           orderData,
           aggregation,
@@ -71,7 +75,14 @@ class OrderbookAndDepthChart extends React.Component {
         )
       }
 
-      updatedData = addOrderToOrderbook(orderbookData, orderData)
+      updatedData = addOrdersToOrderbook(
+        orderbookData,
+        orderData,
+        aggregation,
+        { asks, bids },
+        false,
+        amountsMap
+      )
     }
 
     return {
@@ -145,10 +156,12 @@ class OrderbookAndDepthChart extends React.Component {
       activeExchange,
       exchange,
       quote,
+      updateTerminalPriceFromOrderbook,
     } = this.props
-    const { asks, bids, aggregation, aggregatedData } = this.state
+    const { asks, bids, aggregation, aggregatedData, amountsMap } = this.state
 
     const dataToSend = aggregation === 0.01 ? { asks, bids } : aggregatedData
+    const amountForBackground = amountsMap.average()
 
     return (
       <>
@@ -185,6 +198,8 @@ class OrderbookAndDepthChart extends React.Component {
             changeTable={changeTable}
             currencyPair={currencyPair}
             marketType={marketType}
+            amountForBackground={amountForBackground}
+            updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
             setOrderbookAggregation={this.setOrderbookAggregation}
             quote={quote}
             data={dataToSend}
@@ -203,6 +218,7 @@ export const APIWrapper = ({
   marketType,
   activeExchange,
   exchange,
+  updateTerminalPriceFromOrderbook,
   symbol,
   quote,
 }) => (
@@ -226,6 +242,7 @@ export const APIWrapper = ({
       aggregation,
       onButtonClick: changeTable,
       setOrders: chartProps.setOrders,
+      updateTerminalPriceFromOrderbook,
       ...chartProps,
     }}
   />
