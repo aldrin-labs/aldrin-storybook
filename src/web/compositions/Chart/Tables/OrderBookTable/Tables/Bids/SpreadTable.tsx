@@ -24,6 +24,7 @@ class SpreadTable extends Component<IProps> {
       aggregation,
       openOrderHistory,
       mode,
+      amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
@@ -63,7 +64,12 @@ class SpreadTable extends Component<IProps> {
               rowHeight={window.outerHeight / 60}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
-                defaultRowRenderer({ ...rest[0], openOrderHistory })
+                defaultRowRenderer({
+                  ...rest[0],
+                  side: 'bids',
+                  amountForBackground,
+                  openOrderHistory,
+                })
               }
             >
               <Column

@@ -12,6 +12,7 @@ export const LastTradeContainer = styled.div`
   margin: 0 0.8rem;
   text-align: center;
   background: #f2f4f6;
+  border: 0.1rem solid #e0e5ec;
   border-radius: 0.75rem;
 `
 

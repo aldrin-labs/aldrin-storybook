@@ -138,11 +138,26 @@ class OrderbookAndDepthChart extends React.Component {
   }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
+    const [asks, amountsMapAsks] = getAggregatedData(
+      this.state.asks,
+      aggregation,
+      'asks',
+      new SortedMap()
+    )
+
+    const [bids, amountsMapBids] = getAggregatedData(
+      this.state.bids,
+      aggregation,
+      'bids',
+      amountsMapAsks
+    )
+
     this.setState({
       aggregation,
       aggregatedData: {
-        asks: getAggregatedData(this.state.asks, aggregation, 'asks'),
-        bids: getAggregatedData(this.state.bids, aggregation, 'bids'),
+        bids,
+        asks,
+        amountsMap: amountsMapBids,
       },
     })
   }

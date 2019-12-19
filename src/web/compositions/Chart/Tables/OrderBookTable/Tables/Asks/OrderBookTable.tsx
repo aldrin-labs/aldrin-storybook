@@ -25,6 +25,7 @@ class OrderBookTable extends Component<IProps> {
       mode,
       aggregation,
       openOrderHistory,
+      amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
@@ -64,7 +65,12 @@ class OrderBookTable extends Component<IProps> {
               scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
-                defaultRowRenderer({ ...rest[0], openOrderHistory })
+                defaultRowRenderer({
+                  ...rest[0],
+                  side: 'asks',
+                  openOrderHistory,
+                  amountForBackground,
+                })
               }
             >
               <Column

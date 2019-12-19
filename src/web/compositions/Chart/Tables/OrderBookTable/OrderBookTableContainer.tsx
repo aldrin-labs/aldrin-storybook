@@ -56,6 +56,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       aggregation,
       currencyPair,
       onButtonClick,
+      amountForBackground,
       setOrderbookAggregation,
       updateTerminalPriceFromOrderbook,
       getOpenOrderHistoryQuery: { getOpenOrderHistory },
@@ -113,6 +114,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           onButtonClick={onButtonClick}
           openOrderHistory={getOpenOrderHistory}
           currencyPair={currencyPair}
+          amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
         />
@@ -132,6 +134,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           aggregation={aggregation}
           openOrderHistory={getOpenOrderHistory}
           currencyPair={currencyPair}
+          amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
         />

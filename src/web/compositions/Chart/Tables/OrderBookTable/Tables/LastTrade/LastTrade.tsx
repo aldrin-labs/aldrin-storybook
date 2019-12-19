@@ -24,7 +24,7 @@ interface IProps {
 }
 
 const LastTrade = (props: IProps) => {
-  const { mode, updateTerminalPriceFromOrderbook } = props
+  const { updateTerminalPriceFromOrderbook } = props
 
   let unsubscribe = undefined
 
@@ -37,10 +37,6 @@ const LastTrade = (props: IProps) => {
     }
   }, [props.marketType, props.exchange, props.currencyPair])
 
-  if (mode !== 'both' && props.data.marketTickers.length > 0) {
-    return null
-  }
-
   let price = 0
   let fall = false
 
@@ -51,7 +47,11 @@ const LastTrade = (props: IProps) => {
   } catch (e) {}
 
   return (
-    <LastTradeContainer onClick={() => updateTerminalPriceFromOrderbook(stripDigitPlaces(price, 2))}>
+    <LastTradeContainer
+      onClick={() =>
+        updateTerminalPriceFromOrderbook(stripDigitPlaces(price, 2))
+      }
+    >
       <LastTradeValue fall={fall}>
         <ArrowIcon fall={fall} />
         {addMainSymbol(stripDigitPlaces(price, 2), true)}
