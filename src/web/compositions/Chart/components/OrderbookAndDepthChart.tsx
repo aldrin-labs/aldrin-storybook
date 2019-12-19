@@ -41,6 +41,7 @@ class OrderbookAndDepthChart extends React.Component {
     const { asks, bids, readyForNewOrder, aggregation, amountsMap } = state
     const {
       data: { marketOrders },
+      sizeDigits,
     } = newProps
 
     let updatedData = null
@@ -55,34 +56,40 @@ class OrderbookAndDepthChart extends React.Component {
       testJSON(marketOrders.asks) &&
       testJSON(marketOrders.bids)
     ) {
-      updatedData = transformOrderbookData({ marketOrders, amountsMap })
+      updatedData = transformOrderbookData({
+        marketOrders,
+        amountsMap,
+        sizeDigits,
+      })
     }
 
     if (
       !(typeof marketOrders.asks === 'string') ||
       !(typeof marketOrders.bids === 'string')
     ) {
-      const orderData = newProps.data.marketOrders
+      const ordersData = newProps.data.marketOrders
       const orderbookData = updatedData || { asks, bids }
 
       if (aggregation !== 0.01) {
-        updatedAggregatedData = addOrdersToOrderbook(
-          updatedAggregatedData,
-          orderData,
+        updatedAggregatedData = addOrdersToOrderbook({
+          updatedData: updatedAggregatedData,
+          ordersData,
           aggregation,
-          { asks, bids },
-          true
-        )
+          originalOrderbookTree: { asks, bids },
+          isAggregated: true,
+          sizeDigits,
+        })
       }
 
-      updatedData = addOrdersToOrderbook(
-        orderbookData,
-        orderData,
+      updatedData = addOrdersToOrderbook({
+        updatedData: orderbookData,
+        ordersData,
         aggregation,
-        { asks, bids },
-        false,
-        amountsMap
-      )
+        originalOrderbookTree: { asks, bids },
+        isAggregatedData: false,
+        amountsMap,
+        sizeDigits,
+      })
     }
 
     return {
@@ -138,19 +145,23 @@ class OrderbookAndDepthChart extends React.Component {
   }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
-    const [asks, amountsMapAsks] = getAggregatedData(
-      this.state.asks,
-      aggregation,
-      'asks',
-      new SortedMap()
-    )
+    const { sizeDigits } = this.props
 
-    const [bids, amountsMapBids] = getAggregatedData(
-      this.state.bids,
+    const [asks, amountsMapAsks] = getAggregatedData({
+      orderbookData: this.state.asks,
       aggregation,
-      'bids',
-      amountsMapAsks
-    )
+      side: 'asks',
+      amountsMap: new SortedMap(),
+      sizeDigits,
+    })
+
+    const [bids, amountsMapBids] = getAggregatedData({
+      orderbookData: this.state.bids,
+      aggregation,
+      side: 'bids',
+      amountsMap: amountsMapAsks,
+      sizeDigits,
+    })
 
     this.setState({
       aggregation,
@@ -235,6 +246,7 @@ export const APIWrapper = ({
   exchange,
   updateTerminalPriceFromOrderbook,
   symbol,
+  sizeDigits,
   quote,
 }) => (
   <QueryRenderer
@@ -255,6 +267,7 @@ export const APIWrapper = ({
       activeExchange,
       currencyPair: pair,
       aggregation,
+      sizeDigits,
       onButtonClick: changeTable,
       setOrders: chartProps.setOrders,
       updateTerminalPriceFromOrderbook,

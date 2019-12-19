@@ -48,9 +48,9 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 rowRenderer={(...rest) =>
                   defaultRowRenderer({ ...rest[0] })
                 }>
-                <Column label="Price" dataKey="price" width={width} style={{...rowStyles, color: ''}} headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}  />
-                <Column label="Size" dataKey="size" width={width} style={{ ...rowStyles }} />
-                <Column label="Total" dataKey="time" width={width} style={{ ...rowStyles }} />
+                <Column label="Price" dataKey="price" width={width} style={{ color: '' }} headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}  />
+                <Column label="Size" dataKey="size" width={width} style={{ color: '#16253D' }} />
+                <Column label="time" dataKey="time" width={width} style={{ color: '#16253D' }} />
               </Table>
             )
           }
