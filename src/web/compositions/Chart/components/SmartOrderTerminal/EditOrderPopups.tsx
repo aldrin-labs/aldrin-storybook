@@ -951,8 +951,9 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                 padding="0 .8rem 0 .8rem"
                 width={'calc(40% - 1.6rem)'}
                 symbol={pair[1]}
+                isDisabled={!this.state.isHedgeOn}
                 value={this.state.hedgePrice}
-                showErrors={true}
+                showErrors={this.state.isHedgeOn}
                 isValid={this.props.validateField(
                   this.state.isHedgeOn,
                   this.state.hedgePrice
@@ -964,8 +965,9 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
               <Select
                 width={'18%'}
                 symbol={'LVRG.'}
+                isDisabled={!this.state.isHedgeOn}
                 value={this.state.hedgeIncrease}
-                showErrors={true}
+                showErrors={this.state.isHedgeOn}
                 isValid={this.props.validateField(
                   this.state.isHedgeOn,
                   this.state.hedgeIncrease
@@ -1103,13 +1105,17 @@ export class EditEntryOrderPopup extends React.Component<
                 const newMaxAmount =
                   newSide === 'buy' ? funds[1].quantity : funds[0].quantity
 
-                const newAmount =
+                let newAmount =
                   newSide === 'buy'
                     ? (
                         ((amountPercentage / 100) * newMaxAmount) /
                         price
                       ).toFixed(8)
                     : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+
+                if (!+newAmount || +newAmount === NaN) {
+                  newAmount = 0
+                }
 
                 const newTotal = newAmount * price
 
@@ -1138,10 +1144,10 @@ export class EditEntryOrderPopup extends React.Component<
                 type: getSecondValueFromFirst(prev.type),
               }))
 
-              if (isTrailingOn) {
-                this.setState((prev) => ({
-                  isTrailingOn: getSecondValueFromFirst(prev.type) !== 'limit',
-                }))
+              if (getSecondValueFromFirst(type) === 'limit') {
+                this.setState({
+                  isTrailingOn: false,
+                })
               }
             }}
           />

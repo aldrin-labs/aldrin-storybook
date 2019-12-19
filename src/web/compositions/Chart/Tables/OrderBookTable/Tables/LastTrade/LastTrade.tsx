@@ -24,7 +24,7 @@ interface IProps {
 }
 
 const LastTrade = (props: IProps) => {
-  const { mode } = props
+  const { mode, updateTerminalPriceFromOrderbook } = props
 
   let unsubscribe = undefined
 
@@ -51,7 +51,7 @@ const LastTrade = (props: IProps) => {
   } catch (e) {}
 
   return (
-    <LastTradeContainer>
+    <LastTradeContainer onClick={() => updateTerminalPriceFromOrderbook(stripDigitPlaces(price, 2))}>
       <LastTradeValue fall={fall}>
         <ArrowIcon fall={fall} />
         {addMainSymbol(stripDigitPlaces(price, 2), true)}

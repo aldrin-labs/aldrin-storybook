@@ -28,15 +28,10 @@ export const positionsColumnNames = [
 ]
 
 export const activeTradesColumnNames = [
-  { label: 'Pair', id: 'pair' },
-  { label: 'Side', id: 'side' },
-  { label: 'Status', id: 'status'},
-  { label: 'Profit', id: 'profit' },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Total', id: 'total' },
-  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Entry point', id: 'entryOrder' },
   { label: 'Take a profit', id: 'takeProfit' },
   { label: 'Stop loss', id: 'stopLoss' },
+  { label: 'status', id: 'status' },
   { label: 'close', id: 'close' },
 ]
 

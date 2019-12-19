@@ -80,8 +80,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       return null
     }
 
-    console.log('marketType tradehistory', marketType)
-
     return (
       <TableWithSort
         style={{ borderRadius: 0, height: '100%' }}

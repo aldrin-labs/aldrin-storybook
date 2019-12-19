@@ -74,7 +74,6 @@ class TableContainer extends Component<IProps, IState> {
     if (this.props.subscribeToMore) {
       //  unsubscribe from old exchange when you first time change exchange
       unsubscribe && unsubscribe()
-      console.log('subscribe on mount', this.props.marketType)
       unsubscribe = this.props.subscribeToMore()
     }
   }
@@ -103,7 +102,7 @@ class TableContainer extends Component<IProps, IState> {
   // }
 
   render() {
-    const { quote, currencyPair } = this.props
+    const { quote, currencyPair, updateTerminalPriceFromOrderbook } = this.props
     const { data, numbersAfterDecimalForPrice } = this.state
     return (
       <>
@@ -111,6 +110,7 @@ class TableContainer extends Component<IProps, IState> {
         <TradeHistoryTable
           data={data}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
+          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
           currencyPair={currencyPair}
         />

@@ -2,8 +2,8 @@ import { ChangeEvent, CSSProperties } from 'react'
 
 export interface IProps {
   updateTerminalViewMode: (mode: string) => void
+  priceFromOrderbook: null | number
 }
-
 
 export type EntryPointType = {
   order: {
