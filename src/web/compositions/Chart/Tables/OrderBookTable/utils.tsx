@@ -8,6 +8,7 @@ import { Fade } from '@material-ui/core'
 
 type IProps = {
   className: string
+  amountForBackground: number
   columns: any
   index: number
   key?: string
@@ -73,10 +74,15 @@ export default function defaultRowRenderer({
   onRowRightClick,
   rowData,
   style,
+  side,
   openOrderHistory,
+  amountForBackground,
 }: IProps) {
   const a11yProps = { 'aria-rowindex': index + 1 }
-  const colorStyles = rowData.fall !== undefined ? { color: rowData.fall ? '#DD6956' : '#29AC80'} : {}
+  const colorStyles =
+    rowData.fall !== undefined
+      ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
+      : {}
   let needHighlight = false
 
   if (openOrderHistory && openOrderHistory.length > 0) {
@@ -84,6 +90,11 @@ export default function defaultRowRenderer({
       openOrderHistory.findIndex((order) => order.price === rowData.price) !==
       -1
   }
+
+  const orderPercentage =
+    rowData.size > amountForBackground
+      ? 100
+      : rowData.size / (amountForBackground / 100)
 
   if (
     onRowClick ||
@@ -122,9 +133,29 @@ export default function defaultRowRenderer({
       className={className}
       key={key}
       role="row"
-      style={{ ...style, ...colorStyles, backgroundColor: needHighlight ? '#e0e5ec' : '' }}
+      style={{
+        ...style,
+        ...colorStyles,
+        backgroundColor: needHighlight ? '#e0e5ec' : '',
+      }}
     >
       {columns}
+      {amountForBackground && (
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '80%',
+            backgroundColor:
+              side === 'bids'
+                ? 'rgba(149, 220, 160, 0.31)'
+                : 'rgba(220, 157, 149, 0.31)',
+            borderRadius: '1px',
+            top: '10%',
+            left: `calc(100% - ${orderPercentage}%)`,
+          }}
+        />
+      )}
     </div>
     // </Fade>
   )

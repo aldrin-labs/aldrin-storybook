@@ -13,6 +13,26 @@ export const TableWrapper = styled.div`
       : 'display: none'};
 `
 
+export const BidsWrapper = styled.div`
+  top: 0.2rem;
+  ${({ mode, isFullHeight }: { mode: OrderbookMode; isFullHeight: boolean }) =>
+    mode === 'both'
+      ? 'height: calc(50% - 5rem)'
+      : isFullHeight
+      ? 'height: calc(100% - 8.8rem)'
+      : 'display: none'};
+`
+
+export const AsksWrapper = styled.div`
+  bottom: 0.2rem;
+  ${({ mode, isFullHeight }: { mode: OrderbookMode; isFullHeight: boolean }) =>
+    mode === 'both'
+      ? 'height: calc(50% - 3rem)'
+      : isFullHeight
+      ? 'height: calc(100% - 8.8rem)'
+      : 'display: none'};
+`
+
 export const SvgMode = styled(({ isActive, ...rest }) => (
   <SvgIcon
     {...rest}
