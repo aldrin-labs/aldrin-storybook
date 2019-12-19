@@ -76,16 +76,15 @@ class SpreadTable extends Component<IProps> {
                 label={mode === 'bids' ? `price` : ''}
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width - width / 4}
-                style={{ ...rowStyles, color: '#29AC80' }}
+                width={width - width / 6}
+                style={{ color: '#29AC80' }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
                 dataKey="size"
-                width={width + width / 4}
+                width={width + width / 6}
                 headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
                 style={{
-                  ...rowStyles,
                   textAlign: 'right',
                 }}
               />
@@ -97,7 +96,7 @@ class SpreadTable extends Component<IProps> {
                   textAlign: 'right',
                 }}
                 width={width}
-                style={{ ...rowStyles, textAlign: 'right' }}
+                style={{ textAlign: 'right' }}
               />
             </Table>
           )}

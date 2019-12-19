@@ -69,8 +69,6 @@ export const DefaultView = (props: any) => {
     return
   }
 
-  console.log('re-render')
-
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
   >(null)
@@ -78,6 +76,7 @@ export const DefaultView = (props: any) => {
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
+  const sizeDigits = marketType === 0 ? 8 : 3
 
   return (
     <Container container spacing={8}>
@@ -162,6 +161,7 @@ export const DefaultView = (props: any) => {
                     changeTable,
                     chartProps,
                     marketType,
+                    sizeDigits,
                   }}
                 />
               </Grid>
@@ -182,6 +182,7 @@ export const DefaultView = (props: any) => {
                     showTableOnMobile,
                     changeTable,
                     chartProps,
+                    sizeDigits,
                   }}
                 />
               </Grid>

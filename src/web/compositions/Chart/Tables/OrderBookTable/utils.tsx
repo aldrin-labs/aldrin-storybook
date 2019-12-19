@@ -1,6 +1,12 @@
 /** @flow */
-import React, { useState, useEffect, CSSProperties } from 'react'
-import { Fade } from '@material-ui/core'
+import React, { CSSProperties } from 'react'
+import styled from 'styled-components'
+import { rowStyles } from '@core/utils/chartPageUtils'
+
+const Container = styled.div`
+  ${rowStyles}
+  ${(props: { style: CSSProperties }) => props.styles}
+`
 
 /**
  * Default row renderer for Table.
@@ -128,21 +134,24 @@ export default function defaultRowRenderer({
 
   return (
     // <Fade timeout={1000} in={true}>
-    <div
+    <Container
       {...a11yProps}
       className={className}
       key={key}
       role="row"
-      style={{
+      styles={{
         ...style,
         ...colorStyles,
         backgroundColor: needHighlight ? '#e0e5ec' : '',
+        '&:hover': {
+          backgroundColor: 'rgba(255, 255, 255, .15)',
+        },
       }}
     >
       {columns}
       {amountForBackground && (
-        <div
-          style={{
+        <Container
+          styles={{
             position: 'absolute',
             width: '100%',
             height: '80%',
@@ -156,7 +165,7 @@ export default function defaultRowRenderer({
           }}
         />
       )}
-    </div>
+    </Container>
     // </Fade>
   )
 }

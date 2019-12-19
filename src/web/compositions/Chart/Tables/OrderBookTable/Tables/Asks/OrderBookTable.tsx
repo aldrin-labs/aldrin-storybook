@@ -77,16 +77,15 @@ class OrderBookTable extends Component<IProps> {
                 label="Price"
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width - width / 4}
-                style={{ ...rowStyles, color: '#DD6956' }}
+                width={width - width / 6}
+                style={{ color: '#DD6956' }}
               />
               <Column
                 label={`Size (${base})`}
                 dataKey="size"
-                headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
-                width={width + width / 4}
+                headerStyle={{ textAlign: 'right', paddingRight: '6px' }}
+                width={width + width / 6}
                 style={{
-                  ...rowStyles,
                   textAlign: 'right',
                 }}
               />
@@ -94,11 +93,11 @@ class OrderBookTable extends Component<IProps> {
                 label={`Total (${quote})`}
                 dataKey="total"
                 headerStyle={{
-                  paddingRight: 'calc(.5rem + 10px)',
+                  paddingRight: 'calc(10px)',
                   textAlign: 'right',
                 }}
                 width={width}
-                style={{ ...rowStyles, textAlign: 'right' }}
+                style={{ textAlign: 'right' }}
               />
             </Table>
           )}

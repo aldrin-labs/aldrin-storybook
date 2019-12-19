@@ -50,7 +50,7 @@ class TableContainer extends Component<IProps, IState> {
       const ticker = {
         fall: tickerData[9],
         id: tickerData[6],
-        size: stripDigitPlaces(tickerData[5], 8),
+        size: Number(tickerData[5]).toFixed(newProps.sizeDigits),
         price: stripDigitPlaces(tickerData[4], 2),
         time: new Date(tickerData[8]).toLocaleTimeString(),
       }
