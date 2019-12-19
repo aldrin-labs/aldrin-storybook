@@ -1,5 +1,6 @@
 import React from 'react'
 
+import ComingSoon from '@sb/components/ComingSoon'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
@@ -85,7 +86,8 @@ export const CardsPanel = ({
           selectStyles={selectStyles}
         />
 
-        <CustomCard style={{ display: 'flex', width: '50%' }}>
+        <CustomCard style={{ position: 'relative', display: 'flex', width: '50%' }}>
+          <ComingSoon />
           <PanelCard first>
             <PanelCardTitle>Last price</PanelCardTitle>
             <span>

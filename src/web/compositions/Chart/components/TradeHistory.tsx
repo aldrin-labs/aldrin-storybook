@@ -16,6 +16,7 @@ export const TradeHistory = ({
   aggregation,
   changeTable,
   chartProps,
+  sizeDigits,
   marketType,
   exchange,
   symbol,
@@ -50,6 +51,7 @@ export const TradeHistory = ({
           changeTable,
           chartProps,
           marketType,
+          sizeDigits,
           updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}
