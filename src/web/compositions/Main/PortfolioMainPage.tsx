@@ -8,10 +8,6 @@ import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
-
-const test = '2'
-console.log('test', test)
-
 // import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 // import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
