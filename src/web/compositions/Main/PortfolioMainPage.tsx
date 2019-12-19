@@ -9,6 +9,7 @@ import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
 
+
 // import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 // import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
