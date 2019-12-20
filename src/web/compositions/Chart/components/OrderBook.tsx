@@ -16,6 +16,7 @@ export const OrderBook = ({
   setOrderbookAggregation,
   amountForBackground,
   updateTerminalPriceFromOrderbook,
+  sizeDigits,
 }) => (
   <OrderbookContainer key={`orderbook_table`}>
     <OrderBookTable
@@ -30,6 +31,7 @@ export const OrderBook = ({
         onButtonClick: changeTable,
         amountForBackground,
         updateTerminalPriceFromOrderbook,
+        sizeDigits,
         ...chartProps,
         data,
         key: 'orderbook_table_query_render',
