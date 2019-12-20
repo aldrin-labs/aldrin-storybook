@@ -5,7 +5,16 @@ import { rowStyles } from '@core/utils/chartPageUtils'
 
 const Container = styled.div`
   ${rowStyles}
-  ${(props: { style: CSSProperties }) => props.styles}
+  ${(props: { style: CSSProperties }) =>
+    props.styles}
+
+  @media (max-width: 1450px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 1350px) {
+    font-size: 0.9rem;
+  }
 `
 
 /**
