@@ -624,22 +624,22 @@ export default compose(
   }),
   graphql(updatePortfolioSettingsMutation, {
     name: 'updatePortfolioSettings',
-    // options: ({ baseCoin }) => ({
-    //   refetchQueries: [
-    //     // {
-    //     //   query: portfolioKeyAndWalletsQuery,
-    //     //   variables: { baseCoin, innerSettings: true },
-    //     // },
-    //     {
-    //       query: getPortfolioAssets,
-    //       variables: { baseCoin, innerSettings: true },
-    //     },
-    //     {
-    //       query: getMyPortfoliosQuery,
-    //       variables: { baseCoin },
-    //     },
-    //   ],
-    // }),
+    options: ({ baseCoin }) => ({
+      refetchQueries: [
+        // {
+        //   query: portfolioKeyAndWalletsQuery,
+        //   variables: { baseCoin, innerSettings: true },
+        // },
+        {
+          query: getPortfolioAssets,
+          variables: { baseCoin, innerSettings: true },
+        },
+        {
+          query: getMyPortfoliosQuery,
+          variables: { baseCoin },
+        },
+      ],
+    }),
   })
 )(PortfolioSelectorDataWrapper)
 
