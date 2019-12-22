@@ -132,11 +132,11 @@ class OrderbookAndDepthChart extends React.Component {
       unsubscribe = this.props.subscribeToMore()
     }
 
-    if (this.state.readyForNewOrder) {
-      this.setState({ readyForNewOrder: false }, () =>
-        setTimeout(() => this.setState({ readyForNewOrder: true }), 100)
-      )
-    }
+    // if (this.state.readyForNewOrder) {
+    //   this.setState({ readyForNewOrder: false }, () =>
+    //     setTimeout(() => this.setState({ readyForNewOrder: true }), 100)
+    //   )
+    // }
   }
 
   componentWillUnmount() {

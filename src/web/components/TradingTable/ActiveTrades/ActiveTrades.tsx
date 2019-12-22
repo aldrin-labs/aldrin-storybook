@@ -231,7 +231,7 @@ class ActiveTradesTable extends React.Component {
     const [
       USDTFuturesFund = { quantity: 0, value: 0 },
     ] = getFundsQuery.getFunds
-      .filter((el) => el.assetType === 1 && el.asset.symbol === 'USDT')
+      .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
       .map((el) => ({ quantity: el.quantity, value: el.quantity }))
 
     const processedFunds =

@@ -86,8 +86,10 @@ export const CardsPanel = ({
           selectStyles={selectStyles}
         />
 
-        <CustomCard style={{ position: 'relative', display: 'flex', width: '50%' }}>
-          <ComingSoon />
+        <CustomCard
+          style={{ position: 'relative', display: 'flex', width: '50%' }}
+        >
+          <ComingSoon style={{ zIndex: 1 }} />
           <PanelCard first>
             <PanelCardTitle>Last price</PanelCardTitle>
             <span>

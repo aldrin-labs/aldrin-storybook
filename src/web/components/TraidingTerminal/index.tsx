@@ -192,32 +192,33 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const priceForCalculate =
       priceType !== 'market' && limit !== null ? limit : price
 
-    if (
-      (errors.amount === traidingErrorMessages[1] ||
-        errors.total === traidingErrorMessages[1]) &&
-      e.target.value > amount
-    )
-      return null
+    // if (
+    //   (errors.amount === traidingErrorMessages[1] ||
+    //     errors.total === traidingErrorMessages[1]) &&
+    //   e.target.value > amount
+    // )
+    //   return null
 
-    if (
-      +e.target.value > (funds[1].quantity * leverage) / priceForCalculate &&
-      !isSPOTMarket
-    ) {
-      setFieldValue(
-        'amount',
-        ((funds[1].quantity * leverage) / priceForCalculate).toFixed(3)
-      )
-      return null
-    }
+    // if (
+    //   +e.target.value > (funds[1].quantity * leverage) / priceForCalculate &&
+    //   !isSPOTMarket
+    // ) {
+    //   setFieldValue(
+    //     'amount',
+    //     ((funds[1].quantity * leverage) / priceForCalculate).toFixed(3)
+    //   )
+    //   return null
+    // }
 
     const total = e.target.value * priceForCalculate
+
     const newAmount = isSPOTMarket
       ? e.target.value
       : +e.target.value > 0
       ? +e.target.value * leverage
       : e.target.value
 
-    setFieldValue('amount', newAmount, 0)
+    setFieldValue('amount', e.target.value)
     setFieldTouched('amount', true)
 
     this.setFormatted('total', total, 1)
@@ -271,8 +272,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', funds[1].quantity * value, 1)
       setFieldValue(
         'amount',
-        isSPOTMarket ? baseQuantity : (baseQuantity * leverage).toFixed(3),
-        0
+        isSPOTMarket
+          ? baseQuantity.toFixed(8)
+          : (baseQuantity * leverage).toFixed(3)
       )
     } else {
       const necessaryFund = isSPOTMarket ? funds[0] : funds[1]
@@ -290,8 +292,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', quoteQuantity, 1)
       setFieldValue(
         'amount',
-        isSPOTMarket ? amount : (amount * leverage).toFixed(3),
-        0
+        isSPOTMarket ? amount.toFixed(8) : (amount * leverage).toFixed(3)
       )
     }
 
@@ -312,19 +313,27 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       isSPOTMarket,
       values,
       handleSubmit,
-      touched,
-      errors,
       validateForm,
+      setFieldValue,
     } = this.props
 
     if (!funds) return null
 
-    const pairsErrors = toPairs(errors)
     const isBuyType = operationType === 'buy'
+
     const priceForCalculate =
       priceType !== 'market' && values.limit !== null
         ? values.limit
         : values.price
+
+    let maxAmount = 0
+
+    if (isSPOTMarket) {
+      maxAmount =
+      isBuyType ? funds[1].quantity : funds[0].quantity
+    } else {
+      maxAmount = funds[1].quantity * leverage
+    }
 
     return (
       <Container background={'transparent'}>
@@ -369,14 +378,35 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 />
 
                 <BlueSlider
-                  value={percentage}
+                  value={
+                    isBuyType || !isSPOTMarket
+                      ? values.total / (maxAmount / 100)
+                      : values.amount / (maxAmount / 100)
+                  }
                   sliderContainerStyles={{
                     width: '70%',
                     margin: '0 0 0 auto',
                   }}
                   onChange={(value) => {
-                    changePercentage(value)
-                    this.onPercentageClick(value / 100)
+                    const newValue = (maxAmount / 100) * value
+
+                    const newAmount =
+                      isBuyType || !isSPOTMarket
+                        ? newValue / priceForCalculate
+                        : newValue
+
+                    const newTotal =
+                      isBuyType || !isSPOTMarket
+                        ? newValue
+                        : newValue * priceForCalculate
+
+                    const fixedAmount =
+                      isSPOTMarket
+                        ? newAmount.toFixed(8)
+                        : newAmount.toFixed(3)
+
+                    setFieldValue('amount', fixedAmount)
+                    setFieldValue('total', newTotal)
                   }}
                 />
               </InputRowContainer>
@@ -416,7 +446,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       <InputTitle>cost:</InputTitle>
                       <InputTitle color="#16253D" style={{ width: 'auto' }}>
                         {values.amount > 0
-                          ? (funds[1].quantity * (percentage / 100)).toFixed(2)
+                          ? (funds[1].quantity / 100 * (isBuyType || !isSPOTMarket
+                            ? values.total / (maxAmount / 100)
+                            : values.amount / (maxAmount / 100) / 100)).toFixed(2)
                           : 0.0}{' '}
                         {pair[1]}
                       </InputTitle>
@@ -451,7 +483,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   const result = await validateForm()
 
                   if (Object.keys(result).length === 0) {
-                    await handleSubmit()
+                    await handleSubmit(values)
                   }
                 }}
               >
@@ -600,6 +632,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
     } = props
+
     if (priceType || byType) {
       const filtredValues =
         priceType === 'limit'
@@ -611,6 +644,16 @@ const formikEnhancer = withFormik<IProps, FormValues>({
               limit: values.limit,
               amount: values.amount,
             }
+
+      const priceForCalculate =
+        priceType !== 'market' && values.limit !== null
+          ? values.limit
+          : values.price
+
+      if (values.amount * priceForCalculate < 10) {
+        props.showOrderResult({ status: 'error', message: 'Total value must be at least 10.' })
+        return
+      }
 
       const result = await props.confirmOperation(
         byType,

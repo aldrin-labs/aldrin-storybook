@@ -38,8 +38,6 @@ class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
     mode: 'limit',
-    percentageBuy: 0,
-    percentageSell: 0,
     leverage: 1,
     reduceOnly: false,
     orderMode: 'TIF',
@@ -260,7 +258,6 @@ class SimpleTabs extends React.Component {
                   priceType={mode}
                   priceFromOrderbook={priceFromOrderbook}
                   isSPOTMarket={isSPOTMarket}
-                  percentage={percentageBuy}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Buy')
                   }
@@ -290,7 +287,6 @@ class SimpleTabs extends React.Component {
                   priceType={mode}
                   priceFromOrderbook={priceFromOrderbook}
                   isSPOTMarket={isSPOTMarket}
-                  percentage={percentageSell}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Sell')
                   }

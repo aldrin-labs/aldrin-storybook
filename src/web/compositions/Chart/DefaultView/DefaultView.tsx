@@ -149,7 +149,7 @@ export const DefaultView = (props: any) => {
           >
             <Grid item container style={{ height: '100%' }}>
               <Grid item container xs={7} style={{ height: '100%' }}>
-                <OrderbookAndDepthChart
+                {/* <OrderbookAndDepthChart
                   {...{
                     symbol: currencyPair,
                     pair: currencyPair,
@@ -163,7 +163,7 @@ export const DefaultView = (props: any) => {
                     marketType,
                     sizeDigits,
                   }}
-                />
+                /> */}
               </Grid>
               <Grid
                 item
