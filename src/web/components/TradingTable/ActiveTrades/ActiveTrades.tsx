@@ -488,7 +488,7 @@ const LastTradeWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
@@ -511,7 +511,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: props.selectedKey.keyId } }}
       name={`getFundsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {
