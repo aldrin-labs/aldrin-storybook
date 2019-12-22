@@ -406,7 +406,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         : newAmount.toFixed(3)
 
                     setFieldValue('amount', fixedAmount)
-                    setFieldValue('total', newTotal)
+                    setFieldValue('total', newTotal.toFixed(8))
                   }}
                 />
               </InputRowContainer>
@@ -489,7 +489,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               >
                 {isSPOTMarket
                   ? operationType === 'buy'
-                    ? `buy ${pair[1]}`
+                    ? `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
                   ? 'buy/long'

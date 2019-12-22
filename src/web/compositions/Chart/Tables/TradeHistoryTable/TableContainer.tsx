@@ -51,7 +51,7 @@ class TableContainer extends Component<IProps, IState> {
         fall: tickerData[9],
         id: tickerData[6],
         size: Number(tickerData[5]).toFixed(newProps.sizeDigits),
-        price: stripDigitPlaces(tickerData[4], 2),
+        price: Number(tickerData[4]).toFixed(2),
         time: new Date(tickerData[8]).toLocaleTimeString(),
       }
 

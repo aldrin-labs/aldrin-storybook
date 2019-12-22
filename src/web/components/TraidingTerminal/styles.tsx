@@ -247,7 +247,7 @@ export const SendButton = styled(StyledTab)`
   color: #fff;
   background-color: ${(props) =>
     props.type === 'buy' ? '#29AC80' : '#DD6956'};
-  box-shadow: 0px .4rem .6rem rgba(8, 22, 58, 0.3);
+  box-shadow: 0px .7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: .75rem;
   border: none;
 
