@@ -113,36 +113,9 @@ export const combinePositionsTable = (
     orderId: string,
     pair: string
   ) => Promise<any>,
-  theme: Theme
+  theme: Theme,
+  marketPrice: number
 ) => {
-  const positionsMockedData = {
-    _id: '5df140cfcaf898d38cf277fd',
-    symbol: 'BTC_USDT',
-    entryPrice: 1,
-    accRealized: 40,
-    markPrice: 888,
-    positionAmt: 20,
-    unrealizedProfit: 30,
-  }
-
-  // const positions: OrderType[] = []
-  // const positionsData = [
-  //   {
-  //     symbol: 'BTC_USDT',
-  //     type: 'market',
-  //     side: 'buy',
-  //     leverage: 20,
-  //     price: 8704.01,
-  //     entryPrice: 8604.01,
-  //     marketPrice: 8504.01,
-  //     liqPrice: 8404.01,
-  //     realizedPnl: 3,
-  //     info: {
-  //       origQty: 0.05,
-  //     },
-  //   },
-  // ]
-
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -156,26 +129,18 @@ export const combinePositionsTable = (
       const {
         symbol,
         entryPrice,
-        markPrice,
-        unrealizedProfit,
-        accRealized,
         liquidationPrice,
         positionAmt,
-        leverage = '-',
-        // origQty = '-',
+        leverage = 1,
         type = '-',
-        // side,
-        // marketPrice,
-        // liqPrice,
-        // realizedPnl,
-        // info: { origQty = '-' },
       } = el
 
-      const realizedPnl = accRealized
-      const marketPrice = markPrice
       const liqPrice = liquidationPrice
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
-      const origQty = positionAmt
+      const profitPercentage =
+        (marketPrice / entryPrice - 1) * 100 * (side === 'sell short' ? -1 : 1)
+      const profitAmount =
+        Math.abs(positionAmt) * leverage * (profitPercentage / 100)
 
       const pair = symbol.split('_')
 
@@ -222,15 +187,13 @@ export const combinePositionsTable = (
             },
           },
           size: {
-            // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-            render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
-            contentToSort: origQty,
+            render: `${positionAmt} ${pair[0]}`,
+            contentToSort: positionAmt,
           },
           leverage: {
             render: `X${leverage}`,
             contentToSort: leverage,
           },
-          // TODO: We should change "total" to total param from backend when it will be ready
           entryPrice: {
             render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
             style: { textAlign: 'left', whiteSpace: 'nowrap' },
@@ -247,29 +210,20 @@ export const combinePositionsTable = (
             contentToSort: liqPrice,
           },
           pnlRoe: {
-            render:
-              realizedPnl !== null ? (
-                <span style={{ color: realizedPnl > 0 ? green.new : red.new }}>
-                  {addMainSymbol(realizedPnl, true)}
-                </span>
-              ) : (
-                '-'
-              ),
-            contentToSort: realizedPnl,
+            render: (
+              <span
+                style={{ color: profitPercentage > 0 ? green.new : red.new }}
+              >
+                {profitPercentage && profitAmount
+                  ? `${profitAmount.toFixed(8)} / ${+profitPercentage.toFixed(
+                      2
+                    )}%`
+                  : '-'}
+              </span>
+            ),
+
+            contentToSort: profitAmount,
           },
-          // cancel: {
-          //   render: (
-          //     <TableButton
-          //       key={i}
-          //       variant="outlined"
-          //       size={`small`}
-          //       style={{ color: '#DD6956', borderColor: '#DD6956' }}
-          //       onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
-          //     >
-          //       Cancel
-          //     </TableButton>
-          //   ),
-          // },
         },
         {
           pair: {

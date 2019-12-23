@@ -45,8 +45,8 @@ export const TabsTypeContainer = styled(TabsContainer)`
 export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   min-width: auto;
   width: 30%;
-  height: 3.5rem;
-  font-size: 1.3rem;
+  height: 4.5rem;
+  font-size: 1.5rem;
   font-weight: bold;
 
   letter-spacing: 1.5px;
@@ -124,7 +124,9 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   >
     {children}
   </BtnCustom>
-))``
+))`
+  text-transform: none;
+`
 
 export const TradingMenuContainer = styled.div`
   width: 50%;

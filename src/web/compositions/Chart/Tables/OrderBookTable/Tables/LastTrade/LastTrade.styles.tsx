@@ -14,6 +14,7 @@ export const LastTradeContainer = styled.div`
   background: #f2f4f6;
   border: 0.1rem solid #e0e5ec;
   border-radius: 0.75rem;
+  font-family: "IBM Plex Sans Condensed", sans-serif;
 `
 
 export const LastTradeValue = styled.div`

@@ -12,7 +12,7 @@ const KeySelector = ({ ...props }: IProps) => {
       placeholder="Select key"
       value={value}
       options={options}
-      onChange={handleChange}
+      onChange={(e) => handleChange(e)}
       selectStyles={selectStyles}
       isAccountSelect={isAccountSelect}
     />

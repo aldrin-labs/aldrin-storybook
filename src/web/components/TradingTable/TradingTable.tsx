@@ -60,6 +60,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             selectedKey,
             marketType,
+            exchange,
+            currencyPair,
             show: tab === 'positions',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
