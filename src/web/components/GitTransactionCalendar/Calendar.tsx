@@ -104,10 +104,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
     }
   }
 
-  componentDidMount() {
-    this.props.getCalendarActionsQueryRefetch()
-  }
-
   render() {
     const {
       getCalendarActionsQuery,
@@ -291,8 +287,9 @@ const CalendarDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={GitTransactionCalendar}
       query={getCalendarActions}
+      pollInterval={30000}
       name={`getCalendarActionsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       variables={{
         input: {
           timezone,

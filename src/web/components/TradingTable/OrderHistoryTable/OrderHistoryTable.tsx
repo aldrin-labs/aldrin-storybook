@@ -165,7 +165,7 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getOrderHistory}
       name={`getOrderHistoryQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
         variables: {

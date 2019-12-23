@@ -245,6 +245,7 @@ export default withAuth(
     queryRendererHoc({
       query: getChartData,
       name: 'getChartDataQuery',
+      fetchPolicy: 'cache-and-network',
     }),
     graphql(CHANGE_CURRENCY_PAIR, {
       name: 'changeCurrencyPairMutation',

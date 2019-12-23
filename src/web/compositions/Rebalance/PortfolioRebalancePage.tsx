@@ -744,6 +744,7 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
