@@ -64,15 +64,6 @@ class AccountsSlick extends Component {
     })
   }
 
-  componentDidMount() {
-    const intervalId = setInterval(() => this.props.refetch(), 30000)
-    this.setState({ intervalId })
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.intervalId)
-  }
-
   render() {
     const {
       baseCoin,
@@ -191,13 +182,14 @@ const APIWrapper = (props: any) => {
 
   return (
     <QueryRenderer
-      {...props}
       loaderColor="#fefefe"
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       component={MutationComponent}
       query={getMyPortfoliosQuery}
-      variables={{ baseCoin }}
+      pollInterval={30000}
+      variables={{ baseCoin: props.baseCoin }}
       withOutSpinner={false}
+      {...props}
     />
   )
 }

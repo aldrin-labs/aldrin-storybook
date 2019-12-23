@@ -54,9 +54,9 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     openSharePortfolioPopUp: false,
   }
 
-  componentDidMount() {
-    this.props.portfolioAssetsRefetch()
-  }
+  // componentDidMount() {
+  //   this.props.portfolioAssetsRefetch()
+  // }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
@@ -238,6 +238,7 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
     query: getPageType,
@@ -246,7 +247,7 @@ export default compose(
   queryRendererHoc({
     query: getFuturesOverview,
     name: 'getFuturesOverviewQuery',
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     pollInterval: 30000,
   }),
   graphql(updateTooltipSettings, {

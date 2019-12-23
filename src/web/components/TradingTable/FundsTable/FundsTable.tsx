@@ -160,7 +160,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {
