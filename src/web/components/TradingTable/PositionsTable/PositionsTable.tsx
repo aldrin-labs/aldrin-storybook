@@ -218,7 +218,7 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getActivePositions}
       name={`getActivePositionsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: FUTURES_POSITIONS,
         variables: {
