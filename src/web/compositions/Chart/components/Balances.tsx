@@ -116,9 +116,11 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscri
   })
 
   const [USDTFuturesFund = { free: 0, locked: 0, quantity: 0 }] = getFundsQuery.getFunds
-  .filter(el => el.assetType === 1 && el.asset.symbol === 'USDT')
+  .filter(el => +el.assetType === 1 && el.asset.symbol === 'USDT')
 
   const isSPOTMarket = isSPOTMarketType(marketType)
+
+  console.log('USDTFuturesFund', USDTFuturesFund)
 
   const firstValuePair =
     stripDigitPlaces(funds[0].value) === null

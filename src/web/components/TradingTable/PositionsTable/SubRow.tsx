@@ -12,7 +12,7 @@ const SubRow = ({}) => {
     <div
       style={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
       }}
     >

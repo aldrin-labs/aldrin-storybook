@@ -38,8 +38,6 @@ class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
     mode: 'limit',
-    percentageBuy: 0,
-    percentageSell: 0,
     leverage: 1,
     reduceOnly: false,
     orderMode: 'TIF',
@@ -94,13 +92,13 @@ class SimpleTabs extends React.Component {
               isActive={mode === 'limit'}
               onClick={() => this.handleChangeMode('limit')}
             >
-              limit
+              Limit
             </TerminalModeButton>
             <TerminalModeButton
               isActive={mode === 'market'}
               onClick={() => this.handleChangeMode('market')}
             >
-              market
+              Market
             </TerminalModeButton>
             <TerminalModeButton
               isActive={mode === 'stop-limit'}
@@ -109,7 +107,7 @@ class SimpleTabs extends React.Component {
                 this.setState({ orderMode: 'TIF' })
               }}
             >
-              stop-limit
+              Stop-Limit
             </TerminalModeButton>
             <SmartOrderModeButton
               isActive={mode === 'smart'}
@@ -119,8 +117,7 @@ class SimpleTabs extends React.Component {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ paddingRight: '1rem' }}>smart order</span>
-                <StyledZoomIcon />
+                <span style={{ paddingRight: '1rem' }}>Smart Trade</span>
               </div>
             </SmartOrderModeButton>
           </TerminalHeader>
@@ -260,7 +257,6 @@ class SimpleTabs extends React.Component {
                   priceType={mode}
                   priceFromOrderbook={priceFromOrderbook}
                   isSPOTMarket={isSPOTMarket}
-                  percentage={percentageBuy}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Buy')
                   }
@@ -290,7 +286,6 @@ class SimpleTabs extends React.Component {
                   priceType={mode}
                   priceFromOrderbook={priceFromOrderbook}
                   isSPOTMarket={isSPOTMarket}
-                  percentage={percentageSell}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Sell')
                   }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
+import { client } from '@core/graphql/apolloClient'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -14,6 +15,7 @@ import {
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
+import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
@@ -21,7 +23,8 @@ import { cancelOrderStatus } from '@core/utils/tradingUtils'
 @withTheme
 class PositionsTable extends React.PureComponent {
   state = {
-    openOrdersProcessedData: [],
+    positionsData: [],
+    marketPrice: 0,
   }
 
   unsubscribeFunction: null | Function = null
@@ -68,13 +71,46 @@ class PositionsTable extends React.PureComponent {
   componentDidMount() {
     const { getActivePositionsQuery, subscribeToMore, theme } = this.props
 
-    const openOrdersProcessedData = combinePositionsTable(
+    const that = this
+
+    this.subscription = client
+      .subscribe({
+        query: MARKET_TICKERS,
+        variables: {
+          symbol: this.props.currencyPair,
+          exchange: this.props.exchange,
+          marketType: String(this.props.marketType),
+        },
+      })
+      .subscribe({
+        next: (data) => {
+          if (data && data.data && data.data.listenMarketTickers) {
+            const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
+
+            const positionsData = combinePositionsTable(
+              that.props.getActivePositionsQuery.getActivePositions,
+              that.cancelOrderWithStatus,
+              theme,
+              marketPrice
+            )
+
+            that.setState({
+              positionsData,
+              marketPrice,
+            })
+          }
+        },
+      })
+
+
+    const positionsData = combinePositionsTable(
       getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
-      theme
+      theme,
+      this.state.marketPrice
     )
     this.setState({
-      openOrdersProcessedData,
+      positionsData,
     })
 
     this.unsubscribeFunction = subscribeToMore()
@@ -85,21 +121,25 @@ class PositionsTable extends React.PureComponent {
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
     }
+
+    this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    const openOrdersProcessedData = combinePositionsTable(
+    const positionsData = combinePositionsTable(
       nextProps.getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
-      nextProps.theme
+      nextProps.theme,
+      this.state.marketPrice
     )
+
     this.setState({
-      openOrdersProcessedData,
+      positionsData,
     })
   }
 
   render() {
-    const { openOrdersProcessedData } = this.state
+    const { positionsData } = this.state
     const { tab, handleTabChange, show, marketType } = this.props
 
     if (!show) {
@@ -158,7 +198,7 @@ class PositionsTable extends React.PureComponent {
           </div>
         }
         rowsWithHover={false}
-        data={{ body: openOrdersProcessedData }}
+        data={{ body: positionsData }}
         columnNames={getTableHead(tab)}
       />
     )

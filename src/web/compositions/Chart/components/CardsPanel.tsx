@@ -5,7 +5,7 @@ import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 import {
   PanelWrapper,
@@ -54,6 +54,8 @@ export const CardsPanel = ({
   themeMode,
   activeExchange,
   changeActiveExchangeMutation,
+  isDefaultTerminalViewMode,
+  updateTerminalViewMode
 }) => {
   return (
     <>
@@ -86,8 +88,10 @@ export const CardsPanel = ({
           selectStyles={selectStyles}
         />
 
-        <CustomCard style={{ position: 'relative', display: 'flex', width: '50%' }}>
-          <ComingSoon />
+        <CustomCard
+          style={{ position: 'relative', display: 'flex', width: '49.3%', marginRight: '1rem' }}
+        >
+          <ComingSoon style={{ zIndex: 1 }} />
           <PanelCard first>
             <PanelCardTitle>Last price</PanelCardTitle>
             <span>
@@ -128,13 +132,13 @@ export const CardsPanel = ({
           </PanelCard>
         </CustomCard>
 
-        <PillowButton
-          firstHalfText={'single chart'}
-          secondHalfText={'multichart'}
-          activeHalf={'first'}
-          changeHalf={() => {}}
-          buttonAdditionalStyle={{ height: '100%', padding: '0 1rem' }}
-        />
+        <SendButton
+          style={{ height: '100%', width: '17.3%', marginRight: '.4rem' }}
+          type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+          onClick={() => updateTerminalViewMode(isDefaultTerminalViewMode ? 'smartOrderMode' : 'default')}
+        >
+          {isDefaultTerminalViewMode ? 'smart trading' : 'back to original terminal'}
+        </SendButton>
 
         {/* {view === 'default' && (
         <TransparentExtendedFAB

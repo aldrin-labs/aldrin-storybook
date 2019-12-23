@@ -134,7 +134,7 @@ class OrderbookAndDepthChart extends React.Component {
 
     if (this.state.readyForNewOrder) {
       this.setState({ readyForNewOrder: false }, () =>
-        setTimeout(() => this.setState({ readyForNewOrder: true }), 100)
+        setTimeout(() => this.setState({ readyForNewOrder: true }), 1000)
       )
     }
   }

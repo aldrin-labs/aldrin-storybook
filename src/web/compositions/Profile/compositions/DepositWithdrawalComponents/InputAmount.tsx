@@ -23,7 +23,7 @@ interface IProps {
 const Balances = ({ selectedCoin, getFundsQuery, marketType = 0, ...inputProps }: IProps) => {
   const { getFunds } = getFundsQuery
   const [currentElement] = getFunds.filter(
-    (el: FundsType) => el.asset.symbol === selectedCoin && el.assetType === marketType
+    (el: FundsType) => el.asset.symbol === selectedCoin && +el.assetType === marketType
   )
 
   const { quantity, locked, free } = currentElement || {

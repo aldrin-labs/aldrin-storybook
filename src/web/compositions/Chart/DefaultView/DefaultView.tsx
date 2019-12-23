@@ -89,6 +89,8 @@ export const DefaultView = (props: any) => {
             themeMode,
             activeExchange,
             changeActiveExchangeMutation,
+            isDefaultTerminalViewMode,
+            updateTerminalViewMode,
           }}
         />
       </ChartGridContainer>
