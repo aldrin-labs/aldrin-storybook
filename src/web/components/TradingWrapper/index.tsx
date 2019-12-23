@@ -116,7 +116,12 @@ class SimpleTabs extends React.Component {
                 updateTerminalViewMode('smartOrderMode')
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                }}
+              >
                 <span style={{ paddingRight: '1rem' }}>Smart Trade</span>
               </div>
             </SmartOrderModeButton>

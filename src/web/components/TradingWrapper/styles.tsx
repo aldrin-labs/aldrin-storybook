@@ -187,9 +187,13 @@ export const StyledZoomIcon = styled(ZoomOutMapIcon)`
 `
 
 export const SmartOrderModeButton = styled(TerminalModeButton)`
-  padding-right: 1rem;
+  text-transform: none;
+  padding: 0.25rem 1rem 0.1rem 1rem;
+  border-top-right-radius: 0.75rem;
   position: absolute;
   right: 0;
+  color: #0b1fd1;
+  border: 0.1rem solid #0b1fd1;
 `
 
 export const FuturesSettings = styled.div`
