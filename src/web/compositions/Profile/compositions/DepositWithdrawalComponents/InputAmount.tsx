@@ -44,7 +44,7 @@ const Balances = ({
     <StyledInput
       endAdornment={
         <InputAdornment
-          style={{ width: '70%', justifyContent: 'flex-end' }}
+          style={{ width: '70%', justifyContent: 'flex-end', cursor: 'pointer' }}
           disableTypography={true}
           position="end"
         >
