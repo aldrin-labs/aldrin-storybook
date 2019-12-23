@@ -606,8 +606,8 @@ const PortfolioSelectorDataWrapper = (props) => {
   return (
     <QueryRenderer
       component={PortfolioSelector}
-      withOutSpinner={true}
-      withTableLoader={true}
+      // withOutSpinner={true}
+      // withTableLoader={true}
       query={getPortfolioAssets}
       variables={{ baseCoin: props.baseCoin, innerSettings: true }}
       pollInterval={30000}

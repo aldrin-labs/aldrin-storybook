@@ -66,5 +66,6 @@ export default compose(
   queryRendererHoc({
     query: getMyPortfoliosQuery,
     name: 'getMyPortfoliosQuery',
+    fetchPolicy: "cache-and-network",
   })
 )(PortfolioSelector)

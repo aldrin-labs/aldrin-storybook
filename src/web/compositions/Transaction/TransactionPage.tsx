@@ -486,22 +486,24 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
-  // queryRendererHoc({
-  //   query: getPortfolioAssets,
-  //   name: 'portfolioKeys',
-  //   // pollInterval: 30000,
-  //   variables: { baseCoin: 'USDT', innerSettings: true },
-  // }),
-  graphql(getPortfolioAssets, {
+  queryRendererHoc({
+    query: getPortfolioAssets,
     name: 'portfolioKeys',
-    options: {
-      variables: { baseCoin: 'USDT', innerSettings: true },
-      pollInterval: 30000,
-    },
+    pollInterval: 30000,
+    fetchPolicy: "cache-and-network",
+    variables: { baseCoin: 'USDT', innerSettings: true },
   }),
+  // graphql(getPortfolioAssets, {
+  //   name: 'portfolioKeys',
+  //   options: {
+  //     variables: { baseCoin: 'USDT', innerSettings: true },
+  //     pollInterval: 30000,
+  //   },
+  // }),
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+    fetchPolicy: "cache-and-network",
     withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {
