@@ -18,12 +18,20 @@ interface IProps {
   getFundsQuery: {
     getFunds: FundsType[]
   }
+  onChange: ({ target: { value } }: { target: { value: number } }) => void
 }
 
-const Balances = ({ selectedCoin, getFundsQuery, marketType = 0, ...inputProps }: IProps) => {
+const Balances = ({
+  selectedCoin,
+  getFundsQuery,
+  marketType = 0,
+  onChange = () => {},
+  ...inputProps
+}: IProps) => {
   const { getFunds } = getFundsQuery
   const [currentElement] = getFunds.filter(
-    (el: FundsType) => el.asset.symbol === selectedCoin && +el.assetType === marketType
+    (el: FundsType) =>
+      el.asset.symbol === selectedCoin && +el.assetType === marketType
   )
 
   const { quantity, locked, free } = currentElement || {
@@ -40,7 +48,11 @@ const Balances = ({ selectedCoin, getFundsQuery, marketType = 0, ...inputProps }
           disableTypography={true}
           position="end"
         >
-          <StyledTypographyCaption onClick={() => inputProps.onClickAbornment ? inputProps.onChange({ target: { value: marketType === 0 ? free : quantity }}): () => {}}>{`AVAILABLE: ${marketType === 0 ? free : quantity} ${selectedCoin}`}</StyledTypographyCaption>
+          <StyledTypographyCaption
+            onClick={() => onChange({ target: { value: free } })}
+          >
+            {`AVAILABLE: ${free} ${selectedCoin}`}
+          </StyledTypographyCaption>
         </InputAdornment>
       }
       {...inputProps}
@@ -48,7 +60,7 @@ const Balances = ({ selectedCoin, getFundsQuery, marketType = 0, ...inputProps }
   )
 }
 
-const BalancesWrapper = (props) => {
+const BalancesWrapper = (props: any) => {
   return (
     <QueryRenderer
       component={Balances}
