@@ -120,6 +120,8 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscri
 
   const isSPOTMarket = isSPOTMarketType(marketType)
 
+  console.log('USDTFuturesFund', USDTFuturesFund)
+
   const firstValuePair =
     stripDigitPlaces(funds[0].value) === null
       ? funds[0].value

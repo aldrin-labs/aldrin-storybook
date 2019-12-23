@@ -92,13 +92,13 @@ class SimpleTabs extends React.Component {
               isActive={mode === 'limit'}
               onClick={() => this.handleChangeMode('limit')}
             >
-              limit
+              Limit
             </TerminalModeButton>
             <TerminalModeButton
               isActive={mode === 'market'}
               onClick={() => this.handleChangeMode('market')}
             >
-              market
+              Market
             </TerminalModeButton>
             <TerminalModeButton
               isActive={mode === 'stop-limit'}
@@ -107,7 +107,7 @@ class SimpleTabs extends React.Component {
                 this.setState({ orderMode: 'TIF' })
               }}
             >
-              stop-limit
+              Stop-Limit
             </TerminalModeButton>
             <SmartOrderModeButton
               isActive={mode === 'smart'}
@@ -117,8 +117,7 @@ class SimpleTabs extends React.Component {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ paddingRight: '1rem' }}>smart order</span>
-                <StyledZoomIcon />
+                <span style={{ paddingRight: '1rem' }}>Smart Trade</span>
               </div>
             </SmartOrderModeButton>
           </TerminalHeader>

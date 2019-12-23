@@ -479,11 +479,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             <Grid xs={11} item container alignItems="center">
               <SendButton
                 type={operationType}
-                onClick={async () => {
-                  const result = await validateForm()
+                onClick={() => {
+                  const result = validateForm()
+                  console.log('resilt', result)
 
-                  if (Object.keys(result).length === 0) {
-                    await handleSubmit(values)
+                  if (Object.keys(result).length === 0 || !isSPOTMarket) {
+                    console.log('got here', handleSubmit)
+                    handleSubmit(values)
                   }
                 }}
               >
@@ -533,7 +535,6 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -561,7 +562,6 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -596,7 +596,6 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(funds[1].quantity, traidingErrorMessages[1])
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])

@@ -45,8 +45,6 @@ import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrat
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
-import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
-import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 
 @withTheme

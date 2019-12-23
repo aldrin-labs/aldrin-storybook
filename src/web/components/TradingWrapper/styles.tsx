@@ -124,7 +124,9 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   >
     {children}
   </BtnCustom>
-))``
+))`
+  text-transform: none;
+`
 
 export const TradingMenuContainer = styled.div`
   width: 50%;
