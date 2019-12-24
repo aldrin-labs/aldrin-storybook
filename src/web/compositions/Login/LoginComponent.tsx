@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Auth0Lock } from 'auth0-lock'
 
+import { withRouter } from 'react-router'
 import { Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
@@ -14,10 +15,10 @@ import {
   auth0UnauthorizedErrorMessage,
   errorInProcessOfLoginin,
 } from '@core/utils/errorsConfig'
-
-// import { Props } from './Login.types'
+import { Loading } from '@sb/components/index'
 
 @withTheme
+@withRouter
 class LoginClassComponent extends React.Component<{}> {
   lock = null
 
@@ -101,6 +102,7 @@ class LoginClassComponent extends React.Component<{}> {
           }
 
           await this.props.onLogin(profile, authResult.idToken)
+
           this.addFSIdentify(profile)
         }
       )
@@ -142,8 +144,6 @@ class LoginClassComponent extends React.Component<{}> {
   }
 
   showLogin = async () => {
-    console.log('showLogin fired')
-    
     if (!this.props.modalIsOpen && !this.props.modalLogging) {
       await this.onModalChanges(true)
       this.lock.show()
@@ -154,15 +154,29 @@ class LoginClassComponent extends React.Component<{}> {
   }
 
   render() {
+    const {
+      history: {
+        location: { hash },
+      },
+      loginStatus
+    } = this.props
+    const isAfterRedirectFromAuth = hash.includes('access_token')
+
     return (
-      <Button
-        color="secondary"
-        variant="contained"
-        onClick={this.showLogin}
-        className="loginButton"
-      >
-        Log in / Sign Up
-      </Button>
+      <>
+        {isAfterRedirectFromAuth || loginStatus === true ? (
+          <Loading color={'#165BE0'} />
+        ) : (
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={this.showLogin}
+            className="loginButton"
+          >
+            Log in / Sign Up
+          </Button>
+        )}
+      </>
     )
   }
 }
