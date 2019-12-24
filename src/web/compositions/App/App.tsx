@@ -7,7 +7,11 @@ import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
 import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
 
-const generateClassName = createGenerateClassName()
+const generateClassName = createGenerateClassName({
+  dangerouslyUseGlobalCSS: false,
+  productionPrefix: 'c',
+})
+
 const jss = create(jssPreset())
 // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
@@ -33,6 +37,8 @@ if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
 }
+
+
 
 const AppRaw = ({
   children,
