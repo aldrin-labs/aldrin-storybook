@@ -329,8 +329,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     let maxAmount = 0
 
     if (isSPOTMarket) {
-      maxAmount =
-      isBuyType ? funds[1].quantity : funds[0].quantity
+      maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
     } else {
       maxAmount = funds[1].quantity * leverage
     }
@@ -341,7 +340,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
             <div style={{ margin: 'auto 0', width: '100%' }}>
               {priceType !== 'market' ? (
-                <InputRowContainer key={'limit-price'}>
+                <InputRowContainer
+                  key={'limit-price'}
+                  padding={'.8rem 0 .6rem 0'}
+                >
                   <TradeInputContainer
                     title={'Price'}
                     value={values.limit || ''}
@@ -400,10 +402,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         ? newValue
                         : newValue * priceForCalculate
 
-                    const fixedAmount =
-                      isSPOTMarket
-                        ? newAmount.toFixed(8)
-                        : newAmount.toFixed(3)
+                    const fixedAmount = isSPOTMarket
+                      ? newAmount.toFixed(8)
+                      : newAmount.toFixed(3)
 
                     setFieldValue('amount', fixedAmount)
                     setFieldValue('total', newTotal.toFixed(8))
@@ -446,9 +447,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       <InputTitle>cost:</InputTitle>
                       <InputTitle color="#16253D" style={{ width: 'auto' }}>
                         {values.amount > 0
-                          ? (funds[1].quantity / 100 * (isBuyType || !isSPOTMarket
-                            ? values.total / (maxAmount / 100)
-                            : values.amount / (maxAmount / 100) / 100)).toFixed(2)
+                          ? (
+                              (funds[1].quantity / 100) *
+                              (isBuyType || !isSPOTMarket
+                                ? values.total / (maxAmount / 100)
+                                : values.amount / (maxAmount / 100) / 100)
+                            ).toFixed(2)
                           : 0.0}{' '}
                         {pair[1]}
                       </InputTitle>
@@ -474,7 +478,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             </div>
           </Grid>
 
-          <Grid xs={3} item container style={{ maxWidth: '100%' }}>
+          <Grid
+            xs={3}
+            item
+            container
+            style={{ maxWidth: '100%', paddingBottom: '1.5rem' }}
+          >
             <Grid xs={1} item />
             <Grid xs={11} item container alignItems="center">
               <SendButton
@@ -650,7 +659,10 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           : values.price
 
       if (values.amount * priceForCalculate < 10) {
-        props.showOrderResult({ status: 'error', message: 'Total value must be at least 10.' })
+        props.showOrderResult({
+          status: 'error',
+          message: 'Total value must be at least 10.',
+        })
         return
       }
 

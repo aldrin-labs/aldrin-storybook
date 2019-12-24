@@ -61,6 +61,10 @@ class OrderbookAndDepthChart extends React.Component {
         amountsMap,
         sizeDigits,
       })
+
+      return {
+        ...updatedData,
+      }
     }
 
     if (
@@ -92,12 +96,13 @@ class OrderbookAndDepthChart extends React.Component {
       })
     }
 
-    return {
-      readyForNewOrder:
-        readyForNewOrder === undefined ? true : readyForNewOrder,
-      aggregatedData: updatedAggregatedData,
-      ...updatedData,
-    }
+    return null
+    // return {
+    //   readyForNewOrder:
+    //     readyForNewOrder === undefined ? true : readyForNewOrder,
+    //   aggregatedData: updatedAggregatedData,
+    //   ...updatedData,
+    // }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -188,6 +193,8 @@ class OrderbookAndDepthChart extends React.Component {
 
     const dataToSend = aggregation === 0.01 ? { asks, bids } : aggregatedData
     const amountForBackground = amountsMap.average()
+
+    console.log('re-render orderbook')
 
     return (
       <>

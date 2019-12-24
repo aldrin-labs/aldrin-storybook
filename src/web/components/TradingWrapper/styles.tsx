@@ -20,6 +20,7 @@ export const TablesBlockWrapper = styled(Grid)`
 export const TerminalContainer = styled.div`
   height: 100%;
   padding: 5px;
+  overflow: hidden scroll;
 `
 
 export const ScrollWrapper = styled.div`
@@ -188,7 +189,7 @@ export const StyledZoomIcon = styled(ZoomOutMapIcon)`
 
 export const SmartOrderModeButton = styled(TerminalModeButton)`
   text-transform: none;
-  padding: 0.25rem 1rem 0.1rem 1rem;
+  padding: 0.25rem 1rem 0.1rem 2rem;
   border-top-right-radius: 0.75rem;
   position: absolute;
   right: 0;
