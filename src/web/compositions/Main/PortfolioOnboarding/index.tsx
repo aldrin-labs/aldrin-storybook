@@ -49,7 +49,8 @@ const Onboarding = ({
   if (!needOnboarding) return null
 
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
-  const completeOnboarding = async () =>
+  const completeOnboarding = async () => {
+
     await updateTooltipSettings({
       variables: {
         settings: {
@@ -66,6 +67,7 @@ const Onboarding = ({
       },
       update: updateTooltipMutation,
     })
+  }
 
   return (
     <>
