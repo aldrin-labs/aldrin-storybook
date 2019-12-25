@@ -47,6 +47,8 @@ class OrderbookAndDepthChart extends React.Component {
     let updatedData = null
     let updatedAggregatedData = state.aggregatedData
 
+    console.log({ asks: asks.getLength(), bids: bids.getLength() })
+
     // first get data from query
     if (
       asks.getLength() === 0 &&
@@ -96,19 +98,17 @@ class OrderbookAndDepthChart extends React.Component {
       })
     }
 
-    return null
-    // return {
-    //   readyForNewOrder:
-    //     readyForNewOrder === undefined ? true : readyForNewOrder,
-    //   aggregatedData: updatedAggregatedData,
-    //   ...updatedData,
-    // }
+    return {
+      readyForNewOrder:
+        readyForNewOrder === undefined ? true : readyForNewOrder,
+      aggregatedData: updatedAggregatedData,
+      ...updatedData,
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.readyForNewOrder) {
+    if (nextProps.data.marketOrders !== this.props.data.marketOrders)
       return true
-    }
 
     return false
   }
@@ -137,11 +137,11 @@ class OrderbookAndDepthChart extends React.Component {
       unsubscribe = this.props.subscribeToMore()
     }
 
-    if (this.state.readyForNewOrder) {
-      this.setState({ readyForNewOrder: false }, () =>
-        setTimeout(() => this.setState({ readyForNewOrder: true }), 1000)
-      )
-    }
+    // if (this.state.readyForNewOrder) {
+    //   this.setState({ readyForNewOrder: false }, () =>
+    //     setTimeout(() => this.setState({ readyForNewOrder: true }), 0)
+    //   )
+    // }
   }
 
   componentWillUnmount() {

@@ -89,6 +89,10 @@ const toFixedTrunc = (value, n) => {
 
 @withTheme
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
+  state = {
+    priceFromOrderbook: null,
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.priceType !== this.props.priceType) {
       const {
@@ -102,13 +106,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', amount * priceForCalculate, 1)
     }
 
-    if (prevProps.priceFromOrderbook !== this.props.priceFromOrderbook) {
+    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
       const {
         priceFromOrderbook,
         values: { amount },
       } = this.props
+
       this.setFormatted('limit', priceFromOrderbook, 1)
       this.setFormatted('total', amount * priceFromOrderbook, 1)
+      this.setState({ priceFromOrderbook })
     }
   }
 

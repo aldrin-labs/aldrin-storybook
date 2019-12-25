@@ -10,7 +10,7 @@ import { IProps } from './OrderBookTable.types'
 
 import {
   getDataForTable,
-  getArrayFromAggregatedTree,
+  getDataFromTree,
   rowStyles,
 } from '@core/utils/chartPageUtils'
 
@@ -32,7 +32,7 @@ class OrderBookTable extends Component<IProps> {
     const tableData =
       aggregation === 0.01
         ? getDataForTable(data, aggregation, 'asks').reverse()
-        : getArrayFromAggregatedTree(data.asks, 'asks').reverse()
+        : getDataFromTree(data.asks, 'asks').reverse()
 
     const [base, quote] = currencyPair.split('_')
 

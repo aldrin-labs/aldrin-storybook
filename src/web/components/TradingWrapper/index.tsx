@@ -14,7 +14,6 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import {
-  TablesBlockWrapper,
   TerminalContainer,
   TerminalMainGrid,
   FullHeightGrid,
@@ -27,7 +26,6 @@ import {
   SettingsLabel,
   StyledSelect,
   StyledOption,
-  StyledZoomIcon,
   FuturesSettings,
   SmartOrderModeButton,
 } from './styles'
@@ -60,8 +58,6 @@ class SimpleTabs extends React.Component {
   render() {
     const {
       mode,
-      percentageBuy,
-      percentageSell,
       leverage,
       reduceOnly,
       orderMode,
@@ -78,6 +74,7 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      updateMode,
       priceFromOrderbook,
       updateTerminalViewMode,
     } = this.props
