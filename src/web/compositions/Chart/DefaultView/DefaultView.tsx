@@ -170,7 +170,10 @@ export const DefaultView = (props: any) => {
               <Grid
                 item
                 xs={5}
-                style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
+                style={{
+                  height: '100%',
+                  padding: '0 0 .4rem .4rem',
+                }}
               >
                 <TradeHistory
                   {...{
