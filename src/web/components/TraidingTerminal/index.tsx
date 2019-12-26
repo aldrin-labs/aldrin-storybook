@@ -621,7 +621,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           status: 'error',
           message: 'Total value must be at least 10.',
         }, props.cancelOrder, isSPOTMarket ? 0 : 1)
-        return
+
+        return null
       }
 
       const result = await props.confirmOperation(

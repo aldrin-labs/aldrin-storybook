@@ -26,11 +26,19 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   unsubscribeFunction: null | Function = null
 
   componentDidMount() {
-    const { getOrderHistoryQuery, subscribeToMore, theme } = this.props
+    const {
+      getOrderHistoryQuery,
+      subscribeToMore,
+      theme,
+      arrayOfMarketIds,
+      marketType,
+    } = this.props
 
     const orderHistoryProcessedData = combineOrderHistoryTable(
       getOrderHistoryQuery.getOrderHistory,
-      theme
+      theme,
+      arrayOfMarketIds,
+      marketType
     )
     this.setState({
       orderHistoryProcessedData,
@@ -49,7 +57,9 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   componentWillReceiveProps(nextProps: IProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
       nextProps.getOrderHistoryQuery.getOrderHistory,
-      nextProps.theme
+      nextProps.theme,
+      nextProps.arrayOfMarketIds,
+      nextProps.marketType
     )
 
     this.setState({

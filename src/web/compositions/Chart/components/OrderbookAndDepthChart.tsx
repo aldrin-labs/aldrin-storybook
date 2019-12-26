@@ -49,6 +49,8 @@ class OrderbookAndDepthChart extends React.Component {
     let updatedData = null
     let updatedAggregatedData = state.aggregatedData
 
+    console.log({ asks: asks.getLength(), bids: bids.getLength() })
+
     // first get data from query
     if (
       asks.getLength() === 0 &&

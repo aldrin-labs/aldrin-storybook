@@ -64,6 +64,8 @@ export const DefaultView = (props: any) => {
     changeActiveExchangeMutation,
     terminalViewMode,
     updateTerminalViewMode,
+    marketByMarketType,
+    arrayOfMarketIds,
   } = props
 
   if (!currencyPair) {
@@ -210,6 +212,7 @@ export const DefaultView = (props: any) => {
                   marketType={marketType}
                   exchange={exchange}
                   currencyPair={currencyPair}
+                  arrayOfMarketIds={arrayOfMarketIds}
                 />
               </CustomCard>
             </TradingTabelContainer>
