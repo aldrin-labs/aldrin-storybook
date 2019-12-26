@@ -102,10 +102,10 @@ export default function defaultRowRenderer({
 
   if (openOrderHistory && openOrderHistory.length > 0) {
     needHighlight =
-      openOrderHistory.findIndex((order) => order.price === rowData.price) !==
+      openOrderHistory.findIndex((order) => +order.price === +rowData.price) !==
       -1
   }
-
+  
   const orderPercentage =
     rowData.size > amountForBackground
       ? 100

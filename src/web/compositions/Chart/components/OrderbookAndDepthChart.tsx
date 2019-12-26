@@ -18,6 +18,7 @@ import {
   addOrdersToOrderbook,
   getAggregatedData,
   testJSON,
+  getAggregationsFromMinPriceDigits,
 } from '@core/utils/chartPageUtils'
 
 let unsubscribe = Function
@@ -25,7 +26,7 @@ let unsubscribe = Function
 class OrderbookAndDepthChart extends React.Component {
   state = {
     readyForNewOrder: true,
-    aggregation: 0.01,
+    aggregation: 0,
     amountsMap: new SortedMap(),
     asks: new TreeMap(),
     bids: new TreeMap(),
@@ -42,6 +43,7 @@ class OrderbookAndDepthChart extends React.Component {
     const {
       data: { marketOrders },
       sizeDigits,
+      minPriceDigits,
     } = newProps
 
     let updatedData = null
@@ -61,9 +63,9 @@ class OrderbookAndDepthChart extends React.Component {
       updatedData = transformOrderbookData({
         marketOrders,
         amountsMap,
+        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         sizeDigits,
       })
-
       return {
         ...updatedData,
       }
@@ -76,7 +78,21 @@ class OrderbookAndDepthChart extends React.Component {
       const ordersData = newProps.data.marketOrders
       const orderbookData = updatedData || { asks, bids }
 
-      if (aggregation !== 0.01) {
+      // check that current pair and marketType === pair in new orders
+      if (
+        (ordersData.bids.length > 0 &&
+          ordersData.bids[0].pair !==
+            `${newProps.symbol}_${newProps.marketType}`) ||
+        (ordersData.asks.length > 0 &&
+          ordersData.asks[0].pair !==
+            `${newProps.symbol}_${newProps.marketType}`)
+      )
+        return null
+
+      if (
+        String(aggregation) !==
+        String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+      ) {
         updatedAggregatedData = addOrdersToOrderbook({
           updatedData: updatedAggregatedData,
           ordersData,
@@ -101,16 +117,13 @@ class OrderbookAndDepthChart extends React.Component {
     return {
       readyForNewOrder:
         readyForNewOrder === undefined ? true : readyForNewOrder,
+      aggregation:
+        aggregation === undefined || aggregation === 0
+          ? String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+          : aggregation,
       aggregatedData: updatedAggregatedData,
       ...updatedData,
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.data.marketOrders !== this.props.data.marketOrders)
-      return true
-
-    return false
   }
 
   componentDidMount() {
@@ -120,15 +133,34 @@ class OrderbookAndDepthChart extends React.Component {
 
       unsubscribe = this.props.subscribeToMore()
     }
+
+    this.setState({
+      aggregation: String(
+        getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
+      ),
+    })
   }
 
   componentDidUpdate(prevProps: IProps) {
     if (
-      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
-      prevProps.currencyPair !== this.props.currencyPair
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.symbol !== this.props.symbol ||
+      prevProps.marketType !== this.props.marketType
     ) {
       // when change exchange delete all data and...
-      this.setState({ asks: new TreeMap(), bids: new TreeMap() })
+      this.setState({
+        asks: new TreeMap(),
+        bids: new TreeMap(),
+        amountsMap: new SortedMap(),
+        aggregation: String(
+          getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
+        ),
+        aggregatedData: {
+          asks: new TreeMap(),
+          bids: new TreeMap(),
+          amountsMap: new SortedMap(),
+        },
+      })
 
       //  unsubscribe from old exchange
       unsubscribe && unsubscribe()
@@ -137,17 +169,26 @@ class OrderbookAndDepthChart extends React.Component {
       unsubscribe = this.props.subscribeToMore()
     }
 
-    // if (this.state.readyForNewOrder) {
-    //   this.setState({ readyForNewOrder: false }, () =>
-    //     setTimeout(() => this.setState({ readyForNewOrder: true }), 0)
-    //   )
-    // }
+    if (
+      String(
+        getAggregationsFromMinPriceDigits(prevProps.minPriceDigits)[0].value
+      ) !==
+      String(
+        getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
+      )
+    ) {
+      this.setState({
+        aggregation: String(
+          getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
+        ),
+      })
+    }
   }
 
-  componentWillUnmount() {
-    this.setState({ readyForNewOrder: false })
-    unsubscribe && unsubscribe()
-  }
+  // componentWillUnmount() {
+  //   this.setState({ readyForNewOrder: false })
+  //   unsubscribe && unsubscribe()
+  // }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
     const { sizeDigits } = this.props
@@ -182,19 +223,24 @@ class OrderbookAndDepthChart extends React.Component {
     const {
       chartProps,
       changeTable,
-      currencyPair,
+      symbol,
       marketType,
-      activeExchange,
       exchange,
       quote,
+      selectedKey,
+      minPriceDigits,
       updateTerminalPriceFromOrderbook,
     } = this.props
+
     const { asks, bids, aggregation, aggregatedData, amountsMap } = this.state
 
-    const dataToSend = aggregation === 0.01 ? { asks, bids } : aggregatedData
-    const amountForBackground = amountsMap.average()
+    const dataToSend =
+      String(aggregation) ===
+      String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+        ? { asks, bids }
+        : aggregatedData
 
-    console.log('re-render orderbook')
+    const amountForBackground = amountsMap.average()
 
     return (
       <>
@@ -210,7 +256,7 @@ class OrderbookAndDepthChart extends React.Component {
             chartProps={chartProps}
             changeTable={changeTable}
             exchange={exchange}
-            symbol={currencyPair}
+            symbol={symbol}
             data={{
               asks,
               bids,
@@ -225,11 +271,13 @@ class OrderbookAndDepthChart extends React.Component {
           style={{ height: '100%', padding: '0 .4rem .4rem .4rem' }}
         >
           <OrderBook
-            activeExchange={activeExchange}
+            exchange={exchange}
             aggregation={aggregation}
             chartProps={chartProps}
             changeTable={changeTable}
-            currencyPair={currencyPair}
+            symbol={symbol}
+            minPriceDigits={minPriceDigits}
+            selectedKey={selectedKey}
             marketType={marketType}
             amountForBackground={amountForBackground}
             updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
@@ -247,38 +295,42 @@ export const APIWrapper = ({
   chartProps,
   changeTable,
   aggregation,
-  pair,
   marketType,
-  activeExchange,
   exchange,
+  minPriceDigits,
+  selectedKey,
   updateTerminalPriceFromOrderbook,
   symbol,
   sizeDigits,
   quote,
-}) => (
-  <QueryRenderer
-    component={OrderbookAndDepthChart}
-    withOutSpinner
-    withTableLoader={true}
-    fetchPolicy="network-only"
-    query={ORDERS_MARKET_QUERY}
-    variables={{ symbol: symbol, exchange, marketType }}
-    subscriptionArgs={{
-      subscription: ORDERBOOK,
-      variables: { symbol: symbol, exchange, marketType },
-      updateQueryFunction: updateOrderBookQuerryFunction,
-    }}
-    {...{
-      quote,
-      symbol,
-      activeExchange,
-      currencyPair: pair,
-      aggregation,
-      sizeDigits,
-      onButtonClick: changeTable,
-      setOrders: chartProps.setOrders,
-      updateTerminalPriceFromOrderbook,
-      ...chartProps,
-    }}
-  />
-)
+}) => {
+  return (
+    <QueryRenderer
+      component={OrderbookAndDepthChart}
+      withOutSpinner
+      withTableLoader={true}
+      fetchPolicy="network-only"
+      query={ORDERS_MARKET_QUERY}
+      variables={{ symbol: symbol, exchange, marketType }}
+      subscriptionArgs={{
+        subscription: ORDERBOOK,
+        variables: { symbol, exchange, marketType },
+        updateQueryFunction: updateOrderBookQuerryFunction,
+      }}
+      {...{
+        quote,
+        symbol,
+        exchange,
+        aggregation,
+        marketType,
+        sizeDigits,
+        selectedKey,
+        minPriceDigits,
+        onButtonClick: changeTable,
+        setOrders: chartProps.setOrders,
+        updateTerminalPriceFromOrderbook,
+        ...chartProps,
+      }}
+    />
+  )
+}

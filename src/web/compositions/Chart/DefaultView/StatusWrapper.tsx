@@ -30,7 +30,7 @@ const CloseButton = withStyles(canselStyeles)((props) => (
 ))
 
 class OrderStatusWrapper extends React.Component {
-  showOrderResult = (result, cancelOrder) => {
+  showOrderResult = (result, cancelOrder, marketType) => {
     if (result.status === 'success' && result.orderId && result.message) {
       this.props.enqueueSnackbar(result.message, {
         variant: 'success',
@@ -39,7 +39,7 @@ class OrderStatusWrapper extends React.Component {
           <Button
             size="small"
             color="inherit"
-            onClick={() => cancelOrder(result.orderId)}
+            onClick={() => cancelOrder(result.orderId, marketType)}
           >
             {'Cancel'}
           </Button>

@@ -30,7 +30,7 @@ class PositionsTable extends React.PureComponent {
   unsubscribeFunction: null | Function = null
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation } = this.props
+    const { cancelOrderMutation, marketType } = this.props
 
     try {
       const responseResult = await cancelOrderMutation({
@@ -39,6 +39,7 @@ class PositionsTable extends React.PureComponent {
             keyId,
             orderId,
             pair,
+            marketType
           },
         },
       })
