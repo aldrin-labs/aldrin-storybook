@@ -14,6 +14,9 @@ export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
     themeMode: string
   }
   getTooltipSettings: TooltipsType
+  marketByMarketType: {
+    _id: string
+  }[]
   chart: {
     selectedKey: Key
     activeExchange: {

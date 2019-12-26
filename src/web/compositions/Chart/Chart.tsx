@@ -172,8 +172,8 @@ class Chart extends React.Component<IProps, IState> {
         getTradingSettings: { selectedTradingKey } = {
           selectedTradingKey: '',
         },
+        marketByMarketType,
         chart: {
-          selectedKey,
           activeExchange,
           currencyPair: { pair },
           view,
@@ -187,6 +187,8 @@ class Chart extends React.Component<IProps, IState> {
     if (!pair) {
       return
     }
+
+    const arrayOfMarketIds = marketByMarketType.map(el => el._id)
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
@@ -231,6 +233,7 @@ class Chart extends React.Component<IProps, IState> {
             changeTable={this.changeTable}
             chartProps={this.props}
             changeActiveExchangeMutation={changeActiveExchangeMutation}
+            arrayOfMarketIds={arrayOfMarketIds}
             MASTER_BUILD={MASTER_BUILD}
           />
         )}
@@ -246,6 +249,9 @@ export default withAuth(
       query: getChartData,
       name: 'getChartDataQuery',
       fetchPolicy: 'cache-and-network',
+      variables: {
+        marketType: 1, // hardcode here to get only futures marketIds'
+      }
     }),
     graphql(CHANGE_CURRENCY_PAIR, {
       name: 'changeCurrencyPairMutation',
