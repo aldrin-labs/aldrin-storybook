@@ -3,19 +3,19 @@ import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { rowStyles } from '@core/utils/chartPageUtils'
 
-const Container = styled.div`
-  ${rowStyles}
-  ${(props: { style: CSSProperties }) =>
-    props.styles}
+// ${rowStyles}
+// ${(props: { style: CSSProperties }) =>
+//   props.styles}
 
-  @media (max-width: 1450px) {
-    font-size: 1rem;
-  }
+// @media (max-width: 1450px) {
+//   font-size: 1rem;
+// }
 
-  @media (max-width: 1350px) {
-    font-size: 0.9rem;
-  }
-`
+// @media (max-width: 1350px) {
+//   font-size: 0.9rem;
+// }
+
+const Container = styled.div``
 
 /**
  * Default row renderer for Table.
@@ -102,10 +102,10 @@ export default function defaultRowRenderer({
 
   if (openOrderHistory && openOrderHistory.length > 0) {
     needHighlight =
-      openOrderHistory.findIndex((order) => order.price === rowData.price) !==
+      openOrderHistory.findIndex((order) => +order.price === +rowData.price) !==
       -1
   }
-
+  
   const orderPercentage =
     rowData.size > amountForBackground
       ? 100
@@ -148,19 +148,26 @@ export default function defaultRowRenderer({
       className={className}
       key={key}
       role="row"
-      styles={{
+      style={{
         ...style,
+        ...rowStyles,
         ...colorStyles,
         backgroundColor: needHighlight ? '#e0e5ec' : '',
         '&:hover': {
-          backgroundColor: 'rgba(255, 255, 255, .15)',
+          backgroundColor: 'rgba(0, 0, 0, .15)',
+        },
+        '@media (max-width: 1450px)': {
+          fontSize: '1rem',
+        },
+        '@media (max-width: 1350px)': {
+          fontSize: '0.9rem',
         },
       }}
     >
       {columns}
       {amountForBackground && (
         <Container
-          styles={{
+          style={{
             position: 'absolute',
             width: '100%',
             height: '80%',

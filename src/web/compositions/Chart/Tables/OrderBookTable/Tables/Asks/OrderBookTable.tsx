@@ -8,11 +8,7 @@ import 'react-virtualized/styles.css'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { IProps } from './OrderBookTable.types'
 
-import {
-  getDataForTable,
-  getArrayFromAggregatedTree,
-  rowStyles,
-} from '@core/utils/chartPageUtils'
+import { getDataFromTree } from '@core/utils/chartPageUtils'
 
 import defaultRowRenderer from '../../utils'
 import { AsksWrapper } from '../../OrderBookTableContainer.styles'
@@ -23,16 +19,12 @@ class OrderBookTable extends Component<IProps> {
     const {
       data,
       mode,
-      aggregation,
       openOrderHistory,
       amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
-    const tableData =
-      aggregation === 0.01
-        ? getDataForTable(data, aggregation, 'asks').reverse()
-        : getArrayFromAggregatedTree(data.asks, 'asks').reverse()
+    const tableData = getDataFromTree(data.asks, 'asks').reverse()
 
     const [base, quote] = currencyPair.split('_')
 

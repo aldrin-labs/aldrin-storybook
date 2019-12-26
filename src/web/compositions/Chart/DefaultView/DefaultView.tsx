@@ -54,6 +54,7 @@ export const DefaultView = (props: any) => {
     activeExchange,
     activeChart,
     changeTable,
+    minPriceDigits,
     showOrderResult,
     showCancelResult,
     showFuturesTransfer,
@@ -122,7 +123,7 @@ export const DefaultView = (props: any) => {
             xs={7}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
-            <CustomCard>
+            {/* <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
@@ -142,7 +143,7 @@ export const DefaultView = (props: any) => {
                   </DepthChartContainer>
                 </Fade>
               )}
-            </CustomCard>
+            </CustomCard> */}
           </ChartsContainer>
           <TradingTerminalContainer
             item
@@ -157,8 +158,10 @@ export const DefaultView = (props: any) => {
                     pair: currencyPair,
                     exchange,
                     quote,
+                    minPriceDigits,
                     updateTerminalPriceFromOrderbook,
                     activeExchange,
+                    selectedKey,
                     showTableOnMobile,
                     changeTable,
                     chartProps,
@@ -170,7 +173,10 @@ export const DefaultView = (props: any) => {
               <Grid
                 item
                 xs={5}
-                style={{ height: '100%', padding: '0 0 .4rem .4rem' }}
+                style={{
+                  height: '100%',
+                  padding: '0 0 .4rem .4rem',
+                }}
               >
                 <TradeHistory
                   {...{
@@ -178,6 +184,7 @@ export const DefaultView = (props: any) => {
                     pair: currencyPair,
                     exchange,
                     quote,
+                    minPriceDigits,
                     updateTerminalPriceFromOrderbook,
                     marketType,
                     activeExchange,

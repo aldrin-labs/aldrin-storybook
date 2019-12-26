@@ -11,9 +11,7 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
-import {
-  getUpdatedArray,
-} from '@core/utils/chartPageUtils'
+import { getDataFromTree } from '@core/utils/chartPageUtils'
 
 import { red, green } from '@material-ui/core/colors'
 import {
@@ -47,7 +45,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = getUpdatedArray(data, 'asks')
+    let transformedAsksData = getDataFromTree(data['asks'], 'asks')
       .reverse()
       .map(({ price, size }) => {
         totalVolumeAsks = totalVolumeAsks + Number(size)
@@ -59,7 +57,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       })
 
     let totalVolumeBids = 0
-    let transformedBidsData = getUpdatedArray(data, 'bids')
+    let transformedBidsData = getDataFromTree(data['bids'], 'bids')
       .reverse()
       .map(({ price, size }) => {
         totalVolumeBids = totalVolumeBids + Number(size)
@@ -281,7 +279,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 transform: 'translate(0)',
               }}
               animation={animated}
-              key='chart'
+              key="chart"
               data={ordersData}
             />
             {/* <AreaSeries
@@ -438,7 +436,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                 transform: 'translate(0)',
               }}
               animation={animated}
-              key='chardt'
+              key="chardt"
               data={spreadData}
             />
           </FlexibleXYPlot>

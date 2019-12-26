@@ -94,15 +94,25 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
   color: #7284a0;
 `
 
-export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscribeToMore, showFuturesTransfer }) => {
+export const Balances = ({
+  getFundsQuery,
+  pair,
+  marketType,
+  selectedKey,
+  subscribeToMore,
+  showFuturesTransfer,
+}) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
-    return () => { unsubscribeFunction() }
+    return () => {
+      unsubscribeFunction()
+    }
   }, [])
 
   const [open, togglePopup] = useState(false)
-  const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(false)
-
+  const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
+    false
+  )
 
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
@@ -115,12 +125,13 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscri
     return { quantity, value }
   })
 
-  const [USDTFuturesFund = { free: 0, locked: 0, quantity: 0 }] = getFundsQuery.getFunds
-  .filter(el => +el.assetType === 1 && el.asset.symbol === 'USDT')
+  const [
+    USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
+  ] = getFundsQuery.getFunds.filter(
+    (el) => +el.assetType === 1 && el.asset.symbol === 'USDT'
+  )
 
   const isSPOTMarket = isSPOTMarketType(marketType)
-
-  console.log('USDTFuturesFund', USDTFuturesFund)
 
   const firstValuePair =
     stripDigitPlaces(funds[0].value) === null
@@ -134,158 +145,161 @@ export const Balances = ({ getFundsQuery, pair, marketType, selectedKey, subscri
 
   return (
     <>
-    <TransferPopup 
-      open={open}
-      handleClose={() => togglePopup(false)}
-      transferFromSpotToFutures={transferFromSpotToFutures}
-      selectedAccount={selectedKey.keyId}
-      showFuturesTransfer={showFuturesTransfer}
-    />
-    <CustomCard>
-      <ChartCardHeader>Balances</ChartCardHeader>
-      <Grid
-        container
-        xs={12}
-        direction="column"
-        style={{ height: 'calc(100% - 3rem)', padding: '0 .3rem' }}
-      >
-        {isSPOTMarket ? (
-          <>
-            <Grid
-              item
-              container
-              direction="column"
-              justify="center"
-              xs={6}
-              style={{
-                borderBottom: '.1rem solid #e0e5ec',
-                maxWidth: '100%',
-              }}
-            >
-              <BalanceTitle>
-                <BalanceSymbol>{pair[0]}</BalanceSymbol>
-                <SvgIcon
-                  width={`1.7rem`}
-                  height={`1.7rem`}
-                  src={importCoinIcon(pair[0])}
-                />
-              </BalanceTitle>
-              <BalanceValues>
-                <BalanceQuantity>
-                  {funds[0].quantity.toFixed(8)}
-                </BalanceQuantity>
-                <BalanceValue>
-                  {addMainSymbol(firstValuePair, true)}
-                </BalanceValue>
-              </BalanceValues>
-            </Grid>
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              item
-              xs={6}
-              style={{ maxWidth: '100%' }}
-            >
-              <BalanceTitle>
-                <BalanceSymbol>{pair[1]}</BalanceSymbol>
-                <SvgIcon
-                  width={`1.7rem`}
-                  height={`1.7rem`}
-                  src={importCoinIcon(pair[1])}
-                />
-              </BalanceTitle>
-              <BalanceValues>
-                <BalanceQuantity>
-                  {funds[1].quantity.toFixed(8)}
-                </BalanceQuantity>
-                <BalanceValue>
-                  {addMainSymbol(secondValuePair, true)}
-                </BalanceValue>
-              </BalanceValues>
-            </Grid>
-          </>
-        ) : (
-          <>
-            <Grid
-              item
-              xs={8}
-              container
-              alignItems="center"
-              justify="center"
-              style={{ maxWidth: '100%' }}
-            >
-              <div style={{ width: '100%' }}>
-                <BalanceFuturesContainer>
-                  <BalanceFuturesTitle>Total</BalanceFuturesTitle>
-                  <BalanceFuturesValue>
-                    {stripDigitPlaces(USDTFuturesFund.quantity)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
-                  </BalanceFuturesValue>
-                </BalanceFuturesContainer>
-                <BalanceFuturesContainer needBorder>
-                  <BalanceFuturesTitle>In order</BalanceFuturesTitle>
-                  <BalanceFuturesValue>
-                    {stripDigitPlaces(USDTFuturesFund.locked)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
-                  </BalanceFuturesValue>
-                </BalanceFuturesContainer>
-                <BalanceFuturesContainer>
-                  <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
-                  <BalanceFuturesValue>
-                    {stripDigitPlaces(USDTFuturesFund.free)} <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
-                  </BalanceFuturesValue>
-                </BalanceFuturesContainer>
-              </div>
-            </Grid>
-            <Grid
-              item
-              xs={4}
-              container
-              direction="column"
-              alignItems="center"
-              justify="space-evenly"
-              style={{ maxWidth: '100%', padding: '0 1rem' }}
-            >
-              <BtnCustom
-                btnWidth="100%"
-                height="auto"
-                fontSize=".8rem"
-                padding="1rem 0 .8rem 0;"
-                borderRadius=".8rem"
-                btnColor={'#0B1FD1'}
-                backgroundColor={'#fff'}
-                hoverColor={'#fff'}
-                hoverBackground={'#0B1FD1'}
-                transition={'all .4s ease-out'}
-                onClick={() => {
-                  setTransferFromSpotToFutures(true)
-                  togglePopup(true)
+      <TransferPopup
+        open={open}
+        handleClose={() => togglePopup(false)}
+        transferFromSpotToFutures={transferFromSpotToFutures}
+        selectedAccount={selectedKey.keyId}
+        showFuturesTransfer={showFuturesTransfer}
+      />
+      <CustomCard>
+        <ChartCardHeader>Balances</ChartCardHeader>
+        <Grid
+          container
+          xs={12}
+          direction="column"
+          style={{ height: 'calc(100% - 3rem)', padding: '0 .3rem' }}
+        >
+          {isSPOTMarket ? (
+            <>
+              <Grid
+                item
+                container
+                direction="column"
+                justify="center"
+                xs={6}
+                style={{
+                  borderBottom: '.1rem solid #e0e5ec',
+                  maxWidth: '100%',
                 }}
               >
-                transfer in
-              </BtnCustom>
-              <BtnCustom
-                btnWidth="100%"
-                height="auto"
-                fontSize=".8rem"
-                padding="1rem 0 .8rem 0;"
-                borderRadius=".8rem"
-                btnColor={'#0B1FD1'}
-                backgroundColor={'#fff'}
-                hoverColor={'#fff'}
-                hoverBackground={'#0B1FD1'}
-                transition={'all .4s ease-out'}
-                onClick={() => {
-                  setTransferFromSpotToFutures(false)
-                  togglePopup(true)
-                }}
+                <BalanceTitle>
+                  <BalanceSymbol>{pair[0]}</BalanceSymbol>
+                  <SvgIcon
+                    width={`1.7rem`}
+                    height={`1.7rem`}
+                    src={importCoinIcon(pair[0])}
+                  />
+                </BalanceTitle>
+                <BalanceValues>
+                  <BalanceQuantity>
+                    {funds[0].quantity.toFixed(8)}
+                  </BalanceQuantity>
+                  <BalanceValue>
+                    {addMainSymbol(firstValuePair, true)}
+                  </BalanceValue>
+                </BalanceValues>
+              </Grid>
+              <Grid
+                container
+                direction="column"
+                justify="center"
+                item
+                xs={6}
+                style={{ maxWidth: '100%' }}
               >
-                transfer out
-              </BtnCustom>
-            </Grid>
-          </>
-        )}
-      </Grid>
-    </CustomCard>
+                <BalanceTitle>
+                  <BalanceSymbol>{pair[1]}</BalanceSymbol>
+                  <SvgIcon
+                    width={`1.7rem`}
+                    height={`1.7rem`}
+                    src={importCoinIcon(pair[1])}
+                  />
+                </BalanceTitle>
+                <BalanceValues>
+                  <BalanceQuantity>
+                    {funds[1].quantity.toFixed(8)}
+                  </BalanceQuantity>
+                  <BalanceValue>
+                    {addMainSymbol(secondValuePair, true)}
+                  </BalanceValue>
+                </BalanceValues>
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid
+                item
+                xs={8}
+                container
+                alignItems="center"
+                justify="center"
+                style={{ maxWidth: '100%' }}
+              >
+                <div style={{ width: '100%' }}>
+                  <BalanceFuturesContainer>
+                    <BalanceFuturesTitle>Total</BalanceFuturesTitle>
+                    <BalanceFuturesValue>
+                      {stripDigitPlaces(USDTFuturesFund.quantity)}{' '}
+                      <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                  <BalanceFuturesContainer needBorder>
+                    <BalanceFuturesTitle>In order</BalanceFuturesTitle>
+                    <BalanceFuturesValue>
+                      {stripDigitPlaces(USDTFuturesFund.locked)}{' '}
+                      <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                  <BalanceFuturesContainer>
+                    <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
+                    <BalanceFuturesValue>
+                      {stripDigitPlaces(USDTFuturesFund.free)}{' '}
+                      <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                </div>
+              </Grid>
+              <Grid
+                item
+                xs={4}
+                container
+                direction="column"
+                alignItems="center"
+                justify="space-evenly"
+                style={{ maxWidth: '100%', padding: '0 1rem' }}
+              >
+                <BtnCustom
+                  btnWidth="100%"
+                  height="auto"
+                  fontSize=".8rem"
+                  padding="1rem 0 .8rem 0;"
+                  borderRadius=".8rem"
+                  btnColor={'#0B1FD1'}
+                  backgroundColor={'#fff'}
+                  hoverColor={'#fff'}
+                  hoverBackground={'#0B1FD1'}
+                  transition={'all .4s ease-out'}
+                  onClick={() => {
+                    setTransferFromSpotToFutures(true)
+                    togglePopup(true)
+                  }}
+                >
+                  transfer in
+                </BtnCustom>
+                <BtnCustom
+                  btnWidth="100%"
+                  height="auto"
+                  fontSize=".8rem"
+                  padding="1rem 0 .8rem 0;"
+                  borderRadius=".8rem"
+                  btnColor={'#0B1FD1'}
+                  backgroundColor={'#fff'}
+                  hoverColor={'#fff'}
+                  hoverBackground={'#0B1FD1'}
+                  transition={'all .4s ease-out'}
+                  onClick={() => {
+                    setTransferFromSpotToFutures(false)
+                    togglePopup(true)
+                  }}
+                >
+                  transfer out
+                </BtnCustom>
+              </Grid>
+            </>
+          )}
+        </Grid>
+      </CustomCard>
     </>
   )
 }
