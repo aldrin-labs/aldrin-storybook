@@ -14,6 +14,7 @@ export interface IProps extends WithTheme<Theme> {
   subscribeToMore: () => () => void
   theme: Theme
   selectedKey: Key
+  marketType: number
 }
 
 export interface IState {

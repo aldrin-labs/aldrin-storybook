@@ -12,7 +12,6 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
@@ -68,12 +67,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
-    const { getOpenOrderHistoryQuery, subscribeToMore, theme } = this.props
+    const { getOpenOrderHistoryQuery, subscribeToMore, theme, arrayOfMarketIds, marketType } = this.props
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
-      theme
+      theme,
+      arrayOfMarketIds,
+      marketType,
     )
     this.setState({
       openOrdersProcessedData,
@@ -93,7 +94,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
-      nextProps.theme
+      nextProps.theme,
+      nextProps.arrayOfMarketIds,
+      nextProps.marketType,
     )
     this.setState({
       openOrdersProcessedData,

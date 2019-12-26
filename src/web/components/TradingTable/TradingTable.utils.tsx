@@ -106,6 +106,16 @@ export const getCurrentCurrencySymbol = (
   return isBuyTypeOrder(tradeType) ? quote : base
 }
 
+export const isDataForThisMarket = (
+  marketType: number,
+  arrayOfMarketIds: string[],
+  elementMarketId: string
+) => {
+  return marketType === 1
+    ? arrayOfMarketIds.includes(elementMarketId)
+    : !arrayOfMarketIds.includes(elementMarketId)
+}
+
 export const combinePositionsTable = (
   data: OrderType[],
   cancelOrderFunc: (
@@ -434,14 +444,20 @@ export const combineOpenOrdersTable = (
     orderId: string,
     pair: string
   ) => Promise<any>,
-  theme: Theme
+  theme: Theme,
+  arrayOfMarketIds: string[],
+  marketType: number
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
   }
 
   const processedOpenOrdersData = openOrdersData
-    .filter((el) => el.status === 'open')
+    .filter(
+      (el) =>
+        el.status === 'open' &&
+        isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
+    )
     .map((el: OrderType, i: number) => {
       const {
         keyId,
@@ -563,182 +579,194 @@ export const combineOpenOrdersTable = (
 
 export const combineOrderHistoryTable = (
   orderData: OrderType[],
-  theme: Theme
+  theme: Theme,
+  arrayOfMarketIds: string[],
+  marketType: number
 ) => {
   if (!orderData && !Array.isArray(orderData)) {
     return []
   }
 
-  const processedOrderHistoryData = orderData.map((el: OrderType, i) => {
-    const {
-      symbol,
-      timestamp,
-      type,
-      side,
-      price,
-      status,
-      filled,
-      average,
-      info,
-    } = el
+  const processedOrderHistoryData = orderData
+    .filter((el) =>
+      isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
+    )
+    .map((el: OrderType, i) => {
+      const {
+        symbol,
+        timestamp,
+        type,
+        side,
+        price,
+        status,
+        filled,
+        average,
+        info,
+      } = el
 
-    // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-    const pair = symbol.split('_')
+      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+      const pair = symbol.split('_')
 
-    const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
-      ? info
-      : { orderId: 'id', stopPrice: 0, origQty: 0 }
+      const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
+        ? info
+        : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
-    const triggerConditions = +stopPrice ? stopPrice : '-'
+      const triggerConditions = +stopPrice ? stopPrice : '-'
 
-    return {
-      id: `${orderId}${timestamp}${origQty}`,
-      pair: {
-        render: (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {pair[0]}/{pair[1]}
-          </div>
-        ),
-        contentToSort: symbol,
-      },
-      // type: type,
-      side: {
-        render: (
-          <div>
-            <span
-              style={{
-                display: 'block',
-                textTransform: 'uppercase',
-                color: side === 'buy' ? '#29AC80' : '#DD6956',
-              }}
-            >
-              {side}
-            </span>
-            <span
-              style={{
-                textTransform: 'capitalize',
-                color: '#7284A0',
-                letterSpacing: '1px',
-              }}
-            >
-              {type}
-            </span>
-          </div>
-        ),
-        style: {
-          color: isBuyTypeOrder(side)
-            ? theme.customPalette.green.main
-            : theme.customPalette.red.main,
+      return {
+        id: `${orderId}${timestamp}${origQty}`,
+        pair: {
+          render: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {pair[0]}/{pair[1]}
+            </div>
+          ),
+          contentToSort: symbol,
         },
-        contentToSort: side,
-      },
-      // average: {
-      //   render: average || '-',
-      //
-      //   contentToSort: +average,
-      // },
-      price: {
-        render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
-        style: { textAlign: 'left', whiteSpace: 'nowrap' },
-        contentToSort: price,
-      },
-      // filled: {
-      //   render: `${filledQuantityProcessed} %`,
-      //
-      //   contentToSort: filledQuantityProcessed,
-      // },
-      quantity: {
-        render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
-        contentToSort: +origQty,
-      },
-      // TODO: We should change "total" to total param from backend when it will be ready
-      amount: {
-        // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-        render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
-        contentToSort: origQty * price,
-      },
-      // TODO: Not sure about triggerConditions
-      triggerConditions: {
-        render: triggerConditions,
+        // type: type,
+        side: {
+          render: (
+            <div>
+              <span
+                style={{
+                  display: 'block',
+                  textTransform: 'uppercase',
+                  color: side === 'buy' ? '#29AC80' : '#DD6956',
+                }}
+              >
+                {side}
+              </span>
+              <span
+                style={{
+                  textTransform: 'capitalize',
+                  color: '#7284A0',
+                  letterSpacing: '1px',
+                }}
+              >
+                {type}
+              </span>
+            </div>
+          ),
+          style: {
+            color: isBuyTypeOrder(side)
+              ? theme.customPalette.green.main
+              : theme.customPalette.red.main,
+          },
+          contentToSort: side,
+        },
+        // average: {
+        //   render: average || '-',
+        //
+        //   contentToSort: +average,
+        // },
+        price: {
+          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          contentToSort: price,
+        },
+        // filled: {
+        //   render: `${filledQuantityProcessed} %`,
+        //
+        //   contentToSort: filledQuantityProcessed,
+        // },
+        quantity: {
+          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
+          contentToSort: +origQty,
+        },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        amount: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+          contentToSort: origQty * price,
+        },
+        // TODO: Not sure about triggerConditions
+        triggerConditions: {
+          render: triggerConditions,
 
-        contentToSort: +stopPrice,
-      },
-      status: {
-        render: status ? (
-          <span
-            style={{
-              color: status === 'canceled' ? '#DD6956' : '#29AC80',
-              textTransform: 'uppercase',
-            }}
-          >
-            {status.replace(/_/g, ' ')}
-          </span>
-        ) : (
-          '-'
-        ),
-        contentToSort: status,
-      },
-      date: {
-        render: (
-          <div>
-            <span style={{ display: 'block' }}>
-              {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                /-/g,
-                '.'
-              )}
+          contentToSort: +stopPrice,
+        },
+        status: {
+          render: status ? (
+            <span
+              style={{
+                color: status === 'canceled' ? '#DD6956' : '#29AC80',
+                textTransform: 'uppercase',
+              }}
+            >
+              {status.replace(/_/g, ' ')}
             </span>
-            <span style={{ color: '#7284A0' }}>
-              {moment(timestamp).format('LT')}
-            </span>
-          </div>
-        ),
-        style: { whiteSpace: 'nowrap' },
-        contentToSort: timestamp,
-      },
-    }
-  })
+          ) : (
+            '-'
+          ),
+          contentToSort: status,
+        },
+        date: {
+          render: (
+            <div>
+              <span style={{ display: 'block' }}>
+                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
+                  /-/g,
+                  '.'
+                )}
+              </span>
+              <span style={{ color: '#7284A0' }}>
+                {moment(timestamp).format('LT')}
+              </span>
+            </div>
+          ),
+          style: { whiteSpace: 'nowrap' },
+          contentToSort: timestamp,
+        },
+      }
+    })
 
   return processedOrderHistoryData
 }
 
 export const combineTradeHistoryTable = (
   tradeData: TradeType[],
-  theme: Theme
+  theme: Theme,
+  arrayOfMarketIds: string[],
+  marketType: number,
 ) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
   }
 
-  const processedTradeHistoryData = tradeData.map((el: TradeType) => {
-    const { id, timestamp, symbol, side, price, amount } = el
+  const processedTradeHistoryData = tradeData
+    .filter((el) =>
+      isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
+    )
+    .map((el: TradeType) => {
+      const { id, timestamp, symbol, side, price, amount } = el
 
-    const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
-    const { cost, currency } = fee
-    const pair = symbol.split('_')
+      const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
+      const { cost, currency } = fee
+      const pair = symbol.split('_')
 
-    return {
-      id: id,
-      pair: {
-        render: (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {pair[0]}/{pair[1]}
-          </div>
-        ),
-        contentToSort: symbol,
-      },
-      type: {
-        render: (
-          <div>
-            <span
-              style={{
-                display: 'block',
-                textTransform: 'uppercase',
-                color: side === 'buy' ? '#29AC80' : '#DD6956',
-              }}
-            >
-              {side}
-            </span>
-            {/* <span
+      return {
+        id: id,
+        pair: {
+          render: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {pair[0]}/{pair[1]}
+            </div>
+          ),
+          contentToSort: symbol,
+        },
+        type: {
+          render: (
+            <div>
+              <span
+                style={{
+                  display: 'block',
+                  textTransform: 'uppercase',
+                  color: side === 'buy' ? '#29AC80' : '#DD6956',
+                }}
+              >
+                {side}
+              </span>
+              {/* <span
               style={{
                 textTransform: 'capitalize',
                 color: '#7284A0',
@@ -747,65 +775,66 @@ export const combineTradeHistoryTable = (
             >
               {type}
             </span> */}
-          </div>
-        ),
-        contentToSort: side,
-      },
-      price: {
-        render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
-        style: { textAlign: 'left', whiteSpace: 'nowrap' },
-        contentToSort: price,
-      },
-      quantity: {
-        render: `${stripDigitPlaces(amount, 8)} ${pair[0]}`,
-        contentToSort: +amount,
-      },
-      // TODO: We should change "total" to total param from backend when it will be ready
-      amount: {
-        // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-        render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
-        contentToSort: amount * price,
-      },
-      fee: {
-        render: `${stripDigitPlaces(cost, 8)} ${currency}`,
+            </div>
+          ),
+          contentToSort: side,
+        },
+        price: {
+          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          contentToSort: price,
+        },
+        quantity: {
+          render: `${stripDigitPlaces(amount, 8)} ${pair[0]}`,
+          contentToSort: +amount,
+        },
+        // TODO: We should change "total" to total param from backend when it will be ready
+        amount: {
+          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+          render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
+          contentToSort: amount * price,
+        },
+        fee: {
+          render: `${stripDigitPlaces(cost, 8)} ${currency}`,
 
-        contentToSort: cost,
-      },
-      status: {
-        render: (
-          <span style={{ color: '#29AC80', textTransform: 'uppercase' }}>
-            succesful
-          </span>
-        ),
+          contentToSort: cost,
+        },
+        status: {
+          render: (
+            <span style={{ color: '#29AC80', textTransform: 'uppercase' }}>
+              succesful
+            </span>
+          ),
 
-        contentToSort: 0,
-      },
-      date: {
-        render: (
-          <div>
-            <span style={{ display: 'block' }}>
-              {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                /-/g,
-                '.'
-              )}
-            </span>
-            <span style={{ color: '#7284A0' }}>
-              {moment(timestamp).format('LT')}
-            </span>
-          </div>
-        ),
-        style: { whiteSpace: 'nowrap' },
-        contentToSort: timestamp,
-      },
-    }
-  })
+          contentToSort: 0,
+        },
+        date: {
+          render: (
+            <div>
+              <span style={{ display: 'block' }}>
+                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
+                  /-/g,
+                  '.'
+                )}
+              </span>
+              <span style={{ color: '#7284A0' }}>
+                {moment(timestamp).format('LT')}
+              </span>
+            </div>
+          ),
+          style: { whiteSpace: 'nowrap' },
+          contentToSort: timestamp,
+        },
+      }
+    })
 
   return processedTradeHistoryData
 }
 
 export const combineFundsTable = (
   fundsData: FundsType[],
-  hideSmallAssets: boolean
+  hideSmallAssets: boolean,
+  marketType: number,
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -817,7 +846,9 @@ export const combineFundsTable = (
       )
     : fundsData
 
-  const processedFundsData = filtredFundsData.map((el: FundsType) => {
+  const processedFundsData = filtredFundsData
+  .filter(el => el.assetType === marketType || el.asset.symbol === 'BNB')
+  .map((el: FundsType) => {
     const {
       quantity,
       locked,

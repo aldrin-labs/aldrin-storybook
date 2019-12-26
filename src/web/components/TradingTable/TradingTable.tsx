@@ -38,7 +38,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       selectedKey,
       marketType,
       exchange,
-      currencyPair
+      currencyPair,
+      arrayOfMarketIds,
     } = this.props
 
     return (
@@ -72,6 +73,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             selectedKey,
             marketType,
+            arrayOfMarketIds,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -82,6 +84,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             selectedKey,
             marketType,
+            arrayOfMarketIds,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -91,6 +94,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             selectedKey,
             marketType,
+            arrayOfMarketIds,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}

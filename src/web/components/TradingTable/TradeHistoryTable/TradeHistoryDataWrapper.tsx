@@ -56,6 +56,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       handleTabChange,
       selectedKey,
       marketType,
+      arrayOfMarketIds,
     } = this.props
     const { focusedInput, endDate, activeDateButton, startDate } = this.state
 
@@ -70,6 +71,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           selectedKey,
           show,
           marketType,
+          arrayOfMarketIds,
           handleTabChange,
           focusedInput,
           endDate,

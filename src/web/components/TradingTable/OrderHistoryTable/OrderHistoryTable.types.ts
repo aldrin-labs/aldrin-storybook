@@ -30,6 +30,8 @@ export interface IProps extends WithTheme<Theme> {
   }
   theme: Theme
   selectedKey: Key
+  arrayOfMarketIds: string[]
+  marketType: number
 }
 
 export interface IState {

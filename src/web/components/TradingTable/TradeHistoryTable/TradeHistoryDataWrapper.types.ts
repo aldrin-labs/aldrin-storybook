@@ -10,6 +10,8 @@ export interface IProps {
   show: boolean
   handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
   selectedKey: Key
+  arrayOfMarketIds: string[]
+  marketType: number
 }
 
 export interface IState {
