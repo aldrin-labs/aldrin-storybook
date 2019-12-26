@@ -1,4 +1,5 @@
 import React, { Component, PureComponent } from 'react'
+import styled from 'styled-components'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
@@ -9,7 +10,7 @@ import { withTheme } from '@material-ui/styles'
 
 import {
   getDataForTable,
-  getArrayFromAggregatedTree,
+  getDataFromTree,
   rowStyles,
 } from '@core/utils/chartPageUtils'
 
@@ -31,7 +32,7 @@ class SpreadTable extends Component<IProps> {
     const tableData =
       aggregation === 0.01
         ? getDataForTable(data, aggregation, 'bids').reverse()
-        : getArrayFromAggregatedTree(data.bids, 'bids').reverse()
+        : getDataFromTree(data.bids, 'bids').reverse()
 
     const [base, quote] = currencyPair.split('_')
 
