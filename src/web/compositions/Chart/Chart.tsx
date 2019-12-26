@@ -19,6 +19,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { CHANGE_ACTIVE_EXCHANGE } from '@core/graphql/mutations/chart/changeActiveExchange'
 import { CHANGE_VIEW_MODE } from '@core/graphql/mutations/chart/changeViewMode'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
+import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { MASTER_BUILD } from '@core/utils/config'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
@@ -181,11 +182,22 @@ class Chart extends React.Component<IProps, IState> {
         },
         app: { themeMode },
       },
+      pairPropertiesQuery,
       changeActiveExchangeMutation,
     } = this.props
 
-    if (!pair) {
-      return
+    let minPriceDigits
+
+    if (
+      !pair ||
+      this.props.loading ||
+      !pairPropertiesQuery.marketByName ||
+      !pairPropertiesQuery.marketByName[0]
+    ) {
+      minPriceDigits = 0.00000001
+    } else {
+      minPriceDigits = +this.props.pairPropertiesQuery.marketByName[0]
+        .properties.binance.filters[0].minPrice
     }
 
     const arrayOfMarketIds = marketByMarketType.map(el => el._id)
@@ -201,7 +213,6 @@ class Chart extends React.Component<IProps, IState> {
               sm={view === 'default' ? 8 : 12}
               xs={view === 'default' ? 8 : 12}
               container
-              alignItems="left"
               justify="flex-end"
             >
               <CardsPanel
@@ -223,8 +234,11 @@ class Chart extends React.Component<IProps, IState> {
             view={view}
             marketType={marketType}
             currencyPair={pair}
+            minPriceDigits={minPriceDigits}
             themeMode={themeMode}
-            selectedKey={selectedTradingKey ? { keyId: selectedTradingKey } : { keyId: '' }}
+            selectedKey={
+              selectedTradingKey ? { keyId: selectedTradingKey } : { keyId: '' }
+            }
             activeExchange={activeExchange}
             terminalViewMode={terminalViewMode}
             updateTerminalViewMode={this.updateTerminalViewMode}
@@ -262,6 +276,16 @@ export default withAuth(
     graphql(CHANGE_VIEW_MODE, {
       name: 'changeViewModeMutation',
     }),
-    graphql(ADD_CHART, { name: 'addChartMutation' })
+    graphql(ADD_CHART, { name: 'addChartMutation' }),
+    graphql(pairProperties, {
+      name: 'pairPropertiesQuery',
+      options: (props) => ({
+        fetchPolicy: 'cache-and-network',
+        variables: {
+          marketName: props.getChartDataQuery.chart.currencyPair.pair,
+          marketType: props.getChartDataQuery.chart.marketType,
+        },
+      }),
+    })
   )(withErrorFallback(Chart))
 )

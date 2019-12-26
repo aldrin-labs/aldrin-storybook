@@ -153,12 +153,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       funds,
       decimals,
     } = this.props
-    // if (
-    //   (errors.amount === traidingErrorMessages[1] ||
-    //     errors.total === traidingErrorMessages[1]) &&
-    //   e.target.value > total
-    // )
-    //   return null
 
     const priceForCalculate =
       priceType !== 'market' && limit !== null ? limit : price
@@ -174,10 +168,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         (amount * priceForCalculate) / ((maxAmount * priceForCalculate) / 100)
       )
 
-      // todo: fix this, in amount i have btc amount
-      console.log('pre', amount, priceForCalculate, maxAmount)
-
-      this.props.changePercentage(percentageAmount)
       this.setFormatted('amount', amount, 0)
       setFieldTouched('amount', true)
     }
@@ -189,40 +179,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       isSPOTMarket,
       leverage,
       setFieldValue,
-      values: { amount, price, limit },
+      values: { price, limit },
       setFieldTouched,
-      errors,
-      funds,
     } = this.props
 
     const priceForCalculate =
       priceType !== 'market' && limit !== null ? limit : price
 
-    // if (
-    //   (errors.amount === traidingErrorMessages[1] ||
-    //     errors.total === traidingErrorMessages[1]) &&
-    //   e.target.value > amount
-    // )
-    //   return null
-
-    // if (
-    //   +e.target.value > (funds[1].quantity * leverage) / priceForCalculate &&
-    //   !isSPOTMarket
-    // ) {
-    //   setFieldValue(
-    //     'amount',
-    //     ((funds[1].quantity * leverage) / priceForCalculate).toFixed(3)
-    //   )
-    //   return null
-    // }
-
     const total = e.target.value * priceForCalculate
-
-    const newAmount = isSPOTMarket
-      ? e.target.value
-      : +e.target.value > 0
-      ? +e.target.value * leverage
-      : e.target.value
 
     setFieldValue('amount', e.target.value)
     setFieldTouched('amount', true)
@@ -312,8 +276,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       pair,
       funds,
       leverage,
-      percentage,
-      changePercentage,
       operationType,
       priceType,
       isSPOTMarket,
@@ -429,12 +391,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 </InputRowContainer>
               )}
 
-              {/* {pairsErrors.length > 0 && (
-                  <FormError>
-                    {pairsErrors.length ? pairsErrors[0][1] : '\u00A0'}
-                  </FormError>
-                )} */}
-
               {!isSPOTMarket && (
                 <InputRowContainer justify="flex-end">
                   <Grid xs={1} item />
@@ -496,10 +452,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 type={operationType}
                 onClick={() => {
                   const result = validateForm()
-                  console.log('resilt', result)
-
                   if (Object.keys(result).length === 0 || !isSPOTMarket) {
-                    console.log('got here', handleSubmit)
                     handleSubmit(values)
                   }
                 }}
@@ -640,7 +593,6 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       byType,
       priceType,
       isSPOTMarket,
-      leverage,
       reduceOnly,
       orderMode,
       TIFMode,
@@ -668,8 +620,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         props.showOrderResult({
           status: 'error',
           message: 'Total value must be at least 10.',
-        })
-        return
+        }, props.cancelOrder, isSPOTMarket ? 0 : 1)
+
+        return null
       }
 
       const result = await props.confirmOperation(
@@ -692,11 +645,11 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
               }
             : {}),
-          // ...(priceType !== 'stop-limit' ? { reduceOnly } : {}),
+          ...(priceType !== 'stop-limit' ? { reduceOnly } : {}),
         }
       )
 
-      props.showOrderResult(result, props.cancelOrder)
+      props.showOrderResult(result, props.cancelOrder, isSPOTMarket ? 0 : 1)
       setSubmitting(false)
     }
   },
