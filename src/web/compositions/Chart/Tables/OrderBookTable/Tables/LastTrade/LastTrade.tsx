@@ -42,22 +42,22 @@ const LastTrade = (props: IProps) => {
 
   try {
     const data = JSON.parse(props.data.marketTickers[0])
-    price = data[4]
-    fall = data[9]
+    if (data[1] === props.symbol || data[2] === props.marketType) {
+      price = data[4]
+      fall = data[9]
+    }
   } catch (e) {}
 
   return (
     <LastTradeContainer
-      onClick={() =>
-        updateTerminalPriceFromOrderbook(stripDigitPlaces(price, 2))
-      }
+      onClick={() => updateTerminalPriceFromOrderbook(Number(price).toFixed(2))}
     >
       <LastTradeValue fall={fall}>
         <ArrowIcon fall={fall} />
-        {addMainSymbol(stripDigitPlaces(price, 2), true)}
+        {addMainSymbol(Number(price).toFixed(2), true)}
       </LastTradeValue>
       <LastTradePrice>
-        {addMainSymbol(stripDigitPlaces(price, 2), true)}
+        {addMainSymbol(Number(price).toFixed(2), true)}
       </LastTradePrice>
     </LastTradeContainer>
   )

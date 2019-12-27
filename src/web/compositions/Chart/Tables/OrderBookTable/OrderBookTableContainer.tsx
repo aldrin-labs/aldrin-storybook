@@ -4,9 +4,7 @@ import { compose } from 'recompose'
 
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
 
@@ -23,17 +21,10 @@ import SortByBoth from '@icons/SortByBoth.svg'
 import SortByAsks from '@icons/SortByAsks.svg'
 import SortByBids from '@icons/SortByBids.svg'
 
-import ComingSoon from '@sb/components/ComingSoon'
-import {
-  IProps,
-  IState,
-  OrderbookMode,
-  OrderbookGroup,
-  OrderbookGroupOptions,
-} from './OrderBookTableContainer.types'
+import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
-import { MASTER_BUILD } from '@core/utils/config'
+import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
 
 import { GET_ORDERS } from '@core/graphql/queries/chart/getOrders'
 import { SET_ORDERS } from '@core/graphql/mutations/chart/setOrders'
@@ -56,17 +47,18 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       aggregation,
       currencyPair,
       onButtonClick,
+      minPriceDigits,
       amountForBackground,
       setOrderbookAggregation,
       updateTerminalPriceFromOrderbook,
       getOpenOrderHistoryQuery: { getOpenOrderHistory },
     } = this.props
+
     const { mode } = this.state
+    const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
 
     return (
       <>
-        {MASTER_BUILD && <ComingSoon />}
-
         <ChartCardHeader
           style={{
             display: 'flex',
@@ -96,12 +88,17 @@ class OrderBookTableContainer extends Component<IProps, IState> {
               onClick={() => this.setOrderbookMode('asks')}
             />
             <StyledSelect
-              onChange={(e: ChangeEvent) =>
-                setOrderbookAggregation(+e.target.value)
+              onChange={(e: ChangeEvent) => {
+                setOrderbookAggregation(
+                  aggregationModes
+                    .find((mode) => String(mode.label) === e.target.value)
+                    .value
+                )
+              }
               }
             >
-              {OrderbookGroupOptions.map((option) => (
-                <StyledOption key={option.value}>{option.value}</StyledOption>
+              {aggregationModes.map((option) => (
+                <StyledOption key={option.label}>{option.label}</StyledOption>
               ))}
             </StyledSelect>
           </ModesContainer>
@@ -124,7 +121,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           marketType={marketType}
           aggregation={aggregation}
           symbol={currencyPair}
-          exchange={this.props.activeExchange.symbol}
+          exchange={this.props.exchange}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
         />
 
@@ -149,20 +146,19 @@ const APIWrapper = (props) => {
       component={OrderBookTableContainer}
       variables={{
         openOrderInput: {
-          activeExchangeKey: props.getSelectedKeyQuery.chart.selectedKey.keyId,
+          activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {
           openOrderInput: {
-            activeExchangeKey:
-              props.getSelectedKeyQuery.chart.selectedKey.keyId,
+            activeExchangeKey: props.selectedKey.keyId,
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
@@ -179,9 +175,5 @@ export default compose(
   }),
   graphql(SET_ORDERS, {
     name: 'setOrdersMutation',
-  }),
-  queryRendererHoc({
-    query: getSelectedKey,
-    name: 'getSelectedKeyQuery',
   })
 )(APIWrapper)

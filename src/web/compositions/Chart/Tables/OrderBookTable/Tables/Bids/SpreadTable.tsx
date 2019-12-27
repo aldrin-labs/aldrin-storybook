@@ -29,10 +29,8 @@ class SpreadTable extends Component<IProps> {
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
-    const tableData =
-      aggregation === 0.01
-        ? getDataForTable(data, aggregation, 'bids').reverse()
-        : getDataFromTree(data.bids, 'bids').reverse()
+
+    const tableData = getDataFromTree(data.bids, 'bids').reverse()
 
     const [base, quote] = currencyPair.split('_')
 

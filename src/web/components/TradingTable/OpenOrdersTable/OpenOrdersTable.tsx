@@ -28,7 +28,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   unsubscribeFunction: null | Function = null
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation } = this.props
+    const { cancelOrderMutation, marketType } = this.props
 
     try {
       const responseResult = await cancelOrderMutation({
@@ -37,6 +37,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             keyId,
             orderId,
             pair,
+            marketType
           },
         },
       })
