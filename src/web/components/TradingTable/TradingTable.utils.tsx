@@ -549,7 +549,7 @@ export const combineOpenOrdersTable = (
         // TODO: Not sure about triggerConditions
         triggerConditions: {
           render: triggerConditionsFormatted,
-          contentToSort: +triggerConditions,
+          contentToSort: +rawStopPrice,
         },
         date: {
           render: (
@@ -702,7 +702,7 @@ export const combineOrderHistoryTable = (
         // TODO: Not sure about triggerConditions
         triggerConditions: {
           render: triggerConditionsFormatted,
-          contentToSort: +triggerConditions,
+          contentToSort: +rawStopPrice,
         },
         status: {
           render: status ? (
