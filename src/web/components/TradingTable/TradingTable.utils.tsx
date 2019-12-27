@@ -989,7 +989,7 @@ export const updateActivePositionsQuerryFunction = (
 
   const positionHasTheSameIndex = prev.getActivePositions.findIndex(
     (el: TradeType) =>
-      el._id === subscriptionData.data.listenFuturesPositions._id
+      el.symbol === subscriptionData.data.listenFuturesPositions.symbol
   )
 
   console.log('prev.getActivePositions', prev.getActivePositions)
