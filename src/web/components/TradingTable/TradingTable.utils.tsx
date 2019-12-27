@@ -472,8 +472,18 @@ export const combineOpenOrdersTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
-      const triggerConditions =
-        el && el.info && +el.info.stopPrice ? el.info.stopPrice : '-'
+
+      const rawStopPrice = +el.info.stopPrice || +el.stopPrice
+      const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
+      const triggerConditionsFormatted =
+        triggerConditions === '-'
+          ? '-'
+          : (side === 'buy' && type === 'stop_market') ||
+            type === 'stop_limit' ||
+            ((side === 'sell' && type === 'take_profit_market') ||
+              type === 'take_profit_limit')
+          ? `>= ${triggerConditions}`
+          : `<= ${triggerConditions}`
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -538,8 +548,8 @@ export const combineOpenOrdersTable = (
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
-          render: triggerConditions,
-          contentToSort: +stopPrice,
+          render: triggerConditionsFormatted,
+          contentToSort: +triggerConditions,
         },
         date: {
           render: (
@@ -611,7 +621,17 @@ export const combineOrderHistoryTable = (
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
-      const triggerConditions = +stopPrice ? stopPrice : '-'
+      const rawStopPrice = +el.info.stopPrice || +el.stopPrice
+      const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
+      const triggerConditionsFormatted =
+        triggerConditions === '-'
+          ? '-'
+          : (side === 'buy' && type === 'stop_market') ||
+            type === 'stop_limit' ||
+            ((side === 'sell' && type === 'take_profit_market') ||
+              type === 'take_profit_limit')
+          ? `>= ${triggerConditions}`
+          : `<= ${triggerConditions}`
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -681,9 +701,8 @@ export const combineOrderHistoryTable = (
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
-          render: triggerConditions,
-
-          contentToSort: +stopPrice,
+          render: triggerConditionsFormatted,
+          contentToSort: +triggerConditions,
         },
         status: {
           render: status ? (
@@ -727,7 +746,7 @@ export const combineTradeHistoryTable = (
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: number
 ) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
@@ -834,7 +853,7 @@ export const combineTradeHistoryTable = (
 export const combineFundsTable = (
   fundsData: FundsType[],
   hideSmallAssets: boolean,
-  marketType: number,
+  marketType: number
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -847,65 +866,67 @@ export const combineFundsTable = (
     : fundsData
 
   const processedFundsData = filtredFundsData
-  .filter(el => el.assetType === marketType || el.asset.symbol === 'BNB')
-  .map((el: FundsType) => {
-    const {
-      quantity,
-      locked,
-      free,
-      asset: { symbol, priceBTC, priceUSD },
-    } = el
+    .filter((el) => el.assetType === marketType || el.asset.symbol === 'BNB')
+    .map((el: FundsType) => {
+      const {
+        quantity,
+        locked,
+        free,
+        asset: { symbol, priceBTC, priceUSD },
+      } = el
 
-    if (!quantity || quantity === 0) {
-      return
-    }
+      if (!quantity || quantity === 0) {
+        return
+      }
 
-    const btcValue = addMainSymbol(
-      roundAndFormatNumber(quantity * priceBTC, 8, false),
-      false
-    )
+      const btcValue = addMainSymbol(
+        roundAndFormatNumber(quantity * priceBTC, 8, false),
+        false
+      )
 
-    return {
-      id: `${symbol}${quantity}`,
-      coin: symbol || 'unknown',
-      totalBalance: {
-        render:
-          addMainSymbol(
-            roundAndFormatNumber(quantity * priceUSD, 8, true),
-            true
-          ) || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +quantity * priceUSD,
-      },
-      totalQuantity: {
-        render: quantity || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +quantity,
-      },
-      availableBalance: {
-        render:
-          addMainSymbol(roundAndFormatNumber(free * priceUSD, 8, true), true) ||
-          '-',
-        style: { textAlign: 'left' },
-        contentToSort: +free * priceUSD,
-      },
-      availableQuantity: {
-        render: free || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +free,
-      },
-      inOrder: {
-        render: locked || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +locked,
-      },
-      btcValue: {
-        render: btcValue || '-',
-        style: { textAlign: 'left' },
-        contentToSort: quantity * priceBTC,
-      },
-    }
-  })
+      return {
+        id: `${symbol}${quantity}`,
+        coin: symbol || 'unknown',
+        totalBalance: {
+          render:
+            addMainSymbol(
+              roundAndFormatNumber(quantity * priceUSD, 8, true),
+              true
+            ) || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +quantity * priceUSD,
+        },
+        totalQuantity: {
+          render: quantity || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +quantity,
+        },
+        availableBalance: {
+          render:
+            addMainSymbol(
+              roundAndFormatNumber(free * priceUSD, 8, true),
+              true
+            ) || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +free * priceUSD,
+        },
+        availableQuantity: {
+          render: free || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +free,
+        },
+        inOrder: {
+          render: locked || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +locked,
+        },
+        btcValue: {
+          render: btcValue || '-',
+          style: { textAlign: 'left' },
+          contentToSort: quantity * priceBTC,
+        },
+      }
+    })
 
   return processedFundsData.filter((el) => !!el)
 }
