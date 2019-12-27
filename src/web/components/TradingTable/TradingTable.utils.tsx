@@ -21,17 +21,19 @@ import {
 } from '@sb/components/TradingTable/TradingTable.mocks'
 
 import SubRow from './PositionsTable/SubRow'
-import {
-  EntryOrderColumn,
-  StopLossColumn,
-  StatusColumn,
-  TakeProfitColumn,
-} from './ActiveTrades/Columns'
+// import {
+//   EntryOrderColumn,
+//   StopLossColumn,
+//   StatusColumn,
+//   TakeProfitColumn,
+// } from './ActiveTrades/Columns'
+
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 
@@ -261,11 +263,11 @@ const getStatusFromState = (
   if (state === 'End') {
     return ['Closed', '#DD6956']
   } else if (state === 'Cancel') {
-    return ['Cancelled', '#DD6956']
+    return ['Canceled', '#DD6956']
   } else if (state === 'WaitForEntry' || state === '-') {
     return ['Waiting', '#5C8CEA']
   } else {
-    return ['Open', '#29AC80']
+    return [state, '#29AC80']
   }
 }
 
@@ -291,6 +293,7 @@ export const combineActiveTradesTable = (
       const {
         conditions: {
           pair,
+          leverage,
           marketType,
           entryOrder: {
             side,
@@ -329,13 +332,15 @@ export const combineActiveTradesTable = (
         },
       } = el
 
-      const { entryPrice, state } = el.conditions.state || {
+      const { entryPrice, state } = el.state || {
         entryPrice: 0,
         state: '-',
       }
+
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
       const pairArr = pair.split('_')
+      const status = getStatusFromState(state)
 
       const entryOrderPrice = !!entryPrice
         ? entryPrice
@@ -343,73 +348,73 @@ export const combineActiveTradesTable = (
         ? activatePrice + (activatePrice / 100) * entryDeviation
         : price
 
-      const profitPercentage = (currentPrice / entryOrderPrice - 1) * 100
-      const profitAmount = amount * (profitPercentage / 100)
+      const profitPercentage =
+        (currentPrice / entryOrderPrice - 1) * 100 * leverage
+      const profitAmount = amount * (profitPercentage / 100) * leverage
 
       return {
-        // TODO: We should change "total" to total param from backend when it will be ready
-        entryOrder: {
+        pair: {
           render: (
-            <EntryOrderColumn
-              enableEdit={!!entryPrice}
-              pair={`${pairArr[0]}/${pairArr[1]}`}
-              side={side}
-              price={entryOrderPrice}
-              order={orderType}
-              amount={
-                marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
-              }
-              total={entryOrderPrice * amount}
-              trailing={!entryPrice && entryDeviation}
-              red={red.new}
-              green={green.new}
-              blue={blue}
-              editTrade={() => editTrade('entryOrder', el)}
-            />
+            <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+          ),
+        },
+        side: {
+          render: (
+            <SubColumnValue color={side === 'buy' ? green.new : red.new}>
+              {marketType === 0
+                ? side
+                : side === 'buy'
+                ? 'buy long'
+                : 'sell short'}
+            </SubColumnValue>
+          ),
+        },
+        entryPrice: {
+          render: (
+            <SubColumnValue>
+              {entryOrderPrice} {pairArr[1]}
+            </SubColumnValue>
+          ),
+        },
+        quantity: {
+          render: (
+            <SubColumnValue>
+              {amount} {pairArr[0]}{' '}
+            </SubColumnValue>
           ),
         },
         takeProfit: {
-          render: (
-            <TakeProfitColumn
-              price={exitLevels.length > 0 && exitLevels[0].price}
-              order={exitLevels.length > 0 && exitLevels[0].orderType}
-              targets={exitLevels ? exitLevels : []}
-              timeoutProfit={timeoutWhenProfit}
-              timeoutProfitable={timeoutIfProfitable}
-              trailing={trailingExit}
-              red={red.new}
-              green={green.new}
-              blue={blue}
-              editTrade={() => editTrade('takeProfit', el)}
-            />
-          ),
+          render: <SubColumnValue>{'-'}</SubColumnValue>,
         },
         stopLoss: {
-          render: (
-            <StopLossColumn
-              price={stopLoss}
-              order={stopLossType}
-              forced={!!forcedLoss}
-              timeoutLoss={timeoutLoss}
-              trailing={false}
-              timeoutLossable={timeoutLossable}
-              red={red.new}
-              green={green.new}
-              blue={blue}
-              editTrade={() => editTrade('stopLoss', el)}
-            />
+          render: stopLoss ? (
+            <SubColumnValue color={red.new}>{stopLoss}%</SubColumnValue>
+          ) : (
+            '-'
+          ),
+        },
+        profit: {
+          render: currentPrice ? (
+            <SubColumnValue
+              color={
+                profitPercentage > 0 && side === 'buy' ? green.new : red.new
+              }
+            >
+              {profitPercentage && profitAmount
+                ? `${Math.abs(Number(profitAmount.toFixed(2)))} ${
+                    pairArr[0]
+                  } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                : '-'}
+            </SubColumnValue>
+          ) : (
+            '-'
           ),
         },
         status: {
           render: (
-            <StatusColumn
-              status={getStatusFromState(state)}
-              profitPercentage={profitPercentage}
-              profitAmount={profitAmount}
-              red={red.new}
-              green={green.new}
-              blue={blue}
-            />
+            <SubColumnValue style={{ textTransform: 'none' }} color={status[1]}>
+              {!!status[0] ? status[0] : 'Waiting'}
+            </SubColumnValue>
           ),
         },
         close: {
@@ -417,20 +422,104 @@ export const combineActiveTradesTable = (
             <BtnCustom
               btnWidth="100%"
               height="auto"
-              fontSize="1.3rem"
-              padding=".5rem 0 .4rem 0"
+              fontSize=".9rem"
+              padding=".2rem 0 .1rem 0"
               borderRadius=".8rem"
-              btnColor={red.new}
-              backgroundColor={'#fff'}
-              hoverColor={'#fff'}
-              hoverBackground={red.new}
+              btnColor={'#fff'}
+              borderColor={red.new}
+              backgroundColor={red.new}
+              hoverColor={red.new}
+              hoverBackground={'#fff'}
               transition={'all .4s ease-out'}
               onClick={() => cancelOrderFunc(el._id)}
             >
-              close
+              {status[0] === 'Waiting' ? 'close' : 'market'}
             </BtnCustom>
           ),
         },
+        // entryOrder: {
+        //   render: (
+        //     <EntryOrderColumn
+        //       enableEdit={!!entryPrice}
+        //       pair={`${pairArr[0]}/${pairArr[1]}`}
+        //       side={side}
+        //       price={entryOrderPrice}
+        //       order={orderType}
+        //       amount={
+        //         marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
+        //       }
+        //       total={entryOrderPrice * amount}
+        //       trailing={!entryPrice && entryDeviation}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //       editTrade={() => editTrade('entryOrder', el)}
+        //     />
+        //   ),
+        // },
+        // takeProfit: {
+        //   render: (
+        //     <TakeProfitColumn
+        //       price={exitLevels.length > 0 && exitLevels[0].price}
+        //       order={exitLevels.length > 0 && exitLevels[0].orderType}
+        //       targets={exitLevels ? exitLevels : []}
+        //       timeoutProfit={timeoutWhenProfit}
+        //       timeoutProfitable={timeoutIfProfitable}
+        //       trailing={trailingExit}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //       editTrade={() => editTrade('takeProfit', el)}
+        //     />
+        //   ),
+        // },
+        // stopLoss: {
+        //   render: (
+        //     <StopLossColumn
+        //       price={stopLoss}
+        //       order={stopLossType}
+        //       forced={!!forcedLoss}
+        //       timeoutLoss={timeoutLoss}
+        //       trailing={false}
+        //       timeoutLossable={timeoutLossable}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //       editTrade={() => editTrade('stopLoss', el)}
+        //     />
+        //   ),
+        // },
+        // status: {
+        //   render: (
+        //     <StatusColumn
+        //       status={getStatusFromState(state)}
+        //       profitPercentage={profitPercentage}
+        //       profitAmount={profitAmount}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //     />
+        //   ),
+        // },
+        // close: {
+        //   render: (
+        //     <BtnCustom
+        //       btnWidth="100%"
+        //       height="auto"
+        //       fontSize="1.3rem"
+        //       padding=".5rem 0 .4rem 0"
+        //       borderRadius=".8rem"
+        //       btnColor={red.new}
+        //       backgroundColor={'#fff'}
+        //       hoverColor={'#fff'}
+        //       hoverBackground={red.new}
+        //       transition={'all .4s ease-out'}
+        //       onClick={() => cancelOrderFunc(el._id)}
+        //     >
+        //       close
+        //     </BtnCustom>
+        //   ),
+        // },
       }
     })
 
@@ -727,7 +816,7 @@ export const combineTradeHistoryTable = (
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: number
 ) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
@@ -834,7 +923,7 @@ export const combineTradeHistoryTable = (
 export const combineFundsTable = (
   fundsData: FundsType[],
   hideSmallAssets: boolean,
-  marketType: number,
+  marketType: number
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -847,65 +936,67 @@ export const combineFundsTable = (
     : fundsData
 
   const processedFundsData = filtredFundsData
-  .filter(el => el.assetType === marketType || el.asset.symbol === 'BNB')
-  .map((el: FundsType) => {
-    const {
-      quantity,
-      locked,
-      free,
-      asset: { symbol, priceBTC, priceUSD },
-    } = el
+    .filter((el) => el.assetType === marketType || el.asset.symbol === 'BNB')
+    .map((el: FundsType) => {
+      const {
+        quantity,
+        locked,
+        free,
+        asset: { symbol, priceBTC, priceUSD },
+      } = el
 
-    if (!quantity || quantity === 0) {
-      return
-    }
+      if (!quantity || quantity === 0) {
+        return
+      }
 
-    const btcValue = addMainSymbol(
-      roundAndFormatNumber(quantity * priceBTC, 8, false),
-      false
-    )
+      const btcValue = addMainSymbol(
+        roundAndFormatNumber(quantity * priceBTC, 8, false),
+        false
+      )
 
-    return {
-      id: `${symbol}${quantity}`,
-      coin: symbol || 'unknown',
-      totalBalance: {
-        render:
-          addMainSymbol(
-            roundAndFormatNumber(quantity * priceUSD, 8, true),
-            true
-          ) || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +quantity * priceUSD,
-      },
-      totalQuantity: {
-        render: quantity || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +quantity,
-      },
-      availableBalance: {
-        render:
-          addMainSymbol(roundAndFormatNumber(free * priceUSD, 8, true), true) ||
-          '-',
-        style: { textAlign: 'left' },
-        contentToSort: +free * priceUSD,
-      },
-      availableQuantity: {
-        render: free || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +free,
-      },
-      inOrder: {
-        render: locked || '-',
-        style: { textAlign: 'left' },
-        contentToSort: +locked,
-      },
-      btcValue: {
-        render: btcValue || '-',
-        style: { textAlign: 'left' },
-        contentToSort: quantity * priceBTC,
-      },
-    }
-  })
+      return {
+        id: `${symbol}${quantity}`,
+        coin: symbol || 'unknown',
+        totalBalance: {
+          render:
+            addMainSymbol(
+              roundAndFormatNumber(quantity * priceUSD, 8, true),
+              true
+            ) || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +quantity * priceUSD,
+        },
+        totalQuantity: {
+          render: quantity || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +quantity,
+        },
+        availableBalance: {
+          render:
+            addMainSymbol(
+              roundAndFormatNumber(free * priceUSD, 8, true),
+              true
+            ) || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +free * priceUSD,
+        },
+        availableQuantity: {
+          render: free || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +free,
+        },
+        inOrder: {
+          render: locked || '-',
+          style: { textAlign: 'left' },
+          contentToSort: +locked,
+        },
+        btcValue: {
+          render: btcValue || '-',
+          style: { textAlign: 'left' },
+          contentToSort: quantity * priceBTC,
+        },
+      }
+    })
 
   return processedFundsData.filter((el) => !!el)
 }
