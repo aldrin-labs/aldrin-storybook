@@ -147,8 +147,9 @@ export const combinePositionsTable = (
         type = '-',
       } = el
 
-      const liqPrice = liquidationPrice
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
+      const liqPrice = entryPrice * (side === 'sell short' ? 1 + (100/leverage) / 100 : 1 - (100/leverage) / 100)
+
       const profitPercentage =
         (marketPrice / entryPrice - 1) * 100 * (side === 'sell short' ? -1 : 1)
       const profitAmount =
