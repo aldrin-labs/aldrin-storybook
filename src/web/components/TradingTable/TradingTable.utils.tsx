@@ -561,8 +561,18 @@ export const combineOpenOrdersTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
-      const triggerConditions =
-        el && el.info && +el.info.stopPrice ? el.info.stopPrice : '-'
+
+      const rawStopPrice = +el.info.stopPrice || +el.stopPrice
+      const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
+      const triggerConditionsFormatted =
+        triggerConditions === '-'
+          ? '-'
+          : (side === 'buy' && type === 'stop_market') ||
+            type === 'stop_limit' ||
+            ((side === 'sell' && type === 'take_profit_market') ||
+              type === 'take_profit_limit')
+          ? `>= ${triggerConditions}`
+          : `<= ${triggerConditions}`
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -627,8 +637,8 @@ export const combineOpenOrdersTable = (
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
-          render: triggerConditions,
-          contentToSort: +stopPrice,
+          render: triggerConditionsFormatted,
+          contentToSort: +rawStopPrice,
         },
         date: {
           render: (
@@ -700,7 +710,17 @@ export const combineOrderHistoryTable = (
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
-      const triggerConditions = +stopPrice ? stopPrice : '-'
+      const rawStopPrice = +el.info.stopPrice || +el.stopPrice
+      const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
+      const triggerConditionsFormatted =
+        triggerConditions === '-'
+          ? '-'
+          : (side === 'buy' && type === 'stop_market') ||
+            type === 'stop_limit' ||
+            ((side === 'sell' && type === 'take_profit_market') ||
+              type === 'take_profit_limit')
+          ? `>= ${triggerConditions}`
+          : `<= ${triggerConditions}`
 
       return {
         id: `${orderId}${timestamp}${origQty}`,
@@ -770,9 +790,8 @@ export const combineOrderHistoryTable = (
         },
         // TODO: Not sure about triggerConditions
         triggerConditions: {
-          render: triggerConditions,
-
-          contentToSort: +stopPrice,
+          render: triggerConditionsFormatted,
+          contentToSort: +rawStopPrice,
         },
         status: {
           render: status ? (
@@ -1059,7 +1078,7 @@ export const updateActivePositionsQuerryFunction = (
 
   const positionHasTheSameIndex = prev.getActivePositions.findIndex(
     (el: TradeType) =>
-      el._id === subscriptionData.data.listenFuturesPositions._id
+      el.symbol === subscriptionData.data.listenFuturesPositions.symbol
   )
 
   console.log('prev.getActivePositions', prev.getActivePositions)
