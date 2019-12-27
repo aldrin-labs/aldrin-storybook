@@ -42,6 +42,7 @@ const Balances = ({
 
   return (
     <StyledInput
+      onChange={onChange}
       endAdornment={
         <InputAdornment
           style={{ width: '70%', justifyContent: 'flex-end', cursor: 'pointer' }}
