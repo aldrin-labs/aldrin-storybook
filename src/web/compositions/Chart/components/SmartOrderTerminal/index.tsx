@@ -473,8 +473,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
 
                     const total = amount * entryPoint.order.price
-                    console.log('amount', amount)
-
                     this.updateSubBlockValue(
                       'entryPoint',
                       'order',
@@ -755,10 +753,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 <InputRowContainer>
-                  <FormInputContainer title={'total'}>
+                  <FormInputContainer title={marketType === 0 ? 'total' : 'cost'}>
                     <Input
                       symbol={pair[1]}
                       value={entryPoint.order.total}
+                      isDisabled={marketType === 1}
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'entryPoint',
