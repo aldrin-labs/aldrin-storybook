@@ -3,14 +3,14 @@ import styled from 'styled-components'
 import { InputTitle } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-const SubColumnTitle = styled(InputTitle)`
+export const SubColumnTitle = styled(InputTitle)`
   display: inline-block;
   width: 50%;
   padding: 0.4rem 0.5rem 0.4rem 0;
   text-align: left;
 `
 
-const SubColumnValue = styled(InputTitle)`
+export const SubColumnValue = styled(InputTitle)`
   display: inline-block;
   width: 50%;
   padding: 0.4rem 0rem 0.4rem 0.5rem;
@@ -305,7 +305,9 @@ export const StatusColumn = ({
     <>
       <div>
         <SubColumnTitle>status</SubColumnTitle>
-        <SubColumnValue color={status[1]}>{status[0]}</SubColumnValue>
+        <SubColumnValue style={{ textTransform: 'none' }} color={status[1]}>
+          {status[0]}
+        </SubColumnValue>
       </div>
 
       <div>

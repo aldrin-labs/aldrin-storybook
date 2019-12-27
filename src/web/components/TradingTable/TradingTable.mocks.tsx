@@ -28,11 +28,20 @@ export const positionsColumnNames = [
 ]
 
 export const activeTradesColumnNames = [
-  { label: 'Entry point', id: 'entryOrder' },
-  { label: 'Take a profit', id: 'takeProfit' },
-  { label: 'Stop loss', id: 'stopLoss' },
+  { label: 'pair', id: 'pair' },
+  { label: 'Side', id: 'side' },
+  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Size', id: 'quantity' },
+  { label: 'T-A-P', id: 'takeProfit' },
+  { label: 'Stop', id: 'stopLoss' },
+  { label: 'Pnl/Roe', id: 'profit' },
   { label: 'status', id: 'status' },
   { label: 'close', id: 'close' },
+  // { label: 'Entry point', id: 'entryOrder' },
+  // { label: 'Take a profit', id: 'takeProfit' },
+  // { label: 'Stop loss', id: 'stopLoss' },
+  // { label: 'status', id: 'status' },
+  // { label: 'close', id: 'close' },
 ]
 
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
