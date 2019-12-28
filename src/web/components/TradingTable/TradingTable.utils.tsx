@@ -347,7 +347,7 @@ export const combineActiveTradesTable = (
         state: '-',
       }
 
-      console.log('order', el)
+      // console.log('order', el)
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
