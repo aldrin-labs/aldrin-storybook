@@ -91,7 +91,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
     },
     takeProfit: {
-      isTakeProfitOn: false,
+      isTakeProfitOn: true,
       type: 'market',
       pricePercentage: 0,
       splitTargets: {
@@ -114,7 +114,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
     },
     stopLoss: {
-      isStopLossOn: false,
+      isStopLossOn: true,
       type: 'market',
       pricePercentage: 0,
       timeout: {
