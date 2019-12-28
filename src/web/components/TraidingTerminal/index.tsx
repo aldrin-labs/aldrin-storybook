@@ -616,11 +616,15 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           ? values.limit
           : values.price
 
-      if (values.amount * priceForCalculate < 10) {
-        props.showOrderResult({
-          status: 'error',
-          message: 'Total value must be at least 10.',
-        }, props.cancelOrder, isSPOTMarket ? 0 : 1)
+      if (values.amount * priceForCalculate < 10 && isSPOTMarket) {
+        props.showOrderResult(
+          {
+            status: 'error',
+            message: 'Total value must be at least 10.',
+          },
+          props.cancelOrder,
+          isSPOTMarket ? 0 : 1
+        )
 
         return null
       }

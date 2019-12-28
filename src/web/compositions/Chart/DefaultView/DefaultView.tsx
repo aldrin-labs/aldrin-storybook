@@ -103,7 +103,7 @@ export const DefaultView = (props: any) => {
         container
         xs={12}
         style={{
-          height: '94%',
+          height: '100%',
           padding: '0',
           marginLeft: 0,
           marginRight: 0,
