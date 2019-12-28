@@ -1,7 +1,12 @@
 /** @flow */
 import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
-import { rowStyles } from '@core/utils/chartPageUtils'
+import {
+  rowStyles,
+  roundUp,
+  roundUpSmall,
+  getNumberOfDecimalsFromNumber,
+} from '@core/utils/chartPageUtils'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>
@@ -90,6 +95,7 @@ export default function defaultRowRenderer({
   rowData,
   style,
   side,
+  aggregation = 0.00000001,
   openOrderHistory,
   amountForBackground,
 }: IProps) {
@@ -98,14 +104,32 @@ export default function defaultRowRenderer({
     rowData.fall !== undefined
       ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
       : {}
-  let needHighlight = false
+  let needHighlightPrice = false
+  let needHighlightStopPrice = false
 
   if (openOrderHistory && openOrderHistory.length > 0) {
-    needHighlight =
-      openOrderHistory.findIndex((order) => +order.price === +rowData.price) !==
-      -1
+    const functionToRound = aggregation >= 1 ? roundUp : roundUpSmall
+
+    const digitsByGroup =
+      aggregation >= 1
+        ? aggregation
+        : getNumberOfDecimalsFromNumber(aggregation)
+
+    needHighlightPrice =
+      openOrderHistory.findIndex((order) => {
+        const orderPrice = functionToRound(order.price, digitsByGroup)
+
+        return +orderPrice === +rowData.price
+      }) !== -1
+
+    needHighlightStopPrice =
+      openOrderHistory.findIndex((order) => {
+        const orderStopPrice = functionToRound(order.stopPrice, digitsByGroup)
+
+        return +orderStopPrice === +rowData.price
+      }) !== -1
   }
-  
+
   const orderPercentage =
     rowData.size > amountForBackground
       ? 100
@@ -152,7 +176,11 @@ export default function defaultRowRenderer({
         ...style,
         ...rowStyles,
         ...colorStyles,
-        backgroundColor: needHighlight ? '#e0e5ec' : '',
+        backgroundColor: needHighlightPrice
+          ? '#e0e5ec'
+          : needHighlightStopPrice
+          ? '#44CCFF'
+          : '',
         '&:hover': {
           backgroundColor: 'rgba(0, 0, 0, .15)',
         },
