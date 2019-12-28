@@ -26,7 +26,7 @@ const selectStyles = {
   border: '0.1rem solid #e0e5ec',
   borderRadius: '0.75rem',
   boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
-  width: '8.5%',
+  width: '20%',
   '& div': {
     cursor: 'pointer',
     color: '#16253D',
@@ -55,7 +55,7 @@ export const CardsPanel = ({
   activeExchange,
   changeActiveExchangeMutation,
   isDefaultTerminalViewMode,
-  updateTerminalViewMode
+  updateTerminalViewMode,
 }) => {
   return (
     <>
@@ -65,7 +65,7 @@ export const CardsPanel = ({
         )}
 
         <SelectExchange
-          style={{ height: '100%' }}
+          style={{ height: '100%', width: '20%' }}
           changeActiveExchangeMutation={changeActiveExchangeMutation}
           activeExchange={activeExchange}
           currencyPair={pair}
@@ -75,12 +75,13 @@ export const CardsPanel = ({
         {view === 'default' && (
           <KeySelector
             exchange={activeExchange}
-            selectStyles={{ ...selectStyles, width: '17%' }}
+            selectStyles={{ ...selectStyles, width: '30%' }}
             isAccountSelect={true}
           />
         )}
 
         <AutoSuggestSelect
+          style={{ width: '20%', minWidth: '0' }}
           value={view === 'default' && pair}
           id={'currencyPair'}
           view={view}
@@ -88,7 +89,7 @@ export const CardsPanel = ({
           selectStyles={selectStyles}
         />
 
-        <CustomCard
+        {/* <CustomCard
           style={{ position: 'relative', display: 'flex', width: '49.3%', marginRight: '1rem' }}
         >
           <ComingSoon style={{ zIndex: 1 }} />
@@ -130,14 +131,20 @@ export const CardsPanel = ({
               <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
             </span>
           </PanelCard>
-        </CustomCard>
+        </CustomCard> */}
 
         <SendButton
-          style={{ height: '100%', width: '17.3%', marginRight: '.4rem' }}
+          style={{ height: '100%', width: '30%', marginRight: '.4rem' }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
-          onClick={() => updateTerminalViewMode(isDefaultTerminalViewMode ? 'smartOrderMode' : 'default')}
+          onClick={() =>
+            updateTerminalViewMode(
+              isDefaultTerminalViewMode ? 'smartOrderMode' : 'default'
+            )
+          }
         >
-          {isDefaultTerminalViewMode ? 'smart trading' : 'back to original terminal'}
+          {isDefaultTerminalViewMode
+            ? 'smart trading'
+            : 'back to original terminal'}
         </SendButton>
 
         {/* {view === 'default' && (
