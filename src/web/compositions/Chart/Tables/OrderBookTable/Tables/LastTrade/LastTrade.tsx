@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { client } from '@core/graphql/apolloClient'
 
 import {
   LastTradeContainer,
@@ -26,14 +27,41 @@ interface IProps {
 const LastTrade = (props: IProps) => {
   const { updateTerminalPriceFromOrderbook } = props
 
-  let unsubscribe = undefined
+  const [marketPrice, updateMarketPrice] = useState(0)
+  let unsubscribe
 
   useEffect(() => {
     unsubscribe && unsubscribe()
     unsubscribe = props.subscribeToMore()
 
     return () => {
-      unsubscribe()
+      unsubscribe && unsubscribe()
+    }
+  }, [props.marketType, props.exchange, props.symbol])
+
+  useEffect(() => {
+    if (props.marketType === 1) {
+      const unsubscribe = client
+        .subscribe({
+          query: MARKET_TICKERS,
+          variables: {
+            symbol: props.symbol,
+            exchange: props.exchange,
+            marketType: String(0),
+          },
+        })
+        .subscribe({
+          next: (data) => {
+            if (data && data.data && data.data.listenMarketTickers) {
+              const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
+              updateMarketPrice(marketPrice)
+            }
+          },
+        })
+    }
+
+    return () => {
+      unsubscribe && unsubscribe()
     }
   }, [props.marketType, props.exchange, props.currencyPair])
 
@@ -54,11 +82,11 @@ const LastTrade = (props: IProps) => {
     >
       <LastTradeValue fall={fall}>
         <ArrowIcon fall={fall} />
-        {addMainSymbol(Number(price).toFixed(2), true)}
+        {Number(price).toFixed(2)}
       </LastTradeValue>
-      <LastTradePrice>
-        {addMainSymbol(Number(price).toFixed(2), true)}
-      </LastTradePrice>
+      {props.marketType === 1 && (
+        <LastTradePrice>{Number(marketPrice).toFixed(2)}</LastTradePrice>
+      )}
     </LastTradeContainer>
   )
 }
