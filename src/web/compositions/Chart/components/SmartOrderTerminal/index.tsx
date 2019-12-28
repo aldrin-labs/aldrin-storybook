@@ -752,12 +752,41 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   />
                 </InputRowContainer>
 
+                {/* <InputRowContainer>
+                  <FormInputContainer title="total (usdt)">
+                    <Input
+                      symbol={pair[1]}
+                      value={entryPoint.order.temp.totalUSD}
+                      isDisabled={entryPoint.trailing.isTrailingOn || entryPoint.order.type === 'market'}
+                      onChange={(e) => {
+
+                        // this.updateSubBlockValue(
+                        //   'entryPoint',
+                        //   'order',
+                        //   'total',
+                        //   stripDigitPlaces(e.target.value, 8)
+                        // )
+
+                        // this.updateSubBlockValue(
+                        //   'entryPoint',
+                        //   'order',
+                        //   'amount',
+                        //   (+(e.target.value / entryPoint.order.price)).toFixed(
+                        //     8
+                        //   )
+                        // )
+
+                      }}
+                    />
+                  </FormInputContainer>
+                </InputRowContainer> */}
+
                 <InputRowContainer>
                   <FormInputContainer title={marketType === 0 ? 'total' : 'cost'}>
                     <Input
                       symbol={pair[1]}
                       value={entryPoint.order.total}
-                      isDisabled={marketType === 1}
+                      isDisabled={entryPoint.trailing.isTrailingOn || entryPoint.order.type === 'market'}
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'entryPoint',
