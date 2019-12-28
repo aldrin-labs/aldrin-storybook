@@ -37,7 +37,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             keyId,
             orderId,
             pair,
-            marketType
+            marketType,
           },
         },
       })
@@ -68,14 +68,20 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
-    const { getOpenOrderHistoryQuery, subscribeToMore, theme, arrayOfMarketIds, marketType } = this.props
+    const {
+      getOpenOrderHistoryQuery,
+      subscribeToMore,
+      theme,
+      arrayOfMarketIds,
+      marketType,
+    } = this.props
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
       theme,
       arrayOfMarketIds,
-      marketType,
+      marketType
     )
     this.setState({
       openOrdersProcessedData,
@@ -97,7 +103,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       this.cancelOrderWithStatus,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
-      nextProps.marketType,
+      nextProps.marketType
     )
     this.setState({
       openOrdersProcessedData,
@@ -157,7 +163,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           </div>
         }
         data={{ body: openOrdersProcessedData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead(tab, marketType)}
       />
     )
   }

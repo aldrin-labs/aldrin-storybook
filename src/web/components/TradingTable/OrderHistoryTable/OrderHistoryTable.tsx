@@ -149,7 +149,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           </div>
         }
         data={{ body: orderHistoryProcessedData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead(tab, marketType)}
       />
     )
   }
