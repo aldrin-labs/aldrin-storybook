@@ -50,13 +50,13 @@ export const getTableBody = (tab: string) =>
     ? positionsBody
     : []
 
-export const getTableHead = (tab: string): any[] =>
+export const getTableHead = (tab: string, marketType: number = 0): any[] =>
   tab === 'openOrders'
-    ? openOrdersColumnNames
+    ? openOrdersColumnNames(marketType)
     : tab === 'orderHistory'
-    ? orderHistoryColumnNames
+    ? orderHistoryColumnNames(marketType)
     : tab === 'tradeHistory'
-    ? tradeHistoryColumnNames
+    ? tradeHistoryColumnNames(marketType)
     : tab === 'funds'
     ? fundsColumnNames
     : tab === 'positions'
@@ -148,12 +148,16 @@ export const combinePositionsTable = (
       } = el
 
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
-      const liqPrice = entryPrice * (side === 'sell short' ? 1 + (100/leverage) / 100 : 1 - (100/leverage) / 100)
+      const liqPrice =
+        entryPrice *
+        (side === 'sell short'
+          ? 1 + 100 / leverage / 100
+          : 1 - 100 / leverage / 100)
 
       const profitPercentage =
-        (marketPrice / entryPrice - 1) * 100 * (side === 'sell short' ? -1 : 1)
-      const profitAmount =
-        Math.abs(positionAmt) * leverage * (profitPercentage / 100)
+        ((marketPrice / entryPrice) * 100 - 100) * leverage
+
+      const profitAmount = positionAmt * (profitPercentage / 100) * leverage
 
       const pair = symbol.split('_')
 
@@ -222,20 +226,25 @@ export const combinePositionsTable = (
             style: { textAlign: 'left', whiteSpace: 'nowrap' },
             contentToSort: liqPrice,
           },
-          pnlRoe: {
-            render: (
-              <span
-                style={{ color: profitPercentage > 0 ? green.new : red.new }}
-              >
-                {profitPercentage && profitAmount
-                  ? `${profitAmount.toFixed(8)} / ${+profitPercentage.toFixed(
-                      2
-                    )}%`
-                  : '-'}
-              </span>
-            ),
-
-            contentToSort: profitAmount,
+          profit: {
+            render:
+              marketPrice && !!status[0] && status[1] === '#29AC80' ? (
+                <SubColumnValue
+                  color={
+                    profitPercentage > 0 && side === 'buy long'
+                      ? green.new
+                      : red.new
+                  }
+                >
+                  {profitPercentage && profitAmount
+                    ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
+                        pair[0]
+                      } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                    : '-'}
+                </SubColumnValue>
+              ) : (
+                `0 ${pair[0]} / 0%`
+              ),
           },
         },
         {
@@ -350,7 +359,8 @@ export const combineActiveTradesTable = (
         : price
 
       const profitPercentage =
-        (currentPrice / entryOrderPrice - 1) * 100 * leverage
+        ((currentPrice / entryOrderPrice) * 100 - 100) * leverage
+
       const profitAmount = amount * (profitPercentage / 100) * leverage
 
       return {
@@ -385,7 +395,15 @@ export const combineActiveTradesTable = (
           ),
         },
         takeProfit: {
-          render: <SubColumnValue>{'-'}</SubColumnValue>,
+          render: (
+            <SubColumnValue color={green.new}>
+              {trailingExit
+                ? `${exitLevels[0].activatePrice}% / ${
+                    exitLevels[0].entryDeviation
+                  }`
+                : `${exitLevels[0].price}%`}
+            </SubColumnValue>
+          ),
         },
         stopLoss: {
           render: stopLoss ? (
@@ -395,21 +413,22 @@ export const combineActiveTradesTable = (
           ),
         },
         profit: {
-          render: currentPrice ? (
-            <SubColumnValue
-              color={
-                profitPercentage > 0 && side === 'buy' ? green.new : red.new
-              }
-            >
-              {profitPercentage && profitAmount
-                ? `${Math.abs(Number(profitAmount.toFixed(2)))} ${
-                    pairArr[0]
-                  } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
-                : '-'}
-            </SubColumnValue>
-          ) : (
-            '-'
-          ),
+          render:
+            currentPrice && !!status[0] && status[1] === '#29AC80' ? (
+              <SubColumnValue
+                color={
+                  profitPercentage > 0 && side === 'buy' ? green.new : red.new
+                }
+              >
+                {profitPercentage && profitAmount
+                  ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
+                      pairArr[0]
+                    } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                  : '-'}
+              </SubColumnValue>
+            ) : (
+              `0 ${pairArr[0]} / 0%`
+            ),
         },
         status: {
           render: (
@@ -631,11 +650,15 @@ export const combineOpenOrdersTable = (
           contentToSort: +origQty,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
-        amount: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
-          contentToSort: origQty * price,
-        },
+        ...(marketType === 0
+          ? {
+              amount: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+                contentToSort: origQty * price,
+              },
+            }
+          : {}),
         // TODO: Not sure about triggerConditions
         triggerConditions: {
           render: triggerConditionsFormatted,
@@ -784,11 +807,15 @@ export const combineOrderHistoryTable = (
           contentToSort: +origQty,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
-        amount: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
-          contentToSort: origQty * price,
-        },
+        ...(marketType === 0
+          ? {
+              amount: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+                contentToSort: origQty * price,
+              },
+            }
+          : {}),
         // TODO: Not sure about triggerConditions
         triggerConditions: {
           render: triggerConditionsFormatted,
@@ -898,11 +925,15 @@ export const combineTradeHistoryTable = (
           contentToSort: +amount,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
-        amount: {
-          // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-          render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
-          contentToSort: amount * price,
-        },
+        ...(marketType === 0
+          ? {
+              amount: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
+                contentToSort: amount * price,
+              },
+            }
+          : {}),
         fee: {
           render: `${stripDigitPlaces(cost, 8)} ${currency}`,
 

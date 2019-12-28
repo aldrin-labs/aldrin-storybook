@@ -454,7 +454,7 @@ class ActiveTradesTable extends React.Component {
           }
           rowsWithHover={false}
           data={{ body: activeStrategiesProcessedData }}
-          columnNames={getTableHead(tab)}
+          columnNames={getTableHead(tab, marketType)}
         />
       </>
     )

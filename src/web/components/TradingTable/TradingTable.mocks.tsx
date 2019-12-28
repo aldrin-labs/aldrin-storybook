@@ -1,4 +1,7 @@
+import React from 'react'
 import { TableButton } from './TradingTable.styles'
+import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
+import Help from '@material-ui/icons/Help'
 
 const arrayOfSides = ['sell', 'buy']
 
@@ -32,7 +35,27 @@ export const activeTradesColumnNames = [
   { label: 'Side', id: 'side' },
   { label: 'Entry Price', id: 'entryPrice' },
   { label: 'Size', id: 'quantity' },
-  { label: 'T-A-P', id: 'takeProfit' },
+  {
+    label: (
+      <TooltipCustom
+        title={`Take a profit`}
+        component={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            T-A-P
+            <Help
+              style={{
+                height: '1.5rem',
+                width: '1.5rem',
+                color: 'rgb(0, 93, 217)',
+                marginLeft: '.5rem',
+              }}
+            />
+          </div>
+        }
+      />
+    ),
+    id: 'takeProfit',
+  },
   { label: 'Stop', id: 'stopLoss' },
   { label: 'Pnl/Roe', id: 'profit' },
   { label: 'status', id: 'status' },
@@ -66,26 +89,27 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   },
 }))
 
-export const openOrdersColumnNames = [
-  { label: 'Pair', id: 'pair' },
-  // { label: 'Type', id: 'type' },
-  { label: 'Side/Type', id: 'side' },
-  { label: 'Price', id: 'price' },
-  { label: 'Quantity', id: 'quantity' },
-  // { label: 'Filled %', id: 'filled',  },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Trigger', id: 'triggerConditions' },
-  { label: 'Date', id: 'date' },
-  {
-    label:
-      // <TableButton size="small" variant="outlined">
-      //   Cancel all
-      // </TableButton>
-      '',
-    id: 'cancel',
-    isSortable: false,
-  },
-]
+export const openOrdersColumnNames = (marketType: number) =>
+  [
+    { label: 'Pair', id: 'pair' },
+    // { label: 'Type', id: 'type' },
+    { label: 'Side/Type', id: 'side' },
+    { label: 'Price', id: 'price' },
+    { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
+    // { label: 'Filled %', id: 'filled',  },
+    marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
+    { label: 'Trigger', id: 'triggerConditions' },
+    { label: 'Date', id: 'date' },
+    {
+      label:
+        // <TableButton size="small" variant="outlined">
+        //   Cancel all
+        // </TableButton>
+        ' ',
+      id: 'cancel',
+      isSortable: false,
+    },
+  ].filter((x) => x.label)
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   id: i,
@@ -109,19 +133,20 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   },
 }))
 
-export const orderHistoryColumnNames = [
-  { label: 'Pair', id: 'pair' },
-  // { label: 'Type', id: 'type' },
-  { label: 'Side/Type', id: 'side' },
-  // { label: 'Average', id: 'average',  },
-  { label: 'Price', id: 'price' },
-  // { label: 'Filled %', id: 'filled',  },
-  { label: 'Quantity', id: 'quantity' },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Trigger', id: 'triggerConditions' },
-  { label: 'Status', id: 'status' },
-  { label: 'Date', id: 'date' },
-]
+export const orderHistoryColumnNames = (marketType: number) =>
+  [
+    { label: 'Pair', id: 'pair' },
+    // { label: 'Type', id: 'type' },
+    { label: 'Side/Type', id: 'side' },
+    // { label: 'Average', id: 'average',  },
+    { label: 'Price', id: 'price' },
+    // { label: 'Filled %', id: 'filled',  },
+    { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
+    marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
+    { label: 'Trigger', id: 'triggerConditions' },
+    { label: 'Status', id: 'status' },
+    { label: 'Date', id: 'date' },
+  ].filter((x) => x.label)
 
 export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   date: new Date().toDateString(),
@@ -139,16 +164,17 @@ export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   status: arrayOforderStatus[getRandomInt(0, 2)],
 }))
 
-export const tradeHistoryColumnNames = [
-  { label: 'Pair', id: 'pair' },
-  { label: 'Type', id: 'type' },
-  { label: 'Price', id: 'price' },
-  { label: 'Quantity', id: 'quantity' },
-  { label: 'Amount', id: 'amount' },
-  { label: 'Fee', id: 'fee' },
-  { label: 'Status', id: 'status' },
-  { label: 'Date', id: 'date' },
-]
+export const tradeHistoryColumnNames = (marketType: number) =>
+  [
+    { label: 'Pair', id: 'pair' },
+    { label: 'Type', id: 'type' },
+    { label: 'Price', id: 'price' },
+    { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
+    marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
+    { label: 'Fee', id: 'fee' },
+    { label: 'Status', id: 'status' },
+    { label: 'Date', id: 'date' },
+  ].filter((x) => x.label)
 
 export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   time: new Date().toDateString(),
