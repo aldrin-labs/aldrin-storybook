@@ -1,5 +1,5 @@
 import React, { SFC, useState } from 'react'
-import { withApollo } from 'react-apollo'
+import { withApollo, graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
 import { client } from '@core/graphql/apolloClient'
@@ -60,13 +60,13 @@ const NavBarRaw: SFC<Props> = ({
   theme,
   pathname,
   $hide = false,
+  marketTypeData,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   let page = pathnamePage[pathnamePage.length - 1]
 
   if (page === 'chart') {
-    const marketTypeData = client.readQuery({ query: GET_MARKET_TYPE })
     const isSPOTMarket = isSPOTMarketType(marketTypeData.chart.marketType)
 
     page = isSPOTMarket ? 'spot trading' : 'futures trading'
@@ -265,4 +265,4 @@ const NavBarRaw: SFC<Props> = ({
   )
 }
 
-export const NavBar = withTheme(NavBarRaw)
+export const NavBar = compose(withTheme, graphql(GET_MARKET_TYPE, { name: 'marketTypeData'}))(NavBarRaw)

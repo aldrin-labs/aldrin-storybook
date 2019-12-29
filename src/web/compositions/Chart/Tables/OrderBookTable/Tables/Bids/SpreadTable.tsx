@@ -25,6 +25,7 @@ class SpreadTable extends Component<IProps> {
       aggregation,
       openOrderHistory,
       mode,
+      arrayOfMarketIds,
       amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
@@ -67,6 +68,7 @@ class SpreadTable extends Component<IProps> {
                   ...rest[0],
                   side: 'bids',
                   aggregation,
+                  arrayOfMarketIds,
                   amountForBackground,
                   openOrderHistory,
                 })

@@ -18,6 +18,7 @@ export const OrderBook = ({
   updateTerminalPriceFromOrderbook,
   sizeDigits,
   minPriceDigits,
+  arrayOfMarketIds
 }) => (
   <OrderbookContainer key={`orderbook_table`}>
     <OrderBookTable
@@ -34,6 +35,7 @@ export const OrderBook = ({
         sizeDigits,
         minPriceDigits,
         selectedKey,
+        arrayOfMarketIds,
         ...chartProps,
         data,
         key: 'orderbook_table_query_render',
