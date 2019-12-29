@@ -21,6 +21,7 @@ class OrderBookTable extends Component<IProps> {
       mode,
       aggregation,
       openOrderHistory,
+      arrayOfMarketIds,
       amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
@@ -62,6 +63,7 @@ class OrderBookTable extends Component<IProps> {
                   ...rest[0],
                   side: 'asks',
                   aggregation,
+                  arrayOfMarketIds,
                   openOrderHistory,
                   amountForBackground,
                 })

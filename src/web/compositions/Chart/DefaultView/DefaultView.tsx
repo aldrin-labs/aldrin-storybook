@@ -64,7 +64,6 @@ export const DefaultView = (props: any) => {
     changeActiveExchangeMutation,
     terminalViewMode,
     updateTerminalViewMode,
-    marketByMarketType,
     arrayOfMarketIds,
   } = props
 
@@ -161,6 +160,7 @@ export const DefaultView = (props: any) => {
                     exchange,
                     quote,
                     minPriceDigits,
+                    arrayOfMarketIds,
                     updateTerminalPriceFromOrderbook,
                     activeExchange,
                     selectedKey,
