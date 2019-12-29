@@ -114,7 +114,7 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
 export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   <BtnCustom
     fontSize="1.3rem"
-    padding=".35rem 3.5rem .1rem 3.5rem"
+    padding=""
     btnWidth="auto"
     height="auto"
     btnColor={isActive ? '#fff' : '#16253D'}
@@ -128,6 +128,11 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   </BtnCustom>
 ))`
   text-transform: none;
+  padding: .35rem 3.5rem .1rem 3.5rem;
+
+  @media (max-width: 1600px) {
+    padding: .35rem 2rem .1rem 2rem;
+  }
 `
 
 export const TradingMenuContainer = styled.div`
