@@ -96,7 +96,7 @@ class OrderbookAndDepthChart extends React.Component {
           ordersData,
           aggregation,
           originalOrderbookTree: { asks, bids },
-          isAggregated: true,
+          isAggregatedData: true,
           sizeDigits,
         })
       }
@@ -227,6 +227,7 @@ class OrderbookAndDepthChart extends React.Component {
       quote,
       selectedKey,
       minPriceDigits,
+      arrayOfMarketIds,
       updateTerminalPriceFromOrderbook,
     } = this.props
 
@@ -278,6 +279,7 @@ class OrderbookAndDepthChart extends React.Component {
             selectedKey={selectedKey}
             marketType={marketType}
             amountForBackground={amountForBackground}
+            arrayOfMarketIds={arrayOfMarketIds}
             updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
             setOrderbookAggregation={this.setOrderbookAggregation}
             quote={quote}
@@ -296,6 +298,7 @@ export const APIWrapper = ({
   marketType,
   exchange,
   minPriceDigits,
+  arrayOfMarketIds,
   selectedKey,
   updateTerminalPriceFromOrderbook,
   symbol,
@@ -324,6 +327,7 @@ export const APIWrapper = ({
         sizeDigits,
         selectedKey,
         minPriceDigits,
+        arrayOfMarketIds,
         onButtonClick: changeTable,
         setOrders: chartProps.setOrders,
         updateTerminalPriceFromOrderbook,

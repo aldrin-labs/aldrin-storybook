@@ -74,7 +74,6 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
-      updateMode,
       priceFromOrderbook,
       updateTerminalViewMode,
     } = this.props
@@ -105,6 +104,15 @@ class SimpleTabs extends React.Component {
               }}
             >
               Stop-Limit
+            </TerminalModeButton>
+            <TerminalModeButton
+              isActive={mode === 'take-profit'}
+              onClick={() => {
+                this.handleChangeMode('take-profit')
+                this.setState({ orderMode: 'TIF' })
+              }}
+            >
+              Take-Profit
             </TerminalModeButton>
             <SmartOrderModeButton
               isActive={mode === 'smart'}
@@ -170,7 +178,7 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
 
-                {mode !== 'stop-limit' && (
+                {mode !== 'stop-limit' && mode !== 'take-profit' && (
                   <FuturesSettings key="reduceTerminalController">
                     <SCheckbox
                       id="reduceOnly"
@@ -188,7 +196,7 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
 
-                {mode === 'stop-limit' && (
+                {(mode === 'stop-limit' || mode === 'take-profit') && (
                   <FuturesSettings key="triggerTerminalController">
                     <SettingsLabel htmlFor="trigger">trigger</SettingsLabel>
                     <StyledSelect

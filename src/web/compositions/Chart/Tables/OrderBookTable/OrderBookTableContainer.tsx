@@ -48,6 +48,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       currencyPair,
       onButtonClick,
       minPriceDigits,
+      arrayOfMarketIds,
       amountForBackground,
       setOrderbookAggregation,
       updateTerminalPriceFromOrderbook,
@@ -107,6 +108,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <OrderBookTable
           data={data}
           mode={mode}
+          arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           onButtonClick={onButtonClick}
           openOrderHistory={getOpenOrderHistory}
@@ -128,6 +130,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <SpreadTable
           data={data}
           mode={mode}
+          arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           openOrderHistory={getOpenOrderHistory}
           currencyPair={currencyPair}

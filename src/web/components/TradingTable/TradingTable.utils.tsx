@@ -228,7 +228,7 @@ export const combinePositionsTable = (
           },
           profit: {
             render:
-              marketPrice && !!status[0] && status[1] === '#29AC80' ? (
+              marketPrice ? (
                 <SubColumnValue
                   color={
                     profitPercentage > 0 && side === 'buy long'
@@ -402,7 +402,7 @@ export const combineActiveTradesTable = (
           render: (
             <SubColumnValue color={green.new}>
               {trailingExit
-                ? `${exitLevels[0].entryDeviation}%`
+                ? `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
                 : `${exitLevels[0].price}%`}
             </SubColumnValue>
           ),
