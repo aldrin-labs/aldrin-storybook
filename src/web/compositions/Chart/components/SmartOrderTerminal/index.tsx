@@ -131,6 +131,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         pricePercentage: 0,
       },
     },
+    temp: {
+      initialMargin: 0,
+    },
   }
 
   static getDerivedStateFromProps(props: IProps, state: IState) {
@@ -621,6 +624,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             8
                           )
                         )
+
+                        this.setState({
+                          temp: {
+                            initialMargin: stripDigitPlaces(
+                              (e.target.value * entryPoint.order.amount) /
+                                entryPoint.order.leverage,
+                              8
+                            ),
+                          },
+                        })
                       }}
                     />
                   </FormInputContainer>
@@ -701,6 +714,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           'total',
                           newTotal ? newTotal.toFixed(8) : 0
                         )
+
+                        this.setState({
+                          temp: {
+                            initialMargin: stripDigitPlaces(
+                              (newTotal || 0) / entryPoint.order.leverage,
+                              8
+                            ),
+                          },
+                        })
                       }}
                     />
                   </FormInputContainer>
@@ -748,45 +770,76 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'total',
                         newTotal.toFixed(8)
                       )
+
+                      this.setState({
+                        temp: {
+                          initialMargin: stripDigitPlaces(
+                            (newTotal || 0) / entryPoint.order.leverage,
+                            8
+                          ),
+                        },
+                      })
                     }}
                   />
                 </InputRowContainer>
 
-                {/* <InputRowContainer>
-                  <FormInputContainer title="total (usdt)">
-                    <Input
-                      symbol={pair[1]}
-                      value={entryPoint.order.temp.totalUSD}
-                      isDisabled={entryPoint.trailing.isTrailingOn || entryPoint.order.type === 'market'}
-                      onChange={(e) => {
+                {marketType === 1 && (
+                  <InputRowContainer>
+                    <FormInputContainer title="margin">
+                      <Input
+                        symbol={pair[1]}
+                        value={this.state.temp.initialMargin}
+                        isDisabled={
+                          entryPoint.trailing.isTrailingOn ||
+                          entryPoint.order.type === 'market'
+                        }
+                        onChange={(e) => {
+                          const inputInitialMargin = e.target.value
+                          const newTotal =
+                            inputInitialMargin * entryPoint.order.leverage
+                          const newAmount = newTotal / entryPoint.order.price
 
-                        // this.updateSubBlockValue(
-                        //   'entryPoint',
-                        //   'order',
-                        //   'total',
-                        //   stripDigitPlaces(e.target.value, 8)
-                        // )
+                          const fixedAmount =
+                            marketType === 0
+                              ? newAmount.toFixed(8)
+                              : newAmount.toFixed(3)
 
-                        // this.updateSubBlockValue(
-                        //   'entryPoint',
-                        //   'order',
-                        //   'amount',
-                        //   (+(e.target.value / entryPoint.order.price)).toFixed(
-                        //     8
-                        //   )
-                        // )
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'total',
+                            newTotal.toFixed(8)
+                          )
 
-                      }}
-                    />
-                  </FormInputContainer>
-                </InputRowContainer> */}
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'amount',
+                            fixedAmount
+                          )
+
+                          this.setState({
+                            temp: {
+                              initialMargin: inputInitialMargin,
+                            },
+                          })
+                        }}
+                      />
+                    </FormInputContainer>
+                  </InputRowContainer>
+                )}
 
                 <InputRowContainer>
-                  <FormInputContainer title={marketType === 0 ? 'total' : 'cost'}>
+                  <FormInputContainer
+                    title={marketType === 0 ? 'total' : 'cost'}
+                  >
                     <Input
                       symbol={pair[1]}
                       value={entryPoint.order.total}
-                      isDisabled={entryPoint.trailing.isTrailingOn || entryPoint.order.type === 'market'}
+                      isDisabled={
+                        entryPoint.trailing.isTrailingOn ||
+                        entryPoint.order.type === 'market'
+                      }
                       onChange={(e) => {
                         this.updateSubBlockValue(
                           'entryPoint',
@@ -803,6 +856,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             8
                           )
                         )
+
+                        this.setState({
+                          temp: {
+                            initialMargin: stripDigitPlaces(
+                              e.target.value /
+                                entryPoint.order.price /
+                                entryPoint.order.leverage,
+                              8
+                            ),
+                          },
+                        })
                       }}
                     />
                   </FormInputContainer>
