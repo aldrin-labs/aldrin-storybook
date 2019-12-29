@@ -347,7 +347,7 @@ export const combineActiveTradesTable = (
         state: '-',
       }
 
-      console.log('order', el)
+      // console.log('order', el)
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
@@ -590,9 +590,9 @@ export const combineOpenOrdersTable = (
         triggerConditions === '-'
           ? '-'
           : (side === 'buy' && type === 'stop_market') ||
-            type === 'stop_limit' ||
-            ((side === 'sell' && type === 'take_profit_market') ||
-              type === 'take_profit_limit')
+            (side === 'buy' && type === 'stop_limit' ) ||
+            (side === 'sell' && type === 'take_profit_market') ||
+            (side === 'sell' && type === 'take_profit_limit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
@@ -742,9 +742,9 @@ export const combineOrderHistoryTable = (
         triggerConditions === '-'
           ? '-'
           : (side === 'buy' && type === 'stop_market') ||
-            type === 'stop_limit' ||
-            ((side === 'sell' && type === 'take_profit_market') ||
-              type === 'take_profit_limit')
+            (side === 'buy' && type === 'stop_limit' ) ||
+            (side === 'sell' && type === 'take_profit_market') ||
+            (side === 'sell' && type === 'take_profit_limit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
