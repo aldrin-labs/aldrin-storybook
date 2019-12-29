@@ -347,6 +347,8 @@ export const combineActiveTradesTable = (
         state: '-',
       }
 
+      // console.log('order', el)
+
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
 
       const pairArr = pair.split('_')
@@ -355,13 +357,15 @@ export const combineActiveTradesTable = (
       const entryOrderPrice = !!entryPrice
         ? entryPrice
         : !!entryDeviation
-        ? activatePrice + (activatePrice / 100) * entryDeviation
+        ? // ? activatePrice + (activatePrice / 100) * entryDeviation
+          activatePrice * (1 + entryDeviation / leverage / 100)
         : price
 
       const profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) * leverage
 
-      const profitAmount = amount * (profitPercentage / 100) * leverage
+      const profitAmount =
+        (amount / leverage) * currentPrice * (profitPercentage / 100)
 
       return {
         pair: {
@@ -398,9 +402,7 @@ export const combineActiveTradesTable = (
           render: (
             <SubColumnValue color={green.new}>
               {trailingExit
-                ? `${exitLevels[0].activatePrice}% / ${
-                    exitLevels[0].entryDeviation
-                  }`
+                ? `${exitLevels[0].entryDeviation}%`
                 : `${exitLevels[0].price}%`}
             </SubColumnValue>
           ),
@@ -422,12 +424,12 @@ export const combineActiveTradesTable = (
               >
                 {profitPercentage && profitAmount
                   ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
-                      pairArr[0]
+                      pairArr[1]
                     } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
             ) : (
-              `0 ${pairArr[0]} / 0%`
+              `0 ${pairArr[1]} / 0%`
             ),
         },
         status: {

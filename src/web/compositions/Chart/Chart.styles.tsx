@@ -38,6 +38,7 @@ export const GlobalStyles = createGlobalStyle`
 
 export const PanelWrapper = styled.div`
   display: flex;
+  justify-content: flex-end;
   width: 100%;
   height: 100%;
 `
@@ -167,14 +168,15 @@ export const WatchListContainer = styled(Card)`
 `
 
 export const ChartGridContainer = styled(Grid)`
-  position: relative;
+  position: absolute;
+  right: 1rem;
   display: flex;
   flex: auto;
   align-items: center;
-  width: 100%;
+  width: 41.6%;
   height: 6%;
 
-  padding: 0 0 0.4rem 0 !important;
+  padding: 0 0 0.4rem 0.8rem !important;
 `
 
 export const TablesContainer = styled(Grid)`
@@ -195,8 +197,12 @@ export const TradingTerminalContainer = styled(
 )`
   position: relative;
   display: flex;
-
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '60%' : '45%')};
+  // 60% - 3%, the half of height cards, will fix in future
+  height: ${(props) =>
+    props.isDefaultTerminalViewMode
+      ? 'calc(57% - .8rem)'
+      : 'calc(39% - .8rem)'};
+  top: calc(6% + 0.8rem);
   overflow: hidden;
 
   flex-direction: column;

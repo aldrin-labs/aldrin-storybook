@@ -19,6 +19,7 @@ class OrderBookTable extends Component<IProps> {
     const {
       data,
       mode,
+      aggregation,
       openOrderHistory,
       amountForBackground,
       updateTerminalPriceFromOrderbook,
@@ -60,6 +61,7 @@ class OrderBookTable extends Component<IProps> {
                 defaultRowRenderer({
                   ...rest[0],
                   side: 'asks',
+                  aggregation,
                   openOrderHistory,
                   amountForBackground,
                 })

@@ -66,6 +66,7 @@ class SpreadTable extends Component<IProps> {
                 defaultRowRenderer({
                   ...rest[0],
                   side: 'bids',
+                  aggregation,
                   amountForBackground,
                   openOrderHistory,
                 })
