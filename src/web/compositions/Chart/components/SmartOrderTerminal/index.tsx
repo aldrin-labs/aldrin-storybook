@@ -951,7 +951,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* STOP LOSS */}
             <TerminalBlock
               width={'calc(31% + 1%)'}
-              borderRight="0"
               style={{ overflow: 'hidden' }}
             >
               <InputRowContainer justify="center">
@@ -1278,7 +1277,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             </TerminalBlock>
 
             {/* TAKE A PROFIT */}
-            <TerminalBlock width={'calc(31% + 1%)'}>
+            <TerminalBlock width={'calc(31% + 1%)'} borderRight="0">
               <InputRowContainer justify="center">
                 <CustomSwitcher
                   firstHalfText={'limit'}
