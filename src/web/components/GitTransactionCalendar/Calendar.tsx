@@ -289,7 +289,7 @@ const CalendarDataWrapper = ({ ...props }) => {
       query={getCalendarActions}
       pollInterval={30000}
       name={`getCalendarActionsQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="network-only"
       variables={{
         input: {
           timezone,
