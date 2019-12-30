@@ -140,7 +140,7 @@ const NavBarRaw: SFC<Props> = ({
                 ]}
               />
 
-              {!MASTER_BUILD && (
+              {/* {!MASTER_BUILD && (
                 <Dropdown
                   id="explore-menu"
                   key="explore-menu"
@@ -167,7 +167,7 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   ]}
                 />
-              )}
+              )} */}
 
               {!MASTER_BUILD && (
                 <Dropdown

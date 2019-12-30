@@ -1,11 +1,9 @@
 import React from 'react'
-
-import ComingSoon from '@sb/components/ComingSoon'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
-import { SendButton } from '@sb/components/TraidingTerminal/styles'
+import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
 
 import {
   PanelWrapper,
@@ -133,7 +131,7 @@ export const CardsPanel = ({
           </PanelCard>
         </CustomCard> */}
 
-        <SendButton
+        <SmartTradeButton
           style={{ height: '100%', width: '30%', marginRight: '.4rem' }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
           onClick={() =>
@@ -145,7 +143,7 @@ export const CardsPanel = ({
           {isDefaultTerminalViewMode
             ? 'smart trading'
             : 'back to original terminal'}
-        </SendButton>
+        </SmartTradeButton>
 
         {/* {view === 'default' && (
         <TransparentExtendedFAB
