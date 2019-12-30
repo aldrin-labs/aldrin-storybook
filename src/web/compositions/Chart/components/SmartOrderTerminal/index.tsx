@@ -731,6 +731,48 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 <InputRowContainer>
+                  <FormInputContainer
+                    title={'total'}
+                  >
+                    <Input
+                      symbol={pair[1]}
+                      value={entryPoint.order.total}
+                      isDisabled={
+                        entryPoint.trailing.isTrailingOn ||
+                        entryPoint.order.type === 'market'
+                      }
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          stripDigitPlaces(e.target.value, 8)
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'amount',
+                          (+(e.target.value / entryPoint.order.price)).toFixed(
+                            8
+                          )
+                        )
+
+                        this.setState({
+                          temp: {
+                            initialMargin: stripDigitPlaces(
+                              e.target.value /
+                                entryPoint.order.leverage,
+                              8
+                            ),
+                          },
+                        })
+                      }}
+                    />
+                  </FormInputContainer>
+                </InputRowContainer>
+
+                <InputRowContainer>
                   <BlueSlider
                     value={
                       entryPoint.order.side === 'buy' || marketType === 1
@@ -830,49 +872,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </FormInputContainer>
                   </InputRowContainer>
                 )}
-
-                <InputRowContainer>
-                  <FormInputContainer
-                    title={marketType === 0 ? 'total' : 'cost'}
-                  >
-                    <Input
-                      symbol={pair[1]}
-                      value={entryPoint.order.total}
-                      isDisabled={
-                        entryPoint.trailing.isTrailingOn ||
-                        entryPoint.order.type === 'market'
-                      }
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          stripDigitPlaces(e.target.value, 8)
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'amount',
-                          (+(e.target.value / entryPoint.order.price)).toFixed(
-                            8
-                          )
-                        )
-
-                        this.setState({
-                          temp: {
-                            initialMargin: stripDigitPlaces(
-                              e.target.value /
-                                entryPoint.order.price /
-                                entryPoint.order.leverage,
-                              8
-                            ),
-                          },
-                        })
-                      }}
-                    />
-                  </FormInputContainer>
-                </InputRowContainer>
 
                 {entryPoint.order.isHedgeOn && (
                   <InputRowContainer>
