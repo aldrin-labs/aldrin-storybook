@@ -205,7 +205,7 @@ export const DefaultView = (props: any) => {
               xs={6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
-              <CustomCard style={{ overflow: 'scroll' }}>
+              <CustomCard style={{ overflow: 'hidden scroll' }}>
                 <TradingTable
                   selectedKey={selectedKey}
                   showCancelResult={showCancelResult}
