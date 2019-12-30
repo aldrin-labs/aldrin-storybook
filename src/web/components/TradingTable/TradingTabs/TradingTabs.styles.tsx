@@ -15,6 +15,12 @@ export const TitleTab = styled(({ active, ...rest }) => <Button {...rest} />)`
     letter-spacing: 0.05rem;
     border-right: 0.1rem solid #e0e5ec;
   }
+
+  @media (max-width: 1600px) {
+    &&& {
+      padding: .6rem 2rem;
+    }
+  }
 `
 
 export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
