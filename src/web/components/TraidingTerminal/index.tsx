@@ -90,6 +90,7 @@ const toFixedTrunc = (value, n) => {
 @withTheme
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   state = {
+    marketPrice: null,
     priceFromOrderbook: null,
   }
 
@@ -106,7 +107,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', amount * priceForCalculate, 1)
     }
 
-    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
+    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook && priceType !== 'market') {
       const {
         priceFromOrderbook,
         values: { amount },
@@ -164,9 +165,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       const amount =
         toFixedTrunc(e.target.value, decimals[1]) / priceForCalculate
       const maxAmount = byType === 'buy' ? funds[1].quantity : funds[0].quantity
-      const percentageAmount = Math.floor(
-        (amount * priceForCalculate) / ((maxAmount * priceForCalculate) / 100)
-      )
 
       this.setFormatted('amount', amount, 0)
       setFieldTouched('amount', true)
@@ -321,7 +319,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 </InputRowContainer>
               ) : null}
 
-              {priceType === 'stop-limit' ? (
+              {priceType === 'stop-limit' || priceType === 'take-profit' ? (
                 <InputRowContainer key={'stop-limit'}>
                   <TradeInputContainer
                     title={'Stop'}
@@ -649,7 +647,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
               }
             : {}),
-          ...(priceType !== 'stop-limit' ? { reduceOnly } : {}),
+          ...(priceType !== 'stop-limit' && priceType !== 'take-profit' ? { reduceOnly } : {}),
         }
       )
 

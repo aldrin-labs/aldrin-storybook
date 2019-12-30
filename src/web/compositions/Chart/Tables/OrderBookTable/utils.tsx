@@ -95,6 +95,7 @@ export default function defaultRowRenderer({
   rowData,
   style,
   side,
+  arrayOfMarketIds = [],
   aggregation = 0.00000001,
   openOrderHistory,
   amountForBackground,
@@ -119,14 +120,14 @@ export default function defaultRowRenderer({
       openOrderHistory.findIndex((order) => {
         const orderPrice = functionToRound(order.price, digitsByGroup)
 
-        return +orderPrice === +rowData.price
+        return +orderPrice === +rowData.price && arrayOfMarketIds.includes(order.marketId)
       }) !== -1
 
     needHighlightStopPrice =
       openOrderHistory.findIndex((order) => {
         const orderStopPrice = functionToRound(order.stopPrice, digitsByGroup)
 
-        return +orderStopPrice === +rowData.price
+        return +orderStopPrice === +rowData.price && arrayOfMarketIds.includes(order.marketId)
       }) !== -1
   }
 
