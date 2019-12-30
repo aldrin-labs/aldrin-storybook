@@ -56,6 +56,8 @@ const RenameKeyDialogComponent = ({
       return setError('Please limit name to 20 characters')
     }
 
+    closeDialog()
+
     const { data } = await renameMutation({
       variables,
     })
@@ -65,8 +67,6 @@ const RenameKeyDialogComponent = ({
     if (!executed) {
       return setError(error)
     }
-
-    executed ? closeDialog() : null
   }
 
   return (
