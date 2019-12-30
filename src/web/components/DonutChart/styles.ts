@@ -32,6 +32,7 @@ export const ColorLegendContainer = styled.div`
 export const ColorLegendPercentContainer = styled.div`
   font-weight: 500;
   font-size: 1.28rem;
+  padding-left: 0.5rem;
 
   span {
     display: inline-block;
