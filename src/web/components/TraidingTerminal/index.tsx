@@ -162,11 +162,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     setFieldTouched('total', true)
 
     if (priceForCalculate) {
-      const amount =
-        toFixedTrunc(e.target.value, decimals[1]) / priceForCalculate
-      const maxAmount = byType === 'buy' ? funds[1].quantity : funds[0].quantity
-
-      this.setFormatted('amount', amount, 0)
+      const amount = e.target.value / priceForCalculate
+      
+      this.setFormatted('amount', amount.toFixed(8), 0)
       setFieldTouched('amount', true)
     }
   }

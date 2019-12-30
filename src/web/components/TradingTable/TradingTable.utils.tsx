@@ -157,7 +157,8 @@ export const combinePositionsTable = (
       const profitPercentage =
         ((marketPrice / entryPrice) * 100 - 100) * leverage
 
-      const profitAmount = positionAmt * (profitPercentage / 100) * leverage
+      const profitAmount =
+        (positionAmt / leverage) * marketPrice * (profitPercentage / 100)
 
       const pair = symbol.split('_')
 
@@ -230,6 +231,7 @@ export const combinePositionsTable = (
             render:
               marketPrice ? (
                 <SubColumnValue
+                  style={{ whiteSpace: 'normal' }}
                   color={
                     profitPercentage > 0 && side === 'buy long'
                       ? green.new
@@ -238,12 +240,12 @@ export const combinePositionsTable = (
                 >
                   {profitPercentage && profitAmount
                     ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
-                        pair[0]
+                        pair[1]
                       } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                     : '-'}
                 </SubColumnValue>
               ) : (
-                `0 ${pair[0]} / 0%`
+                `0 ${pair[1]} / 0%`
               ),
           },
         },

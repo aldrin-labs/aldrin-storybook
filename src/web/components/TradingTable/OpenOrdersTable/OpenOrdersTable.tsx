@@ -120,7 +120,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
-        style={{ borderRadius: 0, height: '100%' }}
+        style={{ borderRadius: 0, height: '100%', overflowX: 'hidden' }}
         stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
           sortColumn: 'date',

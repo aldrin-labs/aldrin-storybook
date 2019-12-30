@@ -11,10 +11,10 @@ export const SubColumnTitle = styled(InputTitle)`
 `
 
 export const SubColumnValue = styled(InputTitle)`
+  text-align: left;
   display: inline-block;
   width: 50%;
-  padding: 0.4rem 0rem 0.4rem 0.5rem;
-  text-align: right;
+  padding: 0.4rem 0rem 0.4rem 0rem;
   color: ${(props) => props.color || '#16253D'};
 `
 

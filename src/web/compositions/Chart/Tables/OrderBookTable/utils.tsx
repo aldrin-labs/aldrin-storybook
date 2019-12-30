@@ -178,9 +178,9 @@ export default function defaultRowRenderer({
         ...rowStyles,
         ...colorStyles,
         backgroundColor: needHighlightPrice
-          ? '#e0e5ec'
+          ? 'rgba(224, 229, 236, 0.5)'
           : needHighlightStopPrice
-          ? '#44CCFF'
+          ? 'rgba(68, 204, 255, 0.5)'
           : '',
         '&:hover': {
           backgroundColor: 'rgba(0, 0, 0, .15)',
