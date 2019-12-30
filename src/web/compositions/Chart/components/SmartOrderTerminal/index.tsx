@@ -284,6 +284,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.handleCloseConfirmationPopup()
 
+    updateTerminalViewMode('default')
+
     const result = await placeOrder(
       entryPoint.order.side,
       entryPoint.order.type,
@@ -294,8 +296,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     await showOrderResult(result, cancelOrder)
 
-    if (result.status === 'success' && result.orderId)
-      updateTerminalViewMode('default')
+    // if (result.status === 'success' && result.orderId)
+        //   updateTerminalViewMode('default')
   }
 
   render() {
