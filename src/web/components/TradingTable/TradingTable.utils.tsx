@@ -746,7 +746,8 @@ export const combineOrderHistoryTable = (
           : (side === 'buy' && type === 'stop_market') ||
             (side === 'buy' && type === 'stop_limit' ) ||
             (side === 'sell' && type === 'take_profit_market') ||
-            (side === 'sell' && type === 'take_profit_limit')
+            (side === 'sell' && type === 'take_profit_limit') ||
+            (side === 'sell' && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
