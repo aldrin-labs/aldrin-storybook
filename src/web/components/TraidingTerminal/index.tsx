@@ -107,7 +107,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', amount * priceForCalculate, 1)
     }
 
-    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook && priceType !== 'market') {
+    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook && this.props.priceType !== 'market') {
       const {
         priceFromOrderbook,
         values: { amount },
