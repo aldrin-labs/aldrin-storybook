@@ -3,7 +3,7 @@ import { getExchangesForKeysListQuery } from '@core/graphql/queries/user/getExch
 import QueryRenderer from '@core/components/QueryRenderer'
 import { SelectR } from '@sb/styles/cssUtils'
 
-const SelectExchangeList = ({ data, ...otherPropsForSelect }) => {
+const SelectExchangeList = ({ data, placeholder = '', ...otherPropsForSelect }) => {
   const exchangeOptions =
     data.exchangePagination &&
     data.exchangePagination.items
@@ -11,14 +11,15 @@ const SelectExchangeList = ({ data, ...otherPropsForSelect }) => {
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
       // TODO: hardcode it for now, because we currently support only Binance
-      .filter((el) => el.name === 'Binance')
+      .filter((el) => el.name.toLowerCase() === 'binance')
       .map(({ name }) => ({
         label: name,
         value: name,
       }))
+
   return (
     <SelectR
-      placeholder={''}
+      placeholder={placeholder}
       options={exchangeOptions || []}
       {...otherPropsForSelect}
     />
@@ -28,6 +29,7 @@ const SelectExchangeList = ({ data, ...otherPropsForSelect }) => {
 const DataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
+      withOutSpinner={false}
       component={SelectExchangeList}
       query={getExchangesForKeysListQuery}
       {...props}
