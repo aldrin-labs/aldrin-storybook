@@ -18,7 +18,7 @@ const Withdrawal = ({  }: IProps) => {
   const inOrder = 0.000003241
   const availableBalance = 0.000003241
 
-  const [selectedCoin, setSelectedCoin] = useState('BTC')
+  const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
   const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: '' })
@@ -95,7 +95,7 @@ const Withdrawal = ({  }: IProps) => {
                 Amount
               </StyledTypography>
               <InputAmount
-                selectedCoin={selectedCoin}
+                selectedCoin={selectedCoin.label}
                 selectedAccount={selectedAccount.keyId}
                 value={coinAmount}
                 onChange={(e) => setCoinAmount(e.target.value)}

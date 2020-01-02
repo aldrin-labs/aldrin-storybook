@@ -143,13 +143,16 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                 theme={theme}
                 toggleWallets={this.toggleWallets}
               />
-              <PortfolioOnboarding
-                portfolioKeys={keys}
-                portfolioId={portfolioId}
-                baseCoin={baseCoin}
-              />
             </>
           )}
+
+          <PortfolioOnboarding
+            portfoliosNumber={data.myPortfolios.length}
+            portfolioKeys={keys}
+            numberOfKeys={keys.length}
+            portfolioId={portfolioId}
+            baseCoin={baseCoin}
+          />
 
           {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow

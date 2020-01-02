@@ -122,15 +122,14 @@ const AccountBlock = ({
         menuPortalStyles={{
           zIndex: 11111,
         }}
-        placeholder={'BTC'}
+        value={selectedCoin}
         onChange={(
           optionSelected: {
             label: string
-            value: string
-            priceUSD: string | number
+            name: string
           }
         ) => {
-          setSelectedCoin(optionSelected.value)
+          setSelectedCoin({ label: optionSelected.label, name: optionSelected.name })
         }}
         noOptionsMessage={() => `No such coin in our DB found`}
         menuStyles={{
@@ -201,7 +200,7 @@ const AccountBlock = ({
         }}
       />
     </Grid>
-    <Balances selectedCoin={selectedCoin} selectedAccount={selectedAccount.keyId} />
+    <Balances selectedCoin={selectedCoin.label} selectedAccount={selectedAccount.keyId} />
     <Grid item id="description_block">
       {isDepositPage && (
         <Typography>
