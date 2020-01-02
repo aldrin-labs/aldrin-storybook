@@ -16,7 +16,7 @@ import { IProps } from './Deposit.types'
 
 const Deposits = ({  }: IProps) => {
   const [popupOpened, togglePopup] = useState(false)
-  const [selectedCoin, setSelectedCoin] = useState('BTC')
+  const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
   const [coinAddress, setCoinAddress] = useState('')
   const [selectedAccount, setSelectedAccount] = useState({
     keyId: '#',
@@ -89,9 +89,9 @@ const Deposits = ({  }: IProps) => {
             </Grid>
             <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
-                {selectedCoin} address
+                {selectedCoin.label} address
               </StyledTypography>
-              <InputAddress value={coinAddress} selectedCoin={selectedCoin} setCoinAddress={setCoinAddress} selectedAccount={selectedAccount.keyId}/>
+              <InputAddress value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedAccount.keyId}/>
               {/* <StyledInput
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -135,10 +135,10 @@ const Deposits = ({  }: IProps) => {
                   <Typography
                     style={{ color: '#16253D', paddingBottom: '1rem' }}
                   >
-                    Send only {selectedCoin} to this deposit address.
+                    Send only {selectedCoin.label} to this deposit address.
                   </Typography>
                   <Typography>
-                    Sending coin or token other than {selectedCoin} to this
+                    Sending coin or token other than {selectedCoin.label} to this
                     address may result in the loss of your deposit.
                   </Typography>
                 </Grid>
