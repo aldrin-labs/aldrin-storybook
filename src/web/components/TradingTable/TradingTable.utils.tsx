@@ -88,7 +88,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
-  /buy/i.test(orderStringType)
+  /buy/gi.test(orderStringType)
 
 export const getFilledQuantity = (
   filledQuantity: number,
@@ -576,7 +576,7 @@ export const combineOpenOrdersTable = (
         keyId,
         symbol,
         timestamp,
-        type,
+        type: orderType,
         side,
         price,
         filled,
@@ -585,16 +585,18 @@ export const combineOpenOrdersTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
+      const type = orderType.toLowerCase().replace('-', '_')
 
       const rawStopPrice = +el.info.stopPrice || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
       const triggerConditionsFormatted =
         triggerConditions === '-'
           ? '-'
-          : (side === 'buy' && type === 'stop_market') ||
-            (side === 'buy' && type === 'stop_limit' ) ||
-            (side === 'sell' && type === 'take_profit_market') ||
-            (side === 'sell' && type === 'take_profit_limit')
+          : (isBuyTypeOrder(side) && type === 'stop_market') ||
+            (isBuyTypeOrder(side) && type === 'stop_limit' ) ||
+            (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
+            (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
+            (!isBuyTypeOrder(side) && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
@@ -722,7 +724,7 @@ export const combineOrderHistoryTable = (
       const {
         symbol,
         timestamp,
-        type,
+        type: orderType,
         side,
         price,
         status,
@@ -733,6 +735,7 @@ export const combineOrderHistoryTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
+      const type = orderType.toLowerCase().replace('-', '_')
 
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
         ? info
@@ -743,11 +746,11 @@ export const combineOrderHistoryTable = (
       const triggerConditionsFormatted =
         triggerConditions === '-'
           ? '-'
-          : (side === 'buy' && type === 'stop_market') ||
-            (side === 'buy' && type === 'stop_limit' ) ||
-            (side === 'sell' && type === 'take_profit_market') ||
-            (side === 'sell' && type === 'take_profit_limit') ||
-            (side === 'sell' && type === 'take_profit')
+          : (isBuyTypeOrder(side) && type === 'stop_market') ||
+            (isBuyTypeOrder(side) && type === 'stop_limit' ) ||
+            (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
+            (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
+            (!isBuyTypeOrder(side) && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
