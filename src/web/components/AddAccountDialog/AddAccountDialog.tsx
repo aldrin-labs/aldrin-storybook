@@ -181,8 +181,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       showWarning,
     } = this.state
 
-    console.log('numberOfKeys', numberOfKeys)
-
     return (
       <>
         <GetKeysInfo

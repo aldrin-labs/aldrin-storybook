@@ -58,13 +58,13 @@ class OrderbookAndDepthChart extends React.Component {
       testJSON(marketOrders.asks) &&
       testJSON(marketOrders.bids)
     ) {
-      console.log('marketOrders', marketOrders)
       updatedData = transformOrderbookData({
         marketOrders,
         amountsMap,
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         sizeDigits,
       })
+      
       return {
         ...updatedData,
       }
