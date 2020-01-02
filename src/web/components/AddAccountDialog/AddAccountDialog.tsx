@@ -71,7 +71,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     name: '',
     apiKey: '',
     secretOfApiKey: '',
-    exchange: '',
+    exchange: 'binance',
     error: '',
   }
 
@@ -85,26 +85,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }
 
   handleSubmit = async () => {
-    const { name, apiKey, secretOfApiKey, exchange } = this.state
-
-    const trimmedName = name.trim()
+    const { apiKey, secretOfApiKey, exchange } = this.state
+    const { numberOfKeys } = this.props
+    
 
     const variables = {
-      name: trimmedName,
+      name: `Binance #${numberOfKeys + 1}`,
       apiKey,
       secret: secretOfApiKey,
       exchange: exchange.toLowerCase(),
       date: Math.round(+Date.now() / 1000),
-    }
-
-    if (trimmedName.length < 3) {
-      this.setState({ error: 'Please enter name with at least 3 characters ' })
-      return false
-    }
-
-    if (trimmedName.length > 20) {
-      this.setState({ error: 'Please limit name to 20 characters ' })
-      return false
     }
 
     try {
@@ -113,7 +103,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       })
 
       const { error } = data.addExchangeKey
-
+      
       if (error !== '') {
         this.setState({ error })
         return false
@@ -178,6 +168,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       setCurrentStep,
       existCustomButton = false,
       CustomButton,
+      numberOfKeys = 0
     } = this.props
 
     const {
@@ -250,13 +241,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               borderRadius={'1rem'}
               color={black.custom}
             >
-              {onboarding ? (
-                <>
-                  connect your exchanges - <Steps current={2} />
-                </>
-              ) : (
-                'Add Api Key'
-              )}
+              Add Api Key
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
@@ -422,7 +407,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                         }}
                       />
                     </GridCustom>
-                    <GridCustom>
+                    {/* <GridCustom>
                       <Legend>Account name</Legend>
                       <InputBaseCustom
                         id="name"
@@ -435,7 +420,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                         // margin="normal"
                       />
                       {error && <FormError>{error}</FormError>}
-                    </GridCustom>
+                    </GridCustom> */}
                     <GridCustom>
                       <Legend>Api key</Legend>
                       <InputBaseCustom

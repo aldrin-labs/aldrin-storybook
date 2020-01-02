@@ -107,7 +107,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', amount * priceForCalculate, 1)
     }
 
-    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook && priceType !== 'market') {
+    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook && this.props.priceType !== 'market') {
       const {
         priceFromOrderbook,
         values: { amount },
@@ -404,14 +404,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     >
                       <InputTitle>cost:</InputTitle>
                       <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                        {values.amount > 0
+                        {/* {values.amount > 0
                           ? (
                               (funds[1].quantity / 100) *
                               (isBuyType || !isSPOTMarket
                                 ? values.total / (maxAmount / 100)
                                 : values.amount / (maxAmount / 100) / 100)
                             ).toFixed(2)
-                          : 0.0}{' '}
+                          : 0.0}{' '} */}
+                        {(values.amount / leverage * priceForCalculate).toFixed(2)}{' '}
                         {pair[1]}
                       </InputTitle>
                     </Grid>
@@ -423,10 +424,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     >
                       <InputTitle>max buy:</InputTitle>
                       <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                        {(
+                        {priceForCalculate ? (
                           (funds[1].quantity * leverage) /
                           priceForCalculate
-                        ).toFixed(3)}{' '}
+                        ).toFixed(3) : 0}{' '}
                         {pair[0]}
                       </InputTitle>
                     </Grid>
