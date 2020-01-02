@@ -115,7 +115,7 @@ class PopupStart extends React.Component<IProps, IState> {
               <BtnCustom
                 backgroundColor="white"
                 onClick={() => {
-                  setCurrentStep('createPortfolio')
+                  setCurrentStep('addAccount')
                 }}
                 style={{
                   maxWidth: '15rem',

@@ -61,11 +61,12 @@ class Accounts extends React.PureComponent<IProps> {
       onKeysSelectAll,
       isSidebar,
       baseCoin,
-      isSideNavOpen,
+      isSideNavOpen
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
+    console.log('keys', keys)
 
     return (
       <>
@@ -210,7 +211,7 @@ class Accounts extends React.PureComponent<IProps> {
             )
           })}
         </AccountsList>
-        {isSidebar && <AddAccountDialog baseCoin={baseCoin} />}
+        {isSidebar && <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />}
       </>
     )
   }
