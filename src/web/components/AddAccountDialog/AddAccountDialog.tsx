@@ -103,8 +103,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       })
 
       const { error } = data.addExchangeKey
-      console.log('resp data', data)
-
+      
       if (error !== '') {
         this.setState({ error })
         return false

@@ -66,7 +66,6 @@ class Accounts extends React.PureComponent<IProps> {
 
     const isUSDT = baseCoin === 'USDT'
     const roundNumber = isUSDT ? 2 : 8
-    console.log('keys', keys)
 
     return (
       <>
