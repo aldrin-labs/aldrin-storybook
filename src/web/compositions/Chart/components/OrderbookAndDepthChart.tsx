@@ -64,6 +64,7 @@ class OrderbookAndDepthChart extends React.Component {
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         sizeDigits,
       })
+      
       return {
         ...updatedData,
       }
@@ -104,7 +105,7 @@ class OrderbookAndDepthChart extends React.Component {
       updatedData = addOrdersToOrderbook({
         updatedData: orderbookData,
         ordersData,
-        aggregation,
+        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         originalOrderbookTree: { asks, bids },
         isAggregatedData: false,
         amountsMap,
