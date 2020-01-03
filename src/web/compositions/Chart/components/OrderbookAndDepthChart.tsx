@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import 'treemap-js'
 var SortedMap = require('collections/sorted-map')
 
@@ -20,6 +20,31 @@ import {
   testJSON,
   getAggregationsFromMinPriceDigits,
 } from '@core/utils/chartPageUtils'
+
+const random = (min, max) => {
+  const rand = min + Math.random() * (max + 1 - min);
+  return rand;
+};
+
+const getOrder = () => {
+  const id = Math.random();
+  const side = Math.random() > 0.5 ? 'asks' : 'bids';
+  const size = Math.random() > 0.8 ? 0 : Math.random() * 10;
+  const time = Math.random() > 0.5 ? 10000 : -10000
+  let price;
+
+  // bids from 6500 to 6550
+  // 6500 - average
+  // asks from 6450 to 6500
+  if (side === 'bids') {
+    price = random(6495, 6555);
+  } else {
+    price = random(6450, 6505);
+  }
+
+  return { id, side, size, price, exchange: 'binance', pair: 'BTC_USDT_0', timestamp: +new Date() + time }
+}
+
 
 let unsubscribe = Function
 
@@ -46,29 +71,30 @@ class OrderbookAndDepthChart extends React.Component {
       minPriceDigits,
     } = newProps
 
+    console.log('newProps', newProps)
     let updatedData = null
     let updatedAggregatedData = state.aggregatedData
 
     // first get data from query
-    if (
-      asks.getLength() === 0 &&
-      bids.getLength() === 0 &&
-      marketOrders.asks &&
-      marketOrders.bids &&
-      testJSON(marketOrders.asks) &&
-      testJSON(marketOrders.bids)
-    ) {
-      updatedData = transformOrderbookData({
-        marketOrders,
-        amountsMap,
-        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
-        sizeDigits,
-      })
+    // if (
+    //   asks.getLength() === 0 &&
+    //   bids.getLength() === 0 &&
+    //   marketOrders.asks &&
+    //   marketOrders.bids &&
+    //   testJSON(marketOrders.asks) &&
+    //   testJSON(marketOrders.bids)
+    // ) {
+    //   updatedData = transformOrderbookData({
+    //     marketOrders,
+    //     amountsMap,
+    //     aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+    //     sizeDigits,
+    //   })
       
-      return {
-        ...updatedData,
-      }
-    }
+    //   return {
+    //     ...updatedData,
+    //   }
+    // }
 
     if (
       !(typeof marketOrders.asks === 'string') ||
@@ -306,19 +332,35 @@ export const APIWrapper = ({
   sizeDigits,
   quote,
 }) => {
+
+  const [marketOrders, setMarketOrders] = useState({ bids: [], asks: [] })
+
+  const generateData = () => {
+    const data = new Array(100).fill(undefined).map(el => getOrder())
+    const marketOrders = (updateOrderBookQuerryFunction(null, { subscriptionData: { data: { listenOrderbook: data } } })).marketOrders
+    
+    setMarketOrders(marketOrders)
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(generateData, 1000)
+    return () => clearInterval(intervalId)
+  })
+
   return (
-    <QueryRenderer
-      component={OrderbookAndDepthChart}
-      withOutSpinner
-      withTableLoader={true}
-      fetchPolicy="network-only"
-      query={ORDERS_MARKET_QUERY}
-      variables={{ symbol: symbol, exchange, marketType }}
-      subscriptionArgs={{
-        subscription: ORDERBOOK,
-        variables: { symbol, exchange, marketType },
-        updateQueryFunction: updateOrderBookQuerryFunction,
-      }}
+    <OrderbookAndDepthChart
+      data={{ marketOrders }}
+      // component={OrderbookAndDepthChart}
+      // withOutSpinner
+      // withTableLoader={true}
+      // fetchPolicy="network-only"
+      // query={ORDERS_MARKET_QUERY}
+      // variables={{ symbol: symbol, exchange, marketType }}
+      // subscriptionArgs={{
+      //   subscription: ORDERBOOK,
+      //   variables: { symbol, exchange, marketType },
+      //   updateQueryFunction: updateOrderBookQuerryFunction,
+      // }}
       {...{
         quote,
         symbol,
