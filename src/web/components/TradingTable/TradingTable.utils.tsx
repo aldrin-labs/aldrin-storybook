@@ -128,7 +128,8 @@ export const combinePositionsTable = (
     pair: string
   ) => Promise<any>,
   theme: Theme,
-  marketPrice: number
+  marketPrice: number,
+  pair: string
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -139,6 +140,7 @@ export const combinePositionsTable = (
 
   const processedPositionsData = data
     .filter((el) => el.positionAmt !== 0)
+    .filter(el => el.symbol === pair)
     .map((el: OrderType, i: number) => {
       const {
         symbol,
@@ -594,7 +596,8 @@ export const combineOpenOrdersTable = (
       const triggerConditionsFormatted =
         triggerConditions === '-'
           ? '-'
-          : (isBuyTypeOrder(side) && type === 'stop_market') ||
+          : (isBuyTypeOrder(side) && type === 'limit') ||
+            (isBuyTypeOrder(side) && type === 'stop_market') ||
             (isBuyTypeOrder(side) && type === 'stop_limit' ) ||
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
