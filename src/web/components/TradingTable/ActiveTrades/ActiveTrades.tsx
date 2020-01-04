@@ -43,7 +43,7 @@ import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES
 import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MARKET_TICKERS, MOCKED_MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 
@@ -54,6 +54,7 @@ class ActiveTradesTable extends React.Component {
     selectedTrade: {},
     activeStrategiesProcessedData: [],
     marketPrice: 0,
+    needUpdate: true
   }
 
   unsubscribeFunction: null | Function = null
@@ -115,8 +116,9 @@ class ActiveTradesTable extends React.Component {
     // TODO: Also it would be good to show the dialog message here after mutation completed
   }
 
-  componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
+  subscribe() {
+    const { theme } = this.props
+
     const that = this
 
     this.subscription = client
@@ -126,12 +128,14 @@ class ActiveTradesTable extends React.Component {
           symbol: this.props.currencyPair,
           exchange: this.props.exchange,
           marketType: String(this.props.marketType),
-        },
+      }
+        // query: MOCKED_MARKET_TICKERS,
+        // variables: { time: 10000 }
       })
       .subscribe({
         next: (data) => {
-          if (data && data.data && data.data.listenMarketTickers) {
-            const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
+          if (data && data.data && data.data.listenMarketTickers && that.state.needUpdate) {
+            const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
 
             const activeStrategiesProcessedData = combineActiveTradesTable(
               that.props.getActiveStrategiesQuery.getActiveStrategies,
@@ -145,15 +149,22 @@ class ActiveTradesTable extends React.Component {
             that.setState({
               activeStrategiesProcessedData,
               marketPrice,
+              needUpdate: false,
             })
           }
         },
       })
+  }
+
+  componentDidMount() {
+    const { getActiveStrategiesQuery, subscribeToMore, } = this.props
+
+    this.subscribe()
 
     const activeStrategiesProcessedData = combineActiveTradesTable(
       getActiveStrategiesQuery.getActiveStrategies,
-      that.cancelOrderWithStatus,
-      that.editTrade,
+      this.cancelOrderWithStatus,
+      this.editTrade,
       theme,
       this.state.marketPrice,
       this.props.marketType
@@ -166,13 +177,28 @@ class ActiveTradesTable extends React.Component {
     this.unsubscribeFunction = subscribeToMore()
   }
 
+  componentDidUpdate(prevProps) {
+    if (!this.state.needUpdate) {
+      setTimeout(() => this.setState({ needUpdate: true }), 10000)
+    }
+
+    if (
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      this.subscription && this.subscription.unsubscribe()
+      this.subscribe()
+    }
+  }
+
   componentWillUnmount = () => {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
     }
 
-    this.subscription.unsubscribe()
+    this.subscription && this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps) {

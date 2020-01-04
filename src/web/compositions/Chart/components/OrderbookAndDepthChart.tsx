@@ -5,7 +5,7 @@ var SortedMap = require('collections/sorted-map')
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-import { ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
+import { MOCKED_ORDERBOOK, ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
 import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
 import { OrderBook, DepthChart } from '../components'
 import {
@@ -317,6 +317,8 @@ export const APIWrapper = ({
       subscriptionArgs={{
         subscription: ORDERBOOK,
         variables: { symbol, exchange, marketType },
+        // subscription: MOCKED_ORDERBOOK,
+        // variables: { time: 10000, ordersPerTime: 100 },
         updateQueryFunction: updateOrderBookQuerryFunction,
       }}
       {...{

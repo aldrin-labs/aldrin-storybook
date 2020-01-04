@@ -1,7 +1,7 @@
 import React from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MOCKED_MARKET_TICKERS, MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
@@ -39,6 +39,8 @@ export const TradeHistory = ({
         subscriptionArgs={{
           subscription: MARKET_TICKERS,
           variables: { symbol, exchange, marketType: String(marketType) },
+          // subscription: MOCKED_MARKET_TICKERS,
+          // variables: { time: 10000 },
           updateQueryFunction: updateTradeHistoryQuerryFunction,
         }}
         {...{
