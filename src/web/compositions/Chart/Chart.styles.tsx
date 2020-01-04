@@ -11,41 +11,46 @@ export const MainContainer = styled.div`
 
 export const GlobalStyles = createGlobalStyle`
 
+@media only screen and (max-width: 1720px) {
+  html {
+    font-size: 9px;
+  }
+}
+
 @media only screen and (max-width: 1400px) {
   html {
     font-size: 8px;
   }
 }
 
-  @media only screen and (max-width: 1720px) {
-    html {
-      font-size: 9px;
-    }
+@media only screen and (max-width: 1300px) {
+  html {
+    font-size: 7px;
   }
+}
 
-  @media only screen and (min-width: 1921px) {
-    html {
-      font-size: 12px;
-    }
+@media only screen and (max-width: 1200px) {
+  html {
+    font-size: 6px;
   }
-
-  @media only screen and (min-device-pixel-ratio: 2) and (min-width: 1921px),
-  only screen and (min-resolution: 192dpi) and (min-width: 1921px),
-  only screen and (min-resolution: 2dppx)  and (min-width: 1921px) { 
-    font-size: 9px;
-  }  
-
-  @media only screen and (min-width: 2560px) {
-    html {
-      font-size: 15px;
-    }
+}
+@media only screen and (max-width: 1100px) {
+  html {
+    font-size: 5px;
   }
+}
 
-  @media only screen and (min-device-pixel-ratio: 2) and (min-width: 2560px),
-  only screen and (min-resolution: 192dpi) and (min-width: 2560px),
-  only screen and (min-resolution: 2dppx) and (min-width: 2560px) { 
+@media only screen and (min-width: 1921px) {
+  html {
     font-size: 12px;
-  }    
+  }
+}
+
+@media only screen and (min-width: 2560px) {
+  html {
+    font-size: 15px;
+  }
+}  
 `
 
 export const PanelWrapper = styled.div`
