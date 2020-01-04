@@ -25,6 +25,7 @@ class PositionsTable extends React.PureComponent {
   state = {
     positionsData: [],
     marketPrice: 0,
+    needUpdate: true
   }
 
   unsubscribeFunction: null | Function = null
@@ -69,52 +70,76 @@ class PositionsTable extends React.PureComponent {
     // TODO: Also it would be good to show the dialog message here after mutation completed
   }
 
-  componentDidMount() {
-    const { getActivePositionsQuery, subscribeToMore, theme } = this.props
+  subscribe() {
+    const { theme } = this.props
 
     const that = this
 
     this.subscription = client
-      .subscribe({
-        query: MARKET_TICKERS,
-        variables: {
-          symbol: this.props.currencyPair,
-          exchange: this.props.exchange,
-          marketType: String(this.props.marketType),
-        },
-      })
-      .subscribe({
-        next: (data) => {
-          if (data && data.data && data.data.listenMarketTickers) {
-            const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
+    .subscribe({
+      query: MARKET_TICKERS,
+      variables: {
+        symbol: that.props.currencyPair,
+        exchange: that.props.exchange,
+        marketType: String(that.props.marketType),
+      },
+    })
+    .subscribe({
+      next: (data) => {
+        if (data && data.data && data.data.listenMarketTickers && that.state.needUpdate) {
+          const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
 
-            const positionsData = combinePositionsTable(
-              that.props.getActivePositionsQuery.getActivePositions,
-              that.cancelOrderWithStatus,
-              theme,
-              marketPrice
-            )
+          const positionsData = combinePositionsTable(
+            that.props.getActivePositionsQuery.getActivePositions,
+            that.cancelOrderWithStatus,
+            theme,
+            marketPrice,
+            this.props.currencyPair
+          )
 
-            that.setState({
-              positionsData,
-              marketPrice,
-            })
-          }
-        },
-      })
+          that.setState({
+            positionsData,
+            marketPrice,
+            needUpdate: false,
+          })
+        }
+      },
+    })
+  }
 
+  componentDidMount() {
+    const { getActivePositionsQuery, subscribeToMore, theme } = this.props
+
+    this.subscribe()
 
     const positionsData = combinePositionsTable(
       getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
       theme,
-      this.state.marketPrice
+      this.state.marketPrice,
+      this.props.currencyPair
     )
+
     this.setState({
       positionsData,
     })
 
     this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!this.state.needUpdate) {
+      setTimeout(() => this.setState({ needUpdate: true }), 10000)
+    }
+
+    if (
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      this.subscription && this.subscription.unsubscribe()
+      this.subscribe()
+    }
   }
 
   componentWillUnmount = () => {
@@ -123,7 +148,7 @@ class PositionsTable extends React.PureComponent {
       this.unsubscribeFunction()
     }
 
-    this.subscription.unsubscribe()
+    this.subscription && this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -131,7 +156,8 @@ class PositionsTable extends React.PureComponent {
       nextProps.getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
       nextProps.theme,
-      this.state.marketPrice
+      this.state.marketPrice,
+      this.props.currencyPair
     )
 
     this.setState({

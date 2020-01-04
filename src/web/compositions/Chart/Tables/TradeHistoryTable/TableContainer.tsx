@@ -42,31 +42,30 @@ class TableContainer extends Component<IProps, IState> {
       newProps.data.marketTickers &&
       newProps.data.marketTickers.length > 0
     ) {
-      const tickerData = testJSON(newProps.data.marketTickers[0])
-        ? JSON.parse(newProps.data.marketTickers[0])
-        : newProps.data.marketTickers[0]
+      const tickersData = newProps.data.marketTickers
 
       if (
-        (state.data.length > 0 && tickerData[6] === state.data[0].id) ||
-        tickerData[1] !== newProps.currencyPair ||
-        tickerData[2] !== newProps.marketType
+        !tickersData ||
+        tickersData.length === 0 ||
+        tickersData[0].pair !== newProps.currencyPair ||
+        tickersData[0].marketType != newProps.marketType
       ) {
         return null
       }
 
-      const ticker = {
-        fall: tickerData[9],
-        id: tickerData[6],
-        size: Number(tickerData[5]).toFixed(newProps.sizeDigits),
-        price: Number(tickerData[4]).toFixed(
-          getNumberOfDecimalsFromNumber(
-            getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
-          )
-        ),
-        time: new Date(tickerData[8]).toLocaleTimeString(),
-      }
+      const updatedData = tickersData
+        .map((trade) => ({
+          ...trade,
+          price: Number(trade.price).toFixed(
+            getNumberOfDecimalsFromNumber(
+              getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0]
+                .value
+            )
+          ),
+          time: new Date(trade.time).toLocaleTimeString(),
+        }))
+        .concat(state.data)
 
-      const updatedData = [ticker].concat(state.data)
       const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
         updatedData,
         'price'
