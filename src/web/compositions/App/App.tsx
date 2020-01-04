@@ -31,7 +31,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-const version = `10.5.9`
+const version = `10.5.10`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
