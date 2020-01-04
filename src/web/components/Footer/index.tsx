@@ -34,6 +34,10 @@ const Footer = ({
     return null
   }
 
+  if (isChartPage) {
+    return null
+  }
+
   return (
     <Container
       position="static"
