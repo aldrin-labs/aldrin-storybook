@@ -13,7 +13,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components/index'
 
 import QueryRenderer from '@core/components/QueryRenderer'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MARKET_TICKERS, MOCKED_MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
@@ -100,12 +100,14 @@ const APIWrapper = (props) => {
       fetchPolicy="cache-only"
       variables={{ symbol: props.symbol, exchange: props.exchange }}
       subscriptionArgs={{
-        subscription: MARKET_TICKERS,
-        variables: {
-          symbol: props.symbol,
-          exchange: props.exchange,
-          marketType: String(props.marketType),
-        },
+        // subscription: MARKET_TICKERS,
+        // variables: {
+        //   symbol: props.symbol,
+        //   exchange: props.exchange,
+        //   marketType: String(props.marketType),
+        // },
+        subscription: MOCKED_MARKET_TICKERS,
+        variables: { time: 10000 },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...props}

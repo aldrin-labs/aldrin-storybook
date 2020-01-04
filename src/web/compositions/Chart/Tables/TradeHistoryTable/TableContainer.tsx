@@ -47,6 +47,7 @@ class TableContainer extends Component<IProps, IState> {
         : newProps.data.marketTickers[0]
 
       if (
+        !tickerData || 
         (state.data.length > 0 && tickerData[6] === state.data[0].id) ||
         tickerData[1] !== newProps.currencyPair ||
         tickerData[2] !== newProps.marketType

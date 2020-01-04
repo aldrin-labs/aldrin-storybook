@@ -5,7 +5,7 @@ var SortedMap = require('collections/sorted-map')
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-import { ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
+import { MOCKED_ORDERBOOK, ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
 import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
 import { OrderBook, DepthChart } from '../components'
 import {
@@ -50,25 +50,25 @@ class OrderbookAndDepthChart extends React.Component {
     let updatedAggregatedData = state.aggregatedData
 
     // first get data from query
-    if (
-      asks.getLength() === 0 &&
-      bids.getLength() === 0 &&
-      marketOrders.asks &&
-      marketOrders.bids &&
-      testJSON(marketOrders.asks) &&
-      testJSON(marketOrders.bids)
-    ) {
-      updatedData = transformOrderbookData({
-        marketOrders,
-        amountsMap,
-        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
-        sizeDigits,
-      })
+    // if (
+    //   asks.getLength() === 0 &&
+    //   bids.getLength() === 0 &&
+    //   marketOrders.asks &&
+    //   marketOrders.bids &&
+    //   testJSON(marketOrders.asks) &&
+    //   testJSON(marketOrders.bids)
+    // ) {
+    //   updatedData = transformOrderbookData({
+    //     marketOrders,
+    //     amountsMap,
+    //     aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+    //     sizeDigits,
+    //   })
       
-      return {
-        ...updatedData,
-      }
-    }
+    //   return {
+    //     ...updatedData,
+    //   }
+    // }
 
     if (
       !(typeof marketOrders.asks === 'string') ||
@@ -78,15 +78,15 @@ class OrderbookAndDepthChart extends React.Component {
       const orderbookData = updatedData || { asks, bids }
 
       // check that current pair and marketType === pair in new orders
-      if (
-        (ordersData.bids.length > 0 &&
-          ordersData.bids[0].pair !==
-            `${newProps.symbol}_${newProps.marketType}`) ||
-        (ordersData.asks.length > 0 &&
-          ordersData.asks[0].pair !==
-            `${newProps.symbol}_${newProps.marketType}`)
-      )
-        return null
+      // if (
+      //   (ordersData.bids.length > 0 &&
+      //     ordersData.bids[0].pair !==
+      //       `${newProps.symbol}_${newProps.marketType}`) ||
+      //   (ordersData.asks.length > 0 &&
+      //     ordersData.asks[0].pair !==
+      //       `${newProps.symbol}_${newProps.marketType}`)
+      // )
+      //   return null
 
       if (
         String(aggregation) !==
@@ -315,8 +315,10 @@ export const APIWrapper = ({
       query={ORDERS_MARKET_QUERY}
       variables={{ symbol: symbol, exchange, marketType }}
       subscriptionArgs={{
-        subscription: ORDERBOOK,
-        variables: { symbol, exchange, marketType },
+        // subscription: ORDERBOOK,
+        // variables: { symbol, exchange, marketType },
+        subscription: MOCKED_ORDERBOOK,
+        variables: { time: 10000, ordersPerTime: 100 },
         updateQueryFunction: updateOrderBookQuerryFunction,
       }}
       {...{

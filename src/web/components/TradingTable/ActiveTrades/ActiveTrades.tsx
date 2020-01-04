@@ -43,7 +43,7 @@ import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES
 import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { MARKET_TICKERS, MOCKED_MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 
@@ -54,6 +54,7 @@ class ActiveTradesTable extends React.Component {
     selectedTrade: {},
     activeStrategiesProcessedData: [],
     marketPrice: 0,
+    needUpdate: true
   }
 
   unsubscribeFunction: null | Function = null
@@ -121,16 +122,18 @@ class ActiveTradesTable extends React.Component {
 
     this.subscription = client
       .subscribe({
-        query: MARKET_TICKERS,
-        variables: {
-          symbol: this.props.currencyPair,
-          exchange: this.props.exchange,
-          marketType: String(this.props.marketType),
-        },
+        // query: MARKET_TICKERS,
+        // variables: {
+        //   symbol: this.props.currencyPair,
+        //   exchange: this.props.exchange,
+        //   marketType: String(this.props.marketType),
+      // }
+        query: MOCKED_MARKET_TICKERS,
+        variables: { time: 10000 }
       })
       .subscribe({
         next: (data) => {
-          if (data && data.data && data.data.listenMarketTickers) {
+          if (data && data.data && data.data.listenMarketTickers && that.state.needUpdate) {
             const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
 
             const activeStrategiesProcessedData = combineActiveTradesTable(
@@ -144,7 +147,6 @@ class ActiveTradesTable extends React.Component {
 
             that.setState({
               activeStrategiesProcessedData,
-              marketPrice,
             })
           }
         },
@@ -166,13 +168,19 @@ class ActiveTradesTable extends React.Component {
     this.unsubscribeFunction = subscribeToMore()
   }
 
+  componentDidUpdate() {
+    if (this.state.needUpdate) {
+      this.setState({ needUpdate: false }, () => setTimeout(() => this.setState({ needUpdate: true }), 10000))
+    }
+  }
+
   componentWillUnmount = () => {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
     }
 
-    this.subscription.unsubscribe()
+    this.subscription && this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps) {

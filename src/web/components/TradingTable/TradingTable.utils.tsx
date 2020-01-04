@@ -592,7 +592,8 @@ export const combineOpenOrdersTable = (
       const triggerConditionsFormatted =
         triggerConditions === '-'
           ? '-'
-          : (isBuyTypeOrder(side) && type === 'stop_market') ||
+          : (isBuyTypeOrder(side) && type === 'limit') ||
+            (isBuyTypeOrder(side) && type === 'stop_market') ||
             (isBuyTypeOrder(side) && type === 'stop_limit' ) ||
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||

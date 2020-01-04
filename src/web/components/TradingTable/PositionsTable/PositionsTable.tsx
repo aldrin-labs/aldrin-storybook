@@ -25,6 +25,7 @@ class PositionsTable extends React.PureComponent {
   state = {
     positionsData: [],
     marketPrice: 0,
+    needUpdate: true
   }
 
   unsubscribeFunction: null | Function = null
@@ -78,14 +79,14 @@ class PositionsTable extends React.PureComponent {
       .subscribe({
         query: MARKET_TICKERS,
         variables: {
-          symbol: this.props.currencyPair,
-          exchange: this.props.exchange,
-          marketType: String(this.props.marketType),
+          symbol: that.props.currencyPair,
+          exchange: that.props.exchange,
+          marketType: String(that.props.marketType),
         },
       })
       .subscribe({
         next: (data) => {
-          if (data && data.data && data.data.listenMarketTickers) {
+          if (data && data.data && data.data.listenMarketTickers && that.state.needUpdate) {
             const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
 
             const positionsData = combinePositionsTable(
@@ -117,13 +118,19 @@ class PositionsTable extends React.PureComponent {
     this.unsubscribeFunction = subscribeToMore()
   }
 
+  componentDidUpdate() {
+    if (this.state.needUpdate) {
+      this.setState({ needUpdate: false }, () => setTimeout(() => this.setState({ needUpdate: true }), 10000))
+    }
+  }
+
   componentWillUnmount = () => {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
     }
 
-    this.subscription.unsubscribe()
+    this.subscription && this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
