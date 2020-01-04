@@ -223,6 +223,7 @@ class Chart extends React.Component<IProps, IState> {
                   themeMode,
                   activeExchange,
                   changeActiveExchangeMutation,
+                  marketType,
                 }}
               />
             </Grid>

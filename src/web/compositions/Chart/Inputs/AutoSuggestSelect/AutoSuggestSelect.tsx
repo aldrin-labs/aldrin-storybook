@@ -150,7 +150,7 @@ const queryRender = (props: IProps) => (
     placeholder={() => <TextInputLoader style={{ width: 100, margin: 0 }} />}
     component={IntegrationReactSelect}
     query={MARKETS_BY_EXCHANE_QUERY}
-    variables={{ splitter: '_', exchange: props.activeExchange.symbol }}
+    variables={{ splitter: '_', exchange: props.activeExchange.symbol, marketType: props.marketType}}
     withOutSpinner={true}
     {...props}
   />

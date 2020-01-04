@@ -93,6 +93,7 @@ export const DefaultView = (props: any) => {
             changeActiveExchangeMutation,
             isDefaultTerminalViewMode,
             updateTerminalViewMode,
+            marketType,
           }}
         />
       </ChartGridContainer>

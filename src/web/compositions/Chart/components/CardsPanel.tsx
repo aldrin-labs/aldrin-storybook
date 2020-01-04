@@ -54,7 +54,9 @@ export const CardsPanel = ({
   changeActiveExchangeMutation,
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
+  marketType,
 }) => {
+
   return (
     <>
       <PanelWrapper>
@@ -85,6 +87,7 @@ export const CardsPanel = ({
           view={view}
           activeExchange={activeExchange}
           selectStyles={selectStyles}
+          marketType={marketType}
         />
 
         {/* <CustomCard
