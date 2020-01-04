@@ -49,7 +49,9 @@ export const SvgMode = styled(({ isActive, ...rest }) => (
 
 export const ModesContainer = styled.div`
   position: absolute;
-  right: 1rem;
+  width: 60%;
+  right: 0;
+  justify-content: center;
 
   display: flex;
   align-items: center;

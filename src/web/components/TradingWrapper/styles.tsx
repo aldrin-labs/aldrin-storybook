@@ -170,6 +170,7 @@ export const SettingsLabel = styled(LeverageLabel)`
 `
 
 export const StyledSelect = styled.select`
+  width: 100%;
   background: ${(props) => !props.disabled && '#ffffff'};
   border: 0.1rem solid #e0e5ec;
   border-radius: 0.2rem;

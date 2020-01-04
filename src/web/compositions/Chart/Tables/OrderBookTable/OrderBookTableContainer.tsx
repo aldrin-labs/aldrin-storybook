@@ -88,6 +88,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
               isActive={mode === 'asks'}
               onClick={() => this.setOrderbookMode('asks')}
             />
+            <div style={{ width: '60%', padding: '0 1rem' }}>
             <StyledSelect
               onChange={(e: ChangeEvent) => {
                 setOrderbookAggregation(
@@ -102,6 +103,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
                 <StyledOption key={option.label}>{option.label}</StyledOption>
               ))}
             </StyledSelect>
+            </div>
           </ModesContainer>
         </ChartCardHeader>
 
