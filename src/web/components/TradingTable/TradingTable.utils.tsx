@@ -126,7 +126,8 @@ export const combinePositionsTable = (
     pair: string
   ) => Promise<any>,
   theme: Theme,
-  marketPrice: number
+  marketPrice: number,
+  pair: string
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -137,6 +138,7 @@ export const combinePositionsTable = (
 
   const processedPositionsData = data
     .filter((el) => el.positionAmt !== 0)
+    .filter(el => el.symbol === pair)
     .map((el: OrderType, i: number) => {
       const {
         symbol,

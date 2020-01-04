@@ -37,10 +37,10 @@ export const TradeHistory = ({
         query={MARKET_QUERY}
         variables={{ symbol, exchange }}
         subscriptionArgs={{
-          // subscription: MARKET_TICKERS,
-          // variables: { symbol, exchange, marketType: String(marketType) },
-          subscription: MOCKED_MARKET_TICKERS,
-          variables: { time: 10000 },
+          subscription: MARKET_TICKERS,
+          variables: { symbol, exchange, marketType: String(marketType) },
+          // subscription: MOCKED_MARKET_TICKERS,
+          // variables: { time: 10000 },
           updateQueryFunction: updateTradeHistoryQuerryFunction,
         }}
         {...{

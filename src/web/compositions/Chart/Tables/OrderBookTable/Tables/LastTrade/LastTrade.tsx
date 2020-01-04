@@ -9,8 +9,6 @@ import {
 } from './LastTrade.styles'
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { addMainSymbol } from '@sb/components/index'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { MARKET_TICKERS, MOCKED_MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
@@ -28,20 +26,23 @@ const LastTrade = (props: IProps) => {
   const { updateTerminalPriceFromOrderbook } = props
 
   const [marketPrice, updateMarketPrice] = useState(0)
-  let unsubscribe
+  let unsubscribeSpot: Function
+  let unsubscribeFutures: Function
 
   useEffect(() => {
-    unsubscribe && unsubscribe()
-    unsubscribe = props.subscribeToMore()
+    unsubscribeSpot && unsubscribeSpot()
+    unsubscribeSpot = props.subscribeToMore()
 
     return () => {
-      unsubscribe && unsubscribe()
+      unsubscribeSpot && unsubscribeSpot()
     }
   }, [props.marketType, props.exchange, props.symbol])
 
   useEffect(() => {
     if (props.marketType === 1) {
-      const unsubscribe = client
+      unsubscribeFutures && unsubscribeFutures.unsubscribe()
+
+      unsubscribeFutures = client
         .subscribe({
           query: MARKET_TICKERS,
           variables: {
@@ -53,7 +54,8 @@ const LastTrade = (props: IProps) => {
         .subscribe({
           next: (data) => {
             if (data && data.data && data.data.listenMarketTickers) {
-              const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
+              const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
+
               updateMarketPrice(marketPrice)
             }
           },
@@ -61,18 +63,18 @@ const LastTrade = (props: IProps) => {
     }
 
     return () => {
-      unsubscribe && unsubscribe()
+      unsubscribeFutures && unsubscribeFutures.unsubscribe()
     }
-  }, [props.marketType, props.exchange, props.currencyPair])
+  }, [props.marketType, props.exchange, props.symbol])
 
   let price = 0
   let fall = false
 
   try {
-    const data = JSON.parse(props.data.marketTickers[0])
-    if (data[1] === props.symbol || data[2] === props.marketType) {
-      price = data[4]
-      fall = data[9]
+    const data = props.data.marketTickers[props.data.marketTickers.length - 1]
+    if (data.pair === props.symbol || Number(data.marketType) === Number(props.marketType)) {
+      price = data.price
+      fall = !!(+data.fall)
     }
   } catch (e) {}
 
@@ -100,14 +102,14 @@ const APIWrapper = (props) => {
       fetchPolicy="cache-only"
       variables={{ symbol: props.symbol, exchange: props.exchange }}
       subscriptionArgs={{
-        // subscription: MARKET_TICKERS,
-        // variables: {
-        //   symbol: props.symbol,
-        //   exchange: props.exchange,
-        //   marketType: String(props.marketType),
-        // },
-        subscription: MOCKED_MARKET_TICKERS,
-        variables: { time: 10000 },
+        subscription: MARKET_TICKERS,
+        variables: {
+          symbol: props.symbol,
+          exchange: props.exchange,
+          marketType: String(props.marketType),
+        },
+        // subscription: MOCKED_MARKET_TICKERS,
+        // variables: { time: 10000 },
         updateQueryFunction: updateTradeHistoryQuerryFunction,
       }}
       {...props}

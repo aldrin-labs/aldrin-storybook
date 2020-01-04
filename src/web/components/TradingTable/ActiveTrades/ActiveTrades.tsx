@@ -116,25 +116,26 @@ class ActiveTradesTable extends React.Component {
     // TODO: Also it would be good to show the dialog message here after mutation completed
   }
 
-  componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
+  subscribe() {
+    const { theme } = this.props
+
     const that = this
 
     this.subscription = client
       .subscribe({
-        // query: MARKET_TICKERS,
-        // variables: {
-        //   symbol: this.props.currencyPair,
-        //   exchange: this.props.exchange,
-        //   marketType: String(this.props.marketType),
-      // }
-        query: MOCKED_MARKET_TICKERS,
-        variables: { time: 10000 }
+        query: MARKET_TICKERS,
+        variables: {
+          symbol: this.props.currencyPair,
+          exchange: this.props.exchange,
+          marketType: String(this.props.marketType),
+      }
+        // query: MOCKED_MARKET_TICKERS,
+        // variables: { time: 10000 }
       })
       .subscribe({
         next: (data) => {
           if (data && data.data && data.data.listenMarketTickers && that.state.needUpdate) {
-            const marketPrice = JSON.parse(data.data.listenMarketTickers)[4]
+            const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
 
             const activeStrategiesProcessedData = combineActiveTradesTable(
               that.props.getActiveStrategiesQuery.getActiveStrategies,
@@ -147,15 +148,23 @@ class ActiveTradesTable extends React.Component {
 
             that.setState({
               activeStrategiesProcessedData,
+              marketPrice,
+              needUpdate: false,
             })
           }
         },
       })
+  }
+
+  componentDidMount() {
+    const { getActiveStrategiesQuery, subscribeToMore, } = this.props
+
+    this.subscribe()
 
     const activeStrategiesProcessedData = combineActiveTradesTable(
       getActiveStrategiesQuery.getActiveStrategies,
-      that.cancelOrderWithStatus,
-      that.editTrade,
+      this.cancelOrderWithStatus,
+      this.editTrade,
       theme,
       this.state.marketPrice,
       this.props.marketType
@@ -168,9 +177,18 @@ class ActiveTradesTable extends React.Component {
     this.unsubscribeFunction = subscribeToMore()
   }
 
-  componentDidUpdate() {
-    if (this.state.needUpdate) {
-      this.setState({ needUpdate: false }, () => setTimeout(() => this.setState({ needUpdate: true }), 10000))
+  componentDidUpdate(prevProps) {
+    if (!this.state.needUpdate) {
+      setTimeout(() => this.setState({ needUpdate: true }), 10000)
+    }
+
+    if (
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      this.subscription && this.subscription.unsubscribe()
+      this.subscribe()
     }
   }
 
