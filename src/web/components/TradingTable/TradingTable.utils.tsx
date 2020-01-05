@@ -303,8 +303,8 @@ export const combineActiveTradesTable = (
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((el) => el.enabled)
     .filter((el) => el.conditions.marketType === marketType)
+    .sort((a, b) => b.enabled ? 1 : -1)
     .map((el: OrderType, i: number) => {
       const {
         conditions: {
@@ -378,6 +378,9 @@ export const combineActiveTradesTable = (
           render: (
             <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         side: {
           render: (
@@ -389,6 +392,9 @@ export const combineActiveTradesTable = (
                 : 'sell short'}
             </SubColumnValue>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         entryPrice: {
           render: (
@@ -396,6 +402,9 @@ export const combineActiveTradesTable = (
               {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         quantity: {
           render: (
@@ -403,15 +412,21 @@ export const combineActiveTradesTable = (
               {amount} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
-              {trailingExit
+              {trailingExit && exitLevels[0] && exitLevels[0].activatePrice && exitLevels[0].entryDeviation
                 ? `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
-                : `${exitLevels[0].price}%`}
+                : exitLevels[0] && exitLevels[0].price ? `${exitLevels[0].price}%` : '-'} 
             </SubColumnValue>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         stopLoss: {
           render: stopLoss ? (
@@ -419,6 +434,9 @@ export const combineActiveTradesTable = (
           ) : (
             '-'
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         profit: {
           render:
@@ -437,6 +455,9 @@ export const combineActiveTradesTable = (
             ) : (
               `0 ${pairArr[1]} / 0%`
             ),
+            style: {
+              opacity: el.enabled ? 1 : 0.5 
+            }
         },
         status: {
           render: (
@@ -444,6 +465,9 @@ export const combineActiveTradesTable = (
               {!!status[0] ? status[0] : 'Waiting'}
             </SubColumnValue>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         close: {
           render: (
@@ -464,6 +488,9 @@ export const combineActiveTradesTable = (
               {status[0] === 'Waiting' ? 'close' : 'market'}
             </BtnCustom>
           ),
+          style: {
+            opacity: el.enabled ? 1 : 0.5 
+          }
         },
         // entryOrder: {
         //   render: (
