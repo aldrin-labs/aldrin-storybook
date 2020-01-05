@@ -183,6 +183,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
+      pollInterval={60000}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {

@@ -169,6 +169,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
       fetchPolicy="cache-and-network"
+      pollInterval={60000}
       variables={{
         tradeHistoryInput: {
           startDate,
