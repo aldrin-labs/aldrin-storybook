@@ -1,4 +1,5 @@
 import React from 'react'
+import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { client } from '@core/graphql/apolloClient'
@@ -18,6 +19,7 @@ import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
+import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
@@ -25,10 +27,55 @@ class PositionsTable extends React.PureComponent {
   state = {
     positionsData: [],
     marketPrice: 0,
-    needUpdate: true
+    needUpdate: true,
   }
 
   unsubscribeFunction: null | Function = null
+
+  createOrder = async (variables) => {
+    const { createOrderMutation } = this.props
+
+    try {
+      const result = await createOrderMutation({ variables })
+
+      if (result.errors) {
+        return {
+          status: 'error',
+          message: 'Something went wrong',
+        }
+      }
+      if (result.data.createOrder.status === 'ERR') {
+        return {
+          status: 'error',
+          message: result.data.createOrder.binanceMessage,
+        }
+      }
+      if (result.data.createOrder.orderId) {
+        return {
+          status: 'success',
+          message: 'Order placed',
+          orderId: result.data.createOrder.orderId,
+        }
+      }
+      return {
+        status: 'error',
+        message: 'Something went wrong',
+      }
+    } catch (err) {
+      return {
+        status: 'error',
+        message: 'Something went wrong',
+      }
+    }
+  }
+
+  createOrderWithStatus = async (variables) => {
+    const { showOrderResult, cancelOrder, marketType } = this.props
+
+    const result = await this.createOrder(variables)
+    console.log('result', result)
+    await showOrderResult(result, cancelOrder, marketType)
+  }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
     const { cancelOrderMutation, marketType } = this.props
@@ -40,7 +87,7 @@ class PositionsTable extends React.PureComponent {
             keyId,
             orderId,
             pair,
-            marketType
+            marketType,
           },
         },
       })
@@ -76,35 +123,45 @@ class PositionsTable extends React.PureComponent {
     const that = this
 
     this.subscription = client
-    .subscribe({
-      query: MARKET_TICKERS,
-      variables: {
-        symbol: that.props.currencyPair,
-        exchange: that.props.exchange,
-        marketType: String(that.props.marketType),
-      },
-    })
-    .subscribe({
-      next: (data) => {
-        if (data && data.data && data.data.listenMarketTickers && that.state.needUpdate) {
-          const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
+      .subscribe({
+        query: MARKET_TICKERS,
+        variables: {
+          symbol: that.props.currencyPair,
+          exchange: that.props.exchange,
+          marketType: String(that.props.marketType),
+        },
+      })
+      .subscribe({
+        next: (data) => {
+          if (
+            data &&
+            data.data &&
+            data.data.listenMarketTickers &&
+            that.state.needUpdate
+          ) {
+            const marketPrice =
+              data.data.listenMarketTickers[
+                data.data.listenMarketTickers.length - 1
+              ].price
 
-          const positionsData = combinePositionsTable(
-            that.props.getActivePositionsQuery.getActivePositions,
-            that.cancelOrderWithStatus,
-            theme,
-            marketPrice,
-            this.props.currencyPair
-          )
+            const positionsData = combinePositionsTable(
+              that.props.getActivePositionsQuery.getActivePositions,
+              that.cancelOrderWithStatus,
+              that.createOrderWithStatus,
+              theme,
+              marketPrice,
+              this.props.currencyPair,
+              this.props.selectedKey.keyId
+            )
 
-          that.setState({
-            positionsData,
-            marketPrice,
-            needUpdate: false,
-          })
-        }
-      },
-    })
+            that.setState({
+              positionsData,
+              marketPrice,
+              needUpdate: false,
+            })
+          }
+        },
+      })
   }
 
   componentDidMount() {
@@ -115,9 +172,11 @@ class PositionsTable extends React.PureComponent {
     const positionsData = combinePositionsTable(
       getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
+      this.createOrderWithStatus,
       theme,
       this.state.marketPrice,
-      this.props.currencyPair
+      this.props.currencyPair,
+      this.props.selectedKey.keyId
     )
 
     this.setState({
@@ -155,9 +214,11 @@ class PositionsTable extends React.PureComponent {
     const positionsData = combinePositionsTable(
       nextProps.getActivePositionsQuery.getActivePositions,
       this.cancelOrderWithStatus,
+      this.createOrderWithStatus,
       nextProps.theme,
       this.state.marketPrice,
-      this.props.currencyPair
+      this.props.currencyPair,
+      this.props.selectedKey.keyId
     )
 
     this.setState({
@@ -260,6 +321,7 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
-  TableDataWrapper
-)
+export default compose(
+  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
+  graphql(createOrder, { name: 'createOrderMutation' })
+)(TableDataWrapper)

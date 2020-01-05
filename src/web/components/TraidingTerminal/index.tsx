@@ -608,23 +608,23 @@ const formikEnhancer = withFormik<IProps, FormValues>({
               amount: values.amount,
             }
 
-      const priceForCalculate =
-        priceType !== 'market' && values.limit !== null
-          ? values.limit
-          : values.price
+      // const priceForCalculate =
+      //   priceType !== 'market' && values.limit !== null
+      //     ? values.limit
+      //     : values.price
 
-      if (values.amount * priceForCalculate < 10 && isSPOTMarket) {
-        props.showOrderResult(
-          {
-            status: 'error',
-            message: 'Total value must be at least 10.',
-          },
-          props.cancelOrder,
-          isSPOTMarket ? 0 : 1
-        )
+      // if (values.amount * priceForCalculate < 10 && isSPOTMarket) {
+      //   props.showOrderResult(
+      //     {
+      //       status: 'error',
+      //       message: 'Total value must be at least 10.',
+      //     },
+      //     props.cancelOrder,
+      //     isSPOTMarket ? 0 : 1
+      //   )
 
-        return null
-      }
+      //   return null
+      // }
 
       const result = await props.confirmOperation(
         byType,
@@ -640,7 +640,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
               ? { timeInForce: TIFMode, postOnly: false }
               : { postOnly: true }
             : {}),
-          ...(priceType === 'stop-limit'
+          ...(priceType === 'stop-limit' || priceType === 'take-profit'
             ? {
                 workingType:
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
