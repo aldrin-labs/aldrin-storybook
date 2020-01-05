@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 
-import { compose } from 'recompose'
 import QueryRenderer from '@core/components/QueryRenderer'
-
+import { getTimeZone } from '@core/utils/dateUtils'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
@@ -138,6 +137,8 @@ const APIWrapper = (props: any) => {
 
   const endDate = +moment().endOf('day')
   const startDate = +moment().subtract(1, 'weeks')
+  const timezone = getTimeZone()
+
 
   const queries = [
     { query: getPortfolioAssets, variables: { baseCoin, innerSettings: true } },
@@ -159,6 +160,7 @@ const APIWrapper = (props: any) => {
         input: {
           startDate,
           endDate,
+          timezone,
         },
       },
     },
