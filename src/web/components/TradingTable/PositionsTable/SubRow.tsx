@@ -4,10 +4,10 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Input } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/components/Balances'
 
-const SubRow = ({}) => {
+const SubRow = ({ getVariables, createOrderWithStatus }) => {
   const [enableEdit, updateEnableEdit] = useState(false)
   const [price, updateClosePrice] = useState('')
-
+  console.log('price', price)
   return (
     <div
       style={{
@@ -36,8 +36,10 @@ const SubRow = ({}) => {
           padding={'0 .5rem 0 1rem'}
           value={price}
           placeholder={'price'}
-          onChange={(e) => updateClosePrice(e.target.price)}
-          inputStyles={{ textTransform: 'uppercase', color: '#ABBAD1' }}
+          onChange={(e) => {
+            updateClosePrice(e.target.value)
+          }}
+          inputStyles={{ textTransform: 'uppercase', color: '#16253d' }}
         />
         <BtnCustom
           btnWidth="30%"
@@ -51,6 +53,7 @@ const SubRow = ({}) => {
           hoverColor={'#fff'}
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
+          onClick={() => createOrderWithStatus(getVariables('limit', +price))}
         >
           limit
         </BtnCustom>
@@ -65,6 +68,7 @@ const SubRow = ({}) => {
           hoverColor={'#fff'}
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
+          onClick={() => createOrderWithStatus(getVariables('market'))}
         >
           market
         </BtnCustom>

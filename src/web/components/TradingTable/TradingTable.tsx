@@ -65,6 +65,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             show: tab === 'positions',
             handleTabChange: this.handleTabChange,
+            showOrderResult: this.props.showOrderResult,
             showCancelResult: this.props.showCancelResult,
           }}
         />
@@ -113,6 +114,4 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default compose(
-  withErrorFallback,
-)(TradingTable)
+export default compose(withErrorFallback)(TradingTable)
