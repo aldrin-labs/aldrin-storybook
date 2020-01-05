@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Loading } from '@sb/components/index'
 import { cloneDeep } from 'lodash-es'
+
+const CloseButton = ({ i, onClick }) => {
+  const [isCancelled, cancelOrder] = useState(false)
+
+  return (
+    <TableButton
+      key={i}
+      variant="outlined"
+      size={`small`}
+      disabled={isCancelled}
+      style={{ color: isCancelled ? 'grey' : '#DD6956', borderColor: isCancelled ? 'grey' : '#DD6956' }}
+      onClick={() => {
+        onClick()
+        cancelOrder(true)
+      }}
+    >
+      {isCancelled ? <div><Loading size={16} style={{ height: '16px'}} /></div> : 'Cancel'}
+    </TableButton>
+  )
+}
 
 import {
   fundsColumnNames,
@@ -127,9 +148,11 @@ export const combinePositionsTable = (
     orderId: string,
     pair: string
   ) => Promise<any>,
+  createOrderWithStatus,
   theme: Theme,
   marketPrice: number,
-  pair: string
+  pair: string,
+  keyId: string
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -140,16 +163,30 @@ export const combinePositionsTable = (
 
   const processedPositionsData = data
     .filter((el) => el.positionAmt !== 0)
-    .filter(el => el.symbol === pair)
+    .filter((el) => el.symbol === pair)
     .map((el: OrderType, i: number) => {
       const {
         symbol,
         entryPrice,
-        liquidationPrice,
         positionAmt,
         leverage = 1,
-        type = '-',
       } = el
+
+      const getVariables = (type: String, price: Number) => ({
+        keyId,
+        keyParams: {
+          symbol,
+          side: positionAmt < 0 ? 'buy' : 'sell',
+          marketType: 1,
+          type,
+          ...(type === 'limit' ? { price, timeInForce: "GTC" } : {}),
+          amount: Math.abs(positionAmt),
+          leverage,
+          params: {
+            type,
+          },
+        },
+      })
 
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
       const liqPrice =
@@ -194,14 +231,6 @@ export const combinePositionsTable = (
                 >
                   {side}
                 </span>
-                <span
-                  style={{
-                    color: '#7284A0',
-                    letterSpacing: '1px',
-                  }}
-                >
-                  {type}
-                </span>
               </div>
             ),
             style: {
@@ -232,32 +261,34 @@ export const combinePositionsTable = (
             contentToSort: liqPrice,
           },
           profit: {
-            render:
-              marketPrice ? (
-                <SubColumnValue
-                  style={{ whiteSpace: 'normal' }}
-                  color={
-                    profitPercentage > 0 && side === 'buy long'
-                      ? green.new
-                      : red.new
-                  }
-                >
-                  {profitPercentage && profitAmount
-                    ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
-                        pair[1]
-                      } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
-                    : '-'}
-                </SubColumnValue>
-              ) : (
-                `0 ${pair[1]} / 0%`
-              ),
+            render: marketPrice ? (
+              <SubColumnValue
+                style={{ whiteSpace: 'normal' }}
+                color={
+                  profitPercentage > 0 && side === 'buy long'
+                    ? green.new
+                    : red.new
+                }
+              >
+                {profitPercentage && profitAmount
+                  ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
+                      pair[1]
+                    } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                  : '-'}
+              </SubColumnValue>
+            ) : (
+              `0 ${pair[1]} / 0%`
+            ),
           },
         },
         {
           pair: {
             render: (
               <div>
-                <SubRow />
+                <SubRow
+                  getVariables={getVariables}
+                  createOrderWithStatus={createOrderWithStatus}
+                />
               </div>
             ),
             colspan: 8,
@@ -419,9 +450,17 @@ export const combineActiveTradesTable = (
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
+<<<<<<< HEAD
               {trailingExit && exitLevels[0] && exitLevels[0].activatePrice && exitLevels[0].entryDeviation
                 ? `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
                 : exitLevels[0] && exitLevels[0].price ? `${exitLevels[0].price}%` : '-'} 
+=======
+              {trailingExit
+                ? `${exitLevels[0].activatePrice}% / ${
+                    exitLevels[0].entryDeviation
+                  }%`
+                : `${exitLevels[0].price}%`}
+>>>>>>> afbbabcd0c0e9992ce55574a63b94289e9efd1b4
             </SubColumnValue>
           ),
           style: {
@@ -599,7 +638,7 @@ export const combineOpenOrdersTable = (
   const processedOpenOrdersData = openOrdersData
     .filter(
       (el) =>
-        el.status === 'open' &&
+        (el.status === 'open' || el.status === 'expired' && el.info) &&
         isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
     )
     .map((el: OrderType, i: number) => {
@@ -625,7 +664,7 @@ export const combineOpenOrdersTable = (
           ? '-'
           : (isBuyTypeOrder(side) && type === 'limit') ||
             (isBuyTypeOrder(side) && type === 'stop_market') ||
-            (isBuyTypeOrder(side) && type === 'stop_limit' ) ||
+            (isBuyTypeOrder(side) && type === 'stop_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit')
@@ -721,15 +760,12 @@ export const combineOpenOrdersTable = (
         },
         cancel: {
           render: (
-            <TableButton
-              key={i}
-              variant="outlined"
-              size={`small`}
-              style={{ color: '#DD6956', borderColor: '#DD6956' }}
+            <CloseButton
+              i={i}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
             >
               Cancel
-            </TableButton>
+            </CloseButton>
           ),
         },
       }
@@ -779,7 +815,7 @@ export const combineOrderHistoryTable = (
         triggerConditions === '-'
           ? '-'
           : (isBuyTypeOrder(side) && type === 'stop_market') ||
-            (isBuyTypeOrder(side) && type === 'stop_limit' ) ||
+            (isBuyTypeOrder(side) && type === 'stop_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit')
@@ -1198,7 +1234,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
     (el: OrderType) =>
-      el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
+      el.info && el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
