@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Loading } from '@sb/components/index'
 import { cloneDeep } from 'lodash-es'
+
+const CloseButton = ({ i, onClick }) => {
+  const [isCancelled, cancelOrder] = useState(false)
+
+  return (
+    <TableButton
+      key={i}
+      variant="outlined"
+      size={`small`}
+      disabled={isCancelled}
+      style={{ color: isCancelled ? 'grey' : '#DD6956', borderColor: isCancelled ? 'grey' : '#DD6956' }}
+      onClick={() => {
+        onClick()
+        cancelOrder(true)
+      }}
+    >
+      {isCancelled ? <div><Loading size={16} style={{ height: '16px'}} /></div> : 'Cancel'}
+    </TableButton>
+  )
+}
 
 import {
   fundsColumnNames,
@@ -706,15 +727,12 @@ export const combineOpenOrdersTable = (
         },
         cancel: {
           render: (
-            <TableButton
-              key={i}
-              variant="outlined"
-              size={`small`}
-              style={{ color: '#DD6956', borderColor: '#DD6956' }}
+            <CloseButton
+              i={i}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
             >
               Cancel
-            </TableButton>
+            </CloseButton>
           ),
         },
       }
