@@ -450,17 +450,9 @@ export const combineActiveTradesTable = (
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
-<<<<<<< HEAD
               {trailingExit && exitLevels[0] && exitLevels[0].activatePrice && exitLevels[0].entryDeviation
                 ? `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
                 : exitLevels[0] && exitLevels[0].price ? `${exitLevels[0].price}%` : '-'} 
-=======
-              {trailingExit
-                ? `${exitLevels[0].activatePrice}% / ${
-                    exitLevels[0].entryDeviation
-                  }%`
-                : `${exitLevels[0].price}%`}
->>>>>>> afbbabcd0c0e9992ce55574a63b94289e9efd1b4
             </SubColumnValue>
           ),
           style: {
