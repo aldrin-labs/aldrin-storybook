@@ -13,14 +13,6 @@ import {
   SCheckbox,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-// temporary hardcode maxLeverage for futures pairs
-const maxLeverage = new Map()
-
-maxLeverage.set('BTC_USDT', 125)
-maxLeverage.set('ETH_USDT', 75)
-maxLeverage.set('BCH_USDT', 75)
-maxLeverage.set('XRP_USDT', 75)
-
 import {
   TerminalContainer,
   TerminalMainGrid,
@@ -38,6 +30,7 @@ import {
   SmartOrderModeButton,
 } from './styles'
 
+import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 class SimpleTabs extends React.Component {
@@ -49,6 +42,7 @@ class SimpleTabs extends React.Component {
     orderMode: 'TIF',
     TIFMode: 'GTC',
     trigger: 'last price',
+    orderIsCreating: false,
   }
 
   handleChangeMode = (mode: string) => {
@@ -63,6 +57,10 @@ class SimpleTabs extends React.Component {
     this.setState({ [`percentage${mode}`]: percentage })
   }
 
+  addLoaderToButton = (side: 'buy' | 'sell') => {
+    this.setState({ orderIsCreating: side })
+  }
+
   render() {
     const {
       mode,
@@ -71,6 +69,7 @@ class SimpleTabs extends React.Component {
       orderMode,
       TIFMode,
       trigger,
+      orderIsCreating,
     } = this.state
 
     const {
@@ -182,7 +181,7 @@ class SimpleTabs extends React.Component {
                       }
                     >
                       <StyledOption>GTC</StyledOption>
-                      <StyledOption>IOK</StyledOption>
+                      <StyledOption>IOC</StyledOption>
                       <StyledOption>FOK</StyledOption>
                     </StyledSelect>
                   </FuturesSettings>
@@ -303,6 +302,8 @@ class SimpleTabs extends React.Component {
                   confirmOperation={placeOrder}
                   cancelOrder={cancelOrder}
                   decimals={decimals}
+                  addLoaderToButton={this.addLoaderToButton}
+                  orderIsCreating={orderIsCreating}
                   showOrderResult={showOrderResult}
                   leverage={leverage}
                   reduceOnly={reduceOnly}
@@ -332,6 +333,8 @@ class SimpleTabs extends React.Component {
                   confirmOperation={placeOrder}
                   cancelOrder={cancelOrder}
                   decimals={decimals}
+                  addLoaderToButton={this.addLoaderToButton}
+                  orderIsCreating={orderIsCreating}
                   showOrderResult={showOrderResult}
                   leverage={leverage}
                   reduceOnly={reduceOnly}

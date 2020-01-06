@@ -13,6 +13,7 @@ import Yup from 'yup'
 import { toNumber, toPairs } from 'lodash-es'
 
 import { Grid, InputAdornment, Typography } from '@material-ui/core'
+import { Loading } from '@sb/components/index'
 
 import { traidingErrorMessages } from '@core/config/errorMessages'
 
@@ -107,7 +108,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', amount * priceForCalculate, 1)
     }
 
-    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook && this.props.priceType !== 'market') {
+    if (
+      this.state.priceFromOrderbook !== this.props.priceFromOrderbook &&
+      this.props.priceType !== 'market'
+    ) {
       const {
         priceFromOrderbook,
         values: { amount },
@@ -163,7 +167,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (priceForCalculate) {
       const amount = e.target.value / priceForCalculate
-      
+
       this.setFormatted('amount', amount.toFixed(8), 0)
       setFieldTouched('amount', true)
     }
@@ -279,6 +283,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       handleSubmit,
       validateForm,
       setFieldValue,
+      orderIsCreating,
     } = this.props
 
     if (!funds) return null
@@ -412,7 +417,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                                 : values.amount / (maxAmount / 100) / 100)
                             ).toFixed(2)
                           : 0.0}{' '} */}
-                        {(values.amount / leverage * priceForCalculate).toFixed(2)}{' '}
+                        {(
+                          (values.amount / leverage) *
+                          priceForCalculate
+                        ).toFixed(2)}{' '}
                         {pair[1]}
                       </InputTitle>
                     </Grid>
@@ -424,10 +432,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     >
                       <InputTitle>max buy:</InputTitle>
                       <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                        {priceForCalculate ? (
-                          (funds[1].quantity * leverage) /
-                          priceForCalculate
-                        ).toFixed(3) : 0}{' '}
+                        {priceForCalculate
+                          ? (
+                              (funds[1].quantity * leverage) /
+                              priceForCalculate
+                            ).toFixed(3)
+                          : 0}{' '}
                         {pair[0]}
                       </InputTitle>
                     </Grid>
@@ -446,21 +456,34 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             <Grid xs={1} item />
             <Grid xs={11} item container alignItems="center">
               <SendButton
+                disabled={orderIsCreating === operationType}
                 type={operationType}
-                onClick={() => {
-                  const result = validateForm()
+                onClick={async () => {
+                  const result = await validateForm()
                   if (Object.keys(result).length === 0 || !isSPOTMarket) {
                     handleSubmit(values)
                   }
                 }}
               >
-                {isSPOTMarket
-                  ? operationType === 'buy'
-                    ? `buy ${pair[0]}`
-                    : `sell ${pair[0]}`
-                  : operationType === 'buy'
-                  ? 'buy/long'
-                  : 'sell/short'}
+                {orderIsCreating === operationType ? (
+                  <div>
+                    <Loading
+                      color={'#fff'}
+                      size={24}
+                      style={{ height: '24px' }}
+                    />
+                  </div>
+                ) : isSPOTMarket ? (
+                  operationType === 'buy' ? (
+                    `buy ${pair[0]}`
+                  ) : (
+                    `sell ${pair[0]}`
+                  )
+                ) : operationType === 'buy' ? (
+                  'buy/long'
+                ) : (
+                  'sell/short'
+                )}
               </SendButton>
             </Grid>
           </Grid>
@@ -626,6 +649,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       //   return null
       // }
 
+      await props.addLoaderToButton(byType)
+
       const result = await props.confirmOperation(
         byType,
         priceType,
@@ -646,11 +671,18 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
               }
             : {}),
-          ...(priceType !== 'stop-limit' && priceType !== 'take-profit' ? { reduceOnly } : {}),
+          ...(priceType !== 'stop-limit' && priceType !== 'take-profit'
+            ? { reduceOnly }
+            : {}),
         }
       )
 
-      props.showOrderResult(result, props.cancelOrder, isSPOTMarket ? 0 : 1)
+      await props.showOrderResult(
+        result,
+        props.cancelOrder,
+        isSPOTMarket ? 0 : 1
+      )
+      await await props.addLoaderToButton(false)
       setSubmitting(false)
     }
   },
