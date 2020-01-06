@@ -13,6 +13,14 @@ import {
   SCheckbox,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
+// temporary hardcode maxLeverage for futures pairs
+const maxLeverage = new Map()
+
+maxLeverage.set('BTC_USDT', 125)
+maxLeverage.set('ETH_USDT', 75)
+maxLeverage.set('BCH_USDT', 75)
+maxLeverage.set('XRP_USDT', 75)
+
 import {
   TerminalContainer,
   TerminalMainGrid,
@@ -36,7 +44,7 @@ class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
     mode: 'limit',
-    leverage: 1,
+    leverage: false,
     reduceOnly: false,
     orderMode: 'TIF',
     TIFMode: 'GTC',
@@ -74,8 +82,10 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      leverage: startLeverage,
       priceFromOrderbook,
       updateTerminalViewMode,
+      updateLeverageWithStatus,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -178,27 +188,28 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
 
-                {mode !== 'stop-limit' && mode !== 'take-profit' && (
-                  <FuturesSettings key="reduceTerminalController">
-                    <SCheckbox
-                      id="reduceOnly"
-                      checked={reduceOnly}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState((prev) => ({
-                          reduceOnly: !prev.reduceOnly,
-                        }))
-                      }
-                    />
-                    <SettingsLabel htmlFor="reduceOnly">
-                      reduce only
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
+                <FuturesSettings key="reduceTerminalController">
+                  <SCheckbox
+                    id="reduceOnly"
+                    checked={reduceOnly}
+                    style={{ padding: '0 1rem' }}
+                    onChange={() =>
+                      this.setState((prev) => ({
+                        reduceOnly: !prev.reduceOnly,
+                      }))
+                    }
+                  />
+                  <SettingsLabel htmlFor="reduceOnly">
+                    reduce only
+                  </SettingsLabel>
+                </FuturesSettings>
 
                 {(mode === 'stop-limit' || mode === 'take-profit') && (
-                  <FuturesSettings key="triggerTerminalController">
-                    <SettingsLabel htmlFor="trigger">trigger</SettingsLabel>
+                  <FuturesSettings
+                    key="triggerTerminalController"
+                    style={{ padding: '0 1rem' }}
+                  >
+                    {/* <SettingsLabel htmlFor="trigger">trigger</SettingsLabel> */}
                     <StyledSelect
                       id="trigger"
                       onChange={(e) =>
@@ -215,20 +226,34 @@ class SimpleTabs extends React.Component {
                 <LeverageTitle>leverage:</LeverageTitle>
                 <SmallSlider
                   min={1}
-                  max={125}
-                  defaultValue={1}
-                  value={leverage}
+                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`)}
+                  defaultValue={startLeverage}
+                  value={!leverage ? startLeverage : leverage}
                   valueSymbol={'X'}
-                  marks={{
-                    1: {},
-                    25: {},
-                    50: {},
-                    75: {},
-                    100: {},
-                    125: {},
-                  }}
-                  onChange={(leverage) => {
+                  marks={
+                    maxLeverage.get(`${pair[0]}_${pair[1]}`) === 75
+                      ? {
+                          1: {},
+                          15: {},
+                          30: {},
+                          45: {},
+                          60: {},
+                          75: {},
+                        }
+                      : {
+                          1: {},
+                          25: {},
+                          50: {},
+                          75: {},
+                          100: {},
+                          125: {},
+                        }
+                  }
+                  onChange={(leverage: number) => {
                     this.setState({ leverage })
+                  }}
+                  onAfterChange={(leverage: number) => {
+                    updateLeverageWithStatus(leverage)
                   }}
                   sliderContainerStyles={{
                     width: '65%',

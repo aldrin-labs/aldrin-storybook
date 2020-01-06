@@ -86,6 +86,19 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
+  showUpdateLeverageResult = (result) => {
+    if (result.status === 'success' && result.message) {
+      this.props.enqueueSnackbar(result.message, {
+        variant: 'success',
+        action: (
+          <CloseButton />
+        ),
+      })
+    } else {
+      this.props.enqueueSnackbar(result.message, { variant: 'error' })
+    }
+  }
+
 
   render() {
     return (
@@ -93,6 +106,7 @@ class OrderStatusWrapper extends React.Component {
         showOrderResult={this.showOrderResult}
         showCancelResult={this.showCancelResult}
         showFuturesTransfer={this.showFuturesTransfer}
+        showUpdateLeverageResult={this.showUpdateLeverageResult}
         {...this.props}
       />
     )
