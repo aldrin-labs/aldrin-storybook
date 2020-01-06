@@ -16,13 +16,22 @@ const CloseButton = ({ i, onClick }) => {
       variant="outlined"
       size={`small`}
       disabled={isCancelled}
-      style={{ color: isCancelled ? 'grey' : '#DD6956', borderColor: isCancelled ? 'grey' : '#DD6956' }}
+      style={{
+        color: isCancelled ? 'grey' : '#DD6956',
+        borderColor: isCancelled ? 'grey' : '#DD6956',
+      }}
       onClick={() => {
         onClick()
         cancelOrder(true)
       }}
     >
-      {isCancelled ? <div><Loading size={16} style={{ height: '16px'}} /></div> : 'Cancel'}
+      {isCancelled ? (
+        <div>
+          <Loading size={16} style={{ height: '16px' }} />
+        </div>
+      ) : (
+        'Cancel'
+      )}
     </TableButton>
   )
 }
@@ -107,7 +116,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     : tab === 'positions'
     ? 'You have no open positions'
     : tab === 'activeTrades'
-    ? 'You have no active trades' 
+    ? 'You have no active trades'
     : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
@@ -165,12 +174,7 @@ export const combinePositionsTable = (
     .filter((el) => el.positionAmt !== 0)
     .filter((el) => el.symbol === pair)
     .map((el: OrderType, i: number) => {
-      const {
-        symbol,
-        entryPrice,
-        positionAmt,
-        leverage = 1,
-      } = el
+      const { symbol, entryPrice, positionAmt, leverage = 1 } = el
 
       const getVariables = (type: String, price: Number) => ({
         keyId,
@@ -179,7 +183,7 @@ export const combinePositionsTable = (
           side: positionAmt < 0 ? 'buy' : 'sell',
           marketType: 1,
           type,
-          ...(type === 'limit' ? { price, timeInForce: "GTC" } : {}),
+          ...(type === 'limit' ? { price, timeInForce: 'GTC' } : {}),
           amount: Math.abs(positionAmt),
           leverage,
           params: {
@@ -335,7 +339,7 @@ export const combineActiveTradesTable = (
 
   const processedActiveTradesData = data
     .filter((el) => el.conditions.marketType === marketType)
-    .sort((a, b) => b.enabled ? 1 : -1)
+    .filter((el) => el.enabled)
     .map((el: OrderType, i: number) => {
       const {
         conditions: {
@@ -409,9 +413,9 @@ export const combineActiveTradesTable = (
           render: (
             <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         side: {
           render: (
@@ -423,9 +427,9 @@ export const combineActiveTradesTable = (
                 : 'sell short'}
             </SubColumnValue>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         entryPrice: {
           render: (
@@ -433,9 +437,9 @@ export const combineActiveTradesTable = (
               {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         quantity: {
           render: (
@@ -443,21 +447,28 @@ export const combineActiveTradesTable = (
               {amount} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
-              {trailingExit && exitLevels[0] && exitLevels[0].activatePrice && exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
-                : exitLevels[0] && exitLevels[0].price ? `${exitLevels[0].price}%` : '-'} 
+              {trailingExit &&
+              exitLevels[0] &&
+              exitLevels[0].activatePrice &&
+              exitLevels[0].entryDeviation
+                ? `${exitLevels[0].activatePrice}% / ${
+                    exitLevels[0].entryDeviation
+                  }%`
+                : exitLevels[0] && exitLevels[0].price
+                ? `${exitLevels[0].price}%`
+                : '-'}
             </SubColumnValue>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         stopLoss: {
           render: stopLoss ? (
@@ -465,9 +476,9 @@ export const combineActiveTradesTable = (
           ) : (
             '-'
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         profit: {
           render:
@@ -486,9 +497,9 @@ export const combineActiveTradesTable = (
             ) : (
               `0 ${pairArr[1]} / 0%`
             ),
-            style: {
-              opacity: el.enabled ? 1 : 0.5 
-            }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         status: {
           render: (
@@ -496,9 +507,9 @@ export const combineActiveTradesTable = (
               {!!status[0] ? status[0] : 'Waiting'}
             </SubColumnValue>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         close: {
           render: (
@@ -519,9 +530,9 @@ export const combineActiveTradesTable = (
               {status[0] === 'Waiting' ? 'close' : 'market'}
             </BtnCustom>
           ),
-          style: {
-            opacity: el.enabled ? 1 : 0.5 
-          }
+          // style: {
+          //   opacity: el.enabled ? 1 : 0.5,
+          // },
         },
         // entryOrder: {
         //   render: (
@@ -630,7 +641,8 @@ export const combineOpenOrdersTable = (
   const processedOpenOrdersData = openOrdersData
     .filter(
       (el) =>
-        (el.status === 'open' || el.status === 'expired' && el.info) &&
+        el.status === 'open' &&
+        el.info &&
         isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
     )
     .map((el: OrderType, i: number) => {
@@ -801,7 +813,7 @@ export const combineOrderHistoryTable = (
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
-      const rawStopPrice = +el.info.stopPrice || +el.stopPrice
+      const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
       const triggerConditionsFormatted =
         triggerConditions === '-'
@@ -1226,7 +1238,8 @@ export const updateOpenOrderHistoryQuerryFunction = (
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
     (el: OrderType) =>
-      el.info && el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
+      el.info &&
+      el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 

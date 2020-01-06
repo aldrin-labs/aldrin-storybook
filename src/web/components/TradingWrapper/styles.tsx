@@ -112,26 +112,46 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
 `
 
 export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
-  <BtnCustom
-    fontSize="1.3rem"
-    padding=""
-    btnWidth="auto"
-    height="auto"
-    btnColor={isActive ? '#fff' : '#16253D'}
-    backgroundColor={isActive ? '#5C8CEA' : '#f2f4f6'}
-    borderColor="#e0e5ec"
-    borderWidth="0"
-    borderRadius="0"
+  <button
+    // fontSize="1.3rem"
+    // padding=""
+    // btnWidth="auto"
+    // height="auto"
+    // btnColor={isActive ? '#fff' : '#16253D'}
+    // backgroundColor={isActive ? '#5C8CEA' : '#f2f4f6'}
+    // borderColor="#e0e5ec"
+    // borderWidth="0"
+    // borderRadius="0"
     {...rest}
   >
     {children}
-  </BtnCustom>
+  </button>
 ))`
+  height: auto;
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  width: auto;
+  background-color: ${(props) => (props.isActive ? '#5C8CEA' : '#f2f4f6')};
+  color: ${(props) => (props.isActive ? '#fff' : '#16253D')};
+  border: ${(props) =>
+    props.isActive ? '.1rem solid #5C8CEA' : '.1rem solid #f2f4f6'};
   text-transform: none;
-  padding: .35rem 3.5rem .1rem 3.5rem;
+  padding: 0.7rem 3.5rem 0.5rem 3.5rem;
+
+  &:hover {
+    // background-color: #5c8cea;
+    cursor: pointer;
+    // color: #fff;
+    // border: 0.1rem solid #5c8cea;
+  }
+
+  &:focus {
+    outline: none;
+  }
 
   @media (max-width: 1600px) {
-    padding: .35rem 2rem .1rem 2rem;
+    padding: 0.7rem 2rem 0.5rem 2rem;
   }
 `
 
@@ -196,7 +216,7 @@ export const StyledZoomIcon = styled(ZoomOutMapIcon)`
 
 export const SmartOrderModeButton = styled(TerminalModeButton)`
   text-transform: none;
-  padding: 0.25rem 1rem 0.1rem 2rem;
+  /* padding: 0.25rem 1rem 0.1rem 2rem; */
   border-top-right-radius: 0.75rem;
   position: absolute;
   right: 0;
