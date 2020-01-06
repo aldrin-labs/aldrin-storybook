@@ -22,6 +22,7 @@ import {
 } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { maxLeverage } from '@sb/compositions/Chart/mocks'
 
 import { CustomCard } from '../../Chart.styles'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
@@ -78,7 +79,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         price: 0,
         amount: 0,
         total: 0,
-        leverage: 1,
+        leverage: 0,
         isHedgeOn: false,
         hedgePrice: 0,
         // X20,
@@ -297,11 +298,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     await showOrderResult(result, cancelOrder)
 
     // if (result.status === 'success' && result.orderId)
-        //   updateTerminalViewMode('default')
+    //   updateTerminalViewMode('default')
   }
 
   render() {
-    const { updateTerminalViewMode, pair, funds, marketType } = this.props
+    const {
+      updateTerminalViewMode,
+      pair,
+      funds,
+      marketType,
+      updateLeverageWithStatus,
+      leverage: startLeverage,
+    } = this.props
     const {
       entryPoint,
       takeProfit,
@@ -353,18 +361,33 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <LeverageTitle>leverage:</LeverageTitle>
                   <SmallSlider
                     min={1}
-                    max={125}
-                    defaultValue={1}
-                    value={entryPoint.order.leverage}
+                    max={maxLeverage.get(`${pair[0]}_${pair[1]}`)}
+                    defaultValue={startLeverage}
+                    value={
+                      !entryPoint.order.leverage
+                        ? startLeverage
+                        : entryPoint.order.leverage
+                    }
                     valueSymbol={'X'}
-                    marks={{
-                      1: {},
-                      25: {},
-                      50: {},
-                      75: {},
-                      100: {},
-                      125: {},
-                    }}
+                    marks={
+                      maxLeverage.get(`${pair[0]}_${pair[1]}`) === 75
+                        ? {
+                            1: {},
+                            15: {},
+                            30: {},
+                            45: {},
+                            60: {},
+                            75: {},
+                          }
+                        : {
+                            1: {},
+                            25: {},
+                            50: {},
+                            75: {},
+                            100: {},
+                            125: {},
+                          }
+                    }
                     onChange={(leverage) => {
                       this.updateSubBlockValue(
                         'entryPoint',
@@ -372,6 +395,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'leverage',
                         leverage
                       )
+                    }}
+                    onAfterChange={(leverage: number) => {
+                      updateLeverageWithStatus(leverage)
                     }}
                     sliderContainerStyles={{
                       width: '65%',
@@ -731,9 +757,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 <InputRowContainer>
-                  <FormInputContainer
-                    title={'total'}
-                  >
+                  <FormInputContainer title={'total'}>
                     <Input
                       symbol={pair[1]}
                       value={entryPoint.order.total}
@@ -761,8 +785,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         this.setState({
                           temp: {
                             initialMargin: stripDigitPlaces(
-                              e.target.value /
-                                entryPoint.order.leverage,
+                              e.target.value / entryPoint.order.leverage,
                               8
                             ),
                           },
@@ -1735,7 +1758,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </BluredBackground>
               )}
             </TerminalBlock>
-            
           </TerminalBlocksContainer>
           {editPopup === 'takeProfit' && (
             <EditTakeProfitPopup
