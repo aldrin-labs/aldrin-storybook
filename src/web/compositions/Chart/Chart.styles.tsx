@@ -191,7 +191,7 @@ export const ChartGridContainer = styled(Grid)`
   flex: auto;
   align-items: center;
   width: 41.6%;
-  height: 6%;
+  height: 5%;
 
   padding: 0 0 0.4rem 0.8rem !important;
 `
@@ -217,9 +217,9 @@ export const TradingTerminalContainer = styled(
   // 60% - 3%, the half of height cards, will fix in future
   height: ${(props) =>
     props.isDefaultTerminalViewMode
-      ? 'calc(57% - .8rem)'
+      ? 'calc(58% - .8rem)'
       : 'calc(39% - .8rem)'};
-  top: calc(6% + 0.8rem);
+  top: calc(5% + 0.8rem);
   overflow: hidden;
 
   flex-direction: column;
