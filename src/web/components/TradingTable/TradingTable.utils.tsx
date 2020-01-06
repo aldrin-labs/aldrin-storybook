@@ -1061,7 +1061,7 @@ export const combineFundsTable = (
           contentToSort: +quantity * priceUSD,
         },
         totalQuantity: {
-          render: quantity || '-',
+          render: roundAndFormatNumber(quantity, 8, true) || '-',
           style: { textAlign: 'left' },
           contentToSort: +quantity,
         },
@@ -1075,12 +1075,12 @@ export const combineFundsTable = (
           contentToSort: +free * priceUSD,
         },
         availableQuantity: {
-          render: free || '-',
+          render: roundAndFormatNumber(free, 8, true) || '-',
           style: { textAlign: 'left' },
           contentToSort: +free,
         },
         inOrder: {
-          render: locked || '-',
+          render: roundAndFormatNumber(locked, 8, true) || '-',
           style: { textAlign: 'left' },
           contentToSort: +locked,
         },
