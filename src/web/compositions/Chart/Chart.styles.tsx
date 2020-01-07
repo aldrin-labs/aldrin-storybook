@@ -234,7 +234,7 @@ export const ChartsContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '60%' : '45%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '63%' : '45%')};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -253,7 +253,7 @@ export const TradingTabelContainer = styled(
   // 32vh was
   background-color: #f9fbfd;
   padding: 0.4rem 0.4rem 0 0;
-  height: ${(props) => props.isDefaultTerminalViewMode && '40%'};
+  height: ${(props) => props.isDefaultTerminalViewMode && '37%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -348,7 +348,7 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '55%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '55%')};
   padding: ${({
     isDefaultTerminalViewMode,
   }: {

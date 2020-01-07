@@ -3,6 +3,8 @@ import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
+import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+import { client } from '@core/graphql/apolloClient'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import { cloneDeep } from 'lodash-es'
@@ -120,7 +122,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
-  /buy/gi.test(orderStringType)
+  /buy/gi.test(orderStringType.toLowerCase())
 
 export const getFilledQuantity = (
   filledQuantity: number,
@@ -175,6 +177,7 @@ export const combinePositionsTable = (
     .filter((el) => el.symbol === pair)
     .map((el: OrderType, i: number) => {
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
+      const needOpacity = el._id === '0'
 
       const getVariables = (type: String, price: Number) => ({
         keyId,
@@ -221,6 +224,7 @@ export const combinePositionsTable = (
               </div>
             ),
             contentToSort: symbol,
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
           // type: type,
           side: {
@@ -239,29 +243,44 @@ export const combinePositionsTable = (
             ),
             style: {
               color: side === 'buy long' ? green.new : red.new,
+              opacity: needOpacity ? 0.5 : 1,
             },
           },
           size: {
             render: `${positionAmt} ${pair[0]}`,
             contentToSort: positionAmt,
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
           leverage: {
             render: `X${leverage}`,
             contentToSort: leverage,
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
             render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
-            style: { textAlign: 'left', whiteSpace: 'nowrap' },
+            style: {
+              textAlign: 'left',
+              whiteSpace: 'nowrap',
+              opacity: needOpacity ? 0.5 : 1,
+            },
             contentToSort: entryPrice,
           },
           marketPrice: {
             render: `${stripDigitPlaces(marketPrice, 8)} ${pair[1]}`,
-            style: { textAlign: 'left', whiteSpace: 'nowrap' },
+            style: {
+              textAlign: 'left',
+              whiteSpace: 'nowrap',
+              opacity: needOpacity ? 0.5 : 1,
+            },
             contentToSort: marketPrice,
           },
           liqPrice: {
             render: `${stripDigitPlaces(liqPrice, 8)} ${pair[1]}`,
-            style: { textAlign: 'left', whiteSpace: 'nowrap' },
+            style: {
+              textAlign: 'left',
+              whiteSpace: 'nowrap',
+              opacity: needOpacity ? 0.5 : 1,
+            },
             contentToSort: liqPrice,
           },
           profit: {
@@ -283,6 +302,7 @@ export const combinePositionsTable = (
             ) : (
               `0 ${pair[1]} / 0%`
             ),
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
         },
         {
@@ -296,6 +316,7 @@ export const combinePositionsTable = (
               </div>
             ),
             colspan: 8,
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
         },
       ]
@@ -394,6 +415,7 @@ export const combineActiveTradesTable = (
 
       const pairArr = pair.split('_')
       const status = getStatusFromState(state)
+      const needOpacity = el._id === '-1'
 
       const entryOrderPrice = !!entryPrice
         ? entryPrice
@@ -413,9 +435,9 @@ export const combineActiveTradesTable = (
           render: (
             <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         side: {
           render: (
@@ -427,9 +449,9 @@ export const combineActiveTradesTable = (
                 : 'sell short'}
             </SubColumnValue>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         entryPrice: {
           render: (
@@ -437,9 +459,9 @@ export const combineActiveTradesTable = (
               {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         quantity: {
           render: (
@@ -447,9 +469,9 @@ export const combineActiveTradesTable = (
               {amount} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         takeProfit: {
           render: (
@@ -466,9 +488,9 @@ export const combineActiveTradesTable = (
                 : '-'}
             </SubColumnValue>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         stopLoss: {
           render: stopLoss ? (
@@ -476,9 +498,9 @@ export const combineActiveTradesTable = (
           ) : (
             '-'
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         profit: {
           render:
@@ -497,9 +519,9 @@ export const combineActiveTradesTable = (
             ) : (
               `0 ${pairArr[1]} / 0%`
             ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         status: {
           render: (
@@ -507,9 +529,9 @@ export const combineActiveTradesTable = (
               {!!status[0] ? status[0] : 'Waiting'}
             </SubColumnValue>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         close: {
           render: (
@@ -527,12 +549,12 @@ export const combineActiveTradesTable = (
               transition={'all .4s ease-out'}
               onClick={() => cancelOrderFunc(el._id)}
             >
-              {status[0] === 'Waiting' ? 'close' : 'market'}
+              {status[0] === 'Waiting' ? 'cancel' : 'market'}
             </BtnCustom>
           ),
-          // style: {
-          //   opacity: el.enabled ? 1 : 0.5,
-          // },
+          style: {
+            opacity: needOpacity ? .6 : 1,
+          },
         },
         // entryOrder: {
         //   render: (
@@ -604,7 +626,7 @@ export const combineActiveTradesTable = (
         //       btnWidth="100%"
         //       height="auto"
         //       fontSize="1.3rem"
-        //       padding=".5rem 0 .4rem 0"
+        //       padding=".75rem 0 .4rem 0"
         //       borderRadius=".8rem"
         //       btnColor={red.new}
         //       backgroundColor={'#fff'}
@@ -641,27 +663,25 @@ export const combineOpenOrdersTable = (
   const processedOpenOrdersData = openOrdersData
     .filter(
       (el) =>
-        el.status === 'open' &&
-        el.info &&
-        isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
+        ((el.status === 'open' ||
+          el.status === 'placing' ||
+          el.status === 'NEW') &&
+          isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)) ||
+        el.marketId === '0' && el.symbol
     )
     .map((el: OrderType, i: number) => {
-      const {
-        keyId,
-        symbol,
-        timestamp,
-        type: orderType,
-        side,
-        price,
-        filled,
-        info: { orderId, stopPrice = 0, origQty = '0' },
-      } = el
+      const { keyId, symbol, type: orderType, side, price } = el
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+      const orderId = (el.info && el.info.orderId) || el.orderId
+      const origQty = (el.info && el.info.origQty) || el.origQty
+      const timestamp = el.timestamp || el.updateTime
+
+      const needOpacity = el.status === 'placing'
       const pair = symbol.split('_')
       const type = orderType.toLowerCase().replace('-', '_')
 
-      const rawStopPrice = +el.info.stopPrice || +el.stopPrice
+      const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
       const triggerConditionsFormatted =
         triggerConditions === '-'
@@ -713,11 +733,16 @@ export const combineOpenOrdersTable = (
             color: isBuyTypeOrder(side)
               ? theme.customPalette.green.main
               : theme.customPalette.red.main,
+            opacity: needOpacity ? 0.75 : 1,
           },
         },
         price: {
-          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
-          style: { textAlign: 'left', whiteSpace: 'nowrap' },
+          render: !+price ? price : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          style: {
+            textAlign: 'left',
+            whiteSpace: 'nowrap',
+            opacity: needOpacity ? 0.75 : 1,
+          },
           contentToSort: price,
         },
         // filled: {
@@ -729,14 +754,18 @@ export const combineOpenOrdersTable = (
         quantity: {
           render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
           contentToSort: +origQty,
+          style: { opacity: needOpacity ? 0.75 : 1 },
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+                render: !+price
+                  ? '-'
+                  : `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
                 contentToSort: origQty * price,
+                style: { opacity: needOpacity ? 0.75 : 1 },
               },
             }
           : {}),
@@ -744,6 +773,7 @@ export const combineOpenOrdersTable = (
         triggerConditions: {
           render: triggerConditionsFormatted,
           contentToSort: +rawStopPrice,
+          style: { opacity: needOpacity ? 0.75 : 1 },
         },
         date: {
           render: (
@@ -759,11 +789,13 @@ export const combineOpenOrdersTable = (
               </span>
             </div>
           ),
-          style: { whiteSpace: 'nowrap' },
+          style: { whiteSpace: 'nowrap', opacity: needOpacity ? 0.75 : 1 },
           contentToSort: timestamp,
         },
         cancel: {
-          render: (
+          render: needOpacity ? (
+            '-'
+          ) : (
             <CloseButton
               i={i}
               onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
@@ -1239,8 +1271,10 @@ export const updateOpenOrderHistoryQuerryFunction = (
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
     (el: OrderType) =>
       el.info &&
-      el.info.orderId === subscriptionData.data.listenOpenOrders.info.orderId
+      String(el.info.orderId) ===
+        String(subscriptionData.data.listenOpenOrders.info.orderId)
   )
+
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
@@ -1251,12 +1285,19 @@ export const updateOpenOrderHistoryQuerryFunction = (
       ...subscriptionData.data.listenOpenOrders,
     }
 
+    // console.log(
+    //   'order exist, update',
+    //   prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex]
+    // )
+
     result = { ...prev }
   } else {
     prev.getOpenOrderHistory = [
       { ...subscriptionData.data.listenOpenOrders },
       ...prev.getOpenOrderHistory,
     ]
+
+    // console.log('add order', prev.getOpenOrderHistory)
 
     result = { ...prev }
   }

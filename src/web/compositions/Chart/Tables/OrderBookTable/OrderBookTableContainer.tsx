@@ -44,6 +44,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       data,
       quote,
       marketType,
+      marketOrders,
       aggregation,
       currencyPair,
       onButtonClick,
@@ -122,7 +123,9 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
         <LastTrade
           mode={mode}
-          marketType={marketType}
+          data={data}
+          // marketType={marketType}
+          marketOrders={marketOrders}
           aggregation={aggregation}
           symbol={currencyPair}
           exchange={this.props.exchange}

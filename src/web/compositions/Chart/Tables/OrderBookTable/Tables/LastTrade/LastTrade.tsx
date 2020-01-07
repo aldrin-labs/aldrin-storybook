@@ -29,66 +29,85 @@ const LastTrade = (props: IProps) => {
   let unsubscribeSpot: Function
   let unsubscribeFutures: Function
 
-  useEffect(() => {
-    unsubscribeSpot && unsubscribeSpot()
-    unsubscribeSpot = props.subscribeToMore()
+  // useEffect(() => {
+  //   unsubscribeSpot && unsubscribeSpot()
+  //   unsubscribeSpot = props.subscribeToMore()
 
-    return () => {
-      unsubscribeSpot && unsubscribeSpot()
-    }
-  }, [props.marketType, props.exchange, props.symbol])
+  //   return () => {
+  //     unsubscribeSpot && unsubscribeSpot()
+  //   }
+  // }, [props.marketType, props.exchange, props.symbol])
 
-  useEffect(() => {
-    if (props.marketType === 1) {
-      unsubscribeFutures && unsubscribeFutures.unsubscribe()
+  // useEffect(() => {
+  //   if (props.marketType === 1) {
+  //     unsubscribeFutures && unsubscribeFutures.unsubscribe()
 
-      unsubscribeFutures = client
-        .subscribe({
-          query: MARKET_TICKERS,
-          variables: {
-            symbol: props.symbol,
-            exchange: props.exchange,
-            marketType: String(0),
-          },
-        })
-        .subscribe({
-          next: (data) => {
-            if (data && data.data && data.data.listenMarketTickers) {
-              const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
+  //     unsubscribeFutures = client
+  //       .subscribe({
+  //         query: MARKET_TICKERS,
+  //         variables: {
+  //           symbol: props.symbol,
+  //           exchange: props.exchange,
+  //           marketType: String(0),
+  //         },
+  //       })
+  //       .subscribe({
+  //         next: (data) => {
+  //           if (data && data.data && data.data.listenMarketTickers) {
+  //             const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
 
-              updateMarketPrice(marketPrice)
-            }
-          },
-        })
-    }
+  //             updateMarketPrice(marketPrice)
+  //           }
+  //         },
+  //       })
+  //   }
 
-    return () => {
-      unsubscribeFutures && unsubscribeFutures.unsubscribe()
-    }
-  }, [props.marketType, props.exchange, props.symbol])
+  //   return () => {
+  //     unsubscribeFutures && unsubscribeFutures.unsubscribe()
+  //   }
+  // }, [props.marketType, props.exchange, props.symbol])
 
   let price = 0
   let fall = false
 
-  try {
-    const data = props.data.marketTickers[props.data.marketTickers.length - 1]
-    if (data.pair === props.symbol || Number(data.marketType) === Number(props.marketType)) {
-      price = data.price
-      fall = !!(+data.fall)
-    }
-  } catch (e) {}
+  let spread = props.data.asks.getMaxKey() - props.data.bids.getMinKey()
+
+  // try {
+  //   const data = props.data.marketTickers[props.data.marketTickers.length - 1]
+  //   if (data.pair === props.symbol || Number(data.marketType) === Number(props.marketType)) {
+  //     price = data.price
+  //     fall = !!(+data.fall)
+  //   }
+  // } catch (e) {}
+
+
 
   return (
     <LastTradeContainer
       onClick={() => updateTerminalPriceFromOrderbook(Number(price).toFixed(2))}
     >
-      <LastTradeValue fall={fall}>
-        <ArrowIcon fall={fall} />
-        {Number(price).toFixed(2)}
-      </LastTradeValue>
-      {props.marketType === 1 && (
+      <div style={{ width: '50%', display: 'flex', justifyContent: 'space-around' }}>
+      <LastTradePrice>
+        spread
+      </LastTradePrice>
+      <LastTradePrice fall={fall}>
+        {/* <ArrowIcon fall={fall} /> */}
+        {Number(spread).toFixed(2)}
+      </LastTradePrice>
+      {/* {props.marketType === 1 && (
         <LastTradePrice>{Number(marketPrice).toFixed(2)}</LastTradePrice>
-      )}
+      )} */}
+      </div>
+
+      <div style={{ width: '50%', display: 'flex' }}>
+      <LastTradePrice>
+        updates per/sec
+      </LastTradePrice>
+      <LastTradePrice fall={fall}>
+        {/* <ArrowIcon fall={fall} /> */}
+        {props.marketOrders.asks.length + props.marketOrders.bids.length}
+      </LastTradePrice>
+      </div>
     </LastTradeContainer>
   )
 }
@@ -101,17 +120,17 @@ const APIWrapper = (props) => {
       query={MARKET_QUERY}
       fetchPolicy="cache-only"
       variables={{ symbol: props.symbol, exchange: props.exchange }}
-      subscriptionArgs={{
-        subscription: MARKET_TICKERS,
-        variables: {
-          symbol: props.symbol,
-          exchange: props.exchange,
-          marketType: String(props.marketType),
-        },
+      // subscriptionArgs={{
+        // subscription: MARKET_TICKERS,
+        // variables: {
+        //   symbol: props.symbol,
+        //   exchange: props.exchange,
+        //   marketType: String(props.marketType),
+        // },
         // subscription: MOCKED_MARKET_TICKERS,
         // variables: { time: 10000 },
-        updateQueryFunction: updateTradeHistoryQuerryFunction,
-      }}
+      //   updateQueryFunction: updateTradeHistoryQuerryFunction,
+      // }}
       {...props}
     />
   )

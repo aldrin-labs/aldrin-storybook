@@ -617,6 +617,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       orderMode,
       TIFMode,
       trigger,
+      leverage,
     } = props
 
     if (priceType || byType) {
@@ -658,7 +659,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         'default',
         {},
         {
-          // leverage,
+          leverage,
           marketType: isSPOTMarket ? 0 : 1,
           ...(priceType !== 'market'
             ? orderMode === 'TIF'

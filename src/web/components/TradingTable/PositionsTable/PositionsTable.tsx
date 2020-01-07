@@ -73,7 +73,6 @@ class PositionsTable extends React.PureComponent {
     const { showOrderResult, cancelOrder, marketType } = this.props
 
     const result = await this.createOrder(variables)
-    console.log('result', result)
     await showOrderResult(result, cancelOrder, marketType)
   }
 
@@ -122,46 +121,46 @@ class PositionsTable extends React.PureComponent {
 
     const that = this
 
-    this.subscription = client
-      .subscribe({
-        query: MARKET_TICKERS,
-        variables: {
-          symbol: that.props.currencyPair,
-          exchange: that.props.exchange,
-          marketType: String(that.props.marketType),
-        },
-      })
-      .subscribe({
-        next: (data) => {
-          if (
-            data &&
-            data.data &&
-            data.data.listenMarketTickers &&
-            that.state.needUpdate
-          ) {
-            const marketPrice =
-              data.data.listenMarketTickers[
-                data.data.listenMarketTickers.length - 1
-              ].price
+    // this.subscription = client
+    //   .subscribe({
+    //     query: MARKET_TICKERS,
+    //     variables: {
+    //       symbol: that.props.currencyPair,
+    //       exchange: that.props.exchange,
+    //       marketType: String(that.props.marketType),
+    //     },
+    //   })
+    //   .subscribe({
+    //     next: (data) => {
+    //       if (
+    //         data &&
+    //         data.data &&
+    //         data.data.listenMarketTickers &&
+    //         that.state.needUpdate
+    //       ) {
+    //         const marketPrice =
+    //           data.data.listenMarketTickers[
+    //             data.data.listenMarketTickers.length - 1
+    //           ].price
 
-            const positionsData = combinePositionsTable(
-              that.props.getActivePositionsQuery.getActivePositions,
-              that.cancelOrderWithStatus,
-              that.createOrderWithStatus,
-              theme,
-              marketPrice,
-              this.props.currencyPair,
-              this.props.selectedKey.keyId
-            )
+    //         const positionsData = combinePositionsTable(
+    //           that.props.getActivePositionsQuery.getActivePositions,
+    //           that.cancelOrderWithStatus,
+    //           that.createOrderWithStatus,
+    //           theme,
+    //           marketPrice,
+    //           this.props.currencyPair,
+    //           this.props.selectedKey.keyId
+    //         )
 
-            that.setState({
-              positionsData,
-              marketPrice,
-              needUpdate: false,
-            })
-          }
-        },
-      })
+    //         that.setState({
+    //           positionsData,
+    //           marketPrice,
+    //           needUpdate: false,
+    //         })
+    //       }
+    //     },
+    //   })
   }
 
   componentDidMount() {
@@ -182,6 +181,64 @@ class PositionsTable extends React.PureComponent {
     this.setState({
       positionsData,
     })
+
+    const that = this
+
+    client
+      .watchQuery({
+        query: getActivePositions,
+        variables: {
+          input: {
+            keyId: this.props.selectedKey.keyId,
+          },
+        },
+        fetchPolicy: 'cache-and-network',
+      })
+      .subscribe({
+        next: async (data) => {
+          if (data.data.getActivePositions.length === 0) return
+
+          const orderData =
+            data.data.getActivePositions[
+              data.data.getActivePositions.length - 1
+            ]
+
+          const positionData = await client.readQuery({
+            query: getActivePositions,
+            variables: {
+              input: {
+                keyId: that.props.selectedKey.keyId,
+              },
+            },
+          })
+
+          const currentPosition = positionData.getActivePositions.find(
+            (pos) => pos.symbol === that.props.currencyPair
+          )
+
+          if (orderData._id === '1') {
+            await client.writeQuery({
+              query: getActivePositions,
+              variables: {
+                input: {
+                  keyId: that.props.selectedKey.keyId,
+                },
+              },
+              data: {
+                getActivePositions: positionData.getActivePositions.filter(
+                  (order) =>
+                    !(
+                      order._id === '0' ||
+                      (order._id === 1 &&
+                        currentPosition.positionAmt === order.positionAmt &&
+                        order.symbol === that.props.currencyPair)
+                    )
+                ),
+              },
+            })
+          }
+        },
+      })
 
     this.unsubscribeFunction = subscribeToMore()
   }

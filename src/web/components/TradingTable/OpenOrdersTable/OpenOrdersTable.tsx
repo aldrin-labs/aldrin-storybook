@@ -17,6 +17,7 @@ import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHis
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
+import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
 @withTheme
@@ -83,9 +84,81 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType
     )
+
+    console.log(
+      'getOpenOrderHistoryQuery.getOpenOrderHistory',
+      getOpenOrderHistoryQuery.getOpenOrderHistory
+    )
+
+    client.writeQuery({
+      query: getOpenOrderHistory,
+      variables: {
+        openOrderInput: {
+          activeExchangeKey: this.props.selectedKey.keyId,
+        },
+      },
+      data: {
+        getOpenOrderHistory: getOpenOrderHistoryQuery.getOpenOrderHistory,
+      },
+    })
+
     this.setState({
       openOrdersProcessedData,
     })
+
+    const that = this
+
+    client
+      .watchQuery({
+        query: getOpenOrderHistory,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+          },
+        },
+        fetchPolicy: 'cache-and-network',
+      })
+      .subscribe({
+        next: async (data) => {
+          if (data.data.getOpenOrderHistory.length === 0) return
+
+          const orderData = data.data.getOpenOrderHistory[0]
+
+          if (orderData.marketId === '0' && orderData.status !== 'placing') {
+            const data = await client.readQuery({
+              query: getOpenOrderHistory,
+              variables: {
+                openOrderInput: {
+                  activeExchangeKey: that.props.selectedKey.keyId,
+                },
+              },
+            })
+
+            await client.writeQuery({
+              query: getOpenOrderHistory,
+              variables: {
+                openOrderInput: {
+                  activeExchangeKey: that.props.selectedKey.keyId,
+                },
+              },
+              data: {
+                getOpenOrderHistory: data.getOpenOrderHistory
+                  .filter(
+                    (order) =>
+                      !(
+                        order.price === orderData.price &&
+                        order.side === orderData.side &&
+                        order.type === orderData.type
+                      )
+                    // (order.info &&
+                    //   +order.info.origQty === +orderData.info.origQty)
+                  )
+                  .concat(orderData),
+              },
+            })
+          }
+        },
+      })
 
     this.unsubscribeFunction = subscribeToMore()
   }
@@ -105,7 +178,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       nextProps.arrayOfMarketIds,
       nextProps.marketType
     )
-    
+
     this.setState({
       openOrdersProcessedData,
     })
