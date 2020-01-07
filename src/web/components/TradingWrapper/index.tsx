@@ -45,6 +45,25 @@ class SimpleTabs extends React.Component {
     orderIsCreating: false,
   }
 
+  static getDerivedStateFromProps(props, state) {
+    const { leverage } = props
+    const { leverage: stateLeverage } = state
+
+    if (!stateLeverage) {
+      return {
+        leverage
+      }
+    } else {
+      return null
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.leverage !== this.props.leverage) {
+      this.setState({ leverage: this.props.leverage })
+    }
+  }
+
   handleChangeMode = (mode: string) => {
     this.setState({ mode })
   }
@@ -227,7 +246,7 @@ class SimpleTabs extends React.Component {
                   min={1}
                   max={maxLeverage.get(`${pair[0]}_${pair[1]}`)}
                   defaultValue={startLeverage}
-                  value={!leverage ? startLeverage : leverage}
+                  value={leverage}
                   valueSymbol={'X'}
                   marks={
                     maxLeverage.get(`${pair[0]}_${pair[1]}`) === 75
