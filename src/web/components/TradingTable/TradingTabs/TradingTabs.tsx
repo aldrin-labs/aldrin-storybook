@@ -11,7 +11,7 @@ const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
         active={tab === 'activeTrades'}
         onClick={() => handleTabChange('activeTrades')}
       >
-        Active trades
+        Smart trades
       </TitleTab>
       {!isSPOTMarketType(marketType) && (
         <TitleTab

@@ -116,7 +116,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     : tab === 'positions'
     ? 'You have no open positions'
     : tab === 'activeTrades'
-    ? 'You have no active trades'
+    ? 'You have no smart trades'
     : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
