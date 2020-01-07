@@ -19,6 +19,7 @@ import {
   validateStopLoss,
   validateTakeProfit,
   validateEntryOrder,
+  getDefaultStateFromStrategySettings,
 } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -165,6 +166,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     return null
+  }
+
+  componentDidMount() {
+    const { getStrategySettingsQuery, marketType } = this.props
+    const result = getDefaultStateFromStrategySettings({ getStrategySettingsQuery, marketType })
+
+    if (!result) {
+      return
+    }
+
+    this.setState({
+      takeProfit: result.takeProfit,
+      stopLoss: result.stopLoss
+    })
   }
 
   componentDidUpdate(prevProps: IProps) {
