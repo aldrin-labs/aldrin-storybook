@@ -105,6 +105,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       nextProps.arrayOfMarketIds,
       nextProps.marketType
     )
+    
     this.setState({
       openOrdersProcessedData,
     })
