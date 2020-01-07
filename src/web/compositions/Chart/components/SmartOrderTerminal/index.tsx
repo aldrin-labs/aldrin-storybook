@@ -79,7 +79,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         price: 0,
         amount: 0,
         total: 0,
-        leverage: 0,
+        leverage: false,
         isHedgeOn: false,
         hedgePrice: 0,
         // X20,
@@ -150,6 +150,21 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
       }
     }
+
+    if (!state.entryPoint.order.leverage) {
+      return {
+        ...state,
+        entryPoint: {
+          ...state.entryPoint,
+          order: {
+            ...state.entryPoint.order,
+            leverage: props.leverage,
+          },
+        },
+      }
+    }
+
+    return null
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -169,6 +184,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         'order',
         'total',
         this.props.priceFromOrderbook * this.state.entryPoint.order.amount
+      )
+    }
+
+    if (
+      prevProps.leverage !== this.props.leverage
+    ) {
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'leverage',
+        this.props.leverage
       )
     }
   }
