@@ -30,17 +30,38 @@ import {
   SmartOrderModeButton,
 } from './styles'
 
+import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
     mode: 'limit',
-    leverage: 1,
+    leverage: false,
     reduceOnly: false,
     orderMode: 'TIF',
     TIFMode: 'GTC',
     trigger: 'last price',
+    orderIsCreating: false,
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { leverage } = props
+    const { leverage: stateLeverage } = state
+
+    if (!stateLeverage) {
+      return {
+        leverage
+      }
+    } else {
+      return null
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.leverage !== this.props.leverage) {
+      this.setState({ leverage: this.props.leverage })
+    }
   }
 
   handleChangeMode = (mode: string) => {
@@ -55,6 +76,10 @@ class SimpleTabs extends React.Component {
     this.setState({ [`percentage${mode}`]: percentage })
   }
 
+  addLoaderToButton = (side: 'buy' | 'sell') => {
+    this.setState({ orderIsCreating: side })
+  }
+
   render() {
     const {
       mode,
@@ -63,6 +88,7 @@ class SimpleTabs extends React.Component {
       orderMode,
       TIFMode,
       trigger,
+      orderIsCreating,
     } = this.state
 
     const {
@@ -74,8 +100,10 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      leverage: startLeverage,
       priceFromOrderbook,
       updateTerminalViewMode,
+      updateLeverageWithStatus,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -172,33 +200,34 @@ class SimpleTabs extends React.Component {
                       }
                     >
                       <StyledOption>GTC</StyledOption>
-                      <StyledOption>IOK</StyledOption>
+                      <StyledOption>IOC</StyledOption>
                       <StyledOption>FOK</StyledOption>
                     </StyledSelect>
                   </FuturesSettings>
                 )}
 
-                {mode !== 'stop-limit' && mode !== 'take-profit' && (
-                  <FuturesSettings key="reduceTerminalController">
-                    <SCheckbox
-                      id="reduceOnly"
-                      checked={reduceOnly}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState((prev) => ({
-                          reduceOnly: !prev.reduceOnly,
-                        }))
-                      }
-                    />
-                    <SettingsLabel htmlFor="reduceOnly">
-                      reduce only
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
+                <FuturesSettings key="reduceTerminalController">
+                  <SCheckbox
+                    id="reduceOnly"
+                    checked={reduceOnly}
+                    style={{ padding: '0 1rem' }}
+                    onChange={() =>
+                      this.setState((prev) => ({
+                        reduceOnly: !prev.reduceOnly,
+                      }))
+                    }
+                  />
+                  <SettingsLabel htmlFor="reduceOnly">
+                    reduce only
+                  </SettingsLabel>
+                </FuturesSettings>
 
                 {(mode === 'stop-limit' || mode === 'take-profit') && (
-                  <FuturesSettings key="triggerTerminalController">
-                    <SettingsLabel htmlFor="trigger">trigger</SettingsLabel>
+                  <FuturesSettings
+                    key="triggerTerminalController"
+                    style={{ padding: '0 1rem' }}
+                  >
+                    {/* <SettingsLabel htmlFor="trigger">trigger</SettingsLabel> */}
                     <StyledSelect
                       id="trigger"
                       onChange={(e) =>
@@ -215,20 +244,34 @@ class SimpleTabs extends React.Component {
                 <LeverageTitle>leverage:</LeverageTitle>
                 <SmallSlider
                   min={1}
-                  max={125}
-                  defaultValue={1}
+                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`)}
+                  defaultValue={startLeverage}
                   value={leverage}
                   valueSymbol={'X'}
-                  marks={{
-                    1: {},
-                    25: {},
-                    50: {},
-                    75: {},
-                    100: {},
-                    125: {},
-                  }}
-                  onChange={(leverage) => {
+                  marks={
+                    maxLeverage.get(`${pair[0]}_${pair[1]}`) === 75
+                      ? {
+                          1: {},
+                          15: {},
+                          30: {},
+                          45: {},
+                          60: {},
+                          75: {},
+                        }
+                      : {
+                          1: {},
+                          25: {},
+                          50: {},
+                          75: {},
+                          100: {},
+                          125: {},
+                        }
+                  }
+                  onChange={(leverage: number) => {
                     this.setState({ leverage })
+                  }}
+                  onAfterChange={(leverage: number) => {
+                    updateLeverageWithStatus(leverage)
                   }}
                   sliderContainerStyles={{
                     width: '65%',
@@ -278,6 +321,8 @@ class SimpleTabs extends React.Component {
                   confirmOperation={placeOrder}
                   cancelOrder={cancelOrder}
                   decimals={decimals}
+                  addLoaderToButton={this.addLoaderToButton}
+                  orderIsCreating={orderIsCreating}
                   showOrderResult={showOrderResult}
                   leverage={leverage}
                   reduceOnly={reduceOnly}
@@ -307,6 +352,8 @@ class SimpleTabs extends React.Component {
                   confirmOperation={placeOrder}
                   cancelOrder={cancelOrder}
                   decimals={decimals}
+                  addLoaderToButton={this.addLoaderToButton}
+                  orderIsCreating={orderIsCreating}
                   showOrderResult={showOrderResult}
                   leverage={leverage}
                   reduceOnly={reduceOnly}

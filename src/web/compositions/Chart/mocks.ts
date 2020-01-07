@@ -29,3 +29,11 @@ export const getFakeDepthChartData = () => {
 export const orders = []
 
 export const orderBook = []
+
+// temporary hardcode maxLeverage for futures pairs
+export const maxLeverage = new Map()
+
+maxLeverage.set('BTC_USDT', 125)
+maxLeverage.set('ETH_USDT', 75)
+maxLeverage.set('BCH_USDT', 75)
+maxLeverage.set('XRP_USDT', 75)
