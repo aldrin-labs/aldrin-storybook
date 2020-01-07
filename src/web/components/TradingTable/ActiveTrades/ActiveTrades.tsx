@@ -513,7 +513,7 @@ const LastTradeWrapper = ({ ...props }) => {
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={60000}
+      pollInterval={15000}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
