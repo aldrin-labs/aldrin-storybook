@@ -25,10 +25,10 @@ export const LastTradeValue = styled.div`
 `
 
 export const LastTradePrice = styled.span`
-  position: relative;
-  top: 0.4rem;
+  /* position: relative;
+  top: 0.4rem; */
 
-  font-size: 1rem;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #16253d;
   letter-spacing: 0.075rem;

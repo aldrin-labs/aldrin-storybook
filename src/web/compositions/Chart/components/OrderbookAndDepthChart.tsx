@@ -227,6 +227,7 @@ class OrderbookAndDepthChart extends React.Component {
       exchange,
       quote,
       selectedKey,
+      data: { marketOrders },
       minPriceDigits,
       arrayOfMarketIds,
       updateTerminalPriceFromOrderbook,
@@ -276,6 +277,7 @@ class OrderbookAndDepthChart extends React.Component {
             chartProps={chartProps}
             changeTable={changeTable}
             symbol={symbol}
+            marketOrders={marketOrders}
             minPriceDigits={minPriceDigits}
             selectedKey={selectedKey}
             marketType={marketType}
