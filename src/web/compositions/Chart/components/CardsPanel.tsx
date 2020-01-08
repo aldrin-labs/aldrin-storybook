@@ -64,18 +64,18 @@ export const CardsPanel = ({
           <LayoutSelector userId={_id} themeMode={themeMode} />
         )}
 
-        <SelectExchange
+        {/* <SelectExchange
           style={{ height: '100%', width: '20%' }}
           changeActiveExchangeMutation={changeActiveExchangeMutation}
           activeExchange={activeExchange}
           currencyPair={pair}
           selectStyles={selectStyles}
-        />
+        /> */}
 
         {view === 'default' && (
           <KeySelector
             exchange={activeExchange}
-            selectStyles={{ ...selectStyles, width: '30%' }}
+            selectStyles={{ ...selectStyles, width: '40%' }}
             isAccountSelect={true}
           />
         )}
@@ -135,7 +135,7 @@ export const CardsPanel = ({
         </CustomCard> */}
 
         <SmartTradeButton
-          style={{ height: '100%', width: '30%', marginRight: '.4rem' }}
+          style={{ height: '100%', width: '40%', marginRight: '.4rem' }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
           onClick={() =>
             updateTerminalViewMode(

@@ -123,7 +123,7 @@ export const DefaultView = (props: any) => {
         >
           <ChartsContainer
             item
-            xs={7}
+            xs={9}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <CustomCard>
@@ -150,11 +150,11 @@ export const DefaultView = (props: any) => {
           </ChartsContainer>
           <TradingTerminalContainer
             item
-            xs={5}
+            xs={3}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <Grid item container style={{ height: '100%' }}>
-              <Grid item container xs={7} style={{ height: '100%' }}>
+              <Grid item container xs={12} style={{ height: '100%' }}>
                 <OrderbookAndDepthChart
                   {...{
                     symbol: currencyPair,
@@ -174,14 +174,14 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 xs={5}
                 style={{
                   height: '100%',
                   padding: '0 0 .4rem .4rem',
                 }}
-              >
+              > */}
                 {/* <TradeHistory
                   {...{
                     symbol: currencyPair,
@@ -198,7 +198,7 @@ export const DefaultView = (props: any) => {
                     sizeDigits,
                   }}
                 /> */}
-              </Grid>
+              {/* </Grid> */}
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (

@@ -84,12 +84,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType
     )
-
-    console.log(
-      'getOpenOrderHistoryQuery.getOpenOrderHistory',
-      getOpenOrderHistoryQuery.getOpenOrderHistory
-    )
-
+    
     client.writeQuery({
       query: getOpenOrderHistory,
       variables: {

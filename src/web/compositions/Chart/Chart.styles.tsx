@@ -186,11 +186,11 @@ export const WatchListContainer = styled(Card)`
 
 export const ChartGridContainer = styled(Grid)`
   position: absolute;
-  right: 1rem;
+  right: 1.4rem;
   display: flex;
   flex: auto;
   align-items: center;
-  width: 41.6%;
+  width: 25%;
   height: 5%;
 
   padding: 0 0 0.4rem 0.8rem !important;
@@ -218,7 +218,7 @@ export const TradingTerminalContainer = styled(
   height: ${(props) =>
     props.isDefaultTerminalViewMode
       ? 'calc(58% - .8rem)'
-      : 'calc(39% - .8rem)'};
+      : 'calc(40% - .8rem)'};
   top: calc(5% + 0.8rem);
   overflow: hidden;
 

@@ -17,6 +17,8 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+
+import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 import { createOrder } from '@core/graphql/mutations/chart/createOrder'
@@ -121,6 +123,23 @@ class PositionsTable extends React.PureComponent {
 
     const that = this
 
+    this.subscription = client
+      .watchQuery({
+        query: getPrice,
+        variables: {
+          exchange: 'binance',
+          pair: that.props.currencyPair,
+        },
+        fetchPolicy: 'cache-and-network',
+        pollInterval: 15000,
+      })
+      .subscribe({
+        next: (data) => {
+          if (data.loading || data.data.getPrice === that.state.marketPrice ) return
+          that.setState({ marketPrice: data.data.getPrice })
+        }
+      })
+
     // this.subscription = client
     //   .subscribe({
     //     query: MARKET_TICKERS,
@@ -216,27 +235,24 @@ class PositionsTable extends React.PureComponent {
             (pos) => pos.symbol === that.props.currencyPair
           )
 
-          if (orderData._id === '1') {
-            await client.writeQuery({
-              query: getActivePositions,
-              variables: {
-                input: {
-                  keyId: that.props.selectedKey.keyId,
-                },
+          await client.writeQuery({
+            query: getActivePositions,
+            variables: {
+              input: {
+                keyId: that.props.selectedKey.keyId,
               },
-              data: {
-                getActivePositions: positionData.getActivePositions.filter(
-                  (order) =>
-                    !(
-                      order._id === '0' ||
-                      (order._id === 1 &&
-                        currentPosition.positionAmt === order.positionAmt &&
-                        order.symbol === that.props.currencyPair)
-                    )
-                ),
-              },
-            })
-          }
+            },
+            data: {
+              getActivePositions: positionData.getActivePositions.filter(
+                (order) =>
+                  !(
+                    (order._id === '0' &&
+                      currentPosition.positionAmt === order.positionAmt &&
+                      order.symbol === that.props.currencyPair)
+                  )
+              ),
+            },
+          })
         },
       })
 

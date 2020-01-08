@@ -10,11 +10,12 @@ import {
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'
 
+import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { MARKET_TICKERS, MOCKED_MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
-import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
+import { updateTradeHistoryQuerryFunction, getAggregationsFromMinPriceDigits, getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 
 interface IProps {
   data: { marketTickers: [string] }
@@ -69,8 +70,37 @@ const LastTrade = (props: IProps) => {
 
   let price = 0
   let fall = false
+  let subscription
+  const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0].value
 
-  let spread = props.data.asks.getMaxKey() - props.data.bids.getMinKey()
+  // const spread = props.data.asks.getMaxKey() - props.data.bids.getMinKey()
+  // const asksUpdated = typeof props.marketOrders.asks === 'string' ? 0 : props.marketOrders.asks.length
+  // const bidsUpdated = typeof props.marketOrders.bids === 'string' ? 0 : props.marketOrders.bids.length
+
+  useEffect(() => {
+    subscription && subscription.unsubscribe()
+
+    subscription = client
+    .watchQuery({
+      query: getPrice,
+      variables: {
+        exchange: 'binance',
+        pair: props.symbol,
+      },
+      fetchPolicy: 'cache-and-network',
+      pollInterval: 15000,
+    })
+    .subscribe({
+      next: (data) => {
+        if (data.loading || data.data.getPrice === marketPrice) return
+        updateMarketPrice(data.data.getPrice)
+      }
+    })
+
+    return () => {
+      subscription && subscription.unsubscribe()
+    }
+  }, [props.symbol])
 
   // try {
   //   const data = props.data.marketTickers[props.data.marketTickers.length - 1]
@@ -80,34 +110,32 @@ const LastTrade = (props: IProps) => {
   //   }
   // } catch (e) {}
 
-
-
   return (
     <LastTradeContainer
-      onClick={() => updateTerminalPriceFromOrderbook(Number(price).toFixed(2))}
+      onClick={() => updateTerminalPriceFromOrderbook(Number(marketPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation)))}
     >
-      <div style={{ width: '50%', display: 'flex', justifyContent: 'space-around' }}>
-      <LastTradePrice>
+      {/* <div style={{ width: '50%', display: 'flex', justifyContent: 'space-around' }}> */}
+      {/* <LastTradePrice>
         spread
-      </LastTradePrice>
+      </LastTradePrice> */}
       <LastTradePrice fall={fall}>
         {/* <ArrowIcon fall={fall} /> */}
-        {Number(spread).toFixed(2)}
+        {Number(marketPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
       </LastTradePrice>
       {/* {props.marketType === 1 && (
         <LastTradePrice>{Number(marketPrice).toFixed(2)}</LastTradePrice>
       )} */}
-      </div>
+      {/* </div> */}
 
-      <div style={{ width: '50%', display: 'flex' }}>
+      {/* <div style={{ width: '50%', display: 'flex' }}>
       <LastTradePrice>
         updates per/sec
       </LastTradePrice>
       <LastTradePrice fall={fall}>
-        {/* <ArrowIcon fall={fall} /> */}
-        {props.marketOrders.asks.length + props.marketOrders.bids.length}
+        {/* <ArrowIcon fall={fall} /> 
+        {asksUpdated + bidsUpdated}
       </LastTradePrice>
-      </div>
+    </div> */}
     </LastTradeContainer>
   )
 }

@@ -58,6 +58,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
     const { mode } = this.state
     const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
+    console.log('minPriceDigits', minPriceDigits)
 
     return (
       <>
@@ -124,6 +125,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <LastTrade
           mode={mode}
           data={data}
+          minPriceDigits={minPriceDigits}
           // marketType={marketType}
           marketOrders={marketOrders}
           aggregation={aggregation}

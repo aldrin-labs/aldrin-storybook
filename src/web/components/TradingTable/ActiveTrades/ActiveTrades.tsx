@@ -42,6 +42,7 @@ import { updateTakeProfitStrategy } from '@core/graphql/mutations/chart/updateTa
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
 import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 
+import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import {
   MARKET_TICKERS,
@@ -124,6 +125,23 @@ class ActiveTradesTable extends React.Component {
 
     const that = this
 
+    this.subscription = client
+      .watchQuery({
+        query: getPrice,
+        variables: {
+          exchange: 'binance',
+          pair: that.props.currencyPair,
+        },
+        fetchPolicy: 'cache-and-network',
+        pollInterval: 15000,
+      })
+      .subscribe({
+        next: (data) => {
+          if (data.loading || data.data.getPrice === that.state.marketPrice ) return
+          that.setState({ marketPrice: data.data.getPrice })
+        }
+      })
+
     // this.subscription = client
     //   .subscribe({
     //     query: MARKET_TICKERS,
@@ -160,7 +178,7 @@ class ActiveTradesTable extends React.Component {
   }
 
   componentDidMount() {
-    const { getActiveStrategiesQuery, subscribeToMore } = this.props
+    const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
 
     this.subscribe()
 
