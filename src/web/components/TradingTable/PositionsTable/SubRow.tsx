@@ -3,10 +3,13 @@ import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Input } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/components/Balances'
+import { Loading } from '@sb/components/index'
 
 const SubRow = ({ getVariables, createOrderWithStatus }) => {
   const [enableEdit, updateEnableEdit] = useState(false)
   const [price, updateClosePrice] = useState('')
+  const [isClosingPositionProcessEnabled, closePosition] = useState(false)
+
   console.log('price', price)
   return (
     <div
@@ -53,9 +56,19 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           hoverColor={'#fff'}
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
-          onClick={() => createOrderWithStatus(getVariables('limit', +price))}
+          disabled={isClosingPositionProcessEnabled}
+          onClick={() => {
+            closePosition(true)
+            createOrderWithStatus(getVariables('limit', +price))
+          }}
         >
-          limit
+          {isClosingPositionProcessEnabled ? (
+            <div>
+              <Loading size={16} style={{ height: '16px' }} />
+            </div>
+          ) : (
+            'limit'
+          )}
         </BtnCustom>
         <BtnCustom
           btnWidth="30%"
@@ -68,9 +81,19 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           hoverColor={'#fff'}
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
-          onClick={() => createOrderWithStatus(getVariables('market'))}
+          disabled={isClosingPositionProcessEnabled}
+          onClick={() => {
+            closePosition(true)
+            createOrderWithStatus(getVariables('market'))
+          }}
         >
-          market
+          {isClosingPositionProcessEnabled ? (
+            <div>
+              <Loading size={16} style={{ height: '16px' }} />
+            </div>
+          ) : (
+            'market'
+          )}
         </BtnCustom>
       </div>
     </div>

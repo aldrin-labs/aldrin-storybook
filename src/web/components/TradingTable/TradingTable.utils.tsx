@@ -316,7 +316,7 @@ export const combinePositionsTable = (
               </div>
             ),
             colspan: 8,
-            style: { opacity: needOpacity ? 0.5 : 1 },
+            style: { opacity: needOpacity ? 0.5 : 1, visibility: needOpacity ? 'hidden' : 'visible' },
           },
         },
       ]
