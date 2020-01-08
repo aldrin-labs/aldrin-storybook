@@ -44,6 +44,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       data,
       quote,
       marketType,
+      marketOrders,
       aggregation,
       currencyPair,
       onButtonClick,
@@ -57,6 +58,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
     const { mode } = this.state
     const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
+    console.log('minPriceDigits', minPriceDigits)
 
     return (
       <>
@@ -122,7 +124,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
         <LastTrade
           mode={mode}
-          marketType={marketType}
+          data={data}
+          minPriceDigits={minPriceDigits}
+          // marketType={marketType}
+          marketOrders={marketOrders}
           aggregation={aggregation}
           symbol={currencyPair}
           exchange={this.props.exchange}

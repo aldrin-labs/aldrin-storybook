@@ -544,7 +544,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       amount = 0
                     }
 
-                    const total = amount * entryPoint.order.price
+                    const total = (amount * entryPoint.order.price).toFixed(8)
                     this.updateSubBlockValue(
                       'entryPoint',
                       'order',

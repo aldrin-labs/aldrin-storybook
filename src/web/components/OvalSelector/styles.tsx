@@ -11,7 +11,7 @@ export const SelectR = styled(ReactSelectComponent)`
 export const SelectContainer = styled.div`
   ${ChartSelectStyles}
   ${(props) => props.selectStyles}
-  min-width: ${(props) => (props.isAccountSelect ? '22.8rem' : '14.4rem')};
+  /* min-width: ${(props) => (props.isAccountSelect ? '22.8rem' : '14.4rem')}; */
 
   & > div {
     display: flex;
