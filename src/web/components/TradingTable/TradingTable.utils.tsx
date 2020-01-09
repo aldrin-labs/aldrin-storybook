@@ -7,6 +7,7 @@ import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHis
 import { client } from '@core/graphql/apolloClient'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
+import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 
 const CloseButton = ({ i, onClick }) => {
@@ -152,6 +153,10 @@ export const isDataForThisMarket = (
     : !arrayOfMarketIds.includes(elementMarketId)
 }
 
+export const getNumberOfPrecisionDigitsForSymbol = (symbol: string) => {
+  return stableCoins.includes(symbol) ? 2 : 8
+}
+
 export const combinePositionsTable = (
   data: OrderType[],
   cancelOrderFunc: (
@@ -294,9 +299,9 @@ export const combinePositionsTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount <= 0 ? '-' : ''} ${Math.abs(Number(profitAmount.toFixed(3)))} ${
+                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(Number(profitAmount.toFixed(3)))} ${
                       pair[1]
-                    } / ${profitPercentage <= 0 ? '-' : ''} ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                    } / ${profitPercentage <= 0 ? '-' : ''}${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
             ) : (
@@ -456,7 +461,7 @@ export const combineActiveTradesTable = (
         entryPrice: {
           render: (
             <SubColumnValue>
-              {entryOrderPrice} {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, getNumberOfPrecisionDigitsForSymbol(pairArr[1]))} {pairArr[1]}
             </SubColumnValue>
           ),
           style: {
@@ -511,9 +516,9 @@ export const combineActiveTradesTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
+                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(Number(profitAmount.toFixed(3)))} ${
                       pairArr[1]
-                    } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                    } / ${profitPercentage <= 0 ? '-' : ''}${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
             ) : (
