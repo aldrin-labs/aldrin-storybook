@@ -218,7 +218,7 @@ export const TradingTerminalContainer = styled(
   height: ${(props) =>
     props.isDefaultTerminalViewMode
       ? 'calc(58% - .8rem)'
-      : 'calc(40% - .8rem)'};
+      : 'calc(47% - .8rem)'};
   top: calc(5% + 0.8rem);
   overflow: hidden;
 
@@ -234,7 +234,7 @@ export const ChartsContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '63%' : '45%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '63%' : '52%')};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -348,7 +348,7 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '55%')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
   padding: ${({
     isDefaultTerminalViewMode,
   }: {
@@ -359,6 +359,6 @@ export const BalancesContainer = styled(
 
 export const SmartTerminalContainer = styled(Grid)`
   position: relative;
-  height: 55%;
+  height: 48%;
   padding: 0.4rem 0 0 0.4rem;
 `

@@ -635,7 +635,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </span>
                     </HeaderLabel>
                   </SwitcherContainer>
-                  <SwitcherContainer>
+                  {/* <SwitcherContainer>
                     <GreenSwitcher
                       id="isHedgeOn"
                       checked={entryPoint.order.isHedgeOn}
@@ -649,7 +649,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     />
                     <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
-                  </SwitcherContainer>
+                  </SwitcherContainer> */}
                 </InputRowContainer>
 
                 <InputRowContainer>

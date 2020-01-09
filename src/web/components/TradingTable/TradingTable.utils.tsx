@@ -702,7 +702,7 @@ export const combineOpenOrdersTable = (
       const triggerConditionsFormatted =
         triggerConditions === '-'
           ? '-'
-          : (isBuyTypeOrder(side) && type === 'limit') ||
+          : (!isBuyTypeOrder(side) && type === 'limit') ||
             (isBuyTypeOrder(side) && type === 'stop_market') ||
             (isBuyTypeOrder(side) && type === 'stop_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
@@ -712,7 +712,7 @@ export const combineOpenOrdersTable = (
           : `<= ${triggerConditions}`
 
       return {
-        id: `${orderId}${timestamp}${origQty}`,
+        id: `${orderId}${timestamp}${origQty}${el.marketId}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -729,7 +729,7 @@ export const combineOpenOrdersTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: side === 'buy' ? '#29AC80' : '#DD6956',
+                  color: isBuyTypeOrder(side) ? '#29AC80' : '#DD6956',
                 }}
               >
                 {side}

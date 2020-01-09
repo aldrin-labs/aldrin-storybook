@@ -20,6 +20,8 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
+let interval
+
 @withTheme
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
@@ -84,7 +86,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType
     )
-    
+
     client.writeQuery({
       query: getOpenOrderHistory,
       variables: {
@@ -103,57 +105,28 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     const that = this
 
-    client
-      .watchQuery({
+    interval = setInterval(() => {
+      const data = client.readQuery({
         query: getOpenOrderHistory,
         variables: {
           openOrderInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
           },
         },
-        fetchPolicy: 'cache-and-network',
       })
-      .subscribe({
-        next: async (data) => {
-          if (data.data.getOpenOrderHistory.length === 0) return
 
-          const orderData = data.data.getOpenOrderHistory[0]
+      if (data.getOpenOrderHistory.find((order) => order.marketId === '0')) {
+        return
+      }
 
-          if (orderData.marketId === '0' && orderData.status !== 'placing') {
-            const data = await client.readQuery({
-              query: getOpenOrderHistory,
-              variables: {
-                openOrderInput: {
-                  activeExchangeKey: that.props.selectedKey.keyId,
-                },
-              },
-            })
-
-            await client.writeQuery({
-              query: getOpenOrderHistory,
-              variables: {
-                openOrderInput: {
-                  activeExchangeKey: that.props.selectedKey.keyId,
-                },
-              },
-              data: {
-                getOpenOrderHistory: data.getOpenOrderHistory
-                  .filter(
-                    (order) =>
-                      !(
-                        order.price === orderData.price &&
-                        order.side === orderData.side &&
-                        order.type === orderData.type
-                      )
-                    // (order.info &&
-                    //   +order.info.origQty === +orderData.info.origQty)
-                  )
-                  .concat(orderData),
-              },
-            })
-          }
+      that.props.getOpenOrderHistoryQueryRefetch({
+        variables: {
+          activeStrategiesInput: {
+            activeExchangeKey: that.props.selectedKey.keyId,
+          },
         },
       })
+    }, 20000)
 
     this.unsubscribeFunction = subscribeToMore()
   }
@@ -163,6 +136,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
     }
+
+    interval && clearInterval(interval)
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -252,7 +227,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={15000}
+      // pollInterval={15000}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {

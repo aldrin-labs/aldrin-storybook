@@ -51,11 +51,14 @@ import {
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 
+let interval
+
 @withTheme
 class ActiveTradesTable extends React.Component {
   state = {
     editTrade: null,
     selectedTrade: {},
+    cachedOrder: null,
     activeStrategiesProcessedData: [],
     marketPrice: 0,
     needUpdate: false,
@@ -137,9 +140,10 @@ class ActiveTradesTable extends React.Component {
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.getPrice === that.state.marketPrice ) return
+          if (data.loading || data.data.getPrice === that.state.marketPrice)
+            return
           that.setState({ marketPrice: data.data.getPrice })
-        }
+        },
       })
 
     // this.subscription = client
@@ -180,6 +184,29 @@ class ActiveTradesTable extends React.Component {
   componentDidMount() {
     const { getActiveStrategiesQuery, subscribeToMore, theme } = this.props
 
+    interval = setInterval(() => {
+      const data = client.readQuery({
+        query: getActiveStrategies,
+        variables: {
+          activeStrategiesInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+          },
+        },
+      })
+
+      if (data.getActiveStrategies.find((order) => order._id === '-1')) {
+        return
+      }
+
+      this.props.getActiveStrategiesQueryRefetch({
+        variables: {
+          activeStrategiesInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+          },
+        },
+      })
+    }, 20000)
+
     this.subscribe()
 
     const activeStrategiesProcessedData = combineActiveTradesTable(
@@ -193,18 +220,6 @@ class ActiveTradesTable extends React.Component {
 
     this.setState({
       activeStrategiesProcessedData,
-    })
-
-    client.writeQuery({
-      query: getActiveStrategies,
-      variables: {
-        activeStrategiesInput: {
-          activeExchangeKey: this.props.selectedKey.keyId,
-        },
-      },
-      data: {
-        getActiveStrategies: getActiveStrategiesQuery.getActiveStrategies,
-      },
     })
 
     this.unsubscribeFunction = subscribeToMore()
@@ -232,20 +247,42 @@ class ActiveTradesTable extends React.Component {
     }
 
     this.subscription && this.subscription.unsubscribe()
+    clearInterval(interval)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      this.props.getActiveStrategiesQuery.getActiveStrategies.some(
-        (a) => a._id === '-1'
-      ) &&
-      nextProps.getActiveStrategiesQuery.getActiveStrategies.length <
-        this.props.getActiveStrategiesQuery.getActiveStrategies.length
+    const data = client.readQuery({
+      query: getActiveStrategies,
+      variables: {
+        activeStrategiesInput: {
+          activeExchangeKey: this.props.selectedKey.keyId,
+        },
+      },
+    })
+
+    const orderReturned = nextProps.getActiveStrategiesQuery.getActiveStrategies.some(
+      (a) => a._id === '0'
     )
-      return
+
+    if (
+      !this.state.cachedOrder &&
+      data.getActiveStrategies.some((a) => a._id === '-1')
+    ) {
+      this.setState({
+        cachedOrder: data.getActiveStrategies.filter((a) => a._id === '-1'),
+      })
+    }
+
+    if (orderReturned) {
+      this.setState({ cachedOrder: null })
+    }
 
     const activeStrategiesProcessedData = combineActiveTradesTable(
-      nextProps.getActiveStrategiesQuery.getActiveStrategies,
+      !orderReturned && this.state.cachedOrder
+        ? nextProps.getActiveStrategiesQuery.getActiveStrategies.concat(
+            this.state.cachedOrder
+          )
+        : nextProps.getActiveStrategiesQuery.getActiveStrategies,
       this.cancelOrderWithStatus,
       this.editTrade,
       nextProps.theme,
@@ -256,6 +293,22 @@ class ActiveTradesTable extends React.Component {
     this.setState({
       activeStrategiesProcessedData,
     })
+
+    client.writeQuery({
+      query: getActiveStrategies,
+      variables: {
+        activeStrategiesInput: {
+          activeExchangeKey: this.props.selectedKey.keyId,
+        },
+      },
+      data: {
+        getActiveStrategies: nextProps.getActiveStrategiesQuery.getActiveStrategies.filter(
+          (a) => a._id !== '0'
+        ),
+      },
+    })
+
+    return null
   }
 
   render() {
@@ -555,7 +608,7 @@ const LastTradeWrapper = ({ ...props }) => {
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={15000}
+      // pollInterval={20000}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
