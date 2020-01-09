@@ -12,10 +12,17 @@ import { OrderbookMode } from '../../OrderBookTableContainer.types'
 
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import QueryRenderer from '@core/components/QueryRenderer'
-import { MARKET_TICKERS, MOCKED_MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import {
+  MARKET_TICKERS,
+  MOCKED_MARKET_TICKERS,
+} from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
-import { updateTradeHistoryQuerryFunction, getAggregationsFromMinPriceDigits, getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
+import {
+  updateTradeHistoryQuerryFunction,
+  getAggregationsFromMinPriceDigits,
+  getNumberOfDecimalsFromNumber,
+} from '@core/utils/chartPageUtils'
 
 interface IProps {
   data: { marketTickers: [string] }
@@ -71,9 +78,10 @@ const LastTrade = (props: IProps) => {
   let price = 0
   let fall = false
   let subscription
-  const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0].value
+  const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
+    .value
 
-  // const spread = props.data.asks.getMaxKey() - props.data.bids.getMinKey()
+  const spread = props.data.asks.getMinKey() - props.data.bids.getMaxKey()
   // const asksUpdated = typeof props.marketOrders.asks === 'string' ? 0 : props.marketOrders.asks.length
   // const bidsUpdated = typeof props.marketOrders.bids === 'string' ? 0 : props.marketOrders.bids.length
 
@@ -81,21 +89,21 @@ const LastTrade = (props: IProps) => {
     subscription && subscription.unsubscribe()
 
     subscription = client
-    .watchQuery({
-      query: getPrice,
-      variables: {
-        exchange: 'binance',
-        pair: props.symbol,
-      },
-      fetchPolicy: 'cache-and-network',
-      pollInterval: 15000,
-    })
-    .subscribe({
-      next: (data) => {
-        if (data.loading || data.data.getPrice === marketPrice) return
-        updateMarketPrice(data.data.getPrice)
-      }
-    })
+      .watchQuery({
+        query: getPrice,
+        variables: {
+          exchange: 'binance',
+          pair: props.symbol,
+        },
+        fetchPolicy: 'cache-and-network',
+        pollInterval: 15000,
+      })
+      .subscribe({
+        next: (data) => {
+          if (data.loading || data.data.getPrice === marketPrice) return
+          updateMarketPrice(data.data.getPrice)
+        },
+      })
 
     return () => {
       subscription && subscription.unsubscribe()
@@ -112,7 +120,13 @@ const LastTrade = (props: IProps) => {
 
   return (
     <LastTradeContainer
-      onClick={() => updateTerminalPriceFromOrderbook(Number(marketPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation)))}
+      onClick={() =>
+        updateTerminalPriceFromOrderbook(
+          Number(marketPrice).toFixed(
+            getNumberOfDecimalsFromNumber(aggregation)
+          )
+        )
+      }
     >
       {/* <div style={{ width: '50%', display: 'flex', justifyContent: 'space-around' }}> */}
       {/* <LastTradePrice>
@@ -120,7 +134,8 @@ const LastTrade = (props: IProps) => {
       </LastTradePrice> */}
       <LastTradePrice fall={fall}>
         {/* <ArrowIcon fall={fall} /> */}
-        {Number(marketPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
+        Spread:{' '}
+        {Number(spread).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
       </LastTradePrice>
       {/* {props.marketType === 1 && (
         <LastTradePrice>{Number(marketPrice).toFixed(2)}</LastTradePrice>
@@ -149,14 +164,14 @@ const APIWrapper = (props) => {
       fetchPolicy="cache-only"
       variables={{ symbol: props.symbol, exchange: props.exchange }}
       // subscriptionArgs={{
-        // subscription: MARKET_TICKERS,
-        // variables: {
-        //   symbol: props.symbol,
-        //   exchange: props.exchange,
-        //   marketType: String(props.marketType),
-        // },
-        // subscription: MOCKED_MARKET_TICKERS,
-        // variables: { time: 10000 },
+      // subscription: MARKET_TICKERS,
+      // variables: {
+      //   symbol: props.symbol,
+      //   exchange: props.exchange,
+      //   marketType: String(props.marketType),
+      // },
+      // subscription: MOCKED_MARKET_TICKERS,
+      // variables: { time: 10000 },
       //   updateQueryFunction: updateTradeHistoryQuerryFunction,
       // }}
       {...props}
