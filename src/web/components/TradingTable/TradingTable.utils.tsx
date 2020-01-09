@@ -299,10 +299,10 @@ export const combinePositionsTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(
+                  ? `${profitAmount < 0? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
                     )} ${pair[1]} / ${
-                      profitPercentage <= 0 ? '-' : ''
+                      profitPercentage < 0? '-' : ''
                     }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
@@ -525,10 +525,10 @@ export const combineActiveTradesTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(
+                  ? `${profitAmount < 0? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
                     )} ${pairArr[1]} / ${
-                      profitPercentage <= 0 ? '-' : ''
+                      profitPercentage < 0? '-' : ''
                     }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
@@ -1069,7 +1069,7 @@ export const combineTradeHistoryTable = (
                   <span style={{ color: realizedPnl > 0 ? '#29AC80' : realizedPnl < 0 ? '#DD6956' : '' }}>
                     {`${
                       realizedPnl || realizedPnl === 0
-                        ? stripDigitPlaces(realizedPnl, 2)
+                        ? stripDigitPlaces(realizedPnl, 8)
                         : '-'
                     } ${realizedPnl || realizedPnl === 0 ? pair[1] : ''}`}
                   </span>
