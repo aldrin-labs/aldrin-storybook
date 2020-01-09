@@ -991,7 +991,7 @@ export const combineTradeHistoryTable = (
       isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
     )
     .map((el: TradeType) => {
-      const { id, timestamp, symbol, side, price, amount } = el
+      const { id, timestamp, symbol, side, price, amount, realizedPnl } = el
 
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
@@ -1051,6 +1051,15 @@ export const combineTradeHistoryTable = (
               },
             }
           : {}),
+          ...(marketType === 1
+            ? {
+              realizedPnl: {
+                  // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                  render: `${realizedPnl !== 0 ? stripDigitPlaces(realizedPnl, 2) : '-'} ${realizedPnl !== 0 ? pair[1] : ''}`,
+                  contentToSort: realizedPnl,
+                },
+              }
+            : {}),
         fee: {
           render: `${stripDigitPlaces(cost, 8)} ${currency}`,
 

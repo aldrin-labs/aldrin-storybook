@@ -171,6 +171,7 @@ export const tradeHistoryColumnNames = (marketType: number) =>
     { label: 'Price', id: 'price' },
     { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
     marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
+    marketType === 1 ? { label: 'P&L', id: 'realizedPnl' } : {},
     { label: 'Fee', id: 'fee' },
     { label: 'Status', id: 'status' },
     { label: 'Date', id: 'date' },
