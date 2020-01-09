@@ -1066,7 +1066,7 @@ export const combineTradeHistoryTable = (
           ? {
               realizedPnl: {
                 render: (
-                  <span style={{ color: realizedPnl > 0 ? green.new : realizedPnl < 0 ? red.new : '' }}>
+                  <span style={{ color: realizedPnl > 0 ? '#29AC80' : realizedPnl < 0 ? '#DD6956' : '' }}>
                     {`${
                       realizedPnl || realizedPnl === 0
                         ? stripDigitPlaces(realizedPnl, 2)
