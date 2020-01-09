@@ -257,7 +257,7 @@ export const combinePositionsTable = (
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(entryPrice, 2)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -266,7 +266,7 @@ export const combinePositionsTable = (
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(marketPrice, 2)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -275,7 +275,7 @@ export const combinePositionsTable = (
             contentToSort: marketPrice,
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liqPrice, 2)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -294,9 +294,9 @@ export const combinePositionsTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${Math.abs(Number(profitAmount.toFixed(3)))} ${
+                  ? `${profitAmount <= 0 ? '-' : ''} ${Math.abs(Number(profitAmount.toFixed(3)))} ${
                       pair[1]
-                    } / ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                    } / ${profitPercentage <= 0 ? '-' : ''} ${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
             ) : (
