@@ -128,7 +128,7 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   </button>
 ))`
   height: auto;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
   width: auto;
