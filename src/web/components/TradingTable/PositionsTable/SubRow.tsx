@@ -9,6 +9,7 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
   const [enableEdit, updateEnableEdit] = useState(false)
   const [price, updateClosePrice] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
+  const [closingType, setClosingType] = useState('')
 
   console.log('price', price)
   return (
@@ -58,11 +59,12 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled}
           onClick={() => {
+            setClosingType('limit')
             closePosition(true)
             createOrderWithStatus(getVariables('limit', +price))
           }}
         >
-          {isClosingPositionProcessEnabled ? (
+          {closingType === 'limit' ? (
             <div>
               <Loading size={16} style={{ height: '16px' }} />
             </div>
@@ -83,11 +85,12 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled}
           onClick={() => {
+            setClosingType('market')
             closePosition(true)
             createOrderWithStatus(getVariables('market'))
           }}
         >
-          {isClosingPositionProcessEnabled ? (
+          {closingType === 'market' ? (
             <div>
               <Loading size={16} style={{ height: '16px' }} />
             </div>
