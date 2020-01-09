@@ -176,7 +176,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOrderHistory}
       name={`getOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={60000}
+      pollInterval={45000}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
         variables: {
