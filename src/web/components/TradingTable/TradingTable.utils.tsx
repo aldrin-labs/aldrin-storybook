@@ -299,9 +299,11 @@ export const combinePositionsTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(Number(profitAmount.toFixed(3)))} ${
-                      pair[1]
-                    } / ${profitPercentage <= 0 ? '-' : ''}${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(
+                      Number(profitAmount.toFixed(3))
+                    )} ${pair[1]} / ${
+                      profitPercentage <= 0 ? '-' : ''
+                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
             ) : (
@@ -321,7 +323,10 @@ export const combinePositionsTable = (
               </div>
             ),
             colspan: 8,
-            style: { opacity: needOpacity ? 0.5 : 1, visibility: needOpacity ? 'hidden' : 'visible' },
+            style: {
+              opacity: needOpacity ? 0.5 : 1,
+              visibility: needOpacity ? 'hidden' : 'visible',
+            },
           },
         },
       ]
@@ -441,7 +446,7 @@ export const combineActiveTradesTable = (
             <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         side: {
@@ -455,17 +460,21 @@ export const combineActiveTradesTable = (
             </SubColumnValue>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         entryPrice: {
           render: (
             <SubColumnValue>
-              {stripDigitPlaces(entryOrderPrice, getNumberOfPrecisionDigitsForSymbol(pairArr[1]))} {pairArr[1]}
+              {stripDigitPlaces(
+                entryOrderPrice,
+                getNumberOfPrecisionDigitsForSymbol(pairArr[1])
+              )}{' '}
+              {pairArr[1]}
             </SubColumnValue>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         quantity: {
@@ -475,7 +484,7 @@ export const combineActiveTradesTable = (
             </SubColumnValue>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         takeProfit: {
@@ -494,7 +503,7 @@ export const combineActiveTradesTable = (
             </SubColumnValue>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         stopLoss: {
@@ -504,7 +513,7 @@ export const combineActiveTradesTable = (
             '-'
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         profit: {
@@ -516,16 +525,18 @@ export const combineActiveTradesTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(Number(profitAmount.toFixed(3)))} ${
-                      pairArr[1]
-                    } / ${profitPercentage <= 0 ? '-' : ''}${Math.abs(Number(profitPercentage.toFixed(2)))}%`
+                  ? `${profitAmount <= 0 ? '-' : ''}${Math.abs(
+                      Number(profitAmount.toFixed(3))
+                    )} ${pairArr[1]} / ${
+                      profitPercentage <= 0 ? '-' : ''
+                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
             ) : (
               `0 ${pairArr[1]} / 0%`
             ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         status: {
@@ -535,7 +546,7 @@ export const combineActiveTradesTable = (
             </SubColumnValue>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         close: {
@@ -558,7 +569,7 @@ export const combineActiveTradesTable = (
             </BtnCustom>
           ),
           style: {
-            opacity: needOpacity ? .6 : 1,
+            opacity: needOpacity ? 0.6 : 1,
           },
         },
         // entryOrder: {
@@ -672,7 +683,7 @@ export const combineOpenOrdersTable = (
           el.status === 'placing' ||
           el.status === 'NEW') &&
           isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)) ||
-        el.marketId === '0' && el.symbol
+        (el.marketId === '0' && el.symbol)
     )
     .map((el: OrderType, i: number) => {
       const { keyId, symbol, type: orderType, side, price } = el
@@ -1051,15 +1062,22 @@ export const combineTradeHistoryTable = (
               },
             }
           : {}),
-          ...(marketType === 1
-            ? {
+        ...(marketType === 1
+          ? {
               realizedPnl: {
-                  // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                  render: `${realizedPnl !== 0 ? stripDigitPlaces(realizedPnl, 2) : '-'} ${realizedPnl !== 0 ? pair[1] : ''}`,
-                  contentToSort: realizedPnl,
-                },
-              }
-            : {}),
+                render: (
+                  <span style={{ color: realizedPnl > 0 ? green.new : realizedPnl < 0 ? red.new : '' }}>
+                    {`${
+                      realizedPnl || realizedPnl === 0
+                        ? stripDigitPlaces(realizedPnl, 2)
+                        : '-'
+                    } ${realizedPnl || realizedPnl === 0 ? pair[1] : ''}`}
+                  </span>
+                ),
+                contentToSort: realizedPnl,
+              },
+            }
+          : {}),
         fee: {
           render: `${stripDigitPlaces(cost, 8)} ${currency}`,
 
