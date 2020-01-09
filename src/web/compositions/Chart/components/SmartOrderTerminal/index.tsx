@@ -613,12 +613,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           !entryPoint.trailing.isTrailingOn
                         )
 
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'type',
-                          'market'
-                        )
+                        // this.updateSubBlockValue(
+                        //   'entryPoint',
+                        //   'order',
+                        //   'type',
+                        //   'market'
+                        // )
                       }}
                     />
                     <HeaderLabel htmlFor="entryPointTrailingOn">
@@ -1359,12 +1359,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       getSecondValueFromFirst(takeProfit.type)
                     )
 
-                    this.updateSubBlockValue(
-                      'takeProfit',
-                      'trailingTAP',
-                      'isTrailingOn',
-                      false
-                    )
+                    // this.updateSubBlockValue(
+                    //   'takeProfit',
+                    //   'trailingTAP',
+                    //   'isTrailingOn',
+                    //   false
+                    // )
                   }}
                 />
               </InputRowContainer>
