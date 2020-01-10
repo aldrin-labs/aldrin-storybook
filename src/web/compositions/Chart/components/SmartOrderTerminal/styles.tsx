@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { HeaderProperties, BlockProperties, InputRowProps } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
@@ -41,6 +42,12 @@ export const HeaderTitle = styled.span`
   font-weight: bold;
   text-transform: uppercase;
   color: #16253d;
+`
+
+export const BlockHeader = styled(HeaderTitle)`
+  color: #7284A0;
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
 `
 
 export const InputTitle = styled(HeaderTitle)`
@@ -132,4 +139,24 @@ export const BeforeCharacter = styled.span`
   display: ${(props) => (props.needCharacter ? 'block' : 'none')};
   font-size: 1.2rem;
   color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
+`
+
+export const AdditionalSettingsButton = styled(({ isActive, children, ...rest }) => <BtnCustom 
+  btnWidth="30%"
+  fontSize="1.2rem"
+  fontWeight="normal"
+  padding=".5rem 0 .4rem 0"
+  borderRadius=".8rem"
+  borderColor={isActive ? '#5C8CEA' : '#E0E5EC'}
+  btnColor={isActive ? '#fff' : '#7284A0'}
+  backgroundColor={isActive ? '#5C8CEA' : '#F2F4F6'}
+  hoverColor={'#fff'}
+  hoverBorderColor={'#5C8CEA'}
+  hoverBackground={'#5C8CEA'}
+  transition={'all .25s ease-out'}
+  textTransform="capitalize"
+  boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.3)'}
+  margin={'0 3% 0 0'}
+  {...rest}
+>{children}</BtnCustom>)`
 `

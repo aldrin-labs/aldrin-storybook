@@ -217,7 +217,7 @@ export const TradingTerminalContainer = styled(
   // 60% - 3%, the half of height cards, will fix in future
   height: ${(props) =>
     props.isDefaultTerminalViewMode
-      ? 'calc(58% - .8rem)'
+      ? 'calc(59% - .8rem)'
       : 'calc(48% - .8rem)'};
   top: calc(4% + 0.8rem);
   overflow: hidden;

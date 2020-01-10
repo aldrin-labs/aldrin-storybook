@@ -93,18 +93,19 @@ export const TradeInputHeader = ({
 export const TradeInputContent = ({
   isValid = true,
   showErrors = false,
+  disabled = false,
+  haveSelector = false,
+  needTitle = false,
+  title = '',
   symbol = '',
   value = '',
-  type = 'number',
   pattern = '',
   step = '',
+  type = 'number',
   padding = '0',
   width = '100%',
   textAlign = 'right',
   onChange = () => {},
-  needTitle = false,
-  title = '',
-  disabled = false,
 }) => {
   return (
     <InputRowContainer
@@ -123,6 +124,7 @@ export const TradeInputContent = ({
         disabled={disabled}
         onChange={onChange}
         needPadding={symbol !== ''}
+        haveSelector={haveSelector}
       />
       <UpdatedCoin right={symbol.length <= 2 ? '2.5rem' : '1rem'}>
         {symbol}

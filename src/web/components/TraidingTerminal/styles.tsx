@@ -167,15 +167,14 @@ export const TradeBlock = styled(BalanceGrid)`
 `
 
 export const TradeInput = styled.input`
-  position: relative;
-  bottom: 0.2rem;
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
     props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
   border-radius: 4px;
+  border-top-right-radius: ${(props) => props.haveSelector && '0'};
+  border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  margin-top: 0.2rem;
   color: #16253d;
   background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
   font-size: 1.3rem;
@@ -222,7 +221,7 @@ export const InputWrapper = styled.div`
 
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
-  top: 50%;
+  top: calc(50% + 0.1rem);
   right: ${({ right }: { right?: string }) => right || '1rem'};
   transform: translateY(-50%);
   text-transform: uppercase;
