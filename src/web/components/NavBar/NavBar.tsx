@@ -3,7 +3,7 @@ import { withApollo, graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
 import { client } from '@core/graphql/apolloClient'
-import { LoginComponent as Login} from '@sb/components/Login'
+import { LoginComponent as Login } from '@sb/components/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -251,9 +251,9 @@ const NavBarRaw: SFC<Props> = ({
               direction={'row'}
               container={true}
             >
-              <Hidden only={['sm', 'xs']}>
+              {/* <Hidden only={['sm', 'xs']}>
                 <Feedback borderColor={fade(divider, 0.5)} />
-              </Hidden>
+              </Hidden> */}
               <Hidden only="xs">
                 <Login />
               </Hidden>
@@ -265,4 +265,7 @@ const NavBarRaw: SFC<Props> = ({
   )
 }
 
-export const NavBar = compose(withTheme, graphql(GET_MARKET_TYPE, { name: 'marketTypeData'}))(NavBarRaw)
+export const NavBar = compose(
+  withTheme,
+  graphql(GET_MARKET_TYPE, { name: 'marketTypeData' })
+)(NavBarRaw)

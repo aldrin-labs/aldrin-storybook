@@ -20,7 +20,12 @@ import {
 //   font-size: 0.9rem;
 // }
 
-const Container = styled.div``
+const Container = styled.div`
+  &:hover {
+    /* transition: all 0.1s ease-out; */
+    background-color: rgba(150, 150, 150, 0.15);
+  }
+`
 
 /**
  * Default row renderer for Table.
@@ -120,14 +125,20 @@ export default function defaultRowRenderer({
       openOrderHistory.findIndex((order) => {
         const orderPrice = functionToRound(order.price, digitsByGroup)
 
-        return +orderPrice === +rowData.price && arrayOfMarketIds.includes(order.marketId)
+        return (
+          +orderPrice === +rowData.price &&
+          arrayOfMarketIds.includes(order.marketId)
+        )
       }) !== -1
 
     needHighlightStopPrice =
       openOrderHistory.findIndex((order) => {
         const orderStopPrice = functionToRound(order.stopPrice, digitsByGroup)
 
-        return +orderStopPrice === +rowData.price && arrayOfMarketIds.includes(order.marketId)
+        return (
+          +orderStopPrice === +rowData.price &&
+          arrayOfMarketIds.includes(order.marketId)
+        )
       }) !== -1
   }
 
@@ -168,7 +179,7 @@ export default function defaultRowRenderer({
 
   return (
     // <Fade timeout={1000} in={true}>
-    <Container
+    <div
       {...a11yProps}
       className={className}
       key={key}
@@ -182,8 +193,9 @@ export default function defaultRowRenderer({
           : needHighlightStopPrice
           ? 'rgba(68, 204, 255, 0.5)'
           : '',
-        '&:hover': {
-          backgroundColor: 'rgba(0, 0, 0, .15)',
+        cursor: 'default',
+        '&:focus': {
+          outline: 'none',
         },
         '@media (max-width: 1450px)': {
           fontSize: '1rem',
@@ -195,7 +207,7 @@ export default function defaultRowRenderer({
     >
       {columns}
       {amountForBackground && (
-        <Container
+        <div
           style={{
             position: 'absolute',
             width: '100%',
@@ -207,10 +219,22 @@ export default function defaultRowRenderer({
             borderRadius: '1px',
             top: '10%',
             left: `calc(100% - ${orderPercentage}%)`,
+            zIndex: 1,
           }}
         />
       )}
-    </Container>
+      <Container
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          // transition: 'all .1s ease-out',
+          left: `0`,
+          top: '0',
+          zIndex: 2,
+        }}
+      />
+    </div>
     // </Fade>
   )
 }

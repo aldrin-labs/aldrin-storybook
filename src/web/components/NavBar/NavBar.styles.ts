@@ -29,6 +29,7 @@ export const Nav = styled(AppBar)`
 export const StyledToolbar = styled(Toolbar)`
   border-bottom: 1px solid #e0e5ec;
   height: 100%;
+  min-height: auto;
 `
 
 // @media (max-width: 1400px) {
@@ -63,6 +64,7 @@ export const NavBarWrapper = styled(Grid)`
 `
 
 export const NavBreadcrumbTypography = styled(Typography)`
+  color: #16253d;
   text-transform: uppercase;
   border-left: 1px solid #7284a0;
   padding-left: 0.75rem;
@@ -70,6 +72,7 @@ export const NavBreadcrumbTypography = styled(Typography)`
   font-size: 1.2rem;
   line-height: 2.75rem;
   letter-spacing: 1px;
+  white-space: nowrap;
 
   @media only screen and (max-width: 1100px) {
     font-size: 9px;
