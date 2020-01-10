@@ -31,14 +31,12 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-const version = `10.5.10`
+const version = `10.5.11`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
 }
-
-
 
 const AppRaw = ({
   children,
@@ -66,17 +64,14 @@ const AppRaw = ({
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
         <CssBaseline />
-        <FontStyle/>
+        <FontStyle />
         <AppGridLayout
           showFooter={showFooter}
           isPNL={isPNL}
           isChartPage={isChartPage}
         >
           {!pageIsRegistration && (
-            <AnimatedNavBar
-              pathname={currentPage}
-              hide={fullscreen}
-            />
+            <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
           )}
           {children}
           <Footer
