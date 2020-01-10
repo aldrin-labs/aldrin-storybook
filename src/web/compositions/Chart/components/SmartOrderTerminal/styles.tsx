@@ -45,7 +45,7 @@ export const HeaderTitle = styled.span`
 `
 
 export const BlockHeader = styled(HeaderTitle)`
-  color: #7284A0;
+  color: #7284a0;
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
 `
@@ -68,6 +68,7 @@ export const TargetValue = styled(HeaderTitle)`
 
 export const TargetTitle = styled(TargetValue)`
   color: #7284a0;
+  letter-spacing: 0.1rem;
 `
 
 export const CloseHeader = styled(TerminalHeader)`
@@ -141,22 +142,34 @@ export const BeforeCharacter = styled.span`
   color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
 `
 
-export const AdditionalSettingsButton = styled(({ isActive, children, ...rest }) => <BtnCustom 
-  btnWidth="30%"
-  fontSize="1.2rem"
-  fontWeight="normal"
-  padding=".5rem 0 .4rem 0"
-  borderRadius=".8rem"
-  borderColor={isActive ? '#5C8CEA' : '#E0E5EC'}
-  btnColor={isActive ? '#fff' : '#7284A0'}
-  backgroundColor={isActive ? '#5C8CEA' : '#F2F4F6'}
-  hoverColor={'#fff'}
-  hoverBorderColor={'#5C8CEA'}
-  hoverBackground={'#5C8CEA'}
-  transition={'all .25s ease-out'}
-  textTransform="capitalize"
-  boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.3)'}
-  margin={'0 3% 0 0'}
-  {...rest}
->{children}</BtnCustom>)`
+export const AdditionalSettingsButton = styled(
+  ({ isActive, children, ...rest }) => (
+    <BtnCustom
+      btnWidth="30%"
+      height={'2.5rem'}
+      fontSize="1.2rem"
+      fontWeight="normal"
+      padding="0"
+      borderRadius=".8rem"
+      borderColor={isActive ? '#5C8CEA' : '#E0E5EC'}
+      btnColor={isActive ? '#fff' : '#7284A0'}
+      backgroundColor={isActive ? '#5C8CEA' : '#F2F4F6'}
+      hoverColor={'#fff'}
+      hoverBorderColor={'#5C8CEA'}
+      hoverBackground={'#5C8CEA'}
+      transition={'all .25s ease-out'}
+      textTransform="none"
+      boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
+      margin={'0 3% 0 0'}
+      {...rest}
+    >
+      {children}
+    </BtnCustom>
+  )
+)`
+  @media (min-width: 1921px) {
+    height: calc(2.5rem - 0.5rem);
+    font-size: 1.1rem;
+    padding-top: 0.2rem;
+  }
 `

@@ -291,7 +291,7 @@ export const SeparateInputTitle = styled.span`
   font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.1rem;
   white-space: nowrap;
 `
 

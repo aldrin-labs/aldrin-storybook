@@ -46,6 +46,7 @@ import {
   EditEntryOrderPopup,
 } from './EditOrderPopups'
 
+import HeightIcon from '@material-ui/icons/Height'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
@@ -350,9 +351,48 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     //   updateTerminalViewMode('default')
   }
 
+  setMaxAmount = () => {
+    const { entryPoint } = this.state
+
+    const { funds, marketType } = this.props
+
+    let maxAmount = 0
+
+    if (marketType === 0) {
+      maxAmount =
+        entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
+    } else if (marketType === 1) {
+      maxAmount = funds[1].quantity * entryPoint.order.leverage
+    }
+
+    const [amount, total] =
+      entryPoint.order.side === 'buy' || marketType === 1
+        ? [maxAmount / entryPoint.order.price, maxAmount]
+        : [maxAmount, maxAmount / entryPoint.order.price]
+
+    this.updateSubBlockValue(
+      'entryPoint',
+      'order',
+      'amount',
+      stripDigitPlaces(amount, marketType === 1 ? 3 : 8)
+    )
+
+    this.updateSubBlockValue(
+      'entryPoint',
+      'order',
+      'total',
+      stripDigitPlaces(total, marketType === 1 ? 2 : 8)
+    )
+
+    this.updateBlockValue(
+      'temp',
+      'initialMargin',
+      stripDigitPlaces(funds[1].quantity, 2)
+    )
+  }
+
   render() {
     const {
-      updateTerminalViewMode,
       pair,
       funds,
       marketType,
@@ -459,8 +499,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       height: '1.2rem',
                       border: 'none',
                       backgroundColor: '#036141',
-                      marginTop: '-.45rem',
+                      marginTop: '-.28rem',
                       boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
+                      transform: 'translate(-50%, -15%) !important',
                     }}
                     dotStyles={{
                       border: 'none',
@@ -477,7 +518,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               )}
             </TerminalHeader>
             <TerminalHeader
-              width={'31%'}
+              width={'32.5%'}
               margin={'0 1%'}
               padding={'0rem 1.5rem'}
               justify={'center'}
@@ -494,7 +535,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             </TerminalHeader>
             <TerminalHeader
               key={'takeProfit'}
-              width={'31%'}
+              width={'32.5%'}
               padding={'0rem 1.5rem'}
               justify={'center'}
             >
@@ -507,13 +548,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 }
               /> */}
             </TerminalHeader>
-            <CloseHeader
+            {/* <CloseHeader
               key={'buttonToggleTerminalView'}
               padding={'.55rem .5rem'}
               onClick={() => updateTerminalViewMode('default')}
             >
               <StyledZoomIcon />
-            </CloseHeader>
+            </CloseHeader> */}
           </TerminalHeaders>
 
           <TerminalBlocksContainer xs={12} container item>
@@ -524,7 +565,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 firstHalfText={'buy'}
                 secondHalfText={'sell'}
                 buttonHeight={'2.5rem'}
-                containerStyles={{ width: '100%', paddingBottom: '.4rem' }}
+                containerStyles={{ width: '100%', paddingBottom: '.6rem' }}
                 firstHalfStyleProperties={GreenSwitcherStyles}
                 secondHalfStyleProperties={RedSwitcherStyles}
                 firstHalfIsActive={entryPoint.order.side === 'buy'}
@@ -543,17 +584,25 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                     let amount =
                       newSide === 'buy'
-                        ? (
+                        ? stripDigitPlaces(
                             ((amountPercentage / 100) * newMaxAmount) /
-                            entryPoint.order.price
-                          ).toFixed(8)
-                        : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+                              entryPoint.order.price,
+                            marketType === 1 ? 3 : 8
+                          )
+                        : stripDigitPlaces(
+                            (amountPercentage / 100) * newMaxAmount,
+                            marketType === 1 ? 3 : 8
+                          )
 
                     if (!+amount || +amount === NaN) {
                       amount = 0
                     }
 
-                    const total = (amount * entryPoint.order.price).toFixed(8)
+                    const total = stripDigitPlaces(
+                      amount * entryPoint.order.price,
+                      marketType === 1 ? 2 : 8
+                    )
+
                     this.updateSubBlockValue(
                       'entryPoint',
                       'order',
@@ -582,7 +631,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 firstHalfText={'limit'}
                 secondHalfText={'market'}
                 buttonHeight={'2.5rem'}
-                containerStyles={{ width: '100%' }}
+                containerStyles={{ width: '100%', padding: '.6rem 0' }}
                 firstHalfStyleProperties={BlueSwitcherStyles}
                 secondHalfStyleProperties={BlueSwitcherStyles}
                 firstHalfIsActive={entryPoint.order.type === 'limit'}
@@ -594,21 +643,42 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     getSecondValueFromFirst(entryPoint.order.type)
                   )
 
-                  if (entryPoint.trailing.isTrailingOn) {
+                  if (
+                    getSecondValueFromFirst(entryPoint.order.type) === 'market'
+                  ) {
                     this.updateSubBlockValue(
                       'entryPoint',
-                      'trailing',
-                      'isTrailingOn',
-                      getSecondValueFromFirst(entryPoint.order.type) !== 'limit'
+                      'order',
+                      'price',
+                      this.props.price
+                    )
+
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'total',
+                      stripDigitPlaces(
+                        this.props.price * entryPoint.order.amount,
+                        marketType === 1 ? 2 : 8
+                      )
                     )
                   }
+
+                  // if (entryPoint.trailing.isTrailingOn) {
+                  //   this.updateSubBlockValue(
+                  //     'entryPoint',
+                  //     'trailing',
+                  //     'isTrailingOn',
+                  //     getSecondValueFromFirst(entryPoint.order.type) !== 'limit'
+                  //   )
+                  // }
                 }}
               />
 
               <div>
                 <InputRowContainer
                   justify="flex-start"
-                  padding={'.8rem 0 1.2rem 0'}
+                  padding={'.6rem 0 1.2rem 0'}
                 >
                   <AdditionalSettingsButton
                     isActive={entryPoint.trailing.isTrailingOn}
@@ -621,7 +691,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }}
                   >
-                    trailing {entryPoint.order.side}
+                    Trailing {entryPoint.order.side}
                   </AdditionalSettingsButton>
                   {/* <SwitcherContainer>
                     <GreenSwitcher
@@ -639,7 +709,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
                   </SwitcherContainer> */}
                 </InputRowContainer>
-                <FormInputContainer title={`price (${pair[1]})`}>
+                <FormInputContainer
+                  padding={'0 0 1.2rem 0'}
+                  title={`price (${pair[1]})`}
+                >
                   <Input
                     symbol={pair[1]}
                     type={
@@ -658,7 +731,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                     showErrors={showErrors}
                     isValid={this.validateField(true, entryPoint.order.price)}
-                    isDisabled={
+                    disabled={
                       entryPoint.order.type === 'market' &&
                       !entryPoint.trailing.isTrailingOn
                     }
@@ -676,151 +749,202 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'total',
                         stripDigitPlaces(
                           e.target.value * entryPoint.order.amount,
-                          8
+                          marketType === 1 ? 2 : 8
                         )
                       )
 
-                      this.setState({
-                        temp: {
-                          initialMargin: stripDigitPlaces(
-                            (e.target.value * entryPoint.order.amount) /
-                              entryPoint.order.leverage,
-                            8
-                          ),
-                        },
-                      })
+                      this.updateBlockValue(
+                        'temp',
+                        'initialMargin',
+                        stripDigitPlaces(
+                          (e.target.value * entryPoint.order.amount) /
+                            entryPoint.order.leverage,
+                          2
+                        )
+                      )
                     }}
                   />
                 </FormInputContainer>
 
                 {entryPoint.trailing.isTrailingOn && (
-                  <InputRowContainer>
-                    <FormInputContainer title={'trailing deviation (%)'}>
-                      <InputRowContainer>
-                        <Input
-                          padding={'0 .8rem 0 0'}
-                          width={'calc(50%)'}
-                          symbol={'%'}
-                          value={entryPoint.trailing.deviationPercentage}
-                          showErrors={showErrors}
-                          isValid={this.validateField(
-                            entryPoint.trailing.isTrailingOn,
-                            entryPoint.trailing.deviationPercentage
-                          )}
-                          onChange={(e) => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'trailing',
-                              'deviationPercentage',
-                              e.target.value
-                            )
-                          }}
-                        />
+                  <FormInputContainer title={'trailing deviation (%)'}>
+                    <InputRowContainer>
+                      <Input
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(50%)'}
+                        symbol={'%'}
+                        value={entryPoint.trailing.deviationPercentage}
+                        showErrors={showErrors}
+                        isValid={this.validateField(
+                          entryPoint.trailing.isTrailingOn,
+                          entryPoint.trailing.deviationPercentage
+                        )}
+                        onChange={(e) => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'trailing',
+                            'deviationPercentage',
+                            e.target.value
+                          )
+                        }}
+                      />
 
-                        <BlueSlider
-                          disabled={!entryPoint.trailing.isTrailingOn}
-                          value={entryPoint.trailing.deviationPercentage}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'trailing',
-                              'deviationPercentage',
-                              value
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  </InputRowContainer>
+                      <BlueSlider
+                        disabled={!entryPoint.trailing.isTrailingOn}
+                        value={entryPoint.trailing.deviationPercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'trailing',
+                            'deviationPercentage',
+                            value
+                          )
+                        }}
+                      />
+                    </InputRowContainer>
+                  </FormInputContainer>
                 )}
 
                 <InputRowContainer>
-                  <FormInputContainer title={`amount (${pair[0]})`}>
-                    <Input
-                      type={'text'}
-                      pattern={
-                        marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
-                      }
-                      symbol={pair[0]}
-                      value={entryPoint.order.amount}
-                      showErrors={showErrors}
-                      isValid={this.validateField(
-                        true,
-                        +entryPoint.order.amount
-                      )}
-                      onChange={(e) => {
-                        const newTotal = e.target.value * entryPoint.order.price
-                        const newAmount =
-                          marketType === 0 ? e.target.value : e.target.value
+                  <div style={{ width: '47%' }}>
+                    <FormInputContainer
+                      needLine={false}
+                      needRightValue={true}
+                      rightValue={`${
+                        entryPoint.order.side === 'buy' || marketType === 1
+                          ? stripDigitPlaces(
+                              maxAmount / entryPoint.order.price,
+                              marketType === 1 ? 3 : 8
+                            )
+                          : stripDigitPlaces(
+                              maxAmount,
+                              marketType === 1 ? 3 : 8
+                            )
+                      } ${pair[1]}`}
+                      onValueClick={this.setMaxAmount}
+                      title={`${
+                        marketType === 1 ? 'order quantity' : 'amount'
+                      } (${pair[0]})`}
+                    >
+                      <Input
+                        type={'text'}
+                        pattern={
+                          marketType === 0
+                            ? '[0-9]+.[0-9]{8}'
+                            : '[0-9]+.[0-9]{3}'
+                        }
+                        symbol={pair[0]}
+                        value={entryPoint.order.amount}
+                        showErrors={showErrors}
+                        isValid={this.validateField(
+                          true,
+                          +entryPoint.order.amount
+                        )}
+                        onChange={(e) => {
+                          const newTotal =
+                            e.target.value * entryPoint.order.price
+                          const newAmount =
+                            marketType === 0 ? e.target.value : e.target.value
 
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'amount',
-                          newAmount
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          newTotal ? newTotal.toFixed(8) : 0
-                        )
-
-                        this.setState({
-                          temp: {
-                            initialMargin: stripDigitPlaces(
-                              (newTotal || 0) / entryPoint.order.leverage,
-                              8
-                            ),
-                          },
-                        })
-                      }}
-                    />
-                  </FormInputContainer>
-                </InputRowContainer>
-
-                <InputRowContainer>
-                  <FormInputContainer title={`total (${pair[1]})`}>
-                    <Input
-                      symbol={pair[1]}
-                      value={entryPoint.order.total}
-                      isDisabled={
-                        entryPoint.trailing.isTrailingOn ||
-                        entryPoint.order.type === 'market'
-                      }
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          stripDigitPlaces(e.target.value, 8)
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'amount',
-                          (+(e.target.value / entryPoint.order.price)).toFixed(
-                            8
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'amount',
+                            newAmount
                           )
-                        )
 
-                        this.setState({
-                          temp: {
-                            initialMargin: stripDigitPlaces(
-                              e.target.value / entryPoint.order.leverage,
-                              8
-                            ),
-                          },
-                        })
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'total',
+                            stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
+                          )
+
+                          this.updateBlockValue(
+                            'temp',
+                            'initialMargin',
+                            stripDigitPlaces(
+                              (newTotal || 0) / entryPoint.order.leverage,
+                              2
+                            )
+                          )
+                        }}
+                      />
+                    </FormInputContainer>
+                  </div>
+                  <div
+                    style={{
+                      width: '6%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <HeightIcon
+                      style={{
+                        color: '#7284A0',
+                        transform: 'rotate(-90deg) translateX(-30%)',
                       }}
                     />
-                  </FormInputContainer>
+                  </div>
+                  <div style={{ width: '47%' }}>
+                    <FormInputContainer
+                      needLine={false}
+                      needRightValue={true}
+                      rightValue={`${
+                        entryPoint.order.side === 'buy' || marketType === 1
+                          ? stripDigitPlaces(
+                              maxAmount,
+                              marketType === 1 ? 0 : 2
+                            )
+                          : stripDigitPlaces(
+                              maxAmount * entryPoint.order.price,
+                              marketType === 1 ? 0 : 2
+                            )
+                      } ${pair[1]}`}
+                      onValueClick={this.setMaxAmount}
+                      title={`total (${pair[1]})`}
+                    >
+                      <Input
+                        symbol={pair[1]}
+                        value={entryPoint.order.total}
+                        disabled={
+                          entryPoint.trailing.isTrailingOn ||
+                          entryPoint.order.type === 'market'
+                        }
+                        onChange={(e) => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'total',
+                            e.target.value
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'amount',
+                            stripDigitPlaces(
+                              e.target.value / entryPoint.order.price,
+                              marketType === 1 ? 3 : 8
+                            )
+                          )
+
+                          this.updateBlockValue(
+                            'temp',
+                            'initialMargin',
+                            stripDigitPlaces(
+                              e.target.value / entryPoint.order.leverage,
+                              2
+                            )
+                          )
+                        }}
+                      />
+                    </FormInputContainer>
+                  </div>
                 </InputRowContainer>
 
                 <InputRowContainer>
@@ -847,10 +971,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           ? newValue
                           : newValue * entryPoint.order.price
 
-                      const fixedAmount =
-                        marketType === 0
-                          ? newAmount.toFixed(8)
-                          : newAmount.toFixed(3)
+                      const newMargin = stripDigitPlaces(
+                        (newTotal || 0) / entryPoint.order.leverage,
+                        2
+                      )
+
+                      const fixedAmount = stripDigitPlaces(
+                        newAmount,
+                        marketType === 1 ? 3 : 8
+                      )
 
                       this.updateSubBlockValue(
                         'entryPoint',
@@ -863,28 +992,29 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'entryPoint',
                         'order',
                         'total',
-                        newTotal.toFixed(8)
+                        stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
                       )
 
-                      this.setState({
-                        temp: {
-                          initialMargin: stripDigitPlaces(
-                            (newTotal || 0) / entryPoint.order.leverage,
-                            8
-                          ),
-                        },
-                      })
+                      this.updateBlockValue('temp', 'initialMargin', newMargin)
                     }}
                   />
                 </InputRowContainer>
 
                 {marketType === 1 && (
                   <InputRowContainer>
-                    <FormInputContainer title="margin">
+                    <FormInputContainer
+                      needLine={false}
+                      needRightValue={true}
+                      rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
+                        pair[1]
+                      }`}
+                      onValueClick={this.setMaxAmount}
+                      title={`cost / initial margin (${pair[1]})`}
+                    >
                       <Input
                         symbol={pair[1]}
                         value={this.state.temp.initialMargin}
-                        isDisabled={
+                        disabled={
                           entryPoint.trailing.isTrailingOn ||
                           entryPoint.order.type === 'market'
                         }
@@ -894,16 +1024,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             inputInitialMargin * entryPoint.order.leverage
                           const newAmount = newTotal / entryPoint.order.price
 
-                          const fixedAmount =
-                            marketType === 0
-                              ? newAmount.toFixed(8)
-                              : newAmount.toFixed(3)
+                          const fixedAmount = stripDigitPlaces(
+                            newAmount,
+                            marketType === 1 ? 3 : 8
+                          )
 
                           this.updateSubBlockValue(
                             'entryPoint',
                             'order',
                             'total',
-                            newTotal.toFixed(8)
+                            stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
                           )
 
                           this.updateSubBlockValue(
@@ -913,11 +1043,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             fixedAmount
                           )
 
-                          this.setState({
-                            temp: {
-                              initialMargin: inputInitialMargin,
-                            },
-                          })
+                          this.updateBlockValue(
+                            'temp',
+                            'initialMargin',
+                            inputInitialMargin
+                          )
                         }}
                       />
                     </FormInputContainer>
@@ -1002,7 +1132,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
             {/* STOP LOSS */}
             <TerminalBlock
-              width={'calc(31% + 1%)'}
+              width={'calc(32.5% + 1%)'}
               style={{ overflow: 'hidden' }}
             >
               <InputRowContainer justify="center">
@@ -1026,7 +1156,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               <div>
                 <InputRowContainer
                   justify="flex-start"
-                  padding={'.8rem 0 1.2rem 0'}
+                  padding={'.6rem 0 1.2rem 0'}
                 >
                   <AdditionalSettingsButton
                     isActive={stopLoss.timeout.isTimeoutOn}
@@ -1039,7 +1169,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }
                   >
-                    timeout
+                    Timeout
                   </AdditionalSettingsButton>
 
                   <AdditionalSettingsButton
@@ -1053,51 +1183,49 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }
                   >
-                    forced stop
+                    Forced stop
                   </AdditionalSettingsButton>
                 </InputRowContainer>
 
-                <InputRowContainer padding={'0 0 1.6rem 0'}>
-                  <FormInputContainer title={'loss (%)'}>
-                    <InputRowContainer>
-                      <Input
-                        needCharacter
-                        beforeSymbol={'-'}
-                        padding={'0 .8rem 0 0'}
-                        width={'calc(50%)'}
-                        symbol={'%'}
-                        value={stopLoss.pricePercentage}
-                        showErrors={showErrors && stopLoss.isStopLossOn}
-                        isValid={this.validateField(
-                          true,
-                          stopLoss.pricePercentage
-                        )}
-                        onChange={(e) => {
-                          this.updateBlockValue(
-                            'stopLoss',
-                            'pricePercentage',
-                            e.target.value
-                          )
-                        }}
-                      />
+                <FormInputContainer title={'loss (%)'}>
+                  <InputRowContainer>
+                    <Input
+                      needCharacter
+                      beforeSymbol={'-'}
+                      padding={'0 .8rem 0 0'}
+                      width={'calc(50%)'}
+                      symbol={'%'}
+                      value={stopLoss.pricePercentage}
+                      showErrors={showErrors && stopLoss.isStopLossOn}
+                      isValid={this.validateField(
+                        true,
+                        stopLoss.pricePercentage
+                      )}
+                      onChange={(e) => {
+                        this.updateBlockValue(
+                          'stopLoss',
+                          'pricePercentage',
+                          e.target.value
+                        )
+                      }}
+                    />
 
-                      <BlueSlider
-                        value={stopLoss.pricePercentage}
-                        sliderContainerStyles={{
-                          width: '50%',
-                          margin: '0 .8rem 0 .8rem',
-                        }}
-                        onChange={(value) => {
-                          this.updateBlockValue(
-                            'stopLoss',
-                            'pricePercentage',
-                            value
-                          )
-                        }}
-                      />
-                    </InputRowContainer>
-                  </FormInputContainer>
-                </InputRowContainer>
+                    <BlueSlider
+                      value={stopLoss.pricePercentage}
+                      sliderContainerStyles={{
+                        width: '50%',
+                        margin: '0 .8rem 0 .8rem',
+                      }}
+                      onChange={(value) => {
+                        this.updateBlockValue(
+                          'stopLoss',
+                          'pricePercentage',
+                          value
+                        )
+                      }}
+                    />
+                  </InputRowContainer>
+                </FormInputContainer>
 
                 {stopLoss.timeout.isTimeoutOn && (
                   <>
@@ -1141,7 +1269,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               borderTopRightRadius: 0,
                               borderBottomRightRadius: 0,
                             }}
-                            isDisabled={!stopLoss.timeout.whenLossOn}
+                            disabled={!stopLoss.timeout.whenLossOn}
                           />
                           <Select
                             width={'calc(30% - .4rem)'}
@@ -1204,7 +1332,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               borderTopRightRadius: 0,
                               borderBottomRightRadius: 0,
                             }}
-                            isDisabled={!stopLoss.timeout.whenLossableOn}
+                            disabled={!stopLoss.timeout.whenLossableOn}
                           />
                           <Select
                             width={'calc(30% - .4rem)'}
@@ -1301,7 +1429,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               )}
               <InputRowContainer
                 style={{
-                  width: 'calc(100% - 2.2rem)',
+                  width: 'calc(100%)',
                   margin: '0 auto',
                   position: 'relative',
                   bottom: '0',
@@ -1325,7 +1453,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             </TerminalBlock>
 
             {/* TAKE A PROFIT */}
-            <TerminalBlock width={'calc(31% + 1%)'} borderRight="0">
+            <TerminalBlock width={'calc(33%)'} borderRight="0">
               <InputRowContainer justify="center">
                 <CustomSwitcher
                   firstHalfText={'limit'}
@@ -1341,22 +1469,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       'type',
                       getSecondValueFromFirst(takeProfit.type)
                     )
-
-                    // this.updateSubBlockValue(
-                    //   'takeProfit',
-                    //   'trailingTAP',
-                    //   'isTrailingOn',
-                    //   false
-                    // )
                   }}
                 />
               </InputRowContainer>
               <div>
                 <InputRowContainer
                   justify="flex-start"
-                  padding={'.8rem 0 1.2rem 0'}
+                  padding={'.6rem 0 1.2rem 0'}
                 >
                   <AdditionalSettingsButton
+                    style={{ fontSize: '1rem' }}
                     isActive={takeProfit.trailingTAP.isTrailingOn}
                     onClick={() => {
                       this.updateSubBlockValue(
@@ -1376,7 +1498,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       this.updateBlockValue('takeProfit', 'type', 'market')
                     }}
                   >
-                    trailing take a profit
+                    Trailing take a profit
                   </AdditionalSettingsButton>
 
                   <AdditionalSettingsButton
@@ -1397,7 +1519,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }}
                   >
-                    split targets
+                    Split targets
                   </AdditionalSettingsButton>
 
                   <AdditionalSettingsButton
@@ -1411,169 +1533,161 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }}
                   >
-                    timeout
+                    Timeout
                   </AdditionalSettingsButton>
                 </InputRowContainer>
 
                 {!takeProfit.trailingTAP.isTrailingOn && (
-                  <InputRowContainer>
-                    <FormInputContainer title={'profit (%)'}>
-                      <InputRowContainer>
-                        <Input
-                          needCharacter
-                          beforeSymbol={'+'}
-                          padding={'0 .8rem 0 0'}
-                          width={'calc(50%)'}
-                          symbol={'%'}
-                          value={takeProfit.pricePercentage}
-                          showErrors={
-                            showErrors &&
-                            takeProfit.isTakeProfitOn &&
-                            !takeProfit.splitTargets.isSplitTargetsOn &&
-                            !takeProfit.trailingTAP.isTrailingOn
-                          }
-                          isValid={this.validateField(
-                            true,
-                            takeProfit.pricePercentage
-                          )}
-                          onChange={(e) => {
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'pricePercentage',
-                              e.target.value
-                            )
-                          }}
-                        />
+                  <FormInputContainer title={'profit (%)'}>
+                    <InputRowContainer>
+                      <Input
+                        needCharacter
+                        beforeSymbol={'+'}
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(50%)'}
+                        symbol={'%'}
+                        value={takeProfit.pricePercentage}
+                        showErrors={
+                          showErrors &&
+                          takeProfit.isTakeProfitOn &&
+                          !takeProfit.splitTargets.isSplitTargetsOn &&
+                          !takeProfit.trailingTAP.isTrailingOn
+                        }
+                        isValid={this.validateField(
+                          true,
+                          takeProfit.pricePercentage
+                        )}
+                        onChange={(e) => {
+                          this.updateBlockValue(
+                            'takeProfit',
+                            'pricePercentage',
+                            e.target.value
+                          )
+                        }}
+                      />
 
-                        <BlueSlider
-                          value={takeProfit.pricePercentage}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'pricePercentage',
-                              value
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  </InputRowContainer>
+                      <BlueSlider
+                        value={takeProfit.pricePercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.updateBlockValue(
+                            'takeProfit',
+                            'pricePercentage',
+                            value
+                          )
+                        }}
+                      />
+                    </InputRowContainer>
+                  </FormInputContainer>
                 )}
                 {takeProfit.trailingTAP.isTrailingOn && (
-                  <InputRowContainer>
-                    <FormInputContainer title={'trailing deviation (%)'}>
-                      <InputRowContainer>
-                        <Input
-                          padding={'0 .8rem 0 0'}
-                          width={'calc(50%)'}
-                          symbol={'%'}
-                          value={takeProfit.trailingTAP.deviationPercentage}
-                          showErrors={showErrors && takeProfit.isTakeProfitOn}
-                          isValid={this.validateField(
-                            takeProfit.trailingTAP.isTrailingOn,
-                            takeProfit.trailingTAP.deviationPercentage
-                          )}
-                          onChange={(e) => {
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'deviationPercentage',
-                              e.target.value
-                            )
-                          }}
-                        />
+                  <FormInputContainer title={'trailing deviation (%)'}>
+                    <InputRowContainer>
+                      <Input
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(50%)'}
+                        symbol={'%'}
+                        value={takeProfit.trailingTAP.deviationPercentage}
+                        showErrors={showErrors && takeProfit.isTakeProfitOn}
+                        isValid={this.validateField(
+                          takeProfit.trailingTAP.isTrailingOn,
+                          takeProfit.trailingTAP.deviationPercentage
+                        )}
+                        onChange={(e) => {
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'deviationPercentage',
+                            e.target.value
+                          )
+                        }}
+                      />
 
-                        <BlueSlider
-                          value={takeProfit.trailingTAP.deviationPercentage}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'deviationPercentage',
-                              value
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  </InputRowContainer>
+                      <BlueSlider
+                        value={takeProfit.trailingTAP.deviationPercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'deviationPercentage',
+                            value
+                          )
+                        }}
+                      />
+                    </InputRowContainer>
+                  </FormInputContainer>
                 )}
 
                 {takeProfit.splitTargets.isSplitTargetsOn && (
                   <>
-                    <InputRowContainer>
-                      <FormInputContainer title={'amount (%)'}>
-                        <InputRowContainer>
-                          <Input
-                            padding={'0 .8rem 0 0'}
-                            width={'calc(50%)'}
-                            symbol={'%'}
-                            value={takeProfit.splitTargets.volumePercentage}
-                            onChange={(e) => {
-                              const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                                (prev, curr) => prev + curr.quantity,
-                                0
-                              )
+                    <FormInputContainer title={'amount (%)'}>
+                      <InputRowContainer>
+                        <Input
+                          padding={'0 .8rem 0 0'}
+                          width={'calc(50%)'}
+                          symbol={'%'}
+                          value={takeProfit.splitTargets.volumePercentage}
+                          onChange={(e) => {
+                            const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+                              (prev, curr) => prev + curr.quantity,
+                              0
+                            )
 
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'splitTargets',
-                                'volumePercentage',
-                                occupiedVolume + e.target.value < 100
-                                  ? e.target.value
-                                  : 100 - occupiedVolume
-                              )
-                            }}
-                          />
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'splitTargets',
+                              'volumePercentage',
+                              occupiedVolume + e.target.value < 100
+                                ? e.target.value
+                                : 100 - occupiedVolume
+                            )
+                          }}
+                        />
 
-                          <BlueSlider
-                            value={takeProfit.splitTargets.volumePercentage}
-                            sliderContainerStyles={{
-                              width: '50%',
-                              margin: '0 .8rem 0 .8rem',
-                            }}
-                            onChange={(value) => {
-                              const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                                (prev, curr) => prev + curr.quantity,
-                                0
-                              )
+                        <BlueSlider
+                          value={takeProfit.splitTargets.volumePercentage}
+                          sliderContainerStyles={{
+                            width: '50%',
+                            margin: '0 .8rem 0 .8rem',
+                          }}
+                          onChange={(value) => {
+                            const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+                              (prev, curr) => prev + curr.quantity,
+                              0
+                            )
 
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'splitTargets',
-                                'volumePercentage',
-                                occupiedVolume + value < 100
-                                  ? value
-                                  : 100 - occupiedVolume
-                              )
-                            }}
-                          />
-                        </InputRowContainer>
-                      </FormInputContainer>
-                    </InputRowContainer>
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'splitTargets',
+                              'volumePercentage',
+                              occupiedVolume + value < 100
+                                ? value
+                                : 100 - occupiedVolume
+                            )
+                          }}
+                        />
+                      </InputRowContainer>
+                    </FormInputContainer>
 
-                    <InputRowContainer
-                      padding="0 0 .4rem 0"
-                      style={{
-                        borderBottom: '.1rem solid #e0e5ec',
-                      }}
-                    >
+                    <InputRowContainer padding="0 0 .6rem 0">
                       <BtnCustom
-                        btnColor={'#0B1FD1'}
+                        btnColor={'#fff'}
+                        backgroundColor={'#F29C38'}
+                        borderColor={'#F29C38'}
                         btnWidth={'100%'}
                         height={'auto'}
                         borderRadius={'1rem'}
                         margin={'0'}
                         padding={'.1rem 0'}
                         fontSize={'1rem'}
+                        boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
                         letterSpacing={'.05rem'}
                         onClick={this.addTarget}
                       >
@@ -1582,11 +1696,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </InputRowContainer>
 
                     <InputRowContainer
-                      padding=".4rem 1rem 1.2rem .4rem"
+                      padding=".6rem 1rem 1.2rem .4rem"
                       direction="column"
                     >
                       <InputRowContainer padding=".2rem .5rem">
-                        <TargetTitle style={{ width: '50%' }}>
+                        <TargetTitle
+                          style={{ width: '50%', paddingLeft: '2rem' }}
+                        >
                           price
                         </TargetTitle>
                         <TargetTitle style={{ width: '50%' }}>
@@ -1596,15 +1712,26 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <div
                         style={{
                           width: '100%',
+                          background: '#F9FBFD',
+                          borderRadius: '.8rem',
+                          border: '.1rem solid #e0e5ec',
                         }}
                       >
                         {takeProfit.splitTargets.targets.map((target, i) => (
                           <InputRowContainer
                             key={`${target.price}${target.quantity}${i}`}
                             padding=".2rem .5rem"
-                            style={{ borderBottom: '.1rem solid #e0e5ec' }}
+                            style={
+                              takeProfit.splitTargets.targets.length - 1 !== i
+                                ? {
+                                    borderBottom: '.1rem solid #e0e5ec',
+                                  }
+                                : {}
+                            }
                           >
-                            <TargetValue style={{ width: '50%' }}>
+                            <TargetValue
+                              style={{ width: '50%', paddingLeft: '2rem' }}
+                            >
                               +{target.price}%
                             </TargetValue>
                             <TargetValue style={{ width: '40%' }}>
@@ -1667,7 +1794,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               borderTopRightRadius: 0,
                               borderBottomRightRadius: 0,
                             }}
-                            isDisabled={!takeProfit.timeout.whenProfitOn}
+                            disabled={!takeProfit.timeout.whenProfitOn}
                           />
                           <Select
                             width={'calc(30% - .4rem)'}
@@ -1730,7 +1857,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               borderTopRightRadius: 0,
                               borderBottomRightRadius: 0,
                             }}
-                            isDisabled={!takeProfit.timeout.whenProfitableOn}
+                            disabled={!takeProfit.timeout.whenProfitableOn}
                           />
                           <Select
                             width={'calc(30% - .4rem)'}

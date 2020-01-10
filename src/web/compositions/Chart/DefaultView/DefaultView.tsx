@@ -25,7 +25,7 @@ const TerminalContainer = ({ isDefaultTerminalViewMode, children }) =>
       {children}
     </TablesBlockWrapper>
   ) : (
-    <SmartTerminalContainer xs={11} item container>
+    <SmartTerminalContainer xs={12} item container>
       {children}
     </SmartTerminalContainer>
   )
@@ -220,18 +220,20 @@ export const DefaultView = (props: any) => {
               </CustomCard>
             </TradingTabelContainer>
           )}
-          <BalancesContainer
-            item
-            xs={1}
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-          >
-            <Balances
-              pair={currencyPair.split('_')}
-              selectedKey={selectedKey}
-              marketType={marketType}
-              showFuturesTransfer={showFuturesTransfer}
-            />
-          </BalancesContainer>
+          {isDefaultTerminalViewMode && (
+            <BalancesContainer
+              item
+              xs={1}
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            >
+              <Balances
+                pair={currencyPair.split('_')}
+                selectedKey={selectedKey}
+                marketType={marketType}
+                showFuturesTransfer={showFuturesTransfer}
+              />
+            </BalancesContainer>
+          )}
 
           <TerminalContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}

@@ -105,24 +105,28 @@ export const Select = ({
 export const FormInputContainer = ({
   title,
   children,
+  padding,
+  needLine = true,
+  needRightValue = false,
+  rightValue = '',
+  onValueClick = () => {},
 }: {
   title: string
   children: ReactNode
+  padding?: string
+  needLine?: boolean
+  needRightValue?: boolean
+  rightValue?: string
+  onValueClick?: any
 }) => {
   return (
-    <InputRowContainer direction="column">
+    <InputRowContainer padding={padding} direction="column">
       <TradeInputHeader
         title={title}
-        needLine={true}
-        // needRightValue={true}
-        // rightValue={`${maxSpotAmount} ${pair[0]}`}
-        // onValueClick={() =>
-        //   this.onAmountChange({
-        //     target: {
-        //       value: maxSpotAmount,
-        //     },
-        //   })
-        // }
+        needLine={needLine}
+        needRightValue={needRightValue}
+        rightValue={rightValue}
+        onValueClick={onValueClick}
       />
       {children}
     </InputRowContainer>
