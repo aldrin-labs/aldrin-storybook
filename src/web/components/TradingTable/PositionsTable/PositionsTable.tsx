@@ -135,9 +135,10 @@ class PositionsTable extends React.PureComponent {
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.getPrice === that.state.marketPrice ) return
+          if (data.loading || data.data.getPrice === that.state.marketPrice)
+            return
           that.setState({ marketPrice: data.data.getPrice })
-        }
+        },
       })
 
     // this.subscription = client
@@ -215,7 +216,7 @@ class PositionsTable extends React.PureComponent {
       })
       .subscribe({
         next: async (data) => {
-          if (data.data.getActivePositions.length === 0) return
+          if (!data.data || data.data.getActivePositions.length === 0) return
 
           const orderData =
             data.data.getActivePositions[
@@ -246,9 +247,9 @@ class PositionsTable extends React.PureComponent {
               getActivePositions: positionData.getActivePositions.filter(
                 (order) =>
                   !(
-                    (order._id === '0' &&
-                      currentPosition.positionAmt === order.positionAmt &&
-                      order.symbol === that.props.currencyPair)
+                    order._id === '0' &&
+                    currentPosition.positionAmt === order.positionAmt &&
+                    order.symbol === that.props.currencyPair
                   )
               ),
             },

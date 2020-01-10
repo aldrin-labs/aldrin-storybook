@@ -168,39 +168,37 @@ export const TradeBlock = styled(BalanceGrid)`
 
 export const TradeInput = styled.input`
   position: relative;
-  bottom: .2rem;
+  bottom: 0.2rem;
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
     props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
   border-radius: 4px;
-  box-shadow: inset 0px 0px .2rem rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
   margin-top: 0.2rem;
   color: #16253d;
   background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
-  font-size: 1.1rem;
-  
+  font-size: 1.3rem;
+
   font-weight: bold;
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};
   outline: none;
-  padding-right: 5rem;
-
-  &::after {
-    content: '${(props) => props.text}';
-    position: absolute;
-    right: 20px;
-    top: 50%;
-  }
+  padding-right: ${(props) => (props.needPadding ? '4rem' : '0')};
 
   &::placeholder {
-    color: #ABBAD1;
+    color: #abbad1;
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 `
 
 export const TradeSelect = styled.select`
   position: relative;
-  bottom: 0.2rem;
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
@@ -226,13 +224,13 @@ export const InputWrapper = styled.div`
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
   top: 50%;
-  right: ${({ right }: { right: string }) => right || '20px'};
+  right: ${({ right }: { right?: string }) => right || '1rem'};
   transform: translateY(-50%);
+  text-transform: uppercase;
+  z-index: 2;
 `
 
-export const UpdatedCoin = styled(Coin)`
-  top: 49.5%;
-`
+export const UpdatedCoin = styled(Coin)``
 // percentages
 
 export const PercentageGrid = styled(Grid)`
@@ -301,4 +299,12 @@ export const SeparateInputTitle = styled.span`
 export const BlueInputTitle = styled(SeparateInputTitle)`
   color: #5c8cea;
   cursor: pointer;
+`
+
+export const AbsoluteInputTitle = styled(Coin)`
+  left: 1rem;
+  color: #16253d;
+  font-size: 0.9rem;
+  width: 0;
+  white-space: nowrap;
 `

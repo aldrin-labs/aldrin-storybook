@@ -158,6 +158,7 @@ export const Balances = ({
           container
           xs={12}
           direction="column"
+          wrap={'nowrap'}
           style={{ height: 'calc(100% - 3rem)', padding: '0 .3rem' }}
         >
           {isSPOTMarket ? (

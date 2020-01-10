@@ -48,12 +48,17 @@ class LoginClassComponent extends React.Component<Props> {
 
     return (
       <SWrapper className="LoginButton">
-        <Grow in={!loginStatus && !isLoginPage} unmountOnExit={true} mountOnEnter={true}>
+        <Grow
+          in={!loginStatus && !isLoginPage}
+          unmountOnExit={true}
+          mountOnEnter={true}
+        >
           <Button
             color="secondary"
             variant="contained"
             onClick={this.hangleGoToLoginPage}
             className="loginButton"
+            style={{ padding: '1px 16px' }}
           >
             Log in / Sign Up
           </Button>

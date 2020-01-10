@@ -31,6 +31,7 @@ import {
   TradeInput,
   BlueInputTitle,
   SeparateInputTitle,
+  AbsoluteInputTitle,
 } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
 import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
@@ -65,6 +66,63 @@ const TradeInputContainer = ({
   )
 }
 
+const TradeInputHeader = ({
+  title = 'Input',
+  padding = '0 0 .8rem 0',
+  needLine = true,
+  needRightValue = false,
+  rightValue = 'Value',
+  onValueClick = () => {},
+}) => {
+  return (
+    <InputRowContainer
+      justify={needRightValue ? 'space-between' : 'flex-start'}
+      padding={padding}
+    >
+      <SeparateInputTitle>{title}</SeparateInputTitle>
+      {needLine && <Line />}
+      {needRightValue && (
+        <BlueInputTitle onClick={() => onValueClick()}>
+          {rightValue}
+        </BlueInputTitle>
+      )}
+    </InputRowContainer>
+  )
+}
+
+const TradeInputContent = ({
+  isValid = true,
+  coinText = '',
+  value = '',
+  type = 'number',
+  pattern = '',
+  step = '',
+  padding = '0',
+  textAlign = 'right',
+  onChange = () => {},
+  needTitle = false,
+  title = '',
+  disabled = false,
+}) => {
+  return (
+    <InputRowContainer padding={padding} style={{ position: 'relative' }}>
+      {needTitle && <AbsoluteInputTitle>{title}</AbsoluteInputTitle>}
+      <TradeInput
+        align={textAlign}
+        type={type}
+        pattern={pattern}
+        step={step}
+        isValid={isValid}
+        value={value}
+        disabled={disabled}
+        onChange={onChange}
+        needPadding={coinText !== ''}
+      />
+      <UpdatedCoin>{coinText}</UpdatedCoin>
+    </InputRowContainer>
+  )
+}
+
 // function is removing all decimals after set number without rounding
 const toFixedTrunc = (value, n) => {
   const v = value.toString().split('.')
@@ -86,13 +144,17 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     if (prevProps.priceType !== this.props.priceType) {
       const {
         priceType,
+        marketPrice,
+        leverage,
         values: { amount, price, limit },
       } = this.props
 
-      const priceForCalculate =
-        priceType !== 'market' && limit !== null ? limit : price
+      const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
       this.setFormatted('total', amount * priceForCalculate, 1)
+      this.onMarginChange({
+        target: { value: ((amount / leverage) * priceForCalculate).toFixed(2) },
+      })
     }
 
     if (
@@ -108,9 +170,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setFormatted('total', amount * priceFromOrderbook, 1)
       this.setState({ priceFromOrderbook })
     }
+
+    if (this.props.leverage !== prevProps.leverage) {
+      this.onMarginChange({ target: { value: this.props.values.margin } })
+    }
   }
 
-  setFormatted = (fild: priceType, value: any, index: number) => {
+  setFormatted = (fild: marketPriceType, value: any, index: number) => {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
 
@@ -139,15 +205,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       priceType,
       byType,
-      values: { limit, price, total },
+      marketPrice,
+      values: { price },
       setFieldTouched,
       errors,
       funds,
       decimals,
     } = this.props
 
-    const priceForCalculate =
-      priceType !== 'market' && limit !== null ? limit : price
+    const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
     this.setFormatted('total', e.target.value, 1)
     setFieldTouched('total', true)
@@ -165,15 +231,21 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       isSPOTMarket,
       leverage,
+      marketPrice,
       setFieldValue,
       values: { price, limit },
       setFieldTouched,
     } = this.props
 
-    const priceForCalculate =
-      priceType !== 'market' && limit !== null ? limit : price
+    const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
     const total = e.target.value * priceForCalculate
+
+    const newMargin = ((e.target.value / leverage) * priceForCalculate).toFixed(
+      2
+    )
+
+    this.setFormatted('margin', newMargin, 1)
 
     setFieldValue('amount', e.target.value)
     setFieldTouched('amount', true)
@@ -183,10 +255,23 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   onPriceChange = (e: SyntheticEvent<Element>) => {
-    const { values, setFieldTouched } = this.props
+    const {
+      values: { limit, amount },
+      setFieldTouched,
+      marketPrice,
+      priceType,
+      leverage,
+    } = this.props
+    const priceForCalculate =
+      priceType !== 'market' ? e.target.value : marketPrice
+
     this.setFormatted('price', e.target.value, 1)
-    const total = e.target.value * values.amount
+    const total = e.target.value * amount
     this.setFormatted('total', total, 1)
+
+    const newMargin = ((amount / leverage) * priceForCalculate).toFixed(2)
+
+    this.setFormatted('margin', newMargin, 1)
 
     setFieldTouched('price', true)
     setFieldTouched('total', true)
@@ -203,10 +288,36 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     setFieldTouched('total', true)
   }
 
+  onMarginChange = (e) => {
+    const {
+      values: { limit, amount, price },
+      setFieldTouched,
+      marketPrice,
+      priceType,
+      setFieldValue,
+      leverage,
+      funds,
+    } = this.props
+    const value =
+      e.target.value > funds[1].quantity
+        ? funds[1].quantity.toFixed(2)
+        : e.target.value
+
+    const priceForCalculate = priceType !== 'market' ? price : marketPrice
+
+    const newAmount = (value * leverage) / priceForCalculate
+    const newTotal = value * leverage
+
+    setFieldValue('margin', value)
+    setFieldValue('amount', newAmount.toFixed(3))
+    setFieldValue('total', newTotal.toFixed(8))
+  }
+
   onPercentageClick = (value: number) => {
     const {
       values: { limit, price },
       funds,
+      marketPrice,
       setFieldValue,
       setFieldTouched,
       validateForm,
@@ -216,8 +327,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       leverage,
     } = this.props
 
-    const priceForCalculate =
-      priceType !== 'market' && limit !== null ? limit : price
+    const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
     if (byType === 'buy') {
       const baseQuantity = getBaseQuantityFromQuote({
@@ -244,7 +354,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
       const amount = isSPOTMarket
         ? necessaryFund.quantity * value
-        : (necessaryFund.quantity / price) * value
+        : (necessaryFund.quantity / priceForCalculate) * value
 
       this.setFormatted('total', quoteQuantity, 1)
       setFieldValue(
@@ -261,6 +371,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   render() {
     const {
       pair,
+      marketPrice,
       funds,
       leverage,
       operationType,
@@ -279,8 +390,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const priceForCalculate =
       priceType !== 'market' && values.limit !== null
-        ? values.limit
-        : values.price
+        ? values.price
+        : marketPrice
 
     let maxAmount = 0
 
@@ -308,22 +419,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   padding={'.6rem 0'}
                   direction={'column'}
                 >
-                  <InputRowContainer padding={'0 0 .8rem 0'}>
-                    <SeparateInputTitle>Price ({pair[1]})</SeparateInputTitle>
-                    <Line />
-                  </InputRowContainer>
-                  <InputRowContainer
-                    padding={'0'}
-                    style={{ position: 'relative' }}
-                  >
-                    <TradeInput
-                      align={'right'}
-                      isValid={true}
-                      value={values.limit || ''}
-                      onChange={this.onLimitChange}
-                    />
-                    <UpdatedCoin>{pair[1]}</UpdatedCoin>
-                  </InputRowContainer>
+                  <TradeInputContent
+                    needTitle
+                    title={`price (${pair[1]})`}
+                    value={values.price || ''}
+                    onChange={this.onPriceChange}
+                    coinText={pair[1]}
+                  />
                 </InputRowContainer>
               ) : null}
 
@@ -333,24 +435,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   padding={'.6rem 0'}
                   direction={'column'}
                 >
-                  <InputRowContainer padding={'0 0 .8rem 0'}>
-                    <SeparateInputTitle>
-                      Stop Price ({pair[1]})
-                    </SeparateInputTitle>
-                    <Line />
-                  </InputRowContainer>
-                  <InputRowContainer
-                    padding={'0'}
-                    style={{ position: 'relative' }}
-                  >
-                    <TradeInput
-                      align={'right'}
-                      isValid={true}
-                      value={values.stop || ''}
-                      onChange={this.onStopChange}
-                    />
-                    <UpdatedCoin>{pair[1]}</UpdatedCoin>
-                  </InputRowContainer>
+                  <TradeInputContent
+                    needTitle
+                    title={`trigger price (${pair[1]})`}
+                    value={values.stop || ''}
+                    onChange={this.onStopChange}
+                    coinText={pair[1]}
+                  />
                 </InputRowContainer>
               ) : null}
 
@@ -360,42 +451,59 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 padding={'.6rem 0'}
                 justify={priceType === 'market' ? 'flex-end' : 'center'}
               >
-                <InputRowContainer
-                  justify="space-between"
-                  padding={'0 0 .8rem 0'}
-                >
-                  <SeparateInputTitle>
-                    {isSPOTMarket ? `Amount` : 'qtty'} ({pair[0]})
-                  </SeparateInputTitle>
-                  <BlueInputTitle
-                    onClick={() =>
-                      this.onAmountChange({
-                        target: {
-                          value: maxSpotAmount,
-                        },
-                      })
-                    }
-                  >
-                    {maxSpotAmount} {pair[0]}
-                  </BlueInputTitle>
-                </InputRowContainer>
-                <InputRowContainer
-                  padding={'0'}
-                  style={{ position: 'relative' }}
-                >
-                  <TradeInput
-                    align={'right'}
-                    isValid={true}
+                {/* <TradeInputHeader
+                  title={`${isSPOTMarket ? `Amount` : 'qtty'} (${pair[0]})`}
+                  needLine={false}
+                  needRightValue={true}
+                  rightValue={`${maxSpotAmount} ${pair[0]}`}
+                  onValueClick={() =>
+                    this.onAmountChange({
+                      target: {
+                        value: maxSpotAmount,
+                      },
+                    })
+                  }
+                /> */}
+
+                {isSPOTMarket ? (
+                  <TradeInputContent
+                    needTitle
+                    title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${
+                      pair[0]
+                    })`}
+                    value={values.amount || ''}
                     type={'text'}
                     pattern={
                       isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
                     }
-                    value={values.amount}
-                    step={!isSPOTMarket && 0.001}
                     onChange={this.onAmountChange}
+                    coinText={pair[0]}
                   />
-                  <UpdatedCoin>{pair[0]}</UpdatedCoin>
-                </InputRowContainer>
+                ) : (
+                  <InputRowContainer direction="row" padding={'0'}>
+                    <div style={{ width: '50%', paddingRight: '2.5%' }}>
+                      <TradeInputContent
+                        needTitle
+                        title={`size (${pair[0]})`}
+                        value={values.amount || ''}
+                        type={'text'}
+                        pattern={
+                          isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                        }
+                        onChange={this.onAmountChange}
+                        coinText={pair[0]}
+                      />
+                    </div>
+                    <div style={{ width: '50%', paddingLeft: '2.5%' }}>
+                      <TradeInputContent
+                        disabled={true}
+                        value={values.total || ''}
+                        onChange={this.onTotalChange}
+                        coinText={pair[1]}
+                      />
+                    </div>
+                  </InputRowContainer>
+                )}
 
                 <BlueSlider
                   value={
@@ -425,8 +533,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       ? newAmount.toFixed(8)
                       : newAmount.toFixed(3)
 
+                    const newMargin = (
+                      (funds[1].quantity * value) /
+                      100
+                    ).toFixed(2)
+
                     setFieldValue('amount', fixedAmount)
                     setFieldValue('total', newTotal.toFixed(8))
+                    setFieldValue('margin', newMargin)
                   }}
                 />
               </InputRowContainer>
@@ -437,58 +551,42 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   padding={'.6rem 0'}
                   direction={'column'}
                 >
-                  <InputRowContainer padding={'0 0 .8rem 0'}>
-                    <SeparateInputTitle>Total ({pair[1]})</SeparateInputTitle>
-                    <Line />
-                  </InputRowContainer>
-                  <InputRowContainer
-                    padding={'0'}
-                    style={{ position: 'relative' }}
-                  >
-                    <TradeInput
-                      align={'right'}
-                      isValid={true}
-                      value={values.total || ''}
-                      onChange={this.onTotalChange}
-                    />
-                    <UpdatedCoin>{pair[1]}</UpdatedCoin>
-                  </InputRowContainer>
+                  <TradeInputContent
+                    needTitle
+                    title={`total (${pair[1]})`}
+                    value={values.total || ''}
+                    onChange={this.onTotalChange}
+                    coinText={pair[1]}
+                  />
                 </InputRowContainer>
               )}
 
               {!isSPOTMarket && (
-                <InputRowContainer justify="flex-end">
-                  <Grid
-                    xs={12}
-                    item
-                    container
-                    direction="column"
-                    justify={priceType === 'stop-limit' ? 'flex-end' : 'center'}
-                  >
-                    <Grid
-                      container
-                      justify="space-between"
-                      style={{ padding: '.6rem 0' }}
-                    >
-                      <InputTitle>cost:</InputTitle>
+                <InputRowContainer
+                  key={'cost'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
+                  justify="flex-end"
+                >
+                  {/* <InputTitle>cost:</InputTitle>
                       <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                        {/* {values.amount > 0
-                          ? (
-                              (funds[1].quantity / 100) *
-                              (isBuyType || !isSPOTMarket
-                                ? values.total / (maxAmount / 100)
-                                : values.amount / (maxAmount / 100) / 100)
-                            ).toFixed(2)
-                          : 0.0}{' '} */}
                         {(
                           (values.amount / leverage) *
                           priceForCalculate
                         ).toFixed(2)}{' '}
                         {pair[1]}
-                      </InputTitle>
-                    </Grid>
-
-                    <Grid
+                      </InputTitle> */}
+                  <TradeInputContent
+                    needTitle
+                    disabled={priceType === 'market'}
+                    title={`margin (${pair[1]})`}
+                    value={values.margin || ''}
+                    type={'text'}
+                    pattern={'[0-9]+.[0-9]{2}'}
+                    onChange={this.onMarginChange}
+                    coinText={pair[1]}
+                  />
+                  {/* <Grid
                       container
                       justify="space-between"
                       style={{ padding: '.6rem 0' }}
@@ -503,8 +601,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                           : 0}{' '}
                         {pair[0]}
                       </InputTitle>
-                    </Grid>
-                  </Grid>
+                    </Grid> */}
                 </InputRowContainer>
               )}
             </InputRowContainer>
@@ -669,6 +766,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     limit: props.marketPrice,
     amount: null,
     total: null,
+    margin: null,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {
@@ -686,7 +784,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       const filtredValues =
         priceType === 'limit'
           ? { limit: values.limit, price: values.price, amount: values.amount }
-          : priceType === 'market'
+          : marketPriceType === 'market'
           ? { amount: values.amount }
           : {
               stop: values.stop,

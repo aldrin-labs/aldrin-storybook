@@ -82,6 +82,7 @@ class LoginMenuComponent extends React.Component {
               color="default"
               component={UserLink}
               className="UserLink"
+              style={{ padding: '0 12px' }}
             >
               <AccountCircle />
             </IconButton>
@@ -91,7 +92,12 @@ class LoginMenuComponent extends React.Component {
           title="Log out"
           enterDelay={500}
           component={
-            <IconButton color="default" onClick={handleLogout} id="ExitButton">
+            <IconButton
+              style={{ padding: '0 12px' }}
+              color="default"
+              onClick={handleLogout}
+              id="ExitButton"
+            >
               <ExitIcon />
             </IconButton>
           }
