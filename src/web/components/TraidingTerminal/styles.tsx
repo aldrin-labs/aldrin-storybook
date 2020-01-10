@@ -69,7 +69,7 @@ export const GridContainer = styled.div`
   flex-direction: column;
 
   height: 100%;
-  padding: 0 2.5rem 0 0;
+  padding: 0 1.2rem;
 `
 
 export const NameHeader = styled.div`
@@ -119,7 +119,8 @@ export const BalanceItem = styled(BalanceGrid)`
 export const TradingItemTitle = styled.span`
   display: block;
   color: #7284a0;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
 
   font-weight: bold;
 `
@@ -181,7 +182,9 @@ export const TradeInput = styled.input`
   
   font-weight: bold;
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
+  text-align: ${(props) => props.align};
   outline: none;
+  padding-right: 5rem;
 
   &::after {
     content: '${(props) => props.text}';
@@ -226,6 +229,10 @@ export const Coin = styled(TradingItemTitle)`
   right: ${({ right }: { right: string }) => right || '20px'};
   transform: translateY(-50%);
 `
+
+export const UpdatedCoin = styled(Coin)`
+  top: 49.5%;
+`
 // percentages
 
 export const PercentageGrid = styled(Grid)`
@@ -268,6 +275,10 @@ export const SmartTradeButton = styled(SendButton)`
   @media (max-width: 1600px) {
     font-size: ${(props) => (props.type === 'buy' ? '1.3rem' : '1rem')};
   }
+
+  @media (min-width: 1921px) {
+    font-size: ${(props) => (props.type === 'buy' ? '1.3rem' : '1rem')};
+  }
 `
 
 export const PriceContainer = styled(Grid)``
@@ -276,4 +287,18 @@ export const TradeInputBlock = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+`
+
+export const SeparateInputTitle = styled.span`
+  color: #16253d;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  white-space: nowrap;
+`
+
+export const BlueInputTitle = styled(SeparateInputTitle)`
+  color: #5c8cea;
+  cursor: pointer;
 `

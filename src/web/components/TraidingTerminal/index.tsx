@@ -1,24 +1,16 @@
 import React, { PureComponent, SyntheticEvent } from 'react'
+import Yup from 'yup'
 
 import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
-
-import SmallSlider from '@sb/components/Slider/SmallSlider'
-
 import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
-
-import Yup from 'yup'
-
-import { toNumber, toPairs } from 'lodash-es'
 
 import { Grid, InputAdornment, Typography } from '@material-ui/core'
 import { Loading } from '@sb/components/index'
 
+import { toNumber, toPairs } from 'lodash-es'
 import { traidingErrorMessages } from '@core/config/errorMessages'
-
-import { PlaseOrderDialog } from '../PlaseOrderDialog'
-
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
 import {
@@ -26,22 +18,23 @@ import {
   getQuoteQuantityFromBase,
 } from '@core/utils/chartPageUtils'
 
+import BlueSlider from '@sb/components/Slider/BlueSlider'
+
 import {
   Container,
   GridContainer,
   Coin,
-  PaddingGrid,
+  UpdatedCoin,
   InputTitle,
   InputWrapper,
   TradeInputBlock,
   TradeInput,
-  TotalGrid,
-  PriceContainer,
+  BlueInputTitle,
+  SeparateInputTitle,
 } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
-
+import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 const TradeInputContainer = ({
   title,
@@ -71,12 +64,6 @@ const TradeInputContainer = ({
     </TradeInputBlock>
   )
 }
-
-const FormError = ({ children }: any) => (
-  <Typography color="error" style={{ textAlign: 'right' }}>
-    {children}
-  </Typography>
-)
 
 // function is removing all decimals after set number without rounding
 const toFixedTrunc = (value, n) => {
@@ -303,50 +290,112 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       maxAmount = funds[1].quantity * leverage
     }
 
+    const maxSpotAmount = isBuyType
+      ? (maxAmount / priceForCalculate).toFixed(8)
+      : maxAmount.toFixed(8)
+
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={pair}>
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
-            <div style={{ margin: 'auto 0', width: '100%' }}>
+            <InputRowContainer
+              direction="column"
+              style={{ margin: 'auto 0', width: '100%' }}
+            >
               {priceType !== 'market' ? (
                 <InputRowContainer
                   key={'limit-price'}
-                  padding={'.8rem 0 .6rem 0'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
                 >
-                  <TradeInputContainer
-                    title={'Price'}
-                    value={values.limit || ''}
-                    onChange={this.onLimitChange}
-                    coin={pair[1]}
-                  />
+                  <InputRowContainer padding={'0 0 .8rem 0'}>
+                    <SeparateInputTitle>Price ({pair[1]})</SeparateInputTitle>
+                    <Line />
+                  </InputRowContainer>
+                  <InputRowContainer
+                    padding={'0'}
+                    style={{ position: 'relative' }}
+                  >
+                    <TradeInput
+                      align={'right'}
+                      isValid={true}
+                      value={values.limit || ''}
+                      onChange={this.onLimitChange}
+                    />
+                    <UpdatedCoin>{pair[1]}</UpdatedCoin>
+                  </InputRowContainer>
                 </InputRowContainer>
               ) : null}
 
               {priceType === 'stop-limit' || priceType === 'take-profit' ? (
-                <InputRowContainer key={'stop-limit'}>
-                  <TradeInputContainer
-                    title={'Stop'}
-                    coin={pair[1]}
-                    value={values.stop || ''}
-                    onChange={this.onStopChange}
-                  />
+                <InputRowContainer
+                  key={'stop-limit'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
+                >
+                  <InputRowContainer padding={'0 0 .8rem 0'}>
+                    <SeparateInputTitle>
+                      Stop Price ({pair[1]})
+                    </SeparateInputTitle>
+                    <Line />
+                  </InputRowContainer>
+                  <InputRowContainer
+                    padding={'0'}
+                    style={{ position: 'relative' }}
+                  >
+                    <TradeInput
+                      align={'right'}
+                      isValid={true}
+                      value={values.stop || ''}
+                      onChange={this.onStopChange}
+                    />
+                    <UpdatedCoin>{pair[1]}</UpdatedCoin>
+                  </InputRowContainer>
                 </InputRowContainer>
               ) : null}
 
               <InputRowContainer
                 direction="column"
+                key={'amount'}
+                padding={'.6rem 0'}
                 justify={priceType === 'market' ? 'flex-end' : 'center'}
               >
-                <TradeInputContainer
-                  title={isSPOTMarket ? `Amount` : 'qtty'}
-                  type={'text'}
-                  pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
-                  value={values.amount}
-                  onChange={this.onAmountChange}
-                  coin={pair[0]}
-                  step={!isSPOTMarket && 0.001}
-                  style={{ paddingBottom: '.8rem' }}
-                />
+                <InputRowContainer
+                  justify="space-between"
+                  padding={'0 0 .8rem 0'}
+                >
+                  <SeparateInputTitle>
+                    {isSPOTMarket ? `Amount` : 'qtty'} ({pair[0]})
+                  </SeparateInputTitle>
+                  <BlueInputTitle
+                    onClick={() =>
+                      this.onAmountChange({
+                        target: {
+                          value: maxSpotAmount,
+                        },
+                      })
+                    }
+                  >
+                    {maxSpotAmount} {pair[0]}
+                  </BlueInputTitle>
+                </InputRowContainer>
+                <InputRowContainer
+                  padding={'0'}
+                  style={{ position: 'relative' }}
+                >
+                  <TradeInput
+                    align={'right'}
+                    isValid={true}
+                    type={'text'}
+                    pattern={
+                      isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                    }
+                    value={values.amount}
+                    step={!isSPOTMarket && 0.001}
+                    onChange={this.onAmountChange}
+                  />
+                  <UpdatedCoin>{pair[0]}</UpdatedCoin>
+                </InputRowContainer>
 
                 <BlueSlider
                   value={
@@ -355,8 +404,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       : values.amount / (maxAmount / 100)
                   }
                   sliderContainerStyles={{
-                    width: '70%',
-                    margin: '0 0 0 auto',
+                    width: 'calc(100% - 1rem)',
+                    margin: '0 .5rem',
+                    padding: '.9rem 0 0 0',
                   }}
                   onChange={(value) => {
                     const newValue = (maxAmount / 100) * value
@@ -382,21 +432,34 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               </InputRowContainer>
 
               {isSPOTMarket && (
-                <InputRowContainer direction="column" justify="center">
-                  <TradeInputContainer
-                    title={`Total`}
-                    value={values.total || ''}
-                    onChange={this.onTotalChange}
-                    coin={pair[1]}
-                  />
+                <InputRowContainer
+                  key={'total'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
+                >
+                  <InputRowContainer padding={'0 0 .8rem 0'}>
+                    <SeparateInputTitle>Total ({pair[1]})</SeparateInputTitle>
+                    <Line />
+                  </InputRowContainer>
+                  <InputRowContainer
+                    padding={'0'}
+                    style={{ position: 'relative' }}
+                  >
+                    <TradeInput
+                      align={'right'}
+                      isValid={true}
+                      value={values.total || ''}
+                      onChange={this.onTotalChange}
+                    />
+                    <UpdatedCoin>{pair[1]}</UpdatedCoin>
+                  </InputRowContainer>
                 </InputRowContainer>
               )}
 
               {!isSPOTMarket && (
                 <InputRowContainer justify="flex-end">
-                  <Grid xs={1} item />
                   <Grid
-                    xs={11}
+                    xs={12}
                     item
                     container
                     direction="column"
@@ -444,7 +507,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   </Grid>
                 </InputRowContainer>
               )}
-            </div>
+            </InputRowContainer>
           </Grid>
 
           <Grid
@@ -453,8 +516,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             container
             style={{ maxWidth: '100%', paddingBottom: '1.5rem' }}
           >
-            <Grid xs={1} item />
-            <Grid xs={11} item container alignItems="center">
+            <Grid xs={12} item container alignItems="center">
               <SendButton
                 disabled={orderIsCreating === operationType}
                 type={operationType}
