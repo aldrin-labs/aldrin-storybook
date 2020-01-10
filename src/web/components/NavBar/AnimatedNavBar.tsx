@@ -16,7 +16,7 @@ const AnimatedContainer = styled(
 )`
   position: sticky;
   z-index: 999;
-  height: 7.4vh;
+  height: 3rem;
 `
 
 export default class AnimatedNavBar extends Component<Props> {

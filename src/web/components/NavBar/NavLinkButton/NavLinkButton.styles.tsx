@@ -20,6 +20,7 @@ export const SButton = styled(
   font-weight: 500;
   letter-spacing: 1px;
   transition: 0.35s all;
+  padding: 0 8px;
 
   @media only screen and (max-width: 1100px) {
     margin: 0;

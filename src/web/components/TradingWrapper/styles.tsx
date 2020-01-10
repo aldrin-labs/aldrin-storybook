@@ -47,7 +47,7 @@ export const TabsTypeContainer = styled(TabsContainer)`
 export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   min-width: auto;
   width: 30%;
-  height: 4.5rem;
+  height: 4rem;
   font-size: 1.5rem;
   font-weight: bold;
 

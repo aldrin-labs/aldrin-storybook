@@ -51,7 +51,7 @@ class SimpleTabs extends React.Component {
 
     if (!stateLeverage) {
       return {
-        leverage
+        leverage,
       }
     } else {
       return null
@@ -244,12 +244,12 @@ class SimpleTabs extends React.Component {
                 <LeverageTitle>leverage:</LeverageTitle>
                 <SmallSlider
                   min={1}
-                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`)}
+                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
                   defaultValue={startLeverage}
                   value={leverage}
                   valueSymbol={'X'}
                   marks={
-                    maxLeverage.get(`${pair[0]}_${pair[1]}`) === 75
+                    maxLeverage.get(`${pair[0]}_${pair[1]}`) !== 125
                       ? {
                           1: {},
                           15: {},

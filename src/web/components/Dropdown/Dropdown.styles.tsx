@@ -37,6 +37,7 @@ export const StyledButton = styled(Button)`
   font-size: 12px;
   letter-spacing: 1px;
   transition: 0.35s all;
+  padding: 0 8px;
 
   @media only screen and (max-width: 1100px) {
     font-size: 9px;
@@ -50,7 +51,7 @@ export const StyledDropdown = styled.div`
   position: relative;
   display: inherit;
   margin: 0 1rem;
-  padding: 1rem 0.5rem;
+  padding: 0rem 0.5rem;
   height: 100%;
 
   @media only screen and (max-width: 1100px) {
@@ -58,18 +59,18 @@ export const StyledDropdown = styled.div`
   }
 
   @media (min-width: 1921px) {
-    padding: 1.15rem 0.5rem;
+    padding: 0rem 0.5rem;
   }
 
   @media (min-width: 2560px) {
-    padding: 1.25rem 0.5rem;
+    padding: 0rem 0.5rem;
   }
 `
 
 export const StyledPaper = styled(Paper)`
   && {
     position: absolute;
-    top: 7.25vh;
+    top: calc(3rem - 1px);
     left: 50%;
     height: auto;
     box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);

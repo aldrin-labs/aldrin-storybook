@@ -303,7 +303,7 @@ export const StyledSwitch = styled(({ isActive, ...rest }) => (
 export const Container = styled(Grid)`
   display: flex;
   // - ( menu + margin )
-  height: calc(100vh - 6.4vh - 1rem);
+  height: calc(100vh - 3rem);
   width: 100%;
   padding: 1rem;
   margin: 0;
