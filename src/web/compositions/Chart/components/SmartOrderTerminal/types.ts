@@ -113,4 +113,5 @@ export type InputRowProps = {
   direction?: string
   justify?: string
   padding?: string
+  width?: string
 }

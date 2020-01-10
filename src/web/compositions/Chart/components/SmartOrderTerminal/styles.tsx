@@ -93,7 +93,7 @@ export const SubBlocksContainer = styled.div`
 export const InputRowContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: ${(props: InputRowProps) => props.width || '100%'};
   flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
   justify-content: ${(props: InputRowProps) => props.justify};
   padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};

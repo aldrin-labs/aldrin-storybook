@@ -6,8 +6,12 @@ import {
   TradeSelect,
   Coin,
 } from '@sb/components/TraidingTerminal/styles'
+import {
+  TradeInputContent,
+  TradeInputHeader,
+} from '@sb/components/TraidingTerminal/index'
 
-import { InputTitle, BeforeCharacter } from './styles'
+import { BeforeCharacter, InputRowContainer } from './styles'
 
 export const Character = ({
   needCharacter,
@@ -26,7 +30,7 @@ export const Character = ({
 export const Input = ({
   symbol,
   value,
-  width = '85%',
+  width = '100%',
   padding = '0',
   pattern = '',
   type = 'number',
@@ -106,11 +110,21 @@ export const FormInputContainer = ({
   children: ReactNode
 }) => {
   return (
-    <>
-      <div style={{ width: '15%', textAlign: 'right' }}>
-        <InputTitle>{title}</InputTitle>
-      </div>
+    <InputRowContainer direction="column">
+      <TradeInputHeader
+        title={title}
+        needLine={true}
+        // needRightValue={true}
+        // rightValue={`${maxSpotAmount} ${pair[0]}`}
+        // onValueClick={() =>
+        //   this.onAmountChange({
+        //     target: {
+        //       value: maxSpotAmount,
+        //     },
+        //   })
+        // }
+      />
       {children}
-    </>
+    </InputRowContainer>
   )
 }

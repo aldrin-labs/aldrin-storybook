@@ -84,7 +84,7 @@ class LoginMenuComponent extends React.Component {
               className="UserLink"
               style={{ padding: '0 12px' }}
             >
-              <AccountCircle />
+              <AccountCircle style={{ fontSize: '3rem' }} />
             </IconButton>
           }
         />
@@ -98,7 +98,7 @@ class LoginMenuComponent extends React.Component {
               onClick={handleLogout}
               id="ExitButton"
             >
-              <ExitIcon />
+              <ExitIcon style={{ fontSize: '3rem' }} />
             </IconButton>
           }
         />

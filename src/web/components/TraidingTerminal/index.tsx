@@ -66,7 +66,7 @@ const TradeInputContainer = ({
   )
 }
 
-const TradeInputHeader = ({
+export const TradeInputHeader = ({
   title = 'Input',
   padding = '0 0 .8rem 0',
   needLine = true,
@@ -90,14 +90,16 @@ const TradeInputHeader = ({
   )
 }
 
-const TradeInputContent = ({
+export const TradeInputContent = ({
   isValid = true,
-  coinText = '',
+  showErrors = false,
+  symbol = '',
   value = '',
   type = 'number',
   pattern = '',
   step = '',
   padding = '0',
+  width = '100%',
   textAlign = 'right',
   onChange = () => {},
   needTitle = false,
@@ -105,20 +107,26 @@ const TradeInputContent = ({
   disabled = false,
 }) => {
   return (
-    <InputRowContainer padding={padding} style={{ position: 'relative' }}>
+    <InputRowContainer
+      padding={padding}
+      width={width}
+      style={{ position: 'relative' }}
+    >
       {needTitle && <AbsoluteInputTitle>{title}</AbsoluteInputTitle>}
       <TradeInput
         align={textAlign}
         type={type}
         pattern={pattern}
         step={step}
-        isValid={isValid}
+        isValid={showErrors ? isValid : true}
         value={value}
         disabled={disabled}
         onChange={onChange}
-        needPadding={coinText !== ''}
+        needPadding={symbol !== ''}
       />
-      <UpdatedCoin>{coinText}</UpdatedCoin>
+      <UpdatedCoin right={symbol.length <= 2 ? '2.5rem' : '1rem'}>
+        {symbol}
+      </UpdatedCoin>
     </InputRowContainer>
   )
 }
@@ -424,7 +432,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     title={`price (${pair[1]})`}
                     value={values.price || ''}
                     onChange={this.onPriceChange}
-                    coinText={pair[1]}
+                    symbol={pair[1]}
                   />
                 </InputRowContainer>
               ) : null}
@@ -440,7 +448,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     title={`trigger price (${pair[1]})`}
                     value={values.stop || ''}
                     onChange={this.onStopChange}
-                    coinText={pair[1]}
+                    symbol={pair[1]}
                   />
                 </InputRowContainer>
               ) : null}
@@ -477,7 +485,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
                     }
                     onChange={this.onAmountChange}
-                    coinText={pair[0]}
+                    symbol={pair[0]}
                   />
                 ) : (
                   <InputRowContainer direction="row" padding={'0'}>
@@ -491,7 +499,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                           isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
                         }
                         onChange={this.onAmountChange}
-                        coinText={pair[0]}
+                        symbol={pair[0]}
                       />
                     </div>
                     <div style={{ width: '50%', paddingLeft: '2.5%' }}>
@@ -499,7 +507,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         disabled={true}
                         value={values.total || ''}
                         onChange={this.onTotalChange}
-                        coinText={pair[1]}
+                        symbol={pair[1]}
                       />
                     </div>
                   </InputRowContainer>
@@ -556,7 +564,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     title={`total (${pair[1]})`}
                     value={values.total || ''}
                     onChange={this.onTotalChange}
-                    coinText={pair[1]}
+                    symbol={pair[1]}
                   />
                 </InputRowContainer>
               )}
@@ -584,7 +592,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     type={'text'}
                     pattern={'[0-9]+.[0-9]{2}'}
                     onChange={this.onMarginChange}
-                    coinText={pair[1]}
+                    symbol={pair[1]}
                   />
                   {/* <Grid
                       container
