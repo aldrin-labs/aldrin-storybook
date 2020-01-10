@@ -65,11 +65,12 @@ export const NavBarWrapper = styled(Grid)`
 
 export const NavBreadcrumbTypography = styled(Typography)`
   color: #16253d;
+  font-weight: bold;
   text-transform: uppercase;
   border-left: 1px solid #7284a0;
   padding-left: 0.75rem;
   padding-top: 0.1rem;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 2.75rem;
   letter-spacing: 1px;
   white-space: nowrap;
