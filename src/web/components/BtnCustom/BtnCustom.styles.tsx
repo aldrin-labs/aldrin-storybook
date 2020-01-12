@@ -14,6 +14,12 @@ export const BtnCustom = styled(
     fontSize,
     backgroundColor,
     borderColor,
+    hoverBackground,
+    borderWidth,
+    letterSpacing,
+    hoverColor,
+    transition,
+    needMinWidth,
     ...rest
   }) => <Button {...rest} />
 )`
@@ -32,8 +38,11 @@ export const BtnCustom = styled(
   padding: ${(props) => props.padding || '3px 0px'};
   letter-spacing: ${(props) => props.letterSpacing || '1.5px'};
   background: ${(props) => props.backgroundColor || 'transparent'};
+  min-width: ${(props) => !props.needMinWidth && 'auto'};
 
   &:hover {
-    background: ${(props) => props.backgroundColor};
+    color: ${(props) => props.hoverColor};
+    background: ${(props) => props.hoverBackground || props.backgroundColor};
+    transition: ${(props) => props.transition || 'all .3s ease-out'};
   }
 `

@@ -1,117 +1,109 @@
-import React, { memo, PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
+import styled from 'styled-components'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { Column, Table } from 'react-virtualized'
+import 'react-virtualized/styles.css'
 
-// import { calculatePercentagesOfOrderSize } from '@core/utils/chartPageUtils'
-import { Body } from '@sb/components/OldTable/Table'
-import { SpreadreadTableWrapper } from './SpreadTable.styles'
-// import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
-// import {
-//   EmptyCell,
-//   StyledTypography,
-//   RowWithVolumeChart,
-// } from '../../../SharedStyles'
 import { IProps } from './SpreadTable.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-// import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { withTheme } from '@material-ui/styles'
-import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 import {
-  // StyledTypography,
-  // StyledArrow,
-  // StyledTitle,
-  // TradeHistoryTableCollapsible,
-  // TriggerTitle,
-  // CardTitle,
-  StyledCell,
-  StyledRow,
-} from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+  getDataForTable,
+  getDataFromTree,
+  rowStyles,
+} from '@core/utils/chartPageUtils'
 
-const RowFunc = ({
-  order,
-  data,
-  action,
-  background,
-  digitsAfterDecimalForBidsSize,
-  green,
-  digitsAfterDecimalForBidsPrice,
-}) => (
-  <StyledRow background={'transparent'}>
-    <StyledCell style={{ minWidth: '30%' }}>
-      <TypographyFullWidth textColor={'#2F7619'} variant="body1" align="left">
-        {
-          order.price
-          // .toFixed(digitsAfterDecimalForAsksPrice)
-        }
-      </TypographyFullWidth>
-    </StyledCell>
+import defaultRowRenderer from '../../utils'
+import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 
-    <StyledCell style={{ minWidth: '30%' }}>
-      <TypographyFullWidth textColor={'#7284A0'} variant="body2" align="left">
-        {
-          order.size
-          // .toFixed(digitsAfterDecimalForAsksSize)
-        }
-      </TypographyFullWidth>
-    </StyledCell>
-
-    <StyledCell style={{ minWidth: '40%' }}>
-      <TypographyFullWidth
-        textColor={'#7284A0'}
-        variant="body1"
-        align="right"
-        style={{ paddingRight: 0 }}
-      >
-        {order.total.toFixed(0)
-        // .toFixed(digitsAfterDecimalForAsksPrice)
-        }
-      </TypographyFullWidth>
-    </StyledCell>
-  </StyledRow>
-)
-
-const MemoizedRow = memo(
-  RowFunc,
-  (prevProps, nextProps) => nextProps.order.price === prevProps.order.price
-)
-
-@withTheme()
-class SpreadTable extends PureComponent<IProps> {
+@withTheme
+class SpreadTable extends Component<IProps> {
   render() {
     const {
       data,
-      digitsAfterDecimalForBidsSize,
-      digitsAfterDecimalForBidsPrice,
-      theme: { palette, customPalette },
+      aggregation,
+      openOrderHistory,
+      mode,
+      arrayOfMarketIds,
+      amountForBackground,
+      updateTerminalPriceFromOrderbook,
+      currencyPair,
     } = this.props
 
-    const { background, action, type } = palette
-    const { green } = customPalette
+    const tableData = getDataFromTree(data.bids, 'bids').reverse()
+
+    const [base, quote] = currencyPair.split('_')
 
     return (
-      <SpreadreadTableWrapper>
-        <Body height="calc(100% - 26px)">
-          {data.map(
-            (
-              order: { size: number; price: number; type: string },
-              i: number
-            ) => (
-              <MemoizedRow
-                key={`${order.price}${order.size}${order.type}`}
-                {...{
-                  type,
-                  order,
-                  data,
-                  action,
-                  background,
-                  digitsAfterDecimalForBidsSize,
-                  green,
-                  digitsAfterDecimalForBidsPrice,
+      <BidsWrapper mode={mode} isFullHeight={mode === 'bids'}>
+        <AutoSizer>
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              disableHeader={mode !== 'bids'}
+              width={width}
+              height={height}
+              headerHeight={window.outerHeight / 50}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
+              headerStyle={{
+                color: '#7284A0',
+                paddingLeft: '.5rem',
+                marginLeft: 0,
+                marginRight: 0,
+                paddingTop: '.25rem',
+                letterSpacing: '.075rem',
+                borderBottom: '.1rem solid #e0e5ec',
+                fontSize: '1rem',
+              }}
+              gridStyle={{
+                overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
+              }}
+              rowCount={tableData.length}
+              rowHeight={window.outerHeight / 60}
+              rowGetter={({ index }) => tableData[index]}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({
+                  ...rest[0],
+                  side: 'bids',
+                  aggregation,
+                  arrayOfMarketIds,
+                  amountForBackground,
+                  openOrderHistory,
+                })
+              }
+            >
+              <Column
+                label={mode === 'bids' ? `price` : ''}
+                dataKey="price"
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
+                width={width - width / 6}
+                style={{ color: '#29AC80' }}
+              />
+              <Column
+                label={mode === 'bids' ? `size (${base})` : ''}
+                dataKey="size"
+                width={width + width / 6}
+                headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
+                style={{
+                  textAlign: 'right',
                 }}
               />
-            )
+              <Column
+                label={mode === 'bids' ? `total (${quote})` : ''}
+                dataKey="total"
+                headerStyle={{
+                  paddingRight: 'calc(.5rem + 10px)',
+                  textAlign: 'right',
+                }}
+                width={width}
+                style={{ textAlign: 'right' }}
+              />
+            </Table>
           )}
-        </Body>
-      </SpreadreadTableWrapper>
+        </AutoSizer>
+      </BidsWrapper>
     )
   }
 }

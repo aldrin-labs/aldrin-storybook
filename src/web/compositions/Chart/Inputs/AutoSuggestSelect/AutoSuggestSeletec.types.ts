@@ -11,6 +11,7 @@ export interface IProps {
   view: 'default' | 'onlyCharts'
   value: string
   children?: any
+  marketType: Number
 }
 
 export interface IState {

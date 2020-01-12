@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Checkbox, Radio } from '@material-ui/core'
 
 import { IProps } from './Accounts.types'
@@ -51,6 +52,7 @@ class Accounts extends React.PureComponent<IProps> {
       color,
       keys = [],
       portfolioAssetsData,
+      portfolioAssetsMap,
       onKeyToggle,
       login,
       isRebalance,
@@ -59,7 +61,7 @@ class Accounts extends React.PureComponent<IProps> {
       onKeysSelectAll,
       isSidebar,
       baseCoin,
-      isSideNavOpen,
+      isSideNavOpen
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -131,14 +133,9 @@ class Accounts extends React.PureComponent<IProps> {
             const Component = isRebalance ? Radio : Checkbox
             const isChecked = key.selected
 
-            // TODO: filter by account id in portfolio asset
-            const assetData = portfolioAssetsData.filter((asset) => {
-              return asset.name === key.name
-            })
-
             const formattedValue = addMainSymbol(
               roundAndFormatNumber(
-                assetData[0] ? assetData[0].value : 0,
+                portfolioAssetsMap.get(key._id) ? portfolioAssetsMap.get(key._id).value : 0,
                 roundNumber,
                 true
               ),
@@ -147,7 +144,7 @@ class Accounts extends React.PureComponent<IProps> {
 
             return (
               <AccountsListItem
-                key={key._id}
+                key={`${key._id}${i}`}
                 color={color}
                 style={{
                   display: 'flex',
@@ -174,7 +171,7 @@ class Accounts extends React.PureComponent<IProps> {
                   fontSize={'1.4rem'}
                   textColor={'#7284A0'}
                   letterSpacing="1px"
-                  style={{ paddingLeft: '1rem'}}
+                  style={{ paddingLeft: '1rem' }}
                 >
                   {key.name}
                   <TypographyTitle lineHeight="122.5%">
@@ -200,6 +197,9 @@ class Accounts extends React.PureComponent<IProps> {
                 />
                 {isSidebar && (
                   <PortfolioSelectorPopup
+                    id={`popup${key._id}${i}`}
+                    needPortalPopup={true}
+                    needPortalMask={true}
                     data={key}
                     baseCoin={baseCoin}
                     isSideNavOpen={isSideNavOpen}
@@ -210,7 +210,7 @@ class Accounts extends React.PureComponent<IProps> {
             )
           })}
         </AccountsList>
-        {isSidebar && <AddAccountDialog baseCoin={baseCoin} />}
+        {isSidebar && <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />}
       </>
     )
   }

@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 
@@ -13,7 +12,7 @@ export interface IProps extends WithTheme<Theme> {
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory: OrderType[]
   }
-  subscribeToMore: () => void
+  subscribeToMore: () => () => void
   showCancelResult: ({
     status,
     message,
@@ -23,6 +22,8 @@ export interface IProps extends WithTheme<Theme> {
   }) => void
   theme: Theme
   selectedKey: Key
+  arrayOfMarketIds: string[]
+  marketType: number
 }
 
 export interface IState {

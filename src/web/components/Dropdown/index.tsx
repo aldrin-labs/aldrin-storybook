@@ -36,28 +36,29 @@ export default class Dropdown extends React.Component<IProps> {
       <StyledDropdown
         onMouseEnter={this.handleToggle}
         onMouseLeave={this.handleClose}
+        key={`${id}-${selectedMenu}`}
       >
         <StyledButton
           disableRipple={false}
           aria-controls={this.props.id}
           aria-haspopup="true"
+          id={id}
           onClick={this.handleToggle}
         >
           {this.props.buttonText}
         </StyledButton>
 
         <StyledPaper
-          id={id}
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
           <MenuList>
-            {this.props.items.map(({ icon, text, to, onMouseOver }) => (
+            {this.props.items.map(({ icon, text, to, ...events }) => (
               <StyledMenuItem disableRipple disableGutters={true} key={text}>
                 <StyledLink
                   to={to}
                   key={`${text}-link`}
                   onClick={this.handleClose}
-                  onMouseOver={onMouseOver ? onMouseOver : () => {}}
+                  {...events}
                 >
                   {icon}
                   <StyledMenuItemText key={`${text}-text`}>

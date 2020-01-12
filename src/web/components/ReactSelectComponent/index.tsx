@@ -229,4 +229,4 @@ const DropdownIndicator = (props: object) =>
     </components.DropdownIndicator>
   )
 
-export default ForwarderRefHoc(withTheme()(ReactSelectComponent))
+export default ForwarderRefHoc(withTheme(ReactSelectComponent))

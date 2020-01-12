@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { SnackbarProvider, withSnackbar } from 'notistack'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 import { orderError } from '@core/utils/errorsConfig'
 
@@ -30,7 +30,7 @@ const CloseButton = withStyles(canselStyeles)((props) => (
 ))
 
 class OrderStatusWrapper extends React.Component {
-  showOrderResult = (result, cancelOrder) => {
+  showOrderResult = (result, cancelOrder, marketType) => {
     if (result.status === 'success' && result.orderId && result.message) {
       this.props.enqueueSnackbar(result.message, {
         variant: 'success',
@@ -39,7 +39,7 @@ class OrderStatusWrapper extends React.Component {
           <Button
             size="small"
             color="inherit"
-            onClick={() => cancelOrder(result.orderId)}
+            onClick={() => cancelOrder(result.orderId, marketType)}
           >
             {'Cancel'}
           </Button>
@@ -52,6 +52,23 @@ class OrderStatusWrapper extends React.Component {
     } else {
       this.props.enqueueSnackbar(result.message, { variant: 'error' })
     }
+  }
+
+  showFuturesTransfer = (result) => {
+    if (result.status === 'OK' && result.data && result.data.tranId) {
+      this.props.enqueueSnackbar(
+        'Funds transfered!', {
+          variant: 'success',
+          action: (
+            <CloseButton />
+          ),
+        }
+      )
+    }
+    else {
+      this.props.enqueueSnackbar('Something went wrong during transfering funds', { variant: 'error' })
+    }
+
   }
 
   showCancelResult = (result) => {
@@ -69,12 +86,27 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
+  showUpdateLeverageResult = (result) => {
+    if (result.status === 'success' && result.message) {
+      this.props.enqueueSnackbar(result.message, {
+        variant: 'success',
+        action: (
+          <CloseButton />
+        ),
+      })
+    } else {
+      this.props.enqueueSnackbar(result.message, { variant: 'error' })
+    }
+  }
+
 
   render() {
     return (
       <DefaultView
         showOrderResult={this.showOrderResult}
         showCancelResult={this.showCancelResult}
+        showFuturesTransfer={this.showFuturesTransfer}
+        showUpdateLeverageResult={this.showUpdateLeverageResult}
         {...this.props}
       />
     )

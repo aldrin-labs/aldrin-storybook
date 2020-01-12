@@ -17,30 +17,49 @@ import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme()
+@withTheme
 class OrderHistoryTable extends React.PureComponent<IProps> {
   state: IState = {
     orderHistoryProcessedData: [],
   }
 
+  unsubscribeFunction: null | Function = null
+
   componentDidMount() {
-    const { getOrderHistoryQuery, subscribeToMore, theme } = this.props
+    const {
+      getOrderHistoryQuery,
+      subscribeToMore,
+      theme,
+      arrayOfMarketIds,
+      marketType,
+    } = this.props
 
     const orderHistoryProcessedData = combineOrderHistoryTable(
       getOrderHistoryQuery.getOrderHistory,
-      theme
+      theme,
+      arrayOfMarketIds,
+      marketType
     )
     this.setState({
       orderHistoryProcessedData,
     })
 
-    subscribeToMore()
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
       nextProps.getOrderHistoryQuery.getOrderHistory,
-      nextProps.theme
+      nextProps.theme,
+      nextProps.arrayOfMarketIds,
+      nextProps.marketType
     )
 
     this.setState({
@@ -64,6 +83,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
+      marketType,
     } = this.props
 
     if (!show) {
@@ -82,29 +102,36 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
             backgroundColor: '#fff',
             color: '#16253D',
+            boxShadow: 'none',
           },
           cell: {
-            color: '#16253D',
-            fontSize: '1.3rem', // 1.2 if bold
-            // fontWeight: 'bold',
-            fontFamily: 'Trebuchet MS',
+            color: '#7284A0',
+            fontSize: '1rem', // 1.2 if bold
+            fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           tab: {
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
+            <TradingTabs
+              tab={tab}
+              handleTabChange={handleTabChange}
+              marketType={marketType}
+            />
             <TradingTitle
               {...{
                 startDate,
@@ -122,7 +149,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           </div>
         }
         data={{ body: orderHistoryProcessedData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead(tab, marketType)}
       />
     )
   }
@@ -148,7 +175,8 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getOrderHistory}
       name={`getOrderHistoryQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
+      pollInterval={45000}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
         variables: {

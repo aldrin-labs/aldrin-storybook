@@ -34,6 +34,10 @@ const Footer = ({
     return null
   }
 
+  if (isChartPage) {
+    return null
+  }
+
   return (
     <Container
       position="static"
@@ -43,7 +47,7 @@ const Footer = ({
     >
       <Block>
         <StyledTypography color="default">
-          Cryptocurrencies Ai, 2018{' '}
+          Cryptocurrencies Ai, 2020{' '}
         </StyledTypography>
 
         <Typography variant="h6" color="secondary">
@@ -102,6 +106,7 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 
   && {
     flex-direction: row;
+    background-color: #fefefe;
   }
 
   height: 6.4vh;
@@ -124,7 +129,7 @@ const Block = styled.div`
 `
 
 export default compose(
-  withTheme(),
+  withTheme,
   queryRendererHoc({
     query: GET_THEME_MODE,
     name: 'getThemeModeQuery',

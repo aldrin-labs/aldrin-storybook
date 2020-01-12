@@ -7,11 +7,16 @@ import {
 import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 import { TooltipsType } from '@core/types/PortfolioTypes'
 
+
+
 export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
   app: {
     themeMode: string
   }
   getTooltipSettings: TooltipsType
+  marketByMarketType: {
+    _id: string
+  }[]
   chart: {
     selectedKey: Key
     activeExchange: {
@@ -22,9 +27,13 @@ export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
       pair: string
     }
     view: 'default' | 'onlyCharts'
+    marketType: 0 | 1
   }
   multichart: {
     charts: string[]
+  }
+  getTradingSettings: {
+    selectedTradingKey: string | null
   }
 }
 
@@ -36,7 +45,7 @@ export interface IProps extends TooltipMutationType {
   selectCurrencies: Function
   theme: any
   themeMode: 'dark' | 'light'
-  getChartDataQuery:  GetChartDataQueryInterface
+  getChartDataQuery: GetChartDataQueryInterface
   addChartMutation: (queryObject: any) => Promise<any>
   changeActiveExchangeMutation: ({
     variables: exchange,
@@ -51,8 +60,8 @@ export interface IProps extends TooltipMutationType {
 }
 
 export interface IState {
-  aggregation: number
   showTableOnMobile: string
   activeChart: string
   joyride: boolean
+  terminalViewMode: string
 }

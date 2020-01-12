@@ -1,5 +1,5 @@
 import React, { PureComponent, memo } from 'react'
-import { withStyles, withTheme } from '@material-ui/core/styles'
+import { withStyles, withTheme } from '@material-ui/styles'
 
 import { LinearProgressCustom } from './ProgressBar.styles'
 import { IProps, IState } from './ProgressBar.types'
@@ -11,7 +11,7 @@ const styles = {
   },
 }
 
-@withTheme()
+@withTheme
 class ProgressBar extends PureComponent<IProps> {
   state: IState = {
     completed: 0,

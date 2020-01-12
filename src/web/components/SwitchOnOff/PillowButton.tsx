@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const Container = styled.div`
+  display: flex;
   margin: 0 1rem;
+
+  ${(props) => props.containerStyle}
 `
 
 const StyledButton = styled(({ isDisabled, ...rest }) => (
@@ -19,6 +22,7 @@ const StyledButton = styled(({ isDisabled, ...rest }) => (
     {...rest}
   />
 ))`
+  white-space: nowrap;
   cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};
   letter-spacing: 0.15rem;
 
@@ -35,16 +39,28 @@ const StyledButton = styled(({ isDisabled, ...rest }) => (
   }
 `
 
-const FirstHalfButton = styled(StyledButton)`
+export const FirstHalfButton = styled(
+  ({ firstHalfAdditionalStyle, buttonAdditionalStyle, ...rest }) => (
+    <StyledButton {...rest} />
+  )
+)`
   border-top-left-radius: 1.3rem;
   border-bottom-left-radius: 1.3rem;
   padding-left: 0.8rem;
+  ${(props) => props.buttonAdditionalStyle}
+  ${(props) => props.firstHalfAdditionalStyle}
 `
 
-const SecondHalfButton = styled(StyledButton)`
+export const SecondHalfButton = styled(
+  ({ secondHalfAdditionalStyle, buttonAdditionalStyle, ...rest }) => (
+    <StyledButton {...rest} />
+  )
+)`
   border-top-right-radius: 1.3rem;
   border-bottom-right-radius: 1.3rem;
   padding-right: 0.5rem;
+  ${(props) => props.buttonAdditionalStyle}
+  ${(props) => props.secondHalfAdditionalStyle}
 `
 
 const PillowButton = ({
@@ -52,25 +68,37 @@ const PillowButton = ({
   secondHalfText,
   activeHalf,
   changeHalf,
+  buttonAdditionalStyle,
+  containerStyle,
+  firstHalfAdditionalStyle,
+  secondHalfAdditionalStyle,
 }: {
   firstHalfText: string
   secondHalfText: string
   activeHalf: string
   changeHalf: () => void
+  containerStyle: CSSProperties
+  buttonAdditionalStyle?: CSSProperties
+  firstHalfAdditionalStyle?: CSSProperties
+  secondHalfAdditionalStyle?: CSSProperties
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
   return (
-    <Container>
+    <Container containerStyle={containerStyle}>
       <FirstHalfButton
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
+        firstHalfAdditionalStyle={firstHalfAdditionalStyle}
+        buttonAdditionalStyle={buttonAdditionalStyle}
       >
         {firstHalfText}
       </FirstHalfButton>
       <SecondHalfButton
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
+        secondHalfAdditionalStyle={secondHalfAdditionalStyle}
+        buttonAdditionalStyle={buttonAdditionalStyle}
       >
         {secondHalfText}
       </SecondHalfButton>

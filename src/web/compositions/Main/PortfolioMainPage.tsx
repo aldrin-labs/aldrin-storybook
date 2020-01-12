@@ -8,7 +8,6 @@ import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
-
 // import PortfolioMainChart from '@core/containers/PortfolioMainChart/PortfolioMainChart'
 // import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import PortfolioMainTable from '@core/containers/PortfolioMainTable/PortfolioMainTable'
@@ -46,7 +45,7 @@ const LayoutClearfixWrapper = styled.div`
     padding-right: calc(2.5% + 3rem);
   }
 `
-@withTheme()
+@withTheme
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
@@ -55,9 +54,9 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     openSharePortfolioPopUp: false,
   }
 
-  componentDidMount() {
-    this.props.portfolioAssetsRefetch()
-  }
+  // componentDidMount() {
+  //   this.props.portfolioAssetsRefetch()
+  // }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
@@ -142,7 +141,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       isUSDCurrently
     )
 
-    const { portfolioAssetsData, totalKeyAssetsData } = getPortfolioAssetsData(
+    const { portfolioAssetsData, totalKeyAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
       filteredData,
       baseCoin
     )
@@ -166,6 +165,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               isUSDCurrently={isUSDCurrently}
               getFuturesOverview={getFuturesOverview}
               portfolioAssetsData={portfolioAssetsData}
+              portfolioAssetsMap={portfolioAssetsMap}
               totalKeyAssetsData={totalKeyAssetsData}
             />
           </div>
@@ -238,6 +238,7 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
     query: getPageType,
@@ -246,7 +247,7 @@ export default compose(
   queryRendererHoc({
     query: getFuturesOverview,
     name: 'getFuturesOverviewQuery',
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     pollInterval: 30000,
   }),
   graphql(updateTooltipSettings, {

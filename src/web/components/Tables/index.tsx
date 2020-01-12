@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { withStyles, createStyles } from '@material-ui/styles'
+import { Theme } from '@material-ui/core/styles'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell, { Padding } from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
@@ -44,7 +45,7 @@ import CustomPlaceholder from '@sb/components/CustomPlaceholder'
 const CustomTableCell = withStyles((theme) => ({
   head: {
     position: 'sticky',
-    top: theme.spacing.unit * 4,
+    top: '3rem',
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.text.primary,
     textTransform: 'uppercase',
@@ -54,12 +55,14 @@ const CustomTableCell = withStyles((theme) => ({
     whiteSpace: 'nowrap',
     zIndex: 100,
     padding: '0.2rem 1.6rem 0.2rem  0.6rem',
+    boxShadow: 'none',
   },
   body: {
     color: theme.palette.text.primary,
     borderBottom: 'none',
     fontSize: 14,
     padding: '0.2rem 1.6rem 0.2rem 0.6rem',
+    boxShadow: 'none',
   },
   footer: {
     fontSize: 14,
@@ -155,6 +158,11 @@ const styles = (theme: Theme) =>
       '&:hover': {
         backgroundColor: theme.palette.action.hover,
       },
+      '&:hover td': {
+        backgroundColor: `${
+          theme.palette.hover[theme.palette.type]
+        } !important`,
+      },
     },
     indeterminateCheckbox: {
       color: theme.palette.primary.main,
@@ -182,21 +190,33 @@ const styles = (theme: Theme) =>
     },
     headRow: {
       height: '2rem',
+      boxShadow: 'none',
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
     },
     row: {
       height: '2rem',
+      boxShadow: 'none',
       transition: `background-color ${theme.transitions.duration.short}ms  ${
         theme.transitions.easing.easeOut
       }`,
       borderBottom: '0',
+      '&:hover td': {
+        transition: `background-color ${theme.transitions.duration.short}ms  ${
+          theme.transitions.easing.easeOut
+        }`,
+      },
     },
     rowWithHover: {
       '&:hover': {
         borderRadius: '32px',
         backgroundColor: theme.palette.hover[theme.palette.type], //TODO theme.palette.action.hover,
+      },
+      '&:hover td': {
+        backgroundColor: `${
+          theme.palette.hover[theme.palette.type]
+        } !important`, //TODO theme.palette.action.hover,
       },
     },
     rowWithHoverBorderRadius: {
@@ -318,6 +338,8 @@ const renderCell = ({
         variant={variant}
         style={{ color: cell.color, ...cell.style, ...tableStyles.cell }}
         key={id}
+        rowSpan={cell.rowspan}
+        colSpan={cell.colspan}
         padding={padding}
         align={align}
       >
@@ -528,6 +550,7 @@ const CustomTable = (props: Props) => {
     emptyTableText = 'no data',
     tableStyles = {
       heading: {},
+      row: {},
       title: {},
       footer: {},
       cell: {},
@@ -719,8 +742,13 @@ const CustomTable = (props: Props) => {
                                 0.5
                               )}`,
                               cursor: 'pointer',
+                              ...tableStyles.row,
                             }
-                          : { cursor: 'pointer' }
+                          : {
+                              cursor: 'pointer',
+                              boxShadow: 'none',
+                              ...tableStyles.row,
+                            }
                       }
                       className={rowHoverClassName}
                       onClick={() =>
@@ -733,7 +761,12 @@ const CustomTable = (props: Props) => {
                     >
                       {row.expandableContent &&
                       row.expandableContent.length > 0 ? (
-                        <CustomTableCell padding="checkbox">
+                        <CustomTableCell
+                          padding="checkbox"
+                          style={{
+                            backgroundColor: tableStyles.cell.backgroundColor,
+                          }}
+                        >
                           {renderCheckBox({
                             onChange,
                             id: row.id,
@@ -753,7 +786,12 @@ const CustomTable = (props: Props) => {
                         </CustomTableCell>
                       ) : (
                         typeOfCheckbox !== null && (
-                          <CustomTableCell padding="checkbox">
+                          <CustomTableCell
+                            style={{
+                              backgroundColor: tableStyles.cell.backgroundColor,
+                            }}
+                            padding="checkbox"
+                          >
                             {' '}
                           </CustomTableCell>
                         )

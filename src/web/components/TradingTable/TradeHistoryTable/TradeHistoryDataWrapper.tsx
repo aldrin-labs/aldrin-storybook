@@ -10,10 +10,10 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   IState
 > {
   state: IState = {
-    startDate: getEndDate('1Week'),
+    startDate: getEndDate('1Day'),
     endDate: moment().endOf('day'),
     focusedInput: null,
-    activeDateButton: '1Week',
+    activeDateButton: '1Day',
   }
 
   onClearDateButtonClick = () => {
@@ -49,7 +49,15 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
 
   render() {
-    const { tab, tabIndex, show, handleTabChange, selectedKey } = this.props
+    const {
+      tab,
+      tabIndex,
+      show,
+      handleTabChange,
+      selectedKey,
+      marketType,
+      arrayOfMarketIds,
+    } = this.props
     const { focusedInput, endDate, activeDateButton, startDate } = this.state
 
     const maximumDate = moment().endOf('day')
@@ -62,6 +70,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           tabIndex,
           selectedKey,
           show,
+          marketType,
+          arrayOfMarketIds,
           handleTabChange,
           focusedInput,
           endDate,

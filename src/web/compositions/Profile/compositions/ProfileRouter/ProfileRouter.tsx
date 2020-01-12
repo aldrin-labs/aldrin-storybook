@@ -14,11 +14,19 @@ export const ComingSoonBlock = () => (
 )
 
 const Accounts = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@core/containers/Profile/ProfileAccounts/ProfileAccounts')
+  import(/* webpackPrefetch: true, webpackChunkName: "accounts" */ '@core/containers/Profile/ProfileAccounts/ProfileAccounts')
 )
 
 const Settings = React.lazy(() =>
-  import(/* webpackPrefetch: true */ '@sb/compositions/Profile/compositions/ProfileSettings/ProfileSettings')
+  import(/* webpackPrefetch: true, webpackChunkName: "settings" */ '@sb/compositions/Profile/compositions/ProfileSettings/ProfileSettings')
+)
+
+const Deposit = React.lazy(() => 
+  import(/* webpackPrefetch: true, webpackChunkName: "deposit"  */ '@sb/compositions/Profile/compositions/Deposit/Deposit')
+)
+
+const Withdrawal = React.lazy(() => 
+  import(/* webpackPrefetch: true, webpackChunkName: "withdrawal" */ '@sb/compositions/Profile/compositions/Withdrawal/Withdrawal')
 )
 
 const ProfileRouter = () => {
@@ -50,6 +58,16 @@ const ProfileRouter = () => {
             exact
             path="/profile/notifications"
             render={(...rest) => <ComingSoonBlock />}
+          />
+          <Route
+            exact
+            path="/profile/deposit"
+            render={(...rest) => <Deposit />}
+          />
+          <Route
+            exact
+            path="/profile/withdrawal"
+            render={(...rest) => <Withdrawal />}
           />
         </Switch>
       </Suspense>

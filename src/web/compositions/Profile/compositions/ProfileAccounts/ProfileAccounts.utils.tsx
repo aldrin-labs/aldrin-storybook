@@ -74,7 +74,7 @@ const getKeyStatus = (status: string, valid: boolean) => {
     : status
 }
 
-export const transformData = (data: AccountData[]) => {
+export const transformData = (data: AccountData[], numberOfKeys: number) => {
   const transformedData = data.map((row, i) => {
     return {
       id: row._id,
@@ -170,7 +170,7 @@ export const transformData = (data: AccountData[]) => {
         render: (
           <PortfolioSelectorPopup
             popupStyle={{ transform: 'translateX(-95%)' }}
-            needPortal={true}
+            needPortalMask={true}
             dotsColor={'#7284A0'}
             data={row}
           />
@@ -191,6 +191,7 @@ export const transformData = (data: AccountData[]) => {
     autoRebalance: {
       render: (
         <AddAccountDialog
+        numberOfKeys={numberOfKeys}
           existCustomButton={true}
           CustomButton={({ handleClick }: { handleClick: () => void }) => (
             <AddAccountButton onClick={handleClick}>
@@ -208,7 +209,7 @@ export const transformData = (data: AccountData[]) => {
 }
 
 export const putDataInTable = (tableData: any[]) => {
-  const body = transformData(tableData)
+  const body = transformData(tableData, tableData.length)
 
   return {
     head: [

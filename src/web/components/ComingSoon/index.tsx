@@ -6,9 +6,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Typography, Fade } from '@material-ui/core'
 
-export default ({ show = true }) =>
+export default ({ show = true, style }) =>
   show ? (
-    <Container>
+    <Container style={style}>
       <Fade timeout={1000} in={show}>
         <Typography variant="h3" style={{ color: '#005dd9' }}>
           Coming Soon

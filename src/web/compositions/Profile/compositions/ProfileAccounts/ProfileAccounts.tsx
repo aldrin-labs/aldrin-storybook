@@ -138,15 +138,15 @@ const ProfileAccounts = ({
             </PortfolioValues>
             {/* edit portfolio name */}
             <PortfolioSelectorPopup
-              isPortfolio={true}
-              needPortal={true}
+              isPortfolio
+              needPortalMask
               dotsColor={'#7284A0'}
               data={currentPortfolioData}
             />
           </ChangePortfolioBlock>
           <CreatePortfolio
             baseCoin={'USDT'}
-            existCustomButton={true}
+            existCustomButton
             CustomButton={({ handleClick }: { handleClick: () => void }) => (
               <CreatePortfolioButton onClick={handleClick}>
                 <StyledAddIcon />

@@ -1,83 +1,104 @@
-import React, { memo, PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import { withTheme } from '@material-ui/styles'
 
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { Column, Table } from 'react-virtualized'
+import 'react-virtualized/styles.css'
+
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { Row, Head } from '@sb/components/OldTable/Table'
-import OrderBookBody from './OrderBookBody/OrderBookBody'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
-
 import { IProps } from './OrderBookTable.types'
-import { AsksTable, StyledHeadCell } from './OrderBookTable.styles'
 
-import { StyledTitle } from '../../../TradeHistoryTable/Table/TradeHistoryTable.styles'
+import { getDataFromTree } from '@core/utils/chartPageUtils'
 
-const MemoHead = memo(() => (
-  <>
-    <ChartCardHeader>Orderbook</ChartCardHeader>
-    <Head background={'#fff'} style={{ height: 'auto', border: 'none' }}>
-      <Row style={{ height: 'auto' }}>
-        <StyledHeadCell>
-          <StyledTitle variant="body2" color="default" align="left">
-            Price
-            {/* {quote || 'Fiat'} */}
-          </StyledTitle>
-        </StyledHeadCell>
+import defaultRowRenderer from '../../utils'
+import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 
-        <StyledHeadCell isCenter={true}>
-          <StyledTitle variant="body2" color="default" align="left">
-            Size
-          </StyledTitle>
-        </StyledHeadCell>
-
-        <StyledHeadCell>
-          <StyledTitle
-            variant="body2"
-            color="default"
-            align="right"
-            style={{ paddingRight: 0 }}
-          >
-            Total
-          </StyledTitle>
-        </StyledHeadCell>
-      </Row>
-    </Head>
-  </>
-))
-
-@withTheme()
-class OrderBookTable extends PureComponent<IProps> {
+@withTheme
+class OrderBookTable extends Component<IProps> {
   render() {
     const {
-      onButtonClick,
-      quote,
-      theme: { palette },
+      data,
+      mode,
+      aggregation,
+      openOrderHistory,
+      arrayOfMarketIds,
+      amountForBackground,
+      updateTerminalPriceFromOrderbook,
+      currencyPair,
     } = this.props
+    const tableData = getDataFromTree(data.asks, 'asks').reverse()
 
-    const { background, action, type, primary } = palette
+    const [base, quote] = currencyPair.split('_')
 
     return (
-      <AsksTable>
-        <MemoHead
-          {...{
-            palette,
-            primary,
-            type,
-            onButtonClick,
-            background,
-            quote,
-            key: 'asks_headrow',
-          }}
-        />
-        {/* hack to autoscroll to bottom */}
-        <OrderBookBody
-          {...{
-            background,
-            action,
-            ...this.props,
-            key: 'asks_body',
-          }}
-        />
-      </AsksTable>
+      <AsksWrapper mode={mode} isFullHeight={mode === 'asks'}>
+        <AutoSizer>
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              width={width}
+              height={height}
+              rowCount={tableData.length}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
+              headerHeight={window.outerHeight / 50}
+              headerStyle={{
+                color: '#7284A0',
+                paddingLeft: '.5rem',
+                paddingTop: '.25rem',
+                marginLeft: 0,
+                marginRight: 0,
+                letterSpacing: '.075rem',
+                borderBottom: '.1rem solid #e0e5ec',
+                fontSize: '1rem',
+              }}
+              gridStyle={{
+                overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
+              }}
+              rowHeight={window.outerHeight / 60}
+              scrollToIndex={tableData.length - 1}
+              rowGetter={({ index }) => tableData[index]}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({
+                  ...rest[0],
+                  side: 'asks',
+                  aggregation,
+                  arrayOfMarketIds,
+                  openOrderHistory,
+                  amountForBackground,
+                })
+              }
+            >
+              <Column
+                label="Price"
+                dataKey="price"
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
+                width={width - width / 6}
+                style={{ color: '#DD6956' }}
+              />
+              <Column
+                label={`Size (${base})`}
+                dataKey="size"
+                headerStyle={{ textAlign: 'right', paddingRight: '6px' }}
+                width={width + width / 6}
+                style={{
+                  textAlign: 'right',
+                }}
+              />
+              <Column
+                label={`Total (${quote})`}
+                dataKey="total"
+                headerStyle={{
+                  paddingRight: 'calc(10px)',
+                  textAlign: 'right',
+                }}
+                width={width}
+                style={{ textAlign: 'right' }}
+              />
+            </Table>
+          )}
+        </AutoSizer>
+      </AsksWrapper>
     )
   }
 }

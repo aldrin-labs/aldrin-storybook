@@ -1,9 +1,9 @@
 import React, { SFC, useState } from 'react'
-import { withApollo } from 'react-apollo'
+import { withApollo, graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
 import { client } from '@core/graphql/apolloClient'
-import { Login } from '@core/containers/Login'
+import { LoginComponent as Login } from '@sb/components/Login'
 import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
@@ -28,9 +28,12 @@ import IndustryIcon from '@material-ui/icons/DonutLarge'
 import RebalanceIcon from '@material-ui/icons/SwapHoriz'
 import CorrelationIcon from '@material-ui/icons/ViewModule'
 import OptimizationIcon from '@material-ui/icons/Assessment'
+
+import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
+import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -57,15 +60,20 @@ const NavBarRaw: SFC<Props> = ({
   theme,
   pathname,
   $hide = false,
-  push,
+  marketTypeData,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
-  const page = pathnamePage[pathnamePage.length - 1]
+  let page = pathnamePage[pathnamePage.length - 1]
+
+  if (page === 'chart') {
+    const isSPOTMarket = isSPOTMarketType(marketTypeData.chart.marketType)
+
+    page = isSPOTMarket ? 'spot trading' : 'futures trading'
+  }
 
   return (
     <Nav
-      position="static"
       variant={{ hide: $hide, background: primary.main }}
       color="default"
       className="Navbar"
@@ -132,7 +140,7 @@ const NavBarRaw: SFC<Props> = ({
                 ]}
               />
 
-              {!MASTER_BUILD && (
+              {/* {!MASTER_BUILD && (
                 <Dropdown
                   id="explore-menu"
                   key="explore-menu"
@@ -159,30 +167,46 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   ]}
                 />
-              )}
+              )} */}
 
               {!MASTER_BUILD && (
-                <>
-                  <NavLinkButtonWrapper key="chart-wrapper">
-                    <NavLinkButton
-                      key="chart"
-                      page={`chart`}
-                      component={Chart}
-                      pathname={pathname}
-                    >
-                      Chart
-                    </NavLinkButton>
-                  </NavLinkButtonWrapper>
-
-                  <NavLinkButton
-                    key="market"
-                    page={`market`}
-                    component={Market}
-                    pathname={pathname}
-                  >
-                    Strategy
-                  </NavLinkButton>
-                </>
+                <Dropdown
+                  id="chart-page"
+                  key="chart-page"
+                  buttonText="Trading"
+                  selectedMenu={selectedMenu}
+                  selectActiveMenu={selectMenu}
+                  items={[
+                    {
+                      text: 'Spot market',
+                      to: '/chart',
+                      onClick: () => {
+                        client.writeData({
+                          data: {
+                            chart: {
+                              __typename: 'chart',
+                              marketType: 0,
+                            },
+                          },
+                        })
+                      },
+                    },
+                    {
+                      text: 'Futures market',
+                      to: '/chart',
+                      onClick: () => {
+                        client.writeData({
+                          data: {
+                            chart: {
+                              __typename: 'chart',
+                              marketType: 1,
+                            },
+                          },
+                        })
+                      },
+                    },
+                  ]}
+                />
               )}
 
               <NavLinkButtonWrapper key="market-wrapper">
@@ -227,11 +251,11 @@ const NavBarRaw: SFC<Props> = ({
               direction={'row'}
               container={true}
             >
-              <Hidden only={['sm', 'xs']}>
+              {/* <Hidden only={['sm', 'xs']}>
                 <Feedback borderColor={fade(divider, 0.5)} />
-              </Hidden>
+              </Hidden> */}
               <Hidden only="xs">
-                <Login push={push} />
+                <Login />
               </Hidden>
             </Grid>
           </Grid>
@@ -241,4 +265,7 @@ const NavBarRaw: SFC<Props> = ({
   )
 }
 
-export const NavBar = compose(withTheme())(NavBarRaw)
+export const NavBar = compose(
+  withTheme,
+  graphql(GET_MARKET_TYPE, { name: 'marketTypeData' })
+)(NavBarRaw)

@@ -11,8 +11,8 @@ export const PortfolioSelectorPopupWrapper = styled.div`
 
 export const PortfolioSelectorPopupMain = styled.div`
   position: absolute;
-  top: 35px;
-  left: 50%;
+  top: ${(props) => `calc(${props.top}px + 3rem)` || '35px'};
+  left: ${(props) => `${props.left}px` || '50%'};
   transform: translateX(-50%);
   text-align: center;
   font-size: 1.25rem;

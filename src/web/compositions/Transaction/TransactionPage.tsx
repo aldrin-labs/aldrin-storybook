@@ -61,7 +61,7 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 import { transactionsPageSteps } from '@sb/config/joyrideSteps'
 import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
 
-@withTheme()
+@withTheme
 class TransactionPage extends React.PureComponent {
   state = {
     includeExchangeTransactions: true,
@@ -296,7 +296,11 @@ class TransactionPage extends React.PureComponent {
     const login = true
     const isSideNavOpen = true
 
-    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+    const {
+      totalKeyAssetsData,
+      portfolioAssetsData,
+      portfolioAssetsMap,
+    } = getPortfolioAssetsData(
       portfolioKeys.myPortfolios
         ? portfolioKeys.myPortfolios[0].portfolioAssets
         : [],
@@ -364,7 +368,7 @@ class TransactionPage extends React.PureComponent {
                     />
                   </PortfolioSelectorWrapper>
 
-                  <Grid>
+                  <Grid style={{ height: '60vh' }}>
                     <Accounts
                       {...{
                         color,
@@ -375,6 +379,7 @@ class TransactionPage extends React.PureComponent {
                         keys,
                         isTransactions: true,
                         portfolioAssetsData: portfolioAssetsData,
+                        portfolioAssetsMap,
                         isRebalance: false,
                         onKeysSelectAll: this.onKeysSelectAll,
                         onKeyToggle: this.onKeyToggle,
@@ -481,22 +486,24 @@ class TransactionPage extends React.PureComponent {
 }
 
 export default compose(
-  // queryRendererHoc({
-  //   query: getPortfolioAssets,
-  //   name: 'portfolioKeys',
-  //   // pollInterval: 30000,
-  //   variables: { baseCoin: 'USDT', innerSettings: true },
-  // }),
-  graphql(getPortfolioAssets, {
+  queryRendererHoc({
+    query: getPortfolioAssets,
     name: 'portfolioKeys',
-    options: {
-      variables: { baseCoin: 'USDT', innerSettings: true },
-      pollInterval: 30000,
-    },
+    pollInterval: 30000,
+    fetchPolicy: "cache-and-network",
+    variables: { baseCoin: 'USDT', innerSettings: true },
   }),
+  // graphql(getPortfolioAssets, {
+  //   name: 'portfolioKeys',
+  //   options: {
+  //     variables: { baseCoin: 'USDT', innerSettings: true },
+  //     pollInterval: 30000,
+  //   },
+  // }),
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+    fetchPolicy: "cache-and-network",
     withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {

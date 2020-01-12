@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
 import { cloneDeep } from 'lodash-es'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import { Link, withRouter } from 'react-router-dom'
 
@@ -87,7 +88,7 @@ const RebalanceMediaQuery = createGlobalStyle`
 `
 
 @withRouter
-@withTheme()
+@withTheme
 class PortfolioSelector extends React.Component<IProps> {
   state = {
     valueSliderPercentage: 0,
@@ -352,8 +353,9 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!portfolioKeys || !portfolioKeys.myPortfolios || !dustFilter)
+    if (!portfolioKeys || !portfolioKeys.myPortfolios || !dustFilter) {
       return null
+    }
 
     // TODO: separate dust filter
 
@@ -387,7 +389,7 @@ class PortfolioSelector extends React.Component<IProps> {
         )
       : assets
 
-    const { totalKeyAssetsData, portfolioAssetsData } = getPortfolioAssetsData(
+    const { totalKeyAssetsData, portfolioAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
       filteredData,
       isTransactions ? 'USDT' : baseCoin
     )
@@ -452,8 +454,11 @@ class PortfolioSelector extends React.Component<IProps> {
                 <PortfolioSelectorPopup
                   data={myPortfolios[0]}
                   baseCoin={baseCoin}
+                  id={'renamePortfolio'}
                   isSideNavOpen={isSideNavOpen}
                   isPortfolio={true}
+                  needPortalMask={true}
+                  needPortalPopup={true}
                   forceUpdateAccountContainer={() => this.forceUpdate()}
                 />
               </Grid>
@@ -481,6 +486,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 baseCoin,
                 isSideNavOpen,
                 portfolioAssetsData,
+                portfolioAssetsMap,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,
@@ -595,14 +601,24 @@ class PortfolioSelector extends React.Component<IProps> {
   }
 }
 
+const PortfolioSelectorDataWrapper = (props) => {
+  
+  return (
+    <QueryRenderer
+      component={PortfolioSelector}
+      // withOutSpinner={true}
+      // withTableLoader={true}
+      query={getPortfolioAssets}
+      variables={{ baseCoin: props.baseCoin, innerSettings: true }}
+      pollInterval={30000}
+      name={`portfolioKeys`}
+      fetchPolicy="cache-and-network"
+      {...props}
+    />
+  )
+}
+
 export default compose(
-  graphql(getPortfolioAssets, {
-    name: 'portfolioKeys',
-    options: ({ baseCoin }) => ({
-      variables: { baseCoin, innerSettings: true },
-      pollInterval: 30000,
-    }),
-  }),
   graphql(updateDustFilter, {
     name: 'updateDustFilter',
   }),
@@ -625,4 +641,6 @@ export default compose(
       ],
     }),
   })
-)(PortfolioSelector)
+)(PortfolioSelectorDataWrapper)
+
+

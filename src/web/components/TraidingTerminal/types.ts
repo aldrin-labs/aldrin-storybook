@@ -8,6 +8,10 @@ export interface FormValues {
   limit: number | string
   amount: number | string
   total: number | string
+  reduceOnly: boolean
+  leverage: number
+  timeInForce?: string
+  postOnly?: boolean
 }
 
 export type priceType = 'limit' | 'market' | 'stop-limit'
@@ -23,9 +27,16 @@ export interface IProps {
   confirmOperation: (
     byType: 'buy' | 'sell',
     priceType: 'limit' | 'market' | 'stop-limit',
-    filtredValues: Partial<FormValues>) => IResult
-  showOrderResult: (result: IResult, cancelOrderFunction: (arg: any) => void) => null
+    filtredValues: Partial<FormValues>,
+    mode: string,
+    state: any,
+    futuresValues: any
+  ) => IResult
+
+  showOrderResult: (
+    result: IResult,
+    cancelOrderFunction: (arg: any) => void
+  ) => null
 }
 
 export interface IPropsWithFormik extends FormikProps<FormValues>, IProps {}
-

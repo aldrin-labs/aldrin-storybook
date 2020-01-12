@@ -12,22 +12,26 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
+import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
-@withTheme()
+let interval
+
+@withTheme
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],
   }
 
+  unsubscribeFunction: null | Function = null
+
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation } = this.props
+    const { cancelOrderMutation, marketType } = this.props
 
     try {
       const responseResult = await cancelOrderMutation({
@@ -36,6 +40,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             keyId,
             orderId,
             pair,
+            marketType,
           },
         },
       })
@@ -66,26 +71,84 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentDidMount() {
-    const { getOpenOrderHistoryQuery, subscribeToMore, theme } = this.props
+    const {
+      getOpenOrderHistoryQuery,
+      subscribeToMore,
+      theme,
+      arrayOfMarketIds,
+      marketType,
+    } = this.props
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
-      theme
+      theme,
+      arrayOfMarketIds,
+      marketType
     )
+
+    client.writeQuery({
+      query: getOpenOrderHistory,
+      variables: {
+        openOrderInput: {
+          activeExchangeKey: this.props.selectedKey.keyId,
+        },
+      },
+      data: {
+        getOpenOrderHistory: getOpenOrderHistoryQuery.getOpenOrderHistory,
+      },
+    })
+
     this.setState({
       openOrdersProcessedData,
     })
 
-    subscribeToMore()
+    const that = this
+
+    interval = setInterval(() => {
+      const data = client.readQuery({
+        query: getOpenOrderHistory,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+          },
+        },
+      })
+
+      if (data.getOpenOrderHistory.find((order) => order.marketId === '0')) {
+        return
+      }
+
+      that.props.getOpenOrderHistoryQueryRefetch({
+        variables: {
+          activeStrategiesInput: {
+            activeExchangeKey: that.props.selectedKey.keyId,
+          },
+        },
+      })
+    }, 20000)
+
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
+
+    interval && clearInterval(interval)
   }
 
   componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
-      nextProps.theme
+      nextProps.theme,
+      nextProps.arrayOfMarketIds,
+      nextProps.marketType
     )
+
     this.setState({
       openOrdersProcessedData,
     })
@@ -93,7 +156,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   render() {
     const { openOrdersProcessedData } = this.state
-    const { tab, handleTabChange, show } = this.props
+    const { tab, handleTabChange, show, marketType } = this.props
 
     if (!show) {
       return null
@@ -101,7 +164,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
-        style={{ borderRadius: 0, height: '100%' }}
+        style={{ borderRadius: 0, height: '100%', overflowX: 'hidden' }}
         stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
           sortColumn: 'date',
@@ -111,33 +174,40 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
             backgroundColor: '#fff',
             color: '#16253D',
+            boxShadow: 'none',
           },
           cell: {
-            color: '#16253D',
-            fontSize: '1.3rem', // 1.2 if bold
-            // fontWeight: 'bold',
-            fontFamily: 'Trebuchet MS',
+            color: '#7284A0',
+            fontSize: '1rem', // 1.2 if bold
+            fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           tab: {
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs tab={tab} handleTabChange={handleTabChange} />
+            <TradingTabs
+              tab={tab}
+              handleTabChange={handleTabChange}
+              marketType={marketType}
+            />
           </div>
         }
         data={{ body: openOrdersProcessedData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead(tab, marketType)}
       />
     )
   }
@@ -156,7 +226,8 @@ const TableDataWrapper = ({ ...props }) => {
       withTableLoader={true}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
+      // pollInterval={15000}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {
@@ -174,7 +245,3 @@ const TableDataWrapper = ({ ...props }) => {
 export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
   TableDataWrapper
 )
-
-// TODO
-// maybe percentages for table
-// layout fixes > 2560 and < 1400

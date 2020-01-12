@@ -24,12 +24,14 @@ export interface IProps extends WithTheme<Theme> {
   }) => void
   onFocusChange: (focusedInput: string) => void
   onClearDateButtonClick: () => void
-  subscribeToMore: () => void
+  subscribeToMore: () => () => void
   getOrderHistoryQuery: {
     getOrderHistory: OrderType[]
   }
   theme: Theme
   selectedKey: Key
+  arrayOfMarketIds: string[]
+  marketType: number
 }
 
 export interface IState {

@@ -1,23 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Fade, Grid } from '@material-ui/core'
 
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
-
+import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { SingleChart } from '@sb/components/Chart'
 
+import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
-// import ComingSoon from '@sb/components/ComingSoon'
+import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
+import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
+
+const TerminalContainer = ({ isDefaultTerminalViewMode, children }) =>
+  isDefaultTerminalViewMode ? (
+    <TablesBlockWrapper
+      item
+      container
+      xs={5}
+      style={{
+        padding: '.4rem 0 0 .4rem',
+      }}
+    >
+      {children}
+    </TablesBlockWrapper>
+  ) : (
+    <SmartTerminalContainer xs={11} item container>
+      {children}
+    </SmartTerminalContainer>
+  )
 
 import {
   Container,
   ChartsContainer,
   DepthChartContainer,
-  // RangesContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
   ChartGridContainer,
+  CustomCard,
+  BalancesContainer,
+  SmartTerminalContainer,
 } from '../Chart.styles'
 
 // fix props type
@@ -26,51 +48,90 @@ export const DefaultView = (props: any) => {
     currencyPair,
     // theme,
     id,
+    view,
+    marketType,
     themeMode,
     activeExchange,
     activeChart,
-    renderTogglerBody,
-    renderTables,
-    renderDepthAndList,
-    // MASTER_BUILD,
+    changeTable,
+    minPriceDigits,
     showOrderResult,
     showCancelResult,
+    showFuturesTransfer,
+    showUpdateLeverageResult,
+    showTableOnMobile,
     selectedKey,
+    chartProps,
+    changeActiveExchangeMutation,
+    terminalViewMode,
+    updateTerminalViewMode,
+    arrayOfMarketIds,
   } = props
 
   if (!currencyPair) {
     return
   }
+
+  const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
+    null | number
+  >(null)
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
+  const exchange = activeExchange.symbol
+  const isDefaultTerminalViewMode = terminalViewMode === 'default'
+  const sizeDigits = marketType === 0 ? 8 : 3
 
   return (
-    <div>
-      <Container container spacing={8}>
-        <ChartGridContainer item xs={12} style={{ paddingBottom: '0px' }}>
-          {renderTogglerBody()}
-        </ChartGridContainer>
+    <Container container spacing={8}>
+      <ChartGridContainer item xs={12}>
+        <CardsPanel
+          {...{
+            _id: id,
+            pair: currencyPair,
+            view,
+            themeMode,
+            activeExchange,
+            changeActiveExchangeMutation,
+            isDefaultTerminalViewMode,
+            updateTerminalViewMode,
+            marketType,
+          }}
+        />
+      </ChartGridContainer>
 
+      <Grid
+        item
+        container
+        xs={12}
+        style={{
+          height: '100%',
+          padding: '0',
+          marginLeft: 0,
+          marginRight: 0,
+        }}
+        direction="column"
+        spacing={8}
+      >
         <Grid
           item
           container
           xs={12}
-          style={{ height: 'calc(100% - 3rem)', paddingRight: 0 }}
-          spacing={8}
+          style={{
+            height: '100%',
+            padding: '.4rem .4rem 0 0',
+          }}
         >
-          <Grid
+          <ChartsContainer
             item
-            container
-            direction="column"
-            xs={6}
-            style={{
-              height: 'calc(100% - 8px)',
-            }}
+            xs={9}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
-            <ChartsContainer item xs={12}>
+            <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
-                  additionalUrl={`/?symbol=${base}/${quote}&user_id=${id}&theme=${themeMode}`}
+                  additionalUrl={`/?symbol=${base}/${quote}_${String(
+                    marketType
+                  )}&user_id=${id}&theme=${themeMode}`}
                 />
               ) : (
                 <Fade timeout={1000} in={activeChart === 'depth'}>
@@ -85,47 +146,111 @@ export const DefaultView = (props: any) => {
                   </DepthChartContainer>
                 </Fade>
               )}
-            </ChartsContainer>
-            <TradingTabelContainer style={{ overflowX: 'hidden' }} item xs={12}>
-              {/*{MASTER_BUILD && <ComingSoon />}*/}
-              <TradingTable showCancelResult={showCancelResult} />
-            </TradingTabelContainer>
-          </Grid>
+            </CustomCard>
+          </ChartsContainer>
           <TradingTerminalContainer
             item
-            container
-            xs={6}
-            style={{ height: '100%', paddingRight: 0 }}
+            xs={3}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
-            {/*{MASTER_BUILD && <ComingSoon />}*/}
-            <Grid item container xs={6} style={{ height: '100%' }} spacing={8}>
-              {renderDepthAndList()}
-              {renderTables()}
-            </Grid>
-            <Grid
-              item
-              container
-              direction="column"
-              style={{
-                height: '100%',
-                padding: '4px  0 4px 8px',
-                position: 'relative',
-                bottom: '4px',
-              }}
-              xs={6}
-            >
-              <TradingComponent
-                selectedKey={selectedKey}
-                activeExchange={activeExchange}
-                pair={baseQuoteArr}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
-              />
-              {/* <RangesContainer>ranges</RangesContainer> */}
+            <Grid item container style={{ height: '100%' }}>
+              <Grid item container xs={12} style={{ height: '100%' }}>
+                <OrderbookAndDepthChart
+                  {...{
+                    symbol: currencyPair,
+                    pair: currencyPair,
+                    exchange,
+                    quote,
+                    minPriceDigits,
+                    arrayOfMarketIds,
+                    updateTerminalPriceFromOrderbook,
+                    activeExchange,
+                    selectedKey,
+                    showTableOnMobile,
+                    changeTable,
+                    chartProps,
+                    marketType,
+                    sizeDigits,
+                  }}
+                />
+              </Grid>
+              {/* <Grid
+                item
+                xs={5}
+                style={{
+                  height: '100%',
+                  padding: '0 0 .4rem .4rem',
+                }}
+              > */}
+              {/* <TradeHistory
+                  {...{
+                    symbol: currencyPair,
+                    pair: currencyPair,
+                    exchange,
+                    quote,
+                    minPriceDigits,
+                    updateTerminalPriceFromOrderbook,
+                    marketType,
+                    activeExchange,
+                    showTableOnMobile,
+                    changeTable,
+                    chartProps,
+                    sizeDigits,
+                  }}
+                /> */}
+              {/* </Grid> */}
             </Grid>
           </TradingTerminalContainer>
+          {isDefaultTerminalViewMode && (
+            <TradingTabelContainer
+              item
+              xs={6}
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            >
+              <CustomCard style={{ overflow: 'hidden scroll' }}>
+                <TradingTable
+                  selectedKey={selectedKey}
+                  showOrderResult={showOrderResult}
+                  showCancelResult={showCancelResult}
+                  marketType={marketType}
+                  exchange={exchange}
+                  currencyPair={currencyPair}
+                  arrayOfMarketIds={arrayOfMarketIds}
+                />
+              </CustomCard>
+            </TradingTabelContainer>
+          )}
+          <BalancesContainer
+            item
+            xs={1}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <Balances
+              pair={currencyPair.split('_')}
+              selectedKey={selectedKey}
+              marketType={marketType}
+              showFuturesTransfer={showFuturesTransfer}
+            />
+          </BalancesContainer>
+
+          <TerminalContainer
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <TradingComponent
+              selectedKey={selectedKey}
+              activeExchange={activeExchange}
+              pair={baseQuoteArr}
+              priceFromOrderbook={priceFromOrderbook}
+              marketType={marketType}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              showUpdateLeverageResult={showUpdateLeverageResult}
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              updateTerminalViewMode={updateTerminalViewMode}
+            />
+          </TerminalContainer>
         </Grid>
-      </Container>
-    </div>
+      </Grid>
+    </Container>
   )
 }

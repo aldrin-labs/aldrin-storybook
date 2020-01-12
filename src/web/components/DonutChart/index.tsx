@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography, withWidth } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import { isWidthUp, isWidthDown } from '@material-ui/core/withWidth'
 import { withTheme } from '@material-ui/styles'
 import { isEqual, range } from 'lodash-es'
@@ -45,7 +45,7 @@ const DEFAULT_CHART_SIZE = {
 }
 const DEFAULT_COLOR_LEGEND_WIDTH = 150
 
-@withTheme()
+@withTheme
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',
@@ -248,7 +248,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
   }
 }
 
-const wrappedDonutChart = withWidth()(DonutChartWitoutTheme)
+const wrappedDonutChart = DonutChartWitoutTheme
 
 export const DonutChart = wrappedDonutChart
 

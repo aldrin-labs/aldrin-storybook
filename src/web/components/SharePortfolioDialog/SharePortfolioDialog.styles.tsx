@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom'
 
 export const StyledDialogContent = styled(DialogContent)`
   padding: 0 2.4rem 2.4rem;
+  font-family: DM Sans;
 
   @media (min-width: 2560px) {
     padding: 0 2rem 2rem;
@@ -196,25 +197,35 @@ export const SRadio = styled(Radio)`
       font-size: 2rem;
     }
   }
+
+  & svg {
+    height: 2rem;
+    width: 2rem;
+  }
 `
 
 export const SCheckbox = styled(Checkbox)`
   @media (min-width: 1440px) {
-    svg {
+    & svg {
       font-size: 2.2rem;
     }
   }
 
   @media (min-width: 1720px) {
-    svg {
+    & svg {
       font-size: 2.4rem;
     }
   }
 
   @media (min-width: 2560px) {
-    svg {
+    & svg {
       font-size: 2rem;
     }
+  }
+
+  & svg {
+    height: 2rem;
+    width: 2rem;
   }
 `
 

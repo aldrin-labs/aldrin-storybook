@@ -1,14 +1,11 @@
 import React from 'react'
-import { withWidth } from '@material-ui/core'
-import { compose } from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Slider from '@sb/components/Slider/Slider'
 import Tooltip from '@material-ui/core/Tooltip'
-import { withTheme } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/styles'
 
 import {
   StyledTypography,
@@ -22,7 +19,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
-@withTheme()
+@withTheme
 class TablePanelSummary extends React.Component {
   render() {
     const {
@@ -127,4 +124,4 @@ class TablePanelSummary extends React.Component {
 }
 
 // export default withStyles(styles)(TablePanelSummary)
-export default withWidth()(TablePanelSummary)
+export default TablePanelSummary

@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { StyledTable } from './TraderOrderHistoryTable.styles'
 import { IProps } from './TraderOrderHistoryTable.types'
-import { withWidth } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 import CoinRow from './CoinRow'
 
-@withTheme()
+@withTheme
 class TradeOrderHistoryTable extends React.Component<IProps> {
   addFilter = () => {
     const {
@@ -103,4 +102,4 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
   }
 }
 
-export default withWidth()(TradeOrderHistoryTable)
+export default TradeOrderHistoryTable

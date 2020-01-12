@@ -1,144 +1,64 @@
 import * as React from 'react'
-import { auth0Options } from '@core/config/authConfig'
-import Button from '@material-ui/core/Button'
-import { Grow, Slide } from '@material-ui/core'
-import { Props } from './Login.types'
-import { LoginMenu } from '@sb/components/LoginMenu'
-import MainLogo from '@icons/AuthLogo.png'
-import auth0Logo from '@icons/auth0Logo.png'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+import { withRouter } from 'react-router'
 
-import { MASTER_BUILD } from '@core/utils/config'
-import { SWrapper } from './Login.styles'
+import { Grow, Slide, Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
-import { auth0VerifyEmailErrorMessage, auth0UnauthorizedErrorMessage, errorInProcessOfLoginin } from '@core/utils/errorsConfig'
 
-@withTheme()
-class LoginQuery extends React.Component<Props> {
-  lock = new Auth0Lock('0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm', 'ccai.auth0.com', {
-    ...auth0Options,
-    theme: {
-      ...auth0Options.theme,
-      primaryColor: this.props.theme.palette.secondary.main,
-      logo: auth0Logo,
-    },
-  })
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import * as CLIENT_API_MUTATIONS from '@core/graphql/mutations/login'
+import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
 
-  componentDidUpdate = async (prevProps: Props) => {
-    if (!this.props.loginStatus && !this.props.modalIsOpen && this.props.loginStatus !== prevProps.loginStatus) {
-      await this.onModalChanges(true)
-      this.showLoginAfterDelay()
-    }
+import { handleLogout } from '@core/utils/loginUtils'
+
+import { LoginMenu } from '@sb/components/LoginMenu'
+import { Props } from './Login.types'
+import { SWrapper } from './Login.styles'
+
+@withTheme
+@withRouter
+class LoginClassComponent extends React.Component<Props> {
+  hangleGoToLoginPage = () => {
+    const {
+      history: { push },
+    } = this.props
+
+    push('/login')
   }
 
-  componentDidMount = async () => {
-    this.setLockListeners()
-    if (this.props.loginStatus) this.addFSIdentify(this.props.user)
-    if (this.props.modalIsOpen) {
-      await this.onModalChanges(false)
-    }
-  }
-
-  showLoginAfterDelay = (delay = 1500): void => {
-    setTimeout(this.showLogin, delay)
-  }
-
-  handleAuthError = async (errorObject: any) => {
-    const { authErrorsMutation, persistCacheImmediately } = this.props
-    // we handle only verification email error, assuming that other errors will be resolved by auth0 lib & lock widget
-    if (!(auth0VerifyEmailErrorMessage === errorObject.errorDescription && errorObject.error === auth0UnauthorizedErrorMessage)) {
-      return
-    }
-
-    await authErrorsMutation({
-      variables: {
-        authError: true,
-        authErrorText: errorObject.error || errorInProcessOfLoginin,
-      },
-    })
-    await this.onModalChanges(false)
-    await persistCacheImmediately()
-  }
-
-  addFSIdentify(profile) {
-    if (MASTER_BUILD && window.FS && window.FS.identify) {
-      return window.FS.identify(profile.email, {
-        displayName: profile.email,
-        email: profile.email,
-      })
-    }
-  }
-
-  setLockListeners = () => {
-    this.lock.on('authenticated', (authResult: any) => {
-      this.lock.getUserInfo(
-        authResult.accessToken,
-        async (error: Error, profile: any) => {
-          if (error) {
-            console.error(error)
-          }
-
-          await this.props.onLogin(profile, authResult.idToken)
-          this.addFSIdentify(profile)
-        }
-      )
-    })
-    this.lock.on('hide', async () => {
-      await this.onModalProcessChanges(true)
-      setTimeout(async () => {
-        await this.onModalChanges(false)
-      }, 1000)
-    })
-
-    this.lock.on('authorization_error', this.handleAuthError)
-  }
-
-  onModalChanges = async (modalIsOpen: boolean) => {
-    const { modalStatusMutation } = this.props
-    const variables = {
-      modalIsOpen,
-    }
-
-    try {
-      await modalStatusMutation({ variables })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  onModalProcessChanges = async (modalLogging: boolean) => {
-    const { modalProcessMutation } = this.props
-    const variables = {
-      modalLogging,
-    }
-
-    try {
-      await modalProcessMutation({ variables })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  showLogin = async () => {
-    if (!this.props.modalIsOpen && !this.props.modalLogging) {
-      await this.onModalChanges(true)
-      this.lock.show()
-      return
-    }
-
-    await this.onModalChanges(false)
+  logout = async () => {
+    const {
+      logoutMutation,
+      history: { push },
+    } = this.props
+    await handleLogout(logoutMutation)
+    push('/login')
   }
 
   render() {
-    const { loginStatus, handleLogout, user } = this.props
+    const {
+      loginDataQuery: {
+        login: { loginStatus, user },
+      },
+      location: { pathname },
+    } = this.props
+
+    const isLoginPage = pathname === '/login'
 
     return (
       <SWrapper className="LoginButton">
-        <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
+        <Grow
+          in={!loginStatus && !isLoginPage}
+          unmountOnExit={true}
+          mountOnEnter={true}
+        >
           <Button
             color="secondary"
             variant="contained"
-            onClick={this.showLogin}
+            onClick={this.hangleGoToLoginPage}
             className="loginButton"
+            style={{ padding: '1px 16px' }}
           >
             Log in / Sign Up
           </Button>
@@ -149,14 +69,14 @@ class LoginQuery extends React.Component<Props> {
           unmountOnExit={true}
           mountOnEnter={true}
         >
-          <LoginMenu
-            handleLogout={handleLogout}
-            userName={user && user.name}
-          />
+          <LoginMenu handleLogout={this.logout} userName={user && user.name} />
         </Slide>
       </SWrapper>
     )
   }
 }
 
-export const LoginComponent = LoginQuery
+export const LoginComponent = compose(
+  queryRendererHoc({ query: GET_LOGIN_DATA, name: 'loginDataQuery' }),
+  graphql(CLIENT_API_MUTATIONS.LOGOUT, { name: 'logoutMutation' })
+)(LoginClassComponent)

@@ -8,7 +8,7 @@ import Joyride from 'react-joyride'
 import { IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { SnackbarProvider, withSnackbar } from 'notistack'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 import { createGlobalStyle } from 'styled-components'
 
@@ -78,7 +78,7 @@ const CloseButton = withStyles(canselStyeles)((props) => (
   </IconButton>
 ))
 
-@withTheme()
+@withTheme
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
@@ -740,10 +740,11 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 // }
 
 export default compose(
-  withTheme(),
+  withTheme,
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',

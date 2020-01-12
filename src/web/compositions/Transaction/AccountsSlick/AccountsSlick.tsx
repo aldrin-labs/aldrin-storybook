@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 
-import { compose } from 'recompose'
 import QueryRenderer from '@core/components/QueryRenderer'
-
+import { getTimeZone } from '@core/utils/dateUtils'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
@@ -62,15 +61,6 @@ class AccountsSlick extends Component {
         },
       },
     })
-  }
-
-  componentDidMount() {
-    const intervalId = setInterval(() => this.props.refetch(), 30000)
-    this.setState({ intervalId })
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.intervalId)
   }
 
   render() {
@@ -147,6 +137,8 @@ const APIWrapper = (props: any) => {
 
   const endDate = +moment().endOf('day')
   const startDate = +moment().subtract(1, 'weeks')
+  const timezone = getTimeZone()
+
 
   const queries = [
     { query: getPortfolioAssets, variables: { baseCoin, innerSettings: true } },
@@ -168,6 +160,7 @@ const APIWrapper = (props: any) => {
         input: {
           startDate,
           endDate,
+          timezone,
         },
       },
     },
@@ -191,13 +184,14 @@ const APIWrapper = (props: any) => {
 
   return (
     <QueryRenderer
-      {...props}
       loaderColor="#fefefe"
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       component={MutationComponent}
       query={getMyPortfoliosQuery}
-      variables={{ baseCoin }}
+      pollInterval={30000}
+      variables={{ baseCoin: props.baseCoin }}
       withOutSpinner={false}
+      {...props}
     />
   )
 }

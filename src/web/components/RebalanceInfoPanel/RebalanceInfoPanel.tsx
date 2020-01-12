@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Input, withWidth } from '@material-ui/core'
+import { Grid, Input } from '@material-ui/core'
 import {
   GridFlex,
   GridInfoPanelWrapper,
@@ -23,7 +23,7 @@ import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
 
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
 
-@withTheme()
+@withTheme
 class RebalanceInfoPanel extends Component<IProps, IState> {
   state: IState = {
     isHiddenRebalanceDaysInput: 'hidden',
@@ -291,4 +291,4 @@ class RebalanceInfoPanel extends Component<IProps, IState> {
   }
 }
 
-export default withWidth()(RebalanceInfoPanel)
+export default RebalanceInfoPanel

@@ -22,10 +22,15 @@ export const TitleButton = styled(
     props.isActive ? '#165BE0' : '#E0E5EC'};
   background-color: ${(props: { isActive?: boolean }) =>
     props.isActive ? '#165BE0' : '#F9FBFD'};
-  margin: 7px;
-  padding: 0px 8px;
+  margin: .7rem;
+  padding: 0px .4rem;
   border-radius: 1rem;
-  min-width: 40px;
+  min-width: 4rem;
+
+  &:hover {
+    background-color: ${(props: { isActive?: boolean }) =>
+    props.isActive && '#165BE0'};
+  }
 `
 
 export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`

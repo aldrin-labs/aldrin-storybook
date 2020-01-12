@@ -22,29 +22,42 @@ class FundsTable extends React.PureComponent<IProps> {
     hideSmallAssets: false,
   }
 
+  unsubscribeFunction: null | Function = null
+
   handleSmallAssetsCheckboxChange = (event, checked) => {
+    const { marketType } = this.props
+
     this.setState({
       hideSmallAssets: checked,
       fundsProcessedData: combineFundsTable(
         this.props.getFundsQuery.getFunds,
-        checked
+        checked,
+        marketType,
       ),
     })
   }
 
   componentDidMount() {
-    const { getFundsQuery, subscribeToMore } = this.props
+    const { getFundsQuery, subscribeToMore, marketType } = this.props
     const { hideSmallAssets } = this.state
 
     const fundsProcessedData = combineFundsTable(
       getFundsQuery.getFunds,
-      hideSmallAssets
+      hideSmallAssets,
+      marketType,
     )
     this.setState({
       fundsProcessedData,
     })
 
-    subscribeToMore()
+    this.unsubscribeFunction = subscribeToMore()
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunction !== null) {
+      this.unsubscribeFunction()
+    }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -52,7 +65,8 @@ class FundsTable extends React.PureComponent<IProps> {
 
     const fundsProcessedData = combineFundsTable(
       nextProps.getFundsQuery.getFunds,
-      hideSmallAssets
+      hideSmallAssets,
+      nextProps.marketType,
     )
     this.setState({
       fundsProcessedData,
@@ -61,7 +75,7 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const { tab, handleTabChange, show } = this.props
+    const { tab, handleTabChange, show, marketType } = this.props
 
     if (!show) {
       return null
@@ -75,23 +89,26 @@ class FundsTable extends React.PureComponent<IProps> {
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
             backgroundColor: '#fff',
             color: '#16253D',
+            boxShadow: 'none',
           },
           cell: {
-            color: '#16253D',
-            fontSize: '1.3rem', // 1.2 if bold
-            // fontWeight: 'bold',
-            fontFamily: 'Trebuchet MS',
+            color: '#7284A0',
+            fontSize: '1rem', // 1.2 if bold
+            fontWeight: 'bold',
             letterSpacing: '1px',
             borderBottom: '1px solid #e0e5ec',
+            boxShadow: 'none',
           },
           tab: {
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
@@ -99,6 +116,7 @@ class FundsTable extends React.PureComponent<IProps> {
           <div>
             <TradingTabs
               tab={tab}
+              marketType={marketType}
               hideSmallAssets={hideSmallAssets}
               handleTabChange={handleTabChange}
               handleSmallAssetsCheckboxChange={
@@ -147,7 +165,8 @@ const TableDataWrapper = ({ ...props }) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
+      pollInterval={60000}
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {

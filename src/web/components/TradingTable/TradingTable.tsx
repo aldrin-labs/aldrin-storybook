@@ -8,7 +8,10 @@ import 'react-dates/lib/css/_datepicker.css'
 
 import { IProps, IState } from './TradingTable.types'
 import { tradingTableTabConfig } from './TradingTable.mocks'
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import ActiveTrades from './ActiveTrades/ActiveTrades'
+import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
@@ -20,7 +23,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     tabIndex: 0,
-    tab: 'openOrders',
+    tab: 'activeTrades',
   }
 
   handleTabChange = (tab: string | any) => {
@@ -32,17 +35,46 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   render() {
     const { tab } = this.state
     const {
-      getSelectedKeyQuery: {
-        chart: { selectedKey },
-      },
+      selectedKey,
+      marketType,
+      exchange,
+      currencyPair,
+      arrayOfMarketIds,
     } = this.props
 
     return (
       <>
+        <ActiveTrades
+          {...{
+            tab,
+            selectedKey,
+            marketType,
+            exchange,
+            currencyPair,
+            show: tab === 'activeTrades',
+            handleTabChange: this.handleTabChange,
+            showCancelResult: this.props.showCancelResult,
+          }}
+        />
+        <PositionsTable
+          {...{
+            tab,
+            selectedKey,
+            marketType,
+            exchange,
+            currencyPair,
+            show: tab === 'positions',
+            handleTabChange: this.handleTabChange,
+            showOrderResult: this.props.showOrderResult,
+            showCancelResult: this.props.showCancelResult,
+          }}
+        />
         <OpenOrdersTable
           {...{
             tab,
             selectedKey,
+            marketType,
+            arrayOfMarketIds,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -52,6 +84,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
+            arrayOfMarketIds,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -60,6 +94,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
+            arrayOfMarketIds,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -68,6 +104,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             selectedKey,
+            marketType,
             show: tab === 'funds',
             handleTabChange: this.handleTabChange,
           }}
@@ -77,10 +114,4 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default compose(
-  withErrorFallback,
-  queryRendererHoc({
-    query: getSelectedKey,
-    name: 'getSelectedKeyQuery',
-  })
-)(TradingTable)
+export default compose(withErrorFallback)(TradingTable)

@@ -12,7 +12,7 @@ import {
 import { IProps } from './TradingTitle.types'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme()
+@withTheme
 export default class TradingTitle extends React.PureComponent<IProps> {
   render() {
     const {
@@ -76,8 +76,8 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           fontSize={CSS_CONFIG.chart.content.fontSize}
           style={{ paddingLeft: '2rem', borderLeft: '1px solid #e0e5ec' }}
           zIndexPicker={200}
-          dateInputHeight={`24px`}
-          dateInputPadding={`0 5px`}
+          dateInputHeight={`2.4rem`}
+          dateInputPadding={`0 .5rem`}
           dateRangePadding={`0px`}
         >
           <DateRangePicker

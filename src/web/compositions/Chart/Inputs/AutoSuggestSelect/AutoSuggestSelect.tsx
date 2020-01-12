@@ -22,7 +22,7 @@ type T = { value: string; data: string }
 
 let suggestions: T[] = []
 
-@withTheme()
+@withTheme
 class IntegrationReactSelect extends React.Component<IProps, IState> {
   state = {
     isClosed: true,
@@ -94,24 +94,30 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
       return <Loading centerAligned={true} />
     }
 
-    const matchFrom: 'start' | 'any' = 'start'
-
-    const filterConfig = {
-      matchFrom,
-      ignoreCase: true,
-      trim: true,
+    const customFilterOption = (option, rawInput) => {
+      const words = rawInput.split(' ')
+      return words.reduce(
+        (acc, cur) =>
+          acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+        true
+      )
     }
 
     if (data) {
       suggestions = data.getMarketsByExchange
+        .map((el) => el.symbol)
         .filter(
-          ({ symbol }: { symbol: string }) =>
-            symbol.split('_')[0] !== 'undefined' ||
-            symbol.split('_')[1] !== 'undefined'
+          (symbol: string, index, origArray) =>
+            origArray.indexOf(symbol) === index &&
+            (symbol.split('_')[0] !== 'undefined' &&
+              symbol.split('_')[1] !== 'undefined')
         )
-        .map((suggestion: any) => ({
-          value: suggestion.symbol,
-          label: suggestion.symbol,
+        .sort((a, b) =>
+          /BTC_/.test(a) ? -1 : /BTC_/.test(b) ? 1 : /_BTC/.test(b) ? 0 : -1
+        )
+        .map((symbol: string) => ({
+          value: symbol,
+          label: symbol,
         }))
     }
     return (
@@ -123,7 +129,7 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
         <SelectR
           id={this.props.id}
           style={{ width: '100%' }}
-          filterOption={createFilter(filterConfig)}
+          filterOption={customFilterOption}
           placeholder="Add chart"
           value={this.state.isClosed && value && { value, label: value }}
           fullWidth={true}
@@ -144,7 +150,8 @@ const queryRender = (props: IProps) => (
     placeholder={() => <TextInputLoader style={{ width: 100, margin: 0 }} />}
     component={IntegrationReactSelect}
     query={MARKETS_BY_EXCHANE_QUERY}
-    variables={{ splitter: '_', exchange: props.activeExchange.symbol }}
+    variables={{ splitter: '_', exchange: props.activeExchange.symbol, marketType: props.marketType}}
+    withOutSpinner={true}
     {...props}
   />
 )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import { Grid, Table, TableBody, TableCell, TableRow } from '@material-ui/core'
 import ProgressBar from '@sb/components/ProgressBar/ProgressBar'
 import SvgIcon from '../SvgIcon'

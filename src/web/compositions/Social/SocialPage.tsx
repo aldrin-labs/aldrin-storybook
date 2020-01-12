@@ -132,7 +132,7 @@ const PortfolioListItem = ({ el, onClick, isSelected }) => (
   // </Paper>
 )
 
-@withTheme()
+@withTheme
 class SocialPage extends React.Component {
   state = {
     search: '',

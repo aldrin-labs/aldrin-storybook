@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { StyledTab } from '@sb/components/TradingWrapper/styles'
 import { Button, TextField, Grid } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
@@ -57,13 +57,19 @@ export const PriceButton = withStyles(styles)(
 )
 
 export const Container = styled.div`
+  height: 100%;
+
   && {
     background-color: ${(props: { background?: string }) => props.background};
   }
 `
 
 export const GridContainer = styled.div`
-  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  padding: 0 1.2rem;
 `
 
 export const NameHeader = styled.div`
@@ -98,7 +104,7 @@ export const BalanceTitle = styled(BalanceGrid)`
   background: #e0e5ec;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  font-family: Trebuchet MS;
+
   font-size: 1.3rem;
 `
 
@@ -113,19 +119,26 @@ export const BalanceItem = styled(BalanceGrid)`
 export const TradingItemTitle = styled.span`
   display: block;
   color: #7284a0;
-  font-size: 1.2rem;
-  font-family: Trebuchet MS;
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+
   font-weight: bold;
 `
 
 export const InputTitle = styled(TradingItemTitle)`
-  padding-left: 0.5rem;
+  color: ${(props) => props.color || '#7284a0'};
+  font-size: 1rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+  padding: 0 1rem;
+  width: 30%;
+  text-align: right;
 `
 
 export const TradingItemValue = styled.span`
   color: #16253d;
   font-size: 1.2rem;
-  font-family: Trebuchet MS;
+
   font-weight: bold;
 `
 
@@ -138,7 +151,11 @@ export const TradingItemSubValue = styled(TradingItemValue)`
 // input with coin inset
 
 export const PaddingGrid = styled(Grid)`
-  padding: 1rem 0;
+  display: flex;
+`
+
+export const TotalGrid = styled(PaddingGrid)`
+  padding-bottom: 0;
 `
 
 export const TradeBlock = styled(BalanceGrid)`
@@ -151,38 +168,69 @@ export const TradeBlock = styled(BalanceGrid)`
 
 export const TradeInput = styled.input`
   position: relative;
+  bottom: 0.2rem;
   width: 100%;
   min-height: 3rem;
-  border: 1px solid #e0e5ec;
+  border: ${(props) =>
+    props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
   border-radius: 4px;
-  box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
   margin-top: 0.2rem;
   color: #16253d;
-  font-size: 1.2rem;
-  font-family: Trebuchet MS;
-  font-weight: bold;
-  padding-left: 0.6rem;
-  outline: none;
+  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
+  font-size: 1.3rem;
 
-  &::after {
-    content: '${(props) => props.text}';
-    position: absolute;
-    right: 20px;
-    top: 50%;
+  font-weight: bold;
+  padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
+  text-align: ${(props) => props.align};
+  outline: none;
+  padding-right: ${(props) => (props.needPadding ? '4rem' : '0')};
+
+  &::placeholder {
+    color: #abbad1;
   }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`
+
+export const TradeSelect = styled.select`
+  position: relative;
+  width: 100%;
+  min-height: 3rem;
+  border: ${(props) =>
+    props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
+  border-radius: 4px;
+  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
+  margin-top: 0.2rem;
+  color: #7284a0;
+  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
+  font-size: 1.1rem;
+
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
+  outline: none;
 `
 
 export const InputWrapper = styled.div`
   position: relative;
-  width: 100%;
+  width: 70%;
 `
 
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
-  top: 52.5%;
-  right: 20px;
+  top: 50%;
+  right: ${({ right }: { right?: string }) => right || '1rem'};
   transform: translateY(-50%);
+  text-transform: uppercase;
+  z-index: 2;
 `
+
+export const UpdatedCoin = styled(Coin)``
 // percentages
 
 export const PercentageGrid = styled(Grid)`
@@ -201,17 +249,62 @@ export const PercentageItem = styled(StyledTab)`
 
 export const SendButton = styled(StyledTab)`
   width: 100%;
-  background: #fff;
-  color: ${(props) => (props.type === 'buy' ? '#2F7619' : '#b93b2b')};
-  border: 1px solid ${(props) => (props.type === 'buy' ? '#2F7619' : '#b93b2b')};
+  color: #fff;
+  background-color: ${(props) =>
+    props.type === 'buy' ? '#29AC80' : '#DD6956'};
+  box-shadow: 0px .7rem 1rem rgba(8, 22, 58, 0.3);
+  border-radius: .75rem;
+  border: none;
+
+
+  // border: 1px solid ${(props) =>
+    props.type === 'buy' ? '#2F7619' : '#b93b2b'};
 
   &:hover {
     color: #fff;
     background-color: ${(props) =>
-      props.type === 'buy' ? '#2F7619' : '#b93b2b'};
+      props.type === 'buy' ? '#29AC80' : '#DD6956'};
   }
 `
 
-export const PriceContainer = styled(Grid)`
-  padding-bottom: 1rem;
+export const SmartTradeButton = styled(SendButton)`
+  font-size: ${(props) => (props.type === 'buy' ? '1.5rem' : '1.1rem')};
+
+  @media (max-width: 1600px) {
+    font-size: ${(props) => (props.type === 'buy' ? '1.1rem' : '0.85rem')};
+  }
+
+  @media (min-width: 1921px) {
+    font-size: ${(props) => (props.type === 'buy' ? '1.3rem' : '1rem')};
+  }
+`
+
+export const PriceContainer = styled(Grid)``
+
+export const TradeInputBlock = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`
+
+export const SeparateInputTitle = styled.span`
+  color: #16253d;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  white-space: nowrap;
+`
+
+export const BlueInputTitle = styled(SeparateInputTitle)`
+  color: #5c8cea;
+  cursor: pointer;
+`
+
+export const AbsoluteInputTitle = styled(Coin)`
+  left: 1rem;
+  color: #16253d;
+  font-size: 0.9rem;
+  width: 0;
+  white-space: nowrap;
 `

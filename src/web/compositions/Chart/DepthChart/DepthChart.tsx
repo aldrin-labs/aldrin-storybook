@@ -11,8 +11,13 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 
-import { transformOrderbookData } from '../utils'
+import { getDataFromTree } from '@core/utils/chartPageUtils'
+
 import { red, green } from '@material-ui/core/colors'
+import {
+  transformOrderbookData,
+  addOrderToOrderbook,
+} from '@core/utils/chartPageUtils'
 
 import { Loading } from '@sb/components/Loading/Loading'
 import { abbrNum } from '../DepthChart/depthChartUtil'
@@ -20,7 +25,7 @@ import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import { IDepthChartProps, IDepthChartState } from './DepthChart.types'
 // import ComingSoon from '@sb/components/ComingSoon'
 
-@withTheme()
+@withTheme
 class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
   state = {
     // must be calculated
@@ -37,29 +42,33 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     props: IDepthChartProps,
     state: IDepthChartState
   ) {
-    const objData = transformOrderbookData(props.data)
+    const { data } = props
 
     let totalVolumeAsks = 0
-    let transformedAsksData = objData.asks.map((el) => {
-      totalVolumeAsks = totalVolumeAsks + +el.size
+    let transformedAsksData = getDataFromTree(data['asks'], 'asks')
+      .reverse()
+      .map(({ price, size }) => {
+        totalVolumeAsks = totalVolumeAsks + Number(size)
 
-      return {
-        y: +el.price,
-        x: totalVolumeAsks,
-      }
-    })
+        return {
+          y: +price,
+          x: totalVolumeAsks,
+        }
+      })
 
     let totalVolumeBids = 0
-    let transformedBidsData = objData.bids.reverse().map((el) => {
-      totalVolumeBids = totalVolumeBids + +el.size
+    let transformedBidsData = getDataFromTree(data['bids'], 'bids')
+      .reverse()
+      .map(({ price, size }) => {
+        totalVolumeBids = totalVolumeBids + Number(size)
 
-      return {
-        y: +el.price,
-        x: totalVolumeBids,
-      }
-    })
+        return {
+          y: +price,
+          x: totalVolumeBids,
+        }
+      })
 
-    //  if arrays of dada not equal crosshair not worhing correctly
+    // if arrays of dada not equal crosshair not worhing correctly
     if (transformedBidsData.length > transformedAsksData.length) {
       transformedBidsData = transformedBidsData.slice(
         0,
@@ -75,7 +84,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
     return {
       transformedBidsData,
       transformedAsksData,
-      MAX_DOMAIN_PLOT: totalVolumeAsks,
+      MAX_DOMAIN_PLOT: Math.max(totalVolumeAsks, totalVolumeBids),
     }
   }
 
@@ -202,7 +211,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
           <FlexibleXYPlot
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
-            style={{ transform: 'scale(1, -1)' }}
+            style={{ transform: 'scale(-1, -1)' }}
             // xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
             // style={{ transform: 'scale(1, -1)' }}
           >
@@ -264,9 +273,9 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
               curve={'curveStep'}
               onNearestX={this.onNearestOrderX}
               style={{
-                fill: hexToRgbAWithOpacity('#b93b2b', 0.5),
-                stroke: '#B93B2B',
-                strokeWidth: '3px',
+                fill: 'rgba(185, 59, 43, 0.5)',
+                stroke: '#DD6956',
+                strokeWidth: '.2rem',
                 transform: 'translate(0)',
               }}
               animation={animated}
@@ -287,7 +296,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             key="chardt"
             data={spreadData}
           /> */}
-            <Crosshair values={crosshairValuesForSpread}>
+            {/* <Crosshair values={crosshairValuesForSpread}>
               <CrosshairContent
                 background={palette.primary.main}
                 textColor={palette.text.primary}
@@ -306,7 +315,6 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                       </Typography>
                       <RotatedBr />
                       <Typography variant="body1">
-                        {/* For a total of{' '} */}
                         {(
                           crosshairValuesForSpread[0].y *
                           crosshairValuesForSpread[0].x
@@ -319,8 +327,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                   <CircularProgress color="primary" />
                 )}
               </CrosshairContent>
-            </Crosshair>
-            <Crosshair values={crosshairValuesForOrder}>
+            </Crosshair> */}
+            {/* <Crosshair values={crosshairValuesForOrder}>
               <CrosshairContent
                 background={palette.primary.main}
                 textColor={palette.text.primary}
@@ -335,14 +343,13 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                     <Br light={true} />
                     <CrosshairBottomWrapper>
                       <Typography variant="body1">
-                        {/* Can be sold  */}
+                     
                         {crosshairValuesForOrder[0].y.toFixed(2)}{' '}
                         {base || 'Fiat'}
                       </Typography>
                       <RotatedBr />
                       <Typography variant="body1">
-                        {/* {' '}
-                      For a total of{' '} */}
+                      
                         {(
                           crosshairValuesForOrder[0].y *
                           crosshairValuesForOrder[0].x
@@ -355,13 +362,14 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
                   <CircularProgress color="primary" />
                 )}
               </CrosshairContent>
-            </Crosshair>
+            </Crosshair> */}
           </FlexibleXYPlot>
         </Container>
         <Container>
           <FlexibleXYPlot
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
+            style={{ transform: 'scale(-1, 1)' }}
             // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
           >
             {/* <ScaleWrapper>
@@ -422,9 +430,9 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
               curve={'curveStep'}
               onNearestX={this.onNearestSpreadX}
               style={{
-                fill: hexToRgbAWithOpacity('#2f7619', 0.5),
-                stroke: '#2F7619',
-                strokeWidth: '3px',
+                fill: 'rgba(47, 118, 25, 0.5)',
+                stroke: '#29AC80',
+                strokeWidth: '.2rem',
                 transform: 'translate(0)',
               }}
               animation={animated}

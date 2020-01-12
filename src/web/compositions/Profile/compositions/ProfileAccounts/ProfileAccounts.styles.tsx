@@ -19,6 +19,7 @@ export const ContentContainer = styled.div`
 
 // 1.5 rem - margin
 export const GridBlock = styled(GridCard)`
+  overflow: scroll;
   margin-top: 1.5rem;
   height: ${(props) => `calc(${props.height} - 1.5rem)`};
 `

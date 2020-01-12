@@ -6,7 +6,7 @@ import { getTimeZone } from '@core/utils/dateUtils'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
 import { Grid } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 
 import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
@@ -102,10 +102,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
         date: null,
       },
     }
-  }
-
-  componentDidMount() {
-    this.props.getCalendarActionsQueryRefetch()
   }
 
   render() {
@@ -291,6 +287,7 @@ const CalendarDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={GitTransactionCalendar}
       query={getCalendarActions}
+      pollInterval={30000}
       name={`getCalendarActionsQuery`}
       fetchPolicy="network-only"
       variables={{

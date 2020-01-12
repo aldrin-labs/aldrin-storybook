@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 
@@ -9,12 +9,16 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
+import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
+import BinanceAccountCreated from '@sb/components/Onboarding/BinanceAccountCreated/BinanceAccountCreated'
+import BinanceAccountCreatedLater from '@sb/components/Onboarding/BinanceAccountCreatedLater/BinanceAccountCreatedLater'
 
 import { demoKeyId } from '@core/utils/config'
 
@@ -26,6 +30,9 @@ const Onboarding = ({
   getTooltipSettingsQuery,
   updateTooltipSettings,
   portfolioKeys,
+  numberOfKeys,
+  createPortfolio,
+  portfoliosNumber,
   portfolioId,
   baseCoin,
   theme,
@@ -38,16 +45,28 @@ const Onboarding = ({
     ? onboarding
     : { instructions: false }
 
-  console.log('onboarding', portfolioKeys.length > 1, !needOnboarding)
-
-  if (portfolioKeys.length > 1) {
+  if (portfolioKeys.length > 1 || portfoliosNumber > 1) {
     return null
   }
 
   if (!needOnboarding) return null
 
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
-  const completeOnboarding = async () =>
+
+  useEffect(() => {
+    const variables = {
+      inputPortfolio: {
+        name: 'My portfolio',
+      },
+    }
+
+    createPortfolio({
+      variables,
+    })
+  }, [])
+  
+  const completeOnboarding = async () => {
+
     await updateTooltipSettings({
       variables: {
         settings: {
@@ -64,6 +83,7 @@ const Onboarding = ({
       },
       update: updateTooltipMutation,
     })
+  }
 
   return (
     <>
@@ -76,7 +96,7 @@ const Onboarding = ({
         />
       )}
 
-      {currentStep === 'createPortfolio' && (
+      {/* {currentStep === 'createPortfolio' && (
         <CreatePortfolio
           open={true}
           onboarding={true}
@@ -84,11 +104,12 @@ const Onboarding = ({
           portfolioId={portfolioId}
           setCurrentStep={setCurrentStep}
         />
-      )}
+      )} */}
 
       {currentStep === 'addAccount' && (
         <AddAccountDialog
           open={true}
+          numberOfKeys={numberOfKeys}
           onboarding={true}
           baseCoin={baseCoin}
           setCurrentStep={setCurrentStep}
@@ -98,12 +119,35 @@ const Onboarding = ({
       {currentStep === 'congratulations' && (
         <Congratulations open={true} completeOnboarding={completeOnboarding} />
       )}
+
+      {currentStep === 'binanceAccountCreated' && (
+        <BinanceAccountCreated
+          open={true}
+          setCurrentStep={setCurrentStep}
+          completeOnboarding={completeOnboarding}
+        />
+      )}
+
+      {currentStep === 'binanceAccountCreatedLater' && (
+        <BinanceAccountCreatedLater
+          open={true}
+          completeOnboarding={completeOnboarding}
+        />
+      )}
     </>
   )
 }
 
 export default compose(
-  withTheme(),
+  withTheme,
+  graphql(createPortfolioMutation, {
+    name: 'createPortfolio',
+    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
+      refetchQueries: [
+        { query: getMyPortfoliosQuery, variables: { baseCoin } },
+      ],
+    }),
+  }),
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',

@@ -143,13 +143,16 @@ class PortfolioComponent extends React.Component<IProps, IState> {
                 theme={theme}
                 toggleWallets={this.toggleWallets}
               />
-              <PortfolioOnboarding
-                portfolioKeys={keys}
-                portfolioId={portfolioId}
-                baseCoin={baseCoin}
-              />
             </>
           )}
+
+          <PortfolioOnboarding
+            portfoliosNumber={data.myPortfolios.length}
+            portfolioKeys={keys}
+            numberOfKeys={keys.length}
+            portfolioId={portfolioId}
+            baseCoin={baseCoin}
+          />
 
           {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
@@ -204,14 +207,14 @@ const APIWrapper = (props: any) => {
       name={'data'}
       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
       withOutSpinner={false}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
     />
   )
 }
 
 export default compose(
   withAuth,
-  withTheme(),
+  withTheme,
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',

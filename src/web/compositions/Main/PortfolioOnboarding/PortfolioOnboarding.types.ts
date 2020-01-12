@@ -5,6 +5,8 @@ export type ICurrentStep =
   | 'createPortfolio'
   | 'addAccount'
   | 'congratulations'
+  | 'binanceAccountCreated'
+  | 'binanceAccountCreatedLater'
 
 export type ITooltip = {
   getTooltipSettings: {
@@ -31,6 +33,7 @@ export interface IProps {
   getTooltipSettingsQuery: ITooltip
   updateTooltipSettings: (setting: IVariables) => boolean
   portfolioKeys: PorfolioKey[]
+  portfoliosNumber: number
   portfolioId: string
   baseCoin: 'USDT' | 'BTC'
   theme: Theme

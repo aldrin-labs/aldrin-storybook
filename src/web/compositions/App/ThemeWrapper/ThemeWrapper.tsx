@@ -94,6 +94,17 @@ export default class ThemeWrapper extends Component<Props> {
               MuiTableCell: {
                 body: {
                   fontSize: '1.3rem',
+                  boxShadow: 'none',
+                },
+              },
+              MuiTableHead: {
+                root: {
+                  boxShadow: '0',
+                },
+              },
+              MuiTableRow: {
+                root: {
+                  boxShadow: '0',
                 },
               },
               MuiFab: {
@@ -134,16 +145,20 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#FE425A',
                 custom: '#D93B28',
                 bright: '#ED6337',
+                new: '#DD6956',
               },
               blue: {
                 custom: '#5085EC',
                 light: '#165BE0',
+                first: '#0B1FD1',
+                second: '#5C8CEA',
               },
               green: {
                 dark: '#377E21',
                 light: '#E7ECF3',
                 custom: '#97C15C',
                 main: '#48DCC6',
+                new: '#29AC80',
               },
               grey: {
                 custom: '#ABBAD1',
@@ -156,7 +171,7 @@ export default class ThemeWrapper extends Component<Props> {
                 light: '#27272D',
               },
               secondary: {
-                main:'#165BE0', //'#48DCC6',
+                main: '#165BE0', //'#48DCC6',
               },
               action: {
                 selected: 'rgba(255, 255, 255, 0.05)',
@@ -283,15 +298,19 @@ export default class ThemeWrapper extends Component<Props> {
                 main: '#FE425A',
                 custom: '#D93B28',
                 bright: '#ED6337',
+                new: '#DD6956',
               },
               blue: {
                 custom: '#5085EC',
                 light: '#165BE0',
+                first: '#0B1FD1',
+                second: '#5C8CEA',
               },
               green: {
                 dark: '#377E21',
                 custom: '#97C15C',
                 main: '#48DCC6',
+                new: '#29AC80',
               },
               grey: {
                 custom: '#ABBAD1',

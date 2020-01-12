@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
 
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/styles'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 

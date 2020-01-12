@@ -11,8 +11,15 @@ export const StyledTypography = styled(
   )
 )`
   && {
+    font-size: 1rem;
     color: ${(props) => props.textColor};
     font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  @media (min-width: 1921px) {
+    && {
+      font-size: 0.8rem;
+    }
   }
 `
 
@@ -21,11 +28,11 @@ export const StyledRow = styled(Row)`
 `
 
 export const StyledTitle = styled(TypographyFullWidth)`
-  line-height: 18px;
-  font-size: 0.9rem;
-  color: #16253d;
+  line-height: 1;
+  font-size: 1rem;
+  color: #7284a0;
   font-weight: bold;
-  padding: 6px 0 0 1rem;
+  padding: 0.5rem 0 0.5rem 1rem;
 `
 
 export const StyledCell = styled(Cell)`
@@ -33,9 +40,16 @@ export const StyledCell = styled(Cell)`
 
   & span,
   & p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: bold;
     padding-left: 0;
+  }
+
+  @media (min-width: 1921px) {
+    & span,
+    & p {
+      font-size: 0.8rem;
+    }
   }
 `
 
