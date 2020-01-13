@@ -15,7 +15,6 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import { IProps } from './BinanceAccountCreated.types'
 
-
 const DialogContent = withStyles((theme) => ({
   root: {
     margin: 0,
@@ -33,7 +32,7 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
       handleClose,
       open,
       completeOnboarding,
-      setCurrentStep
+      setCurrentStep,
     } = this.props
 
     return (
@@ -104,7 +103,7 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
               btnColor={'#165BE0'}
               onClick={async () => {
                 await completeOnboarding()
-                this.props.history.push('profile/deposit')
+                this.props.history.push('/profile/deposit')
               }}
             >
               Deposit now

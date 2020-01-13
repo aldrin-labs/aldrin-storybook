@@ -34,6 +34,7 @@ const Onboarding = ({
   createPortfolio,
   portfoliosNumber,
   portfolioId,
+  history,
   baseCoin,
   theme,
 }: IProps) => {
@@ -64,9 +65,8 @@ const Onboarding = ({
       variables,
     })
   }, [])
-  
-  const completeOnboarding = async () => {
 
+  const completeOnboarding = async () => {
     await updateTooltipSettings({
       variables: {
         settings: {
@@ -123,6 +123,7 @@ const Onboarding = ({
       {currentStep === 'binanceAccountCreated' && (
         <BinanceAccountCreated
           open={true}
+          history={history}
           setCurrentStep={setCurrentStep}
           completeOnboarding={completeOnboarding}
         />
