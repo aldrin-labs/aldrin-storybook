@@ -3,7 +3,11 @@ import { getExchangesForKeysListQuery } from '@core/graphql/queries/user/getExch
 import QueryRenderer from '@core/components/QueryRenderer'
 import { SelectR } from '@sb/styles/cssUtils'
 
-const SelectExchangeList = ({ data, placeholder = '', ...otherPropsForSelect }) => {
+const SelectExchangeList = ({
+  data,
+  placeholder = '',
+  ...otherPropsForSelect
+}) => {
   const exchangeOptions =
     data.exchangePagination &&
     data.exchangePagination.items
