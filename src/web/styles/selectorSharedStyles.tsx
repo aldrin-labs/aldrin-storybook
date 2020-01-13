@@ -67,7 +67,7 @@ export const SelectAll = styled.div`
 export const AccountName = styled(({ textColor, lineHeight, ...rest }) => (
   <div {...rest} />
 ))`
-  height: 50%;
+  height: 100%;
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
@@ -78,6 +78,7 @@ export const AccountName = styled(({ textColor, lineHeight, ...rest }) => (
 
   display: flex;
   flex-direction: column;
+  justify-content: center;
 
   text-overflow: ellipsis;
   white-space: nowrap;

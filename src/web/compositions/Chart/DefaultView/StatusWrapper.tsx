@@ -8,25 +8,21 @@ import { orderError } from '@core/utils/errorsConfig'
 
 import { DefaultView } from './DefaultView'
 
-const canselStyeles = theme => ({
+const canselStyeles = (theme) => ({
   icon: {
     fontSize: 20,
-  }
+  },
 })
 
-const snackStyeles = theme => ({
+const snackStyeles = (theme) => ({
   success: { backgroundColor: theme.customPalette.green.main },
   error: { backgroundColor: theme.customPalette.red.main },
 })
 
 const CloseButton = withStyles(canselStyeles)((props) => (
-  <IconButton
-    key="close"
-    aria-label="Close"
-    color="inherit"
-  >
+  <IconButton key="close" aria-label="Close" color="inherit">
     <CloseIcon className={props.classes.icon} />
-</IconButton>
+  </IconButton>
 ))
 
 class OrderStatusWrapper extends React.Component {
@@ -36,14 +32,14 @@ class OrderStatusWrapper extends React.Component {
         variant: 'success',
         action: (
           <>
-          <Button
-            size="small"
-            color="inherit"
-            onClick={() => cancelOrder(result.orderId, marketType)}
-          >
-            {'Cancel'}
-          </Button>
-          <CloseButton />
+            <Button
+              size="small"
+              color="inherit"
+              onClick={() => cancelOrder(result.orderId, marketType)}
+            >
+              {'Cancel'}
+            </Button>
+            <CloseButton />
           </>
         ),
       })
@@ -56,28 +52,23 @@ class OrderStatusWrapper extends React.Component {
 
   showFuturesTransfer = (result) => {
     if (result.status === 'OK' && result.data && result.data.tranId) {
+      this.props.enqueueSnackbar('Funds transfered!', {
+        variant: 'success',
+        action: <CloseButton />,
+      })
+    } else {
       this.props.enqueueSnackbar(
-        'Funds transfered!', {
-          variant: 'success',
-          action: (
-            <CloseButton />
-          ),
-        }
+        'Something went wrong during transfering funds',
+        { variant: 'error' }
       )
     }
-    else {
-      this.props.enqueueSnackbar('Something went wrong during transfering funds', { variant: 'error' })
-    }
-
   }
 
   showCancelResult = (result) => {
     if (result.status === 'success' && result.message) {
       this.props.enqueueSnackbar(result.message, {
         variant: 'success',
-        action: (
-          <CloseButton />
-        ),
+        action: <CloseButton />,
       })
     } else if (result.status === 'success' || !result.message) {
       this.props.enqueueSnackbar(orderError, { variant: 'error' })
@@ -86,37 +77,21 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
-  showUpdateLeverageResult = (result) => {
-    if (result.status === 'success' && result.message) {
-      this.props.enqueueSnackbar(result.message, {
-        variant: 'success',
-        action: (
-          <CloseButton />
-        ),
-      })
-    } else {
-      this.props.enqueueSnackbar(result.message, { variant: 'error' })
-    }
-  }
-
-
   render() {
     return (
       <DefaultView
         showOrderResult={this.showOrderResult}
         showCancelResult={this.showCancelResult}
         showFuturesTransfer={this.showFuturesTransfer}
-        showUpdateLeverageResult={this.showUpdateLeverageResult}
         {...this.props}
       />
     )
   }
 }
 
-
 const SnackbarWrapper = withSnackbar(OrderStatusWrapper)
 
-const IntegrationNotistack = ({classes, ...otherProps}) => {
+const IntegrationNotistack = ({ classes, ...otherProps }) => {
   return (
     <SnackbarProvider
       maxSnack={3}
@@ -125,19 +100,15 @@ const IntegrationNotistack = ({classes, ...otherProps}) => {
         vertical: 'top',
         horizontal: 'right',
       }}
-      action={(
-        <CloseButton />
-      )}
+      action={<CloseButton />}
       classes={{
         variantSuccess: classes.success,
         variantError: classes.error,
       }}
     >
-      <SnackbarWrapper
-        {...otherProps}
-      />
+      <SnackbarWrapper {...otherProps} />
     </SnackbarProvider>
-  );
+  )
 }
 
 export default withStyles(snackStyeles)(IntegrationNotistack)

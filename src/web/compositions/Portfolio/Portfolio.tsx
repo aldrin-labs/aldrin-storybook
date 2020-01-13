@@ -152,6 +152,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             numberOfKeys={keys.length}
             portfolioId={portfolioId}
             baseCoin={baseCoin}
+            history={this.props.history}
           />
 
           {hasKeysOrWallets && !hasActiveKeysOrWallets && (

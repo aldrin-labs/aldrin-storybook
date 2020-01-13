@@ -141,10 +141,11 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       isUSDCurrently
     )
 
-    const { portfolioAssetsData, totalKeyAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
-      filteredData,
-      baseCoin
-    )
+    const {
+      portfolioAssetsData,
+      totalKeyAssetsData,
+      portfolioAssetsMap,
+    } = getPortfolioAssetsData(filteredData, baseCoin)
 
     return (
       <LayoutClearfixWrapper>

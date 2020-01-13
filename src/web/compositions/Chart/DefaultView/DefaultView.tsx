@@ -58,7 +58,6 @@ export const DefaultView = (props: any) => {
     showOrderResult,
     showCancelResult,
     showFuturesTransfer,
-    showUpdateLeverageResult,
     showTableOnMobile,
     selectedKey,
     chartProps,
@@ -246,7 +245,6 @@ export const DefaultView = (props: any) => {
               marketType={marketType}
               showOrderResult={showOrderResult}
               showCancelResult={showCancelResult}
-              showUpdateLeverageResult={showUpdateLeverageResult}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
             />
