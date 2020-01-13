@@ -70,7 +70,7 @@ export const StyledDropdown = styled.div`
 export const StyledPaper = styled(Paper)`
   && {
     position: absolute;
-    top: calc(3rem - 1px);
+    top: calc(3rem - 2px);
     left: 50%;
     height: auto;
     box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);

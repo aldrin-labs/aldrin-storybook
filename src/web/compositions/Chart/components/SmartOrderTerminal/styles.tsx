@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { HeaderProperties, BlockProperties, InputRowProps } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
@@ -43,6 +44,12 @@ export const HeaderTitle = styled.span`
   color: #16253d;
 `
 
+export const BlockHeader = styled(HeaderTitle)`
+  color: #7284a0;
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+`
+
 export const InputTitle = styled(HeaderTitle)`
   color: #7284a0;
   margin-right: 1rem;
@@ -61,6 +68,7 @@ export const TargetValue = styled(HeaderTitle)`
 
 export const TargetTitle = styled(TargetValue)`
   color: #7284a0;
+  letter-spacing: 0.1rem;
 `
 
 export const CloseHeader = styled(TerminalHeader)`
@@ -93,7 +101,7 @@ export const SubBlocksContainer = styled.div`
 export const InputRowContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: ${(props: InputRowProps) => props.width || '100%'};
   flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
   justify-content: ${(props: InputRowProps) => props.justify};
   padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};
@@ -132,4 +140,36 @@ export const BeforeCharacter = styled.span`
   display: ${(props) => (props.needCharacter ? 'block' : 'none')};
   font-size: 1.2rem;
   color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
+`
+
+export const AdditionalSettingsButton = styled(
+  ({ isActive, children, ...rest }) => (
+    <BtnCustom
+      btnWidth="30%"
+      height={'2.5rem'}
+      fontSize="1.2rem"
+      fontWeight="normal"
+      padding="0"
+      borderRadius=".8rem"
+      borderColor={isActive ? '#5C8CEA' : '#E0E5EC'}
+      btnColor={isActive ? '#fff' : '#7284A0'}
+      backgroundColor={isActive ? '#5C8CEA' : '#F2F4F6'}
+      hoverColor={'#fff'}
+      hoverBorderColor={'#5C8CEA'}
+      hoverBackground={'#5C8CEA'}
+      transition={'all .25s ease-out'}
+      textTransform="none"
+      boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
+      margin={'0 3% 0 0'}
+      {...rest}
+    >
+      {children}
+    </BtnCustom>
+  )
+)`
+  @media (min-width: 1921px) {
+    height: calc(2.5rem - 0.5rem);
+    font-size: 1.1rem;
+    padding-top: 0.2rem;
+  }
 `

@@ -1307,7 +1307,11 @@ export const updateOpenOrderHistoryQuerryFunction = (
         String(subscriptionData.data.listenOpenOrders.info.orderId)
   )
 
+  console.log('subscriptionData.data.listenOpenOrders', subscriptionData.data.listenOpenOrders)
+  console.log('openOrderHasTheSameOrderIndex', openOrderHasTheSameOrderIndex)
+
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
+  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
 
   let result
 
