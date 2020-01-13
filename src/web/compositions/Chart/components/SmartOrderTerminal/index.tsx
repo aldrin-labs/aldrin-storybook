@@ -120,6 +120,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       trailingTAP: {
         isTrailingOn: false,
+        activatePrice: 0,
         deviationPercentage: 0,
       },
     },
@@ -396,7 +397,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       pair,
       funds,
       marketType,
-      updateLeverageWithStatus,
+      updateLeverage,
       leverage: startLeverage,
     } = this.props
 
@@ -487,7 +488,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )
                     }}
                     onAfterChange={(leverage: number) => {
-                      updateLeverageWithStatus(leverage)
+                      updateLeverage(leverage)
                     }}
                     sliderContainerStyles={{
                       width: '65%',
@@ -1583,46 +1584,70 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </InputRowContainer>
                   </FormInputContainer>
                 )}
-                {takeProfit.trailingTAP.isTrailingOn && (
-                  <FormInputContainer title={'trailing deviation (%)'}>
-                    <InputRowContainer>
-                      <Input
-                        padding={'0 .8rem 0 0'}
-                        width={'calc(50%)'}
-                        symbol={'%'}
-                        value={takeProfit.trailingTAP.deviationPercentage}
-                        showErrors={showErrors && takeProfit.isTakeProfitOn}
-                        isValid={this.validateField(
-                          takeProfit.trailingTAP.isTrailingOn,
-                          takeProfit.trailingTAP.deviationPercentage
-                        )}
-                        onChange={(e) => {
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'trailingTAP',
-                            'deviationPercentage',
-                            e.target.value
-                          )
-                        }}
-                      />
 
-                      <BlueSlider
-                        value={takeProfit.trailingTAP.deviationPercentage}
-                        sliderContainerStyles={{
-                          width: '50%',
-                          margin: '0 .8rem 0 .8rem',
-                        }}
-                        onChange={(value) => {
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'trailingTAP',
-                            'deviationPercentage',
-                            value
-                          )
-                        }}
-                      />
-                    </InputRowContainer>
-                  </FormInputContainer>
+                {takeProfit.trailingTAP.isTrailingOn && (
+                  <>
+                    <FormInputContainer title={`activate price (${pair[1]})`}>
+                      <InputRowContainer>
+                        <Input
+                          symbol={pair[1]}
+                          value={takeProfit.trailingTAP.activatePrice}
+                          showErrors={showErrors && takeProfit.isTakeProfitOn}
+                          isValid={this.validateField(
+                            takeProfit.trailingTAP.isTrailingOn,
+                            takeProfit.trailingTAP.activatePrice
+                          )}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'trailingTAP',
+                              'activatePrice',
+                              e.target.value
+                            )
+                          }}
+                        />
+                      </InputRowContainer>
+                    </FormInputContainer>
+                    <FormInputContainer title={'trailing deviation (%)'}>
+                      <InputRowContainer>
+                        <Input
+                          padding={'0 .8rem 0 0'}
+                          width={'calc(50%)'}
+                          symbol={'%'}
+                          value={takeProfit.trailingTAP.deviationPercentage}
+                          showErrors={showErrors && takeProfit.isTakeProfitOn}
+                          isValid={this.validateField(
+                            takeProfit.trailingTAP.isTrailingOn,
+                            takeProfit.trailingTAP.deviationPercentage
+                          )}
+                          onChange={(e) => {
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'trailingTAP',
+                              'deviationPercentage',
+                              e.target.value
+                            )
+                          }}
+                        />
+
+                        <BlueSlider
+                          value={takeProfit.trailingTAP.deviationPercentage}
+                          sliderContainerStyles={{
+                            width: '50%',
+                            margin: '0 .8rem 0 .8rem',
+                          }}
+                          onChange={(value) => {
+                            this.updateSubBlockValue(
+                              'takeProfit',
+                              'trailingTAP',
+                              'deviationPercentage',
+                              value
+                            )
+                          }}
+                        />
+                      </InputRowContainer>
+                    </FormInputContainer>
+                  </>
                 )}
 
                 {takeProfit.splitTargets.isSplitTargetsOn && (
