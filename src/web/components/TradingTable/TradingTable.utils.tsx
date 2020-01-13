@@ -299,10 +299,10 @@ export const combinePositionsTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount < 0? '-' : ''}${Math.abs(
+                  ? `${profitAmount < 0 ? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
                     )} ${pair[1]} / ${
-                      profitPercentage < 0? '-' : ''
+                      profitPercentage < 0 ? '-' : ''
                     }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
@@ -494,7 +494,7 @@ export const combineActiveTradesTable = (
               exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice}% / ${
+                ? `${exitLevels[0].activatePrice} / ${
                     exitLevels[0].entryDeviation
                   }%`
                 : exitLevels[0] && exitLevels[0].price
@@ -525,10 +525,10 @@ export const combineActiveTradesTable = (
                 }
               >
                 {profitPercentage && profitAmount
-                  ? `${profitAmount < 0? '-' : ''}${Math.abs(
+                  ? `${profitAmount < 0 ? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
                     )} ${pairArr[1]} / ${
-                      profitPercentage < 0? '-' : ''
+                      profitPercentage < 0 ? '-' : ''
                     }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
                   : '-'}
               </SubColumnValue>
@@ -1066,8 +1066,21 @@ export const combineTradeHistoryTable = (
           ? {
               realizedPnl: {
                 render: (
-                  <span style={{ color: realizedPnl > 0 ? '#29AC80' : realizedPnl < 0 ? '#DD6956' : '' }}>
-                    {`${typeof realizedPnl === 'number' && realizedPnl < 0 ? '-' : ''}${
+                  <span
+                    style={{
+                      color:
+                        realizedPnl > 0
+                          ? '#29AC80'
+                          : realizedPnl < 0
+                          ? '#DD6956'
+                          : '',
+                    }}
+                  >
+                    {`${
+                      typeof realizedPnl === 'number' && realizedPnl < 0
+                        ? '-'
+                        : ''
+                    }${
                       realizedPnl || realizedPnl === 0
                         ? stripDigitPlaces(realizedPnl, 8)
                         : '-'
@@ -1307,7 +1320,10 @@ export const updateOpenOrderHistoryQuerryFunction = (
         String(subscriptionData.data.listenOpenOrders.info.orderId)
   )
 
-  console.log('subscriptionData.data.listenOpenOrders', subscriptionData.data.listenOpenOrders)
+  console.log(
+    'subscriptionData.data.listenOpenOrders',
+    subscriptionData.data.listenOpenOrders
+  )
   console.log('openOrderHasTheSameOrderIndex', openOrderHasTheSameOrderIndex)
 
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1

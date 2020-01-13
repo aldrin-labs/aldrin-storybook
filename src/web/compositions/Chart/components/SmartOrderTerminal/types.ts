@@ -47,6 +47,7 @@ export type TakeProfitType = {
   }
   trailingTAP: {
     isTrailingOn: boolean
+    activatePrice: number
     deviationPercentage: number
   }
 }
