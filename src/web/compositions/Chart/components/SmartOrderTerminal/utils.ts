@@ -20,13 +20,13 @@ const CommonSwitcherStyles = {
 
 export const GreenSwitcherStyles = {
   ...CommonSwitcherStyles,
-  activeBackgroundColor: 'rgba(41, 172, 128, 0.49)',
+  activeBackgroundColor: '#29AC80;',
   activeBorderColor: '#29AC80',
 }
 
 export const RedSwitcherStyles = {
   ...CommonSwitcherStyles,
-  activeBackgroundColor: 'rgba(221, 105, 86, 0.5)',
+  activeBackgroundColor: '#DD6956',
   activeBorderColor: '#DD6956',
 }
 
