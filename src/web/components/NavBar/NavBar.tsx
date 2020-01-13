@@ -169,7 +169,6 @@ const NavBarRaw: SFC<Props> = ({
                 />
               )} */}
 
-              {!MASTER_BUILD && (
                 <Dropdown
                   id="chart-page"
                   key="chart-page"
@@ -207,7 +206,6 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   ]}
                 />
-              )}
 
               <NavLinkButtonWrapper key="market-wrapper">
                 <NavLinkButton
