@@ -206,7 +206,7 @@ export default ({
                 </Grid>
               </Grid>
             </Grid>
-            <Grid id="hedge">
+            {/* <Grid id="hedge">
               <Grid
                 container
                 justify="space-between"
@@ -249,7 +249,7 @@ export default ({
                   </ItemTypography>
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid id="takeaprofit">
               <Grid
                 container

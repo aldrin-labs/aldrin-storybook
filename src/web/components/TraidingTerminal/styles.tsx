@@ -167,15 +167,14 @@ export const TradeBlock = styled(BalanceGrid)`
 `
 
 export const TradeInput = styled.input`
-  position: relative;
-  bottom: 0.2rem;
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
     props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
   border-radius: 4px;
+  border-top-right-radius: ${(props) => props.haveSelector && '0'};
+  border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  margin-top: 0.2rem;
   color: #16253d;
   background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
   font-size: 1.3rem;
@@ -184,7 +183,7 @@ export const TradeInput = styled.input`
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};
   outline: none;
-  padding-right: ${(props) => (props.needPadding ? '4rem' : '0')};
+  padding-right: ${(props) => (props.needPadding ? '4rem' : '1.5rem')};
 
   &::placeholder {
     color: #abbad1;
@@ -205,7 +204,6 @@ export const TradeSelect = styled.select`
     props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
   border-radius: 4px;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  margin-top: 0.2rem;
   color: #7284a0;
   background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
   font-size: 1.1rem;
@@ -223,7 +221,7 @@ export const InputWrapper = styled.div`
 
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
-  top: 50%;
+  top: calc(50% + 0.1rem);
   right: ${({ right }: { right?: string }) => right || '1rem'};
   transform: translateY(-50%);
   text-transform: uppercase;
@@ -269,14 +267,15 @@ export const SendButton = styled(StyledTab)`
 
 export const SmartTradeButton = styled(SendButton)`
   font-size: ${(props) => (props.type === 'buy' ? '1.5rem' : '1.1rem')};
+  font-size: 1.3rem;
 
-  @media (max-width: 1600px) {
+  /* @media (max-width: 1600px) {
     font-size: ${(props) => (props.type === 'buy' ? '1.1rem' : '0.85rem')};
   }
 
   @media (min-width: 1921px) {
     font-size: ${(props) => (props.type === 'buy' ? '1.3rem' : '1rem')};
-  }
+  } */
 `
 
 export const PriceContainer = styled(Grid)``
@@ -292,7 +291,7 @@ export const SeparateInputTitle = styled.span`
   font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.1rem;
   white-space: nowrap;
 `
 
