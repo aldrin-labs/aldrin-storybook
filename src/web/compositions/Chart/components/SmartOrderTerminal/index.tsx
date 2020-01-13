@@ -1237,7 +1237,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </InputRowContainer>
                         <InputRowContainer>
                           <SCheckbox
-                            checked={stopLoss.timeout.whenProfitOn}
+                            checked={stopLoss.timeout.whenLossOn}
                             onChange={() => {
                               this.updateSubBlockValue(
                                 'stopLoss',
