@@ -21,7 +21,7 @@ const AccountContent = ({ data }: { data: ComponentData })  => (
     <Grid item style={{ alignSelf: 'center' }}>
       {data.label}
     </Grid>
-    <Grid
+    {/* <Grid
       item
       style={{
         alignSelf: 'flex-end',
@@ -29,7 +29,7 @@ const AccountContent = ({ data }: { data: ComponentData })  => (
         fontSize: '1.2rem',
         paddingLeft: '1rem',
       }}
-    >{`$ ${stripDigitPlaces(data.value, 2)}`}</Grid>
+    >{`$ ${stripDigitPlaces(data.value, 2)}`}</Grid> */}
   </>
 )
 

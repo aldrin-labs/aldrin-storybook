@@ -103,7 +103,7 @@ class SimpleTabs extends React.Component {
       leverage: startLeverage,
       priceFromOrderbook,
       updateTerminalViewMode,
-      updateLeverageWithStatus,
+      updateLeverage,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -271,7 +271,7 @@ class SimpleTabs extends React.Component {
                     this.setState({ leverage })
                   }}
                   onAfterChange={(leverage: number) => {
-                    updateLeverageWithStatus(leverage)
+                    updateLeverage(leverage)
                   }}
                   sliderContainerStyles={{
                     width: '65%',
