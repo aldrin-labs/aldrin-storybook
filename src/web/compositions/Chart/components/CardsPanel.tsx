@@ -145,7 +145,7 @@ export const CardsPanel = ({
         >
           {isDefaultTerminalViewMode
             ? 'smart trading'
-            : 'back to original terminal'}
+            : 'back'}
         </SmartTradeButton>
 
         {/* {view === 'default' && (
