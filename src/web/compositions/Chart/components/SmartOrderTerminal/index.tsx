@@ -825,7 +825,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               maxAmount,
                               marketType === 1 ? 3 : 8
                             )
-                      } ${pair[1]}`}
+                      } ${pair[0]}`}
                       onValueClick={this.setMaxAmount}
                       title={`${
                         marketType === 1 ? 'order quantity' : 'amount'
