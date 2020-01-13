@@ -6,8 +6,12 @@ import {
   TradeSelect,
   Coin,
 } from '@sb/components/TraidingTerminal/styles'
+import {
+  TradeInputContent,
+  TradeInputHeader,
+} from '@sb/components/TraidingTerminal/index'
 
-import { InputTitle, BeforeCharacter } from './styles'
+import { BeforeCharacter, InputRowContainer } from './styles'
 
 export const Character = ({
   needCharacter,
@@ -26,7 +30,7 @@ export const Character = ({
 export const Input = ({
   symbol,
   value,
-  width = '85%',
+  width = '100%',
   padding = '0',
   pattern = '',
   type = 'number',
@@ -101,16 +105,30 @@ export const Select = ({
 export const FormInputContainer = ({
   title,
   children,
+  padding,
+  needLine = true,
+  needRightValue = false,
+  rightValue = '',
+  onValueClick = () => {},
 }: {
   title: string
   children: ReactNode
+  padding?: string
+  needLine?: boolean
+  needRightValue?: boolean
+  rightValue?: string
+  onValueClick?: any
 }) => {
   return (
-    <>
-      <div style={{ width: '15%', textAlign: 'right' }}>
-        <InputTitle>{title}</InputTitle>
-      </div>
+    <InputRowContainer padding={padding} direction="column">
+      <TradeInputHeader
+        title={title}
+        needLine={needLine}
+        needRightValue={needRightValue}
+        rightValue={rightValue}
+        onValueClick={onValueClick}
+      />
       {children}
-    </>
+    </InputRowContainer>
   )
 }
