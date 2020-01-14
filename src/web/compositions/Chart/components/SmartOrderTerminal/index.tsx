@@ -188,10 +188,21 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       return
     }
 
-    this.setState({
+    this.setState((prevState) => ({
+      entryPoint: {
+        ...prevState.entryPoint,
+        order: {
+          ...prevState.entryPoint.order,
+          ...(result.entryPoint ? result.entryPoint.order.amount : {})
+        },
+        trailing: {
+          ...prevState.entryPoint.trailing,
+          ...(result.entryPoint ? result.entryPoint.trailing : {})
+        }
+      },
       takeProfit: result.takeProfit,
       stopLoss: result.stopLoss,
-    })
+    }))
   }
 
   componentDidUpdate(prevProps: IProps) {
