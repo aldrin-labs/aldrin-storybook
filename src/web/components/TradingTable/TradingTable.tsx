@@ -15,6 +15,7 @@ import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
+import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryTable'
 import Funds from './FundsTable/FundsTable'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
@@ -52,6 +53,18 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             exchange,
             currencyPair,
             show: tab === 'activeTrades',
+            handleTabChange: this.handleTabChange,
+            showCancelResult: this.props.showCancelResult,
+          }}
+        />
+        <StrategiesHistoryTable 
+          {...{
+            tab,
+            selectedKey,
+            marketType,
+            exchange,
+            currencyPair,
+            show: tab === 'strategiesHistory',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
           }}
