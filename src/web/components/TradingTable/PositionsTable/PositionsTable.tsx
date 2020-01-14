@@ -305,7 +305,7 @@ class PositionsTable extends React.PureComponent {
 
   render() {
     const { positionsData } = this.state
-    const { tab, handleTabChange, show, marketType } = this.props
+    const { tab, handleTabChange, show, marketType, selectedKey, canceledOrders } = this.props
 
     if (!show) {
       return null
@@ -357,6 +357,8 @@ class PositionsTable extends React.PureComponent {
           <div>
             <TradingTabs
               tab={tab}
+              selectedKey={selectedKey}
+              canceledOrders={canceledOrders}
               handleTabChange={handleTabChange}
               marketType={marketType}
             />

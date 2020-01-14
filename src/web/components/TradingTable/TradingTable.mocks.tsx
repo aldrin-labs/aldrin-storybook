@@ -31,6 +31,7 @@ export const positionsColumnNames = [
 ]
 
 export const activeTradesColumnNames = [
+  { label: ' ', id: 'blank' },
   { label: 'pair', id: 'pair' },
   { label: 'Side', id: 'side' },
   { label: 'Entry Price', id: 'entryPrice' },
@@ -68,6 +69,7 @@ export const activeTradesColumnNames = [
 ]
 
 export const strategiesHistoryColumnNames = [
+  { label: ' ', id: 'blank' },
   { label: 'pair', id: 'pair' },
   { label: 'Side', id: 'side' },
   { label: 'Entry Price', id: 'entryPrice' },

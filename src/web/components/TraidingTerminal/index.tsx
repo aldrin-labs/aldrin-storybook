@@ -814,7 +814,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           ? { amount: values.amount }
           : {
               stop: values.stop,
-              limit: values.limit,
+              price: values.price,
               amount: values.amount,
             }
 

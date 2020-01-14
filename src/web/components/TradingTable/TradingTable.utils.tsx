@@ -56,12 +56,12 @@ import {
 } from '@sb/components/TradingTable/TradingTable.mocks'
 
 import SubRow from './PositionsTable/SubRow'
-// import {
-//   EntryOrderColumn,
-//   StopLossColumn,
-//   StatusColumn,
-//   TakeProfitColumn,
-// } from './ActiveTrades/Columns'
+import {
+  EntryOrderColumn,
+  StopLossColumn,
+  StatusColumn,
+  TakeProfitColumn,
+} from './ActiveTrades/Columns'
 
 import { Theme } from '@material-ui/core'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
@@ -540,7 +540,7 @@ export const combineActiveTradesTable = (
         },
         profit: {
           render:
-            currentPrice && !!status[0] && status[1] === '#29AC80' ? (
+            entryPrice && currentPrice ? (
               <SubColumnValue
                 color={
                   profitPercentage > 0 && side === 'buy' ? green.new : red.new
@@ -591,92 +591,60 @@ export const combineActiveTradesTable = (
             </BtnCustom>
           ),
           style: {
-            opacity: needOpacity ? 0.6 : 1,
+            opacity: needOpacity ? 0 : 1,
           },
         },
-        // entryOrder: {
-        //   render: (
-        //     <EntryOrderColumn
-        //       enableEdit={!!entryPrice}
-        //       pair={`${pairArr[0]}/${pairArr[1]}`}
-        //       side={side}
-        //       price={entryOrderPrice}
-        //       order={orderType}
-        //       amount={
-        //         marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
-        //       }
-        //       total={entryOrderPrice * amount}
-        //       trailing={!entryPrice && entryDeviation}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //       editTrade={() => editTrade('entryOrder', el)}
-        //     />
-        //   ),
-        // },
-        // takeProfit: {
-        //   render: (
-        //     <TakeProfitColumn
-        //       price={exitLevels.length > 0 && exitLevels[0].price}
-        //       order={exitLevels.length > 0 && exitLevels[0].orderType}
-        //       targets={exitLevels ? exitLevels : []}
-        //       timeoutProfit={timeoutWhenProfit}
-        //       timeoutProfitable={timeoutIfProfitable}
-        //       trailing={trailingExit}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //       editTrade={() => editTrade('takeProfit', el)}
-        //     />
-        //   ),
-        // },
-        // stopLoss: {
-        //   render: (
-        //     <StopLossColumn
-        //       price={stopLoss}
-        //       order={stopLossType}
-        //       forced={!!forcedLoss}
-        //       timeoutLoss={timeoutLoss}
-        //       trailing={false}
-        //       timeoutLossable={timeoutLossable}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //       editTrade={() => editTrade('stopLoss', el)}
-        //     />
-        //   ),
-        // },
-        // status: {
-        //   render: (
-        //     <StatusColumn
-        //       status={getStatusFromState(state)}
-        //       profitPercentage={profitPercentage}
-        //       profitAmount={profitAmount}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //     />
-        //   ),
-        // },
-        // close: {
-        //   render: (
-        //     <BtnCustom
-        //       btnWidth="100%"
-        //       height="auto"
-        //       fontSize="1.3rem"
-        //       padding=".75rem 0 .4rem 0"
-        //       borderRadius=".8rem"
-        //       btnColor={red.new}
-        //       backgroundColor={'#fff'}
-        //       hoverColor={'#fff'}
-        //       hoverBackground={red.new}
-        //       transition={'all .4s ease-out'}
-        //       onClick={() => cancelOrderFunc(el._id)}
-        //     >
-        //       close
-        //     </BtnCustom>
-        //   ),
-        // },
+        expandableContent: [
+          {
+            row: {
+              render: (
+                <>
+                  <EntryOrderColumn
+                    haveEdit={false}
+                    enableEdit={!!entryPrice}
+                    pair={`${pairArr[0]}/${pairArr[1]}`}
+                    side={side}
+                    price={entryOrderPrice}
+                    order={orderType}
+                    amount={
+                      marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
+                    }
+                    total={entryOrderPrice * amount}
+                    trailing={!entryPrice && entryDeviation}
+                    red={red.new}
+                    green={green.new}
+                    blue={blue}
+                  />
+                  <TakeProfitColumn
+                    haveEdit={false}
+                    price={exitLevels.length > 0 && exitLevels[0].price}
+                    order={exitLevels.length > 0 && exitLevels[0].orderType}
+                    targets={exitLevels ? exitLevels : []}
+                    timeoutProfit={timeoutWhenProfit}
+                    timeoutProfitable={timeoutIfProfitable}
+                    trailing={trailingExit}
+                    red={red.new}
+                    green={green.new}
+                    blue={blue}
+                  />
+                  <StopLossColumn
+                    haveEdit={false}
+                    price={stopLoss}
+                    order={stopLossType}
+                    forced={!!forcedLoss}
+                    timeoutLoss={timeoutLoss}
+                    trailing={false}
+                    timeoutLossable={timeoutLossable}
+                    red={red.new}
+                    green={green.new}
+                    blue={blue}
+                  />
+                </>
+              ),
+              colspan: 8,
+            },
+          },
+        ],
       }
     })
 
@@ -750,6 +718,7 @@ export const combineStrategiesHistoryTable = (
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
+      const editTrade = () => {}
 
       const entryOrderPrice = !!entryPrice
         ? entryPrice
@@ -766,6 +735,7 @@ export const combineStrategiesHistoryTable = (
       })
 
       return {
+        id: el._id,
         pair: {
           render: (
             <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
@@ -819,7 +789,7 @@ export const combineStrategiesHistoryTable = (
               exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice} / ${
+                ? `${exitLevels[0].activatePrice}% / ${
                     exitLevels[0].entryDeviation
                   }%`
                 : exitLevels[0] && exitLevels[0].price
@@ -875,89 +845,57 @@ export const combineStrategiesHistoryTable = (
             opacity: needOpacity ? 0.6 : 1,
           },
         },
-        // entryOrder: {
-        //   render: (
-        //     <EntryOrderColumn
-        //       enableEdit={!!entryPrice}
-        //       pair={`${pairArr[0]}/${pairArr[1]}`}
-        //       side={side}
-        //       price={entryOrderPrice}
-        //       order={orderType}
-        //       amount={
-        //         marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
-        //       }
-        //       total={entryOrderPrice * amount}
-        //       trailing={!entryPrice && entryDeviation}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //       editTrade={() => editTrade('entryOrder', el)}
-        //     />
-        //   ),
-        // },
-        // takeProfit: {
-        //   render: (
-        //     <TakeProfitColumn
-        //       price={exitLevels.length > 0 && exitLevels[0].price}
-        //       order={exitLevels.length > 0 && exitLevels[0].orderType}
-        //       targets={exitLevels ? exitLevels : []}
-        //       timeoutProfit={timeoutWhenProfit}
-        //       timeoutProfitable={timeoutIfProfitable}
-        //       trailing={trailingExit}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //       editTrade={() => editTrade('takeProfit', el)}
-        //     />
-        //   ),
-        // },
-        // stopLoss: {
-        //   render: (
-        //     <StopLossColumn
-        //       price={stopLoss}
-        //       order={stopLossType}
-        //       forced={!!forcedLoss}
-        //       timeoutLoss={timeoutLoss}
-        //       trailing={false}
-        //       timeoutLossable={timeoutLossable}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //       editTrade={() => editTrade('stopLoss', el)}
-        //     />
-        //   ),
-        // },
-        // status: {
-        //   render: (
-        //     <StatusColumn
-        //       status={getStatusFromState(state)}
-        //       profitPercentage={profitPercentage}
-        //       profitAmount={profitAmount}
-        //       red={red.new}
-        //       green={green.new}
-        //       blue={blue}
-        //     />
-        //   ),
-        // },
-        // close: {
-        //   render: (
-        //     <BtnCustom
-        //       btnWidth="100%"
-        //       height="auto"
-        //       fontSize="1.3rem"
-        //       padding=".75rem 0 .4rem 0"
-        //       borderRadius=".8rem"
-        //       btnColor={red.new}
-        //       backgroundColor={'#fff'}
-        //       hoverColor={'#fff'}
-        //       hoverBackground={red.new}
-        //       transition={'all .4s ease-out'}
-        //       onClick={() => cancelOrderFunc(el._id)}
-        //     >
-        //       close
-        //     </BtnCustom>
-        //   ),
-        // },
+        expandableContent: [
+          {
+            row: {
+              render: (
+                <>
+                  <EntryOrderColumn
+                    haveEdit={false}
+                    enableEdit={!!entryPrice}
+                    pair={`${pairArr[0]}/${pairArr[1]}`}
+                    side={side}
+                    price={entryOrderPrice}
+                    order={orderType}
+                    amount={
+                      marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
+                    }
+                    total={entryOrderPrice * amount}
+                    trailing={!entryPrice && entryDeviation}
+                    red={red.new}
+                    green={green.new}
+                    blue={blue}
+                  />
+                  <TakeProfitColumn
+                    haveEdit={false}
+                    price={exitLevels.length > 0 && exitLevels[0].price}
+                    order={exitLevels.length > 0 && exitLevels[0].orderType}
+                    targets={exitLevels ? exitLevels : []}
+                    timeoutProfit={timeoutWhenProfit}
+                    timeoutProfitable={timeoutIfProfitable}
+                    trailing={trailingExit}
+                    red={red.new}
+                    green={green.new}
+                    blue={blue}
+                  />
+                  <StopLossColumn
+                    haveEdit={false}
+                    price={stopLoss}
+                    order={stopLossType}
+                    forced={!!forcedLoss}
+                    timeoutLoss={timeoutLoss}
+                    trailing={false}
+                    timeoutLossable={timeoutLossable}
+                    red={red.new}
+                    green={green.new}
+                    blue={blue}
+                  />
+                </>
+              ),
+              colspan: 8,
+            },
+          },
+        ],
       }
     })
 
