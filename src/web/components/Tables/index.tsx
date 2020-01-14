@@ -564,6 +564,7 @@ const CustomTable = (props: Props) => {
     stylesForTable,
     paperAdditionalStyle = '',
     isCustomStyleForFooter,
+    hideCommonCheckbox = false,
   } = props
 
   if (
@@ -653,7 +654,7 @@ const CustomTable = (props: Props) => {
             className={classes.headRow}
             style={{ ...tableStyles.headRow }}
           >
-            {(withCheckboxes || expandableRows) && (
+            {(withCheckboxes || expandableRows) && !hideCommonCheckbox && (
               <CustomTableCell
                 padding="checkbox"
                 style={{ ...isOnTop, width: '6rem' }}
@@ -810,7 +811,9 @@ const CustomTable = (props: Props) => {
                             unmountOnExit={true}
                             mountOnEnter={true}
                           >
-                            <TableRow className={classes.rowExpanded}>
+                            <TableRow
+                              className={rowsWithHover && classes.rowExpanded}
+                            >
                               <CustomTableCell padding="checkbox" />
                               {renderCells({
                                 padding,
