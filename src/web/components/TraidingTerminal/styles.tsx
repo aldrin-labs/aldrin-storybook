@@ -266,16 +266,15 @@ export const SendButton = styled(StyledTab)`
 `
 
 export const SmartTradeButton = styled(SendButton)`
-  font-size: ${(props) => (props.type === 'buy' ? '1.5rem' : '1.1rem')};
   font-size: 1.3rem;
 
-  /* @media (max-width: 1600px) {
-    font-size: ${(props) => (props.type === 'buy' ? '1.1rem' : '0.85rem')};
+  @media (max-width: 1600px) {
+    font-size: 1.1rem;
   }
 
   @media (min-width: 1921px) {
-    font-size: ${(props) => (props.type === 'buy' ? '1.3rem' : '1rem')};
-  } */
+    font-size: 1.1rem;
+  } 
 `
 
 export const PriceContainer = styled(Grid)``

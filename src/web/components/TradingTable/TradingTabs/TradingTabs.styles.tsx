@@ -10,7 +10,8 @@ export const TitleTab = styled(({ active, ...rest }) => <Button {...rest} />)`
       props.active ? '#5C8CEA' : '#f2f4f6'};
     font-size: 1rem;
     font-weight: bold;
-    padding: 0.6rem 4rem;
+    width: 20%;
+    // padding: 0.6rem 4rem;
     border-radius: 0;
     letter-spacing: 0.05rem;
     border-right: 0.1rem solid #e0e5ec;
@@ -18,7 +19,7 @@ export const TitleTab = styled(({ active, ...rest }) => <Button {...rest} />)`
 
   @media (max-width: 1600px) {
     &&& {
-      padding: .6rem 2rem;
+      // padding: .6rem 2rem;
     }
   }
 `

@@ -3,8 +3,19 @@ import { IProps } from './TradingTabs.types'
 import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
 import { withTheme } from '@material-ui/styles'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
+import QueryRenderer from '@core/components/QueryRenderer'
+import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
 
-const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
+import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+
+const TradingTabs = ({
+  tab,
+  handleTabChange,
+  marketType,
+  getOpenOrderHistoryQuery,
+  canceledOrders,
+}: IProps) => (
   <>
     <TitleTabsGroup>
       <TitleTab
@@ -12,6 +23,12 @@ const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
         onClick={() => handleTabChange('activeTrades')}
       >
         Smart trades
+      </TitleTab>
+      <TitleTab
+        active={tab === 'strategiesHistory'}
+        onClick={() => handleTabChange('strategiesHistory')}
+      >
+        ST History
       </TitleTab>
       {!isSPOTMarketType(marketType) && (
         <TitleTab
@@ -26,7 +43,7 @@ const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
         active={tab === 'openOrders'}
         onClick={() => handleTabChange('openOrders')}
       >
-        Open orders
+        Open orders ({getOpenOrderHistoryQuery.getOpenOrderHistory.filter(order => canceledOrders.includes(order.info.orderId)).length})
       </TitleTab>
       <TitleTab
         active={tab === 'orderHistory'}
@@ -53,4 +70,32 @@ const TradingTabs = ({ tab, handleTabChange, marketType }: IProps) => (
   </>
 )
 
-export default withTheme(TradingTabs)
+const TradingTabsWrapper = ({ ...props }) => {
+  return (
+    <QueryRenderer
+      component={TradingTabs}
+      variables={{
+        openOrderInput: {
+          activeExchangeKey: props.selectedKey.keyId,
+        },
+      }}
+      withOutSpinner={true}
+      withTableLoader={true}
+      query={getOpenOrderHistory}
+      name={`getOpenOrderHistoryQuery`}
+      fetchPolicy="cache-and-network"
+      subscriptionArgs={{
+        subscription: OPEN_ORDER_HISTORY,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: props.selectedKey.keyId,
+          },
+        },
+        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+      }}
+      {...props}
+    />
+  )
+}
+
+export default withTheme(TradingTabsWrapper)

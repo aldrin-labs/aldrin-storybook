@@ -48,8 +48,12 @@ import {
   MARKET_TICKERS,
   MOCKED_MARKET_TICKERS,
 } from '@core/graphql/subscriptions/MARKET_TICKERS'
+
+import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
+import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
 let interval
 
@@ -59,6 +63,7 @@ class ActiveTradesTable extends React.Component {
     editTrade: null,
     selectedTrade: {},
     cachedOrder: null,
+    expandedRows: [],
     activeStrategiesProcessedData: [],
     marketPrice: 0,
     needUpdate: false,
@@ -129,20 +134,22 @@ class ActiveTradesTable extends React.Component {
     const that = this
 
     this.subscription = client
-      .watchQuery({
-        query: getPrice,
+      .subscribe({
+        query: LISTEN_PRICE,
         variables: {
-          exchange: 'binance',
-          pair: that.props.currencyPair,
+          input: {
+            exchange: 'binance',
+            pair: that.props.currencyPair,
+          }
         },
-        fetchPolicy: 'cache-and-network',
-        pollInterval: 15000,
+        fetchPolicy: 'cache-only',
+        // pollInterval: 15000,
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.getPrice === that.state.marketPrice)
+          if (data.loading || data.data.listenPrice === that.state.marketPrice)
             return
-          that.setState({ marketPrice: data.data.getPrice })
+          that.setState({ marketPrice: data.data.listenPrice })
         },
       })
 
@@ -311,11 +318,21 @@ class ActiveTradesTable extends React.Component {
     return null
   }
 
+  setExpandedRows = (id: string) => {
+    this.setState(
+      (prevState) => ({
+        expandedRows: onCheckBoxClick(prevState.expandedRows, id),
+      }),
+      () => this.forceUpdate()
+    )
+  }
+
   render() {
     const {
       activeStrategiesProcessedData,
       editTrade,
       selectedTrade,
+      expandedRows,
     } = this.state
 
     const {
@@ -329,6 +346,8 @@ class ActiveTradesTable extends React.Component {
       updateTakeProfitStrategyMutation,
       showCancelResult,
       getFundsQuery,
+      selectedKey,
+      canceledOrders
     } = this.props
 
     if (!show) {
@@ -525,6 +544,11 @@ class ActiveTradesTable extends React.Component {
           />
         )}
         <TableWithSort
+          hideCommonCheckbox
+          expandableRows={true}
+          expandedRows={expandedRows}
+          onChange={this.setExpandedRows}
+          rowsWithHover={false}
           style={{ borderRadius: 0, height: '100%', overflowX: 'hidden' }}
           stylesForTable={{ backgroundColor: '#fff' }}
           defaultSort={{
@@ -558,10 +582,6 @@ class ActiveTradesTable extends React.Component {
               padding: 0,
               boxShadow: 'none',
             },
-            row: {
-              height: '4.5rem',
-              cursor: 'initial',
-            },
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
           title={
@@ -570,6 +590,8 @@ class ActiveTradesTable extends React.Component {
                 tab={tab}
                 handleTabChange={handleTabChange}
                 marketType={marketType}
+                canceledOrders={canceledOrders}
+                selectedKey={selectedKey}
               />
             </div>
           }

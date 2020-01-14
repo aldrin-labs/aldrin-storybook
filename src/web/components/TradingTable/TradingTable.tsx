@@ -15,6 +15,7 @@ import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
+import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryTable'
 import Funds from './FundsTable/FundsTable'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
@@ -24,6 +25,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     tabIndex: 0,
     tab: 'activeTrades',
+    canceledOrders: []
   }
 
   handleTabChange = (tab: string | any) => {
@@ -32,8 +34,14 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     })
   }
 
+  addOrderToCanceled = (orderId: string | number) => {
+    this.setState((prev: IState) => {
+      return { canceledOrders: [...prev.canceledOrders].concat(orderId) }
+    })
+  }
+
   render() {
-    const { tab } = this.state
+    const { tab, canceledOrders } = this.state
     const {
       selectedKey,
       marketType,
@@ -51,7 +59,21 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             marketType,
             exchange,
             currencyPair,
+            canceledOrders,
             show: tab === 'activeTrades',
+            handleTabChange: this.handleTabChange,
+            showCancelResult: this.props.showCancelResult,
+          }}
+        />
+        <StrategiesHistoryTable 
+          {...{
+            tab,
+            selectedKey,
+            marketType,
+            exchange,
+            currencyPair,
+            canceledOrders,
+            show: tab === 'strategiesHistory',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
           }}
@@ -63,6 +85,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             marketType,
             exchange,
             currencyPair,
+            canceledOrders,
             show: tab === 'positions',
             handleTabChange: this.handleTabChange,
             showOrderResult: this.props.showOrderResult,
@@ -75,9 +98,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             selectedKey,
             marketType,
             arrayOfMarketIds,
+            canceledOrders,
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
+            addOrderToCanceled: this.addOrderToCanceled,
           }}
         />
         <OrderHistoryTable
@@ -86,6 +111,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             selectedKey,
             marketType,
             arrayOfMarketIds,
+            canceledOrders,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -96,6 +122,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             selectedKey,
             marketType,
             arrayOfMarketIds,
+            canceledOrders,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -105,6 +132,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             selectedKey,
             marketType,
+            canceledOrders,
             show: tab === 'funds',
             handleTabChange: this.handleTabChange,
           }}
