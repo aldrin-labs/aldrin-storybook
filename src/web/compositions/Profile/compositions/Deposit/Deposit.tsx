@@ -69,7 +69,7 @@ const Deposits = ({  }: IProps) => {
             spacing={32}
             style={{ width: 'auto' }}
           >
-            <Grid item>
+            {/* <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 Select network
               </StyledTypography>
@@ -86,7 +86,7 @@ const Deposits = ({  }: IProps) => {
                   margin: 0,
                 }}
               />
-            </Grid>
+            </Grid> */}
             <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 {selectedCoin.label} address

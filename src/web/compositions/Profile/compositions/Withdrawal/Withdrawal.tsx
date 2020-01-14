@@ -63,7 +63,7 @@ const Withdrawal = ({  }: IProps) => {
             spacing={32}
             // style={{ width: 'auto' }}
           >
-            <Grid item>
+            {/* <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 Select network
               </StyledTypography>
@@ -80,7 +80,7 @@ const Withdrawal = ({  }: IProps) => {
                   margin: 0,
                 }}
               />
-            </Grid>
+            </Grid> */}
             <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 BTC address
