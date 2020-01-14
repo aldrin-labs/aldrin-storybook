@@ -15,8 +15,9 @@ const TradingTabs = ({
   marketType,
   getOpenOrderHistoryQuery,
   canceledOrders,
-}: IProps) => (
-  <>
+}: IProps) => {
+  console.log('can', canceledOrders)
+  return <>
     <TitleTabsGroup>
       <TitleTab
         active={tab === 'activeTrades'}
@@ -43,7 +44,9 @@ const TradingTabs = ({
         active={tab === 'openOrders'}
         onClick={() => handleTabChange('openOrders')}
       >
-        Open orders ({getOpenOrderHistoryQuery.getOpenOrderHistory.filter(order => canceledOrders.includes(order.info.orderId)).length})
+        Open orders ({getOpenOrderHistoryQuery.getOpenOrderHistory
+        // .filter(order => canceledOrders.includes(order.info.orderId))
+        .length})
       </TitleTab>
       <TitleTab
         active={tab === 'orderHistory'}
@@ -68,7 +71,7 @@ const TradingTabs = ({
       )}
     </TitleTabsGroup>
   </>
-)
+}
 
 const TradingTabsWrapper = ({ ...props }) => {
   return (

@@ -263,12 +263,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       2
     )
 
-    this.setFormatted('margin', newMargin, 1)
+    setFieldValue('margin', stripDigitPlaces(newMargin, 3))
 
     setFieldValue('amount', e.target.value)
     setFieldTouched('amount', true)
 
-    this.setFormatted('total', total, 1)
+    setFieldValue('total', stripDigitPlaces(total, isSPOTMarket ? 8 : 3))
     setFieldTouched('total', true)
   }
 
