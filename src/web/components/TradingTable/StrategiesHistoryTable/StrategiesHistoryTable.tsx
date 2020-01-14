@@ -17,12 +17,15 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getStrategiesHistory } from '@core/graphql/queries/chart/getStrategiesHistory'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
+import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 @withTheme
 class StrategiesHistoryTable extends React.PureComponent<IProps> {
   state: IState = {
     strategiesHistoryProcessedData: [],
+    expandedRows: [],
   }
 
   unsubscribeFunction: null | Function = null
@@ -67,8 +70,17 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     })
   }
 
+  setExpandedRows = (id: string) => {
+    this.setState(
+      (prevState) => ({
+        expandedRows: onCheckBoxClick(prevState.expandedRows, id),
+      }),
+      () => this.forceUpdate()
+    )
+  }
+
   render() {
-    const { strategiesHistoryProcessedData } = this.state
+    const { strategiesHistoryProcessedData, expandedRows } = this.state
 
     const {
       tab,
@@ -93,6 +105,11 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        hideCommonCheckbox
+        expandableRows={true}
+        expandedRows={expandedRows}
+        onChange={this.setExpandedRows}
+        rowsWithHover={false}
         style={{ borderRadius: 0, height: '100%' }}
         stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{

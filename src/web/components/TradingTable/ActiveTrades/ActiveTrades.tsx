@@ -48,6 +48,9 @@ import {
   MARKET_TICKERS,
   MOCKED_MARKET_TICKERS,
 } from '@core/graphql/subscriptions/MARKET_TICKERS'
+
+import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 
@@ -59,6 +62,7 @@ class ActiveTradesTable extends React.Component {
     editTrade: null,
     selectedTrade: {},
     cachedOrder: null,
+    expandedRows: [],
     activeStrategiesProcessedData: [],
     marketPrice: 0,
     needUpdate: false,
@@ -311,11 +315,21 @@ class ActiveTradesTable extends React.Component {
     return null
   }
 
+  setExpandedRows = (id: string) => {
+    this.setState(
+      (prevState) => ({
+        expandedRows: onCheckBoxClick(prevState.expandedRows, id),
+      }),
+      () => this.forceUpdate()
+    )
+  }
+
   render() {
     const {
       activeStrategiesProcessedData,
       editTrade,
       selectedTrade,
+      expandedRows,
     } = this.state
 
     const {
@@ -525,6 +539,11 @@ class ActiveTradesTable extends React.Component {
           />
         )}
         <TableWithSort
+          hideCommonCheckbox
+          expandableRows={true}
+          expandedRows={expandedRows}
+          onChange={this.setExpandedRows}
+          rowsWithHover={false}
           style={{ borderRadius: 0, height: '100%', overflowX: 'hidden' }}
           stylesForTable={{ backgroundColor: '#fff' }}
           defaultSort={{
@@ -557,10 +576,6 @@ class ActiveTradesTable extends React.Component {
             tab: {
               padding: 0,
               boxShadow: 'none',
-            },
-            row: {
-              height: '4.5rem',
-              cursor: 'initial',
             },
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
