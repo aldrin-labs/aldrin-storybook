@@ -67,6 +67,37 @@ export const activeTradesColumnNames = [
   // { label: 'close', id: 'close' },
 ]
 
+export const strategiesHistoryColumnNames = [
+  { label: 'pair', id: 'pair' },
+  { label: 'Side', id: 'side' },
+  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Size', id: 'quantity' },
+  {
+    label: (
+      <TooltipCustom
+        title={`Take a profit`}
+        component={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            T-A-P
+            <Help
+              style={{
+                height: '1.5rem',
+                width: '1.5rem',
+                color: 'rgb(0, 93, 217)',
+                marginLeft: '.5rem',
+              }}
+            />
+          </div>
+        }
+      />
+    ),
+    id: 'takeProfit',
+  },
+  { label: 'Stop', id: 'stopLoss' },
+  { label: 'profit', id: 'profit' },
+  { label: 'status', id: 'status' },
+]
+
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   id: i,
   date: new Date().toDateString(),

@@ -26,6 +26,7 @@ let interval
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],
+    canceledOrders: [],
   }
 
   unsubscribeFunction: null | Function = null
@@ -44,6 +45,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           },
         },
       })
+
+      this.setState((prev) => ({
+        canceledOrders: prev.canceledOrders.concat(orderId),
+      }))
 
       return responseResult
     } catch (err) {
@@ -142,7 +147,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
-      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
+      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
+        (order) => !this.state.canceledOrders.includes(order.info.orderId)
+      ),
       this.cancelOrderWithStatus,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
