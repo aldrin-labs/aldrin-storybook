@@ -5,6 +5,7 @@ import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { client } from '@core/graphql/apolloClient'
+import { filterCacheData } from '@core/utils/TradingTable.utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -46,6 +47,7 @@ import {
   tradeHistoryColumnNames,
   positionsColumnNames,
   activeTradesColumnNames,
+  strategiesHistoryColumnNames,
   fundsBody,
   positionsBody,
   openOrdersBody,
@@ -96,6 +98,8 @@ export const getTableHead = (tab: string, marketType: number = 0): any[] =>
     ? positionsColumnNames
     : tab === 'activeTrades'
     ? activeTradesColumnNames
+    : tab === 'strategiesHistory'
+    ? strategiesHistoryColumnNames
     : []
 
 export const getEndDate = (stringDate: string) =>
@@ -119,6 +123,8 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     : tab === 'positions'
     ? 'You have no open positions'
     : tab === 'activeTrades'
+    ? 'You have no active smart trades'
+    : tab === 'strategiesHistory'
     ? 'You have no smart trades'
     : 'You have no assets'
 
@@ -155,6 +161,22 @@ export const isDataForThisMarket = (
 
 export const getNumberOfPrecisionDigitsForSymbol = (symbol: string) => {
   return stableCoins.includes(symbol) ? 2 : 8
+}
+
+export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
+  if (state && state.entryPrice && state.exitPrice) {
+    const profitPercentage =
+      ((state.exitPrice / state.entryPrice) * 100 - 100) *
+      leverage *
+      (side === 'buy' ? 1 : -1)
+
+    const profitAmount =
+      (amount / leverage) * state.entryPrice * (profitPercentage / 100)
+
+    return [profitAmount, profitPercentage]
+  }
+
+  return [0, 0]
 }
 
 export const combinePositionsTable = (
@@ -211,7 +233,7 @@ export const combinePositionsTable = (
         ((marketPrice / entryPrice) * 100 - 100) * leverage
 
       const profitAmount =
-        (positionAmt / leverage) * marketPrice * (profitPercentage / 100)
+        (positionAmt / leverage) * entryPrice * (profitPercentage / 100)
 
       const pair = symbol.split('_')
 
@@ -309,7 +331,7 @@ export const combinePositionsTable = (
             ) : (
               `0 ${pair[1]} / 0%`
             ),
-            style: { opacity: needOpacity ? 0.5 : 1 },
+            style: { opacity: needOpacity ? 0.5 : 1, whiteSpace: 'nowrap' },
           },
         },
         {
@@ -438,7 +460,7 @@ export const combineActiveTradesTable = (
         ((currentPrice / entryOrderPrice) * 100 - 100) * leverage
 
       const profitAmount =
-        (amount / leverage) * currentPrice * (profitPercentage / 100)
+        (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
 
       return {
         pair: {
@@ -661,6 +683,287 @@ export const combineActiveTradesTable = (
   return processedActiveTradesData
 }
 
+export const combineStrategiesHistoryTable = (
+  data: OrderType[],
+  theme,
+  marketType: number
+) => {
+  if (!data && !Array.isArray(data)) {
+    return []
+  }
+
+  const { green, red, blue } = theme.palette
+
+  const processedStrategiesHistoryData = data
+    .filter((el) => el.conditions.marketType === marketType)
+    .map((el: OrderType, i: number) => {
+      const {
+        conditions: {
+          pair,
+          leverage,
+          marketType,
+          entryOrder: {
+            side,
+            orderType,
+            amount,
+            entryDeviation,
+            price,
+            activatePrice,
+          },
+          exitLevels,
+          stopLoss,
+          stopLossType,
+          forcedLoss,
+          trailingExit,
+          timeoutIfProfitable,
+          timeoutLoss,
+          timeoutLossable,
+          timeoutWhenProfit,
+        } = {
+          pair: '-',
+          marketType: 0,
+          entryOrder: {
+            side: '-',
+            orderType: '-',
+            amount: '-',
+          },
+          exitLevels: [],
+          stopLoss: '-',
+          stopLossType: '-',
+          forcedLoss: false,
+          trailingExit: false,
+          timeoutIfProfitable: '-',
+          timeoutLoss: '-',
+          timeoutLossable: '-',
+          timeoutWhenProfit: '-',
+        },
+      } = el
+
+      const { entryPrice, state } = el.state || {
+        entryPrice: 0,
+        state: '-',
+      }
+
+      // console.log('order', el)
+
+      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
+
+      const pairArr = pair.split('_')
+      const needOpacity = el._id === '-1'
+
+      const entryOrderPrice = !!entryPrice
+        ? entryPrice
+        : !!entryDeviation
+        ? activatePrice * (1 + entryDeviation / leverage / 100)
+        : price
+
+      const [profitAmount, profitPercentage] = getPnlFromState({
+        state,
+        pair: pairArr,
+        side,
+        amount,
+        leverage,
+      })
+
+      return {
+        pair: {
+          render: (
+            <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        side: {
+          render: (
+            <SubColumnValue color={side === 'buy' ? green.new : red.new}>
+              {marketType === 0
+                ? side
+                : side === 'buy'
+                ? 'buy long'
+                : 'sell short'}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        entryPrice: {
+          render: (
+            <SubColumnValue>
+              {stripDigitPlaces(
+                entryOrderPrice,
+                getNumberOfPrecisionDigitsForSymbol(pairArr[1])
+              )}{' '}
+              {pairArr[1]}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        quantity: {
+          render: (
+            <SubColumnValue>
+              {amount} {pairArr[0]}{' '}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        takeProfit: {
+          render: (
+            <SubColumnValue color={green.new}>
+              {trailingExit &&
+              exitLevels[0] &&
+              exitLevels[0].activatePrice &&
+              exitLevels[0].entryDeviation
+                ? `${exitLevels[0].activatePrice} / ${
+                    exitLevels[0].entryDeviation
+                  }%`
+                : exitLevels[0] && exitLevels[0].price
+                ? `${exitLevels[0].price}%`
+                : '-'}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        stopLoss: {
+          render: stopLoss ? (
+            <SubColumnValue color={red.new}>{stopLoss}%</SubColumnValue>
+          ) : (
+            '-'
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        profit: {
+          render: (
+            <SubColumnValue
+              color={
+                profitPercentage === 0
+                  ? ''
+                  : profitPercentage > 0 && side === 'buy'
+                  ? green.new
+                  : red.new
+              }
+            >
+              {`${stripDigitPlaces(profitAmount, 3)} ${
+                pairArr[1]
+              } / ${stripDigitPlaces(profitPercentage, 2)}%`}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        status: {
+          render: (
+            <SubColumnValue color={profitPercentage > 0 ? green.new : red.new}>
+              {profitPercentage === 0
+                ? 'Canceled'
+                : profitPercentage > 0
+                ? 'finished by t-a-p'
+                : 'closed by stop-loss'}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+        // entryOrder: {
+        //   render: (
+        //     <EntryOrderColumn
+        //       enableEdit={!!entryPrice}
+        //       pair={`${pairArr[0]}/${pairArr[1]}`}
+        //       side={side}
+        //       price={entryOrderPrice}
+        //       order={orderType}
+        //       amount={
+        //         marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
+        //       }
+        //       total={entryOrderPrice * amount}
+        //       trailing={!entryPrice && entryDeviation}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //       editTrade={() => editTrade('entryOrder', el)}
+        //     />
+        //   ),
+        // },
+        // takeProfit: {
+        //   render: (
+        //     <TakeProfitColumn
+        //       price={exitLevels.length > 0 && exitLevels[0].price}
+        //       order={exitLevels.length > 0 && exitLevels[0].orderType}
+        //       targets={exitLevels ? exitLevels : []}
+        //       timeoutProfit={timeoutWhenProfit}
+        //       timeoutProfitable={timeoutIfProfitable}
+        //       trailing={trailingExit}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //       editTrade={() => editTrade('takeProfit', el)}
+        //     />
+        //   ),
+        // },
+        // stopLoss: {
+        //   render: (
+        //     <StopLossColumn
+        //       price={stopLoss}
+        //       order={stopLossType}
+        //       forced={!!forcedLoss}
+        //       timeoutLoss={timeoutLoss}
+        //       trailing={false}
+        //       timeoutLossable={timeoutLossable}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //       editTrade={() => editTrade('stopLoss', el)}
+        //     />
+        //   ),
+        // },
+        // status: {
+        //   render: (
+        //     <StatusColumn
+        //       status={getStatusFromState(state)}
+        //       profitPercentage={profitPercentage}
+        //       profitAmount={profitAmount}
+        //       red={red.new}
+        //       green={green.new}
+        //       blue={blue}
+        //     />
+        //   ),
+        // },
+        // close: {
+        //   render: (
+        //     <BtnCustom
+        //       btnWidth="100%"
+        //       height="auto"
+        //       fontSize="1.3rem"
+        //       padding=".75rem 0 .4rem 0"
+        //       borderRadius=".8rem"
+        //       btnColor={red.new}
+        //       backgroundColor={'#fff'}
+        //       hoverColor={'#fff'}
+        //       hoverBackground={red.new}
+        //       transition={'all .4s ease-out'}
+        //       onClick={() => cancelOrderFunc(el._id)}
+        //     >
+        //       close
+        //     </BtnCustom>
+        //   ),
+        // },
+      }
+    })
+
+  return processedStrategiesHistoryData
+}
+
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
   cancelOrderFunc: (
@@ -814,7 +1117,19 @@ export const combineOpenOrdersTable = (
           ) : (
             <CloseButton
               i={i}
-              onClick={() => cancelOrderFunc(keyId, orderId, symbol)}
+              onClick={() => {
+                cancelOrderFunc(keyId, orderId, symbol)
+                filterCacheData({
+                  name: 'getOpenOrderHistory',
+                  query: getOpenOrderHistory,
+                  variables: {
+                    openOrderInput: {
+                      activeExchangeKey: keyId,
+                    },
+                  },
+                  filterData: (order) => order.info.orderId != orderId,
+                })
+              }}
             >
               Cancel
             </CloseButton>
