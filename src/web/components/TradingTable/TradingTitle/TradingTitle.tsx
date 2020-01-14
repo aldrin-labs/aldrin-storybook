@@ -96,13 +96,13 @@ export default class TradingTitle extends React.PureComponent<IProps> {
             displayFormat="MM-DD-YYYY"
           />
         </StyledWrapperForDateRangePicker>
-        <ClearButton
+        {/* <ClearButton
           size="small"
           variant={`outlined`}
           onClick={onClearDateButtonClick}
         >
           Clear
-        </ClearButton>
+        </ClearButton> */}
       </TitleSecondRowContainer>
     )
   }

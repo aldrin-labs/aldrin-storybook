@@ -4,44 +4,48 @@ import { withTheme } from '@material-ui/styles'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps, IState } from './OrderHistoryTable.types'
+import { IProps, IState } from './TradeHistoryTable.types'
+
 import {
-  updateOrderHistoryQuerryFunction,
-  combineOrderHistoryTable,
+  updateActiveStrategiesQuerryFunction,
+  combineStrategiesHistoryTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import { getStrategiesHistory } from '@core/graphql/queries/chart/getStrategiesHistory'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
-import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
-import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
+import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
+import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 @withTheme
-class OrderHistoryTable extends React.PureComponent<IProps> {
+class StrategiesHistoryTable extends React.PureComponent<IProps> {
   state: IState = {
-    orderHistoryProcessedData: [],
+    strategiesHistoryProcessedData: [],
+    expandedRows: [],
   }
 
   unsubscribeFunction: null | Function = null
 
   componentDidMount() {
     const {
-      getOrderHistoryQuery,
+      getStrategiesHistoryQuery,
       subscribeToMore,
       theme,
-      arrayOfMarketIds,
       marketType,
     } = this.props
 
-    const orderHistoryProcessedData = combineOrderHistoryTable(
-      getOrderHistoryQuery.getOrderHistory,
+    const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
+      getStrategiesHistoryQuery.getStrategiesHistory,
       theme,
-      arrayOfMarketIds,
       marketType
     )
+
     this.setState({
-      orderHistoryProcessedData,
+      strategiesHistoryProcessedData,
     })
 
     this.unsubscribeFunction = subscribeToMore()
@@ -55,20 +59,29 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getOrderHistoryQuery.getOrderHistory,
+    const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
+      nextProps.getStrategiesHistoryQuery.getStrategiesHistory,
       nextProps.theme,
-      nextProps.arrayOfMarketIds,
       nextProps.marketType
     )
 
     this.setState({
-      orderHistoryProcessedData,
+      strategiesHistoryProcessedData,
     })
   }
 
+  setExpandedRows = (id: string) => {
+    this.setState(
+      (prevState) => ({
+        expandedRows: onCheckBoxClick(prevState.expandedRows, id),
+      }),
+      () => this.forceUpdate()
+    )
+  }
+
   render() {
-    const { orderHistoryProcessedData } = this.state
+    const { strategiesHistoryProcessedData, expandedRows } = this.state
+
     const {
       tab,
       show,
@@ -85,7 +98,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       onFocusChange,
       marketType,
       selectedKey,
-      canceledOrders,
+      canceledOrders
     } = this.props
 
     if (!show) {
@@ -94,6 +107,11 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
+        hideCommonCheckbox
+        expandableRows={true}
+        expandedRows={expandedRows}
+        onChange={this.setExpandedRows}
+        rowsWithHover={false}
         style={{ borderRadius: 0, height: '100%' }}
         stylesForTable={{ backgroundColor: '#fff' }}
         defaultSort={{
@@ -131,10 +149,10 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           <div>
             <TradingTabs
               tab={tab}
+              selectedKey={selectedKey}
               handleTabChange={handleTabChange}
               marketType={marketType}
               canceledOrders={canceledOrders}
-              selectedKey={selectedKey}
             />
             <TradingTitle
               {...{
@@ -152,7 +170,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
             />
           </div>
         }
-        data={{ body: orderHistoryProcessedData }}
+        data={{ body: strategiesHistoryProcessedData }}
         columnNames={getTableHead(tab, marketType)}
       />
     )
@@ -160,37 +178,33 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate } = props
+  // let { startDate, endDate } = props
 
-  startDate = +startDate
-  endDate = +endDate
+  // startDate = +startDate
+  // endDate = +endDate
 
   return (
     <QueryRenderer
-      component={OrderHistoryTable}
+      component={StrategiesHistoryTable}
       variables={{
-        orderHistoryInput: {
-          startDate,
-          endDate,
+        strategiesHistoryInput: {
           activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
-      query={getOrderHistory}
-      name={`getOrderHistoryQuery`}
+      query={getStrategiesHistory}
+      name={`getStrategiesHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={45000}
+      pollInterval={20000}
       subscriptionArgs={{
-        subscription: ORDER_HISTORY,
+        subscription: ACTIVE_STRATEGIES,
         variables: {
-          orderHistoryInput: {
-            startDate,
-            endDate,
+          activeStrategiesInput: {
             activeExchangeKey: props.selectedKey.keyId,
           },
         },
-        updateQueryFunction: updateOrderHistoryQuerryFunction,
+        updateQueryFunction: updateActiveStrategiesQuerryFunction,
       }}
       {...props}
     />
