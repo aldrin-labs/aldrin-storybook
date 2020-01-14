@@ -12,6 +12,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
@@ -26,7 +27,6 @@ let interval
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],
-    canceledOrders: [],
   }
 
   unsubscribeFunction: null | Function = null
@@ -46,10 +46,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         },
       })
 
-      this.setState((prev) => ({
-        canceledOrders: prev.canceledOrders.concat(orderId),
-      }))
-
       return responseResult
     } catch (err) {
       return { errors: err }
@@ -62,7 +58,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     pair: string
   ) => {
     const { showCancelResult } = this.props
-
+    
+    this.props.addOrderToCanceled(orderId)
     const result = await this.onCancelOrder(keyId, orderId, pair)
     showCancelResult(cancelOrderStatus(result))
   }
@@ -148,7 +145,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   componentWillReceiveProps(nextProps: IProps) {
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
-        (order) => !this.state.canceledOrders.includes(order.info.orderId)
+        (order) => !this.props.canceledOrders.includes(order.info.orderId)
       ),
       this.cancelOrderWithStatus,
       nextProps.theme,
@@ -163,7 +160,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   render() {
     const { openOrdersProcessedData } = this.state
-    const { tab, handleTabChange, show, marketType } = this.props
+    const { tab, handleTabChange, show, marketType, selectedKey } = this.props
 
     if (!show) {
       return null
@@ -210,6 +207,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
               tab={tab}
               handleTabChange={handleTabChange}
               marketType={marketType}
+              selectedKey={selectedKey}
             />
           </div>
         }
@@ -234,7 +232,6 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
-      // pollInterval={15000}
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {

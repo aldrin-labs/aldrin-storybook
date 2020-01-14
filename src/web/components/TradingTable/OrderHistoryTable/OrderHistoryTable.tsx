@@ -84,6 +84,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       onDatesChange,
       onFocusChange,
       marketType,
+      selectedKey,
+      canceledOrders,
     } = this.props
 
     if (!show) {
@@ -131,6 +133,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
               tab={tab}
               handleTabChange={handleTabChange}
               marketType={marketType}
+              canceledOrders={canceledOrders}
+              selectedKey={selectedKey}
             />
             <TradingTitle
               {...{
