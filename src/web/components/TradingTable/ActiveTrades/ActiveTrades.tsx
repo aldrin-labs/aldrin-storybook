@@ -343,6 +343,8 @@ class ActiveTradesTable extends React.Component {
       updateTakeProfitStrategyMutation,
       showCancelResult,
       getFundsQuery,
+      selectedKey,
+      canceledOrders
     } = this.props
 
     if (!show) {
@@ -585,6 +587,8 @@ class ActiveTradesTable extends React.Component {
                 tab={tab}
                 handleTabChange={handleTabChange}
                 marketType={marketType}
+                canceledOrders={canceledOrders}
+                selectedKey={selectedKey}
               />
             </div>
           }

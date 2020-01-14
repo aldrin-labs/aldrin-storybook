@@ -32,7 +32,7 @@ class FundsTable extends React.PureComponent<IProps> {
       fundsProcessedData: combineFundsTable(
         this.props.getFundsQuery.getFunds,
         checked,
-        marketType,
+        marketType
       ),
     })
   }
@@ -44,7 +44,7 @@ class FundsTable extends React.PureComponent<IProps> {
     const fundsProcessedData = combineFundsTable(
       getFundsQuery.getFunds,
       hideSmallAssets,
-      marketType,
+      marketType
     )
     this.setState({
       fundsProcessedData,
@@ -66,7 +66,7 @@ class FundsTable extends React.PureComponent<IProps> {
     const fundsProcessedData = combineFundsTable(
       nextProps.getFundsQuery.getFunds,
       hideSmallAssets,
-      nextProps.marketType,
+      nextProps.marketType
     )
     this.setState({
       fundsProcessedData,
@@ -75,7 +75,7 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const { tab, handleTabChange, show, marketType } = this.props
+    const { tab, handleTabChange, show, marketType, selectedKey, canceledOrders } = this.props
 
     if (!show) {
       return null
@@ -116,7 +116,9 @@ class FundsTable extends React.PureComponent<IProps> {
           <div>
             <TradingTabs
               tab={tab}
+              selectedKey={selectedKey}
               marketType={marketType}
+              canceledOrders={canceledOrders}
               hideSmallAssets={hideSmallAssets}
               handleTabChange={handleTabChange}
               handleSmallAssetsCheckboxChange={
