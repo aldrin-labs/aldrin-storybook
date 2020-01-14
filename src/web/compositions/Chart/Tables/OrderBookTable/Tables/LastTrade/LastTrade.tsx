@@ -17,6 +17,7 @@ import {
   MOCKED_MARKET_TICKERS,
 } from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
+import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
 import {
   updateTradeHistoryQuerryFunction,
@@ -89,19 +90,21 @@ const LastTrade = (props: IProps) => {
     subscription && subscription.unsubscribe()
 
     subscription = client
-      .watchQuery({
-        query: getPrice,
+      .subscribe({
+        query: LISTEN_PRICE,
         variables: {
-          exchange: 'binance',
-          pair: props.symbol,
+          input: {
+            exchange: 'binance',
+            pair: props.symbol,
+          }
         },
-        fetchPolicy: 'cache-and-network',
-        pollInterval: 15000,
+        // fetchPolicy: 'cache-and-network',
+        // pollInterval: 15000,
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.getPrice === marketPrice) return
-          updateMarketPrice(data.data.getPrice)
+          if (data.loading || data.data.listenPrice === marketPrice) return
+          updateMarketPrice(data.data.listenPrice)
         },
       })
 
