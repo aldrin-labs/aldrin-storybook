@@ -86,6 +86,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       marketType,
       selectedKey,
       canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -135,6 +136,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
               handleTabChange={handleTabChange}
               marketType={marketType}
               canceledOrders={canceledOrders}
+              arrayOfMarketIds={arrayOfMarketIds}
             />
             <TradingTitle
               {...{

@@ -140,7 +140,7 @@ class ActiveTradesTable extends React.Component {
           input: {
             exchange: 'binance',
             pair: that.props.currencyPair,
-          }
+          },
         },
         fetchPolicy: 'cache-only',
       })
@@ -200,12 +200,15 @@ class ActiveTradesTable extends React.Component {
         },
       })
 
-      if (!this.props.show || data.getActiveStrategies.find((order) => order._id === '-1')) {
+      if (
+        !this.props.show ||
+        data.getActiveStrategies.find((order) => order._id === '-1')
+      ) {
         return
       }
 
       this.props.getActiveStrategiesQueryRefetch()
-    }, 25000)
+    }, 60000)
 
     this.subscribe()
 
@@ -340,7 +343,8 @@ class ActiveTradesTable extends React.Component {
       showCancelResult,
       getFundsQuery,
       selectedKey,
-      canceledOrders
+      canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -585,6 +589,7 @@ class ActiveTradesTable extends React.Component {
                 marketType={marketType}
                 canceledOrders={canceledOrders}
                 selectedKey={selectedKey}
+                arrayOfMarketIds={arrayOfMarketIds}
               />
             </div>
           }
