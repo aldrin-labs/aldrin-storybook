@@ -199,7 +199,7 @@ export const combinePositionsTable = (
 
   const { green, red } = theme.palette
   let positions = []
-  console.log('data', data)
+  // console.log('data', data)
   const processedPositionsData = data
     .filter(
       (el) =>
