@@ -372,6 +372,10 @@ class PositionsTable extends React.PureComponent {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+
+  // console.log('PositionsTable props.show', props.show)
+  // console.log('PositionsTable props', props)
+
   return (
     <QueryRenderer
       component={PositionsTable}
@@ -385,7 +389,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getActivePositions}
       name={`getActivePositionsQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={15000}
+      pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: FUTURES_POSITIONS,
         variables: {

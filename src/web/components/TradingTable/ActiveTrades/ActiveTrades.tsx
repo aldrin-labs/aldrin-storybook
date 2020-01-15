@@ -200,18 +200,12 @@ class ActiveTradesTable extends React.Component {
         },
       })
 
-      if (data.getActiveStrategies.find((order) => order._id === '-1')) {
+      if (!this.props.show || data.getActiveStrategies.find((order) => order._id === '-1')) {
         return
       }
 
-      this.props.getActiveStrategiesQueryRefetch({
-        variables: {
-          activeStrategiesInput: {
-            activeExchangeKey: this.props.selectedKey.keyId,
-          },
-        },
-      })
-    }, 20000)
+      this.props.getActiveStrategiesQueryRefetch()
+    }, 25000)
 
     this.subscribe()
 
@@ -629,7 +623,6 @@ const LastTradeWrapper = ({ ...props }) => {
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
       fetchPolicy="cache-and-network"
-      // pollInterval={20000}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {

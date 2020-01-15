@@ -117,18 +117,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         },
       })
 
-      if (data.getOpenOrderHistory.find((order) => order.marketId === '0')) {
+      if (!this.props.show || data.getOpenOrderHistory.find((order) => order.marketId === '0')) {
         return
       }
 
-      that.props.getOpenOrderHistoryQueryRefetch({
-        variables: {
-          activeStrategiesInput: {
-            activeExchangeKey: that.props.selectedKey.keyId,
-          },
-        },
-      })
-    }, 20000)
+      that.props.getOpenOrderHistoryQueryRefetch()
+    }, 25000)
 
     this.unsubscribeFunction = subscribeToMore()
   }

@@ -168,7 +168,7 @@ const TableDataWrapper = ({ ...props }) => {
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={60000}
+      pollInterval={props.show ? 60000 : 0}
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {

@@ -196,7 +196,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getStrategiesHistory}
       name={`getStrategiesHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={20000}
+      pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
