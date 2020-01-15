@@ -46,9 +46,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         },
       })
 
-      if (responseResult) {
-        await this.props.clearCanceledOrders()
-      }
       return responseResult
     } catch (err) {
       return { errors: err }
