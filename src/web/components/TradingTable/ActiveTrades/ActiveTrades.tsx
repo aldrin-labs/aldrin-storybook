@@ -143,7 +143,6 @@ class ActiveTradesTable extends React.Component {
           }
         },
         fetchPolicy: 'cache-only',
-        // pollInterval: 15000,
       })
       .subscribe({
         next: (data) => {

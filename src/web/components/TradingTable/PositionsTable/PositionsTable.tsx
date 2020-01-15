@@ -134,7 +134,6 @@ class PositionsTable extends React.PureComponent {
           }
         },
         fetchPolicy: 'cache-only',
-        // pollInterval: 15000,
       })
       .subscribe({
         next: (data) => {
