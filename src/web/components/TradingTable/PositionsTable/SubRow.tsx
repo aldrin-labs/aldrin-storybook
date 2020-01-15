@@ -5,13 +5,12 @@ import { Input } from '@sb/compositions/Chart/components/SmartOrderTerminal/Inpu
 import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/components/Balances'
 import { Loading } from '@sb/components/index'
 
-const SubRow = ({ getVariables, createOrderWithStatus }) => {
+const SubRow = ({ getVariables, createOrderWithStatus, positionId }) => {
   const [enableEdit, updateEnableEdit] = useState(false)
   const [price, updateClosePrice] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
 
-  console.log('price', price)
   return (
     <div
       style={{
@@ -61,7 +60,7 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           onClick={() => {
             setClosingType('limit')
             closePosition(true)
-            createOrderWithStatus(getVariables('limit', +price))
+            createOrderWithStatus(getVariables('limit', +price), '_')
           }}
         >
           {closingType === 'limit' ? (
@@ -87,7 +86,7 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           onClick={() => {
             setClosingType('market')
             closePosition(true)
-            createOrderWithStatus(getVariables('market'))
+            createOrderWithStatus(getVariables('market'), positionId)
           }}
         >
           {closingType === 'market' ? (

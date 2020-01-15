@@ -75,7 +75,15 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const { tab, handleTabChange, show, marketType, selectedKey, canceledOrders } = this.props
+    const {
+      tab,
+      handleTabChange,
+      show,
+      marketType,
+      selectedKey,
+      canceledOrders,
+      arrayOfMarketIds,
+    } = this.props
 
     if (!show) {
       return null
@@ -116,6 +124,7 @@ class FundsTable extends React.PureComponent<IProps> {
           <div>
             <TradingTabs
               tab={tab}
+              arrayOfMarketIds={arrayOfMarketIds}
               selectedKey={selectedKey}
               marketType={marketType}
               canceledOrders={canceledOrders}

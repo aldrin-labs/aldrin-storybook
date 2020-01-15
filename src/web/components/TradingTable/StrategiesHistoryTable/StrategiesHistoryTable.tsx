@@ -98,7 +98,8 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       onFocusChange,
       marketType,
       selectedKey,
-      canceledOrders
+      canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -153,6 +154,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
               handleTabChange={handleTabChange}
               marketType={marketType}
               canceledOrders={canceledOrders}
+              arrayOfMarketIds={arrayOfMarketIds}
             />
             <TradingTitle
               {...{
