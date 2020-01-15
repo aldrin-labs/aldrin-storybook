@@ -953,6 +953,9 @@ export const combineOpenOrdersTable = (
           : (!isBuyTypeOrder(side) && type === 'limit') ||
             (isBuyTypeOrder(side) && type === 'stop_market') ||
             (isBuyTypeOrder(side) && type === 'stop_limit') ||
+            (isBuyTypeOrder(side) && type === 'stop_loss_limit') ||
+            (isBuyTypeOrder(side) && type === 'stop') ||
+            (isBuyTypeOrder(side) && type === 'stop_loss_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit')
@@ -1485,7 +1488,7 @@ export const updateActiveStrategiesQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = prev.getActiveStrategies.findIndex(
+  const strategyHasTheSameIndex = (prev.getActiveStrategies || []).findIndex(
     (el: TradeType) =>
       el._id === subscriptionData.data.listenActiveStrategies._id
   )

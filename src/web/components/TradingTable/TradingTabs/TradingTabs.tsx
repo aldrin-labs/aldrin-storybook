@@ -54,11 +54,11 @@ const TradingTabs = ({
               (order) =>
                 !canceledOrders.includes(order.info.orderId) &&
                 order.type !== 'market' &&
-                isDataForThisMarket(
+                (isDataForThisMarket(
                   marketType,
                   arrayOfMarketIds,
                   order.marketId
-                ) &&
+                ) || order.marketId === '0' && order.symbol) &&
                 (order.status === 'open' ||
                   order.status === 'placing' ||
                   order.status === 'NEW')
