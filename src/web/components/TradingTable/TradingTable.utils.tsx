@@ -190,7 +190,8 @@ export const combinePositionsTable = (
   theme: Theme,
   marketPrice: number,
   pair: string,
-  keyId: string
+  keyId: string,
+  canceledPositions: string[]
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -198,10 +199,14 @@ export const combinePositionsTable = (
 
   const { green, red } = theme.palette
   let positions = []
-
+  // console.log('data', data)
   const processedPositionsData = data
-    .filter((el) => el.positionAmt !== 0)
-    .filter((el) => el.symbol === pair)
+    .filter(
+      (el) =>
+        el.positionAmt !== 0 &&
+        el.symbol === pair &&
+        !canceledPositions.includes(el._id)
+    )
     .map((el: OrderType, i: number) => {
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
       const needOpacity = el._id === '0'
@@ -313,7 +318,7 @@ export const combinePositionsTable = (
           profit: {
             render: marketPrice ? (
               <SubColumnValue
-                style={{ whiteSpace: 'normal' }}
+                style={{ whiteSpace: 'nowrap' }}
                 color={
                   profitPercentage > 0 && side === 'buy long'
                     ? green.new
@@ -331,7 +336,7 @@ export const combinePositionsTable = (
             ) : (
               `0 ${pair[1]} / 0%`
             ),
-            style: { opacity: needOpacity ? 0.5 : 1, whiteSpace: 'nowrap' },
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
         },
         {
@@ -339,6 +344,7 @@ export const combinePositionsTable = (
             render: (
               <div>
                 <SubRow
+                  positionId={el._id}
                   getVariables={getVariables}
                   createOrderWithStatus={createOrderWithStatus}
                 />
@@ -920,11 +926,12 @@ export const combineOpenOrdersTable = (
   const processedOpenOrdersData = openOrdersData
     .filter(
       (el) =>
-        ((el.status === 'open' ||
+        (el.status === 'open' ||
           el.status === 'placing' ||
           el.status === 'NEW') &&
-          isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)) ||
-        (el.marketId === '0' && el.symbol)
+        (isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId) ||
+          (el.marketId === '0' && el.symbol)) &&
+        el.type !== 'market'
     )
     .map((el: OrderType, i: number) => {
       const { keyId, symbol, type: orderType, side, price } = el

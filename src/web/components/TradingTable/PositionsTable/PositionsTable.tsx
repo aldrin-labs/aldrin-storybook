@@ -29,6 +29,7 @@ import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 class PositionsTable extends React.PureComponent {
   state = {
     positionsData: [],
+    canceledPositions: [],
     marketPrice: 0,
     needUpdate: true,
   }
@@ -72,11 +73,23 @@ class PositionsTable extends React.PureComponent {
     }
   }
 
-  createOrderWithStatus = async (variables) => {
+  addPositionToCanceled = (positionId) => {
+    this.setState((prev) => ({
+      canceledPositions: [...prev.canceledPositions].concat(positionId),
+    }))
+  }
+
+  createOrderWithStatus = async (variables, positionId) => {
     const { showOrderResult, cancelOrder, marketType } = this.props
+
+    await this.addPositionToCanceled(positionId)
 
     const result = await this.createOrder(variables)
     await showOrderResult(result, cancelOrder, marketType)
+
+    if (result) {
+      await this.setState({ canceledPositions: [] })
+    }
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
@@ -131,7 +144,7 @@ class PositionsTable extends React.PureComponent {
           input: {
             exchange: 'binance',
             pair: that.props.currencyPair,
-          }
+          },
         },
         fetchPolicy: 'cache-only',
       })
@@ -197,7 +210,8 @@ class PositionsTable extends React.PureComponent {
       theme,
       this.state.marketPrice,
       this.props.currencyPair,
-      this.props.selectedKey.keyId
+      this.props.selectedKey.keyId,
+      this.state.canceledPositions
     )
 
     this.setState({
@@ -263,10 +277,9 @@ class PositionsTable extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.state.needUpdate) {
-      setTimeout(() => this.setState({ needUpdate: true }), 10000)
-    }
-
+    // if (!this.state.needUpdate) {
+    //   setTimeout(() => this.setState({ needUpdate: true }), 10000)
+    // }
     if (
       prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
@@ -294,7 +307,8 @@ class PositionsTable extends React.PureComponent {
       nextProps.theme,
       this.state.marketPrice,
       this.props.currencyPair,
-      this.props.selectedKey.keyId
+      this.props.selectedKey.keyId,
+      this.state.canceledPositions
     )
 
     this.setState({
@@ -304,7 +318,15 @@ class PositionsTable extends React.PureComponent {
 
   render() {
     const { positionsData } = this.state
-    const { tab, handleTabChange, show, marketType, selectedKey, canceledOrders } = this.props
+    const {
+      tab,
+      handleTabChange,
+      show,
+      marketType,
+      selectedKey,
+      canceledOrders,
+      arrayOfMarketIds,
+    } = this.props
 
     if (!show) {
       return null
@@ -359,6 +381,7 @@ class PositionsTable extends React.PureComponent {
               selectedKey={selectedKey}
               canceledOrders={canceledOrders}
               handleTabChange={handleTabChange}
+              arrayOfMarketIds={arrayOfMarketIds}
               marketType={marketType}
             />
           </div>
@@ -372,7 +395,6 @@ class PositionsTable extends React.PureComponent {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-
   // console.log('PositionsTable props.show', props.show)
   // console.log('PositionsTable props', props)
 
