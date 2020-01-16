@@ -15,8 +15,8 @@ const canselStyeles = (theme) => ({
 })
 
 const snackStyeles = (theme) => ({
-  success: { backgroundColor: theme.customPalette.green.main },
-  error: { backgroundColor: theme.customPalette.red.main },
+  success: { fontSize: '1.25rem', fontWeight: 'bold', backgroundColor: theme.customPalette.green.main },
+  error: { fontSize: '1.25rem',  fontWeight: 'bold', backgroundColor: theme.customPalette.red.main },
 })
 
 const CloseButton = withStyles(canselStyeles)((props) => (
