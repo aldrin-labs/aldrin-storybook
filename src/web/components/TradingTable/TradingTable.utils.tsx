@@ -230,7 +230,7 @@ export const combinePositionsTable = (
           : 1 - 100 / leverage / 100)
 
       const profitPercentage =
-        ((marketPrice / entryPrice) * 100 - 100) * leverage
+        ((marketPrice / entryPrice) * 100 - 100) * leverage * (side === 'buy long' ? 1 : -1)
 
       const profitAmount =
         (positionAmt / leverage) * entryPrice * (profitPercentage / 100)
