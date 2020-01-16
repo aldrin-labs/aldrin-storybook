@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Input } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/components/Balances'
 import { Loading } from '@sb/components/index'
 
-const SubRow = ({ getVariables, createOrderWithStatus, positionId }) => {
-  const [enableEdit, updateEnableEdit] = useState(false)
+const SubRow = ({ getVariables, createOrderWithStatus, positionId, priceFromOrderbook }) => {
   const [price, updateClosePrice] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
+
+  useEffect(() => {
+    updateClosePrice(priceFromOrderbook)
+  }, [priceFromOrderbook])
 
   return (
     <div
@@ -19,13 +22,6 @@ const SubRow = ({ getVariables, createOrderWithStatus, positionId }) => {
         alignItems: 'center',
       }}
     >
-      {/* <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Typography>enable edit:</Typography>
-        <GreenSwitcher
-          checked={enableEdit}
-          handleToggle={() => updateEnableEdit(!enableEdit)}
-        />
-      </div> */}
       <div
         style={{
           display: 'flex',
