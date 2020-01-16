@@ -58,8 +58,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     pair: string
   ) => {
     const { showCancelResult } = this.props
-    
-    this.props.addOrderToCanceled(orderId)
+
+    await this.props.addOrderToCanceled(orderId)
     const result = await this.onCancelOrder(keyId, orderId, pair)
     showCancelResult(cancelOrderStatus(result))
   }
@@ -117,12 +117,15 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         },
       })
 
-      if (!this.props.show || data.getOpenOrderHistory.find((order) => order.marketId === '0')) {
+      if (
+        !this.props.show ||
+        data.getOpenOrderHistory.find((order) => order.marketId === '0')
+      ) {
         return
       }
 
       that.props.getOpenOrderHistoryQueryRefetch()
-    }, 25000)
+    }, 60000)
 
     this.unsubscribeFunction = subscribeToMore()
   }
@@ -154,7 +157,15 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   render() {
     const { openOrdersProcessedData } = this.state
-    const { tab, handleTabChange, show, marketType, selectedKey } = this.props
+    const {
+      tab,
+      handleTabChange,
+      show,
+      marketType,
+      selectedKey,
+      canceledOrders,
+      arrayOfMarketIds,
+    } = this.props
 
     if (!show) {
       return null
@@ -201,7 +212,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
               tab={tab}
               handleTabChange={handleTabChange}
               marketType={marketType}
+              canceledOrders={canceledOrders}
               selectedKey={selectedKey}
+              arrayOfMarketIds={arrayOfMarketIds}
             />
           </div>
         }
