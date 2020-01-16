@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Input } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/components/Balances'
 import { Loading } from '@sb/components/index'
 
-const SubRow = ({ getVariables, createOrderWithStatus }) => {
-  const [enableEdit, updateEnableEdit] = useState(false)
+const SubRow = ({ getVariables, createOrderWithStatus, positionId, priceFromOrderbook }) => {
   const [price, updateClosePrice] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
 
-  console.log('price', price)
+  useEffect(() => {
+    updateClosePrice(priceFromOrderbook)
+  }, [priceFromOrderbook])
+
   return (
     <div
       style={{
@@ -20,13 +22,6 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
         alignItems: 'center',
       }}
     >
-      {/* <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Typography>enable edit:</Typography>
-        <GreenSwitcher
-          checked={enableEdit}
-          handleToggle={() => updateEnableEdit(!enableEdit)}
-        />
-      </div> */}
       <div
         style={{
           display: 'flex',
@@ -61,7 +56,7 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           onClick={() => {
             setClosingType('limit')
             closePosition(true)
-            createOrderWithStatus(getVariables('limit', +price))
+            createOrderWithStatus(getVariables('limit', +price), '_')
           }}
         >
           {closingType === 'limit' ? (
@@ -87,7 +82,7 @@ const SubRow = ({ getVariables, createOrderWithStatus }) => {
           onClick={() => {
             setClosingType('market')
             closePosition(true)
-            createOrderWithStatus(getVariables('market'))
+            createOrderWithStatus(getVariables('market'), positionId)
           }}
         >
           {closingType === 'market' ? (

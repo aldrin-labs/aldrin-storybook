@@ -213,6 +213,7 @@ export const DefaultView = (props: any) => {
                   showCancelResult={showCancelResult}
                   marketType={marketType}
                   exchange={exchange}
+                  priceFromOrderbook={priceFromOrderbook}
                   currencyPair={currencyPair}
                   arrayOfMarketIds={arrayOfMarketIds}
                 />

@@ -140,10 +140,9 @@ class ActiveTradesTable extends React.Component {
           input: {
             exchange: 'binance',
             pair: that.props.currencyPair,
-          }
+          },
         },
         fetchPolicy: 'cache-only',
-        // pollInterval: 15000,
       })
       .subscribe({
         next: (data) => {
@@ -201,18 +200,15 @@ class ActiveTradesTable extends React.Component {
         },
       })
 
-      if (data.getActiveStrategies.find((order) => order._id === '-1')) {
+      if (
+        !this.props.show ||
+        data.getActiveStrategies.find((order) => order._id === '-1')
+      ) {
         return
       }
 
-      this.props.getActiveStrategiesQueryRefetch({
-        variables: {
-          activeStrategiesInput: {
-            activeExchangeKey: this.props.selectedKey.keyId,
-          },
-        },
-      })
-    }, 20000)
+      this.props.getActiveStrategiesQueryRefetch()
+    }, 60000)
 
     this.subscribe()
 
@@ -347,7 +343,8 @@ class ActiveTradesTable extends React.Component {
       showCancelResult,
       getFundsQuery,
       selectedKey,
-      canceledOrders
+      canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -592,6 +589,7 @@ class ActiveTradesTable extends React.Component {
                 marketType={marketType}
                 canceledOrders={canceledOrders}
                 selectedKey={selectedKey}
+                arrayOfMarketIds={arrayOfMarketIds}
               />
             </div>
           }
@@ -630,7 +628,6 @@ const LastTradeWrapper = ({ ...props }) => {
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
       fetchPolicy="cache-and-network"
-      // pollInterval={20000}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {

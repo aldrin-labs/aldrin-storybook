@@ -86,6 +86,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       marketType,
       selectedKey,
       canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -133,6 +134,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
               tab={tab}
               handleTabChange={handleTabChange}
               marketType={marketType}
+              arrayOfMarketIds={arrayOfMarketIds}
               canceledOrders={canceledOrders}
               selectedKey={selectedKey}
             />
@@ -180,7 +182,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getOrderHistory}
       name={`getOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={45000}
+      pollInterval={props.show ? 45000 : 0}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
         variables: {

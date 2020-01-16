@@ -86,6 +86,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       marketType,
       selectedKey,
       canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -135,6 +136,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
               handleTabChange={handleTabChange}
               marketType={marketType}
               canceledOrders={canceledOrders}
+              arrayOfMarketIds={arrayOfMarketIds}
             />
             <TradingTitle
               {...{
@@ -173,7 +175,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={60000}
+      pollInterval={props.show ? 60000 : 0}
       variables={{
         tradeHistoryInput: {
           startDate,
