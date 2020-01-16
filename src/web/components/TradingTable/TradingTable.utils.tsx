@@ -181,17 +181,13 @@ export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
 
 export const combinePositionsTable = (
   data: OrderType[],
-  cancelOrderFunc: (
-    keyId: string,
-    orderId: string,
-    pair: string
-  ) => Promise<any>,
   createOrderWithStatus,
   theme: Theme,
   marketPrice: number,
   pair: string,
   keyId: string,
-  canceledPositions: string[]
+  canceledPositions: string[],
+  priceFromOrderbook: number | string
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -346,6 +342,7 @@ export const combinePositionsTable = (
                 <SubRow
                   positionId={el._id}
                   getVariables={getVariables}
+                  priceFromOrderbook={priceFromOrderbook}
                   createOrderWithStatus={createOrderWithStatus}
                 />
               </div>
