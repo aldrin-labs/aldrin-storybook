@@ -236,14 +236,14 @@ export const Balances = ({
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer needBorder>
-                    <BalanceFuturesTitle>In order</BalanceFuturesTitle>
+                    <BalanceFuturesTitle>{isSPOTMarket ? `In order` : `locked`}</BalanceFuturesTitle>
                     <BalanceFuturesValue>
                       {stripDigitPlaces(USDTFuturesFund.locked)}{' '}
                       <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer>
-                    <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
+                    <BalanceFuturesTitle>{isSPOTMarket ? `Availiable` : `free`}</BalanceFuturesTitle>
                     <BalanceFuturesValue>
                       {stripDigitPlaces(USDTFuturesFund.free)}{' '}
                       <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>

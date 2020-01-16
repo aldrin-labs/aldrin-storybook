@@ -4,7 +4,10 @@ import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
 import { withTheme } from '@material-ui/styles'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import QueryRenderer from '@core/components/QueryRenderer'
-import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
+import {
+  updateOpenOrderHistoryQuerryFunction,
+  isDataForThisMarket,
+} from '@sb/components/TradingTable/TradingTable.utils'
 
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
@@ -15,62 +18,78 @@ const TradingTabs = ({
   marketType,
   getOpenOrderHistoryQuery,
   canceledOrders,
+  arrayOfMarketIds,
 }: IProps) => {
-  console.log('can', canceledOrders)
-  return <>
-    <TitleTabsGroup>
-      <TitleTab
-        active={tab === 'activeTrades'}
-        onClick={() => handleTabChange('activeTrades')}
-      >
-        Smart trades
-      </TitleTab>
-      <TitleTab
-        active={tab === 'strategiesHistory'}
-        onClick={() => handleTabChange('strategiesHistory')}
-      >
-        ST History
-      </TitleTab>
-      {!isSPOTMarketType(marketType) && (
+  return (
+    <>
+      <TitleTabsGroup>
         <TitleTab
-          active={tab === 'positions'}
-          onClick={() => handleTabChange('positions')}
+          active={tab === 'activeTrades'}
+          onClick={() => handleTabChange('activeTrades')}
         >
-          Positions
+          Smart trades
         </TitleTab>
-      )}
-
-      <TitleTab
-        active={tab === 'openOrders'}
-        onClick={() => handleTabChange('openOrders')}
-      >
-        Open orders ({getOpenOrderHistoryQuery.getOpenOrderHistory
-        // .filter(order => canceledOrders.includes(order.info.orderId))
-        .length})
-      </TitleTab>
-      <TitleTab
-        active={tab === 'orderHistory'}
-        onClick={() => handleTabChange('orderHistory')}
-      >
-        Order history
-      </TitleTab>
-      <TitleTab
-        active={tab === 'tradeHistory'}
-        onClick={() => handleTabChange('tradeHistory')}
-      >
-        Trade history
-      </TitleTab>
-
-      {isSPOTMarketType(marketType) && (
         <TitleTab
-          active={tab === 'funds'}
-          onClick={() => handleTabChange('funds')}
+          active={tab === 'strategiesHistory'}
+          onClick={() => handleTabChange('strategiesHistory')}
         >
-          Funds
+          ST History
         </TitleTab>
-      )}
-    </TitleTabsGroup>
-  </>
+        {!isSPOTMarketType(marketType) && (
+          <TitleTab
+            active={tab === 'positions'}
+            onClick={() => handleTabChange('positions')}
+          >
+            Positions
+          </TitleTab>
+        )}
+
+        <TitleTab
+          active={tab === 'openOrders'}
+          onClick={() => handleTabChange('openOrders')}
+        >
+          Open orders (
+          {
+            getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
+              (order) =>
+                !canceledOrders.includes(order.info.orderId) &&
+                order.type !== 'market' &&
+                (isDataForThisMarket(
+                  marketType,
+                  arrayOfMarketIds,
+                  order.marketId
+                ) || order.marketId === '0' && order.symbol) &&
+                (order.status === 'open' ||
+                  order.status === 'placing' ||
+                  order.status === 'NEW')
+            ).length
+          }
+          )
+        </TitleTab>
+        <TitleTab
+          active={tab === 'orderHistory'}
+          onClick={() => handleTabChange('orderHistory')}
+        >
+          Order history
+        </TitleTab>
+        <TitleTab
+          active={tab === 'tradeHistory'}
+          onClick={() => handleTabChange('tradeHistory')}
+        >
+          Trade history
+        </TitleTab>
+
+        {isSPOTMarketType(marketType) && (
+          <TitleTab
+            active={tab === 'funds'}
+            onClick={() => handleTabChange('funds')}
+          >
+            Funds
+          </TitleTab>
+        )}
+      </TitleTabsGroup>
+    </>
+  )
 }
 
 const TradingTabsWrapper = ({ ...props }) => {

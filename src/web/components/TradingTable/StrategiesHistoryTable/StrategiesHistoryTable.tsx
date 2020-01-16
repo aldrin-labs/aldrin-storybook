@@ -98,7 +98,8 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       onFocusChange,
       marketType,
       selectedKey,
-      canceledOrders
+      canceledOrders,
+      arrayOfMarketIds,
     } = this.props
 
     if (!show) {
@@ -153,6 +154,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
               handleTabChange={handleTabChange}
               marketType={marketType}
               canceledOrders={canceledOrders}
+              arrayOfMarketIds={arrayOfMarketIds}
             />
             <TradingTitle
               {...{
@@ -196,7 +198,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getStrategiesHistory}
       name={`getStrategiesHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={20000}
+      pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {

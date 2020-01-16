@@ -121,6 +121,7 @@ const TransferPopup = ({
             <Grid style={{ paddingBottom: '2rem' }}>
               <StyledTypography>Coin:</StyledTypography>
               <SelectCoinList
+                isDisabled={true}
                 classNamePrefix="custom-select-box"
                 components={{
                   Option: CoinOption,

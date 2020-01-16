@@ -29,6 +29,7 @@ import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 class PositionsTable extends React.PureComponent {
   state = {
     positionsData: [],
+    canceledPositions: [],
     marketPrice: 0,
     needUpdate: true,
   }
@@ -72,11 +73,43 @@ class PositionsTable extends React.PureComponent {
     }
   }
 
-  createOrderWithStatus = async (variables) => {
-    const { showOrderResult, cancelOrder, marketType } = this.props
+  addPositionToCanceled = (positionId) => {
+    this.setState((prev) => ({
+      canceledPositions: [...prev.canceledPositions].concat(positionId),
+    }))
+  }
+
+  createOrderWithStatus = async (variables, positionId) => {
+    const {
+      showOrderResult,
+      cancelOrder,
+      marketType,
+      getActivePositionsQuery,
+      theme,
+    } = this.props
+
+    const positionsData = combinePositionsTable(
+      getActivePositionsQuery.getActivePositions,
+      this.createOrderWithStatus,
+      theme,
+      this.state.marketPrice,
+      this.props.currencyPair,
+      this.props.selectedKey.keyId,
+      [...this.state.canceledPositions].concat(positionId),
+      this.props.priceFromOrderbook
+    )
+
+    this.setState((prev) => ({
+      positionsData,
+      canceledPositions: [...prev.canceledPositions].concat(positionId),
+    }))
 
     const result = await this.createOrder(variables)
     await showOrderResult(result, cancelOrder, marketType)
+
+    if (result) {
+      await setTimeout(() => this.setState({ canceledPositions: [] }), 5000)
+    }
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
@@ -111,16 +144,8 @@ class PositionsTable extends React.PureComponent {
     showCancelResult(cancelOrderStatus(result))
   }
 
-  // TODO: here should be a mutation order to cancel a specific order
-  // TODO: Also it should receive an argument to edentify the order that we should cancel
-
-  onCancelAll = async () => {
-    // TODO: here should be a mutation func to cancel all orders
-    // TODO: Also it would be good to show the dialog message here after mutation completed
-  }
-
   subscribe() {
-    const { theme } = this.props
+    // const { theme } = this.props
 
     const that = this
 
@@ -131,10 +156,9 @@ class PositionsTable extends React.PureComponent {
           input: {
             exchange: 'binance',
             pair: that.props.currencyPair,
-          }
+          },
         },
         fetchPolicy: 'cache-only',
-        // pollInterval: 15000,
       })
       .subscribe({
         next: (data) => {
@@ -193,12 +217,13 @@ class PositionsTable extends React.PureComponent {
 
     const positionsData = combinePositionsTable(
       getActivePositionsQuery.getActivePositions,
-      this.cancelOrderWithStatus,
       this.createOrderWithStatus,
       theme,
       this.state.marketPrice,
       this.props.currencyPair,
-      this.props.selectedKey.keyId
+      this.props.selectedKey.keyId,
+      this.state.canceledPositions,
+      this.props.priceFromOrderbook
     )
 
     this.setState({
@@ -264,10 +289,9 @@ class PositionsTable extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (!this.state.needUpdate) {
-      setTimeout(() => this.setState({ needUpdate: true }), 10000)
-    }
-
+    // if (!this.state.needUpdate) {
+    //   setTimeout(() => this.setState({ needUpdate: true }), 10000)
+    // }
     if (
       prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
@@ -275,6 +299,16 @@ class PositionsTable extends React.PureComponent {
     ) {
       this.subscription && this.subscription.unsubscribe()
       this.subscribe()
+    }
+
+    if (
+      this.props.getActivePositionsQuery.getActivePositions.some(
+        (position) =>
+          this.state.canceledPositions.includes(position._id) &&
+          +position.positionAmt === 0
+      )
+    ) {
+      this.setState({ canceledOrders: [] })
     }
   }
 
@@ -287,15 +321,16 @@ class PositionsTable extends React.PureComponent {
     this.subscription && this.subscription.unsubscribe()
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps(nextProps) {
     const positionsData = combinePositionsTable(
       nextProps.getActivePositionsQuery.getActivePositions,
-      this.cancelOrderWithStatus,
       this.createOrderWithStatus,
       nextProps.theme,
       this.state.marketPrice,
-      this.props.currencyPair,
-      this.props.selectedKey.keyId
+      nextProps.currencyPair,
+      nextProps.selectedKey.keyId,
+      this.state.canceledPositions,
+      nextProps.priceFromOrderbook
     )
 
     this.setState({
@@ -305,7 +340,15 @@ class PositionsTable extends React.PureComponent {
 
   render() {
     const { positionsData } = this.state
-    const { tab, handleTabChange, show, marketType, selectedKey, canceledOrders } = this.props
+    const {
+      tab,
+      handleTabChange,
+      show,
+      marketType,
+      selectedKey,
+      canceledOrders,
+      arrayOfMarketIds,
+    } = this.props
 
     if (!show) {
       return null
@@ -360,6 +403,7 @@ class PositionsTable extends React.PureComponent {
               selectedKey={selectedKey}
               canceledOrders={canceledOrders}
               handleTabChange={handleTabChange}
+              arrayOfMarketIds={arrayOfMarketIds}
               marketType={marketType}
             />
           </div>
@@ -373,6 +417,9 @@ class PositionsTable extends React.PureComponent {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+  // console.log('PositionsTable props.show', props.show)
+  // console.log('PositionsTable props', props)
+
   return (
     <QueryRenderer
       component={PositionsTable}
@@ -386,7 +433,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getActivePositions}
       name={`getActivePositionsQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={15000}
+      pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: FUTURES_POSITIONS,
         variables: {

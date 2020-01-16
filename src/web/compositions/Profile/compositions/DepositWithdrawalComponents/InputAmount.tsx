@@ -52,7 +52,7 @@ const Balances = ({
           <StyledTypographyCaption
             onClick={() => onChange({ target: { value: free } })}
           >
-            {`AVAILABLE: ${free} ${selectedCoin}`}
+            <span>AVAILABLE:</span><span style={{ color: 'rgb(22, 91, 224)' }}>{` ${free} ${selectedCoin}`}</span>
           </StyledTypographyCaption>
         </InputAdornment>
       }
