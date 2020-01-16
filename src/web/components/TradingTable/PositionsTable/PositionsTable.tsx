@@ -90,13 +90,13 @@ class PositionsTable extends React.PureComponent {
 
     const positionsData = combinePositionsTable(
       getActivePositionsQuery.getActivePositions,
-      this.cancelOrderWithStatus,
       this.createOrderWithStatus,
       theme,
       this.state.marketPrice,
       this.props.currencyPair,
       this.props.selectedKey.keyId,
-      [...this.state.canceledPositions].concat(positionId)
+      [...this.state.canceledPositions].concat(positionId),
+      this.props.priceFromOrderbook
     )
 
     this.setState((prev) => ({
@@ -144,16 +144,8 @@ class PositionsTable extends React.PureComponent {
     showCancelResult(cancelOrderStatus(result))
   }
 
-  // TODO: here should be a mutation order to cancel a specific order
-  // TODO: Also it should receive an argument to edentify the order that we should cancel
-
-  onCancelAll = async () => {
-    // TODO: here should be a mutation func to cancel all orders
-    // TODO: Also it would be good to show the dialog message here after mutation completed
-  }
-
   subscribe() {
-    const { theme } = this.props
+    // const { theme } = this.props
 
     const that = this
 
@@ -225,13 +217,13 @@ class PositionsTable extends React.PureComponent {
 
     const positionsData = combinePositionsTable(
       getActivePositionsQuery.getActivePositions,
-      this.cancelOrderWithStatus,
       this.createOrderWithStatus,
       theme,
       this.state.marketPrice,
       this.props.currencyPair,
       this.props.selectedKey.keyId,
-      this.state.canceledPositions
+      this.state.canceledPositions,
+      this.props.priceFromOrderbook
     )
 
     this.setState({
@@ -329,16 +321,16 @@ class PositionsTable extends React.PureComponent {
     this.subscription && this.subscription.unsubscribe()
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps(nextProps) {
     const positionsData = combinePositionsTable(
       nextProps.getActivePositionsQuery.getActivePositions,
-      this.cancelOrderWithStatus,
       this.createOrderWithStatus,
       nextProps.theme,
       this.state.marketPrice,
-      this.props.currencyPair,
-      this.props.selectedKey.keyId,
-      this.state.canceledPositions
+      nextProps.currencyPair,
+      nextProps.selectedKey.keyId,
+      this.state.canceledPositions,
+      nextProps.priceFromOrderbook
     )
 
     this.setState({
