@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 
+import ReimportKey from '@core/components/ReimportKey/ReimportKey'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import {
@@ -176,6 +177,11 @@ export const transformData = (data: AccountData[], numberOfKeys: number) => {
           />
         ),
       },
+      refresh: {
+        render: (
+          <ReimportKey keyId={row._id} />
+        )
+      }
     }
   })
 
@@ -203,6 +209,7 @@ export const transformData = (data: AccountData[], numberOfKeys: number) => {
       ),
     },
     edit: ' ',
+    refresh: ' ',
   })
 
   return transformedData
@@ -243,6 +250,12 @@ export const putDataInTable = (tableData: any[]) => {
       { id: 'autoRebalance', label: 'auto-rebalance', isSortable: true },
       {
         id: 'edit',
+        label: '',
+        style: { borderTopRightRadius: '1.5rem' },
+        isSortable: false,
+      },
+      {
+        id: 'refresh',
         label: '',
         style: { borderTopRightRadius: '1.5rem' },
         isSortable: false,
