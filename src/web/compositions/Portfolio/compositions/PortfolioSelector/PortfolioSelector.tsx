@@ -353,7 +353,7 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!portfolioKeys || !portfolioKeys.myPortfolios || !dustFilter) {
+    if (!dustFilter || !portfolioKeys || !portfolioKeys.myPortfolios || !portfolioKeys.myPortfolios.length) {
       return null
     }
 
