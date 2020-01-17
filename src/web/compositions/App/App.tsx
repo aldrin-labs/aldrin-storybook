@@ -22,6 +22,7 @@ import Footer from '@sb/components/Footer'
 
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
+import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/cssUtils'
@@ -63,25 +64,27 @@ const AppRaw = ({
   return (
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <ThemeWrapper themeMode={themeMode}>
-        <CssBaseline />
-        <FontStyle />
-        <AppGridLayout
-          showFooter={showFooter}
-          isPNL={isPNL}
-          isChartPage={isChartPage}
-        >
-          {!pageIsRegistration && (
-            <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-          )}
-          {children}
-          <Footer
-            isChartPage={isChartPage}
-            fullscreenMode={fullscreen}
+        <SnackbarWrapper>
+          <CssBaseline />
+          <FontStyle />
+          <AppGridLayout
             showFooter={showFooter}
-          />
-        </AppGridLayout>
-        {/* <ShowWarningOnMoblieDevice /> */}
-        <GlobalStyle />
+            isPNL={isPNL}
+            isChartPage={isChartPage}
+          >
+            {!pageIsRegistration && (
+              <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
+            )}
+            {children}
+            <Footer
+              isChartPage={isChartPage}
+              fullscreenMode={fullscreen}
+              showFooter={showFooter}
+            />
+          </AppGridLayout>
+          {/* <ShowWarningOnMoblieDevice /> */}
+          <GlobalStyle />
+        </SnackbarWrapper>
       </ThemeWrapper>
     </JssProvider>
   )
