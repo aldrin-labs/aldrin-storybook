@@ -65,10 +65,10 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
           }}
         >
           <Grid style={{ width: '440px' }}>
-            <GridCustom>
+            <Grid>
               <Typography
                 style={{
-                  fontSize: '17px',
+                  fontSize: '1.2rem',
                   fontWeight: 'bold',
                   textAlign: 'center',
                   textTransform: 'uppercase',
@@ -78,27 +78,28 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
               >
                 When you’ll be ready go
               </Typography>
-            </GridCustom>
-            <GridCustom>
+            </Grid>
+            <Grid style={{ marginBottom: '2rem'}}>
               <Typography
                 style={{
-                  fontSize: '17px',
+                  fontSize: '1.2rem',
                   fontWeight: 'bold',
                   textAlign: 'center',
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
-                  paddingTop: '15px',
+                  paddingTop: '0.5rem',
+                  color: '#16253D',
                 }}
               >
                 profile > Hybrid account > Deposit/withdrawal
               </Typography>
-            </GridCustom>
+            </Grid>
           </Grid>
 
-          <Grid container justify="flex-end" alignItems="center">
+          <Grid container justify="center" alignItems="center">
             <BtnCustom
               btnWidth={'85px'}
-              borderRadius={'32px'}
+              borderRadius={'8px'}
               btnColor={'#165BE0'}
               onClick={async () => {
                 await completeOnboarding()

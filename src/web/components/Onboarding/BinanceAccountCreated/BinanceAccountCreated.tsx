@@ -50,7 +50,8 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
             backgroundColor: '#fff',
           }}
         >
-          <TypographyCustomHeading
+          <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
+          {/* <TypographyCustomHeading
             fontWeight={'700'}
             borderRadius={'1rem'}
             color={black.custom}
@@ -60,7 +61,7 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
             }}
           >
             Your hybrid account created
-          </TypographyCustomHeading>
+          </TypographyCustomHeading> */}
         </DialogTitleCustom>
         <DialogContent
           justify="center"
@@ -71,14 +72,28 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
         >
           <Grid style={{ width: '440px' }}>
             <GridCustom>
+            <TypographyCustomHeading
+            fontWeight={'700'}
+            borderRadius={'1rem'}
+            color={black.custom}
+            style={{
+              fontSize: '1.7rem',
+              textAlign: 'center',
+              textTransform: 'uppercase',
+              paddingBottom: '2rem',
+            }}
+          >
+            Your hybrid account created
+          </TypographyCustomHeading>
+          
               <Typography
                 style={{
-                  fontSize: '17px',
+                  fontSize: '1.2rem',
                   fontWeight: 'bold',
                   textAlign: 'center',
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
-                  paddingTop: '15px',
+                  padding: '15px',
                 }}
               >
                 Do you want to deposit funds and start trading now?
@@ -86,11 +101,14 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
             </GridCustom>
           </Grid>
 
-          <Grid container justify="flex-end" alignItems="center">
+          <Grid container justify="center" alignItems="center">
             <BtnCustom
-              btnWidth={'85px'}
-              borderRadius={'32px'}
-              btnColor={'#165BE0'}
+              btnWidth={'120px'}
+              borderRadius={'8px'}
+              borderColor={'#ABBAD1'}
+              btnColor={'#ABBAD1'}
+              margin={'0 3%'}
+              padding="0"
               onClick={() => {
                 setCurrentStep('binanceAccountCreatedLater')
               }}
@@ -98,9 +116,11 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
               Later
             </BtnCustom>
             <BtnCustom
-              btnWidth={'85px'}
-              borderRadius={'32px'}
+              btnWidth={'120px'}
+              borderRadius={'8px'}
               btnColor={'#165BE0'}
+              margin={'0 3%'}
+              padding="0"
               onClick={async () => {
                 await completeOnboarding()
                 this.props.history.push('/profile/deposit')

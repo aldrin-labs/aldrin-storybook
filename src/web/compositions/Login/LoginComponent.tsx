@@ -158,13 +158,14 @@ class LoginClassComponent extends React.Component<{}> {
       history: {
         location: { hash },
       },
-      loginStatus
+      loginStatus,
+      loginInProcess,
     } = this.props
     const isAfterRedirectFromAuth = hash.includes('access_token')
 
     return (
       <>
-        {isAfterRedirectFromAuth || loginStatus === true ? (
+        {isAfterRedirectFromAuth || loginInProcess === true || loginStatus === true ? (
           <Loading color={'#165BE0'} />
         ) : (
           <Button

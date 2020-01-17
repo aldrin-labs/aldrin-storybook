@@ -366,7 +366,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <Grid container justify={'center'}>
                       <BtnCustom
                         btnWidth={'45%'}
-                        borderRadius={'32px'}
+                        borderRadius={'8px'}
                         btnColor={'#165BE0'}
                         borderColor={'#165BE0'}
                         padding={'1.5rem'}
