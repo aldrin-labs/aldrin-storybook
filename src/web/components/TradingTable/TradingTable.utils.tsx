@@ -179,6 +179,35 @@ export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
   return [0, 0]
 }
 
+export const filterOpenOrders = ({
+  order,
+  canceledOrders,
+  arrayOfMarketIds,
+  marketType,
+}) => {
+  return (
+    !canceledOrders.includes(order.info.orderId) &&
+    order.type !== 'market' &&
+    (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
+      (order.marketId === '0' && order.symbol)) &&
+    (order.status === 'open' ||
+      order.status === 'placing' ||
+      order.status === 'NEW')
+  )
+}
+
+export const filterPositions = ({ position, pair, canceledPositions }) => {
+  return (
+    position.positionAmt !== 0 &&
+    position.symbol === pair &&
+    !canceledPositions.includes(position._id)
+  )
+}
+
+export const filterActiveTrades = ({ trade, marketType }) => {
+  return trade.conditions.marketType === marketType && trade.enabled
+}
+
 export const combinePositionsTable = (
   data: OrderType[],
   createOrderWithStatus,
@@ -197,12 +226,7 @@ export const combinePositionsTable = (
   let positions = []
   // console.log('data', data)
   const processedPositionsData = data
-    .filter(
-      (el) =>
-        el.positionAmt !== 0 &&
-        el.symbol === pair &&
-        !canceledPositions.includes(el._id)
-    )
+    .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
       const needOpacity = el._id === '0'
@@ -231,10 +255,15 @@ export const combinePositionsTable = (
           : 1 - 100 / leverage / 100)
 
       const profitPercentage =
-        ((marketPrice / entryPrice) * 100 - 100) * leverage * (side === 'buy long' ? 1 : -1)
+        ((marketPrice / entryPrice) * 100 - 100) *
+        leverage *
+        (side === 'buy long' ? 1 : -1)
 
       const profitAmount =
-        (positionAmt / leverage) * entryPrice * (profitPercentage / 100) * (side === 'buy long' ? 1 : -1)
+        (positionAmt / leverage) *
+        entryPrice *
+        (profitPercentage / 100) *
+        (side === 'buy long' ? 1 : -1)
 
       const pair = symbol.split('_')
 
@@ -315,11 +344,7 @@ export const combinePositionsTable = (
             render: marketPrice ? (
               <SubColumnValue
                 style={{ whiteSpace: 'nowrap' }}
-                color={
-                  profitPercentage > 0
-                    ? green.new
-                    : red.new
-                }
+                color={profitPercentage > 0 ? green.new : red.new}
               >
                 {profitPercentage && profitAmount
                   ? `${profitAmount < 0 ? '-' : ''}${Math.abs(
@@ -394,8 +419,7 @@ export const combineActiveTradesTable = (
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((el) => el.conditions.marketType === marketType)
-    .filter((el) => el.enabled)
+    .filter((el) => filterActiveTrades({ trade: el, marketType }))
     .map((el: OrderType, i: number) => {
       const {
         conditions: {
@@ -466,6 +490,7 @@ export const combineActiveTradesTable = (
         (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
 
       return {
+        id: `${el._id}${i}`,
         pair: {
           render: (
             <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
@@ -487,6 +512,7 @@ export const combineActiveTradesTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: side,
         },
         entryPrice: {
           render: (
@@ -501,6 +527,7 @@ export const combineActiveTradesTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: entryOrderPrice,
         },
         quantity: {
           render: (
@@ -511,6 +538,7 @@ export const combineActiveTradesTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: amount,
         },
         takeProfit: {
           render: (
@@ -540,6 +568,7 @@ export const combineActiveTradesTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: stopLoss,
         },
         profit: {
           render:
@@ -563,6 +592,7 @@ export const combineActiveTradesTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: profitAmount,
         },
         status: {
           render: (
@@ -573,6 +603,7 @@ export const combineActiveTradesTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: !!status[0] ? status[0] : 'Waiting',
         },
         close: {
           render: (
@@ -669,6 +700,7 @@ export const combineStrategiesHistoryTable = (
     .filter((el) => el.conditions.marketType === marketType)
     .map((el: OrderType, i: number) => {
       const {
+        createdAt,
         conditions: {
           pair,
           leverage,
@@ -715,13 +747,8 @@ export const combineStrategiesHistoryTable = (
         state: '-',
       }
 
-      // console.log('order', el)
-
-      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
-      const editTrade = () => {}
 
       const entryOrderPrice = !!entryPrice
         ? entryPrice
@@ -746,6 +773,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: `${pairArr[0]}/${pairArr[1]}`,
         },
         side: {
           render: (
@@ -760,6 +788,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: side,
         },
         entryPrice: {
           render: (
@@ -774,6 +803,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: entryOrderPrice
         },
         quantity: {
           render: (
@@ -784,6 +814,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: amount,
         },
         takeProfit: {
           render: (
@@ -813,6 +844,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: stopLoss
         },
         profit: {
           render: (
@@ -833,6 +865,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: profitAmount
         },
         status: {
           render: (
@@ -847,6 +880,27 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: profitPercentage,
+        },
+        date: {
+          render: createdAt ? (
+            <div>
+            <span style={{ display: 'block', color: '#16253D' }}>
+              {String(moment(createdAt).format('DD-MM-YYYY')).replace(
+                /-/g,
+                '.'
+              )}
+            </span>
+            <span style={{ color: '#7284A0' }}>
+              {moment(createdAt).format('LT')}
+            </span>
+          </div>
+          ) : '-',
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+            textAlign: 'right'
+          },
+          contentToSort: createdAt ? +new Date(createdAt) : -1,
         },
         expandableContent: [
           {
@@ -914,21 +968,21 @@ export const combineOpenOrdersTable = (
   ) => Promise<any>,
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number
+  marketType: number,
+  canceledOrders
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
   }
 
   const processedOpenOrdersData = openOrdersData
-    .filter(
-      (el) =>
-        (el.status === 'open' ||
-          el.status === 'placing' ||
-          el.status === 'NEW') &&
-        (isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId) ||
-          (el.marketId === '0' && el.symbol)) &&
-        el.type !== 'market'
+    .filter((el) =>
+      filterOpenOrders({
+        order: el,
+        arrayOfMarketIds,
+        marketType,
+        canceledOrders,
+      })
     )
     .map((el: OrderType, i: number) => {
       const { keyId, symbol, type: orderType, side, price } = el
@@ -1042,7 +1096,7 @@ export const combineOpenOrdersTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block' }}>
+              <span style={{ display: 'block', color: '#16253D' }}>
                 {String(moment(timestamp).format('DD-MM-YYYY')).replace(
                   /-/g,
                   '.'
@@ -1053,7 +1107,7 @@ export const combineOpenOrdersTable = (
               </span>
             </div>
           ),
-          style: { whiteSpace: 'nowrap', opacity: needOpacity ? 0.75 : 1 },
+          style: { whiteSpace: 'nowrap', opacity: needOpacity ? 0.75 : 1, textAlign: 'right' },
           contentToSort: timestamp,
         },
         cancel: {
@@ -1227,7 +1281,7 @@ export const combineOrderHistoryTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block' }}>
+              <span style={{ display: 'block', color: '#16253D' }}>
                 {String(moment(timestamp).format('DD-MM-YYYY')).replace(
                   /-/g,
                   '.'
@@ -1238,7 +1292,7 @@ export const combineOrderHistoryTable = (
               </span>
             </div>
           ),
-          style: { whiteSpace: 'nowrap' },
+          style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
       }
@@ -1368,7 +1422,7 @@ export const combineTradeHistoryTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block' }}>
+              <span style={{ display: 'block', color: '#16253D' }}>
                 {String(moment(timestamp).format('DD-MM-YYYY')).replace(
                   /-/g,
                   '.'
@@ -1379,7 +1433,7 @@ export const combineTradeHistoryTable = (
               </span>
             </div>
           ),
-          style: { whiteSpace: 'nowrap' },
+          style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
       }
@@ -1485,7 +1539,7 @@ export const updateActiveStrategiesQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = (prev.getActiveStrategies || []).findIndex(
+  const strategyHasTheSameIndex = prev.getActiveStrategies.findIndex(
     (el: TradeType) =>
       el._id === subscriptionData.data.listenActiveStrategies._id
   )
@@ -1504,6 +1558,46 @@ export const updateActiveStrategiesQuerryFunction = (
     prev.getActiveStrategies = [
       { ...subscriptionData.data.listenActiveStrategies },
       ...prev.getActiveStrategies,
+    ]
+
+    result = { ...prev }
+  }
+
+  return result
+}
+
+export const updateStrategiesHistoryQuerryFunction = (
+  previous,
+  { subscriptionData }
+) => {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
+
+  if (isEmptySubscription) {
+    return previous
+  }
+
+  const prev = cloneDeep(previous)
+
+  const strategyHasTheSameIndex = prev.getStrategiesHistory.findIndex(
+    (el: TradeType) =>
+      el._id === subscriptionData.data.listenActiveStrategies._id
+  )
+  const tradeAlreadyExists = strategyHasTheSameIndex !== -1
+
+  let result
+
+  if (tradeAlreadyExists) {
+    prev.getStrategiesHistory[strategyHasTheSameIndex] = {
+      ...prev.getStrategiesHistory[strategyHasTheSameIndex],
+      ...subscriptionData.data.listenActiveStrategies,
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getStrategiesHistory = [
+      { ...subscriptionData.data.listenActiveStrategies },
+      ...prev.getStrategiesHistory,
     ]
 
     result = { ...prev }

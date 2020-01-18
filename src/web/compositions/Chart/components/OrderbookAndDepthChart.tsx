@@ -5,7 +5,10 @@ var SortedMap = require('collections/sorted-map')
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-import { MOCKED_ORDERBOOK, ORDERBOOK } from '@core/graphql/subscriptions/ORDERBOOK'
+import {
+  MOCKED_ORDERBOOK,
+  ORDERBOOK,
+} from '@core/graphql/subscriptions/ORDERBOOK'
 import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
 import { OrderBook, DepthChart } from '../components'
 import {
@@ -27,6 +30,8 @@ class OrderbookAndDepthChart extends React.Component {
   state = {
     readyForNewOrder: true,
     aggregation: 0,
+    resubscribeTimer: null,
+    dataWasUpdated: true,
     amountsMap: new SortedMap(),
     asks: new TreeMap(),
     bids: new TreeMap(),
@@ -47,6 +52,7 @@ class OrderbookAndDepthChart extends React.Component {
     } = newProps
 
     let updatedData = null
+    let newResubscribeTimer = null
     let updatedAggregatedData = state.aggregatedData
 
     // first get data from query
@@ -64,7 +70,7 @@ class OrderbookAndDepthChart extends React.Component {
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         sizeDigits,
       })
-      
+
       return {
         ...updatedData,
       }
@@ -114,6 +120,8 @@ class OrderbookAndDepthChart extends React.Component {
     }
 
     return {
+      dataWasUpdated: true,
+      resubscribeTimer: newResubscribeTimer,
       readyForNewOrder:
         readyForNewOrder === undefined ? true : readyForNewOrder,
       aggregation:
@@ -133,7 +141,19 @@ class OrderbookAndDepthChart extends React.Component {
       unsubscribe = this.props.subscribeToMore()
     }
 
+    clearInterval(this.state.resubscribeTimer)
+
+    const resubscribeTimer = setInterval(() => {
+      if (this.state.dataWasUpdated) {
+        this.setState({ dataWasUpdated: false })
+      } else {
+        unsubscribe && unsubscribe()
+        unsubscribe = this.props.subscribeToMore()
+      }
+    }, 20000)
+
     this.setState({
+      resubscribeTimer,
       aggregation: String(
         getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
       ),
@@ -184,10 +204,11 @@ class OrderbookAndDepthChart extends React.Component {
     }
   }
 
-  // componentWillUnmount() {
-  //   this.setState({ readyForNewOrder: false })
-  //   unsubscribe && unsubscribe()
-  // }
+  componentWillUnmount() {
+    this.setState({ readyForNewOrder: false })
+    unsubscribe && unsubscribe()
+    clearInterval(this.state.resubscribeTimer)
+  }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
     const { sizeDigits } = this.props

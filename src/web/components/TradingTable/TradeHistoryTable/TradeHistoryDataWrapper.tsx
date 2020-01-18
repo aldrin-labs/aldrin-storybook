@@ -55,10 +55,12 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       show,
       handleTabChange,
       selectedKey,
+      currencyPair,
       marketType,
       canceledOrders,
       arrayOfMarketIds,
     } = this.props
+
     const { focusedInput, endDate, activeDateButton, startDate } = this.state
 
     const maximumDate = moment().endOf('day')
@@ -73,6 +75,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           show,
           marketType,
           canceledOrders,
+          currencyPair,
           arrayOfMarketIds,
           handleTabChange,
           focusedInput,
