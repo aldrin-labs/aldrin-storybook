@@ -56,8 +56,7 @@ const RefetchError = (props: { error?: ApolloError; refetch: Function }) => (
 
 const ErrorWithoutMessage = () => (
   <Typography variant="body1" align="center" color="error">
-    {`Oops looks like we broke it somehow! 🙈
-      We are working on this. 🔧Please refresh the page or contact the support.`}
+    {`Network error, please refresh page or contact support in telegram chat`}
   </Typography>
 )
 
@@ -67,7 +66,7 @@ export const ErrorFallback = (props: {
   refetch?: Function
 }) => (
   <Error style={{ margin: 'auto' }} elevation={10}>
-    {MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
+    {!MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
   </Error>
 )
 
