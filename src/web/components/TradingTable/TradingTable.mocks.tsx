@@ -98,6 +98,7 @@ export const strategiesHistoryColumnNames = [
   { label: 'Stop', id: 'stopLoss' },
   { label: 'profit', id: 'profit' },
   { label: 'status', id: 'status' },
+  { label: 'date', isNumber: true, id: 'date' },
 ]
 
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
@@ -132,7 +133,7 @@ export const openOrdersColumnNames = (marketType: number) =>
     // { label: 'Filled %', id: 'filled',  },
     marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
     { label: 'Trigger', id: 'triggerConditions' },
-    { label: 'Date', id: 'date' },
+    { label: 'date', isNumber: true, id: 'date' },
     {
       label:
         // <TableButton size="small" variant="outlined">
@@ -178,7 +179,7 @@ export const orderHistoryColumnNames = (marketType: number) =>
     marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
     { label: 'Trigger', id: 'triggerConditions' },
     { label: 'Status', id: 'status' },
-    { label: 'Date', id: 'date' },
+    { label: 'date', isNumber: true, id: 'date' },
   ].filter((x) => x.label)
 
 export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
@@ -207,7 +208,7 @@ export const tradeHistoryColumnNames = (marketType: number) =>
     marketType === 1 ? { label: 'P&L', id: 'realizedPnl' } : {},
     { label: 'Fee', id: 'fee' },
     { label: 'Status', id: 'status' },
-    { label: 'Date', id: 'date' },
+    { label: 'date', isNumber: true, id: 'date' },
   ].filter((x) => x.label)
 
 export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({

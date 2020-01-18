@@ -53,7 +53,8 @@ class OrderBookTable extends Component<IProps> {
                 fontSize: '1rem',
               }}
               gridStyle={{
-                overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
+                // overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
+                overflow: 'hidden'
               }}
               rowHeight={window.outerHeight / 60}
               scrollToIndex={tableData.length - 1}

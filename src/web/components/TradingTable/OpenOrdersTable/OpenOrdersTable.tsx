@@ -61,7 +61,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     await this.props.addOrderToCanceled(orderId)
     const result = await this.onCancelOrder(keyId, orderId, pair)
-    showCancelResult(cancelOrderStatus(result))
+    const status = await cancelOrderStatus(result)
+
+    if (status.result === 'error') {
+      await this.props.clearCanceledOrders()
+    }
+
+    showCancelResult(status)
   }
 
   // TODO: here should be a mutation order to cancel a specific order
@@ -86,7 +92,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       this.cancelOrderWithStatus,
       theme,
       arrayOfMarketIds,
-      marketType
+      marketType,
+      this.props.canceledOrders
     )
 
     client.writeQuery({
@@ -147,7 +154,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       this.cancelOrderWithStatus,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
-      nextProps.marketType
+      nextProps.marketType,
+      nextProps.canceledOrders
     )
 
     this.setState({
@@ -164,6 +172,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       marketType,
       selectedKey,
       canceledOrders,
+      currencyPair,
       arrayOfMarketIds,
     } = this.props
 
@@ -214,6 +223,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
               marketType={marketType}
               canceledOrders={canceledOrders}
               selectedKey={selectedKey}
+              currencyPair={currencyPair}
               arrayOfMarketIds={arrayOfMarketIds}
             />
           </div>

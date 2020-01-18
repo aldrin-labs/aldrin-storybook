@@ -1,29 +1,9 @@
 import React from 'react'
-import { Button, IconButton } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
-import { SnackbarProvider, withSnackbar } from 'notistack'
-import { withStyles } from '@material-ui/styles'
+import { Button } from '@material-ui/core'
+import { withSnackbar } from 'notistack'
 
 import { orderError } from '@core/utils/errorsConfig'
-
 import { DefaultView } from './DefaultView'
-
-const canselStyeles = (theme) => ({
-  icon: {
-    fontSize: 20,
-  },
-})
-
-const snackStyeles = (theme) => ({
-  success: { fontSize: '1.25rem', fontWeight: 'bold', backgroundColor: theme.customPalette.green.main },
-  error: { fontSize: '1.25rem',  fontWeight: 'bold', backgroundColor: theme.customPalette.red.main },
-})
-
-const CloseButton = withStyles(canselStyeles)((props) => (
-  <IconButton key="close" aria-label="Close" color="inherit">
-    <CloseIcon className={props.classes.icon} />
-  </IconButton>
-))
 
 class OrderStatusWrapper extends React.Component {
   showOrderResult = (result, cancelOrder, marketType) => {
@@ -39,7 +19,7 @@ class OrderStatusWrapper extends React.Component {
             >
               {'Cancel'}
             </Button>
-            <CloseButton />
+            {/* <CloseButton /> */}
           </>
         ),
       })
@@ -54,7 +34,7 @@ class OrderStatusWrapper extends React.Component {
     if (result.status === 'OK' && result.data && result.data.tranId) {
       this.props.enqueueSnackbar('Funds transfered!', {
         variant: 'success',
-        action: <CloseButton />,
+        // action: <CloseButton />,
       })
     } else {
       this.props.enqueueSnackbar(
@@ -68,7 +48,7 @@ class OrderStatusWrapper extends React.Component {
     if (result.status === 'success' && result.message) {
       this.props.enqueueSnackbar(result.message, {
         variant: 'success',
-        action: <CloseButton />,
+        // action: <CloseButton />,
       })
     } else if (result.status === 'success' || !result.message) {
       this.props.enqueueSnackbar(orderError, { variant: 'error' })
@@ -89,26 +69,5 @@ class OrderStatusWrapper extends React.Component {
   }
 }
 
-const SnackbarWrapper = withSnackbar(OrderStatusWrapper)
 
-const IntegrationNotistack = ({ classes, ...otherProps }) => {
-  return (
-    <SnackbarProvider
-      maxSnack={3}
-      autoHideDuration={3000}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      action={<CloseButton />}
-      classes={{
-        variantSuccess: classes.success,
-        variantError: classes.error,
-      }}
-    >
-      <SnackbarWrapper {...otherProps} />
-    </SnackbarProvider>
-  )
-}
-
-export default withStyles(snackStyeles)(IntegrationNotistack)
+export default withSnackbar(OrderStatusWrapper)
