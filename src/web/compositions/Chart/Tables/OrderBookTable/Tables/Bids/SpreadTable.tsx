@@ -58,7 +58,8 @@ class SpreadTable extends Component<IProps> {
                 fontSize: '1rem',
               }}
               gridStyle={{
-                overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
+                // overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
+                overflow: 'hidden'
               }}
               rowCount={tableData.length}
               rowHeight={window.outerHeight / 60}

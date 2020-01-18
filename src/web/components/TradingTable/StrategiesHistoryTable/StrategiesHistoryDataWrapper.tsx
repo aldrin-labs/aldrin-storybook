@@ -2,13 +2,10 @@ import React from 'react'
 import moment from 'moment'
 
 import { getEndDate } from '../TradingTable.utils'
-import { IProps, IState } from './OrderHistoryDataWrapper.types'
-import OrderHistoryTable from './OrderHistoryTable'
+import { IProps, IState } from './TradeHistoryDataWrapper.types'
+import StrategiesHistoryTable from './StrategiesHistoryTable'
 
-export default class OrderHistoryDataWrapper extends React.PureComponent<
-  IProps,
-  IState
-> {
+export default class StrategiesHistoryDataWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
     startDate: getEndDate('1Day'),
     endDate: moment().endOf('day'),
@@ -55,9 +52,9 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       show,
       handleTabChange,
       selectedKey,
+      currencyPair,
       marketType,
       canceledOrders,
-      currencyPair,
       arrayOfMarketIds,
     } = this.props
 
@@ -67,7 +64,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     const minimumDate = moment().subtract(3, 'years')
 
     return (
-      <OrderHistoryTable
+      <StrategiesHistoryTable
         {...{
           tab,
           tabIndex,

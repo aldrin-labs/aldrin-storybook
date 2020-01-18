@@ -350,7 +350,7 @@ class ActiveTradesTable extends React.Component {
     if (!show) {
       return null
     }
-
+    
     const pair = currencyPair.split('_')
 
     const funds = pair.map((coin, index) => {
@@ -589,6 +589,7 @@ class ActiveTradesTable extends React.Component {
                 marketType={marketType}
                 canceledOrders={canceledOrders}
                 selectedKey={selectedKey}
+                currencyPair={currencyPair}
                 arrayOfMarketIds={arrayOfMarketIds}
               />
             </div>

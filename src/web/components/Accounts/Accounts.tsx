@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Checkbox, Radio } from '@material-ui/core'
+import { Checkbox, Radio, Grid } from '@material-ui/core'
 
 import { IProps } from './Accounts.types'
 import {
@@ -29,6 +29,7 @@ import Help from '@material-ui/icons/Help'
 // import { PortfolioSelector } from '@sb/compositions/Portfolio/compositions'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
+import ReimportKey from '@core/components/ReimportKey/ReimportKey'
 
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
@@ -61,7 +62,7 @@ class Accounts extends React.PureComponent<IProps> {
       onKeysSelectAll,
       isSidebar,
       baseCoin,
-      isSideNavOpen
+      isSideNavOpen,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -135,7 +136,9 @@ class Accounts extends React.PureComponent<IProps> {
 
             const formattedValue = addMainSymbol(
               roundAndFormatNumber(
-                portfolioAssetsMap.get(key._id) ? portfolioAssetsMap.get(key._id).value : 0,
+                portfolioAssetsMap.get(key._id)
+                  ? portfolioAssetsMap.get(key._id).value
+                  : 0,
                 roundNumber,
                 true
               ),
@@ -196,21 +199,28 @@ class Accounts extends React.PureComponent<IProps> {
                   }}
                 />
                 {isSidebar && (
-                  <PortfolioSelectorPopup
-                    id={`popup${key._id}${i}`}
-                    needPortalPopup={true}
-                    needPortalMask={true}
-                    data={key}
-                    baseCoin={baseCoin}
-                    isSideNavOpen={isSideNavOpen}
-                    forceUpdateAccountContainer={() => this.forceUpdate()}
-                  />
+                  <>
+                    <PortfolioSelectorPopup
+                      id={`popup${key._id}${i}`}
+                      needPortalPopup={true}
+                      needPortalMask={true}
+                      data={key}
+                      baseCoin={baseCoin}
+                      isSideNavOpen={isSideNavOpen}
+                      forceUpdateAccountContainer={() => this.forceUpdate()}
+                    />
+                    <Grid style={{ padding: '0 0 0 6px' }}>
+                      <ReimportKey keyId={key._id} />
+                    </Grid>
+                  </>
                 )}
               </AccountsListItem>
             )
           })}
         </AccountsList>
-        {isSidebar && <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />}
+        {isSidebar && (
+          <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />
+        )}
       </>
     )
   }

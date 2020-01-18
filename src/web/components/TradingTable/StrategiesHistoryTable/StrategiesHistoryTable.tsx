@@ -7,7 +7,7 @@ import { TableWithSort } from '@sb/components'
 import { IProps, IState } from './TradeHistoryTable.types'
 
 import {
-  updateActiveStrategiesQuerryFunction,
+  updateStrategiesHistoryQuerryFunction,
   combineStrategiesHistoryTable,
   getEmptyTextPlaceholder,
   getTableHead,
@@ -99,6 +99,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       marketType,
       selectedKey,
       canceledOrders,
+      currencyPair,
       arrayOfMarketIds,
     } = this.props
 
@@ -153,6 +154,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
               selectedKey={selectedKey}
               handleTabChange={handleTabChange}
               marketType={marketType}
+              currencyPair={currencyPair}
               canceledOrders={canceledOrders}
               arrayOfMarketIds={arrayOfMarketIds}
             />
@@ -180,10 +182,10 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  // let { startDate, endDate } = props
+  let { startDate, endDate } = props
 
-  // startDate = +startDate
-  // endDate = +endDate
+  startDate = +startDate
+  endDate = +endDate
 
   return (
     <QueryRenderer
@@ -191,6 +193,8 @@ const TableDataWrapper = ({ ...props }) => {
       variables={{
         strategiesHistoryInput: {
           activeExchangeKey: props.selectedKey.keyId,
+          startDate,
+          endDate,
         },
       }}
       withOutSpinner={true}
@@ -206,7 +210,7 @@ const TableDataWrapper = ({ ...props }) => {
             activeExchangeKey: props.selectedKey.keyId,
           },
         },
-        updateQueryFunction: updateActiveStrategiesQuerryFunction,
+        updateQueryFunction: updateStrategiesHistoryQuerryFunction,
       }}
       {...props}
     />
