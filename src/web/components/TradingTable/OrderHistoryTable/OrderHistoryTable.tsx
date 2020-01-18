@@ -86,6 +86,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       marketType,
       selectedKey,
       canceledOrders,
+      currencyPair,
       arrayOfMarketIds,
     } = this.props
 
@@ -137,6 +138,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
               arrayOfMarketIds={arrayOfMarketIds}
               canceledOrders={canceledOrders}
               selectedKey={selectedKey}
+              currencyPair={currencyPair}
             />
             <TradingTitle
               {...{

@@ -83,6 +83,7 @@ class FundsTable extends React.PureComponent<IProps> {
       selectedKey,
       canceledOrders,
       arrayOfMarketIds,
+      currencyPair,
     } = this.props
 
     if (!show) {
@@ -127,6 +128,7 @@ class FundsTable extends React.PureComponent<IProps> {
               arrayOfMarketIds={arrayOfMarketIds}
               selectedKey={selectedKey}
               marketType={marketType}
+              currencyPair={currencyPair}
               canceledOrders={canceledOrders}
               hideSmallAssets={hideSmallAssets}
               handleTabChange={handleTabChange}
