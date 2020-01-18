@@ -11,7 +11,7 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 
-const CloseButton = ({ i, onClick }) => {
+export const CloseButton = ({ i, onClick }) => {
   const [isCancelled, cancelOrder] = useState(false)
 
   return (
@@ -883,7 +883,7 @@ export const combineStrategiesHistoryTable = (
           contentToSort: profitPercentage,
         },
         date: {
-          render: createdAt ? (
+          render: createdAt && moment(createdAt).format('LT').toLowerCase() !== 'invalid date' ? (
             <div>
             <span style={{ display: 'block', color: '#16253D' }}>
               {String(moment(createdAt).format('DD-MM-YYYY')).replace(

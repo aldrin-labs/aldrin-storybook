@@ -19,7 +19,7 @@ class OrderStatusWrapper extends React.Component {
             >
               {'Cancel'}
             </Button>
-            <CloseButton />
+            {/* <CloseButton /> */}
           </>
         ),
       })
@@ -34,7 +34,7 @@ class OrderStatusWrapper extends React.Component {
     if (result.status === 'OK' && result.data && result.data.tranId) {
       this.props.enqueueSnackbar('Funds transfered!', {
         variant: 'success',
-        action: <CloseButton />,
+        // action: <CloseButton />,
       })
     } else {
       this.props.enqueueSnackbar(
@@ -48,7 +48,7 @@ class OrderStatusWrapper extends React.Component {
     if (result.status === 'success' && result.message) {
       this.props.enqueueSnackbar(result.message, {
         variant: 'success',
-        action: <CloseButton />,
+        // action: <CloseButton />,
       })
     } else if (result.status === 'success' || !result.message) {
       this.props.enqueueSnackbar(orderError, { variant: 'error' })

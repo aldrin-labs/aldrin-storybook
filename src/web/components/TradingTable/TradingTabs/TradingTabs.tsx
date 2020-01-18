@@ -158,7 +158,7 @@ const OpenOrdersWrapper = ({ variables, ...props }) => {
       withTableLoader={true}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="cache"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {
@@ -197,7 +197,7 @@ const PositionsWrapper = ({ subscribeToMore, variables, ...props }) => {
       withTableLoader={true}
       query={getActivePositions}
       name={`getActivePositionsQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="cache"
       subscriptionArgs={{
         subscription: FUTURES_POSITIONS,
         variables: {
@@ -236,7 +236,7 @@ const ActiveTradesWrapper = ({ subscribeToMore, variables, ...props }) => {
       withTableLoader={true}
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="cache"
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
