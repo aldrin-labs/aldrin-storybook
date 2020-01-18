@@ -66,7 +66,7 @@ export const ErrorFallback = (props: {
   refetch?: Function
 }) => (
   <Error style={{ margin: 'auto' }} elevation={10}>
-    {!MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
+    {MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
   </Error>
 )
 
