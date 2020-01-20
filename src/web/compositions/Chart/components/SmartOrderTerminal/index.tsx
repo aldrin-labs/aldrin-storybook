@@ -178,7 +178,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   componentDidMount() {
-    const { getStrategySettingsQuery, marketType } = this.props
+    const { getStrategySettingsQuery, marketType, price } = this.props
     const result = getDefaultStateFromStrategySettings({
       getStrategySettingsQuery,
       marketType,
@@ -193,7 +193,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         ...prevState.entryPoint,
         order: {
           ...prevState.entryPoint.order,
-          ...(result.entryPoint ? result.entryPoint.order.amount : {}),
+          ...(result.entryPoint &&
+          result.entryPoint.order &&
+          result.entryPoint.order.type
+            ? { type: result.entryPoint.order.type }
+            : {}),
+          ...(result.entryPoint &&
+          result.entryPoint.order &&
+          result.entryPoint.order.side
+            ? { side: result.entryPoint.order.side }
+            : {}),
         },
         trailing: {
           ...prevState.entryPoint.trailing,
@@ -203,6 +212,28 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       takeProfit: result.takeProfit,
       stopLoss: result.stopLoss,
     }))
+
+    if (!(result && result.entryPoint && result.entryPoint.order && result.entryPoint.order.amount)) {
+      return
+    }
+
+    const newTotal = result.entryPoint.order.amount * price
+    const newAmount = marketType === 0 ? result.entryPoint.order.amount : result.entryPoint.order.amount
+
+    this.updateSubBlockValue('entryPoint', 'order', 'amount', newAmount)
+
+    this.updateSubBlockValue(
+      'entryPoint',
+      'order',
+      'total',
+      stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
+    )
+
+    this.updateBlockValue(
+      'temp',
+      'initialMargin',
+      stripDigitPlaces((newTotal || 0) / this.props.leverage, 2)
+    )
   }
 
   componentDidUpdate(prevProps: IProps) {
