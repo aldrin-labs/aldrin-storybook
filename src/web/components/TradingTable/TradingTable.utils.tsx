@@ -238,6 +238,7 @@ export const combinePositionsTable = (
           side: positionAmt < 0 ? 'buy' : 'sell',
           marketType: 1,
           type,
+          reduceOnly: true,
           ...(type === 'limit' ? { price, timeInForce: 'GTC' } : {}),
           amount: Math.abs(positionAmt),
           leverage,
@@ -619,7 +620,10 @@ export const combineActiveTradesTable = (
               hoverColor={red.new}
               hoverBackground={'#fff'}
               transition={'all .4s ease-out'}
-              onClick={() => cancelOrderFunc(el._id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                cancelOrderFunc(el._id)
+              }}
             >
               {status[0] === 'Waiting' ? 'cancel' : 'market'}
             </BtnCustom>
@@ -803,7 +807,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
-          contentToSort: entryOrderPrice
+          contentToSort: entryOrderPrice,
         },
         quantity: {
           render: (
@@ -844,7 +848,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
-          contentToSort: stopLoss
+          contentToSort: stopLoss,
         },
         profit: {
           render: (
@@ -865,7 +869,7 @@ export const combineStrategiesHistoryTable = (
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
-          contentToSort: profitAmount
+          contentToSort: profitAmount,
         },
         status: {
           render: (
@@ -883,22 +887,28 @@ export const combineStrategiesHistoryTable = (
           contentToSort: profitPercentage,
         },
         date: {
-          render: createdAt && moment(createdAt).format('LT').toLowerCase() !== 'invalid date' ? (
-            <div>
-            <span style={{ display: 'block', color: '#16253D' }}>
-              {String(moment(createdAt).format('DD-MM-YYYY')).replace(
-                /-/g,
-                '.'
-              )}
-            </span>
-            <span style={{ color: '#7284A0' }}>
-              {moment(createdAt).format('LT')}
-            </span>
-          </div>
-          ) : '-',
+          render:
+            createdAt &&
+            moment(createdAt)
+              .format('LT')
+              .toLowerCase() !== 'invalid date' ? (
+              <div>
+                <span style={{ display: 'block', color: '#16253D' }}>
+                  {String(moment(createdAt).format('DD-MM-YYYY')).replace(
+                    /-/g,
+                    '.'
+                  )}
+                </span>
+                <span style={{ color: '#7284A0' }}>
+                  {moment(createdAt).format('LT')}
+                </span>
+              </div>
+            ) : (
+              '-'
+            ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
-            textAlign: 'right'
+            textAlign: 'right',
           },
           contentToSort: createdAt ? +new Date(createdAt) : -1,
         },
@@ -1107,7 +1117,11 @@ export const combineOpenOrdersTable = (
               </span>
             </div>
           ),
-          style: { whiteSpace: 'nowrap', opacity: needOpacity ? 0.75 : 1, textAlign: 'right' },
+          style: {
+            whiteSpace: 'nowrap',
+            opacity: needOpacity ? 0.75 : 1,
+            textAlign: 'right',
+          },
           contentToSort: timestamp,
         },
         cancel: {

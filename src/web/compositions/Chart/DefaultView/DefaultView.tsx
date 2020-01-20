@@ -65,6 +65,7 @@ export const DefaultView = (props: any) => {
     terminalViewMode,
     updateTerminalViewMode,
     arrayOfMarketIds,
+    quantityPrecision,
   } = props
 
   if (!currencyPair) {
@@ -242,6 +243,7 @@ export const DefaultView = (props: any) => {
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
+              quantityPrecision={quantityPrecision}
               priceFromOrderbook={priceFromOrderbook}
               marketType={marketType}
               showOrderResult={showOrderResult}

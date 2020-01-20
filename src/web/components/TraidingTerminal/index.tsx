@@ -208,9 +208,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   onStopChange = (e: SyntheticEvent<Element>) => {
-    const { setFieldTouched } = this.props
-    this.setFormatted('stop', e.target.value, 1)
-    setFieldTouched('stop', true)
+    const { setFieldValue } = this.props
+    setFieldValue('stop', e.target.value)
   }
 
   onTotalChange = (e: SyntheticEvent<Element>) => {
@@ -221,6 +220,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values: { price },
       setFieldTouched,
       isSPOTMarket,
+      quantityPrecision,
       errors,
       funds,
       decimals,
@@ -229,17 +229,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
     this.setFormatted('total', e.target.value, 1)
-    setFieldTouched('total', true)
 
     if (priceForCalculate) {
       const amount = e.target.value / priceForCalculate
 
       this.setFormatted(
         'amount',
-        stripDigitPlaces(amount, isSPOTMarket ? 8 : 3),
+        stripDigitPlaces(amount, isSPOTMarket ? 8 : quantityPrecision),
         0
       )
-      setFieldTouched('amount', true)
     }
   }
 
@@ -252,6 +250,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
       values: { price, limit },
       setFieldTouched,
+      quantityPrecision,
     } = this.props
 
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
@@ -264,12 +263,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     )
 
     setFieldValue('margin', stripDigitPlaces(newMargin, 3))
-
     setFieldValue('amount', e.target.value)
-    setFieldTouched('amount', true)
-
     setFieldValue('total', stripDigitPlaces(total, isSPOTMarket ? 8 : 3))
-    setFieldTouched('total', true)
   }
 
   onPriceChange = (e: SyntheticEvent<Element>) => {
@@ -279,11 +274,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       marketPrice,
       priceType,
       leverage,
+      setFieldValue,
     } = this.props
     const priceForCalculate =
       priceType !== 'market' ? e.target.value : marketPrice
 
-    this.setFormatted('price', e.target.value, 1)
+    setFieldValue('price', e.target.value)
+
     const total = e.target.value * amount
     this.setFormatted('total', total, 1)
 
@@ -317,6 +314,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       setFieldValue,
       leverage,
+      quantityPrecision,
       funds,
       isSPOTMarket,
     } = this.props
@@ -331,65 +329,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const newTotal = value * leverage
 
     setFieldValue('margin', value)
-    setFieldValue('amount', stripDigitPlaces(newAmount, 3))
+    setFieldValue('amount', newAmount.toFixed(quantityPrecision))
     setFieldValue('total', stripDigitPlaces(newTotal, 2))
-  }
-
-  onPercentageClick = (value: number) => {
-    const {
-      values: { limit, price },
-      funds,
-      marketPrice,
-      setFieldValue,
-      setFieldTouched,
-      validateForm,
-      priceType,
-      byType,
-      isSPOTMarket,
-      leverage,
-    } = this.props
-
-    const priceForCalculate = priceType !== 'market' ? price : marketPrice
-
-    if (byType === 'buy') {
-      const baseQuantity = getBaseQuantityFromQuote({
-        quoteQuantity: funds[1].quantity,
-        price: priceForCalculate,
-        percentage: value,
-      })
-
-      this.setFormatted('total', funds[1].quantity * value, 1)
-      setFieldValue(
-        'amount',
-        isSPOTMarket
-          ? stripDigitPlaces(baseQuantity, 8)
-          : stripDigitPlaces(baseQuantity * leverage, 3)
-      )
-    } else {
-      const necessaryFund = isSPOTMarket ? funds[0] : funds[1]
-
-      const quoteQuantity = getQuoteQuantityFromBase({
-        baseQuantity: necessaryFund.quantity,
-        price: priceForCalculate,
-        percentage: value,
-      })
-
-      const amount = isSPOTMarket
-        ? necessaryFund.quantity * value
-        : (necessaryFund.quantity / priceForCalculate) * value
-
-      this.setFormatted('total', quoteQuantity, 1)
-      setFieldValue(
-        'amount',
-        isSPOTMarket
-          ? stripDigitPlaces(amount, 8)
-          : stripDigitPlaces(amount * leverage, 3)
-      )
-    }
-
-    setFieldTouched('amount', true)
-    setFieldTouched('total', true)
-    validateForm()
   }
 
   render() {
@@ -405,6 +346,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       handleSubmit,
       validateForm,
       setFieldValue,
+      quantityPrecision,
       orderIsCreating,
     } = this.props
 
@@ -441,6 +383,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 >
                   <TradeInputContent
                     needTitle
+                    type={'text'}
                     title={`price (${pair[1]})`}
                     value={values.price || ''}
                     onChange={this.onPriceChange}
@@ -457,6 +400,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 >
                   <TradeInputContent
                     needTitle
+                    type={'text'}
                     title={`trigger price (${pair[1]})`}
                     value={values.stop || ''}
                     onChange={this.onStopChange}
@@ -543,28 +487,25 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
                     const newAmount =
                       isBuyType || !isSPOTMarket
-                        ? newValue / priceForCalculate
-                        : newValue
+                        ? (newValue / priceForCalculate).toFixed(
+                            isSPOTMarket ? 8 : quantityPrecision
+                          )
+                        : newValue.toFixed(isSPOTMarket ? 8 : quantityPrecision)
 
                     const newTotal =
                       isBuyType || !isSPOTMarket
                         ? newValue
                         : newValue * priceForCalculate
 
-                    const fixedAmount = stripDigitPlaces(
-                      newAmount,
-                      isSPOTMarket ? 8 : 3
-                    )
-
                     const newMargin = stripDigitPlaces(
                       (funds[1].quantity * value) / 100,
                       2
                     )
 
-                    setFieldValue('amount', fixedAmount)
+                    setFieldValue('amount', newAmount)
                     setFieldValue(
                       'total',
-                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 2)
+                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
                     )
                     setFieldValue('margin', newMargin)
                   }}
@@ -645,6 +586,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 type={operationType}
                 onClick={async () => {
                   const result = await validateForm()
+                  console.log('result', result)
                   if (Object.keys(result).length === 0 || !isSPOTMarket) {
                     handleSubmit(values)
                   }
@@ -694,10 +636,6 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(
-                    isSPOTMarket ? funds[0].quantity : funds[1].quantity,
-                    traidingErrorMessages[1]
-                  )
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -721,10 +659,6 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(
-                    isSPOTMarket ? funds[0].quantity : funds[1].quantity,
-                    traidingErrorMessages[1]
-                  )
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -755,10 +689,6 @@ const validate = (values: FormValues, props: IProps) => {
                   .nullable(true)
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0])
-                  .max(
-                    isSPOTMarket ? funds[0].quantity : funds[1].quantity,
-                    traidingErrorMessages[1]
-                  )
               : Yup.number()
                   .nullable(true)
                   .required(traidingErrorMessages[0])
@@ -817,24 +747,6 @@ const formikEnhancer = withFormik<IProps, FormValues>({
               price: values.price,
               amount: values.amount,
             }
-
-      // const priceForCalculate =
-      //   priceType !== 'market' && values.limit !== null
-      //     ? values.limit
-      //     : values.price
-
-      // if (values.amount * priceForCalculate < 10 && isSPOTMarket) {
-      //   props.showOrderResult(
-      //     {
-      //       status: 'error',
-      //       message: 'Total value must be at least 10.',
-      //     },
-      //     props.cancelOrder,
-      //     isSPOTMarket ? 0 : 1
-      //   )
-
-      //   return null
-      // }
 
       await props.addLoaderToButton(byType)
 
