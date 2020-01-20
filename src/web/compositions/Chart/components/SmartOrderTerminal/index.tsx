@@ -178,7 +178,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   componentDidMount() {
-    const { getStrategySettingsQuery, marketType } = this.props
+    const { getStrategySettingsQuery, marketType, price } = this.props
     const result = getDefaultStateFromStrategySettings({
       getStrategySettingsQuery,
       marketType,
@@ -217,7 +217,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       return
     }
 
-    const newTotal = result.entryPoint.order.amount * this.props.priceFromOrderbook
+    const newTotal = result.entryPoint.order.amount * price
     const newAmount = marketType === 0 ? result.entryPoint.order.amount : result.entryPoint.order.amount
 
     this.updateSubBlockValue('entryPoint', 'order', 'amount', newAmount)
