@@ -411,7 +411,8 @@ export const combineActiveTradesTable = (
   editTrade: (block: string, trade: any) => void,
   theme: Theme,
   currentPrice: number,
-  marketType: number
+  marketType: number,
+  currencyPair: string
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -421,8 +422,13 @@ export const combineActiveTradesTable = (
 
   const processedActiveTradesData = data
     .filter((el) => filterActiveTrades({ trade: el, marketType }))
+    .sort(
+      (a, b) =>
+        moment(b.createdAt).format('X') - moment(a.createdAt).format('X')
+    )
     .map((el: OrderType, i: number) => {
       const {
+        createdAt,
         conditions: {
           pair,
           leverage,
@@ -607,7 +613,9 @@ export const combineActiveTradesTable = (
           contentToSort: !!status[0] ? status[0] : 'Waiting',
         },
         close: {
-          render: (
+          render: needOpacity ? (
+            ' '
+          ) : (
             <BtnCustom
               btnWidth="100%"
               height="auto"
@@ -628,9 +636,6 @@ export const combineActiveTradesTable = (
               {status[0] === 'Waiting' ? 'cancel' : 'market'}
             </BtnCustom>
           ),
-          style: {
-            opacity: needOpacity ? 0 : 1,
-          },
         },
         expandableContent: [
           {
@@ -1220,7 +1225,7 @@ export const combineOrderHistoryTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: side === 'buy' ? '#29AC80' : '#DD6956',
+                  color: isBuyTypeOrder(side) ? '#29AC80' : '#DD6956',
                 }}
               >
                 {side}

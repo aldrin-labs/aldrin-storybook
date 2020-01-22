@@ -168,7 +168,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...state.entryPoint,
           order: {
             ...state.entryPoint.order,
-            leverage: props.leverage,
+            leverage: props.componentLeverage,
           },
         },
       }
@@ -178,7 +178,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   componentDidMount() {
-    const { getStrategySettingsQuery, marketType, price } = this.props
+    const {
+      getStrategySettingsQuery,
+      marketType,
+      price,
+      componentLeverage,
+    } = this.props
+
     const result = getDefaultStateFromStrategySettings({
       getStrategySettingsQuery,
       marketType,
@@ -203,6 +209,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           result.entryPoint.order.side
             ? { side: result.entryPoint.order.side }
             : {}),
+          leverage: componentLeverage,
         },
         trailing: {
           ...prevState.entryPoint.trailing,
@@ -213,12 +220,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       stopLoss: result.stopLoss,
     }))
 
-    if (!(result && result.entryPoint && result.entryPoint.order && result.entryPoint.order.amount)) {
+    if (
+      !(
+        result &&
+        result.entryPoint &&
+        result.entryPoint.order &&
+        result.entryPoint.order.amount
+      )
+    ) {
       return
     }
 
     const newTotal = result.entryPoint.order.amount * price
-    const newAmount = marketType === 0 ? result.entryPoint.order.amount : result.entryPoint.order.amount
+    const newAmount =
+      marketType === 0
+        ? result.entryPoint.order.amount
+        : result.entryPoint.order.amount
 
     this.updateSubBlockValue('entryPoint', 'order', 'amount', newAmount)
 
@@ -256,12 +273,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       )
     }
 
-    if (prevProps.leverage !== this.props.leverage) {
+    if (prevProps.componentLeverage !== this.props.componentLeverage) {
       this.updateSubBlockValue(
         'entryPoint',
         'order',
         'leverage',
-        this.props.leverage
+        this.props.componentLeverage
       )
     }
   }
@@ -495,7 +512,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <LeverageTitle>leverage:</LeverageTitle>
                   <SmallSlider
                     min={1}
-                    max={maxLeverage.get(`${pair[0]}_${pair[1]}`)}
+                    max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
                     defaultValue={startLeverage}
                     value={
                       !entryPoint.order.leverage

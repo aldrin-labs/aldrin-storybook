@@ -46,21 +46,27 @@ class SimpleTabs extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { leverage } = props
+    const { componentLeverage } = props
     const { leverage: stateLeverage } = state
 
     if (!stateLeverage) {
       return {
-        leverage,
+        leverage: componentLeverage,
       }
     } else {
       return null
     }
   }
 
+  componentDidMount() {
+    this.setState({
+      leverage: this.props.componentLeverage,
+    })
+  }
+
   componentDidUpdate(prevProps) {
-    if (prevProps.leverage !== this.props.leverage) {
-      this.setState({ leverage: this.props.leverage })
+    if (prevProps.componentLeverage !== this.props.componentLeverage) {
+      this.setState({ leverage: this.props.componentLeverage })
     }
   }
 

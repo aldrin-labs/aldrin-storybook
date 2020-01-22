@@ -10,7 +10,7 @@ export const TablesBlockWrapper = styled(Grid)`
   padding-right: 0;
   border: none;
   position: relative;
-  height: 37%;
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
   top: 0%;
 
   && {
