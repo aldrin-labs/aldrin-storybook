@@ -499,6 +499,7 @@ export const combineActiveTradesTable = (
       const pairArr = pair.split('_')
       const status = getStatusFromState(state)
       const needOpacity = el._id === '-1'
+      const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
       const entryOrderPrice = entryPrice
       // : !!entryDeviation
@@ -694,7 +695,7 @@ export const combineActiveTradesTable = (
                     green={green.new}
                     blue={blue}
                   />
-                  <DateColumn createdAt={createdAt} />
+                  <DateColumn createdAt={date} />
                 </div>
               ),
               colspan: 9,
@@ -771,6 +772,7 @@ export const combineStrategiesHistoryTable = (
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
+      const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
       const entryOrderPrice = !!entryPrice
         ? entryPrice
@@ -905,25 +907,16 @@ export const combineStrategiesHistoryTable = (
           contentToSort: profitPercentage,
         },
         date: {
-          render:
-            createdAt &&
-            moment(createdAt)
-              .format('LT')
-              .toLowerCase() !== 'invalid date' ? (
-              <div>
-                <span style={{ display: 'block', color: '#16253D' }}>
-                  {String(moment(createdAt).format('DD-MM-YYYY')).replace(
-                    /-/g,
-                    '.'
-                  )}
-                </span>
-                <span style={{ color: '#7284A0' }}>
-                  {moment(createdAt).format('LT')}
-                </span>
-              </div>
-            ) : (
-              '-'
-            ),
+          render: (
+            <div>
+              <span style={{ display: 'block', color: '#16253D' }}>
+                {String(moment(date).format('DD-MM-YYYY')).replace(/-/g, '.')}
+              </span>
+              <span style={{ color: '#7284A0' }}>
+                {moment(date).format('LT')}
+              </span>
+            </div>
+          ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             textAlign: 'right',
