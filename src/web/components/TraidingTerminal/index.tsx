@@ -151,29 +151,30 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   componentDidUpdate(prevProps) {
-    const { pair, marketPrice } = this.props
+    const { pair, marketPrice, marketPriceAfterPairChange } = this.props
 
-    const currencyPair = `${pair[0]}_${pair[1]}`
-    const prevPair = `${prevProps.pair[0]}_${prevProps.pair[1]}`
-
-    if (prevPair !== currencyPair) {
-      this.onPriceChange({ target: { value: marketPrice } })
+    if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
+      this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
     }
 
     if (prevProps.priceType !== this.props.priceType) {
       const {
         priceType,
         leverage,
+        setFieldValue,
         values: { amount, price },
       } = this.props
+
       const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
       this.setFormatted('total', amount * priceForCalculate, 1)
-      this.onMarginChange({
-        target: {
-          value: stripDigitPlaces((amount / leverage) * priceForCalculate, 2),
-        },
-      })
+
+      const newMargin = stripDigitPlaces(
+        (amount / leverage) * priceForCalculate,
+        3
+      )
+
+      setFieldValue('margin', newMargin)
     }
 
     if (
@@ -364,8 +365,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const newTotal = value * leverage
 
     setFieldValue('margin', value)
-    setFieldValue('amount', newAmount.toFixed(quantityPrecision))
-    setFieldValue('total', stripDigitPlaces(newTotal, 2))
+    setFieldValue(
+      'amount',
+      newAmount.toFixed(isSPOTMarket ? 8 : quantityPrecision)
+    )
+    setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 2))
   }
 
   render() {
