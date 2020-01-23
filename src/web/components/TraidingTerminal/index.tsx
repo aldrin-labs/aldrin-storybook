@@ -153,9 +153,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   componentDidUpdate(prevProps) {
     const { pair, marketPrice, marketPriceAfterPairChange } = this.props
 
-    const currencyPair = `${pair[0]}_${pair[1]}`
-    const prevPair = `${prevProps.pair[0]}_${prevProps.pair[1]}`
-
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
       this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
     }

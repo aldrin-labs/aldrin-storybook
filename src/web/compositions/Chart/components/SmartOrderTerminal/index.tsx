@@ -307,6 +307,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
       this.updateBlockValue('temp', 'initialMargin', newMargin)
     }
+
+    if (
+      this.props.marketPriceAfterPairChange !==
+      prevProps.marketPriceAfterPairChange
+    ) {
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'price',
+        this.props.marketPriceAfterPairChange
+      )
+
+      this.updateSubBlockValue('entryPoint', 'order', 'total', 0)
+
+      this.updateSubBlockValue('entryPoint', 'order', 'amount', 0)
+    }
   }
 
   handleCloseConfirmationPopup = () => {
