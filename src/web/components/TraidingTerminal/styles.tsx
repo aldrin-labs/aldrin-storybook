@@ -274,7 +274,7 @@ export const SmartTradeButton = styled(SendButton)`
 
   @media (min-width: 1921px) {
     font-size: 1.1rem;
-  } 
+  }
 `
 
 export const PriceContainer = styled(Grid)``
@@ -301,7 +301,7 @@ export const BlueInputTitle = styled(SeparateInputTitle)`
 
 export const AbsoluteInputTitle = styled(Coin)`
   left: 1rem;
-  color: #16253d;
+  color: #abbad1;
   font-size: 0.9rem;
   width: 0;
   white-space: nowrap;

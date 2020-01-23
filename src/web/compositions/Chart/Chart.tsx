@@ -187,6 +187,8 @@ class Chart extends React.Component<IProps, IState> {
     } = this.props
 
     let minPriceDigits
+    let quantityPrecision
+    let pricePrecision
 
     if (
       !pair ||
@@ -195,12 +197,19 @@ class Chart extends React.Component<IProps, IState> {
       !pairPropertiesQuery.marketByName[0]
     ) {
       minPriceDigits = 0.00000001
+      quantityPrecision = 3
     } else {
       minPriceDigits = +this.props.pairPropertiesQuery.marketByName[0]
         .properties.binance.filters[0].minPrice
+
+      quantityPrecision = +this.props.pairPropertiesQuery.marketByName[0]
+        .properties.binance.quantityPrecision
+
+        pricePrecision = +this.props.pairPropertiesQuery.marketByName[0]
+        .properties.binance.pricePrecision
     }
 
-    const arrayOfMarketIds = marketByMarketType.map(el => el._id)
+    const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
@@ -235,6 +244,8 @@ class Chart extends React.Component<IProps, IState> {
             view={view}
             marketType={marketType}
             currencyPair={pair}
+            pricePrecision={pricePrecision}
+            quantityPrecision={quantityPrecision}
             minPriceDigits={minPriceDigits}
             themeMode={themeMode}
             selectedKey={
@@ -266,7 +277,7 @@ export default withAuth(
       fetchPolicy: 'cache-and-network',
       variables: {
         marketType: 1, // hardcode here to get only futures marketIds'
-      }
+      },
     }),
     graphql(CHANGE_CURRENCY_PAIR, {
       name: 'changeCurrencyPairMutation',
