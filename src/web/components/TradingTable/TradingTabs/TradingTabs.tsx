@@ -71,6 +71,7 @@ const TradingTabs = ({
       filterActiveTrades({
         trade,
         marketType,
+        currencyPair,
       })
   ).length
 

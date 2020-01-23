@@ -188,6 +188,7 @@ class Chart extends React.Component<IProps, IState> {
 
     let minPriceDigits
     let quantityPrecision
+    let pricePrecision
 
     if (
       !pair ||
@@ -203,6 +204,9 @@ class Chart extends React.Component<IProps, IState> {
 
       quantityPrecision = +this.props.pairPropertiesQuery.marketByName[0]
         .properties.binance.quantityPrecision
+
+        pricePrecision = +this.props.pairPropertiesQuery.marketByName[0]
+        .properties.binance.pricePrecision
     }
 
     const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
@@ -240,6 +244,7 @@ class Chart extends React.Component<IProps, IState> {
             view={view}
             marketType={marketType}
             currencyPair={pair}
+            pricePrecision={pricePrecision}
             quantityPrecision={quantityPrecision}
             minPriceDigits={minPriceDigits}
             themeMode={themeMode}

@@ -133,6 +133,7 @@ export const openOrdersColumnNames = (marketType: number) =>
     // { label: 'Filled %', id: 'filled',  },
     marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
     { label: 'Trigger', id: 'triggerConditions' },
+    marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
     { label: 'date', isNumber: true, id: 'date' },
     {
       label:
@@ -178,6 +179,7 @@ export const orderHistoryColumnNames = (marketType: number) =>
     { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
     marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
     { label: 'Trigger', id: 'triggerConditions' },
+    marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
     { label: 'Status', id: 'status' },
     { label: 'date', isNumber: true, id: 'date' },
   ].filter((x) => x.label)
