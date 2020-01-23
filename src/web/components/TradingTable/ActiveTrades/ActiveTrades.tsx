@@ -148,6 +148,7 @@ class ActiveTradesTable extends React.Component {
         next: (data) => {
           if (data.loading || data.data.listenPrice === that.state.marketPrice)
             return
+
           that.setState({ marketPrice: data.data.listenPrice })
         },
       })
@@ -218,7 +219,8 @@ class ActiveTradesTable extends React.Component {
       this.editTrade,
       theme,
       this.state.marketPrice,
-      this.props.marketType
+      this.props.marketType,
+      this.props.currencyPair
     )
 
     this.setState({
@@ -290,7 +292,8 @@ class ActiveTradesTable extends React.Component {
       this.editTrade,
       nextProps.theme,
       this.state.marketPrice,
-      this.props.marketType
+      nextProps.marketType,
+      nextProps.currencyPair
     )
 
     this.setState({
@@ -301,7 +304,7 @@ class ActiveTradesTable extends React.Component {
       query: getActiveStrategies,
       variables: {
         activeStrategiesInput: {
-          activeExchangeKey: this.props.selectedKey.keyId,
+          activeExchangeKey: nextProps.selectedKey.keyId,
         },
       },
       data: {
@@ -350,7 +353,7 @@ class ActiveTradesTable extends React.Component {
     if (!show) {
       return null
     }
-    
+
     const pair = currencyPair.split('_')
 
     const funds = pair.map((coin, index) => {

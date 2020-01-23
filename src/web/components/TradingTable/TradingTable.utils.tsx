@@ -59,7 +59,7 @@ import SubRow from './PositionsTable/SubRow'
 import {
   EntryOrderColumn,
   StopLossColumn,
-  StatusColumn,
+  DateColumn,
   TakeProfitColumn,
 } from './ActiveTrades/Columns'
 
@@ -204,27 +204,44 @@ export const filterPositions = ({ position, pair, canceledPositions }) => {
   )
 }
 
-export const filterActiveTrades = ({ trade, marketType }) => {
-  return trade.conditions.marketType === marketType && trade.enabled
+export const filterActiveTrades = ({ trade, marketType, currencyPair }) => {
+  return (
+    trade.conditions.marketType === marketType &&
+    trade.enabled &&
+    trade.conditions.pair === currencyPair
+  )
 }
 
-export const combinePositionsTable = (
-  data: OrderType[],
+export const combinePositionsTable = ({
+  data,
   createOrderWithStatus,
-  theme: Theme,
-  marketPrice: number,
-  pair: string,
-  keyId: string,
-  canceledPositions: string[],
+  theme,
+  marketPrice,
+  pair,
+  keyId,
+  canceledPositions,
+  priceFromOrderbook,
+  pricePrecision,
+  quantityPrecision,
+}: {
+  data: OrderType[]
+  createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
+  theme: Theme
+  marketPrice: number
+  pair: string
+  keyId: string
+  canceledPositions: string[]
   priceFromOrderbook: number | string
-) => {
+  pricePrecision: number
+  quantityPrecision: number
+}) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
 
   const { green, red } = theme.palette
   let positions = []
-  // console.log('data', data)
+
   const processedPositionsData = data
     .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
@@ -315,7 +332,9 @@ export const combinePositionsTable = (
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, 2)} ${pair[1]}`,
+            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${
+              pair[1]
+            }`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -324,7 +343,9 @@ export const combinePositionsTable = (
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, 2)} ${pair[1]}`,
+            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${
+              pair[1]
+            }`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -333,7 +354,7 @@ export const combinePositionsTable = (
             contentToSort: marketPrice,
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, 2)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liqPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -421,7 +442,7 @@ export const combineActiveTradesTable = (
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((el) => filterActiveTrades({ trade: el, marketType }))
+    .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
     .sort(
       (a, b) =>
         moment(b.createdAt).format('X') - moment(a.createdAt).format('X')
@@ -475,20 +496,14 @@ export const combineActiveTradesTable = (
         state: '-',
       }
 
-      // console.log('order', el)
-
-      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-
       const pairArr = pair.split('_')
       const status = getStatusFromState(state)
       const needOpacity = el._id === '-1'
 
-      const entryOrderPrice = !!entryPrice
-        ? entryPrice
-        : !!entryDeviation
-        ? // ? activatePrice + (activatePrice / 100) * entryDeviation
-          activatePrice * (1 + entryDeviation / leverage / 100)
-        : price
+      const entryOrderPrice = entryPrice
+      // : !!entryDeviation
+      // ? activatePrice * (1 + entryDeviation / leverage / 100)
+      // : price
 
       const profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) * leverage
@@ -522,14 +537,12 @@ export const combineActiveTradesTable = (
           contentToSort: side,
         },
         entryPrice: {
-          render: (
+          render: entryPrice ? (
             <SubColumnValue>
-              {stripDigitPlaces(
-                entryOrderPrice,
-                getNumberOfPrecisionDigitsForSymbol(pairArr[1])
-              )}{' '}
-              {pairArr[1]}
+              {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
+          ) : (
+            '-'
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
@@ -579,7 +592,7 @@ export const combineActiveTradesTable = (
         },
         profit: {
           render:
-            entryPrice && currentPrice ? (
+            !!entryPrice && !!currentPrice ? (
               <SubColumnValue
                 color={
                   profitPercentage > 0 && side === 'buy' ? green.new : red.new
@@ -641,7 +654,7 @@ export const combineActiveTradesTable = (
           {
             row: {
               render: (
-                <>
+                <div style={{ position: 'relative' }}>
                   <EntryOrderColumn
                     haveEdit={false}
                     enableEdit={!!entryPrice}
@@ -676,15 +689,15 @@ export const combineActiveTradesTable = (
                     order={stopLossType}
                     forced={!!forcedLoss}
                     timeoutLoss={timeoutLoss}
-                    trailing={false}
                     timeoutLossable={timeoutLossable}
                     red={red.new}
                     green={green.new}
                     blue={blue}
                   />
-                </>
+                  <DateColumn createdAt={createdAt} />
+                </div>
               ),
-              colspan: 8,
+              colspan: 9,
             },
           },
         ],
@@ -921,7 +934,7 @@ export const combineStrategiesHistoryTable = (
           {
             row: {
               render: (
-                <>
+                <div style={{ position: 'relative' }}>
                   <EntryOrderColumn
                     haveEdit={false}
                     enableEdit={!!entryPrice}
@@ -956,15 +969,14 @@ export const combineStrategiesHistoryTable = (
                     order={stopLossType}
                     forced={!!forcedLoss}
                     timeoutLoss={timeoutLoss}
-                    trailing={false}
                     timeoutLossable={timeoutLossable}
                     red={red.new}
                     green={green.new}
                     blue={blue}
                   />
-                </>
+                </div>
               ),
-              colspan: 8,
+              colspan: 9,
             },
           },
         ],
@@ -1000,7 +1012,7 @@ export const combineOpenOrdersTable = (
       })
     )
     .map((el: OrderType, i: number) => {
-      const { keyId, symbol, type: orderType, side, price } = el
+      const { keyId, symbol, type: orderType, side, price, reduceOnly } = el
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const orderId = (el.info && el.info.orderId) || el.orderId
@@ -1108,6 +1120,15 @@ export const combineOpenOrdersTable = (
           contentToSort: +rawStopPrice,
           style: { opacity: needOpacity ? 0.75 : 1 },
         },
+        ...(marketType === 1
+          ? {
+              reduceOnly: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: reduceOnly ? '+' : '-',
+                contentToSort: reduceOnly,
+              },
+            }
+          : {}),
         date: {
           render: (
             <div>
@@ -1180,6 +1201,7 @@ export const combineOrderHistoryTable = (
         type: orderType,
         side,
         price,
+        reduceOnly,
         status,
         filled,
         average,
@@ -1282,6 +1304,15 @@ export const combineOrderHistoryTable = (
           render: triggerConditionsFormatted,
           contentToSort: +rawStopPrice,
         },
+        ...(marketType === 1
+          ? {
+              reduceOnly: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: reduceOnly ? '+' : '-',
+                contentToSort: reduceOnly,
+              },
+            }
+          : {}),
         status: {
           render: status ? (
             <span
@@ -1415,7 +1446,7 @@ export const combineTradeHistoryTable = (
                         : ''
                     }${
                       realizedPnl || realizedPnl === 0
-                        ? stripDigitPlaces(realizedPnl, 8)
+                        ? stripDigitPlaces(Math.abs(realizedPnl), 8)
                         : '-'
                     } ${realizedPnl || realizedPnl === 0 ? pair[1] : ''}`}
                   </span>
