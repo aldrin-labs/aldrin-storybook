@@ -109,6 +109,7 @@ class SimpleTabs extends React.Component {
       leverage: startLeverage,
       priceFromOrderbook,
       quantityPrecision,
+      marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
     } = this.props
@@ -318,6 +319,7 @@ class SimpleTabs extends React.Component {
                   priceType={mode}
                   quantityPrecision={quantityPrecision}
                   priceFromOrderbook={priceFromOrderbook}
+                  marketPriceAfterPairChange={marketPriceAfterPairChange}
                   isSPOTMarket={isSPOTMarket}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Buy')
@@ -350,6 +352,7 @@ class SimpleTabs extends React.Component {
                   priceType={mode}
                   quantityPrecision={quantityPrecision}
                   priceFromOrderbook={priceFromOrderbook}
+                  marketPriceAfterPairChange={marketPriceAfterPairChange}
                   isSPOTMarket={isSPOTMarket}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Sell')
