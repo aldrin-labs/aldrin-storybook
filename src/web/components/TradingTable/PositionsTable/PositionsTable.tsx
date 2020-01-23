@@ -74,34 +74,44 @@ class PositionsTable extends React.PureComponent {
 
   createOrderWithStatus = async (variables, positionId) => {
     const {
-      showOrderResult,
+      getActivePositionsQuery,
+      currencyPair,
+      selectedKey,
+      canceledOrders,
+      priceFromOrderbook,
+      pricePrecision,
+      quantityPrecision,
+      theme,
       cancelOrder,
       marketType,
-      getActivePositionsQuery,
-      theme,
+      showOrderResult,
+      addOrderToCanceled,
+      clearCanceledOrders,
     } = this.props
 
-    const positionsData = combinePositionsTable(
-      getActivePositionsQuery.getActivePositions,
-      this.createOrderWithStatus,
+    const positionsData = combinePositionsTable({
+      data: getActivePositionsQuery.getActivePositions,
+      createOrderWithStatus: this.createOrderWithStatus,
       theme,
-      this.state.marketPrice,
-      this.props.currencyPair,
-      this.props.selectedKey.keyId,
-      [...this.props.canceledOrders].concat(positionId),
-      this.props.priceFromOrderbook
-    )
+      marketPrice: this.state.marketPrice,
+      pair: currencyPair,
+      keyId: selectedKey.keyId,
+      canceledPositions: canceledOrders,
+      priceFromOrderbook,
+      pricePrecision,
+      quantityPrecision,
+    })
 
     this.setState({
       positionsData,
     })
 
     const result = await this.createOrder(variables)
-    this.props.addOrderToCanceled(positionId)
+    addOrderToCanceled(positionId)
     await showOrderResult(result, cancelOrder, marketType)
 
     if (result) {
-      await setTimeout(() => this.props.clearCanceledOrders(), 5000)
+      await setTimeout(() => clearCanceledOrders(), 5000)
     }
   }
 
@@ -210,20 +220,32 @@ class PositionsTable extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getActivePositionsQuery, subscribeToMore, theme } = this.props
+    const {
+      getActivePositionsQuery,
+      currencyPair,
+      selectedKey,
+      canceledOrders,
+      priceFromOrderbook,
+      pricePrecision,
+      quantityPrecision,
+      subscribeToMore,
+      theme,
+    } = this.props
 
     this.subscribe()
 
-    const positionsData = combinePositionsTable(
-      getActivePositionsQuery.getActivePositions,
-      this.createOrderWithStatus,
+    const positionsData = combinePositionsTable({
+      data: getActivePositionsQuery.getActivePositions,
+      createOrderWithStatus: this.createOrderWithStatus,
       theme,
-      this.state.marketPrice,
-      this.props.currencyPair,
-      this.props.selectedKey.keyId,
-      this.props.canceledOrders,
-      this.props.priceFromOrderbook
-    )
+      marketPrice: this.state.marketPrice,
+      pair: currencyPair,
+      keyId: selectedKey.keyId,
+      canceledPositions: canceledOrders,
+      priceFromOrderbook,
+      pricePrecision,
+      quantityPrecision,
+    })
 
     this.setState({
       positionsData,
@@ -321,16 +343,29 @@ class PositionsTable extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const positionsData = combinePositionsTable(
-      nextProps.getActivePositionsQuery.getActivePositions,
-      this.createOrderWithStatus,
-      nextProps.theme,
-      this.state.marketPrice,
-      nextProps.currencyPair,
-      nextProps.selectedKey.keyId,
-      nextProps.canceledOrders,
-      nextProps.priceFromOrderbook
-    )
+    const {
+      getActivePositionsQuery,
+      theme,
+      currencyPair,
+      selectedKey,
+      canceledOrders,
+      priceFromOrderbook,
+      pricePrecision,
+      quantityPrecision,
+    } = nextProps
+
+    const positionsData = combinePositionsTable({
+      data: getActivePositionsQuery.getActivePositions,
+      createOrderWithStatus: this.createOrderWithStatus,
+      theme,
+      marketPrice: this.state.marketPrice,
+      pair: currencyPair,
+      keyId: selectedKey.keyId,
+      canceledPositions: canceledOrders,
+      priceFromOrderbook,
+      pricePrecision,
+      quantityPrecision,
+    })
 
     this.setState({
       positionsData,

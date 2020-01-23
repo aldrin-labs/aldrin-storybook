@@ -198,7 +198,6 @@ export const PopupInfoBlock = styled.div`
   border-right: ${(props) => props.isFirstBlock && '.1rem solid #e0e5ec'};
   padding: ${(props) =>
     props.isFirstBlock ? '0 1.5rem 0 .6rem' : '0 .6rem 0 1.5rem'};
-  width: 50%;
 `
 
 export const PopupInfoTitle = styled.p`

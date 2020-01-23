@@ -151,14 +151,21 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   componentDidUpdate(prevProps) {
+    const { pair, marketPrice } = this.props
+
+    const currencyPair = `${pair[0]}_${pair[1]}`
+    const prevPair = `${prevProps.pair[0]}_${prevProps.pair[1]}`
+
+    if (prevPair !== currencyPair) {
+      this.onPriceChange({ target: { value: marketPrice } })
+    }
+
     if (prevProps.priceType !== this.props.priceType) {
       const {
         priceType,
-        marketPrice,
         leverage,
-        values: { amount, price, limit },
+        values: { amount, price },
       } = this.props
-
       const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
       this.setFormatted('total', amount * priceForCalculate, 1)
@@ -185,6 +192,23 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (this.props.leverage !== prevProps.leverage) {
       this.onMarginChange({ target: { value: this.props.values.margin } })
+    }
+
+    if (
+      marketPrice !== prevProps.marketPrice &&
+      this.props.priceType === 'market'
+    ) {
+      const {
+        leverage,
+        values: { amount },
+      } = this.props
+
+      const total = marketPrice * amount
+      this.setFormatted('total', total, 1)
+
+      const newMargin = stripDigitPlaces((amount / leverage) * marketPrice, 2)
+
+      this.setFormatted('margin', newMargin, 1)
     }
   }
 
@@ -243,7 +267,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
   onAmountChange = (e: SyntheticEvent<Element>) => {
     const {
+      funds,
       priceType,
+      operationType,
       isSPOTMarket,
       leverage,
       marketPrice,
@@ -254,6 +280,16 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
+    const isBuyType = operationType === 'buy'
+
+    // const maxAmount =
+    //   isBuyType || !isSPOTMarket
+    //     ? (funds[1].quantity / priceForCalculate).toFixed(
+    //         isSPOTMarket ? 8 : quantityPrecision
+    //       )
+    //     : +funds[0].quantity.toFixed(isSPOTMarket ? 8 : quantityPrecision)
+
+    // const amount = e.target.value > maxAmount ? maxAmount : e.target.value
 
     const total = e.target.value * priceForCalculate
 
@@ -262,8 +298,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       2
     )
 
-    setFieldValue('margin', stripDigitPlaces(newMargin, 3))
     setFieldValue('amount', e.target.value)
+    setFieldValue('margin', stripDigitPlaces(newMargin, 3))
     setFieldValue('total', stripDigitPlaces(total, isSPOTMarket ? 8 : 3))
   }
 
@@ -276,6 +312,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       leverage,
       setFieldValue,
     } = this.props
+
     const priceForCalculate =
       priceType !== 'market' ? e.target.value : marketPrice
 
@@ -290,9 +327,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     )
 
     this.setFormatted('margin', newMargin, 1)
-
-    setFieldTouched('price', true)
-    setFieldTouched('total', true)
   }
 
   onLimitChange = (e: SyntheticEvent<Element>) => {
@@ -318,6 +352,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       funds,
       isSPOTMarket,
     } = this.props
+
     const value =
       e.target.value > funds[1].quantity
         ? stripDigitPlaces(funds[1].quantity, 2)
@@ -369,7 +404,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     return (
       <Container background={'transparent'}>
-        <GridContainer isBuyType={isBuyType} key={pair}>
+        <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
             <InputRowContainer
               direction="column"
@@ -445,10 +480,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   />
                 ) : (
                   <InputRowContainer direction="row" padding={'0'}>
-                    <div style={{ width: '50%', paddingRight: '2.5%' }}>
+                    <div style={{ width: '50%', paddingRight: '1%' }}>
                       <TradeInputContent
                         needTitle
-                        title={`size (${pair[0]})`}
+                        title={`size`}
                         value={values.amount || ''}
                         type={'text'}
                         pattern={
@@ -458,7 +493,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         symbol={pair[0]}
                       />
                     </div>
-                    <div style={{ width: '50%', paddingLeft: '2.5%' }}>
+                    <div style={{ width: '50%', paddingLeft: '1%' }}>
                       <TradeInputContent
                         disabled={true}
                         needTitle

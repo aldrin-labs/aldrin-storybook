@@ -52,7 +52,7 @@ const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
             <PopupInfoValue isSPOTRealized>soon</PopupInfoValue>
           ) : (
             <PopupInfoValue>
-              {getFormattedProfit(realizedPnlSum)}
+              {getFormattedProfit((+realizedPnlSum).toFixed(5))}
             </PopupInfoValue>
           )}
         </PopupInfoBlock>
