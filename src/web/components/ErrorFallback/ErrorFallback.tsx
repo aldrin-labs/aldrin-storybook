@@ -56,8 +56,7 @@ const RefetchError = (props: { error?: ApolloError; refetch: Function }) => (
 
 const ErrorWithoutMessage = () => (
   <Typography variant="body1" align="center" color="error">
-    {`Oops looks like we broke it somehow! 🙈
-      We are working on this. 🔧Please refresh the page or contact the support.`}
+    {`Network error, please refresh page or contact support in telegram chat`}
   </Typography>
 )
 

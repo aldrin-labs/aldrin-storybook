@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import moment from 'moment'
 import { InputTitle } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
@@ -228,7 +229,6 @@ export const StopLossColumn = ({
   price,
   forced,
   order,
-  trailing,
   timeoutLoss,
   timeoutLossable,
   green,
@@ -240,7 +240,6 @@ export const StopLossColumn = ({
   price: number
   forced?: boolean
   order: string
-  trailing: boolean
   timeoutLoss?: number
   timeoutLossable?: number
   green: string
@@ -253,7 +252,7 @@ export const StopLossColumn = ({
   editTrade: () => void
 }) => {
   return (
-    <BlockContainer>
+    <BlockContainer style={{ position: 'absolute' }}>
       <div style={{ width: '100%' }}>
         {haveEdit ? (
           <SubColumnTitle style={{ width: '75%' }}>
@@ -298,18 +297,32 @@ export const StopLossColumn = ({
       </div>
 
       <div>
-        <SubColumnTitle>trailing</SubColumnTitle>
-        <SubColumnValue textAlign={'right'} color={trailing ? green : red}>
-          {trailing ? 'on' : 'off'}
-        </SubColumnValue>
-      </div>
-
-      <div>
         <SubColumnTitle>timeout</SubColumnTitle>
         <SubColumnValue textAlign={'right'}>
           {timeoutLoss || '-'} / {timeoutLossable || '-'}
         </SubColumnValue>
       </div>
+    </BlockContainer>
+  )
+}
+
+export const DateColumn = ({ createdAt }) => {
+  return (
+    <BlockContainer style={{ position: 'absolute', right: '0' }}>
+      {moment(createdAt)
+        .format('LT')
+        .toLowerCase() !== 'invalid date' ? (
+        <div style={{ textAlign: 'right' }}>
+          <span style={{ display: 'block', color: '#16253D' }}>
+            {String(moment(createdAt).format('DD-MM-YYYY')).replace(/-/g, '.')}
+          </span>
+          <span style={{ color: '#7284A0' }}>
+            {moment(createdAt).format('LT')}
+          </span>
+        </div>
+      ) : (
+        <>-</>
+      )}
     </BlockContainer>
   )
 }

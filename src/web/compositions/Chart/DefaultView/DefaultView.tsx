@@ -12,23 +12,19 @@ import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
 
-const TerminalContainer = ({ isDefaultTerminalViewMode, children }) =>
-  isDefaultTerminalViewMode ? (
-    <TablesBlockWrapper
-      item
-      container
-      xs={5}
-      style={{
-        padding: '.4rem 0 0 .4rem',
-      }}
-    >
-      {children}
-    </TablesBlockWrapper>
-  ) : (
-    <SmartTerminalContainer xs={12} item container>
-      {children}
-    </SmartTerminalContainer>
-  )
+const TerminalContainer = ({ isDefaultTerminalViewMode, children }) => (
+  <TablesBlockWrapper
+    item
+    container
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    style={{
+      padding: '.4rem 0 0 .4rem',
+    }}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 import {
   Container,
@@ -65,6 +61,8 @@ export const DefaultView = (props: any) => {
     terminalViewMode,
     updateTerminalViewMode,
     arrayOfMarketIds,
+    quantityPrecision,
+    pricePrecision
   } = props
 
   if (!currencyPair) {
@@ -213,6 +211,8 @@ export const DefaultView = (props: any) => {
                   showCancelResult={showCancelResult}
                   marketType={marketType}
                   exchange={exchange}
+                  pricePrecision={pricePrecision}
+                  quantityPrecision={quantityPrecision}
                   priceFromOrderbook={priceFromOrderbook}
                   currencyPair={currencyPair}
                   arrayOfMarketIds={arrayOfMarketIds}
@@ -242,6 +242,7 @@ export const DefaultView = (props: any) => {
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
+              quantityPrecision={quantityPrecision}
               priceFromOrderbook={priceFromOrderbook}
               marketType={marketType}
               showOrderResult={showOrderResult}

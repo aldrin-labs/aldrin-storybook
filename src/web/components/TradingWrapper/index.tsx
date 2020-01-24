@@ -46,21 +46,27 @@ class SimpleTabs extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { leverage } = props
+    const { componentLeverage } = props
     const { leverage: stateLeverage } = state
 
     if (!stateLeverage) {
       return {
-        leverage,
+        leverage: componentLeverage,
       }
     } else {
       return null
     }
   }
 
+  componentDidMount() {
+    this.setState({
+      leverage: this.props.componentLeverage,
+    })
+  }
+
   componentDidUpdate(prevProps) {
-    if (prevProps.leverage !== this.props.leverage) {
-      this.setState({ leverage: this.props.leverage })
+    if (prevProps.componentLeverage !== this.props.componentLeverage) {
+      this.setState({ leverage: this.props.componentLeverage })
     }
   }
 
@@ -102,6 +108,8 @@ class SimpleTabs extends React.Component {
       marketType,
       leverage: startLeverage,
       priceFromOrderbook,
+      quantityPrecision,
+      marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
     } = this.props
@@ -309,7 +317,9 @@ class SimpleTabs extends React.Component {
                   byType={'buy'}
                   operationType={'buy'}
                   priceType={mode}
+                  quantityPrecision={quantityPrecision}
                   priceFromOrderbook={priceFromOrderbook}
+                  marketPriceAfterPairChange={marketPriceAfterPairChange}
                   isSPOTMarket={isSPOTMarket}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Buy')
@@ -340,7 +350,9 @@ class SimpleTabs extends React.Component {
                   byType={'sell'}
                   operationType={'sell'}
                   priceType={mode}
+                  quantityPrecision={quantityPrecision}
                   priceFromOrderbook={priceFromOrderbook}
+                  marketPriceAfterPairChange={marketPriceAfterPairChange}
                   isSPOTMarket={isSPOTMarket}
                   changePercentage={(value) =>
                     this.handleChangePercentage(value, 'Sell')
