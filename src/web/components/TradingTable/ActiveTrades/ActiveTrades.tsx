@@ -220,7 +220,8 @@ class ActiveTradesTable extends React.Component {
       theme,
       this.state.marketPrice,
       this.props.marketType,
-      this.props.currencyPair
+      this.props.currencyPair,
+      this.props.quantityPrecision
     )
 
     this.setState({
@@ -293,7 +294,8 @@ class ActiveTradesTable extends React.Component {
       nextProps.theme,
       this.state.marketPrice,
       nextProps.marketType,
-      nextProps.currencyPair
+      nextProps.currencyPair,
+      nextProps.quantityPrecision
     )
 
     this.setState({
