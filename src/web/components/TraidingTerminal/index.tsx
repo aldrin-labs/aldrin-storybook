@@ -283,23 +283,35 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
     const isBuyType = operationType === 'buy'
 
-    // const maxAmount =
-    //   isBuyType || !isSPOTMarket
-    //     ? (funds[1].quantity / priceForCalculate).toFixed(
-    //         isSPOTMarket ? 8 : quantityPrecision
-    //       )
-    //     : +funds[0].quantity.toFixed(isSPOTMarket ? 8 : quantityPrecision)
+    let maxAmount = 0
 
-    // const amount = e.target.value > maxAmount ? maxAmount : e.target.value
+    if (isSPOTMarket) {
+      maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
+    } else {
+      maxAmount = funds[1].quantity * leverage
+    }
 
-    const total = e.target.value * priceForCalculate
+    const currentMaxAmount =
+      isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
+
+    const isAmountMoreThanMax = e.target.value > currentMaxAmount
+
+    const amountForUpdate = isAmountMoreThanMax
+      ? currentMaxAmount
+      : e.target.value
+
+    const total = amountForUpdate * priceForCalculate
 
     const newMargin = stripDigitPlaces(
-      (e.target.value / leverage) * priceForCalculate,
+      (amountForUpdate / leverage) * priceForCalculate,
       2
     )
 
-    setFieldValue('amount', e.target.value)
+    const strippedAmount = isAmountMoreThanMax
+      ? stripDigitPlaces(amountForUpdate, isSPOTMarket ? 8 : quantityPrecision)
+      : e.target.value
+
+    setFieldValue('amount', strippedAmount)
     setFieldValue('margin', stripDigitPlaces(newMargin, 3))
     setFieldValue('total', stripDigitPlaces(total, isSPOTMarket ? 8 : 3))
   }
@@ -544,7 +556,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     setFieldValue('amount', newAmount)
                     setFieldValue(
                       'total',
-                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
+                      newTotal < 1
+                        ? newTotal.toFixed(isSPOTMarket ? 8 : 3)
+                        : stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
                     )
                     setFieldValue('margin', newMargin)
                   }}
@@ -798,6 +812,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         {
           leverage,
           marketType: isSPOTMarket ? 0 : 1,
+          params: { maxIfNotEnough: true },
           ...(priceType !== 'market'
             ? orderMode === 'TIF'
               ? { timeInForce: TIFMode, postOnly: false }

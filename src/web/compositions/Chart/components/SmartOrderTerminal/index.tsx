@@ -102,7 +102,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     },
     takeProfit: {
       isTakeProfitOn: true,
-      type: 'market',
+      type: 'limit',
       pricePercentage: 0,
       splitTargets: {
         isSplitTargetsOn: false,
@@ -126,7 +126,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     },
     stopLoss: {
       isStopLossOn: true,
-      type: 'market',
+      type: 'limit',
       pricePercentage: 0,
       timeout: {
         isTimeoutOn: false,
@@ -453,10 +453,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     //   updateTerminalViewMode('default')
   }
 
-  setMaxAmount = () => {
+  getMaxValues = () => {
     const { entryPoint } = this.state
-
-    const { funds, marketType, quantityPrecision } = this.props
+    const { funds, marketType } = this.props
 
     let maxAmount = 0
 
@@ -471,6 +470,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       entryPoint.order.side === 'buy' || marketType === 1
         ? [maxAmount / entryPoint.order.price, maxAmount]
         : [maxAmount, maxAmount / entryPoint.order.price]
+
+    return [amount, total]
+  }
+
+  setMaxAmount = () => {
+    const { funds, marketType, quantityPrecision } = this.props
+
+    const [amount, total] = this.getMaxValues()
 
     this.updateSubBlockValue(
       'entryPoint',
@@ -946,16 +953,27 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           +entryPoint.order.amount
                         )}
                         onChange={(e) => {
+                          const [maxAmount] = this.getMaxValues()
+                          const isAmountMoreThanMax = e.target.value > maxAmount
+                          const amountForUpdate = isAmountMoreThanMax
+                            ? maxAmount
+                            : e.target.value
+
                           const newTotal =
-                            e.target.value * entryPoint.order.price
-                          const newAmount =
-                            marketType === 0 ? e.target.value : e.target.value
+                            amountForUpdate * entryPoint.order.price
+
+                          const strippedAmount = isAmountMoreThanMax
+                            ? stripDigitPlaces(
+                                amountForUpdate,
+                                marketType === 1 ? quantityPrecision : 8
+                              )
+                            : e.target.value
 
                           this.updateSubBlockValue(
                             'entryPoint',
                             'order',
                             'amount',
-                            newAmount
+                            strippedAmount
                           )
 
                           this.updateSubBlockValue(
