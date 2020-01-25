@@ -33,7 +33,13 @@ import {
 } from './Calendar.styles'
 
 const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
-  const { transactionsCount, realizedPnlSum, date } = squareDayInfo
+  const {
+    transactionsCount,
+    realizedPnlSum,
+    BNBFee,
+    USDTFee,
+    date,
+  } = squareDayInfo
 
   return (
     <SquarePopup ref={inputRef}>
@@ -56,6 +62,18 @@ const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
             </PopupInfoValue>
           )}
         </PopupInfoBlock>
+        {!isSPOTCurrently && (
+          <>
+            <PopupInfoBlock>
+              <PopupInfoTitle>USDT Fee</PopupInfoTitle>
+              <PopupInfoValue>{(+USDTFee).toFixed(5)}</PopupInfoValue>
+            </PopupInfoBlock>
+            <PopupInfoBlock>
+              <PopupInfoTitle>BNB Fee</PopupInfoTitle>
+              <PopupInfoValue>{(+BNBFee).toFixed(5)}</PopupInfoValue>
+            </PopupInfoBlock>
+          </>
+        )}
       </PopupInfoContainer>
     </SquarePopup>
   )
@@ -99,6 +117,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
         spotTradesCount: null,
         exchangeTransactionsCount: null,
         realizedPnlSum: null,
+        BNBFee: null,
+        USDTFee: null,
         date: null,
       },
     }
@@ -188,6 +208,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
               spotTradesCount,
               exchangeTransactionsCount,
               realizedPnlSum,
+              BNBFee,
+              USDTFee,
               date,
             } = value
 
@@ -207,6 +229,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
                 spotTradesCount,
                 exchangeTransactionsCount,
                 realizedPnlSum,
+                BNBFee,
+                USDTFee,
                 date,
               },
             })

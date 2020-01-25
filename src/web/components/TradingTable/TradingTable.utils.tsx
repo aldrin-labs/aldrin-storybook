@@ -433,7 +433,8 @@ export const combineActiveTradesTable = (
   theme: Theme,
   currentPrice: number,
   marketType: number,
-  currencyPair: string
+  currencyPair: string,
+  quantityPrecision: number
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -553,7 +554,11 @@ export const combineActiveTradesTable = (
         quantity: {
           render: (
             <SubColumnValue>
-              {amount} {pairArr[0]}{' '}
+              {stripDigitPlaces(
+                amount,
+                marketType === 0 ? 8 : quantityPrecision
+              )}{' '}
+              {pairArr[0]}{' '}
             </SubColumnValue>
           ),
           style: {
@@ -832,7 +837,7 @@ export const combineStrategiesHistoryTable = (
         quantity: {
           render: (
             <SubColumnValue>
-              {amount} {pairArr[0]}{' '}
+              {stripDigitPlaces(amount, 8)} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
           style: {
@@ -1117,7 +1122,18 @@ export const combineOpenOrdersTable = (
           ? {
               reduceOnly: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: reduceOnly ? '+' : '-',
+                render: reduceOnly ? (
+                  <div
+                    style={{
+                      width: '.6rem',
+                      height: '.6rem',
+                      background: '#5C8CEA',
+                      borderRadius: '50%',
+                    }}
+                  />
+                ) : (
+                  '-'
+                ),
                 contentToSort: reduceOnly,
               },
             }
@@ -1301,7 +1317,18 @@ export const combineOrderHistoryTable = (
           ? {
               reduceOnly: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: reduceOnly ? '+' : '-',
+                render: reduceOnly ? (
+                  <div
+                    style={{
+                      width: '.6rem',
+                      height: '.6rem',
+                      background: '#5C8CEA',
+                      borderRadius: '50%',
+                    }}
+                  />
+                ) : (
+                  '-'
+                ),
                 contentToSort: reduceOnly,
               },
             }
@@ -1364,6 +1391,7 @@ export const combineTradeHistoryTable = (
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
       const pair = symbol.split('_')
+      const isSmallProfit = Math.abs(realizedPnl) < 0.01
 
       return {
         id: id,
@@ -1387,15 +1415,6 @@ export const combineTradeHistoryTable = (
               >
                 {side}
               </span>
-              {/* <span
-              style={{
-                textTransform: 'capitalize',
-                color: '#7284A0',
-                letterSpacing: '1px',
-              }}
-            >
-              {type}
-            </span> */}
             </div>
           ),
           contentToSort: side,
@@ -1433,13 +1452,15 @@ export const combineTradeHistoryTable = (
                           : '',
                     }}
                   >
-                    {`${
+                    {`${isSmallProfit ? '< ' : ''}${
                       typeof realizedPnl === 'number' && realizedPnl < 0
                         ? '-'
                         : ''
                     }${
-                      realizedPnl || realizedPnl === 0
-                        ? stripDigitPlaces(Math.abs(realizedPnl), 8)
+                      isSmallProfit && realizedPnl !== 0
+                        ? '0.01'
+                        : realizedPnl || realizedPnl === 0
+                        ? stripDigitPlaces(Math.abs(realizedPnl), 2)
                         : '-'
                     } ${realizedPnl || realizedPnl === 0 ? pair[1] : ''}`}
                   </span>
