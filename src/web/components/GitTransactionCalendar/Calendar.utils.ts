@@ -56,7 +56,7 @@ export const getCalendarData = (
       )
 
       if (action) {
-        const { transactionsCount, realizedPnlSum = 0 } = action
+        const { transactionsCount, realizedPnlSum = 0, BNBFee = 0, USDTFee = 0, } = action
 
         return {
           date: moment(+startDate)
@@ -65,6 +65,8 @@ export const getCalendarData = (
             .toDate(),
           transactionsCount,
           realizedPnlSum,
+          BNBFee,
+          USDTFee,
           className: getSquareClassName(
             transactionsCount,
             maxTransactionsCount,
@@ -82,6 +84,8 @@ export const getCalendarData = (
           .toDate(),
         transactionsCount: 0,
         realizedPnlSum: 0,
+        BNBFee: 0,
+        USDTFee: 0,
         className: squareColorsRange[0].className,
       }
     })

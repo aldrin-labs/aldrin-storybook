@@ -34,6 +34,7 @@ import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFol
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
+import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -61,6 +62,7 @@ const NavBarRaw: SFC<Props> = ({
   pathname,
   $hide = false,
   marketTypeData,
+  changeCurrencyPairMutation,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
@@ -202,6 +204,14 @@ const NavBarRaw: SFC<Props> = ({
                             },
                           },
                         })
+
+                        changeCurrencyPairMutation({
+                          variables: {
+                            pairInput: {
+                              pair: 'BTC_USDT',
+                            },
+                          },
+                        })
                       },
                     },
                   ]}
@@ -265,5 +275,8 @@ const NavBarRaw: SFC<Props> = ({
 
 export const NavBar = compose(
   withTheme,
-  graphql(GET_MARKET_TYPE, { name: 'marketTypeData' })
+  graphql(GET_MARKET_TYPE, { name: 'marketTypeData' }),
+  graphql(CHANGE_CURRENCY_PAIR, {
+    name: 'changeCurrencyPairMutation',
+  }),
 )(NavBarRaw)
