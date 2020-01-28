@@ -446,7 +446,11 @@ class PositionsTable extends React.PureComponent {
         }
         rowsWithHover={false}
         data={{ body: positionsData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead(
+          tab,
+          marketType,
+          this.props.getActivePositionsQueryRefetch
+        )}
       />
     )
   }

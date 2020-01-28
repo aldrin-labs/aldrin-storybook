@@ -85,7 +85,11 @@ export const getTableBody = (tab: string) =>
     ? positionsBody
     : []
 
-export const getTableHead = (tab: string, marketType: number = 0): any[] =>
+export const getTableHead = (
+  tab: string,
+  marketType: number = 0,
+  refetch: () => void
+): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
     : tab === 'orderHistory'
@@ -95,7 +99,7 @@ export const getTableHead = (tab: string, marketType: number = 0): any[] =>
     : tab === 'funds'
     ? fundsColumnNames
     : tab === 'positions'
-    ? positionsColumnNames
+    ? positionsColumnNames(refetch)
     : tab === 'activeTrades'
     ? activeTradesColumnNames
     : tab === 'strategiesHistory'
@@ -177,6 +181,29 @@ export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
   }
 
   return [0, 0]
+}
+
+const getActiveOrderStatus = ({ state, profitPercentage }) => {
+  console.log('state', state)
+  if ((state && state.state) || state.state === 'WaitForEntry') {
+    const { state: status } = state
+
+    if (status === 'TrailingEntry') {
+      return ['Trailing entry', '#29AC80']
+    }
+
+    if (status === 'InEntry') {
+      return ['Active', '#29AC80']
+    }
+
+    if (profitPercentage > 0) {
+      return ['In Profit', '#29AC80']
+    } else {
+      return ['In Loss', '#DD6956']
+    }
+  } else {
+    return ['Preparing', '#5C8CEA']
+  }
 }
 
 export const filterOpenOrders = ({
@@ -498,7 +525,6 @@ export const combineActiveTradesTable = (
       }
 
       const pairArr = pair.split('_')
-      const status = getStatusFromState(state)
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
@@ -512,6 +538,11 @@ export const combineActiveTradesTable = (
 
       const profitAmount =
         (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
+
+      const [activeOrderStatus, statusColor] = getActiveOrderStatus({
+        state: el.state,
+        profitPercentage,
+      })
 
       return {
         id: `${el._id}${i}`,
@@ -598,7 +629,7 @@ export const combineActiveTradesTable = (
         },
         profit: {
           render:
-            !!entryPrice && !!currentPrice ? (
+            state === 'InEntry' && !!currentPrice ? (
               <SubColumnValue
                 color={
                   profitPercentage > 0 && side === 'buy' ? green.new : red.new
@@ -622,14 +653,17 @@ export const combineActiveTradesTable = (
         },
         status: {
           render: (
-            <SubColumnValue style={{ textTransform: 'none' }} color={status[1]}>
-              {!!status[0] ? status[0] : 'Waiting'}
+            <SubColumnValue
+              style={{ textTransform: 'none' }}
+              color={statusColor}
+            >
+              {activeOrderStatus}
             </SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
-          contentToSort: !!status[0] ? status[0] : 'Waiting',
+          contentToSort: activeOrderStatus,
         },
         close: {
           render: needOpacity ? (
@@ -662,8 +696,9 @@ export const combineActiveTradesTable = (
               render: (
                 <div style={{ position: 'relative' }}>
                   <EntryOrderColumn
-                    haveEdit={false}
-                    enableEdit={!!entryPrice}
+                    haveEdit={true}
+                    editTrade={() => editTrade('entryOrder', el)}
+                    enableEdit={activeOrderStatus === 'Preparing'}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
                     side={side}
                     price={entryOrderPrice}
@@ -672,13 +707,16 @@ export const combineActiveTradesTable = (
                       marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
                     }
                     total={entryOrderPrice * amount}
-                    trailing={!entryPrice && entryDeviation}
+                    trailing={entryDeviation}
+                    activatePrice={activatePrice}
                     red={red.new}
                     green={green.new}
                     blue={blue}
                   />
                   <TakeProfitColumn
-                    haveEdit={false}
+                    haveEdit={true}
+                    enableEdit={true}
+                    editTrade={() => editTrade('takeProfit', el)}
                     price={exitLevels.length > 0 && exitLevels[0].price}
                     order={exitLevels.length > 0 && exitLevels[0].orderType}
                     targets={exitLevels ? exitLevels : []}
@@ -690,7 +728,9 @@ export const combineActiveTradesTable = (
                     blue={blue}
                   />
                   <StopLossColumn
-                    haveEdit={false}
+                    haveEdit={true}
+                    enableEdit={true}
+                    editTrade={() => editTrade('stopLoss', el)}
                     price={stopLoss}
                     order={stopLossType}
                     forced={!!forcedLoss}
@@ -729,6 +769,7 @@ export const combineStrategiesHistoryTable = (
     .map((el: OrderType, i: number) => {
       const {
         createdAt,
+        enabled,
         conditions: {
           pair,
           leverage,
@@ -779,11 +820,11 @@ export const combineStrategiesHistoryTable = (
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
-      const entryOrderPrice = !!entryPrice
-        ? entryPrice
-        : !!entryDeviation
-        ? activatePrice * (1 + entryDeviation / leverage / 100)
-        : price
+      const entryOrderPrice = entryPrice
+      // ? entryPrice
+      // : !!entryDeviation
+      // ? activatePrice * (1 + entryDeviation / leverage / 100)
+      // : price
 
       const [profitAmount, profitPercentage] = getPnlFromState({
         state,
@@ -898,12 +939,11 @@ export const combineStrategiesHistoryTable = (
         },
         status: {
           render: (
-            <SubColumnValue color={profitPercentage > 0 ? green.new : red.new}>
-              {profitPercentage === 0
-                ? 'Canceled'
-                : profitPercentage > 0
-                ? 'finished by t-a-p'
-                : 'closed by stop-loss'}
+            <SubColumnValue
+              style={{ textTransform: 'none' }}
+              color={state ? green.new : red.new}
+            >
+              {state ? state : enabled ? 'Waiting' : 'Closed'}
             </SubColumnValue>
           ),
           style: {
@@ -944,7 +984,8 @@ export const combineStrategiesHistoryTable = (
                       marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
                     }
                     total={entryOrderPrice * amount}
-                    trailing={!entryPrice && entryDeviation}
+                    trailing={entryDeviation}
+                    activatePrice={activatePrice}
                     red={red.new}
                     green={green.new}
                     blue={blue}
@@ -1391,7 +1432,7 @@ export const combineTradeHistoryTable = (
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
       const pair = symbol.split('_')
-      const isSmallProfit = Math.abs(realizedPnl) < 0.01
+      const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
         id: id,
