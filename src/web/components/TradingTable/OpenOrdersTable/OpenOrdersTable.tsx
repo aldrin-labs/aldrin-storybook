@@ -137,6 +137,16 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     this.unsubscribeFunction = subscribeToMore()
   }
 
+  componentDidUpdate(prevProps) {
+    const refetch = async () => {
+      await this.props.getOpenOrderHistoryQueryRefetch()
+    }
+
+    if (this.props.show !== prevProps.show && this.props.show) {
+      refetch()
+    }
+  }
+
   componentWillUnmount = () => {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {

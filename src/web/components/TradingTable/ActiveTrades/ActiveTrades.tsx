@@ -90,7 +90,7 @@ class ActiveTradesTable extends React.Component {
     }
   }
 
-  editTrade = (block, selectedTrade) => {
+  editTrade = (block: string, selectedTrade: any) => {
     this.setState({ editTrade: block, selectedTrade })
   }
 
