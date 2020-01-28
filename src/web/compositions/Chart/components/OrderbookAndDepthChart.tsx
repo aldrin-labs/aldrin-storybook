@@ -2,9 +2,12 @@ import React from 'react'
 import 'treemap-js'
 var SortedMap = require('collections/sorted-map')
 
+import { client } from '@core/graphql/apolloClient'
 import { Grid } from '@material-ui/core'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
+import { getTerminalData } from '@core/graphql/queries/chart/getTerminalData'
+
 import {
   MOCKED_ORDERBOOK,
   ORDERBOOK,
@@ -19,6 +22,7 @@ import {
 import {
   transformOrderbookData,
   addOrdersToOrderbook,
+  addOrderToOrderbook,
   getAggregatedData,
   testJSON,
   getAggregationsFromMinPriceDigits,
@@ -239,6 +243,70 @@ class OrderbookAndDepthChart extends React.Component {
     })
   }
 
+  addOrderToOrderbookTree = async (data) => {
+    const { asks, bids, aggregation, amountsMap, aggregatedData } = this.state
+
+    const { sizeDigits, minPriceDigits, symbol, marketType } = this.props
+
+    let marketPrice
+    let updatedData = null
+    let updatedAggregatedData = aggregatedData
+
+    const orderbookData = { asks, bids }
+
+    if (data.price === 'market') return null
+
+    await client
+      .query({
+        query: getTerminalData,
+        variables: {
+          pair: `${symbol}:${marketType}`,
+          exchange: 'binance',
+        },
+      })
+      .then((getTerminalData) => {
+        marketPrice = getTerminalData.data.getPrice
+
+        const side = data.price > marketPrice ? 'asks' : 'bids'
+        const orderData = {
+          [side]: [{ ...data, side }],
+          [side === 'asks' ? 'bids' : 'asks']: [],
+        }
+
+        if (
+          String(aggregation) !==
+          String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+        ) {
+          updatedAggregatedData = addOrderToOrderbook({
+            updatedData: updatedAggregatedData,
+            orderData,
+            aggregation,
+            originalOrderbookTree: { asks, bids },
+            isAggregatedData: true,
+            sizeDigits,
+          })
+        }
+
+        updatedData = addOrderToOrderbook({
+          updatedData: orderbookData,
+          orderData,
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
+            .value,
+          originalOrderbookTree: { asks, bids },
+          isAggregatedData: false,
+          amountsMap,
+          sizeDigits,
+        })
+
+        this.setState({
+          aggregatedData: updatedAggregatedData,
+          ...updatedData,
+        })
+      })
+
+    return null
+  }
+
   render() {
     const {
       chartProps,
@@ -306,6 +374,7 @@ class OrderbookAndDepthChart extends React.Component {
             arrayOfMarketIds={arrayOfMarketIds}
             updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
             setOrderbookAggregation={this.setOrderbookAggregation}
+            addOrderToOrderbookTree={this.addOrderToOrderbookTree}
             quote={quote}
             data={dataToSend}
           />

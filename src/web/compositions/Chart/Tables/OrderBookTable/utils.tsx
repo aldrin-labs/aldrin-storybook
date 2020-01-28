@@ -127,7 +127,7 @@ export default function defaultRowRenderer({
 
         return (
           +orderPrice === +rowData.price &&
-          arrayOfMarketIds.includes(order.marketId)
+          (arrayOfMarketIds.includes(order.marketId) || order.marketId === '0')
         )
       }) !== -1
 
@@ -137,7 +137,7 @@ export default function defaultRowRenderer({
 
         return (
           +orderStopPrice === +rowData.price &&
-          arrayOfMarketIds.includes(order.marketId)
+          (arrayOfMarketIds.includes(order.marketId) || order.marketId === '0')
         )
       }) !== -1
   }

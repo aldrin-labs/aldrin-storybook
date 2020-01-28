@@ -1,7 +1,9 @@
 import React from 'react'
 import { TableButton } from './TradingTable.styles'
+import SvgIcon from '@sb/components/SvgIcon'
 import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
 import Help from '@material-ui/icons/Help'
+import Reimport from '@icons/reimport.svg'
 
 const arrayOfSides = ['sell', 'buy']
 
@@ -17,7 +19,7 @@ export const tradingTableTabConfig = [
   'positions',
 ]
 
-export const positionsColumnNames = [
+export const positionsColumnNames = (refetch) => [
   { label: '#', id: 'index' },
   { label: 'Pair', id: 'pair' },
   // { label: 'Type', id: 'type' },
@@ -28,6 +30,28 @@ export const positionsColumnNames = [
   { label: 'Market Price', id: 'marketPrice' },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
+  {
+    label: (
+      <TooltipCustom
+        title={`Update positions`}
+        component={
+          <div
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          >
+            <SvgIcon
+              alt="Update positions"
+              src={Reimport}
+              width="26px"
+              height="17px"
+              onClick={async () => await refetch()}
+            />
+          </div>
+        }
+      />
+    ),
+    id: 'refetch',
+    isSortable: false,
+  },
 ]
 
 export const activeTradesColumnNames = [
@@ -60,7 +84,7 @@ export const activeTradesColumnNames = [
   { label: 'Stop', id: 'stopLoss' },
   { label: 'Pnl/Roe', id: 'profit' },
   { label: 'status', id: 'status' },
-  { label: 'close', id: 'close' },
+  { label: 'close', id: 'close', isSortable: false },
   // { label: 'Entry point', id: 'entryOrder' },
   // { label: 'Take a profit', id: 'takeProfit' },
   // { label: 'Stop loss', id: 'stopLoss' },

@@ -161,9 +161,10 @@ class SimpleTabs extends React.Component {
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
+                  justifyContent: 'center'
                 }}
               >
-                <span style={{ paddingRight: '1rem' }}>Smart Trade</span>
+                <span>Smart Trade</span>
               </div>
             </SmartOrderModeButton>
           </TerminalHeader>
