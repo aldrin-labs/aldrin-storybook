@@ -15,6 +15,7 @@ import { handleLogout } from '@core/utils/loginUtils'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import { Props } from './Login.types'
 import { SWrapper } from './Login.styles'
+import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 
 @withTheme
 @withRouter
@@ -32,7 +33,7 @@ class LoginClassComponent extends React.Component<Props> {
       logoutMutation,
       history: { push },
     } = this.props
-    await handleLogout(logoutMutation)
+    await handleLogout(logoutMutation, this.props.persistorInstance)
     push('/login')
   }
 
@@ -77,6 +78,7 @@ class LoginClassComponent extends React.Component<Props> {
 }
 
 export const LoginComponent = compose(
+  withApolloPersist,
   queryRendererHoc({ query: GET_LOGIN_DATA, name: 'loginDataQuery' }),
   graphql(CLIENT_API_MUTATIONS.LOGOUT, { name: 'logoutMutation' })
 )(LoginClassComponent)
