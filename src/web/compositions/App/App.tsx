@@ -22,6 +22,7 @@ import Footer from '@sb/components/Footer'
 
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
+import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
@@ -45,6 +46,7 @@ const AppRaw = ({
   getThemeModeQuery,
   location: { pathname: currentPage },
   history: { push },
+  ...otherProps,
 }: any) => {
   const themeMode =
     getThemeModeQuery &&
@@ -62,31 +64,33 @@ const AppRaw = ({
   const isChartPage = currentPage === '/chart'
 
   return (
-    <JssProvider jss={jss} generateClassName={generateClassName}>
-      <ThemeWrapper themeMode={themeMode}>
-        <SnackbarWrapper>
-          <CssBaseline />
-          <FontStyle />
-          <AppGridLayout
-            showFooter={showFooter}
-            isPNL={isPNL}
-            isChartPage={isChartPage}
-          >
-            {!pageIsRegistration && (
-              <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-            )}
-            {children}
-            <Footer
-              isChartPage={isChartPage}
-              fullscreenMode={fullscreen}
+    <ApolloPersistWrapper>
+      <JssProvider jss={jss} generateClassName={generateClassName}>
+        <ThemeWrapper themeMode={themeMode}>
+          <SnackbarWrapper>
+            <CssBaseline />
+            <FontStyle />
+            <AppGridLayout
               showFooter={showFooter}
-            />
-          </AppGridLayout>
-          {/* <ShowWarningOnMoblieDevice /> */}
-          <GlobalStyle />
-        </SnackbarWrapper>
-      </ThemeWrapper>
-    </JssProvider>
+              isPNL={isPNL}
+              isChartPage={isChartPage}
+            >
+              {!pageIsRegistration && (
+                <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
+              )}
+              {children}
+              <Footer
+                isChartPage={isChartPage}
+                fullscreenMode={fullscreen}
+                showFooter={showFooter}
+              />
+            </AppGridLayout>
+            {/* <ShowWarningOnMoblieDevice /> */}
+            <GlobalStyle />
+          </SnackbarWrapper>
+        </ThemeWrapper>
+      </JssProvider>
+    </ApolloPersistWrapper>
   )
 }
 
@@ -99,6 +103,6 @@ export const App = withRouter(
     queryRendererHoc({
       query: GET_THEME_MODE,
       name: 'getThemeModeQuery',
-    })
+    }),
   )(AppRaw)
 )
