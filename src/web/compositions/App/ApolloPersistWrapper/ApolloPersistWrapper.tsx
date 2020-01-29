@@ -7,6 +7,7 @@ import {
 
 import storage from '@storage'
 import { memCache, restoreCache } from '@core/graphql/apolloClient'
+import { MASTER_BUILD } from '@core/utils/config'
 
 export const ApolloPersistContext = React.createContext({ persistorInstance: null });
 
@@ -21,6 +22,11 @@ export default class ApolloPersistWrapper extends Component<any> {
         cache: memCache,
         storage: storage,
     })
+
+    // for logging
+    if (!MASTER_BUILD) {
+      window.cachePersistor = cachePersistor;
+    }
 
     try {
       await restoreCache(cachePersistor)
