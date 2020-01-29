@@ -1042,6 +1042,7 @@ export class EditEntryOrderPopup extends React.Component<
       updateState,
       validate,
       marketType,
+      quantityPrecision,
     } = this.props
 
     const {
@@ -1090,7 +1091,7 @@ export class EditEntryOrderPopup extends React.Component<
             firstHalfText={'buy'}
             secondHalfText={'sell'}
             buttonHeight={'2.5rem'}
-            containerStyles={{ width: '100%', paddingBottom: '.4rem' }}
+            containerStyles={{ width: '100%', padding: '1.2rem 0 .6rem 0' }}
             firstHalfStyleProperties={GreenSwitcherStyles}
             secondHalfStyleProperties={RedSwitcherStyles}
             firstHalfIsActive={side === 'buy'}
@@ -1107,17 +1108,23 @@ export class EditEntryOrderPopup extends React.Component<
 
                 let newAmount =
                   newSide === 'buy'
-                    ? (
-                        ((amountPercentage / 100) * newMaxAmount) /
-                        price
-                      ).toFixed(8)
-                    : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+                    ? stripDigitPlaces(
+                        ((amountPercentage / 100) * newMaxAmount) / price,
+                        marketType === 1 ? quantityPrecision : 8
+                      )
+                    : stripDigitPlaces(
+                        (amountPercentage / 100) * newMaxAmount,
+                        marketType === 1 ? quantityPrecision : 8
+                      )
 
                 if (!+newAmount || +newAmount === NaN) {
                   newAmount = 0
                 }
 
-                const newTotal = newAmount * price
+                const newTotal = stripDigitPlaces(
+                  amount * price,
+                  marketType === 1 ? 2 : 8
+                )
 
                 this.setState({
                   amount: newAmount,
@@ -1144,9 +1151,12 @@ export class EditEntryOrderPopup extends React.Component<
                 type: getSecondValueFromFirst(prev.type),
               }))
 
-              if (getSecondValueFromFirst(type) === 'limit') {
+              if (getSecondValueFromFirst(type) === 'market') {
                 this.setState({
-                  isTrailingOn: false,
+                  total: stripDigitPlaces(
+                    this.props.price * amount,
+                    marketType === 1 ? 2 : 8
+                  ),
                 })
               }
             }}

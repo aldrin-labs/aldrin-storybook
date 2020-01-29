@@ -184,8 +184,7 @@ export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
 }
 
 const getActiveOrderStatus = ({ state, profitPercentage }) => {
-  console.log('state', state)
-  if ((state && state.state) || state.state === 'WaitForEntry') {
+  if (state && state.state && state.state !== 'WaitForEntry') {
     const { state: status } = state
 
     if (status === 'TrailingEntry') {
