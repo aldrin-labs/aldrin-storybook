@@ -86,9 +86,10 @@ export const EntryOrderColumn = ({
               borderColor={enableEdit ? blue.first : '#e0e5ec'}
               btnColor={'#fff'}
               backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={blue.first}
+              hoverBackground={enableEdit ? blue.first : '#e0e5ec'}
               transition={'all .4s ease-out'}
-              onClick={editTrade}
+              onClick={enableEdit ? editTrade : () => {}}
+              style={enableEdit ? {} : { cursor: 'default' }}
             >
               edit
             </BtnCustom>
