@@ -16,7 +16,7 @@ import { LoginMenu } from '@sb/components/LoginMenu'
 import { Props } from './Login.types'
 import { SWrapper } from './Login.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
-
+import { syncStorage } from '@storage'
 @withTheme
 @withRouter
 class LoginClassComponent extends React.Component<Props> {
@@ -40,10 +40,12 @@ class LoginClassComponent extends React.Component<Props> {
   render() {
     const {
       loginDataQuery: {
-        login: { loginStatus, user },
+        login: { user },
       },
       location: { pathname },
     } = this.props
+    const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
+
 
     const isLoginPage = pathname === '/login'
 
