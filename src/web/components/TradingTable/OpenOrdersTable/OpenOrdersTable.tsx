@@ -246,6 +246,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+
+  
+
   return (
     <QueryRenderer
       component={OpenOrdersTable}
