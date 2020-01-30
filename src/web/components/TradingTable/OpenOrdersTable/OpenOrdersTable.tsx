@@ -1,4 +1,5 @@
 import React from 'react'
+import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 
@@ -17,6 +18,7 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
+import { ordersHealthcheck } from '@core/graphql/mutations/chart/ordersHealthcheck'
 
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
@@ -143,6 +145,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
+      this.props.ordersHealthcheckMutation({
+        variables: {
+          input: {
+            keyId: this.props.selectedKey.keyId,
+            pair: this.props.currencyPair,
+          }
+        }
+      })
       refetch()
     }
   }
@@ -246,9 +256,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-
-  
-
   return (
     <QueryRenderer
       component={OpenOrdersTable}
@@ -276,6 +283,8 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' })(
-  TableDataWrapper
-)
+export default compose(
+  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
+  graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })
+)(TableDataWrapper)
+

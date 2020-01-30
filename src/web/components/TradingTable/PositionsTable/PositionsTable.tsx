@@ -537,6 +537,6 @@ const TableDataWrapper = ({ ...props }) => {
 export default compose(
   withSnackbar,
   graphql(updatePosition, { name: 'updatePositionMutation' }),
-  graphql(createOrder, { name: 'createOrderMutation' }),
+  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(createOrder, { name: 'createOrderMutation' })
 )(TableDataWrapper)
