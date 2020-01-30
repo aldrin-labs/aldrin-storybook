@@ -4,6 +4,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
 import Help from '@material-ui/icons/Help'
 import Reimport from '@icons/reimport.svg'
+import { Loading } from '@sb/components/index'
 
 const arrayOfSides = ['sell', 'buy']
 
@@ -19,7 +20,11 @@ export const tradingTableTabConfig = [
   'positions',
 ]
 
-export const positionsColumnNames = (refetch) => [
+export const positionsColumnNames = (
+  refetch,
+  updatePositionsHandler,
+  positionsRefetchInProcess
+) => [
   { label: '#', id: 'index' },
   { label: 'Pair', id: 'pair' },
   // { label: 'Type', id: 'type' },
@@ -38,13 +43,20 @@ export const positionsColumnNames = (refetch) => [
           <div
             style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           >
-            <SvgIcon
-              alt="Update positions"
-              src={Reimport}
-              width="26px"
-              height="17px"
-              onClick={async () => await refetch()}
-            />
+            {positionsRefetchInProcess ? (
+              <Loading size={16} style={{ height: '16px' }} />
+            ) : (
+              <SvgIcon
+                alt="Update positions"
+                src={Reimport}
+                width="26px"
+                height="17px"
+                onClick={async () => {
+                  refetch()
+                  updatePositionsHandler()
+                }}
+              />
+            )}
           </div>
         }
       />
