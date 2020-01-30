@@ -122,9 +122,9 @@ export const EntryOrderColumn = ({
           ) : (
             price
           )}
-          {trailing && (
+          {trailing ? (
             <span style={{ display: 'block' }}>{activatePrice}</span>
-          )}
+          ) : null}
         </SubColumnValue>
       </div>
 

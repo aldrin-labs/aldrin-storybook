@@ -470,10 +470,16 @@ export const combineActiveTradesTable = (
 
   const processedActiveTradesData = data
     .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
-    .sort(
-      (a, b) =>
-        moment(b.createdAt).format('X') - moment(a.createdAt).format('X')
-    )
+    .sort((a, b) => {
+      const aDate = isNaN(moment(+a.createdAt).unix())
+        ? a.createdAt
+        : +a.createdAt
+      const bDate = isNaN(moment(+b.createdAt).unix())
+        ? b.createdAt
+        : +b.createdAt
+
+      return moment(bDate).format('X') - moment(aDate).format('X')
+    })
     .map((el: OrderType, i: number) => {
       const {
         createdAt,
@@ -533,7 +539,8 @@ export const combineActiveTradesTable = (
       // : price
 
       const profitPercentage =
-        ((currentPrice / entryOrderPrice) * 100 - 100) * leverage
+        ((currentPrice / entryOrderPrice) * 100 - 100) * leverage *
+        (isBuyTypeOrder(side) ? 1 : -1)
 
       const profitAmount =
         (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
@@ -603,7 +610,7 @@ export const combineActiveTradesTable = (
               exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice} / ${
+                ? `${exitLevels[0].activatePrice}% / ${
                     exitLevels[0].entryDeviation
                   }%`
                 : exitLevels[0] && exitLevels[0].price
