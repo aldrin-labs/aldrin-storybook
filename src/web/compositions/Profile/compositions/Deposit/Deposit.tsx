@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
+import { compose } from 'recompose'
 import { Grid, Typography } from '@material-ui/core'
 import copy from 'clipboard-copy'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
 
 import exclamationMark from '@icons/exclamationMark.svg'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -155,4 +159,6 @@ const Deposits = ({  }: IProps) => {
   )
 }
 
-export default Deposits
+export default compose(
+  queryRendererHoc({ query: getProfileSettings, name: 'getProfileSettingsQuery' })
+)(Deposits)

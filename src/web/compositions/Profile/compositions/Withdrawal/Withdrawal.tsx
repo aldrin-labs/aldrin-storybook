@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
+import { compose } from 'recompose'
 import { Grid } from '@material-ui/core'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -37,6 +41,7 @@ const Withdrawal = ({  }: IProps) => {
           boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
           borderRadius: '32px',
           marginBottom: '2%',
+          overflow: 'scroll',
         }}
       >
         <AccountBlock
@@ -162,4 +167,6 @@ const Withdrawal = ({  }: IProps) => {
   )
 }
 
-export default Withdrawal
+export default compose(
+  queryRendererHoc({ query: getProfileSettings, name: 'getProfileSettingsQuery' })
+)(Withdrawal)
