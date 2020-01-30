@@ -460,6 +460,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     let maxAmount = 0
 
+    let priceForCalculate =
+      entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
+        ? this.props.price
+        : entryPoint.order.price
+
     if (marketType === 0) {
       maxAmount =
         entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
@@ -757,7 +762,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   )
 
                   if (
-                    getSecondValueFromFirst(entryPoint.order.type) === 'market'
+                    getSecondValueFromFirst(entryPoint.order.type) ===
+                      'market' &&
+                    !entryPoint.trailing.isTrailingOn
                   ) {
                     // this.updateSubBlockValue(
                     //   'entryPoint',
@@ -773,6 +780,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       stripDigitPlaces(
                         this.props.price * entryPoint.order.amount,
                         marketType === 1 ? 2 : 8
+                      )
+                    )
+
+                    this.updateBlockValue(
+                      'temp',
+                      'initialMargin',
+                      stripDigitPlaces(
+                        (this.props.price * entryPoint.order.amount) /
+                          entryPoint.order.leverage,
+                        2
                       )
                     )
                   }
@@ -1310,8 +1327,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 <FormInputContainer title={'loss (%)'}>
                   <InputRowContainer>
                     <Input
-                      needCharacter
-                      beforeSymbol={'-'}
                       padding={'0 .8rem 0 0'}
                       width={'calc(50%)'}
                       symbol={'%'}
@@ -1486,13 +1501,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <FormInputContainer title={'forced stop (loss %)'}>
                         <InputRowContainer>
                           <Input
-                            needCharacter
                             showErrors={showErrors && stopLoss.isStopLossOn}
                             isValid={this.validateField(
                               stopLoss.forcedStop.isForcedStopOn,
                               stopLoss.forcedStop.pricePercentage
                             )}
-                            beforeSymbol={'-'}
                             padding={'0 .8rem 0 0'}
                             width={'calc(50%)'}
                             symbol={'%'}
@@ -1614,8 +1627,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'isSplitTargetsOn',
                         false
                       )
-
-                      this.updateBlockValue('takeProfit', 'type', 'market')
                     }}
                   >
                     Trailing take a profit
@@ -1661,8 +1672,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <FormInputContainer title={'profit (%)'}>
                     <InputRowContainer>
                       <Input
-                        needCharacter
-                        beforeSymbol={'+'}
                         padding={'0 .8rem 0 0'}
                         width={'calc(50%)'}
                         symbol={'%'}
@@ -2128,7 +2137,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           {editPopup === 'entryOrder' && (
             <EditEntryOrderPopup
               open={editPopup === 'entryOrder'}
-              pair={pair}
+              pair={pair.join('_')}
+              price={this.props.price}
               marketType={marketType}
               leverage={entryPoint.order.leverage}
               funds={funds}
