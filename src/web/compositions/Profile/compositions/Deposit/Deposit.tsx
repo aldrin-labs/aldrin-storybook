@@ -50,6 +50,7 @@ const Deposits = ({  }: IProps) => {
           boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
           borderRadius: '32px',
           marginBottom: '2%',
+          overflow: 'scroll',
         }}
       >
         <AccountBlock
