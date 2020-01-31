@@ -2,6 +2,7 @@ import React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
+import { withSnackbar } from 'notistack'
 import { client } from '@core/graphql/apolloClient'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -22,6 +23,8 @@ import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 import { createOrder } from '@core/graphql/mutations/chart/createOrder'
+import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
+
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
@@ -31,6 +34,7 @@ class PositionsTable extends React.PureComponent {
     positionsData: [],
     marketPrice: 0,
     needUpdate: true,
+    positionsRefetchInProcess: false,
   }
 
   unsubscribeFunction: null | Function = null
@@ -372,8 +376,48 @@ class PositionsTable extends React.PureComponent {
     })
   }
 
+  updatePositionsHandler = () => {
+    const {
+      updatePositionMutation,
+      currencyPair,
+      selectedKey,
+      enqueueSnackbar,
+    } = this.props
+
+    this.setState({
+      positionsRefetchInProcess: true,
+    })
+
+    updatePositionMutation({
+      variables: {
+        input: {
+          keyId: selectedKey.keyId,
+        }
+      }
+    })
+    .then(res => {
+      this.showPositionsStatus({ status: res.data.updatePosition.status, errorMessage: res.data.updatePosition.errorMessage })
+    })
+    .catch(e => {
+      this.showPositionsStatus({ status: 'ERR', errorMessage: e.message })
+    })
+  }
+
+  showPositionsStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of position update' }: { status: "ERR" | "OK", errorMessage: string }) => {
+    this.setState({
+      positionsRefetchInProcess: false,
+    })
+
+    if (status === 'OK') {
+      this.props.enqueueSnackbar(`Your positions successful updated`, { variant: 'success' })
+    } else {
+      this.props.enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
+
+
   render() {
-    const { positionsData } = this.state
+    const { positionsData, positionsRefetchInProcess } = this.state
     const {
       tab,
       handleTabChange,
@@ -446,7 +490,13 @@ class PositionsTable extends React.PureComponent {
         }
         rowsWithHover={false}
         data={{ body: positionsData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead(
+          tab,
+          marketType,
+          this.props.getActivePositionsQueryRefetch,
+          this.updatePositionsHandler,
+          positionsRefetchInProcess,
+        )}
       />
     )
   }
@@ -485,6 +535,8 @@ const TableDataWrapper = ({ ...props }) => {
 }
 
 export default compose(
+  withSnackbar,
+  graphql(updatePosition, { name: 'updatePositionMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(createOrder, { name: 'createOrderMutation' })
 )(TableDataWrapper)

@@ -15,11 +15,12 @@ export const OrderBook = ({
   selectedKey,
   setOrderbookAggregation,
   amountForBackground,
+  addOrderToOrderbookTree,
   updateTerminalPriceFromOrderbook,
   sizeDigits,
   minPriceDigits,
   arrayOfMarketIds,
-  marketOrders
+  marketOrders,
 }) => (
   <OrderbookContainer key={`orderbook_table`}>
     <OrderBookTable
@@ -33,6 +34,7 @@ export const OrderBook = ({
         setOrderbookAggregation,
         onButtonClick: changeTable,
         amountForBackground,
+        addOrderToOrderbookTree,
         updateTerminalPriceFromOrderbook,
         sizeDigits,
         minPriceDigits,
