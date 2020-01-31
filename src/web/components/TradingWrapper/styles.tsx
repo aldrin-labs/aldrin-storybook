@@ -131,13 +131,14 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
-  width: auto;
+  width: 15%;
   background-color: ${(props) => (props.isActive ? '#5C8CEA' : '#f2f4f6')};
   color: ${(props) => (props.isActive ? '#fff' : '#16253D')};
   border: ${(props) =>
     props.isActive ? '.1rem solid #5C8CEA' : '.1rem solid #f2f4f6'};
   text-transform: none;
-  padding: 0.7rem 3.5rem 0.5rem 3.5rem;
+  white-space: nowrap;
+  padding: 0.7rem 0 0.5rem 0;
 
   &:hover {
     // background-color: #5c8cea;

@@ -42,6 +42,7 @@ export const EntryOrderColumn = ({
   enableEdit,
   editTrade,
   haveEdit,
+  activatePrice,
 }: {
   price: number
   pair: string
@@ -49,6 +50,7 @@ export const EntryOrderColumn = ({
   order: string
   trailing: boolean
   amount: number
+  activatePrice: number
   total: number
   green: string
   red: string
@@ -62,29 +64,36 @@ export const EntryOrderColumn = ({
 }) => {
   return (
     <BlockContainer>
-      <div style={{ width: '100%' }}>
-        {haveEdit ? (
-          <SubColumnTitle style={{ width: '75%' }}>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <SubColumnValue>entry point</SubColumnValue>
+        {haveEdit && (
+          <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disable={!enableEdit}
               needMinWidth={false}
-              btnWidth="40%"
+              btnWidth="auto"
               height="auto"
               fontSize=".9rem"
-              padding=".1rem 0 0 0"
+              padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={blue.first}
+              borderColor={enableEdit ? blue.first : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={blue.second}
-              hoverBackground={blue.first}
+              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
+              hoverBackground={enableEdit ? blue.first : '#e0e5ec'}
               transition={'all .4s ease-out'}
-              onClick={editTrade}
+              onClick={enableEdit ? editTrade : () => {}}
+              style={enableEdit ? {} : { cursor: 'default' }}
             >
               edit
             </BtnCustom>
           </SubColumnTitle>
-        ) : (
-          <SubColumnValue>entry point</SubColumnValue>
         )}
       </div>
 
@@ -101,9 +110,9 @@ export const EntryOrderColumn = ({
         </SubColumnValue>
       </div>
 
-      <div>
+      <div style={{ display: 'flex' }}>
         <SubColumnTitle>price</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>
+        <SubColumnValue style={{ display: 'block' }} textAlign={'right'}>
           {trailing ? (
             <span>
               Trailing <span style={{ color: green }}>{trailing}%</span>
@@ -113,6 +122,9 @@ export const EntryOrderColumn = ({
           ) : (
             price
           )}
+          {trailing ? (
+            <span style={{ display: 'block' }}>{activatePrice}</span>
+          ) : null}
         </SubColumnValue>
       </div>
 
@@ -140,6 +152,7 @@ export const TakeProfitColumn = ({
   red,
   blue,
   editTrade,
+  enableEdit,
   haveEdit,
 }: {
   price: number
@@ -155,23 +168,33 @@ export const TakeProfitColumn = ({
     second: string
   }
   haveEdit: boolean
+  enableEdit: boolean
   editTrade: () => void
 }) => {
   return (
-    <BlockContainer>
-      <div style={{ width: '100%' }}>
-        {haveEdit ? (
-          <SubColumnTitle style={{ width: '75%' }}>
+    <BlockContainer style={{ position: 'absolute', left: '25%' }}>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <SubColumnValue>take profit</SubColumnValue>
+        {haveEdit && (
+          <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
+              disable={!enableEdit}
               needMinWidth={false}
-              btnWidth="40%"
+              btnWidth="auto"
               height="auto"
               fontSize=".9rem"
-              padding=".1rem 0 0 0"
+              padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={blue.first}
+              borderColor={enableEdit ? blue.first : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={blue.second}
+              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
               hoverBackground={blue.first}
               transition={'all .4s ease-out'}
               onClick={editTrade}
@@ -179,8 +202,6 @@ export const TakeProfitColumn = ({
               edit
             </BtnCustom>
           </SubColumnTitle>
-        ) : (
-          <SubColumnValue>take a profit</SubColumnValue>
         )}
       </div>
       <div>
@@ -236,6 +257,7 @@ export const StopLossColumn = ({
   blue,
   editTrade,
   haveEdit,
+  enableEdit,
 }: {
   price: number
   forced?: boolean
@@ -249,23 +271,33 @@ export const StopLossColumn = ({
     second: string
   }
   haveEdit: boolean
+  enableEdit: boolean
   editTrade: () => void
 }) => {
   return (
-    <BlockContainer style={{ position: 'absolute' }}>
-      <div style={{ width: '100%' }}>
-        {haveEdit ? (
-          <SubColumnTitle style={{ width: '75%' }}>
+    <BlockContainer style={{ position: 'absolute', left: '50%' }}>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <SubColumnValue>stop loss</SubColumnValue>
+        {haveEdit && (
+          <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
+              disabled={!enableEdit}
               needMinWidth={false}
-              btnWidth="40%"
+              btnWidth="auto"
               height="auto"
               fontSize=".9rem"
-              padding=".1rem 0 0 0"
+              padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={blue.first}
+              borderColor={enableEdit ? blue.first : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={blue.second}
+              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
               hoverBackground={blue.first}
               transition={'all .4s ease-out'}
               onClick={editTrade}
@@ -273,8 +305,6 @@ export const StopLossColumn = ({
               edit
             </BtnCustom>
           </SubColumnTitle>
-        ) : (
-          <SubColumnValue>stop loss</SubColumnValue>
         )}
       </div>
       <div>

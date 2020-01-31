@@ -1,4 +1,4 @@
-import React, { PureComponent, SyntheticEvent } from 'react'
+import React, { PureComponent, SyntheticEvent, CSSProperties } from 'react'
 import Yup from 'yup'
 
 import { compose } from 'recompose'
@@ -106,6 +106,24 @@ export const TradeInputContent = ({
   width = '100%',
   textAlign = 'right',
   onChange = () => {},
+  inputStyles,
+}: {
+  isValid?: boolean
+  showErrors?: boolean
+  disabled?: boolean
+  haveSelector?: boolean
+  needTitle?: boolean
+  title?: string
+  symbol?: string
+  value: string | number
+  pattern?: string
+  step?: string | number
+  type?: string
+  padding?: string | number
+  width?: string | number
+  textAlign?: string
+  onChange: any
+  inputStyles?: CSSProperties
 }) => {
   return (
     <InputRowContainer
@@ -125,6 +143,7 @@ export const TradeInputContent = ({
         onChange={onChange}
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
+        style={{ ...inputStyles }}
       />
       <UpdatedCoin right={symbol.length <= 2 ? '2.5rem' : '1rem'}>
         {symbol}

@@ -37,6 +37,32 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     i: 0,
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      getOpenOrderHistoryQuery: { getOpenOrderHistory },
+      addOrderToOrderbookTree,
+    } = this.props
+    const {
+      getOpenOrderHistoryQuery: { getOpenOrderHistory: prevOpenOrderHistory },
+    } = prevProps
+
+    const isNewOrder = getOpenOrderHistory.length > prevOpenOrderHistory.length
+    const newCachedOrder = getOpenOrderHistory.find(
+      (order) => order.marketId === '0'
+    )
+
+    if (isNewOrder && newCachedOrder) {
+      const transformedOrder = {
+        timestamp: +new Date() / 1000,
+        price: newCachedOrder.price,
+        size: newCachedOrder.info.origQty,
+      }
+
+      console.log('add order to ob')
+      addOrderToOrderbookTree(transformedOrder)
+    }
+  }
+
   setOrderbookMode = (mode: OrderbookMode) => this.setState({ mode })
 
   render() {
@@ -90,20 +116,19 @@ class OrderBookTableContainer extends Component<IProps, IState> {
               onClick={() => this.setOrderbookMode('asks')}
             />
             <div style={{ width: '60%', padding: '0 1rem' }}>
-            <StyledSelect
-              onChange={(e: ChangeEvent) => {
-                setOrderbookAggregation(
-                  aggregationModes
-                    .find((mode) => String(mode.label) === e.target.value)
-                    .value
-                )
-              }
-              }
-            >
-              {aggregationModes.map((option) => (
-                <StyledOption key={option.label}>{option.label}</StyledOption>
-              ))}
-            </StyledSelect>
+              <StyledSelect
+                onChange={(e: ChangeEvent) => {
+                  setOrderbookAggregation(
+                    aggregationModes.find(
+                      (mode) => String(mode.label) === e.target.value
+                    ).value
+                  )
+                }}
+              >
+                {aggregationModes.map((option) => (
+                  <StyledOption key={option.label}>{option.label}</StyledOption>
+                ))}
+              </StyledSelect>
             </div>
           </ModesContainer>
         </ChartCardHeader>

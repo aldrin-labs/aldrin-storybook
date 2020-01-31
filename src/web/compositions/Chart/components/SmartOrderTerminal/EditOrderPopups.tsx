@@ -15,10 +15,16 @@ import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
+import HeightIcon from '@material-ui/icons/Height'
 
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { FormInputContainer, Input, Select } from './InputComponents'
+import { FormInputContainer, Select } from './InputComponents'
+
+import {
+  TradeInputContent as Input,
+  TradeInputHeader,
+} from '@sb/components/TraidingTerminal/index'
 
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
@@ -31,6 +37,7 @@ import {
   TimeoutTitle,
   TargetTitle,
   TargetValue,
+  AdditionalSettingsButton,
 } from './styles'
 
 import {
@@ -47,7 +54,7 @@ const StyledPaper = styled(Paper)`
 
 type IProps = {
   open: boolean
-  pair?: [string, string]
+  pair?: string
   maxAmount?: number
   validateField: (a: boolean, b: number | string) => boolean
   handleClose: () => void
@@ -60,6 +67,7 @@ type IProps = {
 type ITAPState = {
   type: string
   pricePercentage: number
+  activatePrice: number
   isSplitTargetsOn: boolean
   volumePercentage: number
   targets: {
@@ -104,6 +112,7 @@ type EntryOrderState = {
   price: number
   amount: number
   total: number
+  initialMargin: number
   isTrailingOn: boolean
   deviationPercentage: number
 }
@@ -112,6 +121,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
   state = {
     type: '',
     pricePercentage: 0,
+    activatePrice: 0,
     isSplitTargetsOn: false,
     volumePercentage: 0,
     targets: [],
@@ -190,165 +200,184 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               justify="flex-start"
               padding={'.8rem 0 1.2rem 0'}
             >
-              <div>
-                <GreenSwitcher
-                  id="takeProfitTrailingOnDialog"
-                  checked={this.state.isTrailingOn}
-                  handleToggle={() => {
-                    this.setState((prev) => ({
-                      type: 'market',
-                      isSplitTargetsOn: false,
-                      isTrailingOn: !prev.isTrailingOn,
-                    }))
-                  }}
-                />
-                <HeaderLabel htmlFor="takeProfitTrailingOnDialog">
-                  trailing <span style={{ color: '#29AC80' }}>t-a-p</span>
-                </HeaderLabel>
-              </div>
-              <div>
-                <GreenSwitcher
-                  id="isSplitTargetsOnDialog"
-                  checked={this.state.isSplitTargetsOn}
-                  handleToggle={() => {
-                    this.setState((prev) => ({
-                      isSplitTargetsOn: !prev.isSplitTargetsOn,
-                      isTrailingOn: false,
-                    }))
-                  }}
-                />
-                <HeaderLabel htmlFor="isSplitTargetsOnDialog">
-                  split targets
-                </HeaderLabel>
-              </div>
-              <div>
-                <GreenSwitcher
-                  id="takeProfitTimeoutDialog"
-                  checked={this.state.isTimeoutOn}
-                  handleToggle={() => {
-                    this.setState((prev) => ({
-                      isTimeoutOn: !prev.isTimeoutOn,
-                    }))
-                  }}
-                />
-                <HeaderLabel htmlFor="takeProfitTimeoutDialog">
-                  timeout
-                </HeaderLabel>
-              </div>
+              <AdditionalSettingsButton
+                style={{ fontSize: '1rem' }}
+                isActive={this.state.isTrailingOn}
+                onClick={() => {
+                  this.setState((prev) => ({
+                    isSplitTargetsOn: false,
+                    isTrailingOn: !prev.isTrailingOn,
+                  }))
+                }}
+              >
+                Trailing take a profit
+              </AdditionalSettingsButton>
+
+              <AdditionalSettingsButton
+                isActive={this.state.isSplitTargetsOn}
+                onClick={() => {
+                  this.setState((prev) => ({
+                    isSplitTargetsOn: !prev.isSplitTargetsOn,
+                    isTrailingOn: false,
+                  }))
+                }}
+              >
+                Split targets
+              </AdditionalSettingsButton>
+
+              <AdditionalSettingsButton
+                isActive={this.state.isTimeoutOn}
+                onClick={() => {
+                  this.setState((prev) => ({
+                    isTimeoutOn: !prev.isTimeoutOn,
+                  }))
+                }}
+              >
+                Timeout
+              </AdditionalSettingsButton>
             </InputRowContainer>
 
             {!this.state.isTrailingOn && (
               <InputRowContainer>
                 <FormInputContainer title={'profit'}>
-                  <Input
-                    needCharacter
-                    beforeSymbol={'+'}
-                    padding={'0 .8rem 0 0'}
-                    width={'calc(35%)'}
-                    symbol={'%'}
-                    showErrors={
-                      !this.state.isSplitTargetsOn && !this.state.isTrailingOn
-                    }
-                    value={this.state.pricePercentage}
-                    isValid={this.props.validateField(
-                      true,
-                      this.state.pricePercentage
-                    )}
-                    onChange={(e) => {
-                      this.setState({ pricePercentage: e.target.value })
-                    }}
-                  />
+                  <InputRowContainer>
+                    <Input
+                      padding={'0 .8rem 0 0'}
+                      width={'calc(55%)'}
+                      symbol={'%'}
+                      showErrors={
+                        !this.state.isSplitTargetsOn && !this.state.isTrailingOn
+                      }
+                      value={this.state.pricePercentage}
+                      isValid={this.props.validateField(
+                        true,
+                        this.state.pricePercentage
+                      )}
+                      onChange={(e) => {
+                        this.setState({ pricePercentage: e.target.value })
+                      }}
+                    />
 
-                  <BlueSlider
-                    value={this.state.pricePercentage}
-                    sliderContainerStyles={{
-                      width: '50%',
-                      margin: '0 .8rem 0 .8rem',
-                    }}
-                    onChange={(value) => {
-                      this.setState({ pricePercentage: value })
-                    }}
-                  />
+                    <BlueSlider
+                      value={this.state.pricePercentage}
+                      sliderContainerStyles={{
+                        width: '50%',
+                        margin: '0 .8rem 0 .8rem',
+                      }}
+                      onChange={(value) => {
+                        this.setState({ pricePercentage: value })
+                      }}
+                    />
+                  </InputRowContainer>
                 </FormInputContainer>
               </InputRowContainer>
             )}
 
             {this.state.isTrailingOn && (
-              <InputRowContainer>
-                <FormInputContainer title={'deviation'}>
-                  <Input
-                    padding={'0 .8rem 0 0'}
-                    width={'calc(35%)'}
-                    symbol={'%'}
-                    value={this.state.deviationPercentage}
-                    showErrors={true}
-                    isValid={this.props.validateField(
-                      this.state.isTrailingOn,
-                      this.state.deviationPercentage
-                    )}
-                    onChange={(e) => {
-                      this.setState({ deviationPercentage: e.target.value })
-                    }}
-                  />
-
-                  <BlueSlider
-                    value={this.state.deviationPercentage}
-                    sliderContainerStyles={{
-                      width: '50%',
-                      margin: '0 .8rem 0 .8rem',
-                    }}
-                    onChange={(value) => {
-                      this.setState({ deviationPercentage: value })
-                    }}
-                  />
+              <>
+                <FormInputContainer title={`activate price (%)`}>
+                  <InputRowContainer>
+                    <Input
+                      symbol={'%'}
+                      padding={'0 .8rem 0 0'}
+                      width={'calc(50%)'}
+                      value={this.state.activatePrice}
+                      onChange={(e) => {
+                        this.setState({ activatePrice: e.target.value })
+                      }}
+                    />
+                    <BlueSlider
+                      value={this.state.activatePrice}
+                      sliderContainerStyles={{
+                        width: '50%',
+                        margin: '0 .8rem 0 .8rem',
+                      }}
+                      onChange={(value) => {
+                        this.setState({ activatePrice: value })
+                      }}
+                    />
+                  </InputRowContainer>
                 </FormInputContainer>
-              </InputRowContainer>
+                <InputRowContainer>
+                  <FormInputContainer title={'deviation'}>
+                    <InputRowContainer>
+                      <Input
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(50%)'}
+                        symbol={'%'}
+                        value={this.state.deviationPercentage}
+                        showErrors={true}
+                        isValid={this.props.validateField(
+                          this.state.isTrailingOn,
+                          this.state.deviationPercentage
+                        )}
+                        onChange={(e) => {
+                          this.setState({ deviationPercentage: e.target.value })
+                        }}
+                      />
+
+                      <BlueSlider
+                        value={this.state.deviationPercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.setState({ deviationPercentage: value })
+                        }}
+                      />
+                    </InputRowContainer>
+                  </FormInputContainer>
+                </InputRowContainer>
+              </>
             )}
 
             {this.state.isSplitTargetsOn && (
               <>
                 <InputRowContainer>
                   <FormInputContainer title={'volume'}>
-                    <Input
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(35%)'}
-                      symbol={'%'}
-                      value={this.state.volumePercentage}
-                      onChange={(e) => {
-                        const occupiedVolume = this.state.targets.reduce(
-                          (prev, curr) => prev + curr.quantity,
-                          0
-                        )
+                    <InputRowContainer>
+                      <Input
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(55%)'}
+                        symbol={'%'}
+                        value={this.state.volumePercentage}
+                        onChange={(e) => {
+                          const occupiedVolume = this.state.targets.reduce(
+                            (prev, curr) => prev + curr.quantity,
+                            0
+                          )
 
-                        this.setState({
-                          volumePercentage:
-                            occupiedVolume + e.target.value < 100
-                              ? e.target.value
-                              : 100 - occupiedVolume,
-                        })
-                      }}
-                    />
+                          this.setState({
+                            volumePercentage:
+                              occupiedVolume + e.target.value < 100
+                                ? e.target.value
+                                : 100 - occupiedVolume,
+                          })
+                        }}
+                      />
 
-                    <BlueSlider
-                      value={this.state.volumePercentage}
-                      sliderContainerStyles={{
-                        width: '50%',
-                        margin: '0 .8rem 0 .8rem',
-                      }}
-                      onChange={(value) => {
-                        const occupiedVolume = this.state.targets.reduce(
-                          (prev, curr) => prev + curr.quantity,
-                          0
-                        )
+                      <BlueSlider
+                        value={this.state.volumePercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          const occupiedVolume = this.state.targets.reduce(
+                            (prev, curr) => prev + curr.quantity,
+                            0
+                          )
 
-                        this.setState({
-                          volumePercentage:
-                            occupiedVolume + value < 100
-                              ? value
-                              : 100 - occupiedVolume,
-                        })
-                      }}
-                    />
+                          this.setState({
+                            volumePercentage:
+                              occupiedVolume + value < 100
+                                ? value
+                                : 100 - occupiedVolume,
+                          })
+                        }}
+                      />
+                    </InputRowContainer>
                   </FormInputContainer>
                 </InputRowContainer>
 
@@ -359,13 +388,16 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   }}
                 >
                   <BtnCustom
-                    btnColor={'#0B1FD1'}
+                    btnColor={'#fff'}
+                    backgroundColor={'#F29C38'}
+                    borderColor={'#F29C38'}
                     btnWidth={'100%'}
                     height={'auto'}
                     borderRadius={'1rem'}
                     margin={'0'}
                     padding={'.1rem 0'}
                     fontSize={'1rem'}
+                    boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
                     letterSpacing={'.05rem'}
                     onClick={() => {
                       this.setState((prev) => ({
@@ -387,25 +419,38 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 </InputRowContainer>
 
                 <InputRowContainer
-                  padding=".4rem 1rem 1.2rem .4rem"
+                  padding=".6rem 1rem 1.2rem .4rem"
                   direction="column"
                 >
                   <InputRowContainer padding=".2rem .5rem">
-                    <TargetTitle style={{ width: '50%' }}>price</TargetTitle>
+                    <TargetTitle style={{ width: '50%', paddingLeft: '2rem' }}>
+                      price
+                    </TargetTitle>
                     <TargetTitle style={{ width: '50%' }}>quantity</TargetTitle>
                   </InputRowContainer>
                   <div
                     style={{
                       width: '100%',
+                      background: '#F9FBFD',
+                      borderRadius: '.8rem',
+                      border: '.1rem solid #e0e5ec',
                     }}
                   >
                     {this.state.targets.map((target, i) => (
                       <InputRowContainer
                         key={`${target.price}${target.quantity}${i}`}
                         padding=".2rem .5rem"
-                        style={{ borderBottom: '.1rem solid #e0e5ec' }}
+                        style={
+                          this.state.targets.length - 1 !== i
+                            ? {
+                                borderBottom: '.1rem solid #e0e5ec',
+                              }
+                            : {}
+                        }
                       >
-                        <TargetValue style={{ width: '50%' }}>
+                        <TargetValue
+                          style={{ width: '50%', paddingLeft: '2rem' }}
+                        >
                           +{target.price}%
                         </TargetValue>
                         <TargetValue style={{ width: '40%' }}>
@@ -435,9 +480,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTimeoutOn && (
               <>
-                <InputRowContainer>
-                  <HeaderTitle>timeout</HeaderTitle>
-                </InputRowContainer>
+                <TradeInputHeader title={`timeout`} needLine={true} />
                 <InputRowContainer>
                   <SubBlocksContainer>
                     <InputRowContainer>
@@ -468,7 +511,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                        isDisabled={!this.state.whenProfitOn}
+                        disabled={!this.state.whenProfitOn}
                       />
                       <Select
                         width={'calc(30% - .4rem)'}
@@ -517,7 +560,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                        isDisabled={!this.state.whenProfitableOn}
+                        disabled={!this.state.whenProfitableOn}
                       />
                       <Select
                         width={'calc(30% - .4rem)'}
@@ -641,71 +684,64 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               justify="flex-start"
               padding={'.8rem 0 1.2rem 0'}
             >
-              <div>
-                <GreenSwitcher
-                  id="forcedStopDialog"
-                  checked={this.state.isForcedStopOn}
-                  handleToggle={() => {
-                    this.setState((prev) => ({
-                      isForcedStopOn: !prev.isForcedStopOn,
-                    }))
-                  }}
-                />
-                <HeaderLabel htmlFor="forcedStopDialog">
-                  forced <span style={{ color: '#DD6956' }}>stop</span>
-                </HeaderLabel>
-              </div>
-              <div>
-                <GreenSwitcher
-                  id="stopLossTimeout"
-                  checked={this.state.isTimeoutOn}
-                  handleToggle={() => {
-                    this.setState((prev) => ({
-                      isTimeoutOn: !prev.isTimeoutOn,
-                    }))
-                  }}
-                />
-                <HeaderLabel htmlFor="stopLossTimeout">timeout</HeaderLabel>
-              </div>
+              <AdditionalSettingsButton
+                isActive={this.state.isTimeoutOn}
+                onClick={() =>
+                  this.setState((prev) => ({
+                    isTimeoutOn: !prev.isTimeoutOn,
+                  }))
+                }
+              >
+                Timeout
+              </AdditionalSettingsButton>
+
+              <AdditionalSettingsButton
+                isActive={this.state.isForcedStopOn}
+                onClick={() =>
+                  this.setState((prev) => ({
+                    isForcedStopOn: !prev.isForcedStopOn,
+                  }))
+                }
+              >
+                Forced stop
+              </AdditionalSettingsButton>
             </InputRowContainer>
 
             <InputRowContainer>
               <FormInputContainer title={'loss'}>
-                <Input
-                  needCharacter
-                  beforeSymbol={'-'}
-                  padding={'0 .8rem 0 0'}
-                  width={'calc(35%)'}
-                  symbol={'%'}
-                  showErrors={true}
-                  value={this.state.pricePercentage}
-                  isValid={this.props.validateField(
-                    true,
-                    this.state.pricePercentage
-                  )}
-                  onChange={(e) => {
-                    this.setState({ pricePercentage: e.target.value })
-                  }}
-                />
+                <InputRowContainer>
+                  <Input
+                    padding={'0 .8rem 0 0'}
+                    width={'calc(50%)'}
+                    symbol={'%'}
+                    showErrors={true}
+                    value={this.state.pricePercentage}
+                    isValid={this.props.validateField(
+                      true,
+                      this.state.pricePercentage
+                    )}
+                    onChange={(e) => {
+                      this.setState({ pricePercentage: e.target.value })
+                    }}
+                  />
 
-                <BlueSlider
-                  value={this.state.pricePercentage}
-                  sliderContainerStyles={{
-                    width: '50%',
-                    margin: '0 .8rem 0 .8rem',
-                  }}
-                  onChange={(value) => {
-                    this.setState({ pricePercentage: value })
-                  }}
-                />
+                  <BlueSlider
+                    value={this.state.pricePercentage}
+                    sliderContainerStyles={{
+                      width: '50%',
+                      margin: '0 .8rem 0 .8rem',
+                    }}
+                    onChange={(value) => {
+                      this.setState({ pricePercentage: value })
+                    }}
+                  />
+                </InputRowContainer>
               </FormInputContainer>
             </InputRowContainer>
 
             {this.state.isTimeoutOn && (
               <>
-                <InputRowContainer>
-                  <HeaderTitle>timeout</HeaderTitle>
-                </InputRowContainer>
+                <TradeInputHeader title={`timeout`} needLine={true} />
                 <InputRowContainer>
                   <SubBlocksContainer>
                     <InputRowContainer>
@@ -736,7 +772,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                        isDisabled={!this.state.whenLossOn}
+                        disabled={!this.state.whenLossOn}
                       />
                       <Select
                         width={'calc(30% - .4rem)'}
@@ -785,7 +821,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                        isDisabled={!this.state.whenLossableOn}
+                        disabled={!this.state.whenLossableOn}
                       />
                       <Select
                         width={'calc(30% - .4rem)'}
@@ -811,37 +847,34 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             {this.state.isForcedStopOn && (
               <>
                 <InputRowContainer>
-                  <HeaderTitle>forced stop</HeaderTitle>
-                </InputRowContainer>
-                <InputRowContainer>
-                  <FormInputContainer title={'price'}>
-                    <Input
-                      needCharacter
-                      showErrors={true}
-                      isValid={this.props.validateField(
-                        this.state.isForcedStopOn,
-                        this.state.forcedPercentage
-                      )}
-                      beforeSymbol={'-'}
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(35%)'}
-                      symbol={'%'}
-                      value={this.state.forcedPercentage}
-                      onChange={(e) => {
-                        this.setState({ forcedPercentage: e.target.value })
-                      }}
-                    />
+                  <FormInputContainer title={'forced stop (loss %)'}>
+                    <InputRowContainer>
+                      <Input
+                        showErrors={true}
+                        isValid={this.props.validateField(
+                          this.state.isForcedStopOn,
+                          this.state.forcedPercentage
+                        )}
+                        padding={'0 .8rem 0 0'}
+                        width={'calc(50%)'}
+                        symbol={'%'}
+                        value={this.state.forcedPercentage}
+                        onChange={(e) => {
+                          this.setState({ forcedPercentage: e.target.value })
+                        }}
+                      />
 
-                    <BlueSlider
-                      value={this.state.forcedPercentage}
-                      sliderContainerStyles={{
-                        width: '50%',
-                        margin: '0 .8rem 0 .8rem',
-                      }}
-                      onChange={(value) => {
-                        this.setState({ forcedPercentage: value })
-                      }}
-                    />
+                      <BlueSlider
+                        value={this.state.forcedPercentage}
+                        sliderContainerStyles={{
+                          width: '50%',
+                          margin: '0 .8rem 0 .8rem',
+                        }}
+                        onChange={(value) => {
+                          this.setState({ forcedPercentage: value })
+                        }}
+                      />
+                    </InputRowContainer>
                   </FormInputContainer>
                 </InputRowContainer>
               </>
@@ -1017,6 +1050,7 @@ export class EditEntryOrderPopup extends React.Component<
     price: 0,
     amount: 0,
     total: 0,
+    initialMargin: 0,
     isTrailingOn: false,
     deviationPercentage: 0,
   }
@@ -1026,15 +1060,56 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       return {
         ...props.derivedState,
+        initialMargin: (
+          (props.derivedState.amount * props.derivedState.price) /
+          props.leverage
+        ).toFixed(2),
       }
     }
     return null
   }
 
+  getMaxValues = () => {
+    const { side, type, price, amount, total, isTrailingOn } = this.state
+    const { funds, marketType, leverage } = this.props
+
+    let maxAmount = 0
+
+    let priceForCalculate =
+      type === 'market' && !isTrailingOn ? this.props.price : price
+
+    if (marketType === 0) {
+      maxAmount = side === 'buy' ? funds[1].quantity : funds[0].quantity
+    } else if (marketType === 1) {
+      maxAmount = funds[1].quantity * leverage
+    }
+
+    const [newAmount, newTotal] =
+      side === 'buy' || marketType === 1
+        ? [maxAmount / priceForCalculate, maxAmount]
+        : [maxAmount, maxAmount / priceForCalculate]
+
+    return [newAmount, newTotal]
+  }
+
+  setMaxAmount = () => {
+    const { funds, marketType, quantityPrecision } = this.props
+
+    const [amount, total] = this.getMaxValues()
+
+    this.setState({
+      amount: stripDigitPlaces(
+        amount,
+        marketType === 1 ? quantityPrecision : 8
+      ),
+      total: stripDigitPlaces(total, marketType === 1 ? 2 : 8),
+      initialMargin: stripDigitPlaces(funds[1].quantity, 2),
+    })
+  }
+
   render() {
     const {
       open,
-      pair,
       funds,
       leverage,
       transformProperties,
@@ -1042,6 +1117,7 @@ export class EditEntryOrderPopup extends React.Component<
       updateState,
       validate,
       marketType,
+      quantityPrecision,
     } = this.props
 
     const {
@@ -1054,7 +1130,11 @@ export class EditEntryOrderPopup extends React.Component<
       deviationPercentage,
     } = this.state
 
+    const pair = this.props.pair.split('_')
+
     let maxAmount = 0
+    let priceForCalculate =
+      type === 'market' && !isTrailingOn ? this.props.price : price
 
     if (marketType === 0) {
       maxAmount = side === 'buy' ? funds[1].quantity : funds[0].quantity
@@ -1090,7 +1170,7 @@ export class EditEntryOrderPopup extends React.Component<
             firstHalfText={'buy'}
             secondHalfText={'sell'}
             buttonHeight={'2.5rem'}
-            containerStyles={{ width: '100%', paddingBottom: '.4rem' }}
+            containerStyles={{ width: '100%', padding: '1.2rem 0 .6rem 0' }}
             firstHalfStyleProperties={GreenSwitcherStyles}
             secondHalfStyleProperties={RedSwitcherStyles}
             firstHalfIsActive={side === 'buy'}
@@ -1110,14 +1190,18 @@ export class EditEntryOrderPopup extends React.Component<
                     ? (
                         ((amountPercentage / 100) * newMaxAmount) /
                         price
-                      ).toFixed(8)
-                    : ((amountPercentage / 100) * newMaxAmount).toFixed(8)
+                      ).toFixed(marketType === 1 ? quantityPrecision : 8)
+                    : ((amountPercentage / 100) * newMaxAmount).toFixed(
+                        marketType === 1 ? quantityPrecision : 8
+                      )
 
                 if (!+newAmount || +newAmount === NaN) {
                   newAmount = 0
                 }
 
-                const newTotal = newAmount * price
+                const newTotal = (newAmount * price).toFixed(
+                  marketType === 1 ? 2 : 8
+                )
 
                 this.setState({
                   amount: newAmount,
@@ -1144,9 +1228,11 @@ export class EditEntryOrderPopup extends React.Component<
                 type: getSecondValueFromFirst(prev.type),
               }))
 
-              if (getSecondValueFromFirst(type) === 'limit') {
+              if (getSecondValueFromFirst(type) === 'market' && !isTrailingOn) {
+                const total = this.props.price * amount
                 this.setState({
-                  isTrailingOn: false,
+                  total: stripDigitPlaces(total, marketType === 1 ? 2 : 8),
+                  initialMargin: stripDigitPlaces(total / leverage, 2),
                 })
               }
             }}
@@ -1155,30 +1241,18 @@ export class EditEntryOrderPopup extends React.Component<
           <div>
             <InputRowContainer
               justify="flex-start"
-              padding={'.8rem 0 1.2rem 0'}
+              padding={'.6rem 0 1.2rem 0'}
             >
-              <div>
-                <GreenSwitcher
-                  id="entryPointTrailingOn"
-                  checked={isTrailingOn}
-                  handleToggle={() => {
-                    this.setState((prev) => ({
-                      isTrailingOn: !prev.isTrailingOn,
-                      type: 'market',
-                    }))
-                  }}
-                />
-                <HeaderLabel htmlFor="entryPointTrailingOn">
-                  trailing{' '}
-                  <span
-                    style={{
-                      color: side === 'buy' ? '#29AC80' : '#DD6956',
-                    }}
-                  >
-                    {side}
-                  </span>
-                </HeaderLabel>
-              </div>
+              <AdditionalSettingsButton
+                isActive={isTrailingOn}
+                onClick={() => {
+                  this.setState((prev) => ({
+                    isTrailingOn: !prev.isTrailingOn,
+                  }))
+                }}
+              >
+                Trailing {side}
+              </AdditionalSettingsButton>
             </InputRowContainer>
 
             <InputRowContainer>
@@ -1197,13 +1271,15 @@ export class EditEntryOrderPopup extends React.Component<
                   }
                   showErrors={true}
                   isValid={this.props.validateField(true, price)}
-                  isDisabled={type === 'market' && !isTrailingOn}
+                  disabled={type === 'market' && !isTrailingOn}
                   onChange={(e) => {
+                    const total = e.target.value * amount
                     this.setState({
                       price: e.target.value,
                       total: Number(
-                        stripDigitPlaces(e.target.value * amount, 8)
+                        stripDigitPlaces(total, marketType === 1 ? 2 : 8)
                       ),
+                      initialMargin: stripDigitPlaces(total, 2),
                     })
                   }}
                 />
@@ -1211,11 +1287,11 @@ export class EditEntryOrderPopup extends React.Component<
             </InputRowContainer>
 
             {isTrailingOn && (
-              <InputRowContainer>
-                <FormInputContainer title={'deviation'}>
+              <FormInputContainer title={'deviation'}>
+                <InputRowContainer>
                   <Input
                     padding={'0 .8rem 0 0'}
-                    width={'calc(35%)'}
+                    width={'calc(50%)'}
                     symbol={'%'}
                     value={deviationPercentage}
                     showErrors={true}
@@ -1239,31 +1315,124 @@ export class EditEntryOrderPopup extends React.Component<
                       this.setState({ deviationPercentage: value })
                     }}
                   />
-                </FormInputContainer>
-              </InputRowContainer>
+                </InputRowContainer>
+              </FormInputContainer>
             )}
 
             <InputRowContainer>
-              <FormInputContainer title={'amount'}>
-                <Input
-                  type={'text'}
-                  pattern={
-                    marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
-                  }
-                  symbol={pair[0]}
-                  value={amount}
-                  showErrors={true}
-                  isValid={this.props.validateField(true, +amount)}
-                  onChange={(e) => {
-                    const newTotal = e.target.value * price
+              <div style={{ width: '47%' }}>
+                <FormInputContainer
+                  needLine={false}
+                  needRightValue={true}
+                  rightValue={`${
+                    side === 'buy' || marketType === 1
+                      ? (maxAmount / priceForCalculate).toFixed(
+                          marketType === 1 ? quantityPrecision : 8
+                        )
+                      : maxAmount.toFixed(
+                          marketType === 1 ? quantityPrecision : 8
+                        )
+                  } ${pair[0]}`}
+                  onValueClick={this.setMaxAmount}
+                  title={`${marketType === 1 ? 'order quantity' : 'amount'} (${
+                    pair[0]
+                  })`}
+                >
+                  <Input
+                    type={'text'}
+                    pattern={
+                      marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                    }
+                    symbol={pair[0]}
+                    value={amount}
+                    showErrors={true}
+                    isValid={this.props.validateField(true, +amount)}
+                    onChange={(e) => {
+                      const [maxAmount] = this.getMaxValues()
+                      const isAmountMoreThanMax = e.target.value > maxAmount
+                      const amountForUpdate = isAmountMoreThanMax
+                        ? maxAmount
+                        : e.target.value
 
-                    this.setState({
-                      total: newTotal ? newTotal.toFixed(8) : 0,
-                      amount: e.target.value,
-                    })
+                      const newTotal = amountForUpdate * priceForCalculate
+
+                      const strippedAmount = isAmountMoreThanMax
+                        ? stripDigitPlaces(
+                            amountForUpdate,
+                            marketType === 1 ? quantityPrecision : 8
+                          )
+                        : e.target.value
+
+                      this.setState({
+                        amount: strippedAmount,
+                        total: stripDigitPlaces(
+                          newTotal,
+                          marketType === 1 ? 2 : 8
+                        ),
+                        initialMargin: stripDigitPlaces(
+                          (newTotal || 0) / leverage,
+                          2
+                        ),
+                      })
+                    }}
+                  />
+                </FormInputContainer>
+              </div>
+              <div
+                style={{
+                  width: '6%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <HeightIcon
+                  style={{
+                    color: '#7284A0',
+                    transform: 'rotate(-90deg) translateX(-30%)',
                   }}
                 />
-              </FormInputContainer>
+              </div>
+              <div style={{ width: '47%' }}>
+                <FormInputContainer
+                  needLine={false}
+                  needRightValue={true}
+                  rightValue={`${
+                    side === 'buy' || marketType === 1
+                      ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
+                      : stripDigitPlaces(
+                          maxAmount * priceForCalculate,
+                          marketType === 1 ? 0 : 2
+                        )
+                  } ${pair[1]}`}
+                  onValueClick={this.setMaxAmount}
+                  title={`total (${pair[1]})`}
+                >
+                  <Input
+                    symbol={pair[1]}
+                    value={total}
+                    disabled={isTrailingOn || type === 'market'}
+                    onChange={(e) => {
+                      this.setState({
+                        total: e.target.value,
+                        amount: stripDigitPlaces(
+                          e.target.value / priceForCalculate,
+                          marketType === 1 ? quantityPrecision : 8
+                        ),
+                        initialMargin: stripDigitPlaces(
+                          e.target.value / leverage,
+                          2
+                        ),
+                      })
+
+                      // this.updateBlockValue(
+                      //   'temp',
+                      //   'initialMargin',
+                      //   stripDigitPlaces(e.target.value / leverage, 2)
+                      // )
+                    }}
+                  />
+                </FormInputContainer>
+              </div>
             </InputRowContainer>
 
             <InputRowContainer>
@@ -1274,7 +1443,7 @@ export class EditEntryOrderPopup extends React.Component<
                     : amount / (maxAmount / 100)
                 }
                 sliderContainerStyles={{
-                  width: 'calc(85% - .8rem)',
+                  width: 'calc(100% - .8rem)',
                   margin: '0 .8rem 0 auto',
                 }}
                 onChange={(value) => {
@@ -1282,41 +1451,71 @@ export class EditEntryOrderPopup extends React.Component<
 
                   const newAmount =
                     side === 'buy' || marketType === 1
-                      ? newValue / price
-                      : newValue
+                      ? (newValue / priceForCalculate).toFixed(
+                          marketType === 1 ? quantityPrecision : 8
+                        )
+                      : newValue.toFixed(
+                          marketType === 1 ? quantityPrecision : 8
+                        )
 
                   const newTotal =
                     side === 'buy' || marketType === 1
                       ? newValue
-                      : newValue * price
+                      : newValue * priceForCalculate
 
-                  const fixedAmount =
-                    marketType === 0
-                      ? newAmount.toFixed(8)
-                      : newAmount.toFixed(3)
+                  const newMargin = stripDigitPlaces(
+                    (newTotal || 0) / leverage,
+                    2
+                  )
 
                   this.setState({
-                    total: +newTotal.toFixed(8),
-                    amount: +fixedAmount,
+                    amount: newAmount,
+                    total: stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8),
+                    initialMargin: newMargin,
                   })
                 }}
               />
             </InputRowContainer>
 
-            <InputRowContainer>
-              <FormInputContainer title={'total'}>
-                <Input
-                  symbol={pair[1]}
-                  value={total}
-                  onChange={(e) => {
-                    this.setState({
-                      total: stripDigitPlaces(e.target.value, 8),
-                      amount: (+(e.target.value / price)).toFixed(8),
-                    })
-                  }}
-                />
-              </FormInputContainer>
-            </InputRowContainer>
+            {marketType === 1 && (
+              <InputRowContainer>
+                <FormInputContainer
+                  needLine={false}
+                  needRightValue={true}
+                  rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
+                    pair[1]
+                  }`}
+                  onValueClick={this.setMaxAmount}
+                  title={`cost / initial margin (${pair[1]})`}
+                >
+                  <Input
+                    symbol={pair[1]}
+                    value={this.state.initialMargin}
+                    disabled={isTrailingOn || type === 'market'}
+                    onChange={(e) => {
+                      const inputInitialMargin = e.target.value
+                      const newTotal = inputInitialMargin * leverage
+                      const newAmount = newTotal / priceForCalculate
+
+                      const fixedAmount = stripDigitPlaces(
+                        newAmount,
+                        marketType === 1 ? quantityPrecision : 8
+                      )
+
+                      this.setState({
+                        total: stripDigitPlaces(
+                          newTotal,
+                          marketType === 1 ? 2 : 8
+                        ),
+                        amount: fixedAmount,
+                        initialMargin: inputInitialMargin,
+                      })
+                    }}
+                  />
+                </FormInputContainer>
+              </InputRowContainer>
+            )}
+
             <InputRowContainer padding={'2rem 0 0 0'}>
               <SendButton
                 type={'buy'}

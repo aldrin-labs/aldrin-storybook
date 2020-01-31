@@ -90,7 +90,7 @@ class ActiveTradesTable extends React.Component {
     }
   }
 
-  editTrade = (block, selectedTrade) => {
+  editTrade = (block: string, selectedTrade: any) => {
     this.setState({ editTrade: block, selectedTrade })
   }
 
@@ -342,6 +342,7 @@ class ActiveTradesTable extends React.Component {
       handleTabChange,
       show,
       marketType,
+      quantityPrecision,
       updateEntryPointStrategyMutation,
       updateStopLossStrategyMutation,
       updateTakeProfitStrategyMutation,
@@ -383,7 +384,9 @@ class ActiveTradesTable extends React.Component {
           selectedTrade &&
           selectedTrade.conditions && (
             <EditEntryOrderPopup
+              price={this.state.marketPrice}
               funds={processedFunds}
+              quantityPrecision={quantityPrecision}
               open={editTrade === 'entryOrder'}
               pair={selectedTrade.conditions.pair}
               leverage={selectedTrade.conditions.leverage}
