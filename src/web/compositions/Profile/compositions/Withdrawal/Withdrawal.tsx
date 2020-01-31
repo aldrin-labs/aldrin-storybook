@@ -23,7 +23,6 @@ const Withdrawal = ({ ...props  }: IProps) => {
 
   const totalBalance = 0.000003241
   const inOrder = 0.000003241
-  const availableBalance = 0.000003241
 
   const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
   const [coinAddress, setCoinAddress] = useState('')
@@ -48,9 +47,6 @@ const Withdrawal = ({ ...props  }: IProps) => {
       >
         <AccountBlock
           isDepositPage={false}
-          totalBalance={totalBalance}
-          inOrder={inOrder}
-          availableBalance={availableBalance}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
           selectedKey={selectedKey}
@@ -107,7 +103,7 @@ const Withdrawal = ({ ...props  }: IProps) => {
                 onChange={(e) => setCoinAmount(e.target.value)}
               />
               <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
-                Minimum Withdrawal: 0.00100000 BTC
+                Minimum Withdrawal: 0.00100000 {selectedCoin.label}
               </StyledTypographyCaption>
               <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
                 <Grid container>

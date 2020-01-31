@@ -55,8 +55,6 @@ const Deposits = ({ ...props }: IProps) => {
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
           selectedKey={selectedKey}
-          // selectedAccount={selectedAccount}
-          // setSelectedAccount={setSelectedAccount}
         />
 
         <Grid
