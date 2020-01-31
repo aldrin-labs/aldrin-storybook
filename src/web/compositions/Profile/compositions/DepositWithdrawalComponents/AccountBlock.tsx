@@ -11,10 +11,9 @@ import { IProps } from './AccountBlock.types'
 
 const AccountBlock = ({
   isDepositPage,
+  selectedKey,
   selectedCoin,
   setSelectedCoin,
-  selectedAccount,
-  setSelectedAccount,
 }: IProps) => (
   <Grid
     id="left_block"
@@ -26,24 +25,14 @@ const AccountBlock = ({
     <Grid item id="accounts_block">
       <StyledTypography>Account</StyledTypography>
       <SelectKeyList
+        isDeposit={isDepositPage}
         classNamePrefix="custom-select-box"
         components={{ Option: AccountOption, SingleValue: AccountSingleValue, DropdownIndicator: undefined }}
         isSearchable={false}
-        setDefaultValue={true}
         menuPortalTarget={document.body}
         menuPortalStyles={{
           zIndex: 11111,
         }}
-        onChange={(
-          optionSelected: {
-            label: string
-            value: number
-            keyId: string
-          }
-        ) => {
-          setSelectedAccount(optionSelected)
-        }}
-        value={selectedAccount}
         menuStyles={{
           fontSize: '1.4rem',
           fontWeight: 'bold',
@@ -200,7 +189,7 @@ const AccountBlock = ({
         }}
       />
     </Grid>
-    <Balances selectedCoin={selectedCoin.label} selectedAccount={selectedAccount.keyId} />
+    <Balances selectedCoin={selectedCoin.label} selectedAccount={selectedKey} />
     <Grid item id="description_block">
       {isDepositPage && (
         <Typography>

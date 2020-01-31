@@ -17,7 +17,10 @@ import {
 } from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
 
-const Withdrawal = ({  }: IProps) => {
+const Withdrawal = ({ ...props  }: IProps) => {
+  const { withdrawalSettings } = props.getProfileSettingsQuery.getProfileSettings
+  const { selectedKey = '#' } = withdrawalSettings || { selectedKey: '#' }
+
   const totalBalance = 0.000003241
   const inOrder = 0.000003241
   const availableBalance = 0.000003241
@@ -25,7 +28,6 @@ const Withdrawal = ({  }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
-  const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: '' })
 
   const networkChange = () => {}
 
@@ -45,14 +47,13 @@ const Withdrawal = ({  }: IProps) => {
         }}
       >
         <AccountBlock
-          isDepositPage={true}
+          isDepositPage={false}
           totalBalance={totalBalance}
           inOrder={inOrder}
           availableBalance={availableBalance}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
-          selectedAccount={selectedAccount}
-          setSelectedAccount={setSelectedAccount}
+          selectedKey={selectedKey}
         />
 
         <Grid
@@ -101,7 +102,7 @@ const Withdrawal = ({  }: IProps) => {
               </StyledTypography>
               <InputAmount
                 selectedCoin={selectedCoin.label}
-                selectedAccount={selectedAccount.keyId}
+                selectedAccount={selectedKey}
                 value={coinAmount}
                 onChange={(e) => setCoinAmount(e.target.value)}
               />
@@ -162,7 +163,7 @@ const Withdrawal = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable isDepositPage={false} specificKey={selectedAccount.keyId} />
+      <RecentHistoryTable isDepositPage={false} specificKey={selectedKey} />
     </>
   )
 }

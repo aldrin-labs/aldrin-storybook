@@ -18,15 +18,12 @@ import InputAddress from '@sb/compositions/Profile/compositions/DepositWithdrawa
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 
-const Deposits = ({  }: IProps) => {
+const Deposits = ({ ...props }: IProps) => {
+  const { depositSettings } = props.getProfileSettingsQuery.getProfileSettings
+  const { selectedKey = '#' } = depositSettings || { selectedKey: '#' }
   const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
   const [coinAddress, setCoinAddress] = useState('')
-  const [selectedAccount, setSelectedAccount] = useState({
-    keyId: '#',
-    label: '',
-    value: 0,
-  })
 
   const copyCoinAddress = () => {
     copy(coinAddress)
@@ -57,8 +54,9 @@ const Deposits = ({  }: IProps) => {
           isDepositPage={true}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
-          selectedAccount={selectedAccount}
-          setSelectedAccount={setSelectedAccount}
+          selectedKey={selectedKey}
+          // selectedAccount={selectedAccount}
+          // setSelectedAccount={setSelectedAccount}
         />
 
         <Grid
@@ -96,7 +94,7 @@ const Deposits = ({  }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 {selectedCoin.label} address
               </StyledTypography>
-              <InputAddress value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedAccount.keyId}/>
+              <InputAddress value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
               {/* <StyledInput
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -154,7 +152,7 @@ const Deposits = ({  }: IProps) => {
       </Grid>
       <RecentHistoryTable
         isDepositPage={true}
-        specificKey={selectedAccount.keyId}
+        specificKey={selectedKey}
       />
     </>
   )
