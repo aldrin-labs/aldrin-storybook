@@ -148,7 +148,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   static getDerivedStateFromProps(props: IProps, state: IState) {
-    if (state.priceForCalculate === 0) {
+    // TODO: check this condition later
+    if (state.priceForCalculate === 0 || state.entryPoint.order.type === 'market') {
       return {
         ...state,
         entryPoint: {
