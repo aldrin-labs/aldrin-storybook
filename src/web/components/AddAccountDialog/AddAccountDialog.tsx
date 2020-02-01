@@ -92,7 +92,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   showGenerateBrokerKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of adding key' }: { status: "ERR" | "OK", errorMessage: string }) => {
     const { enqueueSnackbar } = this.props
     if (status === 'OK') {
-      enqueueSnackbar(`Your key successful added`, { variant: 'success' })
+      enqueueSnackbar(`Broker key successful added`, { variant: 'success' })
     } else {
       enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
