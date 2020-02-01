@@ -2,8 +2,9 @@ import React from 'react'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
-
+import { withSnackbar } from 'notistack'
 import { withTheme } from '@material-ui/styles'
+
 
 import { Grid } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -79,20 +80,46 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     loadingRequest: false,
   }
 
-  handleGenerateBrokerKey = async () => {
-    const { generateBrokerKeyMutation, setCurrentStep, onboarding } = this.props
+  showAddingExchangeKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of adding key' }: { status: "ERR" | "OK", errorMessage: string }) => {
+    const { enqueueSnackbar } = this.props
+    if (status === 'OK') {
+      enqueueSnackbar(`Your key successful added`, { variant: 'success' })
+    } else {
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
 
+  showGenerateBrokerKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of adding key' }: { status: "ERR" | "OK", errorMessage: string }) => {
+    const { enqueueSnackbar } = this.props
+    if (status === 'OK') {
+      enqueueSnackbar(`Your key successful added`, { variant: 'success' })
+    } else {
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
+
+  handleGenerateBrokerKey = async () => {
+    const { generateBrokerKeyMutation, setCurrentStep, onboarding, enqueueSnackbar } = this.props
     this.setState({ loadingRequest: true })
 
+    try {
     const resp = await generateBrokerKeyMutation()
-    console.log('handleGenerateBrokerKey response', resp)
+    const { data } = resp
+    const { status = 'ERR', errorMessage = 'Something went wrong with generating broker key' } = data.generateBrokerKey || {
+      status: 'ERR', errorMessage: 'Something went wrong with generating broker key'
+    }
+    this.showGenerateBrokerKeyStatus({ status, errorMessage })
 
+  } catch(error) {
+    console.log('error handleGenerateBrokerKey', error)
+    this.showGenerateBrokerKeyStatus({ status: 'ERR', errorMessage: error.message })
+  }
     onboarding ? setCurrentStep('binanceAccountCreated') : this.handleClose()
   }
 
   handleSubmit = async () => {
     const { apiKey, secretOfApiKey, exchange } = this.state
-    const { numberOfKeys } = this.props
+    const { numberOfKeys, addExchangeKey } = this.props
 
     const variables = {
       name: `Binance #${numberOfKeys + 1}`,
@@ -103,17 +130,22 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     }
 
     try {
-      const { data } = await this.props.addExchangeKey({
+      const { data } = await addExchangeKey({
         variables,
       })
 
-      const { error } = data.addExchangeKey
+      const { status = 'ERR', errorMessage = 'Something went wrong' } = data.addExchangeKey || {
+        status: 'ERR', errorMessage: 'Something went wrong',
+      }
 
-      if (error !== '') {
-        this.setState({ error })
+      if (status === 'ERR') {
+        this.showAddingExchangeKeyStatus({ status, errorMessage })
+        this.setState({ error: errorMessage })
         return false
       }
 
+
+      this.showAddingExchangeKeyStatus({ status, errorMessage })
       this.setState({
         error: '',
         name: '',
@@ -124,6 +156,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         loadingRequest: false,
       })
     } catch (error) {
+      this.showAddingExchangeKeyStatus({ status: 'ERR', errorMessage: error.message })
       console.log(error)
     }
 
@@ -513,6 +546,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 }
 
 export default compose(
+  withSnackbar,
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
