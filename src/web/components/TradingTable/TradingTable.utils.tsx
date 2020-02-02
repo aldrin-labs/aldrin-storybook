@@ -220,7 +220,10 @@ export const filterOpenOrders = ({
       (order.marketId === '0' && order.symbol)) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
-      order.status === 'NEW')
+      order.status === 'NEW' || 
+      order.status === 'expired'
+      )
+
   )
 }
 
