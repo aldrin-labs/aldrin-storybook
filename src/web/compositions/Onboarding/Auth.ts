@@ -10,7 +10,7 @@ export default class Auth {
     ...auth0Options.auth,
   })
 
-  register = (email, password) => {
+  register = (email: string, password: string) => {
     return new Promise((resolve) => {
       this.auth0.signup(
         {
@@ -34,7 +34,7 @@ export default class Auth {
     })
   }
 
-  login = (email, password) => {
+  login = (email: string, password: string) => {
     this.auth0.login(
       {
         email,
@@ -79,4 +79,55 @@ export default class Auth {
       )
     })
   }
+
+  forgotPassword = async ({
+    email,
+    connection = 'Username-Password-Authentication',
+  }: {
+    email: string
+    connection: string
+  }) => {
+    this.auth0.changePassword({ email, connection }, () => {})
+  }
+
+  authMfaAssociate = async ({
+    authenticatorTypes,
+    authMfaToken,
+  }: {
+    authenticatorTypes: string[]
+    authMfaToken: string
+  }) => {
+    const result = await fetch(`https://ccai.auth0.com/mfa/associate`, {
+      method: 'post',
+      body: JSON.stringify({
+        authenticator_types: authenticatorTypes,
+      }),
+      headers: {
+        authorization: authMfaToken,
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    })
+  }
+
+  authMfa = async ({
+    authMfaToken,
+    otp,
+  }: {
+    authMfaToken: string
+    otp: string
+  }) => {
+    const result = await fetch(`https://ccai.auth0.com/oauth/token`, {
+      method: 'post',
+      body: JSON.stringify({
+        client_id: ClientId,
+        grant_type: 'http://auth0.com/oauth/grant-type/mfa-otp',
+        mfa_token: authMfaToken,
+        otp: otp,
+      }),
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    })
+  }
+  
 }
