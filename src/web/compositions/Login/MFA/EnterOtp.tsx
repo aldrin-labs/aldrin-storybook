@@ -11,10 +11,14 @@ const EnterOtp = ({
   theme,
   changeStep,
   onChangeOtp,
+  status,
+  errorMessage,
 }: {
   theme: Theme
   changeStep: (step: string) => void
   onChangeOtp: (otp: string) => void
+  status: 'error' | 'success'
+  errorMessage: string
 }) => {
   return (
     <Grid>
@@ -33,9 +37,16 @@ const EnterOtp = ({
           numInputs={6}
           separator={<span>-</span>}
         />
+        {status === 'error' && errorMessage !== '' && (
+          <Typography>
+            {errorMessage}
+          </Typography>
+        )}
       </Grid>
       <Grid>
-        <Typography onClick={() => changeStep('recoveryCode')}>Can't access Google Authenticator?</Typography>
+        <Typography onClick={() => changeStep('recoveryCode')}>
+          Can't access Google Authenticator?
+        </Typography>
       </Grid>
     </Grid>
   )
