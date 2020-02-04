@@ -10,7 +10,7 @@ const SignIn = ({ }: IProps) => {
 
       )}
 
-      {currentStep === 'addAccount' && (
+      {currentStep === 'otherStep' && (
 
       )}
 
