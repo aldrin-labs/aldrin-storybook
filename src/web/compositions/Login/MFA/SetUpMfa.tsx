@@ -48,7 +48,7 @@ const SetUpMfa = ({
         </Grid>
       </Grid>
       <Grid>
-        <Button onClick={() => changeStep('confirmEmail')}>
+        <Button onClick={() => changeStep('enterOtp')}>
           Save changes and enable 2FA
         </Button>
       </Grid>
