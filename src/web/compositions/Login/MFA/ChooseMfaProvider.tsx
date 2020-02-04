@@ -9,13 +9,11 @@ import AndroidLogo from '@icons/android.svg'
 import AppleQrCodeAppLink from '@icons/appleLink.png'
 import AndroidQrCodeAppLink from '@icons/androidLink.png'
 
-
-
 const ChooseMfaProvider = ({
   theme,
   changeStep,
 }: {
-  theme: Theme,
+  theme: Theme
   changeStep: (step: string) => void
 }) => {
   return (
@@ -50,11 +48,11 @@ const ChooseMfaProvider = ({
             <SvgIcon src={AndroidQrCodeAppLink} width="20%" height="auto" />
           </Grid>
         </Grid>
-        <Grid>
-            <Button onClick={() => changeStep('chooseProvider')}>
-                I already have the app
-            </Button>
-        </Grid>
+      </Grid>
+      <Grid>
+        <Button onClick={() => changeStep('setupMfa')}>
+          I already have the app
+        </Button>
       </Grid>
     </Grid>
   )
