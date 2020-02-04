@@ -1,16 +1,16 @@
 import auth0 from 'auth0-js'
 
-import { auth0Options } from '@core/config/authConfig'
+import { auth0Options, ClientId } from '@core/config/authConfig'
 import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
 
 export default class Auth {
   auth0 = new auth0.WebAuth({
     domain: 'ccai.auth0.com',
-    clientID: '0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm',
+    clientID: ClientId,
     ...auth0Options.auth,
   })
 
-  register = (email: string, password: string) => {
+  register = async (email: string, password: string) => {
     return new Promise((resolve) => {
       this.auth0.signup(
         {
@@ -42,7 +42,9 @@ export default class Auth {
         realm: 'Username-Password-Authentication',
         redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
       },
-      () => null
+      (authError) => {
+        console.log('authError', authError)
+      }
     )
   }
 
@@ -54,6 +56,7 @@ export default class Auth {
   }
 
   handleAuthentication = () => {
+    console.log('handleAuthentication', window.location.hash)
     return new Promise((resolve) => {
       this.auth0.parseHash(
         { hash: window.location.hash },
@@ -129,5 +132,7 @@ export default class Auth {
       },
     })
   }
-  
+
 }
+
+window.AuthClass = Auth
