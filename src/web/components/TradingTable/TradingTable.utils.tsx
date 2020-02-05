@@ -215,12 +215,15 @@ export const filterOpenOrders = ({
 }) => {
   return (
     !canceledOrders.includes(order.info.orderId) &&
-    order.type !== 'market' &&
+    order.type && order.type !== 'market' &&
     (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
       (order.marketId === '0' && order.symbol)) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
-      order.status === 'NEW')
+      order.status === 'NEW' || 
+      order.status === 'expired'
+      )
+
   )
 }
 
@@ -1288,7 +1291,7 @@ export const combineOrderHistoryTable = (
           : `<= ${triggerConditions}`
 
       return {
-        id: `${orderId}${timestamp}${origQty}`,
+        id: `${orderId}_${timestamp}_${origQty}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
