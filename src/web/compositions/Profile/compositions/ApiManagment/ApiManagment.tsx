@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withSnackbar } from 'notistack'
 import copy from 'clipboard-copy'
-import { Grid, Button, TextField } from '@material-ui/core'
+import { Grid, Button } from '@material-ui/core'
 
 import { createApiKey } from '@core/graphql/mutations/user/createApiKey'
 import { StyledInputApiManagment } from './ApiManagment.styles'
