@@ -20,6 +20,8 @@ const LINKS = [
   // { path: '/profile/notifications', text: 'Notifications' },
   { path: '/profile/deposit', text: 'Deposit' },
   { path: '/profile/withdrawal', text: 'Withdrawal' },
+  { path: '/profile/api', text: 'Api managment' },
+
 ]
 
 const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
