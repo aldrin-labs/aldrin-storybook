@@ -129,8 +129,6 @@ class ActiveTradesTable extends React.Component {
   }
 
   subscribe() {
-    const { theme } = this.props
-
     const that = this
 
     this.subscription = client
@@ -139,7 +137,7 @@ class ActiveTradesTable extends React.Component {
         variables: {
           input: {
             exchange: 'binance',
-            pair: that.props.currencyPair,
+            pair: `${that.props.currencyPair}:${that.props.marketType}`,
           },
         },
         fetchPolicy: 'cache-only',
