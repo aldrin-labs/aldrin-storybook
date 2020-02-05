@@ -88,7 +88,9 @@ export const getTableBody = (tab: string) =>
 export const getTableHead = (
   tab: string,
   marketType: number = 0,
-  refetch: () => void
+  refetch: () => void,
+  updatePositionsHandler: () => Promise<void>,
+  positionsRefetchInProcess = false,
 ): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
@@ -99,7 +101,7 @@ export const getTableHead = (
     : tab === 'funds'
     ? fundsColumnNames
     : tab === 'positions'
-    ? positionsColumnNames(refetch)
+    ? positionsColumnNames(refetch, updatePositionsHandler, positionsRefetchInProcess)
     : tab === 'activeTrades'
     ? activeTradesColumnNames
     : tab === 'strategiesHistory'
@@ -218,7 +220,10 @@ export const filterOpenOrders = ({
       (order.marketId === '0' && order.symbol)) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
-      order.status === 'NEW')
+      order.status === 'NEW' || 
+      order.status === 'expired'
+      )
+
   )
 }
 
