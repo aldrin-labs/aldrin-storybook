@@ -19,6 +19,7 @@ export { default as CorrelationMatrix } from './CorrelationMatrix'
 export { default as PortfolioChart } from './PortfolioChart'
 export { addMainSymbol } from './AddMainSymbol'
 export { default as PrivacyPolicy } from './PrivacyPolicy'
+export { default as TermsOfUse } from './TermsOfUse/TermsOfUse'
 export { default as CardHeader } from './CardHeader'
 export { LoginComponent } from './Login'
 export {
