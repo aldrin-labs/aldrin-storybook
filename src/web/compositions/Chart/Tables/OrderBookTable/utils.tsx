@@ -8,6 +8,8 @@ import {
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
+import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
+
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>
 //   props.styles}
@@ -87,6 +89,12 @@ type IProps = {
   }) => void
 }
 
+const roundDown = function(num, precision) {
+  num = parseFloat(num)
+  if (!precision) return num
+  return (Math.floor(num / precision) * precision)
+}
+
 export default function defaultRowRenderer({
   className,
   columns,
@@ -101,6 +109,7 @@ export default function defaultRowRenderer({
   style,
   side,
   arrayOfMarketIds = [],
+  marketType,
   aggregation = 0.00000001,
   openOrderHistory,
   amountForBackground,
@@ -114,7 +123,7 @@ export default function defaultRowRenderer({
   let needHighlightStopPrice = false
 
   if (openOrderHistory && openOrderHistory.length > 0) {
-    const functionToRound = aggregation >= 1 ? roundUp : roundUpSmall
+    const functionToRound = aggregation >= 1 ? roundDown : roundUpSmall
 
     const digitsByGroup =
       aggregation >= 1
@@ -127,7 +136,8 @@ export default function defaultRowRenderer({
 
         return (
           +orderPrice === +rowData.price &&
-          (arrayOfMarketIds.includes(order.marketId) || order.marketId === '0')
+          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) || order.marketId === '0') &&
+          !order.stopPrice
         )
       }) !== -1
 
@@ -137,7 +147,7 @@ export default function defaultRowRenderer({
 
         return (
           +orderStopPrice === +rowData.price &&
-          (arrayOfMarketIds.includes(order.marketId) || order.marketId === '0')
+          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId)  || order.marketId === '0')
         )
       }) !== -1
   }

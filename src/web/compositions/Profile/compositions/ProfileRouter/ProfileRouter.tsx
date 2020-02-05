@@ -29,6 +29,10 @@ const Withdrawal = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "withdrawal" */ '@sb/compositions/Profile/compositions/Withdrawal/Withdrawal')
 )
 
+const ApiManagment = React.lazy(() => 
+  import(/* webpackPrefetch: true, webpackChunkName: "apimanagment" */ '@sb/compositions/Profile/compositions/ApiManagment/ApiManagment')
+)
+
 const ProfileRouter = () => {
   return (
     <MainContainer>
@@ -68,6 +72,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/withdrawal"
             render={(...rest) => <Withdrawal />}
+          />
+          <Route
+            exact
+            path="/profile/api"
+            render={(...rest) => <ApiManagment />}
           />
         </Switch>
       </Suspense>
