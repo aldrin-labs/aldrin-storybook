@@ -203,7 +203,7 @@ export default class Auth {
           authenticator_types: authenticatorTypes,
         }),
         headers: {
-          authorization: authMfaToken,
+          authorization: `Bearer ${authMfaToken}`,
           'Content-Type': 'application/json;charset=utf-8',
         },
       })
@@ -306,9 +306,10 @@ export default class Auth {
           'Content-Type': 'application/json;charset=utf-8',
         },
       })
-      console.log('changePassword 1', result)
-      result = await result.json()
-      console.log('changePassword 2', result)
+
+      result = {
+        status: 'success'
+      }
 
     } catch (e) {
       result = {
