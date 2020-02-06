@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { useState, ChangeEvent } from 'react'
 import { compose } from 'recompose'
 import { Grid, Typography, Theme, Input, Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
@@ -8,19 +8,19 @@ import GoogleAuthenticationLogo from '@icons/googleAuthentication.svg'
 
 const EnterRecoveryCode = ({
   theme,
-  changeStep,
-  onChangeRecoveryCode,
+  enterRecoveryCodeHandler,
   status,
   errorMessage,
   newRecoveryCode,
 }: {
   theme: Theme
-  changeStep: (step: string) => void
-  onChangeRecoveryCode: (otp: string) => void
+  enterRecoveryCodeHandler: (recoveryCode: string) => void
   status: 'error' | 'success'
   errorMessage: string
   newRecoveryCode: string
 }) => {
+  const [recoveryCode, setRecoveryCode] = useState('')
+
   return (
     <Grid>
       <Grid>
@@ -32,8 +32,9 @@ const EnterRecoveryCode = ({
       </Grid>
       <Grid>
         <Input
+          value={recoveryCode}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            onChangeRecoveryCode(e.target.value)
+            setRecoveryCode(e.target.value)
           }
         />
         {status === 'error' && errorMessage !== '' && (
@@ -47,7 +48,7 @@ const EnterRecoveryCode = ({
         </Grid>
       )}
       <Grid>
-        <Button onClick={() => changeStep('confirmRecoveryCode')}>
+        <Button onClick={() => enterRecoveryCodeHandler(recoveryCode)}>
           I already have the app
         </Button>
       </Grid>
