@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import OtpInput from 'react-otp-input'
 import { compose } from 'recompose'
 import { Grid, Typography, Theme } from '@material-ui/core'
@@ -10,16 +10,27 @@ import GoogleAuthenticationLogo from '@icons/googleAuthentication.svg'
 const EnterOtp = ({
   theme,
   changeStep,
-  onChangeOtp,
   status,
   errorMessage,
+  otpCompleteHandler,
 }: {
   theme: Theme
   changeStep: (step: string) => void
-  onChangeOtp: (otp: string) => void
+  otpCompleteHandler: (otp: string) => void
   status: 'error' | 'success'
   errorMessage: string
 }) => {
+
+  const [otp, setOtp] = useState('')
+
+  const otpChangeHandler = (otp: string) => {
+    setOtp(otp)
+
+    if (otp.length === 6) {
+      otpCompleteHandler(otp)
+    }
+  }
+
   return (
     <Grid>
       <Grid>
@@ -33,7 +44,7 @@ const EnterOtp = ({
       </Grid>
       <Grid>
         <OtpInput
-          onChange={(otp: string) => onChangeOtp(otp)}
+          onChange={(otp: string) => otpChangeHandler(otp)}
           numInputs={6}
           separator={<span>-</span>}
         />
