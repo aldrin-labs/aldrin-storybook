@@ -7,5 +7,8 @@ export interface IProps {
 }
 
 export interface IState {
-    
+
 }
+
+
+export type 
