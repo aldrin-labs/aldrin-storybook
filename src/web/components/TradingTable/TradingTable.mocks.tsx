@@ -43,9 +43,9 @@ const StatusTooltip = () => {
         >
           <p>Preparing (while placing orders/waiting for act price)</p>
           <p>Trailing entry (When trailing activated)</p>
-          <p>Active (Instead inentry)</p>
-          <p>In loss</p>
-          <p>In Profit</p>
+          {/* <p>Active (Instead inentry)</p> */}
+          <p>In loss (pnl less than 0)</p>
+          <p>In Profit (profit greater that 0)</p>
         </div>
       ) : null}
     </div>

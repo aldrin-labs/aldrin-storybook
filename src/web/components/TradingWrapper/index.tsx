@@ -150,23 +150,15 @@ class SimpleTabs extends React.Component {
             >
               Take-Profit
             </TerminalModeButton>
-            <SmartOrderModeButton
+            <TerminalModeButton
               isActive={mode === 'smart'}
               onClick={() => {
                 this.handleChangeMode('smart')
                 updateTerminalViewMode('smartOrderMode')
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'center'
-                }}
-              >
-                <span>Smart Trade</span>
-              </div>
-            </SmartOrderModeButton>
+              Smart Trade
+            </TerminalModeButton>
           </TerminalHeader>
 
           {!isSPOTMarket && (
