@@ -40,6 +40,7 @@ const ForgotPassoword = ({
       </Grid>
       <Grid>
         <Input
+          value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }

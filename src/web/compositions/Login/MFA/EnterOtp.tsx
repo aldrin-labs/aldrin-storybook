@@ -44,6 +44,7 @@ const EnterOtp = ({
       </Grid>
       <Grid>
         <OtpInput
+          value={otp}
           onChange={(otp: string) => otpChangeHandler(otp)}
           numInputs={6}
           separator={<span>-</span>}

@@ -25,10 +25,10 @@ const SignIn = ({
   onLoginWithGoogleClick: () => any
   // TODO: Need to replace any here
   onLoginButtonClick: ({
-    email,
+    username,
     password,
   }: {
-    email: string
+    username: string
     password: string
   }) => any
   changeStep: (step: string) => void
@@ -73,12 +73,12 @@ const SignIn = ({
           <Typography>Remember me</Typography>
         </Grid>
         <Grid>
-          <Typography onClick={() => changeStep('forgotPassword')} />
+          <Typography onClick={() => changeStep('forgotPassword')}> Forgot password </Typography>
         </Grid>
       </Grid>
       <Grid>
-        <Button onClick={() => onLoginButtonClick({ email, password })}>
-          I already have the app
+        <Button onClick={() => onLoginButtonClick({ username: email, password })}>
+          Log in
         </Button>
       </Grid>
     </Grid>

@@ -1,4 +1,7 @@
 import React from 'react'
+import { compose } from 'recompose'
+import { withSnackbar, withSnackbarProps } from 'notistack'
+
 import { ILoginStep, IProps, IState } from './LoginComposition.types'
 
 import Auth from '@sb/compositions/Onboarding/Auth'
@@ -56,6 +59,21 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     })
   }
 
+  showLoginStatus = ({
+    status,
+    errorMessage = 'Something went wrong with login',
+  }: {
+    status: 'error' | 'success' | string
+    errorMessage: string
+  }) => {
+    const { enqueueSnackbar } = this.props
+    if (status === 'success') {
+      enqueueSnackbar(`Success`, { variant: 'success' })
+    } else {
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
+
   authenticateWithPasswordHandler = async ({
     username,
     password,
@@ -64,6 +82,33 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     password: string
   }) => {
     const resultOfAuthenticate = await auth.authSimple({ username, password })
+
+    const { access_token, id_token } = resultOfAuthenticate
+
+    // if mfa for this user is disabled
+    if (access_token && access_token.length && id_token && id_token.length) {
+      this.setState({
+        accessToken: access_token,
+        idToken: id_token,
+      })
+      this.showLoginStatus({
+        status: 'success',
+        errorMessage: '',
+      })
+
+      return
+    }
+
+    // other errors
+    if (resultOfAuthenticate.error !== 'mfa_required') {
+      // Add notistack here
+      this.showLoginStatus({
+        status: resultOfAuthenticate.error,
+        errorMessage: resultOfAuthenticate.error_description,
+      })
+
+      return
+    }
 
     // if mfa for user enabled
     if (
@@ -88,6 +133,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         }))
 
         // Add notistack here
+        this.showLoginStatus({
+          status: listOfAssociatedMfa.error,
+          errorMessage: listOfAssociatedMfa.error_description,
+        })
 
         return
       }
@@ -131,6 +180,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       }))
       // Add notistack here
+      this.showLoginStatus({
+        status: resultOfAssociationWithMfaMethod.error,
+        errorMessage: resultOfAssociationWithMfaMethod.error_description,
+      })
 
       return
     }
@@ -149,6 +202,11 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
 
       if (!(Array.isArray(recovery_codes) && recovery_codes.length)) {
         // add notistack here
+        this.showLoginStatus({
+          status: 'error',
+          errorMessage:
+            'Recovery code missing, probably you already set up mfa',
+        })
       }
 
       this.setState({
@@ -156,7 +214,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         // TODO: delete secret because it's unused
         secret: secret,
         barcodeUri: barcode_uri,
-        recoveryCode: '',
+        recoveryCode: recovery_codes[0],
       })
     }
   }
@@ -181,6 +239,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       }))
       // Add notistack here
+      this.showLoginStatus({
+        status: resultOfAuthenticateWithRecoveryCode.error,
+        errorMessage: resultOfAuthenticateWithRecoveryCode.error_description,
+      })
 
       return
     }
@@ -194,6 +256,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       }))
       // Add notistack here
+      this.showLoginStatus({
+        status: 'error',
+        errorMessage: 'Recovery code missing',
+      })
 
       return
     }
@@ -217,6 +283,12 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       },
       () => {
+        // Add notistack here
+        this.showLoginStatus({
+          status: 'success',
+          errorMessage: '',
+        })
+
         // should be handler after authetication
         console.log('this.state', this.state)
       }
@@ -243,6 +315,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       }))
       // Add notistack here
+      this.showLoginStatus({
+        status: resultOfAuthenticateWithOtp.error,
+        errorMessage: resultOfAuthenticateWithOtp.error_description,
+      })
 
       return
     }
@@ -256,6 +332,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       }))
       // Add notistack here
+      this.showLoginStatus({
+        status: 'error',
+        errorMessage: 'Access code missing',
+      })
 
       return
     }
@@ -277,13 +357,19 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       },
       () => {
-        // should be handler after authetication
+        // Add notistack here
+        this.showLoginStatus({
+          status: 'success',
+          errorMessage: '',
+        })
+
+        //TODO: should be handler after authetication
         console.log('this.state', this.state)
       }
     )
   }
 
-  forgotPasswordHandler = async (email: string) => {
+  forgotPasswordHandler = async ({ email }: { email: string }) => {
     const resultOfForgotPassowrd = await auth.changePassword({
       email,
     })
@@ -295,11 +381,15 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       this.setState((prevState) => ({
         ...prevState,
         forgotPassword: {
-          status: 'error',
-          errorMessage: 'Access code missing',
+          status: resultOfForgotPassowrd.error,
+          errorMessage: resultOfForgotPassowrd.error_description,
         },
       }))
       // Add notistack here
+      this.showLoginStatus({
+        status: resultOfForgotPassowrd.error,
+        errorMessage: resultOfForgotPassowrd.error_description,
+      })
 
       return
     }
@@ -310,7 +400,14 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         errorMessage: '',
       },
     })
+    // Add notistack here
+    this.showLoginStatus({
+      status: 'success',
+      errorMessage: '',
+    })
   }
+
+  processAuthentificationHandler = () => {}
 
   render() {
     const {
@@ -344,6 +441,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         )}
         {currentStep === 'recoveryCode' && (
           <EnterRecoveryCode
+            processAuthentificationHandler={this.processAuthentificationHandler}
             enterRecoveryCodeHandler={this.enterRecoveryCodeHandler}
             status={authenticateWithRecovery.status}
             errorMessage={authenticateWithRecovery.errorMessage}
@@ -372,4 +470,4 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default compose(withTheme)(LoginComposition)
+export default compose(withSnackbar)(LoginComposition)

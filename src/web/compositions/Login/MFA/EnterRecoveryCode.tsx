@@ -12,12 +12,14 @@ const EnterRecoveryCode = ({
   status,
   errorMessage,
   newRecoveryCode,
+  processAuthentificationHandler,
 }: {
   theme: Theme
   enterRecoveryCodeHandler: (recoveryCode: string) => void
   status: 'error' | 'success'
   errorMessage: string
   newRecoveryCode: string
+  processAuthentificationHandler: () => void
 }) => {
   const [recoveryCode, setRecoveryCode] = useState('')
 
@@ -48,9 +50,17 @@ const EnterRecoveryCode = ({
         </Grid>
       )}
       <Grid>
-        <Button onClick={() => enterRecoveryCodeHandler(recoveryCode)}>
-          I already have the app
+        <Button
+          disabled={newRecoveryCode}
+          onClick={() => enterRecoveryCodeHandler(recoveryCode)}
+        >
+          Confirm
         </Button>
+        {newRecoveryCode && (
+          <Button onClick={() => processAuthentificationHandler()}>
+            Go to App
+          </Button>
+        )}
       </Grid>
     </Grid>
   )
