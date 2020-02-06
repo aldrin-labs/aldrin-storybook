@@ -966,7 +966,7 @@ export const combineStrategiesHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(date).format('DD-MM-YYYY')).replace(/-/g, '.')}
+                {String(moment(date).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(date).format('LT')}
@@ -1194,10 +1194,7 @@ export const combineOpenOrdersTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                  /-/g,
-                  '.'
-                )}
+                {String(moment(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(timestamp).format('LT')}
@@ -1404,10 +1401,7 @@ export const combineOrderHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                  /-/g,
-                  '.'
-                )}
+                {String(moment(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(timestamp).format('LT')}
@@ -1539,10 +1533,7 @@ export const combineTradeHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                  /-/g,
-                  '.'
-                )}
+                {String(moment(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(timestamp).format('LT')}
