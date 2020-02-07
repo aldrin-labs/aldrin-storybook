@@ -1,4 +1,4 @@
-import auth0 from 'auth0-js'
+import auth0, { Auth0Error, Auth0DecodedHash } from 'auth0-js'
 
 import { auth0Options, ClientId } from '@core/config/authConfig'
 import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
@@ -62,7 +62,7 @@ export default class Auth {
     ...auth0Options.auth,
   })
 
-  register = async (email: string, password: string) => {
+  register = async (email: string, password: string): Promise<{status: 'error' | 'ok', message: '' | string, errorDestription: string}> => {
     return new Promise((resolve) => {
       this.auth0.signup(
         {
@@ -70,16 +70,18 @@ export default class Auth {
           email,
           password,
         },
-        async (err, result) => {
+        async (err: Auth0Error | null, result) => {
           if (err) {
             resolve({
               status: 'error',
-              message: err,
+              message: err.error,
+              errorDestription: err.errorDescription,
             })
           }
           resolve({
             status: 'ok',
-            messafe: '',
+            message: '',
+            errorDestription: '',
           })
         }
       )
@@ -103,11 +105,12 @@ export default class Auth {
   googleSingup = () => {
     this.auth0.authorize({
       connection: 'google-oauth2',
-      redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
+      redirectUri: `${CALLBACK_URL_FOR_AUTH0}/login`,
+      // redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
     })
   }
 
-  handleAuthentication = () => {
+  handleAuthentication = async (): Promise<{status: 'err' | 'ok', data: 'no authResult' | Auth0Error | Auth0DecodedHash | null}> => {
     console.log('handleAuthentication', window.location.hash)
     return new Promise((resolve) => {
       this.auth0.parseHash(
