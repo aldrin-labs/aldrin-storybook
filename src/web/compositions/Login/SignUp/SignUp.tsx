@@ -28,11 +28,9 @@ const SignUp = ({
   onSignUpButtonClick: ({
     email,
     password,
-    passwordAgaing,
   }: {
     email: string
     password: string
-    passwordAgaing: string
   }) => any
   status: 'error' | 'success'
   errorMessage: string
@@ -43,10 +41,13 @@ const SignUp = ({
   const [isAgreeWithRules, setAgreementWithRules] = useState(false)
   const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
   const [showTermsOfUse, toggleTermsOfUse] = useState(false)
+  const [error, setError] = useState('')
 
   const toggleAgreementCheckbox = () => {
     setAgreementWithRules(!isAgreeWithRules)
   }
+
+  const checkPasswordsMatch = ({ pass1, pass2 }: { pass1: string, pass2: string }) => pass1 === pass2
 
   return (
     <>
@@ -79,23 +80,30 @@ const SignUp = ({
         </Grid>
         <Grid>
           <Input
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value)
-            }
+              setError('')
+            }}
           />
         </Grid>
         <Grid>
           <Input
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setPasswordAgaing(e.target.value)
-            }
+              setError('')
+            }}
           />
         </Grid>
-        <Grid>
-          {status === 'error' && errorMessage !== '' && (
+        {status === 'error' && errorMessage !== '' && (
+          <Grid>
             <Typography>{errorMessage}</Typography>
-          )}
-        </Grid>
+          </Grid>
+        )}
+        {error !== '' && (
+          <Grid>
+            <Typography>Passwords doesn't match</Typography>
+          </Grid>
+        )}
         <Grid>
           <Grid>
             <Checkbox
@@ -118,11 +126,15 @@ const SignUp = ({
         <Grid>
           <Button
             disabled={!isAgreeWithRules}
-            onClick={() =>
-              onSignUpButtonClick({ email, password, passwordAgaing })
-            }
+            onClick={() => {
+              const isPasswordsAreTheSame = checkPasswordsMatch({ pass1: password, pass2: passwordAgaing })
+              if (!isPasswordsAreTheSame) {
+                return
+              }
+              onSignUpButtonClick({ email, password })
+            }}
           >
-            I already have the app
+            Sign up
           </Button>
         </Grid>
       </Grid>

@@ -1,7 +1,7 @@
 import React from 'react'
 import jwtDecode from 'jwt-decode'
 import { compose } from 'recompose'
-import { withSnackbar, withSnackbarProps } from 'notistack'
+import { withSnackbar } from 'notistack'
 
 import { ILoginStep, IProps, IState } from './LoginComposition.types'
 
@@ -21,7 +21,7 @@ import SignUp from '@sb/compositions/Login/SignUp/SignUp'
 
 class LoginComposition extends React.PureComponent<IProps, IState> {
   state: IState = {
-    currentStep: 'signIn',
+    currentStep: 'signUp',
     accessToken: '',
     idToken: '',
     mfaToken: '',
@@ -54,6 +54,31 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       status: '',
       errorMessage: '',
     },
+    signUp: {
+      status: '',
+      errorMessage: '',
+    },
+  }
+
+  // this lifecycle here is only needed for sign up with google / sign in with google
+  // maybe better to move it upper level into LoginCustom container
+  async componentDidMount() {
+    const result = await auth.handleAuthentication()
+    console.log('result', result)
+
+    if (result.status === 'ok') {
+      const { data } = result
+      if (data && data.idToken && data.idTokenPayload) {
+        // this.setState({ redirected: true })
+        const profile = {
+          idToken: data.idToken,
+          ...data.idTokenPayload,
+        }
+        await this.props.onLogin(profile, data.idToken)
+      }
+    } else {
+      console.log('error in register callback')
+    }
   }
 
   changeCurrentStep = (step: ILoginStep) => {
@@ -442,6 +467,52 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     await this.processAuthentificationHandler({ accessToken, idToken })
   }
 
+  signUpWithPasswordHandler = async ({
+    email,
+    password,
+  }: {
+    email: string
+    password: string
+  }) => {
+    const resultOfSignUp = await auth.register(email, password)
+
+    if (resultOfSignUp.status === 'error' && resultOfSignUp.message) {
+      this.setState({
+        signUp: {
+          status: resultOfSignUp.status,
+          errorMessage: resultOfSignUp.message,
+        },
+      })
+      // Add notistack here
+      this.showLoginStatus({
+        status: resultOfSignUp.status,
+        errorMessage: resultOfSignUp.message,
+      })
+
+      return
+    }
+
+    if (resultOfSignUp.status === 'ok') {
+      this.setState({
+        signUp: {
+          status: 'success',
+          errorMessage: '',
+        },
+      })
+      // Add notistack here
+      this.showLoginStatus({
+        status: 'success',
+        errorMessage: '',
+      })
+
+      // trying to login
+      this.authenticateWithPasswordHandler({ username: email, password })
+
+    }
+
+    console.log('resultOfSignUp', resultOfSignUp)
+  }
+
   render() {
     const {
       currentStep,
@@ -449,6 +520,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       enterOtp,
       authenticateWithRecovery,
       forgotPassword,
+      signUp,
       barcodeUri,
       recoveryCode,
       newRecoveryCode,
@@ -474,7 +546,9 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         )}
         {currentStep === 'recoveryCode' && (
           <EnterRecoveryCode
-            processAuthentificationHandler={this.callProcessAuthentificationHandler}
+            processAuthentificationHandler={
+              this.callProcessAuthentificationHandler
+            }
             enterRecoveryCodeHandler={this.enterRecoveryCodeHandler}
             status={authenticateWithRecovery.status}
             errorMessage={authenticateWithRecovery.errorMessage}
@@ -496,6 +570,14 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
             status={forgotPassword.status}
             errorMessage={forgotPassword.errorMessage}
             onForgotPasswordClick={this.forgotPasswordHandler}
+          />
+        )}
+        {currentStep === 'signUp' && (
+          <SignUp
+            onSignUpButtonClick={this.signUpWithPasswordHandler}
+            onSignUpWithGoogleClick={auth.googleSingup}
+            status={signUp.status}
+            errorMessage={signUp.errorMessage}
           />
         )}
       </>
