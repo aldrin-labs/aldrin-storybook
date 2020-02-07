@@ -1,4 +1,5 @@
 import React from 'react'
+import jwtDecode from 'jwt-decode'
 import { compose } from 'recompose'
 import { withSnackbar, withSnackbarProps } from 'notistack'
 
@@ -21,6 +22,8 @@ import SignUp from '@sb/compositions/Login/SignUp/SignUp'
 class LoginComposition extends React.PureComponent<IProps, IState> {
   state: IState = {
     currentStep: 'signIn',
+    accessToken: '',
+    idToken: '',
     mfaToken: '',
     // TODO: delete secret
     secret: '',
@@ -95,6 +98,11 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         status: 'success',
         errorMessage: '',
       })
+      // should be handler after authetication
+      await this.processAuthentificationHandler({
+        accessToken: access_token,
+        idToken: id_token,
+      })
 
       return
     }
@@ -113,6 +121,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     // if mfa for user enabled
     if (
       resultOfAuthenticate.error === 'mfa_required' &&
+      resultOfAuthenticate.mfa_token &&
       resultOfAuthenticate.mfa_token !== ''
     ) {
       const listOfAssociatedMfa = await auth.listOfAssociatedMfa({
@@ -282,7 +291,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           errorMessage: '',
         },
       },
-      () => {
+      async () => {
         // Add notistack here
         this.showLoginStatus({
           status: 'success',
@@ -291,6 +300,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
 
         // should be handler after authetication
         console.log('this.state', this.state)
+        await this.processAuthentificationHandler({
+          accessToken: access_token,
+          idToken: id_token,
+        })
       }
     )
   }
@@ -356,7 +369,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           errorMessage: '',
         },
       },
-      () => {
+      async () => {
         // Add notistack here
         this.showLoginStatus({
           status: 'success',
@@ -365,6 +378,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
 
         //TODO: should be handler after authetication
         console.log('this.state', this.state)
+        await this.processAuthentificationHandler({
+          accessToken: access_token,
+          idToken: id_token,
+        })
       }
     )
   }
@@ -407,7 +424,23 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     })
   }
 
-  processAuthentificationHandler = () => {}
+  processAuthentificationHandler = async ({
+    accessToken,
+    idToken,
+  }: {
+    accessToken: string
+    idToken: string
+  }) => {
+    const { onLogin } = this.props
+    const decodedProfile = jwtDecode(idToken)
+
+    await onLogin(decodedProfile, idToken)
+  }
+
+  callProcessAuthentificationHandler = async () => {
+    const { accessToken, idToken } = this.state
+    await this.processAuthentificationHandler({ accessToken, idToken })
+  }
 
   render() {
     const {
@@ -441,7 +474,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         )}
         {currentStep === 'recoveryCode' && (
           <EnterRecoveryCode
-            processAuthentificationHandler={this.processAuthentificationHandler}
+            processAuthentificationHandler={this.callProcessAuthentificationHandler}
             enterRecoveryCodeHandler={this.enterRecoveryCodeHandler}
             status={authenticateWithRecovery.status}
             errorMessage={authenticateWithRecovery.errorMessage}
