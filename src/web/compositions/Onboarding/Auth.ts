@@ -47,11 +47,11 @@ export type AssociateMfaErrorType = {
 }
 
 export type ChangePasswordSuccessReponseType = {
-  status: 'success',
+  status: 'success'
 }
 
 export type ChangePasswordErrorResponseType = {
-  error:  'network_error' | string
+  error: 'network_error' | string
   error_description: string
 }
 
@@ -154,7 +154,7 @@ export default class Auth {
   }: {
     username: string
     password: string
-  }): Promise<AuthSimpleSuccessResponseType | AuthSimpleErrorResponseType> => {
+  }): Promise<AuthSimpleSuccessResponseType & AuthSimpleErrorResponseType> => {
     let result
     try {
       result = await fetch(`https://ccai.auth0.com/oauth/token`, {
@@ -193,7 +193,7 @@ export default class Auth {
   }: {
     authenticatorTypes: string[]
     authMfaToken: string
-  }): Promise<AssociateMfaSuccessType | AssociateMfaErrorType> => {
+  }): Promise<AssociateMfaSuccessType & AssociateMfaErrorType> => {
     let result
 
     try {
@@ -227,7 +227,7 @@ export default class Auth {
     authMfaToken: string
     otp?: string
     recoveryCode?: string
-  }): Promise<AuthSimpleSuccessResponseType | AuthSimpleErrorResponseType> => {
+  }): Promise<AuthSimpleSuccessResponseType & AuthSimpleErrorResponseType> => {
     const grantType = otp
       ? 'http://auth0.com/oauth/grant-type/mfa-otp'
       : recoveryCode
@@ -265,7 +265,9 @@ export default class Auth {
     authMfaToken,
   }: {
     authMfaToken: string
-  }): Promise<ListOfAssociatedSuccessMfaType | ListOfAssociatedErrorMfaType> => {
+  }): Promise<
+    ListOfAssociatedSuccessMfaType & ListOfAssociatedErrorMfaType
+  > => {
     let result
     try {
       result = await fetch(`https://ccai.auth0.com/mfa/authenticators`, {
@@ -288,29 +290,32 @@ export default class Auth {
   }
 
   changePassword = async ({
-    email
+    email,
   }: {
     email: string
-  }): Promise<ChangePasswordSuccessReponseType | ChangePasswordErrorResponseType> => {
-
+  }): Promise<
+    ChangePasswordSuccessReponseType & ChangePasswordErrorResponseType
+  > => {
     let result
     try {
-      result = await fetch(`https://ccai.auth0.com/dbconnections/change_password`, {
-        method: 'post',
-        body: JSON.stringify({
-          client_id: ClientId,
-          email: email,
-          connection: 'Username-Password-Authentication',
-        }),
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-      })
+      result = await fetch(
+        `https://ccai.auth0.com/dbconnections/change_password`,
+        {
+          method: 'post',
+          body: JSON.stringify({
+            client_id: ClientId,
+            email: email,
+            connection: 'Username-Password-Authentication',
+          }),
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+          },
+        }
+      )
 
       result = {
-        status: 'success'
+        status: 'success',
       }
-
     } catch (e) {
       result = {
         error: 'network_error',
