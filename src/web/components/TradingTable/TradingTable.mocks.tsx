@@ -45,7 +45,7 @@ const StatusTooltip = () => {
           <p>Trailing entry (When trailing activated)</p>
           {/* <p>Active (Instead inentry)</p> */}
           <p>In loss (pnl less than 0)</p>
-          <p>In Profit (profit greater that 0)</p>
+          <p>In Profit (profit greater than 0)</p>
         </div>
       ) : null}
     </div>

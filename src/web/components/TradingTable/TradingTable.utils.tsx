@@ -189,7 +189,18 @@ export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
   return [0, 0]
 }
 
-const getActiveOrderStatus = ({ state, profitPercentage }) => {
+type IStatus = {
+  state: { state: string }
+  profitPercentage: number
+}
+
+const getActiveOrderStatus = ({
+  state,
+  profitPercentage,
+}: IStatus): [
+  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing',
+  string
+] => {
   if (state && state.state && state.state !== 'WaitForEntry') {
     const { state: status } = state
 
@@ -701,7 +712,10 @@ export const combineActiveTradesTable = (
                 cancelOrderFunc(el._id)
               }}
             >
-              {status[0] === 'Waiting' ? 'cancel' : 'market'}
+              {activeOrderStatus === 'Preparing' ||
+              activeOrderStatus === 'Trailing entry'
+                ? 'cancel'
+                : 'market'}
             </BtnCustom>
           ),
         },
