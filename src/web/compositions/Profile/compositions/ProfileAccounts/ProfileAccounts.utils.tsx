@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 
+import { TooltipCustom } from '@sb/components/index'
 import ReimportKey from '@core/components/ReimportKey/ReimportKey'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
@@ -16,6 +17,7 @@ import {
   Typography,
   SmallAddIcon,
 } from './ProfileAccounts.styles'
+import { Button } from '@material-ui/core'
 
 export const accountsColors = [
   '#9A77F7',
@@ -75,7 +77,11 @@ const getKeyStatus = (status: string, valid: boolean) => {
     : status
 }
 
-export const transformData = (data: AccountData[], numberOfKeys: number) => {
+export const transformData = (
+  data: AccountData[],
+  numberOfKeys: number,
+  telegramUsernameConnected: boolean
+) => {
   const transformedData = data.map((row, i) => {
     return {
       id: row._id,
@@ -178,10 +184,8 @@ export const transformData = (data: AccountData[], numberOfKeys: number) => {
         ),
       },
       refresh: {
-        render: (
-          <ReimportKey keyId={row._id} />
-        )
-      }
+        render: <ReimportKey keyId={row._id} />,
+      },
     }
   })
 
@@ -192,12 +196,39 @@ export const transformData = (data: AccountData[], numberOfKeys: number) => {
     name: ' ',
     value: ' ',
     added: ' ',
-    lastUpdate: ' ',
-    status: ' ',
+    lastUpdate: {
+      render: (
+        <TooltipCustom
+          title={`First, attach your telegram account via telegram tab on the left menu`}
+          enterDelay={250}
+          leaveDelay={200}
+          component={
+            <div>
+              <Button
+                disabled={!telegramUsernameConnected}
+                style={{
+                  width: '100%',
+                  color: telegramUsernameConnected ? '#0B1FD1' : '#7284A0',
+                  fontWeight: 'bold',
+                  fontFamily: 'DM Sans',
+                  border: telegramUsernameConnected
+                    ? '.1rem solid #0B1FD1'
+                    : '.1rem solid #7284A0',
+                  borderRadius: '1.6rem',
+                }}
+              >
+                join futures wars
+              </Button>
+            </div>
+          }
+        />
+      ),
+      colspan: 2,
+    },
     autoRebalance: {
       render: (
         <AddAccountDialog
-        numberOfKeys={numberOfKeys}
+          numberOfKeys={numberOfKeys}
           existCustomButton={true}
           CustomButton={({ handleClick }: { handleClick: () => void }) => (
             <AddAccountButton onClick={handleClick}>
@@ -215,8 +246,15 @@ export const transformData = (data: AccountData[], numberOfKeys: number) => {
   return transformedData
 }
 
-export const putDataInTable = (tableData: any[]) => {
-  const body = transformData(tableData, tableData.length)
+export const putDataInTable = (
+  tableData: any[],
+  telegramUsernameConnected: boolean
+) => {
+  const body = transformData(
+    tableData,
+    tableData.length,
+    telegramUsernameConnected
+  )
 
   return {
     head: [

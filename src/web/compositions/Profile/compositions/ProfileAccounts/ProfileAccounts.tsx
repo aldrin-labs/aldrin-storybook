@@ -43,10 +43,14 @@ const ProfileAccounts = ({
   allPortfoliosData,
   portfolioAccountsData,
   selectPortfolioMutation,
+  getTelegramUsername,
 }: IProps) => {
   const currentPortfolioIndex = allPortfoliosData.findIndex(
     (portfolio: PortfolioData) => portfolio._id === currentPortfolioData._id
   )
+
+  const telegramUsernameConnected = !!getTelegramUsername.getTelegramUsername
+    .telegramUsername
 
   const prevPortfolioId =
     currentPortfolioIndex === 0
@@ -158,7 +162,10 @@ const ProfileAccounts = ({
 
         {/* account table */}
         <GridBlock height={'86%'}>
-          <ProfileAccountsTable accounts={portfolioAccountsData} />
+          <ProfileAccountsTable
+            telegramUsernameConnected={telegramUsernameConnected}
+            accounts={portfolioAccountsData}
+          />
         </GridBlock>
       </ContentContainer>
     </MainContainer>
