@@ -296,7 +296,7 @@ const TransferPopup = ({
                   transferFromSpotToFutures && !isFuturesWarsKey
                     ? 0
                     : isFuturesWarsKey
-                    ? 1
+                    ? 0
                     : 1
                 }
                 value={isFuturesWarsKey ? futuresWarsRoundBet : coinAmount}
