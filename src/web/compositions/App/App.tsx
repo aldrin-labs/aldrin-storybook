@@ -54,13 +54,13 @@ const AppRaw = ({
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
-  const fullscreen: boolean =
-    currentPage === '/chart' && chartPageView !== 'default'
+  const isChartPage = /chart/.test(currentPage)  
+
+  const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = currentPage !== '/registration'
   const isPNL = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
-  const isChartPage = currentPage === '/chart'
 
   return (
     <ApolloPersistWrapper>
