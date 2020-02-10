@@ -253,8 +253,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ exchange: e.value.toLowerCase() })
   }
 
-  handleSelectRoomId = (option) => {
-    this.setState({ roomId: option.value })
+  handleSelectRoomId = (value) => {
+    this.setState({ roomId: value })
   }
 
   handleClickOpen = () => {
@@ -401,16 +401,15 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <Grid container direction={'column'}>
                       <Typography
                         align={`center`}
-                        style={{ paddingTop: '1.4rem', color: '#DD6956' }}
+                        style={{ paddingTop: '1.4rem', paddingBottom: '1.4rem', color: '#DD6956' }}
                       >
                         You must understand that you risk losing money. But you
                         can also win it
                       </Typography>
                     </Grid>
-                    <Grid container direction={'column'}>
+                    <Grid justify="center" container direction={'column'} style={{ height: '4rem'}}>
                       <Typography
                         align={`center`}
-                        style={{ paddingTop: '1.4rem' }}
                       >
                         Select room:
                       </Typography>
@@ -667,7 +666,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </div>
               )}
 
-              {includeCommonBinanceKey && !loadingRequest && (
+              {includeCommonBinanceKey && !isFuturesWars && !loadingRequest && (
                 <Grid container justify="space-between" alignItems="center">
                   <LinkCustom
                     href={'#'}
