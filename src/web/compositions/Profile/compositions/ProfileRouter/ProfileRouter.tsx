@@ -21,16 +21,20 @@ const Settings = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "settings" */ '@sb/compositions/Profile/compositions/ProfileSettings/ProfileSettings')
 )
 
-const Deposit = React.lazy(() => 
+const Deposit = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "deposit"  */ '@sb/compositions/Profile/compositions/Deposit/Deposit')
 )
 
-const Withdrawal = React.lazy(() => 
+const Withdrawal = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "withdrawal" */ '@sb/compositions/Profile/compositions/Withdrawal/Withdrawal')
 )
 
-const ApiManagment = React.lazy(() => 
+const ApiManagment = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "apimanagment" */ '@sb/compositions/Profile/compositions/ApiManagment/ApiManagment')
+)
+
+const Telegram = React.lazy(() =>
+  import(/* webpackPrefetch: true, webpackChunkName: "apimanagment" */ '@sb/compositions/Profile/compositions/Telegram/Telegram')
 )
 
 const ProfileRouter = () => {
@@ -77,6 +81,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/api"
             render={(...rest) => <ApiManagment />}
+          />
+          <Route
+            exact
+            path="/profile/telegram"
+            render={(...rest) => <Telegram />}
           />
         </Switch>
       </Suspense>
