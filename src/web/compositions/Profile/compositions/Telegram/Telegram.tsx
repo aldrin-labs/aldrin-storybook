@@ -9,12 +9,11 @@ import { searchTelegramUsernameBySecretCode } from '@core/graphql/mutations/user
 import { setTelegramUsername } from '@core/graphql/mutations/user/setTelegramUsername'
 import { getTelegramUsername } from '@core/graphql/queries/user/getTelegramUsername'
 import { client } from '@core/graphql/apolloClient'
+import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 
 import { StyledInputApiManagment } from '../ApiManagment/ApiManagment.styles'
 
 const Telegram = (props) => {
-  console.log('props', props)
-
   const [code, setCode] = useState('')
   const [telegramUsername, setTelegramUsername] = useState('')
 
@@ -195,7 +194,34 @@ const Telegram = (props) => {
                     textAlign: 'center',
                   }}
                 >
+
+<AddAccountDialog
+                isFuturesWars={true}
+                existCustomButton={true}
+                CustomButton={({
+                  handleClick,
+                }: {
+                  handleClick: () => void
+                }) => (
                   <Button
+                    onClick={handleClick}
+                    disabled={!telegramUsername}
+                    style={{
+                      width: '100%',
+                      color: !!telegramUsername ? '#0B1FD1' : '#7284A0',
+                      fontWeight: 'bold',
+                      fontFamily: 'DM Sans',
+                      border: !!telegramUsername
+                        ? '.1rem solid #0B1FD1'
+                        : '.1rem solid #7284A0',
+                      borderRadius: '1.6rem',
+                    }}
+                  >
+                    join futures wars
+                  </Button>
+                )}
+              />
+                  {/* <Button
                     style={{
                       width: '100%',
                       color: '#0B1FD1',
@@ -206,7 +232,7 @@ const Telegram = (props) => {
                     }}
                   >
                     join futures wars
-                  </Button>
+                  </Button> */}
                 </Grid>
               </Grid>
             </>

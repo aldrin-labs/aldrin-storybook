@@ -202,6 +202,9 @@ export const transformData = (
           title={`First, attach your telegram account via telegram tab on the left menu`}
           enterDelay={250}
           leaveDelay={200}
+          disableHoverListener={telegramUsernameConnected}
+          disableFocusListener={telegramUsernameConnected}
+          disableTouchListener={telegramUsernameConnected}
           component={
             <div>
               <AddAccountDialog
@@ -215,7 +218,7 @@ export const transformData = (
                 }) => (
                   <Button
                     onClick={handleClick}
-                    // disabled={!telegramUsernameConnected}
+                    disabled={!telegramUsernameConnected}
                     style={{
                       width: '100%',
                       color: telegramUsernameConnected ? '#0B1FD1' : '#7284A0',
