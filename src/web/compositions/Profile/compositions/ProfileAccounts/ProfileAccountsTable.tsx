@@ -9,8 +9,14 @@ import {
 
 import { AccountData } from '@core/containers/Profile/ProfileAccounts/ProfileAccounts.types'
 
-const ProfileAccountsTable = ({ accounts }: { accounts: AccountData[] }) => {
-  const { body, head } = putDataInTable(accounts)
+const ProfileAccountsTable = ({
+  accounts,
+  telegramUsernameConnected,
+}: {
+  accounts: AccountData[]
+  telegramUsernameConnected: boolean
+}) => {
+  const { body, head } = putDataInTable(accounts, telegramUsernameConnected)
 
   return (
     <TableWithSort

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
+import { withSnackbar } from 'notistack'
+import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { Grid } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 
+import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
 import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
@@ -52,6 +55,10 @@ const TransferPopup = ({
   handleClose,
   futuresTransferMutation,
   showFuturesTransfer,
+  isFuturesWarsKey,
+  futuresWarsRoundBet,
+  joinFuturesWarsRoundMutation,
+  enqueueSnackbar,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'USDT',
@@ -77,6 +84,44 @@ const TransferPopup = ({
       showFuturesTransfer(response.data.futuresTransfer)
     } catch (e) {
       showFuturesTransfer({ status: 'ERR' })
+    }
+  }
+
+  const showJoinFuturesWarsRoundStatus = ({
+    status = 'ERR',
+    errorMessage = 'Something went wrong with the result of join FuturesWars round',
+  }: {
+    status: 'ERR' | 'OK'
+    errorMessage: string
+  }) => {
+    if (status === 'OK') {
+      enqueueSnackbar(`Your successful join futures round`, {
+        variant: 'success',
+      })
+    } else {
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
+
+  const joinFuturesWarsHandler = async () => {
+    handleClose()
+
+    try {
+      const response = await joinFuturesWarsRoundMutation({
+        variables: {
+          input: {
+            keyId: selectedAccount,
+            amount: +coinAmount,
+          },
+        },
+      })
+
+      showJoinFuturesWarsRoundStatus({
+        status: response.data.joinFuturesWarsRound.status,
+        errorMessage: response.data.joinFuturesWarsRound.errorMessage,
+      })
+    } catch (e) {
+      showJoinFuturesWarsRoundStatus({ status: 'ERR', errorMessage: e.message })
     }
   }
 
@@ -106,7 +151,7 @@ const TransferPopup = ({
               color: '#16253D',
             }}
           >
-            {transferFromSpotToFutures
+            {isFuturesWarsKey ? `Join futures wars` : transferFromSpotToFutures
               ? `Trasfer from spot to futures account`
               : `Trasfer from futures to spot account`}
           </TypographyCustomHeading>
@@ -118,6 +163,34 @@ const TransferPopup = ({
           }}
         >
           <Grid>
+            <Grid style={{ paddingBottom: '1rem' }}>
+              {isFuturesWarsKey && futuresWarsRoundBet !== 0 && (
+                <>
+                  <Typography
+                    style={{ paddingBottom: '1.4rem', color: '#16253D' }}
+                  >
+                    You replenish your futureswars account with{' '}
+                    {futuresWarsRoundBet} USDT.
+                  </Typography>
+                  <Typography
+                    style={{ paddingBottom: '1.4rem', color: '#16253D' }}
+                  >
+                    {futuresWarsRoundBet / 2} USDT is your bet, it will go to
+                    the bank. The remaining {futuresWarsRoundBet / 2} USDT is
+                    your capital for trading in this round.
+                  </Typography>
+                  <Typography style={{ color: '#16253D' }}>
+                    Good luck!
+                  </Typography>
+                </>
+              )}
+              {isFuturesWarsKey && futuresWarsRoundBet === 0 && (
+                <Typography>
+                  The round is not started yet or the round bet is 0. You cannot
+                  join the round before it's started or join round with 0 bet.
+                </Typography>
+              )}
+            </Grid>
             <Grid style={{ paddingBottom: '2rem' }}>
               <StyledTypography>Coin:</StyledTypography>
               <SelectCoinList
@@ -219,8 +292,14 @@ const TransferPopup = ({
               <InputAmount
                 selectedCoin={selectedCoin.label}
                 selectedAccount={selectedAccount}
-                marketType={transferFromSpotToFutures ? 0 : 1}
-                value={coinAmount}
+                marketType={
+                  transferFromSpotToFutures && !isFuturesWarsKey
+                    ? 0
+                    : isFuturesWarsKey
+                    ? 1
+                    : 1
+                }
+                value={isFuturesWarsKey ? futuresWarsRoundBet : coinAmount}
                 onClickAbornment={true}
                 onChange={(e) => setCoinAmount(e.target.value)}
                 style={{ width: '100%' }}
@@ -241,6 +320,7 @@ const TransferPopup = ({
                 Cancel
               </BtnCustom>
               <BtnCustom
+                disabled={isFuturesWarsKey && futuresWarsRoundBet === 0}
                 btnWidth={'38%'}
                 borderRadius={'8px'}
                 btnColor={'#165BE0'}
@@ -248,9 +328,11 @@ const TransferPopup = ({
                 fontWeight={'bold'}
                 fontSize={'1.2rem'}
                 height={'4rem'}
-                onClick={transferHandler}
+                onClick={
+                  isFuturesWarsKey ? joinFuturesWarsHandler : transferHandler
+                }
               >
-                Confirm
+                {isFuturesWarsKey ? `Transfer USDT` : `Confirm`}
               </BtnCustom>
             </Grid>
           </Grid>
@@ -260,6 +342,12 @@ const TransferPopup = ({
   )
 }
 
-export default graphql(futuresTransfer, {
-  name: 'futuresTransferMutation',
-})(TransferPopup)
+export default compose(
+  withSnackbar,
+  graphql(futuresTransfer, {
+    name: 'futuresTransferMutation',
+  }),
+  graphql(joinFuturesWarsRound, {
+    name: 'joinFuturesWarsRoundMutation',
+  })
+)(TransferPopup)

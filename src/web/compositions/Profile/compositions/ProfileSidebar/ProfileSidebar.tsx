@@ -21,7 +21,7 @@ const LINKS = [
   { path: '/profile/deposit', text: 'Deposit' },
   { path: '/profile/withdrawal', text: 'Withdrawal' },
   { path: '/profile/api', text: 'Api managment' },
-
+  { path: '/profile/telegram', text: 'Telegram' },
 ]
 
 const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
