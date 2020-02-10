@@ -204,21 +204,33 @@ export const transformData = (
           leaveDelay={200}
           component={
             <div>
-              <Button
-                disabled={!telegramUsernameConnected}
-                style={{
-                  width: '100%',
-                  color: telegramUsernameConnected ? '#0B1FD1' : '#7284A0',
-                  fontWeight: 'bold',
-                  fontFamily: 'DM Sans',
-                  border: telegramUsernameConnected
-                    ? '.1rem solid #0B1FD1'
-                    : '.1rem solid #7284A0',
-                  borderRadius: '1.6rem',
-                }}
-              >
-                join futures wars
-              </Button>
+              <AddAccountDialog
+                isFuturesWars={true}
+                numberOfKeys={numberOfKeys}
+                existCustomButton={true}
+                CustomButton={({
+                  handleClick,
+                }: {
+                  handleClick: () => void
+                }) => (
+                  <Button
+                    onClick={handleClick}
+                    // disabled={!telegramUsernameConnected}
+                    style={{
+                      width: '100%',
+                      color: telegramUsernameConnected ? '#0B1FD1' : '#7284A0',
+                      fontWeight: 'bold',
+                      fontFamily: 'DM Sans',
+                      border: telegramUsernameConnected
+                        ? '.1rem solid #0B1FD1'
+                        : '.1rem solid #7284A0',
+                      borderRadius: '1.6rem',
+                    }}
+                  >
+                    join futures wars
+                  </Button>
+                )}
+              />
             </div>
           }
         />
