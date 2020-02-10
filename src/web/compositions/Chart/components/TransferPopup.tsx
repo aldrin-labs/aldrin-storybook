@@ -163,7 +163,7 @@ const TransferPopup = ({
           }}
         >
           <Grid>
-            <Grid style={{ paddingBottom: '1rem' }}>
+            <Grid style={{ paddingBottom: '1rem', textAlign: 'center' }}>
               {isFuturesWarsKey && futuresWarsRoundBet !== 0 && (
                 <>
                   <Typography
