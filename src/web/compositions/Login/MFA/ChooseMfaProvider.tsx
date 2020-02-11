@@ -47,16 +47,33 @@ const ChooseMfaProvider = ({
       </Grid>
       <Grid
         container
-        justify="space-between"
+        justify="center"
         alignItems="center"
         style={{ paddingBottom: '5rem', flexWrap: 'nowrap' }}
       >
-        <Grid container justify="center" alignItems="center" direction="column">
+        <Grid
+          style={{ width: '33%' }}
+          container
+          justify="center"
+          alignItems="center"
+          direction="column"
+        >
           <SvgIcon src={AppleLogo} width="3.5rem" height="auto" />
           <SvgIcon src={AppleQrCodeAppLink} width="160px" height="auto" />
         </Grid>
-        <Grid container justify="center" alignItems="center" direction="column">
-          <SvgIcon src={AndroidLogo} width="4.5rem" height="auto" style={{ paddingBottom: '1.5rem' }} />
+        <Grid
+          style={{ width: '33%' }}
+          container
+          justify="center"
+          alignItems="center"
+          direction="column"
+        >
+          <SvgIcon
+            src={AndroidLogo}
+            width="4.5rem"
+            height="auto"
+            style={{ paddingBottom: '1.5rem' }}
+          />
           <SvgIcon src={AndroidQrCodeAppLink} width="144px" height="auto" />
         </Grid>
       </Grid>
