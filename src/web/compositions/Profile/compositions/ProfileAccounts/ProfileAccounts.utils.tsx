@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import copy from 'clipboard-copy'
 
 import { TooltipCustom } from '@sb/components/index'
 import ReimportKey from '@core/components/ReimportKey/ReimportKey'
@@ -11,6 +12,7 @@ import {
 } from '@core/containers/Profile/ProfileAccounts/ProfileAccounts.types'
 
 import { addMainSymbol } from '@sb/components'
+import SvgIcon from '@sb/components/SvgIcon'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import {
   AddAccountButton,
@@ -18,6 +20,7 @@ import {
   SmallAddIcon,
 } from './ProfileAccounts.styles'
 import { Button } from '@material-ui/core'
+import { FileCopy } from '@material-ui/icons'
 
 export const accountsColors = [
   '#9A77F7',
@@ -183,6 +186,23 @@ export const transformData = (
           />
         ),
       },
+      copy: {
+        render: (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              copy(row._id)
+            }}
+          >
+            <FileCopy style={{ width: '2rem', height: '2rem' }} />
+          </div>
+        ),
+      },
       refresh: {
         render: <ReimportKey keyId={row._id} />,
       },
@@ -255,6 +275,7 @@ export const transformData = (
       ),
     },
     edit: ' ',
+    copy: ' ',
     refresh: ' ',
   })
 
@@ -303,6 +324,12 @@ export const putDataInTable = (
       { id: 'autoRebalance', label: 'auto-rebalance', isSortable: true },
       {
         id: 'edit',
+        label: '',
+        style: { borderTopRightRadius: '1.5rem' },
+        isSortable: false,
+      },
+      {
+        id: 'copy',
         label: '',
         style: { borderTopRightRadius: '1.5rem' },
         isSortable: false,
