@@ -56,7 +56,6 @@ export const CardsPanel = ({
   updateTerminalViewMode,
   marketType,
 }) => {
-
   return (
     <>
       <PanelWrapper>
@@ -143,9 +142,7 @@ export const CardsPanel = ({
             )
           }
         >
-          {isDefaultTerminalViewMode
-            ? 'smart trading'
-            : 'back'}
+          {isDefaultTerminalViewMode ? 'go to smart trading' : 'back'}
         </SmartTradeButton>
 
         {/* {view === 'default' && (

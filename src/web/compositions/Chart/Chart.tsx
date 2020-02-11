@@ -178,12 +178,12 @@ class Chart extends React.Component<IProps, IState> {
           activeExchange,
           currencyPair: { pair },
           view,
-          marketType,
         },
         app: { themeMode },
       },
       pairPropertiesQuery,
       changeActiveExchangeMutation,
+      marketType,
     } = this.props
 
     let minPriceDigits
@@ -295,7 +295,7 @@ export default withAuth(
         fetchPolicy: 'cache-and-network',
         variables: {
           marketName: props.getChartDataQuery.chart.currencyPair.pair,
-          marketType: props.getChartDataQuery.chart.marketType,
+          marketType: props.marketType,
         },
       }),
     })

@@ -93,7 +93,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
             onDatesChange={onDatesChange} // PropTypes.func.isRequired,
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
             onFocusChange={onFocusChange} // PropTypes.func.isRequired,
-            displayFormat="MM-DD-YYYY"
+            displayFormat="ll"
           />
         </StyledWrapperForDateRangePicker>
         {/* <ClearButton

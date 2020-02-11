@@ -1,9 +1,12 @@
 import React from 'react'
+import { graphql } from 'react-apollo'
+
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { Grid } from '@material-ui/core'
 import { compose } from 'recompose'
 
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
+import { isFuturesWarsKey } from '@core/graphql/queries/futureWars/isFuturesWarsKey'
 
 import TraidingTerminal from '../TraidingTerminal'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
@@ -12,6 +15,8 @@ import {
   SRadio,
   SCheckbox,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+
+import { SendButton } from '../TraidingTerminal/styles'
 
 import {
   TerminalContainer,
@@ -150,23 +155,15 @@ class SimpleTabs extends React.Component {
             >
               Take-Profit
             </TerminalModeButton>
-            <SmartOrderModeButton
+            <TerminalModeButton
               isActive={mode === 'smart'}
               onClick={() => {
                 this.handleChangeMode('smart')
                 updateTerminalViewMode('smartOrderMode')
               }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'center'
-                }}
-              >
-                <span>Smart Trade</span>
-              </div>
-            </SmartOrderModeButton>
+              Smart Trade
+            </TerminalModeButton>
           </TerminalHeader>
 
           {!isSPOTMarket && (
@@ -312,71 +309,96 @@ class SimpleTabs extends React.Component {
           )}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
-            <FullHeightGrid xs={6} item needBorderRight>
-              <TerminalContainer>
-                <TraidingTerminal
-                  byType={'buy'}
-                  operationType={'buy'}
-                  priceType={mode}
-                  quantityPrecision={quantityPrecision}
-                  priceFromOrderbook={priceFromOrderbook}
-                  marketPriceAfterPairChange={marketPriceAfterPairChange}
-                  isSPOTMarket={isSPOTMarket}
-                  changePercentage={(value) =>
-                    this.handleChangePercentage(value, 'Buy')
-                  }
-                  pair={pair}
-                  funds={funds}
-                  key={[pair, funds]}
-                  walletValue={funds && funds[1]}
-                  marketPrice={price}
-                  confirmOperation={placeOrder}
-                  cancelOrder={cancelOrder}
-                  decimals={decimals}
-                  addLoaderToButton={this.addLoaderToButton}
-                  orderIsCreating={orderIsCreating}
-                  showOrderResult={showOrderResult}
-                  leverage={leverage}
-                  reduceOnly={reduceOnly}
-                  orderMode={orderMode}
-                  TIFMode={TIFMode}
-                  trigger={trigger}
-                />
-              </TerminalContainer>
-            </FullHeightGrid>
+            {this.props.isFuturesWarsKeyQuery &&
+            this.props.isFuturesWarsKeyQuery.isFuturesWarsKey ? (
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <SendButton
+                  style={{ width: '30%' }}
+                  type={'buy'}
+                  onClick={() => {
+                    this.handleChangeMode('smart')
+                    updateTerminalViewMode('smartOrderMode')
+                  }}
+                >
+                  use smart order
+                </SendButton>
+              </div>
+            ) : (
+              <>
+                <FullHeightGrid xs={6} item needBorderRight>
+                  <TerminalContainer>
+                    <TraidingTerminal
+                      byType={'buy'}
+                      operationType={'buy'}
+                      priceType={mode}
+                      quantityPrecision={quantityPrecision}
+                      priceFromOrderbook={priceFromOrderbook}
+                      marketPriceAfterPairChange={marketPriceAfterPairChange}
+                      isSPOTMarket={isSPOTMarket}
+                      changePercentage={(value) =>
+                        this.handleChangePercentage(value, 'Buy')
+                      }
+                      pair={pair}
+                      funds={funds}
+                      key={[pair, funds]}
+                      walletValue={funds && funds[1]}
+                      marketPrice={price}
+                      confirmOperation={placeOrder}
+                      cancelOrder={cancelOrder}
+                      decimals={decimals}
+                      addLoaderToButton={this.addLoaderToButton}
+                      orderIsCreating={orderIsCreating}
+                      showOrderResult={showOrderResult}
+                      leverage={leverage}
+                      reduceOnly={reduceOnly}
+                      orderMode={orderMode}
+                      TIFMode={TIFMode}
+                      trigger={trigger}
+                    />
+                  </TerminalContainer>
+                </FullHeightGrid>
 
-            <FullHeightGrid xs={6} item>
-              <TerminalContainer>
-                <TraidingTerminal
-                  byType={'sell'}
-                  operationType={'sell'}
-                  priceType={mode}
-                  quantityPrecision={quantityPrecision}
-                  priceFromOrderbook={priceFromOrderbook}
-                  marketPriceAfterPairChange={marketPriceAfterPairChange}
-                  isSPOTMarket={isSPOTMarket}
-                  changePercentage={(value) =>
-                    this.handleChangePercentage(value, 'Sell')
-                  }
-                  pair={pair}
-                  funds={funds}
-                  key={[pair, funds]}
-                  walletValue={funds && funds[1]}
-                  marketPrice={price}
-                  confirmOperation={placeOrder}
-                  cancelOrder={cancelOrder}
-                  decimals={decimals}
-                  addLoaderToButton={this.addLoaderToButton}
-                  orderIsCreating={orderIsCreating}
-                  showOrderResult={showOrderResult}
-                  leverage={leverage}
-                  reduceOnly={reduceOnly}
-                  orderMode={orderMode}
-                  TIFMode={TIFMode}
-                  trigger={trigger}
-                />
-              </TerminalContainer>
-            </FullHeightGrid>
+                <FullHeightGrid xs={6} item>
+                  <TerminalContainer>
+                    <TraidingTerminal
+                      byType={'sell'}
+                      operationType={'sell'}
+                      priceType={mode}
+                      quantityPrecision={quantityPrecision}
+                      priceFromOrderbook={priceFromOrderbook}
+                      marketPriceAfterPairChange={marketPriceAfterPairChange}
+                      isSPOTMarket={isSPOTMarket}
+                      changePercentage={(value) =>
+                        this.handleChangePercentage(value, 'Sell')
+                      }
+                      pair={pair}
+                      funds={funds}
+                      key={[pair, funds]}
+                      walletValue={funds && funds[1]}
+                      marketPrice={price}
+                      confirmOperation={placeOrder}
+                      cancelOrder={cancelOrder}
+                      decimals={decimals}
+                      addLoaderToButton={this.addLoaderToButton}
+                      orderIsCreating={orderIsCreating}
+                      showOrderResult={showOrderResult}
+                      leverage={leverage}
+                      reduceOnly={reduceOnly}
+                      orderMode={orderMode}
+                      TIFMode={TIFMode}
+                      trigger={trigger}
+                    />
+                  </TerminalContainer>
+                </FullHeightGrid>
+              </>
+            )}
           </TerminalMainGrid>
         </CustomCard>
       </Grid>
@@ -384,4 +406,18 @@ class SimpleTabs extends React.Component {
   }
 }
 
-export default compose(withErrorFallback)(SimpleTabs)
+export default compose(
+  withErrorFallback,
+  graphql(isFuturesWarsKey, {
+    // query: isFuturesWarsKey,
+    options: (props) => ({
+      fetchPolicy: 'cache-and-network',
+      variables: {
+        input: {
+          keyId: props.keyId,
+        },
+      },
+    }),
+    name: 'isFuturesWarsKeyQuery',
+  })
+)(SimpleTabs)

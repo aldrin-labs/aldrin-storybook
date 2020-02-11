@@ -68,8 +68,8 @@ const NavBarRaw: SFC<Props> = ({
   const pathnamePage = pathname.split('/')
   let page = pathnamePage[pathnamePage.length - 1]
 
-  if (page === 'chart') {
-    const isSPOTMarket = isSPOTMarketType(marketTypeData.chart.marketType)
+  if (/chart/.test(pathname)) {
+    const isSPOTMarket = /spot/.test(pathname)
 
     page = isSPOTMarket ? 'spot trading' : 'futures trading'
   }
@@ -180,30 +180,30 @@ const NavBarRaw: SFC<Props> = ({
                   items={[
                     {
                       text: 'Spot market',
-                      to: '/chart',
-                      onClick: () => {
-                        client.writeData({
-                          data: {
-                            chart: {
-                              __typename: 'chart',
-                              marketType: 0,
-                            },
-                          },
-                        })
-                      },
+                      to: '/chart/spot',
+                      // onClick: () => {
+                      //   client.writeData({
+                      //     data: {
+                      //       chart: {
+                      //         __typename: 'chart',
+                      //         marketType: 0,
+                      //       },
+                      //     },
+                      //   })
+                      // },
                     },
                     {
                       text: 'Futures market',
-                      to: '/chart',
+                      to: '/chart/futures',
                       onClick: () => {
-                        client.writeData({
-                          data: {
-                            chart: {
-                              __typename: 'chart',
-                              marketType: 1,
-                            },
-                          },
-                        })
+                        // client.writeData({
+                        //   data: {
+                        //     chart: {
+                        //       __typename: 'chart',
+                        //       marketType: 1,
+                        //     },
+                        //   },
+                        // })
 
                         changeCurrencyPairMutation({
                           variables: {
