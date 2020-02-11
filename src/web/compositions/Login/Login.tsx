@@ -8,7 +8,7 @@ import Login from '@core/containers/LoginCustom'
 
 
 export default ({}) => (
-  <Grid container justify="center" alignItems="center">
+  <Grid style={{ height: 'calc(100% - 3rem)' }} container justify="center" alignItems="center">
     <Login />
   </Grid>
 )
