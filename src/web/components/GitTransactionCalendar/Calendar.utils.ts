@@ -45,7 +45,7 @@ export const getCalendarData = (
   const { squareColorsRange } = getSquareColorRange(maxTransactionsCount)
 
   const actions = isSPOTCurrently ? actionsByDay : futuresActionsByDay
-
+  
   const lastDayOfYear = moment(startDate).isLeapYear() ? 367 : 366
   const mappedActionsArray = Array(lastDayOfYear)
     .fill(undefined)

@@ -149,7 +149,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
   static getDerivedStateFromProps(props: IProps, state: IState) {
     // TODO: check this condition later
-    if (state.priceForCalculate === 0 || state.entryPoint.order.type === 'market') {
+    if (state.priceForCalculate === 0 || (state.entryPoint.order.type === 'market' && !state.entryPoint.trailing.isTrailingOn)) {
       return {
         ...state,
         entryPoint: {
@@ -185,6 +185,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       price,
       componentLeverage,
     } = this.props
+
+    this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
 
     const result = getDefaultStateFromStrategySettings({
       getStrategySettingsQuery,

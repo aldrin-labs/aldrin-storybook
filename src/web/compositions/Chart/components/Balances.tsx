@@ -101,6 +101,8 @@ export const Balances = ({
   selectedKey,
   subscribeToMore,
   showFuturesTransfer,
+  isFuturesWarsKey = false,
+  futuresWarsRoundBet = 0,
 }) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
@@ -151,6 +153,8 @@ export const Balances = ({
         transferFromSpotToFutures={transferFromSpotToFutures}
         selectedAccount={selectedKey.keyId}
         showFuturesTransfer={showFuturesTransfer}
+        isFuturesWarsKey={isFuturesWarsKey}
+        futuresWarsRoundBet={futuresWarsRoundBet}
       />
       <CustomCard>
         <ChartCardHeader>Balances</ChartCardHeader>
@@ -236,14 +240,18 @@ export const Balances = ({
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer needBorder>
-                    <BalanceFuturesTitle>{isSPOTMarket ? `In order` : `locked`}</BalanceFuturesTitle>
+                    <BalanceFuturesTitle>
+                      {isSPOTMarket ? `In order` : `locked`}
+                    </BalanceFuturesTitle>
                     <BalanceFuturesValue>
                       {stripDigitPlaces(USDTFuturesFund.locked)}{' '}
                       <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer>
-                    <BalanceFuturesTitle>{isSPOTMarket ? `Availiable` : `free`}</BalanceFuturesTitle>
+                    <BalanceFuturesTitle>
+                      {isSPOTMarket ? `Availiable` : `free`}
+                    </BalanceFuturesTitle>
                     <BalanceFuturesValue>
                       {stripDigitPlaces(USDTFuturesFund.free)}{' '}
                       <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
@@ -260,42 +268,65 @@ export const Balances = ({
                 justify="space-evenly"
                 style={{ maxWidth: '100%', padding: '0 1rem' }}
               >
-                <BtnCustom
-                  btnWidth="100%"
-                  height="auto"
-                  fontSize=".8rem"
-                  padding="1rem 0 .8rem 0;"
-                  borderRadius=".8rem"
-                  btnColor={'#0B1FD1'}
-                  backgroundColor={'#fff'}
-                  hoverColor={'#fff'}
-                  hoverBackground={'#0B1FD1'}
-                  transition={'all .4s ease-out'}
-                  onClick={() => {
-                    setTransferFromSpotToFutures(true)
-                    togglePopup(true)
-                  }}
-                >
-                  transfer in
-                </BtnCustom>
-                <BtnCustom
-                  btnWidth="100%"
-                  height="auto"
-                  fontSize=".8rem"
-                  padding="1rem 0 .8rem 0;"
-                  borderRadius=".8rem"
-                  btnColor={'#0B1FD1'}
-                  backgroundColor={'#fff'}
-                  hoverColor={'#fff'}
-                  hoverBackground={'#0B1FD1'}
-                  transition={'all .4s ease-out'}
-                  onClick={() => {
-                    setTransferFromSpotToFutures(false)
-                    togglePopup(true)
-                  }}
-                >
-                  transfer out
-                </BtnCustom>
+                {isFuturesWarsKey && (
+                  <BtnCustom
+                    btnWidth="100%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding="1rem 0 .8rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={'#0B1FD1'}
+                    backgroundColor={'#fff'}
+                    hoverColor={'#fff'}
+                    hoverBackground={'#0B1FD1'}
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      togglePopup(true)
+                    }}
+                  >
+                    join
+                  </BtnCustom>
+                )}
+                {!isFuturesWarsKey && (
+                  <>
+                    <BtnCustom
+                      btnWidth="100%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding="1rem 0 .8rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={'#0B1FD1'}
+                      backgroundColor={'#fff'}
+                      hoverColor={'#fff'}
+                      hoverBackground={'#0B1FD1'}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        setTransferFromSpotToFutures(true)
+                        togglePopup(true)
+                      }}
+                    >
+                      transfer in
+                    </BtnCustom>
+                    <BtnCustom
+                      btnWidth="100%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding="1rem 0 .8rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={'#0B1FD1'}
+                      backgroundColor={'#fff'}
+                      hoverColor={'#fff'}
+                      hoverBackground={'#0B1FD1'}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        setTransferFromSpotToFutures(false)
+                        togglePopup(true)
+                      }}
+                    >
+                      transfer out
+                    </BtnCustom>
+                  </>
+                )}
               </Grid>
             </>
           )}

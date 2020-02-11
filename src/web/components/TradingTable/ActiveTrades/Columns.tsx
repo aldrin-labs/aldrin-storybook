@@ -344,7 +344,7 @@ export const DateColumn = ({ createdAt }) => {
         .toLowerCase() !== 'invalid date' ? (
         <div style={{ textAlign: 'right' }}>
           <span style={{ display: 'block', color: '#16253D' }}>
-            {String(moment(createdAt).format('DD-MM-YYYY')).replace(/-/g, '.')}
+            {String(moment(createdAt).format('ll'))}
           </span>
           <span style={{ color: '#7284A0' }}>
             {moment(createdAt).format('LT')}

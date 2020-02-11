@@ -136,6 +136,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <OrderBookTable
           data={data}
           mode={mode}
+          marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           onButtonClick={onButtonClick}
@@ -161,6 +162,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <SpreadTable
           data={data}
           mode={mode}
+          marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           openOrderHistory={getOpenOrderHistory}

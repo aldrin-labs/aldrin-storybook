@@ -266,14 +266,15 @@ export const SendButton = styled(StyledTab)`
 `
 
 export const SmartTradeButton = styled(SendButton)`
-  font-size: 1.3rem;
+  line-height: 150%;
+  font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.3rem')};
 
   @media (max-width: 1600px) {
-    font-size: 1.1rem;
+    font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.1rem')};
   }
 
   @media (min-width: 1921px) {
-    font-size: 1.1rem;
+    font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.1rem')};
   }
 `
 

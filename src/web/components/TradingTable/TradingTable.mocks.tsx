@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TableButton } from './TradingTable.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
@@ -11,6 +11,46 @@ const arrayOfSides = ['sell', 'buy']
 const arrayOfOrdersType = ['market', 'limit', 'stop']
 
 const arrayOforderStatus = ['finished', 'canceled']
+
+const StatusTooltip = () => {
+  const [showTooltip, updateTooltipState] = useState(false)
+
+  return (
+    <div
+      style={{ display: 'flex', alignItems: 'center', padding: '.4rem' }}
+      onMouseEnter={() => updateTooltipState(true)}
+      onMouseLeave={() => updateTooltipState(false)}
+    >
+      status
+      <Help
+        style={{
+          height: '1.5rem',
+          width: '1.5rem',
+          color: 'rgb(0, 93, 217)',
+          marginLeft: '.5rem',
+        }}
+      />
+      {showTooltip ? (
+        <div
+          style={{
+            background: 'rgba(0, 0, 0, .6)',
+            padding: '.4rem 2rem',
+            position: 'absolute',
+            top: '150%',
+            color: 'white',
+            transform: 'translateX(-45%)',
+          }}
+        >
+          <p>Preparing (while placing orders/waiting for act price)</p>
+          <p>Trailing entry (When trailing activated)</p>
+          {/* <p>Active (Instead inentry)</p> */}
+          <p>In loss (pnl less than 0)</p>
+          <p>In Profit (profit greater than 0)</p>
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 export const tradingTableTabConfig = [
   'openOrders',
@@ -95,7 +135,10 @@ export const activeTradesColumnNames = [
   },
   { label: 'Stop', id: 'stopLoss' },
   { label: 'Pnl/Roe', id: 'profit' },
-  { label: 'status', id: 'status' },
+  {
+    label: <StatusTooltip />,
+    id: 'status',
+  },
   { label: 'close', id: 'close', isSortable: false },
   // { label: 'Entry point', id: 'entryOrder' },
   // { label: 'Take a profit', id: 'takeProfit' },

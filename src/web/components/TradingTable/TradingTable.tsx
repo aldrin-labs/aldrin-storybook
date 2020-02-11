@@ -9,6 +9,7 @@ import 'react-dates/lib/css/_datepicker.css'
 import { IProps, IState } from './TradingTable.types'
 import { tradingTableTabConfig } from './TradingTable.mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
+import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 
 import ActiveTrades from './ActiveTrades/ActiveTrades'
 import PositionsTable from './PositionsTable/PositionsTable'
@@ -160,6 +161,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handleTabChange: this.handleTabChange,
           }}
         />
+        <StyleForCalendar />
       </>
     )
   }

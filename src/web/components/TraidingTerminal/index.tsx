@@ -841,6 +841,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             ? {
                 workingType:
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
+                type: priceType === 'stop-limit' ? 'stop-limit' : 'take-profit-limit'
               }
             : {}),
           ...(priceType !== 'stop-limit' && priceType !== 'take-profit'

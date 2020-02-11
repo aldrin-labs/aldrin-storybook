@@ -168,7 +168,7 @@ class PositionsTable extends React.PureComponent {
         variables: {
           input: {
             exchange: 'binance',
-            pair: that.props.currencyPair,
+            pair: `${that.props.currencyPair}:${that.props.marketType}`,
           },
         },
         fetchPolicy: 'cache-only',

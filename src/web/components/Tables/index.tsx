@@ -754,7 +754,7 @@ const CustomTable = (props: Props) => {
                       className={rowHoverClassName}
                       onClick={() =>
                         onTrClick
-                          ? onTrClick(row.orderbook ? row.orderbook : {})
+                          ? onTrClick(row.orderbook ? row.orderbook : row)
                           : typeOfCheckbox === 'expand'
                           ? onChange(row.id)
                           : null

@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography'
 import { withSnackbar } from 'notistack'
 import { withTheme } from '@material-ui/styles'
 
-
 import { Grid } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import {
@@ -32,6 +31,7 @@ import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import FuturesWarsRoomSelector from '@core/components/FuturesWarsRoomSelector/index'
 import { keysNames } from '@core/graphql/queries/chart/keysNames'
 import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
@@ -80,7 +80,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     loadingRequest: false,
   }
 
-  showAddingExchangeKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of adding key' }: { status: "ERR" | "OK", errorMessage: string }) => {
+  showAddingExchangeKeyStatus = ({
+    status = 'ERR',
+    errorMessage = 'Something went wrong with the result of adding key',
+  }: {
+    status: 'ERR' | 'OK'
+    errorMessage: string
+  }) => {
     const { enqueueSnackbar } = this.props
     if (status === 'OK') {
       enqueueSnackbar(`Your key successful added`, { variant: 'success' })
@@ -89,7 +95,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     }
   }
 
-  showGenerateBrokerKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of adding key' }: { status: "ERR" | "OK", errorMessage: string }) => {
+  showGenerateBrokerKeyStatus = ({
+    status = 'ERR',
+    errorMessage = 'Something went wrong with the result of adding key',
+  }: {
+    status: 'ERR' | 'OK'
+    errorMessage: string
+  }) => {
     const { enqueueSnackbar } = this.props
     if (status === 'OK') {
       enqueueSnackbar(`Broker key successful added`, { variant: 'success' })
@@ -98,23 +110,87 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     }
   }
 
+  showFuturesWarsKeyStatus = ({
+    status = 'ERR',
+    errorMessage = 'Something went wrong with the result of creating futures wars key',
+  }: {
+    status: 'ERR' | 'OK'
+    errorMessage: string
+  }) => {
+    const { enqueueSnackbar } = this.props
+    if (status === 'OK') {
+      enqueueSnackbar(`FuturesWars key successful created`, { variant: 'success' })
+    } else {
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
+
   handleGenerateBrokerKey = async () => {
-    const { generateBrokerKeyMutation, setCurrentStep, onboarding, enqueueSnackbar } = this.props
+    const {
+      generateBrokerKeyMutation,
+      setCurrentStep,
+      onboarding,
+      enqueueSnackbar,
+    } = this.props
     this.setState({ loadingRequest: true })
 
     try {
-    const resp = await generateBrokerKeyMutation()
-    const { data } = resp
-    const { status = 'ERR', errorMessage = 'Something went wrong with generating broker key' } = data.generateBrokerKey || {
-      status: 'ERR', errorMessage: 'Something went wrong with generating broker key'
+      const resp = await generateBrokerKeyMutation()
+      const { data } = resp
+      const {
+        status = 'ERR',
+        errorMessage = 'Something went wrong with generating broker key',
+      } = data.generateBrokerKey || {
+        status: 'ERR',
+        errorMessage: 'Something went wrong with generating broker key',
+      }
+      this.showGenerateBrokerKeyStatus({ status, errorMessage })
+    } catch (error) {
+      console.log('error handleGenerateBrokerKey', error)
+      this.showGenerateBrokerKeyStatus({
+        status: 'ERR',
+        errorMessage: error.message,
+      })
     }
-    this.showGenerateBrokerKeyStatus({ status, errorMessage })
-
-  } catch(error) {
-    console.log('error handleGenerateBrokerKey', error)
-    this.showGenerateBrokerKeyStatus({ status: 'ERR', errorMessage: error.message })
-  }
     onboarding ? setCurrentStep('binanceAccountCreated') : this.handleClose()
+  }
+
+  handleGenerateFuturesWarsAccount = async () => {
+    const {
+      generateBrokerKeyMutation,
+      setCurrentStep,
+      onboarding,
+      enqueueSnackbar,
+    } = this.props
+    const { roomId } = this.state
+
+    this.setState({ loadingRequest: true })
+
+    try {
+      const resp = await generateBrokerKeyMutation({ variables: {
+        input: {
+          isFuturesWarsKey: true,
+          roomId: roomId,
+        }
+      } })
+      const { data } = resp
+      const {
+        status = 'ERR',
+        errorMessage = 'Something went wrong with generating FuturesWars key',
+      } = data.generateBrokerKey || {
+        status: 'ERR',
+        errorMessage: 'Something went wrong with generating FuturesWars key',
+      }
+      this.showFuturesWarsKeyStatus({ status, errorMessage })
+    } catch (error) {
+      console.log('error handleGenerateBrokerKey FuturesWars', error)
+      this.showFuturesWarsKeyStatus({
+        status: 'ERR',
+        errorMessage: error.message,
+      })
+    }
+    onboarding ? setCurrentStep('binanceAccountCreated') : this.handleClose()
+
   }
 
   handleSubmit = async () => {
@@ -134,8 +210,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         variables,
       })
 
-      const { status = 'ERR', errorMessage = 'Something went wrong' } = data.addExchangeKey || {
-        status: 'ERR', errorMessage: 'Something went wrong',
+      const {
+        status = 'ERR',
+        errorMessage = 'Something went wrong',
+      } = data.addExchangeKey || {
+        status: 'ERR',
+        errorMessage: 'Something went wrong',
       }
 
       if (status === 'ERR') {
@@ -143,7 +223,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         this.setState({ error: errorMessage })
         return false
       }
-
 
       this.showAddingExchangeKeyStatus({ status, errorMessage })
       this.setState({
@@ -156,7 +235,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         loadingRequest: false,
       })
     } catch (error) {
-      this.showAddingExchangeKeyStatus({ status: 'ERR', errorMessage: error.message })
+      this.showAddingExchangeKeyStatus({
+        status: 'ERR',
+        errorMessage: error.message,
+      })
       console.log(error)
     }
 
@@ -169,6 +251,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 
   handleSelectExchange = (e) => {
     this.setState({ exchange: e.value.toLowerCase() })
+  }
+
+  handleSelectRoomId = (value) => {
+    this.setState({ roomId: value })
   }
 
   handleClickOpen = () => {
@@ -208,6 +294,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       existCustomButton = false,
       CustomButton,
       numberOfKeys = 0,
+      isFuturesWars = false,
     } = this.props
 
     const {
@@ -218,6 +305,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       error,
       showWarning,
       loadingRequest,
+      roomId,
     } = this.state
 
     return (
@@ -283,7 +371,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               borderRadius={'1rem'}
               color={black.custom}
             >
-              Add Api Key
+              {isFuturesWars ? 'Create futures wars account' : `Add Api Key`}
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
@@ -303,7 +391,83 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               }}
               style={{ minWidth: '440px' }}
             >
-              {!loadingRequest ? (
+              {!loadingRequest && isFuturesWars ? (
+                <GridCustom>
+                  <Grid
+                    container
+                    justify={'space-between'}
+                    style={{ padding: '3rem 0' }}
+                  >
+                    <Grid container direction={'column'}>
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem', paddingBottom: '1.4rem', color: '#DD6956' }}
+                      >
+                        You must understand that you risk losing money. But you
+                        can also win it
+                      </Typography>
+                    </Grid>
+                    <Grid justify="center" container direction={'column'} style={{ height: '4rem'}}>
+                      <Typography
+                        align={`center`}
+                      >
+                        Select room:
+                      </Typography>
+                      <FuturesWarsRoomSelector onChange={this.handleSelectRoomId} />
+                    </Grid>
+                    <Grid container direction={'column'}>
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem', color: '#16253D' }}
+                      >
+                        In order to start the game you must go to the futures
+                        terminal and choose your futures wars account from the
+                        list available from above
+                      </Typography>
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem', color: '#16253D' }}
+                      >
+                        You will need to transfer the set amount to your balance
+                        by pressing the "Join" button in the terminal. Half of
+                        this amount is your deposit for trading, half will go to
+                        the betting bank. Then wait for the round to start and
+                        trade as long as you want until the round is over.{' '}
+                      </Typography>
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem', color: '#16253D' }}
+                      >
+                        At the end of the round, the winner will receive the
+                        bank.
+                      </Typography>
+                      <Typography
+                        align={`center`}
+                        style={{ paddingTop: '1.4rem', color: '#16253D' }}
+                      >
+                        Statistics, rating and time to start and end of the
+                        round you can see in the telegram bot @futureswars_bot
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container justify={'center'}>
+                    <BtnCustom
+                      btnWidth={'45%'}
+                      borderRadius={'8px'}
+                      btnColor={'#165BE0'}
+                      borderColor={'#165BE0'}
+                      padding={'1.5rem'}
+                      height={'auto'}
+                      borderWidth={'2px'}
+                      fontSize={'1.2rem'}
+                      disabled={!roomId}
+                      onClick={this.handleGenerateFuturesWarsAccount}
+                    >
+                      Ok, let's start
+                    </BtnCustom>
+                  </Grid>
+                </GridCustom>
+              ) : !loadingRequest && !isFuturesWars ? (
                 <Grid>
                   <GridCustom
                     container
@@ -502,7 +666,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </div>
               )}
 
-              {includeCommonBinanceKey && !loadingRequest && (
+              {includeCommonBinanceKey && !isFuturesWars && !loadingRequest && (
                 <Grid container justify="space-between" alignItems="center">
                   <LinkCustom
                     href={'#'}

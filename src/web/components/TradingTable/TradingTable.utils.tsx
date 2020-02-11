@@ -90,7 +90,7 @@ export const getTableHead = (
   marketType: number = 0,
   refetch: () => void,
   updatePositionsHandler: () => Promise<void>,
-  positionsRefetchInProcess = false,
+  positionsRefetchInProcess = false
 ): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
@@ -101,7 +101,11 @@ export const getTableHead = (
     : tab === 'funds'
     ? fundsColumnNames
     : tab === 'positions'
-    ? positionsColumnNames(refetch, updatePositionsHandler, positionsRefetchInProcess)
+    ? positionsColumnNames(
+        refetch,
+        updatePositionsHandler,
+        positionsRefetchInProcess
+      )
     : tab === 'activeTrades'
     ? activeTradesColumnNames
     : tab === 'strategiesHistory'
@@ -185,7 +189,18 @@ export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
   return [0, 0]
 }
 
-const getActiveOrderStatus = ({ state, profitPercentage }) => {
+type IStatus = {
+  state: { state: string }
+  profitPercentage: number
+}
+
+const getActiveOrderStatus = ({
+  state,
+  profitPercentage,
+}: IStatus): [
+  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing',
+  string
+] => {
   if (state && state.state && state.state !== 'WaitForEntry') {
     const { state: status } = state
 
@@ -193,9 +208,9 @@ const getActiveOrderStatus = ({ state, profitPercentage }) => {
       return ['Trailing entry', '#29AC80']
     }
 
-    if (status === 'InEntry') {
-      return ['Active', '#29AC80']
-    }
+    // if (status === 'InEntry') {
+    //   return ['Active', '#29AC80']
+    // }
 
     if (profitPercentage > 0) {
       return ['In Profit', '#29AC80']
@@ -215,15 +230,14 @@ export const filterOpenOrders = ({
 }) => {
   return (
     !canceledOrders.includes(order.info.orderId) &&
+    order.type &&
     order.type !== 'market' &&
     (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
       (order.marketId === '0' && order.symbol)) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
-      order.status === 'NEW' || 
-      order.status === 'expired'
-      )
-
+      order.status === 'NEW' ||
+      order.status === 'expired')
   )
 }
 
@@ -544,7 +558,8 @@ export const combineActiveTradesTable = (
       // : price
 
       const profitPercentage =
-        ((currentPrice / entryOrderPrice) * 100 - 100) * leverage *
+        ((currentPrice / entryOrderPrice) * 100 - 100) *
+        leverage *
         (isBuyTypeOrder(side) ? 1 : -1)
 
       const profitAmount =
@@ -697,7 +712,10 @@ export const combineActiveTradesTable = (
                 cancelOrderFunc(el._id)
               }}
             >
-              {status[0] === 'Waiting' ? 'cancel' : 'market'}
+              {activeOrderStatus === 'Preparing' ||
+              activeOrderStatus === 'Trailing entry'
+                ? 'cancel'
+                : 'market'}
             </BtnCustom>
           ),
         },
@@ -966,7 +984,7 @@ export const combineStrategiesHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(date).format('DD-MM-YYYY')).replace(/-/g, '.')}
+                {String(moment(date).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(date).format('LT')}
@@ -1194,10 +1212,7 @@ export const combineOpenOrdersTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                  /-/g,
-                  '.'
-                )}
+                {String(moment(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(timestamp).format('LT')}
@@ -1291,7 +1306,7 @@ export const combineOrderHistoryTable = (
           : `<= ${triggerConditions}`
 
       return {
-        id: `${orderId}${timestamp}${origQty}`,
+        id: `${orderId}_${timestamp}_${origQty}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -1404,10 +1419,7 @@ export const combineOrderHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                  /-/g,
-                  '.'
-                )}
+                {String(moment(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(timestamp).format('LT')}
@@ -1539,10 +1551,7 @@ export const combineTradeHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('DD-MM-YYYY')).replace(
-                  /-/g,
-                  '.'
-                )}
+                {String(moment(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {moment(timestamp).format('LT')}
