@@ -1,13 +1,21 @@
 import React, { ChangeEvent, useState } from 'react'
 import { compose } from 'recompose'
-import {
-  Grid,
-  Typography,
-  Theme,
-  Input,
-  Button,
-} from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
+
+import {
+  SubmitLoginButton,
+  StyledInputLogin,
+  LoginContainer,
+  LoginHeadingBox,
+  LoginContainerHeading,
+  LoginContainerText,
+  InputContainer,
+  LoginTextContainer,
+  SubmitButtonContainer,
+} from '@sb/compositions/Login/Login.styles'
+
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 const ForgotPassoword = ({
   theme,
@@ -17,51 +25,54 @@ const ForgotPassoword = ({
 }: {
   theme: Theme
   // TODO: Need to replace any here
-  onForgotPasswordClick: ({
-    email,
-  }: {
-    email: string
-  }) => any
+  onForgotPasswordClick: ({ email }: { email: string }) => any
   status: 'error' | 'success'
   errorMessage: string
 }) => {
   const [email, setEmail] = useState('')
 
   return (
-    <Grid>
-      <Grid>
-        <Typography>Forgot your password?</Typography>
-      </Grid>
-      <Grid>
-        <Typography>
+    <LoginContainer>
+      <LoginHeadingBox>
+        <LoginContainerHeading>Forgot your password?</LoginContainerHeading>
+      </LoginHeadingBox>
+      <LoginTextContainer>
+        <LoginContainerText>
           Enter the e-mail address to which your account is registered. We will
           send you a link to reset your password.
-        </Typography>
-      </Grid>
-      <Grid>
-        <Input
+        </LoginContainerText>
+      </LoginTextContainer>
+      <InputContainer>
+        <StyledInputLogin
+          placeholder="E-mail"
           value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
         />
-      </Grid>
-      <Grid>
+      </InputContainer>
+      <LoginTextContainer>
         {status === 'error' && errorMessage !== '' && (
-          <Typography>{errorMessage}</Typography>
+          <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+            {errorMessage}
+          </TypographyWithCustomColor>
         )}
         {status === 'success' && errorMessage === '' && (
-          <Typography>
+          <TypographyWithCustomColor textColor={theme.customPalette.green.main}>
             We've just sent you an email to reset your password
-          </Typography>
+          </TypographyWithCustomColor>
         )}
-      </Grid>
-      <Grid>
-        <Button onClick={() => onForgotPasswordClick({ email })}>
+      </LoginTextContainer>
+      <SubmitButtonContainer>
+        <SubmitLoginButton
+          variant="contained"
+          color="secondary"
+          onClick={() => onForgotPasswordClick({ email })}
+        >
           Confirm and go to the mailbox
-        </Button>
-      </Grid>
-    </Grid>
+        </SubmitLoginButton>
+      </SubmitButtonContainer>
+    </LoginContainer>
   )
 }
 

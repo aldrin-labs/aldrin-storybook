@@ -2,6 +2,8 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Grid, Typography, Button, Theme } from '@material-ui/core'
 
+import { Outlined } from '@sb/compositions/Profile/compositions/Withdrawal/Withdrawal.styles'
+
 export const MfaHeadingCss = css`
   font-weight: bold;
   font-size: 4rem;
@@ -55,6 +57,50 @@ export const SubmitLoginButtonCss = css`
   box-shadow: rgba(8, 22, 58, 0.3) 0px 8px 12px;
 `
 
+export const LoginContainerCss = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  position: relative;
+  padding: 3rem 6rem;
+  background: #edf5f5;
+`
+
+export const LoginContainerHeadingCss = css`
+  font-weight: bold;
+  font-size: 2.4rem;
+  line-height: 100%;
+
+  color: #16253d;
+`
+
+export const LoginContainerTextCss = css`
+  font-size: 2rem;
+  line-height: 100%;
+
+  color: rgba(22, 37, 61, 0.84);
+`
+
+export const LoginHeadingBoxCss = css`
+  padding: 0 1rem 5rem 1rem;
+  border-bottom: 2px solid #e7ecf3;
+`
+
+export const LoginTextContainerCss = css`
+  padding-bottom: 3rem;
+`
+
+export const InputContainerCss = css`
+  ${LoginTextContainerCss}
+  width: 100%;
+`
+
+export const SubmitButtonContainerCss = css`
+  position: absolute;
+  bottom: -2.5rem;
+`
+
 export const MfaHeading = styled(({ ...props }) => <Typography {...props} />)`
   ${MfaHeadingCss}
 `
@@ -89,4 +135,51 @@ export const SubmitLoginButton = styled(({ ...props }) => (
   <Button {...props} />
 ))`
   ${SubmitLoginButtonCss}
+`
+
+export const SubmitButtonContainer = styled(({ ...props }) => (
+  <Button {...props} />
+))`
+  ${SubmitButtonContainerCss}
+`
+
+export const LoginHeadingBox = styled(({ ...props }) => <Grid {...props} />)`
+  ${LoginHeadingBoxCss}
+`
+
+export const LoginContainer = styled(({ ...props }) => <Grid {...props} />)`
+  ${LoginContainerCss}
+`
+
+export const InputContainer = styled(({ ...props }) => <Grid {...props} />)`
+  ${InputContainerCss}
+`
+
+export const LoginTextContainer = styled(({ ...props }) => <Grid {...props} />)`
+  ${LoginTextContainerCss}
+`
+
+export const LoginContainerHeading = styled(({ ...props }) => (
+  <Typography {...props} />
+))`
+  ${LoginContainerHeadingCss}
+`
+
+export const LoginContainerText = styled(({ ...props }) => (
+  <Typography {...props} />
+))`
+  ${LoginContainerTextCss}
+`
+
+export const StyledInputLogin = styled(({ ...props }) => (
+  <Outlined {...props} />
+))`
+  width: 100%;
+  background: #fff;
+
+  & input {
+    font-size: 2rem;
+    color: #bec5cf;
+    text-align: left;
+  }
 `
