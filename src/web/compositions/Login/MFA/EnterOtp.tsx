@@ -7,6 +7,21 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import GoogleAuthenticationLogo from '@icons/googleAuthentication.svg'
 
+import {
+  SubmitLoginButton,
+  StyledInputLogin,
+  LoginContainer,
+  LoginHeadingBox,
+  LoginHeadingText,
+  LoginText,
+  InputContainer,
+  LoginTextContainer,
+  SubmitButtonContainer,
+} from '@sb/compositions/Login/Login.styles'
+
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+
+
 const EnterOtp = ({
   theme,
   changeStep,
@@ -32,17 +47,17 @@ const EnterOtp = ({
   }
 
   return (
-    <Grid>
-      <Grid>
-        <Typography>Google Authentication</Typography>
-      </Grid>
-      <Grid>
+    <LoginContainer>
+      <LoginHeadingBox>
+        <LoginHeadingText>Google Authentication</LoginHeadingText>
+      </LoginHeadingBox>
+      <LoginTextContainer container justify="space-around">
         <SvgIcon src={GoogleAuthenticationLogo} width="3.5rem" height="auto" />
-        <Typography>
+        <LoginText>
           Input the 6-digit code in your Google Authenticator app
-        </Typography>
-      </Grid>
-      <Grid>
+        </LoginText>
+      </LoginTextContainer>
+      <LoginTextContainer>
         <OtpInput
           value={otp}
           onChange={(otp: string) => otpChangeHandler(otp)}
@@ -50,17 +65,17 @@ const EnterOtp = ({
           separator={<span>-</span>}
         />
         {status === 'error' && errorMessage !== '' && (
-          <Typography>
-            {errorMessage}
-          </Typography>
+          <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+          {errorMessage}
+          </TypographyWithCustomColor>
         )}
-      </Grid>
-      <Grid>
-        <Typography onClick={() => changeStep('recoveryCode')}>
+      </LoginTextContainer>
+      <LoginTextContainer>
+        <LoginText onClick={() => changeStep('recoveryCode')}>
           Can't access Google Authenticator?
-        </Typography>
-      </Grid>
-    </Grid>
+        </LoginText>
+      </LoginTextContainer>
+    </LoginContainer>
   )
 }
 
