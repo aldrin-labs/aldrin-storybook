@@ -83,12 +83,19 @@ export const LoginTextCss = css`
 `
 
 export const LoginHeadingBoxCss = css`
-  padding: 0 1rem 5rem 1rem;
+  width: 100%;
+  text-align: center;
+  padding: 0 1rem 1rem 1rem;
   border-bottom: 2px solid #e7ecf3;
 `
 
 export const LoginTextContainerCss = css`
   padding-bottom: 3rem;
+`
+
+export const LoginSubHeadingBoxCss = css`
+  padding-top: 5rem;
+  ${LoginTextContainerCss}
 `
 
 export const InputContainerCss = css`
@@ -102,7 +109,25 @@ export const SubmitButtonContainerCss = css`
 `
 
 export const LoginLinkCss = css`
-  background: #165BE0;  
+  background: #165be0;
+`
+
+export const LoginGoogleAuthHeadingTextCss = css`
+  ${LoginTextCss}
+  padding-left: 3rem;
+`
+
+export const TextLinkCss = css`
+  font-weight: 500;
+  font-size: 1.6rem;
+  color: #165be0;
+  cursor: pointer;
+`
+
+export const OtpInputContainerCss = css`
+  & > div {
+    padding: 1rem;
+  }
 `
 
 export const MfaHeading = styled(({ ...props }) => <Typography {...props} />)`
@@ -169,9 +194,7 @@ export const LoginHeadingText = styled(({ ...props }) => (
   ${LoginHeadingTextCss}
 `
 
-export const LoginText = styled(({ ...props }) => (
-  <Typography {...props} />
-))`
+export const LoginText = styled(({ ...props }) => <Typography {...props} />)`
   ${LoginTextCss}
 `
 
@@ -188,9 +211,23 @@ export const StyledInputLogin = styled(({ ...props }) => (
   }
 `
 
-export const SubmitLoginLink = styled(({ ...props }) => (
-    <Link {...props} />
-  ))`
-    ${SubmitLoginButtonCss}
-    ${LoginLinkCss}
-  `
+export const SubmitLoginLink = styled(({ ...props }) => <Link {...props} />)`
+  ${SubmitLoginButtonCss}
+  ${LoginLinkCss}
+`
+
+export const LoginSubHeadingBox = styled(({ ...props }) => (
+  <Grid {...props} />
+))`
+  ${LoginSubHeadingBoxCss}
+`
+
+export const LoginGoogleAuthHeadingText = styled(({ ...props }) => (
+  <Typography {...props} />
+))`
+  ${LoginGoogleAuthHeadingTextCss}
+`
+
+export const TextLink = styled(({ ...props }) => <Typography {...props} />)`
+  ${TextLinkCss}
+`

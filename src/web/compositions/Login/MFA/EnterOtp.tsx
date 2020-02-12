@@ -1,26 +1,23 @@
 import React, { useState } from 'react'
 import OtpInput from 'react-otp-input'
 import { compose } from 'recompose'
-import { Grid, Typography, Theme } from '@material-ui/core'
+import { Theme, Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import GoogleAuthenticationLogo from '@icons/googleAuthentication.svg'
 
 import {
-  SubmitLoginButton,
-  StyledInputLogin,
   LoginContainer,
   LoginHeadingBox,
   LoginHeadingText,
-  LoginText,
   InputContainer,
-  LoginTextContainer,
-  SubmitButtonContainer,
+  LoginSubHeadingBox,
+  LoginGoogleAuthHeadingText,
+  TextLink,
 } from '@sb/compositions/Login/Login.styles'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
-
 
 const EnterOtp = ({
   theme,
@@ -35,7 +32,6 @@ const EnterOtp = ({
   status: 'error' | 'success'
   errorMessage: string
 }) => {
-
   const [otp, setOtp] = useState('')
 
   const otpChangeHandler = (otp: string) => {
@@ -51,30 +47,48 @@ const EnterOtp = ({
       <LoginHeadingBox>
         <LoginHeadingText>Google Authentication</LoginHeadingText>
       </LoginHeadingBox>
-      <LoginTextContainer container justify="space-around">
+      <LoginSubHeadingBox container alignItems="center" wrap="nowrap">
         <SvgIcon src={GoogleAuthenticationLogo} width="3.5rem" height="auto" />
-        <LoginText>
+        <LoginGoogleAuthHeadingText>
           Input the 6-digit code in your Google Authenticator app
-        </LoginText>
-      </LoginTextContainer>
-      <LoginTextContainer>
+        </LoginGoogleAuthHeadingText>
+      </LoginSubHeadingBox>
+      <InputContainer>
         <OtpInput
+          containerStyle={{
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          inputStyle={{
+            width: '1.4em',
+            height: '1.5em',
+            textAlign: 'center',
+            fontSize: '3.2rem',
+            fontWeight: 'bold',
+            background: 'transparent',
+            outline: 'none',
+            border: '0',
+            borderBottom: '2px solid #0B1FD1',
+          }}
+          shouldAutoFocus
           value={otp}
           onChange={(otp: string) => otpChangeHandler(otp)}
           numInputs={6}
-          separator={<span>-</span>}
+        separator={<span style={{ padding: '1rem' }} >{" "}</span>}
         />
         {status === 'error' && errorMessage !== '' && (
           <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
-          {errorMessage}
+            {errorMessage}
           </TypographyWithCustomColor>
         )}
-      </LoginTextContainer>
-      <LoginTextContainer>
-        <LoginText onClick={() => changeStep('recoveryCode')}>
+      </InputContainer>
+      <Grid>
+        <TextLink onClick={() => changeStep('recoveryCode')}>
           Can't access Google Authenticator?
-        </LoginText>
-      </LoginTextContainer>
+        </TextLink>
+      </Grid>
     </LoginContainer>
   )
 }
