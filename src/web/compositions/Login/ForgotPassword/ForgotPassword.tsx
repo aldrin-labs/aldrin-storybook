@@ -8,8 +8,8 @@ import {
   StyledInputLogin,
   LoginContainer,
   LoginHeadingBox,
-  LoginContainerHeading,
-  LoginContainerText,
+  LoginHeadingText,
+  LoginText,
   InputContainer,
   LoginTextContainer,
   SubmitButtonContainer,
@@ -34,13 +34,13 @@ const ForgotPassoword = ({
   return (
     <LoginContainer>
       <LoginHeadingBox>
-        <LoginContainerHeading>Forgot your password?</LoginContainerHeading>
+        <LoginHeadingText>Forgot your password?</LoginHeadingText>
       </LoginHeadingBox>
       <LoginTextContainer>
-        <LoginContainerText>
+        <LoginText>
           Enter the e-mail address to which your account is registered. We will
           send you a link to reset your password.
-        </LoginContainerText>
+        </LoginText>
       </LoginTextContainer>
       <InputContainer>
         <StyledInputLogin

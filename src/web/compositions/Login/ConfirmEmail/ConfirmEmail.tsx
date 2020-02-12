@@ -1,35 +1,57 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { Grid, Typography, Button, Theme, Link } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
 import CubeLogo from '@icons/auth0Logo.png'
 import { Logo } from './ConfirmEmail.styles'
 
-const ConfirmEmail = ({ theme, userEmailHosting }: { theme: Theme, userEmailHosting: string }) => {
+import {
+  LoginContainer,
+  LoginHeadingBox,
+  LoginHeadingText,
+  LoginText,
+  LoginTextContainer,
+  SubmitButtonContainer,
+  SubmitLoginLink,
+} from '@sb/compositions/Login/Login.styles'
+
+const ConfirmEmail = ({
+  theme,
+  userEmailHosting,
+}: {
+  theme: Theme
+  userEmailHosting: string
+}) => {
   return (
-    <Grid>
-      <Grid>
+    <LoginContainer>
+      <LoginTextContainer container justify="center" alignItems="center">
         <Logo src={CubeLogo} />
-      </Grid>
-      <Grid>
-        <Typography>Confirm your e-mail</Typography>
-      </Grid>
-      <Grid>
-        <Typography>Thank you for joining cryptocurrencies.ai</Typography>
-      </Grid>
-      <Grid>
-        <Typography>
+      </LoginTextContainer>
+      <LoginHeadingBox>
+        <LoginHeadingText>Confirm your e-mail</LoginHeadingText>
+      </LoginHeadingBox>
+      <LoginTextContainer>
+        <LoginText>Thank you for joining cryptocurrencies.ai</LoginText>
+      </LoginTextContainer>
+      <LoginTextContainer>
+        <LoginText>
           We have sent a confirmation email to the address indicated during your
           registration.
-        </Typography>
-      </Grid>
-      <Grid>
-        <Link target="_blank" rel="noopener noreferrer" underline="none" variant="body2" href={`https://${userEmailHosting}`}>
+        </LoginText>
+      </LoginTextContainer>
+      <SubmitButtonContainer>
+        <SubmitLoginLink
+          target="_blank"
+          rel="noopener noreferrer"
+          underline="none"
+          variant="body2"
+          href={`https://${userEmailHosting}`}
+        >
           Go to e-mail and confirm
-        </Link>
-      </Grid>
-    </Grid>
+        </SubmitLoginLink>
+      </SubmitButtonContainer>
+    </LoginContainer>
   )
 }
 
