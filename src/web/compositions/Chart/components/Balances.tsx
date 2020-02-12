@@ -101,8 +101,11 @@ export const Balances = ({
   selectedKey,
   subscribeToMore,
   showFuturesTransfer,
+  timerForFuturesWars = {},
+  isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
+
 }) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
@@ -155,6 +158,7 @@ export const Balances = ({
         showFuturesTransfer={showFuturesTransfer}
         isFuturesWarsKey={isFuturesWarsKey}
         futuresWarsRoundBet={futuresWarsRoundBet}
+        timerForFuturesWars={timerForFuturesWars}
       />
       <CustomCard>
         <ChartCardHeader>Balances</ChartCardHeader>
@@ -270,6 +274,7 @@ export const Balances = ({
               >
                 {isFuturesWarsKey && (
                   <BtnCustom
+                    disabled={isAlreadyJoined}
                     btnWidth="100%"
                     height="auto"
                     fontSize=".8rem"
@@ -284,7 +289,7 @@ export const Balances = ({
                       togglePopup(true)
                     }}
                   >
-                    join
+                    {isAlreadyJoined ? 'Joined' : `Join`}
                   </BtnCustom>
                 )}
                 {!isFuturesWarsKey && (

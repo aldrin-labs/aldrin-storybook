@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo'
 import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
+import Timer from 'react-compound-timer'
 
 import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
 import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
@@ -59,6 +60,7 @@ const TransferPopup = ({
   futuresWarsRoundBet,
   joinFuturesWarsRoundMutation,
   enqueueSnackbar,
+  timerForFuturesWars,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'USDT',
@@ -151,7 +153,9 @@ const TransferPopup = ({
               color: '#16253D',
             }}
           >
-            {isFuturesWarsKey ? `Join futures wars` : transferFromSpotToFutures
+            {isFuturesWarsKey
+              ? `Join futures wars`
+              : transferFromSpotToFutures
               ? `Trasfer from spot to futures account`
               : `Trasfer from futures to spot account`}
           </TypographyCustomHeading>
@@ -179,9 +183,58 @@ const TransferPopup = ({
                     the bank. The remaining {futuresWarsRoundBet / 2} USDT is
                     your capital for trading in this round.
                   </Typography>
-                  <Typography style={{ color: '#16253D' }}>
+                  <Typography
+                    style={{ paddingBottom: '1.4rem', color: '#16253D' }}
+                  >
                     Good luck!
                   </Typography>
+                  {timerForFuturesWars && timerForFuturesWars.isEnabled && (
+                    <Grid
+                      container
+                      alignItems="center"
+                      justify="center"
+                      wrap="nowrap"
+                    >
+                      <Typography
+                        style={{
+                          paddingBottom: '1.4rem',
+                          paddingRight: '1.4rem',
+                          color: '#16253D',
+                        }}
+                      >
+                        Round started in:
+                      </Typography>
+                      <Typography
+                        style={{
+                          paddingBottom: '1.4rem',
+                          color: '#16253D',
+                          width: '20%',
+                        }}
+                      >
+                        <Timer
+                          initialTime={
+                            (timerForFuturesWars.startedAt -
+                            Math.floor(+new Date() / 1000)) * 1000
+                          }
+                          direction="backward"
+                          startImmediately={true}
+                        >
+                          {() => (
+                            <React.Fragment>
+                              <Timer.Days />
+                              {'D '}
+                              <Timer.Hours />
+                              {'H '}
+                              <Timer.Minutes />
+                              {'M '}
+                              <Timer.Seconds />
+                              {'S '}
+                            </React.Fragment>
+                          )}
+                        </Timer>
+                      </Typography>
+                    </Grid>
+                  )}
                 </>
               )}
               {isFuturesWarsKey && futuresWarsRoundBet === 0 && (
