@@ -194,6 +194,14 @@ export const ChartGridContainer = styled(Grid)`
   height: 4%;
 
   padding: 0 0 0 0.8rem !important;
+
+  @media screen and (max-width: 1440px) {
+    height: 3%;
+  }
+
+  @media screen and (max-width: 1140px) {
+    height: 2.5%;
+  }
 `
 
 export const TablesContainer = styled(Grid)`
@@ -227,6 +235,22 @@ export const TradingTerminalContainer = styled(
 
   @media (max-width: 1080px) {
     flex-wrap: wrap;
+  }
+
+  @media screen and (max-width: 1440px) {
+    top: calc(3% + 0.8rem);
+    height: ${(props) =>
+      props.isDefaultTerminalViewMode
+        ? 'calc(60% - .8rem)'
+        : 'calc(49% - .8rem)'};
+  }
+
+  @media screen and (max-width: 1140px) {
+    top: calc(2.5% + 0.8rem);
+    height: ${(props) =>
+      props.isDefaultTerminalViewMode
+        ? 'calc(60.5% - .8rem)'
+        : 'calc(49.5% - .8rem)'};
   }
 `
 
@@ -309,6 +333,10 @@ export const Container = styled(Grid)`
   margin: 0;
   font-family: DM Sans;
   background-color: #f9fbfd;
+
+  @media (max-width: 1400px) {
+    height: calc(100vh - 5rem);
+  }
 `
 
 export const WatchItemWrapper = styled.div`
