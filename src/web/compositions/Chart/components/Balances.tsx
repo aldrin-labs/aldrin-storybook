@@ -130,6 +130,7 @@ export const Balances = ({
     return { quantity, value }
   })
 
+  
   const [
     USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
   ] = getFundsQuery.getFunds.filter(
