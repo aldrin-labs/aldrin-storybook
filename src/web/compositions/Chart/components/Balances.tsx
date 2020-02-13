@@ -122,7 +122,7 @@ export const Balances = ({
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
     const asset = getFundsQuery.getFunds.find(
-      (el) => el.asset.symbol === pair[index]
+      (el) => el.asset.symbol === pair[index] && el.assetType === marketType
     )
     const quantity = asset !== undefined ? asset.free : 0
     const value = asset !== undefined ? asset.free * asset.asset.priceUSD : 0
