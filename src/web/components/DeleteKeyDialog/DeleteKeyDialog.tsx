@@ -110,7 +110,7 @@ const DeleteAccountDialogComponent = ({
               wrap="nowrap"
             >
               <TypographySectionTitle>
-                To delete a {target}, please enter it's name
+                To delete an {target}, please enter it's name
               </TypographySectionTitle>
               <Line />
             </Grid>
