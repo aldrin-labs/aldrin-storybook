@@ -273,6 +273,10 @@ export const SmartTradeButton = styled(SendButton)`
     font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.1rem')};
   }
 
+  @media screen and (max-width: 1440px) {
+    font-size: ${(props) => (props.type === 'buy' ? '.9rem' : '1rem')};
+  }
+
   @media (min-width: 1921px) {
     font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.1rem')};
   }

@@ -101,8 +101,11 @@ export const Balances = ({
   selectedKey,
   subscribeToMore,
   showFuturesTransfer,
+  timerForFuturesWars = {},
+  isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
+
 }) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
@@ -119,7 +122,7 @@ export const Balances = ({
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
     const asset = getFundsQuery.getFunds.find(
-      (el) => el.asset.symbol === pair[index]
+      (el) => el.asset.symbol === pair[index] && el.assetType === marketType
     )
     const quantity = asset !== undefined ? asset.free : 0
     const value = asset !== undefined ? asset.free * asset.asset.priceUSD : 0
@@ -127,6 +130,7 @@ export const Balances = ({
     return { quantity, value }
   })
 
+  
   const [
     USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
   ] = getFundsQuery.getFunds.filter(
@@ -155,6 +159,7 @@ export const Balances = ({
         showFuturesTransfer={showFuturesTransfer}
         isFuturesWarsKey={isFuturesWarsKey}
         futuresWarsRoundBet={futuresWarsRoundBet}
+        timerForFuturesWars={timerForFuturesWars}
       />
       <CustomCard>
         <ChartCardHeader>Balances</ChartCardHeader>
@@ -270,6 +275,7 @@ export const Balances = ({
               >
                 {isFuturesWarsKey && (
                   <BtnCustom
+                    disabled={isAlreadyJoined}
                     btnWidth="100%"
                     height="auto"
                     fontSize=".8rem"
@@ -284,7 +290,7 @@ export const Balances = ({
                       togglePopup(true)
                     }}
                   >
-                    join
+                    {isAlreadyJoined ? 'Joined' : `Join`}
                   </BtnCustom>
                 )}
                 {!isFuturesWarsKey && (

@@ -83,6 +83,12 @@ export const StyledPaper = styled(Paper)`
     padding-left: 8px;
     padding-right: 8px;
   }
+
+  @media screen and (max-width: 1400px) {
+    && {
+      top: calc(5rem - 2px);
+    }
+  }
 `
 
 export const StyledMenuItem = styled(MenuItem)`
