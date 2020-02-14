@@ -249,7 +249,6 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
   }),
-  graphql(setTelegramUsername, { name: 'setTelegramUsernameMutation' }),
   graphql(searchTelegramUsernameBySecretCode, {
     name: 'searchTelegramUsernameBySecretCodeMutation',
   })
