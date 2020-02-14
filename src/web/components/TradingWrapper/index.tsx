@@ -310,7 +310,8 @@ class SimpleTabs extends React.Component {
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             {this.props.isFuturesWarsKeyQuery &&
-            this.props.isFuturesWarsKeyQuery.isFuturesWarsKey ? (
+            this.props.isFuturesWarsKeyQuery.isFuturesWarsKey &&
+            false ? (
               <div
                 style={{
                   display: 'flex',

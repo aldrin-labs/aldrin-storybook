@@ -6,7 +6,6 @@ import { Grid, Button } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import { searchTelegramUsernameBySecretCode } from '@core/graphql/mutations/user/searchTelegramUsernameBySecretCode'
-import { setTelegramUsername } from '@core/graphql/mutations/user/setTelegramUsername'
 import { getTelegramUsername } from '@core/graphql/queries/user/getTelegramUsername'
 import { client } from '@core/graphql/apolloClient'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
@@ -27,7 +26,6 @@ const Telegram = (props) => {
   const confirmCode = async (code: number) => {
     const {
       searchTelegramUsernameBySecretCodeMutation,
-      setTelegramUsernameMutation,
       enqueueSnackbar,
     } = props
 
@@ -37,15 +35,16 @@ const Telegram = (props) => {
 
     const username =
       data.data.searchTelegramUsernameBySecretCode.telegramUsername
+    
+    const { data: { searchTelegramUsernameBySecretCode: { status, message } } } = data
 
-    if (username !== null) {
+    if (username !== null && status === 'OK') {
       await setTelegramUsername(username)
-      await setTelegramUsernameMutation({ variables: { username } })
       await enqueueSnackbar(`Telegram account successfully connected`, {
         variant: 'success',
       })
     } else {
-      enqueueSnackbar(`Wrong or expired code`, { variant: 'error' })
+      enqueueSnackbar(`${message}`, { variant: 'error' })
     }
   }
 
@@ -100,7 +99,7 @@ const Telegram = (props) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={'https://t.me/TestFuturesWars_bot'}
+                  href={'https://t.me/FuturesWars_bot'}
                   style={{ textDecoration: 'none' }}
                 >
                   <Button
@@ -194,33 +193,32 @@ const Telegram = (props) => {
                     textAlign: 'center',
                   }}
                 >
-
-<AddAccountDialog
-                isFuturesWars={true}
-                existCustomButton={true}
-                CustomButton={({
-                  handleClick,
-                }: {
-                  handleClick: () => void
-                }) => (
-                  <Button
-                    onClick={handleClick}
-                    disabled={!telegramUsername}
-                    style={{
-                      width: '100%',
-                      color: !!telegramUsername ? '#0B1FD1' : '#7284A0',
-                      fontWeight: 'bold',
-                      fontFamily: 'DM Sans',
-                      border: !!telegramUsername
-                        ? '.1rem solid #0B1FD1'
-                        : '.1rem solid #7284A0',
-                      borderRadius: '1.6rem',
-                    }}
-                  >
-                    join futures wars
-                  </Button>
-                )}
-              />
+                  <AddAccountDialog
+                    isFuturesWars={true}
+                    existCustomButton={true}
+                    CustomButton={({
+                      handleClick,
+                    }: {
+                      handleClick: () => void
+                    }) => (
+                      <Button
+                        onClick={handleClick}
+                        disabled={!telegramUsername}
+                        style={{
+                          width: '100%',
+                          color: !!telegramUsername ? '#0B1FD1' : '#7284A0',
+                          fontWeight: 'bold',
+                          fontFamily: 'DM Sans',
+                          border: !!telegramUsername
+                            ? '.1rem solid #0B1FD1'
+                            : '.1rem solid #7284A0',
+                          borderRadius: '1.6rem',
+                        }}
+                      >
+                        join futures wars
+                      </Button>
+                    )}
+                  />
                   {/* <Button
                     style={{
                       width: '100%',
@@ -251,7 +249,6 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
   }),
-  graphql(setTelegramUsername, { name: 'setTelegramUsernameMutation' }),
   graphql(searchTelegramUsernameBySecretCode, {
     name: 'searchTelegramUsernameBySecretCodeMutation',
   })
