@@ -114,6 +114,7 @@ export const Balances = ({
     }
   }, [])
 
+  const [loading, setLoading] = useState(false)
   const [open, togglePopup] = useState(false)
   const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
     false
@@ -160,6 +161,8 @@ export const Balances = ({
         isFuturesWarsKey={isFuturesWarsKey}
         futuresWarsRoundBet={futuresWarsRoundBet}
         timerForFuturesWars={timerForFuturesWars}
+        loading={loading}
+        setLoading={setLoading}
       />
       <CustomCard>
         <ChartCardHeader>Balances</ChartCardHeader>

@@ -6,6 +6,7 @@ import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogContent from '@material-ui/core/DialogContent'
 import Timer from 'react-compound-timer'
+import { Loading } from '@sb/components/index'
 
 import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
 import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
@@ -61,6 +62,8 @@ const TransferPopup = ({
   joinFuturesWarsRoundMutation,
   enqueueSnackbar,
   timerForFuturesWars,
+  loading,
+  setLoading,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'USDT',
@@ -106,6 +109,7 @@ const TransferPopup = ({
   }
 
   const joinFuturesWarsHandler = async () => {
+    setLoading(true)
     handleClose()
 
     try {
@@ -125,6 +129,7 @@ const TransferPopup = ({
     } catch (e) {
       showJoinFuturesWarsRoundStatus({ status: 'ERR', errorMessage: e.message })
     }
+    setLoading(false)
   }
 
   return (
@@ -373,7 +378,10 @@ const TransferPopup = ({
                 Cancel
               </BtnCustom>
               <BtnCustom
-                disabled={isFuturesWarsKey && futuresWarsRoundBet === 0}
+                disabled={
+                  (isFuturesWarsKey && futuresWarsRoundBet === 0) ||
+                  loading === true
+                }
                 btnWidth={'38%'}
                 borderRadius={'8px'}
                 btnColor={'#165BE0'}
@@ -385,7 +393,13 @@ const TransferPopup = ({
                   isFuturesWarsKey ? joinFuturesWarsHandler : transferHandler
                 }
               >
-                {isFuturesWarsKey ? `Transfer USDT` : `Confirm`}
+                {isFuturesWarsKey && loading ? (
+                  <Loading size={16} style={{ height: '16px' }} />
+                ) : isFuturesWarsKey && !loading ? (
+                  `Transfer USDT`
+                ) : (
+                  `Confirm`
+                )}
               </BtnCustom>
             </Grid>
           </Grid>

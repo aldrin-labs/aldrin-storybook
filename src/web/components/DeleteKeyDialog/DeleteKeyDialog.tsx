@@ -25,6 +25,7 @@ const DeleteAccountDialogComponent = ({
   closeMainPopup,
   disabled = false,
   isPortfolio = false,
+  enqueueSnackbar,
 }) => {
   const { name } = data
   const target = isPortfolio ? 'portfolio' : 'account'
@@ -42,13 +43,35 @@ const DeleteAccountDialogComponent = ({
     closeMainPopup()
   }
 
+  const showDeleteKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with deleting your key' }: { status: "ERR" | "OK", errorMessage: string }) => {
+    if (status === 'OK') {
+      enqueueSnackbar(`Your key was successfully deleted`, { variant: 'success' })
+    } else {
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+    }
+  }
+
+
   const handleSubmit = async () => {
     if (checkName.toLowerCase() === name.toLowerCase()) {
-      const response = await deleteMutation({
-        variables: { name: name, removeTrades: true },
-      })
+      try {
+        const response = await deleteMutation({
+          variables: { name: name, removeTrades: false },
+        })
+        const { status, errorMessage } = response.data.deleteExchangeKey
 
-      response ? closeDialog() : setError('Something went wrong')
+        showDeleteKeyStatus({ status, errorMessage })
+        
+        if (status !== 'OK') {
+          setError('Something went wrong')
+          return
+        }
+        closeDialog()
+
+      } catch(e) {
+        setError('Something went wrong')
+        showDeleteKeyStatus({ status: 'ERR', errorMessage: e.message })
+      }
     } else {
       setError('Names do not match')
     }
@@ -87,7 +110,7 @@ const DeleteAccountDialogComponent = ({
               wrap="nowrap"
             >
               <TypographySectionTitle>
-                To delete a {target}, please enter it's name
+                To delete an {target}, please enter it's name
               </TypographySectionTitle>
               <Line />
             </Grid>
