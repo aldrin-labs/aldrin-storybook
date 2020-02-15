@@ -6,6 +6,21 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import GoogleAuthenticationLogo from '@icons/googleAuthentication.svg'
 
+import {
+  LoginContainer,
+  LoginHeadingBox,
+  LoginHeadingText,
+  InputContainer,
+  LoginSubHeadingBox,
+  LoginGoogleAuthHeadingText,
+  LoginTextContainer,
+  LoginText,
+  TextLink,
+  StyledInputLogin,
+} from '@sb/compositions/Login/Login.styles'
+
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+
 const EnterRecoveryCode = ({
   theme,
   enterRecoveryCodeHandler,
@@ -24,30 +39,34 @@ const EnterRecoveryCode = ({
   const [recoveryCode, setRecoveryCode] = useState('')
 
   return (
-    <Grid>
-      <Grid>
-        <Typography>Google Authentication</Typography>
-      </Grid>
-      <Grid>
+    <LoginContainer>
+      <LoginHeadingBox>
+        <LoginHeadingText>Google Authentication</LoginHeadingText>
+      </LoginHeadingBox>
+      <LoginSubHeadingBox container alignItems="center" wrap="nowrap">
         <SvgIcon src={GoogleAuthenticationLogo} width="3.5rem" height="auto" />
         <Typography>Input your 2FA recovery code here:</Typography>
-      </Grid>
-      <Grid>
-        <Input
+      </LoginSubHeadingBox>
+      <InputContainer>
+        <StyledInputLogin
           value={recoveryCode}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setRecoveryCode(e.target.value)
           }
         />
         {status === 'error' && errorMessage !== '' && (
-          <Typography>{errorMessage}</Typography>
+          <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+            {errorMessage}
+          </TypographyWithCustomColor>
         )}
-      </Grid>
+      </InputContainer>
       {status === 'success' && errorMessage === '' && (
-        <Grid>
-          <Typography>New recovery code:</Typography>
-          <Typography>{newRecoveryCode}</Typography>
-        </Grid>
+        <LoginTextContainer>
+          <LoginText>New recovery code:</LoginText>
+          <LoginText>
+            {newRecoveryCode}
+            </LoginText>
+        </LoginTextContainer>
       )}
       <Grid>
         <Button
@@ -62,7 +81,7 @@ const EnterRecoveryCode = ({
           </Button>
         )}
       </Grid>
-    </Grid>
+    </LoginContainer>
   )
 }
 
