@@ -47,7 +47,6 @@ const Deposits = ({ ...props }: IProps) => {
           boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
           borderRadius: '32px',
           marginBottom: '2%',
-          overflow: 'scroll',
         }}
       >
         <AccountBlock
@@ -92,7 +91,9 @@ const Deposits = ({ ...props }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 {selectedCoin.label} address
               </StyledTypography>
-              <InputAddress value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
+              <Grid style={{ height: '6rem', overflow: 'hidden' }}>
+                <InputAddress value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
+              </Grid>
               {/* <StyledInput
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

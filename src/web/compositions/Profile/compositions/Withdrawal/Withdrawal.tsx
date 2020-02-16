@@ -17,14 +17,19 @@ import {
 } from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
 
-const Withdrawal = ({ ...props  }: IProps) => {
-  const { withdrawalSettings } = props.getProfileSettingsQuery.getProfileSettings
+const Withdrawal = ({ ...props }: IProps) => {
+  const {
+    withdrawalSettings,
+  } = props.getProfileSettingsQuery.getProfileSettings
   const { selectedKey = '#' } = withdrawalSettings || { selectedKey: '#' }
 
   const totalBalance = 0.000003241
   const inOrder = 0.000003241
 
-  const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
+  const [selectedCoin, setSelectedCoin] = useState({
+    label: 'BTC',
+    name: 'Bitcoin',
+  })
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
 
@@ -42,7 +47,6 @@ const Withdrawal = ({ ...props  }: IProps) => {
           boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
           borderRadius: '32px',
           marginBottom: '2%',
-          overflow: 'scroll',
         }}
       >
         <AccountBlock
@@ -96,12 +100,14 @@ const Withdrawal = ({ ...props  }: IProps) => {
               >
                 Amount
               </StyledTypography>
-              <InputAmount
-                selectedCoin={selectedCoin.label}
-                selectedAccount={selectedKey}
-                value={coinAmount}
-                onChange={(e) => setCoinAmount(e.target.value)}
-              />
+              <Grid style={{ height: '6rem', overflow: 'hidden' }}>
+                <InputAmount
+                  selectedCoin={selectedCoin.label}
+                  selectedAccount={selectedKey}
+                  value={coinAmount}
+                  onChange={(e) => setCoinAmount(e.target.value)}
+                />
+              </Grid>
               <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
                 Minimum Withdrawal: 0.00100000 {selectedCoin.label}
               </StyledTypographyCaption>
@@ -165,5 +171,8 @@ const Withdrawal = ({ ...props  }: IProps) => {
 }
 
 export default compose(
-  queryRendererHoc({ query: getProfileSettings, name: 'getProfileSettingsQuery' })
+  queryRendererHoc({
+    query: getProfileSettings,
+    name: 'getProfileSettingsQuery',
+  })
 )(Withdrawal)
