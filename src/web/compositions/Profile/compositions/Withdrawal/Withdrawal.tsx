@@ -21,7 +21,8 @@ const Withdrawal = ({ ...props }: IProps) => {
   const {
     withdrawalSettings,
   } = props.getProfileSettingsQuery.getProfileSettings
-  const { selectedKey = '#' } = withdrawalSettings || { selectedKey: '#' }
+  const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || { selectedKey: '' }
+  const selectedKey = tempSelectedKey || ''
 
   const totalBalance = 0.000003241
   const inOrder = 0.000003241
@@ -174,5 +175,6 @@ export default compose(
   queryRendererHoc({
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
+    fetchPolicy: 'cache-and-network',
   })
 )(Withdrawal)

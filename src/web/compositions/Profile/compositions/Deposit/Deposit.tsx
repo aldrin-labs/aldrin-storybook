@@ -20,7 +20,8 @@ import { IProps } from './Deposit.types'
 
 const Deposits = ({ ...props }: IProps) => {
   const { depositSettings } = props.getProfileSettingsQuery.getProfileSettings
-  const { selectedKey = '#' } = depositSettings || { selectedKey: '#' }
+  const { selectedKey:tempSelectedKey = '' } = depositSettings || { selectedKey: '' }
+  const selectedKey = tempSelectedKey || ''
   const [popupOpened, togglePopup] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
   const [coinAddress, setCoinAddress] = useState('')
@@ -158,5 +159,5 @@ const Deposits = ({ ...props }: IProps) => {
 }
 
 export default compose(
-  queryRendererHoc({ query: getProfileSettings, name: 'getProfileSettingsQuery' })
+  queryRendererHoc({ query: getProfileSettings, name: 'getProfileSettingsQuery', fetchPolicy: 'cache-and-network' })
 )(Deposits)
