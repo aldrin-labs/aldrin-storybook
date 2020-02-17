@@ -15,8 +15,9 @@ import {
   LoginGoogleAuthHeadingText,
   LoginTextContainer,
   LoginText,
-  TextLink,
   StyledInputLogin,
+  SubmitButtonContainer,
+  SubmitLoginButton,
 } from '@sb/compositions/Login/Login.styles'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
@@ -45,7 +46,7 @@ const EnterRecoveryCode = ({
       </LoginHeadingBox>
       <LoginSubHeadingBox container alignItems="center" wrap="nowrap">
         <SvgIcon src={GoogleAuthenticationLogo} width="3.5rem" height="auto" />
-        <Typography>Input your 2FA recovery code here:</Typography>
+        <LoginGoogleAuthHeadingText>Input your 2FA recovery code here:</LoginGoogleAuthHeadingText>
       </LoginSubHeadingBox>
       <InputContainer>
         <StyledInputLogin
@@ -63,24 +64,30 @@ const EnterRecoveryCode = ({
       {status === 'success' && errorMessage === '' && (
         <LoginTextContainer>
           <LoginText>New recovery code:</LoginText>
-          <LoginText>
-            {newRecoveryCode}
-            </LoginText>
+          <LoginText>{newRecoveryCode}</LoginText>
         </LoginTextContainer>
       )}
-      <Grid>
-        <Button
-          disabled={newRecoveryCode}
-          onClick={() => enterRecoveryCodeHandler(recoveryCode)}
-        >
-          Confirm
-        </Button>
-        {newRecoveryCode && (
-          <Button onClick={() => processAuthentificationHandler()}>
-            Go to App
-          </Button>
+      <SubmitButtonContainer>
+        {!newRecoveryCode && (
+          <SubmitLoginButton
+            variant="contained"
+            color="secondary"
+            disabled={newRecoveryCode}
+            onClick={() => enterRecoveryCodeHandler(recoveryCode)}
+          >
+            Confirm
+          </SubmitLoginButton>
         )}
-      </Grid>
+        {newRecoveryCode && (
+          <SubmitLoginButton
+            variant="contained"
+            color="secondary"
+            onClick={() => processAuthentificationHandler()}
+          >
+            Go to App
+          </SubmitLoginButton>
+        )}
+      </SubmitButtonContainer>
     </LoginContainer>
   )
 }
