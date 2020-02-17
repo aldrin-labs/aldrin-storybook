@@ -14,7 +14,9 @@ import {
   LoginTextContainer,
   SubmitButtonContainer,
   LoginSubHeadingBox,
+  SubmitLoginLink,
 } from '@sb/compositions/Login/Login.styles'
+import { Loading } from '@sb/components/index'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
@@ -31,6 +33,19 @@ const ForgotPassoword = ({
   errorMessage: string
 }) => {
   const [email, setEmail] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const isEmailValid = ({ email }: { email: string }) => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    return emailRegex.test(email)
+  }
+
+  const getEmailDomain = ({ email = '' }: { email: string }) => {
+    const emailDomain = email.replace(/.*@/, '')
+    return emailDomain
+  }
 
   return (
     <LoginContainer>
@@ -45,6 +60,8 @@ const ForgotPassoword = ({
       </LoginSubHeadingBox>
       <InputContainer>
         <StyledInputLogin
+          disabled={status === 'success' && errorMessage === ''}
+          error={!!emailError}
           type="email"
           placeholder="E-mail"
           value={email}
@@ -66,13 +83,40 @@ const ForgotPassoword = ({
         )}
       </LoginTextContainer>
       <SubmitButtonContainer>
-        <SubmitLoginButton
-          variant="contained"
-          color="secondary"
-          onClick={() => onForgotPasswordClick({ email })}
-        >
-          Confirm and go to the mailbox
-        </SubmitLoginButton>
+        {status !== 'success' && (
+          <SubmitLoginButton
+            disabled={loading}
+            variant="contained"
+            color="secondary"
+            onClick={async () => {
+              const validEmail = isEmailValid({ email })
+              if (!validEmail) {
+                setEmailError(`Email is not valid`)
+                return
+              }
+              setLoading(true)
+              await onForgotPasswordClick({ email })
+              setLoading(false)
+            }}
+          >
+            {loading ? (
+              <Loading size={16} style={{ height: '16px' }} />
+            ) : (
+              `Confirm`
+            )}
+          </SubmitLoginButton>
+        )}
+        {status === 'success' && errorMessage === '' && (
+          <SubmitLoginLink
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="none"
+            variant="body2"
+            href={`https://${getEmailDomain({ email })}`}
+          >
+            Go to e-mail
+          </SubmitLoginLink>
+        )}
       </SubmitButtonContainer>
     </LoginContainer>
   )
