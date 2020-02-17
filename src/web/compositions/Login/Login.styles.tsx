@@ -269,11 +269,16 @@ export const StyledInputLogin = styled(({ ...props }) => (
   width: 100%;
   background: #fff;
   height: 6.3rem;
+  border-radius: 8px;
 
   & input {
     font-size: 2rem;
-    color: #bec5cf;
+    color: #5E6B83;
     text-align: left;
+  }
+
+  & input::placeholder {
+    color: #bec5cf;
   }
 `
 
