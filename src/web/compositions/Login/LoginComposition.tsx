@@ -345,11 +345,11 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         })
 
         // should be handler after authetication
-        console.log('this.state', this.state)
-        await this.processAuthentificationHandler({
-          accessToken: access_token,
-          idToken: id_token,
-        })
+        // console.log('this.state', this.state)
+        // await this.processAuthentificationHandler({
+        //   accessToken: access_token,
+        //   idToken: id_token,
+        // })
       }
     )
   }
@@ -578,7 +578,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           />
         )}
         {currentStep === 'configureMfa' && (
-          <ChooseMfaProvider changeStep={this.associateMfaMethodHandler} />
+          <ChooseMfaProvider associateMfaMethodHandler={this.associateMfaMethodHandler} />
         )}
         {currentStep === 'setupMfa' && (
           <SetUpMfa
