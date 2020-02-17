@@ -6,7 +6,7 @@ import { withSnackbar } from 'notistack'
 import { ILoginStep, IProps, IState } from './LoginComposition.types'
 
 import Auth from '@sb/compositions/Onboarding/Auth'
-const auth = new Auth()
+import { getAuthCallback } from '@core/utils/config'
 
 import {
   SetUpMfa,
@@ -21,7 +21,7 @@ import SignUp from '@sb/compositions/Login/SignUp/SignUp'
 
 class LoginComposition extends React.PureComponent<IProps, IState> {
   state: IState = {
-    currentStep: 'signUp',
+    currentStep: this.props.initialStep,
     accessToken: '',
     idToken: '',
     mfaToken: '',
@@ -60,10 +60,23 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     },
   }
 
+  auth = new Auth(getAuthCallback({ initialStep: this.props.initialStep }))
+
+  static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
+    console.log('nextProps', nextProps)
+    console.log('prevState', prevState)
+
+
+    if (nextProps.initialStep !== prevState.currentStep && (prevState.currentStep === 'signIn' || prevState.currentStep === 'signUp')) {
+      return { currentStep: nextProps.initialStep }
+    } else return null
+  }
+
   // this lifecycle here is only needed for sign up with google / sign in with google
   // maybe better to move it upper level into LoginCustom container
   async componentDidMount() {
-    const result = await auth.handleAuthentication()
+    // TODO: also we need to validate that hash exists in url before trigger this
+    const result = await this.auth.handleAuthentication()
     console.log('result', result)
 
     if (result.status === 'ok') {
@@ -109,7 +122,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     username: string
     password: string
   }) => {
-    const resultOfAuthenticate = await auth.authSimple({ username, password })
+    const resultOfAuthenticate = await this.auth.authSimple({
+      username,
+      password,
+    })
 
     const { access_token, id_token } = resultOfAuthenticate
 
@@ -149,13 +165,16 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       resultOfAuthenticate.mfa_token &&
       resultOfAuthenticate.mfa_token !== ''
     ) {
-      const listOfAssociatedMfa = await auth.listOfAssociatedMfa({
+      const listOfAssociatedMfa = await this.auth.listOfAssociatedMfa({
         authMfaToken: resultOfAuthenticate.mfa_token,
       })
       const checkThatUserAlreadyConfiguredMfa =
         Array.isArray(listOfAssociatedMfa) && listOfAssociatedMfa.length >= 1
       const checkThatErrorDuringListMfa =
         listOfAssociatedMfa.error && listOfAssociatedMfa.error_description
+
+      console.log('checkThatUserAlreadyConfiguredMfa', checkThatUserAlreadyConfiguredMfa) 
+      console.log('checkThatErrorDuringListMfa', checkThatErrorDuringListMfa) 
 
       if (checkThatErrorDuringListMfa) {
         this.setState((prevState) => ({
@@ -186,6 +205,8 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         this.setState({
           currentStep: 'enterOtp',
           mfaToken: resultOfAuthenticate.mfa_token,
+        }, () => {
+          console.log('enterOtp ')
         })
       }
     }
@@ -196,7 +217,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
 
     const { mfaToken } = this.state
     const authenticatorTypes = ['otp'] // we are not allowing other methods yet
-    const resultOfAssociationWithMfaMethod = await auth.authMfaAssociate({
+    const resultOfAssociationWithMfaMethod = await this.auth.authMfaAssociate({
       authenticatorTypes: authenticatorTypes,
       authMfaToken: mfaToken,
     })
@@ -256,7 +277,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   enterRecoveryCodeHandler = async (recoveryCode: string) => {
     const { mfaToken } = this.state
 
-    const resultOfAuthenticateWithRecoveryCode = await auth.authMfa({
+    const resultOfAuthenticateWithRecoveryCode = await this.auth.authMfa({
       authMfaToken: mfaToken,
       recoveryCode: recoveryCode,
     })
@@ -336,7 +357,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   otpCompleteHandler = async (otp: string) => {
     const { mfaToken } = this.state
 
-    const resultOfAuthenticateWithOtp = await auth.authMfa({
+    const resultOfAuthenticateWithOtp = await this.auth.authMfa({
       authMfaToken: mfaToken,
       otp: otp,
     })
@@ -412,7 +433,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   }
 
   forgotPasswordHandler = async ({ email }: { email: string }) => {
-    const resultOfForgotPassowrd = await auth.changePassword({
+    const resultOfForgotPassowrd = await this.auth.changePassword({
       email,
     })
 
@@ -474,7 +495,9 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     email: string
     password: string
   }) => {
-    const resultOfSignUp = await auth.register(email, password)
+    const resultOfSignUp = await this.auth.register(email, password)
+
+    console.log('resultOfSignUp', resultOfSignUp)
 
     if (resultOfSignUp.status === 'error' && resultOfSignUp.message) {
       this.setState({
@@ -507,7 +530,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
 
       // trying to login
       this.authenticateWithPasswordHandler({ username: email, password })
-
     }
 
     console.log('resultOfSignUp', resultOfSignUp)
@@ -529,7 +551,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       <>
         {currentStep === 'signIn' && (
           <SignIn
-            onLoginWithGoogleClick={auth.googleSingup}
+            onLoginWithGoogleClick={this.auth.googleSingup}
             onLoginButtonClick={this.authenticateWithPasswordHandler}
             changeStep={this.changeCurrentStep}
             status={signIn.status}
@@ -575,7 +597,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         {currentStep === 'signUp' && (
           <SignUp
             onSignUpButtonClick={this.signUpWithPasswordHandler}
-            onSignUpWithGoogleClick={auth.googleSingup}
+            onSignUpWithGoogleClick={this.auth.googleSingup}
             status={signUp.status}
             errorMessage={signUp.errorMessage}
           />

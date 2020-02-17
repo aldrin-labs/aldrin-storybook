@@ -11,6 +11,7 @@ export type ILoginStep =
 
 export interface IProps extends withSnackbarProps {
   onLogin: (profile: any, idToken: any) => Promise<void>
+  initialStep: 'signIn' | 'signUp'
 }
 
 export interface IState {
