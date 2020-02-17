@@ -45,6 +45,7 @@ const ForgotPassoword = ({
       </LoginSubHeadingBox>
       <InputContainer>
         <StyledInputLogin
+          type="email"
           placeholder="E-mail"
           value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
