@@ -2,18 +2,15 @@ import React, { ChangeEvent, useState } from 'react'
 import { compose } from 'recompose'
 import {
   Grid,
-  Typography,
   Theme,
-  Input,
-  Button,
   Checkbox,
   IconButton,
   InputAdornment,
 } from '@material-ui/core'
 
 import { Visibility, VisibilityOff } from '@material-ui/icons/'
-
 import { withTheme } from '@material-ui/styles'
+
 import SvgIcon from '@sb/components/SvgIcon'
 import GoogleLogo from '@icons/googleLogo.svg'
 
