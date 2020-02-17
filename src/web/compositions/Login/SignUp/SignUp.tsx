@@ -12,6 +12,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons/'
 import { withTheme } from '@material-ui/styles'
 
 import { PrivacyPolicy, TermsOfUse } from '@sb/components/index'
+import { Loading } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import GoogleLogo from '@icons/googleLogo.svg'
 
@@ -21,13 +22,11 @@ import {
   StyledInputLogin,
   SubmitButtonContainer,
   SubmitLoginButton,
-  TextLink,
   SmallGrayText,
   OrText,
   WithGoogleButton,
   WithGoogleButtonText,
   OrContainerText,
-  RememberMeContainer,
   TextLinkSpan,
 } from '@sb/compositions/Login/Login.styles'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
@@ -59,25 +58,31 @@ const SignUp = ({
   const [isAgreeWithRules, setAgreementWithRules] = useState(false)
   const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
   const [showTermsOfUse, toggleTermsOfUse] = useState(false)
-  const [error, setError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
   const [emailError, setEmailError] = useState('')
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordAgaing, setShowPasswordAgaing] = useState(false)
 
+  const [loading, setLoading] = useState(false)
+
   const toggleAgreementCheckbox = () => {
     setAgreementWithRules(!isAgreeWithRules)
   }
 
-  const checkPasswordsMatch = ({
+  const isPasswordsValid = ({
     pass1,
     pass2,
   }: {
     pass1: string
     pass2: string
-  }) => pass1 === pass2
+  }) => pass1 === pass2 && pass1 !== '' && pass2 !== ''
 
-  console.log('error', error)
+  const isEmailValid = ({ email }: { email: string }) => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    return emailRegex.test(email)
+  }
 
   return (
     <>
@@ -107,19 +112,19 @@ const SignUp = ({
         <InputContainer>
           <StyledInputLogin
             required
+            type="email"
             error={!!emailError}
             placeholder={`E-mail`}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value)
               setEmailError('')
-            }
-            }
+            }}
           />
         </InputContainer>
         <InputContainer>
           <StyledInputLogin
             required
-            error={!!error}
+            error={!!passwordError}
             type={showPassword ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
@@ -134,14 +139,14 @@ const SignUp = ({
             placeholder={`Password`}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value)
-              setError('')
+              setPasswordError('')
             }}
           />
         </InputContainer>
         <InputContainer>
           <StyledInputLogin
             required
-            error={!!error}
+            error={!!passwordError}
             type={showPasswordAgaing ? 'text' : 'password'}
             endAdornment={
               <InputAdornment position="end">
@@ -156,7 +161,7 @@ const SignUp = ({
             placeholder={`Confirm password`}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setPasswordAgaing(e.target.value)
-              setError('')
+              setPasswordError('')
             }}
           />
         </InputContainer>
@@ -167,10 +172,17 @@ const SignUp = ({
             </TypographyWithCustomColor>
           </Grid>
         )}
-        {error !== '' && (
+        {passwordError !== '' && (
           <Grid>
             <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
               Passwords doesn't match
+            </TypographyWithCustomColor>
+          </Grid>
+        )}
+        {emailError !== '' && (
+          <Grid>
+            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+              Email is not valid
             </TypographyWithCustomColor>
           </Grid>
         )}
@@ -201,21 +213,32 @@ const SignUp = ({
             padding={'2rem 8rem'}
             variant="contained"
             color="secondary"
-            disabled={!isAgreeWithRules}
-            onClick={() => {
-              const isPasswordsAreTheSame = checkPasswordsMatch({
+            disabled={!isAgreeWithRules || loading}
+            onClick={async () => {
+              const validPasswords = isPasswordsValid({
                 pass1: password,
                 pass2: passwordAgaing,
               })
-              console.log('isPasswordsAreTheSame', isPasswordsAreTheSame)
-              if (!isPasswordsAreTheSame) {
-                setError(`Passwords doesn't match`)
+              const validEmail = isEmailValid({ email })
+
+              if (!validPasswords) {
+                setPasswordError(`Passwords doesn't match`)
                 return
               }
-              onSignUpButtonClick({ email, password })
+              if (!validEmail) {
+                setEmailError(`Email is not valid`)
+                return
+              }
+              setLoading(true)
+              await onSignUpButtonClick({ email, password })
+              setLoading(false)
             }}
           >
-            Next
+            {loading ? (
+              <Loading size={16} style={{ height: '16px' }} />
+            ) : (
+              `Next`
+            )}
           </SubmitLoginButton>
         </SubmitButtonContainer>
       </LoginContainer>

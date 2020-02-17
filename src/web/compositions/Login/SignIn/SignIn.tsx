@@ -11,6 +11,7 @@ import {
 import { Visibility, VisibilityOff } from '@material-ui/icons/'
 import { withTheme } from '@material-ui/styles'
 
+import { Loading } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import GoogleLogo from '@icons/googleLogo.svg'
 
@@ -57,6 +58,19 @@ const SignIn = ({
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
+  const [passwordError, setPasswordError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const isEmailValid = ({ email }: { email: string }) => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    return emailRegex.test(email)
+  }
+
+  const isPasswordValid = ({ password }: { password: string }) =>
+    !!password.length
+
   return (
     <LoginContainer>
       <Grid container>
@@ -72,29 +86,37 @@ const SignIn = ({
       </OrContainerText>
       <InputContainer>
         <StyledInputLogin
+          type="email"
           placeholder={`E-mail`}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          error={!!emailError}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setEmail(e.target.value)
-          }
+            setEmailError('')
+          }}
         />
       </InputContainer>
       <InputContainer>
         <StyledInputLogin
+          error={!!passwordError}
           type={showPassword ? 'text' : 'password'}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 aria-label="Toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => {
+                  setShowPassword(!showPassword)
+                  setPasswordError('')
+                }}
               >
                 {showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
             </InputAdornment>
           }
           placeholder={`Password`}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value)
-          }
+            setPasswordError('')
+          }}
         />
       </InputContainer>
       <Grid>
@@ -104,6 +126,20 @@ const SignIn = ({
           </TypographyWithCustomColor>
         )}
       </Grid>
+      {passwordError !== '' && (
+        <Grid>
+          <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+            Password is empty
+          </TypographyWithCustomColor>
+        </Grid>
+      )}
+      {emailError !== '' && (
+        <Grid>
+          <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+            Email is not valid
+          </TypographyWithCustomColor>
+        </Grid>
+      )}
       <InputContainer container justify="space-between" alignItems="center">
         <RememberMeContainer container alignItems="center">
           <Checkbox />
@@ -117,12 +153,33 @@ const SignIn = ({
       </InputContainer>
       <SubmitButtonContainer>
         <SubmitLoginButton
+          disabled={loading}
           padding={'2rem 8rem'}
           variant="contained"
           color="secondary"
-          onClick={() => onLoginButtonClick({ username: email, password })}
+          onClick={async () => {
+            const validPasswords = isPasswordValid({ password })
+            const validEmail = isEmailValid({ email })
+
+            if (!validPasswords) {
+              setPasswordError(`Passwords doesn't match`)
+              return
+            }
+
+            if (!validEmail) {
+              setEmailError(`Email is not valid`)
+              return
+            }
+            setLoading(true)
+            await onLoginButtonClick({ username: email, password })
+            setLoading(false)
+          }}
         >
-          Log In
+          {loading ? (
+            <Loading size={16} style={{ height: '16px' }} />
+          ) : (
+            `Log In`
+          )}
         </SubmitLoginButton>
       </SubmitButtonContainer>
     </LoginContainer>
