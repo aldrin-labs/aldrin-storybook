@@ -11,7 +11,7 @@ import termsOfUseText from './termsOfUseText'
 
 export default ({ open, onClick }: { open: boolean; onClick: () => void }) => (
   <Dialog open={open} scroll={'paper'} aria-labelledby="scroll-dialog-title">
-    <DialogTitle id="scroll-dialog-title">Privacy Policy</DialogTitle>
+    <DialogTitle id="scroll-dialog-title">Terms of Use</DialogTitle>
     <DialogContent>
       <DialogContentText>{termsOfUseText}</DialogContentText>
     </DialogContent>
