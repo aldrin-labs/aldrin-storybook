@@ -21,7 +21,7 @@ import SignUp from '@sb/compositions/Login/SignUp/SignUp'
 
 class LoginComposition extends React.PureComponent<IProps, IState> {
   state: IState = {
-    currentStep: 'signIn',
+    currentStep: 'signUp',
     accessToken: '',
     idToken: '',
     mfaToken: '',
