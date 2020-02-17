@@ -1,18 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
-import { Grid, Typography, Button, Theme, Link } from '@material-ui/core'
+import { Grid, Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
 import {
-  MfaBackupCode,
-  MfaBackupText,
   MfaHeading,
   MfaStep,
-  MfaText,
   MfaSubHeading,
   SubmitLoginButton,
 } from '@sb/compositions/Login/Login.styles'
-
+import { Loading } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import AppleLogo from '@icons/apple.svg'
 import AndroidLogo from '@icons/android.svg'
@@ -21,11 +18,13 @@ import AndroidQrCodeAppLink from '@icons/androidLink.png'
 
 const ChooseMfaProvider = ({
   theme,
-  changeStep,
+  associateMfaMethodHandler,
 }: {
   theme: Theme
-  changeStep: (step: string) => void
+  associateMfaMethodHandler: () => Promise<void>
 }) => {
+  const [loading, setLoading] = useState(false)
+
   return (
     <Grid
       container
@@ -79,11 +78,20 @@ const ChooseMfaProvider = ({
       </Grid>
       <Grid>
         <SubmitLoginButton
+          disabled={loading}
           variant="contained"
           color="secondary"
-          onClick={() => changeStep('setupMfa')}
+          onClick={async () => {
+            setLoading(true)
+            await associateMfaMethodHandler()
+            setLoading(false)
+          }}
         >
-          I already have the app
+          {loading ? (
+            <Loading size={16} style={{ height: '16px' }} />
+          ) : (
+            `I already have the app`
+          )}
         </SubmitLoginButton>
       </Grid>
     </Grid>
