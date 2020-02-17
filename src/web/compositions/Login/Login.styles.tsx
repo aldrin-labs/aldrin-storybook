@@ -57,6 +57,25 @@ export const SubmitLoginButtonCss = css`
   box-shadow: rgba(8, 22, 58, 0.3) 0px 8px 12px;
 `
 
+export const WithGoogleButtonCss = css`
+  width: 100%;
+  background: #ffffff;
+  box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.4);
+  padding: 1.7rem;
+`
+
+export const WithGoogleButtonTextCss = css`
+  color: #16253d;
+  font-size: 1.4rem;
+  font-weight: bold;
+  line-height: 98.6%;
+  letter-spacing: 0.5px;
+  text-transform: initial;
+
+
+  padding-left: 3.5rem;
+`
+
 export const LoginContainerCss = css`
   display: flex;
   flex-direction: column;
@@ -124,10 +143,56 @@ export const TextLinkCss = css`
   cursor: pointer;
 `
 
+export const TextSmallCss = css`
+  line-height: 100%;
+  font-size: 1rem;
+`
+
 export const OtpInputContainerCss = css`
   & > div {
     padding: 1rem;
   }
+`
+
+export const GrayText = css`
+  color: #5e6b83;
+`
+
+export const OrTextCss = css`
+  padding: 1.8rem 1.5rem;
+  font-size: 1rem;
+  color: #16253d;
+  letter-spacing: 0.03em;
+
+  &::before,
+  &::after {
+    background-color: #0b1fd0;
+    content: '';
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
+  }
+
+  &::before {
+    right: 0.5em;
+    margin-left: -50%;
+  }
+
+  &::after {
+    left: 0.5em;
+    margin-right: -50%;
+  }
+`
+
+export const OrContainerTextCss = css`
+  width: 100%;
+  text-align: center;
+`
+
+export const RememberMeContainerCss = css`
+  width: auto;
 `
 
 export const MfaHeading = styled(({ ...props }) => <Typography {...props} />)`
@@ -160,14 +225,15 @@ export const MfaBackupCode = styled(({ ...props }) => (
   ${MfaBackupCodeCss}
 `
 
-export const SubmitLoginButton = styled(({ ...props }) => (
+export const SubmitLoginButton = styled(({ padding, ...props }) => (
   <Button {...props} />
 ))`
   ${SubmitLoginButtonCss}
+  ${({padding}) => padding ? `padding: ${padding};` : ''}
 `
 
 export const SubmitButtonContainer = styled(({ ...props }) => (
-  <Button {...props} />
+  <Grid {...props} />
 ))`
   ${SubmitButtonContainerCss}
 `
@@ -203,6 +269,7 @@ export const StyledInputLogin = styled(({ ...props }) => (
 ))`
   width: 100%;
   background: #fff;
+  height: 6.3rem;
 
   & input {
     font-size: 2rem;
@@ -216,9 +283,7 @@ export const SubmitLoginLink = styled(({ ...props }) => <Link {...props} />)`
   ${LoginLinkCss}
 `
 
-export const LoginSubHeadingBox = styled(({ ...props }) => (
-  <Grid {...props} />
-))`
+export const LoginSubHeadingBox = styled(({ ...props }) => <Grid {...props} />)`
   ${LoginSubHeadingBoxCss}
 `
 
@@ -228,6 +293,43 @@ export const LoginGoogleAuthHeadingText = styled(({ ...props }) => (
   ${LoginGoogleAuthHeadingTextCss}
 `
 
-export const TextLink = styled(({ ...props }) => <Typography {...props} />)`
+export const TextLink = styled(({ small, ...props }) => (
+  <Typography {...props} />
+))`
   ${TextLinkCss}
+  ${(props) => (props.small ? TextSmallCss : ``)}
+`
+
+export const SmallGrayText = styled(({ bold, ...props }) => (
+  <Typography {...props} />
+))`
+  ${TextSmallCss}
+  ${GrayText}
+  ${({ bold }) => (bold ? 'font-weight: bold;' : '')}
+`
+
+export const OrText = styled(({ bold, ...props }) => <Typography {...props} />)`
+  ${OrTextCss}
+`
+
+export const WithGoogleButton = styled(({ bold, ...props }) => (
+  <Button {...props} />
+))`
+  ${WithGoogleButtonCss}
+`
+
+export const WithGoogleButtonText = styled(({ bold, ...props }) => (
+  <Typography {...props} />
+))`
+  ${WithGoogleButtonTextCss}
+`
+
+export const OrContainerText = styled(({ ...props }) => <Grid {...props} />)`
+  ${OrContainerTextCss}
+`
+
+export const RememberMeContainer = styled(({ ...props }) => (
+  <Grid {...props} />
+))`
+  ${RememberMeContainerCss}
 `

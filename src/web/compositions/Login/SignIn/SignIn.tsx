@@ -7,10 +7,31 @@ import {
   Input,
   Button,
   Checkbox,
+  IconButton,
+  InputAdornment,
 } from '@material-ui/core'
+
+import { Visibility, VisibilityOff } from '@material-ui/icons/'
+
 import { withTheme } from '@material-ui/styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import GoogleLogo from '@icons/googleLogo.svg'
+
+import {
+  LoginContainer,
+  InputContainer,
+  StyledInputLogin,
+  SubmitButtonContainer,
+  SubmitLoginButton,
+  TextLink,
+  SmallGrayText,
+  OrText,
+  WithGoogleButton,
+  WithGoogleButtonText,
+  OrContainerText,
+  RememberMeContainer,
+} from '@sb/compositions/Login/Login.styles'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 const SignIn = ({
   theme,
@@ -37,51 +58,77 @@ const SignIn = ({
 }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <Grid>
-      <Grid>
-        <Button onClick={() => onLoginWithGoogleClick()}>
-          Log in with Google
-        </Button>
+    <LoginContainer>
+      <Grid container>
+        <WithGoogleButton onClick={() => onLoginWithGoogleClick()}>
+          <Grid container alignItems="center" justify="center" wrap="nowrap">
+            <SvgIcon src={GoogleLogo} width="2rem" height="auto" />
+            <WithGoogleButtonText>Log in with Google</WithGoogleButtonText>
+          </Grid>
+        </WithGoogleButton>
       </Grid>
-      <Grid>
-        <Typography>or</Typography>
-      </Grid>
-      <Grid>
-        <Input
+      <OrContainerText>
+        <OrText>Or</OrText>
+      </OrContainerText>
+      <InputContainer>
+        <StyledInputLogin
+          placeholder={`E-mail`}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
         />
-      </Grid>
-      <Grid>
-        <Input
+      </InputContainer>
+      <InputContainer>
+        <StyledInputLogin
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="Toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+          placeholder={`Password`}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
           }
         />
-      </Grid>
+      </InputContainer>
       <Grid>
         {status === 'error' && errorMessage !== '' && (
-          <Typography>{errorMessage}</Typography>
+          <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+            {errorMessage}
+          </TypographyWithCustomColor>
         )}
       </Grid>
-      <Grid>
-        <Grid>
+      <InputContainer container justify="space-between" alignItems="center">
+        <RememberMeContainer container alignItems="center">
           <Checkbox />
-          <Typography>Remember me</Typography>
-        </Grid>
+          <SmallGrayText>Remember me</SmallGrayText>
+        </RememberMeContainer>
         <Grid>
-          <Typography onClick={() => changeStep('forgotPassword')}> Forgot password </Typography>
+          <TextLink small={true} onClick={() => changeStep('forgotPassword')}>
+            Forgot password?
+          </TextLink>
         </Grid>
-      </Grid>
-      <Grid>
-        <Button onClick={() => onLoginButtonClick({ username: email, password })}>
-          Log in
-        </Button>
-      </Grid>
-    </Grid>
+      </InputContainer>
+      <SubmitButtonContainer>
+        <SubmitLoginButton
+          padding={'2rem 8rem'}
+          variant="contained"
+          color="secondary"
+          onClick={() => onLoginButtonClick({ username: email, password })}
+        >
+          Log In
+        </SubmitLoginButton>
+      </SubmitButtonContainer>
+    </LoginContainer>
   )
 }
 
