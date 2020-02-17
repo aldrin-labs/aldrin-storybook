@@ -13,6 +13,7 @@ import {
   InputContainer,
   LoginTextContainer,
   SubmitButtonContainer,
+  LoginSubHeadingBox,
 } from '@sb/compositions/Login/Login.styles'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
@@ -36,12 +37,12 @@ const ForgotPassoword = ({
       <LoginHeadingBox>
         <LoginHeadingText>Forgot your password?</LoginHeadingText>
       </LoginHeadingBox>
-      <LoginTextContainer>
+      <LoginSubHeadingBox>
         <LoginText>
           Enter the e-mail address to which your account is registered. We will
           send you a link to reset your password.
         </LoginText>
-      </LoginTextContainer>
+      </LoginSubHeadingBox>
       <InputContainer>
         <StyledInputLogin
           placeholder="E-mail"
