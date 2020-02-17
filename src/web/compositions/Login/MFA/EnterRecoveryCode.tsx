@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from 'react'
 import { compose } from 'recompose'
-import { Grid, Typography, Theme, Input, Button } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -14,11 +14,13 @@ import {
   LoginSubHeadingBox,
   LoginGoogleAuthHeadingText,
   LoginTextContainer,
-  LoginText,
   StyledInputLogin,
   SubmitButtonContainer,
   SubmitLoginButton,
+  MfaBackupText,
+  MfaBackupCode,
 } from '@sb/compositions/Login/Login.styles'
+import { Loading } from '@sb/components/index'
 
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
@@ -31,13 +33,14 @@ const EnterRecoveryCode = ({
   processAuthentificationHandler,
 }: {
   theme: Theme
-  enterRecoveryCodeHandler: (recoveryCode: string) => void
+  enterRecoveryCodeHandler: (recoveryCode: string) => Promise<void>
   status: 'error' | 'success'
   errorMessage: string
   newRecoveryCode: string
   processAuthentificationHandler: () => void
 }) => {
   const [recoveryCode, setRecoveryCode] = useState('')
+  const [loading, setLoading] = useState(false)
 
   return (
     <LoginContainer>
@@ -46,7 +49,9 @@ const EnterRecoveryCode = ({
       </LoginHeadingBox>
       <LoginSubHeadingBox container alignItems="center" wrap="nowrap">
         <SvgIcon src={GoogleAuthenticationLogo} width="3.5rem" height="auto" />
-        <LoginGoogleAuthHeadingText>Input your 2FA recovery code here:</LoginGoogleAuthHeadingText>
+        <LoginGoogleAuthHeadingText>
+          Input your 2FA recovery code here:
+        </LoginGoogleAuthHeadingText>
       </LoginSubHeadingBox>
       <InputContainer>
         <StyledInputLogin
@@ -62,9 +67,13 @@ const EnterRecoveryCode = ({
         )}
       </InputContainer>
       {status === 'success' && errorMessage === '' && (
-        <LoginTextContainer>
-          <LoginText>New recovery code:</LoginText>
-          <LoginText>{newRecoveryCode}</LoginText>
+        <LoginTextContainer
+          container
+          alignItems="center"
+          direction="column"
+        >
+          <MfaBackupText>New recovery code:</MfaBackupText>
+          <MfaBackupCode>{newRecoveryCode}</MfaBackupCode>
         </LoginTextContainer>
       )}
       <SubmitButtonContainer>
@@ -72,19 +81,36 @@ const EnterRecoveryCode = ({
           <SubmitLoginButton
             variant="contained"
             color="secondary"
-            disabled={newRecoveryCode}
-            onClick={() => enterRecoveryCodeHandler(recoveryCode)}
+            disabled={newRecoveryCode || loading}
+            onClick={async () => {
+              setLoading(true)
+              await enterRecoveryCodeHandler(recoveryCode)
+              setLoading(false)
+            }}
           >
-            Confirm
+            {loading ? (
+              <Loading size={16} style={{ height: '16px' }} />
+            ) : (
+              `Confirm`
+            )}
           </SubmitLoginButton>
         )}
         {newRecoveryCode && (
           <SubmitLoginButton
+            disabled={loading}
             variant="contained"
             color="secondary"
-            onClick={() => processAuthentificationHandler()}
+            onClick={async () => {
+              setLoading(true)
+              await processAuthentificationHandler()
+              setLoading(false)
+            }}
           >
-            Go to App
+            {loading ? (
+              <Loading size={16} style={{ height: '16px' }} />
+            ) : (
+              `Go to App`
+            )}
           </SubmitLoginButton>
         )}
       </SubmitButtonContainer>
