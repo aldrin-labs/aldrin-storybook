@@ -127,6 +127,7 @@ export const SubmitButtonContainerCss = css`
 `
 
 export const LoginLinkCss = css`
+  display: block;
   background: #165be0;
 `
 
