@@ -15,8 +15,9 @@ import {
   LoginSubHeadingBox,
   LoginGoogleAuthHeadingText,
   TextLink,
+  OtpLoaderContainer,
 } from '@sb/compositions/Login/Login.styles'
-
+import { Loading } from '@sb/components/index'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 const EnterOtp = ({
@@ -28,17 +29,20 @@ const EnterOtp = ({
 }: {
   theme: Theme
   changeStep: (step: string) => void
-  otpCompleteHandler: (otp: string) => void
+  otpCompleteHandler: (otp: string) => Promise<void>
   status: 'error' | 'success'
   errorMessage: string
 }) => {
   const [otp, setOtp] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const otpChangeHandler = (otp: string) => {
+  const otpChangeHandler = async (otp: string) => {
     setOtp(otp)
 
     if (otp.length === 6) {
-      otpCompleteHandler(otp)
+      setLoading(true)
+      await otpCompleteHandler(otp)
+      setLoading(false)
     }
   }
 
@@ -54,6 +58,9 @@ const EnterOtp = ({
         </LoginGoogleAuthHeadingText>
       </LoginSubHeadingBox>
       <InputContainer>
+        <OtpLoaderContainer container justify="center" alignItems="center">
+          {loading ? <Loading size={16} style={{ height: '16px' }} /> : null}
+        </OtpLoaderContainer>
         <OtpInput
           containerStyle={{
             display: 'flex',
@@ -74,9 +81,9 @@ const EnterOtp = ({
           }}
           shouldAutoFocus
           value={otp}
-          onChange={(otp: string) => otpChangeHandler(otp)}
+          onChange={async (otp: string) => await otpChangeHandler(otp)}
           numInputs={6}
-        separator={<span style={{ padding: '1rem' }} >{" "}</span>}
+          separator={<span style={{ padding: '1rem' }}> </span>}
         />
         {status === 'error' && errorMessage !== '' && (
           <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
