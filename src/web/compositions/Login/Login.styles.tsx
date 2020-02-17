@@ -195,6 +195,10 @@ export const RememberMeContainerCss = css`
   width: auto;
 `
 
+export const OtpLoaderContainerCss = css`
+  height: 1.8rem;
+`
+
 export const MfaHeading = styled(({ ...props }) => <Typography {...props} />)`
   ${MfaHeadingCss}
 `
@@ -345,3 +349,10 @@ export const TextLinkSpan = styled(({ small, ...props }) => (
   ${TextLinkCss}
   ${(props) => (props.small ? TextSmallCss : ``)}
 `
+
+export const OtpLoaderContainer =  styled(({ ...props }) => (
+  <Grid {...props} />
+))`
+  ${OtpLoaderContainerCss}
+`
+
