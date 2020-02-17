@@ -72,7 +72,6 @@ export const WithGoogleButtonTextCss = css`
   letter-spacing: 0.5px;
   text-transform: initial;
 
-
   padding-left: 3.5rem;
 `
 
@@ -229,7 +228,7 @@ export const SubmitLoginButton = styled(({ padding, ...props }) => (
   <Button {...props} />
 ))`
   ${SubmitLoginButtonCss}
-  ${({padding}) => padding ? `padding: ${padding};` : ''}
+  ${({ padding }) => (padding ? `padding: ${padding};` : '')}
 `
 
 export const SubmitButtonContainer = styled(({ ...props }) => (
@@ -332,4 +331,11 @@ export const RememberMeContainer = styled(({ ...props }) => (
   <Grid {...props} />
 ))`
   ${RememberMeContainerCss}
+`
+
+export const TextLinkSpan = styled(({ small, ...props }) => (
+  <span {...props} />
+))`
+  ${TextLinkCss}
+  ${(props) => (props.small ? TextSmallCss : ``)}
 `

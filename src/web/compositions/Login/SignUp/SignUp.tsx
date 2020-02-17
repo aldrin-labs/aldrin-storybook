@@ -2,22 +2,40 @@ import React, { ChangeEvent, useState } from 'react'
 import { compose } from 'recompose'
 import {
   Grid,
-  Typography,
   Theme,
-  Input,
-  Button,
   Checkbox,
+  IconButton,
+  InputAdornment,
 } from '@material-ui/core'
+
+import { Visibility, VisibilityOff } from '@material-ui/icons/'
 import { withTheme } from '@material-ui/styles'
+
 import { PrivacyPolicy, TermsOfUse } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import GoogleLogo from '@icons/googleLogo.svg'
+
+import {
+  LoginContainer,
+  InputContainer,
+  StyledInputLogin,
+  SubmitButtonContainer,
+  SubmitLoginButton,
+  TextLink,
+  SmallGrayText,
+  OrText,
+  WithGoogleButton,
+  WithGoogleButtonText,
+  OrContainerText,
+  RememberMeContainer,
+  TextLinkSpan,
+} from '@sb/compositions/Login/Login.styles'
+import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
 const SignUp = ({
   theme,
   onSignUpWithGoogleClick,
   onSignUpButtonClick,
-  changeStep,
   status,
   errorMessage,
 }: {
@@ -42,12 +60,24 @@ const SignUp = ({
   const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
   const [showTermsOfUse, toggleTermsOfUse] = useState(false)
   const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPasswordAgaing, setShowPasswordAgaing] = useState(false)
 
   const toggleAgreementCheckbox = () => {
     setAgreementWithRules(!isAgreeWithRules)
   }
 
-  const checkPasswordsMatch = ({ pass1, pass2 }: { pass1: string, pass2: string }) => pass1 === pass2
+  const checkPasswordsMatch = ({
+    pass1,
+    pass2,
+  }: {
+    pass1: string
+    pass2: string
+  }) => pass1 === pass2
+
+  console.log('error', error)
 
   return (
     <>
@@ -59,85 +89,136 @@ const SignUp = ({
         open={showTermsOfUse}
         onClick={() => toggleTermsOfUse(!showTermsOfUse)}
       />
-      <Grid>
-        <Grid>
-          <Button
+      <LoginContainer>
+        <Grid container>
+          <WithGoogleButton
             disabled={!isAgreeWithRules}
             onClick={() => onSignUpWithGoogleClick()}
           >
-            Sign up with Google
-          </Button>
+            <Grid container alignItems="center" justify="center" wrap="nowrap">
+              <SvgIcon src={GoogleLogo} width="2rem" height="auto" />
+              <WithGoogleButtonText> Sign up with Google</WithGoogleButtonText>
+            </Grid>
+          </WithGoogleButton>
         </Grid>
-        <Grid>
-          <Typography>or</Typography>
-        </Grid>
-        <Grid>
-          <Input
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+        <OrContainerText>
+          <OrText>Or</OrText>
+        </OrContainerText>
+        <InputContainer>
+          <StyledInputLogin
+            required
+            error={!!emailError}
+            placeholder={`E-mail`}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value)
+              setEmailError('')
+            }
             }
           />
-        </Grid>
-        <Grid>
-          <Input
+        </InputContainer>
+        <InputContainer>
+          <StyledInputLogin
+            required
+            error={!!error}
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Toggle password visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
+            placeholder={`Password`}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value)
               setError('')
             }}
           />
-        </Grid>
-        <Grid>
-          <Input
+        </InputContainer>
+        <InputContainer>
+          <StyledInputLogin
+            required
+            error={!!error}
+            type={showPasswordAgaing ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Toggle password visibility"
+                  onClick={() => setShowPasswordAgaing(!showPasswordAgaing)}
+                >
+                  {showPasswordAgaing ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
+            placeholder={`Confirm password`}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               setPasswordAgaing(e.target.value)
               setError('')
             }}
           />
-        </Grid>
+        </InputContainer>
         {status === 'error' && errorMessage !== '' && (
           <Grid>
-            <Typography>{errorMessage}</Typography>
+            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+              {errorMessage}
+            </TypographyWithCustomColor>
           </Grid>
         )}
         {error !== '' && (
           <Grid>
-            <Typography>Passwords doesn't match</Typography>
+            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+              Passwords doesn't match
+            </TypographyWithCustomColor>
           </Grid>
         )}
-        <Grid>
-          <Grid>
-            <Checkbox
-              checked={isAgreeWithRules}
-              onChange={() => toggleAgreementCheckbox()}
-            />
-            <Typography>
-              I agree to cryptocurrencies.ai
-              <span onClick={() => toggleTermsOfUse(!showTermsOfUse)}>
-                Terms of Use
-              </span>
-              ,{' '}
-              <span onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}>
-                Privacy Policy
-              </span>
-              , and I’m over 18 years old.
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid>
-          <Button
+        <InputContainer container justify="center" alignItems="center">
+          <Checkbox
+            checked={isAgreeWithRules}
+            onChange={() => toggleAgreementCheckbox()}
+          />
+          <SmallGrayText>
+            I agree to cryptocurrencies.ai{' '}
+            <TextLinkSpan
+              small={true}
+              onClick={() => toggleTermsOfUse(!showTermsOfUse)}
+            >
+              Terms of Use,{' '}
+            </TextLinkSpan>
+            <TextLinkSpan
+              small={true}
+              onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
+            >
+              Privacy Policy,{' '}
+            </TextLinkSpan>
+            and I’m over 18 years old.
+          </SmallGrayText>
+        </InputContainer>
+        <SubmitButtonContainer>
+          <SubmitLoginButton
+            padding={'2rem 8rem'}
+            variant="contained"
+            color="secondary"
             disabled={!isAgreeWithRules}
             onClick={() => {
-              const isPasswordsAreTheSame = checkPasswordsMatch({ pass1: password, pass2: passwordAgaing })
+              const isPasswordsAreTheSame = checkPasswordsMatch({
+                pass1: password,
+                pass2: passwordAgaing,
+              })
+              console.log('isPasswordsAreTheSame', isPasswordsAreTheSame)
               if (!isPasswordsAreTheSame) {
+                setError(`Passwords doesn't match`)
                 return
               }
               onSignUpButtonClick({ email, password })
             }}
           >
-            Sign up
-          </Button>
-        </Grid>
-      </Grid>
+            Next
+          </SubmitLoginButton>
+        </SubmitButtonContainer>
+      </LoginContainer>
     </>
   )
 }
