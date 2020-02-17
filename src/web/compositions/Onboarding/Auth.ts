@@ -1,7 +1,6 @@
 import auth0, { Auth0Error, Auth0DecodedHash } from 'auth0-js'
 
 import { auth0Options, ClientId } from '@core/config/authConfig'
-import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
 
 export type AuthSimpleSuccessResponseType = {
   access_token: string
@@ -56,13 +55,26 @@ export type ChangePasswordErrorResponseType = {
 }
 
 export default class Auth {
+  authCallback: string
   auth0 = new auth0.WebAuth({
     domain: 'ccai.auth0.com',
     clientID: ClientId,
     ...auth0Options.auth,
   })
 
-  register = async (email: string, password: string): Promise<{status: 'error' | 'ok', message: '' | string, errorDestription: string}> => {
+  constructor(authCallback: string) {
+    console.log('authCallback', authCallback)
+    this.authCallback = authCallback
+  }
+
+  register = async (
+    email: string,
+    password: string
+  ): Promise<{
+    status: 'error' | 'ok'
+    message: '' | string
+    errorDestription: string
+  }> => {
     return new Promise((resolve) => {
       this.auth0.signup(
         {
@@ -72,10 +84,12 @@ export default class Auth {
         },
         async (err: Auth0Error | null, result) => {
           if (err) {
+            console.log('err register', err);
+
             resolve({
               status: 'error',
-              message: err.error,
-              errorDestription: err.errorDescription,
+              message: err.description,
+              errorDestription: err.code,
             })
           }
           resolve({
@@ -94,7 +108,7 @@ export default class Auth {
         email,
         password,
         realm: 'Username-Password-Authentication',
-        redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
+        redirectUri: this.authCallback,
       },
       (authError) => {
         console.log('authError', authError)
@@ -105,12 +119,14 @@ export default class Auth {
   googleSingup = () => {
     this.auth0.authorize({
       connection: 'google-oauth2',
-      redirectUri: `${CALLBACK_URL_FOR_AUTH0}/login`,
-      // redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
+      redirectUri: this.authCallback,
     })
   }
 
-  handleAuthentication = async (): Promise<{status: 'err' | 'ok', data: 'no authResult' | Auth0Error | Auth0DecodedHash | null}> => {
+  handleAuthentication = async (): Promise<{
+    status: 'err' | 'ok'
+    data: 'no authResult' | Auth0Error | Auth0DecodedHash | null
+  }> => {
     console.log('handleAuthentication', window.location.hash)
     return new Promise((resolve) => {
       this.auth0.parseHash(
