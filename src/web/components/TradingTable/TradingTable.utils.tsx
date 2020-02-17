@@ -425,6 +425,7 @@ export const combinePositionsTable = ({
               `0 ${pair[1]} / 0%`
             ),
             style: { opacity: needOpacity ? 0.5 : 1 },
+            colspan: 2,
           },
         },
         {
@@ -439,7 +440,7 @@ export const combinePositionsTable = ({
                 />
               </div>
             ),
-            colspan: 8,
+            colspan: 9,
             style: {
               opacity: needOpacity ? 0.5 : 1,
               visibility: needOpacity ? 'hidden' : 'visible',
@@ -552,7 +553,7 @@ export const combineActiveTradesTable = (
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
-      const entryOrderPrice = entryPrice
+      const entryOrderPrice = !entryDeviation && orderType === 'limit' ? price : entryPrice
       // : !!entryDeviation
       // ? activatePrice * (1 + entryDeviation / leverage / 100)
       // : price
@@ -596,7 +597,7 @@ export const combineActiveTradesTable = (
           contentToSort: side,
         },
         entryPrice: {
-          render: entryPrice ? (
+          render: entryOrderPrice ? (
             <SubColumnValue>
               {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
@@ -849,7 +850,7 @@ export const combineStrategiesHistoryTable = (
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
-      const entryOrderPrice = entryPrice
+      const entryOrderPrice = !entryDeviation && orderType === 'limit' ? price : entryPrice
       // ? entryPrice
       // : !!entryDeviation
       // ? activatePrice * (1 + entryDeviation / leverage / 100)
@@ -1089,7 +1090,7 @@ export const combineOpenOrdersTable = (
 
       const needOpacity = el.status === 'placing'
       const pair = symbol.split('_')
-      const type = orderType.toLowerCase().replace('-', '_')
+      const type = orderType.toLowerCase().replace(/-/g, '_')
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'

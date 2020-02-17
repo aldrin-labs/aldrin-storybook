@@ -145,6 +145,21 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
+      const data = client.readQuery({
+        query: getOpenOrderHistory,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+          },
+        },
+      })
+
+      if (
+        data.getOpenOrderHistory.find((order) => order.marketId === '0')
+      ) {
+        return
+      }
+
       this.props.ordersHealthcheckMutation({
         variables: {
           input: {
