@@ -30,6 +30,7 @@ import {
   RememberMeContainer,
 } from '@sb/compositions/Login/Login.styles'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+import { isEmailValid } from '@sb/compositions/Login/Login.utils'
 
 const SignIn = ({
   theme,
@@ -61,12 +62,7 @@ const SignIn = ({
   const [passwordError, setPasswordError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const isEmailValid = ({ email }: { email: string }) => {
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-    return emailRegex.test(email)
-  }
+  const [isRememberMe, toggleRememberMe] = useState(true)
 
   const isPasswordValid = ({ password }: { password: string }) =>
     !!password.length
@@ -102,6 +98,7 @@ const SignIn = ({
           endAdornment={
             <InputAdornment position="end">
               <IconButton
+                tabIndex={-1}
                 aria-label="Toggle password visibility"
                 onClick={() => {
                   setShowPassword(!showPassword)
@@ -142,7 +139,10 @@ const SignIn = ({
       )}
       <InputContainer container justify="space-between" alignItems="center">
         <RememberMeContainer container alignItems="center">
-          <Checkbox />
+          <Checkbox
+            checked={isRememberMe}
+            onChange={() => toggleRememberMe(!isRememberMe)}           
+           />
           <SmallGrayText>Remember me</SmallGrayText>
         </RememberMeContainer>
         <Grid>

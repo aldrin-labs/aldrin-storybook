@@ -31,6 +31,8 @@ import {
 } from '@sb/compositions/Login/Login.styles'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 
+import { isEmailValid } from '@sb/compositions/Login/Login.utils'
+
 const SignUp = ({
   theme,
   onSignUpWithGoogleClick,
@@ -60,6 +62,8 @@ const SignUp = ({
   const [showTermsOfUse, toggleTermsOfUse] = useState(false)
   const [passwordError, setPasswordError] = useState('')
   const [emailError, setEmailError] = useState('')
+  const [agreementError, setAgreementError] = useState(false)
+
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordAgaing, setShowPasswordAgaing] = useState(false)
@@ -68,6 +72,7 @@ const SignUp = ({
 
   const toggleAgreementCheckbox = () => {
     setAgreementWithRules(!isAgreeWithRules)
+    setAgreementError(false)
   }
 
   const isPasswordsValid = ({
@@ -77,12 +82,6 @@ const SignUp = ({
     pass1: string
     pass2: string
   }) => pass1 === pass2 && pass1 !== '' && pass2 !== ''
-
-  const isEmailValid = ({ email }: { email: string }) => {
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-    return emailRegex.test(email)
-  }
 
   return (
     <>
@@ -97,8 +96,9 @@ const SignUp = ({
       <LoginContainer>
         <Grid container>
           <WithGoogleButton
-            disabled={!isAgreeWithRules}
-            onClick={() => onSignUpWithGoogleClick()}
+            onClick={() => { 
+              isAgreeWithRules ? onSignUpWithGoogleClick() : setAgreementError(true)
+            }}
           >
             <Grid container alignItems="center" justify="center" wrap="nowrap">
               <SvgIcon src={GoogleLogo} width="2rem" height="auto" />
@@ -129,6 +129,7 @@ const SignUp = ({
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
+                  tabIndex={-1}
                   aria-label="Toggle password visibility"
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -151,6 +152,7 @@ const SignUp = ({
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
+                  tabIndex={-1}
                   aria-label="Toggle password visibility"
                   onClick={() => setShowPasswordAgaing(!showPasswordAgaing)}
                 >
@@ -183,6 +185,13 @@ const SignUp = ({
           <Grid>
             <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
               Email is not valid
+            </TypographyWithCustomColor>
+          </Grid>
+        )}
+        {agreementError && (
+          <Grid>
+            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
+              You must agree to Terms of Use and Privacy Policy
             </TypographyWithCustomColor>
           </Grid>
         )}

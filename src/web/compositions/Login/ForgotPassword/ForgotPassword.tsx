@@ -17,8 +17,9 @@ import {
   SubmitLoginLink,
 } from '@sb/compositions/Login/Login.styles'
 import { Loading } from '@sb/components/index'
-
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+import { isEmailValid } from '@sb/compositions/Login/Login.utils'
+
 
 const ForgotPassoword = ({
   theme,
@@ -35,12 +36,6 @@ const ForgotPassoword = ({
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const isEmailValid = ({ email }: { email: string }) => {
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-
-    return emailRegex.test(email)
-  }
 
   const getEmailDomain = ({ email = '' }: { email: string }) => {
     const emailDomain = email.replace(/.*@/, '')
