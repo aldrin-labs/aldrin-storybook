@@ -71,7 +71,7 @@ class LoginClassComponent extends React.Component<Props> {
               variant="contained"
               // onClick={this.hangleGoToSignupPage}
               className="loginButton"
-              style={{ padding: '1px 16px', margin: '0 1rem', color: '#97C15C' }}
+              style={{ padding: '1px 16px', margin: '0 1rem', backgroundColor: '#97C15C' }}
             >
               Sign Up
             </Button>
