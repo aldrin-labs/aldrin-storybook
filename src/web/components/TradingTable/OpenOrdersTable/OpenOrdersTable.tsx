@@ -298,8 +298,16 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
+const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
+  if (!nextProps.show && !prevProps.show) {
+    return true
+  }
+
+  return false
+})
+
 export default compose(
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })
-)(TableDataWrapper)
+)(MemoizedWrapper)
 
