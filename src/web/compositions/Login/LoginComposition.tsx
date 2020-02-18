@@ -75,7 +75,12 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   // this lifecycle here is only needed for sign up with google / sign in with google
   // maybe better to move it upper level into LoginCustom container
   async componentDidMount() {
-    // TODO: also we need to validate that hash exists in url before trigger this
+     // validate that hash exists in url before trigger google auth
+    if (window.location.hash === "") {
+      console.log('empty hash')
+      return
+    }
+
     const result = await this.auth.handleAuthentication()
     console.log('result', result)
 
