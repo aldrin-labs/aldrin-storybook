@@ -57,8 +57,11 @@ const ForgotPassoword = ({
         <StyledInputLogin
           disabled={status === 'success' && errorMessage === ''}
           error={!!emailError}
+          id="email"
+          name="email"
+          autocomplete="on"
           type="email"
-          placeholder="E-mail"
+          placeholder={`E-mail`}
           value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
