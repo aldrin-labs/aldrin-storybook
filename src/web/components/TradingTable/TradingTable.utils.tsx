@@ -337,6 +337,7 @@ export const combinePositionsTable = ({
             rowspan: 2,
             color: '#7284A0',
           },
+          id: el._id,
           pair: {
             render: (
               <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -1747,7 +1748,7 @@ export const updateActivePositionsQuerryFunction = (
 
   const positionHasTheSameIndex = prev.getActivePositions.findIndex(
     (el: TradeType) =>
-      el.symbol === subscriptionData.data.listenFuturesPositions.symbol
+      el._id === subscriptionData.data.listenFuturesPositions._id
   )
 
   console.log('prev.getActivePositions', prev.getActivePositions)
