@@ -178,10 +178,38 @@ class PositionsTable extends React.PureComponent {
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.listenTablePrice === that.state.marketPrice)
+          if (!data || data.loading || data.data.listenTablePrice === that.state.marketPrice || !that.props.show)
             return;
-            
-          that.setState({ marketPrice: data.data.listenTablePrice })
+
+          const {
+            getActivePositionsQuery,
+            currencyPair,
+            selectedKey,
+            canceledOrders,
+            priceFromOrderbook,
+            pricePrecision,
+            quantityPrecision,
+            theme,
+          } = that.props
+      
+
+          const positionsData = combinePositionsTable({
+            data: getActivePositionsQuery.getActivePositions,
+            createOrderWithStatus: that.createOrderWithStatus,
+            theme,
+            marketPrice: data.data.listenTablePrice,
+            pair: currencyPair,
+            keyId: selectedKey.keyId,
+            canceledPositions: canceledOrders,
+            priceFromOrderbook,
+            pricePrecision,
+            quantityPrecision,
+          })
+
+          that.setState({
+            positionsData,
+            marketPrice: data.data.listenTablePrice,
+          })
         },
       })
 
@@ -380,6 +408,7 @@ class PositionsTable extends React.PureComponent {
     })
   }
 
+
   updatePositionsHandler = () => {
     const {
       updatePositionMutation,
@@ -436,6 +465,8 @@ class PositionsTable extends React.PureComponent {
     if (!show) {
       return null
     }
+
+    console.log('Positions re-render')
 
     return (
       <TableWithSort
@@ -507,9 +538,6 @@ class PositionsTable extends React.PureComponent {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  // console.log('PositionsTable props.show', props.show)
-  // console.log('PositionsTable props', props)
-
   return (
     <QueryRenderer
       component={PositionsTable}
@@ -538,9 +566,17 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
+const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
+  if (!nextProps.show && !prevProps.show) {
+    return true
+  }
+
+  return false
+})
+
 export default compose(
   withSnackbar,
   graphql(updatePosition, { name: 'updatePositionMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(createOrder, { name: 'createOrderMutation' })
-)(TableDataWrapper)
+)(MemoizedWrapper)

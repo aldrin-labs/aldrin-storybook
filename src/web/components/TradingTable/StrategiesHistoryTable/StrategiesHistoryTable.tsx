@@ -217,4 +217,11 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
-export default TableDataWrapper
+export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
+  if (!nextProps.show && !prevProps.show) {
+    return true
+  }
+
+  return false
+})
+

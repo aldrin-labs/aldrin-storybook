@@ -54,11 +54,12 @@ import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
+import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 
 let interval
 
 @withTheme
-class ActiveTradesTable extends React.Component {
+class ActiveTradesTable extends React.Component<{}, {}> {
   state = {
     editTrade: null,
     selectedTrade: {},
@@ -70,6 +71,8 @@ class ActiveTradesTable extends React.Component {
   }
 
   unsubscribeFunction: null | Function = null
+
+  subscription: null | { unsubscribe: () => void } = null
 
   onCancelOrder = async (keyId: string, strategyId: string) => {
     const { disableStrategyMutation } = this.props
@@ -120,20 +123,12 @@ class ActiveTradesTable extends React.Component {
     showCancelResult(statusResult)
   }
 
-  // TODO: here should be a mutation order to cancel a specific order
-  // TODO: Also it should receive an argument to edentify the order that we should cancel
-
-  onCancelAll = async () => {
-    // TODO: here should be a mutation func to cancel all orders
-    // TODO: Also it would be good to show the dialog message here after mutation completed
-  }
-
   subscribe() {
     const that = this
 
     this.subscription = client
       .subscribe({
-        query: LISTEN_PRICE,
+        query: LISTEN_TABLE_PRICE,
         variables: {
           input: {
             exchange: 'binance',
@@ -144,10 +139,38 @@ class ActiveTradesTable extends React.Component {
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.listenPrice === that.state.marketPrice)
+          if (
+            !data ||
+            data.loading ||
+            data.data.listenTablePrice === that.state.marketPrice ||
+            !that.props.show
+          ) {
             return
+          }
 
-          that.setState({ marketPrice: data.data.listenPrice })
+          const {
+            getActiveStrategiesQuery,
+            theme,
+            marketType,
+            currencyPair,
+            quantityPrecision,
+          } = that.props
+
+          const activeStrategiesProcessedData = combineActiveTradesTable(
+            getActiveStrategiesQuery.getActiveStrategies,
+            this.cancelOrderWithStatus,
+            this.editTrade,
+            theme,
+            data.data.listenTablePrice,
+            marketType,
+            currencyPair,
+            quantityPrecision
+          )
+
+          that.setState({
+            activeStrategiesProcessedData,
+            marketPrice: data.data.listenTablePrice,
+          })
         },
       })
 
@@ -670,6 +693,14 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
+const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
+  if (!nextProps.show && !prevProps.show) {
+    return true
+  }
+
+  return false
+})
+
 export default compose(
   graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(updateStopLossStrategy, { name: 'updateStopLossStrategyMutation' }),
@@ -679,4 +710,4 @@ export default compose(
   graphql(updateTakeProfitStrategy, {
     name: 'updateTakeProfitStrategyMutation',
   })
-)(TableDataWrapper)
+)(MemoizedWrapper)
