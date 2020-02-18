@@ -113,6 +113,9 @@ const SignUp = ({
           <StyledInputLogin
             required
             type="email"
+            id="email"
+            name="email"
+            autocomplete="on"
             error={!!emailError}
             placeholder={`E-mail`}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {

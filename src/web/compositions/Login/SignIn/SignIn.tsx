@@ -83,6 +83,9 @@ const SignIn = ({
       <InputContainer>
         <StyledInputLogin
           type="email"
+          id="email"
+          name="email"
+          autocomplete="on"
           placeholder={`E-mail`}
           error={!!emailError}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
