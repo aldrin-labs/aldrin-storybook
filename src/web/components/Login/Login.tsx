@@ -33,7 +33,7 @@ class LoginClassComponent extends React.Component<Props> {
       history: { push },
     } = this.props
     await handleLogout(logoutMutation, this.props.persistorInstance)
-    push('/login')
+    push('/signin')
   }
 
   render() {
