@@ -113,13 +113,15 @@ class PositionsTable extends React.PureComponent {
       positionsData,
     })
 
+    // I've temporary commented 119 & 122-124 lines bcz thay may produce flicker-effect
+
     const result = await this.createOrder(variables)
-    addOrderToCanceled(positionId)
+    // addOrderToCanceled(positionId)
     await showOrderResult(result, cancelOrder, marketType)
 
-    if (result) {
-      await setTimeout(() => clearCanceledOrders(), 5000)
-    }
+    // if (result) {
+    //   await setTimeout(() => clearCanceledOrders(), 5000)
+    // }
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
