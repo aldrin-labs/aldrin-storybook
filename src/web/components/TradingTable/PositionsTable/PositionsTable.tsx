@@ -27,6 +27,9 @@ import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
+import { LISTEN_TERMINAL_PRICE } from '@core/graphql/subscriptions/LISTEN_TERMINAL_PRICE'
+import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
+
 
 @withTheme
 class PositionsTable extends React.PureComponent {
@@ -164,7 +167,7 @@ class PositionsTable extends React.PureComponent {
 
     this.subscription = client
       .subscribe({
-        query: LISTEN_PRICE,
+        query: LISTEN_TABLE_PRICE,
         variables: {
           input: {
             exchange: 'binance',
@@ -175,9 +178,10 @@ class PositionsTable extends React.PureComponent {
       })
       .subscribe({
         next: (data) => {
-          if (data.loading || data.data.listenPrice === that.state.marketPrice)
-            return
-          that.setState({ marketPrice: data.data.listenPrice })
+          if (data.loading || data.data.listenTablePrice === that.state.marketPrice)
+            return;
+            
+          that.setState({ marketPrice: data.data.listenTablePrice })
         },
       })
 
