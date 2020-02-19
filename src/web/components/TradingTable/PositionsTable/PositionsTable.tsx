@@ -14,6 +14,9 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+
+import { IProps, IState } from './PositionsTable.types'
+
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
@@ -30,17 +33,17 @@ import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import { LISTEN_TERMINAL_PRICE } from '@core/graphql/subscriptions/LISTEN_TERMINAL_PRICE'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 
-
 @withTheme
-class PositionsTable extends React.PureComponent {
-  state = {
+class PositionsTable extends React.PureComponent<IProps, IState> {
+  state: IState = {
     positionsData: [],
-    marketPrice: 0,
-    needUpdate: true,
+    prices: [],
     positionsRefetchInProcess: false,
   }
 
   unsubscribeFunction: null | Function = null
+
+  subscription: null | { unsubscribe: () => void } = null
 
   createOrder = async (variables) => {
     const { createOrderMutation } = this.props
@@ -79,7 +82,7 @@ class PositionsTable extends React.PureComponent {
     }
   }
 
-  createOrderWithStatus = async (variables, positionId) => {
+  createOrderWithStatus = async (variables: any) => {
     const {
       getActivePositionsQuery,
       currencyPair,
@@ -92,15 +95,13 @@ class PositionsTable extends React.PureComponent {
       cancelOrder,
       marketType,
       showOrderResult,
-      addOrderToCanceled,
-      clearCanceledOrders,
     } = this.props
 
     const positionsData = combinePositionsTable({
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
       theme,
-      marketPrice: this.state.marketPrice,
+      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
@@ -113,15 +114,8 @@ class PositionsTable extends React.PureComponent {
       positionsData,
     })
 
-    // I've temporary commented 119 & 122-124 lines bcz thay may produce flicker-effect
-
     const result = await this.createOrder(variables)
-    // addOrderToCanceled(positionId)
     await showOrderResult(result, cancelOrder, marketType)
-
-    // if (result) {
-    //   await setTimeout(() => clearCanceledOrders(), 5000)
-    // }
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
@@ -163,25 +157,42 @@ class PositionsTable extends React.PureComponent {
   }
 
   subscribe() {
-    // const { theme } = this.props
-
     const that = this
+    const pairs = this.props.getActivePositionsQuery.getActivePositions.map(
+      (position) => {
+        if (position.positionAmt !== 0) {
+          return `${position.symbol}:${this.props.marketType}`
+        }
+
+        return
+      }
+    )
 
     this.subscription = client
       .subscribe({
         query: LISTEN_TABLE_PRICE,
         variables: {
           input: {
-            exchange: 'binance',
-            pair: `${that.props.currencyPair}:${that.props.marketType}`,
+            exchange: this.props.exchange,
+            pairs,
           },
         },
-        fetchPolicy: 'cache-only',
+        fetchPolicy: 'cache-and-network',
       })
       .subscribe({
         next: (data) => {
-          if (!data || data.loading || data.data.listenTablePrice === that.state.marketPrice || !that.props.show)
-            return;
+          const positions = that.props.getActivePositionsQuery.getActivePositions.filter(
+            (position) => position.positionAmt !== 0
+          )
+
+          if (
+            !data ||
+            data.loading ||
+            !that.props.show ||
+            positions.length === 0
+          ) {
+            return
+          }
 
           const {
             getActivePositionsQuery,
@@ -193,13 +204,12 @@ class PositionsTable extends React.PureComponent {
             quantityPrecision,
             theme,
           } = that.props
-      
 
           const positionsData = combinePositionsTable({
             data: getActivePositionsQuery.getActivePositions,
             createOrderWithStatus: that.createOrderWithStatus,
             theme,
-            marketPrice: data.data.listenTablePrice,
+            prices: data.data.listenTablePrice,
             pair: currencyPair,
             keyId: selectedKey.keyId,
             canceledPositions: canceledOrders,
@@ -210,51 +220,10 @@ class PositionsTable extends React.PureComponent {
 
           that.setState({
             positionsData,
-            marketPrice: data.data.listenTablePrice,
+            prices: data.data.listenTablePrice,
           })
         },
       })
-
-    // this.subscription = client
-    //   .subscribe({
-    //     query: MARKET_TICKERS,
-    //     variables: {
-    //       symbol: that.props.currencyPair,
-    //       exchange: that.props.exchange,
-    //       marketType: String(that.props.marketType),
-    //     },
-    //   })
-    //   .subscribe({
-    //     next: (data) => {
-    //       if (
-    //         data &&
-    //         data.data &&
-    //         data.data.listenMarketTickers &&
-    //         that.state.needUpdate
-    //       ) {
-    //         const marketPrice =
-    //           data.data.listenMarketTickers[
-    //             data.data.listenMarketTickers.length - 1
-    //           ].price
-
-    //         const positionsData = combinePositionsTable(
-    //           that.props.getActivePositionsQuery.getActivePositions,
-    //           that.cancelOrderWithStatus,
-    //           that.createOrderWithStatus,
-    //           theme,
-    //           marketPrice,
-    //           this.props.currencyPair,
-    //           this.props.selectedKey.keyId
-    //         )
-
-    //         that.setState({
-    //           positionsData,
-    //           marketPrice,
-    //           needUpdate: false,
-    //         })
-    //       }
-    //     },
-    //   })
   }
 
   componentDidMount() {
@@ -276,7 +245,7 @@ class PositionsTable extends React.PureComponent {
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
       theme,
-      marketPrice: this.state.marketPrice,
+      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
@@ -289,72 +258,23 @@ class PositionsTable extends React.PureComponent {
       positionsData,
     })
 
-    const that = this
-
-    client
-      .watchQuery({
-        query: getActivePositions,
-        variables: {
-          input: {
-            keyId: this.props.selectedKey.keyId,
-          },
-        },
-        fetchPolicy: 'cache-and-network',
-      })
-      .subscribe({
-        next: async (data) => {
-          if (!data.data || data.data.getActivePositions.length === 0) return
-
-          const orderData =
-            data.data.getActivePositions[
-              data.data.getActivePositions.length - 1
-            ]
-
-          const positionData = await client.readQuery({
-            query: getActivePositions,
-            variables: {
-              input: {
-                keyId: that.props.selectedKey.keyId,
-              },
-            },
-          })
-
-          const currentPosition = positionData.getActivePositions.find(
-            (pos) => pos.symbol === that.props.currencyPair
-          )
-
-          await client.writeQuery({
-            query: getActivePositions,
-            variables: {
-              input: {
-                keyId: that.props.selectedKey.keyId,
-              },
-            },
-            data: {
-              getActivePositions: positionData.getActivePositions.filter(
-                (order) =>
-                  !(
-                    order._id === '0' &&
-                    currentPosition.positionAmt === order.positionAmt &&
-                    order.symbol === that.props.currencyPair
-                  )
-              ),
-            },
-          })
-        },
-      })
-
     this.unsubscribeFunction = subscribeToMore()
   }
 
-  componentDidUpdate(prevProps) {
-    // if (!this.state.needUpdate) {
-    //   setTimeout(() => this.setState({ needUpdate: true }), 10000)
-    // }
+  componentDidUpdate(prevProps: IProps) {
+    const newPositions = this.props.getActivePositionsQuery.getActivePositions.filter(
+      (position) => position.positionAmt !== 0
+    )
+
+    const prevPositions = prevProps.getActivePositionsQuery.getActivePositions.filter(
+      (position) => position.positionAmt !== 0
+    )
+
     if (
       prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType
+      prevProps.marketType !== this.props.marketType ||
+      prevPositions.length < newPositions.length
     ) {
       this.subscription && this.subscription.unsubscribe()
       this.subscribe()
@@ -380,7 +300,7 @@ class PositionsTable extends React.PureComponent {
     this.subscription && this.subscription.unsubscribe()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IProps) {
     const {
       getActivePositionsQuery,
       theme,
@@ -396,7 +316,7 @@ class PositionsTable extends React.PureComponent {
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
       theme,
-      marketPrice: this.state.marketPrice,
+      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
@@ -410,14 +330,8 @@ class PositionsTable extends React.PureComponent {
     })
   }
 
-
   updatePositionsHandler = () => {
-    const {
-      updatePositionMutation,
-      currencyPair,
-      selectedKey,
-      enqueueSnackbar,
-    } = this.props
+    const { updatePositionMutation, selectedKey } = this.props
 
     this.setState({
       positionsRefetchInProcess: true,
@@ -427,29 +341,41 @@ class PositionsTable extends React.PureComponent {
       variables: {
         input: {
           keyId: selectedKey.keyId,
-        }
-      }
+        },
+      },
     })
-    .then(res => {
-      this.showPositionsStatus({ status: res.data.updatePosition.status, errorMessage: res.data.updatePosition.errorMessage })
-    })
-    .catch(e => {
-      this.showPositionsStatus({ status: 'ERR', errorMessage: e.message })
-    })
+      .then((res) => {
+        this.showPositionsStatus({
+          status: res.data.updatePosition.status,
+          errorMessage: res.data.updatePosition.errorMessage,
+        })
+      })
+      .catch((e) => {
+        this.showPositionsStatus({ status: 'ERR', errorMessage: e.message })
+      })
   }
 
-  showPositionsStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with the result of position update' }: { status: "ERR" | "OK", errorMessage: string }) => {
+  showPositionsStatus = ({
+    status = 'ERR',
+    errorMessage = 'Something went wrong with the result of position update',
+  }: {
+    status: 'ERR' | 'OK'
+    errorMessage: string
+  }) => {
+    const { enqueueSnackbar } = this.props
+
     this.setState({
       positionsRefetchInProcess: false,
     })
 
     if (status === 'OK') {
-      this.props.enqueueSnackbar(`Your positions successful updated`, { variant: 'success' })
+      enqueueSnackbar(`Your positions successful updated`, {
+        variant: 'success',
+      })
     } else {
-      this.props.enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
+      enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
   }
-
 
   render() {
     const { positionsData, positionsRefetchInProcess } = this.state
@@ -467,8 +393,6 @@ class PositionsTable extends React.PureComponent {
     if (!show) {
       return null
     }
-
-    console.log('Positions re-render')
 
     return (
       <TableWithSort
@@ -532,7 +456,7 @@ class PositionsTable extends React.PureComponent {
           marketType,
           this.props.getActivePositionsQueryRefetch,
           this.updatePositionsHandler,
-          positionsRefetchInProcess,
+          positionsRefetchInProcess
         )}
       />
     )
