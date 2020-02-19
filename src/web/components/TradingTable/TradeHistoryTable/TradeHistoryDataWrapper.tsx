@@ -51,7 +51,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   render() {
     const {
       tab,
-      tabIndex,
       show,
       handleTabChange,
       selectedKey,
@@ -70,7 +69,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       <TradeHistoryTable
         {...{
           tab,
-          tabIndex,
           selectedKey,
           show,
           marketType,
