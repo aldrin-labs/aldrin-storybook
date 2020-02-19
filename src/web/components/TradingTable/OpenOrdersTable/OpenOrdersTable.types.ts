@@ -8,11 +8,15 @@ export interface IProps extends WithTheme<Theme> {
   tabIndex: number
   show: boolean
   handleTabChange: (tab: string | any) => void
+  getOpenOrderHistoryQueryRefetch: () => void
   cancelOrderMutation: CancelOrderMutationType
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory: OrderType[]
   }
   subscribeToMore: () => () => void
+  addOrderToCanceled: (id: string) => void
+  clearCanceledOrders: () => void
+  ordersHealthcheckMutation: (variables: any) => void
   showCancelResult: ({
     status,
     message,
@@ -24,6 +28,8 @@ export interface IProps extends WithTheme<Theme> {
   selectedKey: Key
   arrayOfMarketIds: string[]
   marketType: number
+  currencyPair: string
+  canceledOrders: string[]
 }
 
 export interface IState {

@@ -14,7 +14,10 @@ export interface IProps extends WithTheme<Theme> {
   subscribeToMore: () => () => void
   theme: Theme
   selectedKey: Key
+  arrayOfMarketIds: string[]
   marketType: number
+  currencyPair: string
+  canceledOrders: string[]
 }
 
 export interface IState {
