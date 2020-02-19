@@ -1,5 +1,5 @@
 import React from 'react'
-import { copy } from 'clipboard-copy'
+import copy from 'clipboard-copy'
 import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
