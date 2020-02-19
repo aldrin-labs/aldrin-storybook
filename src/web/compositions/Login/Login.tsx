@@ -8,7 +8,7 @@ import LoginCustom from '@core/containers/LoginCustom'
 export default ({ initialStep }: { initialStep?: 'signIn' | 'signUp' }) =>
   initialStep ? (
     <Grid
-      style={{ height: 'calc(100% - 3rem)' }}
+      style={{ height: 'calc(100% - 5rem)' }}
       container
       justify="center"
       alignItems="center"
