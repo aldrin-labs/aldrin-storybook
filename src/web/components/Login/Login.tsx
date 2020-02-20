@@ -19,7 +19,6 @@ import { SWrapper } from './Login.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { syncStorage } from '@storage'
 
-const OldLoginLink = (props: any) => <Link to="/login" {...props} />
 const SignInLink = (props: any) => <Link to="/signin" {...props} />
 const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 
@@ -74,16 +73,6 @@ class LoginClassComponent extends React.Component<Props> {
               style={{ padding: '1px 16px', margin: '0 1rem', backgroundColor: '#97C15C' }}
             >
               Sign Up
-            </Button>
-            <Button
-              component={OldLoginLink}
-              color="secondary"
-              variant="contained"
-              // onClick={this.hangleGoToLoginPage}
-              className="loginButton"
-              style={{ padding: '1px 16px', margin: '0 1rem' }}
-            >
-              Old login
             </Button>
           </>
         </Grow>
