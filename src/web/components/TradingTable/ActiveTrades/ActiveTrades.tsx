@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import moment from 'moment'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { client } from '@core/graphql/apolloClient'
@@ -26,6 +27,7 @@ import {
   EditStopLossPopup,
   EditEntryOrderPopup,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/EditOrderPopups'
+
 import { TableWithSort } from '@sb/components'
 
 import {
@@ -34,6 +36,9 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+
+import { IProps, IState, SmartOrder, Price } from './ActiveTrades.types'
+
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 import { updateEntryPointStrategy } from '@core/graphql/mutations/chart/updateEntryPointStrategy'
@@ -48,28 +53,32 @@ import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 
-let interval
-
 @withTheme
-class ActiveTradesTable extends React.Component<{}, {}> {
-  state = {
+class ActiveTradesTable extends React.Component<IProps, IState> {
+  state: IState = {
     editTrade: null,
     selectedTrade: {},
     cachedOrder: null,
     expandedRows: [],
     activeStrategiesProcessedData: [],
     prices: [],
-    needUpdate: false,
   }
 
   unsubscribeFunction: null | Function = null
 
   subscription: null | { unsubscribe: () => void } = null
 
-  onCancelOrder = async (keyId: string, strategyId: string) => {
+  interval: undefined | number = undefined
+
+  onCancelOrder = async (
+    keyId: string,
+    strategyId: string
+  ): Promise<
+    | { data: { disableStrategy: { enabled: boolean } } }
+    | { errors: string; data: null }
+  > => {
     const { disableStrategyMutation } = this.props
 
     try {
@@ -84,7 +93,7 @@ class ActiveTradesTable extends React.Component<{}, {}> {
 
       return responseResult
     } catch (err) {
-      return { errors: err }
+      return { errors: err, data: null }
     }
   }
 
@@ -120,15 +129,17 @@ class ActiveTradesTable extends React.Component<{}, {}> {
 
   subscribe() {
     const that = this
-    const pairs = this.props.getActiveStrategiesQuery.getActiveStrategies.map(
-      (strategy) => {
+    const pairs = this.props.getActiveStrategiesQuery.getActiveStrategies
+      .map((strategy) => {
         if (strategy.enabled) {
           return `${strategy.conditions.pair}:${this.props.marketType}`
         }
 
         return
-      }
-    )
+      })
+      .filter((pair, i, arr) => arr.indexOf(pair) === i)
+
+    console.log('pairs', pairs)
 
     this.subscription = client
       .subscribe({
@@ -142,10 +153,13 @@ class ActiveTradesTable extends React.Component<{}, {}> {
         fetchPolicy: 'cache-only',
       })
       .subscribe({
-        next: (data) => {
-          const orders = that.props.getActiveStrategiesQuery.getActiveStrategies.filter(
-            (strategy) => strategy.enabled
-          )
+        next: (data: {
+          loading: boolean
+          data: { listenTablePrice: Price[] }
+        }) => {
+          const orders = that.props.getActiveStrategiesQuery.getActiveStrategies
+            .filter((strategy) => strategy.enabled && strategy._id !== '-1')
+            .concat(that.state.cachedOrder)
 
           if (
             !data ||
@@ -165,7 +179,7 @@ class ActiveTradesTable extends React.Component<{}, {}> {
           } = that.props
 
           const activeStrategiesProcessedData = combineActiveTradesTable({
-            data: getActiveStrategiesQuery.getActiveStrategies,
+            data: orders,
             cancelOrderFunc: this.cancelOrderWithStatus,
             editTrade: this.editTrade,
             theme,
@@ -185,6 +199,7 @@ class ActiveTradesTable extends React.Component<{}, {}> {
 
   componentDidMount() {
     const {
+      selectedKey,
       getActiveStrategiesQuery,
       subscribeToMore,
       theme,
@@ -193,7 +208,21 @@ class ActiveTradesTable extends React.Component<{}, {}> {
       quantityPrecision,
     } = this.props
 
-    interval = setInterval(() => {
+    client.writeQuery({
+      query: getActiveStrategies,
+      variables: {
+        activeStrategiesInput: {
+          activeExchangeKey: selectedKey.keyId,
+        },
+      },
+      data: {
+        getActiveStrategies: getActiveStrategiesQuery.getActiveStrategies.filter(
+          (a) => a._id !== '-1'
+        ),
+      },
+    })
+
+    this.interval = window.setInterval(() => {
       const data = client.readQuery({
         query: getActiveStrategies,
         variables: {
@@ -205,7 +234,10 @@ class ActiveTradesTable extends React.Component<{}, {}> {
 
       if (
         !this.props.show ||
-        data.getActiveStrategies.find((order) => order._id === '-1')
+        data.getActiveStrategies.find(
+          (order: SmartOrder) => order._id === '-1'
+        ) ||
+        !!this.state.cachedOrder
       ) {
         return
       }
@@ -233,15 +265,20 @@ class ActiveTradesTable extends React.Component<{}, {}> {
     this.unsubscribeFunction = subscribeToMore()
   }
 
-  componentDidUpdate(prevProps) {
-    // if (!this.state.needUpdate) {
-    //   setTimeout(() => this.setState({ needUpdate: true }), 10000)
-    // }
+  componentDidUpdate(prevProps: IProps) {
+    const newOrders = this.props.getActiveStrategiesQuery.getActiveStrategies.filter(
+      (order) => order.enabled && order._id !== '-1'
+    )
+
+    const prevOrders = prevProps.getActiveStrategiesQuery.getActiveStrategies.filter(
+      (order) => order.enabled && order._id !== '-1'
+    )
 
     if (
       prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType
+      prevProps.marketType !== this.props.marketType ||
+      newOrders.length > prevOrders.length
     ) {
       this.subscription && this.subscription.unsubscribe()
       this.subscribe()
@@ -255,18 +292,19 @@ class ActiveTradesTable extends React.Component<{}, {}> {
     }
 
     this.subscription && this.subscription.unsubscribe()
-    clearInterval(interval)
+    clearInterval(this.interval)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IProps) {
     const {
-      getActiveStrategiesQuery,
       theme,
       marketType,
       currencyPair,
       quantityPrecision,
       selectedKey,
     } = nextProps
+
+    const { prices, cachedOrder } = this.state
 
     const data = client.readQuery({
       query: getActiveStrategies,
@@ -277,34 +315,75 @@ class ActiveTradesTable extends React.Component<{}, {}> {
       },
     })
 
-    const orderReturned = getActiveStrategiesQuery.getActiveStrategies.some(
-      (a) => a._id === '0'
-    )
+    // if order have timestamp greater than cached order - it's new order
+    const newOrderFromSubscription =
+      cachedOrder !== null
+        ? data.getActiveStrategies.find((order: SmartOrder) => {
+            const orderDate = isNaN(moment(+order.createdAt).unix())
+              ? order.createdAt
+              : +order.createdAt
 
+            const cachedOrderDate = Math.floor(+cachedOrder.createdAt / 1000)
+
+            return +moment(orderDate).format('X') > cachedOrderDate
+          })
+        : null
+
+    // here we receive order from cache (we write there order on mutation call)
     if (
-      !this.state.cachedOrder &&
-      data.getActiveStrategies.some((a) => a._id === '-1')
+      !cachedOrder &&
+      data.getActiveStrategies.some((a: SmartOrder) => a._id === '-1')
     ) {
       this.setState({
-        cachedOrder: data.getActiveStrategies.filter((a) => a._id === '-1'),
+        cachedOrder: data.getActiveStrategies.filter(
+          (a: SmartOrder) => a._id === '-1'
+        )[0],
+      })
+
+      client.writeQuery({
+        query: getActiveStrategies,
+        variables: {
+          activeStrategiesInput: {
+            activeExchangeKey: selectedKey.keyId,
+          },
+        },
+        data: {
+          getActiveStrategies: data.getActiveStrategies.filter(
+            (a: SmartOrder) => a._id !== '-1'
+          ),
+        },
       })
     }
 
-    if (orderReturned) {
+    // no need to cached order coz of real
+    if (newOrderFromSubscription) {
       this.setState({ cachedOrder: null })
     }
 
+    const newData = client.readQuery({
+      query: getActiveStrategies,
+      variables: {
+        activeStrategiesInput: {
+          activeExchangeKey: selectedKey.keyId,
+        },
+      },
+    })
+
+    const ordersToDisplay =
+      !newOrderFromSubscription && !!cachedOrder
+        ? newData.getActiveStrategies
+            .filter((order: SmartOrder) => order._id !== '-1')
+            .concat(cachedOrder)
+        : newData.getActiveStrategies
+
+    console.log('ordersToDisplay', ordersToDisplay)
+
     const activeStrategiesProcessedData = combineActiveTradesTable({
-      data:
-        !orderReturned && this.state.cachedOrder
-          ? getActiveStrategiesQuery.getActiveStrategies.concat(
-              this.state.cachedOrder
-            )
-          : getActiveStrategiesQuery.getActiveStrategies,
+      data: ordersToDisplay,
       cancelOrderFunc: this.cancelOrderWithStatus,
       editTrade: this.editTrade,
       theme,
-      prices: this.state.prices,
+      prices,
       marketType,
       currencyPair,
       quantityPrecision,
@@ -312,20 +391,6 @@ class ActiveTradesTable extends React.Component<{}, {}> {
 
     this.setState({
       activeStrategiesProcessedData,
-    })
-
-    client.writeQuery({
-      query: getActiveStrategies,
-      variables: {
-        activeStrategiesInput: {
-          activeExchangeKey: selectedKey.keyId,
-        },
-      },
-      data: {
-        getActiveStrategies: getActiveStrategiesQuery.getActiveStrategies.filter(
-          (a) => a._id !== '0'
-        ),
-      },
     })
 
     return null
@@ -396,13 +461,17 @@ class ActiveTradesTable extends React.Component<{}, {}> {
           selectedTrade &&
           selectedTrade.conditions && (
             <EditEntryOrderPopup
-              price={this.state.prices.find(
-                (priceObj) =>
-                  priceObj.pair ===
-                  `${selectedTrade.conditions.pair}:${
-                    selectedTrade.conditions.marketType
-                  }:${this.props.exchange}`
-              )}
+              price={
+                (
+                  this.state.prices.find(
+                    (priceObj) =>
+                      priceObj.pair ===
+                      `${selectedTrade.conditions.pair}:${
+                        selectedTrade.conditions.marketType
+                      }:${this.props.exchange}`
+                  ) || { price: 0 }
+                ).price
+              }
               funds={processedFunds}
               quantityPrecision={quantityPrecision}
               open={editTrade === 'entryOrder'}
