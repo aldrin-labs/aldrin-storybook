@@ -491,8 +491,6 @@ export const combineActiveTradesTable = ({
 
   const { green, red, blue } = theme.palette
 
-  console.log('orig', data.length)
-
   const processedActiveTradesData = data
     .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
     .sort((a, b) => {
@@ -552,8 +550,6 @@ export const combineActiveTradesTable = ({
           timeoutWhenProfit: '-',
         },
       } = el
-
-      console.log('arr', arr.length)
 
       const { entryPrice, state } = el.state || {
         entryPrice: 0,

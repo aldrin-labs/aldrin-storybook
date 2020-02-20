@@ -158,7 +158,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           data: { listenTablePrice: Price[] }
         }) => {
           const orders = that.props.getActiveStrategiesQuery.getActiveStrategies
-            .filter((strategy) => strategy.enabled && strategy._id !== '-1')
+            .filter(
+              (strategy: SmartOrder) =>
+                strategy.enabled && strategy._id !== '-1'
+            )
             .concat(that.state.cachedOrder)
 
           if (
@@ -171,7 +174,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           }
 
           const {
-            getActiveStrategiesQuery,
             theme,
             marketType,
             currencyPair,
@@ -375,8 +377,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             .filter((order: SmartOrder) => order._id !== '-1')
             .concat(cachedOrder)
         : newData.getActiveStrategies
-
-    console.log('ordersToDisplay', ordersToDisplay)
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
       data: ordersToDisplay,
