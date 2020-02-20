@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React from 'react'
 import { compose } from 'recompose'
 
 // MOVE THIS TO APP -_>
@@ -7,8 +7,6 @@ import 'react-dates/lib/css/_datepicker.css'
 // <-- MOVE THIS TO APP
 
 import { IProps, IState } from './TradingTable.types'
-import { tradingTableTabConfig } from './TradingTable.mocks'
-import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 
 import ActiveTrades from './ActiveTrades/ActiveTrades'
@@ -19,8 +17,6 @@ import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryDataWrapper'
 import Funds from './FundsTable/FundsTable'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { getSelectedKey } from '@core/graphql/queries/chart/getSelectedKey'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -35,8 +31,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     })
   }
 
-  addOrderToCanceled = (orderId: string | number) => {
-    this.setState((prev: IState) => {
+  addOrderToCanceled = (orderId: string) => {
+    this.setState((prev) => {
       return { canceledOrders: [...prev.canceledOrders].concat(orderId) }
     })
   }
@@ -55,7 +51,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       arrayOfMarketIds,
       priceFromOrderbook,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = this.props
 
     return (

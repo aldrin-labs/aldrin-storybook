@@ -2,6 +2,7 @@ import * as React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import { Grow, Slide, Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
@@ -17,16 +18,14 @@ import { Props } from './Login.types'
 import { SWrapper } from './Login.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { syncStorage } from '@storage'
+
+const OldLoginLink = (props: any) => <Link to="/login" {...props} />
+const SignInLink = (props: any) => <Link to="/signin" {...props} />
+const SignUpLink = (props: any) => <Link to="/signup" {...props} />
+
 @withTheme
 @withRouter
 class LoginClassComponent extends React.Component<Props> {
-  hangleGoToLoginPage = () => {
-    const {
-      history: { push },
-    } = this.props
-
-    push('/login')
-  }
 
   logout = async () => {
     const {
@@ -34,7 +33,7 @@ class LoginClassComponent extends React.Component<Props> {
       history: { push },
     } = this.props
     await handleLogout(logoutMutation, this.props.persistorInstance)
-    push('/login')
+    push('/signin')
   }
 
   render() {
@@ -46,7 +45,6 @@ class LoginClassComponent extends React.Component<Props> {
     } = this.props
     const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
 
-
     const isLoginPage = pathname === '/login'
 
     return (
@@ -56,15 +54,38 @@ class LoginClassComponent extends React.Component<Props> {
           unmountOnExit={true}
           mountOnEnter={true}
         >
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={this.hangleGoToLoginPage}
-            className="loginButton"
-            style={{ padding: '1px 16px' }}
-          >
-            Log in / Sign Up
-          </Button>
+          <>
+            <Button
+              component={SignInLink}
+              color="secondary"
+              variant="contained"
+              // onClick={this.hangleGoToSiginPage}
+              className="loginButton"
+              style={{ padding: '1px 16px', margin: '0 1rem' }}
+            >
+              Sign in
+            </Button>
+            <Button
+              component={SignUpLink}
+              color="secondary"
+              variant="contained"
+              // onClick={this.hangleGoToSignupPage}
+              className="loginButton"
+              style={{ padding: '1px 16px', margin: '0 1rem', backgroundColor: '#97C15C' }}
+            >
+              Sign Up
+            </Button>
+            <Button
+              component={OldLoginLink}
+              color="secondary"
+              variant="contained"
+              // onClick={this.hangleGoToLoginPage}
+              className="loginButton"
+              style={{ padding: '1px 16px', margin: '0 1rem' }}
+            >
+              Old login
+            </Button>
+          </>
         </Grow>
         <Slide
           in={loginStatus}

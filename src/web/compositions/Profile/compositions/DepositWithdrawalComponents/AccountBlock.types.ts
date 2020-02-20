@@ -1,11 +1,6 @@
 export interface IProps {
   isDepositPage?: boolean
   selectedCoin: { label: string; name: string }
-  setSelectedCoin: (selectedCoin: string) => void
-  selectedAccount: { keyId: string; label: string; value: number }
-  setSelectedAccount: (selectedAccount: {
-    keyId: string
-    label: string
-    value: number
-  }) => void
+  setSelectedCoin: ({ label, name }: { label: string; name: string }) => void
+  selectedKey: string
 }

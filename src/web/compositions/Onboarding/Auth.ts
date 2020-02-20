@@ -1,16 +1,80 @@
-import auth0 from 'auth0-js'
+import auth0, { Auth0Error, Auth0DecodedHash } from 'auth0-js'
 
-import { auth0Options } from '@core/config/authConfig'
-import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
+import { auth0Options, ClientId } from '@core/config/authConfig'
+
+export type AuthSimpleSuccessResponseType = {
+  access_token: string
+  id_token: string
+  scope: 'openid profile email address phone'
+  expires_in: 86400 | number
+  token_type: 'Bearer'
+  recovery_code?: string // only if authmfa with recovery
+}
+
+export type AuthSimpleErrorResponseType = {
+  // OR
+  error: 'mfa_required' | 'network_error' | string
+  error_description: 'Multifactor authentication required' | string
+  mfa_token?: string
+}
+
+export type ListOfAssociatedErrorMfaType = {
+  error: 'invalid_grant' | 'network_error' | string
+  error_description:
+    | 'The mfa_token provided is invalid. Try getting a new token'
+    | string
+}
+
+export type MfaAuthenticatorType = {
+  id: string
+  authenticator_type: 'otp' | string
+  active: boolean
+}
+
+export type ListOfAssociatedSuccessMfaType = MfaAuthenticatorType[]
+
+export type AssociateMfaSuccessType = {
+  authenticator_type: 'otp' | string
+  secret: string
+  barcode_uri: string
+  recovery_codes: [string]
+}
+
+export type AssociateMfaErrorType = {
+  error: 'access_denied' | string
+  error_description: 'User is already enrolled.' | string
+}
+
+export type ChangePasswordSuccessReponseType = {
+  status: 'success'
+}
+
+export type ChangePasswordErrorResponseType = {
+  error: 'network_error' | string
+  error_description: string
+}
 
 export default class Auth {
+  authCallback: string
   auth0 = new auth0.WebAuth({
     domain: 'ccai.auth0.com',
-    clientID: '0N6uJ8lVMbize73Cv9tShaKdqJHmh1Wm',
+    clientID: ClientId,
     ...auth0Options.auth,
   })
 
-  register = (email: string, password: string) => {
+  constructor(authCallback: string) {
+    console.log('authCallback', authCallback)
+    this.authCallback = authCallback
+  }
+
+  register = async (
+    email: string,
+    password: string
+  ): Promise<{
+    status: 'error' | 'ok'
+    message: '' | string
+    errorDestription: string
+  }> => {
     return new Promise((resolve) => {
       this.auth0.signup(
         {
@@ -18,16 +82,20 @@ export default class Auth {
           email,
           password,
         },
-        async (err, result) => {
+        async (err: Auth0Error | null, result) => {
           if (err) {
+            console.log('err register', err);
+
             resolve({
               status: 'error',
-              message: err,
+              message: err.description,
+              errorDestription: err.code,
             })
           }
           resolve({
             status: 'ok',
-            messafe: '',
+            message: '',
+            errorDestription: '',
           })
         }
       )
@@ -40,24 +108,33 @@ export default class Auth {
         email,
         password,
         realm: 'Username-Password-Authentication',
-        redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
+        redirectUri: this.authCallback,
       },
-      () => null
+      (authError) => {
+        console.log('authError', authError)
+      }
     )
   }
 
   googleSingup = () => {
     this.auth0.authorize({
       connection: 'google-oauth2',
-      redirectUri: `${CALLBACK_URL_FOR_AUTH0}/registration/confirm`,
+      redirectUri: this.authCallback,
     })
   }
 
-  handleAuthentication = () => {
+  handleAuthentication = async (): Promise<{
+    status: 'err' | 'ok'
+    data: 'no authResult' | Auth0Error | Auth0DecodedHash | null
+  }> => {
+    console.log('handleAuthentication', window.location.hash)
     return new Promise((resolve) => {
       this.auth0.parseHash(
         { hash: window.location.hash },
         (err, authResult) => {
+          console.log('err handleAuthentication', err)
+          console.log('authResult handleAuthentication', authResult)
+
           if (err) {
             resolve({
               status: 'err',
@@ -90,44 +167,183 @@ export default class Auth {
     this.auth0.changePassword({ email, connection }, () => {})
   }
 
+  authSimple = async ({
+    username,
+    password,
+  }: {
+    username: string
+    password: string
+  }): Promise<AuthSimpleSuccessResponseType & AuthSimpleErrorResponseType> => {
+    let result
+    try {
+      result = await fetch(`https://ccai.auth0.com/oauth/token`, {
+        method: 'post',
+        body: JSON.stringify({
+          client_id: ClientId,
+          username: username,
+          password: password,
+          audience: auth0Options.auth.audience,
+          scope: auth0Options.auth.scope,
+          grant_type: 'password',
+          realm: 'Username-Password-Authentication',
+          // TODO: remove this
+          testEnv: 1,
+        }),
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      })
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        error_description: e.message,
+      }
+      console.log('e', e)
+    }
+
+    return result
+  }
+
   authMfaAssociate = async ({
     authenticatorTypes,
     authMfaToken,
   }: {
     authenticatorTypes: string[]
     authMfaToken: string
-  }) => {
-    const result = await fetch(`https://ccai.auth0.com/mfa/associate`, {
-      method: 'post',
-      body: JSON.stringify({
-        authenticator_types: authenticatorTypes,
-      }),
-      headers: {
-        authorization: authMfaToken,
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    })
+  }): Promise<AssociateMfaSuccessType & AssociateMfaErrorType> => {
+    let result
+
+    try {
+      result = await fetch(`https://ccai.auth0.com/mfa/associate`, {
+        method: 'post',
+        body: JSON.stringify({
+          authenticator_types: authenticatorTypes,
+        }),
+        headers: {
+          authorization: `Bearer ${authMfaToken}`,
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      })
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        error_description: e.message,
+      }
+    }
+
+    return result
   }
 
   authMfa = async ({
     authMfaToken,
     otp,
+    recoveryCode,
   }: {
     authMfaToken: string
-    otp: string
-  }) => {
-    const result = await fetch(`https://ccai.auth0.com/oauth/token`, {
-      method: 'post',
-      body: JSON.stringify({
-        client_id: ClientId,
-        grant_type: 'http://auth0.com/oauth/grant-type/mfa-otp',
-        mfa_token: authMfaToken,
-        otp: otp,
-      }),
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    })
+    otp?: string
+    recoveryCode?: string
+  }): Promise<AuthSimpleSuccessResponseType & AuthSimpleErrorResponseType> => {
+    const grantType = otp
+      ? 'http://auth0.com/oauth/grant-type/mfa-otp'
+      : recoveryCode
+      ? 'http://auth0.com/oauth/grant-type/mfa-recovery-code'
+      : ''
+
+    let result
+    try {
+      result = await fetch(`https://ccai.auth0.com/oauth/token`, {
+        method: 'post',
+        body: JSON.stringify({
+          client_id: ClientId,
+          grant_type: grantType,
+          mfa_token: authMfaToken,
+          ...(otp ? { otp } : {}),
+          ...(recoveryCode ? { recovery_code: recoveryCode } : {}),
+        }),
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      })
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        error_description: e.message,
+      }
+    }
+
+    return result
   }
-  
+
+  listOfAssociatedMfa = async ({
+    authMfaToken,
+  }: {
+    authMfaToken: string
+  }): Promise<
+    ListOfAssociatedSuccessMfaType & ListOfAssociatedErrorMfaType
+  > => {
+    let result
+    try {
+      result = await fetch(`https://ccai.auth0.com/mfa/authenticators`, {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          authorization: `Bearer ${authMfaToken}`,
+        },
+      })
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        error_description: e.message,
+      }
+    }
+
+    return result
+  }
+
+  changePassword = async ({
+    email,
+  }: {
+    email: string
+  }): Promise<
+    ChangePasswordSuccessReponseType & ChangePasswordErrorResponseType
+  > => {
+    let result
+    try {
+      result = await fetch(
+        `https://ccai.auth0.com/dbconnections/change_password`,
+        {
+          method: 'post',
+          body: JSON.stringify({
+            client_id: ClientId,
+            email: email,
+            connection: 'Username-Password-Authentication',
+          }),
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+          },
+        }
+      )
+
+      result = {
+        status: 'success',
+      }
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        error_description: e.message,
+      }
+    }
+
+    return result
+  }
 }
+
+window.AuthClass = Auth

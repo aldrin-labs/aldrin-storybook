@@ -7,6 +7,8 @@ import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
 import { IProps, IState } from './OpenOrdersTable.types'
+import { OrderType } from '@core/types/ChartTypes'
+
 import {
   updateOpenOrderHistoryQuerryFunction,
   combineOpenOrdersTable,
@@ -23,13 +25,13 @@ import { ordersHealthcheck } from '@core/graphql/mutations/chart/ordersHealthche
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
-let interval
-
 @withTheme
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],
   }
+
+  interval: null | number = null
 
   unsubscribeFunction: null | Function = null
 
@@ -116,7 +118,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     const that = this
 
-    interval = setInterval(() => {
+    this.interval = window.setInterval(() => {
       const data = client.readQuery({
         query: getOpenOrderHistory,
         variables: {
@@ -128,7 +130,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
       if (
         !this.props.show ||
-        data.getOpenOrderHistory.find((order) => order.marketId === '0')
+        data.getOpenOrderHistory.find(
+          (order: OrderType) => order.marketId === '0'
+        )
       ) {
         return
       }
@@ -139,19 +143,36 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     this.unsubscribeFunction = subscribeToMore()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: IProps) {
     const refetch = async () => {
       await this.props.getOpenOrderHistoryQueryRefetch()
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
+      const data = client.readQuery({
+        query: getOpenOrderHistory,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+          },
+        },
+      })
+
+      if (
+        data.getOpenOrderHistory.find(
+          (order: OrderType) => order.marketId === '0'
+        )
+      ) {
+        return
+      }
+
       this.props.ordersHealthcheckMutation({
         variables: {
           input: {
             keyId: this.props.selectedKey.keyId,
             pair: this.props.currencyPair,
-          }
-        }
+          },
+        },
       })
       refetch()
     }
@@ -163,7 +184,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       this.unsubscribeFunction()
     }
 
-    interval && clearInterval(interval)
+    this.interval && clearInterval(this.interval)
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -283,8 +304,15 @@ const TableDataWrapper = ({ ...props }) => {
   )
 }
 
+const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
+  if (!nextProps.show && !prevProps.show) {
+    return true
+  }
+
+  return false
+})
+
 export default compose(
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })
-)(TableDataWrapper)
-
+)(MemoizedWrapper)

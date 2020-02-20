@@ -89,10 +89,14 @@ const TableDataWrapper = ({ ...props }) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={getTransactionsInfo}
+      fetchPolicy={`cache-and-network`}
       name={`getTransactionsInfo`}
       variables={{
         input: {
-          specificKey,
+          specificKey: {
+            enabled: true,
+            specificKeyId: specificKey,
+          },
           page,
           perPage,
           includeExchangeTransactions,

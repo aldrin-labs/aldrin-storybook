@@ -336,7 +336,7 @@ class OrderbookAndDepthChart extends React.Component {
       <>
         <Grid
           item
-          xs={4}
+          xs={5}
           style={{
             height: '100%',
             padding: '0 .4rem .4rem 0',
@@ -356,7 +356,7 @@ class OrderbookAndDepthChart extends React.Component {
 
         <Grid
           item
-          xs={8}
+          xs={7}
           id="orderbook"
           style={{ height: '100%', padding: '0 .4rem .4rem .4rem' }}
         >

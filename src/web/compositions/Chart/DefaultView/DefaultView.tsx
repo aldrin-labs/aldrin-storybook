@@ -62,7 +62,7 @@ export const DefaultView = (props: any) => {
     updateTerminalViewMode,
     arrayOfMarketIds,
     quantityPrecision,
-    pricePrecision
+    pricePrecision,
   } = props
 
   if (!currencyPair) {
@@ -119,8 +119,6 @@ export const DefaultView = (props: any) => {
           }}
         >
           <ChartsContainer
-            item
-            xs={9}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <CustomCard>
@@ -146,8 +144,6 @@ export const DefaultView = (props: any) => {
             </CustomCard>
           </ChartsContainer>
           <TradingTerminalContainer
-            item
-            xs={3}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <Grid item container style={{ height: '100%' }}>
