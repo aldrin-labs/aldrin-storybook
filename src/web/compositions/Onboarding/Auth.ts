@@ -1,4 +1,5 @@
 import auth0, { Auth0Error, Auth0DecodedHash } from 'auth0-js'
+import { MASTER_BUILD } from '@core/utils/config'
 
 import { auth0Options, ClientId } from '@core/config/authConfig'
 
@@ -38,6 +39,17 @@ export type AssociateMfaSuccessType = {
   secret: string
   barcode_uri: string
   recovery_codes: [string]
+}
+
+export type EnableMfaSuccessType = {
+  user_metadata: {
+    mfaEnabled: boolean
+  }
+}
+
+export type EnableMfaErrorType = {
+  error: 'Forbidden' | string
+  message: string
 }
 
 export type AssociateMfaErrorType = {
@@ -344,6 +356,43 @@ export default class Auth {
 
     return result
   }
+
+  enableMfa = async ({
+    userId,
+    accessToken,
+  }: {
+    userId: string,
+    accessToken: string,
+  }): Promise<EnableMfaSuccessType & EnableMfaErrorType> => {
+    let result
+
+    try {
+      result = await fetch(`https://ccai.auth0.com/api/v2/users/${userId}`, {
+        method: 'get',
+        body: JSON.stringify({
+          user_metadata: {
+            mfaEnabled: true
+          }
+        }),
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        error_description: e.message,
+      }
+    }
+
+    return result
+  }
 }
 
-window.AuthClass = Auth
+if (!MASTER_BUILD) {
+  window.AuthClass = Auth
+}
+
