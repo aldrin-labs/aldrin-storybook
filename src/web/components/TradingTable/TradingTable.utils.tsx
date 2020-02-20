@@ -296,6 +296,8 @@ export const combinePositionsTable = ({
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
       const needOpacity = el._id === '0'
 
+      console.log('prices', prices, el)
+
       const marketPrice = (
         prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
           price: 0,
@@ -489,6 +491,8 @@ export const combineActiveTradesTable = ({
 
   const { green, red, blue } = theme.palette
 
+  console.log('orig', data.length)
+
   const processedActiveTradesData = data
     .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
     .sort((a, b) => {
@@ -505,7 +509,7 @@ export const combineActiveTradesTable = ({
 
       return moment(bDate).format('X') - moment(aDate).format('X')
     })
-    .map((el: OrderType, i: number) => {
+    .map((el: OrderType, i: number, arr) => {
       const {
         createdAt,
         conditions: {
@@ -548,6 +552,8 @@ export const combineActiveTradesTable = ({
           timeoutWhenProfit: '-',
         },
       } = el
+
+      console.log('arr', arr.length)
 
       const { entryPrice, state } = el.state || {
         entryPrice: 0,

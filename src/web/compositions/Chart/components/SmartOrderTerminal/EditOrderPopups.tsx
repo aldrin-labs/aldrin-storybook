@@ -53,6 +53,7 @@ const StyledPaper = styled(Paper)`
 `
 
 type IProps = {
+  price?: number
   open: boolean
   pair?: string
   maxAmount?: number
