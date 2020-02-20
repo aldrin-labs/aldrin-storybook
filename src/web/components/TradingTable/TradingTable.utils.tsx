@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
+import { Position } from './PositionsTable/PositionsTable.types'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
@@ -88,9 +89,9 @@ export const getTableBody = (tab: string) =>
 export const getTableHead = (
   tab: string,
   marketType: number = 0,
-  refetch: () => void,
-  updatePositionsHandler: () => Promise<void>,
-  positionsRefetchInProcess = false
+  refetch?: () => void,
+  updatePositionsHandler?: () => void,
+  positionsRefetchInProcess?: boolean
 ): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
@@ -244,16 +245,15 @@ export const filterOpenOrders = ({
 export const filterPositions = ({ position, pair, canceledPositions }) => {
   return (
     position.positionAmt !== 0 &&
-    position.symbol === pair &&
+    // position.symbol === pair &&
     !canceledPositions.includes(position._id)
   )
 }
 
 export const filterActiveTrades = ({ trade, marketType, currencyPair }) => {
   return (
-    trade.conditions.marketType === marketType &&
-    trade.enabled &&
-    trade.conditions.pair === currencyPair
+    trade.conditions.marketType === marketType && trade.enabled
+    // trade.conditions.pair === currencyPair
   )
 }
 
@@ -261,7 +261,7 @@ export const combinePositionsTable = ({
   data,
   createOrderWithStatus,
   theme,
-  marketPrice,
+  prices,
   pair,
   keyId,
   canceledPositions,
@@ -269,10 +269,10 @@ export const combinePositionsTable = ({
   pricePrecision,
   quantityPrecision,
 }: {
-  data: OrderType[]
+  data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
   theme: Theme
-  marketPrice: number
+  prices: { price: number; pair: string }[]
   pair: string
   keyId: string
   canceledPositions: string[]
@@ -284,14 +284,25 @@ export const combinePositionsTable = ({
     return []
   }
 
-  const { green, red } = theme.palette
-  let positions = []
+  const {
+    green,
+    red,
+  }: { green: { new: string }; red: { new: string } } = theme.palette
+  let positions: any = []
 
   const processedPositionsData = data
     .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
       const needOpacity = el._id === '0'
+
+      console.log('prices', prices, el)
+
+      const marketPrice = (
+        prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
+          price: 0,
+        }
+      ).price
 
       const getVariables = (type: String, price: Number) => ({
         keyId,
@@ -337,6 +348,7 @@ export const combinePositionsTable = ({
             rowspan: 2,
             color: '#7284A0',
           },
+          id: el._id,
           pair: {
             render: (
               <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -377,9 +389,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${
-              pair[1]
-            }`,
+            render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -388,9 +398,7 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${
-              pair[1]
-            }`,
+            render: `${stripDigitPlaces(marketPrice, 8)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -399,7 +407,7 @@ export const combinePositionsTable = ({
             contentToSort: marketPrice,
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, pricePrecision)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liqPrice, 8)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -425,6 +433,7 @@ export const combinePositionsTable = ({
               `0 ${pair[1]} / 0%`
             ),
             style: { opacity: needOpacity ? 0.5 : 1 },
+            colspan: 2,
           },
         },
         {
@@ -439,7 +448,7 @@ export const combinePositionsTable = ({
                 />
               </div>
             ),
-            colspan: 8,
+            colspan: 9,
             style: {
               opacity: needOpacity ? 0.5 : 1,
               visibility: needOpacity ? 'hidden' : 'visible',
@@ -456,31 +465,26 @@ export const combinePositionsTable = ({
   return positions
 }
 
-const getStatusFromState = (
-  state: 'End' | 'WaitForEntry' | 'Cancel' | string
-) => {
-  if (state === 'End') {
-    return ['Closed', '#DD6956']
-  } else if (state === 'Cancel') {
-    return ['Canceled', '#DD6956']
-  } else if (state === 'WaitForEntry' || state === '-') {
-    return ['Waiting', '#5C8CEA']
-  } else {
-    return [state, '#29AC80']
-  }
-}
-
 // TODO: fix types
-export const combineActiveTradesTable = (
-  data: OrderType[],
-  cancelOrderFunc: (strategyId: string) => Promise<any>,
-  editTrade: (block: string, trade: any) => void,
-  theme: Theme,
-  currentPrice: number,
-  marketType: number,
-  currencyPair: string,
+export const combineActiveTradesTable = ({
+  data,
+  cancelOrderFunc,
+  editTrade,
+  theme,
+  prices,
+  marketType,
+  currencyPair,
+  quantityPrecision,
+}: {
+  data: any[]
+  cancelOrderFunc: (strategyId: string) => Promise<any>
+  editTrade: (block: string, trade: any) => void
+  theme: Theme
+  prices: { pair: string; price: number }[]
+  marketType: number
+  currencyPair: string
   quantityPrecision: number
-) => {
+}) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -490,16 +494,20 @@ export const combineActiveTradesTable = (
   const processedActiveTradesData = data
     .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
     .sort((a, b) => {
+      // sometimes in db we receive createdAt as timestamp
+      // so using this we understand type of value that in createdAt field
+
       const aDate = isNaN(moment(+a.createdAt).unix())
         ? a.createdAt
         : +a.createdAt
+
       const bDate = isNaN(moment(+b.createdAt).unix())
         ? b.createdAt
         : +b.createdAt
 
       return moment(bDate).format('X') - moment(aDate).format('X')
     })
-    .map((el: OrderType, i: number) => {
+    .map((el: OrderType, i: number, arr) => {
       const {
         createdAt,
         conditions: {
@@ -551,11 +559,14 @@ export const combineActiveTradesTable = (
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
+      const currentPrice = (
+        prices.find(
+          (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
+        ) || { price: 0 }
+      ).price
 
-      const entryOrderPrice = entryPrice
-      // : !!entryDeviation
-      // ? activatePrice * (1 + entryDeviation / leverage / 100)
-      // : price
+      const entryOrderPrice =
+        !entryDeviation && orderType === 'limit' ? price : entryPrice
 
       const profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) *
@@ -596,7 +607,7 @@ export const combineActiveTradesTable = (
           contentToSort: side,
         },
         entryPrice: {
-          render: entryPrice ? (
+          render: entryOrderPrice ? (
             <SubColumnValue>
               {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
@@ -849,7 +860,8 @@ export const combineStrategiesHistoryTable = (
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
 
-      const entryOrderPrice = entryPrice
+      const entryOrderPrice =
+        !entryDeviation && orderType === 'limit' ? price : entryPrice
       // ? entryPrice
       // : !!entryDeviation
       // ? activatePrice * (1 + entryDeviation / leverage / 100)
@@ -1089,7 +1101,7 @@ export const combineOpenOrdersTable = (
 
       const needOpacity = el.status === 'placing'
       const pair = symbol.split('_')
-      const type = orderType.toLowerCase().replace('-', '_')
+      const type = orderType.toLowerCase().replace(/-/g, '_')
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
@@ -1746,7 +1758,7 @@ export const updateActivePositionsQuerryFunction = (
 
   const positionHasTheSameIndex = prev.getActivePositions.findIndex(
     (el: TradeType) =>
-      el.symbol === subscriptionData.data.listenFuturesPositions.symbol
+      el._id === subscriptionData.data.listenFuturesPositions._id
   )
 
   console.log('prev.getActivePositions', prev.getActivePositions)

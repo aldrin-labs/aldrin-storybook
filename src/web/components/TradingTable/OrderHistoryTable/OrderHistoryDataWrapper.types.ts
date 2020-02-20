@@ -5,12 +5,13 @@ import { Key } from '@core/types/ChartTypes'
 
 export interface IProps {
   tab: string
-  tabIndex: number
   show: boolean
   handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
   selectedKey: Key
   marketType: number
   arrayOfMarketIds: string[]
+  currencyPair: string
+  canceledOrders: string[]
 }
 
 export interface IState {

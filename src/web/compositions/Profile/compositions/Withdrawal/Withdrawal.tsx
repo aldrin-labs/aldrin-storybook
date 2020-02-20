@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
+import { compose } from 'recompose'
 import { Grid } from '@material-ui/core'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -13,15 +17,22 @@ import {
 } from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
 
-const Withdrawal = ({  }: IProps) => {
+const Withdrawal = ({ ...props }: IProps) => {
+  const {
+    withdrawalSettings,
+  } = props.getProfileSettingsQuery.getProfileSettings
+  const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || { selectedKey: '' }
+  const selectedKey = tempSelectedKey || ''
+
   const totalBalance = 0.000003241
   const inOrder = 0.000003241
-  const availableBalance = 0.000003241
 
-  const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
+  const [selectedCoin, setSelectedCoin] = useState({
+    label: 'BTC',
+    name: 'Bitcoin',
+  })
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
-  const [selectedAccount, setSelectedAccount] = useState({ keyId: '#', label: '', value: '' })
 
   const networkChange = () => {}
 
@@ -40,14 +51,10 @@ const Withdrawal = ({  }: IProps) => {
         }}
       >
         <AccountBlock
-          isDepositPage={true}
-          totalBalance={totalBalance}
-          inOrder={inOrder}
-          availableBalance={availableBalance}
+          isDepositPage={false}
           selectedCoin={selectedCoin}
           setSelectedCoin={setSelectedCoin}
-          selectedAccount={selectedAccount}
-          setSelectedAccount={setSelectedAccount}
+          selectedKey={selectedKey}
         />
 
         <Grid
@@ -94,14 +101,16 @@ const Withdrawal = ({  }: IProps) => {
               >
                 Amount
               </StyledTypography>
-              <InputAmount
-                selectedCoin={selectedCoin.label}
-                selectedAccount={selectedAccount.keyId}
-                value={coinAmount}
-                onChange={(e) => setCoinAmount(e.target.value)}
-              />
+              <Grid style={{ height: '6rem', overflow: 'hidden' }}>
+                <InputAmount
+                  selectedCoin={selectedCoin.label}
+                  selectedAccount={selectedKey}
+                  value={coinAmount}
+                  onChange={(e) => setCoinAmount(e.target.value)}
+                />
+              </Grid>
               <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
-                Minimum Withdrawal: 0.00100000 BTC
+                Minimum Withdrawal: 0.00100000 {selectedCoin.label}
               </StyledTypographyCaption>
               <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
                 <Grid container>
@@ -157,9 +166,15 @@ const Withdrawal = ({  }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable isDepositPage={false} specificKey={selectedAccount.keyId} />
+      <RecentHistoryTable isDepositPage={false} specificKey={selectedKey} />
     </>
   )
 }
 
-export default Withdrawal
+export default compose(
+  queryRendererHoc({
+    query: getProfileSettings,
+    name: 'getProfileSettingsQuery',
+    fetchPolicy: 'cache-and-network',
+  })
+)(Withdrawal)

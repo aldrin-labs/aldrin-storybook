@@ -32,6 +32,8 @@ export interface IProps extends WithTheme<Theme> {
   selectedKey: Key
   arrayOfMarketIds: string[]
   marketType: number
+  canceledOrders: string[]
+  currencyPair: string
 }
 
 export interface IState {

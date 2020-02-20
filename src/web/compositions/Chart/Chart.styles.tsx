@@ -190,10 +190,10 @@ export const ChartGridContainer = styled(Grid)`
   display: flex;
   flex: auto;
   align-items: center;
-  width: 25%;
+  width: 30%;
   height: 4%;
 
-  padding: 0 0 0 0.8rem !important;
+  padding: 0 0 0 1.2rem !important;
 
   @media screen and (max-width: 1440px) {
     height: 3%;
@@ -218,11 +218,12 @@ export const TablesContainer = styled(Grid)`
 `
 
 export const TradingTerminalContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
+  ({ isDefaultTerminalViewMode, ...rest }) => <div {...rest} />
 )`
   position: relative;
   display: flex;
   // 60% - 3%, the half of height cards, will fix in future
+  width: 30%;
   height: ${(props) =>
     props.isDefaultTerminalViewMode
       ? 'calc(59% - .8rem)'
@@ -255,9 +256,12 @@ export const TradingTerminalContainer = styled(
 `
 
 export const ChartsContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
+  ({ isDefaultTerminalViewMode, ...rest }) => <div {...rest} />
 )`
+  position: relative;
+  display: flex;
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
+  width: 70%;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '63%' : '52%')};
   justify-content: flex-end;
   flex-direction: column;
