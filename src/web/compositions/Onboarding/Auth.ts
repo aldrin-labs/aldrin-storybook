@@ -198,8 +198,6 @@ export default class Auth {
           scope: auth0Options.auth.scope,
           grant_type: 'password',
           realm: 'Username-Password-Authentication',
-          // TODO: remove this
-          testEnv: 1,
         }),
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
@@ -368,7 +366,7 @@ export default class Auth {
 
     try {
       result = await fetch(`https://ccai.auth0.com/api/v2/users/${userId}`, {
-        method: 'get',
+        method: 'PATCH', // it's important to have uppercase here
         body: JSON.stringify({
           user_metadata: {
             mfaEnabled: true
@@ -384,7 +382,7 @@ export default class Auth {
     } catch (e) {
       result = {
         error: 'network_error',
-        error_description: e.message,
+        message: e.message,
       }
     }
 
