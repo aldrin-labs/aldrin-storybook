@@ -92,7 +92,8 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           idToken: data.idToken,
           ...data.idTokenPayload,
         }
-        await this.props.onLogin(profile, data.idToken)
+        console.log('data sign in with google', data)
+        await this.props.onLogin(profile, data.idToken, data.accessToken)
       }
     } else {
       console.log('error in register callback')
@@ -348,13 +349,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           status: 'success',
           errorMessage: '',
         })
-
-        // should be handler after authetication
-        // console.log('this.state', this.state)
-        // await this.processAuthentificationHandler({
-        //   accessToken: access_token,
-        //   idToken: id_token,
-        // })
       }
     )
   }
@@ -485,7 +479,9 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     const { onLogin } = this.props
     const decodedProfile = jwtDecode(idToken)
 
-    await onLogin(decodedProfile, idToken)
+    console.log('access_token', accessToken)
+
+    await onLogin(decodedProfile, idToken, accessToken)
   }
 
   callProcessAuthentificationHandler = async () => {
