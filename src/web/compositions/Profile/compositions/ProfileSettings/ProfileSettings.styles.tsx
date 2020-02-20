@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import { GridCard } from '@sb/compositions/Profile/Profile.styles'
@@ -17,6 +18,21 @@ export const LogsGrid = styled(Grid)`
   display: flex;
   height: calc(51% - 1.5rem);
   margin-top: 1.5rem;
+`
+
+export const ProfileSettingsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  alignitems: center;
+  width: 100%;
+  height: 100%;
+`
+
+export const ProfileSettingsCentredBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `
 
 export const GridTitle = styled.div`
@@ -73,3 +89,36 @@ export const ProfileSettingsGrid = ({
 export const SettingsBlock = styled.div`
   padding: 2rem;
 `
+
+export const MFASettingsBlock = styled(({ ...props }) => <Grid {...props} />)`
+  padding: 0 0 1rem 0;
+`
+
+export const MFATypography = styled(({ textColor, ...props }) => (
+  <Typography {...props} />
+))`
+  ${({ textColor }) => (textColor ? `color: ${textColor};` : '')}
+  font-weight: bold;
+  font-size: 1.6rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+`
+
+export const WhatIsBlock = styled(({ ...props }) => <Grid {...props} />)`
+  padding: 0 0 2rem 0;
+`
+
+export const WhatIsText = styled(({ textColor, ...props }) => (
+  <Typography {...props} />
+))`
+  ${({ textColor }) => (textColor ? `color: ${textColor};` : '')}
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 1rem;
+`
+
+export const ButtonContainer = styled(({ ...props }) => <Grid {...props} />)`
+  padding: 2rem 0 2rem 0;
+`
+
