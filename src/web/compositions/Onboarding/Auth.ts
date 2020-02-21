@@ -75,7 +75,6 @@ export default class Auth {
   })
 
   constructor(authCallback: string) {
-    console.log('authCallback', authCallback)
     this.authCallback = authCallback
   }
 
@@ -139,14 +138,10 @@ export default class Auth {
     status: 'err' | 'ok'
     data: 'no authResult' | Auth0Error | Auth0DecodedHash | null
   }> => {
-    console.log('handleAuthentication', window.location.hash)
     return new Promise((resolve) => {
       this.auth0.parseHash(
         { hash: window.location.hash },
         (err, authResult) => {
-          console.log('err handleAuthentication', err)
-          console.log('authResult handleAuthentication', authResult)
-
           if (err) {
             resolve({
               status: 'err',
