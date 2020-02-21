@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 import { Grid } from '@material-ui/core'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
+import { withdrawal } from '@core/graphql/mutations/withdrawal/withdrawal'
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -16,7 +18,7 @@ import {
   StyledTypographyCaption,
 } from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
-import { validateTransactionAmount } from './Withdrawal.styles'
+import { validateTransactionAmount } from './Withdrawal.utils'
 
 const Withdrawal = ({ ...props }: IProps) => {
   const {
@@ -169,8 +171,18 @@ const Withdrawal = ({ ...props }: IProps) => {
                       return
                     }
 
-                    const isCoinAmountIsEnoughToProcessTransaction = validateTransactionAmount({ })
+                    const isCoinAmountIsEnoughToProcessTransaction = validateTransactionAmount(
+                      {
+                        amount: +coinAmount,
+                        transactionFee,
+                        minimalWithdrawalAmount,
+                      }
+                    )
 
+                    if (!isCoinAmountIsEnoughToProcessTransaction) {
+                      setAmountError(true)
+                      return
+                    }
                   }}
                 >
                   Submit
@@ -204,6 +216,7 @@ const Withdrawal = ({ ...props }: IProps) => {
 }
 
 export default compose(
+  graphql(withdrawal, { name: 'withdrawalMutation' }),
   queryRendererHoc({
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
