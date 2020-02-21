@@ -6,6 +6,8 @@ import { Grid } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
 import { withdrawal } from '@core/graphql/mutations/withdrawal/withdrawal'
+import { confirmWithdrawal } from '@core/graphql/mutations/withdrawal/confirmWithdrawal'
+
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -217,6 +219,7 @@ const Withdrawal = ({ ...props }: IProps) => {
 
 export default compose(
   graphql(withdrawal, { name: 'withdrawalMutation' }),
+  graphql(confirmWithdrawal, { name: 'confirmWithdrawalMutation' }),
   queryRendererHoc({
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',

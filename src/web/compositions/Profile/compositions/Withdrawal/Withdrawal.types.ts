@@ -19,4 +19,12 @@ export interface IProps {
       }
     }
   }) => Promise<{ data: string; status: 'ERR' | 'OK'; errorMessage: string }>
+  confirmWithdrawalMutation: (variablesObj: {
+    variables: {
+      input: {
+        keyId: string
+        hash: string
+      }
+    }
+  }) => Promise<{ data: string; status: 'ERR' | 'OK'; errorMessage: string }>
 }
