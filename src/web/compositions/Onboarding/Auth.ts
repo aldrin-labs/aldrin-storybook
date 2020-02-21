@@ -1,4 +1,5 @@
 import auth0, { Auth0Error, Auth0DecodedHash } from 'auth0-js'
+import { MASTER_BUILD } from '@core/utils/config'
 
 import { auth0Options, ClientId } from '@core/config/authConfig'
 
@@ -40,6 +41,17 @@ export type AssociateMfaSuccessType = {
   recovery_codes: [string]
 }
 
+export type EnableMfaSuccessType = {
+  user_metadata: {
+    mfaEnabled: boolean
+  }
+}
+
+export type EnableMfaErrorType = {
+  error: 'Forbidden' | string
+  message: string
+}
+
 export type AssociateMfaErrorType = {
   error: 'access_denied' | string
   error_description: 'User is already enrolled.' | string
@@ -63,7 +75,6 @@ export default class Auth {
   })
 
   constructor(authCallback: string) {
-    console.log('authCallback', authCallback)
     this.authCallback = authCallback
   }
 
@@ -127,14 +138,10 @@ export default class Auth {
     status: 'err' | 'ok'
     data: 'no authResult' | Auth0Error | Auth0DecodedHash | null
   }> => {
-    console.log('handleAuthentication', window.location.hash)
     return new Promise((resolve) => {
       this.auth0.parseHash(
         { hash: window.location.hash },
         (err, authResult) => {
-          console.log('err handleAuthentication', err)
-          console.log('authResult handleAuthentication', authResult)
-
           if (err) {
             resolve({
               status: 'err',
@@ -186,8 +193,6 @@ export default class Auth {
           scope: auth0Options.auth.scope,
           grant_type: 'password',
           realm: 'Username-Password-Authentication',
-          // TODO: remove this
-          testEnv: 1,
         }),
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
@@ -344,6 +349,43 @@ export default class Auth {
 
     return result
   }
+
+  enableMfa = async ({
+    userId,
+    accessToken,
+  }: {
+    userId: string,
+    accessToken: string,
+  }): Promise<EnableMfaSuccessType & EnableMfaErrorType> => {
+    let result
+
+    try {
+      result = await fetch(`https://ccai.auth0.com/api/v2/users/${userId}`, {
+        method: 'PATCH', // it's important to have uppercase here
+        body: JSON.stringify({
+          user_metadata: {
+            mfaEnabled: true
+          }
+        }),
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        message: e.message,
+      }
+    }
+
+    return result
+  }
 }
 
-window.AuthClass = Auth
+if (!MASTER_BUILD) {
+  window.AuthClass = Auth
+}
+
