@@ -35,7 +35,7 @@ const ChartCardHeader = ({
   children,
   style,
 }: {
-  children?: string
+  children?: React.Childern
   style?: CSSProperties
 }) => {
   return (
