@@ -21,11 +21,10 @@ const Withdrawal = ({ ...props }: IProps) => {
   const {
     withdrawalSettings,
   } = props.getProfileSettingsQuery.getProfileSettings
-  const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || { selectedKey: '' }
+  const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || {
+    selectedKey: '',
+  }
   const selectedKey = tempSelectedKey || ''
-
-  const totalBalance = 0.000003241
-  const inOrder = 0.000003241
 
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'BTC',
@@ -33,6 +32,10 @@ const Withdrawal = ({ ...props }: IProps) => {
   })
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
+
+  const minimalWithdrawalAmount = 0.000001
+  const transactionFee = 0.000003241
+  const actualAmountGet = +coinAmount - transactionFee
 
   const networkChange = () => {}
 
@@ -62,6 +65,7 @@ const Withdrawal = ({ ...props }: IProps) => {
           container
           direction="column"
           alignItems="center"
+          justify="center"
           style={{ width: '65%', paddingLeft: '20%' }}
         >
           <Grid
@@ -93,24 +97,31 @@ const Withdrawal = ({ ...props }: IProps) => {
                 BTC address
               </StyledTypography>
               <StyledInput
+                error={amountError}
                 value={coinAddress}
-                onChange={(e) => setCoinAddress(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCoinAddress(e.target.value)
+                }
               />
               <StyledTypography
                 style={{ paddingBottom: '1rem', paddingTop: '1rem' }}
               >
                 Amount
               </StyledTypography>
-              <Grid style={{ height: '6rem', overflow: 'hidden' }}>
+              <Grid style={{ height: '6rem', overflow: 'hidden', paddingTop: '1px' }}>
                 <InputAmount
+                  error={amountError}
                   selectedCoin={selectedCoin.label}
                   selectedAccount={selectedKey}
                   value={coinAmount}
-                  onChange={(e) => setCoinAmount(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCoinAmount(e.target.value)
+                  }
                 />
               </Grid>
               <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
-                Minimum Withdrawal: 0.00100000 {selectedCoin.label}
+                Minimum Withdrawal: {minimalWithdrawalAmount}{' '}
+                {selectedCoin.label}
               </StyledTypographyCaption>
               <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
                 <Grid container>
@@ -118,7 +129,7 @@ const Withdrawal = ({ ...props }: IProps) => {
                   <StyledTypography
                     style={{ color: '#16253D', marginLeft: '1rem' }}
                   >
-                    {totalBalance}
+                    {transactionFee}
                   </StyledTypography>
                 </Grid>
                 <Grid container>
@@ -126,7 +137,7 @@ const Withdrawal = ({ ...props }: IProps) => {
                   <StyledTypography
                     style={{ color: '#16253D', marginLeft: '1rem' }}
                   >
-                    {inOrder}
+                    {actualAmountGet}
                   </StyledTypography>
                 </Grid>
               </Grid>
