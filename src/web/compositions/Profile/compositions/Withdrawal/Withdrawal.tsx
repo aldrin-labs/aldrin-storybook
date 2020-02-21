@@ -16,6 +16,7 @@ import {
   StyledTypographyCaption,
 } from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
+import { validateTransactionAmount } from './Withdrawal.styles'
 
 const Withdrawal = ({ ...props }: IProps) => {
   const {
@@ -32,6 +33,8 @@ const Withdrawal = ({ ...props }: IProps) => {
   })
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
+  const [amountError, setAmountError] = useState(false)
+  const [addressError, setAddressError] = useState(false)
 
   const minimalWithdrawalAmount = 0.000001
   const transactionFee = 0.000003241
@@ -97,26 +100,34 @@ const Withdrawal = ({ ...props }: IProps) => {
                 BTC address
               </StyledTypography>
               <StyledInput
-                error={amountError}
+                error={addressError}
                 value={coinAddress}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setCoinAddress(e.target.value)
-                }
+                  setAddressError(false)
+                }}
               />
               <StyledTypography
                 style={{ paddingBottom: '1rem', paddingTop: '1rem' }}
               >
                 Amount
               </StyledTypography>
-              <Grid style={{ height: '6rem', overflow: 'hidden', paddingTop: '1px' }}>
+              <Grid
+                style={{
+                  height: '6rem',
+                  overflow: 'hidden',
+                  paddingTop: '1px',
+                }}
+              >
                 <InputAmount
                   error={amountError}
                   selectedCoin={selectedCoin.label}
                   selectedAccount={selectedKey}
                   value={coinAmount}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setCoinAmount(e.target.value)
-                  }
+                    setAmountError(false)
+                  }}
                 />
               </Grid>
               <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
@@ -151,6 +162,16 @@ const Withdrawal = ({ ...props }: IProps) => {
                   margin={'0 2rem 0 0'}
                   height={'4rem'}
                   fontSize={'1.2rem'}
+                  onClick={() => {
+                    const isAddressIsNotEmpty = !!coinAddress.length
+                    if (!isAddressIsNotEmpty) {
+                      setAddressError(true)
+                      return
+                    }
+
+                    const isCoinAmountIsEnoughToProcessTransaction = validateTransactionAmount({ })
+
+                  }}
                 >
                   Submit
                 </BtnCustom>
