@@ -73,13 +73,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   async componentDidMount() {
      // validate that hash exists in url before trigger google auth
     if (window.location.hash === "") {
-      console.log('empty hash')
       return
     }
 
     const result = await this.auth.handleAuthentication()
-    console.log('result', result)
-
     if (result.status === 'ok') {
       const { data } = result
       if (data && data.idToken && data.idTokenPayload) {
@@ -88,11 +85,13 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           idToken: data.idToken,
           ...data.idTokenPayload,
         }
-        console.log('data sign in with google', data)
         await this.props.onLogin(profile, data.idToken, data.accessToken)
       }
     } else {
-      console.log('error in register callback')
+      this.showLoginStatus({
+        status: 'error',
+        errorMessage: 'Something went wrong with login with google',
+      })
     }
   }
 
@@ -517,8 +516,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       // trying to login
       this.authenticateWithPasswordHandler({ username: email, password })
     }
-
-    console.log('resultOfSignUp', resultOfSignUp)
   }
 
   render() {
