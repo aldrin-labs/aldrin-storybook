@@ -63,10 +63,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   auth = new Auth(getAuthCallback({ initialStep: this.props.initialStep }))
 
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
-    console.log('nextProps', nextProps)
-    console.log('prevState', prevState)
-
-
     if (nextProps.initialStep !== prevState.currentStep && (prevState.currentStep === 'signIn' || prevState.currentStep === 'signUp')) {
       return { currentStep: nextProps.initialStep }
     } else return null
@@ -77,13 +73,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   async componentDidMount() {
      // validate that hash exists in url before trigger google auth
     if (window.location.hash === "") {
-      console.log('empty hash')
       return
     }
 
     const result = await this.auth.handleAuthentication()
-    console.log('result', result)
-
     if (result.status === 'ok') {
       const { data } = result
       if (data && data.idToken && data.idTokenPayload) {
@@ -92,10 +85,13 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           idToken: data.idToken,
           ...data.idTokenPayload,
         }
-        await this.props.onLogin(profile, data.idToken)
+        await this.props.onLogin(profile, data.idToken, data.accessToken)
       }
     } else {
-      console.log('error in register callback')
+      this.showLoginStatus({
+        status: 'error',
+        errorMessage: 'Something went wrong with login with google',
+      })
     }
   }
 
@@ -178,9 +174,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       const checkThatErrorDuringListMfa =
         listOfAssociatedMfa.error && listOfAssociatedMfa.error_description
 
-      console.log('checkThatUserAlreadyConfiguredMfa', checkThatUserAlreadyConfiguredMfa) 
-      console.log('checkThatErrorDuringListMfa', checkThatErrorDuringListMfa) 
-
       if (checkThatErrorDuringListMfa) {
         this.setState((prevState) => ({
           ...prevState,
@@ -210,8 +203,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         this.setState({
           currentStep: 'enterOtp',
           mfaToken: resultOfAuthenticate.mfa_token,
-        }, () => {
-          console.log('enterOtp ')
         })
       }
     }
@@ -348,13 +339,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           status: 'success',
           errorMessage: '',
         })
-
-        // should be handler after authetication
-        // console.log('this.state', this.state)
-        // await this.processAuthentificationHandler({
-        //   accessToken: access_token,
-        //   idToken: id_token,
-        // })
       }
     )
   }
@@ -427,8 +411,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
           errorMessage: '',
         })
 
-        //TODO: should be handler after authetication
-        console.log('this.state', this.state)
         await this.processAuthentificationHandler({
           accessToken: access_token,
           idToken: id_token,
@@ -485,7 +467,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     const { onLogin } = this.props
     const decodedProfile = jwtDecode(idToken)
 
-    await onLogin(decodedProfile, idToken)
+    await onLogin(decodedProfile, idToken, accessToken)
   }
 
   callProcessAuthentificationHandler = async () => {
@@ -501,8 +483,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     password: string
   }) => {
     const resultOfSignUp = await this.auth.register(email, password)
-
-    console.log('resultOfSignUp', resultOfSignUp)
 
     if (resultOfSignUp.status === 'error' && resultOfSignUp.message) {
       this.setState({
@@ -536,8 +516,6 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
       // trying to login
       this.authenticateWithPasswordHandler({ username: email, password })
     }
-
-    console.log('resultOfSignUp', resultOfSignUp)
   }
 
   render() {
