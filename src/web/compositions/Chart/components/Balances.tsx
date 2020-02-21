@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-
 import { Grid } from '@material-ui/core'
+
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
@@ -13,6 +13,7 @@ import {
 import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
 
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -105,7 +106,6 @@ export const Balances = ({
   isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
-
 }) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
@@ -131,7 +131,6 @@ export const Balances = ({
     return { quantity, value }
   })
 
-  
   const [
     USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
   ] = getFundsQuery.getFunds.filter(
@@ -165,7 +164,20 @@ export const Balances = ({
         setLoading={setLoading}
       />
       <CustomCard>
-        <ChartCardHeader>Balances</ChartCardHeader>
+        <ChartCardHeader
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <>
+            Balances{' '}
+            {!isSPOTMarket && (
+              <UpdateFuturesBalances keyId={selectedKey.keyId} />
+            )}
+          </>
+        </ChartCardHeader>
         <Grid
           container
           xs={12}
