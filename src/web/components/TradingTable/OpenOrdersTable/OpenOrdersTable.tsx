@@ -180,10 +180,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    console.log('orders', nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
-      (order) => !this.props.canceledOrders.includes(order.info.orderId)
-    ),)
-
     const openOrdersProcessedData = combineOpenOrdersTable(
       nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,

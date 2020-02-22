@@ -1261,11 +1261,11 @@ export const combineOrderHistoryTable = (
   arrayOfMarketIds: string[],
   marketType: number
 ) => {
-  if (!orderData || !orderData.orders) {
+  if (!orderData || !orderData) {
     return []
   }
 
-  const processedOrderHistoryData = orderData.orders
+  const processedOrderHistoryData = orderData
     .filter(order => !!order)
     .map((el: OrderType, i) => {
       const {

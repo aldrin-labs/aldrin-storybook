@@ -166,6 +166,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             !data ||
             data.loading ||
             !that.props.show ||
+            // we always have cachedOrder at least
             orders.length === 1
           ) {
             return
@@ -177,8 +178,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             currencyPair,
             quantityPrecision,
           } = that.props
-
-          console.log('oreders', orders.length)
 
           const activeStrategiesProcessedData = combineActiveTradesTable({
             data: orders,

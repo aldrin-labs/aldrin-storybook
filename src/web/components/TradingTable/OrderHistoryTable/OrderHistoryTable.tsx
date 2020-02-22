@@ -35,10 +35,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       marketType,
     } = this.props
 
-    console.log('props', this.props)
-
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      getPaginatedOrderHistoryQuery.getPaginatedOrderHistory,
+      getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       theme,
       arrayOfMarketIds,
       marketType
@@ -59,7 +57,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getPaginatedOrderHistoryQuery.getPaginatedOrderHistory,
+      nextProps.getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType
