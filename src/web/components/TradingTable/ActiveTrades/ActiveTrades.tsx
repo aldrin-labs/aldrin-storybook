@@ -137,9 +137,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
         return
       })
-      .filter((pair, i, arr) => arr.indexOf(pair) === i)
-
-    console.log('pairs', pairs)
+      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
 
     this.subscription = client
       .subscribe({
@@ -168,7 +166,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             !data ||
             data.loading ||
             !that.props.show ||
-            orders.length === 0
+            // we always have cachedOrder at least
+            orders.length === 1
           ) {
             return
           }
@@ -224,7 +223,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       },
     })
 
-    this.interval = window.setInterval(() => {
+    this.interval = setInterval(() => {
       const data = client.readQuery({
         query: getActiveStrategies,
         variables: {
@@ -304,6 +303,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       quantityPrecision,
       selectedKey,
+      getActiveStrategiesQuery
     } = nextProps
 
     const { prices, cachedOrder } = this.state
@@ -313,6 +313,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       variables: {
         activeStrategiesInput: {
           activeExchangeKey: selectedKey.keyId,
+          marketType
         },
       },
     })
@@ -330,12 +331,12 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             return +moment(orderDate).format('X') > cachedOrderDate
           })
         : null
-
     // here we receive order from cache (we write there order on mutation call)
     if (
       !cachedOrder &&
       data.getActiveStrategies.some((a: SmartOrder) => a._id === '-1')
     ) {
+
       this.setState({
         cachedOrder: data.getActiveStrategies.filter(
           (a: SmartOrder) => a._id === '-1'
@@ -373,10 +374,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
-        ? newData.getActiveStrategies
+        ? getActiveStrategiesQuery.getActiveStrategies
             .filter((order: SmartOrder) => order._id !== '-1')
             .concat(cachedOrder)
-        : newData.getActiveStrategies
+        : getActiveStrategiesQuery.getActiveStrategies
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
       data: ordersToDisplay,
@@ -716,6 +717,7 @@ const LastTradeWrapper = ({ ...props }) => {
       component={ActiveTradesTable}
       variables={{
         activeStrategiesInput: {
+          marketType: props.marketType,
           activeExchangeKey: props.selectedKey.keyId,
         },
       }}
@@ -728,6 +730,7 @@ const LastTradeWrapper = ({ ...props }) => {
         subscription: ACTIVE_STRATEGIES,
         variables: {
           activeStrategiesInput: {
+            marketType: props.marketType,
             activeExchangeKey: props.selectedKey.keyId,
           },
         },

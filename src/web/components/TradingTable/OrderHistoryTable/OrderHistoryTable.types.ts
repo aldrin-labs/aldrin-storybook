@@ -7,13 +7,27 @@ import { OrderType, Key } from '@core/types/ChartTypes'
 export interface IProps extends WithTheme<Theme> {
   tab: string
   show: boolean
-  handleTabChange: (tab: string | any) => void
+  page: number
+  perPage: number
   focusedInput: null | string
   startDate: moment.Moment | null
   endDate: moment.Moment | null
   activeDateButton: null | string
   minimumDate: moment.Moment
   maximumDate: moment.Moment
+  getPaginatedOrderHistoryQuery: {
+    getPaginatedOrderHistory: {
+      orders: OrderType[]
+      count: number
+    }
+  }
+  theme: Theme
+  selectedKey: Key
+  arrayOfMarketIds: string[]
+  marketType: number
+  currencyPair: string
+  canceledOrders: string[]
+
   onDateButtonClick: (stringDate: string) => void
   onDatesChange: ({
     startDate,
@@ -25,15 +39,9 @@ export interface IProps extends WithTheme<Theme> {
   onFocusChange: (focusedInput: string) => void
   onClearDateButtonClick: () => void
   subscribeToMore: () => () => void
-  getOrderHistoryQuery: {
-    getOrderHistory: OrderType[]
-  }
-  theme: Theme
-  selectedKey: Key
-  arrayOfMarketIds: string[]
-  marketType: number
-  currencyPair: string
-  canceledOrders: string[]
+  handleTabChange: (tab: string | any) => void
+  handleChangePage: (page: number) => void
+  handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
 export interface IState {

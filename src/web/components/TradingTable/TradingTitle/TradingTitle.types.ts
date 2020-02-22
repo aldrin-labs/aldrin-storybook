@@ -1,6 +1,11 @@
 import moment from 'moment'
+import { Theme } from '@material-ui/core'
 
 export interface IProps {
+  page: number
+  perPage: number
+  maxRows: number
+  theme: Theme
   startDate: moment.Moment | null
   endDate: moment.Moment | null
   focusedInput: null | string
@@ -17,4 +22,6 @@ export interface IProps {
   }) => void
   onFocusChange: (focusedInput: string) => void
   onClearDateButtonClick: () => void
+  handleChangePage: (page: number) => void
+  handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
 }

@@ -15,6 +15,8 @@ export interface IProps {
 }
 
 export interface IState {
+  page: number
+  perPage: number
   startDate: moment.Moment | null
   endDate: moment.Moment | null
   focusedInput: null | string

@@ -22,14 +22,14 @@ export const TitleButton = styled(
     props.isActive ? '#165BE0' : '#E0E5EC'};
   background-color: ${(props: { isActive?: boolean }) =>
     props.isActive ? '#165BE0' : '#F9FBFD'};
-  margin: .7rem;
-  padding: 0px .4rem;
+  margin: 0.7rem;
+  padding: 0px 0.4rem;
   border-radius: 1rem;
   min-width: 4rem;
 
   &:hover {
     background-color: ${(props: { isActive?: boolean }) =>
-    props.isActive && '#165BE0'};
+      props.isActive && '#165BE0'};
   }
 `
 
@@ -50,4 +50,9 @@ export const ClearButton = styled(TitleButton)`
   min-width: 70px;
   font-weight: bold;
   border-radius: 4px;
+`
+
+export const PaginationBlock = styled.div`
+  display: flex;
+  padding-left: 2rem;
 `

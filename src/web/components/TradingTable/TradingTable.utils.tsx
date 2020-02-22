@@ -174,7 +174,7 @@ export const getNumberOfPrecisionDigitsForSymbol = (symbol: string) => {
   return stableCoins.includes(symbol) ? 2 : 8
 }
 
-export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
+export const getPnlFromState = ({ state, amount, side, leverage }) => {
   if (state && state.entryPrice && state.exitPrice) {
     const profitPercentage =
       ((state.exitPrice / state.entryPrice) * 100 - 100) *
@@ -226,15 +226,11 @@ const getActiveOrderStatus = ({
 export const filterOpenOrders = ({
   order,
   canceledOrders,
-  arrayOfMarketIds,
-  marketType,
 }) => {
   return (
     !canceledOrders.includes(order.info.orderId) &&
     order.type &&
     order.type !== 'market' &&
-    (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
-      (order.marketId === '0' && order.symbol)) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
       order.status === 'NEW' ||
@@ -242,18 +238,10 @@ export const filterOpenOrders = ({
   )
 }
 
-export const filterPositions = ({ position, pair, canceledPositions }) => {
+export const filterPositions = ({ position, canceledPositions }) => {
   return (
     position.positionAmt !== 0 &&
-    // position.symbol === pair &&
     !canceledPositions.includes(position._id)
-  )
-}
-
-export const filterActiveTrades = ({ trade, marketType, currencyPair }) => {
-  return (
-    trade.conditions.marketType === marketType && trade.enabled
-    // trade.conditions.pair === currencyPair
   )
 }
 
@@ -492,7 +480,7 @@ export const combineActiveTradesTable = ({
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
+    .filter(a => !!a && a.enabled)
     .sort((a, b) => {
       // sometimes in db we receive createdAt as timestamp
       // so using this we understand type of value that in createdAt field
@@ -1086,8 +1074,6 @@ export const combineOpenOrdersTable = (
     .filter((el) =>
       filterOpenOrders({
         order: el,
-        arrayOfMarketIds,
-        marketType,
         canceledOrders,
       })
     )
@@ -1252,6 +1238,7 @@ export const combineOpenOrdersTable = (
                   variables: {
                     openOrderInput: {
                       activeExchangeKey: keyId,
+                      marketType
                     },
                   },
                   filterData: (order) => order.info.orderId != orderId,
@@ -1274,14 +1261,12 @@ export const combineOrderHistoryTable = (
   arrayOfMarketIds: string[],
   marketType: number
 ) => {
-  if (!orderData && !Array.isArray(orderData)) {
+  if (!orderData || !orderData) {
     return []
   }
 
   const processedOrderHistoryData = orderData
-    .filter((el) =>
-      isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
-    )
+    .filter(order => !!order)
     .map((el: OrderType, i) => {
       const {
         symbol,
@@ -1298,7 +1283,7 @@ export const combineOrderHistoryTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
-      const type = orderType.toLowerCase().replace('-', '_')
+      const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
         ? info
@@ -1898,6 +1883,58 @@ export const updateOrderHistoryQuerryFunction = (
     prev.getOrderHistory = [
       { ...subscriptionData.data.listenOrderHistory },
       ...prev.getOrderHistory,
+    ]
+
+    result = { ...prev }
+  }
+
+  return result
+}
+
+export const updatePaginatedOrderHistoryQuerryFunction = (
+  previous,
+  { subscriptionData }
+) => {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenOrderHistory
+
+  if (isEmptySubscription) {
+    return previous
+  }
+
+  const prev = cloneDeep(previous)
+
+  const openOrderHasTheSameOrderIndex = prev.getPaginatedOrderHistory.orders.findIndex(
+    (el: OrderType) =>
+      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+  )
+  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
+
+  let result
+
+  if (openOrderAlreadyExists) {
+    const oldDataElement = prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex]
+    const newDataElement = subscriptionData.data.listenOrderHistory
+
+    if (
+      newDataElement.status !== 'open' &&
+      !(
+        newDataElement.status === 'partially_filled' &&
+        oldDataElement.status === 'filled'
+      )
+    ) {
+      // here we handling wrong order of subscribtion events
+      prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex] = {
+        ...prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex],
+        ...subscriptionData.data.listenOrderHistory,
+      }
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getPaginatedOrderHistory.orders = [
+      { ...subscriptionData.data.listenOrderHistory },
+      ...prev.getPaginatedOrderHistory.orders,
     ]
 
     result = { ...prev }
