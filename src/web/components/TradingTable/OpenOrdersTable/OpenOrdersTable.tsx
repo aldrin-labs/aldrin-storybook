@@ -74,14 +74,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     showCancelResult(status)
   }
 
-  // TODO: here should be a mutation order to cancel a specific order
-  // TODO: Also it should receive an argument to edentify the order that we should cancel
-
-  onCancelAll = async () => {
-    // TODO: here should be a mutation func to cancel all orders
-    // TODO: Also it would be good to show the dialog message here after mutation completed
-  }
-
   componentDidMount() {
     const {
       getOpenOrderHistoryQuery,
@@ -118,7 +110,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     const that = this
 
-    this.interval = window.setInterval(() => {
+    this.interval = setInterval(() => {
       const data = client.readQuery({
         query: getOpenOrderHistory,
         variables: {
@@ -188,10 +180,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
+    console.log('orders', nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
+      (order) => !this.props.canceledOrders.includes(order.info.orderId)
+    ),)
+
     const openOrdersProcessedData = combineOpenOrdersTable(
-      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
-        (order) => !this.props.canceledOrders.includes(order.info.orderId)
-      ),
+      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
@@ -283,6 +277,7 @@ const TableDataWrapper = ({ ...props }) => {
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
+          marketType: props.marketType
         },
       }}
       withOutSpinner={true}
@@ -295,6 +290,7 @@ const TableDataWrapper = ({ ...props }) => {
         variables: {
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
+            marketType: props.marketType
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
