@@ -7,8 +7,17 @@ import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 import {
   TitleSecondRowContainer,
   TitleButton,
-  ClearButton,
+  PaginationBlock,
 } from '../TradingTable.styles'
+
+import {
+  StyledSelect,
+  StyledOption,
+} from '@sb/components/TradingWrapper/styles'
+
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
+
 import { IProps } from './TradingTitle.types'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
@@ -16,6 +25,9 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 export default class TradingTitle extends React.PureComponent<IProps> {
   render() {
     const {
+      page,
+      perPage,
+      maxRows,
       startDate,
       endDate,
       focusedInput,
@@ -25,6 +37,8 @@ export default class TradingTitle extends React.PureComponent<IProps> {
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
+      handleChangePage,
+      handleChangeRowsPerPage,
       onClearDateButtonClick,
       theme: {
         palette: {
@@ -74,7 +88,12 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           color={primary}
           fontFamily={fontFamily}
           fontSize={CSS_CONFIG.chart.content.fontSize}
-          style={{ paddingLeft: '2rem', borderLeft: '1px solid #e0e5ec' }}
+          style={{
+            paddingLeft: '2rem',
+            borderLeft: '1px solid #e0e5ec',
+            paddingRight: '2rem',
+            borderRight: '1px solid #e0e5ec',
+          }}
           zIndexPicker={200}
           dateInputHeight={`2.4rem`}
           dateInputPadding={`0 .5rem`}
@@ -96,13 +115,45 @@ export default class TradingTitle extends React.PureComponent<IProps> {
             displayFormat="ll"
           />
         </StyledWrapperForDateRangePicker>
-        {/* <ClearButton
-          size="small"
-          variant={`outlined`}
-          onClick={onClearDateButtonClick}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            color: '#16253D',
+            fontSize: '1.2rem',
+          }}
         >
-          Clear
-        </ClearButton> */}
+          <PaginationBlock>
+            Rows per page:{' '}
+            <StyledSelect style={{ marginLeft: '1rem'}} value={perPage} onChange={handleChangeRowsPerPage}>
+              {[10, 20, 30, 50, 100].map((quantity) => {
+                return <StyledOption>{quantity}</StyledOption>
+              })}
+            </StyledSelect>
+          </PaginationBlock>
+          <PaginationBlock>
+            {page * perPage} -{' '}
+            {page * perPage + perPage > maxRows
+              ? maxRows
+              : page * perPage + perPage}{' '}
+            of {maxRows}
+          </PaginationBlock>
+          <PaginationBlock>
+            <ArrowBackIosIcon
+              onClick={() => handleChangePage(page === 0 ? 0 : page - 1)}
+              style={{ width: '2rem', height: '2rem', margin: '0 1rem', cursor: 'pointer' }}
+            />
+            <ArrowForwardIosIcon
+              onClick={() =>
+                handleChangePage(
+                  (page + 1) * perPage > maxRows ? page : page + 1
+                )
+              }
+              style={{ width: '2rem', height: '2rem', margin: '0 1rem', cursor: 'pointer' }}
+            />
+          </PaginationBlock>
+        </div>
       </TitleSecondRowContainer>
     )
   }

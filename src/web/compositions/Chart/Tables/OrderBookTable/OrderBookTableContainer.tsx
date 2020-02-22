@@ -183,6 +183,7 @@ const APIWrapper = (props) => {
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
+          marketType: props.marketType
         },
       }}
       withOutSpinner={true}
@@ -194,6 +195,7 @@ const APIWrapper = (props) => {
         subscription: OPEN_ORDER_HISTORY,
         variables: {
           openOrderInput: {
+            marketType: props.marketType,
             activeExchangeKey: props.selectedKey.keyId,
           },
         },

@@ -39,7 +39,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     } = this.props
 
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
-      getStrategiesHistoryQuery.getStrategiesHistory,
+      getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       theme,
       marketType
     )
@@ -60,7 +60,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
-      nextProps.getStrategiesHistoryQuery.getStrategiesHistory,
+      nextProps.getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       nextProps.theme,
       nextProps.marketType
     )
@@ -85,6 +85,9 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     const {
       tab,
       show,
+      page,
+      perPage,
+      theme,
       handleTabChange,
       focusedInput,
       endDate,
@@ -101,6 +104,9 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       canceledOrders,
       currencyPair,
       arrayOfMarketIds,
+      handleChangePage,
+      handleChangeRowsPerPage,
+      getStrategiesHistoryQuery
     } = this.props
 
     if (!show) {
@@ -160,8 +166,11 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
             />
             <TradingTitle
               {...{
+                page,
+                perPage,
                 startDate,
                 endDate,
+                theme,
                 focusedInput,
                 activeDateButton,
                 minimumDate,
@@ -170,6 +179,9 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
                 onDatesChange,
                 onFocusChange,
                 onClearDateButtonClick,
+                handleChangePage,
+                handleChangeRowsPerPage,
+                maxRows: getStrategiesHistoryQuery.getStrategiesHistory.count,
               }}
             />
           </div>
@@ -182,7 +194,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate } = props
+  let { startDate, endDate, page, perPage } = props
 
   startDate = +startDate
   endDate = +endDate
@@ -192,7 +204,10 @@ const TableDataWrapper = ({ ...props }) => {
       component={StrategiesHistoryTable}
       variables={{
         strategiesHistoryInput: {
+          marketType: props.marketType,
           activeExchangeKey: props.selectedKey.keyId,
+          perPage,
+          page,
           startDate,
           endDate,
         },
@@ -200,6 +215,7 @@ const TableDataWrapper = ({ ...props }) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={getStrategiesHistory}
+      showLoadingWhenQueryParamsChange={false}
       name={`getStrategiesHistoryQuery`}
       fetchPolicy="cache-and-network"
       pollInterval={props.show ? 25000 : 0}
@@ -208,6 +224,7 @@ const TableDataWrapper = ({ ...props }) => {
         variables: {
           activeStrategiesInput: {
             activeExchangeKey: props.selectedKey.keyId,
+            marketType: props.marketType
           },
         },
         updateQueryFunction: updateStrategiesHistoryQuerryFunction,

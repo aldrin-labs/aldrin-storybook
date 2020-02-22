@@ -7,10 +7,20 @@ import StrategiesHistoryTable from './StrategiesHistoryTable'
 
 export default class StrategiesHistoryDataWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
+    page: 0,
+    perPage: 30,
     startDate: getEndDate('1Day'),
     endDate: moment().endOf('day'),
     focusedInput: null,
     activeDateButton: '1Day',
+  }
+
+  handleChangePage = (page: number) => {
+    this.setState({ page })
+  }
+
+  handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setState({ perPage: +event.target.value })
   }
 
   onClearDateButtonClick = () => {
@@ -58,7 +68,7 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<IP
       arrayOfMarketIds,
     } = this.props
 
-    const { focusedInput, endDate, activeDateButton, startDate } = this.state
+    const { focusedInput, endDate, activeDateButton, startDate, page, perPage } = this.state
 
     const maximumDate = moment().endOf('day')
     const minimumDate = moment().subtract(3, 'years')
@@ -68,6 +78,8 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<IP
         {...{
           tab,
           tabIndex,
+          page,
+          perPage,
           selectedKey,
           show,
           marketType,
@@ -81,6 +93,8 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<IP
           startDate,
           maximumDate,
           minimumDate,
+          handleChangePage: this.handleChangePage,
+          handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           onClearDateButtonClick: this.onClearDateButtonClick,
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,
