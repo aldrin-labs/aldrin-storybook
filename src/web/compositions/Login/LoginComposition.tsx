@@ -60,10 +60,18 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     },
   }
 
-  auth = new Auth(getAuthCallback({ initialStep: this.props.initialStep }))
+  auth = new Auth(
+    getAuthCallback({
+      initialStep: this.props.initialStep,
+      forWithdrawal: this.props.forWithdrawal,
+    })
+  )
 
   static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
-    if (nextProps.initialStep !== prevState.currentStep && (prevState.currentStep === 'signIn' || prevState.currentStep === 'signUp')) {
+    if (
+      nextProps.initialStep !== prevState.currentStep &&
+      (prevState.currentStep === 'signIn' || prevState.currentStep === 'signUp')
+    ) {
       return { currentStep: nextProps.initialStep }
     } else return null
   }
@@ -71,8 +79,8 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   // this lifecycle here is only needed for sign up with google / sign in with google
   // maybe better to move it upper level into LoginCustom container
   async componentDidMount() {
-     // validate that hash exists in url before trigger google auth
-    if (window.location.hash === "") {
+    // validate that hash exists in url before trigger google auth
+    if (window.location.hash === '') {
       return
     }
 
@@ -519,6 +527,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   }
 
   render() {
+    const { forWithdrawal } = this.props
     const {
       currentStep,
       signIn,
@@ -539,6 +548,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
             changeStep={this.changeCurrentStep}
             status={signIn.status}
             errorMessage={signIn.errorMessage}
+            forWithdrawal={forWithdrawal}
           />
         )}
         {currentStep === 'enterOtp' && (
@@ -547,6 +557,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
             changeStep={this.changeCurrentStep}
             status={enterOtp.status}
             errorMessage={enterOtp.errorMessage}
+            forWithdrawal={forWithdrawal}
           />
         )}
         {currentStep === 'recoveryCode' && (
@@ -558,10 +569,13 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
             status={authenticateWithRecovery.status}
             errorMessage={authenticateWithRecovery.errorMessage}
             newRecoveryCode={newRecoveryCode}
+            forWithdrawal={forWithdrawal}
           />
         )}
         {currentStep === 'configureMfa' && (
-          <ChooseMfaProvider associateMfaMethodHandler={this.associateMfaMethodHandler} />
+          <ChooseMfaProvider
+            associateMfaMethodHandler={this.associateMfaMethodHandler}
+          />
         )}
         {currentStep === 'setupMfa' && (
           <SetUpMfa
@@ -575,6 +589,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
             status={forgotPassword.status}
             errorMessage={forgotPassword.errorMessage}
             onForgotPasswordClick={this.forgotPasswordHandler}
+            forWithdrawal={forWithdrawal}
           />
         )}
         {currentStep === 'signUp' && (
