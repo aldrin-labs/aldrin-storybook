@@ -1701,7 +1701,7 @@ export const updateStrategiesHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = prev.getStrategiesHistory.findIndex(
+  const strategyHasTheSameIndex = prev.getStrategiesHistory.strategies.findIndex(
     (el: TradeType) =>
       el._id === subscriptionData.data.listenActiveStrategies._id
   )
@@ -1710,16 +1710,16 @@ export const updateStrategiesHistoryQuerryFunction = (
   let result
 
   if (tradeAlreadyExists) {
-    prev.getStrategiesHistory[strategyHasTheSameIndex] = {
-      ...prev.getStrategiesHistory[strategyHasTheSameIndex],
+    prev.getStrategiesHistory.strategies[strategyHasTheSameIndex] = {
+      ...prev.getStrategiesHistory.strategies[strategyHasTheSameIndex],
       ...subscriptionData.data.listenActiveStrategies,
     }
 
     result = { ...prev }
   } else {
-    prev.getStrategiesHistory = [
+    prev.getStrategiesHistory.strategies = [
       { ...subscriptionData.data.listenActiveStrategies },
-      ...prev.getStrategiesHistory,
+      ...prev.getStrategiesHistory.strategies,
     ]
 
     result = { ...prev }
@@ -1956,7 +1956,7 @@ export const updateTradeHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const tradeHasTheSameIndex = prev.getTradeHistory.findIndex(
+  const tradeHasTheSameIndex = prev.getTradeHistory.trades.findIndex(
     (el: TradeType) => el.id === subscriptionData.data.listenTradeHistory.id
   )
   const tradeAlreadyExists = tradeHasTheSameIndex !== -1
@@ -1964,16 +1964,16 @@ export const updateTradeHistoryQuerryFunction = (
   let result
 
   if (tradeAlreadyExists) {
-    prev.getTradeHistory[tradeHasTheSameIndex] = {
-      ...prev.getTradeHistory[tradeHasTheSameIndex],
+    prev.getTradeHistory.trades[tradeHasTheSameIndex] = {
+      ...prev.getTradeHistory.trades[tradeHasTheSameIndex],
       ...subscriptionData.data.listenTradeHistory,
     }
 
     result = { ...prev }
   } else {
-    prev.getTradeHistory = [
+    prev.getTradeHistory.trades = [
       { ...subscriptionData.data.listenTradeHistory },
-      ...prev.getTradeHistory,
+      ...prev.getTradeHistory.trades,
     ]
 
     result = { ...prev }
