@@ -43,7 +43,11 @@ const WithdrawalRequestPopup = ({
       >
         <DialogContent
           style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             padding: '3rem',
+            position: 'relative',
           }}
         >
           <Grid container justify="center" alignItems="center">
