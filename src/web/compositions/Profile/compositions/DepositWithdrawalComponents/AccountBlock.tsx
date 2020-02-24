@@ -25,6 +25,7 @@ const AccountBlock = ({
     id="left_block"
     container
     direction="column"
+    justify="center"
     style={{ width: '35%', borderRight: '1px solid #E0E5EC' }}
     spacing={32}
   >
