@@ -103,7 +103,7 @@ const Withdrawal = ({ ...props }: IProps) => {
     const {
       history: { push },
     } = props
-    push(`/profile/confirmWithdrawal/:${withdrawalId}`)
+    push(`/profile/confirmWithdrawal/${withdrawalId}`)
   }
 
   const withdrawalMutationHandler = async (): Promise<{
