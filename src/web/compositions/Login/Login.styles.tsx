@@ -199,6 +199,10 @@ export const OtpLoaderContainerCss = css`
   height: 1.8rem;
 `
 
+export const forWithdrawalCss = css`
+  width: auto;
+`
+
 export const MfaHeading = styled(({ ...props }) => <Typography {...props} />)`
   ${MfaHeadingCss}
 `
@@ -246,8 +250,10 @@ export const LoginHeadingBox = styled(({ ...props }) => <Grid {...props} />)`
   ${LoginHeadingBoxCss}
 `
 
-export const LoginContainer = styled(({ ...props }) => <Grid {...props} />)`
+export const LoginContainer = styled(({ forWithdrawal, ...props }) => <Grid {...props} />)`
   ${LoginContainerCss}
+  ${(props) => (props.forWithdrawal ? forWithdrawalCss : ``)}
+
 `
 
 export const InputContainer = styled(({ ...props }) => <Grid {...props} />)`
