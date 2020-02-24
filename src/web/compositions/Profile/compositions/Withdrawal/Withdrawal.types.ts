@@ -1,4 +1,8 @@
-export interface IProps {
+import { withSnackbarProps } from 'notistack'
+import { History } from 'history'
+
+export interface IProps extends withSnackbarProps {
+  history: History
   getProfileSettingsQuery: {
     getProfileSettings: {
       depositSettings: {
@@ -6,6 +10,13 @@ export interface IProps {
       }
       withdrawalSettings: {
         selectedKey: string
+      }
+    }
+  }
+  getAccountSettingsQuery: {
+    getAccountSettings: {
+      authorizationSettings: {
+        mfaEnabled: boolean
       }
     }
   }
@@ -18,7 +29,15 @@ export interface IProps {
         amount: number
       }
     }
-  }) => Promise<{ data: string; status: 'ERR' | 'OK'; errorMessage: string }>
+  }) => Promise<{
+    data: {
+      withdrawal: {
+        status: 'ERR' | 'OK'
+        data: { id: string } | null
+        errorMessage: string
+      }
+    }
+  }>
   confirmWithdrawalMutation: (variablesObj: {
     variables: {
       input: {
