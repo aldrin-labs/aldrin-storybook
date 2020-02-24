@@ -29,6 +29,10 @@ const Withdrawal = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "withdrawal" */ '@sb/compositions/Profile/compositions/Withdrawal/Withdrawal')
 )
 
+const ConfirmWithdrawal = React.lazy(() =>
+  import(/* webpackPrefetch: true, webpackChunkName: "ConfirmWithdrawal" */ '@sb/compositions/Profile/compositions/ConfirmWithdrawal/ConfirmWithdrawal')
+)
+
 const ApiManagment = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "apimanagment" */ '@sb/compositions/Profile/compositions/ApiManagment/ApiManagment')
 )
@@ -76,6 +80,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/withdrawal"
             render={(...rest) => <Withdrawal />}
+          />
+          <Route
+            exact
+            path="/profile/confirmWithdrawal/:withdrawalRequestId"
+            render={(...rest) => <ConfirmWithdrawal />}
           />
           <Route
             exact

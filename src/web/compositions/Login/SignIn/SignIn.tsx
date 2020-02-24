@@ -39,6 +39,7 @@ const SignIn = ({
   changeStep,
   status,
   errorMessage,
+  forWithdrawal,
 }: {
   theme: Theme
   // TODO: Need to replace any here
@@ -54,6 +55,7 @@ const SignIn = ({
   changeStep: (step: string) => void
   status: 'error' | 'success'
   errorMessage: string
+  forWithdrawal: boolean
 }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -68,7 +70,7 @@ const SignIn = ({
     !!password.length
 
   return (
-    <LoginContainer>
+    <LoginContainer forWithdrawal={forWithdrawal}>
       <Grid container>
         <WithGoogleButton onClick={() => onLoginWithGoogleClick()}>
           <Grid container alignItems="center" justify="center" wrap="nowrap">

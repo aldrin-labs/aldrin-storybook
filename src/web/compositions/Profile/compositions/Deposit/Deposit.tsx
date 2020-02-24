@@ -62,6 +62,7 @@ const Deposits = ({ ...props }: IProps) => {
           container
           direction="column"
           alignItems="center"
+          justify="center"
           style={{ width: '65%', paddingLeft: '20%' }}
         >
           <Grid
