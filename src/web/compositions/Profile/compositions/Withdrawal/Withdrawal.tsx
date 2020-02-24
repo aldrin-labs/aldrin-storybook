@@ -128,11 +128,11 @@ const Withdrawal = ({ ...props }: IProps) => {
         },
       })
 
-      if (res.data.withdrawal.data && res.data.withdrawal.data.id) {
+      if (res.data.withdrawal && res.data.withdrawal.data) {
         result = {
           status: 'OK',
           errorMessage: '',
-          withdrawalId: res.data.withdrawal.data.id,
+          withdrawalId: res.data.withdrawal.data,
         }
       } else {
         result = {

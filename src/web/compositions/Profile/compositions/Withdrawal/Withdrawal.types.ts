@@ -33,7 +33,7 @@ export interface IProps extends withSnackbarProps {
     data: {
       withdrawal: {
         status: 'ERR' | 'OK'
-        data: { id: string } | null
+        data: string | null
         errorMessage: string
       }
     }
