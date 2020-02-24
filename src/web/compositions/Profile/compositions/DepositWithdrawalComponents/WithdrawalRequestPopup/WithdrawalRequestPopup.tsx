@@ -34,15 +34,16 @@ const WithdrawalRequestPopup = ({
         aria-labelledby="customized-dialog-title"
         onClose={handleClose}
         open={open}
-        style={{
-          borderRadius: '50%',
-          paddingTop: 0,
+        PaperProps={{
+          style: {
+            minWidth: '50%',
+            minHeight: '50%',
+          },
         }}
       >
         <DialogContent
-          justify="center"
           style={{
-            padding: '0 3rem 3rem',
+            padding: '3rem',
           }}
         >
           <Grid container justify="center" alignItems="center">
