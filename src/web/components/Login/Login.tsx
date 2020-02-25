@@ -44,13 +44,11 @@ class LoginClassComponent extends React.Component<Props> {
       location: { pathname },
     } = this.props
     const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
-
-    const isLoginPage = pathname === '/login'
-
+    
     return (
       <SWrapper className="LoginButton">
         <Grow
-          in={!loginStatus && !isLoginPage}
+          in={!loginStatus}
           unmountOnExit={true}
           mountOnEnter={true}
         >
