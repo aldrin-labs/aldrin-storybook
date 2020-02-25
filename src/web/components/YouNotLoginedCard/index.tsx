@@ -65,7 +65,7 @@ const LoginCard = ({ open, children }: IProps) =>
               fontSize: '1.6rem',
             }}
           >
-            Sign in
+            Log in
           </Button>
           <SignUpButton
             component={SignUpLink}
