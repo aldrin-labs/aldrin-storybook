@@ -78,6 +78,14 @@ const NavBarRaw: SFC<Props> = ({
     page = 'Withdrawal'
   }
 
+  if (/login/.test(pathname)) {
+    page = 'Log in'
+  }
+
+  if (/signup/.test(pathname)) {
+    page = 'Sign up'
+  }
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}
