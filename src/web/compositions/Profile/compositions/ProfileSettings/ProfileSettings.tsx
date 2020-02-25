@@ -239,7 +239,7 @@ class ProfileSettingsDataWrapper extends PureComponent<IPropsDataWrapper> {
   logout = async () => {
     const { logoutMutation, persistorInstance, history: { push } } = this.props
     await handleLogout(logoutMutation, persistorInstance)
-    push('/signin')
+    push('/login')
   }
 
   render() {
