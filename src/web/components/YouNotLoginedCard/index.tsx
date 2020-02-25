@@ -8,7 +8,7 @@ import MainLogo from '@icons/Logo.svg'
 import PortfolioMainImage from '@sb/images/PortfolioMain.png'
 import { IProps } from './index.types'
 
-const SignInLink = (props: any) => <Link to="/signin" {...props} />
+const SignInLink = (props: any) => <Link to="/login" {...props} />
 const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 
 const LoginCard = ({ open, children }: IProps) =>

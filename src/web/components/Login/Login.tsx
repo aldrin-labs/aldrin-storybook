@@ -20,7 +20,7 @@ import { SWrapper } from './Login.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { syncStorage } from '@storage'
 
-const SignInLink = (props: any) => <Link to="/signin" {...props} />
+const SignInLink = (props: any) => <Link to="/login" {...props} />
 const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 
 @withTheme
@@ -33,7 +33,7 @@ class LoginClassComponent extends React.Component<Props> {
       history: { push },
     } = this.props
     await handleLogout(logoutMutation, this.props.persistorInstance)
-    push('/signin')
+    push('/login')
   }
 
   render() {
