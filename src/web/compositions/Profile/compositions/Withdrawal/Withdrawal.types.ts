@@ -46,4 +46,22 @@ export interface IProps extends withSnackbarProps {
       }
     }
   }) => Promise<{ data: string; status: 'ERR' | 'OK'; errorMessage: string }>
+  selectedCoin: {
+    label: 'BTC' | string
+    name: 'Bitcoin' | string
+  }
+  setSelectedCoin: (arg: {
+    label: 'BTC' | string
+    name: 'Bitcoin' | string
+  }) => void
+  selectedKey: string
+  getAssetDetailQuery: {
+    getAssetDetail: {
+      minWithdrawAmount: number
+      depositStatus: boolean
+      withdrawFee: number
+      withdrawStatus: boolean
+      depositTip: string
+    }
+  }
 }

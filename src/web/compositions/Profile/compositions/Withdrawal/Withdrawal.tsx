@@ -11,6 +11,7 @@ import { getProfileSettings } from '@core/graphql/queries/user/getProfileSetting
 import { withdrawal } from '@core/graphql/mutations/withdrawal/withdrawal'
 import { confirmWithdrawal } from '@core/graphql/mutations/withdrawal/confirmWithdrawal'
 import { getAccountSettings } from '@core/graphql/queries/user/getAccountSettings'
+import { getAssetDetail } from '@core/graphql/queries/keys/getAssetDetail'
 import {
   validateEnablingMfa,
   getUserProfileFromAuthResult,
@@ -27,6 +28,7 @@ import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawal
 import WithdrawalEnableMfaPopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/WithdrawalEnableMfaPopup/WithdrawalEnableMfaPopup'
 import WithdrawalAuthentificatePopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/WithdrawalAuthentificatePopup/WithdrawalAuthentificatePopup'
 import WithdrawalRequestPopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/WithdrawalRequestPopup/WithdrawalRequestPopup'
+import WithdrawalLimits from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/WithdrawalLimits/WithdrawalLimits'
 
 import {
   StyledInput,
@@ -37,18 +39,23 @@ import { IProps } from './Withdrawal.types'
 import { validateTransactionAmount } from './Withdrawal.utils'
 
 const Withdrawal = ({ ...props }: IProps) => {
+  // we need it here also to update data when it's updated in cache
   const {
-    withdrawalSettings,
-  } = props.getProfileSettingsQuery.getProfileSettings
-  const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || {
-    selectedKey: '',
+    getAssetDetailQuery: { getAssetDetail } = {
+      getAssetDetail: {
+        minWithdrawAmount: 0,
+        withdrawFee: 0,
+      },
+    },
+  } = props
+  const { minWithdrawAmount = 0, withdrawFee = 0 } = getAssetDetail || {
+    minWithdrawAmount: 0,
+    withdrawFee: 0,
   }
-  const selectedKey = tempSelectedKey || ''
+  const minimalWithdrawalAmount = minWithdrawAmount || 0
+  const transactionFee = withdrawFee || 0
 
-  const [selectedCoin, setSelectedCoin] = useState({
-    label: 'BTC',
-    name: 'Bitcoin',
-  })
+  const { selectedCoin, setSelectedCoin, selectedKey } = props
   const [coinAddress, setCoinAddress] = useState('')
   const [coinAmount, setCoinAmount] = useState('')
   const [amountError, setAmountError] = useState(false)
@@ -65,10 +72,6 @@ const Withdrawal = ({ ...props }: IProps) => {
   const [withdrawalRequestId, setWithdrawalRequestId] = useState('')
 
   const [loading, setLoading] = useState(false)
-
-  const minimalWithdrawalAmount = 0
-  const transactionFee = 0
-  const actualAmountGet = +coinAmount - transactionFee
 
   const networkChange = () => {}
 
@@ -317,27 +320,13 @@ const Withdrawal = ({ ...props }: IProps) => {
                   }}
                 />
               </Grid>
-              <StyledTypographyCaption style={{ paddingTop: '0.2rem' }}>
-                Minimum Withdrawal: {minimalWithdrawalAmount}{' '}
-                {selectedCoin.label}
-              </StyledTypographyCaption>
-              <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
-                <Grid container>
-                  <StyledTypography>Transaction fee:</StyledTypography>
-                  <StyledTypography
-                    style={{ color: '#16253D', marginLeft: '1rem' }}
-                  >
-                    {transactionFee}
-                  </StyledTypography>
-                </Grid>
-                <Grid container>
-                  <StyledTypography>You will get:</StyledTypography>
-                  <StyledTypography
-                    style={{ color: '#16253D', marginLeft: '1rem' }}
-                  >
-                    {actualAmountGet}
-                  </StyledTypography>
-                </Grid>
+              <Grid style={{ height: '8.5rem', overflow: 'hidden' }}>
+                <WithdrawalLimits
+                  amountError={amountError}
+                  selectedKey={selectedKey}
+                  selectedCoin={selectedCoin}
+                  coinAmount={coinAmount}
+                />
               </Grid>
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
@@ -406,6 +395,44 @@ const Withdrawal = ({ ...props }: IProps) => {
   )
 }
 
+const WithdrawalDataWrapper = ({ ...props }) => {
+  const [selectedCoin, setSelectedCoin] = useState({
+    label: 'BTC',
+    name: 'Bitcoin',
+  })
+
+  const {
+    withdrawalSettings,
+  } = props.getProfileSettingsQuery.getProfileSettings
+  const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || {
+    selectedKey: '',
+  }
+  const selectedKey = tempSelectedKey || ''
+
+  const WrappedComponent = compose(
+    queryRendererHoc({
+      query: getAssetDetail,
+      name: 'getAssetDetailQuery',
+      variables: {
+        input: {
+          keyId: selectedKey,
+          symbol: selectedCoin.label,
+        },
+      },
+      fetchPolicy: 'cache-only',
+    })
+  )(Withdrawal)
+
+  return (
+    <WrappedComponent
+      selectedCoin={selectedCoin}
+      setSelectedCoin={setSelectedCoin}
+      selectedKey={selectedKey}
+      {...props}
+    />
+  )
+}
+
 export default compose(
   withSnackbar,
   withRouter,
@@ -421,4 +448,4 @@ export default compose(
     name: 'getAccountSettingsQuery',
     fetchPolicy: 'cache-and-network',
   })
-)(Withdrawal)
+)(WithdrawalDataWrapper)
