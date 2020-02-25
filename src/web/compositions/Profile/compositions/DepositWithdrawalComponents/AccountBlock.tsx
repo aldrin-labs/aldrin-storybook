@@ -133,7 +133,7 @@ const AccountBlock = ({
               name: optionSelected.name,
             })
           }}
-          noOptionsMessage={() => `No such coin in our DB found`}
+          noOptionsMessage={() => `Start typing to search the coin`}
           menuStyles={{
             fontSize: '1.4rem',
             fontWeight: 'bold',
