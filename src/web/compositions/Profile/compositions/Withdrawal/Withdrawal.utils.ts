@@ -6,4 +6,4 @@ export const validateTransactionAmount = ({
   amount: number
   transactionFee: number
   minimalWithdrawalAmount: number
-}): boolean => (amount - transactionFee) > minimalWithdrawalAmount
+}): boolean => amount >= minimalWithdrawalAmount
