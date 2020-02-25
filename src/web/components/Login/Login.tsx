@@ -13,6 +13,7 @@ import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
 
 import { handleLogout } from '@core/utils/loginUtils'
 
+import { SignUpButton } from '@sb/components'
 import { LoginMenu } from '@sb/components/LoginMenu'
 import { Props } from './Login.types'
 import { SWrapper } from './Login.styles'
@@ -62,18 +63,18 @@ class LoginClassComponent extends React.Component<Props> {
               className="loginButton"
               style={{ padding: '1px 16px', margin: '0 1rem' }}
             >
-              Sign in
+              Log in
             </Button>
-            <Button
+            <SignUpButton
               component={SignUpLink}
               color="secondary"
               variant="contained"
               // onClick={this.hangleGoToSignupPage}
               className="loginButton"
-              style={{ padding: '1px 16px', margin: '0 1rem', backgroundColor: '#97C15C' }}
+              style={{ padding: '1px 16px', margin: '0 1rem' }}
             >
               Sign Up
-            </Button>
+            </SignUpButton>
           </>
         </Grow>
         <Slide
