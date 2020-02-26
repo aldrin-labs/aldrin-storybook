@@ -16,7 +16,7 @@ const AnimatedContainer = styled(
 )`
   position: sticky;
   z-index: 999;
-  height: 3rem;
+  height: 3.8rem;
 
   @media (max-width: 1400px) {
     height: 5rem;

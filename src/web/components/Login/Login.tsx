@@ -25,7 +25,6 @@ const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 @withTheme
 @withRouter
 class LoginClassComponent extends React.Component<Props> {
-
   logout = async () => {
     const {
       logoutMutation,
@@ -70,7 +69,11 @@ class LoginClassComponent extends React.Component<Props> {
               variant="contained"
               // onClick={this.hangleGoToSignupPage}
               className="loginButton"
-              style={{ padding: '1px 16px', margin: '0 1rem', backgroundColor: '#97C15C' }}
+              style={{
+                padding: '1px 16px',
+                margin: '0 1rem',
+                backgroundColor: '#97C15C',
+              }}
             >
               Sign Up
             </Button>

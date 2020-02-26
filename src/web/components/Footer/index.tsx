@@ -45,10 +45,18 @@ const Footer = ({
       fullscreenMode={fullscreenMode}
       isChartPage={isChartPage}
     >
-      <Block>
-        <StyledTypography color="default">
-          Cryptocurrencies Ai, 2020{' '}
-        </StyledTypography>
+      <Block style={{ paddingLeft: '24px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            paddingRight: '2rem',
+            borderRight: '.1rem solid #e0e5ec',
+            height: '100%',
+          }}
+        >
+          <StyledTypography>Cryptocurrencies Ai, 2020 </StyledTypography>
+        </div>
 
         <Typography variant="h6" color="secondary">
           •
@@ -64,12 +72,12 @@ const Footer = ({
       </Block>
 
       <Block>
-        <IconButton href={'https://t.me/CryptocurrenciesAi'}>
+        {/* <IconButton href={'https://t.me/CryptocurrenciesAi'}>
           <Telegram color="secondary" width={32} height={32} />
-        </IconButton>
+        </IconButton> */}
       </Block>
 
-      {!MASTER_BUILD && (
+      {/* {!MASTER_BUILD && (
         <Block>
           <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
           <Switch
@@ -81,7 +89,7 @@ const Footer = ({
             color="default"
           />
         </Block>
-      )}
+      )} */}
       <PrivacyPolicy
         open={showPrivacyPolicy}
         onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
@@ -94,7 +102,7 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
   <AppBar {...rest} />
 ))`
   flex-wrap: nowrap;
-  justify-content: space-around;
+  justify-content: space-between;
   transition: background 0.25s ease-in-out;
   ${(props: { fullscreenMode: boolean }) =>
     props.fullscreenMode
@@ -106,7 +114,9 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 
   && {
     flex-direction: row;
-    background-color: #fefefe;
+    background-color: #f9fbfd;
+    box-shadow: none;
+    border-top: 0.1rem solid #e0e5ec;
   }
 
   height: 6.4vh;

@@ -121,7 +121,7 @@ export const DefaultView = (props: any) => {
           <ChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
-            <CustomCard>
+            {/* <CustomCard>
               {activeChart === 'candle' ? (
                 <SingleChart
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
@@ -141,14 +141,14 @@ export const DefaultView = (props: any) => {
                   </DepthChartContainer>
                 </Fade>
               )}
-            </CustomCard>
+            </CustomCard> */}
           </ChartsContainer>
           <TradingTerminalContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <Grid item container style={{ height: '100%' }}>
               <Grid item container xs={12} style={{ height: '100%' }}>
-                <OrderbookAndDepthChart
+                {/* <OrderbookAndDepthChart
                   {...{
                     symbol: currencyPair,
                     pair: currencyPair,
@@ -165,7 +165,7 @@ export const DefaultView = (props: any) => {
                     marketType,
                     sizeDigits,
                   }}
-                />
+                /> */}
               </Grid>
               {/* <Grid
                 item
