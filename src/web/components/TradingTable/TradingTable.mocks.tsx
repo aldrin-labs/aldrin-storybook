@@ -46,6 +46,7 @@ const StatusTooltip = () => {
           {/* <p>Active (Instead inentry)</p> */}
           <p>In loss (pnl less than 0)</p>
           <p>In Profit (profit greater than 0)</p>
+          <p>Error (error has occured)</p>
         </div>
       ) : null}
     </div>

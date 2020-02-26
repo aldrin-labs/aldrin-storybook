@@ -31,6 +31,7 @@ class LoginClassComponent extends React.Component<Props> {
       logoutMutation,
       history: { push },
     } = this.props
+    console.log('props', props)
     await handleLogout(logoutMutation, this.props.persistorInstance)
     push('/login')
   }
