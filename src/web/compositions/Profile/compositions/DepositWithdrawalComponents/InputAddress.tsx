@@ -24,7 +24,7 @@ interface IProps {
       }
       status: string
       errorMessage: string
-    },
+    }
   }
 }
 
@@ -33,9 +33,13 @@ const Balances = ({
   getDepositAddressQuery,
   ...inputProps
 }: IProps) => {
-  const {
-    getDepositAddress: { data },
-  } = getDepositAddressQuery
+  const { getDepositAddress } = getDepositAddressQuery
+
+  const { data } = getDepositAddress || {
+    data: {
+      address: '-',
+    },
+  }
 
   const { address } = data || {
     address: '-',
@@ -53,7 +57,9 @@ const BalancesWrapper = (props) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={GET_DEPOSIT_ADDRESS}
-      variables={{ input: { keyId: props.selectedAccount, symbol: props.selectedCoin } }}
+      variables={{
+        input: { keyId: props.selectedAccount, symbol: props.selectedCoin },
+      }}
       name={`getDepositAddressQuery`}
       {...props}
     />
