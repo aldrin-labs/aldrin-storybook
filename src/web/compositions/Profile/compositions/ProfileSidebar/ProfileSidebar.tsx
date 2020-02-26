@@ -28,10 +28,21 @@ const LINKS = [
   { path: '/profile/telegram', text: 'Telegram' },
 ]
 
-const ProfileSidebar = ({ accountData, path }: IProps) => {
+const ProfileSidebar = ({
+  accountData,
+  logoutMutation,
+  persistorInstance,
+  history: { push },
+  path,
+}: IProps) => {
   const data = !accountData
     ? { imageUrl: '', username: 'Loading...', email: 'Loading...' }
     : accountData
+
+  const logout = async () => {
+    await handleLogout(logoutMutation, persistorInstance)
+    push('/login')
+  }
 
   return (
     <SidebarContainer xs={2}>
@@ -53,7 +64,7 @@ const ProfileSidebar = ({ accountData, path }: IProps) => {
           ))}
         </Navigation>
       </div>
-      <LogoutButton onClick={handleLogout}>log out</LogoutButton>
+      <LogoutButton onClick={logout}>log out</LogoutButton>
     </SidebarContainer>
   )
 }

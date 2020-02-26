@@ -144,10 +144,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         accessToken: access_token,
         idToken: id_token,
       })
-      this.showLoginStatus({
-        status: 'success',
-        errorMessage: '',
-      })
+      // this.showLoginStatus({
+      //   status: 'success',
+      //   errorMessage: '',
+      // })
       // should be handler after authetication
       await this.processAuthentificationHandler({
         accessToken: access_token,
@@ -516,10 +516,10 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         },
       })
       // Add notistack here
-      this.showLoginStatus({
-        status: 'success',
-        errorMessage: '',
-      })
+      // this.showLoginStatus({
+      //   status: 'success',
+      //   errorMessage: '',
+      // })
 
       // trying to login
       this.authenticateWithPasswordHandler({ username: email, password })

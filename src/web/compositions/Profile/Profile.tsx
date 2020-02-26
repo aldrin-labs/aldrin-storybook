@@ -10,7 +10,7 @@ import ProfileRouter from './compositions/ProfileRouter/ProfileRouter'
 const Profile = ({ location }) => {
   return (
     <ProfileContainer container>
-      <ProfileSidebar path={location.pathname} />
+      <ProfileSidebar location={location} />
       <ProfileRouter />
     </ProfileContainer>
   )
