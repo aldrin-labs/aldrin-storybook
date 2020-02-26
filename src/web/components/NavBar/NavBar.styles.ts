@@ -18,18 +18,19 @@ export const Nav = styled(AppBar)`
   && {
     position: unset;
     box-shadow: none;
-    padding: 0 3rem 0 6rem;
-    background-color: ${(props) => props.variant.background};
+    /* padding: 0 3rem 0 6rem; */
+    background-color: #f9fbfd;
     @media only screen and (max-width: 1024px) {
-      padding: 0 2rem 0 4rem;
+      /* padding: 0 2rem 0 4rem; */
     }
   }
 `
 
 export const StyledToolbar = styled(Toolbar)`
-  border-bottom: 1px solid #e0e5ec;
+  border-bottom: 0.1rem solid #e0e5ec;
   height: 100%;
   min-height: auto;
+  padding-right: 0;
 `
 
 // @media (max-width: 1400px) {
@@ -51,14 +52,24 @@ export const StyledToolbar = styled(Toolbar)`
 export const NavLinkButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 0.5rem;
+  justify-content: center;
+  padding: 0;
   height: 100%;
+  width: 12rem;
+  color: #7284a0;
+  border-left: 0.1rem solid #e0e5ec;
+  /* border-right: 0.1rem solid #e0e5ec; */
+
+  @media only screen and (max-width: 1400px) {
+    width: 15rem;
+  }
 `
 
 export const NavBarWrapper = styled(Grid)`
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: nowrap;
   justify-content: center;
   height: 100%;
 `
@@ -67,7 +78,7 @@ export const NavBreadcrumbTypography = styled(Typography)`
   color: #16253d;
   font-weight: bold;
   text-transform: uppercase;
-  border-left: 1px solid #7284a0;
+  border-left: 0;
   padding-left: 0.75rem;
   padding-top: 0.1rem;
   font-size: 1.3rem;

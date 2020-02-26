@@ -167,15 +167,15 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-              {/* <Grid
+              <Grid
                 item
                 xs={5}
                 style={{
                   height: '100%',
                   padding: '0 0 .4rem .4rem',
                 }}
-              > */}
-              {/* <TradeHistory
+              >
+                <TradeHistory
                   {...{
                     symbol: currencyPair,
                     pair: currencyPair,
@@ -190,8 +190,8 @@ export const DefaultView = (props: any) => {
                     chartProps,
                     sizeDigits,
                   }}
-                /> */}
-              {/* </Grid> */}
+                />
+              </Grid>
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (

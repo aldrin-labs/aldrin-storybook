@@ -26,7 +26,6 @@ const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 @withTheme
 @withRouter
 class LoginClassComponent extends React.Component<Props> {
-
   logout = async () => {
     const {
       logoutMutation,
@@ -44,14 +43,10 @@ class LoginClassComponent extends React.Component<Props> {
       location: { pathname },
     } = this.props
     const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
-    
+
     return (
       <SWrapper className="LoginButton">
-        <Grow
-          in={!loginStatus}
-          unmountOnExit={true}
-          mountOnEnter={true}
-        >
+        <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
           <>
             <Button
               component={SignInLink}
@@ -59,7 +54,11 @@ class LoginClassComponent extends React.Component<Props> {
               variant="contained"
               // onClick={this.hangleGoToSiginPage}
               className="loginButton"
-              style={{ padding: '1px 16px', margin: '0 1rem' }}
+              style={{
+                padding: '1px 16px',
+                margin: '0 1rem',
+                whiteSpace: 'nowrap',
+              }}
             >
               Log in
             </Button>
@@ -69,7 +68,11 @@ class LoginClassComponent extends React.Component<Props> {
               variant="contained"
               // onClick={this.hangleGoToSignupPage}
               className="loginButton"
-              style={{ padding: '1px 16px', margin: '0 1rem' }}
+              style={{
+                padding: '1px 16px',
+                margin: '0 1rem',
+                whiteSpace: 'nowrap',
+              }}
             >
               Sign Up
             </SignUpButton>

@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import LiveHelp from '@material-ui/icons/Help'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import HelpIcon from '@material-ui/icons/Help'
 import Tooltip from '@material-ui/core/Tooltip'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { tooltipsConfig } from '@core/config/tooltipsConfig'
@@ -22,6 +23,15 @@ import { TooltipCustom } from '@sb/components/index'
 // import { IProps, IState } from './CreatePortfolio.types'
 
 const UserLink = (props) => <Link to="/profile/accounts" {...props} />
+
+const TelegramLink = (props) => (
+  <a
+    href="https://t.me/CryptocurrenciesAi"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
 
 @withRouter
 class LoginMenuComponent extends React.Component {
@@ -75,20 +85,25 @@ class LoginMenuComponent extends React.Component {
         </Tooltip> */}
         {/*<Onboarding />*/}
         <TooltipCustom
-          title={userName}
+          title={'Telegram chat'}
           enterDelay={250}
           component={
             <IconButton
               color="default"
-              component={UserLink}
+              component={TelegramLink}
               className="UserLink"
-              style={{ padding: '0 12px' }}
+              style={{
+                padding: '0 12px',
+                borderRadius: 0,
+                width: '100%',
+                height: '100%',
+              }}
             >
-              <AccountCircle style={{ fontSize: '3rem' }} />
+              <HelpIcon style={{ fontSize: '2.75rem', fill: '#7284A0' }} />
             </IconButton>
           }
         />
-        <TooltipCustom
+        {/* <TooltipCustom
           title="Log out"
           enterDelay={500}
           component={
@@ -101,7 +116,7 @@ class LoginMenuComponent extends React.Component {
               <ExitIcon style={{ fontSize: '3rem' }} />
             </IconButton>
           }
-        />
+        /> */}
       </>
     )
   }

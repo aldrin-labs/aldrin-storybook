@@ -51,7 +51,7 @@ export default class Dropdown extends React.Component<IProps> {
         <StyledPaper
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
-          <MenuList>
+          <MenuList style={{ padding: 0 }}>
             {this.props.items.map(({ icon, text, to, ...events }) => (
               <StyledMenuItem disableRipple disableGutters={true} key={text}>
                 <StyledLink
@@ -60,7 +60,7 @@ export default class Dropdown extends React.Component<IProps> {
                   onClick={this.handleClose}
                   {...events}
                 >
-                  {icon}
+                  {/* {icon} */}
                   <StyledMenuItemText key={`${text}-text`}>
                     {text}
                   </StyledMenuItemText>
