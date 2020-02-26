@@ -14,7 +14,7 @@ export { default as TableWithSort } from './Tables/WithSort'
 // export { Input } from "./Input"
 // export { Legends } from "./Legends"
 // export { default as ReactSelectComponent } from "./ReactSelectComponent"
-// export { default as SvgIcon } from "./SvgIcon"
+export { default as SvgIcon } from './SvgIcon'
 export { default as CorrelationMatrix } from './CorrelationMatrix'
 export { default as PortfolioChart } from './PortfolioChart'
 export { addMainSymbol } from './AddMainSymbol'
@@ -49,3 +49,4 @@ export {
   default as PortfolioRebalanceTable,
 } from './PortfolioRebalanceTable/PortfolioRebalanceTable'
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
+export { SignUpButton } from './SignUpButton/SignUpButton'

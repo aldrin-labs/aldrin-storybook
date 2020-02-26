@@ -99,7 +99,7 @@ class LoginMenuComponent extends React.Component {
                 height: '100%',
               }}
             >
-              <HelpIcon style={{ fontSize: '3rem' }} />
+              <HelpIcon style={{ fontSize: '2.75rem', fill: '#7284A0' }} />
             </IconButton>
           }
         />

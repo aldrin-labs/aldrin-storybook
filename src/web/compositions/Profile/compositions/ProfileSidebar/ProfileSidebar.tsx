@@ -1,7 +1,11 @@
 import React from 'react'
 
 import { IProps } from '@core/containers/Profile/ProfileSidebar/ProfileSidebar.types'
+
+import { handleLogout } from '@core/utils/loginUtils'
+
 import { SidebarContainer } from '@sb/compositions/Profile/Profile.styles'
+
 import {
   UserInfo,
   Navigation,
@@ -24,7 +28,7 @@ const LINKS = [
   { path: '/profile/telegram', text: 'Telegram' },
 ]
 
-const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
+const ProfileSidebar = ({ accountData, path }: IProps) => {
   const data = !accountData
     ? { imageUrl: '', username: 'Loading...', email: 'Loading...' }
     : accountData
@@ -49,9 +53,7 @@ const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
           ))}
         </Navigation>
       </div>
-      <LogoutButton to="/profile" onClick={logoutMutation}>
-        log out
-      </LogoutButton>
+      <LogoutButton onClick={handleLogout}>log out</LogoutButton>
     </SidebarContainer>
   )
 }

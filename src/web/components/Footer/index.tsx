@@ -9,6 +9,7 @@ import { AppBar, IconButton, Switch, Typography } from '@material-ui/core'
 import { StyledButton, StyledTypography } from './index.styles'
 
 import { PrivacyPolicy } from '@sb/components/index'
+import Feedback from '@sb/components/Feedback'
 
 import { MASTER_BUILD } from '@core/utils/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -58,20 +59,22 @@ const Footer = ({
           <StyledTypography>Cryptocurrencies Ai, 2020 </StyledTypography>
         </div>
 
-        <Typography variant="h6" color="secondary">
+        {/* <Typography variant="h6" color="secondary">
           •
-        </Typography>
+        </Typography> */}
 
         <StyledButton
           size="small"
           onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
           color="default"
+          style={{ marginLeft: '1rem' }}
         >
           Privacy Policy
         </StyledButton>
       </Block>
 
       <Block>
+        <Feedback />
         {/* <IconButton href={'https://t.me/CryptocurrenciesAi'}>
           <Telegram color="secondary" width={32} height={32} />
         </IconButton> */}
@@ -132,10 +135,6 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 const Block = styled.div`
   display: flex;
   align-items: center;
-
-  & > * {
-    margin: 0 8px;
-  }
 `
 
 export default compose(

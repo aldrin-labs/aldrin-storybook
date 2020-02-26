@@ -74,6 +74,18 @@ const NavBarRaw: SFC<Props> = ({
     page = isSPOTMarket ? 'spot trading' : 'futures trading'
   }
 
+  if (/confirmWithdrawal/.test(pathname)) {
+    page = 'Withdrawal'
+  }
+
+  if (/login/.test(pathname)) {
+    page = 'Log in'
+  }
+
+  if (/signup/.test(pathname)) {
+    page = 'Sign up'
+  }
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}

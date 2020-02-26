@@ -21,10 +21,10 @@ const DialogContent = withStyles((theme) => ({
 interface IProps {
   open: boolean
   handleClose: () => void
-  logout: () => Promise<void>
+  goToProfileSettingsHandler: () => Promise<void>
 }
 
-const ProfileSettingsPopup = ({ open, handleClose, logout }: IProps) => {
+const WithdrawalEnableMfaPopup = ({ open, handleClose, goToProfileSettingsHandler }: IProps) => {
   const [loading, setLoading] = useState(false)
 
   return (
@@ -70,8 +70,7 @@ const ProfileSettingsPopup = ({ open, handleClose, logout }: IProps) => {
                   padding: '3rem 0',
                 }}
               >
-                You need to log out of your account and log in again to enable
-                2FA. The configuration process will start as soon as you login.
+                You need enable 2FA to process withdrawal
               </Typography>
             </Grid>
             <Grid container justify="center" alignItems="center">
@@ -86,14 +85,14 @@ const ProfileSettingsPopup = ({ open, handleClose, logout }: IProps) => {
                 height={'4rem'}
                 onClick={async () => {
                   setLoading(true)
-                  await logout()
+                  await goToProfileSettingsHandler()
                   setLoading(false)
                 }}
               >
                 {loading ? (
                   <Loading size={16} style={{ height: '16px' }} />
                 ) : (
-                  `Log Out and set 2fa up`
+                  `Go to profile settings page`
                 )}
               </BtnCustom>
             </Grid>
@@ -104,4 +103,4 @@ const ProfileSettingsPopup = ({ open, handleClose, logout }: IProps) => {
   )
 }
 
-export default ProfileSettingsPopup
+export default WithdrawalEnableMfaPopup
