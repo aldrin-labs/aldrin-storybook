@@ -35,9 +35,9 @@ const Balances = ({
   )
 
   const { quantity, locked, free } = currentElement || {
-    quantity: '-',
-    locked: '-',
-    free: '-',
+    quantity: '0.00000000',
+    locked: '0.00000000',
+    free: '0.00000000',
   }
 
   return (
