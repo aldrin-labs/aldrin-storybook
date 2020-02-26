@@ -1,16 +1,10 @@
 import React from 'react'
-
-import { InputAdornment } from '@material-ui/core'
 import {
   StyledInput,
-  StyledTypographyCaption,
 } from '../Withdrawal/Withdrawal.styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { GET_DEPOSIT_ADDRESS } from '@core/graphql/queries/user/getDepositAddress'
-import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
-import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { FundsType } from '@core/types/ChartTypes'
 
 interface IProps {
   setCoinAddress: (coin: string) => void
