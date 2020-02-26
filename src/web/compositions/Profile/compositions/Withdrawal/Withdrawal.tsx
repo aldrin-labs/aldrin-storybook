@@ -290,6 +290,7 @@ const Withdrawal = ({ ...props }: IProps) => {
                 BTC address
               </StyledTypography>
               <StyledInput
+                autoComplete="off"
                 error={addressError}
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
