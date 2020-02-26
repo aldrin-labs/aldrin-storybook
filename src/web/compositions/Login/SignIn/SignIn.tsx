@@ -87,7 +87,7 @@ const SignIn = ({
           type="email"
           id="email"
           name="email"
-          autocomplete="on"
+          autoComplete="on"
           placeholder={`E-mail`}
           error={!!emailError}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {

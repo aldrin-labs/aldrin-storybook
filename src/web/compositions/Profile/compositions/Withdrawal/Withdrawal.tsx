@@ -287,9 +287,10 @@ const Withdrawal = ({ ...props }: IProps) => {
             </Grid> */}
             <Grid item>
               <StyledTypography style={{ paddingBottom: '1rem' }}>
-                BTC address
+                {selectedCoin.label} address
               </StyledTypography>
               <StyledInput
+                autoComplete="off"
                 error={addressError}
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

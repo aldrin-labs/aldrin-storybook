@@ -42,17 +42,25 @@ const Balances = ({
 
   return (
     <StyledInput
+      autoComplete="off"
       onChange={onChange}
       endAdornment={
         <InputAdornment
-          style={{ width: '70%', justifyContent: 'flex-end', cursor: 'pointer' }}
+          style={{
+            width: '70%',
+            justifyContent: 'flex-end',
+            cursor: 'pointer',
+          }}
           disableTypography={true}
           position="end"
         >
           <StyledTypographyCaption
             onClick={() => onChange({ target: { value: free } })}
           >
-            <span>AVAILABLE:</span><span style={{ color: 'rgb(22, 91, 224)' }}>{` ${free} ${selectedCoin}`}</span>
+            <span>AVAILABLE:</span>
+            <span
+              style={{ color: 'rgb(22, 91, 224)' }}
+            >{` ${free} ${selectedCoin}`}</span>
           </StyledTypographyCaption>
         </InputAdornment>
       }
