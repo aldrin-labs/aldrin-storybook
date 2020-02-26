@@ -99,7 +99,7 @@ export default class Auth {
 
             resolve({
               status: 'error',
-              message: err.description,
+              message: err.description || err.name,
               errorDestription: err.code,
             })
           }
