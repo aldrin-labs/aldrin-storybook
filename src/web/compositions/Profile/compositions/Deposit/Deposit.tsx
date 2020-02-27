@@ -126,7 +126,7 @@ const Deposits = ({ ...props }: IProps) => {
                   height={'4rem'}
                   onClick={copyCoinAddress}
                 >
-                  Copy adress
+                  Copy address
                 </BtnCustom>
               </Grid>
             </Grid>
