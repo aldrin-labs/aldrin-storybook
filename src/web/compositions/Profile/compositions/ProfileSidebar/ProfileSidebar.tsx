@@ -33,7 +33,7 @@ const ProfileSidebar = ({
   logoutMutation,
   persistorInstance,
   history: { push },
-  path,
+  location: { pathname },
 }: IProps) => {
   const data = !accountData
     ? { imageUrl: '', username: 'Loading...', email: 'Loading...' }
@@ -56,7 +56,7 @@ const ProfileSidebar = ({
           {LINKS.map((link) => (
             <NavButton
               to={link.path}
-              active={link.path === path}
+              active={link.path === pathname}
               key={link.path}
             >
               {link.text}
