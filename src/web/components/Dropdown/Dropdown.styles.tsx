@@ -66,6 +66,9 @@ export const StyledDropdown = styled.div`
     width: 15rem;
   }
 
+  &:hover > div {
+    display: block !important;
+  }
   /* @media (min-width: 1921px) {
     padding: 0rem 0.5rem;
   }

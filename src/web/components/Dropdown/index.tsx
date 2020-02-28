@@ -34,8 +34,8 @@ export default class Dropdown extends React.Component<IProps> {
 
     return (
       <StyledDropdown
-        onMouseEnter={this.handleToggle}
-        onMouseLeave={this.handleClose}
+        // onMouseEnter={this.handleToggle}
+        // onMouseLeave={this.handleClose}
         key={`${id}-${selectedMenu}`}
       >
         <StyledButton
