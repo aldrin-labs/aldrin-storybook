@@ -11,6 +11,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
@@ -90,6 +91,10 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       selectedKey,
       canceledOrders,
       currencyPair,
+      allKeys,
+      specificPair,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
       arrayOfMarketIds,
       handleChangePage,
       getTradeHistoryQuery,
@@ -134,6 +139,27 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
             boxShadow: 'none',
           },
         }}
+        pagination={{
+          fakePagination: false,
+          enabled: true,
+          totalCount: getTradeHistoryQuery.getTradeHistory.count,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [10, 20, 30, 50, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
+          additionalBlock: (
+            <PaginationBlock
+              {...{
+                allKeys,
+                specificPair,
+                handleToggleAllKeys,
+                handleToggleSpecificPair,
+              }}
+            />
+          ),
+          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
@@ -176,7 +202,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate, page, perPage } = props
+  let { startDate, endDate, page, perPage, allKeys, specificPair } = props
 
   startDate = +startDate
   endDate = +endDate
@@ -199,6 +225,8 @@ const TableDataWrapper = ({ ...props }) => {
           endDate,
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
+          allKeys,
+          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       subscriptionArgs={{
@@ -209,6 +237,8 @@ const TableDataWrapper = ({ ...props }) => {
             endDate,
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
+            allKeys,
+            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateTradeHistoryQuerryFunction,

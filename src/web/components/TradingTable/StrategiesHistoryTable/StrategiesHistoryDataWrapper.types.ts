@@ -16,6 +16,8 @@ export interface IProps {
 export interface IState {
   page: number
   perPage: number
+  allKeys: boolean
+  specificPair: string | boolean
   startDate: moment.Moment | null
   endDate: moment.Moment | null
   focusedInput: null | string

@@ -115,7 +115,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
             displayFormat="ll"
           />
         </StyledWrapperForDateRangePicker>
-        <div
+        {/* <div
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -153,7 +153,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
               style={{ width: '2rem', height: '2rem', margin: '0 1rem', cursor: 'pointer' }}
             />
           </PaginationBlock>
-        </div>
+        </div> */}
       </TitleSecondRowContainer>
     )
   }

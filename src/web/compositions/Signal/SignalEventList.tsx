@@ -299,10 +299,7 @@ class SignalEventListDataWrapper extends React.PureComponent<IProps, IState> {
     perPage: 30,
   }
 
-  handleChangePage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    page: number
-  ) => {
+  handleChangePage = (page: number) => {
     this.setState({ page })
   }
 

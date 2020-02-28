@@ -29,7 +29,10 @@ export interface IProps extends WithTheme<Theme> {
   subscribeToMore: () => () => void
   theme: Theme
   getTradeHistoryQuery: {
-    getTradeHistory: TradeType[]
+    getTradeHistory: {
+      trades: TradeType[]
+      count: number
+    }
   }
   selectedKey: Key
   arrayOfMarketIds: string[]
@@ -39,6 +42,10 @@ export interface IProps extends WithTheme<Theme> {
 
   handleChangePage: (page: number) => void
   handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  allKeys: boolean
+  specificPair: boolean | string
+  handleToggleAllKeys: () => void
+  handleToggleSpecificPair: () => void
 }
 
 export interface IState {
