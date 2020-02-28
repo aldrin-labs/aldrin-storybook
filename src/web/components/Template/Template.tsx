@@ -33,7 +33,10 @@ const Template = ({
 
           <TablesWrapper spacing={16} container={true} item={true} xs={10}>
             <GridTableContainer item={true} xs={12} md={12}>
-              <TableWrapper className="PortfolioMainTable">
+              <TableWrapper
+                id="PortfolioMainTable"
+                className="PortfolioMainTable"
+              >
                 {/* refactor to pass this via Apollo  */}
                 {PortfolioMainTable}
               </TableWrapper>
