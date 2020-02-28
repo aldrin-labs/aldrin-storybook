@@ -17,6 +17,7 @@ import {
   getUserProfileFromAuthResult,
   getToken,
   getUserIdFromToken,
+  validateVerifyingEmail,
 } from '@core/utils/loginUtils'
 import { Loading } from '@sb/components/index'
 
@@ -192,6 +193,7 @@ const Withdrawal = ({ ...props }: IProps) => {
     const processedProfile = getUserProfileFromAuthResult(rawProfile)
     const mfaEnabled = processedProfile.mfaEnabled
     const userId = processedProfile.sub
+    const emailVerified = processedProfile.email_verified
 
     if (!mfaEnabled) {
       showWithdrawalStatus({
@@ -208,6 +210,14 @@ const Withdrawal = ({ ...props }: IProps) => {
       showWithdrawalStatus({
         status: 'ERR',
         errorMessage: 'Different accounts used for confirming withdrawal',
+      })
+      return
+    }
+
+    if (!emailVerified) {
+      showWithdrawalStatus({
+        status: 'ERR',
+        errorMessage: 'Email is not verified',
       })
       return
     }
@@ -375,6 +385,18 @@ const Withdrawal = ({ ...props }: IProps) => {
                       toggleEnableMfaPopup(true)
                       return
                     }
+
+                    const isEmailVerified = await validateVerifyingEmail()
+                    if (!isEmailVerified) {
+                      showWithdrawalStatus({
+                        status: 'ERR',
+                        errorMessage:
+                          'Your email is not verified. Please verify email first to process withdrawal',
+                      })
+                      setLoading(false)
+                      return
+                    }
+
 
                     setLoading(false)
                     toggleWithdrawalAuthentificatePopup(true)
