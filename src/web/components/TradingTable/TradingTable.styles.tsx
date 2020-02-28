@@ -53,6 +53,12 @@ export const ClearButton = styled(TitleButton)`
 `
 
 export const PaginationBlock = styled.div`
+  font-family: 'DM Sans';
   display: flex;
   padding-left: 2rem;
+  color: #7284a0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
 `

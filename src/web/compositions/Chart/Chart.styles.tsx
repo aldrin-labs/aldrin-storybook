@@ -281,6 +281,7 @@ export const TradingTabelContainer = styled(
   // 32vh was
   background-color: #f9fbfd;
   padding: 0.4rem 0.4rem 0 0;
+  position: relative;
   height: ${(props) => props.isDefaultTerminalViewMode && '37%'};
   justify-content: flex-start;
   flex-direction: column;
@@ -331,7 +332,7 @@ export const StyledSwitch = styled(({ isActive, ...rest }) => (
 export const Container = styled(Grid)`
   display: flex;
   // - ( menu + margin )
-  height: calc(100vh - 3rem);
+  height: calc(100vh - 3.8rem);
   width: 100%;
   padding: 1rem;
   margin: 0;
@@ -380,6 +381,7 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
+  position: relative;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
   padding: ${({
     isDefaultTerminalViewMode,

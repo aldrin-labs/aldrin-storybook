@@ -40,6 +40,15 @@ import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
 
+import { PaginationBlock } from '@sb/components/TradingTable/TradingTable.styles'
+import {
+  StyledSelect,
+  StyledOption,
+} from '@sb/components/TradingWrapper/styles'
+
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
+
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
 
 const CustomTableCell = withStyles((theme) => ({
@@ -541,6 +550,7 @@ const CustomTable = (props: Props) => {
       handleChangeRowsPerPage: () => {
         return
       },
+      additionalBlock: null,
     },
     actions = [],
     actionsColSpan = 1,
@@ -589,12 +599,43 @@ const CustomTable = (props: Props) => {
     ? addPaginationFake
     : addRealPagination
 
+  const enabledPagination = !!pagination && pagination.enabled
+
+  const {
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    rowsPerPageOptions,
+    totalCount,
+    additionalBlock,
+    paginationStyles,
+  } = pagination || {
+    totalCount: null,
+    enabled: false,
+    fakePagination: true,
+    rowsPerPage: defaultRowsPerPage,
+    rowsPerPageOptions: defaultrowsPerPageOptions,
+    page: 0,
+    handleChangePage: () => {
+      return
+    },
+    handleChangeRowsPerPage: () => {
+      return
+    },
+    additionalBlock: null,
+    paginationStyles: {},
+  }
+
   return (
     <Paper
       elevation={elevation}
       style={{
         width: '100%',
+        borderRadius: 'inherit',
+        overflow: 'hidden scroll',
         ...style,
+        ...(enabledPagination ? { height: 'calc(100% - 3rem)' } : {}),
       }}
     >
       <StyledTable
@@ -603,6 +644,7 @@ const CustomTable = (props: Props) => {
         id={props.id}
         style={{
           width: '100%',
+
           ...stylesForTable,
         }}
       >
@@ -873,36 +915,35 @@ const CustomTable = (props: Props) => {
           </TableFooter>
         )} */}
       </StyledTable>
-
-      <Grow
-        // we show pagination only when you pass pagination.enabled = true
-        in={pagination.enabled}
-        mountOnEnter
-        unmountOnExit
-      >
-        <div
-          style={
-            isCustomStyleForFooter !== undefined &&
-            isCustomStyleForFooter === true
-              ? {
-                  // position: 'absolute',
-                  // bottom: 0,
-                  // right: 0
-                  position: 'sticky',
-                  bottom: '-1px',
-                  right: '0',
-                  backgroundColor: '#f2f4f6',
-                }
-              : ''
-          }
+      {enabledPagination && (
+        <Grow
+          // we show pagination only when you pass pagination.enabled = true
+          in={pagination.enabled}
+          mountOnEnter
+          unmountOnExit
         >
-          {needRefetch ? (
-            <AutoRefetch
-              autoRefetch={autoRefetch}
-              toggleAutoRefetch={toggleAutoRefetch}
-            />
-          ) : null}
-          <StyledTablePagination
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              left: '0',
+              width: '100%',
+              backgroundColor: '#f2f4f6',
+              borderBottomLeftRadius: 'inherit',
+              borderBottomRightRadius: 'inherit',
+              border: '.1rem solid #e0e5ec',
+              display: 'flex',
+              height: '3rem',
+              ...paginationStyles,
+            }}
+          >
+            {needRefetch ? (
+              <AutoRefetch
+                autoRefetch={autoRefetch}
+                toggleAutoRefetch={toggleAutoRefetch}
+              />
+            ) : null}
+            {/* <StyledTablePagination
             component="div"
             count={pagination.totalCount || data.body.length}
             rowsPerPage={pagination.rowsPerPage}
@@ -916,9 +957,70 @@ const CustomTable = (props: Props) => {
             rowsPerPageOptions={pagination.rowsPerPageOptions}
             onChangePage={pagination.handleChangePage}
             onChangeRowsPerPage={pagination.handleChangeRowsPerPage}
-          />
-        </div>
-      </Grow>
+          /> */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                color: '#16253D',
+                fontSize: '1.2rem',
+                width: '100%',
+              }}
+            >
+              <div>{additionalBlock}</div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <PaginationBlock
+                  style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
+                >
+                  Rows per page:{' '}
+                  <StyledSelect
+                    value={rowsPerPage}
+                    onChange={handleChangeRowsPerPage}
+                  >
+                    {rowsPerPageOptions.map((quantity) => {
+                      return <StyledOption>{quantity}</StyledOption>
+                    })}
+                  </StyledSelect>
+                </PaginationBlock>
+                <PaginationBlock>
+                  {page * rowsPerPage} -{' '}
+                  {page * rowsPerPage + rowsPerPage > totalCount
+                    ? totalCount
+                    : page * rowsPerPage + rowsPerPage}{' '}
+                  of {totalCount}
+                </PaginationBlock>
+                <PaginationBlock>
+                  <ArrowBackIosIcon
+                    onClick={() => handleChangePage(page === 0 ? 0 : page - 1)}
+                    style={{
+                      fill: '#7284a0',
+                      width: '2rem',
+                      height: '2rem',
+                      margin: '0 1rem',
+                      cursor: 'pointer',
+                    }}
+                  />
+                  <ArrowForwardIosIcon
+                    onClick={() =>
+                      handleChangePage(
+                        (page + 1) * rowsPerPage > totalCount ? page : page + 1
+                      )
+                    }
+                    style={{
+                      fill: '#7284a0',
+                      width: '2rem',
+                      height: '2rem',
+                      margin: '0 1rem',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </PaginationBlock>
+              </div>
+            </div>
+          </div>
+        </Grow>
+      )}
     </Paper>
   )
 }

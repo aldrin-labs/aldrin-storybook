@@ -18,7 +18,7 @@ const LoginCard = ({ open, children }: IProps) =>
       justify="center"
       alignItems="center"
       style={{
-        height: 'calc(100% - 3rem)',
+        height: 'calc(100% - 3.8rem)',
         backgroundImage: `url(${PortfolioMainImage})`,
         backgroundSize: 'cover',
       }}

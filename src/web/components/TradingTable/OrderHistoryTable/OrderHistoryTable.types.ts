@@ -42,6 +42,11 @@ export interface IProps extends WithTheme<Theme> {
   handleTabChange: (tab: string | any) => void
   handleChangePage: (page: number) => void
   handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
+
+  allKeys: boolean
+  specificPair: boolean | string
+  handleToggleAllKeys: () => void
+  handleToggleSpecificPair: () => void
 }
 
 export interface IState {

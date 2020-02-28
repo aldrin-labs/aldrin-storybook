@@ -9,10 +9,7 @@ export default (WrappedComponent: React.ReactType) => {
       rowsPerPage: 100,
     }
 
-    handleChangePage = (
-      event: React.ChangeEvent<HTMLInputElement>,
-      page: number
-    ) => {
+    handleChangePage = (page: number) => {
       this.setState({ page })
     }
 
