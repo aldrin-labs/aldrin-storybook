@@ -7,6 +7,8 @@ import { TradeType, Key } from '@core/types/ChartTypes'
 export interface IProps extends WithTheme<Theme> {
   tab: string
   show: boolean
+  page: number
+  perPage: number
   handleTabChange: (tab: string | any) => void
   focusedInput: null | string
   startDate: moment.Moment | null
@@ -27,13 +29,23 @@ export interface IProps extends WithTheme<Theme> {
   subscribeToMore: () => () => void
   theme: Theme
   getTradeHistoryQuery: {
-    getTradeHistory: TradeType[]
+    getTradeHistory: {
+      trades: TradeType[]
+      count: number
+    }
   }
   selectedKey: Key
   arrayOfMarketIds: string[]
   marketType: number
   canceledOrders: string[]
   currencyPair: string
+
+  handleChangePage: (page: number) => void
+  handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  allKeys: boolean
+  specificPair: boolean | string
+  handleToggleAllKeys: () => void
+  handleToggleSpecificPair: () => void
 }
 
 export interface IState {

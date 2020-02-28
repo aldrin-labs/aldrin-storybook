@@ -9,6 +9,7 @@ import { AppBar, IconButton, Switch, Typography } from '@material-ui/core'
 import { StyledButton, StyledTypography } from './index.styles'
 
 import { PrivacyPolicy } from '@sb/components/index'
+import Feedback from '@sb/components/Feedback'
 
 import { MASTER_BUILD } from '@core/utils/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -45,31 +46,41 @@ const Footer = ({
       fullscreenMode={fullscreenMode}
       isChartPage={isChartPage}
     >
-      <Block>
-        <StyledTypography color="default">
-          Cryptocurrencies Ai, 2020{' '}
-        </StyledTypography>
+      <Block style={{ paddingLeft: '24px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            paddingRight: '2rem',
+            borderRight: '.1rem solid #e0e5ec',
+            height: '100%',
+          }}
+        >
+          <StyledTypography>Cryptocurrencies Ai, 2020 </StyledTypography>
+        </div>
 
-        <Typography variant="h6" color="secondary">
+        {/* <Typography variant="h6" color="secondary">
           •
-        </Typography>
+        </Typography> */}
 
         <StyledButton
           size="small"
           onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
           color="default"
+          style={{ marginLeft: '1rem' }}
         >
           Privacy Policy
         </StyledButton>
       </Block>
 
       <Block>
-        <IconButton href={'https://t.me/CryptocurrenciesAi'}>
+        <Feedback />
+        {/* <IconButton href={'https://t.me/CryptocurrenciesAi'}>
           <Telegram color="secondary" width={32} height={32} />
-        </IconButton>
+        </IconButton> */}
       </Block>
 
-      {!MASTER_BUILD && (
+      {/* {!MASTER_BUILD && (
         <Block>
           <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
           <Switch
@@ -81,7 +92,7 @@ const Footer = ({
             color="default"
           />
         </Block>
-      )}
+      )} */}
       <PrivacyPolicy
         open={showPrivacyPolicy}
         onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
@@ -94,7 +105,7 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
   <AppBar {...rest} />
 ))`
   flex-wrap: nowrap;
-  justify-content: space-around;
+  justify-content: space-between;
   transition: background 0.25s ease-in-out;
   ${(props: { fullscreenMode: boolean }) =>
     props.fullscreenMode
@@ -106,7 +117,9 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 
   && {
     flex-direction: row;
-    background-color: #fefefe;
+    background-color: #f9fbfd;
+    box-shadow: none;
+    border-top: 0.1rem solid #e0e5ec;
   }
 
   height: 6.4vh;
@@ -122,10 +135,6 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 const Block = styled.div`
   display: flex;
   align-items: center;
-
-  & > * {
-    margin: 0 8px;
-  }
 `
 
 export default compose(

@@ -26,12 +26,14 @@ const ForgotPassoword = ({
   onForgotPasswordClick,
   status,
   errorMessage,
+  forWithdrawal
 }: {
   theme: Theme
   // TODO: Need to replace any here
   onForgotPasswordClick: ({ email }: { email: string }) => any
   status: 'error' | 'success'
   errorMessage: string
+  forWithdrawal: boolean
 }) => {
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -43,7 +45,7 @@ const ForgotPassoword = ({
   }
 
   return (
-    <LoginContainer>
+    <LoginContainer forWithdrawal={forWithdrawal}>
       <LoginHeadingBox>
         <LoginHeadingText>Forgot your password?</LoginHeadingText>
       </LoginHeadingBox>
@@ -59,7 +61,7 @@ const ForgotPassoword = ({
           error={!!emailError}
           id="email"
           name="email"
-          autocomplete="on"
+          autoComplete="on"
           type="email"
           placeholder={`E-mail`}
           value={email}

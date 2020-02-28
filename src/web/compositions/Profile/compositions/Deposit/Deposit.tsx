@@ -62,6 +62,7 @@ const Deposits = ({ ...props }: IProps) => {
           container
           direction="column"
           alignItems="center"
+          justify="center"
           style={{ width: '65%', paddingLeft: '20%' }}
         >
           <Grid
@@ -93,7 +94,7 @@ const Deposits = ({ ...props }: IProps) => {
                 {selectedCoin.label} address
               </StyledTypography>
               <Grid style={{ height: '6rem', overflow: 'hidden' }}>
-                <InputAddress value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
+                <InputAddress autoComplete="off" value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
               </Grid>
               {/* <StyledInput
                 value={coinAddress}
@@ -125,7 +126,7 @@ const Deposits = ({ ...props }: IProps) => {
                   height={'4rem'}
                   onClick={copyCoinAddress}
                 >
-                  Copy adress
+                  Copy address
                 </BtnCustom>
               </Grid>
             </Grid>

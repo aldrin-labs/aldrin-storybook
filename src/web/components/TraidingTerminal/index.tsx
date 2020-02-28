@@ -170,19 +170,19 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   componentDidUpdate(prevProps) {
-    const { pair, marketPrice, marketPriceAfterPairChange } = this.props
+    const {
+      priceType,
+      marketPrice,
+      marketPriceAfterPairChange,
+      values: { amount, price },
+    } = this.props
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
       this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
     }
 
-    if (prevProps.priceType !== this.props.priceType) {
-      const {
-        priceType,
-        leverage,
-        setFieldValue,
-        values: { amount, price },
-      } = this.props
+    if (prevProps.priceType !== priceType) {
+      const { leverage, setFieldValue } = this.props
 
       const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
@@ -198,12 +198,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (
       this.state.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      this.props.priceType !== 'market'
+      priceType !== 'market'
     ) {
-      const {
-        priceFromOrderbook,
-        values: { amount },
-      } = this.props
+      const { priceFromOrderbook } = this.props
 
       this.setFormatted('price', priceFromOrderbook, 1)
       this.setFormatted('total', amount * priceFromOrderbook, 1)
@@ -211,17 +208,21 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (this.props.leverage !== prevProps.leverage) {
-      this.onMarginChange({ target: { value: this.props.values.margin } })
+      const priceForCalculate = priceType !== 'market' ? price : marketPrice
+
+      this.onMarginChange({
+        target: {
+          value: stripDigitPlaces(
+            (this.props.values.amount * priceForCalculate) /
+              this.props.leverage,
+            2
+          ),
+        },
+      })
     }
 
-    if (
-      marketPrice !== prevProps.marketPrice &&
-      this.props.priceType === 'market'
-    ) {
-      const {
-        leverage,
-        values: { amount },
-      } = this.props
+    if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
+      const { leverage } = this.props
 
       const total = marketPrice * amount
       this.setFormatted('total', total, 1)
@@ -841,7 +842,10 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             ? {
                 workingType:
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
-                type: priceType === 'stop-limit' ? 'stop-limit' : 'take-profit-limit'
+                type:
+                  priceType === 'stop-limit'
+                    ? 'stop-limit'
+                    : 'take-profit-limit',
               }
             : {}),
           ...(priceType !== 'stop-limit' && priceType !== 'take-profit'

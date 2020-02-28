@@ -26,12 +26,14 @@ const EnterOtp = ({
   status,
   errorMessage,
   otpCompleteHandler,
+  forWithdrawal,
 }: {
   theme: Theme
   changeStep: (step: string) => void
   otpCompleteHandler: (otp: string) => Promise<void>
   status: 'error' | 'success'
   errorMessage: string
+  forWithdrawal
 }) => {
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
@@ -47,7 +49,7 @@ const EnterOtp = ({
   }
 
   return (
-    <LoginContainer>
+    <LoginContainer forWithdrawal={forWithdrawal}>
       <LoginHeadingBox>
         <LoginHeadingText>Google Authentication</LoginHeadingText>
       </LoginHeadingBox>

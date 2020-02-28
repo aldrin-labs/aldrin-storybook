@@ -1,13 +1,14 @@
 import Joyride from 'react-joyride'
 
 function JoyrideOnboarding(props) {
-  const { steps, open, handleJoyrideCallback } = props
+  const { steps, open, stepIndex, handleJoyrideCallback } = props
 
   return (
     <Joyride
       continuous={true}
       showProgress={true}
-      showSkipButton={false}
+      showSkipButton={true}
+      stepIndex={stepIndex}
       steps={steps}
       run={open}
       callback={handleJoyrideCallback}
@@ -22,6 +23,7 @@ function JoyrideOnboarding(props) {
         tooltip: {
           fontFamily: 'DM Sans',
           fontSize: '18px',
+          width: '480px',
         },
         buttonClose: {
           display: 'none',
@@ -38,8 +40,23 @@ function JoyrideOnboarding(props) {
           fontWeight: 'bold',
           letterSpacing: '1px',
           lineHeight: '23px',
+          whiteSpace: 'nowrap',
         },
         buttonBack: {
+          backgroundColor: 'transparent',
+          border: '2px solid #FFFFFF',
+          borderRadius: '10px',
+          color: '#fff',
+          outline: 0,
+          padding: '13px 35px',
+          textTransform: 'uppercase',
+          fontFamily: 'DM Sans',
+          fontWeight: 'bold',
+          marginLeft: 'auto',
+          marginRight: 10,
+          letterSpacing: '1px',
+        },
+        buttonSkip: {
           backgroundColor: 'transparent',
           border: '2px solid #FFFFFF',
           borderRadius: '10px',

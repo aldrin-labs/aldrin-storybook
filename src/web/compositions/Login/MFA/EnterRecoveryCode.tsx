@@ -31,6 +31,7 @@ const EnterRecoveryCode = ({
   errorMessage,
   newRecoveryCode,
   processAuthentificationHandler,
+  forWithdrawal,
 }: {
   theme: Theme
   enterRecoveryCodeHandler: (recoveryCode: string) => Promise<void>
@@ -38,12 +39,13 @@ const EnterRecoveryCode = ({
   errorMessage: string
   newRecoveryCode: string
   processAuthentificationHandler: () => void
+  forWithdrawal: boolean
 }) => {
   const [recoveryCode, setRecoveryCode] = useState('')
   const [loading, setLoading] = useState(false)
 
   return (
-    <LoginContainer>
+    <LoginContainer forWithdrawal={forWithdrawal}>
       <LoginHeadingBox>
         <LoginHeadingText>Google Authentication</LoginHeadingText>
       </LoginHeadingBox>

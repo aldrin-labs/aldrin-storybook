@@ -1,16 +1,10 @@
 import React from 'react'
-
-import { InputAdornment } from '@material-ui/core'
 import {
   StyledInput,
-  StyledTypographyCaption,
 } from '../Withdrawal/Withdrawal.styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { GET_DEPOSIT_ADDRESS } from '@core/graphql/queries/user/getDepositAddress'
-import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
-import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { FundsType } from '@core/types/ChartTypes'
 
 interface IProps {
   setCoinAddress: (coin: string) => void
@@ -24,7 +18,7 @@ interface IProps {
       }
       status: string
       errorMessage: string
-    },
+    }
   }
 }
 
@@ -33,9 +27,13 @@ const Balances = ({
   getDepositAddressQuery,
   ...inputProps
 }: IProps) => {
-  const {
-    getDepositAddress: { data },
-  } = getDepositAddressQuery
+  const { getDepositAddress } = getDepositAddressQuery
+
+  const { data } = getDepositAddress || {
+    data: {
+      address: '-',
+    },
+  }
 
   const { address } = data || {
     address: '-',
@@ -53,7 +51,9 @@ const BalancesWrapper = (props) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={GET_DEPOSIT_ADDRESS}
-      variables={{ input: { keyId: props.selectedAccount, symbol: props.selectedCoin } }}
+      variables={{
+        input: { keyId: props.selectedAccount, symbol: props.selectedCoin },
+      }}
       name={`getDepositAddressQuery`}
       {...props}
     />

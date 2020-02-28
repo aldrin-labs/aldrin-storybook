@@ -74,6 +74,18 @@ const NavBarRaw: SFC<Props> = ({
     page = isSPOTMarket ? 'spot trading' : 'futures trading'
   }
 
+  if (/confirmWithdrawal/.test(pathname)) {
+    page = 'Withdrawal'
+  }
+
+  if (/login/.test(pathname)) {
+    page = 'Log in'
+  }
+
+  if (/signup/.test(pathname)) {
+    page = 'Sign up'
+  }
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}
@@ -85,18 +97,31 @@ const NavBarRaw: SFC<Props> = ({
           alignItems="center"
           style={{ height: '100%' }}
           container={true}
+          wrap="nowrap"
           alignContent={'stretch'}
         >
           <Hidden only={['sm', 'xs']}>
-            <Grid item={true} md={2}>
-              <Grid container={true} alignItems={'center'} wrap="nowrap">
+            <Grid
+              item={true}
+              style={{
+                display: 'flex',
+                height: '100%',
+                borderRight: '.1rem solid #e0e5ec',
+              }}
+            >
+              <Grid
+                container={true}
+                alignItems={'center'}
+                wrap="nowrap"
+                style={{}}
+              >
                 <Logo />
-                <Grid style={{ marginLeft: '5%' }}>
-                  <NavBreadcrumbTypography>{page}</NavBreadcrumbTypography>
-                </Grid>
               </Grid>
             </Grid>
           </Hidden>
+          <Grid style={{ width: '100%', textAlign: 'center' }}>
+            <NavBreadcrumbTypography>{page}</NavBreadcrumbTypography>
+          </Grid>
           <Grid
             style={{ height: '100%' }}
             item={true}
@@ -171,51 +196,42 @@ const NavBarRaw: SFC<Props> = ({
                 />
               )} */}
 
-                <Dropdown
-                  id="chart-page"
-                  key="chart-page"
-                  buttonText="Trading"
-                  selectedMenu={selectedMenu}
-                  selectActiveMenu={selectMenu}
-                  items={[
-                    {
-                      text: 'Spot market',
-                      to: '/chart/spot',
-                      // onClick: () => {
-                      //   client.writeData({
-                      //     data: {
-                      //       chart: {
-                      //         __typename: 'chart',
-                      //         marketType: 0,
-                      //       },
-                      //     },
-                      //   })
-                      // },
-                    },
-                    {
-                      text: 'Futures market',
-                      to: '/chart/futures',
-                      onClick: () => {
-                        // client.writeData({
-                        //   data: {
-                        //     chart: {
-                        //       __typename: 'chart',
-                        //       marketType: 1,
-                        //     },
-                        //   },
-                        // })
-
-                        changeCurrencyPairMutation({
-                          variables: {
-                            pairInput: {
-                              pair: 'BTC_USDT',
-                            },
+              <Dropdown
+                id="chart-page"
+                key="chart-page"
+                buttonText="Trading"
+                selectedMenu={selectedMenu}
+                selectActiveMenu={selectMenu}
+                items={[
+                  {
+                    text: 'Spot market',
+                    to: '/chart/spot',
+                    // onClick: () => {
+                    //   client.writeData({
+                    //     data: {
+                    //       chart: {
+                    //         __typename: 'chart',
+                    //         marketType: 0,
+                    //       },
+                    //     },
+                    //   })
+                    // },
+                  },
+                  {
+                    text: 'Futures market',
+                    to: '/chart/futures',
+                    onClick: () => {
+                      changeCurrencyPairMutation({
+                        variables: {
+                          pairInput: {
+                            pair: 'BTC_USDT',
                           },
-                        })
-                      },
+                        },
+                      })
                     },
-                  ]}
-                />
+                  },
+                ]}
+              />
 
               <NavLinkButtonWrapper key="market-wrapper">
                 <NavLinkButton
@@ -249,10 +265,43 @@ const NavBarRaw: SFC<Props> = ({
                   </NavLinkButton>
                 </NavLinkButtonWrapper>
               )}
+              <Dropdown
+                id="profile-page"
+                key="profile-page"
+                buttonText="Profile"
+                selectedMenu={selectedMenu}
+                selectActiveMenu={selectMenu}
+                items={[
+                  {
+                    text: 'Accounts',
+                    to: '/profile/accounts',
+                  },
+                  {
+                    text: 'Settings',
+                    to: '/profile/settings',
+                  },
+                  {
+                    text: 'Deposit',
+                    to: '/profile/deposit',
+                  },
+                  {
+                    text: 'Withdrawal',
+                    to: '/profile/withdrawal',
+                  },
+                  {
+                    text: 'API',
+                    to: '/profile/api',
+                  },
+                  {
+                    text: 'Telegram',
+                    to: '/profile/telegram',
+                  },
+                ]}
+              />
             </NavBarWrapper>
           </Grid>
 
-          <Grid item={true} md={4} sm={7}>
+          <Grid item={true} style={{ display: 'flex', height: '100%' }}>
             <Grid
               justify="flex-end"
               wrap="nowrap"
@@ -278,5 +327,5 @@ export const NavBar = compose(
   graphql(GET_MARKET_TYPE, { name: 'marketTypeData' }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
-  }),
+  })
 )(NavBarRaw)

@@ -8,6 +8,9 @@ import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletW
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
 
+import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+
 import { Backdrop, PortfolioContainer } from './Portfolio.styles'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'

@@ -86,10 +86,7 @@ export class CoinMarket extends React.Component<Props, State> {
     clearInterval(this.state.invervalId)
   }
 
-  handleChangePage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    page: number
-  ) => {
+  handleChangePage = (page: number) => {
     this.setState({ page })
   }
 

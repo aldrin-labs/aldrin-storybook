@@ -25,6 +25,7 @@ const AccountBlock = ({
     id="left_block"
     container
     direction="column"
+    justify="center"
     style={{ width: '35%', borderRight: '1px solid #E0E5EC' }}
     spacing={32}
   >
@@ -132,7 +133,7 @@ const AccountBlock = ({
               name: optionSelected.name,
             })
           }}
-          noOptionsMessage={() => `No such coin in our DB found`}
+          noOptionsMessage={() => `Start typing to search the coin`}
           menuStyles={{
             fontSize: '1.4rem',
             fontWeight: 'bold',

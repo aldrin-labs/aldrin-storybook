@@ -11,7 +11,6 @@ import {
   updateActiveStrategiesQuerryFunction,
   filterOpenOrders,
   filterPositions,
-  filterActiveTrades,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
@@ -51,9 +50,7 @@ const TradingTabs = ({
     (order) =>
       filterOpenOrders({
         order,
-        arrayOfMarketIds,
         canceledOrders,
-        marketType,
       })
   ).length
 
@@ -61,19 +58,11 @@ const TradingTabs = ({
     (position) =>
       filterPositions({
         position,
-        pair: currencyPair,
         canceledPositions: canceledOrders,
       })
   ).length
 
-  const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(
-    (trade) =>
-      filterActiveTrades({
-        trade,
-        marketType,
-        currencyPair,
-      })
-  ).length
+  const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(a => a !== null && a.enabled).length
 
   return (
     <>
@@ -153,6 +142,7 @@ const OpenOrdersWrapper = ({ variables, ...props }) => {
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
+          marketType: props.marketType
         },
       }}
       withOutSpinner={true}
@@ -165,6 +155,7 @@ const OpenOrdersWrapper = ({ variables, ...props }) => {
         variables: {
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
+            marketType: props.marketType,
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
@@ -231,6 +222,7 @@ const ActiveTradesWrapper = ({ subscribeToMore, variables, ...props }) => {
       variables={{
         activeStrategiesInput: {
           activeExchangeKey: props.selectedKey.keyId,
+          marketType: props.marketType,
         },
       }}
       withOutSpinner={true}
@@ -243,6 +235,7 @@ const ActiveTradesWrapper = ({ subscribeToMore, variables, ...props }) => {
         variables: {
           activeStrategiesInput: {
             activeExchangeKey: props.selectedKey.keyId,
+            marketType: props.marketType,
           },
         },
         updateQueryFunction: updateActiveStrategiesQuerryFunction,

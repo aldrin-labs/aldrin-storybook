@@ -167,15 +167,15 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-              {/* <Grid
+              <Grid
                 item
                 xs={5}
                 style={{
                   height: '100%',
                   padding: '0 0 .4rem .4rem',
                 }}
-              > */}
-              {/* <TradeHistory
+              >
+                <TradeHistory
                   {...{
                     symbol: currencyPair,
                     pair: currencyPair,
@@ -190,8 +190,8 @@ export const DefaultView = (props: any) => {
                     chartProps,
                     sizeDigits,
                   }}
-                /> */}
-              {/* </Grid> */}
+                />
+              </Grid>
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (
@@ -200,20 +200,18 @@ export const DefaultView = (props: any) => {
               xs={6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
-              <CustomCard style={{ overflow: 'hidden scroll' }}>
-                <TradingTable
-                  selectedKey={selectedKey}
-                  showOrderResult={showOrderResult}
-                  showCancelResult={showCancelResult}
-                  marketType={marketType}
-                  exchange={exchange}
-                  pricePrecision={pricePrecision}
-                  quantityPrecision={quantityPrecision}
-                  priceFromOrderbook={priceFromOrderbook}
-                  currencyPair={currencyPair}
-                  arrayOfMarketIds={arrayOfMarketIds}
-                />
-              </CustomCard>
+              <TradingTable
+                selectedKey={selectedKey}
+                showOrderResult={showOrderResult}
+                showCancelResult={showCancelResult}
+                marketType={marketType}
+                exchange={exchange}
+                pricePrecision={pricePrecision}
+                quantityPrecision={quantityPrecision}
+                priceFromOrderbook={priceFromOrderbook}
+                currencyPair={currencyPair}
+                arrayOfMarketIds={arrayOfMarketIds}
+              />
             </TradingTabelContainer>
           )}
           {isDefaultTerminalViewMode && (
