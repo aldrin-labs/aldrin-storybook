@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
-
+import { PaginationBlock } from '../TradingTablePagination'
 import { IProps, IState } from './OrderHistoryTable.types'
 import {
   updatePaginatedOrderHistoryQuerryFunction,
@@ -83,6 +83,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       startDate,
       maximumDate,
       minimumDate,
+      allKeys,
+      specificPair,
       onClearDateButtonClick,
       onDateButtonClick,
       onDatesChange,
@@ -94,6 +96,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       handleChangePage,
       handleChangeRowsPerPage,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
     } = this.props
 
     if (!show) {
@@ -140,6 +144,27 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
             boxShadow: 'none',
           },
         }}
+        pagination={{
+          fakePagination: false,
+          enabled: true,
+          totalCount: maxRows,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [10, 20, 30, 50, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
+          additionalBlock: (
+            <PaginationBlock
+              {...{
+                allKeys,
+                specificPair,
+                handleToggleAllKeys,
+                handleToggleSpecificPair,
+              }}
+            />
+          ),
+          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
@@ -182,7 +207,15 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate, page, perPage, marketType } = props
+  let {
+    startDate,
+    endDate,
+    page,
+    perPage,
+    marketType,
+    allKeys,
+    specificPair,
+  } = props
 
   startDate = +startDate
   endDate = +endDate
@@ -197,6 +230,8 @@ const TableDataWrapper = ({ ...props }) => {
           startDate,
           endDate,
           marketType,
+          allKeys,
+          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           activeExchangeKey: props.selectedKey.keyId,
         },
       }}
@@ -215,6 +250,8 @@ const TableDataWrapper = ({ ...props }) => {
             endDate,
             marketType,
             activeExchangeKey: props.selectedKey.keyId,
+            allKeys,
+            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updatePaginatedOrderHistoryQuerryFunction,

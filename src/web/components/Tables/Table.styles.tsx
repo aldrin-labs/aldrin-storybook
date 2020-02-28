@@ -35,6 +35,10 @@ export const StyledTableSortLabel = withStyles({
 })(TableSortLabel)
 
 export const StyledTablePagination = withStyles({
+  toolbar: {
+    height: '3rem',
+    minHeight: 0,
+  },
   caption: {
     fontSize: '1.175rem',
   },

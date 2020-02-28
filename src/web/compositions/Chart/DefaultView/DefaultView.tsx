@@ -200,20 +200,18 @@ export const DefaultView = (props: any) => {
               xs={6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
-              <CustomCard style={{ overflow: 'hidden scroll' }}>
-                <TradingTable
-                  selectedKey={selectedKey}
-                  showOrderResult={showOrderResult}
-                  showCancelResult={showCancelResult}
-                  marketType={marketType}
-                  exchange={exchange}
-                  pricePrecision={pricePrecision}
-                  quantityPrecision={quantityPrecision}
-                  priceFromOrderbook={priceFromOrderbook}
-                  currencyPair={currencyPair}
-                  arrayOfMarketIds={arrayOfMarketIds}
-                />
-              </CustomCard>
+              <TradingTable
+                selectedKey={selectedKey}
+                showOrderResult={showOrderResult}
+                showCancelResult={showCancelResult}
+                marketType={marketType}
+                exchange={exchange}
+                pricePrecision={pricePrecision}
+                quantityPrecision={quantityPrecision}
+                priceFromOrderbook={priceFromOrderbook}
+                currencyPair={currencyPair}
+                arrayOfMarketIds={arrayOfMarketIds}
+              />
             </TradingTabelContainer>
           )}
           {isDefaultTerminalViewMode && (
