@@ -150,6 +150,8 @@ export type Pagination = {
   page: number
   fakePagination: boolean
   totalCount: number | null
+  paginationStyles: CSSProperties
+  additionalBlock: React.ReactElement<any>
 }
 
 export type PaginationFunctionType = (

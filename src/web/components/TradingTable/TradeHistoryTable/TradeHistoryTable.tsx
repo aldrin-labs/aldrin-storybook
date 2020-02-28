@@ -11,6 +11,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
@@ -35,7 +36,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     } = this.props
 
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      getTradeHistoryQuery.getTradeHistory,
+      getTradeHistoryQuery.getTradeHistory.trades,
       theme,
       arrayOfMarketIds,
       marketType
@@ -56,7 +57,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      nextProps.getTradeHistoryQuery.getTradeHistory,
+      nextProps.getTradeHistoryQuery.getTradeHistory.trades,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType
@@ -72,6 +73,9 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     const {
       tab,
       show,
+      page,
+      perPage,
+      theme,
       handleTabChange,
       focusedInput,
       endDate,
@@ -87,7 +91,14 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       selectedKey,
       canceledOrders,
       currencyPair,
+      allKeys,
+      specificPair,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
       arrayOfMarketIds,
+      handleChangePage,
+      getTradeHistoryQuery,
+      handleChangeRowsPerPage,
     } = this.props
 
     if (!show) {
@@ -128,6 +139,27 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
             boxShadow: 'none',
           },
         }}
+        pagination={{
+          fakePagination: false,
+          enabled: true,
+          totalCount: getTradeHistoryQuery.getTradeHistory.count,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [10, 20, 30, 50, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
+          additionalBlock: (
+            <PaginationBlock
+              {...{
+                allKeys,
+                specificPair,
+                handleToggleAllKeys,
+                handleToggleSpecificPair,
+              }}
+            />
+          ),
+          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
@@ -142,6 +174,9 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
             />
             <TradingTitle
               {...{
+                page,
+                perPage,
+                theme,
                 startDate,
                 endDate,
                 focusedInput,
@@ -152,6 +187,9 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
                 onDatesChange,
                 onFocusChange,
                 onClearDateButtonClick,
+                handleChangePage,
+                handleChangeRowsPerPage,
+                maxRows: getTradeHistoryQuery.getTradeHistory.count,
               }}
             />
           </div>
@@ -164,7 +202,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate } = props
+  let { startDate, endDate, page, perPage, allKeys, specificPair } = props
 
   startDate = +startDate
   endDate = +endDate
@@ -177,12 +215,18 @@ const TableDataWrapper = ({ ...props }) => {
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
       fetchPolicy="cache-and-network"
+      showLoadingWhenQueryParamsChange={false}
       pollInterval={props.show ? 60000 : 0}
       variables={{
         tradeHistoryInput: {
+          page,
+          perPage,
           startDate,
           endDate,
           activeExchangeKey: props.selectedKey.keyId,
+          marketType: props.marketType,
+          allKeys,
+          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       subscriptionArgs={{
@@ -192,6 +236,9 @@ const TableDataWrapper = ({ ...props }) => {
             startDate,
             endDate,
             activeExchangeKey: props.selectedKey.keyId,
+            marketType: props.marketType,
+            allKeys,
+            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateTradeHistoryQuerryFunction,

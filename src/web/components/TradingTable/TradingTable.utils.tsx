@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import moment from 'moment'
 import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
+import ErrorIcon from '@material-ui/icons/Error'
+
 import { Position } from './PositionsTable/PositionsTable.types'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
@@ -72,6 +74,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
+import TooltipCustom from '../TooltipCustom/TooltipCustom'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -174,7 +177,7 @@ export const getNumberOfPrecisionDigitsForSymbol = (symbol: string) => {
   return stableCoins.includes(symbol) ? 2 : 8
 }
 
-export const getPnlFromState = ({ state, amount, side, pair, leverage }) => {
+export const getPnlFromState = ({ state, amount, side, leverage }) => {
   if (state && state.entryPrice && state.exitPrice) {
     const profitPercentage =
       ((state.exitPrice / state.entryPrice) * 100 - 100) *
@@ -223,18 +226,11 @@ const getActiveOrderStatus = ({
   }
 }
 
-export const filterOpenOrders = ({
-  order,
-  canceledOrders,
-  arrayOfMarketIds,
-  marketType,
-}) => {
+export const filterOpenOrders = ({ order, canceledOrders }) => {
   return (
     !canceledOrders.includes(order.info.orderId) &&
     order.type &&
     order.type !== 'market' &&
-    (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
-      (order.marketId === '0' && order.symbol)) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
       order.status === 'NEW' ||
@@ -242,19 +238,8 @@ export const filterOpenOrders = ({
   )
 }
 
-export const filterPositions = ({ position, pair, canceledPositions }) => {
-  return (
-    position.positionAmt !== 0 &&
-    // position.symbol === pair &&
-    !canceledPositions.includes(position._id)
-  )
-}
-
-export const filterActiveTrades = ({ trade, marketType, currencyPair }) => {
-  return (
-    trade.conditions.marketType === marketType && trade.enabled
-    // trade.conditions.pair === currencyPair
-  )
+export const filterPositions = ({ position, canceledPositions }) => {
+  return position.positionAmt !== 0 && !canceledPositions.includes(position._id)
 }
 
 export const combinePositionsTable = ({
@@ -492,7 +477,7 @@ export const combineActiveTradesTable = ({
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((el) => filterActiveTrades({ trade: el, marketType, currencyPair }))
+    .filter((a) => !!a && a.enabled)
     .sort((a, b) => {
       // sometimes in db we receive createdAt as timestamp
       // so using this we understand type of value that in createdAt field
@@ -551,9 +536,10 @@ export const combineActiveTradesTable = ({
         },
       } = el
 
-      const { entryPrice, state } = el.state || {
+      const { entryPrice, state, msg } = el.state || {
         entryPrice: 0,
         state: '-',
+        msg: null,
       }
 
       const pairArr = pair.split('_')
@@ -580,6 +566,8 @@ export const combineActiveTradesTable = ({
         state: el.state,
         profitPercentage,
       })
+
+      const isErrorInOrder = !!msg
 
       return {
         id: `${el._id}${i}`,
@@ -691,10 +679,31 @@ export const combineActiveTradesTable = ({
         status: {
           render: (
             <SubColumnValue
-              style={{ textTransform: 'none' }}
-              color={statusColor}
+              style={{
+                textTransform: 'none',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              color={isErrorInOrder ? red.new : statusColor}
             >
-              {activeOrderStatus}
+              {isErrorInOrder ? 'Error' : activeOrderStatus}
+              {isErrorInOrder ? (
+                <TooltipCustom
+                  title={msg}
+                  component={
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <ErrorIcon
+                        style={{
+                          height: '1.5rem',
+                          width: '1.5rem',
+                          color: red.new,
+                          marginLeft: '.5rem',
+                        }}
+                      />
+                    </div>
+                  }
+                />
+              ) : null}
             </SubColumnValue>
           ),
           style: {
@@ -851,14 +860,17 @@ export const combineStrategiesHistoryTable = (
         },
       } = el
 
-      const { entryPrice, state } = el.state || {
+      const { entryPrice, state, msg } = el.state || {
         entryPrice: 0,
         state: '-',
+        msg: null,
       }
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
+      const orderState = state ? state : enabled ? 'Waiting' : 'Closed'
+      const isErrorInOrder = !!msg
 
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' ? price : entryPrice
@@ -981,10 +993,31 @@ export const combineStrategiesHistoryTable = (
         status: {
           render: (
             <SubColumnValue
-              style={{ textTransform: 'none' }}
-              color={state ? green.new : red.new}
+              style={{
+                display: 'flex',
+                textTransform: 'none',
+                alignItems: 'center',
+              }}
+              color={state ? (!isErrorInOrder ? green.new : red.new) : red.new}
             >
-              {state ? state : enabled ? 'Waiting' : 'Closed'}
+              {isErrorInOrder ? 'Error' : orderState}
+              {isErrorInOrder ? (
+                <TooltipCustom
+                  title={msg}
+                  component={
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <ErrorIcon
+                        style={{
+                          height: '1.5rem',
+                          width: '1.5rem',
+                          color: red.new,
+                          marginLeft: '.5rem',
+                        }}
+                      />
+                    </div>
+                  }
+                />
+              ) : null}
             </SubColumnValue>
           ),
           style: {
@@ -1086,8 +1119,6 @@ export const combineOpenOrdersTable = (
     .filter((el) =>
       filterOpenOrders({
         order: el,
-        arrayOfMarketIds,
-        marketType,
         canceledOrders,
       })
     )
@@ -1252,6 +1283,7 @@ export const combineOpenOrdersTable = (
                   variables: {
                     openOrderInput: {
                       activeExchangeKey: keyId,
+                      marketType,
                     },
                   },
                   filterData: (order) => order.info.orderId != orderId,
@@ -1274,14 +1306,12 @@ export const combineOrderHistoryTable = (
   arrayOfMarketIds: string[],
   marketType: number
 ) => {
-  if (!orderData && !Array.isArray(orderData)) {
+  if (!orderData || !orderData) {
     return []
   }
 
   const processedOrderHistoryData = orderData
-    .filter((el) =>
-      isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
-    )
+    .filter((order) => !!order)
     .map((el: OrderType, i) => {
       const {
         symbol,
@@ -1298,7 +1328,7 @@ export const combineOrderHistoryTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
-      const type = orderType.toLowerCase().replace('-', '_')
+      const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
         ? info
@@ -1716,7 +1746,7 @@ export const updateStrategiesHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = prev.getStrategiesHistory.findIndex(
+  const strategyHasTheSameIndex = prev.getStrategiesHistory.strategies.findIndex(
     (el: TradeType) =>
       el._id === subscriptionData.data.listenActiveStrategies._id
   )
@@ -1725,16 +1755,16 @@ export const updateStrategiesHistoryQuerryFunction = (
   let result
 
   if (tradeAlreadyExists) {
-    prev.getStrategiesHistory[strategyHasTheSameIndex] = {
-      ...prev.getStrategiesHistory[strategyHasTheSameIndex],
+    prev.getStrategiesHistory.strategies[strategyHasTheSameIndex] = {
+      ...prev.getStrategiesHistory.strategies[strategyHasTheSameIndex],
       ...subscriptionData.data.listenActiveStrategies,
     }
 
     result = { ...prev }
   } else {
-    prev.getStrategiesHistory = [
+    prev.getStrategiesHistory.strategies = [
       { ...subscriptionData.data.listenActiveStrategies },
-      ...prev.getStrategiesHistory,
+      ...prev.getStrategiesHistory.strategies,
     ]
 
     result = { ...prev }
@@ -1906,6 +1936,59 @@ export const updateOrderHistoryQuerryFunction = (
   return result
 }
 
+export const updatePaginatedOrderHistoryQuerryFunction = (
+  previous,
+  { subscriptionData }
+) => {
+  const isEmptySubscription =
+    !subscriptionData.data || !subscriptionData.data.listenOrderHistory
+
+  if (isEmptySubscription) {
+    return previous
+  }
+
+  const prev = cloneDeep(previous)
+
+  const openOrderHasTheSameOrderIndex = prev.getPaginatedOrderHistory.orders.findIndex(
+    (el: OrderType) =>
+      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+  )
+  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
+
+  let result
+
+  if (openOrderAlreadyExists) {
+    const oldDataElement =
+      prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex]
+    const newDataElement = subscriptionData.data.listenOrderHistory
+
+    if (
+      newDataElement.status !== 'open' &&
+      !(
+        newDataElement.status === 'partially_filled' &&
+        oldDataElement.status === 'filled'
+      )
+    ) {
+      // here we handling wrong order of subscribtion events
+      prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex] = {
+        ...prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex],
+        ...subscriptionData.data.listenOrderHistory,
+      }
+    }
+
+    result = { ...prev }
+  } else {
+    prev.getPaginatedOrderHistory.orders = [
+      { ...subscriptionData.data.listenOrderHistory },
+      ...prev.getPaginatedOrderHistory.orders,
+    ]
+
+    result = { ...prev }
+  }
+
+  return result
+}
+
 export const updateTradeHistoryQuerryFunction = (
   previous,
   { subscriptionData }
@@ -1919,7 +2002,7 @@ export const updateTradeHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const tradeHasTheSameIndex = prev.getTradeHistory.findIndex(
+  const tradeHasTheSameIndex = prev.getTradeHistory.trades.findIndex(
     (el: TradeType) => el.id === subscriptionData.data.listenTradeHistory.id
   )
   const tradeAlreadyExists = tradeHasTheSameIndex !== -1
@@ -1927,16 +2010,16 @@ export const updateTradeHistoryQuerryFunction = (
   let result
 
   if (tradeAlreadyExists) {
-    prev.getTradeHistory[tradeHasTheSameIndex] = {
-      ...prev.getTradeHistory[tradeHasTheSameIndex],
+    prev.getTradeHistory.trades[tradeHasTheSameIndex] = {
+      ...prev.getTradeHistory.trades[tradeHasTheSameIndex],
       ...subscriptionData.data.listenTradeHistory,
     }
 
     result = { ...prev }
   } else {
-    prev.getTradeHistory = [
+    prev.getTradeHistory.trades = [
       { ...subscriptionData.data.listenTradeHistory },
-      ...prev.getTradeHistory,
+      ...prev.getTradeHistory.trades,
     ]
 
     result = { ...prev }

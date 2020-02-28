@@ -16,11 +16,15 @@ const StyledButton = styled(Button)`
 export const SButton = styled(
   ({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />
 )`
-  margin: 0 1rem;
+  // margin: 0 1rem;
   font-weight: 500;
   letter-spacing: 1px;
   transition: 0.35s all;
-  padding: 0 8px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  // padding: 0 8px;
 
   @media only screen and (max-width: 1100px) {
     margin: 0;

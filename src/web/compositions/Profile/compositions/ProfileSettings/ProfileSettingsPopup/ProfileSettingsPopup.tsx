@@ -70,7 +70,7 @@ const ProfileSettingsPopup = ({ open, handleClose, logout }: IProps) => {
                   padding: '3rem 0',
                 }}
               >
-                You need to log out of your account and sign in again to enable
+                You need to log out of your account and log in again to enable
                 2FA. The configuration process will start as soon as you login.
               </Typography>
             </Grid>

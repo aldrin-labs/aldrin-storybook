@@ -1,7 +1,11 @@
 import React from 'react'
 
 import { IProps } from '@core/containers/Profile/ProfileSidebar/ProfileSidebar.types'
+
+import { handleLogout } from '@core/utils/loginUtils'
+
 import { SidebarContainer } from '@sb/compositions/Profile/Profile.styles'
+
 import {
   UserInfo,
   Navigation,
@@ -24,10 +28,21 @@ const LINKS = [
   { path: '/profile/telegram', text: 'Telegram' },
 ]
 
-const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
+const ProfileSidebar = ({
+  accountData,
+  logoutMutation,
+  persistorInstance,
+  history: { push },
+  location: { pathname },
+}: IProps) => {
   const data = !accountData
     ? { imageUrl: '', username: 'Loading...', email: 'Loading...' }
     : accountData
+
+  const logout = async () => {
+    await handleLogout(logoutMutation, persistorInstance)
+    push('/login')
+  }
 
   return (
     <SidebarContainer xs={2}>
@@ -41,7 +56,7 @@ const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
           {LINKS.map((link) => (
             <NavButton
               to={link.path}
-              active={link.path === path}
+              active={link.path === pathname}
               key={link.path}
             >
               {link.text}
@@ -49,9 +64,7 @@ const ProfileSidebar = ({ logoutMutation, accountData, path }: IProps) => {
           ))}
         </Navigation>
       </div>
-      <LogoutButton to="/profile" onClick={logoutMutation}>
-        log out
-      </LogoutButton>
+      <LogoutButton onClick={logout}>log out</LogoutButton>
     </SidebarContainer>
   )
 }

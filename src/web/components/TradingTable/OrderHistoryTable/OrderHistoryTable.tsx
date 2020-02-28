@@ -4,17 +4,17 @@ import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
-
+import { PaginationBlock } from '../TradingTablePagination'
 import { IProps, IState } from './OrderHistoryTable.types'
 import {
-  updateOrderHistoryQuerryFunction,
+  updatePaginatedOrderHistoryQuerryFunction,
   combineOrderHistoryTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
-import { getOrderHistory } from '@core/graphql/queries/chart/getOrderHistory'
+import { getPaginatedOrderHistory } from '@core/graphql/queries/chart/getPaginatedOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
@@ -28,7 +28,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentDidMount() {
     const {
-      getOrderHistoryQuery,
+      getPaginatedOrderHistoryQuery,
       subscribeToMore,
       theme,
       arrayOfMarketIds,
@@ -36,7 +36,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     } = this.props
 
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      getOrderHistoryQuery.getOrderHistory,
+      getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       theme,
       arrayOfMarketIds,
       marketType
@@ -57,7 +57,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getOrderHistoryQuery.getOrderHistory,
+      nextProps.getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType
@@ -73,6 +73,9 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     const {
       tab,
       show,
+      page,
+      perPage,
+      theme,
       handleTabChange,
       focusedInput,
       endDate,
@@ -80,6 +83,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       startDate,
       maximumDate,
       minimumDate,
+      allKeys,
+      specificPair,
       onClearDateButtonClick,
       onDateButtonClick,
       onDatesChange,
@@ -89,11 +94,18 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       canceledOrders,
       currencyPair,
       arrayOfMarketIds,
+      handleChangePage,
+      handleChangeRowsPerPage,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
     } = this.props
 
     if (!show) {
       return null
     }
+
+    const maxRows = this.props.getPaginatedOrderHistoryQuery
+      .getPaginatedOrderHistory.count
 
     return (
       <TableWithSort
@@ -132,6 +144,27 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
             boxShadow: 'none',
           },
         }}
+        pagination={{
+          fakePagination: false,
+          enabled: true,
+          totalCount: maxRows,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [10, 20, 30, 50, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
+          additionalBlock: (
+            <PaginationBlock
+              {...{
+                allKeys,
+                specificPair,
+                handleToggleAllKeys,
+                handleToggleSpecificPair,
+              }}
+            />
+          ),
+          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+        }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
@@ -146,8 +179,12 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
             />
             <TradingTitle
               {...{
+                page,
+                perPage,
                 startDate,
                 endDate,
+                theme,
+                maxRows,
                 focusedInput,
                 activeDateButton,
                 minimumDate,
@@ -156,6 +193,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
                 onDatesChange,
                 onFocusChange,
                 onClearDateButtonClick,
+                handleChangePage,
+                handleChangeRowsPerPage,
               }}
             />
           </div>
@@ -168,7 +207,15 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate } = props
+  let {
+    startDate,
+    endDate,
+    page,
+    perPage,
+    marketType,
+    allKeys,
+    specificPair,
+  } = props
 
   startDate = +startDate
   endDate = +endDate
@@ -177,16 +224,22 @@ const TableDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={OrderHistoryTable}
       variables={{
-        orderHistoryInput: {
+        paginatedOrderHistoryInput: {
+          page,
+          perPage,
           startDate,
           endDate,
+          marketType,
+          allKeys,
+          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           activeExchangeKey: props.selectedKey.keyId,
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
-      query={getOrderHistory}
-      name={`getOrderHistoryQuery`}
+      showLoadingWhenQueryParamsChange={false}
+      query={getPaginatedOrderHistory}
+      name={`getPaginatedOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
       pollInterval={props.show ? 45000 : 0}
       subscriptionArgs={{
@@ -195,10 +248,13 @@ const TableDataWrapper = ({ ...props }) => {
           orderHistoryInput: {
             startDate,
             endDate,
+            marketType,
             activeExchangeKey: props.selectedKey.keyId,
+            allKeys,
+            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
-        updateQueryFunction: updateOrderHistoryQuerryFunction,
+        updateQueryFunction: updatePaginatedOrderHistoryQuerryFunction,
       }}
       {...props}
     />

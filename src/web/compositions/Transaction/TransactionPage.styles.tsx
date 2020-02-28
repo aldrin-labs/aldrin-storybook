@@ -180,7 +180,7 @@ export const LessMoreContainer = styled(Grid)`
 `
 
 export const GridTableContainer = styled(Grid)`
-  overflow: hidden;
+  position: relative;
   box-shadow: 0px 0px 0.4rem rgba(10, 19, 43, 0.1);
   border-radius: 1.5rem;
   border: 0.1rem solid #e0e5ec;

@@ -52,8 +52,8 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
         defaultSort={defaultSort}
         isCustomStyleForFooter={isCustomStyleForFooter}
         style={{
-          height: '100%',
-          position: 'relative',
+          height: 'calc(100% - 3rem)',
+          // position: 'relative',
           overflowY: 'scroll',
           overflowX: 'hidden',
           borderTopLeftRadius: '0',

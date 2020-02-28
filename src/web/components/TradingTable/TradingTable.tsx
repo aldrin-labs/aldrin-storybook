@@ -55,7 +55,15 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     } = this.props
 
     return (
-      <>
+      <div
+        style={{
+          height: '100%',
+          backgroundColor: '#fff',
+          border: '0.1rem solid #e0e5ec',
+          borderRadius: '0.75rem',
+          boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
+        }}
+      >
         <ActiveTrades
           {...{
             tab,
@@ -158,7 +166,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           }}
         />
         <StyleForCalendar />
-      </>
+      </div>
     )
   }
 }
