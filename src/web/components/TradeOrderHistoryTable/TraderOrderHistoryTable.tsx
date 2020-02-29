@@ -55,7 +55,7 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
           height: 'calc(100% - 3rem)',
           // position: 'relative',
           overflowY: 'scroll',
-          overflowX: 'hidden',
+          overflowX: 'scroll',
           borderTopLeftRadius: '0',
           borderTopRightRadius: '0',
         }}
