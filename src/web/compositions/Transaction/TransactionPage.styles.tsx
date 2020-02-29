@@ -148,6 +148,7 @@ export const GridShowHideDataContainer = styled(Grid)`
   min-width: 100%;
   padding: 2rem 1.25rem;
   display: flex;
+  backgroundColor: #fff;
 `
 
 export const TypographyCalendarLegend = styled(Typography)`
