@@ -10,29 +10,34 @@ type T = {
 const buttonsText = {
   back: 'PREVIOUS',
   close: 'CLOSE',
-  last: 'FINISH P&L INTRODUCTION',
+  // last: 'FINISH P&L INTRODUCTION',
+  last: 'FINISH',
   next: 'NEXT',
-  skip: 'SKIP INTRODUCTION',
+  skip: 'SKIP',
 }
 
 const buttonsTransactionsText = {
   back: 'PREVIOUS',
   close: 'CLOSE',
-  last: 'FINISH TRANSACTIONS INTRODUCTION',
+  // last: 'FINISH TRANSACTIONS INTRODUCTION',
+  last: 'FINISH',
   next: 'NEXT',
-  skip: 'SKIP INTRODUCTION',
+  skip: 'SKIP',
 }
 
 export const portfolioMainSteps = [
   {
-    target: '#sharePortfolioPanel',
+    target: '#accordionOverview',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Your portfolio name and it’s overview. </b>
-        Your overview panel shows the portfolio performance for each of your exchange accounts.
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Overview. </b>
+        Your overview panel shows the portfolio performance for each of your
+        exchange accounts.
       </p>
     ),
     placement: 'left',
@@ -40,15 +45,19 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+    stepIndex: 0,
   },
   {
     target: '#allocationChart',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Allocation Chart</b><br/>
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Allocation Chart</b>
+        <br />
         View distribution percent by assets and exchanges
       </p>
     ),
@@ -57,20 +66,24 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+    stepIndex: 1,
   },
   {
     target: '#PortfolioMainTable',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-        padding: 0,
-        margin: 0,
-        marginTop: '-9%',
-      }}>
-        <b>Assets table</b><br/>
-        This table shows all of your assets with real-time market prices and performance.
-        You can also do a quick trade from here without going to the trading terminal.
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+          padding: 0,
+          margin: 0,
+          marginTop: '-9%',
+        }}
+      >
+        <b>Assets table</b>
+        <br />
+        This table shows all of your assets with real-time market prices and
+        performance.
       </p>
     ),
     placement: 'auto',
@@ -78,15 +91,19 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+    stepIndex: 2,
   },
   {
     target: '#sharePortfolioSwitcher',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>USD/BTC Switcher</b><br/>
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>USD/BTC Switcher</b>
+        <br />
         Switch between crypto and fiat for portfolio performance data.
       </p>
     ),
@@ -95,16 +112,21 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+    stepIndex: 3,
   },
   {
     target: '#accountsPanel',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Accounts panel</b><br/>
-        Create a new portfolio or add new exchange accounts to existing portfolio.
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Accounts panel</b>
+        <br />
+        Create a new portfolio or add new exchange accounts to existing
+        portfolio. Filter out small values by dust filter
       </p>
     ),
     placement: 'right',
@@ -112,33 +134,37 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+    stepIndex: 4,
   },
-  {
-    target: '#porfolioSelector',
-    content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Accounts panel</b><br/>
-        Create a new portfolio or add new exchange accounts to existing portfolio.
-        Filter out small values by dust filter
-      </p>
-    ),
-    placement: 'right',
-    spotlightClicks: true,
-    disableOverlayClose: true,
-    hideCloseButton: false,
-    locale: buttonsText,
-  },
+  // {
+  //   target: '#porfolioSelector',
+  //   content: (
+  //     <p style={{
+  //       fontFamily: 'DM Sans',
+  //       textAlign: 'left',
+  //     }}>
+  //       <b>Accounts panel</b><br/>
+  //       Create a new portfolio or add new exchange accounts to existing portfolio.
+  //       Filter out small values by dust filter
+  //     </p>
+  //   ),
+  //   placement: 'right',
+  //   spotlightClicks: true,
+  //   disableOverlayClose: true,
+  //   hideCloseButton: false,
+  //   locale: buttonsText,
+  // },
   {
     target: '#transactionsPanel',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Ok, lets explore transactions page now</b><br/>
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Ok, lets explore transactions page now</b>
+        <br />
         You can view your transaction data here.
       </p>
     ),
@@ -147,6 +173,7 @@ export const portfolioMainSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
+    stepIndex: 5,
   },
 ]
 
@@ -154,13 +181,16 @@ export const transactionsPageSteps = [
   {
     target: '#accountsTransactions',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Accounts filter</b><br/>
-        Select your portfolio and accounts to view its transactions.
-        Filter for transaction type
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Accounts filter</b>
+        <br />
+        Select your portfolio and accounts to view its transactions. Filter for
+        transaction type
       </p>
     ),
     placement: 'auto',
@@ -172,13 +202,16 @@ export const transactionsPageSteps = [
   {
     target: '#calendarTransactions',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Calendar</b><br/>
-        Calendar shows the heat-map of your trading frequency.
-        Use the period selector to filter data.
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Calendar</b>
+        <br />
+        Calendar shows the heat-map of your trading frequency. Use the period
+        selector to filter data.
       </p>
     ),
     placement: 'bottom',
@@ -190,11 +223,14 @@ export const transactionsPageSteps = [
   {
     target: '#tableTransactions',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Your actions table</b><br/>
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Your actions table</b>
+        <br />
         The table shows your detail data per transaction
       </p>
     ),
@@ -207,12 +243,16 @@ export const transactionsPageSteps = [
   {
     target: '#statisticTransactions',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Your actions dashboard</b><br/>
-        These widgets show your recent actions and win/loss ratio of your trades profitability
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Your actions dashboard</b>
+        <br />
+        These widgets show your recent actions and win/loss ratio of your trades
+        profitability
       </p>
     ),
     placement: 'left',
@@ -224,11 +264,14 @@ export const transactionsPageSteps = [
   {
     target: '#accountsPanel',
     content: (
-      <p style={{
-        fontFamily: 'DM Sans',
-        textAlign: 'left',
-      }}>
-        <b>Our introduction is over.</b><br/>
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Our introduction is over.</b>
+        <br />
         Now you can return to P&L page by using quick navigation button.
       </p>
     ),

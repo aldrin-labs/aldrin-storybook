@@ -7,6 +7,7 @@ import LiveHelp from '@material-ui/icons/Help'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import HelpIcon from '@material-ui/icons/Help'
+import TelegramIcon from '@material-ui/icons/Telegram'
 import Tooltip from '@material-ui/core/Tooltip'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { tooltipsConfig } from '@core/config/tooltipsConfig'
@@ -40,15 +41,26 @@ class LoginMenuComponent extends React.Component {
 
     this.state = {
       openPopup: false,
-      // openOnboarding: false,
+      openOnboarding: false,
       key: 0,
+      stepIndex: 0,
+    }
+  }
+
+  componentDidUpdate(prev) {
+    if (prev.location.pathname !== this.props.location.pathname) {
+      this.setState({
+        openOnboarding: false,
+        stepIndex: 0,
+      })
     }
   }
 
   handleClickOpen = () => {
-    // this.setState({
-    //   openOnboarding: true,
-    // })
+    this.setState({
+      openOnboarding: true,
+      stepIndex: 0,
+    })
   }
 
   render() {
@@ -57,10 +69,42 @@ class LoginMenuComponent extends React.Component {
 
     return (
       <>
-        {/*<JoyrideOnboarding
+        <JoyrideOnboarding
+          stepIndex={this.state.stepIndex}
           steps={isMainPage ? portfolioMainSteps : transactionsPageSteps}
           open={this.state.openOnboarding}
-        />*/}
+          handleJoyrideCallback={(a) => {
+            switch (a.action) {
+              case 'reset': {
+                this.setState({ openOnboarding: false, stepIndex: 0 })
+                break
+              }
+              case 'stop': {
+                this.setState({ openOnboarding: false, stepIndex: 0 })
+                break
+              }
+              case 'next': {
+                if (a.lifecycle === 'complete') {
+                  this.setState((prev) => ({ stepIndex: prev.stepIndex + 1 }))
+                }
+                break
+              }
+              case 'prev': {
+                if (a.lifecycle === 'complete') {
+                  this.setState((prev) => ({ stepIndex: prev.stepIndex - 1 }))
+                }
+                break
+              }
+              case 'skip': {
+                this.setState((prev) => ({
+                  openOnboarding: false,
+                  stepIndex: 0,
+                }))
+                break
+              }
+            }
+          }}
+        />
 
         {/* <Tooltip title={'Show Tips'} enterDelay={250}>
           <IconButton
@@ -84,25 +128,49 @@ class LoginMenuComponent extends React.Component {
           </IconButton>
         </Tooltip> */}
         {/*<Onboarding />*/}
-        <TooltipCustom
-          title={'Telegram chat'}
-          enterDelay={250}
-          component={
-            <IconButton
-              color="default"
-              component={TelegramLink}
-              className="UserLink"
-              style={{
-                padding: '0 12px',
-                borderRadius: 0,
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <HelpIcon style={{ fontSize: '2.75rem', fill: '#7284A0' }} />
-            </IconButton>
-          }
-        />
+        <div style={{ display: 'flex', height: '100%' }}>
+          <TooltipCustom
+            title={'Tooltips'}
+            enterDelay={250}
+            component={
+              <IconButton
+                color="default"
+                onClick={this.handleClickOpen}
+                component={(props) => <div {...props} />}
+                className="UserLink"
+                style={{
+                  padding: '0 12px',
+                  borderRadius: 0,
+                  height: '100%',
+                }}
+              >
+                <HelpIcon style={{ fontSize: '2.75rem', fill: '#7284A0' }} />
+              </IconButton>
+            }
+          />
+
+          <TooltipCustom
+            title={'Telegram chat'}
+            enterDelay={250}
+            component={
+              <IconButton
+                color="default"
+                component={TelegramLink}
+                className="UserLink"
+                style={{
+                  padding: '0 12px',
+                  borderRadius: 0,
+                  height: '100%',
+                  borderLeft: '.1rem solid #e0e5ec',
+                }}
+              >
+                <TelegramIcon
+                  style={{ fontSize: '2.75rem', fill: '#7284A0' }}
+                />
+              </IconButton>
+            }
+          />
+        </div>
         {/* <TooltipCustom
           title="Log out"
           enterDelay={500}
