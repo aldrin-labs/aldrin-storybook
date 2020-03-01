@@ -14,19 +14,26 @@ import { IProps } from './types'
 
 @withRouter
 export default class Dropdown extends React.Component<IProps> {
-  static defaultProps = {
-    items: [],
-  }
-
   state = {
     open: false,
   }
 
-  constructor(props: IProps) {
-    super(props)
+  handleToggle = () => {
+    const { selectedMenu, selectActiveMenu, id } = this.props
 
-    this.handleToggle = this.handleToggle.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+    // closing if click second time
+    if (selectedMenu === id) {
+      selectActiveMenu('')
+    }
+
+    if (selectedMenu !== id) {
+      selectActiveMenu(id)
+    }
+  }
+
+  handleClose = () => {
+    const { selectActiveMenu } = this.props
+    selectActiveMenu('')
   }
 
   render() {
@@ -71,17 +78,5 @@ export default class Dropdown extends React.Component<IProps> {
         </StyledPaper>
       </StyledDropdown>
     )
-  }
-
-  handleToggle = () => {
-    const { selectedMenu, selectActiveMenu, id } = this.props
-
-    if (selectedMenu !== id) {
-      selectActiveMenu(id)
-    }
-  }
-  handleClose = () => {
-    const { selectActiveMenu } = this.props
-    selectActiveMenu('')
   }
 }
