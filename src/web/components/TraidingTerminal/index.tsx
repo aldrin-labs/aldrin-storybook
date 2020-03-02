@@ -417,6 +417,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       handleSubmit,
       validateForm,
       setFieldValue,
+      lockedAmount,
       quantityPrecision,
       orderIsCreating,
     } = this.props
@@ -434,6 +435,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (isSPOTMarket) {
       maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
+    } else if (this.props.reduceOnly) {
+      maxAmount = lockedAmount * priceForCalculate
     } else {
       maxAmount = funds[1].quantity * leverage
     }
@@ -569,7 +572,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         : newValue * priceForCalculate
 
                     const newMargin = stripDigitPlaces(
-                      (funds[1].quantity * value) / 100,
+                      (maxAmount * (value / 100)) / leverage,
                       2
                     )
 

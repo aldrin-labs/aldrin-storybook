@@ -348,6 +348,7 @@ class SimpleTabs extends React.Component {
                       }
                       pair={pair}
                       funds={funds}
+                      lockedAmount={funds[2] >= 0 ? 0 : -funds[2]}
                       key={[pair, funds]}
                       walletValue={funds && funds[1]}
                       marketPrice={price}
@@ -381,6 +382,7 @@ class SimpleTabs extends React.Component {
                       }
                       pair={pair}
                       funds={funds}
+                      lockedAmount={funds[2] <= 0 ? 0 : funds[2]}
                       key={[pair, funds]}
                       walletValue={funds && funds[1]}
                       marketPrice={price}

@@ -281,8 +281,6 @@ export const combinePositionsTable = ({
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
       const needOpacity = el._id === '0'
 
-      console.log('prices', prices, el)
-
       const marketPrice = (
         prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
           price: 0,
@@ -1500,7 +1498,7 @@ export const combineTradeHistoryTable = (
       const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
-        id: id,
+        id: `${id}_${timestamp}_${amount}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>

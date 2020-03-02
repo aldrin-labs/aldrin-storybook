@@ -240,7 +240,7 @@ const TableDataWrapper = ({ ...props }) => {
       showLoadingWhenQueryParamsChange={false}
       query={getPaginatedOrderHistory}
       name={`getPaginatedOrderHistoryQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="network-only"
       pollInterval={props.show ? 45000 : 0}
       subscriptionArgs={{
         subscription: ORDER_HISTORY,
