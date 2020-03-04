@@ -333,7 +333,10 @@ class OrderbookAndDepthChart extends React.Component {
     const amountForBackground = amountsMap.average()
 
     return (
-      <>
+      <div
+        id="depthChartAndOB"
+        style={{ display: 'flex', width: '100%', height: '100%' }}
+      >
         <Grid
           item
           xs={5}
@@ -379,7 +382,7 @@ class OrderbookAndDepthChart extends React.Component {
             data={dataToSend}
           />
         </Grid>
-      </>
+      </div>
     )
   }
 }

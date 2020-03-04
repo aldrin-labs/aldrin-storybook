@@ -82,7 +82,7 @@ export const CardsPanel = ({
         <AutoSuggestSelect
           style={{ width: '20%', minWidth: '0' }}
           value={view === 'default' && pair}
-          id={'currencyPair'}
+          id={'pairSelector'}
           view={view}
           activeExchange={activeExchange}
           selectStyles={selectStyles}
@@ -136,11 +136,22 @@ export const CardsPanel = ({
         <SmartTradeButton
           style={{ height: '100%', width: '40%', marginRight: '.4rem' }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
-          onClick={() =>
+          id="smartTradingButton"
+          onClick={() => {
             updateTerminalViewMode(
               isDefaultTerminalViewMode ? 'smartOrderMode' : 'default'
             )
-          }
+
+            const joyrideStep = document.getElementById('react-joyride-step-7')
+            const joyrideOverlay = document.getElementById(
+              'react-joyride-portal'
+            )
+
+            if (joyrideStep && joyrideOverlay) {
+              joyrideStep.style.display = 'none'
+              joyrideOverlay.style.display = 'none'
+            }
+          }}
         >
           {isDefaultTerminalViewMode ? 'go to smart trading' : 'back'}
         </SmartTradeButton>

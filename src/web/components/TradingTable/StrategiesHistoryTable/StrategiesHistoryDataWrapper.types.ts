@@ -11,6 +11,12 @@ export interface IProps {
   selectedKey: Key
   marketType: number
   arrayOfMarketIds: string[]
+  showAllPositionPairs: boolean
+  showAllOpenOrderPairs: boolean
+  showAllSmartTradePairs: boolean
+  showPositionsFromAllAccounts: boolean
+  showOpenOrdersFromAllAccounts: boolean
+  showSmartTradesFromAllAccounts: boolean
 }
 
 export interface IState {

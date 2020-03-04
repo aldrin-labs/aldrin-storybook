@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
@@ -29,6 +29,7 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/EditOrderPopups'
 
 import { TableWithSort } from '@sb/components'
+import { PaginationBlock } from '../TradingTablePagination'
 
 import {
   updateActiveStrategiesQuerryFunction,
@@ -214,6 +215,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       variables: {
         activeStrategiesInput: {
           activeExchangeKey: selectedKey.keyId,
+          marketType,
         },
       },
       data: {
@@ -229,6 +231,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         variables: {
           activeStrategiesInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
+            marketType,
           },
         },
       })
@@ -303,7 +306,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       quantityPrecision,
       selectedKey,
-      getActiveStrategiesQuery
+      getActiveStrategiesQuery,
     } = nextProps
 
     const { prices, cachedOrder } = this.state
@@ -313,7 +316,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       variables: {
         activeStrategiesInput: {
           activeExchangeKey: selectedKey.keyId,
-          marketType
+          marketType,
         },
       },
     })
@@ -336,7 +339,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       !cachedOrder &&
       data.getActiveStrategies.some((a: SmartOrder) => a._id === '-1')
     ) {
-
       this.setState({
         cachedOrder: data.getActiveStrategies.filter(
           (a: SmartOrder) => a._id === '-1'
@@ -348,6 +350,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         variables: {
           activeStrategiesInput: {
             activeExchangeKey: selectedKey.keyId,
+            marketType,
           },
         },
         data: {
@@ -363,14 +366,14 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       this.setState({ cachedOrder: null })
     }
 
-    const newData = client.readQuery({
-      query: getActiveStrategies,
-      variables: {
-        activeStrategiesInput: {
-          activeExchangeKey: selectedKey.keyId,
-        },
-      },
-    })
+    // const newData = client.readQuery({
+    //   query: getActiveStrategies,
+    //   variables: {
+    //     activeStrategiesInput: {
+    //       activeExchangeKey: selectedKey.keyId,
+    //     },
+    //   },
+    // })
 
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
@@ -420,6 +423,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       handleTabChange,
       show,
       marketType,
+      allKeys,
+      specificPair,
       quantityPrecision,
       updateEntryPointStrategyMutation,
       updateStopLossStrategyMutation,
@@ -429,6 +434,14 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       selectedKey,
       canceledOrders,
       arrayOfMarketIds,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
     } = this.props
 
     if (!show) {
@@ -649,6 +662,22 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             sortDirection: 'desc',
           }}
           withCheckboxes={false}
+          pagination={{
+            fakePagination: false,
+            enabled: true,
+            showPagination: false,
+            additionalBlock: (
+              <PaginationBlock
+                {...{
+                  allKeys,
+                  specificPair,
+                  handleToggleAllKeys,
+                  handleToggleSpecificPair,
+                }}
+              />
+            ),
+            paginationStyles: { width: 'calc(100% - 0.4rem)' },
+          }}
           tableStyles={{
             headRow: {
               borderBottom: '1px solid #e0e5ec',
@@ -680,13 +709,21 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           title={
             <div>
               <TradingTabs
-                tab={tab}
-                handleTabChange={handleTabChange}
-                marketType={marketType}
-                canceledOrders={canceledOrders}
-                selectedKey={selectedKey}
-                currencyPair={currencyPair}
-                arrayOfMarketIds={arrayOfMarketIds}
+                {...{
+                  tab,
+                  marketType,
+                  selectedKey,
+                  currencyPair,
+                  canceledOrders,
+                  handleTabChange,
+                  arrayOfMarketIds,
+                  showAllPositionPairs,
+                  showAllOpenOrderPairs,
+                  showAllSmartTradePairs,
+                  showPositionsFromAllAccounts,
+                  showOpenOrdersFromAllAccounts,
+                  showSmartTradesFromAllAccounts,
+                }}
               />
             </div>
           }
@@ -719,12 +756,15 @@ const LastTradeWrapper = ({ ...props }) => {
         activeStrategiesInput: {
           marketType: props.marketType,
           activeExchangeKey: props.selectedKey.keyId,
+          allKeys: props.allKeys,
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
+      showLoadingWhenQueryParamsChange={false}
       fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
@@ -732,6 +772,10 @@ const LastTradeWrapper = ({ ...props }) => {
           activeStrategiesInput: {
             marketType: props.marketType,
             activeExchangeKey: props.selectedKey.keyId,
+            allKeys: props.allKeys,
+            ...(!props.specificPair
+              ? {}
+              : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateActiveStrategiesQuerryFunction,
@@ -741,6 +785,8 @@ const LastTradeWrapper = ({ ...props }) => {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+  const { showSmartTradesFromAllAccounts, showAllSmartTradePairs } = props
+
   return (
     <QueryRenderer
       component={LastTradeWrapper}
@@ -756,6 +802,10 @@ const TableDataWrapper = ({ ...props }) => {
           listenFundsInput: { activeExchangeKey: props.selectedKey.keyId },
         },
         updateQueryFunction: updateFundsQuerryFunction,
+      }}
+      {...{
+        allKeys: showSmartTradesFromAllAccounts,
+        specificPair: showAllSmartTradePairs,
       }}
       {...props}
     />
