@@ -96,12 +96,11 @@ class PortfolioTableTabs extends React.Component<IProps> {
 
         {isTransactionsPage ? (
           <StyledLeftButton
-            key={'P&L'}
-            component={Link}
-            to="/portfolio/main"
+            key={'trAccPanel'}
+            onClick={() => toggleWallets()}
             id="accountsPanel"
           >
-            P&L
+            Accounts
           </StyledLeftButton>
         ) : null}
 
