@@ -31,4 +31,10 @@ export interface IState {
   tab: string
   tabIndex: number
   canceledOrders: string[]
+  showAllPositionPairs: boolean
+  showAllOpenOrderPairs: boolean
+  showAllSmartTradePairs: boolean
+  showPositionsFromAllAccounts: boolean
+  showOpenOrdersFromAllAccounts: boolean
+  showSmartTradesFromAllAccounts: boolean
 }

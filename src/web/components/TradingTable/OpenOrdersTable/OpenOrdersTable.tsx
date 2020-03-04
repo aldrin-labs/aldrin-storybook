@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
@@ -17,6 +17,8 @@ import {
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import { PaginationBlock } from '../TradingTablePagination'
+
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
@@ -205,6 +207,16 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       canceledOrders,
       currencyPair,
       arrayOfMarketIds,
+      allKeys,
+      specificPair,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
     } = this.props
 
     if (!show) {
@@ -220,6 +232,22 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           sortDirection: 'desc',
         }}
         withCheckboxes={false}
+        pagination={{
+          fakePagination: false,
+          enabled: true,
+          showPagination: false,
+          additionalBlock: (
+            <PaginationBlock
+              {...{
+                allKeys,
+                specificPair,
+                handleToggleAllKeys,
+                handleToggleSpecificPair,
+              }}
+            />
+          ),
+          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+        }}
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
@@ -249,13 +277,21 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         title={
           <div>
             <TradingTabs
-              tab={tab}
-              handleTabChange={handleTabChange}
-              marketType={marketType}
-              canceledOrders={canceledOrders}
-              selectedKey={selectedKey}
-              currencyPair={currencyPair}
-              arrayOfMarketIds={arrayOfMarketIds}
+              {...{
+                tab,
+                marketType,
+                selectedKey,
+                currencyPair,
+                canceledOrders,
+                handleTabChange,
+                arrayOfMarketIds,
+                showAllPositionPairs,
+                showAllOpenOrderPairs,
+                showAllSmartTradePairs,
+                showPositionsFromAllAccounts,
+                showOpenOrdersFromAllAccounts,
+                showSmartTradesFromAllAccounts,
+              }}
             />
           </div>
         }
@@ -267,17 +303,24 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+  const {
+    showOpenOrdersFromAllAccounts: allKeys,
+    showAllOpenOrderPairs: specificPair,
+  } = props
   return (
     <QueryRenderer
       component={OpenOrdersTable}
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType
+          marketType: props.marketType,
+          allKeys: allKeys,
+          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
+      showLoadingWhenQueryParamsChange={false}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
@@ -286,10 +329,16 @@ const TableDataWrapper = ({ ...props }) => {
         variables: {
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
-            marketType: props.marketType
+            marketType: props.marketType,
+            allKeys: allKeys,
+            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+      }}
+      {...{
+        allKeys,
+        specificPair,
       }}
       {...props}
     />

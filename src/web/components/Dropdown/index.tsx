@@ -59,7 +59,7 @@ export default class Dropdown extends React.Component<IProps> {
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
           <MenuList style={{ padding: 0 }}>
-            {this.props.items.map(({ icon, text, to, ...events }) => (
+            {this.props.items.map(({ icon, text, to, style, ...events }) => (
               <StyledMenuItem disableRipple disableGutters={true} key={text}>
                 <StyledLink
                   to={to}
@@ -68,7 +68,7 @@ export default class Dropdown extends React.Component<IProps> {
                   {...events}
                 >
                   {/* {icon} */}
-                  <StyledMenuItemText key={`${text}-text`}>
+                  <StyledMenuItemText style={style} key={`${text}-text`}>
                     {text}
                   </StyledMenuItemText>
                 </StyledLink>

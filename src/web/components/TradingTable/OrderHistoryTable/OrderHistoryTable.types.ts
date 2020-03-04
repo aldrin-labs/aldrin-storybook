@@ -27,7 +27,12 @@ export interface IProps extends WithTheme<Theme> {
   marketType: number
   currencyPair: string
   canceledOrders: string[]
-
+  showAllPositionPairs: boolean
+  showAllOpenOrderPairs: boolean
+  showAllSmartTradePairs: boolean
+  showPositionsFromAllAccounts: boolean
+  showOpenOrdersFromAllAccounts: boolean
+  showSmartTradesFromAllAccounts: boolean
   onDateButtonClick: (stringDate: string) => void
   onDatesChange: ({
     startDate,

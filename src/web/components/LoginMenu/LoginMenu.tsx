@@ -15,6 +15,7 @@ import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import {
   portfolioMainSteps,
   transactionsPageSteps,
+  getChartSteps,
 } from '@sb/config/joyrideSteps'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
@@ -57,31 +58,55 @@ class LoginMenuComponent extends React.Component {
   }
 
   handleClickOpen = () => {
-    this.setState({
-      openOnboarding: true,
-      stepIndex: 0,
-    })
+    this.setState(
+      {
+        openOnboarding: false,
+        stepIndex: 0,
+      },
+      () => {
+        this.setState({ openOnboarding: true })
+      }
+    )
   }
 
   render() {
     const { userName, handleLogout, updateTooltipSettings } = this.props
-    const isMainPage = this.props.location.pathname === '/portfolio/main'
+
+    const steps =
+      this.props.location.pathname === '/portfolio/main'
+        ? portfolioMainSteps
+        : this.props.location.pathname === '/portfolio/transactions'
+        ? transactionsPageSteps
+        : this.props.location.pathname === '/chart/spot' ||
+          this.props.location.pathname === '/chart/futures'
+        ? getChartSteps({
+            marketType: this.props.location.pathname === '/chart/spot' ? 0 : 1,
+          })
+        : []
 
     return (
       <>
         <JoyrideOnboarding
+          autoStart
           stepIndex={this.state.stepIndex}
-          steps={isMainPage ? portfolioMainSteps : transactionsPageSteps}
+          steps={steps}
           open={this.state.openOnboarding}
           handleJoyrideCallback={(a) => {
+            if (a.status === 'finished') {
+              this.setState({ openOnboarding: false, stepIndex: 0 })
+              return
+            }
+
             switch (a.action) {
               case 'reset': {
                 this.setState({ openOnboarding: false, stepIndex: 0 })
                 break
               }
               case 'stop': {
-                this.setState({ openOnboarding: false, stepIndex: 0 })
-                break
+                if (a.index !== a.size - 1) {
+                  this.setState({ openOnboarding: false, stepIndex: 0 })
+                  break
+                }
               }
               case 'next': {
                 if (a.lifecycle === 'complete') {

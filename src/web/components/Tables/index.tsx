@@ -551,6 +551,7 @@ const CustomTable = (props: Props) => {
         return
       },
       additionalBlock: null,
+      showPagination: true,
     },
     actions = [],
     actionsColSpan = 1,
@@ -610,6 +611,7 @@ const CustomTable = (props: Props) => {
     totalCount,
     additionalBlock,
     paginationStyles,
+    showPagination,
   } = pagination || {
     totalCount: null,
     enabled: false,
@@ -625,6 +627,7 @@ const CustomTable = (props: Props) => {
     },
     additionalBlock: null,
     paginationStyles: {},
+    showPagination: true,
   }
 
   return (
@@ -969,54 +972,60 @@ const CustomTable = (props: Props) => {
               }}
             >
               <div>{additionalBlock}</div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <PaginationBlock
-                  style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
-                >
-                  Rows per page:{' '}
-                  <StyledSelect
-                    value={rowsPerPage}
-                    onChange={handleChangeRowsPerPage}
+              {showPagination !== false ? (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <PaginationBlock
+                    style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
                   >
-                    {rowsPerPageOptions.map((quantity) => {
-                      return <StyledOption>{quantity}</StyledOption>
-                    })}
-                  </StyledSelect>
-                </PaginationBlock>
-                <PaginationBlock>
-                  {page * rowsPerPage} -{' '}
-                  {page * rowsPerPage + rowsPerPage > totalCount
-                    ? totalCount
-                    : page * rowsPerPage + rowsPerPage}{' '}
-                  of {totalCount}
-                </PaginationBlock>
-                <PaginationBlock>
-                  <ArrowBackIosIcon
-                    onClick={() => handleChangePage(page === 0 ? 0 : page - 1)}
-                    style={{
-                      fill: '#7284a0',
-                      width: '2rem',
-                      height: '2rem',
-                      margin: '0 1rem',
-                      cursor: 'pointer',
-                    }}
-                  />
-                  <ArrowForwardIosIcon
-                    onClick={() =>
-                      handleChangePage(
-                        (page + 1) * rowsPerPage > totalCount ? page : page + 1
-                      )
-                    }
-                    style={{
-                      fill: '#7284a0',
-                      width: '2rem',
-                      height: '2rem',
-                      margin: '0 1rem',
-                      cursor: 'pointer',
-                    }}
-                  />
-                </PaginationBlock>
-              </div>
+                    Rows per page:{' '}
+                    <StyledSelect
+                      value={rowsPerPage}
+                      onChange={handleChangeRowsPerPage}
+                    >
+                      {rowsPerPageOptions.map((quantity) => {
+                        return <StyledOption>{quantity}</StyledOption>
+                      })}
+                    </StyledSelect>
+                  </PaginationBlock>
+                  <PaginationBlock>
+                    {page * rowsPerPage} -{' '}
+                    {page * rowsPerPage + rowsPerPage > totalCount
+                      ? totalCount
+                      : page * rowsPerPage + rowsPerPage}{' '}
+                    of {totalCount}
+                  </PaginationBlock>
+                  <PaginationBlock>
+                    <ArrowBackIosIcon
+                      onClick={() =>
+                        handleChangePage(page === 0 ? 0 : page - 1)
+                      }
+                      style={{
+                        fill: '#7284a0',
+                        width: '2rem',
+                        height: '2rem',
+                        margin: '0 1rem',
+                        cursor: 'pointer',
+                      }}
+                    />
+                    <ArrowForwardIosIcon
+                      onClick={() =>
+                        handleChangePage(
+                          (page + 1) * rowsPerPage > totalCount
+                            ? page
+                            : page + 1
+                        )
+                      }
+                      style={{
+                        fill: '#7284a0',
+                        width: '2rem',
+                        height: '2rem',
+                        margin: '0 1rem',
+                        cursor: 'pointer',
+                      }}
+                    />
+                  </PaginationBlock>
+                </div>
+              ) : null}
             </div>
           </div>
         </Grow>

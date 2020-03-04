@@ -84,6 +84,12 @@ class FundsTable extends React.PureComponent<IProps> {
       canceledOrders,
       arrayOfMarketIds,
       currencyPair,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
     } = this.props
 
     if (!show) {
@@ -124,17 +130,25 @@ class FundsTable extends React.PureComponent<IProps> {
         title={
           <div>
             <TradingTabs
-              tab={tab}
-              arrayOfMarketIds={arrayOfMarketIds}
-              selectedKey={selectedKey}
-              marketType={marketType}
-              currencyPair={currencyPair}
-              canceledOrders={canceledOrders}
-              hideSmallAssets={hideSmallAssets}
-              handleTabChange={handleTabChange}
-              handleSmallAssetsCheckboxChange={
-                this.handleSmallAssetsCheckboxChange
-              }
+              // hideSmallAssets={hideSmallAssets}
+              // handleSmallAssetsCheckboxChange={
+              //   this.handleSmallAssetsCheckboxChange
+              // }
+              {...{
+                tab,
+                marketType,
+                selectedKey,
+                currencyPair,
+                canceledOrders,
+                handleTabChange,
+                arrayOfMarketIds,
+                showAllPositionPairs,
+                showAllOpenOrderPairs,
+                showAllSmartTradePairs,
+                showPositionsFromAllAccounts,
+                showOpenOrdersFromAllAccounts,
+                showSmartTradesFromAllAccounts,
+              }}
             />
           </div>
         }

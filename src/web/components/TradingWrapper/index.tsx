@@ -122,7 +122,12 @@ class SimpleTabs extends React.Component {
     const isSPOTMarket = isSPOTMarketType(marketType)
 
     return (
-      <Grid item xs={12} style={{ height: '100%', padding: '0 0 0 0' }}>
+      <Grid
+        id="tradingTerminal"
+        item
+        xs={12}
+        style={{ height: '100%', padding: '0 0 0 0' }}
+      >
         <CustomCard>
           <TerminalHeader key={'spotTerminal'}>
             <TerminalModeButton
@@ -332,7 +337,7 @@ class SimpleTabs extends React.Component {
                 </SendButton>
               </div>
             ) : (
-              <>
+              <div style={{ display: 'flex', width: '100%', height: '100%' }}>
                 <FullHeightGrid xs={6} item needBorderRight>
                   <TerminalContainer>
                     <TraidingTerminal
@@ -400,7 +405,7 @@ class SimpleTabs extends React.Component {
                     />
                   </TerminalContainer>
                 </FullHeightGrid>
-              </>
+              </div>
             )}
           </TerminalMainGrid>
         </CustomCard>
