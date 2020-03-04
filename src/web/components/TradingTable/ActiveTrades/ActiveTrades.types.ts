@@ -52,7 +52,17 @@ export interface IProps {
     keyId: string
   }
   canceledOrders: string[]
+  allKeys: boolean
+  specificPair: boolean
+  showAllPositionPairs: boolean
+  showAllOpenOrderPairs: boolean
+  showAllSmartTradePairs: boolean
+  showPositionsFromAllAccounts: boolean
+  showOpenOrdersFromAllAccounts: boolean
+  showSmartTradesFromAllAccounts: boolean
 
+  handleToggleAllKeys: (newValue: boolean) => void
+  handleToggleSpecificPair: (newValue: boolean) => void
   showCancelResult: ({
     status,
     message,

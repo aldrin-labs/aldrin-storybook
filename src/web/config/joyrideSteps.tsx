@@ -43,6 +43,7 @@ export const portfolioMainSteps = [
     placement: 'left',
     spotlightClicks: true,
     disableOverlayClose: true,
+    disableBeacon: true,
     hideCloseButton: false,
     locale: buttonsText,
     stepIndex: 0,
@@ -130,7 +131,7 @@ export const portfolioMainSteps = [
       </p>
     ),
     placement: 'right',
-    spotlightClicks: true,
+    spotlightClicks: false,
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsText,
@@ -197,6 +198,7 @@ export const transactionsPageSteps = [
     spotlightClicks: true,
     disableOverlayClose: true,
     hideCloseButton: false,
+    disableBeacon: true,
     locale: buttonsTransactionsText,
   },
   {
@@ -357,7 +359,173 @@ export const portfolioOptimizationSteps = [
   },
 ]
 
-export const singleChartSteps: T[] = []
+export const singleChartSteps = [
+  {
+    target: '#tradingViewChart',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>TA Chart </b>
+        <br />
+        Most of the space on this page is on the chart. You know what to do with
+        it. Follow the market, analyze and trade!
+      </p>
+    ),
+    placement: 'bottom',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    disableBeacon: true,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#accountSelector',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Account selector</b>
+        <br />
+        Choose account to trade from if you have several!
+      </p>
+    ),
+    placement: 'bottom',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#pairSelector',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Pair selector</b>
+        <br />
+        Choose pair which you want to trade here.
+      </p>
+    ),
+    placement: 'bottom',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#depthChartAndOB',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Depth chart and orderbook </b>
+        <br />
+        For ask, bid and trade volumes analysis in realtime!
+      </p>
+    ),
+    placement: 'left',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#tradingTerminal',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Terminal is here! </b>
+        <br />
+        Select order type, input price and amount and trade!
+      </p>
+    ),
+    placement: 'top',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#balances',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Balance and funds transfer </b>
+        <br />
+        Check your balance and transfer funds between spot and futures market
+        with “Transfer in” and “Transfer out” buttons (on futures tab).
+      </p>
+    ),
+    placement: 'right',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#tables',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Tables </b>
+        <br />
+        Here you can see actual information about your trading. Active smart
+        trades, open positions, open orders and your order and trade history.
+      </p>
+    ),
+    placement: 'top',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+  {
+    target: '#smartTradingButton',
+    content: (
+      <p
+        style={{
+          fontFamily: 'DM Sans',
+          textAlign: 'left',
+        }}
+      >
+        <b>Smart trading</b>
+        <br />
+        Smart order is a tool to set up your trade both with stop loss and take
+        a profit with advanced settings. Take a view!
+      </p>
+    ),
+    placement: 'top',
+    spotlightClicks: true,
+    disableOverlayClose: true,
+    hideCloseButton: false,
+    locale: buttonsTransactionsText,
+  },
+]
 
 export const multiChartsSteps: T[] = [
   {

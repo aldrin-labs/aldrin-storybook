@@ -94,6 +94,12 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       canceledOrders,
       currencyPair,
       arrayOfMarketIds,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
       handleChangePage,
       handleChangeRowsPerPage,
       handleToggleAllKeys,
@@ -169,13 +175,21 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         title={
           <div>
             <TradingTabs
-              tab={tab}
-              handleTabChange={handleTabChange}
-              marketType={marketType}
-              arrayOfMarketIds={arrayOfMarketIds}
-              canceledOrders={canceledOrders}
-              selectedKey={selectedKey}
-              currencyPair={currencyPair}
+              {...{
+                tab,
+                marketType,
+                selectedKey,
+                currencyPair,
+                canceledOrders,
+                handleTabChange,
+                arrayOfMarketIds,
+                showAllPositionPairs,
+                showAllOpenOrderPairs,
+                showAllSmartTradePairs,
+                showPositionsFromAllAccounts,
+                showOpenOrdersFromAllAccounts,
+                showSmartTradesFromAllAccounts,
+              }}
             />
             <TradingTitle
               {...{

@@ -99,6 +99,12 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       handleChangePage,
       getTradeHistoryQuery,
       handleChangeRowsPerPage,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
     } = this.props
 
     if (!show) {
@@ -164,13 +170,21 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         title={
           <div>
             <TradingTabs
-              tab={tab}
-              selectedKey={selectedKey}
-              handleTabChange={handleTabChange}
-              marketType={marketType}
-              canceledOrders={canceledOrders}
-              currencyPair={currencyPair}
-              arrayOfMarketIds={arrayOfMarketIds}
+              {...{
+                tab,
+                marketType,
+                selectedKey,
+                currencyPair,
+                canceledOrders,
+                handleTabChange,
+                arrayOfMarketIds,
+                showAllPositionPairs,
+                showAllOpenOrderPairs,
+                showAllSmartTradePairs,
+                showPositionsFromAllAccounts,
+                showOpenOrdersFromAllAccounts,
+                showSmartTradesFromAllAccounts,
+              }}
             />
             <TradingTitle
               {...{

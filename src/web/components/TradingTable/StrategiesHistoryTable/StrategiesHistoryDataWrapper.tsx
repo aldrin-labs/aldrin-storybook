@@ -83,6 +83,12 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
       marketType,
       canceledOrders,
       arrayOfMarketIds,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
     } = this.props
 
     const {
@@ -121,6 +127,12 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
           minimumDate,
           allKeys,
           specificPair,
+          showAllPositionPairs,
+          showAllOpenOrderPairs,
+          showAllSmartTradePairs,
+          showPositionsFromAllAccounts,
+          showOpenOrdersFromAllAccounts,
+          showSmartTradesFromAllAccounts,
           handleChangePage: this.handleChangePage,
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           onClearDateButtonClick: this.onClearDateButtonClick,

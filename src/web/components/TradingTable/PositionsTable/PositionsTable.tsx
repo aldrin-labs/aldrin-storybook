@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
@@ -16,6 +16,7 @@ import {
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import { IProps, IState } from './PositionsTable.types'
+import { PaginationBlock } from '../TradingTablePagination'
 
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
@@ -389,6 +390,16 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       selectedKey,
       canceledOrders,
       arrayOfMarketIds,
+      allKeys,
+      specificPair,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
       currencyPair,
     } = this.props
 
@@ -405,6 +416,22 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           sortDirection: 'desc',
         }}
         withCheckboxes={false}
+        pagination={{
+          fakePagination: false,
+          enabled: true,
+          showPagination: false,
+          additionalBlock: (
+            <PaginationBlock
+              {...{
+                allKeys,
+                specificPair,
+                handleToggleAllKeys,
+                handleToggleSpecificPair,
+              }}
+            />
+          ),
+          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+        }}
         tableStyles={{
           headRow: {
             borderBottom: '1px solid #e0e5ec',
@@ -441,13 +468,21 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         title={
           <div>
             <TradingTabs
-              tab={tab}
-              selectedKey={selectedKey}
-              canceledOrders={canceledOrders}
-              handleTabChange={handleTabChange}
-              arrayOfMarketIds={arrayOfMarketIds}
-              marketType={marketType}
-              currencyPair={currencyPair}
+              {...{
+                tab,
+                marketType,
+                selectedKey,
+                currencyPair,
+                canceledOrders,
+                handleTabChange,
+                arrayOfMarketIds,
+                showAllPositionPairs,
+                showAllOpenOrderPairs,
+                showAllSmartTradePairs,
+                showPositionsFromAllAccounts,
+                showOpenOrdersFromAllAccounts,
+                showSmartTradesFromAllAccounts,
+              }}
             />
           </div>
         }
@@ -466,16 +501,24 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+  const {
+    showPositionsFromAllAccounts: allKeys,
+    showAllPositionPairs: specificPair,
+  } = props
+
   return (
     <QueryRenderer
       component={PositionsTable}
       variables={{
         input: {
           keyId: props.selectedKey.keyId,
+          allKeys: allKeys,
+          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
+      showLoadingWhenQueryParamsChange={false}
       query={getActivePositions}
       name={`getActivePositionsQuery`}
       fetchPolicy="cache-and-network"
@@ -485,9 +528,15 @@ const TableDataWrapper = ({ ...props }) => {
         variables: {
           input: {
             keyId: props.selectedKey.keyId,
+            allKeys: allKeys,
+            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateActivePositionsQuerryFunction,
+      }}
+      {...{
+        allKeys,
+        specificPair,
       }}
       {...props}
     />
