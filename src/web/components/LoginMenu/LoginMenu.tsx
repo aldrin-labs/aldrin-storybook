@@ -15,7 +15,7 @@ import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import {
   portfolioMainSteps,
   transactionsPageSteps,
-  singleChartSteps,
+  getChartSteps,
 } from '@sb/config/joyrideSteps'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
@@ -71,12 +71,18 @@ class LoginMenuComponent extends React.Component {
 
   render() {
     const { userName, handleLogout, updateTooltipSettings } = this.props
+
     const steps =
       this.props.location.pathname === '/portfolio/main'
         ? portfolioMainSteps
         : this.props.location.pathname === '/portfolio/transactions'
         ? transactionsPageSteps
-        : singleChartSteps
+        : this.props.location.pathname === '/chart/spot' ||
+          this.props.location.pathname === '/chart/futures'
+        ? getChartSteps({
+            marketType: this.props.location.pathname === '/chart/spot' ? 0 : 1,
+          })
+        : []
 
     return (
       <>

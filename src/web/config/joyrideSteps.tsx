@@ -359,7 +359,7 @@ export const portfolioOptimizationSteps = [
   },
 ]
 
-export const singleChartSteps = [
+export const getChartSteps = ({ marketType }) => [
   {
     target: '#tradingViewChart',
     content: (
@@ -471,10 +471,11 @@ export const singleChartSteps = [
           textAlign: 'left',
         }}
       >
-        <b>Balance and funds transfer </b>
+        <b>{marketType === 0 ? 'Balances' : 'Balance and funds transfer'}</b>
         <br />
-        Check your balance and transfer funds between spot and futures market
-        with “Transfer in” and “Transfer out” buttons (on futures tab).
+        {marketType === 0
+          ? 'Check your balances here.'
+          : 'Check your balance and transfer funds between spot and futures market with “Transfer in” and “Transfer out” buttons (on futures tab)'}
       </p>
     ),
     placement: 'right',
