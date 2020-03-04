@@ -1,19 +1,40 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import { DayBlock } from '@core/components/TransactionsActionsStatistic/DayActionsStatistic'
 import { WeekBlock } from '@core/components/TransactionsActionsStatistic/WeekActionsStatistic'
+import { AllTimeBlock } from '@core/components/TransactionsActionsStatistic/AllTimeActionsStatistic'
 
 import { Grid } from '@material-ui/core'
 
-class TransactionsActionsStatistic extends Component {
+class TransactionsActionsStatistic extends PureComponent<{
+  includeFutures: boolean
+  includeTrades: boolean
+}> {
   render() {
+    const { includeFutures, includeTrades } = this.props
+    
     return (
       <Grid item>
         <Grid item style={{ position: 'relative', marginBottom: '1.2rem' }}>
-          <DayBlock title={'today'} />
+          <DayBlock
+            includeFutures={includeFutures}
+            includeTrades={includeTrades}
+            title={'today'}
+          />
+        </Grid>
+        <Grid item style={{ position: 'relative', marginBottom: '1.2rem'  }}>
+          <WeekBlock
+            includeFutures={includeFutures}
+            includeTrades={includeTrades}
+            title={'this week'}
+          />
         </Grid>
         <Grid item style={{ position: 'relative' }}>
-          <WeekBlock title={'this week'} />
+          <AllTimeBlock
+            includeFutures={includeFutures}
+            includeTrades={includeTrades}
+            title={'all time'}
+          />
         </Grid>
       </Grid>
     )
