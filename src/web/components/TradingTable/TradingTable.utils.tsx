@@ -288,7 +288,7 @@ export const combinePositionsTable = ({
       ).price
 
       const getVariables = (type: String, price: Number) => ({
-        keyId,
+        keyId: el.keyId,
         keyParams: {
           symbol,
           side: positionAmt < 0 ? 'buy' : 'sell',
@@ -727,7 +727,7 @@ export const combineActiveTradesTable = ({
               transition={'all .4s ease-out'}
               onClick={(e) => {
                 e.stopPropagation()
-                cancelOrderFunc(el._id)
+                cancelOrderFunc(el._id, el.accountId)
               }}
             >
               {activeOrderStatus === 'Preparing' ||
