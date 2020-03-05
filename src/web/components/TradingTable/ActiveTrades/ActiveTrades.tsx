@@ -205,6 +205,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       getActiveStrategiesQuery,
       subscribeToMore,
       theme,
+      allKeys,
+      specificPair,
       marketType,
       currencyPair,
       quantityPrecision,
@@ -216,6 +218,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         activeStrategiesInput: {
           activeExchangeKey: selectedKey.keyId,
           marketType,
+          allKeys,
+          ...(!specificPair ? {} : { specificPair: currencyPair }),
         },
       },
       data: {
@@ -232,6 +236,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           activeStrategiesInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
             marketType,
+            allKeys,
+            ...(!specificPair ? {} : { specificPair: currencyPair }),
           },
         },
       })
@@ -306,20 +312,29 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       quantityPrecision,
       selectedKey,
+      specificPair,
+      allKeys,
       getActiveStrategiesQuery,
     } = nextProps
 
     const { prices, cachedOrder } = this.state
 
-    const data = client.readQuery({
-      query: getActiveStrategies,
-      variables: {
-        activeStrategiesInput: {
-          activeExchangeKey: selectedKey.keyId,
-          marketType,
+    let data
+
+    try {
+      data = client.readQuery({
+        query: getActiveStrategies,
+        variables: {
+          activeStrategiesInput: {
+            activeExchangeKey: selectedKey.keyId,
+            marketType,
+            allKeys: true,
+          },
         },
-      },
-    })
+      })
+    } catch (e) {
+      data = getActiveStrategiesQuery
+    }
 
     // if order have timestamp greater than cached order - it's new order
     const newOrderFromSubscription =
@@ -351,6 +366,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           activeStrategiesInput: {
             activeExchangeKey: selectedKey.keyId,
             marketType,
+            allKeys,
+            ...(!specificPair ? {} : { specificPair: currencyPair }),
           },
         },
         data: {
@@ -415,6 +432,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       editTrade,
       selectedTrade,
       expandedRows,
+      cachedOrder,
     } = this.state
 
     const {
@@ -671,8 +689,12 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 {...{
                   allKeys,
                   specificPair,
-                  handleToggleAllKeys,
-                  handleToggleSpecificPair,
+                  handleToggleAllKeys: !!cachedOrder
+                    ? () => {}
+                    : handleToggleAllKeys,
+                  handleToggleSpecificPair: !!cachedOrder
+                    ? () => {}
+                    : handleToggleSpecificPair,
                 }}
               />
             ),
