@@ -133,14 +133,13 @@ class PortfolioTable extends Component<IProps, IState> {
             />
             <Route
               exact
-              path="/portfolio/transactions"
-              render={(...rest) => (
-                <Transaction
-                  {...rest}
-                  {...this.props}
-                  isCustomStyleForFooter={true}
-                />
-              )}
+              path="/portfolio/transactions/spot"
+              render={(...rest) => <Transaction {...rest} {...this.props} />}
+            />
+            <Route
+              exact
+              path="/portfolio/transactions/futures"
+              render={(...rest) => <Transaction {...rest} {...this.props} />}
             />
           </Switch>
         </Suspense>

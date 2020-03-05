@@ -5,17 +5,10 @@ import moment from 'moment'
 import { getTimeZone } from '@core/utils/dateUtils'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
-import { Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
-
-import ChoosePeriod from '@sb/components/ChoosePeriod/ChoosePeriod'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
-
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
 import { getFormattedProfit } from '@core/containers/TradeOrderHistory/TradeOrderHistory'
-
-import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { IProps } from './Calendar.types'
 import { getCalendarData, getMaxTransactions } from './Calendar.utils'
 import {
@@ -129,17 +122,9 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       getCalendarActionsQuery,
       startDate,
       endDate,
-      tradeOrderHistoryDate,
-      onDatesChange,
-      onFocusChange,
       onHeatmapDateClick,
-      onDateButtonClick,
-      activeDateButton,
       classes,
-      wrapperRef,
-      concreteDaySelected,
       isSPOTCurrently,
-      togglePageType,
     } = this.props
 
     const maxTransactionsCount = getMaxTransactions(
@@ -154,16 +139,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
       isSPOTCurrently
     )
 
-    const maximumDate = moment().endOf('day')
-    const minimumDate = moment().subtract(3, 'years')
-
     return (
-      <HeatmapWrapper
-        style={{
-          paddingTop: '15px',
-          paddingBottom: '5px',
-        }}
-      >
+      <HeatmapWrapper>
         {ReactDOM.createPortal(
           <SquarePopupTooltip
             inputRef={(el) => (this.popupRef = el)}
@@ -240,60 +217,6 @@ class GitTransactionCalendar extends PureComponent<IProps> {
             popupRef.style.display = 'none'
           }}
         />
-
-        <Grid
-          container
-          justify="space-between"
-          alignItems="center"
-          wrap="nowrap"
-          className="ChoosePeriodsBlock"
-          style={{
-            margin: '.75rem 0 2.5rem',
-            padding: '0 1rem 0 0',
-            marginTop: '-4%',
-          }}
-        >
-          <Grid item>
-            <ChoosePeriod
-              isTableCalendar={true}
-              {...{
-                ...tradeOrderHistoryDate,
-                concreteDaySelected,
-                maximumDate,
-                minimumDate,
-                onFocusChange,
-                onDatesChange,
-                onDateButtonClick,
-                activeDateButton,
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <PillowButton
-              firstHalfText={'spot'}
-              secondHalfText={'futures'}
-              activeHalf={isSPOTCurrently ? 'first' : 'second'}
-              changeHalf={togglePageType}
-            />
-          </Grid>
-          {/* <Grid
-            item
-            alignItems="center"
-            style={{
-              width: 'auto',
-              display: 'flex',
-            }}
-          >
-            <LegendTypography>Less</LegendTypography>
-            <LegendHeatmapSquare fill={LEGEND_COLORS.zero} />
-            <LegendHeatmapSquare fill={LEGEND_COLORS.one} />
-            <LegendHeatmapSquare fill={LEGEND_COLORS.two} />
-            <LegendHeatmapSquare fill={LEGEND_COLORS.three} />
-            <LegendHeatmapSquare fill={LEGEND_COLORS.four} />
-            <LegendTypography>More</LegendTypography>
-          </Grid> */}
-        </Grid>
-        <StyleForCalendar />
       </HeatmapWrapper>
     )
   }

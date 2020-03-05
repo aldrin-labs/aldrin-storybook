@@ -1,9 +1,11 @@
 import { Theme } from '@material-ui/core'
 
 export type Key = {
-  selected: boolean
-  name: string
   _id: string
+  name: string
+  selected: boolean
+  isBroker: boolean
+  isFuturesWars: boolean
 }
 export interface IProps {
   data: { myPortfolios: any[]; loading: boolean; error?: string }

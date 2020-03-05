@@ -35,6 +35,7 @@ import {
   // TypographySpan,
   SliderDustFilter,
   Slide,
+  SliderDustFilterContiner,
 } from './PortfolioSelector.styles'
 import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 // import { MASTER_BUILD } from '@core/utils/config'
@@ -353,7 +354,12 @@ class PortfolioSelector extends React.Component<IProps> {
       valueSliderPercentageContainer,
     } = this.state
 
-    if (!dustFilter || !portfolioKeys || !portfolioKeys.myPortfolios || !portfolioKeys.myPortfolios.length) {
+    if (
+      !dustFilter ||
+      !portfolioKeys ||
+      !portfolioKeys.myPortfolios ||
+      !portfolioKeys.myPortfolios.length
+    ) {
       return null
     }
 
@@ -389,10 +395,11 @@ class PortfolioSelector extends React.Component<IProps> {
         )
       : assets
 
-    const { totalKeyAssetsData, portfolioAssetsData, portfolioAssetsMap } = getPortfolioAssetsData(
-      filteredData,
-      isTransactions ? 'USDT' : baseCoin
-    )
+    const {
+      totalKeyAssetsData,
+      portfolioAssetsData,
+      portfolioAssetsMap,
+    } = getPortfolioAssetsData(filteredData, isTransactions ? 'USDT' : baseCoin)
 
     const { name, _id } = portfolioKeys.myPortfolios[0]
 
@@ -429,7 +436,7 @@ class PortfolioSelector extends React.Component<IProps> {
           hoverBackground={theme.palette.action.hover}
           fontFamily={theme.typography.fontFamily}
         >
-          <GridSection style={{ height: '18vh' }}>
+          <GridSection>
             <SvgIcon
               src={PortfolioSidebarBack}
               style={{
@@ -496,44 +503,16 @@ class PortfolioSelector extends React.Component<IProps> {
           </GridSectionAccounts>
           {!isRebalance && (
             <GridSectionDust>
-              <TypographyTitle style={{ color: '#7284a0' }}>
+              <TypographyTitle style={{ color: '#7284a0', margin: 0 }}>
                 Dust Filter
               </TypographyTitle>
               <>
                 <SliderContainer>
                   <GridSymbolContainer>%</GridSymbolContainer>
-                  <SliderDustFilter
-                    step={20}
-                    key={'percentage'}
-                    thumbWidth="25px"
-                    thumbHeight="25px"
-                    sliderWidth="250px"
-                    sliderHeight="17px"
-                    sliderHeightAfter="20px"
-                    borderRadius="30px"
-                    borderRadiusAfter="30px"
-                    thumbBackground="#165BE0"
-                    borderThumb="2px solid white"
-                    trackAfterBackground="#E7ECF3"
-                    trackBeforeBackground={'#165BE0'}
-                    value={this.state.valueSliderPercentage}
-                    onChange={this.handleChangePercentage}
-                    onDragEnd={updatePercentageSlider}
-                  />
-                  <GridSymbolValue>
-                    {valueSliderPercentageContainer === 0 ||
-                    valueSliderPercentageContainer === null
-                      ? `No % Filter`
-                      : `< ${valueSliderPercentageContainer} %`}
-                  </GridSymbolValue>
-                </SliderContainer>
-
-                {isUSDCurrently && (
-                  <SliderContainer>
-                    <GridSymbolContainer>$</GridSymbolContainer>
+                  <SliderDustFilterContiner>
                     <SliderDustFilter
-                      step={1}
-                      key={'usd'}
+                      step={20}
+                      key={'percentage'}
                       thumbWidth="25px"
                       thumbHeight="25px"
                       sliderWidth="250px"
@@ -545,10 +524,44 @@ class PortfolioSelector extends React.Component<IProps> {
                       borderThumb="2px solid white"
                       trackAfterBackground="#E7ECF3"
                       trackBeforeBackground={'#165BE0'}
-                      value={this.state.valueSliderUsd}
-                      onChange={this.handleChangeUsd}
-                      onDragEnd={updateUSDSlider}
+                      value={this.state.valueSliderPercentage}
+                      onChange={this.handleChangePercentage}
+                      onDragEnd={updatePercentageSlider}
                     />
+                  </SliderDustFilterContiner>
+
+                  <GridSymbolValue>
+                    {valueSliderPercentageContainer === 0 ||
+                    valueSliderPercentageContainer === null
+                      ? `No % Filter`
+                      : `< ${valueSliderPercentageContainer} %`}
+                  </GridSymbolValue>
+                </SliderContainer>
+
+                {isUSDCurrently && (
+                  <SliderContainer>
+                    <GridSymbolContainer>$</GridSymbolContainer>
+                    <SliderDustFilterContiner>
+                      <SliderDustFilter
+                        step={1}
+                        key={'usd'}
+                        thumbWidth="25px"
+                        thumbHeight="25px"
+                        sliderWidth="250px"
+                        sliderHeight="17px"
+                        sliderHeightAfter="20px"
+                        borderRadius="30px"
+                        borderRadiusAfter="30px"
+                        thumbBackground="#165BE0"
+                        borderThumb="2px solid white"
+                        trackAfterBackground="#E7ECF3"
+                        trackBeforeBackground={'#165BE0'}
+                        value={this.state.valueSliderUsd}
+                        onChange={this.handleChangeUsd}
+                        onDragEnd={updateUSDSlider}
+                      />
+                    </SliderDustFilterContiner>
+
                     <GridSymbolValue>
                       {valueSliderUsd === 0 || dustFilter.usd === null
                         ? `No $ Filter`
@@ -562,24 +575,26 @@ class PortfolioSelector extends React.Component<IProps> {
                     <GridSymbolContainer>
                       {addMainSymbol('', false)}
                     </GridSymbolContainer>
-                    <SliderDustFilter
-                      step={1}
-                      key={'btc'}
-                      thumbWidth="25px"
-                      thumbHeight="25px"
-                      sliderWidth="250px"
-                      sliderHeight="17px"
-                      sliderHeightAfter="20px"
-                      borderRadius="30px"
-                      borderRadiusAfter="30px"
-                      thumbBackground="#165BE0"
-                      borderThumb="2px solid white"
-                      trackAfterBackground="#E7ECF3"
-                      trackBeforeBackground={'#165BE0'}
-                      value={this.state.valueSliderBtc}
-                      onChange={this.handleChangeBtc}
-                      onDragEnd={updateBTCSlider}
-                    />
+                    <SliderDustFilterContiner>
+                      <SliderDustFilter
+                        step={1}
+                        key={'btc'}
+                        thumbWidth="25px"
+                        thumbHeight="25px"
+                        sliderWidth="250px"
+                        sliderHeight="17px"
+                        sliderHeightAfter="20px"
+                        borderRadius="30px"
+                        borderRadiusAfter="30px"
+                        thumbBackground="#165BE0"
+                        borderThumb="2px solid white"
+                        trackAfterBackground="#E7ECF3"
+                        trackBeforeBackground={'#165BE0'}
+                        value={this.state.valueSliderBtc}
+                        onChange={this.handleChangeBtc}
+                        onDragEnd={updateBTCSlider}
+                      />
+                    </SliderDustFilterContiner>
                     {valueSliderBtcContainer === 0 ||
                     dustFilter.btc === null ? (
                       <GridSymbolValue>
@@ -602,7 +617,6 @@ class PortfolioSelector extends React.Component<IProps> {
 }
 
 const PortfolioSelectorDataWrapper = (props) => {
-  
   return (
     <QueryRenderer
       component={PortfolioSelector}
@@ -642,5 +656,3 @@ export default compose(
     }),
   })
 )(PortfolioSelectorDataWrapper)
-
-

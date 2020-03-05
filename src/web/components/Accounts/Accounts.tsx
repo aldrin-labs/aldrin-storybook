@@ -14,6 +14,7 @@ import {
   AccountsList,
   AccountsListItem,
   TypographyTitle,
+  AddAccountButtonContainer,
 } from '@sb/styles/selectorSharedStyles'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
@@ -23,6 +24,9 @@ import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import SvgIcon from '@sb/components/SvgIcon'
 import ExchangeLogo from '@icons/ExchangeLogo.svg'
+import BrokerIconLogo from '@icons/brokerIconLogo.svg'
+import FuturesWarsIconLogo from '@icons/futuresWarsIconLogo.svg'
+
 import Help from '@material-ui/icons/Help'
 
 // import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -33,6 +37,7 @@ import ReimportKey from '@core/components/ReimportKey/ReimportKey'
 
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
+import { TooltipCustom } from '@sb/components/index'
 
 class Accounts extends React.PureComponent<IProps> {
   state = {
@@ -71,17 +76,7 @@ class Accounts extends React.PureComponent<IProps> {
     return (
       <>
         <AccountsWalletsHeadingWrapper>
-          <TypographyFullWidth
-            gutterBottom={true}
-            align="left"
-            color="secondary"
-            variant="h6"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              position: 'relative',
-            }}
-          >
+          <Grid container justify="space-between" style={isTransactions ? { padding: '0 1.5rem 0 1rem' } : {}}>
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
             {isRebalance ? (
@@ -123,7 +118,7 @@ class Accounts extends React.PureComponent<IProps> {
                 Select all
               </TypographyTitle>
             )}
-          </TypographyFullWidth>
+          </Grid>
         </AccountsWalletsHeadingWrapper>
         <AccountsList id="AccountsList" isTransactions={isTransactions}>
           {keys.map((key, i) => {
@@ -157,7 +152,13 @@ class Accounts extends React.PureComponent<IProps> {
               >
                 {isSidebar && (
                   <SvgIcon
-                    src={ExchangeLogo}
+                    src={
+                      key.isFuturesWars
+                        ? FuturesWarsIconLogo
+                        : key.isBroker
+                        ? BrokerIconLogo
+                        : ExchangeLogo
+                    }
                     style={{
                       marginRight: '.8rem',
                     }}
@@ -176,7 +177,10 @@ class Accounts extends React.PureComponent<IProps> {
                   letterSpacing="1px"
                   style={{ paddingLeft: '1rem' }}
                 >
-                  {key.name}
+                  <TooltipCustom
+                    title={key.name}
+                    component={<span style={{ overflow: 'hidden', textOverflow: 'ellipsis', }}> {key.name} </span>}
+                  />
                   <TypographyTitle lineHeight="122.5%">
                     {formattedValue}
                   </TypographyTitle>
@@ -219,7 +223,9 @@ class Accounts extends React.PureComponent<IProps> {
           })}
         </AccountsList>
         {isSidebar && (
-          <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />
+          <AddAccountButtonContainer>
+            <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />
+          </AddAccountButtonContainer>
         )}
       </>
     )

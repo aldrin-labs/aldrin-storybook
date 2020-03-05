@@ -97,6 +97,14 @@ const NavBarRaw: SFC<Props> = ({
     page = 'Sign up'
   }
 
+  if (/transactions\/spot/.test(pathname)) {
+    page = 'Transactions Spot'
+  }
+
+  if (/transactions\/futures/.test(pathname)) {
+    page = 'Transactions Futures'
+  }
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}

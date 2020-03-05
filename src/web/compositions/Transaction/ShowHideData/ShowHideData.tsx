@@ -27,7 +27,7 @@ class CheckboxesGroup extends React.Component {
               borderBottom: '.1rem solid #e0e5ec',
             }}
           >
-            <TypographyShowHide>Show Deposit / Withdrawal</TypographyShowHide>
+            <TypographyShowHide>Deposit / Withdrawal</TypographyShowHide>
             <CheckboxShowHide
               checked={includeExchangeTransactions}
               onChange={handleChangeShowHideOptions(
@@ -45,7 +45,7 @@ class CheckboxesGroup extends React.Component {
               // borderBottom: '.1rem solid #e0e5ec',
             }}
           >
-            <TypographyShowHide>Show Trades</TypographyShowHide>
+            <TypographyShowHide>Trades</TypographyShowHide>
             <CheckboxShowHide
               checked={includeTrades}
               onChange={handleChangeShowHideOptions('includeTrades')}

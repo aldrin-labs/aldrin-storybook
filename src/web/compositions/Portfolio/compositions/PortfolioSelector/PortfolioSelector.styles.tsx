@@ -1,18 +1,34 @@
+import React from 'react'
 import styled from 'styled-components'
 import FaFilter from '@material-ui/icons/FilterList'
 import { Grid, Typography } from '@material-ui/core'
 import ReactSelect from '@sb/components/ReactSelectComponent'
 import Slider from '@sb/components/Slider/Slider'
 
+export const SliderDustFilterContiner = styled(Grid)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+
+  && .sliderContainer {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    top: auto;
+    left: auto;
+  }
+`
+
 export const SliderDustFilter = styled(Slider)`
-  position: relative;
-  top: 7px;
-  left: 0;
+  && {
+    top: auto;
+    left: auto;
+    width: auto;
+    flex-grow: 1;
+  }
 
   @media (min-width: 1921px) {
-    top: 12px;
-    width: 28rem;
-
     .trackAfter {
       height: 1.8rem;
     }
@@ -52,7 +68,11 @@ export const FilterIcon = styled(FaFilter)`
   margin: 0 0.8rem;
 `
 
-export const AccountsWalletsBlock = styled.div`
+export const AccountsWalletsBlock = styled(
+  ({ fontFamily, background, isSideNavOpen, hoverBackground, ...rest }) => (
+    <div {...rest} />
+  )
+)`
   font-family: ${(props: { fontFamily: string }) => props.fontFamily};
   min-width: 200px;
   width: 100%;
@@ -61,7 +81,8 @@ export const AccountsWalletsBlock = styled.div`
     isSideNavOpen ? '0' : '-18.4rem'};
   cursor: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
     isSideNavOpen ? 'auto' : 'pointer'};
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: fixed;
   top: 0;
   z-index: 1008;
@@ -91,7 +112,9 @@ export const AddAccountBlock = styled.div`
 // export const TypographyTitle = styled(({ fontSize, ...rest }) => (
 //   <Typography {...rest}/>
 // ))`
-export const TypographyTitle = styled(Typography)`
+export const TypographyTitle = styled(({ fontSize, lineHeight, ...rest }) => (
+  <Typography {...rest} />
+))`
   font-family: DM Sans;
   font-size: ${(props) => props.fontSize || `1.25rem`};
   line-height: ${(props) => props.lineHeight || '3rem'};
@@ -105,30 +128,25 @@ export const GridRow = styled(Grid)``
 export const GridCell = styled(Grid)``
 
 export const SliderContainer = styled(Grid)`
+  width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 35px;
-  padding: 0 15px;
-  height: 2rem;
+  align-items: center;
+  margin: 2rem 0;
+  height: 3rem;
 `
 export const GridSection = styled(Grid)`
   padding: 1rem 0;
-  margin-bottom: 2rem;
   position: relative;
 `
 export const GridSectionAccounts = styled(Grid)`
-  height: 61vh;
-  padding: 2.4rem 1.6rem 2.4rem 1.6rem;
+  height: 56vh;
+  padding: 2rem;
+  flex-grow: 1;
 `
 
 export const GridSectionDust = styled(Grid)`
-  max-height: 24vh;
-  width: 37rem;
-  border-top: 1px solid #e7ecf3;
-  padding: 2.4rem 1.6rem;
-  position: absolute;
-  bottom: 0;
-  z-index: 1;
+  padding: 2rem;
 `
 
 export const ReactSelectCustom = styled(ReactSelect)`
@@ -143,27 +161,15 @@ export const ReactSelectCustom = styled(ReactSelect)`
   margin-left: 10px;
 `
 export const GridSymbolContainer = styled(Grid)`
-  width: 10%;
   color: #7284a0;
   font-size: 1.2rem;
-  padding: 0 15px 0 0;
-
-  @media (min-width: 1921px) {
-    margin-right: 1rem;
-    font-size: 1.4rem;
-  }
+  padding: 0 2rem 0rem 0;
 `
+
 export const GridSymbolValue = styled(Grid)`
-  width: 10%;
   color: #7284a0;
   font-size: 1.2rem;
-  padding: 0 0 0 15px;
-  white-space: nowrap;
-
-  @media (min-width: 1921px) {
-    padding: 0;
-    font-size: 1.4rem;
-  }
+  padding: 0 0.5rem 0 2rem;
 `
 
 export const TypographySpan = styled(Typography)`

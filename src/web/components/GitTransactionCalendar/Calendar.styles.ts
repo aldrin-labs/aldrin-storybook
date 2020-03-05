@@ -22,8 +22,6 @@ export const LEGEND_COLORS = {
 }
 
 export const HeatmapWrapper = styled.div`
-  margin-bottom: 1.25rem;
-
   .react-calendar-heatmap-month-label,
   .react-calendar-heatmap .react-calendar-heatmap-small-text {
     font-family: 'DM Sans', sans-serif;
