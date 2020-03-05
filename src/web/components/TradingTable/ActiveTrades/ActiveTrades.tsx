@@ -102,10 +102,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     this.setState({ editTrade: block, selectedTrade })
   }
 
-  cancelOrderWithStatus = async (strategyId: string) => {
+  cancelOrderWithStatus = async (strategyId: string, keyId: string) => {
     const {
       showCancelResult,
-      selectedKey: { keyId },
     } = this.props
 
     const result = await this.onCancelOrder(keyId, strategyId)
