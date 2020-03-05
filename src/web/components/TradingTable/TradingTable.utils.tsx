@@ -1128,7 +1128,7 @@ export const combineOpenOrdersTable = (
       const origQty = (el.info && el.info.origQty) || el.origQty
       const timestamp = el.timestamp || el.updateTime
 
-      const needOpacity = el.status === 'placing'
+      const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
       const type = orderType.toLowerCase().replace(/-/g, '_')
 

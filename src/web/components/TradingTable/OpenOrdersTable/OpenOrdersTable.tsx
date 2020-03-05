@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import moment from 'moment'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
@@ -31,6 +32,7 @@ import { cancelOrderStatus } from '@core/utils/tradingUtils'
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],
+    cachedOrder: null,
   }
 
   interval: null | number = null
@@ -85,6 +87,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       marketType,
     } = this.props
 
+    const that = this
+
     const openOrdersProcessedData = combineOpenOrdersTable(
       getOpenOrderHistoryQuery.getOpenOrderHistory,
       this.cancelOrderWithStatus,
@@ -99,6 +103,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       variables: {
         openOrderInput: {
           activeExchangeKey: this.props.selectedKey.keyId,
+          marketType: this.props.marketType,
+          allKeys: this.props.allKeys,
+          ...(!this.props.specificPair
+            ? {}
+            : { specificPair: this.props.currencyPair }),
         },
       },
       data: {
@@ -106,28 +115,48 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       },
     })
 
-    this.setState({
-      openOrdersProcessedData,
-    })
-
-    const that = this
-
-    this.interval = setInterval(() => {
-      const data = client.readQuery({
+    client
+      .watchQuery({
         query: getOpenOrderHistory,
         variables: {
           openOrderInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
+            marketType: this.props.marketType,
           },
         },
       })
+      .subscribe({
+        next: ({ data }) => {
+          const cachedOrder = data.getOpenOrderHistory.find(
+            (order: OrderType) =>
+              order.marketId === '0' && order.status === 'placing'
+          )
 
-      if (
-        !this.props.show ||
-        data.getOpenOrderHistory.find(
-          (order: OrderType) => order.marketId === '0'
-        )
-      ) {
+          if (cachedOrder && !that.state.cachedOrder) {
+            const ordersToDisplay = that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.concat(
+              cachedOrder
+            )
+
+            const openOrdersProcessedData = combineOpenOrdersTable(
+              ordersToDisplay,
+              that.cancelOrderWithStatus,
+              that.props.theme,
+              that.props.arrayOfMarketIds,
+              that.props.marketType,
+              that.props.canceledOrders
+            )
+
+            that.setState({ cachedOrder, openOrdersProcessedData })
+          }
+        },
+      })
+
+    this.setState({
+      openOrdersProcessedData,
+    })
+
+    this.interval = setInterval(() => {
+      if (!this.props.show || this.checkForCachedOrder()) {
         return
       }
 
@@ -143,22 +172,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
-      const data = client.readQuery({
-        query: getOpenOrderHistory,
-        variables: {
-          openOrderInput: {
-            activeExchangeKey: this.props.selectedKey.keyId,
-          },
-        },
-      })
-
-      if (
-        data.getOpenOrderHistory.find(
-          (order: OrderType) => order.marketId === '0'
-        )
-      ) {
-        return
-      }
+      if (this.checkForCachedOrder()) return
 
       this.props.ordersHealthcheckMutation({
         variables: {
@@ -182,8 +196,50 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
+    const { cachedOrder } = this.state
+
+    const data = client.readQuery({
+      query: getOpenOrderHistory,
+      variables: {
+        openOrderInput: {
+          activeExchangeKey: this.props.selectedKey.keyId,
+          marketType: this.props.marketType,
+          allKeys: this.props.allKeys,
+          ...(!this.props.specificPair
+            ? {}
+            : { specificPair: this.props.currencyPair }),
+        },
+      },
+    })
+
+    const newOrderFromSubscription =
+      cachedOrder !== null
+        ? data.getOpenOrderHistory.find((order: OrderType) => {
+            const orderDate = isNaN(moment(+order.timestamp).unix())
+              ? order.timestamp
+              : +order.timestamp
+
+            const cachedOrderDate = Math.floor(+cachedOrder.timestamp / 1000)
+
+            return +moment(orderDate).format('X') > cachedOrderDate
+          })
+        : null
+
+    if (newOrderFromSubscription) {
+      this.setState({
+        cachedOrder: null,
+      })
+    }
+
+    const ordersToDisplay =
+      !newOrderFromSubscription && !!cachedOrder
+        ? nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.concat(
+            cachedOrder
+          )
+        : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory
+
     const openOrdersProcessedData = combineOpenOrdersTable(
-      nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory,
+      ordersToDisplay,
       this.cancelOrderWithStatus,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
@@ -194,6 +250,30 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     this.setState({
       openOrdersProcessedData,
     })
+  }
+
+  checkForCachedOrder = () => {
+    const data = client.readQuery({
+      query: getOpenOrderHistory,
+      variables: {
+        openOrderInput: {
+          activeExchangeKey: this.props.selectedKey.keyId,
+          marketType: this.props.marketType,
+          // allKeys: this.props.allKeys,
+          // ...(!this.props.specificPair ? {} : { specificPair: this.props.currencyPair }),
+        },
+      },
+    })
+
+    const cachedOrder = data.getOpenOrderHistory.find(
+      (order: OrderType) => order.marketId === '0'
+    )
+
+    if (cachedOrder) {
+      return true
+    }
+
+    return false
   }
 
   render() {
