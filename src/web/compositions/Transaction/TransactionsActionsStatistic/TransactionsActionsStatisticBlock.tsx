@@ -84,7 +84,7 @@ class Block extends PureComponent<IProps> {
           <Grid container alignItems="center" style={{ marginTop: '1rem' }}>
             <TransactionsActionsActionWrapper>
               <TransactionActionsAction>
-                <TransactionActionsHeading>P&L</TransactionActionsHeading>
+                <TransactionActionsHeading>P&L USDT</TransactionActionsHeading>
                 <TransactionActionsSubTypography
                   style={{
                     color: pnlColor,
