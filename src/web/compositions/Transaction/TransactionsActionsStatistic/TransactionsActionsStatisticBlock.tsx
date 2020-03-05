@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { getActionsSummary } from './TransactionsActionsStatistic.utils'
+import React, { PureComponent } from 'react'
 
 import { Grid } from '@material-ui/core'
 
@@ -11,71 +9,119 @@ import {
   TransactionActionsNumber,
   TransactionsActionsActionWrapper,
   TransactionActionsAction,
+  TransactionActionsHeading,
 } from './TransactionsActionsStatistic.styles'
 
-class Block extends React.Component {
-  shouldComponentUpdate(nextProps: any) {
-    const prevActions = this.props.actions.myPortfolios[0].portfolioActions
-      .tradesCount
-    const nextActions =
-      nextProps.actions.myPortfolios[0].portfolioActions.tradesCount
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
-    // console.log(prevActions, nextActions)
+export type PortfolioTradesSummaryItemType = {
+  cost: number
+  fee: {
+    bnb: number
+    usdt: number
+  }
+  count: number
+  realizedPnl: number
+}
 
-    if (prevActions === nextActions) {
-      return true
+export type PortfolioTradesSummary = {
+  _id: string
+  portfolioTradesSummary: PortfolioTradesSummaryItemType
+}
+
+export interface IProps {
+  includeFutures: boolean
+  title: string
+  portfolioTradesSummaryQuery: {
+    myPortfolios: PortfolioTradesSummary[]
+  }
+}
+
+class Block extends PureComponent<IProps> {
+  render() {
+    const { portfolioTradesSummaryQuery, title, includeFutures } = this.props
+
+    const { myPortfolios } = portfolioTradesSummaryQuery || {
+      myPortfolios: [
+        {
+          _id: '',
+          portfolioTradesSummary: {},
+        },
+      ],
     }
 
-    return false
-  }
-
-  render() {
-    const { actions, title } = this.props
-
+    const portfolioTradesSummary = myPortfolios[0].portfolioTradesSummary
     const {
-      trades = 0,
-      deposits = 0,
-      withdrawals = 0,
-    }: {
-      trades: number
-      deposits: number
-      withdrawals: number
-    } = getActionsSummary(actions.myPortfolios[0].portfolioActions.trades)
+      cost = 0,
+      fee = { bnb: 0, usdt: 0 },
+      count = 0,
+      realizedPnl = 0,
+    } = portfolioTradesSummary || {
+      cost: 0,
+      fee: {
+        bnb: 0,
+        usdt: 0,
+      },
+      count: 0,
+      realizedPnl: 0,
+    }
+
+    const pnlColor =
+      realizedPnl > 0 ? '#29AC80' : realizedPnl < 0 ? '#DD6956' : ''
+    const pnlSymbol = realizedPnl > 0 ? '+' : realizedPnl < 0 ? '-' : ''
 
     return (
       <TransactionActions>
         <Grid container justify="space-between" alignItems="flex-start">
           <TransactionActionsTypography>{title}</TransactionActionsTypography>
-          <TransactionActionsNumber>
-            {trades + deposits + withdrawals}
-          </TransactionActionsNumber>
+          <TransactionActionsNumber>{count}</TransactionActionsNumber>
         </Grid>
 
-        <Grid container alignItems="center" style={{ marginTop: '1rem' }}>
-          <TransactionsActionsActionWrapper>
-            <TransactionActionsAction>
-              <h6>Deposits</h6>
-              <TransactionActionsSubTypography>
-                {deposits}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-            <TransactionActionsAction>
-              <h6>Withdrawals</h6>
-              <TransactionActionsSubTypography>
-                {withdrawals}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-          </TransactionsActionsActionWrapper>
+        {includeFutures && (
+          <Grid container alignItems="center" style={{ marginTop: '1rem' }}>
+            <TransactionsActionsActionWrapper>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>P&L</TransactionActionsHeading>
+                <TransactionActionsSubTypography
+                  style={{
+                    color: pnlColor,
+                  }}
+                >
+                  {`${pnlSymbol} `}
+                  {formatNumberToUSFormat(
+                    stripDigitPlaces(Math.abs(realizedPnl))
+                  )}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>Fee USDT</TransactionActionsHeading>
+                <TransactionActionsSubTypography>
+                  {formatNumberToUSFormat(stripDigitPlaces(fee.usdt))}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+            </TransactionsActionsActionWrapper>
 
-          <TransactionsActionsActionWrapper>
-            <TransactionActionsAction>
-              <h6>Trades</h6>
-              <TransactionActionsSubTypography>
-                {trades}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-          </TransactionsActionsActionWrapper>
-        </Grid>
+            <TransactionsActionsActionWrapper>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>
+                  Volume USDT
+                </TransactionActionsHeading>
+                <TransactionActionsSubTypography>
+                  {formatNumberToUSFormat(stripDigitPlaces(cost))}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>Fee BNB</TransactionActionsHeading>
+                <TransactionActionsSubTypography>
+                  {formatNumberToUSFormat(stripDigitPlaces(fee.bnb))}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+            </TransactionsActionsActionWrapper>
+          </Grid>
+        )}
       </TransactionActions>
     )
   }

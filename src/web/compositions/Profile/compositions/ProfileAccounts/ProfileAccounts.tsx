@@ -64,34 +64,6 @@ const ProfileAccounts = ({
 
   return (
     <MainContainer>
-      <StatisticContainer>
-        {/* total portfolios */}
-        <PortfoliosBlock>
-          <GridTitle>total portfolios</GridTitle>
-          <PortfoliosValue>
-            <GreenValue>
-              {formatValue(countAllPortfoliosValue(allPortfoliosData))}
-            </GreenValue>
-            <BigNumberValue>{allPortfoliosData.length}</BigNumberValue>
-          </PortfoliosValue>
-        </PortfoliosBlock>
-
-        {/* summary accounts */}
-        <SummaryAccountsBlock height={'42%'}>
-          <GridTitle>summary accounts</GridTitle>
-          <AccountsValue>
-            <BigNumberValue>{portfolioAccountsData.length}</BigNumberValue>
-          </AccountsValue>
-          <AccountsChartBlock>
-            <GridTitle>chart soon</GridTitle>
-          </AccountsChartBlock>
-        </SummaryAccountsBlock>
-
-        {/* temporary empty block */}
-        <GridBlock height={'44%'}>
-          <ComingSoonBlock />
-        </GridBlock>
-      </StatisticContainer>
       <ContentContainer>
         {/* current portfolio info */}
         <CurrentPortfolioBlock>
@@ -168,6 +140,34 @@ const ProfileAccounts = ({
           />
         </GridBlock>
       </ContentContainer>
+      <StatisticContainer>
+        {/* total portfolios */}
+        <PortfoliosBlock>
+          <GridTitle>total portfolios</GridTitle>
+          <PortfoliosValue>
+            <GreenValue>
+              {formatValue(countAllPortfoliosValue(allPortfoliosData))}
+            </GreenValue>
+            <BigNumberValue>{allPortfoliosData.length}</BigNumberValue>
+          </PortfoliosValue>
+        </PortfoliosBlock>
+
+        {/* summary accounts */}
+        <SummaryAccountsBlock height={'42%'}>
+          <GridTitle>summary accounts</GridTitle>
+          <AccountsValue>
+            <BigNumberValue>{portfolioAccountsData.length}</BigNumberValue>
+          </AccountsValue>
+          {/* <AccountsChartBlock>
+            <GridTitle>chart soon</GridTitle>
+          </AccountsChartBlock> */}
+        </SummaryAccountsBlock>
+
+        {/* temporary empty block */}
+        {/* <GridBlock height={'44%'}>
+          <ComingSoonBlock />
+        </GridBlock> */}
+      </StatisticContainer>
     </MainContainer>
   )
 }

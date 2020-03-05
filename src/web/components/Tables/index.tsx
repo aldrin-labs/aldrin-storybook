@@ -574,7 +574,6 @@ const CustomTable = (props: Props) => {
     toggleAutoRefetch,
     stylesForTable,
     paperAdditionalStyle = '',
-    isCustomStyleForFooter,
     hideCommonCheckbox = false,
   } = props
 

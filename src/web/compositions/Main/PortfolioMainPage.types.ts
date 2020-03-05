@@ -4,6 +4,8 @@ import {
   DustFilterType,
   SharePortfolioMutationType,
 } from '@core/types/PortfolioTypes'
+import { Key } from '@sb/compositions/Portfolio/Portfolio.types'
+
 
 export interface IState {
   key: number
@@ -18,4 +20,5 @@ export interface IProps extends TooltipMutationType, TooltipQueryType {
   sharePortfolioMutation: SharePortfolioMutationType
   portfolioId: string
   portfolioName: string
+  portfolioKeys: Key[]
 }
