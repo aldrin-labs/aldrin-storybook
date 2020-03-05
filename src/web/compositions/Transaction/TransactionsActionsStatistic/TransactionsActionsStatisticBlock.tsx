@@ -17,7 +17,6 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-
 export type PortfolioTradesSummaryItemType = {
   cost: number
   fee: {
@@ -34,6 +33,7 @@ export type PortfolioTradesSummary = {
 }
 
 export interface IProps {
+  includeFutures: boolean
   title: string
   portfolioTradesSummaryQuery: {
     myPortfolios: PortfolioTradesSummary[]
@@ -42,7 +42,7 @@ export interface IProps {
 
 class Block extends PureComponent<IProps> {
   render() {
-    const { portfolioTradesSummaryQuery, title } = this.props
+    const { portfolioTradesSummaryQuery, title, includeFutures } = this.props
 
     const { myPortfolios } = portfolioTradesSummaryQuery || {
       myPortfolios: [
@@ -80,42 +80,48 @@ class Block extends PureComponent<IProps> {
           <TransactionActionsNumber>{count}</TransactionActionsNumber>
         </Grid>
 
-        <Grid container alignItems="center" style={{ marginTop: '1rem' }}>
-          <TransactionsActionsActionWrapper>
-            <TransactionActionsAction>
-              <TransactionActionsHeading>P&L</TransactionActionsHeading>
-              <TransactionActionsSubTypography
-                style={{
-                  color: pnlColor,
-                }}
-              >
-                {`${pnlSymbol} `}
-                {formatNumberToUSFormat(stripDigitPlaces(Math.abs(realizedPnl)))}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-            <TransactionActionsAction>
-              <TransactionActionsHeading>Fee USDT</TransactionActionsHeading>
-              <TransactionActionsSubTypography>
-                {fee.usdt.toFixed(2)}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-          </TransactionsActionsActionWrapper>
+        {includeFutures && (
+          <Grid container alignItems="center" style={{ marginTop: '1rem' }}>
+            <TransactionsActionsActionWrapper>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>P&L</TransactionActionsHeading>
+                <TransactionActionsSubTypography
+                  style={{
+                    color: pnlColor,
+                  }}
+                >
+                  {`${pnlSymbol} `}
+                  {formatNumberToUSFormat(
+                    stripDigitPlaces(Math.abs(realizedPnl))
+                  )}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>Fee USDT</TransactionActionsHeading>
+                <TransactionActionsSubTypography>
+                  {formatNumberToUSFormat(stripDigitPlaces(fee.usdt))}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+            </TransactionsActionsActionWrapper>
 
-          <TransactionsActionsActionWrapper>
-            <TransactionActionsAction>
-              <TransactionActionsHeading>Volume USDT</TransactionActionsHeading>
-              <TransactionActionsSubTypography>
-                {cost.toFixed(2)}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-            <TransactionActionsAction>
-              <TransactionActionsHeading>Fee BNB</TransactionActionsHeading>
-              <TransactionActionsSubTypography>
-                {fee.bnb.toFixed(2)}
-              </TransactionActionsSubTypography>
-            </TransactionActionsAction>
-          </TransactionsActionsActionWrapper>
-        </Grid>
+            <TransactionsActionsActionWrapper>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>
+                  Volume USDT
+                </TransactionActionsHeading>
+                <TransactionActionsSubTypography>
+                  {formatNumberToUSFormat(stripDigitPlaces(cost))}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+              <TransactionActionsAction>
+                <TransactionActionsHeading>Fee BNB</TransactionActionsHeading>
+                <TransactionActionsSubTypography>
+                  {formatNumberToUSFormat(stripDigitPlaces(fee.bnb))}
+                </TransactionActionsSubTypography>
+              </TransactionActionsAction>
+            </TransactionsActionsActionWrapper>
+          </Grid>
+        )}
       </TransactionActions>
     )
   }
