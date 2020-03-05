@@ -44,4 +44,5 @@ export interface IProps extends WithTheme<Theme> {
 
 export interface IState {
   openOrdersProcessedData: any[]
+  cachedOrder: OrderType | null
 }
