@@ -1,76 +1,50 @@
 import React from 'react'
-import * as UTILS from '@core/utils/PortfolioSelectorUtils'
 import moment from 'moment'
-import { cloneDeep } from 'lodash-es'
-
-import { client } from '@core/graphql/apolloClient'
+import { Link, withRouter } from 'react-router-dom'
 
 import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
-
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
 import { Grid } from '@material-ui/core'
 import {
-  GridContainerTitle,
-  TypographyContatinerTitle,
   GridItemContainer,
-  TypographyAccountTitle,
-  ContentGrid,
-  GridShowHideDataContainer,
-  GridAccountContainer,
   GridTableContainer,
-  PortfolioSelectorWrapper,
   TransactionsPageMediaQuery,
   GridCalendarContainer,
 } from './TransactionPage.styles'
 
 import TradeOrderHistory from '@core/containers/TradeOrderHistory/TradeOrderHistoryWrapper'
 
-import Accounts from '@sb/components/Accounts/Accounts'
-// import PortfolioSelector from './PortfolioSelector/PortfolioSelector'
-import AccountsSlick from './AccountsSlick/AccountsSlick'
-import ShowHideData from './ShowHideData/ShowHideData'
-
 import TransactionsActionsStatistic from './TransactionsActionsStatistic/TransactionsActionsStatistic'
-import WinLossRatio from './WinLossRatio'
 
 import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 
-import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
-import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
-import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
-
-import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
-import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
-import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
-import SvgIcon from '@sb/components/SvgIcon'
-import TransactionsAccountsBackground from '@icons/TransactionsAccountsBg.svg'
 import { graphql } from 'react-apollo'
 
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { transactionsPageSteps } from '@sb/config/joyrideSteps'
 import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseYear'
+import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
+
+
+const TransactionsSpotLink = (props: any) => <Link to="/portfolio/transactions/spot" {...props} />
+const TransactionsFuturesLink = (props: any) => <Link to="/portfolio/transactions/futures" {...props} />
 
 @withTheme
+@withRouter
 class TransactionPage extends React.PureComponent {
   state = {
-    includeExchangeTransactions: true,
-    includeTrades: true,
-    includeFutures: true,
     filterCoin: '',
     inputValue: '',
     concreteDaySelected: false,
-    pageType: 'SPOT',
 
     gitCalendarDate: {
       startDate: moment().startOf('year'),
@@ -85,12 +59,6 @@ class TransactionPage extends React.PureComponent {
       focusedInput: null,
     },
   }
-
-  togglePageType = () =>
-    this.setState((prevState) => ({
-      pageType: prevState.pageType === 'SPOT' ? 'FUTURES' : 'SPOT',
-    }))
-
   updateFilterCoin = (inputValue: string) => {
     this.setState({ filterCoin: inputValue })
   }
@@ -171,88 +139,11 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
-  updateSettings = async (
-    objectForMutation: any,
-    type: string,
-    toggledKeyID: string
-  ) => {
-    const { updatePortfolioSettings } = this.props
-    const {
-      portfolio: { baseCoin },
-    } = client.readQuery({
-      query: GET_BASE_COIN,
-    })
-    const data = client.readQuery({
-      query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin },
-    })
-
-    const clonedData = cloneDeep(data)
-
-    const { keys, rebalanceKeys } = UTILS.updateDataSettings(
-      clonedData,
-      type,
-      toggledKeyID
-    )
-    UTILS.updateSettingsLocalCache(clonedData, keys, rebalanceKeys) // Для того, чтобы писать в кэш напрямую до мутации
-
-    try {
-      await updatePortfolioSettings({
-        variables: objectForMutation,
-      })
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
-
-  onKeyToggle = async (toggledKeyID: string) => {
-    const { portfolioId } = this.props
-    const type = 'keyCheckboxes'
-    const {
-      portfolio: { baseCoin },
-    } = client.readQuery({
-      query: GET_BASE_COIN,
-    })
-    const { myPortfolios } = client.readQuery({
-      query: portfolioKeyAndWalletsQuery,
-      variables: { baseCoin },
-    })
-
-    const keys = myPortfolios[0].userSettings.keys
-
-    const objForQuery = {
-      settings: {
-        portfolioId,
-        selectedKeys: UTILS.getArrayContainsOnlySelected(keys, toggledKeyID),
-      },
-    }
-
-    await this.updateSettings(objForQuery, type, toggledKeyID)
-  }
-
-  onKeysSelectAll = async () => {
-    const { portfolioId, keys, isRebalance } = this.props
-    const type = 'keyAll'
-
-    const objForQuery = {
-      settings: {
-        portfolioId,
-        [isRebalance
-          ? 'selectedRebalanceKeys'
-          : 'selectedKeys']: UTILS.getArrayContainsAllSelected(keys),
-      },
-    }
-
-    await this.updateSettings(objForQuery, type)
-  }
-
   handleJoyrideCallback = async (data: any) => {
     const {
       updateTooltipSettings,
       getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
-
-    console.log('Handle Joyride')
 
     await updateTooltipSettings({
       variables: {
@@ -267,160 +158,94 @@ class TransactionPage extends React.PureComponent {
 
   render() {
     const {
-      theme,
-      hideSelector,
-      newWallets = [],
-      keys = [],
-      activeKeys = [],
-      activeWallets = [],
-      portfolioKeys,
-      isCustomStyleForFooter,
+      location: { pathname },
       getTooltipSettingsQuery: {
         getTooltipSettings: { transactionPage },
       },
     } = this.props
 
     const {
-      includeExchangeTransactions,
-      includeTrades,
-      includeFutures,
       gitCalendarDate,
       tradeOrderHistoryDate,
       inputValue,
       filterCoin,
       concreteDaySelected,
-      pageType,
     } = this.state
 
-    const color = theme.palette.secondary.main
-    const login = true
-    const isSideNavOpen = true
-
-    const {
-      totalKeyAssetsData,
-      portfolioAssetsData,
-      portfolioAssetsMap,
-    } = getPortfolioAssetsData(
-      portfolioKeys.myPortfolios
-        ? portfolioKeys.myPortfolios[0].portfolioAssets
-        : [],
-      'USDT'
-    )
-
-    const { name, _id } = portfolioKeys.myPortfolios
-      ? portfolioKeys.myPortfolios[0]
-      : {
-          _id: null,
-          name: undefined,
-        }
-
-    const isCheckedAll =
-      activeKeys.length + activeWallets.length ===
-      keys.length + newWallets.length
+    const pageType = /spot/.test(pathname) ? 'SPOT' : /futures/.test(pathname) ? 'FUTURES' : ''
 
     return (
       <>
         <TransactionsPageMediaQuery />
+        <StyleForCalendar />
         <Grid
           container
           justify="space-between"
           style={{
-            padding: !hideSelector && '2vh 5% 0 5px',
+            padding: '2vh 5% 0 5px',
             overflow: 'hidden',
             flexWrap: 'nowrap',
             height: '84vh',
           }}
-          // borderColor={`1px solid ${theme.palette.grey[theme.palette.type]}`}
         >
-          {/* Accounts */}
-          {!hideSelector && (
-            <Grid item lg={2} md={2}>
-              <GridAccountContainer id="accountsTransactions">
-                <GridContainerTitle
-                  bgColor={theme.palette.primary.dark}
-                  // content
-                  // alignItems="center"
-                >
-                  <TypographyContatinerTitle
-                    textColor={theme.palette.text.subPrimary}
-                  >
-                    accounts
-                  </TypographyContatinerTitle>
-                </GridContainerTitle>
-                <ContentGrid>
-                  <PortfolioSelectorWrapper>
-                    <SvgIcon
-                      src={TransactionsAccountsBackground}
-                      style={{
-                        position: 'absolute',
-                        top: '-4rem',
-                        left: 0,
-                      }}
-                      width="100%"
-                      height="20rem"
-                    />
-                    <TypographyAccountTitle>Portfolio</TypographyAccountTitle>
-                    <AccountsSlick
-                      totalKeyAssetsData={totalKeyAssetsData}
-                      currentName={name}
-                      currentId={_id}
-                      baseCoin={'USDT'}
-                    />
-                  </PortfolioSelectorWrapper>
-
-                  <Grid style={{ height: '60vh' }}>
-                    <Accounts
-                      {...{
-                        color,
-                        login,
-                        isSideNavOpen,
-                        isCheckedAll,
-                        baseCoin: 'USDT',
-                        keys,
-                        isTransactions: true,
-                        portfolioAssetsData: portfolioAssetsData,
-                        portfolioAssetsMap,
-                        isRebalance: false,
-                        onKeysSelectAll: this.onKeysSelectAll,
-                        onKeyToggle: this.onKeyToggle,
-                      }}
-                    />
-                  </Grid>
-                </ContentGrid>
-                <GridShowHideDataContainer>
-                  <ShowHideData
-                    handleChangeShowHideOptions={
-                      this.handleChangeShowHideOptions
-                    }
-                    includeExchangeTransactions={includeExchangeTransactions}
-                    includeTrades={includeTrades}
-                    includeFutures={includeFutures}
-                  />
-                </GridShowHideDataContainer>
-              </GridAccountContainer>
-            </Grid>
-          )}
-
           <GridItemContainer
             item
-            lg={hideSelector ? 9 : 8}
-            md={hideSelector ? 9 : 8}
+            lg={10}
+            md={10}
             style={{
               boxShadow: 'none',
               border: 'none',
-              paddingLeft: !hideSelector && '1.5rem',
+              paddingLeft: '1.5rem',
             }}
           >
             <Grid item style={{ height: '100%' }}>
-              {!hideSelector && (
-                <GridCalendarContainer item xs={12} id="calendarTransactions">
+              <Grid container style={{ height: '30%' }}>
+                <GridCalendarContainer
+                  item
+                  xs={3}
+                  id="choosePeriod"
+                  style={{
+                    background: 'none',
+                    boxShadow: 'none',
+                    border: 'none',
+                    margin: 0,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '0 2rem 2rem 0',
+                  }}
+                >
+                  <Grid container style={{ padding: '0 0 2rem 0' }}>
+                    <PillowButton
+                      containerStyle={{ width: '100%', margin: 0 }}
+                      buttonAdditionalStyle={{ width: '50%', height: '3rem' }}
+                      firstHalfText={'spot'}
+                      secondHalfText={'futures'}
+                      firstHalfComponent={TransactionsSpotLink}
+                      secondHalfComponent={TransactionsFuturesLink}
+                      activeHalf={pageType === 'SPOT' ? 'first' : 'second'}
+                      changeHalf={() => {}}
+                    />
+                  </Grid>
+                  <GitCalendarChooseYear
+                    {...{
+                      ...gitCalendarDate,
+                      onDateButtonClick: this.onGitCalendarDateClick,
+                    }}
+                  />
+                </GridCalendarContainer>
+                <GridCalendarContainer
+                  item
+                  xs={9}
+                  id="calendarTransactions"
+                  style={{ position: 'relative' }}
+                >
                   <GitTransactionCalendar
                     {...{
                       ...gitCalendarDate,
                       tradeOrderHistoryDate,
                       concreteDaySelected,
                       pageType,
-                      togglePageType: this.togglePageType,
                       onDateButtonClick: this.onDateButtonClick,
                       onFocusChange: this.onFocusChange,
                       onDatesChange: this.onDatesChange,
@@ -429,48 +254,55 @@ class TransactionPage extends React.PureComponent {
                     }}
                   />
                 </GridCalendarContainer>
-              )}
+              </Grid>
 
-              <GridTableContainer item xs={12} id="tableTransactions">
-                <TradeOrderHistory
-                  isCustomStyleForFooter={isCustomStyleForFooter}
-                  style={{ overflow: 'scroll' }}
-                  includeExchangeTransactions={
-                    pageType === 'SPOT' && includeExchangeTransactions
-                  }
-                  includeTrades={pageType === 'SPOT' && includeTrades}
-                  includeFutures={pageType === 'FUTURES'}
-                  handleChangeShowHideOptions={this.handleChangeShowHideOptions}
-                  inputValue={inputValue}
-                  filterCoin={filterCoin}
-                  onInputChange={this.onInputChange}
-                  updateFilterCoin={this.updateFilterCoin}
-                  startDate={tradeOrderHistoryDate.startDate}
-                  endDate={tradeOrderHistoryDate.endDate}
-                />
-              </GridTableContainer>
+              <Grid container style={{ height: '100%' }}>
+                <GridTableContainer item xs={12} id="tableTransactions">
+                  <TradeOrderHistory
+                    includeExchangeTransactions={false}
+                    includeTrades={pageType === 'SPOT'}
+                    includeFutures={pageType === 'FUTURES'}
+                    handleChangeShowHideOptions={
+                      this.handleChangeShowHideOptions
+                    }
+                    inputValue={inputValue}
+                    filterCoin={filterCoin}
+                    onInputChange={this.onInputChange}
+                    updateFilterCoin={this.updateFilterCoin}
+                    startDate={tradeOrderHistoryDate.startDate}
+                    endDate={tradeOrderHistoryDate.endDate}
+                    {...{
+                      tradeOrderHistoryDate,
+                      concreteDaySelected,
+                      pageType,
+                      onDateButtonClick: this.onDateButtonClick,
+                      onFocusChange: this.onFocusChange,
+                      onDatesChange: this.onDatesChange,
+                      onHeatmapDateClick: this.onHeatmapDateClick,
+                      activeDateButton: tradeOrderHistoryDate.activeDateButton,
+                    }}
+                  />
+                </GridTableContainer>
+              </Grid>
             </Grid>
           </GridItemContainer>
 
           <GridItemContainer
             item
-            lg={hideSelector ? 3 : 2}
-            md={hideSelector ? 3 : 2}
+            lg={2}
+            md={2}
             id="statisticTransactions"
             style={{
               boxShadow: 'none',
               border: 'none',
               paddingLeft: '1.5rem',
-              paddingTop: hideSelector ? '4rem' : '0',
+              paddingTop: '0',
             }}
           >
-            <GitCalendarChooseYear
-              {...{
-                ...gitCalendarDate,
-                onDateButtonClick: this.onGitCalendarDateClick,
-              }}
+            <TransactionsActionsStatistic
+              includeTrades={pageType === 'SPOT'}
+              includeFutures={pageType === 'FUTURES'}
             />
-            <TransactionsActionsStatistic />
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
@@ -487,67 +319,12 @@ class TransactionPage extends React.PureComponent {
 
 export default compose(
   queryRendererHoc({
-    query: getPortfolioAssets,
-    name: 'portfolioKeys',
-    pollInterval: 30000,
-    fetchPolicy: "cache-and-network",
-    variables: { baseCoin: 'USDT', innerSettings: true },
-  }),
-  // graphql(getPortfolioAssets, {
-  //   name: 'portfolioKeys',
-  //   options: {
-  //     variables: { baseCoin: 'USDT', innerSettings: true },
-  //     pollInterval: 30000,
-  //   },
-  // }),
-  queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettings',
-  }),
-  graphql(updatePortfolioSettingsMutation, {
-    name: 'updatePortfolioSettings',
-    options: ({ baseCoin }) => ({
-      refetchQueries: [
-        // {
-        //   query: portfolioKeyAndWalletsQuery,
-        //   variables: { baseCoin },
-        // },
-        { query: getMyPortfoliosQuery, variables: { baseCoin } },
-        { query: getPortfolioMainQuery, variables: { baseCoin } },
-        {
-          query: getPortfolioAssets,
-          variables: { baseCoin, innerSettings: true },
-        },
-        {
-          query: getPortfolioAssets,
-          variables: { baseCoin, innerSettings: false },
-        },
-        // {
-        //   query: MyTradesQuery,
-        //   variables: {
-        //     input: {
-        //       page: 0,
-        //       perPage: 600,
-        //       startDate: +moment().subtract(1, 'weeks'),
-        //       endDate: +moment().endOf('day'),
-        //     },
-        //   },
-        // },
-        // {
-        //   query: getCalendarActions,
-        //   variables: {
-        //     input: {
-        //       startDate: +moment().subtract(1, 'weeks'),
-        //       endDate: +moment().endOf('day'),
-        //     },
-        //   },
-        // },
-      ],
-    }),
   })
 )(TransactionPage)
