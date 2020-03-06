@@ -390,7 +390,7 @@ class OrderbookAndDepthChart extends React.Component {
 export const APIWrapper = ({
   chartProps,
   changeTable,
-  aggregation,
+  isPairDataLoading,
   marketType,
   exchange,
   minPriceDigits,
@@ -420,7 +420,6 @@ export const APIWrapper = ({
         quote,
         symbol,
         exchange,
-        aggregation,
         marketType,
         sizeDigits,
         selectedKey,
@@ -431,6 +430,7 @@ export const APIWrapper = ({
         updateTerminalPriceFromOrderbook,
         ...chartProps,
       }}
+      isDataLoading={isPairDataLoading}
     />
   )
 }

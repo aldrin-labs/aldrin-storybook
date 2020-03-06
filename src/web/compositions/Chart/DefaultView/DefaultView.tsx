@@ -61,6 +61,7 @@ export const DefaultView = (props: any) => {
     terminalViewMode,
     updateTerminalViewMode,
     arrayOfMarketIds,
+    isPairDataLoading,
     quantityPrecision,
     pricePrecision,
   } = props
@@ -154,6 +155,7 @@ export const DefaultView = (props: any) => {
                     pair: currencyPair,
                     exchange,
                     quote,
+                    isPairDataLoading,
                     minPriceDigits,
                     arrayOfMarketIds,
                     updateTerminalPriceFromOrderbook,
