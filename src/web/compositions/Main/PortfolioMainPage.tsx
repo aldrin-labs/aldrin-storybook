@@ -253,9 +253,6 @@ export default compose(
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
-    options: {
-      update: updateTooltipMutation,
-    },
   }),
   graphql(sharePortfolio, {
     name: 'sharePortfolioMutation',
