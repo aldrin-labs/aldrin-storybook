@@ -103,9 +103,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
   }
 
   cancelOrderWithStatus = async (strategyId: string, keyId: string) => {
-    const {
-      showCancelResult,
-    } = this.props
+    const { showCancelResult } = this.props
 
     const result = await this.onCancelOrder(keyId, strategyId)
 
@@ -332,8 +330,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         },
       })
     } catch (e) {
+      // console.log(e)
       data = getActiveStrategiesQuery
     }
+
+    // console.log('data.getActiveStrategies', data.getActiveStrategies)
 
     // if order have timestamp greater than cached order - it's new order
     const newOrderFromSubscription =
