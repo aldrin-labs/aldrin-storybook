@@ -5,6 +5,9 @@ import {
   GradientDefs,
   makeVisFlexible,
 } from 'react-vis'
+import 'react-vis/dist/style.css'
+
+
 import { darken } from '@material-ui/core/styles/colorManipulator'
 
 const Chart = makeVisFlexible(RadialChart)
@@ -86,13 +89,11 @@ export class FlexibleChart extends Component<Props, State>{
         innerRadius={this.state.chartRadius * (1 - 1 / thicknessCoefficient)}
         animation={true}
         colorType={'literal'}
-        getColor={(d: any) => `url(#${d.colorIndex})`}
+        getColor={(d: any) => {
+          return colorsWithRandom[d.colorIndex]}
+        }
         onValueMouseOver={(v: DonutPiece) => onValueMouseOver(v)}
         onSeriesMouseOut={() => onSeriesMouseOut()}
-        style={{
-          strokeWidth: strokeWidth ? strokeWidth : DEFAULT_CHART_STROKE_WIDTH
-        }}
-
         width={width}
         height={height}
         >
