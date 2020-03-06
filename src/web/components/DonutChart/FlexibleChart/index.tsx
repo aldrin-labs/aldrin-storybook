@@ -5,7 +5,7 @@ import {
   GradientDefs,
   makeVisFlexible,
 } from 'react-vis'
-import 'react-vis/dist/styles.css'
+import 'react-vis/dist/style.css'
 
 
 import { darken } from '@material-ui/core/styles/colorManipulator'
