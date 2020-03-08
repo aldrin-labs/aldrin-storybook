@@ -14,7 +14,7 @@ class GitTransactionCalendarWrapper extends React.PureComponent {
     return (
       <>
         {/* TODO: Fix this when fixing layout */}
-        <div style={{ position: 'relative', height: '25vh' }} ref={wrapperRef}>
+        <div style={{ padding: '2rem' }} ref={wrapperRef}>
           <Calendar wrapperRef={wrapperRef} {...this.props} />
         </div>
       </>

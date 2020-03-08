@@ -43,19 +43,19 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
       count,
       handleChangePage,
       handleChangeRowsPerPage,
-      isCustomStyleForFooter,
       defaultSort,
+      title,
     } = this.props
 
     return (
       <StyledTable
+        title={title}
         defaultSort={defaultSort}
-        isCustomStyleForFooter={isCustomStyleForFooter}
         style={{
           height: 'calc(100% - 3rem)',
           // position: 'relative',
           overflowY: 'scroll',
-          overflowX: 'hidden',
+          overflowX: 'scroll',
           borderTopLeftRadius: '0',
           borderTopRightRadius: '0',
         }}
@@ -95,6 +95,10 @@ class TradeOrderHistoryTable extends React.Component<IProps> {
             textTransform: 'uppercase',
             letterSpacing: 0.5,
             color: '#7284A0',
+          },
+          tab: {
+            padding: 0,
+            boxShadow: 'none',
           },
         }}
       />

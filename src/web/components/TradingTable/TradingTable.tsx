@@ -23,6 +23,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     tabIndex: 0,
     tab: 'activeTrades',
     canceledOrders: [],
+    showAllPositionPairs: false,
+    showAllOpenOrderPairs: false,
+    showAllSmartTradePairs: false,
+    showPositionsFromAllAccounts: true,
+    showOpenOrdersFromAllAccounts: true,
+    showSmartTradesFromAllAccounts: true,
   }
 
   handleTabChange = (tab: string | any) => {
@@ -42,7 +48,17 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 
   render() {
-    const { tab, canceledOrders } = this.state
+    const {
+      tab,
+      canceledOrders,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
+    } = this.state
+
     const {
       selectedKey,
       marketType,
@@ -56,6 +72,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 
     return (
       <div
+        id="tables"
         style={{
           height: '100%',
           backgroundColor: '#fff',
@@ -75,6 +92,20 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             pricePrecision,
             quantityPrecision,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            handleToggleAllKeys: () =>
+              this.setState((prev) => ({
+                showSmartTradesFromAllAccounts: !prev.showSmartTradesFromAllAccounts,
+              })),
+            handleToggleSpecificPair: () =>
+              this.setState((prev) => ({
+                showAllSmartTradePairs: !prev.showAllSmartTradePairs,
+              })),
             show: tab === 'activeTrades',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -89,6 +120,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             canceledOrders,
             arrayOfMarketIds,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
             show: tab === 'strategiesHistory',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -105,8 +142,22 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             pricePrecision,
             quantityPrecision,
-            show: tab === 'positions',
             priceFromOrderbook,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            handleToggleAllKeys: () =>
+              this.setState((prev) => ({
+                showPositionsFromAllAccounts: !prev.showPositionsFromAllAccounts,
+              })),
+            handleToggleSpecificPair: () =>
+              this.setState((prev) => ({
+                showAllPositionPairs: !prev.showAllPositionPairs,
+              })),
+            show: tab === 'positions',
             handleTabChange: this.handleTabChange,
             showOrderResult: this.props.showOrderResult,
             showCancelResult: this.props.showCancelResult,
@@ -122,6 +173,20 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             canceledOrders,
             currencyPair,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            handleToggleAllKeys: () =>
+              this.setState((prev) => ({
+                showOpenOrdersFromAllAccounts: !prev.showOpenOrdersFromAllAccounts,
+              })),
+            handleToggleSpecificPair: () =>
+              this.setState((prev) => ({
+                showAllOpenOrderPairs: !prev.showAllOpenOrderPairs,
+              })),
             show: tab === 'openOrders',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
@@ -137,6 +202,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             canceledOrders,
             currencyPair,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -149,6 +220,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             canceledOrders,
             currencyPair,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
           }}
@@ -161,6 +238,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             canceledOrders,
             arrayOfMarketIds,
             currencyPair,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
             show: tab === 'funds',
             handleTabChange: this.handleTabChange,
           }}

@@ -3,7 +3,7 @@ import { StyledSlider, StyledLock } from './Slider.styles'
 import { TooltipCustom } from '@sb/components/index'
 
 const Slider = (props: any) => (
-  <div style={{ position: 'relative', height: '1.7rem' }}>
+  <div className="sliderContainer" style={{ position: 'relative', height: '1.7rem' }}>
     <TooltipCustom
       title={props.disabledText || 'This slider is temporary locked'}
       placement="top"
