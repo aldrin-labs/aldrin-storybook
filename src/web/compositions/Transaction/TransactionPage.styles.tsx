@@ -53,13 +53,11 @@ export const GridItemContainer = styled(Grid)`
 `
 
 export const GridCalendarContainer = styled(Grid)`
-  height: 30%;
-  box-shadow: 0px 0px 0.4rem rgba(10, 19, 43, 0.1);
+  height: calc(100% - 2rem);
+  box-shadow: 0 0 2rem rgba(8,22,58,0.1);
   background-color: #fff;
   border: 0.1rem solid #e0e5ec;
   border-radius: 1.5rem;
-  margin-bottom: 1%;
-  padding: 0 2rem;
 `
 
 export const ContentGrid = styled(Grid)`
@@ -146,8 +144,9 @@ export const GridShowHideDataContainer = styled(Grid)`
   position: absolute;
   bottom: 0;
   min-width: 100%;
-  padding: 2rem 1.25rem;
+  padding: 2rem 1.5rem 2rem 1rem;
   display: flex;
+  background: #fff;
 `
 
 export const TypographyCalendarLegend = styled(Typography)`
@@ -181,10 +180,10 @@ export const LessMoreContainer = styled(Grid)`
 
 export const GridTableContainer = styled(Grid)`
   position: relative;
-  box-shadow: 0px 0px 0.4rem rgba(10, 19, 43, 0.1);
+  box-shadow: 0 0 2rem rgba(8,22,58,0.1);
   border-radius: 1.5rem;
   border: 0.1rem solid #e0e5ec;
-  height: 68.5%;
+  height: 67.5%;
   ::-webkit-scrollbar {
     display: none;
   }

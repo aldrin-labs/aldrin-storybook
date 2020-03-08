@@ -48,7 +48,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
 
     const switchUSDBTC = pathname === '/portfolio/main'
     const isMainPage = pathname === '/portfolio/main'
-    const isTransactionsPage = pathname === '/portfolio/transactions'
+    const isTransactionsPage = /portfolio\/transactions/.test(pathname)
     const isRebalancePage = pathname === '/portfolio/rebalance'
 
     return (
@@ -96,12 +96,11 @@ class PortfolioTableTabs extends React.Component<IProps> {
 
         {isTransactionsPage ? (
           <StyledLeftButton
-            key={'P&L'}
-            component={Link}
-            to="/portfolio/main"
+            key={'trAccPanel'}
+            onClick={() => toggleWallets()}
             id="accountsPanel"
           >
-            P&L
+            Accounts
           </StyledLeftButton>
         ) : null}
 

@@ -281,8 +281,6 @@ export const combinePositionsTable = ({
       const { symbol, entryPrice, positionAmt, leverage = 1 } = el
       const needOpacity = el._id === '0'
 
-      console.log('prices', prices, el)
-
       const marketPrice = (
         prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
           price: 0,
@@ -290,7 +288,7 @@ export const combinePositionsTable = ({
       ).price
 
       const getVariables = (type: String, price: Number) => ({
-        keyId,
+        keyId: el.keyId,
         keyParams: {
           symbol,
           side: positionAmt < 0 ? 'buy' : 'sell',
@@ -729,7 +727,7 @@ export const combineActiveTradesTable = ({
               transition={'all .4s ease-out'}
               onClick={(e) => {
                 e.stopPropagation()
-                cancelOrderFunc(el._id)
+                cancelOrderFunc(el._id, el.accountId)
               }}
             >
               {activeOrderStatus === 'Preparing' ||
@@ -1130,7 +1128,7 @@ export const combineOpenOrdersTable = (
       const origQty = (el.info && el.info.origQty) || el.origQty
       const timestamp = el.timestamp || el.updateTime
 
-      const needOpacity = el.status === 'placing'
+      const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
       const type = orderType.toLowerCase().replace(/-/g, '_')
 
@@ -1500,7 +1498,7 @@ export const combineTradeHistoryTable = (
       const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
-        id: id,
+        id: `${id}_${timestamp}_${amount}`,
         pair: {
           render: (
             <div style={{ display: 'flex', alignItems: 'center' }}>

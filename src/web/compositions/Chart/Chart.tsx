@@ -190,12 +190,14 @@ class Chart extends React.Component<IProps, IState> {
     let quantityPrecision
     let pricePrecision
 
-    if (
+    const isPairDataLoading =
       !pair ||
       this.props.loading ||
       !pairPropertiesQuery.marketByName ||
-      !pairPropertiesQuery.marketByName[0]
-    ) {
+      !pairPropertiesQuery.marketByName[0] ||
+      pairPropertiesQuery.networkStatus === 2
+
+    if (isPairDataLoading) {
       minPriceDigits = 0.00000001
       quantityPrecision = 3
     } else {
@@ -205,7 +207,7 @@ class Chart extends React.Component<IProps, IState> {
       quantityPrecision = +this.props.pairPropertiesQuery.marketByName[0]
         .properties.binance.quantityPrecision
 
-        pricePrecision = +this.props.pairPropertiesQuery.marketByName[0]
+      pricePrecision = +this.props.pairPropertiesQuery.marketByName[0]
         .properties.binance.pricePrecision
     }
 
@@ -247,6 +249,7 @@ class Chart extends React.Component<IProps, IState> {
             pricePrecision={pricePrecision}
             quantityPrecision={quantityPrecision}
             minPriceDigits={minPriceDigits}
+            isPairDataLoading={isPairDataLoading}
             themeMode={themeMode}
             selectedKey={
               selectedTradingKey ? { keyId: selectedTradingKey } : { keyId: '' }

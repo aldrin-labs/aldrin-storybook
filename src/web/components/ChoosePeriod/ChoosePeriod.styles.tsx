@@ -3,22 +3,36 @@ import styled from 'styled-components'
 
 import { Grid, Typography } from '@material-ui/core'
 
+export const ChooseYearWrapper = styled(({ ...rest }) => <Grid {...rest} />)`
+  padding: 2rem;
+  background: #fff;
+  border: 0.1rem solid #e0e5ec;
+  box-shadow: 0 0 2rem rgba(8, 22, 58, 0.1);
+  border-radius: 2rem;
+  flex: 1 1 auto;
+`
+
+export const ChooseYearTypography = styled(({ ...rest }) => (
+  <Typography {...rest} />
+))`
+  padding-bottom: 2rem;
+  text-transform: uppercase;
+  font-family: 'DM Sans';
+  color: #91a0b6;
+  letter-spacing: 1.5px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+`
+
 export const ChoosePeriodWrapper = styled(({ isTableCalendar, ...rest }) => (
   <Grid {...rest} />
 ))`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-
-  ${(props) =>
-    !props.isTableCalendar && {
-      padding: '.5rem .825rem',
-      background: '#fff',
-      border: '.1rem solid #e0e5ec',
-      boxShadow: '0 0 2rem rgba(8, 22, 58, 0.1)',
-      borderRadius: '2rem',
-    }}
+  justify-content: flex-end;
+  background: #f2f4f6;
+  padding: 0.5rem 2rem;
 `
 
 export const ChoosePeriodButton = styled.button`
@@ -39,8 +53,8 @@ export const ChoosePeriodButton = styled.button`
   white-space: nowrap;
 
   color: ${(props) => (props.active ? '#fff' : '#7284A0')};
-  background-color: ${(props) => (props.active ? '#0B1FD1' : 'transparent')};
-  border: 1.3px solid ${(props) => (props.active ? '#0B1FD1' : '#E0E5EC')};
+  background-color: ${(props) => (props.active ? '#0B1FD1' : '#fff')};
+  border: 1.3px solid ${(props) => (props.active ? '#0B1FD1' : '#0B1FD1')};
 
   &:not(:last-child) {
     margin-right: 0.75rem;
@@ -57,11 +71,11 @@ export const ChoosePeriodButton = styled.button`
   }
 `
 export const ChoosePeriodArrow = styled(ChoosePeriodButton)`
+  width: 30%;
   background-color: #165be0;
 `
 
 export const ChoosePeriodTypography = styled(Typography)`
-  font-family: 'DM Sans';
   font-size: 1.175rem;
   line-height: 114.5%;
 

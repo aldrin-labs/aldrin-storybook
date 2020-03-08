@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import { IProps } from './TradingTabs.types'
 import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
@@ -32,6 +32,7 @@ const TradingTabs = ({
   canceledOrders,
   arrayOfMarketIds,
   currencyPair,
+  changeTab,
   subscribeToMore,
   ...props
 }: IProps) => {
@@ -62,7 +63,9 @@ const TradingTabs = ({
       })
   ).length
 
-  const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(a => a !== null && a.enabled).length
+  const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(
+    (a) => a !== null && a.enabled
+  ).length
 
   return (
     <>
@@ -87,7 +90,9 @@ const TradingTabs = ({
         {!isSPOTMarketType(marketType) && (
           <TitleTab
             active={tab === 'positions'}
-            onClick={() => handleTabChange('positions')}
+            onClick={() => {
+              handleTabChange('positions')
+            }}
           >
             Positions{' '}
             {positionsLength > 0
@@ -135,18 +140,28 @@ const TradingTabs = ({
   )
 }
 
-const OpenOrdersWrapper = ({ variables, ...props }) => {
+const OpenOrdersWrapper = ({
+  variables,
+  showOpenOrdersFromAllAccounts,
+  showAllOpenOrderPairs,
+  ...props
+}) => {
   return (
     <QueryRenderer
       component={PositionsWrapper}
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType
+          marketType: props.marketType,
+          allKeys: showOpenOrdersFromAllAccounts,
+          ...(!showAllOpenOrderPairs
+            ? {}
+            : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
+      showLoadingWhenQueryParamsChange={false}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache"
@@ -156,6 +171,10 @@ const OpenOrdersWrapper = ({ variables, ...props }) => {
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
+            allKeys: showOpenOrdersFromAllAccounts,
+            ...(!showAllOpenOrderPairs
+              ? {}
+              : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
@@ -165,7 +184,13 @@ const OpenOrdersWrapper = ({ variables, ...props }) => {
   )
 }
 
-const PositionsWrapper = ({ subscribeToMore, variables, ...props }) => {
+const PositionsWrapper = ({
+  subscribeToMore,
+  variables,
+  showAllPositionPairs,
+  showPositionsFromAllAccounts,
+  ...props
+}) => {
   let unsubscribeOpenOrders: Function | undefined
 
   useEffect(() => {
@@ -183,10 +208,15 @@ const PositionsWrapper = ({ subscribeToMore, variables, ...props }) => {
       variables={{
         input: {
           keyId: props.selectedKey.keyId,
+          allKeys: showPositionsFromAllAccounts,
+          ...(!showAllPositionPairs
+            ? {}
+            : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
+      showLoadingWhenQueryParamsChange={false}
       query={getActivePositions}
       name={`getActivePositionsQuery`}
       fetchPolicy="cache"
@@ -195,6 +225,10 @@ const PositionsWrapper = ({ subscribeToMore, variables, ...props }) => {
         variables: {
           input: {
             keyId: props.selectedKey.keyId,
+            allKeys: showPositionsFromAllAccounts,
+            ...(!showAllPositionPairs
+              ? {}
+              : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateActivePositionsQuerryFunction,
@@ -204,7 +238,13 @@ const PositionsWrapper = ({ subscribeToMore, variables, ...props }) => {
   )
 }
 
-const ActiveTradesWrapper = ({ subscribeToMore, variables, ...props }) => {
+const ActiveTradesWrapper = ({
+  subscribeToMore,
+  variables,
+  showAllSmartTradePairs,
+  showSmartTradesFromAllAccounts,
+  ...props
+}) => {
   let unsubscribePositions: Function | undefined
 
   useEffect(() => {
@@ -223,10 +263,15 @@ const ActiveTradesWrapper = ({ subscribeToMore, variables, ...props }) => {
         activeStrategiesInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
+          allKeys: showSmartTradesFromAllAccounts,
+          ...(!showAllSmartTradePairs
+            ? {}
+            : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={true}
       withTableLoader={true}
+      showLoadingWhenQueryParamsChange={false}
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
       fetchPolicy="cache"
@@ -236,6 +281,10 @@ const ActiveTradesWrapper = ({ subscribeToMore, variables, ...props }) => {
           activeStrategiesInput: {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
+            allKeys: showSmartTradesFromAllAccounts,
+            ...(!showAllSmartTradePairs
+              ? {}
+              : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateActiveStrategiesQuerryFunction,

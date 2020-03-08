@@ -8,6 +8,8 @@ import { WithTheme } from '@material-ui/core/styles'
 import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
+
+import { handleLogout } from '@core/utils/loginUtils'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
@@ -36,6 +38,9 @@ import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
+import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
+import { LOGOUT } from '@core/graphql/mutations/login'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 export interface Props extends WithTheme {
@@ -62,11 +67,17 @@ const NavBarRaw: SFC<Props> = ({
   pathname,
   $hide = false,
   marketTypeData,
+  logoutMutation,
+  persistorInstance,
   changeCurrencyPairMutation,
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   let page = pathnamePage[pathnamePage.length - 1]
+
+  const logout = () => {
+    handleLogout(logoutMutation, persistorInstance)
+  }
 
   if (/chart/.test(pathname)) {
     const isSPOTMarket = /spot/.test(pathname)
@@ -84,6 +95,14 @@ const NavBarRaw: SFC<Props> = ({
 
   if (/signup/.test(pathname)) {
     page = 'Sign up'
+  }
+
+  if (/transactions\/spot/.test(pathname)) {
+    page = 'Transactions Spot'
+  }
+
+  if (/transactions\/futures/.test(pathname)) {
+    page = 'Transactions Futures'
   }
 
   return (
@@ -296,6 +315,14 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Telegram',
                     to: '/profile/telegram',
                   },
+                  {
+                    text: 'Log out',
+                    to: '/login',
+                    onClick: logout,
+                    style: {
+                      color: '#DD6956',
+                    },
+                  },
                 ]}
               />
             </NavBarWrapper>
@@ -324,6 +351,8 @@ const NavBarRaw: SFC<Props> = ({
 
 export const NavBar = compose(
   withTheme,
+  withApolloPersist,
+  graphql(LOGOUT, { name: 'logoutMutation' }),
   graphql(GET_MARKET_TYPE, { name: 'marketTypeData' }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',

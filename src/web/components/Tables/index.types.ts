@@ -142,8 +142,8 @@ export interface Props {
 
 export type Pagination = {
   enabled: boolean
-  handleChangeRowsPerPage: () => void
-  handleChangePage: () => void
+  handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  handleChangePage: (newPage: number) => void
   rowsPerPageOptions: number[]
   rowsPerPage: number
   // start from  0
@@ -152,6 +152,7 @@ export type Pagination = {
   totalCount: number | null
   paginationStyles: CSSProperties
   additionalBlock: React.ReactElement<any>
+  showPagination: boolean
 }
 
 export type PaginationFunctionType = (

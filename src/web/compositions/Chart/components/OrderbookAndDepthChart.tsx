@@ -333,7 +333,10 @@ class OrderbookAndDepthChart extends React.Component {
     const amountForBackground = amountsMap.average()
 
     return (
-      <>
+      <div
+        id="depthChartAndOB"
+        style={{ display: 'flex', width: '100%', height: '100%' }}
+      >
         <Grid
           item
           xs={5}
@@ -379,7 +382,7 @@ class OrderbookAndDepthChart extends React.Component {
             data={dataToSend}
           />
         </Grid>
-      </>
+      </div>
     )
   }
 }
@@ -387,7 +390,7 @@ class OrderbookAndDepthChart extends React.Component {
 export const APIWrapper = ({
   chartProps,
   changeTable,
-  aggregation,
+  isPairDataLoading,
   marketType,
   exchange,
   minPriceDigits,
@@ -417,7 +420,6 @@ export const APIWrapper = ({
         quote,
         symbol,
         exchange,
-        aggregation,
         marketType,
         sizeDigits,
         selectedKey,
@@ -428,6 +430,7 @@ export const APIWrapper = ({
         updateTerminalPriceFromOrderbook,
         ...chartProps,
       }}
+      isDataLoading={isPairDataLoading}
     />
   )
 }

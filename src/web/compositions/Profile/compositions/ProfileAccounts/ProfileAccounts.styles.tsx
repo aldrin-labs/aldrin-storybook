@@ -10,7 +10,7 @@ export const MainContainer = styled.div`
 
 export const StatisticContainer = styled.div`
   width: 20%;
-  margin-right: 1.5rem;
+  margin: 0 0 0 1.5rem;
 `
 
 export const ContentContainer = styled.div`
@@ -34,6 +34,8 @@ export const PortfoliosBlock = styled(GridCard)`
 `
 
 export const SummaryAccountsBlock = styled(GridBlock)`
+  overflow: auto;
+  height: auto;
   padding: 1.5rem;
 `
 
@@ -85,9 +87,8 @@ export const ChangePortfolioArrow = styled.button`
 export const AccountsValue = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 0.1rem dashed #abbad1;
+  border: none;
+  padding: 2rem 0 0 0;
 `
 
 export const AccountsChartBlock = styled.div`

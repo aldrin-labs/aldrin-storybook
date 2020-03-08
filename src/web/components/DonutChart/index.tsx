@@ -189,7 +189,7 @@ class DonutChartWitoutTheme extends Component<Props, State> {
           {colorLegend && !isEmpty && (
             <ColorLegendContainer width={responsiveLegendWidth}>
               <SDiscreteColorLegend
-                width={responsiveLegendWidth}
+                // width={responsiveLegendWidth}
                 items={data
                   .sort((a, b) => {
                     return b.label === 'OTHER'

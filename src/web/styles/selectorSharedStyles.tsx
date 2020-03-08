@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Arrow from '@material-ui/icons/ChevronRight'
-import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import { Typography } from '@material-ui/core'
+import { Typography, Grid } from '@material-ui/core'
 
 export const AccountsListItem = styled.li`
   display: flex;
@@ -12,7 +11,6 @@ export const AccountsListItem = styled.li`
   text-align: left;
   color: ${(props: { color: string }) => props.color};
   padding: 0;
-  min-height: 5vh;
 
   &:not(:last-child) {
     border-bottom: 1px solid #e0e5ec;
@@ -24,12 +22,13 @@ export const AccountsListItem = styled.li`
   }
 `
 
-export const AccountsList = styled.ul`
+export const AccountsList = styled(({ isTransactions, ...rest }) => (
+  <ul {...rest} />
+))`
   list-style: none;
   display: flex;
   flex-direction: column;
-  padding: ${(props) =>
-    props.isTransactions ? '0rem 0.3rem' : '0 2.4rem 0 2rem'};
+  padding: ${(props) => (props.isTransactions ? '0rem 0.3rem' : '0')};
   margin: 0;
 
   height: 75%;
@@ -41,7 +40,9 @@ export const AccountsWalletsHeadingWrapper = styled.div`
   justify-content: space-between;
 `
 
-export const StyledIcon = styled(Arrow)`
+export const StyledIcon = styled(({ color, isSideNavOpen, ...rest }) => (
+  <Arrow {...rest} />
+))`
   color: ${(props: { color: string }) => props.color};
   text-align: center;
   opacity: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
@@ -87,7 +88,9 @@ export const AccountName = styled(({ textColor, lineHeight, ...rest }) => (
   overflow: hidden;
 `
 
-export const Headline = styled.div`
+export const Headline = styled(({ color, isSideNavOpen, ...rest }) => (
+  <div {...rest} />
+))`
   color: ${(props: { color: string }) => props.color};
   opacity: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
     isSideNavOpen ? '0' : '1'};
@@ -115,4 +118,16 @@ export const TypographyTitle = styled(
   text-transform: uppercase;
   color: ${(props) => props.textColor || '#ABBAD1'};
   padding: ${(props) => props.textPadding || 0};
+`
+
+export const AddAccountButtonContainer = styled(({ ...rest }) => (
+  <Grid {...rest} />
+))`
+  padding: 2rem 0;
+  margin: 0;
+
+  & > button {
+    padding: 0;
+    margin: 0;
+  }
 `

@@ -40,9 +40,8 @@ class ChoosePeriod extends Component<IProps> {
     return (
       <ChoosePeriodWrapper
         isTableCalendar={isTableCalendar}
-        style={{ height: '10%', marginTop: '10px' }}
       >
-        <DatePickerWrapper style={{ marginRight: '20px' }}>
+        <DatePickerWrapper style={{ marginRight: '20px', background: '#fff' }}>
           <DateRangePicker
             withPortal={true}
             isOutsideRange={(date: any) =>

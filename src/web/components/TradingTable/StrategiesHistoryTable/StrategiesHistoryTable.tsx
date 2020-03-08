@@ -108,6 +108,12 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       canceledOrders,
       currencyPair,
       arrayOfMarketIds,
+      showAllPositionPairs,
+      showAllOpenOrderPairs,
+      showAllSmartTradePairs,
+      showPositionsFromAllAccounts,
+      showOpenOrdersFromAllAccounts,
+      showSmartTradesFromAllAccounts,
       handleChangePage,
       handleChangeRowsPerPage,
       getStrategiesHistoryQuery,
@@ -181,13 +187,21 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         title={
           <div>
             <TradingTabs
-              tab={tab}
-              selectedKey={selectedKey}
-              handleTabChange={handleTabChange}
-              marketType={marketType}
-              currencyPair={currencyPair}
-              canceledOrders={canceledOrders}
-              arrayOfMarketIds={arrayOfMarketIds}
+              {...{
+                tab,
+                marketType,
+                selectedKey,
+                currencyPair,
+                canceledOrders,
+                handleTabChange,
+                arrayOfMarketIds,
+                showAllPositionPairs,
+                showAllOpenOrderPairs,
+                showAllSmartTradePairs,
+                showPositionsFromAllAccounts,
+                showOpenOrdersFromAllAccounts,
+                showSmartTradesFromAllAccounts,
+              }}
             />
             <TradingTitle
               {...{
@@ -244,7 +258,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getStrategiesHistory}
       showLoadingWhenQueryParamsChange={false}
       name={`getStrategiesHistoryQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="network-only"
       pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,

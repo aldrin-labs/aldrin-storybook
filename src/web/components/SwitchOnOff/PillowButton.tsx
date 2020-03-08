@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-const Container = styled.div`
+const Container = styled(({ containerStyle, ...rest }) => <div {...rest} />)`
   display: flex;
   margin: 0 1rem;
 
@@ -72,6 +72,8 @@ const PillowButton = ({
   containerStyle,
   firstHalfAdditionalStyle,
   secondHalfAdditionalStyle,
+  firstHalfComponent,
+  secondHalfComponent,
 }: {
   firstHalfText: string
   secondHalfText: string
@@ -81,12 +83,15 @@ const PillowButton = ({
   buttonAdditionalStyle?: CSSProperties
   firstHalfAdditionalStyle?: CSSProperties
   secondHalfAdditionalStyle?: CSSProperties
+  firstHalfComponent?: React.ReactElement<any> | ((props:any) => React.ReactElement<any>)
+  secondHalfComponent?: React.ReactElement<any> | ((props:any) => React.ReactElement<any>)
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
   return (
     <Container containerStyle={containerStyle}>
       <FirstHalfButton
+        component={firstHalfComponent}
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
         firstHalfAdditionalStyle={firstHalfAdditionalStyle}
@@ -95,6 +100,7 @@ const PillowButton = ({
         {firstHalfText}
       </FirstHalfButton>
       <SecondHalfButton
+        component={secondHalfComponent}
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
         secondHalfAdditionalStyle={secondHalfAdditionalStyle}
