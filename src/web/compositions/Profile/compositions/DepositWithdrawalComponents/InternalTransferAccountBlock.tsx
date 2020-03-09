@@ -35,6 +35,7 @@ const InternalTransferAccountBlock = ({
       >
         <SelectPortfolio
           components={{
+            Option: AccountOption,
             DropdownIndicator: undefined,
           }}
           isClearable={false}
@@ -224,6 +225,7 @@ const InternalTransferAccountBlock = ({
       >
         <SelectPortfolio
           components={{
+            Option: AccountOption,
             DropdownIndicator: undefined,
           }}
           isClearable={false}
