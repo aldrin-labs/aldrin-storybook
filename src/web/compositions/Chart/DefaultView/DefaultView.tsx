@@ -122,7 +122,7 @@ export const DefaultView = (props: any) => {
           <ChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
-            <CustomCard id="tradingViewChart">
+            {/* <CustomCard id="tradingViewChart">
               {activeChart === 'candle' ? (
                 <SingleChart
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
@@ -142,7 +142,7 @@ export const DefaultView = (props: any) => {
                   </DepthChartContainer>
                 </Fade>
               )}
-            </CustomCard>
+            </CustomCard> */}
           </ChartsContainer>
           <TradingTerminalContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}

@@ -36,12 +36,14 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       subscribeToMore,
       theme,
       marketType,
+      keys,
     } = this.props
 
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
       getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       theme,
-      marketType
+      marketType,
+      keys
     )
 
     this.setState({
@@ -62,7 +64,8 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
       nextProps.getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       nextProps.theme,
-      nextProps.marketType
+      nextProps.marketType,
+      nextProps.keys
     )
 
     this.setState({

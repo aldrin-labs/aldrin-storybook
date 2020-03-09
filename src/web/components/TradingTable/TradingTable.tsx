@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 // MOVE THIS TO APP -_>
 import 'react-dates/initialize'
@@ -16,6 +17,8 @@ import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryDataWrapper'
 import Funds from './FundsTable/FundsTable'
+
+import { getKeysNames } from '@core/graphql/queries/user/getKeysNames'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
@@ -68,7 +71,10 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
+      getKeysNamesQuery,
     } = this.props
+
+    const { keys } = getKeysNamesQuery.myPortfolios[0]
 
     return (
       <div
@@ -84,6 +90,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <ActiveTrades
           {...{
             tab,
+            keys,
             selectedKey,
             marketType,
             exchange,
@@ -114,6 +121,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <StrategiesHistoryTable
           {...{
             tab,
+            keys,
             selectedKey,
             marketType,
             exchange,
@@ -134,6 +142,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <PositionsTable
           {...{
             tab,
+            keys,
             selectedKey,
             marketType,
             exchange,
@@ -168,6 +177,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <OpenOrdersTable
           {...{
             tab,
+            keys,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -197,6 +207,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <OrderHistoryTable
           {...{
             tab,
+            keys,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -215,6 +226,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <TradeHistoryTable
           {...{
             tab,
+            keys,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -254,4 +266,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default compose(withErrorFallback)(TradingTable)
+export default compose(
+  withErrorFallback,
+  queryRendererHoc({
+    query: getKeysNames,
+    name: 'getKeysNamesQuery',
+    fetchPolicy: 'cache-and-network',
+  })
+)(TradingTable)

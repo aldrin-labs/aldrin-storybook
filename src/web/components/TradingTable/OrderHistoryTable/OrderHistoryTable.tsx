@@ -31,6 +31,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       getPaginatedOrderHistoryQuery,
       subscribeToMore,
       theme,
+      keys,
       arrayOfMarketIds,
       marketType,
     } = this.props
@@ -39,7 +40,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       theme,
       arrayOfMarketIds,
-      marketType
+      marketType,
+      keys
     )
     this.setState({
       orderHistoryProcessedData,
@@ -60,7 +62,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       nextProps.getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
-      nextProps.marketType
+      nextProps.marketType,
+      nextProps.keys
     )
 
     this.setState({

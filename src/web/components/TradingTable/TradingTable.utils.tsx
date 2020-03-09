@@ -14,7 +14,18 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 
-export const CloseButton = ({ i, onClick }) => {
+type Key = {
+  keyId: string
+  name: string
+}
+
+export const CloseButton = ({
+  i,
+  onClick,
+}: {
+  i: number
+  onClick: () => void
+}) => {
   const [isCancelled, cancelOrder] = useState(false)
 
   return (
@@ -249,6 +260,7 @@ export const combinePositionsTable = ({
   prices,
   pair,
   keyId,
+  keys,
   canceledPositions,
   priceFromOrderbook,
   pricePrecision,
@@ -278,7 +290,7 @@ export const combinePositionsTable = ({
   const processedPositionsData = data
     .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
-      const { symbol, entryPrice, positionAmt, leverage = 1 } = el
+      const { symbol, entryPrice, positionAmt, leverage = 1, keyId } = el
       const needOpacity = el._id === '0'
 
       const marketPrice = (
@@ -286,6 +298,9 @@ export const combinePositionsTable = ({
           price: 0,
         }
       ).price
+
+      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
+        .name
 
       const getVariables = (type: String, price: Number) => ({
         keyId: el.keyId,
@@ -418,6 +433,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
             colspan: 2,
           },
+          tooltipTitle: keyName,
         },
         {
           pair: {
@@ -458,6 +474,7 @@ export const combineActiveTradesTable = ({
   marketType,
   currencyPair,
   quantityPrecision,
+  keys,
 }: {
   data: any[]
   cancelOrderFunc: (strategyId: string) => Promise<any>
@@ -467,6 +484,7 @@ export const combineActiveTradesTable = ({
   marketType: number
   currencyPair: string
   quantityPrecision: number
+  keys: Key[]
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -493,6 +511,7 @@ export const combineActiveTradesTable = ({
     .map((el: OrderType, i: number, arr) => {
       const {
         createdAt,
+        accountId,
         conditions: {
           pair,
           leverage,
@@ -548,6 +567,10 @@ export const combineActiveTradesTable = ({
           (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
         ) || { price: 0 }
       ).price
+
+      const keyName = (
+        keys.find((key) => key.keyId === accountId) || { name: '' }
+      ).name
 
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' ? price : entryPrice
@@ -737,6 +760,7 @@ export const combineActiveTradesTable = ({
             </BtnCustom>
           ),
         },
+        tooltipTitle: keyName,
         expandableContent: [
           {
             row: {
@@ -803,7 +827,8 @@ export const combineActiveTradesTable = ({
 export const combineStrategiesHistoryTable = (
   data: OrderType[],
   theme,
-  marketType: number
+  marketType: number,
+  keys
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -817,6 +842,7 @@ export const combineStrategiesHistoryTable = (
       const {
         createdAt,
         enabled,
+        accountId,
         conditions: {
           pair,
           leverage,
@@ -863,6 +889,10 @@ export const combineStrategiesHistoryTable = (
         state: '-',
         msg: null,
       }
+
+      const keyName = (
+        keys.find((key) => key.keyId === accountId) || { name: '' }
+      ).name
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
@@ -1040,6 +1070,7 @@ export const combineStrategiesHistoryTable = (
           },
           contentToSort: createdAt ? +new Date(createdAt) : -1,
         },
+        tooltipTitle: keyName,
         expandableContent: [
           {
             row: {
@@ -1107,7 +1138,8 @@ export const combineOpenOrdersTable = (
   theme: Theme,
   arrayOfMarketIds: string[],
   marketType: number,
-  canceledOrders
+  canceledOrders,
+  keys
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -1127,6 +1159,9 @@ export const combineOpenOrdersTable = (
       const orderId = (el.info && el.info.orderId) || el.orderId
       const origQty = (el.info && el.info.origQty) || el.origQty
       const timestamp = el.timestamp || el.updateTime
+
+      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
+        .name
 
       const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
@@ -1292,6 +1327,7 @@ export const combineOpenOrdersTable = (
             </CloseButton>
           ),
         },
+        tooltipTitle: keyName,
       }
     })
 
@@ -1302,7 +1338,8 @@ export const combineOrderHistoryTable = (
   orderData: OrderType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number
+  marketType: number,
+  keys
 ) => {
   if (!orderData || !orderData) {
     return []
@@ -1312,6 +1349,7 @@ export const combineOrderHistoryTable = (
     .filter((order) => !!order)
     .map((el: OrderType, i) => {
       const {
+        keyId,
         symbol,
         timestamp,
         type: orderType,
@@ -1331,6 +1369,9 @@ export const combineOrderHistoryTable = (
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
+
+      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
+        .name
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
@@ -1469,6 +1510,7 @@ export const combineOrderHistoryTable = (
           style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
+        tooltipTitle: keyName,
       }
     })
 
@@ -1479,7 +1521,8 @@ export const combineTradeHistoryTable = (
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number
+  marketType: number,
+  keys
 ) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
@@ -1490,7 +1533,19 @@ export const combineTradeHistoryTable = (
       isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
     )
     .map((el: TradeType) => {
-      const { id, timestamp, symbol, side, price, amount, realizedPnl } = el
+      const {
+        id,
+        keyId,
+        timestamp,
+        symbol,
+        side,
+        price,
+        amount,
+        realizedPnl,
+      } = el
+
+      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
+        .name
 
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
@@ -1601,6 +1656,7 @@ export const combineTradeHistoryTable = (
           style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
+        tooltipTitle: keyName,
       }
     })
 
