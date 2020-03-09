@@ -9,6 +9,18 @@ import {
 import SelectPortfolio from '@core/components/SelectPortfolio/SelectPortfolio'
 import SelectKeyListInternal from '@core/components/SelectKeyListInternal/SelectKeyListInternal'
 import { StyledTypography } from './AccountBlock.styles'
+import { ReactSelectOptionType } from '@sb/compositions/Profile/compositions/InternalTransfer/InternalTransfer.types'
+
+export interface IProps {
+  selectedKeyFrom: ReactSelectOptionType
+  selectedKeyTo: ReactSelectOptionType
+  selectKeyFrom: (arg: ReactSelectOptionType) => Promise<void>
+  selectKeyTo: (arg: ReactSelectOptionType) => Promise<void>
+  selectedPortfolioFrom: ReactSelectOptionType
+  selectedPortfolioTo: ReactSelectOptionType
+  selectPortfolioFrom: (arg: ReactSelectOptionType) => Promise<void>
+  selectPortfolioTo: (arg: ReactSelectOptionType) => Promise<void>
+}
 
 const InternalTransferAccountBlock = ({
   selectedKeyFrom,
@@ -19,7 +31,7 @@ const InternalTransferAccountBlock = ({
   selectPortfolioTo,
   selectKeyFrom,
   selectKeyTo,
-}: any) => (
+}: IProps) => (
   <Grid
     id="left_block"
     container
