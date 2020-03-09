@@ -37,7 +37,6 @@ class ReactSelectComponent extends Component<IProps> {
     } = this.props
     const textColor: string = theme.typography.body2.color
     const fontFamily: string = theme.typography.fontFamily
-
     const background: string = theme.palette.background.default
 
     const customStyles = {

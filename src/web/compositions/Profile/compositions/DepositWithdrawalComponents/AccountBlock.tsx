@@ -10,7 +10,7 @@ import {
   CoinSingleValue,
 } from '@sb/components/ReactSelectComponents/CoinOption'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
-import SelectKeyList from '@core/components/SelectKeyList/SelectKeyList'
+import SelectKeyListDW from '@core/components/SelectKeyListDW/SelectKeyListDW'
 import Balances from './Balances'
 import { StyledTypography } from './AccountBlock.styles'
 import { IProps } from './AccountBlock.types'
@@ -32,7 +32,7 @@ const AccountBlock = ({
     <Grid item id="accounts_block">
       <StyledTypography>Account</StyledTypography>
       <Grid style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}>
-        <SelectKeyList
+        <SelectKeyListDW
           isDeposit={isDepositPage}
           classNamePrefix="custom-select-box"
           components={{
