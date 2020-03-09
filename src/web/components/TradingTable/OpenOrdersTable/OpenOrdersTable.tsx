@@ -153,7 +153,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
               that.props.theme,
               that.props.arrayOfMarketIds,
               that.props.marketType,
-              that.props.canceledOrders
+              that.props.canceledOrders,
+              that.props.keys
             )
 
             that.setState({
@@ -286,7 +287,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType,
-      nextProps.canceledOrders
+      nextProps.canceledOrders,
+      nextProps.keys
     )
 
     this.setState({

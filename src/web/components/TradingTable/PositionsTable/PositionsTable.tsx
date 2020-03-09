@@ -93,6 +93,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
       theme,
+      keys,
       cancelOrder,
       marketType,
       showOrderResult,
@@ -102,6 +103,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
       theme,
+      keys,
       prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
@@ -206,12 +208,14 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             pricePrecision,
             quantityPrecision,
             theme,
+            keys,
           } = that.props
 
           const positionsData = combinePositionsTable({
             data: getActivePositionsQuery.getActivePositions,
             createOrderWithStatus: that.createOrderWithStatus,
             theme,
+            keys,
             prices: data.data.listenTablePrice,
             pair: currencyPair,
             keyId: selectedKey.keyId,
@@ -240,6 +244,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       quantityPrecision,
       subscribeToMore,
       theme,
+      keys,
     } = this.props
 
     this.subscribe()
@@ -248,6 +253,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
       theme,
+      keys,
       prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
@@ -307,6 +313,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     const {
       getActivePositionsQuery,
       theme,
+      keys,
       currencyPair,
       selectedKey,
       canceledOrders,
@@ -319,6 +326,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
       theme,
+      keys,
       prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,

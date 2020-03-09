@@ -41,6 +41,8 @@ import withStandartSettings from './withStandartSettings/withStandartSettings'
 import withPagination from './withPagination/withPagination'
 
 import { PaginationBlock } from '@sb/components/TradingTable/TradingTable.styles'
+import { StyledTooltip } from '@sb/components/TooltipCustom/TooltipCustom.styles'
+
 import {
   StyledSelect,
   StyledOption,
@@ -422,7 +424,8 @@ const renderCells = ({
         key === 'id' ||
         key === 'options' ||
         key === 'expandableContent' ||
-        key === 'orderbook'
+        key === 'orderbook' ||
+        key === 'tooltipTitle'
       ) {
         return null
       }
@@ -776,73 +779,85 @@ const CustomTable = (props: Props) => {
                   ? `${classes.staticCheckbox} ${classes.checkbox}`
                   : classes.checkbox
 
+                const Component = row.tooltipTitle
+                  ? StyledTooltip
+                  : React.Fragment
+
                 return (
                   <React.Fragment key={row.id}>
-                    <TableRow
-                      style={
-                        borderBottom
-                          ? {
-                              borderBottom: `1px solid ${fade(
-                                theme!.palette.divider,
-                                0.5
-                              )}`,
-                              cursor: 'pointer',
-                              ...tableStyles.row,
-                            }
-                          : {
-                              cursor: 'pointer',
-                              boxShadow: 'none',
-                              ...tableStyles.row,
-                            }
-                      }
-                      className={rowHoverClassName}
-                      onClick={() =>
-                        onTrClick
-                          ? onTrClick(row.orderbook ? row.orderbook : row)
-                          : typeOfCheckbox === 'expand'
-                          ? onChange(row.id)
-                          : null
-                      }
+                    <Component
+                      disableTouchListener
+                      disableFocusListener
+                      title={`Key: ${row.tooltipTitle}`}
+                      enterDelay={250}
                     >
-                      {row.expandableContent &&
-                      row.expandableContent.length > 0 ? (
-                        <CustomTableCell
-                          padding="checkbox"
-                          style={{
-                            backgroundColor: tableStyles.cell.backgroundColor,
-                          }}
-                        >
-                          {renderCheckBox({
-                            onChange,
-                            id: row.id,
-                            checked: withCheckboxes ? selected : expandedRow,
-                            disabled:
-                              expandable &&
-                              row.expandableContent &&
-                              (row.expandableContent as ReadonlyArray<
-                                NotExpandableRow
-                              >).length === 0,
-                            className: {
-                              checkboxClasses,
-                              disabledExpandRow: '',
-                            },
-                            type: typeOfCheckbox,
-                          })}
-                        </CustomTableCell>
-                      ) : (
-                        typeOfCheckbox !== null && (
+                      <TableRow
+                        style={
+                          borderBottom
+                            ? {
+                                borderBottom: `1px solid ${fade(
+                                  theme!.palette.divider,
+                                  0.5
+                                )}`,
+                                cursor: 'pointer',
+                                ...tableStyles.row,
+                              }
+                            : {
+                                cursor: 'pointer',
+                                boxShadow: 'none',
+                                ...tableStyles.row,
+                              }
+                        }
+                        className={rowHoverClassName}
+                        onClick={() =>
+                          onTrClick
+                            ? onTrClick(row.orderbook ? row.orderbook : row)
+                            : typeOfCheckbox === 'expand'
+                            ? onChange(row.id)
+                            : null
+                        }
+                      >
+                        {row.expandableContent &&
+                        row.expandableContent.length > 0 ? (
                           <CustomTableCell
+                            padding="checkbox"
                             style={{
                               backgroundColor: tableStyles.cell.backgroundColor,
                             }}
-                            padding="checkbox"
                           >
-                            {' '}
+                            {renderCheckBox({
+                              onChange,
+                              id: row.id,
+                              checked: withCheckboxes ? selected : expandedRow,
+                              disabled:
+                                expandable &&
+                                row.expandableContent &&
+                                (row.expandableContent as ReadonlyArray<
+                                  NotExpandableRow
+                                >).length === 0,
+                              className: {
+                                checkboxClasses,
+                                disabledExpandRow: '',
+                              },
+                              type: typeOfCheckbox,
+                            })}
                           </CustomTableCell>
-                        )
-                      )}
-                      {renderCells({ row, padding, tableStyles })}
-                    </TableRow>
+                        ) : (
+                          typeOfCheckbox !== null && (
+                            <CustomTableCell
+                              style={{
+                                backgroundColor:
+                                  tableStyles.cell.backgroundColor,
+                              }}
+                              padding="checkbox"
+                            >
+                              {' '}
+                            </CustomTableCell>
+                          )
+                        )}
+                        {renderCells({ row, padding, tableStyles })}
+                      </TableRow>
+                    </Component>
                     {expandable &&
                       // rendering content of expanded row if it is expandable
                       (row!.expandableContent! as ReadonlyArray<
