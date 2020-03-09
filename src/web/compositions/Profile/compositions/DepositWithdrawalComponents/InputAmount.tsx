@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { InputAdornment } from '@material-ui/core'
 import {
@@ -19,21 +19,32 @@ interface IProps {
     getFunds: FundsType[]
   }
   onChange: ({ target: { value } }: { target: { value: number } }) => void
+  subscribeToMore: () => () => void
+  selectedAccount: string
 }
 
 const Balances = ({
   selectedCoin,
   getFundsQuery,
   marketType = 0,
+  subscribeToMore,
+  selectedAccount,
   onChange = () => {},
   ...inputProps
 }: IProps) => {
+  useEffect(() => {
+    const unsubscribeFunds = subscribeToMore()
+
+    return () => {
+      unsubscribeFunds && unsubscribeFunds()
+    }
+  }, [selectedAccount])
+
   const { getFunds } = getFundsQuery
   const [currentElement] = getFunds.filter(
     (el: FundsType) =>
       el.asset.symbol === selectedCoin && +el.assetType === marketType
   )
-
   const { quantity, locked, free } = currentElement || {
     quantity: '0.00000000',
     locked: '0.00000000',
@@ -78,7 +89,7 @@ const BalancesWrapper = (props: any) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: props.selectedAccount } }}
       name={`getFundsQuery`}
-      //   fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {
