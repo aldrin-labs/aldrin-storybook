@@ -105,6 +105,10 @@ const NavBarRaw: SFC<Props> = ({
     page = 'Transactions Futures'
   }
 
+  if (/internal/.test(pathname)) {
+    page = 'Internal Transfer'
+  }
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}
@@ -306,6 +310,10 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Withdrawal',
                     to: '/profile/withdrawal',
+                  },
+                  {
+                    text: 'Internal Transfer',
+                    to: '/profile/internal',
                   },
                   {
                     text: 'API',
