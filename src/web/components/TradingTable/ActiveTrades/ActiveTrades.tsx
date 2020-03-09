@@ -174,6 +174,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             theme,
             marketType,
             currencyPair,
+            keys,
             quantityPrecision,
           } = that.props
 
@@ -182,6 +183,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             cancelOrderFunc: this.cancelOrderWithStatus,
             editTrade: this.editTrade,
             theme,
+            keys,
             prices: data.data.listenTablePrice,
             marketType,
             currencyPair,
@@ -199,6 +201,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
   componentDidMount() {
     const {
       selectedKey,
+      keys,
       getActiveStrategiesQuery,
       subscribeToMore,
       theme,
@@ -259,6 +262,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       cancelOrderFunc: this.cancelOrderWithStatus,
       editTrade: this.editTrade,
       theme,
+      keys,
       prices: this.state.prices,
       marketType,
       currencyPair,
@@ -304,6 +308,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
   componentWillReceiveProps(nextProps: IProps) {
     const {
+      keys,
       theme,
       marketType,
       currencyPair,
@@ -405,6 +410,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       editTrade: this.editTrade,
       theme,
       prices,
+      keys,
       marketType,
       currencyPair,
       quantityPrecision,
