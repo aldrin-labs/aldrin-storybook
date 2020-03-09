@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 
 import {
   AccountOption,
@@ -34,13 +34,14 @@ const InternalTransferAccountBlock = ({
         style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
       >
         <SelectPortfolio
+          placeholder={`Transfer from portfolio`}
           components={{
             Option: AccountOption,
             DropdownIndicator: undefined,
           }}
           isClearable={false}
           value={
-            selectedPortfolioFrom
+            selectedPortfolioFrom && selectedPortfolioFrom.label && selectedPortfolioFrom.value
               ? [
                   {
                     label: selectedPortfolioFrom.label,
@@ -115,7 +116,7 @@ const InternalTransferAccountBlock = ({
             padding: '0.5rem 0',
           }}
           placeholderStyles={{
-            color: '#16253D',
+            color: '#7284A0',
             fontSize: '1.4rem',
             fontWeight: 'bold',
             textTransform: 'uppercase',
@@ -126,6 +127,7 @@ const InternalTransferAccountBlock = ({
         style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
       >
         <SelectKeyListInternal
+          placeHolder={`Transfer from account`}
           selectedPortfolioId={selectedPortfolioFrom.value}
           classNamePrefix="custom-select-box"
           components={{
@@ -134,7 +136,7 @@ const InternalTransferAccountBlock = ({
             DropdownIndicator: undefined,
           }}
           value={
-            selectedKeyFrom
+            selectedKeyFrom && selectedKeyFrom.label && selectedKeyFrom.value
               ? [
                   {
                     label: selectedKeyFrom.label,
@@ -143,7 +145,15 @@ const InternalTransferAccountBlock = ({
                 ]
               : null
           }
-          onChange={({ label, value, keyId }: { label: string; value: string, keyId: string }) => {
+          onChange={({
+            label,
+            value,
+            keyId,
+          }: {
+            label: string
+            value: string
+            keyId: string
+          }) => {
             if (!label) {
               return
             }
@@ -210,7 +220,7 @@ const InternalTransferAccountBlock = ({
             padding: '0.5rem 0',
           }}
           placeholderStyles={{
-            color: '#16253D',
+            color: '#7284A0',
             fontSize: '1.4rem',
             fontWeight: 'bold',
             textTransform: 'uppercase',
@@ -224,13 +234,14 @@ const InternalTransferAccountBlock = ({
         style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
       >
         <SelectPortfolio
+          placeholder={`Transfer to portfolio`}
           components={{
             Option: AccountOption,
             DropdownIndicator: undefined,
           }}
           isClearable={false}
           value={
-            selectedPortfolioTo
+            selectedPortfolioTo && selectedPortfolioTo.label && selectedPortfolioTo.value
               ? [
                   {
                     label: selectedPortfolioTo.label,
@@ -305,7 +316,7 @@ const InternalTransferAccountBlock = ({
             padding: '0.5rem 0',
           }}
           placeholderStyles={{
-            color: '#16253D',
+            color: '#7284A0',
             fontSize: '1.4rem',
             fontWeight: 'bold',
             textTransform: 'uppercase',
@@ -316,6 +327,7 @@ const InternalTransferAccountBlock = ({
         style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
       >
         <SelectKeyListInternal
+          placeHolder={`Transfer to account`}
           selectedPortfolioId={selectedPortfolioTo.value}
           classNamePrefix="custom-select-box"
           components={{
@@ -324,7 +336,7 @@ const InternalTransferAccountBlock = ({
             DropdownIndicator: undefined,
           }}
           value={
-            selectedKeyTo
+            selectedKeyTo && selectedKeyTo.label && selectedKeyTo.value
               ? [
                   {
                     label: selectedKeyTo.label,
@@ -333,7 +345,15 @@ const InternalTransferAccountBlock = ({
                 ]
               : null
           }
-          onChange={({ label, value, keyId }: { label: string; value: string, keyId: string }) => {
+          onChange={({
+            label,
+            value,
+            keyId,
+          }: {
+            label: string
+            value: string
+            keyId: string
+          }) => {
             if (!label) {
               return
             }
@@ -402,13 +422,16 @@ const InternalTransferAccountBlock = ({
             padding: '0.5rem 0',
           }}
           placeholderStyles={{
-            color: '#16253D',
+            color: '#7284A0',
             fontSize: '1.4rem',
             fontWeight: 'bold',
             textTransform: 'uppercase',
           }}
         />
       </Grid>
+    </Grid>
+    <Grid item id="description_block" style={{ }}>
+      <Typography>This feature is allowed only for broker's accounts</Typography>
     </Grid>
   </Grid>
 )
