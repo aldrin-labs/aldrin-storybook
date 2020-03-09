@@ -9,9 +9,7 @@ import { getProfileSettings } from '@core/graphql/queries/user/getProfileSetting
 import { getAssetDetail } from '@core/graphql/queries/keys/getAssetDetail'
 import { transferInternal } from '@core/graphql/mutations/keys/transferInternal'
 import { validateTransactionAmount } from '../Withdrawal/Withdrawal.utils'
-import { Key } from '@sb/compositions/Portfolio/Portfolio.types'
 
-// import SvgIcon from '@sb/components/SvgIcon'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import InternalTransferAccountBlock from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InternalTransferAccountBlock'
 import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
@@ -24,7 +22,7 @@ import {
 } from '@sb/components/ReactSelectComponents/CoinOption'
 
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
-import { IProps } from './InternalTransfer.types'
+import { IProps, ReactSelectOptionType } from './InternalTransfer.types'
 
 const InternalTransfer = ({ ...props }: IProps) => {
   // we need it here also to update data when it's updated in cache
@@ -71,9 +69,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
 
   const [coinAmount, setCoinAmount] = useState('')
   const [amountError, setAmountError] = useState(false)
-  const [internalTransferPopup, toggleInternalTransferPopup] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [internalLoading, setInternalLoading] = useState(false)
 
   const showInternalTransferStatus = ({
     status = 'ERR',
@@ -133,7 +129,6 @@ const InternalTransfer = ({ ...props }: IProps) => {
   }
 
   const processInternalTransferRequestHandler = async () => {
-    setInternalLoading(true)
     const resultOfRequest = await internalTransferMutationHandler()
 
     if (resultOfRequest && resultOfRequest.status === 'OK') {
@@ -142,8 +137,6 @@ const InternalTransfer = ({ ...props }: IProps) => {
         errorMessage: '',
       })
 
-      toggleInternalTransferPopup(false)
-      setInternalLoading(false)
       return
     }
 
@@ -151,9 +144,6 @@ const InternalTransfer = ({ ...props }: IProps) => {
       status: 'ERR',
       errorMessage: resultOfRequest.errorMessage,
     })
-
-    toggleInternalTransferPopup(false)
-    setInternalLoading(false)
   }
 
   return (
@@ -400,12 +390,12 @@ const InternalTransferDataWrapper = ({ ...props }) => {
     value: '',
   })
 
-  const handleSelectPortfolioFrom = (arg) => {
+  const handleSelectPortfolioFrom = (arg: ReactSelectOptionType) => {
     selectPortfolioFrom(arg)
     selectKeyFrom({ label: '', value: '' })
   }
 
-  const handleSelectPortfolioTo = (arg) => {
+  const handleSelectPortfolioTo = (arg: ReactSelectOptionType) => {
     selectPortfolioTo(arg)
     selectKeyTo({ label: '', value: '' })
   }
