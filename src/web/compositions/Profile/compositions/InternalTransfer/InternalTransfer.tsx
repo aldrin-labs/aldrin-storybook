@@ -111,7 +111,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
         },
       })
 
-      if (res.data.transferInternal && res.data.transferInternal.data) {
+      if (res.data.transferInternal && res.data.transferInternal.status === 'OK') {
         result = {
           status: 'OK',
           errorMessage: '',
