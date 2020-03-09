@@ -74,7 +74,13 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       getKeysNamesQuery,
     } = this.props
 
-    const { keys } = getKeysNamesQuery.myPortfolios[0]
+    const keys = getKeysNamesQuery.myPortfolios[0].keys.reduce(
+      (acc, key) => ({
+        ...acc,
+        [key.keyId]: key.name,
+      }),
+      {}
+    )
 
     return (
       <div

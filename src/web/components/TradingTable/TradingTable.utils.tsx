@@ -299,8 +299,7 @@ export const combinePositionsTable = ({
         }
       ).price
 
-      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
-        .name
+      const keyName = keys[keyId]
 
       const getVariables = (type: String, price: Number) => ({
         keyId: el.keyId,
@@ -568,9 +567,7 @@ export const combineActiveTradesTable = ({
         ) || { price: 0 }
       ).price
 
-      const keyName = (
-        keys.find((key) => key.keyId === accountId) || { name: '' }
-      ).name
+      const keyName = keys[accountId]
 
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' ? price : entryPrice
@@ -890,9 +887,7 @@ export const combineStrategiesHistoryTable = (
         msg: null,
       }
 
-      const keyName = (
-        keys.find((key) => key.keyId === accountId) || { name: '' }
-      ).name
+      const keyName = keys[accountId]
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
@@ -1160,8 +1155,7 @@ export const combineOpenOrdersTable = (
       const origQty = (el.info && el.info.origQty) || el.origQty
       const timestamp = el.timestamp || el.updateTime
 
-      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
-        .name
+      const keyName = keys[keyId]
 
       const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
@@ -1370,8 +1364,7 @@ export const combineOrderHistoryTable = (
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
-      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
-        .name
+      const keyName = keys[keyId]
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
@@ -1544,8 +1537,7 @@ export const combineTradeHistoryTable = (
         realizedPnl,
       } = el
 
-      const keyName = (keys.find((key) => key.keyId === keyId) || { name: '' })
-        .name
+      const keyName = keys[keyId]
 
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
