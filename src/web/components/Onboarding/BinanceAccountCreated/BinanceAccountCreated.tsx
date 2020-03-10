@@ -8,6 +8,7 @@ import {
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Loading } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
@@ -17,6 +18,19 @@ import { IProps } from './BinanceAccountCreated.types'
 
 @withTheme
 export default class BinanceAccountCreated extends React.Component<IProps> {
+  state = {
+    loading: false,
+    loadingLater: false,
+  }
+
+  setLoading = (loadArg: boolean) => {
+    this.setState({ loading: loadArg })
+  }
+
+  setLoadingLater = (loadArg: boolean) => {
+    this.setState({ loadingLater: loadArg })
+  }
+
   render() {
     const {
       theme: {
@@ -25,8 +39,10 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
       handleClose,
       open,
       completeOnboarding,
-      setCurrentStep,
     } = this.props
+
+    const { loading, loadingLater } = this.state
+    const { setLoading, setLoadingLater } = this
 
     return (
       <DialogWrapper
@@ -89,30 +105,44 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
 
           <Grid container justify="center" alignItems="center">
             <BtnCustom
+              disabled={loadingLater}
               btnWidth={'120px'}
               borderRadius={'8px'}
               borderColor={'#ABBAD1'}
               btnColor={'#ABBAD1'}
               margin={'0 3%'}
               padding="0"
-              onClick={() => {
-                setCurrentStep('binanceAccountCreatedLater')
+              onClick={async () => {
+                setLoadingLater(true)
+                await completeOnboarding()
+                setLoadingLater(false)
               }}
             >
-              Later
+              {loadingLater ? (
+                <Loading size={16} style={{ height: '16px' }} />
+              ) : (
+                `Later`
+              )}
             </BtnCustom>
             <BtnCustom
+              disabled={loading}
               btnWidth={'120px'}
               borderRadius={'8px'}
               btnColor={'#165BE0'}
               margin={'0 3%'}
               padding="0"
               onClick={async () => {
+                setLoading(true)
                 await completeOnboarding()
                 this.props.history.push('/profile/deposit')
+                setLoading(false)
               }}
             >
-              Deposit now
+              {loading ? (
+                <Loading size={16} style={{ height: '16px' }} />
+              ) : (
+                `Deposit now`
+              )}
             </BtnCustom>
           </Grid>
         </DialogContent>
