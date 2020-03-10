@@ -99,19 +99,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }) => {
     const { enqueueSnackbar } = this.props
     if (status === 'OK') {
-      enqueueSnackbar(`FuturesWars key successful created`, { variant: 'success' })
+      enqueueSnackbar(`FuturesWars key successful created`, {
+        variant: 'success',
+      })
     } else {
       enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
   }
 
   handleGenerateBrokerKey = async () => {
-    const {
-      generateBrokerKeyMutation,
-      setCurrentStep,
-      onboarding,
-      enqueueSnackbar,
-    } = this.props
+    const { generateBrokerKeyMutation, setCurrentStep, onboarding } = this.props
     this.setState({ loadingRequest: true })
 
     try {
@@ -147,12 +144,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ loadingRequest: true })
 
     try {
-      const resp = await generateBrokerKeyMutation({ variables: {
-        input: {
-          isFuturesWarsKey: true,
-          roomId: roomId,
-        }
-      } })
+      const resp = await generateBrokerKeyMutation({
+        variables: {
+          input: {
+            isFuturesWarsKey: true,
+            roomId: roomId,
+          },
+        },
+      })
       const { data } = resp
       const {
         status = 'ERR',
@@ -170,7 +169,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       })
     }
     onboarding ? setCurrentStep('binanceAccountCreated') : this.handleClose()
-
   }
 
   handleSubmit = async () => {
@@ -275,6 +273,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       CustomButton,
       numberOfKeys = 0,
       isFuturesWars = false,
+      includeBrokerKey = true,
     } = this.props
 
     const {
@@ -335,6 +334,17 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               this.handleClose()
             }
           }}
+          PaperProps={{
+            style: {
+              minWidth: '50%',
+              maxWidth: '800px',
+            },
+          }}
+          TransitionProps={{
+            style: {
+              backgroundColor: onboarding ? '#16253D' : '',
+            },
+          }}
           open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
         >
@@ -381,19 +391,26 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <Grid container direction={'column'}>
                       <Typography
                         align={`center`}
-                        style={{ paddingTop: '1.4rem', paddingBottom: '1.4rem', color: '#DD6956' }}
+                        style={{
+                          paddingTop: '1.4rem',
+                          paddingBottom: '1.4rem',
+                          color: '#DD6956',
+                        }}
                       >
                         You must understand that you risk losing money. But you
                         can also win it
                       </Typography>
                     </Grid>
-                    <Grid justify="center" container direction={'column'} style={{ height: '4rem'}}>
-                      <Typography
-                        align={`center`}
-                      >
-                        Select room:
-                      </Typography>
-                      <FuturesWarsRoomSelector onChange={this.handleSelectRoomId} />
+                    <Grid
+                      justify="center"
+                      container
+                      direction={'column'}
+                      style={{ height: '4rem' }}
+                    >
+                      <Typography align={`center`}>Select room:</Typography>
+                      <FuturesWarsRoomSelector
+                        onChange={this.handleSelectRoomId}
+                      />
                     </Grid>
                     <Grid container direction={'column'}>
                       <Typography
@@ -449,120 +466,129 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </GridCustom>
               ) : !loadingRequest && !isFuturesWars ? (
                 <Grid>
-                  <GridCustom
-                    container
-                    direction={'column'}
-                    alignItems={'center'}
-                    justify={'center'}
-                  >
-                    <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
-                  </GridCustom>
-                  <GridCustom>
-                    <Grid
-                      container
-                      justify={'space-between'}
-                      style={{ padding: '3rem 0' }}
-                    >
-                      <Grid
+                  {includeBrokerKey && (
+                    <>
+                      <GridCustom
                         container
                         direction={'column'}
-                        justify={'center'}
                         alignItems={'center'}
-                        style={{ maxWidth: '33%' }}
+                        justify={'center'}
                       >
-                        <Typography
-                          style={{
-                            paddingBottom: '0.5rem',
-                            fontWeight: 'bold',
-                            color: 'black',
-                            textTransform: 'uppercase',
-                          }}
+                        <SvgIcon
+                          src={CcaiBinanceLogo}
+                          width="50%"
+                          height="auto"
+                        />
+                      </GridCustom>
+                      <GridCustom>
+                        <Grid
+                          container
+                          justify={'space-between'}
+                          style={{ padding: '3rem 0' }}
                         >
-                          Free
-                        </Typography>
-                        <SvgIcon src={free} width="40px" height="auto" />
-                        <Typography
-                          align={`center`}
-                          style={{ paddingTop: '1.4rem' }}
-                        >
-                          No extra fee, pay only Binance fee
+                          <Grid
+                            container
+                            direction={'column'}
+                            justify={'center'}
+                            alignItems={'center'}
+                            style={{ maxWidth: '33%' }}
+                          >
+                            <Typography
+                              style={{
+                                paddingBottom: '0.5rem',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Free
+                            </Typography>
+                            <SvgIcon src={free} width="40px" height="auto" />
+                            <Typography
+                              align={`center`}
+                              style={{ paddingTop: '1.4rem' }}
+                            >
+                              No extra fee, pay only Binance fee
+                            </Typography>
+                          </Grid>
+                          <Grid
+                            container
+                            direction={'column'}
+                            justify={'center'}
+                            alignItems={'center'}
+                            style={{ maxWidth: '33%' }}
+                          >
+                            <Typography
+                              style={{
+                                paddingBottom: '0.5rem',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Useful
+                            </Typography>
+                            <SvgIcon src={useful} width="40px" height="auto" />
+                            <Typography
+                              align={`center`}
+                              style={{ paddingTop: '1.4rem' }}
+                            >
+                              All features availiable with no limits
+                            </Typography>
+                          </Grid>
+                          <Grid
+                            container
+                            direction={'column'}
+                            justify={'center'}
+                            alignItems={'center'}
+                            style={{ maxWidth: '33%' }}
+                          >
+                            <Typography
+                              style={{
+                                paddingBottom: '0.2rem',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Secure
+                            </Typography>
+                            <SvgIcon src={secure} width="40px" height="auto" />
+                            <Typography
+                              align={`center`}
+                              style={{ paddingTop: '1.4rem' }}
+                            >
+                              All user funds custody remain with Binance at all
+                              times
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid container justify={'center'}>
+                          <BtnCustom
+                            btnWidth={'45%'}
+                            borderRadius={'8px'}
+                            btnColor={'#165BE0'}
+                            borderColor={'#165BE0'}
+                            padding={'1.5rem'}
+                            height={'auto'}
+                            borderWidth={'2px'}
+                            fontSize={'1.2rem'}
+                            onClick={this.handleGenerateBrokerKey}
+                          >
+                            Create hybrid account
+                          </BtnCustom>
+                        </Grid>
+                      </GridCustom>
+                      <Grid container justify="center" alignItems="center">
+                        <Typography>
+                          {onboarding
+                            ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
+                            : `Or add another exchange key`}
                         </Typography>
                       </Grid>
-                      <Grid
-                        container
-                        direction={'column'}
-                        justify={'center'}
-                        alignItems={'center'}
-                        style={{ maxWidth: '33%' }}
-                      >
-                        <Typography
-                          style={{
-                            paddingBottom: '0.5rem',
-                            fontWeight: 'bold',
-                            color: 'black',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Useful
-                        </Typography>
-                        <SvgIcon src={useful} width="40px" height="auto" />
-                        <Typography
-                          align={`center`}
-                          style={{ paddingTop: '1.4rem' }}
-                        >
-                          All features availiable with no limits
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        container
-                        direction={'column'}
-                        justify={'center'}
-                        alignItems={'center'}
-                        style={{ maxWidth: '33%' }}
-                      >
-                        <Typography
-                          style={{
-                            paddingBottom: '0.2rem',
-                            fontWeight: 'bold',
-                            color: 'black',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Secure
-                        </Typography>
-                        <SvgIcon src={secure} width="40px" height="auto" />
-                        <Typography
-                          align={`center`}
-                          style={{ paddingTop: '1.4rem' }}
-                        >
-                          All user funds custody remain with Binance at all
-                          times
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container justify={'center'}>
-                      <BtnCustom
-                        btnWidth={'45%'}
-                        borderRadius={'8px'}
-                        btnColor={'#165BE0'}
-                        borderColor={'#165BE0'}
-                        padding={'1.5rem'}
-                        height={'auto'}
-                        borderWidth={'2px'}
-                        fontSize={'1.2rem'}
-                        onClick={this.handleGenerateBrokerKey}
-                      >
-                        Create hybrid account
-                      </BtnCustom>
-                    </Grid>
-                  </GridCustom>
-                  <Grid container justify="center" alignItems="center">
-                    <Typography>
-                      {onboarding
-                        ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
-                        : `Or add another exchange key`}
-                    </Typography>
-                  </Grid>
+                    </>
+                  )}
+
                   {includeCommonBinanceKey && (
                     <>
                       <GridCustom>
@@ -577,6 +603,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             borderRadius: '1rem',
                             padding: '0 1rem',
                             background: '#fff',
+                            boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.15)',
                           }}
                           inputStyles={{
                             marginLeft: '0',
@@ -645,12 +672,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   </LinkCustom>
 
                   <BtnCustom
-                    btnWidth={'85px'}
-                    borderRadius={'32px'}
+                    borderRadius={'8px'}
                     btnColor={'#165BE0'}
+                    fontSize="1.6rem"
+                    padding="2rem"
+                    borderWidth="2px"
                     type="submit"
                   >
-                    {onboarding ? 'ADD KEY' : 'ADD'}
+                    {onboarding ? 'ADD AND START' : 'ADD'}
                   </BtnCustom>
                 </Grid>
               )}
