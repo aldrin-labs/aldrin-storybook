@@ -30,30 +30,20 @@ import { compose } from 'recompose'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import FuturesWarsRoomSelector from '@core/components/FuturesWarsRoomSelector/index'
-import { keysNames } from '@core/graphql/queries/chart/keysNames'
-import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
-import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
-import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
 import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
 
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
-import { getCurrentPortfolio } from '@core/graphql/queries/profile/getCurrentPortfolio'
-import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
 
 import InfoDialog from '@sb/components/InfoDialog/InfoDialog'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 
-const FormError = ({ children }: any) => (
-  <Typography color="error">{children}</Typography>
-)
+import { refetchOptionsOnKeyAddFunction } from '@sb/components/AddAccountDialog/AddAccountDialog.utils'
 
 @withTheme
 class AddAccountDialog extends React.Component<IProps, IState> {
@@ -605,20 +595,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           }}
                         />
                       </GridCustom>
-                      {/* <GridCustom>
-                      <Legend>Account name</Legend>
-                      <InputBaseCustom
-                        id="name"
-                        name="name"
-                        label="Name"
-                        value={name}
-                        onChange={(e) => this.handleChange(e)}
-                        placeholder="Type name..."
-                        type="text"
-                        // margin="normal"
-                      />
-                      {error && <FormError>{error}</FormError>}
-                    </GridCustom> */}
                       <GridCustom>
                         <Legend>Api key</Legend>
                         <InputBaseCustom
@@ -707,62 +683,10 @@ export default compose(
   }),
   graphql(generateBrokerKey, {
     name: 'generateBrokerKeyMutation',
-    options: ({
-      baseData: {
-        portfolio: { baseCoin },
-      },
-      onboarding,
-    }: {
-      baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
-      onboarding: boolean
-    }) => ({
-      refetchQueries: !onboarding
-        ? [
-            {
-              query: portfolioKeyAndWalletsQuery,
-              variables: { baseCoin },
-            },
-            { query: getKeysQuery },
-            { query: keysNames },
-            {
-              query: getPortfolioAssets,
-              variables: { baseCoin, innerSettings: true },
-            },
-            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
-            { query: getCurrentPortfolio },
-          ]
-        : [],
-    }),
+    options: refetchOptionsOnKeyAddFunction,
   }),
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
-    options: ({
-      baseData: {
-        portfolio: { baseCoin },
-      },
-      onboarding,
-    }: {
-      baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
-      onboarding: boolean
-    }) => ({
-      refetchQueries: !onboarding
-        ? [
-            {
-              query: portfolioKeyAndWalletsQuery,
-              variables: { baseCoin },
-            },
-            { query: getKeysQuery },
-            { query: keysNames },
-            {
-              query: getPortfolioAssets,
-              variables: { baseCoin, innerSettings: true },
-            },
-            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
-            { query: getCurrentPortfolio },
-            { query: getAllUserKeys },
-            { query: GET_TRADING_SETTINGS },
-          ]
-        : [],
-    }),
+    options: refetchOptionsOnKeyAddFunction,
   })
 )(AddAccountDialog)
