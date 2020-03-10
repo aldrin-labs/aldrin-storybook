@@ -1,8 +1,6 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 
-import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
+import { Grid, Typography, Theme } from '@material-ui/core'
 import CubeLogo from '@icons/auth0Logo.png'
 
 import { withTheme } from '@material-ui/styles'
@@ -13,24 +11,15 @@ import {
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-
-import { IProps, IState } from './PopupStart.types'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 @withTheme
-class PopupStart extends React.Component<IProps, IState> {
-  state: IState = {
-    isSelected: true,
-    portfolioName: '',
-  }
-
+class PopupStart extends PureComponent<{
+  open: boolean
+  setCurrentStep: (step: string) => void
+  theme: Theme
+}> {
   render() {
     const { open, setCurrentStep, theme } = this.props
 
@@ -39,9 +28,16 @@ class PopupStart extends React.Component<IProps, IState> {
         <DialogWrapper
           aria-labelledby="customized-dialog-title"
           open={open}
-          style={{
-            borderRadius: '50%',
-            paddingTop: 0,
+          maxWidth="md"
+          TransitionProps={{
+            style: {
+              backgroundColor: '#16253D',
+            },
+          }}
+          PaperProps={{
+            style: {
+              minWidth: '50%',
+            },
           }}
         >
           <DialogTitleCustom
@@ -71,7 +67,7 @@ class PopupStart extends React.Component<IProps, IState> {
                 color: '#16253D',
               }}
             >
-              Welcome to Cryptocurrencies.Ai
+              Welcome to Cryptocurrencies.ai
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent

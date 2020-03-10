@@ -1,7 +1,6 @@
 import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles, withTheme } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
+import { withTheme } from '@material-ui/styles'
 
 import {
   TypographyCustomHeading,
@@ -11,16 +10,10 @@ import {
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import { IProps } from './BinanceAccountCreated.types'
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
 
 @withTheme
 export default class BinanceAccountCreated extends React.Component<IProps> {

@@ -1,7 +1,5 @@
 import React from 'react'
 import { Grid } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import Clear from '@material-ui/icons/Clear'
 
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
@@ -21,15 +19,10 @@ import { InputRowContainer, TargetTitle, TargetValue } from '../styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { getArrowSymbol } from '@sb/components/AddArrowIcon/AddArrowIcon'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { EntryPointType, StopLossType, TakeProfitType } from '../types'
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
 
 const EditButton = ({ children, ...props }) => (
   <BtnCustom

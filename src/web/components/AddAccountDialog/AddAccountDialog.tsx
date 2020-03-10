@@ -1,6 +1,4 @@
 import React from 'react'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
 import { withSnackbar } from 'notistack'
 import { withTheme } from '@material-ui/styles'
@@ -51,19 +49,11 @@ import { IState, IProps } from './AddAccountDialog.types'
 
 import InfoDialog from '@sb/components/InfoDialog/InfoDialog'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
-import Steps from '@sb/components/Onboarding/Steps/Steps'
-import { Loader } from '@sb/compositions/Optimization/Optimization.styles'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 const FormError = ({ children }: any) => (
   <Typography color="error">{children}</Typography>
 )
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
 
 @withTheme
 class AddAccountDialog extends React.Component<IProps, IState> {

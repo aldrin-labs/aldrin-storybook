@@ -1,15 +1,10 @@
 import React from 'react'
 
-import Yup from 'yup'
-
 import { Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
-
-import { withTheme } from '@material-ui/styles'
 
 import {
   TypographyCustomHeading,
@@ -19,6 +14,7 @@ import {
   DialogTitleCustom,
   Legend,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
@@ -52,12 +48,6 @@ const DialogTitle = withStyles((theme) => ({
   )
 })
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
 
 function GetKeysInfo(props) {
   const { handleClose, open } = props

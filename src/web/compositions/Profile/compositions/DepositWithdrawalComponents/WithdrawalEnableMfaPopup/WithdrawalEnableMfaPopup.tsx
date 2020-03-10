@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import { Loading } from '@sb/components/index'
 
 import {
@@ -10,13 +8,8 @@ import {
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
 
 interface IProps {
   open: boolean

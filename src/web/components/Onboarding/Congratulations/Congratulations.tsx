@@ -3,8 +3,6 @@ import React from 'react'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import CubeLogo from '@icons/auth0Logo.png'
 
 import { withTheme } from '@material-ui/styles'
@@ -19,13 +17,7 @@ import {
 import { IProps, IState } from './Congratulations.types'
 import { Logo } from './Congratulations.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 @withTheme
 class Congratulations extends React.Component<IProps, IState> {
