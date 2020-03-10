@@ -299,7 +299,7 @@ export const combinePositionsTable = ({
         }
       ).price
 
-      const keyName = keys[keyId]
+      const keyName = keys ? keys[keyId] : ''
 
       const getVariables = (type: String, price: Number) => ({
         keyId: el.keyId,
@@ -1155,7 +1155,7 @@ export const combineOpenOrdersTable = (
       const origQty = (el.info && el.info.origQty) || el.origQty
       const timestamp = el.timestamp || el.updateTime
 
-      const keyName = keys[keyId]
+      const keyName = keys ? keys[keyId] : ''
 
       const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
@@ -1364,7 +1364,7 @@ export const combineOrderHistoryTable = (
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
-      const keyName = keys[keyId]
+      const keyName = keys ? keys[keyId] : ''
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
@@ -1537,7 +1537,7 @@ export const combineTradeHistoryTable = (
         realizedPnl,
       } = el
 
-      const keyName = keys[keyId]
+      const keyName = keys ? keys[keyId] : ''
 
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
@@ -1837,13 +1837,6 @@ export const updateActivePositionsQuerryFunction = (
       el._id === subscriptionData.data.listenFuturesPositions._id
   )
 
-  console.log('prev.getActivePositions', prev.getActivePositions)
-  console.log(
-    'subscriptionData.data.listenFuturesPositions',
-    subscriptionData.data.listenFuturesPositions
-  )
-  console.log('positionHasTheSameIndex', positionHasTheSameIndex)
-
   const positionAlreadyExists = positionHasTheSameIndex !== -1
 
   let result
@@ -1887,14 +1880,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
         String(subscriptionData.data.listenOpenOrders.info.orderId)
   )
 
-  console.log(
-    'subscriptionData.data.listenOpenOrders',
-    subscriptionData.data.listenOpenOrders
-  )
-  console.log('openOrderHasTheSameOrderIndex', openOrderHasTheSameOrderIndex)
-
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
-  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
 
   let result
 
@@ -1904,19 +1890,12 @@ export const updateOpenOrderHistoryQuerryFunction = (
       ...subscriptionData.data.listenOpenOrders,
     }
 
-    // console.log(
-    //   'order exist, update',
-    //   prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex]
-    // )
-
     result = { ...prev }
   } else {
     prev.getOpenOrderHistory = [
       { ...subscriptionData.data.listenOpenOrders },
       ...prev.getOpenOrderHistory,
     ]
-
-    // console.log('add order', prev.getOpenOrderHistory)
 
     result = { ...prev }
   }
@@ -1931,7 +1910,6 @@ export const updateOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
-  console.log('isEmptySubscription', isEmptySubscription)
   if (isEmptySubscription) {
     return previous
   }
@@ -1944,11 +1922,6 @@ export const updateOrderHistoryQuerryFunction = (
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
-  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
-  console.log(
-    'subscriptionData.data.listenOrderHistory',
-    subscriptionData.data.listenOrderHistory
-  )
   let result
 
   if (openOrderAlreadyExists) {
