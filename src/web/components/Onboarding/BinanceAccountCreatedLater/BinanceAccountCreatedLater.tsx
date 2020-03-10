@@ -35,10 +35,9 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
       >
         <DialogTitleCustom
           id="customized-dialog-title"
-          onClose={handleClose}
-          justify="center"
           style={{
             backgroundColor: '#fff',
+            justifyContent: 'center',
           }}
         >
           <GridCustom
@@ -51,10 +50,10 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
           </GridCustom>{' '}
         </DialogTitleCustom>
         <DialogContent
-          justify="center"
           style={{
             padding: '0 3rem 3rem',
             textAlign: 'center',
+            justifyContent: 'center',
           }}
         >
           <Grid style={{ width: '440px' }}>
@@ -72,7 +71,7 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
                 When you’ll be ready go
               </Typography>
             </Grid>
-            <Grid style={{ marginBottom: '2rem'}}>
+            <Grid style={{ marginBottom: '2rem' }}>
               <Typography
                 style={{
                   fontSize: '1.2rem',
