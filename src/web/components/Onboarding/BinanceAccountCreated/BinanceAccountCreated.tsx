@@ -34,51 +34,44 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        TransitionProps={{
+          style: {
+            backgroundColor: '#16253D',
+          },
+        }}
       >
         <DialogTitleCustom
           id="customized-dialog-title"
-          onClose={handleClose}
-          justify="center"
           style={{
             backgroundColor: '#fff',
+            justifyContent: 'center',
           }}
         >
           <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
-          {/* <TypographyCustomHeading
-            fontWeight={'700'}
-            borderRadius={'1rem'}
-            color={black.custom}
-            style={{
-              textAlign: 'center',
-              textTransform: 'uppercase',
-            }}
-          >
-            Your hybrid account created
-          </TypographyCustomHeading> */}
         </DialogTitleCustom>
         <DialogContent
-          justify="center"
           style={{
             padding: '0 3rem 3rem',
             textAlign: 'center',
+            justifyContent: 'center',
           }}
         >
           <Grid style={{ width: '440px' }}>
             <GridCustom>
-            <TypographyCustomHeading
-            fontWeight={'700'}
-            borderRadius={'1rem'}
-            color={black.custom}
-            style={{
-              fontSize: '1.7rem',
-              textAlign: 'center',
-              textTransform: 'uppercase',
-              paddingBottom: '2rem',
-            }}
-          >
-            Your hybrid account created
-          </TypographyCustomHeading>
-          
+              <TypographyCustomHeading
+                fontWeight={'700'}
+                borderRadius={'1rem'}
+                color={black.custom}
+                style={{
+                  fontSize: '1.7rem',
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  paddingBottom: '2rem',
+                }}
+              >
+                Your broker account created
+              </TypographyCustomHeading>
+
               <Typography
                 style={{
                   fontSize: '1.2rem',
