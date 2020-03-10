@@ -39,6 +39,9 @@ export interface IProps extends WithTheme<Theme> {
   marketType: number
   canceledOrders: string[]
   currencyPair: string
+  allKeys: boolean
+  keys: Key[]
+  specificPair: boolean | string
   showAllPositionPairs: boolean
   showAllOpenOrderPairs: boolean
   showAllSmartTradePairs: boolean
@@ -47,8 +50,6 @@ export interface IProps extends WithTheme<Theme> {
   showSmartTradesFromAllAccounts: boolean
   handleChangePage: (page: number) => void
   handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
-  allKeys: boolean
-  specificPair: boolean | string
   handleToggleAllKeys: () => void
   handleToggleSpecificPair: () => void
 }

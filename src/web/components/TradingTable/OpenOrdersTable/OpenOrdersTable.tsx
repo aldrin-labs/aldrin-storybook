@@ -87,6 +87,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       theme,
       arrayOfMarketIds,
       marketType,
+      keys,
     } = this.props
 
     const that = this
@@ -97,7 +98,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       theme,
       arrayOfMarketIds,
       marketType,
-      this.props.canceledOrders
+      this.props.canceledOrders,
+      keys
     )
 
     client.writeQuery({

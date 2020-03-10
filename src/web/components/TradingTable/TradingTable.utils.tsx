@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import moment from 'moment'
-import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
+import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import ErrorIcon from '@material-ui/icons/Error'
 
 import { Position } from './PositionsTable/PositionsTable.types'
@@ -13,11 +13,6 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
-
-type Key = {
-  keyId: string
-  name: string
-}
 
 export const CloseButton = ({
   i,
@@ -276,6 +271,7 @@ export const combinePositionsTable = ({
   priceFromOrderbook: number | string
   pricePrecision: number
   quantityPrecision: number
+  keys: Key[]
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -299,7 +295,7 @@ export const combinePositionsTable = ({
         }
       ).price
 
-      const keyName = keys ? keys[keyId] : ''
+      const keyName = keys[keyId]
 
       const getVariables = (type: String, price: Number) => ({
         keyId: el.keyId,
@@ -823,9 +819,9 @@ export const combineActiveTradesTable = ({
 
 export const combineStrategiesHistoryTable = (
   data: OrderType[],
-  theme,
+  theme: Theme,
   marketType: number,
-  keys
+  keys: Key[]
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -1133,8 +1129,8 @@ export const combineOpenOrdersTable = (
   theme: Theme,
   arrayOfMarketIds: string[],
   marketType: number,
-  canceledOrders,
-  keys
+  canceledOrders: string[],
+  keys: Key[]
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
