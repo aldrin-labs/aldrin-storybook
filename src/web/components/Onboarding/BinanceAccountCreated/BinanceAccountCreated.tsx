@@ -1,6 +1,7 @@
 import React from 'react'
-import { Grid, Typography } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
+import { Grid, Typography, Theme, ConsistentWith } from '@material-ui/core'
+import { withTheme, WithTheme } from '@material-ui/styles'
+import { withRouter } from 'react-router'
 
 import {
   TypographyCustomHeading,
@@ -17,7 +18,10 @@ import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import { IProps } from './BinanceAccountCreated.types'
 
 @withTheme
-export default class BinanceAccountCreated extends React.Component<IProps> {
+@withRouter
+export default class BinanceAccountCreated extends React.Component<
+  ConsistentWith<IProps, WithTheme<Theme>>
+> {
   state = {
     loading: false,
     loadingLater: false,
@@ -36,7 +40,6 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
       theme: {
         palette: { black },
       },
-      handleClose,
       open,
       completeOnboarding,
     } = this.props
@@ -47,7 +50,6 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
     return (
       <DialogWrapper
         style={{ borderRadius: '50%' }}
-        onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
         TransitionProps={{

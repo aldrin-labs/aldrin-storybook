@@ -1,7 +1,7 @@
-export interface IProps {
-  history: any
-  theme: any,
-  handleClose: () => void,
-  open: boolean,
-  completeOnboarding: () => Promise<any>,
+import { Theme } from '@material-ui/core'
+import { WithTheme } from '@material-ui/styles'
+
+export interface IProps extends WithTheme<Theme> {
+  open: boolean
+  completeOnboarding: () => Promise<any>
 }
