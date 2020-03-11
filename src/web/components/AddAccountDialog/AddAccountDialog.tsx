@@ -331,7 +331,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   marginRight: '.8rem',
                 }}
               />
-              Add Account
+              {includeBrokerKey && !includeCommonBinanceKey
+                ? `Create broker account`
+                : `Add Account`}
             </BtnCustom>
           )
         )}
@@ -357,7 +359,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
           }}
           transitionDuration={{
             enter: 0,
-            exit: 3000,
+            exit: onboarding ? 3000 : 0,
           }}
           open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
@@ -591,17 +593,17 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             fontSize={'1.2rem'}
                             onClick={this.handleGenerateBrokerKey}
                           >
-                            Create hybrid account
+                            Create broker account
                           </BtnCustom>
                         </Grid>
                       </GridCustom>
-                      <Grid container justify="center" alignItems="center">
+                      {/* <Grid container justify="center" alignItems="center">
                         <Typography>
                           {onboarding
                             ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
                             : `Or add another exchange key`}
                         </Typography>
-                      </Grid>
+                      </Grid> */}
                     </>
                   )}
 
