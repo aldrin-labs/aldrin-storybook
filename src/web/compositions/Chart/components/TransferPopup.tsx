@@ -3,8 +3,6 @@ import { withSnackbar } from 'notistack'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
 
@@ -24,13 +22,7 @@ import {
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 interface IProps {
   selectedAccount: string

@@ -4,7 +4,11 @@ import QueryRenderer from '@core/components/QueryRenderer'
 import { SelectR } from '@sb/styles/cssUtils'
 
 const SelectExchangeList = ({
-  data,
+  data = {
+    exchangePagination: {
+      items: [{ name: 'Binance' }],
+    },
+  },
   placeholder = '',
   ...otherPropsForSelect
 }) => {
@@ -30,15 +34,18 @@ const SelectExchangeList = ({
   )
 }
 
-const DataWrapper = ({ ...props }) => {
-  return (
-    <QueryRenderer
-      withOutSpinner={false}
-      component={SelectExchangeList}
-      query={getExchangesForKeysListQuery}
-      {...props}
-    />
-  )
-}
+// No need for now because we support only binance
 
-export default DataWrapper
+// const DataWrapper = ({ ...props }) => {
+//   return (
+//     <QueryRenderer
+//       withOutSpinner={false}
+//       withTableLoader={true}
+//       component={SelectExchangeList}
+//       query={getExchangesForKeysListQuery}
+//       {...props}
+//     />
+//   )
+// }
+
+export default SelectExchangeList

@@ -34,7 +34,7 @@ export interface IProps {
   updateTooltipSettings: (setting: IVariables) => boolean
   portfolioKeys: PorfolioKey[]
   portfoliosNumber: number
-  portfolioId: string
   baseCoin: 'USDT' | 'BTC'
   theme: Theme
+  numberOfKeys: number
 }

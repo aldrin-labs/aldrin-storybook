@@ -1,6 +1,4 @@
 import React from 'react'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
 import { withSnackbar } from 'notistack'
 import { withTheme } from '@material-ui/styles'
@@ -32,38 +30,20 @@ import { compose } from 'recompose'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import FuturesWarsRoomSelector from '@core/components/FuturesWarsRoomSelector/index'
-import { keysNames } from '@core/graphql/queries/chart/keysNames'
-import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
-import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
-import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
 import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
 
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
-import { getCurrentPortfolio } from '@core/graphql/queries/profile/getCurrentPortfolio'
-import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { IState, IProps } from './AddAccountDialog.types'
 
 import InfoDialog from '@sb/components/InfoDialog/InfoDialog'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
-import Steps from '@sb/components/Onboarding/Steps/Steps'
-import { Loader } from '@sb/compositions/Optimization/Optimization.styles'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
-const FormError = ({ children }: any) => (
-  <Typography color="error">{children}</Typography>
-)
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+import { refetchOptionsOnKeyAddFunction } from '@sb/components/AddAccountDialog/AddAccountDialog.utils'
 
 @withTheme
 class AddAccountDialog extends React.Component<IProps, IState> {
@@ -78,6 +58,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     exchange: 'binance',
     error: '',
     loadingRequest: false,
+    regularLoading: false,
   }
 
   showAddingExchangeKeyStatus = ({
@@ -119,19 +100,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }) => {
     const { enqueueSnackbar } = this.props
     if (status === 'OK') {
-      enqueueSnackbar(`FuturesWars key successful created`, { variant: 'success' })
+      enqueueSnackbar(`FuturesWars key successful created`, {
+        variant: 'success',
+      })
     } else {
       enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
   }
 
   handleGenerateBrokerKey = async () => {
-    const {
-      generateBrokerKeyMutation,
-      setCurrentStep,
-      onboarding,
-      enqueueSnackbar,
-    } = this.props
+    const { generateBrokerKeyMutation, setCurrentStep, onboarding } = this.props
     this.setState({ loadingRequest: true })
 
     try {
@@ -167,12 +145,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     this.setState({ loadingRequest: true })
 
     try {
-      const resp = await generateBrokerKeyMutation({ variables: {
-        input: {
-          isFuturesWarsKey: true,
-          roomId: roomId,
-        }
-      } })
+      const resp = await generateBrokerKeyMutation({
+        variables: {
+          input: {
+            isFuturesWarsKey: true,
+            roomId: roomId,
+          },
+        },
+      })
       const { data } = resp
       const {
         status = 'ERR',
@@ -190,7 +170,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       })
     }
     onboarding ? setCurrentStep('binanceAccountCreated') : this.handleClose()
-
   }
 
   handleSubmit = async () => {
@@ -279,6 +258,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     })
   }
 
+  setRegularLoading = (loadArg: boolean) => {
+    this.setState({ regularLoading: loadArg })
+  }
+
   updateWarningStatus = (newStatus: boolean) =>
     this.setState({ showWarning: newStatus })
 
@@ -295,6 +278,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       CustomButton,
       numberOfKeys = 0,
       isFuturesWars = false,
+      includeBrokerKey = true,
     } = this.props
 
     const {
@@ -306,7 +290,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       showWarning,
       loadingRequest,
       roomId,
+      regularLoading,
     } = this.state
+
+    const { setRegularLoading } = this
 
     return (
       <>
@@ -320,31 +307,35 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         {existCustomButton ? (
           <CustomButton handleClick={this.handleClickOpen} />
         ) : (
-          <BtnCustom
-            btnWidth={'auto'}
-            height={'auto'}
-            btnColor={'#165BE0'}
-            borderRadius={'1rem'}
-            color={'#165BE0'}
-            margin={'1.6rem 0 0 2rem'}
-            padding={'.5rem 1rem .5rem 0'}
-            fontSize={'1.4rem'}
-            letterSpacing="1px"
-            onClick={this.handleClickOpen}
-            style={{
-              border: 'none',
-            }}
-          >
-            <SvgIcon
-              src={Plus}
-              width="3.5rem"
-              height="auto"
+          !onboarding && (
+            <BtnCustom
+              btnWidth={'auto'}
+              height={'auto'}
+              btnColor={'#165BE0'}
+              borderRadius={'1rem'}
+              color={'#165BE0'}
+              margin={'1.6rem 0 0 2rem'}
+              padding={'.5rem 1rem .5rem 0'}
+              fontSize={'1.4rem'}
+              letterSpacing="1px"
+              onClick={this.handleClickOpen}
               style={{
-                marginRight: '.8rem',
+                border: 'none',
               }}
-            />
-            Add Account
-          </BtnCustom>
+            >
+              <SvgIcon
+                src={Plus}
+                width="3.5rem"
+                height="auto"
+                style={{
+                  marginRight: '.8rem',
+                }}
+              />
+              {includeBrokerKey && !includeCommonBinanceKey
+                ? `Create broker account`
+                : `Add Account`}
+            </BtnCustom>
+          )
         )}
 
         <DialogWrapper
@@ -354,6 +345,21 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             if (!onboarding) {
               this.handleClose()
             }
+          }}
+          PaperProps={{
+            style: {
+              minWidth: '50%',
+              maxWidth: '800px',
+            },
+          }}
+          TransitionProps={{
+            style: {
+              backgroundColor: onboarding ? '#16253D' : '',
+            },
+          }}
+          transitionDuration={{
+            enter: 0,
+            exit: onboarding ? 3000 : 0,
           }}
           open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
@@ -383,7 +389,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
+                setRegularLoading(true)
                 const response = await this.handleSubmit()
+                setRegularLoading(false)
 
                 if (response) {
                   this.handleClose()
@@ -401,19 +409,26 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <Grid container direction={'column'}>
                       <Typography
                         align={`center`}
-                        style={{ paddingTop: '1.4rem', paddingBottom: '1.4rem', color: '#DD6956' }}
+                        style={{
+                          paddingTop: '1.4rem',
+                          paddingBottom: '1.4rem',
+                          color: '#DD6956',
+                        }}
                       >
                         You must understand that you risk losing money. But you
                         can also win it
                       </Typography>
                     </Grid>
-                    <Grid justify="center" container direction={'column'} style={{ height: '4rem'}}>
-                      <Typography
-                        align={`center`}
-                      >
-                        Select room:
-                      </Typography>
-                      <FuturesWarsRoomSelector onChange={this.handleSelectRoomId} />
+                    <Grid
+                      justify="center"
+                      container
+                      direction={'column'}
+                      style={{ height: '4rem' }}
+                    >
+                      <Typography align={`center`}>Select room:</Typography>
+                      <FuturesWarsRoomSelector
+                        onChange={this.handleSelectRoomId}
+                      />
                     </Grid>
                     <Grid container direction={'column'}>
                       <Typography
@@ -469,120 +484,129 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </GridCustom>
               ) : !loadingRequest && !isFuturesWars ? (
                 <Grid>
-                  <GridCustom
-                    container
-                    direction={'column'}
-                    alignItems={'center'}
-                    justify={'center'}
-                  >
-                    <SvgIcon src={CcaiBinanceLogo} width="50%" height="auto" />
-                  </GridCustom>
-                  <GridCustom>
-                    <Grid
-                      container
-                      justify={'space-between'}
-                      style={{ padding: '3rem 0' }}
-                    >
-                      <Grid
+                  {includeBrokerKey && (
+                    <>
+                      <GridCustom
                         container
                         direction={'column'}
-                        justify={'center'}
                         alignItems={'center'}
-                        style={{ maxWidth: '33%' }}
-                      >
-                        <Typography
-                          style={{
-                            paddingBottom: '0.5rem',
-                            fontWeight: 'bold',
-                            color: 'black',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Free
-                        </Typography>
-                        <SvgIcon src={free} width="40px" height="auto" />
-                        <Typography
-                          align={`center`}
-                          style={{ paddingTop: '1.4rem' }}
-                        >
-                          No extra fee, pay only Binance fee
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        container
-                        direction={'column'}
                         justify={'center'}
-                        alignItems={'center'}
-                        style={{ maxWidth: '33%' }}
                       >
-                        <Typography
-                          style={{
-                            paddingBottom: '0.5rem',
-                            fontWeight: 'bold',
-                            color: 'black',
-                            textTransform: 'uppercase',
-                          }}
+                        <SvgIcon
+                          src={CcaiBinanceLogo}
+                          width="50%"
+                          height="auto"
+                        />
+                      </GridCustom>
+                      <GridCustom>
+                        <Grid
+                          container
+                          justify={'space-between'}
+                          style={{ padding: '3rem 0' }}
                         >
-                          Useful
+                          <Grid
+                            container
+                            direction={'column'}
+                            justify={'center'}
+                            alignItems={'center'}
+                            style={{ maxWidth: '33%' }}
+                          >
+                            <Typography
+                              style={{
+                                paddingBottom: '0.5rem',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Free
+                            </Typography>
+                            <SvgIcon src={free} width="40px" height="auto" />
+                            <Typography
+                              align={`center`}
+                              style={{ paddingTop: '1.4rem' }}
+                            >
+                              No extra fee, pay only Binance fee
+                            </Typography>
+                          </Grid>
+                          <Grid
+                            container
+                            direction={'column'}
+                            justify={'center'}
+                            alignItems={'center'}
+                            style={{ maxWidth: '33%' }}
+                          >
+                            <Typography
+                              style={{
+                                paddingBottom: '0.5rem',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Useful
+                            </Typography>
+                            <SvgIcon src={useful} width="40px" height="auto" />
+                            <Typography
+                              align={`center`}
+                              style={{ paddingTop: '1.4rem' }}
+                            >
+                              All features availiable with no limits
+                            </Typography>
+                          </Grid>
+                          <Grid
+                            container
+                            direction={'column'}
+                            justify={'center'}
+                            alignItems={'center'}
+                            style={{ maxWidth: '33%' }}
+                          >
+                            <Typography
+                              style={{
+                                paddingBottom: '0.2rem',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Secure
+                            </Typography>
+                            <SvgIcon src={secure} width="40px" height="auto" />
+                            <Typography
+                              align={`center`}
+                              style={{ paddingTop: '1.4rem' }}
+                            >
+                              All user funds custody remain with Binance at all
+                              times
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        <Grid container justify={'center'}>
+                          <BtnCustom
+                            btnWidth={'45%'}
+                            borderRadius={'8px'}
+                            btnColor={'#165BE0'}
+                            borderColor={'#165BE0'}
+                            padding={'1.5rem'}
+                            height={'auto'}
+                            borderWidth={'2px'}
+                            fontSize={'1.2rem'}
+                            onClick={this.handleGenerateBrokerKey}
+                          >
+                            Create broker account
+                          </BtnCustom>
+                        </Grid>
+                      </GridCustom>
+                      {/* <Grid container justify="center" alignItems="center">
+                        <Typography>
+                          {onboarding
+                            ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
+                            : `Or add another exchange key`}
                         </Typography>
-                        <SvgIcon src={useful} width="40px" height="auto" />
-                        <Typography
-                          align={`center`}
-                          style={{ paddingTop: '1.4rem' }}
-                        >
-                          All features availiable with no limits
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        container
-                        direction={'column'}
-                        justify={'center'}
-                        alignItems={'center'}
-                        style={{ maxWidth: '33%' }}
-                      >
-                        <Typography
-                          style={{
-                            paddingBottom: '0.2rem',
-                            fontWeight: 'bold',
-                            color: 'black',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          Secure
-                        </Typography>
-                        <SvgIcon src={secure} width="40px" height="auto" />
-                        <Typography
-                          align={`center`}
-                          style={{ paddingTop: '1.4rem' }}
-                        >
-                          All user funds custody remain with Binance at all
-                          times
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container justify={'center'}>
-                      <BtnCustom
-                        btnWidth={'45%'}
-                        borderRadius={'8px'}
-                        btnColor={'#165BE0'}
-                        borderColor={'#165BE0'}
-                        padding={'1.5rem'}
-                        height={'auto'}
-                        borderWidth={'2px'}
-                        fontSize={'1.2rem'}
-                        onClick={this.handleGenerateBrokerKey}
-                      >
-                        Create hybrid account
-                      </BtnCustom>
-                    </Grid>
-                  </GridCustom>
-                  <Grid container justify="center" alignItems="center">
-                    <Typography>
-                      {onboarding
-                        ? `OR TRY 7 DAY FREE TRIAL WITH ANY OTHER EXCHANGE API KEY`
-                        : `Or add another exchange key`}
-                    </Typography>
-                  </Grid>
+                      </Grid> */}
+                    </>
+                  )}
+
                   {includeCommonBinanceKey && (
                     <>
                       <GridCustom>
@@ -597,6 +621,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             borderRadius: '1rem',
                             padding: '0 1rem',
                             background: '#fff',
+                            boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.15)',
                           }}
                           inputStyles={{
                             marginLeft: '0',
@@ -615,20 +640,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           }}
                         />
                       </GridCustom>
-                      {/* <GridCustom>
-                      <Legend>Account name</Legend>
-                      <InputBaseCustom
-                        id="name"
-                        name="name"
-                        label="Name"
-                        value={name}
-                        onChange={(e) => this.handleChange(e)}
-                        placeholder="Type name..."
-                        type="text"
-                        // margin="normal"
-                      />
-                      {error && <FormError>{error}</FormError>}
-                    </GridCustom> */}
                       <GridCustom>
                         <Legend>Api key</Legend>
                         <InputBaseCustom
@@ -679,12 +690,21 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   </LinkCustom>
 
                   <BtnCustom
-                    btnWidth={'85px'}
-                    borderRadius={'32px'}
+                    disabled={regularLoading}
+                    borderRadius={'8px'}
                     btnColor={'#165BE0'}
+                    fontSize="1.6rem"
+                    padding="2rem"
+                    borderWidth="2px"
                     type="submit"
                   >
-                    {onboarding ? 'ADD KEY' : 'ADD'}
+                    {regularLoading ? (
+                      <Loading size={16} style={{ height: '16px' }} />
+                    ) : onboarding ? (
+                      'ADD AND START'
+                    ) : (
+                      'ADD'
+                    )}
                   </BtnCustom>
                 </Grid>
               )}
@@ -717,62 +737,10 @@ export default compose(
   }),
   graphql(generateBrokerKey, {
     name: 'generateBrokerKeyMutation',
-    options: ({
-      baseData: {
-        portfolio: { baseCoin },
-      },
-      onboarding,
-    }: {
-      baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
-      onboarding: boolean
-    }) => ({
-      refetchQueries: !onboarding
-        ? [
-            {
-              query: portfolioKeyAndWalletsQuery,
-              variables: { baseCoin },
-            },
-            { query: getKeysQuery },
-            { query: keysNames },
-            {
-              query: getPortfolioAssets,
-              variables: { baseCoin, innerSettings: true },
-            },
-            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
-            { query: getCurrentPortfolio },
-          ]
-        : [],
-    }),
+    options: refetchOptionsOnKeyAddFunction,
   }),
   graphql(addExchangeKeyMutation, {
     name: 'addExchangeKey',
-    options: ({
-      baseData: {
-        portfolio: { baseCoin },
-      },
-      onboarding,
-    }: {
-      baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
-      onboarding: boolean
-    }) => ({
-      refetchQueries: !onboarding
-        ? [
-            {
-              query: portfolioKeyAndWalletsQuery,
-              variables: { baseCoin },
-            },
-            { query: getKeysQuery },
-            { query: keysNames },
-            {
-              query: getPortfolioAssets,
-              variables: { baseCoin, innerSettings: true },
-            },
-            { query: getMyPortfoliosQuery, variables: { baseCoin: 'USDT' } },
-            { query: getCurrentPortfolio },
-            { query: getAllUserKeys },
-            { query: GET_TRADING_SETTINGS },
-          ]
-        : [],
-    }),
+    options: refetchOptionsOnKeyAddFunction,
   })
 )(AddAccountDialog)

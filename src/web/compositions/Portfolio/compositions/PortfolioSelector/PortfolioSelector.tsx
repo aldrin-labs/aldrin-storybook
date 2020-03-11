@@ -625,6 +625,7 @@ const PortfolioSelectorDataWrapper = (props) => {
       query={getPortfolioAssets}
       variables={{ baseCoin: props.baseCoin, innerSettings: true }}
       pollInterval={30000}
+      withOutSpinner={true}
       name={`portfolioKeys`}
       fetchPolicy="cache-and-network"
       {...props}

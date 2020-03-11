@@ -1,7 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
@@ -23,6 +22,7 @@ import {
 } from './RebalanceDialogAdd.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { DialogContent } from '@sb/styles/Dialog.styles'
 import ContentList from './ContentList'
 
 import { IProps, IState } from './RebalanceDialogAdd.types'
@@ -57,13 +57,6 @@ const DialogTitle = withStyles((theme) => ({
     </MuiDialogTitle>
   )
 })
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
 
 const DialogActions = withStyles((theme) => ({
   root: {
