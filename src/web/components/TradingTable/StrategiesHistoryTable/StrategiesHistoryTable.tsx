@@ -1,4 +1,5 @@
 import React from 'react'
+import copy from 'clipboard-copy'
 import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -138,6 +139,10 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         defaultSort={{
           sortColumn: 'date',
           sortDirection: 'desc',
+        }}
+        onTrClick={(row) => {
+          this.setExpandedRows(row.id)
+          copy(row.id)
         }}
         withCheckboxes={false}
         tableStyles={{
