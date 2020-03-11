@@ -210,7 +210,7 @@ const APIWrapper = (props: any) => {
       query={portfolioKeyAndWalletsQuery}
       name={'data'}
       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
-      withOutSpinner={false}
+      withOutSpinner={true}
       fetchPolicy="cache-and-network"
     />
   )
