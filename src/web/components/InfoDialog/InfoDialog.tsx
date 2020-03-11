@@ -40,12 +40,12 @@ const InfoDialog = ({
       <ContentWrapper>
         <TextComponent>{text}</TextComponent>
         <BtnCustom
-          height={'auto'}
+          borderRadius={'8px'}
+          btnColor={'#165BE0'}
+          fontSize="1.5rem"
+          padding="2rem"
+          borderWidth="2px"
           margin={'2rem auto 0 auto'}
-          padding={'.5rem 0 .4rem 0'}
-          borderRadius={'1.5rem'}
-          fontSize={'1.5rem'}
-          btnColor={'#0B1FD1'}
           btnWidth={'10rem'}
           onClick={closeDialog}
         >
