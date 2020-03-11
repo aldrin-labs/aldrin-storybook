@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { graphql } from 'react-apollo'
-import { withTheme } from '@material-ui/styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
@@ -9,8 +8,6 @@ import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSetti
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
-import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
@@ -36,7 +33,6 @@ const Onboarding = ({
   portfolioId,
   history,
   baseCoin,
-  theme,
 }: IProps) => {
   const {
     getTooltipSettings: { onboarding },
@@ -53,18 +49,6 @@ const Onboarding = ({
   if (!needOnboarding) return null
 
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
-
-  useEffect(() => {
-    const variables = {
-      inputPortfolio: {
-        name: 'My portfolio',
-      },
-    }
-
-    createPortfolio({
-      variables,
-    })
-  }, [])
 
   const completeOnboarding = async () => {
     await updateTooltipSettings({
@@ -87,14 +71,11 @@ const Onboarding = ({
 
   return (
     <>
-      {currentStep === 'start' && (
-        <PopupStart
-          theme={theme}
-          open={true}
-          baseCoin={baseCoin}
-          setCurrentStep={setCurrentStep}
-        />
-      )}
+      <PopupStart
+        open={currentStep === 'start'}
+        baseCoin={baseCoin}
+        setCurrentStep={setCurrentStep}
+      />
 
       {/* {currentStep === 'createPortfolio' && (
         <CreatePortfolio
@@ -106,49 +87,35 @@ const Onboarding = ({
         />
       )} */}
 
-      {currentStep === 'addAccount' && (
-        <AddAccountDialog
-          open={true}
-          numberOfKeys={numberOfKeys}
-          onboarding={true}
-          baseCoin={baseCoin}
-          setCurrentStep={setCurrentStep}
-        />
-      )}
+      <AddAccountDialog
+        open={currentStep === 'addAccount'}
+        numberOfKeys={numberOfKeys}
+        onboarding={true}
+        baseCoin={baseCoin}
+        setCurrentStep={setCurrentStep}
+        includeBrokerKey={false}
+      />
 
-      {currentStep === 'congratulations' && (
-        <Congratulations open={true} completeOnboarding={completeOnboarding} />
-      )}
+      <Congratulations
+        open={currentStep === 'congratulations'}
+        completeOnboarding={completeOnboarding}
+      />
 
-      {currentStep === 'binanceAccountCreated' && (
-        <BinanceAccountCreated
-          open={true}
-          history={history}
-          setCurrentStep={setCurrentStep}
+      <BinanceAccountCreated
+        open={currentStep === 'binanceAccountCreated'}
+        history={history}
+        completeOnboarding={completeOnboarding}
+      />
+
+      {/* <BinanceAccountCreatedLater
+          open={currentStep === 'binanceAccountCreatedLater'}
           completeOnboarding={completeOnboarding}
-        />
-      )}
-
-      {currentStep === 'binanceAccountCreatedLater' && (
-        <BinanceAccountCreatedLater
-          open={true}
-          completeOnboarding={completeOnboarding}
-        />
-      )}
+        /> */}
     </>
   )
 }
 
 export default compose(
-  withTheme,
-  graphql(createPortfolioMutation, {
-    name: 'createPortfolio',
-    options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
-      refetchQueries: [
-        { query: getMyPortfoliosQuery, variables: { baseCoin } },
-      ],
-    }),
-  }),
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
