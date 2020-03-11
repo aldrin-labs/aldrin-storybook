@@ -55,6 +55,10 @@ export default class BinanceAccountCreated extends React.Component<IProps> {
             backgroundColor: '#16253D',
           },
         }}
+        transitionDuration={{
+          enter: 0,
+          exit: 3000,
+        }}
       >
         <DialogTitleCustom
           id="customized-dialog-title"
