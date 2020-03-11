@@ -58,6 +58,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     exchange: 'binance',
     error: '',
     loadingRequest: false,
+    regularLoading: false,
   }
 
   showAddingExchangeKeyStatus = ({
@@ -257,6 +258,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
     })
   }
 
+  setRegularLoading = (loadArg: boolean) => {
+    this.setState({ regularLoading: loadArg })
+  }
+
   updateWarningStatus = (newStatus: boolean) =>
     this.setState({ showWarning: newStatus })
 
@@ -285,7 +290,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
       showWarning,
       loadingRequest,
       roomId,
+      regularLoading,
     } = this.state
+
+    const { setRegularLoading } = this
 
     return (
       <>
@@ -298,32 +306,34 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 
         {existCustomButton ? (
           <CustomButton handleClick={this.handleClickOpen} />
-        ) : !onboarding && (
-          <BtnCustom
-            btnWidth={'auto'}
-            height={'auto'}
-            btnColor={'#165BE0'}
-            borderRadius={'1rem'}
-            color={'#165BE0'}
-            margin={'1.6rem 0 0 2rem'}
-            padding={'.5rem 1rem .5rem 0'}
-            fontSize={'1.4rem'}
-            letterSpacing="1px"
-            onClick={this.handleClickOpen}
-            style={{
-              border: 'none',
-            }}
-          >
-            <SvgIcon
-              src={Plus}
-              width="3.5rem"
-              height="auto"
+        ) : (
+          !onboarding && (
+            <BtnCustom
+              btnWidth={'auto'}
+              height={'auto'}
+              btnColor={'#165BE0'}
+              borderRadius={'1rem'}
+              color={'#165BE0'}
+              margin={'1.6rem 0 0 2rem'}
+              padding={'.5rem 1rem .5rem 0'}
+              fontSize={'1.4rem'}
+              letterSpacing="1px"
+              onClick={this.handleClickOpen}
               style={{
-                marginRight: '.8rem',
+                border: 'none',
               }}
-            />
-            Add Account
-          </BtnCustom>
+            >
+              <SvgIcon
+                src={Plus}
+                width="3.5rem"
+                height="auto"
+                style={{
+                  marginRight: '.8rem',
+                }}
+              />
+              Add Account
+            </BtnCustom>
+          )
         )}
 
         <DialogWrapper
@@ -377,7 +387,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <form
               onSubmit={async (e) => {
                 e.preventDefault()
+                setRegularLoading(true)
                 const response = await this.handleSubmit()
+                setRegularLoading(false)
 
                 if (response) {
                   this.handleClose()
@@ -676,6 +688,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   </LinkCustom>
 
                   <BtnCustom
+                    disabled={regularLoading}
                     borderRadius={'8px'}
                     btnColor={'#165BE0'}
                     fontSize="1.6rem"
@@ -683,7 +696,13 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     borderWidth="2px"
                     type="submit"
                   >
-                    {onboarding ? 'ADD AND START' : 'ADD'}
+                    {regularLoading ? (
+                      <Loading size={16} style={{ height: '16px' }} />
+                    ) : onboarding ? (
+                      'ADD AND START'
+                    ) : (
+                      'ADD'
+                    )}
                   </BtnCustom>
                 </Grid>
               )}

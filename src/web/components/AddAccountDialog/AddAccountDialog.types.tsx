@@ -9,6 +9,7 @@ export interface IState {
   showWarning: boolean
   openGetKeysInfo: boolean
   loadingRequest: boolean
+  regularLoading: boolean
 }
 
 type Variables = {
