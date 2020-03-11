@@ -203,6 +203,21 @@ export const forWithdrawalCss = css`
   width: auto;
 `
 
+export const FormContainerCss = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+`
+
+export const DialogTitleTextCss = css`
+  font-size: 2rem;
+  color: #16253d;
+  letter-spacing: 1px;
+  padding: 0 1.6rem;
+`
+
 export const MfaHeading = styled(({ ...props }) => <Typography {...props} />)`
   ${MfaHeadingCss}
 `
@@ -250,10 +265,11 @@ export const LoginHeadingBox = styled(({ ...props }) => <Grid {...props} />)`
   ${LoginHeadingBoxCss}
 `
 
-export const LoginContainer = styled(({ forWithdrawal, ...props }) => <Grid {...props} />)`
+export const LoginContainer = styled(({ forWithdrawal, ...props }) => (
+  <Grid {...props} />
+))`
   ${LoginContainerCss}
   ${(props) => (props.forWithdrawal ? forWithdrawalCss : ``)}
-
 `
 
 export const InputContainer = styled(({ ...props }) => <Grid {...props} />)`
@@ -284,7 +300,7 @@ export const StyledInputLogin = styled(({ ...props }) => (
 
   & input {
     font-size: 2rem;
-    color: #5E6B83;
+    color: #5e6b83;
     text-align: left;
   }
 
@@ -356,9 +372,16 @@ export const TextLinkSpan = styled(({ small, ...props }) => (
   ${(props) => (props.small ? TextSmallCss : ``)}
 `
 
-export const OtpLoaderContainer =  styled(({ ...props }) => (
-  <Grid {...props} />
-))`
+export const OtpLoaderContainer = styled(({ ...props }) => <Grid {...props} />)`
   ${OtpLoaderContainerCss}
 `
 
+export const FormContainer = styled(({ ...props }) => <form {...props} />)`
+  ${FormContainerCss}
+`
+
+export const DialogTitleText = styled(({ bold, ...props }) => (
+  <Typography {...props} />
+))`
+  ${DialogTitleTextCss}
+`
