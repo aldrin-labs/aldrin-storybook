@@ -298,7 +298,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 
         {existCustomButton ? (
           <CustomButton handleClick={this.handleClickOpen} />
-        ) : (
+        ) : !onboarding && (
           <BtnCustom
             btnWidth={'auto'}
             height={'auto'}
@@ -344,6 +344,10 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             style: {
               backgroundColor: onboarding ? '#16253D' : '',
             },
+          }}
+          transitionDuration={{
+            enter: 0,
+            exit: 3000,
           }}
           open={onboarding ? open : this.state.open}
           aria-labelledby="customized-dialog-title"
