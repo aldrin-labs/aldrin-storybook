@@ -28,8 +28,10 @@ import {
   WithGoogleButtonText,
   OrContainerText,
   TextLinkSpan,
+  FormContainer,
 } from '@sb/compositions/Login/Login.styles'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
+import ConfirmTermsOfUsePopup from '@sb/compositions/Login/ConfirmTermsOfUsePopup/ConfirmTermsOfUsePopup'
 
 import { isEmailValid } from '@sb/compositions/Login/Login.utils'
 
@@ -60,10 +62,11 @@ const SignUp = ({
   const [isAgreeWithRules, setAgreementWithRules] = useState(false)
   const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
   const [showTermsOfUse, toggleTermsOfUse] = useState(false)
+  const [showConfirmTermsOfUse, toggleConfirmTermsOfUse] = useState(false)
+
   const [passwordError, setPasswordError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [agreementError, setAgreementError] = useState(false)
-
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordAgaing, setShowPasswordAgaing] = useState(false)
@@ -93,11 +96,24 @@ const SignUp = ({
         open={showTermsOfUse}
         onClick={() => toggleTermsOfUse(!showTermsOfUse)}
       />
+      <ConfirmTermsOfUsePopup
+        open={showConfirmTermsOfUse}
+        confirmHandler={onSignUpWithGoogleClick}
+        isAgreeWithRules={isAgreeWithRules}
+        showPrivacyPolicy={showPrivacyPolicy}
+        showTermsOfUse={showTermsOfUse}
+        toggleAgreementCheckbox={toggleAgreementCheckbox}
+        togglePrivacyPolicy={togglePrivacyPolicy}
+        toggleTermsOfUse={toggleTermsOfUse}
+        onClose={() => toggleConfirmTermsOfUse(!showConfirmTermsOfUse)}
+      />
       <LoginContainer>
         <Grid container>
           <WithGoogleButton
-            onClick={() => { 
-              isAgreeWithRules ? onSignUpWithGoogleClick() : setAgreementError(true)
+            onClick={() => {
+              isAgreeWithRules
+                ? onSignUpWithGoogleClick()
+                : toggleConfirmTermsOfUse(!showConfirmTermsOfUse)
             }}
           >
             <Grid container alignItems="center" justify="center" wrap="nowrap">
@@ -109,150 +125,171 @@ const SignUp = ({
         <OrContainerText>
           <OrText>Or</OrText>
         </OrContainerText>
-        <InputContainer>
-          <StyledInputLogin
-            required
-            type="email"
-            id="email"
-            name="email"
-            autoComplete="on"
-            error={!!emailError}
-            placeholder={`E-mail`}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setEmail(e.target.value)
-              setEmailError('')
-            }}
-          />
-        </InputContainer>
-        <InputContainer>
-          <StyledInputLogin
-            required
-            error={!!passwordError}
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  tabIndex={-1}
-                  aria-label="Toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-            placeholder={`Password`}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setPassword(e.target.value)
-              setPasswordError('')
-            }}
-          />
-        </InputContainer>
-        <InputContainer>
-          <StyledInputLogin
-            required
-            error={!!passwordError}
-            type={showPasswordAgaing ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  tabIndex={-1}
-                  aria-label="Toggle password visibility"
-                  onClick={() => setShowPasswordAgaing(!showPasswordAgaing)}
-                >
-                  {showPasswordAgaing ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-            placeholder={`Confirm password`}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setPasswordAgaing(e.target.value)
-              setPasswordError('')
-            }}
-          />
-        </InputContainer>
-        {status === 'error' && errorMessage !== '' && (
-          <Grid>
-            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
-              {errorMessage}
-            </TypographyWithCustomColor>
-          </Grid>
-        )}
-        {passwordError !== '' && (
-          <Grid>
-            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
-              Passwords doesn't match
-            </TypographyWithCustomColor>
-          </Grid>
-        )}
-        {emailError !== '' && (
-          <Grid>
-            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
-              Email is not valid
-            </TypographyWithCustomColor>
-          </Grid>
-        )}
-        {agreementError && (
-          <Grid>
-            <TypographyWithCustomColor textColor={theme.customPalette.red.main}>
-              You must agree to Terms of Use and Privacy Policy
-            </TypographyWithCustomColor>
-          </Grid>
-        )}
-        <InputContainer container justify="center" alignItems="center">
-          <Checkbox
-            checked={isAgreeWithRules}
-            onChange={() => toggleAgreementCheckbox()}
-          />
-          <SmallGrayText>
-            I agree to cryptocurrencies.ai{' '}
-            <TextLinkSpan
-              small={true}
-              onClick={() => toggleTermsOfUse(!showTermsOfUse)}
-            >
-              Terms of Use,{' '}
-            </TextLinkSpan>
-            <TextLinkSpan
-              small={true}
-              onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
-            >
-              Privacy Policy,{' '}
-            </TextLinkSpan>
-            and I’m over 18 years old.
-          </SmallGrayText>
-        </InputContainer>
-        <SubmitButtonContainer>
-          <SubmitLoginButton
-            padding={'2rem 8rem'}
-            variant="contained"
-            color="secondary"
-            disabled={!isAgreeWithRules || loading}
-            onClick={async () => {
-              const validPasswords = isPasswordsValid({
-                pass1: password,
-                pass2: passwordAgaing,
-              })
-              const validEmail = isEmailValid({ email })
+        <FormContainer
+          action=""
+          onSubmit={async (e: React.ChangeEvent<HTMLFormElement>) => {
+            e.preventDefault()
 
-              if (!validPasswords) {
-                setPasswordError(`Passwords doesn't match`)
-                return
+            if (!isAgreeWithRules) {
+              setAgreementError(true)
+              return
+            }
+
+            const validPasswords = isPasswordsValid({
+              pass1: password,
+              pass2: passwordAgaing,
+            })
+            const validEmail = isEmailValid({ email })
+
+            if (!validPasswords) {
+              setPasswordError(`Passwords doesn't match`)
+              return
+            }
+            if (!validEmail) {
+              setEmailError(`Email is not valid`)
+              return
+            }
+            setLoading(true)
+            await onSignUpButtonClick({ email, password })
+            setLoading(false)
+          }}
+        >
+          <InputContainer>
+            <StyledInputLogin
+              required
+              type="email"
+              id="email"
+              name="email"
+              autoComplete="on"
+              error={!!emailError}
+              placeholder={`E-mail`}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setEmail(e.target.value)
+                setEmailError('')
+              }}
+            />
+          </InputContainer>
+          <InputContainer>
+            <StyledInputLogin
+              required
+              error={!!passwordError}
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    tabIndex={-1}
+                    aria-label="Toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
               }
-              if (!validEmail) {
-                setEmailError(`Email is not valid`)
-                return
+              placeholder={`Password`}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setPassword(e.target.value)
+                setPasswordError('')
+              }}
+            />
+          </InputContainer>
+          <InputContainer>
+            <StyledInputLogin
+              required
+              error={!!passwordError}
+              type={showPasswordAgaing ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    tabIndex={-1}
+                    aria-label="Toggle password visibility"
+                    onClick={() => setShowPasswordAgaing(!showPasswordAgaing)}
+                  >
+                    {showPasswordAgaing ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
               }
-              setLoading(true)
-              await onSignUpButtonClick({ email, password })
-              setLoading(false)
-            }}
-          >
-            {loading ? (
-              <Loading size={16} style={{ height: '16px' }} />
-            ) : (
-              `Next`
-            )}
-          </SubmitLoginButton>
-        </SubmitButtonContainer>
+              placeholder={`Confirm password`}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setPasswordAgaing(e.target.value)
+                setPasswordError('')
+              }}
+            />
+          </InputContainer>
+          {status === 'error' && errorMessage !== '' && (
+            <Grid>
+              <TypographyWithCustomColor
+                textColor={theme.customPalette.red.main}
+              >
+                {errorMessage}
+              </TypographyWithCustomColor>
+            </Grid>
+          )}
+          {passwordError !== '' && (
+            <Grid>
+              <TypographyWithCustomColor
+                textColor={theme.customPalette.red.main}
+              >
+                Passwords doesn't match
+              </TypographyWithCustomColor>
+            </Grid>
+          )}
+          {emailError !== '' && (
+            <Grid>
+              <TypographyWithCustomColor
+                textColor={theme.customPalette.red.main}
+              >
+                Email is not valid
+              </TypographyWithCustomColor>
+            </Grid>
+          )}
+          {agreementError && (
+            <Grid>
+              <TypographyWithCustomColor
+                textColor={theme.customPalette.red.main}
+              >
+                You must agree to Terms of Use and Privacy Policy
+              </TypographyWithCustomColor>
+            </Grid>
+          )}
+          <InputContainer container justify="center" alignItems="center">
+            <Checkbox
+              required
+              checked={isAgreeWithRules}
+              onChange={() => toggleAgreementCheckbox()}
+            />
+            <SmallGrayText>
+              I agree to cryptocurrencies.ai{' '}
+              <TextLinkSpan
+                small={true}
+                onClick={() => toggleTermsOfUse(!showTermsOfUse)}
+              >
+                Terms of Use,{' '}
+              </TextLinkSpan>
+              <TextLinkSpan
+                small={true}
+                onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
+              >
+                Privacy Policy,{' '}
+              </TextLinkSpan>
+              and I’m over 18 years old.
+            </SmallGrayText>
+          </InputContainer>
+          <SubmitButtonContainer>
+            <SubmitLoginButton
+              padding={'2rem 8rem'}
+              variant="contained"
+              color="secondary"
+              disabled={loading}
+              type="submit"
+            >
+              {loading ? (
+                <Loading size={16} style={{ height: '16px' }} />
+              ) : (
+                `Next`
+              )}
+            </SubmitLoginButton>
+          </SubmitButtonContainer>
+        </FormContainer>
       </LoginContainer>
     </>
   )
