@@ -8,7 +8,6 @@ import { withTheme } from '@material-ui/styles'
 import CubeLogo from '@icons/auth0Logo.png'
 import {
   TypographyCustomHeading,
-  GridCustom,
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
