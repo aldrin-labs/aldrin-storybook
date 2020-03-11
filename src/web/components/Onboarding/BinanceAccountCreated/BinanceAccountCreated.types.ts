@@ -4,5 +4,4 @@ export interface IProps {
   handleClose: () => void,
   open: boolean,
   completeOnboarding: () => Promise<any>,
-  setCurrentStep: (step: string) => void
 }
