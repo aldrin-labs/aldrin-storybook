@@ -51,6 +51,10 @@ const PopupStart = ({
             backgroundColor: '#16253D',
           },
         }}
+        transitionDuration={{
+          enter: 3000,
+          exit: 3000,
+        }}
         PaperProps={{
           style: {
             minWidth: '50%',
