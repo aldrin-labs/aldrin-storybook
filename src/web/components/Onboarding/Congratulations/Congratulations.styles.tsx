@@ -12,8 +12,8 @@ const keyFrameLogo = keyframes`
 export const Logo = styled.img`
   display: block;
   margin: 0 auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   animation: ${keyFrameLogo} 4s ease-in-out 0s infinite;
 `
 

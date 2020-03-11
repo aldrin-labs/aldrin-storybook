@@ -1,7 +1,11 @@
+import { Theme } from "@material-ui/core";
+
 export interface IState {
-  isSelected: boolean
+  loading: boolean
 }
 
 export interface IProps {
-  title: string
+  theme: Theme
+  open: boolean
+  completeOnboarding: () => Promise<void>
 }
