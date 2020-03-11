@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { graphql } from 'react-apollo'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
@@ -11,13 +10,11 @@ import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolio
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
-import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
+// import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import AddAccountDialog from '@sb/components/AddAccountDialog/AddAccountDialog'
 import Congratulations from '@sb/components/Onboarding/Congratulations/Congratulations'
 import BinanceAccountCreated from '@sb/components/Onboarding/BinanceAccountCreated/BinanceAccountCreated'
-import BinanceAccountCreatedLater from '@sb/components/Onboarding/BinanceAccountCreatedLater/BinanceAccountCreatedLater'
-
-import { demoKeyId } from '@core/utils/config'
+// import BinanceAccountCreatedLater from '@sb/components/Onboarding/BinanceAccountCreatedLater/BinanceAccountCreatedLater'
 
 import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
@@ -26,28 +23,9 @@ import { ICurrentStep, IProps } from './PortfolioOnboarding.types'
 const Onboarding = ({
   getTooltipSettingsQuery,
   updateTooltipSettings,
-  portfolioKeys,
   numberOfKeys,
-  createPortfolio,
-  portfoliosNumber,
-  portfolioId,
-  history,
   baseCoin,
 }: IProps) => {
-  const {
-    getTooltipSettings: { onboarding },
-  } = getTooltipSettingsQuery
-
-  const { instructions: needOnboarding } = onboarding
-    ? onboarding
-    : { instructions: false }
-
-  if (portfolioKeys.length > 1 || portfoliosNumber > 1) {
-    return null
-  }
-
-  if (!needOnboarding) return null
-
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
 
   const completeOnboarding = async () => {
@@ -71,12 +49,12 @@ const Onboarding = ({
 
   return (
     <>
+      <div> </div>
       <PopupStart
         open={currentStep === 'start'}
         baseCoin={baseCoin}
         setCurrentStep={setCurrentStep}
       />
-
       {/* {currentStep === 'createPortfolio' && (
         <CreatePortfolio
           open={true}
@@ -86,7 +64,6 @@ const Onboarding = ({
           setCurrentStep={setCurrentStep}
         />
       )} */}
-
       <AddAccountDialog
         open={currentStep === 'addAccount'}
         numberOfKeys={numberOfKeys}
@@ -95,18 +72,15 @@ const Onboarding = ({
         setCurrentStep={setCurrentStep}
         includeBrokerKey={false}
       />
-
       <Congratulations
         open={currentStep === 'congratulations'}
         completeOnboarding={completeOnboarding}
       />
-
       <BinanceAccountCreated
         open={currentStep === 'binanceAccountCreated'}
-        history={history}
         completeOnboarding={completeOnboarding}
-      />
-
+      />{' '}
+      */}
       {/* <BinanceAccountCreatedLater
           open={currentStep === 'binanceAccountCreatedLater'}
           completeOnboarding={completeOnboarding}
@@ -116,12 +90,6 @@ const Onboarding = ({
 }
 
 export default compose(
-  queryRendererHoc({
-    query: GET_TOOLTIP_SETTINGS,
-    name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'network-only',
-    withOutSpinner: true,
-  }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettings',
     options: ({ baseCoin }) => ({
