@@ -397,7 +397,6 @@ const Withdrawal = ({ ...props }: IProps) => {
                       return
                     }
 
-
                     setLoading(false)
                     toggleWithdrawalAuthentificatePopup(true)
                   }}

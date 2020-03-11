@@ -64,6 +64,7 @@ const Balances = ({
           }}
           disableTypography={true}
           position="end"
+          autoComplete="off"
         >
           <StyledTypographyCaption
             onClick={() => onChange({ target: { value: free } })}

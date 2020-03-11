@@ -24,7 +24,11 @@ interface IProps {
   goToProfileSettingsHandler: () => Promise<void>
 }
 
-const WithdrawalEnableMfaPopup = ({ open, handleClose, goToProfileSettingsHandler }: IProps) => {
+const WithdrawalEnableMfaPopup = ({
+  open,
+  handleClose,
+  goToProfileSettingsHandler,
+}: IProps) => {
   const [loading, setLoading] = useState(false)
 
   return (
@@ -76,7 +80,7 @@ const WithdrawalEnableMfaPopup = ({ open, handleClose, goToProfileSettingsHandle
             <Grid container justify="center" alignItems="center">
               <BtnCustom
                 disabled={loading === true}
-                btnWidth={'38%'}
+                btnWidth={'66%'}
                 borderRadius={'8px'}
                 btnColor={'#165BE0'}
                 borderWidth={'2px'}

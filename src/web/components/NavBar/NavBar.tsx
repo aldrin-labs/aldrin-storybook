@@ -145,13 +145,7 @@ const NavBarRaw: SFC<Props> = ({
           <Grid style={{ width: '100%', textAlign: 'center' }}>
             <NavBreadcrumbTypography>{page}</NavBreadcrumbTypography>
           </Grid>
-          <Grid
-            style={{ height: '100%' }}
-            item={true}
-            md={6}
-            sm={5}
-            key={'navBarGrid'}
-          >
+          <Grid style={{ height: '100%' }} item={true} key={'navBarGrid'}>
             <NavBarWrapper container={true} key={'NavBarWrapper'}>
               {/* <NavLinkButton
                 page={`portfolio`}
