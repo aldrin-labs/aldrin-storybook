@@ -269,7 +269,7 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
   })
 )(APIWrapper)
