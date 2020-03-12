@@ -755,7 +755,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               />
             </div>
           }
-          rowsWithHover={false}
           data={{ body: activeStrategiesProcessedData }}
           columnNames={getTableHead(tab, marketType)}
         />

@@ -35,7 +35,7 @@ const DialogContent = withStyles((theme) => ({
 interface IProps {
   selectedAccount: string
   transferFromSpotToFutures: boolean
-  futuresTransferMutation?: (mutationObj: {
+  futuresTransferMutation: (mutationObj: {
     variables: {
       input: {
         keyId: string
@@ -219,7 +219,8 @@ const TransferPopup = ({
                         <Timer
                           initialTime={
                             (timerForFuturesWars.startedAt -
-                            Math.floor(+new Date() / 1000)) * 1000
+                              Math.floor(+new Date() / 1000)) *
+                            1000
                           }
                           direction="backward"
                           startImmediately={true}

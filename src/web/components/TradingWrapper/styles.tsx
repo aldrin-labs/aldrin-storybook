@@ -1,16 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card, Tabs, Tab, Button, Grid } from '@material-ui/core'
+import { Button, Grid } from '@material-ui/core'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { customAquaScrollBar } from '../cssUtils'
 
 export const TablesBlockWrapper = styled(Grid)`
   border-radius: 0;
   padding-right: 0;
   border: none;
   position: relative;
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
+  height: ${({
+    isDefaultTerminalViewMode,
+  }: {
+    isDefaultTerminalViewMode: boolean
+  }) => (isDefaultTerminalViewMode ? '37%' : '48%')};
   top: 0%;
 
   && {
