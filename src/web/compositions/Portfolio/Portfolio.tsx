@@ -147,7 +147,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const {
       getTooltipSettings: { onboarding },
     } = getTooltipSettingsQuery
-
+    
     const isOnboardingEnabled = getOnboardingStatus({
       keys,
       myPortfolios: data.myPortfolios,
