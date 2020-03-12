@@ -3,54 +3,41 @@ import React from 'react'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
-import CubeLogo from '@icons/auth0Logo.png'
-
 import { withTheme } from '@material-ui/styles'
 
+import CubeLogo from '@icons/auth0Logo.png'
 import {
   TypographyCustomHeading,
-  GridCustom,
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Loading } from '@sb/components/index'
 
 import { IProps, IState } from './Congratulations.types'
 import { Logo } from './Congratulations.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 @withTheme
 class Congratulations extends React.Component<IProps, IState> {
   state: IState = {
-    key: 0,
-    isSelected: true,
-    loading: true,
-    portfolioName: '',
+    loading: false,
   }
 
-  componentDidMount() {
-    setTimeout(() => this.setState({ loading: false }), 2000)
+  setLoading = (loadArg: boolean) => {
+    this.setState({ loading: loadArg })
   }
-
   render() {
     const {
       theme: {
         palette: { black },
       },
-      handleClose,
       open,
       completeOnboarding,
     } = this.props
 
     const { loading } = this.state
+    const { setLoading } = this
 
     return (
       <>
@@ -61,25 +48,33 @@ class Congratulations extends React.Component<IProps, IState> {
 
         <DialogWrapper
           style={{ borderRadius: '50%' }}
-          onClose={handleClose}
           aria-labelledby="customized-dialog-title"
           open={open}
+          TransitionProps={{
+            style: {
+              backgroundColor: '#16253D',
+            },
+          }}
+          transitionDuration={{
+            enter: 0,
+            exit: 3000,
+          }}
         >
           <Logo src={CubeLogo} />
 
           <DialogTitleCustom
             id="customized-dialog-title"
-            onClose={handleClose}
-            justify="center"
             style={{
               backgroundColor: '#fff',
+              justifyContent: 'center',
+              padding: '0 2rem 4rem 2rem',
             }}
           >
             <TypographyCustomHeading
               fontWeight={'700'}
-              borderRadius={'1rem'}
               color={black.custom}
               style={{
+                fontSize: '2rem',
                 textAlign: 'center',
               }}
             >
@@ -87,88 +82,67 @@ class Congratulations extends React.Component<IProps, IState> {
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent
-            justify="center"
             style={{
               padding: '0 3rem 3rem',
               textAlign: 'center',
+              justifyContent: 'center',
             }}
           >
-            <Grid style={{ width: '440px' }}>
-              <GridCustom>
-                <Typography
-                  style={{
-                    color: '#16253D',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    letterSpacing: '0.2px',
-                  }}
-                >
-                  You have created your first portfolio successfully!
-                </Typography>
-              </GridCustom>
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              style={{ paddingBottom: '2rem' }}
+            >
+              <Typography
+                style={{
+                  color: '#16253D',
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                  letterSpacing: '0.2px',
+                }}
+              >
+                You have created your first portfolio successfully!
+              </Typography>
             </Grid>
 
-            <Grid style={{ width: '440px' }}>
-              <GridCustom>
-                {!loading ? (
-                  <Typography
-                    style={{
-                      fontSize: '17px',
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px',
-                      paddingTop: '15px',
-                      color: '#16253D',
-                    }}
-                  >
-                    Now let us show you our platform
-                  </Typography>
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              style={{ paddingBottom: '4rem' }}
+            >
+              <Typography
+                style={{
+                  color: '#16253D',
+                }}
+              >
+                Your keys is processing. It may take few minutes. You can drink
+                a coffee for now.
+              </Typography>
+            </Grid>
+
+            <Grid container justify="center" alignItems="center">
+              <BtnCustom
+                onClick={async () => {
+                  setLoading(true)
+                  await completeOnboarding()
+                  setLoading(false)
+                }}
+                disabled={loading}
+                btnWidth={'50%'}
+                borderRadius={'8px'}
+                btnColor={'#165BE0'}
+                fontSize="1.6rem"
+                padding="2rem"
+                borderWidth="2px"
+              >
+                {loading ? (
+                  <Loading size={16} style={{ height: '16px' }} />
                 ) : (
-                  <Typography
-                    style={{
-                      color: '#16253D',
-                    }}
-                  >
-                    Your keys is processing. It may take few minutes. You can
-                    drink a coffee for now.
-                  </Typography>
+                  `OK`
                 )}
-              </GridCustom>
-            </Grid>
-
-            <Grid container justify="flex-end" alignItems="center">
-              {!loading ? (
-                <BtnCustom
-                  borderRadius={'16px'}
-                  onClick={async (e) => {
-                    e.preventDefault()
-                    await completeOnboarding()
-                  }}
-                  style={{
-                    maxWidth: '133px',
-                    background: 'rgb(41, 172, 128)',
-                    color: 'rgb(255, 255, 255)',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    letterSpacing: '1.5px',
-                    border: '0',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    padding: '18px 0',
-                    borderRadius: '7px',
-                    textTransform: 'uppercase',
-                    textAlign: 'center',
-                    margin: '0px auto',
-                    boxShadow: '0px 4px 8px rgba(41, 172, 128, 0.54)',
-                  }}
-                >
-                  GO
-                </BtnCustom>
-              ) : (
-                ''
-              )}
+              </BtnCustom>
             </Grid>
           </DialogContent>
         </DialogWrapper>

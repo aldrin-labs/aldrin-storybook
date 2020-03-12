@@ -16,6 +16,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { compose } from 'recompose'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 import { getDustFilter } from '@core/graphql/queries/portfolio/getDustFilter'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { portfolioKeyAndWalletsQuery } from '@core/graphql/queries/portfolio/portfolioKeyAndWalletsQuery'
 // import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 // import { getCoinsForOptimization } from '@core/graphql/queries/portfolio/optimization/getCoinsForOptimization'
@@ -53,6 +54,26 @@ const safePortfolioDestruction = (
   }
 } => portfolio
 
+export const getOnboardingStatus = ({
+  keys,
+  myPortfolios,
+  onboarding,
+}: {
+  keys: Key[]
+  myPortfolios: any[]
+  onboarding: {
+    instructions: boolean
+  } | null
+}) => {
+  const { instructions } = onboarding || { instructions: false }
+
+  if (keys.length > 1 || myPortfolios.length > 1) {
+    return false
+  }
+
+  return instructions
+}
+
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
@@ -87,6 +108,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       dustFilterQuery: {
         portfolio: { dustFilter },
       },
+      getTooltipSettingsQuery,
     } = this.props
 
     const baseCoin = baseData.portfolio.baseCoin
@@ -121,11 +143,21 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       ? activeRebalanceKeys.length + activeWallets.length > 0
       : activeKeys.length + activeWallets.length > 0
 
+    // Onboarding
+    const {
+      getTooltipSettings: { onboarding },
+    } = getTooltipSettingsQuery
+
+    const isOnboardingEnabled = getOnboardingStatus({
+      keys,
+      myPortfolios: data.myPortfolios,
+      onboarding,
+    })
+
     return (
       <>
         <PortfolioContainer>
           <PortfolioSelector
-            login={true}
             portfolioId={portfolioId}
             dustFilter={dustFilter}
             keys={isRebalance ? rebalanceKeys : keys}
@@ -149,14 +181,21 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             </>
           )}
 
-          <PortfolioOnboarding
-            portfoliosNumber={data.myPortfolios.length}
-            portfolioKeys={keys}
-            numberOfKeys={keys.length}
-            portfolioId={portfolioId}
-            baseCoin={baseCoin}
-            history={this.props.history}
-          />
+          <Fade
+            timeout={1500}
+            in={isOnboardingEnabled}
+            mountOnEnter={true}
+            unmountOnExit={true}
+          >
+            <PortfolioOnboarding
+              getTooltipSettingsQuery={getTooltipSettingsQuery}
+              portfoliosNumber={data.myPortfolios.length}
+              portfolioKeys={keys}
+              numberOfKeys={keys.length}
+              portfolioId={portfolioId}
+              baseCoin={baseCoin}
+            />
+          </Fade>
 
           {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
@@ -210,7 +249,7 @@ const APIWrapper = (props: any) => {
       query={portfolioKeyAndWalletsQuery}
       name={'data'}
       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
-      withOutSpinner={false}
+      withOutSpinner={true}
       fetchPolicy="cache-and-network"
     />
   )
@@ -226,5 +265,11 @@ export default compose(
   queryRendererHoc({
     query: getDustFilter,
     name: 'dustFilterQuery',
+  }),
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'network-only',
+    withOutSpinner: true,
   })
 )(APIWrapper)

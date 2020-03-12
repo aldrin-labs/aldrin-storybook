@@ -1,7 +1,16 @@
-export interface IState {
-  isSelected: boolean
-}
+import { withSnackbarProps } from 'notistack'
+import { Theme } from '@material-ui/core';
 
-export interface IProps {
-  title: string
+export interface IProps extends withSnackbarProps {
+  open: boolean
+  theme: Theme  
+  setCurrentStep: (step: string) => void
+  generateBrokerKeyMutation: () => Promise<{
+    data: {
+      generateBrokerKey: {
+        status: 'ERR' | 'OK'
+        errorMessage: string
+      }
+    }
+  }>
 }
