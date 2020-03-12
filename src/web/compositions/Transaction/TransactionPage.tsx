@@ -34,9 +34,12 @@ import GitCalendarChooseYear from '@sb/components/GitTransactionCalendar/ChooseY
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 
-
-const TransactionsSpotLink = (props: any) => <Link to="/portfolio/transactions/spot" {...props} />
-const TransactionsFuturesLink = (props: any) => <Link to="/portfolio/transactions/futures" {...props} />
+const TransactionsSpotLink = (props: any) => (
+  <Link to="/portfolio/transactions/spot" {...props} />
+)
+const TransactionsFuturesLink = (props: any) => (
+  <Link to="/portfolio/transactions/futures" {...props} />
+)
 
 @withTheme
 @withRouter
@@ -53,7 +56,9 @@ class TransactionPage extends React.PureComponent {
     },
 
     tradeOrderHistoryDate: {
-      startDate: getEndDate('1Week'),
+      startDate: moment()
+        .startOf('day')
+        .subtract(7, 'days'),
       endDate: moment().endOf('day'),
       activeDateButton: '1Week',
       focusedInput: null,
@@ -172,7 +177,11 @@ class TransactionPage extends React.PureComponent {
       concreteDaySelected,
     } = this.state
 
-    const pageType = /spot/.test(pathname) ? 'SPOT' : /futures/.test(pathname) ? 'FUTURES' : ''
+    const pageType = /spot/.test(pathname)
+      ? 'SPOT'
+      : /futures/.test(pathname)
+      ? 'FUTURES'
+      : ''
 
     return (
       <>
