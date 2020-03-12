@@ -49,7 +49,9 @@ const LayoutClearfixWrapper = styled.div`
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
-    startDate: getEndDate('1Week'),
+    startDate: moment()
+      .startOf('day')
+      .subtract(7, 'days'),
     endDate: moment().endOf('day'),
     openSharePortfolioPopUp: false,
   }
