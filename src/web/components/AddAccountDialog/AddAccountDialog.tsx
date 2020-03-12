@@ -694,7 +694,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     borderRadius={'8px'}
                     btnColor={'#165BE0'}
                     fontSize="1.6rem"
-                    padding="2rem"
+                    padding="1rem"
+                    height="auto"
                     borderWidth="2px"
                     type="submit"
                   >
