@@ -167,14 +167,33 @@ const NavBarRaw: SFC<Props> = ({
                     to: '/portfolio/main',
                   },
                   {
-                    text: 'Transactions',
-                    icon: <IndustryIcon fontSize="small" />,
-                    to: '/portfolio/transactions',
-                  },
-                  {
                     text: 'Rebalance',
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
+                  },
+                  // !MASTER_BUILD && {
+                  //   text: 'Optimizaton',
+                  //   icon: <OptimizationIcon fontSize="small" />,
+                  //   to: '/portfolio/optimization',
+                  // },
+                ]}
+              />
+              <Dropdown
+                id="transaction-menu"
+                key="transaction-menu"
+                buttonText="Transactions"
+                selectedMenu={selectedMenu}
+                selectActiveMenu={selectMenu}
+                items={[
+                  {
+                    text: 'Spot',
+                    icon: <IndustryIcon fontSize="small" />,
+                    to: '/portfolio/transactions/spot',
+                  },
+                  {
+                    text: 'Futures',
+                    icon: <IndustryIcon fontSize="small" />,
+                    to: '/portfolio/transactions/futures',
                   },
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
