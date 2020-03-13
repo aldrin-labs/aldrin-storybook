@@ -671,7 +671,7 @@ export const combineActiveTradesTable = ({
             state === 'InEntry' && !!currentPrice ? (
               <SubColumnValue
                 color={
-                  profitPercentage > 0 && side === 'buy' ? green.new : red.new
+                  profitPercentage > 0 ? green.new : red.new
                 }
               >
                 {profitPercentage && profitAmount
@@ -899,7 +899,7 @@ export const combineStrategiesHistoryTable = (
       // : price
 
       const [profitAmount, profitPercentage] = getPnlFromState({
-        state,
+        state: el.state,
         pair: pairArr,
         side,
         amount,
@@ -994,7 +994,7 @@ export const combineStrategiesHistoryTable = (
               color={
                 profitPercentage === 0
                   ? ''
-                  : profitPercentage > 0 && side === 'buy'
+                  : profitPercentage > 0
                   ? green.new
                   : red.new
               }
