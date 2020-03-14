@@ -688,6 +688,7 @@ export const combineActiveTradesTable = ({
             ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
+            minWidth: '135px',
           },
           contentToSort: profitAmount,
         },
