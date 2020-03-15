@@ -382,7 +382,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -391,16 +391,17 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
+              minWidth: '100px'
             },
             contentToSort: marketPrice,
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liqPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -425,7 +426,7 @@ export const combinePositionsTable = ({
             ) : (
               `0 ${pair[1]} / 0%`
             ),
-            style: { opacity: needOpacity ? 0.5 : 1 },
+            style: { opacity: needOpacity ? 0.5 : 1, minWidth: '150px' },
             colspan: 2,
           },
           tooltipTitle: keyName,
@@ -671,7 +672,7 @@ export const combineActiveTradesTable = ({
             state === 'InEntry' && !!currentPrice ? (
               <SubColumnValue
                 color={
-                  profitPercentage > 0 && side === 'buy' ? green.new : red.new
+                  profitPercentage > 0 ? green.new : red.new
                 }
               >
                 {profitPercentage && profitAmount
@@ -687,6 +688,7 @@ export const combineActiveTradesTable = ({
             ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
+            minWidth: '135px',
           },
           contentToSort: profitAmount,
         },
@@ -899,7 +901,7 @@ export const combineStrategiesHistoryTable = (
       // : price
 
       const [profitAmount, profitPercentage] = getPnlFromState({
-        state,
+        state: el.state,
         pair: pairArr,
         side,
         amount,
@@ -994,7 +996,7 @@ export const combineStrategiesHistoryTable = (
               color={
                 profitPercentage === 0
                   ? ''
-                  : profitPercentage > 0 && side === 'buy'
+                  : profitPercentage > 0
                   ? green.new
                   : red.new
               }

@@ -147,7 +147,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const {
       getTooltipSettings: { onboarding },
     } = getTooltipSettingsQuery
-
+    
     const isOnboardingEnabled = getOnboardingStatus({
       keys,
       myPortfolios: data.myPortfolios,
@@ -269,7 +269,7 @@ export default compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
   })
 )(APIWrapper)

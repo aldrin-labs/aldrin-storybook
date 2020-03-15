@@ -17,13 +17,20 @@ import {
 } from './AccordionOverView.style'
 
 import { addMainSymbol } from '@sb/components/index'
-import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import {
+  roundAndFormatNumber,
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 const format = (number, baseCoin) => {
   const isUSDCurrently = baseCoin === 'USDT'
 
   return isUSDCurrently
-    ? addMainSymbol(roundAndFormatNumber(number, 2, true), isUSDCurrently)
+    ? addMainSymbol(
+        formatNumberToUSFormat(stripDigitPlaces(number, 2)),
+        isUSDCurrently
+      )
     : addMainSymbol(roundAndFormatNumber(number, 8, false), isUSDCurrently)
 }
 

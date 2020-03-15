@@ -79,7 +79,7 @@ const PillowButton = ({
   secondHalfText: string
   activeHalf: string
   changeHalf: () => void
-  containerStyle: CSSProperties
+  containerStyle?: CSSProperties
   buttonAdditionalStyle?: CSSProperties
   firstHalfAdditionalStyle?: CSSProperties
   secondHalfAdditionalStyle?: CSSProperties
