@@ -201,7 +201,7 @@ export const Balances = ({
           xs={12}
           direction="column"
           wrap={'nowrap'}
-          style={{ height: 'calc(100% - 3rem)', padding: '0 .3rem' }}
+          style={{ height: 'calc(100% - 5rem)', padding: '0 .3rem' }}
         >
           {isSPOTMarket ? (
             <>

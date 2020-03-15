@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 
 import { InputAdornment } from '@material-ui/core'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import {
   StyledInput,
   StyledTypographyCaption,
@@ -67,12 +69,15 @@ const Balances = ({
           autoComplete="off"
         >
           <StyledTypographyCaption
-            onClick={() => onChange({ target: { value: free } })}
+            onClick={() =>
+              onChange({ target: { value: stripDigitPlaces(free, 8) } })
+            }
           >
             <span>AVAILABLE:</span>
-            <span
-              style={{ color: 'rgb(22, 91, 224)' }}
-            >{` ${free} ${selectedCoin}`}</span>
+            <span style={{ color: 'rgb(22, 91, 224)' }}>{` ${stripDigitPlaces(
+              free,
+              8
+            )} ${selectedCoin}`}</span>
           </StyledTypographyCaption>
         </InputAdornment>
       }

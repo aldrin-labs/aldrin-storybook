@@ -13,10 +13,6 @@ import { toNumber, toPairs } from 'lodash-es'
 import { traidingErrorMessages } from '@core/config/errorMessages'
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
-import {
-  getBaseQuantityFromQuote,
-  getQuoteQuantityFromBase,
-} from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
@@ -36,35 +32,6 @@ import {
 import { SendButton } from '../TraidingTerminal/styles'
 import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-
-const TradeInputContainer = ({
-  title,
-  value = '',
-  step,
-  onChange,
-  coin,
-  style,
-  type,
-  pattern,
-}) => {
-  return (
-    <TradeInputBlock style={style}>
-      <InputTitle>{title}:</InputTitle>
-      <InputWrapper>
-        <TradeInput
-          isValid={true}
-          value={value}
-          onChange={onChange}
-          type={type || 'number'}
-          pattern={pattern}
-          step={step}
-          min={0}
-        />
-        <Coin>{coin}</Coin>
-      </InputWrapper>
-    </TradeInputBlock>
-  )
-}
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -399,7 +366,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     setFieldValue('margin', value)
     setFieldValue(
       'amount',
-      newAmount.toFixed(isSPOTMarket ? 8 : quantityPrecision)
+      stripDigitPlaces(newAmount, isSPOTMarket ? 8 : quantityPrecision)
     )
     setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 2))
   }
@@ -561,10 +528,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
                     const newAmount =
                       isBuyType || !isSPOTMarket
-                        ? (newValue / priceForCalculate).toFixed(
+                        ? stripDigitPlaces(
+                            newValue / priceForCalculate,
                             isSPOTMarket ? 8 : quantityPrecision
                           )
-                        : newValue.toFixed(isSPOTMarket ? 8 : quantityPrecision)
+                        : stripDigitPlaces(
+                            newValue,
+                            isSPOTMarket ? 8 : quantityPrecision
+                          )
 
                     const newTotal =
                       isBuyType || !isSPOTMarket
@@ -579,9 +550,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     setFieldValue('amount', newAmount)
                     setFieldValue(
                       'total',
-                      newTotal < 1
-                        ? newTotal.toFixed(isSPOTMarket ? 8 : 3)
-                        : stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
+                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
                     )
                     setFieldValue('margin', newMargin)
                   }}

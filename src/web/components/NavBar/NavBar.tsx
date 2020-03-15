@@ -250,21 +250,23 @@ const NavBarRaw: SFC<Props> = ({
                 ]}
               />
 
-              <NavLinkButtonWrapper key="market-wrapper">
-                <NavLinkButton
-                  key="market-2"
-                  page={`market`}
-                  component={Market}
-                  pathname={pathname}
-                  onMouseOver={() => {
-                    client.query({
-                      query: marketsQuery,
-                    })
-                  }}
-                >
-                  Marketcap
-                </NavLinkButton>
-              </NavLinkButtonWrapper>
+              {!MASTER_BUILD && (
+                <NavLinkButtonWrapper key="market-wrapper">
+                  <NavLinkButton
+                    key="market-2"
+                    page={`market`}
+                    component={Market}
+                    pathname={pathname}
+                    onMouseOver={() => {
+                      client.query({
+                        query: marketsQuery,
+                      })
+                    }}
+                  >
+                    Marketcap
+                  </NavLinkButton>
+                </NavLinkButtonWrapper>
+              )}
               {!MASTER_BUILD && (
                 <NavLinkButtonWrapper key="signals-wrapper">
                   <NavLinkButton

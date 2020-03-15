@@ -178,6 +178,10 @@ export const StyleForCalendar = createGlobalStyle`
   .DayPickerNavigation_button__default {
     border: 1px solid #e0e5ec;
   }
+
+  .DateRangePickerInput_arrow {
+    display: flex;
+  }
 }
 `
 
