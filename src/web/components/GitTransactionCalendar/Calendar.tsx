@@ -236,8 +236,8 @@ const CalendarDataWrapper = ({ ...props }) => {
     <QueryRenderer
       component={GitTransactionCalendar}
       query={
-        getCalendarActions
-        // isSPOTCurrently ? getSpotCalendarActions : getFuturesCalendarActions
+        // getCalendarActions
+        isSPOTCurrently ? getSpotCalendarActions : getFuturesCalendarActions
       }
       pollInterval={30000}
       name={`getCalendarActionsQuery`}
