@@ -1024,7 +1024,7 @@ const CustomTable = (props: Props) => {
                     <ArrowForwardIosIcon
                       onClick={() =>
                         handleChangePage(
-                          (page + 1) * rowsPerPage > totalCount
+                          (page + 1) * rowsPerPage >= totalCount
                             ? page
                             : page + 1
                         )
