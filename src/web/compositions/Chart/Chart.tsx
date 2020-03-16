@@ -44,21 +44,6 @@ class Chart extends React.Component<IProps, IState> {
     terminalViewMode: 'default',
   }
 
-  static getDerivedStateFromProps(nextProps: IProps) {
-    const {
-      getChartDataQuery: {
-        chart: {
-          currencyPair: { pair },
-        },
-      },
-    } = nextProps
-
-    const [base, quote] = pair.split('_')
-    /* tslint:disable-next-line:no-object-mutation */
-    document.title = `${base} to ${quote} | CCAI`
-    return null
-  }
-
   componentWillUnmount() {
     /* tslint:disable-next-line:no-object-mutation */
     document.title = 'Cryptocurrencies AI'
