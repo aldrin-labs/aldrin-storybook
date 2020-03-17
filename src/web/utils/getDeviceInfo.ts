@@ -1,5 +1,12 @@
-import * as firebase from 'firebase'
+// import * as firebase from 'firebase'
 import { DeviceType } from '@core/types/DeviceTypes'
+
+//mock
+const firebase = {
+  messaging: {
+    isSupported: () => false
+  }
+}
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAStchdIpX5C_wOElXUtg0PGsPG9JHx5IM',
