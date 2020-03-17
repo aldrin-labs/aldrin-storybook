@@ -44,7 +44,7 @@ class IntegrationReactSelect extends React.Component<IProps, IState> {
       },
       addChartMutation,
       changeCurrencyPairMutation,
-      toggleWarningMessageMutation,
+      toggleWarningMessageMutation = () => {},
     } = this.props
     const {
       multichart: { charts },
@@ -167,7 +167,6 @@ export default compose(
     withTableLoader: false,
     name: 'getCharts',
   }),
-  graphql(TOGGLE_WARNING_MESSAGE, { name: 'toggleWarningMessageMutation' }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
   }),

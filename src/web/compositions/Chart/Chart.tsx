@@ -273,10 +273,10 @@ export default withAuth(
     graphql(CHANGE_ACTIVE_EXCHANGE, {
       name: 'changeActiveExchangeMutation',
     }),
-    graphql(CHANGE_VIEW_MODE, {
-      name: 'changeViewModeMutation',
-    }),
-    graphql(ADD_CHART, { name: 'addChartMutation' }),
+    // graphql(CHANGE_VIEW_MODE, {
+    //   name: 'changeViewModeMutation',
+    // }),
+    // graphql(ADD_CHART, { name: 'addChartMutation' }),
     graphql(pairProperties, {
       name: 'pairPropertiesQuery',
       options: (props) => ({

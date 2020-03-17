@@ -2,11 +2,6 @@ import React from 'react'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-// MOVE THIS TO APP -_>
-import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
-// <-- MOVE THIS TO APP
-
 import { IProps, IState } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 
