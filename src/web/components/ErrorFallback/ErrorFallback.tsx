@@ -45,14 +45,6 @@ const SimpleError = (props: { error?: ApolloError }) => (
     {props.error ? FormatErrorToUser(props.error.message) : 'Error'}
   </Typography>
 )
-const RefetchError = (props: { error?: ApolloError; refetch: Function }) => (
-  <Fragment>
-    <Typography variant="h5" color="error">
-      {props.error ? props.error.message : 'Error'}
-    </Typography>
-    <Button onClick={props.refetch}>Refetch data</Button>
-  </Fragment>
-)
 
 const ErrorWithoutMessage = () => (
   <Typography variant="body1" align="center" color="error">

@@ -12,7 +12,6 @@ import { customAquaScrollBar } from '../cssUtils'
 import SelectTimeRange from '../SelectTimeRangeDropdown'
 import { CorrelationMatrixTable } from './CorrelationMatrixTable'
 import { IProps } from './types'
-import { formatDate } from '../Utils/dateUtils'
 import { ErrorFallback } from '../ErrorFallback'
 
 @withTheme
@@ -112,8 +111,8 @@ class CorrelationMatrixComponent extends PureComponent<IProps> {
                   period={period}
                 />
                 <Typography noWrap={true} align="center" variant="body1">
-                  {formatDate(startDate, 'MM/DD/YYYY')}-
-                  {formatDate(endDate, 'MM/DD/YYYY')}
+                  {startDate}-
+                  {endDate}
                 </Typography>
               </ButtonsWrapper>
             )}
