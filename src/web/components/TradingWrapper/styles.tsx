@@ -182,6 +182,7 @@ export const LeverageLabel = styled.label`
 export const LeverageTitle = styled(LeverageLabel)`
   width: 22.5%;
   margin-left: -0.5rem;
+  margin-right: 2rem;
 `
 
 export const SettingsContainer = styled(TradingMenuContainer)`

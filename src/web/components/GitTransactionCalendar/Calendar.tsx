@@ -8,6 +8,8 @@ import 'react-calendar-heatmap/dist/styles.css'
 import { withStyles } from '@material-ui/styles'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
+import { getSpotCalendarActions } from '@core/graphql/queries/portfolio/main/getSpotCalendarActions'
+import { getFuturesCalendarActions } from '@core/graphql/queries/portfolio/main/getFuturesCalendarActions'
 import { getFormattedProfit } from '@core/containers/TradeOrderHistory/TradeOrderHistory'
 import { IProps } from './Calendar.types'
 import { getCalendarData, getMaxTransactions } from './Calendar.utils'
@@ -233,7 +235,10 @@ const CalendarDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={GitTransactionCalendar}
-      query={getCalendarActions}
+      query={
+        // getCalendarActions
+        isSPOTCurrently ? getSpotCalendarActions : getFuturesCalendarActions
+      }
       pollInterval={30000}
       name={`getCalendarActionsQuery`}
       fetchPolicy="cache-and-network"

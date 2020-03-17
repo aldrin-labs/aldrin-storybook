@@ -26,26 +26,26 @@ const getSquareClassName = (
 }
 
 export const getCalendarData = (
-  portfolio = {
-    portfolioActionsByDay: {
-      actionsByDay: [],
-    },
-    futuresActionsByDay: {
-      actionsByDay: [],
-    },
-  },
+  portfolio,
   maxTransactionsCount: number,
   startDate: number,
   isSPOTCurrently: boolean
 ) => {
-  const {
-    portfolioActionsByDay: { actionsByDay = [] },
-    futuresActionsByDay: { actionsByDay: futuresActionsByDay = [] },
-  } = portfolio
+  const { portfolioActionsByDay, futuresActionsByDay } = portfolio
   const { squareColorsRange } = getSquareColorRange(maxTransactionsCount)
+  let actions
 
-  const actions = isSPOTCurrently ? actionsByDay : futuresActionsByDay
-  
+  if (
+    (isSPOTCurrently && !portfolioActionsByDay) ||
+    (!isSPOTCurrently && !futuresActionsByDay)
+  ) {
+    actions = []
+  } else {
+    actions = isSPOTCurrently
+      ? portfolioActionsByDay.actionsByDay
+      : futuresActionsByDay.actionsByDay
+  }
+
   const lastDayOfYear = moment(startDate).isLeapYear() ? 367 : 366
   const mappedActionsArray = Array(lastDayOfYear)
     .fill(undefined)
@@ -56,7 +56,12 @@ export const getCalendarData = (
       )
 
       if (action) {
-        const { transactionsCount, realizedPnlSum = 0, BNBFee = 0, USDTFee = 0, } = action
+        const {
+          transactionsCount,
+          realizedPnlSum = 0,
+          BNBFee = 0,
+          USDTFee = 0,
+        } = action
 
         return {
           date: moment(+startDate)
@@ -93,21 +98,18 @@ export const getCalendarData = (
   return { mappedActionsArray }
 }
 
-export const getMaxTransactions = (
-  portfolio = {
-    portfolioActionsByDay: {
-      actionsByDay: [],
-    },
-    futuresActionsByDay: { actionsByDay: [] },
-  },
-  isSPOTCurrently = true
-) => {
-  const {
-    portfolioActionsByDay: { actionsByDay = [] },
-    futuresActionsByDay: { actionsByDay: futuresActionsByDay = [] },
-  } = portfolio
+export const getMaxTransactions = (portfolio, isSPOTCurrently = true) => {
+  const { portfolioActionsByDay, futuresActionsByDay } = portfolio
 
-  const actions = isSPOTCurrently ? actionsByDay : futuresActionsByDay
+  if (
+    (isSPOTCurrently && !portfolioActionsByDay) ||
+    (!isSPOTCurrently && !futuresActionsByDay)
+  )
+    return 0
+
+  const actions = isSPOTCurrently
+    ? portfolioActionsByDay.actionsByDay
+    : futuresActionsByDay.actionsByDay
 
   const maxTransactionsCount = actions.reduce((max, { transactionsCount }) => {
     return transactionsCount > max ? transactionsCount : max
