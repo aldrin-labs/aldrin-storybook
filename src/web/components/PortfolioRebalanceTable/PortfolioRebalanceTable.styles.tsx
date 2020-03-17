@@ -39,6 +39,7 @@ export const LoaderInnerWrapper = styled.div`
 `
 
 export const ContentInner = styled(({ ...props }) => <Card {...props} />)`
+  width: 100%;
   height: 100%;
   display: flex;
 

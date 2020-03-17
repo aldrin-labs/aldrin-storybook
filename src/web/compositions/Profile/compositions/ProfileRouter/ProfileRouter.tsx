@@ -38,7 +38,11 @@ const ApiManagment = React.lazy(() =>
 )
 
 const Telegram = React.lazy(() =>
-  import(/* webpackPrefetch: true, webpackChunkName: "apimanagment" */ '@sb/compositions/Profile/compositions/Telegram/Telegram')
+  import(/* webpackPrefetch: true, webpackChunkName: "telegram" */ '@sb/compositions/Profile/compositions/Telegram/Telegram')
+)
+
+const InternalTransfer = React.lazy(() =>
+  import(/* webpackPrefetch: true, webpackChunkName: "telegram" */ '@sb/compositions/Profile/compositions/InternalTransfer/InternalTransfer')
 )
 
 const ProfileRouter = () => {
@@ -90,6 +94,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/api"
             render={(...rest) => <ApiManagment />}
+          />
+          <Route
+            exact
+            path="/profile/internal"
+            render={(...rest) => <InternalTransfer />}
           />
           <Route
             exact

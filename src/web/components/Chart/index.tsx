@@ -10,7 +10,6 @@ const Wrapper = styled(Card)`
   width: 100%;
   height: 100%;
   border-radius: 0;
-  padding-bottom: 0.4rem;
 `
 
 export const SingleChart = ({
@@ -18,6 +17,7 @@ export const SingleChart = ({
   name,
 }: {
   additionalUrl: string
+  name: string
 }) => (
   <Wrapper>
     <iframe

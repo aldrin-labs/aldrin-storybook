@@ -10,6 +10,7 @@ export interface IProps {
   selectedKey: Key
   arrayOfMarketIds: string[]
   marketType: number
+  keys: Key[]
   currencyPair: string
   canceledOrders: string[]
   showAllPositionPairs: boolean

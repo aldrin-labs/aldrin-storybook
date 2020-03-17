@@ -22,4 +22,5 @@ export interface IProps extends AdditionalProps {
   indicatorSeparatorStyles: CSSProperties
   loadingIndicatorStyles: CSSProperties
   noOptionsMessage: CSSProperties
+  inputValue: string | any
 }

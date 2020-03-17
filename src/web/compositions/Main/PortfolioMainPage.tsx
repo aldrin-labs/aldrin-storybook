@@ -49,7 +49,9 @@ const LayoutClearfixWrapper = styled.div`
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
-    startDate: getEndDate('1Week'),
+    startDate: moment()
+      .startOf('day')
+      .subtract(7, 'days'),
     endDate: moment().endOf('day'),
     openSharePortfolioPopUp: false,
   }
@@ -121,7 +123,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       getPageTypeQuery: {
         portfolio: { pageType },
       },
-      getFuturesOverviewQuery: { getFuturesOverview },
+      // getFuturesOverviewQuery: { getFuturesOverview },
     } = this.props
 
     const isSPOTCurrently = pageType === 'SPOT'
@@ -150,7 +152,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     return (
       <LayoutClearfixWrapper>
         <Grid style={{ height: '100%' }}>
-          <div id="sharePortfolioPanel" style={{ minHeight: '17.2vh' }}>
+          <div
+            id="sharePortfolioPanel"
+            style={{ minHeight: '17.2vh', position: 'relative' }}
+          >
             <SharePortfolioPanel
               handleOpenSharePortfolio={this.handleOpenSharePortfolio}
               portfolioName={portfolioName}
@@ -164,7 +169,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               baseCoin={baseCoin}
               isSPOTCurrently={isSPOTCurrently}
               isUSDCurrently={isUSDCurrently}
-              getFuturesOverview={getFuturesOverview}
+              // getFuturesOverview={getFuturesOverview}
               portfolioAssetsData={portfolioAssetsData}
               portfolioAssetsMap={portfolioAssetsMap}
               totalKeyAssetsData={totalKeyAssetsData}
@@ -244,12 +249,6 @@ export default compose(
   queryRendererHoc({
     query: getPageType,
     name: 'getPageTypeQuery',
-  }),
-  queryRendererHoc({
-    query: getFuturesOverview,
-    name: 'getFuturesOverviewQuery',
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 30000,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',

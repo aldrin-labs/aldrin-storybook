@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid } from '@material-ui/core'
 
 import { StyledTypography } from './AccountBlock.styles'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
@@ -33,26 +34,26 @@ const Balances = ({ selectedCoin, getFundsQuery }: IProps) => {
       <Grid container justify="space-between">
         <StyledTypography>Total balance:</StyledTypography>
         <StyledTypography style={{ color: '#16253D' }}>
-          {`${quantity} ${selectedCoin}`}
+          {`${stripDigitPlaces(quantity, 8)} ${selectedCoin}`}
         </StyledTypography>
       </Grid>
       <Grid container justify="space-between">
         <StyledTypography>In order:</StyledTypography>
         <StyledTypography style={{ color: '#16253D' }}>
-          {`${locked} ${selectedCoin}`}
+          {`${stripDigitPlaces(locked, 8)} ${selectedCoin}`}
         </StyledTypography>
       </Grid>
       <Grid container justify="space-between">
         <StyledTypography>Available balance:</StyledTypography>
         <StyledTypography style={{ color: '#16253D' }}>
-          {`${free} ${selectedCoin}`}
+          {`${stripDigitPlaces(free, 8)} ${selectedCoin}`}
         </StyledTypography>
       </Grid>
     </Grid>
   )
 }
 
-const BalancesWrapper = ({...props}) => {
+const BalancesWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={Balances}
@@ -61,7 +62,7 @@ const BalancesWrapper = ({...props}) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: props.selectedAccount } }}
       name={`getFundsQuery`}
-      fetchPolicy="network-only"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: FUNDS,
         variables: {

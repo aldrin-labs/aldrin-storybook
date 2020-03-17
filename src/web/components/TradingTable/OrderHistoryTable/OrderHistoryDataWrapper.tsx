@@ -76,6 +76,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     const {
       tab,
       show,
+      keys,
       handleTabChange,
       selectedKey,
       marketType,
@@ -111,6 +112,7 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           selectedKey,
           show,
           page,
+          keys,
           perPage,
           marketType,
           canceledOrders,

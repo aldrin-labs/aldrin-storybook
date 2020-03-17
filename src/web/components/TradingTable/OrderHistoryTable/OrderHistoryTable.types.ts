@@ -22,6 +22,7 @@ export interface IProps extends WithTheme<Theme> {
     }
   }
   theme: Theme
+  keys: Key[]
   selectedKey: Key
   arrayOfMarketIds: string[]
   marketType: number

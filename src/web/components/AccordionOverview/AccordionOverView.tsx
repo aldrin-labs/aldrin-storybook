@@ -1,7 +1,11 @@
 import React from 'react'
+import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getFuturesOverview } from '@core/graphql/queries/portfolio/main/getFuturesOverview'
 
 import { Grid } from '@material-ui/core'
 import {
@@ -17,13 +21,20 @@ import {
 } from './AccordionOverView.style'
 
 import { addMainSymbol } from '@sb/components/index'
-import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import {
+  roundAndFormatNumber,
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 const format = (number, baseCoin) => {
   const isUSDCurrently = baseCoin === 'USDT'
 
   return isUSDCurrently
-    ? addMainSymbol(roundAndFormatNumber(number, 2, true), isUSDCurrently)
+    ? addMainSymbol(
+        formatNumberToUSFormat(stripDigitPlaces(number, 2)),
+        isUSDCurrently
+      )
     : addMainSymbol(roundAndFormatNumber(number, 8, false), isUSDCurrently)
 }
 
@@ -80,7 +91,7 @@ class DetailedExpansionPanel extends React.Component {
       totalKeyAssetsData,
       baseCoin,
       isSPOTCurrently,
-      getFuturesOverview,
+      getFuturesOverviewQuery: { getFuturesOverview },
     } = this.props
 
     const assetsData = isSPOTCurrently
@@ -297,4 +308,12 @@ class DetailedExpansionPanel extends React.Component {
   }
 }
 
-export default withTheme(DetailedExpansionPanel)
+export default compose(
+  withTheme,
+  queryRendererHoc({
+    query: getFuturesOverview,
+    name: 'getFuturesOverviewQuery',
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 30000,
+  })
+)(DetailedExpansionPanel)

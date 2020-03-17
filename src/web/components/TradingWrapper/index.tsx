@@ -252,7 +252,12 @@ class SimpleTabs extends React.Component {
                 )}
               </SettingsContainer>
               <LeverageContainer>
-                <LeverageTitle>leverage:</LeverageTitle>
+                <LeverageTitle>
+                  <StyledSelect value="Cross" style={{ color: '#16253D' }}>
+                    <StyledOption>Cross</StyledOption>
+                    <StyledOption>Isolated</StyledOption>
+                  </StyledSelect>
+                </LeverageTitle>
                 <SmallSlider
                   min={1}
                   max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}

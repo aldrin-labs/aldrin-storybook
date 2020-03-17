@@ -9,6 +9,7 @@ export interface IProps {
   show: boolean
   handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
   selectedKey: Key
+  keys: Key[]
   marketType: number
   arrayOfMarketIds: string[]
   showAllPositionPairs: boolean
