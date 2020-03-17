@@ -1,7 +1,9 @@
 import React, { SFC, useState } from 'react'
 import { withApollo, graphql } from 'react-apollo'
 import { compose } from 'recompose'
+import moment, { Moment } from 'moment'
 
+import { getTimeZone } from '@core/utils/dateUtils'
 import { client } from '@core/graphql/apolloClient'
 import { LoginComponent as Login } from '@sb/components/Login'
 import { WithTheme } from '@material-ui/core/styles'
@@ -34,6 +36,14 @@ import OptimizationIcon from '@material-ui/icons/Assessment'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
 import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getChartData } from '@core/graphql/queries/chart/getChartData'
+
+import { getSpotCalendarActions } from '@core/graphql/queries/portfolio/main/getSpotCalendarActions'
+import { getFuturesCalendarActions } from '@core/graphql/queries/portfolio/main/getFuturesCalendarActions'
+import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
+
+import { getMyPortfolioQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioQuery'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
@@ -74,6 +84,20 @@ const NavBarRaw: SFC<Props> = ({
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   let page = pathnamePage[pathnamePage.length - 1]
+
+  let calendarStartDate: Moment | number = moment().startOf('year')
+  let calendarEndDate: Moment | number = moment().endOf('year')
+
+  let tableStartDate: Moment | number = moment()
+    .startOf('day')
+    .subtract(7, 'days')
+  let tableEndDate: Moment | number = moment().endOf('day')
+
+  tableStartDate = +tableStartDate
+  tableEndDate = +tableEndDate
+
+  calendarStartDate = +calendarStartDate
+  calendarEndDate = +calendarEndDate
 
   const logout = () => {
     handleLogout(logoutMutation, persistorInstance)
@@ -165,11 +189,23 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'P&L',
                     icon: <MainIcon fontSize="small" />,
                     to: '/portfolio/main',
+                    onMouseOver: () => {
+                      client.query({
+                        query: getPortfolioAssets,
+                        variables: { baseCoin: 'USDT', innerSettings: true },
+                      })
+                    },
                   },
                   {
                     text: 'Rebalance',
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
+                    onMouseOver: () => {
+                      client.query({
+                        query: getMyPortfolioQuery,
+                        variables: { baseCoin: 'USDT', forRebalance: true },
+                      })
+                    },
                   },
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
@@ -189,11 +225,67 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot',
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/spot',
+                    onMouseOver: () => {
+                      client.query({
+                        query: getSpotCalendarActions,
+                        variables: {
+                          input: {
+                            startDate: calendarStartDate,
+                            endDate: calendarEndDate,
+                            timezone: getTimeZone(),
+                          },
+                        },
+                      })
+
+                      client.query({
+                        query: MyTradesQuery,
+                        variables: {
+                          input: {
+                            page: 0,
+                            perPage: 30,
+                            startDate: tableStartDate,
+                            endDate: tableEndDate,
+                            filterCoin: '',
+                            includeExchangeTransactions: false,
+                            includeTrades: true,
+                            includeFutures: false,
+                          },
+                        },
+                      })
+                    },
                   },
                   {
                     text: 'Futures',
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/futures',
+                    onMouseOver: () => {
+                      client.query({
+                        query: getFuturesCalendarActions,
+                        variables: {
+                          input: {
+                            startDate: calendarStartDate,
+                            endDate: calendarEndDate,
+                            timezone: getTimeZone(),
+                          },
+                        },
+                      })
+
+                      client.query({
+                        query: MyTradesQuery,
+                        variables: {
+                          input: {
+                            page: 0,
+                            perPage: 30,
+                            startDate: tableStartDate,
+                            endDate: tableEndDate,
+                            filterCoin: '',
+                            includeExchangeTransactions: false,
+                            includeTrades: false,
+                            includeFutures: true,
+                          },
+                        },
+                      })
+                    },
                   },
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
@@ -242,16 +334,12 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Spot market',
                     to: '/chart/spot',
-                    // onClick: () => {
-                    //   client.writeData({
-                    //     data: {
-                    //       chart: {
-                    //         __typename: 'chart',
-                    //         marketType: 0,
-                    //       },
-                    //     },
-                    //   })
-                    // },
+                    onMouseOver: () => {
+                      client.query({
+                        query: getChartData,
+                        variables: { marketType: 1 },
+                      })
+                    },
                   },
                   {
                     text: 'Futures market',

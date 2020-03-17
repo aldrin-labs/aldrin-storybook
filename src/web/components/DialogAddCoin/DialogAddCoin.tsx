@@ -123,6 +123,7 @@ class DialogAddCoin extends React.Component {
               position: 'relative',
               bottom: '.1rem',
               right: '.2rem',
+              width: '2rem',
             }}
           />
           Add Coin
