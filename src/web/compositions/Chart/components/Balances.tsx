@@ -10,6 +10,8 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
+import { Key, FundsType } from '@core/types/ChartTypes'
+
 import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { importCoinIcon } from '@core/utils/MarketCapUtils'
@@ -70,8 +72,8 @@ export const BalanceFuturesContainer = styled.div`
   width: 100%;
   padding: 0.8rem 0;
 
-  ${(props) =>
-    props.needBorder &&
+  ${({ needBorder }: { needBorder?: boolean }) =>
+    needBorder &&
     'border-top: .1rem solid #e0e5ec; border-bottom: .1rem solid #e0e5ec;'}
 `
 
@@ -101,11 +103,27 @@ export const Balances = ({
   marketType,
   selectedKey,
   subscribeToMore,
-  showFuturesTransfer,
+  showFuturesTransfer = false,
   timerForFuturesWars = {},
   isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
+}: {
+  getFundsQuery: {
+    getFunds: FundsType[]
+  }
+  pair: string[]
+  marketType: 0 | 1
+  selectedKey: Key
+  subscribeToMore: () => () => void
+  showFuturesTransfer: boolean
+  timerForFuturesWars: {
+    isEnabled: boolean
+    startedAt: number
+  }
+  isAlreadyJoined: boolean
+  isFuturesWarsKey: boolean
+  futuresWarsRoundBet: number
 }) => {
   useEffect(() => {
     const unsubscribeFunction = subscribeToMore()
@@ -183,7 +201,7 @@ export const Balances = ({
           xs={12}
           direction="column"
           wrap={'nowrap'}
-          style={{ height: 'calc(100% - 3rem)', padding: '0 .3rem' }}
+          style={{ height: 'calc(100% - 5rem)', padding: '0 .3rem' }}
         >
           {isSPOTMarket ? (
             <>

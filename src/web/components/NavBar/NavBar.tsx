@@ -105,6 +105,10 @@ const NavBarRaw: SFC<Props> = ({
     page = 'Transactions Futures'
   }
 
+  if (/internal/.test(pathname)) {
+    page = 'Internal Transfer'
+  }
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}
@@ -141,13 +145,7 @@ const NavBarRaw: SFC<Props> = ({
           <Grid style={{ width: '100%', textAlign: 'center' }}>
             <NavBreadcrumbTypography>{page}</NavBreadcrumbTypography>
           </Grid>
-          <Grid
-            style={{ height: '100%' }}
-            item={true}
-            md={6}
-            sm={5}
-            key={'navBarGrid'}
-          >
+          <Grid style={{ height: '100%' }} item={true} key={'navBarGrid'}>
             <NavBarWrapper container={true} key={'NavBarWrapper'}>
               {/* <NavLinkButton
                 page={`portfolio`}
@@ -169,14 +167,33 @@ const NavBarRaw: SFC<Props> = ({
                     to: '/portfolio/main',
                   },
                   {
-                    text: 'Transactions',
-                    icon: <IndustryIcon fontSize="small" />,
-                    to: '/portfolio/transactions',
-                  },
-                  {
                     text: 'Rebalance',
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
+                  },
+                  // !MASTER_BUILD && {
+                  //   text: 'Optimizaton',
+                  //   icon: <OptimizationIcon fontSize="small" />,
+                  //   to: '/portfolio/optimization',
+                  // },
+                ]}
+              />
+              <Dropdown
+                id="transaction-menu"
+                key="transaction-menu"
+                buttonText="Transactions"
+                selectedMenu={selectedMenu}
+                selectActiveMenu={selectMenu}
+                items={[
+                  {
+                    text: 'Spot',
+                    icon: <IndustryIcon fontSize="small" />,
+                    to: '/portfolio/transactions/spot',
+                  },
+                  {
+                    text: 'Futures',
+                    icon: <IndustryIcon fontSize="small" />,
+                    to: '/portfolio/transactions/futures',
                   },
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
@@ -252,21 +269,23 @@ const NavBarRaw: SFC<Props> = ({
                 ]}
               />
 
-              <NavLinkButtonWrapper key="market-wrapper">
-                <NavLinkButton
-                  key="market-2"
-                  page={`market`}
-                  component={Market}
-                  pathname={pathname}
-                  onMouseOver={() => {
-                    client.query({
-                      query: marketsQuery,
-                    })
-                  }}
-                >
-                  Marketcap
-                </NavLinkButton>
-              </NavLinkButtonWrapper>
+              {!MASTER_BUILD && (
+                <NavLinkButtonWrapper key="market-wrapper">
+                  <NavLinkButton
+                    key="market-2"
+                    page={`market`}
+                    component={Market}
+                    pathname={pathname}
+                    onMouseOver={() => {
+                      client.query({
+                        query: marketsQuery,
+                      })
+                    }}
+                  >
+                    Marketcap
+                  </NavLinkButton>
+                </NavLinkButtonWrapper>
+              )}
               {!MASTER_BUILD && (
                 <NavLinkButtonWrapper key="signals-wrapper">
                   <NavLinkButton
@@ -306,6 +325,10 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Withdrawal',
                     to: '/profile/withdrawal',
+                  },
+                  {
+                    text: 'Internal Transfer',
+                    to: '/profile/internal',
                   },
                   {
                     text: 'API',

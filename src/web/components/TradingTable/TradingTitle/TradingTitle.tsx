@@ -4,10 +4,7 @@ import { DateRangePicker } from 'react-dates'
 
 import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
-import {
-  TitleSecondRowContainer,
-  TitleButton,
-} from '../TradingTable.styles'
+import { TitleSecondRowContainer, TitleButton } from '../TradingTable.styles'
 
 import { IProps } from './TradingTitle.types'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -16,9 +13,6 @@ import { CSS_CONFIG } from '@sb/config/cssConfig'
 export default class TradingTitle extends React.PureComponent<IProps> {
   render() {
     const {
-      page,
-      perPage,
-      maxRows,
       startDate,
       endDate,
       focusedInput,
@@ -28,13 +22,9 @@ export default class TradingTitle extends React.PureComponent<IProps> {
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
-      handleChangePage,
-      handleChangeRowsPerPage,
-      onClearDateButtonClick,
       theme: {
         palette: {
           text: { primary },
-          secondary: { main },
         },
         typography: { fontFamily },
       },

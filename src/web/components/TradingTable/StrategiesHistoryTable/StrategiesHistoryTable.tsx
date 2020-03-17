@@ -1,4 +1,5 @@
 import React from 'react'
+import copy from 'clipboard-copy'
 import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -36,12 +37,14 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       subscribeToMore,
       theme,
       marketType,
+      keys,
     } = this.props
 
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
       getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       theme,
-      marketType
+      marketType,
+      keys
     )
 
     this.setState({
@@ -62,7 +65,8 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
       nextProps.getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       nextProps.theme,
-      nextProps.marketType
+      nextProps.marketType,
+      nextProps.keys
     )
 
     this.setState({
@@ -135,6 +139,10 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         defaultSort={{
           sortColumn: 'date',
           sortDirection: 'desc',
+        }}
+        onTrClick={(row) => {
+          this.setExpandedRows(row.id)
+          copy(row.id)
         }}
         withCheckboxes={false}
         tableStyles={{

@@ -1,5 +1,7 @@
 import { Theme } from '@material-ui/core'
 
+import { TooltipQueryType } from '@core/types/TooltipTypes'
+
 export type Key = {
   _id: string
   name: string
@@ -7,12 +9,21 @@ export type Key = {
   isBroker: boolean
   isFuturesWars: boolean
 }
-export interface IProps {
+export interface IProps extends TooltipQueryType {
   data: { myPortfolios: any[]; loading: boolean; error?: string }
   theme: Theme
   baseData: {
     portfolio: {
       baseCoin: 'USDT' | 'BTC'
+    }
+  }
+  dustFilterQuery: {
+    portfolio: {
+      dustFilter: {
+        usd: number
+        percentage: number
+        btc: number
+      }
     }
   }
 }

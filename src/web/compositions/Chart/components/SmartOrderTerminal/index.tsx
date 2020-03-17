@@ -463,7 +463,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
   getMaxValues = () => {
     const { entryPoint } = this.state
-    const { funds, marketType } = this.props
+    const { funds, marketType, quantityPrecision } = this.props
 
     let maxAmount = 0
 
@@ -474,9 +474,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     if (marketType === 0) {
       maxAmount =
-        entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
+        entryPoint.order.side === 'buy'
+          ? stripDigitPlaces(funds[1].quantity, 8)
+          : stripDigitPlaces(funds[0].quantity, 8)
     } else if (marketType === 1) {
-      maxAmount = funds[1].quantity * entryPoint.order.leverage
+      maxAmount = stripDigitPlaces(
+        funds[1].quantity * entryPoint.order.leverage,
+        quantityPrecision
+      )
     }
 
     const [amount, total] =
@@ -721,11 +726,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                     let amount =
                       newSide === 'buy'
-                        ? (
+                        ? stripDigitPlaces(
                             ((amountPercentage / 100) * newMaxAmount) /
-                            priceForCalculate
-                          ).toFixed(marketType === 1 ? quantityPrecision : 8)
-                        : ((amountPercentage / 100) * newMaxAmount).toFixed(
+                              priceForCalculate,
+                            marketType === 1 ? quantityPrecision : 8
+                          )
+                        : stripDigitPlaces(
+                            (amountPercentage / 100) * newMaxAmount,
                             marketType === 1 ? quantityPrecision : 8
                           )
 
@@ -963,10 +970,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       needRightValue={true}
                       rightValue={`${
                         entryPoint.order.side === 'buy' || marketType === 1
-                          ? (maxAmount / priceForCalculate).toFixed(
+                          ? stripDigitPlaces(
+                              maxAmount / priceForCalculate,
                               marketType === 1 ? quantityPrecision : 8
                             )
-                          : maxAmount.toFixed(
+                          : stripDigitPlaces(
+                              maxAmount,
                               marketType === 1 ? quantityPrecision : 8
                             )
                       } ${pair[0]}`}
@@ -1118,10 +1127,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                       const newAmount =
                         entryPoint.order.side === 'buy' || marketType === 1
-                          ? (newValue / priceForCalculate).toFixed(
+                          ? stripDigitPlaces(
+                              newValue / priceForCalculate,
                               marketType === 1 ? quantityPrecision : 8
                             )
-                          : newValue.toFixed(
+                          : stripDigitPlaces(
+                              newValue,
                               marketType === 1 ? quantityPrecision : 8
                             )
 

@@ -123,7 +123,7 @@ export const TypographyTitle = styled(
 export const AddAccountButtonContainer = styled(({ ...rest }) => (
   <Grid {...rest} />
 ))`
-  padding: 2rem 0;
+  padding: 0.5rem 0;
   margin: 0;
 
   & > button {

@@ -1,4 +1,5 @@
 import { Theme } from '@material-ui/core'
+import { Key } from '@core/types/ChartTypes'
 
 type SmartOrderConditions = {
   pair: string
@@ -35,6 +36,7 @@ export interface IProps {
   tab: string
   show: boolean
   marketType: 0 | 1
+  keys: Key[]
   exchange: string
   currencyPair: string
   arrayOfMarketIds: string[]

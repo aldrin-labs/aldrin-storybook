@@ -12,7 +12,13 @@ import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
 
-const TerminalContainer = ({ isDefaultTerminalViewMode, children }) => (
+const TerminalContainer = ({
+  isDefaultTerminalViewMode,
+  children,
+}: {
+  isDefaultTerminalViewMode: boolean
+  children: React.ReactChild
+}) => (
   <TablesBlockWrapper
     item
     container
@@ -35,7 +41,6 @@ import {
   ChartGridContainer,
   CustomCard,
   BalancesContainer,
-  SmartTerminalContainer,
 } from '../Chart.styles'
 
 // fix props type
@@ -125,6 +130,7 @@ export const DefaultView = (props: any) => {
             <CustomCard id="tradingViewChart">
               {activeChart === 'candle' ? (
                 <SingleChart
+                  name=""
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
                     marketType
                   )}&user_id=${id}&theme=${themeMode}`}

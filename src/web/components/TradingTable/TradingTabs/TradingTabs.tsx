@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { compose } from 'recompose'
-import { IProps } from './TradingTabs.types'
+import React, { useEffect } from 'react'
+
+import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
 import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
-import { withTheme } from '@material-ui/styles'
+
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import QueryRenderer from '@core/components/QueryRenderer'
 import {
@@ -32,7 +32,6 @@ const TradingTabs = ({
   canceledOrders,
   arrayOfMarketIds,
   currencyPair,
-  changeTab,
   subscribeToMore,
   ...props
 }: IProps) => {
@@ -141,11 +140,10 @@ const TradingTabs = ({
 }
 
 const OpenOrdersWrapper = ({
-  variables,
   showOpenOrdersFromAllAccounts,
   showAllOpenOrderPairs,
   ...props
-}) => {
+}: IQueryProps) => {
   return (
     <QueryRenderer
       component={PositionsWrapper}
@@ -190,7 +188,7 @@ const PositionsWrapper = ({
   showAllPositionPairs,
   showPositionsFromAllAccounts,
   ...props
-}) => {
+}: INextQueryProps) => {
   let unsubscribeOpenOrders: Function | undefined
 
   useEffect(() => {
@@ -244,7 +242,7 @@ const ActiveTradesWrapper = ({
   showAllSmartTradePairs,
   showSmartTradesFromAllAccounts,
   ...props
-}) => {
+}: INextQueryProps) => {
   let unsubscribePositions: Function | undefined
 
   useEffect(() => {
@@ -295,27 +293,3 @@ const ActiveTradesWrapper = ({
 }
 
 export default OpenOrdersWrapper
-
-// return compose(
-// queryRendererHoc({
-//   query: getOpenOrderHistory,
-//   withOutSpinner: true,
-//   withTableLoader: true,
-//   name: 'getOpenOrderHistoryQuery',
-//   variables: {
-//     openOrderInput: {
-//       activeExchangeKey: props.selectedKey.keyId,
-//     },
-//   },
-//   fetchPolicy: 'cache-and-network',
-//   subscriptionArgs: {
-//     subscription: OPEN_ORDER_HISTORY,
-//     variables: {
-//       openOrderInput: {
-//         activeExchangeKey: props.selectedKey.keyId,
-//       },
-//     },
-//     updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
-//   }
-// })
-// )(TradingTabs)

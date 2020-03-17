@@ -1,4 +1,5 @@
 import { Theme } from '@material-ui/core'
+import { Key } from '@core/types/ChartTypes'
 
 export type Position = {
   _id: string
@@ -21,9 +22,8 @@ export interface IProps {
   getActivePositionsQuery: {
     getActivePositions: Position[]
   }
-  selectedKey: {
-    keyId: string
-  }
+  selectedKey: Key
+  keys: Key[]
   canceledOrders: string[]
   allKeys: boolean
   specificPair: boolean

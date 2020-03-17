@@ -103,6 +103,7 @@ export type TableStyles = {
 
 export interface Props {
   classes?: Classes
+  hideCommonCheckbox?: boolean
   withCheckboxes?: boolean
   expandableRows?: boolean
   className?: string
@@ -141,18 +142,20 @@ export interface Props {
 }
 
 export type Pagination = {
-  enabled: boolean
-  handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLSelectElement>) => void
-  handleChangePage: (newPage: number) => void
-  rowsPerPageOptions: number[]
-  rowsPerPage: number
+  enabled?: boolean
+  handleChangeRowsPerPage?: (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => void
+  handleChangePage?: (newPage: number) => void
+  rowsPerPageOptions?: number[]
+  rowsPerPage?: number
   // start from  0
-  page: number
-  fakePagination: boolean
-  totalCount: number | null
-  paginationStyles: CSSProperties
-  additionalBlock: React.ReactElement<any>
-  showPagination: boolean
+  page?: number
+  fakePagination?: boolean
+  totalCount?: number | null
+  paginationStyles?: CSSProperties
+  additionalBlock?: React.ReactElement<any>
+  showPagination?: boolean
 }
 
 export type PaginationFunctionType = (

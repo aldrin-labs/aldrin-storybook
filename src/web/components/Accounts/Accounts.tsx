@@ -76,7 +76,11 @@ class Accounts extends React.PureComponent<IProps> {
     return (
       <>
         <AccountsWalletsHeadingWrapper>
-          <Grid container justify="space-between" style={isTransactions ? { padding: '0 1.5rem 0 1rem' } : {}}>
+          <Grid
+            container
+            justify="space-between"
+            style={isTransactions ? { padding: '0 1.5rem 0 1rem' } : {}}
+          >
             {/* 🔑 Api keys */}
             <TypographyTitle textColor={'#7284A0'}>Accounts</TypographyTitle>
             {isRebalance ? (
@@ -179,7 +183,14 @@ class Accounts extends React.PureComponent<IProps> {
                 >
                   <TooltipCustom
                     title={key.name}
-                    component={<span style={{ overflow: 'hidden', textOverflow: 'ellipsis', }}> {key.name} </span>}
+                    component={
+                      <span
+                        style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      >
+                        {' '}
+                        {key.name}{' '}
+                      </span>
+                    }
                   />
                   <TypographyTitle lineHeight="122.5%">
                     {formattedValue}
@@ -223,9 +234,24 @@ class Accounts extends React.PureComponent<IProps> {
           })}
         </AccountsList>
         {isSidebar && (
-          <AddAccountButtonContainer>
-            <AddAccountDialog numberOfKeys={keys.length} baseCoin={baseCoin} />
-          </AddAccountButtonContainer>
+          <>
+            <AddAccountButtonContainer>
+              <AddAccountDialog
+                numberOfKeys={keys.length}
+                baseCoin={baseCoin}
+                includeBrokerKey={false}
+                includeCommonBinanceKey={true}
+              />
+            </AddAccountButtonContainer>
+            <AddAccountButtonContainer>
+              <AddAccountDialog
+                includeBrokerKey={true}
+                includeCommonBinanceKey={false}
+                numberOfKeys={keys.length}
+                baseCoin={baseCoin}
+              />
+            </AddAccountButtonContainer>
+          </>
         )}
       </>
     )

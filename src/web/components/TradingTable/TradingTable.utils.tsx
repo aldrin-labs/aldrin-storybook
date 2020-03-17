@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import moment from 'moment'
-import { OrderType, TradeType, FundsType } from '@core/types/ChartTypes'
+import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import ErrorIcon from '@material-ui/icons/Error'
 
 import { Position } from './PositionsTable/PositionsTable.types'
@@ -14,7 +14,13 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 
-export const CloseButton = ({ i, onClick }) => {
+export const CloseButton = ({
+  i,
+  onClick,
+}: {
+  i: number
+  onClick: () => void
+}) => {
   const [isCancelled, cancelOrder] = useState(false)
 
   return (
@@ -249,6 +255,7 @@ export const combinePositionsTable = ({
   prices,
   pair,
   keyId,
+  keys,
   canceledPositions,
   priceFromOrderbook,
   pricePrecision,
@@ -264,6 +271,7 @@ export const combinePositionsTable = ({
   priceFromOrderbook: number | string
   pricePrecision: number
   quantityPrecision: number
+  keys: Key[]
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -278,7 +286,7 @@ export const combinePositionsTable = ({
   const processedPositionsData = data
     .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
-      const { symbol, entryPrice, positionAmt, leverage = 1 } = el
+      const { symbol, entryPrice, positionAmt, leverage = 1, keyId } = el
       const needOpacity = el._id === '0'
 
       const marketPrice = (
@@ -286,6 +294,8 @@ export const combinePositionsTable = ({
           price: 0,
         }
       ).price
+
+      const keyName = keys[keyId]
 
       const getVariables = (type: String, price: Number) => ({
         keyId: el.keyId,
@@ -372,7 +382,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -381,16 +391,17 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
+              minWidth: '100px'
             },
             contentToSort: marketPrice,
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, 8)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liqPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -415,9 +426,10 @@ export const combinePositionsTable = ({
             ) : (
               `0 ${pair[1]} / 0%`
             ),
-            style: { opacity: needOpacity ? 0.5 : 1 },
+            style: { opacity: needOpacity ? 0.5 : 1, minWidth: '150px' },
             colspan: 2,
           },
+          tooltipTitle: keyName,
         },
         {
           pair: {
@@ -458,6 +470,7 @@ export const combineActiveTradesTable = ({
   marketType,
   currencyPair,
   quantityPrecision,
+  keys,
 }: {
   data: any[]
   cancelOrderFunc: (strategyId: string) => Promise<any>
@@ -467,6 +480,7 @@ export const combineActiveTradesTable = ({
   marketType: number
   currencyPair: string
   quantityPrecision: number
+  keys: Key[]
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -493,6 +507,7 @@ export const combineActiveTradesTable = ({
     .map((el: OrderType, i: number, arr) => {
       const {
         createdAt,
+        accountId,
         conditions: {
           pair,
           leverage,
@@ -548,6 +563,8 @@ export const combineActiveTradesTable = ({
           (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
         ) || { price: 0 }
       ).price
+
+      const keyName = keys[accountId]
 
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' ? price : entryPrice
@@ -655,7 +672,7 @@ export const combineActiveTradesTable = ({
             state === 'InEntry' && !!currentPrice ? (
               <SubColumnValue
                 color={
-                  profitPercentage > 0 && side === 'buy' ? green.new : red.new
+                  profitPercentage > 0 ? green.new : red.new
                 }
               >
                 {profitPercentage && profitAmount
@@ -671,6 +688,7 @@ export const combineActiveTradesTable = ({
             ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
+            minWidth: '135px',
           },
           contentToSort: profitAmount,
         },
@@ -737,6 +755,7 @@ export const combineActiveTradesTable = ({
             </BtnCustom>
           ),
         },
+        tooltipTitle: keyName,
         expandableContent: [
           {
             row: {
@@ -802,8 +821,9 @@ export const combineActiveTradesTable = ({
 
 export const combineStrategiesHistoryTable = (
   data: OrderType[],
-  theme,
-  marketType: number
+  theme: Theme,
+  marketType: number,
+  keys: Key[]
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -817,6 +837,7 @@ export const combineStrategiesHistoryTable = (
       const {
         createdAt,
         enabled,
+        accountId,
         conditions: {
           pair,
           leverage,
@@ -864,6 +885,8 @@ export const combineStrategiesHistoryTable = (
         msg: null,
       }
 
+      const keyName = keys[accountId]
+
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
       const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
@@ -878,7 +901,7 @@ export const combineStrategiesHistoryTable = (
       // : price
 
       const [profitAmount, profitPercentage] = getPnlFromState({
-        state,
+        state: el.state,
         pair: pairArr,
         side,
         amount,
@@ -973,7 +996,7 @@ export const combineStrategiesHistoryTable = (
               color={
                 profitPercentage === 0
                   ? ''
-                  : profitPercentage > 0 && side === 'buy'
+                  : profitPercentage > 0
                   ? green.new
                   : red.new
               }
@@ -1040,6 +1063,7 @@ export const combineStrategiesHistoryTable = (
           },
           contentToSort: createdAt ? +new Date(createdAt) : -1,
         },
+        tooltipTitle: keyName,
         expandableContent: [
           {
             row: {
@@ -1107,7 +1131,8 @@ export const combineOpenOrdersTable = (
   theme: Theme,
   arrayOfMarketIds: string[],
   marketType: number,
-  canceledOrders
+  canceledOrders: string[],
+  keys: Key[]
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -1127,6 +1152,8 @@ export const combineOpenOrdersTable = (
       const orderId = (el.info && el.info.orderId) || el.orderId
       const origQty = (el.info && el.info.origQty) || el.origQty
       const timestamp = el.timestamp || el.updateTime
+
+      const keyName = keys ? keys[keyId] : ''
 
       const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
@@ -1292,6 +1319,7 @@ export const combineOpenOrdersTable = (
             </CloseButton>
           ),
         },
+        tooltipTitle: keyName,
       }
     })
 
@@ -1302,7 +1330,8 @@ export const combineOrderHistoryTable = (
   orderData: OrderType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number
+  marketType: number,
+  keys
 ) => {
   if (!orderData || !orderData) {
     return []
@@ -1312,6 +1341,7 @@ export const combineOrderHistoryTable = (
     .filter((order) => !!order)
     .map((el: OrderType, i) => {
       const {
+        keyId,
         symbol,
         timestamp,
         type: orderType,
@@ -1331,6 +1361,8 @@ export const combineOrderHistoryTable = (
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
         ? info
         : { orderId: 'id', stopPrice: 0, origQty: 0 }
+
+      const keyName = keys ? keys[keyId] : ''
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
@@ -1469,6 +1501,7 @@ export const combineOrderHistoryTable = (
           style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
+        tooltipTitle: keyName,
       }
     })
 
@@ -1479,7 +1512,8 @@ export const combineTradeHistoryTable = (
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number
+  marketType: number,
+  keys
 ) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
@@ -1490,7 +1524,18 @@ export const combineTradeHistoryTable = (
       isDataForThisMarket(marketType, arrayOfMarketIds, el.marketId)
     )
     .map((el: TradeType) => {
-      const { id, timestamp, symbol, side, price, amount, realizedPnl } = el
+      const {
+        id,
+        keyId,
+        timestamp,
+        symbol,
+        side,
+        price,
+        amount,
+        realizedPnl,
+      } = el
+
+      const keyName = keys ? keys[keyId] : ''
 
       const fee = el.fee ? el.fee : { cost: 0, currency: ' ' }
       const { cost, currency } = fee
@@ -1601,6 +1646,7 @@ export const combineTradeHistoryTable = (
           style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
+        tooltipTitle: keyName,
       }
     })
 
@@ -1789,13 +1835,6 @@ export const updateActivePositionsQuerryFunction = (
       el._id === subscriptionData.data.listenFuturesPositions._id
   )
 
-  console.log('prev.getActivePositions', prev.getActivePositions)
-  console.log(
-    'subscriptionData.data.listenFuturesPositions',
-    subscriptionData.data.listenFuturesPositions
-  )
-  console.log('positionHasTheSameIndex', positionHasTheSameIndex)
-
   const positionAlreadyExists = positionHasTheSameIndex !== -1
 
   let result
@@ -1839,14 +1878,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
         String(subscriptionData.data.listenOpenOrders.info.orderId)
   )
 
-  console.log(
-    'subscriptionData.data.listenOpenOrders',
-    subscriptionData.data.listenOpenOrders
-  )
-  console.log('openOrderHasTheSameOrderIndex', openOrderHasTheSameOrderIndex)
-
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
-  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
 
   let result
 
@@ -1856,19 +1888,12 @@ export const updateOpenOrderHistoryQuerryFunction = (
       ...subscriptionData.data.listenOpenOrders,
     }
 
-    // console.log(
-    //   'order exist, update',
-    //   prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex]
-    // )
-
     result = { ...prev }
   } else {
     prev.getOpenOrderHistory = [
       { ...subscriptionData.data.listenOpenOrders },
       ...prev.getOpenOrderHistory,
     ]
-
-    // console.log('add order', prev.getOpenOrderHistory)
 
     result = { ...prev }
   }
@@ -1883,7 +1908,6 @@ export const updateOrderHistoryQuerryFunction = (
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
-  console.log('isEmptySubscription', isEmptySubscription)
   if (isEmptySubscription) {
     return previous
   }
@@ -1896,11 +1920,6 @@ export const updateOrderHistoryQuerryFunction = (
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
-  console.log('openOrderAlreadyExists', openOrderAlreadyExists)
-  console.log(
-    'subscriptionData.data.listenOrderHistory',
-    subscriptionData.data.listenOrderHistory
-  )
   let result
 
   if (openOrderAlreadyExists) {

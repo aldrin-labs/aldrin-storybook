@@ -4,8 +4,6 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
 import { Grid, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
-import MuiDialogContent from '@material-ui/core/DialogContent'
 import { withTheme } from '@material-ui/styles'
 
 import {
@@ -26,13 +24,7 @@ import { IProps, IState } from './CreatePortfolio.types'
 // import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Steps from '@sb/components/Onboarding/Steps/Steps'
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing.unit * 2,
-  },
-}))(MuiDialogContent)
+import { DialogContent } from '@sb/styles/Dialog.styles'
 
 @withTheme
 class CreatePortfolio extends React.Component<IProps, IState> {
