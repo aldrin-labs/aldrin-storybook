@@ -98,8 +98,9 @@ class Accounts extends React.PureComponent<IProps> {
                   }
                   style={{
                     position: 'absolute',
-                    right: '-0.3rem',
-                    top: '27.5%',
+                    top: '50%',
+                    right: 0,
+                    transform: 'translate(100%, -50%)',
                     height: '1.5rem',
                     width: '1.5rem',
                     color: '#005dd9',
