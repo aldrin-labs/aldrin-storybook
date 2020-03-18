@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import QueryRenderer from '@core/components/QueryRenderer'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFuturesOverview } from '@core/graphql/queries/portfolio/main/getFuturesOverview'
@@ -308,12 +309,22 @@ class DetailedExpansionPanel extends React.Component {
   }
 }
 
-export default compose(
-  withTheme,
-  queryRendererHoc({
-    query: getFuturesOverview,
-    name: 'getFuturesOverviewQuery',
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 30000,
-  })
-)(DetailedExpansionPanel)
+const Wrapper = ({ ...props }) => {
+  return props.isSPOTCurrently ? (
+    <DetailedExpansionPanel
+      {...props}
+      getFuturesOverviewQuery={{ getFuturesOverview: [] }}
+    />
+  ) : (
+    <QueryRenderer
+      component={DetailedExpansionPanel}
+      query={getFuturesOverview}
+      name={'getFuturesOverviewQuery'}
+      pollInterval={30000}
+      fetchPolicy="cache-and-network"
+      {...props}
+    />
+  )
+}
+
+export default compose(withTheme)(Wrapper)
