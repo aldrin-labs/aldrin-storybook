@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Auth0Lock } from 'auth0-lock'
 
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 import { Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 

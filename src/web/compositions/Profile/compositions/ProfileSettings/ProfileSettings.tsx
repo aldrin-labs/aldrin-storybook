@@ -2,7 +2,7 @@ import React, { useState, PureComponent } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { withSnackbar } from 'notistack'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import {

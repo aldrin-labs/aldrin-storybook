@@ -26,7 +26,7 @@ import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
-import { GlobalStyle } from '@sb/styles/cssUtils'
+import { GlobalStyle } from '@sb/styles/global.styles'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -54,7 +54,7 @@ const AppRaw = ({
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
-  const isChartPage = /chart/.test(currentPage)  
+  const isChartPage = /chart/.test(currentPage)
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = currentPage !== '/registration'
@@ -93,15 +93,14 @@ const AppRaw = ({
   )
 }
 
-export const App = withRouter(
-  compose(
-    queryRendererHoc({
-      query: GET_VIEW_MODE,
-      name: 'getViewModeQuery',
-    }),
-    queryRendererHoc({
-      query: GET_THEME_MODE,
-      name: 'getThemeModeQuery',
-    }),
-  )(AppRaw)
-)
+export const App = compose(
+  withRouter,
+  queryRendererHoc({
+    query: GET_VIEW_MODE,
+    name: 'getViewModeQuery',
+  }),
+  queryRendererHoc({
+    query: GET_THEME_MODE,
+    name: 'getThemeModeQuery',
+  })
+)(AppRaw)

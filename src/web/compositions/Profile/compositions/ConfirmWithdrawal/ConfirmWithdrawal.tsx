@@ -1,5 +1,5 @@
 import React from 'react'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 import { Grid, Typography, Link } from '@material-ui/core'
 
 import SvgIcon from '@sb/components/SvgIcon'

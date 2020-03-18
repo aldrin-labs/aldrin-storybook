@@ -1,8 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import { ApolloError } from 'apollo-client';
 import { MASTER_BUILD } from '@core/utils/config'
 

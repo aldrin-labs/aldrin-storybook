@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { FormattedDate } from 'react-intl'
 import styled from 'styled-components'
 
 import Table from '@material-ui/core/Table'
@@ -84,7 +83,7 @@ class CryptoWalletsListComponent extends React.Component {
                       {address}
                     </CryptoWalletTableCell>
                     <CryptoWalletTableCell align="center">
-                      {<FormattedDate value={date} />}
+                      {date}
                     </CryptoWalletTableCell>
                     <CryptoWalletTableCell align="center">
                       <DeleteCryptoWalletDialog

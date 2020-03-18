@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Typography, Theme, ConsistentWith } from '@material-ui/core'
 import { withTheme, WithTheme } from '@material-ui/styles'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import {
   TypographyCustomHeading,
