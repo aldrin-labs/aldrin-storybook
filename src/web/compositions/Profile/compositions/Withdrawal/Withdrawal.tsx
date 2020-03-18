@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 import { withSnackbar } from 'notistack'
 
 import { Grid } from '@material-ui/core'
