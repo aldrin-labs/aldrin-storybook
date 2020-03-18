@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Responsive, WidthProvider } from 'react-grid-layout'
+// import { Responsive, WidthProvider } from 'react-grid-layout'
 import { History } from 'history'
 
 import CalculatorWidget from '@sb/components/Widgets/CalculatorWidget'
