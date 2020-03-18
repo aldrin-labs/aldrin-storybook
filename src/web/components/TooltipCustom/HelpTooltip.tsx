@@ -1,3 +1,4 @@
+import React from 'react'
 import LightTooltip from '@sb/components/TooltipCustom/LightTooltip'
 import Help from '@material-ui/icons/Help'
 
