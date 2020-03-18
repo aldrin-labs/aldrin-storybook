@@ -209,15 +209,6 @@ export const IconCircle = styled.i`
   font-size: 1rem;
 `
 
-export const IconArrow = styled.i`
-  padding: 0 5px;
-  font-size: 1rem;
-
-  position: relative;
-  top: -1px;
-  left: 0;
-`
-
 export const GridTableTypographyContainer = styled(Grid)`
   font-size: 1.2rem;
 
