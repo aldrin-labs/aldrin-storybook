@@ -130,7 +130,7 @@ export default (props) => (
   <QueryRenderer
     component={KeysListComponent}
     query={getKeysQuery}
-    fetchPolicy="network-only"
+    fetchPolicy="cache-and-network"
     withOutSpinner={true}
     {...props}
   />
