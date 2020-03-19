@@ -187,7 +187,7 @@ const PTWrapper = styled(PTWrapperRaw)`
 `
 
 export default compose(
-  withTheme,
+  withTheme(),
   queryRendererHoc({
     query: getCorrelationPeriod,
     name: 'getCorrelationPeriodQuery',

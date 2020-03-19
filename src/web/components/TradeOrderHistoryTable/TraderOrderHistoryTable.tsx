@@ -4,7 +4,7 @@ import { IProps } from './TraderOrderHistoryTable.types'
 import { withTheme } from '@material-ui/styles'
 import CoinRow from './CoinRow'
 
-@withTheme
+@withTheme()
 class TradeOrderHistoryTable extends React.Component<IProps> {
   addFilter = () => {
     const {

@@ -66,7 +66,7 @@ export const rates = [
 ]
 
 @withRouter
-@withTheme
+@withTheme()
 export class CoinMarket extends React.Component<Props, State> {
   state: State = {
     activeSortArg: null,

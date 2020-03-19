@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
 import { IProps } from './ChoosePeriod.types'
 import {

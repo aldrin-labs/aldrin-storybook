@@ -17,7 +17,7 @@ import { DialogContent } from '@sb/styles/Dialog.styles'
 import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import { IProps } from './BinanceAccountCreated.types'
 
-@withTheme
+@withTheme()
 @withRouter
 export default class BinanceAccountCreated extends React.Component<
   ConsistentWith<IProps, WithTheme<Theme>>

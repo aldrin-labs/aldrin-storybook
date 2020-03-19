@@ -129,7 +129,7 @@ const toFixedTrunc = (value, n) => {
   return `${v[0]}.${f}`
 }
 
-@withTheme
+@withTheme()
 class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   state = {
     marketPrice: null,

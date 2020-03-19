@@ -1,6 +1,5 @@
 import React, { Component, lazy, Suspense, memo } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
-import { withTheme } from '@material-ui/styles'
 
 import { Loading } from '@sb/components/index'
 import { IProps, IState } from './PortfolioTable.types'

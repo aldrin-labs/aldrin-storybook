@@ -5,6 +5,8 @@ import { ApolloConsumer } from 'react-apollo'
 import MdReplay from '@material-ui/icons/Replay'
 import { Fab, Button as ButtonMUI, Typography, Grow } from '@material-ui/core'
 import Tooltip from '@material-ui/core/Tooltip'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
 
 import { RebalancePeriod } from './config'

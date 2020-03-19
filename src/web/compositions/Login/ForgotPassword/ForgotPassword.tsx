@@ -122,4 +122,4 @@ const ForgotPassoword = ({
   )
 }
 
-export default compose(withTheme)(ForgotPassoword)
+export default compose(withTheme())(ForgotPassoword)

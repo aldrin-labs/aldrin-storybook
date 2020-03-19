@@ -22,7 +22,7 @@ type T = { value: string; data: string }
 
 let suggestions: T[] = []
 
-@withTheme
+@withTheme()
 class IntegrationReactSelect extends React.Component<IProps, IState> {
   state = {
     isClosed: true,

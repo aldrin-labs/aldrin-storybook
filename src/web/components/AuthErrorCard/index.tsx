@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import { CardContent, Typography } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
 
 import { StyledDialog, StyledCard, MdLockStyled } from './index.styles'
 import { IProps } from './index.types'
@@ -36,4 +35,4 @@ class AuthErrorCard extends PureComponent<IProps> {
   }
 }
 
-export default withTheme(AuthErrorCard)
+export default AuthErrorCard

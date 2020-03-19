@@ -98,4 +98,4 @@ const ChooseMfaProvider = ({
   )
 }
 
-export default compose(withTheme)(ChooseMfaProvider)
+export default compose(withTheme())(ChooseMfaProvider)
