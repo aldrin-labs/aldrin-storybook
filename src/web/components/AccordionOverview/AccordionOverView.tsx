@@ -327,4 +327,4 @@ const Wrapper = ({ ...props }) => {
   )
 }
 
-export default compose(withTheme)(Wrapper)
+export default compose(withTheme())(Wrapper)

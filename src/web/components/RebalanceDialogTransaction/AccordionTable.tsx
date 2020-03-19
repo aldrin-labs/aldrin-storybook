@@ -36,7 +36,7 @@ const styles = (theme) => ({
   },
 })
 
-@withTheme
+@withTheme()
 class AccordionTable extends React.Component<IProps, IState> {
   state: IState = {
     expanded: 'panel1',

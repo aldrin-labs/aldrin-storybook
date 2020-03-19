@@ -12,7 +12,7 @@ import {
   roundPercentage,
 } from '@core/utils/PortfolioTableUtils'
 
-@withTheme
+@withTheme()
 class SocialBalancePanel extends Component {
   render() {
     const { theme, totalFolioAssetsData } = this.props

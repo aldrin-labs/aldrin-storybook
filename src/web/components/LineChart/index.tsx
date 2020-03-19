@@ -29,7 +29,7 @@ const axisStyle = {
   },
   text: { stroke: 'none', fill: '#4ed8da', fontWeight: 600, opacity: 1 },
 }
-@withTheme
+@withTheme()
 export default class LineChart extends React.Component<Props, State> {
   state: State = {
     crosshairValues: [],

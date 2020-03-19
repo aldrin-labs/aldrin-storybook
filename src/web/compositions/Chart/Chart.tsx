@@ -35,7 +35,7 @@ import {
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
-@withTheme
+@withTheme()
 class Chart extends React.Component<IProps, IState> {
   state: IState = {
     showTableOnMobile: 'ORDER',

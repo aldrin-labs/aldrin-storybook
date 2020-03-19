@@ -34,7 +34,7 @@ import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import { LISTEN_TERMINAL_PRICE } from '@core/graphql/subscriptions/LISTEN_TERMINAL_PRICE'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 
-@withTheme
+@withTheme()
 class PositionsTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     positionsData: [],

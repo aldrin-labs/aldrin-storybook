@@ -45,7 +45,6 @@ const AppRaw = ({
   getViewModeQuery,
   getThemeModeQuery,
   location: { pathname: currentPage },
-  history: { push },
 }: any) => {
   const themeMode =
     getThemeModeQuery &&

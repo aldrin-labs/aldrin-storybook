@@ -12,7 +12,7 @@ import {
 
 import defaultRowRenderer from '../../OrderBookTable/utils'
 
-@withTheme
+@withTheme()
 class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
     const {

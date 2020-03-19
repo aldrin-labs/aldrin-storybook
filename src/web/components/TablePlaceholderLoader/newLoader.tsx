@@ -25,7 +25,7 @@ const Loader = ({ color: { primary, secondary }, ...props }) => (
   </ContentLoader>
 )
 
-export default withTheme(
+export default withTheme()(
   ({
     theme: {
       palette: {

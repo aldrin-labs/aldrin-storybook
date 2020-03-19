@@ -45,7 +45,7 @@ const LayoutClearfixWrapper = styled.div`
     padding-right: calc(2.5% + 3rem);
   }
 `
-@withTheme
+@withTheme()
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,

@@ -89,7 +89,7 @@ const RebalanceMediaQuery = createGlobalStyle`
 `
 
 @withRouter
-@withTheme
+@withTheme()
 class PortfolioSelector extends React.Component<IProps> {
   state = {
     valueSliderPercentage: 0,
