@@ -19,7 +19,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
-@withTheme
+@withTheme()
 class TablePanelSummary extends React.Component {
   render() {
     const {

@@ -73,4 +73,4 @@ const PortfolioRebalanceTable: React.FunctionComponent<
   )
 }
 
-export default withTheme(PortfolioRebalanceTable)
+export default withTheme()(PortfolioRebalanceTable)

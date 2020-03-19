@@ -22,7 +22,7 @@ import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme
+@withTheme()
 class StrategiesHistoryTable extends React.PureComponent<IProps> {
   state: IState = {
     strategiesHistoryProcessedData: [],

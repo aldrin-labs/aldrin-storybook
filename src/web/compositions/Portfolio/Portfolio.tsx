@@ -257,7 +257,7 @@ const APIWrapper = (props: any) => {
 
 export default compose(
   withAuth,
-  withTheme,
+  withTheme(),
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',

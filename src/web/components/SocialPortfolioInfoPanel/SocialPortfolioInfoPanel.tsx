@@ -22,7 +22,7 @@ const getOwner = (str: string) => {
   return (b && b[0]) || 'public'
 }
 
-@withTheme
+@withTheme()
 class SocialPortfolioInfoPanel extends Component {
   state = {
     rating: 0,

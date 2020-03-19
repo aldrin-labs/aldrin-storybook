@@ -17,7 +17,7 @@ import {
 } from '@core/utils/errorsConfig'
 import { Loading } from '@sb/components/index'
 
-@withTheme
+@withTheme()
 @withRouter
 class LoginClassComponent extends React.Component<{}> {
   lock = null

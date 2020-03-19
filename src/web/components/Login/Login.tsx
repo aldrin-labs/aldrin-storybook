@@ -22,7 +22,7 @@ import { syncStorage } from '@storage'
 const SignInLink = (props: any) => <Link to="/login" {...props} />
 const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 
-@withTheme
+@withTheme()
 @withRouter
 class LoginClassComponent extends React.Component<Props> {
   logout = async () => {

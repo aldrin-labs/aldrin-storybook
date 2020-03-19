@@ -75,7 +75,7 @@ const Popup = ({
   )
 }
 
-@withTheme
+@withTheme()
 class PortfolioSelectorPopup extends Component {
   state = {
     top: 0,

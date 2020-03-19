@@ -82,4 +82,4 @@ const SetUpMfa = ({
   )
 }
 
-export default compose(withTheme)(SetUpMfa)
+export default compose(withTheme())(SetUpMfa)
