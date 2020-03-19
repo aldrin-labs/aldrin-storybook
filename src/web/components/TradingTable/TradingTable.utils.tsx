@@ -382,7 +382,9 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${pair[1]}`,
+            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${
+              pair[1]
+            }`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -391,12 +393,14 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]}`,
+            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${
+              pair[1]
+            }`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
-              minWidth: '100px'
+              minWidth: '100px',
             },
             contentToSort: marketPrice,
           },
@@ -527,7 +531,7 @@ export const combineActiveTradesTable = ({
           trailingExit,
           timeoutIfProfitable,
           timeoutLoss,
-          timeoutLossable,
+          timeoutWhenLoss,
           timeoutWhenProfit,
         } = {
           pair: '-',
@@ -544,7 +548,7 @@ export const combineActiveTradesTable = ({
           trailingExit: false,
           timeoutIfProfitable: '-',
           timeoutLoss: '-',
-          timeoutLossable: '-',
+          timeoutWhenLoss: '-',
           timeoutWhenProfit: '-',
         },
       } = el
@@ -671,9 +675,7 @@ export const combineActiveTradesTable = ({
           render:
             state === 'InEntry' && !!currentPrice ? (
               <SubColumnValue
-                color={
-                  profitPercentage > 0 ? green.new : red.new
-                }
+                color={profitPercentage > 0 ? green.new : red.new}
               >
                 {profitPercentage && profitAmount
                   ? `${profitAmount < 0 ? '-' : ''}${Math.abs(
@@ -800,8 +802,8 @@ export const combineActiveTradesTable = ({
                     price={stopLoss}
                     order={stopLossType}
                     forced={!!forcedLoss}
+                    timeoutWhenLoss={timeoutWhenLoss}
                     timeoutLoss={timeoutLoss}
-                    timeoutLossable={timeoutLossable}
                     red={red.new}
                     green={green.new}
                     blue={blue}
@@ -856,8 +858,8 @@ export const combineStrategiesHistoryTable = (
           forcedLoss,
           trailingExit,
           timeoutIfProfitable,
+          timeoutWhenLoss,
           timeoutLoss,
-          timeoutLossable,
           timeoutWhenProfit,
         } = {
           pair: '-',
@@ -873,8 +875,8 @@ export const combineStrategiesHistoryTable = (
           forcedLoss: false,
           trailingExit: false,
           timeoutIfProfitable: '-',
+          timeoutWhenLoss: '-',
           timeoutLoss: '-',
-          timeoutLossable: '-',
           timeoutWhenProfit: '-',
         },
       } = el
@@ -1103,8 +1105,8 @@ export const combineStrategiesHistoryTable = (
                     price={stopLoss}
                     order={stopLossType}
                     forced={!!forcedLoss}
+                    timeoutWhenLoss={timeoutWhenLoss}
                     timeoutLoss={timeoutLoss}
-                    timeoutLossable={timeoutLossable}
                     red={red.new}
                     green={green.new}
                     blue={blue}
