@@ -2,6 +2,7 @@ import * as React from 'react'
 import { compose } from 'recompose'
 import { flattenDeep } from 'lodash'
 import { History } from 'history'
+import LazyLoad from 'react-lazyload'
 import { withTheme } from '@material-ui/styles'
 import { Theme } from '@material-ui/core'
 import { withRouter } from 'react-router-dom'
@@ -16,7 +17,7 @@ import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
-import { importCoinIcon, marketPriceRound } from '@core/utils/MarketCapUtils'
+import { importCoinIcon, marketPriceRound, onErrorImportCoinUrl } from '@core/utils/MarketCapUtils'
 import withAuth from '@core/hoc/withAuth'
 import { TableWithSort, addMainSymbol } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -193,12 +194,15 @@ export class CoinMarket extends React.Component<Props, State> {
             render: (
               <CoinSymbolContainer>
                 {
-                  <SvgIcon
-                    style={{ marginRight: '5px' }}
-                    width={`17px`}
-                    height={`17px`}
-                    src={importCoinIcon(value.symbol)}
-                  />
+                  <LazyLoad once height={`17px`}>
+                    <SvgIcon
+                      style={{ marginRight: '5px' }}
+                      width={`17px`}
+                      height={`17px`}
+                      src={importCoinIcon(value.symbol)}
+                      onError={onErrorImportCoinUrl}
+                    />
+                  </LazyLoad>
                 }
                 {value.symbol}
               </CoinSymbolContainer>

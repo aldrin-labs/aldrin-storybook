@@ -1,9 +1,11 @@
 import React, { Ref } from 'react'
 import { components } from 'react-select'
+import LazyLoad from 'react-lazyload'
+
 import { Grid } from '@material-ui/core'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import { importCoinIcon, onErrorImportCoinUrl } from '@core/utils/MarketCapUtils'
 
 type ComponentData = {
   label: string
@@ -19,15 +21,18 @@ interface ComponentIProps {
 const CoinContent = ({ data }: { data: ComponentData }) => (
   <>
     <Grid item style={{ alignSelf: 'center' }}>
-      <SvgIcon
-        style={{
-          marginRight: '.5rem',
-          position: 'relative',
-          top: '0.275rem',
-        }}
-        width={`1.7rem`}
-        src={importCoinIcon(data.label)}
-      />
+      <LazyLoad height={`1.7rem`} once>
+        <SvgIcon
+          style={{
+            marginRight: '.5rem',
+            position: 'relative',
+            top: '0.275rem',
+          }}
+          width={`1.7rem`}
+          src={importCoinIcon(data.label)}
+          onError={onErrorImportCoinUrl}
+        />
+      </LazyLoad>
     </Grid>
     <Grid item style={{ alignSelf: 'center' }}>
       {data.label}
