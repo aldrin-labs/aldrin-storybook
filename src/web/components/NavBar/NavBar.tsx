@@ -38,7 +38,7 @@ import { LOGOUT } from '@core/graphql/mutations/login'
 
 import {
   prefetchSpotTransactions,
-  prefetchFututresTransactions,
+  prefetchFuturesTransactions,
   prefetchRebalance,
   prefetchSpotChart,
   prefetchFuturesChart,
@@ -203,7 +203,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/futures',
                     onMouseOver: () => {
-                      prefetchFututresTransactions()
+                      prefetchFuturesTransactions()
                     },
                   },
                   // !MASTER_BUILD && {
