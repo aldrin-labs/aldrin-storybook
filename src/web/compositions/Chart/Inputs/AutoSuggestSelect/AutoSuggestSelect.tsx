@@ -150,8 +150,13 @@ const queryRender = (props: IProps) => (
     placeholder={() => <TextInputLoader style={{ width: 100, margin: 0 }} />}
     component={IntegrationReactSelect}
     query={MARKETS_BY_EXCHANE_QUERY}
-    variables={{ splitter: '_', exchange: props.activeExchange.symbol, marketType: props.marketType}}
+    variables={{
+      splitter: '_',
+      exchange: props.activeExchange.symbol,
+      marketType: props.marketType,
+    }}
     withOutSpinner={true}
+    fetchPolicy={'cache-and-network'}
     {...props}
   />
 )
@@ -159,13 +164,16 @@ const queryRender = (props: IProps) => (
 export default compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
+    withOutSpinner: true,
     name: 'getViewModeQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
     query: GET_CHARTS,
-    withOutSpinner: false,
+    withOutSpinner: true,
     withTableLoader: false,
     name: 'getCharts',
+    fetchPolicy: 'cache-and-network',
   }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
