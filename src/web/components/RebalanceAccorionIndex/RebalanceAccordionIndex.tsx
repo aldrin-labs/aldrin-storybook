@@ -25,7 +25,7 @@ const styles = (theme) => ({
   },
 })
 
-@withTheme
+@withTheme()
 class RebalanceAccordionIndex extends React.Component {
   state = {
     // change it after we'll do indexes and social portfolios at rebalance

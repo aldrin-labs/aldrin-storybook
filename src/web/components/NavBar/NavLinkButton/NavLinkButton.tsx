@@ -35,4 +35,4 @@ const NavLinkButton = ({
   )
 }
 
-export default withTheme(NavLinkButton)
+export default withTheme()(NavLinkButton)

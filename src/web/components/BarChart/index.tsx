@@ -23,6 +23,7 @@ import {
   axisStyle,
 } from './styles'
 
+@withTheme()
 class BarChartComponent extends Component<IProps, IState> {
   static defaultProps: Partial<IProps> = {
     minColumnWidth: 20,
@@ -161,5 +162,5 @@ class BarChartComponent extends Component<IProps, IState> {
   }
 }
 
-export const BarChart = withTheme(BarChartComponent)
+export const BarChart = BarChartComponent
 export default BarChart

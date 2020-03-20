@@ -436,7 +436,7 @@ class Optimization extends Component<IProps, IState> {
 }
 
 export default compose(
-  withTheme,
+  withTheme(),
   queryRendererHoc({
     query: GET_OPTIMIZATION_COUNT_OF_RUNS,
   }),

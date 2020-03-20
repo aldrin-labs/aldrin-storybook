@@ -14,7 +14,7 @@ import { CorrelationMatrixTable } from './CorrelationMatrixTable'
 import { IProps } from './types'
 import { ErrorFallback } from '../ErrorFallback'
 
-@withTheme
+@withTheme()
 class CorrelationMatrixComponent extends PureComponent<IProps> {
   state = {
     isFullscreenEnabled: false,

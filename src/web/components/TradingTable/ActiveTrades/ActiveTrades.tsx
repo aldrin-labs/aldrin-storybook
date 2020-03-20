@@ -56,7 +56,7 @@ import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 
-@withTheme
+@withTheme()
 class ActiveTradesTable extends React.Component<IProps, IState> {
   state: IState = {
     editTrade: null,

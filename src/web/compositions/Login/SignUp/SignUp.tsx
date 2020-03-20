@@ -295,4 +295,4 @@ const SignUp = ({
   )
 }
 
-export default compose(withTheme)(SignUp)
+export default compose(withTheme())(SignUp)

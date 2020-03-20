@@ -461,7 +461,7 @@ const NavBarRaw: SFC<Props> = ({
 }
 
 export const NavBar = compose(
-  withTheme,
+  withTheme(),
   withApolloPersist,
   graphql(LOGOUT, { name: 'logoutMutation' }),
   graphql(GET_MARKET_TYPE, { name: 'marketTypeData' }),

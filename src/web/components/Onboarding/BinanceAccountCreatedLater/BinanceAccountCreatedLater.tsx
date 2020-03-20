@@ -14,7 +14,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import { IProps } from './BinanceAccountCreated.types'
 
-@withTheme
+@withTheme()
 export default class BinanceAccountCreated extends React.Component<IProps> {
   render() {
     const {

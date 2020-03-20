@@ -27,8 +27,6 @@ import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
-import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
@@ -45,7 +43,6 @@ const AppRaw = ({
   getViewModeQuery,
   getThemeModeQuery,
   location: { pathname: currentPage },
-  history: { push },
 }: any) => {
   const themeMode =
     getThemeModeQuery &&

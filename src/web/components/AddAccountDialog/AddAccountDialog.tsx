@@ -45,7 +45,7 @@ import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { refetchOptionsOnKeyAddFunction } from '@sb/components/AddAccountDialog/AddAccountDialog.utils'
 
-@withTheme
+@withTheme()
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
