@@ -1,9 +1,7 @@
 import React, { SFC, useState } from 'react'
 import { withApollo, graphql } from 'react-apollo'
 import { compose } from 'recompose'
-import moment, { Moment } from 'moment'
 
-import { getTimeZone } from '@core/utils/dateUtils'
 import { client } from '@core/graphql/apolloClient'
 import { LoginComponent as Login } from '@sb/components/Login'
 import { WithTheme } from '@material-ui/core/styles'
@@ -12,7 +10,6 @@ import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 
 import { handleLogout } from '@core/utils/loginUtils'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
 import {
@@ -30,19 +27,7 @@ import Dropdown from '@sb/components/Dropdown'
 import MainIcon from '@material-ui/icons/LineStyle'
 import IndustryIcon from '@material-ui/icons/DonutLarge'
 import RebalanceIcon from '@material-ui/icons/SwapHoriz'
-import CorrelationIcon from '@material-ui/icons/ViewModule'
-import OptimizationIcon from '@material-ui/icons/Assessment'
 
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
-import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
-import { getChartData } from '@core/graphql/queries/chart/getChartData'
-
-import { getSpotCalendarActions } from '@core/graphql/queries/portfolio/main/getSpotCalendarActions'
-import { getFuturesCalendarActions } from '@core/graphql/queries/portfolio/main/getFuturesCalendarActions'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
-
-import { getMyPortfolioQuery } from '@core/graphql/queries/portfolio/rebalance/getMyPortfolioQuery'
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
@@ -50,6 +35,14 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { LOGOUT } from '@core/graphql/mutations/login'
+
+import {
+  prefetchSpotTransactions,
+  prefetchFututresTransactions,
+  prefetchRebalance,
+  prefetchChart,
+  prefetchProfileAccounts,
+} from '@core/utils/prefetching'
 
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -65,18 +58,10 @@ const Signals = (props: any) => <Link to="/signals" {...props} />
 
 const NavBarRaw: SFC<Props> = ({
   theme: {
-    palette: {
-      type,
-      common,
-      secondary: { main },
-      primary,
-      divider,
-    },
+    palette: { primary },
   },
-  theme,
   pathname,
   $hide = false,
-  marketTypeData,
   logoutMutation,
   persistorInstance,
   changeCurrencyPairMutation,
@@ -84,20 +69,6 @@ const NavBarRaw: SFC<Props> = ({
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   let page = pathnamePage[pathnamePage.length - 1]
-
-  let calendarStartDate: Moment | number = moment().startOf('year')
-  let calendarEndDate: Moment | number = moment().endOf('year')
-
-  let tableStartDate: Moment | number = moment()
-    .startOf('day')
-    .subtract(7, 'days')
-  let tableEndDate: Moment | number = moment().endOf('day')
-
-  tableStartDate = +tableStartDate
-  tableEndDate = +tableEndDate
-
-  calendarStartDate = +calendarStartDate
-  calendarEndDate = +calendarEndDate
 
   const logout = () => {
     handleLogout(logoutMutation, persistorInstance)
@@ -201,10 +172,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
                     onMouseOver: () => {
-                      client.query({
-                        query: getMyPortfolioQuery,
-                        variables: { baseCoin: 'USDT', forRebalance: true },
-                      })
+                      prefetchRebalance()
                     },
                   },
                   // !MASTER_BUILD && {
@@ -226,32 +194,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/spot',
                     onMouseOver: () => {
-                      client.query({
-                        query: getSpotCalendarActions,
-                        variables: {
-                          input: {
-                            startDate: calendarStartDate,
-                            endDate: calendarEndDate,
-                            timezone: getTimeZone(),
-                          },
-                        },
-                      })
-
-                      client.query({
-                        query: MyTradesQuery,
-                        variables: {
-                          input: {
-                            page: 0,
-                            perPage: 30,
-                            startDate: tableStartDate,
-                            endDate: tableEndDate,
-                            filterCoin: '',
-                            includeExchangeTransactions: false,
-                            includeTrades: true,
-                            includeFutures: false,
-                          },
-                        },
-                      })
+                      prefetchSpotTransactions()
                     },
                   },
                   {
@@ -259,32 +202,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/futures',
                     onMouseOver: () => {
-                      client.query({
-                        query: getFuturesCalendarActions,
-                        variables: {
-                          input: {
-                            startDate: calendarStartDate,
-                            endDate: calendarEndDate,
-                            timezone: getTimeZone(),
-                          },
-                        },
-                      })
-
-                      client.query({
-                        query: MyTradesQuery,
-                        variables: {
-                          input: {
-                            page: 0,
-                            perPage: 30,
-                            startDate: tableStartDate,
-                            endDate: tableEndDate,
-                            filterCoin: '',
-                            includeExchangeTransactions: false,
-                            includeTrades: false,
-                            includeFutures: true,
-                          },
-                        },
-                      })
+                      prefetchFututresTransactions()
                     },
                   },
                   // !MASTER_BUILD && {
@@ -335,10 +253,7 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot market',
                     to: '/chart/spot',
                     onMouseOver: () => {
-                      client.query({
-                        query: getChartData,
-                        variables: { marketType: 1 },
-                      })
+                      prefetchChart()
                     },
                   },
                   {
@@ -401,6 +316,9 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Accounts',
                     to: '/profile/accounts',
+                    onMouseOver: () => {
+                      prefetchProfileAccounts()
+                    },
                   },
                   {
                     text: 'Settings',
