@@ -1,5 +1,8 @@
+import React from 'react'
+import LazyLoad from 'react-lazyload'
+
 import SvgIcon from '@sb/components/SvgIcon'
-import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import { importCoinIcon, onErrorImportCoinUrl } from '@core/utils/MarketCapUtils'
 import { addMainSymbol } from '@sb/components/index'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
@@ -21,16 +24,19 @@ const CoinRow = ({
       }}
     >
       <span>
-        <SvgIcon
-          style={{
-            marginRight: '.5rem',
-            position: 'relative',
-            top: '0.275rem',
-          }}
-          width={`1.7rem`}
-          height={`1.7rem`}
-          src={importCoinIcon(symbol)}
-        />
+        <LazyLoad once height={`1.7rem`} >
+          <SvgIcon
+            style={{
+              marginRight: '.5rem',
+              position: 'relative',
+              top: '0.275rem',
+            }}
+            width={`1.7rem`}
+            height={`1.7rem`}
+            src={importCoinIcon(symbol)}
+            onError={onErrorImportCoinUrl}
+          />
+        </LazyLoad>
         <span style={{ position: 'relative', bottom: '.2rem' }}>{symbol}</span>
 
         <span
