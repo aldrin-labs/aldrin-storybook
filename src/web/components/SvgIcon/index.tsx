@@ -8,6 +8,7 @@ interface Props {
   width?: number | string
   height?: number | string
   onClick?: (any: any) => any
+  onError?: (e: React.ChangeEvent<HTMLImageElement>) => void
 }
 
 export default class SvgIcon extends React.Component<Props, {}> {
@@ -18,6 +19,7 @@ export default class SvgIcon extends React.Component<Props, {}> {
       styledComponentsAdditionalStyle,
       animation,
       onClick,
+      onError,
       alt = '',
     } = this.props
     const width = this.props.width || 16
@@ -30,6 +32,7 @@ export default class SvgIcon extends React.Component<Props, {}> {
         src={src.replace(/"/gi, '')}
         style={{ ...style, width, height }}
         onClick={onClick}
+        onError={onError}
       />
     )
   }
