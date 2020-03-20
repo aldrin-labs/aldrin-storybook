@@ -40,8 +40,9 @@ import {
   prefetchSpotTransactions,
   prefetchFututresTransactions,
   prefetchRebalance,
-  prefetchChart,
-  prefetchProfileAccounts,
+  prefetchSpotChart,
+  prefetchFuturesChart,
+  prefetchProfileAccounts
 } from '@core/utils/prefetching'
 
 import { MASTER_BUILD } from '@core/utils/config'
@@ -253,13 +254,14 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot market',
                     to: '/chart/spot',
                     onMouseOver: () => {
-                      prefetchChart()
+                      prefetchSpotChart()
                     },
                   },
                   {
                     text: 'Futures market',
                     to: '/chart/futures',
                     onClick: () => {
+                      prefetchFuturesChart()
                       changeCurrencyPairMutation({
                         variables: {
                           pairInput: {
