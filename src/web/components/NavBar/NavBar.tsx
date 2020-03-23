@@ -96,29 +96,29 @@ const NavBarRaw: SFC<Props> = ({
           [joyridePage]: true,
         },
       },
-      update: () => {
-        console.log('set cache data')
-        writeQueryData(
-          GET_TOOLTIP_SETTINGS,
-          {},
-          {
-            getTooltipSettings: {
-              ...getTooltipSettings,
-              onboarding: {
-                ...getTooltipSettings.onboarding,
-              },
-              [joyridePage]: true,
-            },
-          }
-        )
-        client.queryManager.broadcastQueries()
-      },
     })
+
+    writeQueryData(
+      GET_TOOLTIP_SETTINGS,
+      {},
+      {
+        getTooltipSettings: {
+          ...getTooltipSettings,
+          onboarding: {
+            ...getTooltipSettings.onboarding,
+          },
+          [joyridePage]: true,
+        },
+      }
+    )
+
+    client.queryManager.broadcastQueries()
   }
 
   if (/chart/.test(pathname)) {
     const isSPOTMarket = /spot/.test(pathname)
 
+    joyridePage = 'chartPage'
     page = isSPOTMarket ? 'spot trading' : 'futures trading'
   }
 
@@ -136,10 +136,12 @@ const NavBarRaw: SFC<Props> = ({
 
   if (/transactions\/spot/.test(pathname)) {
     page = 'Transactions Spot'
+    joyridePage = 'transactionPage'
   }
 
   if (/transactions\/futures/.test(pathname)) {
     page = 'Transactions Futures'
+    joyridePage = 'transactionPage'
   }
 
   if (/internal/.test(pathname)) {

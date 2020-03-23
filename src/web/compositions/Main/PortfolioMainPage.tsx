@@ -40,6 +40,7 @@ import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverVie
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
+import { finishJoyride } from '@core/utils/joyride'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
@@ -60,18 +61,18 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     openSharePortfolioPopUp: false,
   }
 
-  componentDidMount() {
-    client
-      .watchQuery({
-        query: GET_TOOLTIP_SETTINGS,
-        fetchPolicy: 'cache-only',
-      })
-      .subscribe({
-        next: ({ data }) => {
-          console.log('data', data)
-        },
-      })
-  }
+  // componentDidMount() {
+  //   client
+  //     .watchQuery({
+  //       query: GET_TOOLTIP_SETTINGS,
+  //       fetchPolicy: 'cache-only',
+  //     })
+  //     .subscribe({
+  //       next: ({ data }) => {
+  //         console.log('data', data)
+  //       },
+  //     })
+  // }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
@@ -92,7 +93,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     })
   }
 
-  handleJoyrideCallback = async (data: any) => {
+  handleJoyrideCallback = (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
@@ -103,36 +104,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
         getTooltipSettingsQuery: { getTooltipSettings },
       } = this.props
 
-      await updateTooltipSettingsMutation({
-        variables: {
-          settings: {
-            ...removeTypenameFromObject(getTooltipSettings),
-            onboarding: {
-              ...removeTypenameFromObject(getTooltipSettings.onboarding),
-            },
-            portfolioMain: false,
-          },
-        },
-        update: () => {
-          console.log('set cache data')
-          writeQueryData(
-            GET_TOOLTIP_SETTINGS,
-            {},
-            {
-              getTooltipSettings: {
-                ...getTooltipSettings,
-                onboarding: {
-                  ...getTooltipSettings.onboarding,
-                },
-                portfolioMain: false,
-              },
-            }
-          )
-          client.queryManager.broadcastQueries()
-        },
+      finishJoyride({
+        updateTooltipSettingsMutation,
+        getTooltipSettings,
+        name: 'portfolioMain',
       })
     }
-    console.log(data)
+
     switch (data.action) {
       case 'next': {
         if (data.lifecycle === 'complete') {
@@ -175,8 +153,6 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       },
       // getFuturesOverviewQuery: { getFuturesOverview },
     } = this.props
-
-    console.log('getTooltipSettings', getTooltipSettings.portfolioMain)
 
     const isSPOTCurrently = pageType === 'SPOT'
     // const { openSharePortfolioPopUp } = this.state
