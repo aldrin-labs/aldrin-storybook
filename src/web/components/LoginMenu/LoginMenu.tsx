@@ -99,7 +99,7 @@ class LoginMenuComponent extends React.Component {
         }
       )
 
-      client.queryManager.broadcastQueries()
+      // client.queryManager.broadcastQueries()
     }
 
     return (
