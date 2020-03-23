@@ -14,6 +14,12 @@ import DefaultView from './DefaultView/StatusWrapper'
 // import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
 // import { SingleChart } from '@sb/components/Chart'
 
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { finishJoyride } from '@core/utils/joyride'
+import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+import { getChartSteps } from '@sb/config/joyrideSteps'
+
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { CHANGE_ACTIVE_EXCHANGE } from '@core/graphql/mutations/chart/changeActiveExchange'
@@ -42,6 +48,8 @@ class Chart extends React.Component<IProps, IState> {
     activeChart: 'candle',
     joyride: false,
     terminalViewMode: 'default',
+    stepIndex: 0,
+    key: 0,
   }
 
   componentWillUnmount() {
@@ -60,7 +68,7 @@ class Chart extends React.Component<IProps, IState> {
     this.setState({ terminalViewMode })
   }
 
-  handleJoyrideCallback = async (data: any) => {
+  handleJoyrideCallback = (data: any) => {
     if (
       data.action === 'close' ||
       data.action === 'skip' ||
@@ -68,20 +76,40 @@ class Chart extends React.Component<IProps, IState> {
     ) {
       const {
         updateTooltipSettingsMutation,
-        getChartDataQuery: { getTooltipSettings },
+        getTooltipSettingsQuery: { getTooltipSettings },
       } = this.props
 
-      await updateTooltipSettingsMutation({
-        variables: {
-          settings: {
-            ...removeTypenameFromObject(getTooltipSettings),
-            chartPage: false,
-          },
-        },
+      finishJoyride({
+        updateTooltipSettingsMutation,
+        getTooltipSettings,
+        name: 'chartPage',
       })
     }
-  }
 
+    switch (data.action) {
+      case 'next': {
+        if (data.lifecycle === 'complete') {
+          this.setState((prev) => ({ stepIndex: prev.stepIndex + 1 }))
+        }
+        break
+      }
+      case 'prev': {
+        if (data.lifecycle === 'complete') {
+          this.setState((prev) => ({ stepIndex: prev.stepIndex - 1 }))
+        }
+        break
+      }
+    }
+
+    if (
+      data.status === 'finished' ||
+      (data.status === 'stop' && data.index !== data.size - 1) ||
+      data.status === 'reset'
+    ) {
+      const oldKey = this.state.key
+      this.setState({ key: oldKey + 1 })
+    }
+  }
   renderOnlyCharts = () => {
     const {
       getChartDataQuery: {
@@ -166,6 +194,7 @@ class Chart extends React.Component<IProps, IState> {
         },
         app: { themeMode },
       },
+      getTooltipSettingsQuery: { getTooltipSettings },
       pairPropertiesQuery,
       changeActiveExchangeMutation,
       marketType,
@@ -252,6 +281,16 @@ class Chart extends React.Component<IProps, IState> {
           />
         )}
         {view === 'onlyCharts' && this.renderOnlyCharts()}
+        <JoyrideOnboarding
+          continuous={true}
+          stepIndex={this.state.stepIndex}
+          showProgress={true}
+          showSkipButton={true}
+          key={this.state.key}
+          steps={getChartSteps({ marketType })}
+          open={getTooltipSettings.chartPage}
+          handleJoyrideCallback={this.handleJoyrideCallback}
+        />
       </MainContainer>
     )
   }
@@ -272,6 +311,15 @@ export default withAuth(
     }),
     graphql(CHANGE_ACTIVE_EXCHANGE, {
       name: 'changeActiveExchangeMutation',
+    }),
+    queryRendererHoc({
+      query: GET_TOOLTIP_SETTINGS,
+      name: 'getTooltipSettingsQuery',
+      fetchPolicy: 'cache-and-network',
+      withOutSpinner: true,
+    }),
+    graphql(updateTooltipSettings, {
+      name: 'updateTooltipSettingsMutation',
     }),
     // graphql(CHANGE_VIEW_MODE, {
     //   name: 'changeViewModeMutation',
