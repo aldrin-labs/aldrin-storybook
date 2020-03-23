@@ -69,8 +69,12 @@ class LoginMenuComponent extends React.Component {
     const {
       joyridePage,
       updateTooltipSettingsMutation,
-      getTooltipSettingsQuery: { getTooltipSettings },
+      getTooltipSettingsQuery,
     } = this.props
+
+    const { getTooltipSettings } = getTooltipSettingsQuery || {
+      getTooltipSettings: {},
+    }
 
     const openJoyride = () => {
       updateTooltipSettingsMutation({
@@ -98,8 +102,6 @@ class LoginMenuComponent extends React.Component {
           },
         }
       )
-
-      // client.queryManager.broadcastQueries()
     }
 
     return (
@@ -170,7 +172,7 @@ export const LoginMenu = compose(
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-only',
     withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {
