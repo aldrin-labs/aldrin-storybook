@@ -17,7 +17,7 @@ import {
   transactionsPageSteps,
   getChartSteps,
 } from '@sb/config/joyrideSteps'
-import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Onboarding from '../../compositions/Onboarding/'
 
 import { TooltipCustom } from '@sb/components/index'
@@ -70,7 +70,12 @@ class LoginMenuComponent extends React.Component {
   }
 
   render() {
-    const { userName, handleLogout, updateTooltipSettings } = this.props
+    const {
+      userName,
+      handleLogout,
+      updateTooltipSettings,
+      openJoyride,
+    } = this.props
 
     const steps =
       this.props.location.pathname === '/portfolio/main'
@@ -86,7 +91,7 @@ class LoginMenuComponent extends React.Component {
 
     return (
       <>
-        <JoyrideOnboarding
+        {/* <JoyrideOnboarding
           autoStart
           stepIndex={this.state.stepIndex}
           steps={steps}
@@ -129,7 +134,7 @@ class LoginMenuComponent extends React.Component {
               }
             }
           }}
-        />
+        /> */}
 
         {/* <Tooltip title={'Show Tips'} enterDelay={250}>
           <IconButton
@@ -160,7 +165,7 @@ class LoginMenuComponent extends React.Component {
             component={
               <IconButton
                 color="default"
-                onClick={this.handleClickOpen}
+                onClick={openJoyride}
                 component={(props) => <div {...props} />}
                 className="UserLink"
                 style={{

@@ -179,28 +179,28 @@ export const portfolioMainSteps = [
 ]
 
 export const transactionsPageSteps = [
-  {
-    target: '#accountsTransactions',
-    content: (
-      <p
-        style={{
-          fontFamily: 'DM Sans',
-          textAlign: 'left',
-        }}
-      >
-        <b>Accounts filter</b>
-        <br />
-        Select your portfolio and accounts to view its transactions. Filter for
-        transaction type
-      </p>
-    ),
-    placement: 'auto',
-    spotlightClicks: true,
-    disableOverlayClose: true,
-    hideCloseButton: false,
-    disableBeacon: true,
-    locale: buttonsTransactionsText,
-  },
+  // {
+  //   target: '#accountsTransactions',
+  //   content: (
+  //     <p
+  //       style={{
+  //         fontFamily: 'DM Sans',
+  //         textAlign: 'left',
+  //       }}
+  //     >
+  //       <b>Accounts filter</b>
+  //       <br />
+  //       Select your portfolio and accounts to view its transactions. Filter for
+  //       transaction type
+  //     </p>
+  //   ),
+  //   placement: 'auto',
+  //   spotlightClicks: true,
+  //   disableOverlayClose: true,
+  //   hideCloseButton: false,
+  //   disableBeacon: true,
+  //   locale: buttonsTransactionsText,
+  // },
   {
     target: '#calendarTransactions',
     content: (
@@ -220,7 +220,9 @@ export const transactionsPageSteps = [
     spotlightClicks: true,
     disableOverlayClose: true,
     hideCloseButton: false,
+    disableBeacon: true,
     locale: buttonsTransactionsText,
+    stepIndex: 0,
   },
   {
     target: '#tableTransactions',
@@ -241,6 +243,7 @@ export const transactionsPageSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsTransactionsText,
+    stepIndex: 1,
   },
   {
     target: '#statisticTransactions',
@@ -253,8 +256,7 @@ export const transactionsPageSteps = [
       >
         <b>Your actions dashboard</b>
         <br />
-        These widgets show your recent actions and win/loss ratio of your trades
-        profitability
+        These widgets show your recent actions.
       </p>
     ),
     placement: 'left',
@@ -262,6 +264,7 @@ export const transactionsPageSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsTransactionsText,
+    stepIndex: 2,
   },
   {
     target: '#accountsPanel',
@@ -274,7 +277,8 @@ export const transactionsPageSteps = [
       >
         <b>Our introduction is over.</b>
         <br />
-        Now you can return to P&L page by using quick navigation button.
+        Create a new portfolio or add new exchange accounts to existing
+        portfolio.
       </p>
     ),
     placement: 'right',
@@ -282,6 +286,7 @@ export const transactionsPageSteps = [
     disableOverlayClose: true,
     hideCloseButton: false,
     locale: buttonsTransactionsText,
+    stepIndex: 3,
   },
 ]
 

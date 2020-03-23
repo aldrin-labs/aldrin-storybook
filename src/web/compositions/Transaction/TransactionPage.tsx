@@ -27,6 +27,7 @@ import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
 
 import { graphql } from 'react-apollo'
+import { finishJoyride } from '@core/utils/joyride'
 
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { transactionsPageSteps } from '@sb/config/joyrideSteps'
@@ -48,7 +49,8 @@ class TransactionPage extends React.PureComponent {
     filterCoin: '',
     inputValue: '',
     concreteDaySelected: false,
-
+    key: 0,
+    stepIndex: 0,
     gitCalendarDate: {
       startDate: moment().startOf('year'),
       endDate: moment().endOf('year'),
@@ -144,21 +146,47 @@ class TransactionPage extends React.PureComponent {
     this.setState({ [option]: event.target.checked })
   }
 
-  handleJoyrideCallback = async (data: any) => {
-    const {
-      updateTooltipSettings,
-      getTooltipSettingsQuery: { getTooltipSettings },
-    } = this.props
+  handleJoyrideCallback = (data: any) => {
+    if (
+      data.action === 'close' ||
+      data.action === 'skip' ||
+      data.status === 'finished'
+    ) {
+      const {
+        updateTooltipSettingsMutation,
+        getTooltipSettingsQuery: { getTooltipSettings },
+      } = this.props
 
-    await updateTooltipSettings({
-      variables: {
-        settings: {
-          ...removeTypenameFromObject(getTooltipSettings),
-          transactionPage: false,
-        },
-      },
-      update: updateTooltipMutation,
-    })
+      finishJoyride({
+        updateTooltipSettingsMutation,
+        getTooltipSettings,
+        name: 'transactionPage',
+      })
+    }
+
+    switch (data.action) {
+      case 'next': {
+        if (data.lifecycle === 'complete') {
+          this.setState((prev) => ({ stepIndex: prev.stepIndex + 1 }))
+        }
+        break
+      }
+      case 'prev': {
+        if (data.lifecycle === 'complete') {
+          this.setState((prev) => ({ stepIndex: prev.stepIndex - 1 }))
+        }
+        break
+      }
+    }
+
+    if (
+      data.status === 'finished' ||
+      (data.status === 'stop' && data.index !== data.size - 1) ||
+      data.status === 'reset'
+    ) {
+      const oldKey = this.state.key
+      this.setState({ key: oldKey + 1 })
+    }
   }
 
   render() {
@@ -315,12 +343,17 @@ class TransactionPage extends React.PureComponent {
             {/* <WinLossRatio /> */}
           </GridItemContainer>
         </Grid>
-        {/* 
+
         <JoyrideOnboarding
+          continuous={true}
+          stepIndex={this.state.stepIndex}
+          showProgress={true}
+          showSkipButton={true}
+          key={this.state.key}
           steps={transactionsPageSteps}
           open={transactionPage}
           handleJoyrideCallback={this.handleJoyrideCallback}
-        /> */}
+        />
       </>
     )
   }
@@ -334,6 +367,6 @@ export default compose(
     withOutSpinner: true,
   }),
   graphql(updateTooltipSettings, {
-    name: 'updateTooltipSettings',
+    name: 'updateTooltipSettingsMutation',
   })
 )(TransactionPage)
