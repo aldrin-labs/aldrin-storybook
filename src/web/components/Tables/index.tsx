@@ -52,6 +52,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
+import { OnboardingPlaceholder } from '@sb/components'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -578,6 +579,7 @@ const CustomTable = (props: Props) => {
     stylesForTable,
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
+    onboardingPlaceholder = false,
   } = props
 
   if (
@@ -749,7 +751,9 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.length === 0 ? (
+          {data.body.length === 0 && onboardingPlaceholder ? (
+            <OnboardingPlaceholder />
+          ) : data.body.length === 0 && !onboardingPlaceholder ? (
             <CustomPlaceholder text={emptyTableText} />
           ) : (
             paginationFunc(

@@ -332,7 +332,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 }}
               />
               {includeBrokerKey && !includeCommonBinanceKey
-                ? `Create broker account`
+                ? `Create account`
                 : `Add Account`}
             </BtnCustom>
           )
@@ -593,7 +593,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             fontSize={'1.2rem'}
                             onClick={this.handleGenerateBrokerKey}
                           >
-                            Create broker account
+                            Create account
                           </BtnCustom>
                         </Grid>
                       </GridCustom>

@@ -50,3 +50,5 @@ export {
 } from './PortfolioRebalanceTable/PortfolioRebalanceTable'
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
 export { SignUpButton } from './SignUpButton/SignUpButton'
+export { OnboardingPlaceholder as OnboardingPlaceholder } from './OnboardingPlaceholder/OnboardingPlaceholder'
+export { LightGreenButton } from './LightGreenButton/LightGreenButton'
