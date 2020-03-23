@@ -132,6 +132,7 @@ export interface Props {
   rowsWithHover?: boolean
   rowWithHoverBorderRadius?: boolean
   emptyTableText?: string
+  onboardingPlaceholder?: boolean
   tableStyles?: TableStyles
   onTrClick?: (data: any) => void
   style?: CSSProperties
