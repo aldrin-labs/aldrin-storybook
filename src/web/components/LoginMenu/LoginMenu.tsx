@@ -2,23 +2,19 @@ import React from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { Link, withRouter } from 'react-router-dom'
+import { client } from '@core/graphql/apolloClient'
+
 import IconButton from '@material-ui/core/IconButton'
-import LiveHelp from '@material-ui/icons/Help'
-import ExitIcon from '@material-ui/icons/ExitToApp'
-import AccountCircle from '@material-ui/icons/AccountCircle'
+
 import HelpIcon from '@material-ui/icons/Help'
 import TelegramIcon from '@material-ui/icons/Telegram'
-import Tooltip from '@material-ui/core/Tooltip'
+
+import { writeQueryData } from '@core/utils/TradingTable.utils'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { tooltipsConfig } from '@core/config/tooltipsConfig'
-import { updateTooltipMutation } from '@core/utils/TooltipUtils'
-import {
-  portfolioMainSteps,
-  transactionsPageSteps,
-  getChartSteps,
-} from '@sb/config/joyrideSteps'
-// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
-import Onboarding from '../../compositions/Onboarding/'
+import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import { TooltipCustom } from '@sb/components/index'
 
@@ -71,93 +67,43 @@ class LoginMenuComponent extends React.Component {
 
   render() {
     const {
-      userName,
-      handleLogout,
-      updateTooltipSettings,
-      openJoyride,
+      joyridePage,
+      updateTooltipSettingsMutation,
+      getTooltipSettingsQuery: { getTooltipSettings },
     } = this.props
 
-    const steps =
-      this.props.location.pathname === '/portfolio/main'
-        ? portfolioMainSteps
-        : this.props.location.pathname === '/portfolio/transactions'
-        ? transactionsPageSteps
-        : this.props.location.pathname === '/chart/spot' ||
-          this.props.location.pathname === '/chart/futures'
-        ? getChartSteps({
-            marketType: this.props.location.pathname === '/chart/spot' ? 0 : 1,
-          })
-        : []
+    const openJoyride = () => {
+      updateTooltipSettingsMutation({
+        variables: {
+          settings: {
+            ...removeTypenameFromObject(getTooltipSettings),
+            onboarding: {
+              ...removeTypenameFromObject(getTooltipSettings.onboarding),
+            },
+            [joyridePage]: true,
+          },
+        },
+      })
+
+      writeQueryData(
+        GET_TOOLTIP_SETTINGS,
+        {},
+        {
+          getTooltipSettings: {
+            ...getTooltipSettings,
+            onboarding: {
+              ...getTooltipSettings.onboarding,
+            },
+            [joyridePage]: true,
+          },
+        }
+      )
+
+      client.queryManager.broadcastQueries()
+    }
 
     return (
       <>
-        {/* <JoyrideOnboarding
-          autoStart
-          stepIndex={this.state.stepIndex}
-          steps={steps}
-          open={this.state.openOnboarding}
-          handleJoyrideCallback={(a) => {
-            if (a.status === 'finished') {
-              this.setState({ openOnboarding: false, stepIndex: 0 })
-              return
-            }
-
-            switch (a.action) {
-              case 'reset': {
-                this.setState({ openOnboarding: false, stepIndex: 0 })
-                break
-              }
-              case 'stop': {
-                if (a.index !== a.size - 1) {
-                  this.setState({ openOnboarding: false, stepIndex: 0 })
-                  break
-                }
-              }
-              case 'next': {
-                if (a.lifecycle === 'complete') {
-                  this.setState((prev) => ({ stepIndex: prev.stepIndex + 1 }))
-                }
-                break
-              }
-              case 'prev': {
-                if (a.lifecycle === 'complete') {
-                  this.setState((prev) => ({ stepIndex: prev.stepIndex - 1 }))
-                }
-                break
-              }
-              case 'skip': {
-                this.setState((prev) => ({
-                  openOnboarding: false,
-                  stepIndex: 0,
-                }))
-                break
-              }
-            }
-          }}
-        /> */}
-
-        {/* <Tooltip title={'Show Tips'} enterDelay={250}>
-          <IconButton
-            onClick={async () => {
-              // this.handleClickOpen()
-
-              updateTooltipSettings({
-                variables: {
-                  settings: {
-                    ...tooltipsConfig,
-                  },
-                },
-                update: updateTooltipMutation,
-              })
-              }
-            }
-            color="default"
-            className="TipButton"
-          >
-            <LiveHelp />
-          </IconButton>
-        </Tooltip> */}
-        {/*<Onboarding />*/}
         <div style={{ display: 'flex', height: '100%' }}>
           <TooltipCustom
             title={'Tooltips'}
@@ -221,7 +167,13 @@ class LoginMenuComponent extends React.Component {
 }
 
 export const LoginMenu = compose(
+  queryRendererHoc({
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+  }),
   graphql(updateTooltipSettings, {
-    name: 'updateTooltipSettings',
+    name: 'updateTooltipSettingsMutation',
   })
 )(LoginMenuComponent)
