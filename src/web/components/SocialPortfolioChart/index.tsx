@@ -11,6 +11,7 @@ import {
     SocialPortfolioChartTypography
 } from './SocialPortfolioChart.styles'
 
+@withTheme()
 class SocialPortfolioChart extends Component {
     render() {
         return (
@@ -37,4 +38,4 @@ class SocialPortfolioChart extends Component {
     }
 }
 
-export default withTheme(SocialPortfolioChart)
+export default SocialPortfolioChart

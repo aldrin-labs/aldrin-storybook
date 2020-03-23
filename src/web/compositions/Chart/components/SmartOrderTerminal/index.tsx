@@ -1456,7 +1456,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                       <SubBlocksContainer>
                         <InputRowContainer>
-                          <TimeoutTitle>When lossable</TimeoutTitle>
+                          <TimeoutTitle>When in loss</TimeoutTitle>
                         </InputRowContainer>
                         <InputRowContainer>
                           <SCheckbox

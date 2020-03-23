@@ -38,6 +38,7 @@ export const AccountsList = styled(({ isTransactions, ...rest }) => (
 export const AccountsWalletsHeadingWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  position: relative;
 `
 
 export const StyledIcon = styled(({ color, isSideNavOpen, ...rest }) => (

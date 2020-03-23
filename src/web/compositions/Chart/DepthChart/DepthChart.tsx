@@ -25,7 +25,7 @@ import { hexToRgbAWithOpacity } from '@sb/styles/helpers'
 import { IDepthChartProps, IDepthChartState } from './DepthChart.types'
 // import ComingSoon from '@sb/components/ComingSoon'
 
-@withTheme
+@withTheme()
 class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
   state = {
     // must be calculated

@@ -27,7 +27,7 @@ import AccordionTable from './AccordionTable'
 import * as UTILS from './utils'
 import { IProps, IState } from './RebalanceDialogTransaction.types'
 
-@withTheme
+@withTheme()
 class RebalanceDialogTransaction extends React.Component<IProps, IState> {
   state: IState = {
     isFinished: false,

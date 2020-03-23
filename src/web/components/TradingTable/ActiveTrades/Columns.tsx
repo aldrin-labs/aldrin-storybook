@@ -250,8 +250,8 @@ export const StopLossColumn = ({
   price,
   forced,
   order,
+  timeoutWhenLoss,
   timeoutLoss,
-  timeoutLossable,
   green,
   red,
   blue,
@@ -262,8 +262,8 @@ export const StopLossColumn = ({
   price: number
   forced?: boolean
   order: string
+  timeoutWhenLoss?: number
   timeoutLoss?: number
-  timeoutLossable?: number
   green: string
   red: string
   blue: {
@@ -329,7 +329,7 @@ export const StopLossColumn = ({
       <div>
         <SubColumnTitle>timeout</SubColumnTitle>
         <SubColumnValue textAlign={'right'}>
-          {timeoutLoss || '-'} / {timeoutLossable || '-'}
+          {timeoutWhenLoss || '-'} / {timeoutLoss || '-'}
         </SubColumnValue>
       </div>
     </BlockContainer>

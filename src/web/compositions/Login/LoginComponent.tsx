@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Auth0Lock } from 'auth0-lock'
 
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 import { Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
@@ -17,7 +17,7 @@ import {
 } from '@core/utils/errorsConfig'
 import { Loading } from '@sb/components/index'
 
-@withTheme
+@withTheme()
 @withRouter
 class LoginClassComponent extends React.Component<{}> {
   lock = null

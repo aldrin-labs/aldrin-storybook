@@ -18,7 +18,7 @@ import { Logo } from './Congratulations.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 
-@withTheme
+@withTheme()
 class Congratulations extends React.Component<IProps, IState> {
   state: IState = {
     loading: false,

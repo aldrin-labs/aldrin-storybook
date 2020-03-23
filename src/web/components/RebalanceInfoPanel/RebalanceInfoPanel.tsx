@@ -23,7 +23,7 @@ import HelpTooltip from '@sb/components/TooltipCustom/HelpTooltip'
 
 import { slicePrice } from '../Utils/MoneyUtils/prepareMoneyViewForInfoPanel'
 
-@withTheme
+@withTheme()
 class RebalanceInfoPanel extends Component<IProps, IState> {
   state: IState = {
     isHiddenRebalanceDaysInput: 'hidden',

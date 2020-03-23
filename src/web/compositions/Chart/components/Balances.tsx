@@ -14,7 +14,7 @@ import { Key, FundsType } from '@core/types/ChartTypes'
 
 import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { importCoinIcon } from '@core/utils/MarketCapUtils'
+import { importCoinIcon, onErrorImportCoinUrl } from '@core/utils/MarketCapUtils'
 import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
 
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
@@ -222,6 +222,7 @@ export const Balances = ({
                     width={`1.7rem`}
                     height={`1.7rem`}
                     src={importCoinIcon(pair[0])}
+                    onError={onErrorImportCoinUrl}
                   />
                 </BalanceTitle>
                 <BalanceValues>
@@ -247,6 +248,7 @@ export const Balances = ({
                     width={`1.7rem`}
                     height={`1.7rem`}
                     src={importCoinIcon(pair[1])}
+                    onError={onErrorImportCoinUrl}
                   />
                 </BalanceTitle>
                 <BalanceValues>

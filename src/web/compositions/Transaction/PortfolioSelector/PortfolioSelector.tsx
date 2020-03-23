@@ -6,7 +6,7 @@ import { withTheme } from '@material-ui/styles'
 
 import { ReactSelectCustom } from '../TransactionPage.styles'
 
-@withTheme
+@withTheme()
 class PortfolioSelector extends Component {
   render() {
     const { getMyPortfoliosQuery, theme } = this.props

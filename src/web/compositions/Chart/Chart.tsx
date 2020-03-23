@@ -35,7 +35,7 @@ import {
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
 
-@withTheme
+@withTheme()
 class Chart extends React.Component<IProps, IState> {
   state: IState = {
     showTableOnMobile: 'ORDER',
@@ -273,10 +273,10 @@ export default withAuth(
     graphql(CHANGE_ACTIVE_EXCHANGE, {
       name: 'changeActiveExchangeMutation',
     }),
-    graphql(CHANGE_VIEW_MODE, {
-      name: 'changeViewModeMutation',
-    }),
-    graphql(ADD_CHART, { name: 'addChartMutation' }),
+    // graphql(CHANGE_VIEW_MODE, {
+    //   name: 'changeViewModeMutation',
+    // }),
+    // graphql(ADD_CHART, { name: 'addChartMutation' }),
     graphql(pairProperties, {
       name: 'pairPropertiesQuery',
       options: (props) => ({

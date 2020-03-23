@@ -13,7 +13,7 @@ import { getDataFromTree } from '@core/utils/chartPageUtils'
 import defaultRowRenderer from '../../utils'
 import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 
-@withTheme
+@withTheme()
 class OrderBookTable extends Component<IProps> {
   render() {
     const {

@@ -19,6 +19,6 @@ const TextInputLoader = (props) => (
   </div>
 )
 
-const ThemeWrapper = withTheme(TextInputLoader)
+const ThemeWrapper = withTheme()(TextInputLoader)
 
 export default ThemeWrapper

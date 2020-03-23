@@ -23,6 +23,7 @@ const ActionButton = withStyles(() => ({
   root: { padding: 6 },
 }))(IconButton)
 
+@withTheme()
 class LayoutSelectorComponent extends Component {
 
   state = {
@@ -214,4 +215,4 @@ class LayoutSelectorComponent extends Component {
   }
 }
 
-export default withTheme(LayoutSelectorComponent)
+export default LayoutSelectorComponent

@@ -78,7 +78,7 @@ const CloseButton = withStyles(canselStyeles)((props) => (
   </IconButton>
 ))
 
-@withTheme
+@withTheme()
 class PortfolioRebalancePage extends Component<IProps, IState> {
   state = {
     key: 0,
@@ -740,7 +740,7 @@ class PortfolioRebalancePage extends Component<IProps, IState> {
 // }
 
 export default compose(
-  withTheme,
+  withTheme(),
   queryRendererHoc({
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',

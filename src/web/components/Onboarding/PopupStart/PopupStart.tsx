@@ -284,7 +284,7 @@ class PopoupStartDataWrapper extends PureComponent<IProps> {
 
 export default compose(
   withSnackbar,
-  withTheme,
+  withTheme(),
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',

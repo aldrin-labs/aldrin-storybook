@@ -91,7 +91,7 @@ const OptimizedRow = memo(
 )
 
 // whole table with label and asks + bids
-@withTheme
+@withTheme()
 class OrderBookTable extends PureComponent {
   render() {
     const { title, data } = this.props

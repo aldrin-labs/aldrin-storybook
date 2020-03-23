@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/styles'
 import { ExchangeListContainer } from './SelectExchange.styles'
 import { IProps } from './SelectExchange.types'
 
-@withTheme
+@withTheme()
 export default class SelectExchange extends React.Component<IProps> {
   onSelectChange = async (
     optionSelected: { label: string; value: string } | null

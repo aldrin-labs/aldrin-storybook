@@ -786,10 +786,13 @@ const CustomTable = (props: Props) => {
                 return (
                   <React.Fragment key={row.id}>
                     <Component
-                      disableTouchListener
-                      disableFocusListener
-                      title={`Key: ${row.tooltipTitle}`}
-                      enterDelay={250}
+                      {...(row.tooltipTitle
+                        ? {
+                            disableFocusListener: true,
+                            title: `Key: ${row.tooltipTitle}`,
+                            enterDelay: 250,
+                          }
+                        : {})}
                     >
                       <TableRow
                         style={

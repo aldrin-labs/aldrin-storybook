@@ -38,6 +38,6 @@ const MyLoader = (props) => (
   </div>
 )
 
-const ThemeWrapper = withTheme(MyLoader)
+const ThemeWrapper = withTheme()(MyLoader)
 
 export default ThemeWrapper

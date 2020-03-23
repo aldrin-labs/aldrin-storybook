@@ -795,7 +795,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
                   <SubBlocksContainer>
                     <InputRowContainer>
-                      <TimeoutTitle>When lossable</TimeoutTitle>
+                      <TimeoutTitle>When in loss</TimeoutTitle>
                     </InputRowContainer>
                     <InputRowContainer>
                       <SCheckbox

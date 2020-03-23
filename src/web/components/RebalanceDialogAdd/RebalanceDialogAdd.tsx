@@ -66,7 +66,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions)
 
-@withTheme
+@withTheme()
 class RebalanceDialogAdd extends React.Component<IProps, IState> {
   state: IState = {
     open: false,

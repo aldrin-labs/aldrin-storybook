@@ -1,5 +1,14 @@
 import React from 'react'
-import { IconArrow } from '@sb/styles/cssUtils'
+import styled from 'styled-components'
+
+const IconArrow = styled.i`
+  padding: 0 5px;
+  font-size: 1rem;
+
+  position: relative;
+  top: -1px;
+  left: 0;
+`
 
 export const getArrowSymbol = (base: string, quote: string, left = false) => (
   <>
