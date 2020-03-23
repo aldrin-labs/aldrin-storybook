@@ -71,7 +71,10 @@ export const getOnboardingStatus = ({
     return false
   }
 
-  return instructions
+  // I've commented it here because we are not using onboarding.
+  // If we would use it, just oncomment the line above.
+  // return instructions
+  return false
 }
 
 class PortfolioComponent extends React.Component<IProps, IState> {
