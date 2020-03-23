@@ -17,7 +17,7 @@ const RawLoading = ({
   margin?: string | number
   centerAligned?: boolean
   theme?: Theme
-  style: CSSProperties
+  style?: CSSProperties
 }) => (
   <SpinnerContainer
     margin={margin}
