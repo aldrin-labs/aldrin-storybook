@@ -22,11 +22,12 @@ import Template from '@sb/components/Template/Template'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { client } from '@core/graphql/apolloClient'
+import { writeQueryData } from '@core/utils/TradingTable.utils'
 
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { sharePortfolio } from '@core/graphql/mutations/portfolio/sharePortfolio'
 import { getPageType } from '@core/graphql/queries/portfolio/main/getPageType'
-import { getFuturesOverview } from '@core/graphql/queries/portfolio/main/getFuturesOverview'
 
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
@@ -36,7 +37,9 @@ import { Grid, Divider } from '@material-ui/core'
 // import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
 import SharePortfolioPanel from '@core/components/SharePortfolioPanel/SharePortfolioPanel'
 import AccordionOverview from '@sb/components/AccordionOverview/AccordionOverView'
-import { CodeSharp } from '@material-ui/icons'
+import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+
+import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
@@ -49,6 +52,7 @@ const LayoutClearfixWrapper = styled.div`
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
+    stepIndex: 0,
     startDate: moment()
       .startOf('day')
       .subtract(7, 'days'),
@@ -56,9 +60,18 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     openSharePortfolioPopUp: false,
   }
 
-  // componentDidMount() {
-  //   this.props.portfolioAssetsRefetch()
-  // }
+  componentDidMount() {
+    client
+      .watchQuery({
+        query: GET_TOOLTIP_SETTINGS,
+        fetchPolicy: 'cache-only',
+      })
+      .subscribe({
+        next: ({ data }) => {
+          console.log('data', data)
+        },
+      })
+  }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
@@ -100,10 +113,46 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             portfolioMain: false,
           },
         },
+        update: () => {
+          console.log('set cache data')
+          writeQueryData(
+            GET_TOOLTIP_SETTINGS,
+            {},
+            {
+              getTooltipSettings: {
+                ...getTooltipSettings,
+                onboarding: {
+                  ...getTooltipSettings.onboarding,
+                },
+                portfolioMain: false,
+              },
+            }
+          )
+          client.queryManager.broadcastQueries()
+        },
       })
     }
+    console.log(data)
+    switch (data.action) {
+      case 'next': {
+        if (data.lifecycle === 'complete') {
+          this.setState((prev) => ({ stepIndex: prev.stepIndex + 1 }))
+        }
+        break
+      }
+      case 'prev': {
+        if (data.lifecycle === 'complete') {
+          this.setState((prev) => ({ stepIndex: prev.stepIndex - 1 }))
+        }
+        break
+      }
+    }
 
-    if (data.status === 'finished') {
+    if (
+      data.status === 'finished' ||
+      (data.status === 'stop' && data.index !== data.size - 1) ||
+      data.status === 'reset'
+    ) {
       const oldKey = this.state.key
       this.setState({ key: oldKey + 1 })
     }
@@ -120,11 +169,14 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       isUSDCurrently,
       portfolioAssets: assets,
       baseCoin,
+      getTooltipSettingsQuery: { getTooltipSettings },
       getPageTypeQuery: {
         portfolio: { pageType },
       },
       // getFuturesOverviewQuery: { getFuturesOverview },
     } = this.props
+
+    console.log('getTooltipSettings', getTooltipSettings.portfolioMain)
 
     const isSPOTCurrently = pageType === 'SPOT'
     // const { openSharePortfolioPopUp } = this.state
@@ -202,29 +254,30 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             }
           />
 
-          {/* <Joyride
+          <JoyrideOnboarding
             continuous={true}
+            stepIndex={this.state.stepIndex}
             showProgress={true}
             showSkipButton={true}
             steps={portfolioMainSteps}
-            // run={getTooltipSettings.portfolioMain}
-            run={false}
-            //callback={this.handleJoyrideCallback}
+            open={getTooltipSettings.portfolioMain}
+            // run={false}
+            handleJoyrideCallback={this.handleJoyrideCallback}
             key={this.state.key}
-            styles={{
-              options: {
-                backgroundColor: theme.palette.getContrastText(
-                  theme.palette.primary.main
-                ),
-                primaryColor: theme.palette.secondary.main,
-                textColor: theme.palette.primary.main,
-              },
-              tooltip: {
-                fontFamily: theme.typography.fontFamily,
-                fontSize: theme.typography.fontSize,
-              },
-            }}
-          /> */}
+            // styles={{
+            //   options: {
+            //     backgroundColor: theme.palette.getContrastText(
+            //       theme.palette.primary.main
+            //     ),
+            //     primaryColor: theme.palette.secondary.main,
+            //     textColor: theme.palette.primary.main,
+            //   },
+            //   tooltip: {
+            //     fontFamily: theme.typography.fontFamily,
+            //     fontSize: theme.typography.fontSize,
+            //   },
+            // }}
+          />
 
           {/* <SharePortfolioDialog
             portfolioKeys={portfolioKeys}

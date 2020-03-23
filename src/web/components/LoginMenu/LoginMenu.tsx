@@ -70,7 +70,7 @@ class LoginMenuComponent extends React.Component {
   }
 
   render() {
-    const { userName, handleLogout, updateTooltipSettings } = this.props
+    const { userName, handleLogout, updateTooltipSettings, openJoyride } = this.props
 
     const steps =
       this.props.location.pathname === '/portfolio/main'
@@ -160,7 +160,7 @@ class LoginMenuComponent extends React.Component {
             component={
               <IconButton
                 color="default"
-                onClick={this.handleClickOpen}
+                onClick={openJoyride}
                 component={(props) => <div {...props} />}
                 className="UserLink"
                 style={{
