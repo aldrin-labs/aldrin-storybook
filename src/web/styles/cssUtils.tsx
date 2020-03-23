@@ -89,52 +89,6 @@ export const LegendContainer = styled.div`
   transition: opacity 0.25s ease-out;
 `
 
-export const GlobalStyle = createGlobalStyle`
- 
- html {
-  font-size: 10px;
- }
- 
- &::-webkit-scrollbar {
-    width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
-    height: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(45, 49, 54, 0.1);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #165BE0;
-  }
-
-  .DateRangePicker {
-    display: block;
-  }
-  
-  .DateRangePicker_picker.DateRangePicker_picker__portal {
-    z-index: 200;
-  }
-  
-  @media only screen and (max-width: 1400px) {
-    html {
-      font-size: 8px;
-    }
-  }
-  @media only screen and (min-width: 1921px) {
-    html {
-      font-size: 15px;
-    }
-  }
-
-  @media only screen and (min-width: 2560px) {
-    html {
-      font-size: 18px;
-    }
-  }
-`
-
 export const SelectR = styled(ReactSelectComponent)`
   font-family: DM Sans;
   width: 100%;
@@ -253,15 +207,6 @@ export const GridProgressBarContainer = styled(Grid)`
 export const IconCircle = styled.i`
   padding-right: 5px;
   font-size: 1rem;
-`
-
-export const IconArrow = styled.i`
-  padding: 0 5px;
-  font-size: 1rem;
-
-  position: relative;
-  top: -1px;
-  left: 0;
 `
 
 export const GridTableTypographyContainer = styled(Grid)`

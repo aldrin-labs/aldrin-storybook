@@ -26,7 +26,7 @@ import { IProps, IState } from './CreatePortfolio.types'
 import Steps from '@sb/components/Onboarding/Steps/Steps'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 
-@withTheme
+@withTheme()
 class CreatePortfolio extends React.Component<IProps, IState> {
   state: IState = {
     open: false,

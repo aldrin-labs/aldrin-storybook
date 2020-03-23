@@ -30,7 +30,7 @@ import { ordersHealthcheck } from '@core/graphql/mutations/chart/ordersHealthche
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
-@withTheme
+@withTheme()
 class OpenOrdersTable extends React.PureComponent<IProps> {
   state: IState = {
     openOrdersProcessedData: [],

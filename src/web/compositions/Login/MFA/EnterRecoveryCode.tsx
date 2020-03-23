@@ -120,4 +120,4 @@ const EnterRecoveryCode = ({
   )
 }
 
-export default compose(withTheme)(EnterRecoveryCode)
+export default compose(withTheme())(EnterRecoveryCode)

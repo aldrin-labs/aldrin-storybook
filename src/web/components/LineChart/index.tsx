@@ -10,7 +10,6 @@ import {
 } from 'react-vis'
 import { Typography } from '@material-ui/core'
 
-import { formatDate } from '@core/utils/dateUtils'
 import { Props, State } from './LineChart.types'
 import {
   ContainerForCrossHairValues,
@@ -30,7 +29,7 @@ const axisStyle = {
   },
   text: { stroke: 'none', fill: '#4ed8da', fontWeight: 600, opacity: 1 },
 }
-@withTheme
+@withTheme()
 export default class LineChart extends React.Component<Props, State> {
   state: State = {
     crosshairValues: [],
@@ -127,7 +126,7 @@ export default class LineChart extends React.Component<Props, State> {
 
         <XAxis
           style={axisStyle}
-          tickFormat={(v: number) => formatDate(v, 'MMM DD')}
+          // tickFormat={(v: number) => formatDate(v, 'MMM DD')}
           tickLabelAngle={-90}
         />
 

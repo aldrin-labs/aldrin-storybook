@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 import { Grow, Slide, Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
@@ -23,7 +22,7 @@ import { syncStorage } from '@storage'
 const SignInLink = (props: any) => <Link to="/login" {...props} />
 const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 
-@withTheme
+@withTheme()
 @withRouter
 class LoginClassComponent extends React.Component<Props> {
   logout = async () => {

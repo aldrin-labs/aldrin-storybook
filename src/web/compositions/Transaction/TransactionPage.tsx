@@ -41,7 +41,7 @@ const TransactionsFuturesLink = (props: any) => (
   <Link to="/portfolio/transactions/futures" {...props} />
 )
 
-@withTheme
+@withTheme()
 @withRouter
 class TransactionPage extends React.PureComponent {
   state = {

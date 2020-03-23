@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import styled from 'styled-components'
-import { withTheme } from '@material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
 
 const RawLoading = ({
@@ -32,7 +32,7 @@ const RawLoading = ({
   </SpinnerContainer>
 )
 
-export const Loading = withTheme(RawLoading)
+export const Loading = withTheme()(RawLoading)
 
 const SpinnerContainer = styled.div`
   z-index: 10000;

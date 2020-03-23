@@ -45,7 +45,7 @@ import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { refetchOptionsOnKeyAddFunction } from '@sb/components/AddAccountDialog/AddAccountDialog.utils'
 
-@withTheme
+@withTheme()
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
@@ -621,7 +621,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             borderRadius: '1rem',
                             padding: '0 1rem',
                             background: '#fff',
-                            boxShadow: 'inset 2px 2px 4px rgba(0, 0, 0, 0.15)',
+                            boxShadow: 'inset .1rem .1rem .2rem rgba(0, 0, 0, 0.15)',
                           }}
                           inputStyles={{
                             marginLeft: '0',

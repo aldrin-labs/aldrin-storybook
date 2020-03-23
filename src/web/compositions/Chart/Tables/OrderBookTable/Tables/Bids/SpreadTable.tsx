@@ -17,7 +17,7 @@ import {
 import defaultRowRenderer from '../../utils'
 import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 
-@withTheme
+@withTheme()
 class SpreadTable extends Component<IProps> {
   render() {
     const {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Typography, Theme, ConsistentWith } from '@material-ui/core'
 import { withTheme, WithTheme } from '@material-ui/styles'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
 import {
   TypographyCustomHeading,
@@ -17,7 +17,7 @@ import { DialogContent } from '@sb/styles/Dialog.styles'
 import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import { IProps } from './BinanceAccountCreated.types'
 
-@withTheme
+@withTheme()
 @withRouter
 export default class BinanceAccountCreated extends React.Component<
   ConsistentWith<IProps, WithTheme<Theme>>

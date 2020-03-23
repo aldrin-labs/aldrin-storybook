@@ -16,4 +16,4 @@ const OvalSelector = ({ theme, selectStyles, isAccountSelect, ...props }) => {
   )
 }
 
-export default withTheme(OvalSelector)
+export default withTheme()(OvalSelector)

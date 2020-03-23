@@ -55,4 +55,4 @@ const ConfirmEmail = ({
   )
 }
 
-export default compose(withTheme)(ConfirmEmail)
+export default compose(withTheme())(ConfirmEmail)

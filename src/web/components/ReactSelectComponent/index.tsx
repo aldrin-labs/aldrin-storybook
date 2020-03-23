@@ -9,6 +9,7 @@ import { IProps } from './index.types'
 import { withTheme } from '@material-ui/styles'
 import ForwarderRefHoc from '@core/hoc/ForwarderRef'
 
+@withTheme()
 class ReactSelectComponent extends Component<IProps> {
   render() {
     const {
@@ -228,4 +229,4 @@ const DropdownIndicator = (props: object) =>
     </components.DropdownIndicator>
   )
 
-export default ForwarderRefHoc(withTheme(ReactSelectComponent))
+export default ForwarderRefHoc(ReactSelectComponent)

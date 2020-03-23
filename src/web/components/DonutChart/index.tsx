@@ -45,7 +45,7 @@ const DEFAULT_CHART_SIZE = {
 }
 const DEFAULT_COLOR_LEGEND_WIDTH = 150
 
-@withTheme
+@withTheme()
 class DonutChartWitoutTheme extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
     labelPlaceholder: '',

@@ -10,7 +10,6 @@ import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 
 import { handleLogout } from '@core/utils/loginUtils'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 import Hidden from '@material-ui/core/Hidden'
 
 import {
@@ -28,18 +27,23 @@ import Dropdown from '@sb/components/Dropdown'
 import MainIcon from '@material-ui/icons/LineStyle'
 import IndustryIcon from '@material-ui/icons/DonutLarge'
 import RebalanceIcon from '@material-ui/icons/SwapHoriz'
-import CorrelationIcon from '@material-ui/icons/ViewModule'
-import OptimizationIcon from '@material-ui/icons/Assessment'
 
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { GET_FOLLOWING_PORTFOLIOS } from '@core/graphql/queries/portfolio/getFollowingPortfolios'
-import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serverPortfolioQueries/getPortfolioMainQuery'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { LOGOUT } from '@core/graphql/mutations/login'
+
+import {
+  prefetchSpotTransactions,
+  prefetchFuturesTransactions,
+  prefetchRebalance,
+  prefetchSpotChart,
+  prefetchFuturesChart,
+  prefetchProfileAccounts
+} from '@core/utils/prefetching'
 
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -55,18 +59,10 @@ const Signals = (props: any) => <Link to="/signals" {...props} />
 
 const NavBarRaw: SFC<Props> = ({
   theme: {
-    palette: {
-      type,
-      common,
-      secondary: { main },
-      primary,
-      divider,
-    },
+    palette: { primary },
   },
-  theme,
   pathname,
   $hide = false,
-  marketTypeData,
   logoutMutation,
   persistorInstance,
   changeCurrencyPairMutation,
@@ -165,11 +161,20 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'P&L',
                     icon: <MainIcon fontSize="small" />,
                     to: '/portfolio/main',
+                    onMouseOver: () => {
+                      client.query({
+                        query: getPortfolioAssets,
+                        variables: { baseCoin: 'USDT', innerSettings: true },
+                      })
+                    },
                   },
                   {
                     text: 'Rebalance',
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
+                    onMouseOver: () => {
+                      prefetchRebalance()
+                    },
                   },
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
@@ -189,11 +194,17 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot',
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/spot',
+                    onMouseOver: () => {
+                      prefetchSpotTransactions()
+                    },
                   },
                   {
                     text: 'Futures',
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/futures',
+                    onMouseOver: () => {
+                      prefetchFuturesTransactions()
+                    },
                   },
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
@@ -242,21 +253,15 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Spot market',
                     to: '/chart/spot',
-                    // onClick: () => {
-                    //   client.writeData({
-                    //     data: {
-                    //       chart: {
-                    //         __typename: 'chart',
-                    //         marketType: 0,
-                    //       },
-                    //     },
-                    //   })
-                    // },
+                    onMouseOver: () => {
+                      prefetchSpotChart()
+                    },
                   },
                   {
                     text: 'Futures market',
                     to: '/chart/futures',
                     onClick: () => {
+                      prefetchFuturesChart()
                       changeCurrencyPairMutation({
                         variables: {
                           pairInput: {
@@ -313,6 +318,9 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Accounts',
                     to: '/profile/accounts',
+                    onMouseOver: () => {
+                      prefetchProfileAccounts()
+                    },
                   },
                   {
                     text: 'Settings',
@@ -373,7 +381,7 @@ const NavBarRaw: SFC<Props> = ({
 }
 
 export const NavBar = compose(
-  withTheme,
+  withTheme(),
   withApolloPersist,
   graphql(LOGOUT, { name: 'logoutMutation' }),
   graphql(GET_MARKET_TYPE, { name: 'marketTypeData' }),

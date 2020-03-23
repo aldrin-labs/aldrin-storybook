@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { FormattedDate } from 'react-intl'
 import styled from 'styled-components'
 
 import Paper from '@material-ui/core/Paper'
@@ -82,7 +81,7 @@ class KeysListComponent extends React.Component {
                     <KeyTableCell align="center">{exchange}</KeyTableCell>
                     <KeyTableCell align="center">{apiKey}</KeyTableCell>
                     <KeyTableCell align="center">
-                      {<FormattedDate value={'invalid date'} />}
+                      {'invalid date'}
                     </KeyTableCell>
                     <KeyTableCell>
                       {!(processing === null) && (processing ? 'Yes' : 'No')}
@@ -130,7 +129,7 @@ export default (props) => (
   <QueryRenderer
     component={KeysListComponent}
     query={getKeysQuery}
-    fetchPolicy="network-only"
+    fetchPolicy="cache-and-network"
     withOutSpinner={true}
     {...props}
   />

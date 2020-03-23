@@ -102,4 +102,4 @@ const EnterOtp = ({
   )
 }
 
-export default compose(withTheme)(EnterOtp)
+export default compose(withTheme())(EnterOtp)

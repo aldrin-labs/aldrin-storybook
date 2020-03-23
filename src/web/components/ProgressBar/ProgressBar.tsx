@@ -11,7 +11,7 @@ const styles = {
   },
 }
 
-@withTheme
+@withTheme()
 class ProgressBar extends PureComponent<IProps> {
   state: IState = {
     completed: 0,

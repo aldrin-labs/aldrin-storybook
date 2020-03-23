@@ -1,8 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import { ApolloError } from 'apollo-client';
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -44,14 +43,6 @@ const SimpleError = (props: { error?: ApolloError }) => (
   <Typography variant="h5" color="error">
     {props.error ? FormatErrorToUser(props.error.message) : 'Error'}
   </Typography>
-)
-const RefetchError = (props: { error?: ApolloError; refetch: Function }) => (
-  <Fragment>
-    <Typography variant="h5" color="error">
-      {props.error ? props.error.message : 'Error'}
-    </Typography>
-    <Button onClick={props.refetch}>Refetch data</Button>
-  </Fragment>
 )
 
 const ErrorWithoutMessage = () => (
