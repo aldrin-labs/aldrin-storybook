@@ -184,7 +184,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             </>
           )}
 
-          <Fade
+          {/* <Fade
             timeout={1500}
             in={isOnboardingEnabled}
             mountOnEnter={true}
@@ -198,7 +198,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               portfolioId={portfolioId}
               baseCoin={baseCoin}
             />
-          </Fade>
+          </Fade> */}
 
           {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
