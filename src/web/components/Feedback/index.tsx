@@ -53,7 +53,7 @@ export default class Feedback extends Component<{}, {}> {
         <Wrapper>
           <StyledButton
             onClick={() => {
-              this.openLink(config.bugLink)
+              this.openLink('https://t.me/CryptocurrenciesAi')
             }}
             style={{ color: '#7284A0', textTransform: 'capitalize' }}
           >
