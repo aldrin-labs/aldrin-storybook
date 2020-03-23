@@ -263,6 +263,8 @@ export const transformData = (
     autoRebalance: {
       render: (
         <AddAccountDialog
+          includeBrokerKey={true}
+          includeCommonBinanceKey={false}
           numberOfKeys={numberOfKeys}
           existCustomButton={true}
           CustomButton={({ handleClick }: { handleClick: () => void }) => (

@@ -236,14 +236,14 @@ class Accounts extends React.PureComponent<IProps> {
         </AccountsList>
         {isSidebar && (
           <>
-            <AddAccountButtonContainer>
+            {/* <AddAccountButtonContainer>
               <AddAccountDialog
                 numberOfKeys={keys.length}
                 baseCoin={baseCoin}
                 includeBrokerKey={false}
                 includeCommonBinanceKey={true}
               />
-            </AddAccountButtonContainer>
+            </AddAccountButtonContainer> */}
             <AddAccountButtonContainer>
               <AddAccountDialog
                 includeBrokerKey={true}
