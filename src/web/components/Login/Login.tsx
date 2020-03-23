@@ -41,7 +41,7 @@ class LoginClassComponent extends React.Component<Props> {
         login: { user },
       },
       location: { pathname },
-      openJoyride,
+      joyridePage,
     } = this.props
     const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
 
@@ -85,7 +85,11 @@ class LoginClassComponent extends React.Component<Props> {
           unmountOnExit={true}
           mountOnEnter={true}
         >
-          <LoginMenu openJoyride={openJoyride} handleLogout={this.logout} userName={user && user.name} />
+          <LoginMenu
+            joyridePage={joyridePage}
+            handleLogout={this.logout}
+            userName={user && user.name}
+          />
         </Slide>
       </SWrapper>
     )

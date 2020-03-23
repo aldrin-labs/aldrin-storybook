@@ -20,13 +20,6 @@ import {
   NavBreadcrumbTypography,
 } from './NavBar.styles'
 
-import { writeQueryData } from '@core/utils/TradingTable.utils'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
-import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { removeTypenameFromObject } from '@core/utils/apolloUtils'
-
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import Dropdown from '@sb/components/Dropdown'
@@ -73,8 +66,6 @@ const NavBarRaw: SFC<Props> = ({
   logoutMutation,
   persistorInstance,
   changeCurrencyPairMutation,
-  updateTooltipSettingsMutation,
-  getTooltipSettingsQuery: { getTooltipSettings },
 }) => {
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
@@ -83,36 +74,6 @@ const NavBarRaw: SFC<Props> = ({
 
   const logout = () => {
     handleLogout(logoutMutation, persistorInstance)
-  }
-
-  const openJoyride = () => {
-    updateTooltipSettingsMutation({
-      variables: {
-        settings: {
-          ...removeTypenameFromObject(getTooltipSettings),
-          onboarding: {
-            ...removeTypenameFromObject(getTooltipSettings.onboarding),
-          },
-          [joyridePage]: true,
-        },
-      },
-    })
-
-    writeQueryData(
-      GET_TOOLTIP_SETTINGS,
-      {},
-      {
-        getTooltipSettings: {
-          ...getTooltipSettings,
-          onboarding: {
-            ...getTooltipSettings.onboarding,
-          },
-          [joyridePage]: true,
-        },
-      }
-    )
-
-    client.queryManager.broadcastQueries()
   }
 
   if (/chart/.test(pathname)) {
@@ -417,7 +378,7 @@ const NavBarRaw: SFC<Props> = ({
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden> */}
               <Hidden only="xs">
-                <Login openJoyride={openJoyride} />
+                <Login joyridePage={joyridePage} />
               </Hidden>
             </Grid>
           </Grid>
@@ -434,13 +395,5 @@ export const NavBar = compose(
   graphql(GET_MARKET_TYPE, { name: 'marketTypeData' }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
-  }),
-  queryRendererHoc({
-    query: GET_TOOLTIP_SETTINGS,
-    name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'cache-and-network',
-  }),
-  graphql(updateTooltipSettings, {
-    name: 'updateTooltipSettingsMutation',
   })
 )(NavBarRaw)
