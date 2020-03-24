@@ -5,7 +5,7 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogContent from '@material-ui/core/DialogContent'
 import Dialog from '@material-ui/core/Dialog'
 import { compose, withStateHandlers } from 'recompose'
-import _ from 'lodash'
+import { isEmpty } from 'lodash-es'
 
 import { TradeButton } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
@@ -34,7 +34,7 @@ const PlaseOrderDialogComponent = ({ ...props }: IProps) => {
 
   const handleOpen = async () => {
     const result = await validateForm()
-    if (!_.isEmpty(touched) && _.isEmpty(result)) handleClickOpen()
+    if (!isEmpty(touched) && isEmpty(result)) handleClickOpen()
   }
 
   return (

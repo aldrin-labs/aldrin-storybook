@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
-import _ from 'lodash'
+import { uniqBy } from 'lodash-es'
 import {
   FlexibleXYPlot,
   VerticalBarSeries,
@@ -62,7 +62,7 @@ class BarChartComponent extends Component<IProps, IState> {
     })
 
     const uniqueXLengh = (data: any[]) => {
-      const uniqueLength = _.uniqBy(data, 'x').length
+      const uniqueLength = uniqBy(data, 'x').length
       if (uniqueLength > data.length)
         console.warn('There are duplicate x indices in the input')
       return uniqueLength

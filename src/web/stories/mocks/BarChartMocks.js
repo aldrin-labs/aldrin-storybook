@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { range } from 'lodash-es'
 
 export const basic = {
   staticRows: [
@@ -113,7 +113,7 @@ export const basic = {
 
 
 export const longMocksGenirator = (len) => 
-  _.range(len).map(value => (
+  range(len).map(value => (
       {
         'x': value,
         'y': Math.random()

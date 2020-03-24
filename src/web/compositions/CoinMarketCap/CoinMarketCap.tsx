@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { compose } from 'recompose'
-import { flattenDeep } from 'lodash'
+import { flattenDeep } from 'lodash-es'
 import { History } from 'history'
 import LazyLoad from 'react-lazyload'
 import { withTheme } from '@material-ui/styles'
