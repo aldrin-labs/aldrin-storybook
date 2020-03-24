@@ -1,4 +1,10 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
+import isLeapYear from 'dayjs/plugin/isLeapYear'
+import dayOfYear from 'dayjs/plugin/dayOfYear'
+
+dayjs.extend(isLeapYear)
+dayjs.extend(dayOfYear)
+
 
 const getSquareClassName = (
   count: number,
@@ -46,7 +52,7 @@ export const getCalendarData = (
       : futuresActionsByDay.actionsByDay
   }
 
-  const lastDayOfYear = moment(startDate).isLeapYear() ? 367 : 366
+  const lastDayOfYear = dayjs(startDate).isLeapYear() ? 367 : 366
   const mappedActionsArray = Array(lastDayOfYear)
     .fill(undefined)
     .map((el, index) => {
@@ -64,9 +70,9 @@ export const getCalendarData = (
         } = action
 
         return {
-          date: moment(+startDate)
+          date: dayjs(+startDate)
             .dayOfYear(action._id)
-            .add(2, 'hours') // react-heatmap-calendar doesn't handle time change during seasons
+            .add(2, 'hour') // react-heatmap-calendar doesn't handle time change during seasons
             .toDate(),
           transactionsCount,
           realizedPnlSum,
@@ -83,9 +89,9 @@ export const getCalendarData = (
       }
 
       return {
-        date: moment(+startDate)
+        date: dayjs(+startDate)
           .dayOfYear(index)
-          .add(2, 'hours') // react-heatmap-calendar doesn't handle time change during seasons
+          .add(2, 'hour') // react-heatmap-calendar doesn't handle time change during seasons
           .toDate(),
         transactionsCount: 0,
         realizedPnlSum: 0,

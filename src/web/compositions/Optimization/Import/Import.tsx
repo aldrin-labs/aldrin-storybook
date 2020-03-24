@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { isEqual } from 'lodash-es'
 import { ApolloConsumer } from 'react-apollo'
 import MdReplay from '@material-ui/icons/Replay'
@@ -8,6 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
+import moment from 'moment'
 
 import { RebalancePeriod } from './config'
 import { OPTIMIZE_PORTFOLIO } from '@core/graphql/queries/portfolio/optimization/optimizePortfolio'
@@ -175,7 +176,7 @@ export default class Import extends PureComponent<IProps> {
 
         if (backendResultParsed.new_start) {
           this.setState({
-            startDate: moment.unix(backendResultParsed.new_start),
+            startDate: dayjs.unix(backendResultParsed.new_start),
           })
           this.setDataFromResponse(backendResultParsed)
         }
@@ -394,8 +395,8 @@ export default class Import extends PureComponent<IProps> {
     const fontFamily = theme.typography.fontFamily
 
     // move it to the state
-    const maximumDate = moment()
-    const minimumDate = moment().subtract(3, 'years')
+    const maximumDate = dayjs()
+    const minimumDate = dayjs().subtract(3, 'year')
 
     const isAllOptionsFilled =
       baseCoin && rebalancePeriod && startDate && endDate
@@ -456,13 +457,13 @@ export default class Import extends PureComponent<IProps> {
                       fontFamily={fontFamily}
                     >
                       <DateRangePicker
-                        isOutsideRange={(date) =>
+                        isOutsideRange={(date: typeof dayjs) =>
                           date.isBefore(minimumDate, 'day') ||
                           date.isAfter(maximumDate, 'day')
                         }
-                        startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                        startDate={moment(+this.state.startDate)} // momentPropTypes.momentObj or null,
                         startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-                        endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                        endDate={moment(+this.state.endDate)} // momentPropTypes.momentObj or null,
                         endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
                         onDatesChange={this.onDatesChange} // PropTypes.func.isRequired,
                         focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,

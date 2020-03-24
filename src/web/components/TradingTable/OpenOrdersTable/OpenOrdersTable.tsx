@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
@@ -255,13 +255,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const newOrderFromSubscription =
       cachedOrder !== null
         ? data.getOpenOrderHistory.find((order: OrderType) => {
-            const orderDate = isNaN(moment(+order.timestamp).unix())
+            const orderDate = isNaN(dayjs(+order.timestamp).unix())
               ? order.timestamp
               : +order.timestamp
 
             const cachedOrderDate = Math.floor(+cachedOrder.timestamp / 1000)
 
-            return +moment(orderDate).format('X') > cachedOrderDate
+            return dayjs(orderDate).valueOf() > cachedOrderDate
           })
         : null
 

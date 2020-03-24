@@ -3,6 +3,7 @@ import { withTheme } from '@material-ui/styles'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
+import moment from 'moment'
 
 import { StyledWrapperForDateRangePicker } from '@sb/styles/cssUtils'
 
@@ -88,9 +89,9 @@ export default class TradingTitle extends React.PureComponent<IProps> {
               date.isBefore(minimumDate, 'day') ||
               date.isAfter(maximumDate, 'day')
             }
-            startDate={startDate} // momentPropTypes.momentObj or null,
+            startDate={moment(+startDate)} // momentPropTypes.momentObj or null,
             startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
-            endDate={endDate} // momentPropTypes.momentObj or null,
+            endDate={moment(+endDate)} // momentPropTypes.momentObj or null,
             endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
             onDatesChange={onDatesChange} // PropTypes.func.isRequired,
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,

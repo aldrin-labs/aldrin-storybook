@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { Grid } from '@material-ui/core'
 
@@ -10,8 +10,8 @@ import WinLossRatio from './WinLossRatio'
 class WinLossRatioWrapper extends Component {
   state = {
     periods: [
-      { id: 0, label: '30D', period: moment().subtract(1, 'months') },
-      { id: 1, label: '7D', period: moment().subtract(1, 'weeks') },
+      { id: 0, label: '30D', period: dayjs().subtract(1, 'month') },
+      { id: 1, label: '7D', period: dayjs().subtract(1, 'week') },
     ],
     period: null,
   }
@@ -47,7 +47,7 @@ class WinLossRatioWrapper extends Component {
           />
         </Grid>
 
-        <WinLossRatio startDate={period || periods[0]} endDate={moment()} />
+        <WinLossRatio startDate={period || periods[0]} endDate={dayjs()} />
       </WinLossRatioGrid>
     )
   }
