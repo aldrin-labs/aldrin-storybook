@@ -49,11 +49,13 @@ const Onboarding = ({
 
   return (
     <>
+    {/* This is very important <div> below, even it doesn't look like that, do not erase it because it's create magic for us */}
       <div> </div>
       <PopupStart
         open={currentStep === 'start'}
         baseCoin={baseCoin}
         setCurrentStep={setCurrentStep}
+        completeOnboarding={completeOnboarding}
       />
       {/* {currentStep === 'createPortfolio' && (
         <CreatePortfolio
@@ -64,7 +66,7 @@ const Onboarding = ({
           setCurrentStep={setCurrentStep}
         />
       )} */}
-      <AddAccountDialog
+      {/* <AddAccountDialog
         open={currentStep === 'addAccount'}
         numberOfKeys={numberOfKeys}
         onboarding={true}
@@ -79,8 +81,7 @@ const Onboarding = ({
       <BinanceAccountCreated
         open={currentStep === 'binanceAccountCreated'}
         completeOnboarding={completeOnboarding}
-      />{' '}
-      */}
+      /> */}
       {/* <BinanceAccountCreatedLater
           open={currentStep === 'binanceAccountCreatedLater'}
           completeOnboarding={completeOnboarding}
