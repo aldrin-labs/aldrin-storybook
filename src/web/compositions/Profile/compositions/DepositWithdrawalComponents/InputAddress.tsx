@@ -2,7 +2,7 @@ import React from 'react'
 import { InputAdornment } from '@material-ui/core'
 import {
   StyledInput,
-  StyledTypographyCaption,
+  StyledTypography,
 } from '../Withdrawal/Withdrawal.styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -49,10 +49,10 @@ const Balances = ({
   return (
     <>
       <StyledInput {...inputProps} />
-      <StyledTypographyCaption style={{ padding: '0.5rem 0'}}>
+      <StyledTypography style={{ padding: '0.5rem 0'}}>
         <span>Tag:{' '}</span>
         <span>{addressTag}</span>
-      </StyledTypographyCaption>
+      </StyledTypography>
     </>
   )
 }
