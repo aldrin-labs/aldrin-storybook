@@ -425,7 +425,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 >
                   <InputRowContainer padding=".2rem .5rem">
                     <TargetTitle style={{ width: '50%', paddingLeft: '2rem' }}>
-                      price
+                      profit
                     </TargetTitle>
                     <TargetTitle style={{ width: '50%' }}>quantity</TargetTitle>
                   </InputRowContainer>

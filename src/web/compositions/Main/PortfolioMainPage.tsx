@@ -1,5 +1,5 @@
 import React from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/styles'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
@@ -54,10 +54,10 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
     stepIndex: 0,
-    startDate: moment()
+    startDate: dayjs()
       .startOf('day')
-      .subtract(7, 'days'),
-    endDate: moment().endOf('day'),
+      .subtract(7, 'day'),
+    endDate: dayjs().endOf('day'),
     openSharePortfolioPopUp: false,
   }
 
@@ -77,7 +77,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   choosePeriod = (stringDate: string) => {
     this.setState({
       startDate: getEndDate(stringDate),
-      endDate: moment().endOf('day'),
+      endDate: dayjs().endOf('day'),
     })
   }
 

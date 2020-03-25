@@ -1,5 +1,5 @@
 import React from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Theme } from '@material-ui/core'
 
 export interface IProps {
@@ -12,7 +12,7 @@ export interface IProps {
   theme: Theme
   red: string
   saveButtonColor: string
-  timestampSnapshot: moment.Moment | null
+  timestampSnapshot: typeof dayjs | null
   onNewSnapshot: () => void
   tableData: any
 }
