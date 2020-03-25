@@ -67,14 +67,14 @@ export const getOnboardingStatus = ({
 }) => {
   const { instructions } = onboarding || { instructions: false }
 
-  if (keys.length > 1 || myPortfolios.length > 1) {
+  if (keys.length > 0 || myPortfolios.length > 1) {
     return false
   }
 
   // I've commented it here because we are not using onboarding.
   // If we would use it, just oncomment the line above.
   // return instructions
-  return false
+  return true
 }
 
 class PortfolioComponent extends React.Component<IProps, IState> {
@@ -150,7 +150,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const {
       getTooltipSettings: { onboarding },
     } = getTooltipSettingsQuery
-    
+
     const isOnboardingEnabled = getOnboardingStatus({
       keys,
       myPortfolios: data.myPortfolios,
@@ -184,8 +184,11 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             </>
           )}
 
-          {/* <Fade
-            timeout={1500}
+          <Fade
+            timeout={{
+              enter: 1500,
+              exit: 3500,
+            }}
             in={isOnboardingEnabled}
             mountOnEnter={true}
             unmountOnExit={true}
@@ -198,7 +201,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               portfolioId={portfolioId}
               baseCoin={baseCoin}
             />
-          </Fade> */}
+          </Fade>
 
           {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
