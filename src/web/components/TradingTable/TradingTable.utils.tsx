@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
+
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import ErrorIcon from '@material-ui/icons/Error'
 
@@ -122,14 +125,14 @@ export const getTableHead = (
     ? strategiesHistoryColumnNames
     : []
 
-export const getEndDate = (stringDate: string) =>
+export const getEndDate = (stringDate: string): typeof dayjs =>
   stringDate === '1Day'
-    ? moment().subtract(1, 'days')
+    ? dayjs().subtract(1, 'day')
     : stringDate === '1Week'
-    ? moment().subtract(1, 'weeks')
+    ? dayjs().subtract(1, 'week')
     : stringDate === '1Month'
-    ? moment().subtract(1, 'months')
-    : moment().subtract(3, 'months')
+    ? dayjs().subtract(1, 'month')
+    : dayjs().subtract(3, 'month')
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
@@ -498,15 +501,16 @@ export const combineActiveTradesTable = ({
       // sometimes in db we receive createdAt as timestamp
       // so using this we understand type of value that in createdAt field
 
-      const aDate = isNaN(moment(+a.createdAt).unix())
+      const aDate = isNaN(dayjs(+a.createdAt).unix())
         ? a.createdAt
         : +a.createdAt
 
-      const bDate = isNaN(moment(+b.createdAt).unix())
+      const bDate = isNaN(dayjs(+b.createdAt).unix())
         ? b.createdAt
         : +b.createdAt
 
-      return moment(bDate).format('X') - moment(aDate).format('X')
+      // TODO: maybe I'm wrong here with replacing with dayjs
+      return dayjs(bDate).valueOf()()- dayjs(aDate).valueOf()()
     })
     .map((el: OrderType, i: number, arr) => {
       const {
@@ -561,7 +565,7 @@ export const combineActiveTradesTable = ({
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
-      const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
+      const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
       const currentPrice = (
         prices.find(
           (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
@@ -891,7 +895,7 @@ export const combineStrategiesHistoryTable = (
 
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
-      const date = isNaN(moment(+createdAt).unix()) ? createdAt : +createdAt
+      const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
       const orderState = state ? state : enabled ? 'Waiting' : 'Closed'
       const isErrorInOrder = !!msg
 
@@ -1052,10 +1056,10 @@ export const combineStrategiesHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(date).format('ll'))}
+                {String(dayjs(date).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {moment(date).format('LT')}
+                {dayjs(date).format('LT')}
               </span>
             </div>
           ),
@@ -1282,10 +1286,10 @@ export const combineOpenOrdersTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('ll'))}
+                {String(dayjs(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {moment(timestamp).format('LT')}
+                {dayjs(timestamp).format('LT')}
               </span>
             </div>
           ),
@@ -1493,10 +1497,10 @@ export const combineOrderHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('ll'))}
+                {String(dayjs(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {moment(timestamp).format('LT')}
+                {dayjs(timestamp).format('LT')}
               </span>
             </div>
           ),
@@ -1638,10 +1642,10 @@ export const combineTradeHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block', color: '#16253D' }}>
-                {String(moment(timestamp).format('ll'))}
+                {String(dayjs(timestamp).format('ll'))}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {moment(timestamp).format('LT')}
+                {dayjs(timestamp).format('LT')}
               </span>
             </div>
           ),

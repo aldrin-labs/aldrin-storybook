@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getTimeZone } from '@core/utils/dateUtils'
@@ -135,8 +135,8 @@ class AccountsSlick extends Component {
 const APIWrapper = (props: any) => {
   const { baseCoin } = props
 
-  const endDate = +moment().endOf('day')
-  const startDate = +moment().subtract(1, 'weeks')
+  const endDate = +dayjs().endOf('day')
+  const startDate = +dayjs().subtract(1, 'week')
   const timezone = getTimeZone()
 
 

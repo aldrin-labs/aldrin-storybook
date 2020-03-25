@@ -1898,7 +1898,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         <TargetTitle
                           style={{ width: '50%', paddingLeft: '2rem' }}
                         >
-                          price
+                          profit
                         </TargetTitle>
                         <TargetTitle style={{ width: '50%' }}>
                           quantity

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
-import moment from 'moment'
+import dayjs from 'dayjs'
 // import { client } from '@core/graphql/apolloClient'
 import { getTimeZone } from '@core/utils/dateUtils'
 import CalendarHeatmap from 'react-calendar-heatmap'
@@ -39,7 +39,7 @@ const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
   return (
     <SquarePopup ref={inputRef}>
       <PopupDateContainer>
-        {moment(date).format('DD MMM, YYYY')}
+        {dayjs(date).format('DD MMM, YYYY')}
       </PopupDateContainer>
       <PopupInfoContainer>
         <PopupInfoBlock isFirstBlock>
@@ -154,8 +154,8 @@ class GitTransactionCalendar extends PureComponent<IProps> {
 
         <CalendarHeatmap
           className={classes.root}
-          startDate={moment(+startDate).subtract(1, 'seconds')}
-          endDate={moment(+endDate)}
+          startDate={dayjs(+startDate).subtract(1, 'second')}
+          endDate={dayjs(+endDate)}
           values={mappedActionsArray}
           gutterSize={3}
           classForValue={(value) => {

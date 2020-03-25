@@ -1,5 +1,8 @@
 import React from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
+
 import copy from 'clipboard-copy'
 
 import { TooltipCustom } from '@sb/components/index'
@@ -131,11 +134,11 @@ export const transformData = (
               }}
             >
               {String(
-                moment.unix(row.date / 1000).format('MMM, DD, YYYY')
+                dayjs.unix(row.date / 1000).format('MMM, DD, YYYY')
               ).replace(/-/g, '.')}
             </span>
             <span style={{ color: '#ABBAD1' }}>
-              {moment.unix(row.date / 1000).format('LT')}
+              {dayjs.unix(row.date / 1000).format('LT')}
             </span>
           </div>
         ),
@@ -153,11 +156,11 @@ export const transformData = (
               }}
             >
               {String(
-                moment.unix(row.lastUpdate).format('MMM, DD, YYYY')
+                dayjs.unix(row.lastUpdate).format('MMM, DD, YYYY')
               ).replace(/-/g, '.')}
             </span>
             <span style={{ color: '#ABBAD1' }}>
-              {moment.unix(row.lastUpdate).format('LT')}
+              {dayjs.unix(row.lastUpdate).format('LT')}
             </span>
           </div>
         ),

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import moment from 'moment'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import { DateRangePicker } from 'react-dates'
@@ -53,9 +54,9 @@ class ChoosePeriod extends Component<IProps> {
             showDefaultInputIcon={true}
             customArrowIcon="-"
             inputIconPosition="after"
-            startDate={startDate} // momentPropTypes.momentObj or null,
+            startDate={moment(+startDate)} // momentPropTypes.momentObj or null,
             startDateId="dateButtonId" // PropTypes.string.isRequired,
-            endDate={endDate} // momentPropTypes.momentObj or null,
+            endDate={moment(+endDate)} // momentPropTypes.momentObj or null,
             endDateId="dateButtonId" // PropTypes.string.isRequired,
             onDatesChange={onDatesChange} // PropTypes.func.isRequired,
             focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,

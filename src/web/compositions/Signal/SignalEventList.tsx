@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
@@ -81,13 +84,13 @@ const transformData = (data: any[]) => {
         render: row.t ? (
           <div>
             <span style={{ display: 'block' }}>
-              {String(moment(row.t / 1000000).format('DD-MM-YYYY')).replace(
+              {String(dayjs(row.t / 1000000).format('DD-MM-YYYY')).replace(
                 /-/g,
                 '.'
               )}
             </span>
             <span style={{ color: '#7284A0' }}>
-              {moment(row.t / 1000000).format('LT')}
+              {dayjs(row.t / 1000000).format('LT')}
             </span>
           </div>
         ) : (

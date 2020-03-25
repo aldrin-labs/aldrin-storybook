@@ -1,6 +1,6 @@
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { TradeType, Key } from '@core/types/ChartTypes'
 
@@ -11,18 +11,18 @@ export interface IProps extends WithTheme<Theme> {
   perPage: number
   handleTabChange: (tab: string | any) => void
   focusedInput: null | string
-  startDate: moment.Moment | null
-  endDate: moment.Moment | null
+  startDate: typeof dayjs | null
+  endDate: typeof dayjs | null
   activeDateButton: null | string
-  minimumDate: moment.Moment
-  maximumDate: moment.Moment
+  minimumDate: typeof dayjs
+  maximumDate: typeof dayjs
   onDateButtonClick: (stringDate: string) => void
   onDatesChange: ({
     startDate,
     endDate,
   }: {
-    startDate: moment.Moment | null
-    endDate: moment.Moment | null
+    startDate: typeof dayjs | null
+    endDate: typeof dayjs | null
   }) => void
   onFocusChange: (focusedInput: string) => void
   onClearDateButtonClick: () => void
