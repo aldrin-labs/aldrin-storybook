@@ -190,7 +190,7 @@ const APIWrapper = (props: any) => {
       query={getMyPortfoliosQuery}
       pollInterval={30000}
       variables={{ baseCoin: props.baseCoin }}
-      withOutSpinner={false}
+      withOutSpinner={true}
       {...props}
     />
   )
