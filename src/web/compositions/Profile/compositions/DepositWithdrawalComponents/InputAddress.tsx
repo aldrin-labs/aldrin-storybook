@@ -1,6 +1,8 @@
 import React from 'react'
+import { InputAdornment } from '@material-ui/core'
 import {
   StyledInput,
+  StyledTypographyCaption,
 } from '../Withdrawal/Withdrawal.styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -32,16 +34,27 @@ const Balances = ({
   const { data } = getDepositAddress || {
     data: {
       address: '-',
+      addressTag: '-',
     },
   }
 
-  const { address } = data || {
+  const { address, addressTag } = data || {
     address: '-',
+    addressTag: '-',
   }
+  const isAddressTagExists = addressTag !== '-'
 
   setCoinAddress(address)
 
-  return <StyledInput {...inputProps} />
+  return (
+    <>
+      <StyledInput {...inputProps} />
+      <StyledTypographyCaption style={{ padding: '0.5rem 0'}}>
+        <span>Tag:{' '}</span>
+        <span>{addressTag}</span>
+      </StyledTypographyCaption>
+    </>
+  )
 }
 
 const BalancesWrapper = (props) => {

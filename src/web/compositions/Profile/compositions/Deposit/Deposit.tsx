@@ -93,7 +93,7 @@ const Deposits = ({ ...props }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 {selectedCoin.label} address
               </StyledTypography>
-              <Grid style={{ height: '6rem', overflow: 'hidden' }}>
+              <Grid style={{ height: '7rem', overflow: 'hidden' }}>
                 <InputAddress autoComplete="off" value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
               </Grid>
               {/* <StyledInput
