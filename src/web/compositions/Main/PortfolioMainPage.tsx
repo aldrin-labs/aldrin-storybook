@@ -41,6 +41,12 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { finishJoyride } from '@core/utils/joyride'
+import {
+  prefetchFuturesTransactions,
+  prefetchSpotChart,
+  prefetchFuturesChart,
+  prefetchSpotTransactions,
+} from '@core/utils/prefetching'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
@@ -61,18 +67,15 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     openSharePortfolioPopUp: false,
   }
 
-  // componentDidMount() {
-  //   client
-  //     .watchQuery({
-  //       query: GET_TOOLTIP_SETTINGS,
-  //       fetchPolicy: 'cache-only',
-  //     })
-  //     .subscribe({
-  //       next: ({ data }) => {
-  //         console.log('data', data)
-  //       },
-  //     })
-  // }
+  componentDidMount() {
+    setTimeout(() => {
+      prefetchFuturesTransactions()
+    }, 15000)
+
+    setTimeout(() => {
+      prefetchSpotTransactions()
+    }, 30000)
+  }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
