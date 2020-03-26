@@ -97,6 +97,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         isSideNavOpen: activeKeys.length === 0,
       })
     }
+
+    
   }
 
   toggleWallets = () => {
@@ -160,33 +162,35 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     return (
       <>
         <PortfolioContainer>
-          <PortfolioSelector
-            portfolioId={portfolioId}
-            dustFilter={dustFilter}
-            keys={isRebalance ? rebalanceKeys : keys}
-            newWallets={wallets}
-            activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
-            activeWallets={activeWallets}
-            toggleWallets={this.toggleWallets}
-            isSideNavOpen={this.state.isSideNavOpen}
-            isRebalance={isRebalance}
-            isUSDCurrently={isUSDCurrently}
-            data={data}
-            baseCoin={baseCoin}
-          />
+          {hasKeysOrWallets && hasActiveKeysOrWallets && (
+            <PortfolioSelector
+              portfolioId={portfolioId}
+              dustFilter={dustFilter}
+              keys={isRebalance ? rebalanceKeys : keys}
+              newWallets={wallets}
+              activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+              activeWallets={activeWallets}
+              toggleWallets={this.toggleWallets}
+              isSideNavOpen={this.state.isSideNavOpen}
+              isRebalance={isRebalance}
+              isUSDCurrently={isUSDCurrently}
+              data={data}
+              baseCoin={baseCoin}
+            />
+          )}
 
-          {!hasKeysOrWallets && (
+          {/* {!hasKeysOrWallets && (
             <>
               <AddExchangeOrWalletWindow
                 theme={theme}
                 toggleWallets={this.toggleWallets}
               />
             </>
-          )}
+          )} */}
 
           <Fade
             timeout={{
-              enter: 1500,
+              enter: 0,
               exit: 3500,
             }}
             in={isOnboardingEnabled}
@@ -203,12 +207,12 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             />
           </Fade>
 
-          {hasKeysOrWallets && !hasActiveKeysOrWallets && (
+          {/* {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
               theme={theme}
               toggleWallets={this.toggleWallets}
             />
-          )}
+          )} */}
 
           {hasKeysOrWallets && hasActiveKeysOrWallets && (
             <PortfolioTable
@@ -247,19 +251,19 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 }
 
-const APIWrapper = (props: any) => {
-  return (
-    <QueryRenderer
-      {...props}
-      component={PortfolioComponent}
-      query={portfolioKeyAndWalletsQuery}
-      name={'data'}
-      variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
-      withOutSpinner={true}
-      fetchPolicy="cache-and-network"
-    />
-  )
-}
+// const APIWrapper = (props: any) => {
+//   return (
+//     <QueryRenderer
+//       {...props}
+//       component={PortfolioComponent}
+//       query={portfolioKeyAndWalletsQuery}
+//       name={'data'}
+//       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
+//       withOutSpinner={true}
+//       fetchPolicy="cache-and-network"
+//     />
+//   )
+// }
 
 export default compose(
   withAuth,
@@ -267,6 +271,15 @@ export default compose(
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
+  }),
+  queryRendererHoc({
+    query: portfolioKeyAndWalletsQuery,
+    name: 'data',
+    withOutSpinner: true,
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      baseCoin: props.baseData.portfolio.baseCoin,
+    }),
   }),
   queryRendererHoc({
     query: getDustFilter,
@@ -278,4 +291,4 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
   })
-)(APIWrapper)
+)(PortfolioComponent)

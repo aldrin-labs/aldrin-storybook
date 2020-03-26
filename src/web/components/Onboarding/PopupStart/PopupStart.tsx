@@ -311,52 +311,51 @@ const MinimalPopupStart = ({
                 )}
               </Grid>
             </Grid>
-            {errorDuringBrokerKeyGeneration ||
-              (errorDuringOnboarding && (
-                <>
-                  <Grid
-                    container
-                    justify="space-around"
-                    alignItems="center"
-                    style={{ padding: '2rem 0' }}
-                  >
-                    <Grid style={{ width: '47%', display: 'flex' }}>
-                      <BtnCustom
-                        onClick={async () => {
-                          setLoading(true)
-                          if (errorDuringBrokerKeyGeneration) {
-                            await handleGenerateBrokerKey()
-                            await handleFinishOnboarding()
-                          } else {
-                            await handleFinishOnboarding()
-                          }
-                          setLoading(false)
-                        }}
-                        disabled={loading}
-                        btnWidth={'100%'}
-                        borderRadius={'8px'}
-                        btnColor={'#165BE0'}
-                        fontSize="1.6rem"
-                        padding="1rem"
-                        height="auto"
-                        borderWidth="2px"
-                      >
-                        {loading ? (
-                          <Loading size={16} style={{ height: '1.6rem' }} />
-                        ) : (
-                          `Retry`
-                        )}
-                      </BtnCustom>
-                    </Grid>
+            {(errorDuringBrokerKeyGeneration || errorDuringOnboarding) && (
+              <>
+                <Grid
+                  container
+                  justify="space-around"
+                  alignItems="center"
+                  style={{ padding: '2rem 0' }}
+                >
+                  <Grid style={{ width: '47%', display: 'flex' }}>
+                    <BtnCustom
+                      onClick={async () => {
+                        setLoading(true)
+                        if (errorDuringBrokerKeyGeneration) {
+                          await handleGenerateBrokerKey()
+                          await handleFinishOnboarding()
+                        } else {
+                          await handleFinishOnboarding()
+                        }
+                        setLoading(false)
+                      }}
+                      disabled={loading}
+                      btnWidth={'100%'}
+                      borderRadius={'8px'}
+                      btnColor={'#165BE0'}
+                      fontSize="1.6rem"
+                      padding="1rem"
+                      height="auto"
+                      borderWidth="2px"
+                    >
+                      {loading ? (
+                        <Loading size={16} style={{ height: '1.6rem' }} />
+                      ) : (
+                        `Retry`
+                      )}
+                    </BtnCustom>
                   </Grid>
-                  <Grid style={{ textAlign: 'center' }}>
-                    <Typography>
-                      Something went wrong during creating your account, please
-                      retry.
-                    </Typography>
-                  </Grid>
-                </>
-              ))}
+                </Grid>
+                <Grid style={{ textAlign: 'center' }}>
+                  <Typography>
+                    Something went wrong during creating your account, please
+                    retry.
+                  </Typography>
+                </Grid>
+              </>
+            )}
           </Grid>
         </DialogContent>
       </DialogWrapper>
