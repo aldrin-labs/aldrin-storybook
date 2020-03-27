@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql } from 'react-apollo'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { Grid } from '@material-ui/core'
 import { compose } from 'recompose'
@@ -421,16 +422,14 @@ class SimpleTabs extends React.Component {
 
 export default compose(
   withErrorFallback,
-  graphql(isFuturesWarsKey, {
-    // query: isFuturesWarsKey,
-    options: (props) => ({
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        input: {
-          keyId: props.keyId,
-        },
+  queryRendererHoc({
+    query: isFuturesWarsKey,
+    name: 'isFuturesWarsKeyQuery',
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      input: {
+        keyId: props.keyId,
       },
     }),
-    name: 'isFuturesWarsKeyQuery',
   })
 )(SimpleTabs)

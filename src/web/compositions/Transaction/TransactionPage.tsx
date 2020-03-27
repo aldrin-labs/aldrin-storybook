@@ -2,7 +2,7 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { Link, withRouter } from 'react-router-dom'
 
-import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+import { getStartDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
 import { Grid } from '@material-ui/core'
@@ -88,7 +88,7 @@ class TransactionPage extends React.PureComponent {
       concreteDaySelected: false,
       tradeOrderHistoryDate: {
         activeDateButton: stringDate,
-        startDate: getEndDate(stringDate),
+        startDate: getStartDate(stringDate),
         endDate: dayjs().endOf('day'),
       },
     })
@@ -297,6 +297,7 @@ class TransactionPage extends React.PureComponent {
                 <GridTableContainer item xs={12} id="tableTransactions">
                   <TradeOrderHistory
                     includeExchangeTransactions={false}
+                    marketType={pageType === 'SPOT' ? 0 : 1}
                     includeTrades={pageType === 'SPOT'}
                     includeFutures={pageType === 'FUTURES'}
                     handleChangeShowHideOptions={

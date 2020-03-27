@@ -1,7 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
 
-import { getEndDate } from '../TradingTable.utils'
+import { getStartDate } from '../TradingTable.utils'
 import { IProps, IState } from './StrategiesHistoryDataWrapper.types'
 import StrategiesHistoryTable from './StrategiesHistoryTable'
 
@@ -12,7 +12,7 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
   state: IState = {
     page: 0,
     perPage: 30,
-    startDate: getEndDate('1Day'),
+    startDate: getStartDate('1Day'),
     endDate: dayjs().endOf('day'),
     focusedInput: null,
     activeDateButton: '1Day',
@@ -53,7 +53,7 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
     this.setState(
       {
         activeDateButton: stringDate,
-        startDate: getEndDate(stringDate),
+        startDate: getStartDate(stringDate),
         endDate: dayjs().endOf('day'),
       },
       () => {
@@ -67,7 +67,7 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
     endDate,
   }: {
     startDate: typeof dayjs | null
-    endDate: typeof dayjs| null
+    endDate: typeof dayjs | null
   }) => this.setState({ startDate, endDate })
 
   onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
