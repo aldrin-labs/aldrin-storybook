@@ -125,14 +125,26 @@ export const getTableHead = (
     ? strategiesHistoryColumnNames
     : []
 
-export const getEndDate = (stringDate: string): typeof dayjs =>
+export const getStartDate = (stringDate: string): number =>
   stringDate === '1Day'
-    ? dayjs().subtract(1, 'day')
+    ? dayjs()
+        .startOf('day')
+        .subtract(1, 'day')
+        .valueOf()
     : stringDate === '1Week'
-    ? dayjs().subtract(1, 'week')
+    ? dayjs()
+        .startOf('day')
+        .subtract(1, 'week')
+        .valueOf()
     : stringDate === '1Month'
-    ? dayjs().subtract(1, 'month')
-    : dayjs().subtract(3, 'month')
+    ? dayjs()
+        .startOf('day')
+        .subtract(1, 'month')
+        .valueOf()
+    : dayjs()
+        .startOf('day')
+        .subtract(3, 'month')
+        .valueOf()
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
@@ -510,7 +522,7 @@ export const combineActiveTradesTable = ({
         : +b.createdAt
 
       // TODO: maybe I'm wrong here with replacing with dayjs
-      return dayjs(bDate).valueOf()()- dayjs(aDate).valueOf()()
+      return dayjs(bDate).valueOf()() - dayjs(aDate).valueOf()()
     })
     .map((el: OrderType, i: number, arr) => {
       const {
