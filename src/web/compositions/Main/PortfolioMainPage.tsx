@@ -1,10 +1,10 @@
 import React from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/styles'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 // import Joyride from 'react-joyride'
-import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+import { getStartDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
@@ -41,6 +41,12 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 
 import { portfolioMainSteps } from '@sb/config/joyrideSteps'
 import { finishJoyride } from '@core/utils/joyride'
+import {
+  prefetchFuturesTransactions,
+  prefetchSpotChart,
+  prefetchFuturesChart,
+  prefetchSpotTransactions,
+} from '@core/utils/prefetching'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
@@ -54,30 +60,31 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
     stepIndex: 0,
-    startDate: moment()
+    startDate: dayjs()
       .startOf('day')
-      .subtract(7, 'days'),
-    endDate: moment().endOf('day'),
+      .subtract(7, 'day'),
+    endDate: dayjs().endOf('day'),
     openSharePortfolioPopUp: false,
   }
 
-  // componentDidMount() {
-  //   client
-  //     .watchQuery({
-  //       query: GET_TOOLTIP_SETTINGS,
-  //       fetchPolicy: 'cache-only',
-  //     })
-  //     .subscribe({
-  //       next: ({ data }) => {
-  //         console.log('data', data)
-  //       },
-  //     })
-  // }
+  componentDidMount() {
+    setTimeout(() => {
+      prefetchFuturesChart()
+    }, 15000)
+
+    setTimeout(() => {
+      prefetchFuturesTransactions()
+    }, 30000)
+
+    setTimeout(() => {
+      prefetchSpotTransactions()
+    }, 45000)
+  }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
-      startDate: getEndDate(stringDate),
-      endDate: moment().endOf('day'),
+      startDate: getStartDate(stringDate),
+      endDate: dayjs().endOf('day'),
     })
   }
 

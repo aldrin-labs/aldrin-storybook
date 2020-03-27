@@ -58,4 +58,5 @@ export const UserName = styled(Typography)`
 export const UserEmail = styled(Typography)`
   color: #7284a0;
   font-size: 1.2rem;
+  overflow: scroll;
 `

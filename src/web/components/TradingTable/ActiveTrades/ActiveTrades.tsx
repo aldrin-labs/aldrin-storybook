@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { client } from '@core/graphql/apolloClient'
@@ -345,13 +345,14 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     const newOrderFromSubscription =
       cachedOrder !== null
         ? data.getActiveStrategies.find((order: SmartOrder) => {
-            const orderDate = isNaN(moment(+order.createdAt).unix())
+            const orderDate = isNaN(dayjs(+order.createdAt).unix())
               ? order.createdAt
               : +order.createdAt
 
             const cachedOrderDate = Math.floor(+cachedOrder.createdAt / 1000)
 
-            return +moment(orderDate).format('X') > cachedOrderDate
+            // TODO: Maybe I'm wrong with replacing it here with dayjs
+            return dayjs(orderDate).valueOf() > cachedOrderDate
           })
         : null
     // here we receive order from cache (we write there order on mutation call)

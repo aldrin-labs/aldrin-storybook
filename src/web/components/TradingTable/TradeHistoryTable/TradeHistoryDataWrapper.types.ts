@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { Key } from '@core/types/ChartTypes'
 
@@ -26,8 +26,8 @@ export interface IState {
   perPage: number
   allKeys: boolean
   specificPair: string | boolean
-  startDate: moment.Moment | null
-  endDate: moment.Moment | null
+  startDate: typeof dayjs | null
+  endDate: typeof dayjs | null
   focusedInput: null | string
   activeDateButton: null | string
 }

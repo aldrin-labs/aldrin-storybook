@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Grid } from '@material-ui/core'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { IProps } from './ChooseYear.types'
 
@@ -25,8 +25,8 @@ class ChooseYear extends PureComponent<IProps> {
           <ChoosePeriodArrow
             onClick={() =>
               onDateButtonClick(
-                moment(`${activeDateButton}-01-01`)
-                  .subtract(1, 'years')
+                dayjs(`${activeDateButton}-01-01`)
+                  .subtract(1, 'year')
                   .toDate()
               )
             }
@@ -45,10 +45,10 @@ class ChooseYear extends PureComponent<IProps> {
           </ChoosePeriodButton>
           <ChoosePeriodArrow
             onClick={() => {
-              if (moment().year() !== Number(activeDateButton)) {
+              if (dayjs().year() !== Number(activeDateButton)) {
                 onDateButtonClick(
-                  moment(`${activeDateButton}-01-01`)
-                    .add(1, 'years')
+                  dayjs(`${activeDateButton}-01-01`)
+                    .add(1, 'year')
                     .toDate()
                 )
               }

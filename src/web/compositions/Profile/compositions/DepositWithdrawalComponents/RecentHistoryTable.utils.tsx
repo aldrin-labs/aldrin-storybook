@@ -1,6 +1,9 @@
 import React from 'react'
 import copy from 'clipboard-copy'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
+
 import { Theme, Grid } from '@material-ui/core'
 
 import copyIcon from '@icons/copy.svg'
@@ -57,10 +60,10 @@ export const combineRecentHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block' }}>
-                {String(moment(date * 1000).format('DD-MM-YYYY')).replace(/-/g, '.')}
+                {String(dayjs(date * 1000).format('DD-MM-YYYY')).replace(/-/g, '.')}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {moment(date * 1000).format('LT')}
+                {dayjs(date * 1000).format('LT')}
               </span>
             </div>
           ),

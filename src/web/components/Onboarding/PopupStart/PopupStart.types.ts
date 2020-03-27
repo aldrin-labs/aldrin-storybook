@@ -13,4 +13,11 @@ export interface IProps extends withSnackbarProps {
       }
     }
   }>
+  completeOnboarding: () => Promise<void>
+}
+
+export interface IState {
+  internalLoading: boolean
+  errorDuringBrokerKeyGeneration: boolean
+  errorDuringOnboarding: boolean
 }
