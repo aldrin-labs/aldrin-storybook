@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
 
 import QueryRenderer from '@core/components/QueryRenderer'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
+import { MySpotTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 import { TransactionActionsTypography } from './../TransactionsActionsStatistic/TransactionsActionsStatistic.styles'
 import {
   WinLossRatioNumber,
@@ -49,7 +49,7 @@ const WinLossRatioWithPeriod = ({ ...props }) => {
     <QueryRenderer
       component={WinLossRatio}
       withOutSpinner={true}
-      query={MyTradesQuery}
+      query={MySpotTradesQuery}
       name={`myTrades`}
       fetchPolicy="network-only"
       variables={{

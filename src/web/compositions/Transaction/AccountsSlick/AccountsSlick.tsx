@@ -9,7 +9,10 @@ import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serv
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { selectPortfolio } from '@core/graphql/mutations/portfolio/selectPortfolio'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
+import {
+  MySpotTradesQuery,
+  MyFuturesTradesQuery,
+} from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 
 // import Slider from 'react-slick'
 import { Query, Mutation } from 'react-apollo'
@@ -136,19 +139,31 @@ const APIWrapper = (props: any) => {
   const { baseCoin } = props
 
   const endDate = +dayjs().endOf('day')
-  const startDate = +dayjs().subtract(1, 'week')
+  const startDate = +dayjs()
+    .startOf('day')
+    .subtract(1, 'week')
   const timezone = getTimeZone()
-
 
   const queries = [
     { query: getPortfolioAssets, variables: { baseCoin, innerSettings: true } },
     { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
     {
-      query: MyTradesQuery,
+      query: MySpotTradesQuery,
       variables: {
         input: {
           page: 0,
-          perPage: 600,
+          perPage: 30,
+          startDate,
+          endDate,
+        },
+      },
+    },
+    {
+      query: MyFuturesTradesQuery,
+      variables: {
+        input: {
+          page: 0,
+          perPage: 30,
           startDate,
           endDate,
         },

@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/styles'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 // import Joyride from 'react-joyride'
-import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+import { getStartDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
@@ -69,17 +69,21 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
   componentDidMount() {
     setTimeout(() => {
-      prefetchFuturesTransactions()
+      prefetchFuturesChart()
     }, 15000)
 
     setTimeout(() => {
-      prefetchSpotTransactions()
+      prefetchFuturesTransactions()
     }, 30000)
+
+    setTimeout(() => {
+      prefetchSpotTransactions()
+    }, 45000)
   }
 
   choosePeriod = (stringDate: string) => {
     this.setState({
-      startDate: getEndDate(stringDate),
+      startDate: getStartDate(stringDate),
       endDate: dayjs().endOf('day'),
     })
   }
