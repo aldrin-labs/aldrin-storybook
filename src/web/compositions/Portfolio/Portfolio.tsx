@@ -67,11 +67,14 @@ export const getOnboardingStatus = ({
 }) => {
   const { instructions } = onboarding || { instructions: false }
 
-  if (keys.length > 1 || myPortfolios.length > 1) {
+  if (keys.length > 0 || myPortfolios.length > 1) {
     return false
   }
 
-  return instructions
+  // I've commented it here because we are not using onboarding.
+  // If we would use it, just oncomment the line above.
+  // return instructions
+  return true
 }
 
 class PortfolioComponent extends React.Component<IProps, IState> {
@@ -94,6 +97,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         isSideNavOpen: activeKeys.length === 0,
       })
     }
+
+    
   }
 
   toggleWallets = () => {
@@ -147,7 +152,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     const {
       getTooltipSettings: { onboarding },
     } = getTooltipSettingsQuery
-    
+
     const isOnboardingEnabled = getOnboardingStatus({
       keys,
       myPortfolios: data.myPortfolios,
@@ -157,32 +162,37 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     return (
       <>
         <PortfolioContainer>
-          <PortfolioSelector
-            portfolioId={portfolioId}
-            dustFilter={dustFilter}
-            keys={isRebalance ? rebalanceKeys : keys}
-            newWallets={wallets}
-            activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
-            activeWallets={activeWallets}
-            toggleWallets={this.toggleWallets}
-            isSideNavOpen={this.state.isSideNavOpen}
-            isRebalance={isRebalance}
-            isUSDCurrently={isUSDCurrently}
-            data={data}
-            baseCoin={baseCoin}
-          />
+          {hasKeysOrWallets && hasActiveKeysOrWallets && (
+            <PortfolioSelector
+              portfolioId={portfolioId}
+              dustFilter={dustFilter}
+              keys={isRebalance ? rebalanceKeys : keys}
+              newWallets={wallets}
+              activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
+              activeWallets={activeWallets}
+              toggleWallets={this.toggleWallets}
+              isSideNavOpen={this.state.isSideNavOpen}
+              isRebalance={isRebalance}
+              isUSDCurrently={isUSDCurrently}
+              data={data}
+              baseCoin={baseCoin}
+            />
+          )}
 
-          {!hasKeysOrWallets && (
+          {/* {!hasKeysOrWallets && (
             <>
               <AddExchangeOrWalletWindow
                 theme={theme}
                 toggleWallets={this.toggleWallets}
               />
             </>
-          )}
+          )} */}
 
           <Fade
-            timeout={1500}
+            timeout={{
+              enter: 0,
+              exit: 3500,
+            }}
             in={isOnboardingEnabled}
             mountOnEnter={true}
             unmountOnExit={true}
@@ -197,12 +207,12 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             />
           </Fade>
 
-          {hasKeysOrWallets && !hasActiveKeysOrWallets && (
+          {/* {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
               theme={theme}
               toggleWallets={this.toggleWallets}
             />
-          )}
+          )} */}
 
           {hasKeysOrWallets && hasActiveKeysOrWallets && (
             <PortfolioTable
@@ -241,19 +251,19 @@ class PortfolioComponent extends React.Component<IProps, IState> {
   }
 }
 
-const APIWrapper = (props: any) => {
-  return (
-    <QueryRenderer
-      {...props}
-      component={PortfolioComponent}
-      query={portfolioKeyAndWalletsQuery}
-      name={'data'}
-      variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
-      withOutSpinner={true}
-      fetchPolicy="cache-and-network"
-    />
-  )
-}
+// const APIWrapper = (props: any) => {
+//   return (
+//     <QueryRenderer
+//       {...props}
+//       component={PortfolioComponent}
+//       query={portfolioKeyAndWalletsQuery}
+//       name={'data'}
+//       variables={{ baseCoin: props.baseData.portfolio.baseCoin }}
+//       withOutSpinner={true}
+//       fetchPolicy="cache-and-network"
+//     />
+//   )
+// }
 
 export default compose(
   withAuth,
@@ -261,6 +271,15 @@ export default compose(
   queryRendererHoc({
     query: GET_BASE_COIN,
     name: 'baseData',
+  }),
+  queryRendererHoc({
+    query: portfolioKeyAndWalletsQuery,
+    name: 'data',
+    withOutSpinner: true,
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      baseCoin: props.baseData.portfolio.baseCoin,
+    }),
   }),
   queryRendererHoc({
     query: getDustFilter,
@@ -272,4 +291,4 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
   })
-)(APIWrapper)
+)(PortfolioComponent)

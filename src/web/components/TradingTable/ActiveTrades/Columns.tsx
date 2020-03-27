@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
+
 import { InputTitle } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
@@ -339,15 +342,15 @@ export const StopLossColumn = ({
 export const DateColumn = ({ createdAt }) => {
   return (
     <BlockContainer style={{ position: 'absolute', right: '0' }}>
-      {moment(createdAt)
+      {dayjs(createdAt)
         .format('LT')
         .toLowerCase() !== 'invalid date' ? (
         <div style={{ textAlign: 'right' }}>
           <span style={{ display: 'block', color: '#16253D' }}>
-            {String(moment(createdAt).format('ll'))}
+            {String(dayjs(createdAt).format('ll'))}
           </span>
           <span style={{ color: '#7284A0' }}>
-            {moment(createdAt).format('LT')}
+            {dayjs(createdAt).format('LT')}
           </span>
         </div>
       ) : (

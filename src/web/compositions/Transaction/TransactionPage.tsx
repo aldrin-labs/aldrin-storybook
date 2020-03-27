@@ -1,8 +1,8 @@
 import React from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Link, withRouter } from 'react-router-dom'
 
-import { getEndDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+import { getStartDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
 import { Grid } from '@material-ui/core'
@@ -52,16 +52,16 @@ class TransactionPage extends React.PureComponent {
     key: 0,
     stepIndex: 0,
     gitCalendarDate: {
-      startDate: moment().startOf('year'),
-      endDate: moment().endOf('year'),
-      activeDateButton: moment().format('YYYY'),
+      startDate: dayjs().startOf('year'),
+      endDate: dayjs().endOf('year'),
+      activeDateButton: dayjs().format('YYYY'),
     },
 
     tradeOrderHistoryDate: {
-      startDate: moment()
+      startDate: dayjs()
         .startOf('day')
-        .subtract(7, 'days'),
-      endDate: moment().endOf('day'),
+        .subtract(7, 'day'),
+      endDate: dayjs().endOf('day'),
       activeDateButton: '1Week',
       focusedInput: null,
     },
@@ -88,8 +88,8 @@ class TransactionPage extends React.PureComponent {
       concreteDaySelected: false,
       tradeOrderHistoryDate: {
         activeDateButton: stringDate,
-        startDate: getEndDate(stringDate),
-        endDate: moment().endOf('day'),
+        startDate: getStartDate(stringDate),
+        endDate: dayjs().endOf('day'),
       },
     })
   }
@@ -98,8 +98,8 @@ class TransactionPage extends React.PureComponent {
     startDate,
     endDate,
   }: {
-    startDate: moment.Moment | null
-    endDate: moment.Moment | null
+    startDate: typeof dayjs | null
+    endDate: typeof dayjs | null
   }) =>
     this.setState((prevState) => ({
       ...prevState,
@@ -115,9 +115,9 @@ class TransactionPage extends React.PureComponent {
       (prevState) => ({
         ...prevState,
         gitCalendarDate: {
-          activeDateButton: moment(stringDate).format('YYYY'),
-          startDate: moment(stringDate).startOf('year'),
-          endDate: moment(stringDate).endOf('year'),
+          activeDateButton: dayjs(stringDate).format('YYYY'),
+          startDate: dayjs(stringDate).startOf('year'),
+          endDate: dayjs(stringDate).endOf('year'),
         },
       }),
       () => {
@@ -136,8 +136,8 @@ class TransactionPage extends React.PureComponent {
       concreteDaySelected: true,
       tradeOrderHistoryDate: {
         ...prevState.tradeOrderHistoryDate,
-        startDate: moment(value.date).startOf('day'),
-        endDate: moment(value.date).endOf('day'),
+        startDate: dayjs(value.date).startOf('day'),
+        endDate: dayjs(value.date).endOf('day'),
       },
     }))
   }
@@ -297,6 +297,7 @@ class TransactionPage extends React.PureComponent {
                 <GridTableContainer item xs={12} id="tableTransactions">
                   <TradeOrderHistory
                     includeExchangeTransactions={false}
+                    marketType={pageType === 'SPOT' ? 0 : 1}
                     includeTrades={pageType === 'SPOT'}
                     includeFutures={pageType === 'FUTURES'}
                     handleChangeShowHideOptions={

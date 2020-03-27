@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getTimeZone } from '@core/utils/dateUtils'
@@ -9,7 +9,10 @@ import { getPortfolioMainQuery } from '@core/graphql/queries/portfolio/main/serv
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
 import { selectPortfolio } from '@core/graphql/mutations/portfolio/selectPortfolio'
 import { getCalendarActions } from '@core/graphql/queries/portfolio/main/getCalendarActions'
-import { MyTradesQuery } from '@core/graphql/queries/portfolio/main/MyTradesQuery'
+import {
+  MySpotTradesQuery,
+  MyFuturesTradesQuery,
+} from '@core/graphql/queries/portfolio/main/MyTradesQuery'
 
 // import Slider from 'react-slick'
 import { Query, Mutation } from 'react-apollo'
@@ -135,20 +138,32 @@ class AccountsSlick extends Component {
 const APIWrapper = (props: any) => {
   const { baseCoin } = props
 
-  const endDate = +moment().endOf('day')
-  const startDate = +moment().subtract(1, 'weeks')
+  const endDate = +dayjs().endOf('day')
+  const startDate = +dayjs()
+    .startOf('day')
+    .subtract(1, 'week')
   const timezone = getTimeZone()
-
 
   const queries = [
     { query: getPortfolioAssets, variables: { baseCoin, innerSettings: true } },
     { query: portfolioKeyAndWalletsQuery, variables: { baseCoin } },
     {
-      query: MyTradesQuery,
+      query: MySpotTradesQuery,
       variables: {
         input: {
           page: 0,
-          perPage: 600,
+          perPage: 30,
+          startDate,
+          endDate,
+        },
+      },
+    },
+    {
+      query: MyFuturesTradesQuery,
+      variables: {
+        input: {
+          page: 0,
+          perPage: 30,
           startDate,
           endDate,
         },
@@ -190,7 +205,7 @@ const APIWrapper = (props: any) => {
       query={getMyPortfoliosQuery}
       pollInterval={30000}
       variables={{ baseCoin: props.baseCoin }}
-      withOutSpinner={false}
+      withOutSpinner={true}
       {...props}
     />
   )

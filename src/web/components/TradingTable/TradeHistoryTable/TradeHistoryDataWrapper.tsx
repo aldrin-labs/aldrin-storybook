@@ -1,7 +1,7 @@
 import React from 'react'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
-import { getEndDate } from '../TradingTable.utils'
+import { getStartDate } from '../TradingTable.utils'
 import { IProps, IState } from './TradeHistoryDataWrapper.types'
 import TradeHistoryTable from './TradeHistoryTable'
 
@@ -12,8 +12,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
   state: IState = {
     page: 0,
     perPage: 30,
-    startDate: getEndDate('1Day'),
-    endDate: moment().endOf('day'),
+    startDate: getStartDate('1Day'),
+    endDate: dayjs().endOf('day'),
     focusedInput: null,
     activeDateButton: '1Day',
     allKeys: true,
@@ -53,8 +53,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     this.setState(
       {
         activeDateButton: stringDate,
-        startDate: getEndDate(stringDate),
-        endDate: moment().endOf('day'),
+        startDate: getStartDate(stringDate),
+        endDate: dayjs().endOf('day'),
       },
       () => {
         // TODO: there should be mutation for search:
@@ -66,8 +66,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     startDate,
     endDate,
   }: {
-    startDate: moment.Moment | null
-    endDate: moment.Moment | null
+    startDate: typeof dayjs | null
+    endDate: typeof dayjs | null
   }) => this.setState({ startDate, endDate })
 
   onFocusChange = (focusedInput: string) => this.setState({ focusedInput })
@@ -102,8 +102,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       specificPair,
     } = this.state
 
-    const maximumDate = moment().endOf('day')
-    const minimumDate = moment().subtract(3, 'years')
+    const maximumDate = dayjs().endOf('day')
+    const minimumDate = dayjs().subtract(3, 'year')
 
     return (
       <TradeHistoryTable

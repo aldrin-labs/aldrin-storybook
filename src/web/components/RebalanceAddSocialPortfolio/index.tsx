@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import _ from 'lodash'
+import { uniqBy } from 'lodash-es'
 
 import { Grid } from '@material-ui/core'
 import {
@@ -23,7 +23,7 @@ const transformData = (portfolios) =>
     fromMarket: !isPrivate,
     perform: 1.46,
     assets: portfolioAssets.length,
-    exchanges: _.uniqBy(portfolioAssets, (asset) => asset.where).length,
+    exchanges: uniqBy(portfolioAssets, (asset) => asset.where).length,
   }))
 
 const CustomContentList = ({ data }) => (
