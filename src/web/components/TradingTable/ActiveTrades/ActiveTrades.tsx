@@ -680,7 +680,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           expandedRows={expandedRows}
           onChange={this.setExpandedRows}
           rowsWithHover={false}
-          style={{ borderRadius: 0, height: '100%', overflowX: 'hidden' }}
+          style={{ borderRadius: 0, height: '100%', overflowX: 'scroll' }}
           stylesForTable={{ backgroundColor: '#fff' }}
           defaultSort={{
             sortColumn: 'date',

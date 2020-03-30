@@ -11,6 +11,10 @@ export const MainContainer = styled.div`
 
 export const GlobalStyles = createGlobalStyle`
 
+html {
+    font-size: 10px;
+  }
+
 @media only screen and (max-width: 1720px) {
   html {
     font-size: 9px;
@@ -29,20 +33,21 @@ export const GlobalStyles = createGlobalStyle`
   }
 }
 
-@media only screen and (max-width: 1200px) {
-  html {
-    font-size: 6px;
-  }
-}
 @media only screen and (max-width: 1100px) {
   html {
-    font-size: 5px;
+    font-size: 6px !important;
   }
 }
 
+/* @media only screen and (max-width: 1100px) {
+  html {
+    font-size: 5px;
+  }
+} */
+
 @media only screen and (min-width: 1921px) {
   html {
-    font-size: 12px;
+    font-size: 12px !important;
   }
 }
 
