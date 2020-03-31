@@ -591,7 +591,9 @@ export const combineActiveTradesTable = ({
       const keyName = keys[accountId]
 
       const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' && !entryPrice ? price : entryPrice
+        !entryDeviation && orderType === 'limit' && !entryPrice
+          ? price
+          : entryPrice
 
       const profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) *
@@ -693,7 +695,11 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            state && activeOrderStatus !== 'Preparing' && state !== 'WaitForEntry' && state !== 'TrailingEntry' && !!currentPrice ? (
+            state &&
+            activeOrderStatus !== 'Preparing' &&
+            state !== 'WaitForEntry' &&
+            state !== 'TrailingEntry' &&
+            !!currentPrice ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >
@@ -903,7 +909,7 @@ export const combineStrategiesHistoryTable = (
 
       const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
-        state: '-',
+        state: '',
         msg: null,
         exitPrice: 0,
       }
@@ -917,7 +923,9 @@ export const combineStrategiesHistoryTable = (
       let isErrorInOrder = !!msg
 
       const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' && !entryPrice ? price : entryPrice
+        !entryDeviation && orderType === 'limit' && !entryPrice
+          ? price
+          : entryPrice
       // ? entryPrice
       // : !!entryDeviation
       // ? activatePrice * (1 + entryDeviation / leverage / 100)
@@ -932,11 +940,24 @@ export const combineStrategiesHistoryTable = (
       })
 
       if (isErrorInOrder && profitAmount !== 0) {
-        orderState = 'End'
+        orderState = 'Closed'
         isErrorInOrder = false
-      } else if (profitAmount === 0 && !exitPrice && !enabled) {
+      }
+
+      if (!enabled && (state !== 'TrailingEntry' && state !== 'WaitForEntry')) {
+        orderState = 'Closed'
+      }
+
+      if (
+        profitAmount === 0 &&
+        !exitPrice &&
+        !enabled &&
+        (!state || state === 'TrailingEntry' || state === 'WaitForEntry')
+      ) {
         orderState = 'Canceled'
       }
+
+      if (orderState === 'End') orderState = 'Closed'
 
       return {
         id: el._id,
@@ -1049,7 +1070,13 @@ export const combineStrategiesHistoryTable = (
                 textTransform: 'none',
                 alignItems: 'center',
               }}
-              color={state ? (!isErrorInOrder && orderState !== 'Canceled' ? green.new : red.new) : red.new}
+              color={
+                state
+                  ? !isErrorInOrder && orderState !== 'Canceled'
+                    ? green.new
+                    : red.new
+                  : red.new
+              }
             >
               {isErrorInOrder ? 'Error' : orderState}
               {isErrorInOrder ? (
