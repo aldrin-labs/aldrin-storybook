@@ -897,10 +897,11 @@ export const combineStrategiesHistoryTable = (
         },
       } = el
 
-      const { entryPrice, state, msg } = el.state || {
+      const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
         state: '-',
         msg: null,
+        exitPrice: 0,
       }
 
       const keyName = keys[accountId]
@@ -908,8 +909,8 @@ export const combineStrategiesHistoryTable = (
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-      const orderState = state ? state : enabled ? 'Waiting' : 'Closed'
-      const isErrorInOrder = !!msg
+      let orderState = state ? state : enabled ? 'Waiting' : 'Closed'
+      let isErrorInOrder = !!msg
 
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' && !entryPrice ? price : entryPrice
@@ -925,6 +926,11 @@ export const combineStrategiesHistoryTable = (
         amount,
         leverage,
       })
+
+      if (isErrorInOrder && profitAmount !== 0) {
+        orderState = 'End'
+        isErrorInOrder = false
+      }
 
       return {
         id: el._id,
