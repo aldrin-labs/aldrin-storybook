@@ -689,7 +689,7 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            state && state !== 'WaitForEntry' && state !== 'TrailingEntry' && !!currentPrice ? (
+            state && activeOrderStatus !== 'Preparing' && state !== 'WaitForEntry' && state !== 'TrailingEntry' && !!currentPrice ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >
