@@ -113,6 +113,8 @@ const NavBarRaw: SFC<Props> = ({
     joyridePage = 'portfolioMain'
   }
 
+  const notAuthPages = page === 'Log in' || page === 'Sign up'
+
   return (
     <Nav
       variant={{ hide: $hide, background: primary.main }}
@@ -170,6 +172,10 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <MainIcon fontSize="small" />,
                     to: '/portfolio/main',
                     onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       client.query({
                         query: getPortfolioAssets,
                         variables: { baseCoin: 'USDT', innerSettings: true },
@@ -181,6 +187,10 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
                     onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       prefetchRebalance()
                     },
                   },
@@ -203,6 +213,10 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/spot',
                     onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       prefetchSpotTransactions()
                     },
                   },
@@ -211,6 +225,10 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/futures',
                     onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       prefetchFuturesTransactions()
                     },
                   },
@@ -262,6 +280,10 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot market',
                     to: '/chart/spot',
                     onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       prefetchSpotChart()
                     },
                   },
@@ -269,6 +291,10 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Futures market',
                     to: '/chart/futures',
                     onClick: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       prefetchFuturesChart()
                       changeCurrencyPairMutation({
                         variables: {
@@ -290,6 +316,10 @@ const NavBarRaw: SFC<Props> = ({
                     component={Market}
                     pathname={pathname}
                     onMouseOver={() => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       client.query({
                         query: marketsQuery,
                       })
@@ -307,6 +337,10 @@ const NavBarRaw: SFC<Props> = ({
                     component={Signals}
                     pathname={pathname}
                     onMouseOver={() => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       client.query({
                         query: GET_FOLLOWING_SIGNALS_QUERY,
                       })
@@ -327,6 +361,10 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Accounts',
                     to: '/profile/accounts',
                     onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
                       prefetchProfileAccounts()
                     },
                   },
