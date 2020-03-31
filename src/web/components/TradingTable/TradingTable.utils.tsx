@@ -522,7 +522,7 @@ export const combineActiveTradesTable = ({
         : +b.createdAt
 
       // TODO: maybe I'm wrong here with replacing with dayjs
-      return dayjs(bDate).valueOf()() - dayjs(aDate).valueOf()()
+      return dayjs(bDate).valueOf() - dayjs(aDate).valueOf()
     })
     .map((el: OrderType, i: number, arr) => {
       const {
