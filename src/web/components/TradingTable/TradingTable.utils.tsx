@@ -934,6 +934,8 @@ export const combineStrategiesHistoryTable = (
       if (isErrorInOrder && profitAmount !== 0) {
         orderState = 'End'
         isErrorInOrder = false
+      } else if (profitAmount === 0 && !exitPrice && !enabled) {
+        orderState = 'Canceled'
       }
 
       return {
@@ -1047,7 +1049,7 @@ export const combineStrategiesHistoryTable = (
                 textTransform: 'none',
                 alignItems: 'center',
               }}
-              color={state ? (!isErrorInOrder ? green.new : red.new) : red.new}
+              color={state ? (!isErrorInOrder && orderState !== 'Canceled' ? green.new : red.new) : red.new}
             >
               {isErrorInOrder ? 'Error' : orderState}
               {isErrorInOrder ? (
