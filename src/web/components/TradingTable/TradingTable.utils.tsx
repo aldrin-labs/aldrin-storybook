@@ -223,7 +223,7 @@ const getActiveOrderStatus = ({
   state,
   profitPercentage,
 }: IStatus): [
-  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing',
+  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
 ] => {
   if (state && state.state && state.state !== 'WaitForEntry') {
@@ -231,6 +231,10 @@ const getActiveOrderStatus = ({
 
     if (status === 'TrailingEntry') {
       return ['Trailing entry', '#29AC80']
+    }
+
+    if (status === 'Timeout') {
+      return ['Timeout', '#29AC80']
     }
 
     // if (status === 'InEntry') {
