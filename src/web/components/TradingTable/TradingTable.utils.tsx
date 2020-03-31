@@ -587,7 +587,7 @@ export const combineActiveTradesTable = ({
       const keyName = keys[accountId]
 
       const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' ? price : entryPrice
+        !entryDeviation && orderType === 'limit' && !entryPrice ? price : entryPrice
 
       const profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) *
@@ -912,7 +912,7 @@ export const combineStrategiesHistoryTable = (
       const isErrorInOrder = !!msg
 
       const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' ? price : entryPrice
+        !entryDeviation && orderType === 'limit' && !entryPrice ? price : entryPrice
       // ? entryPrice
       // : !!entryDeviation
       // ? activatePrice * (1 + entryDeviation / leverage / 100)
