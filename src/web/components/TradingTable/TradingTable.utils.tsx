@@ -939,21 +939,19 @@ export const combineStrategiesHistoryTable = (
         leverage,
       })
 
+      const positionWasPlaced =
+        !!state && state !== 'TrailingEntry' && state !== 'WaitForEntry'
+
       if (isErrorInOrder && profitAmount !== 0) {
         orderState = 'Closed'
         isErrorInOrder = false
       }
 
-      if (!enabled && (state !== 'TrailingEntry' && state !== 'WaitForEntry')) {
+      if (!enabled && positionWasPlaced) {
         orderState = 'Closed'
       }
 
-      if (
-        profitAmount === 0 &&
-        !exitPrice &&
-        !enabled &&
-        (!state || state === 'TrailingEntry' || state === 'WaitForEntry')
-      ) {
+      if (profitAmount === 0 && !exitPrice && !enabled && !positionWasPlaced) {
         orderState = 'Canceled'
       }
 
