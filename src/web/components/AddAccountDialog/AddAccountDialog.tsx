@@ -237,6 +237,24 @@ class AddAccountDialog extends React.Component<IProps, IState> {
   }
 
   handleClickOpen = () => {
+    const {
+      includeCommonBinanceKey = true,
+      existCustomButton = false,
+      isFuturesWars = false,
+      includeBrokerKey = true,
+      addAditionalAccount,
+    } = this.props
+
+    if (
+      includeBrokerKey &&
+      !includeCommonBinanceKey &&
+      !existCustomButton &&
+      !isFuturesWars
+    ) {
+      addAditionalAccount()
+      return
+    }
+
     this.setState({
       open: true,
     })
@@ -377,7 +395,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               borderRadius={'1rem'}
               color={black.custom}
             >
-              {isFuturesWars ? 'Create futures wars account' : `Add Api Key`}
+              {isFuturesWars
+                ? 'Create futures wars account'
+                : `Create free exchange account`}
             </TypographyCustomHeading>
           </DialogTitleCustom>
           <DialogContent

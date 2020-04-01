@@ -1,9 +1,10 @@
 import { withSnackbarProps } from 'notistack'
-import { Theme } from '@material-ui/core';
+import { Theme } from '@material-ui/core'
 
 export interface IProps extends withSnackbarProps {
   open: boolean
-  theme: Theme  
+  theme: Theme
+  creatingAdditionalAccount: boolean
   setCurrentStep: (step: string) => void
   generateBrokerKeyMutation: () => Promise<{
     data: {
