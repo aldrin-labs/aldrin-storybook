@@ -4,6 +4,7 @@ import { Fade } from '@material-ui/core'
 
 import { IProps, IState, Key } from './Portfolio.types'
 import PortfolioOnboarding from '@sb/compositions/Main/PortfolioOnboarding'
+import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import SelectExchangeOrWalletWindow from '@sb/components/SelectExchangeOrWalletWindow/SelectExchangeOrWalletWindow'
 import AddExchangeOrWalletWindow from '@sb/components/AddExchangeOrWalletWindow/AddExchangeOrWalletWindow'
 import { PortfolioTable, PortfolioSelector } from './compositions'
@@ -80,6 +81,7 @@ export const getOnboardingStatus = ({
 class PortfolioComponent extends React.Component<IProps, IState> {
   state: IState = {
     isSideNavOpen: false,
+    creatingAdditionalAccount: false,
   }
 
   componentDidMount() {
@@ -97,12 +99,14 @@ class PortfolioComponent extends React.Component<IProps, IState> {
         isSideNavOpen: activeKeys.length === 0,
       })
     }
-
-    
   }
 
   toggleWallets = () => {
     this.setState({ isSideNavOpen: !this.state.isSideNavOpen })
+  }
+
+  setCreatingAdditionalAccountStatus = (status: boolean) => {
+    this.setState({ creatingAdditionalAccount: status })
   }
 
   render() {
@@ -166,6 +170,9 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             <PortfolioSelector
               portfolioId={portfolioId}
               dustFilter={dustFilter}
+              addAditionalAccount={() => {
+                this.setCreatingAdditionalAccountStatus(true)
+              }}
               keys={isRebalance ? rebalanceKeys : keys}
               newWallets={wallets}
               activeKeys={isRebalance ? activeRebalanceKeys : activeKeys}
@@ -206,6 +213,16 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               baseCoin={baseCoin}
             />
           </Fade>
+
+          {this.state.creatingAdditionalAccount && (
+            <PopupStart
+              open={true}
+              creatingAdditionalAccount={true}
+              completeOnboarding={() => {
+                this.setCreatingAdditionalAccountStatus(false)
+              }}
+            />
+          )}
 
           {/* {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow

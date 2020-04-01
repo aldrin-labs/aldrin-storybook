@@ -230,6 +230,7 @@ const MinimalPopupStart = ({
   errorDuringBrokerKeyGeneration,
   errorDuringOnboarding,
   handleFinishOnboarding,
+  creatingAdditionalAccount,
 }: {
   open: boolean
   theme: Theme
@@ -238,6 +239,7 @@ const MinimalPopupStart = ({
   internalLoading: boolean
   errorDuringBrokerKeyGeneration: boolean
   errorDuringOnboarding: boolean
+  creatingAdditionalAccount: boolean
 }) => {
   const [loading, setLoading] = useState(false)
 
@@ -284,7 +286,9 @@ const MinimalPopupStart = ({
               paddingBottom: '1.5rem',
             }}
           >
-            Welcome to Cryptocurrencies.ai
+            {creatingAdditionalAccount
+              ? 'Creating additional account...'
+              : 'Welcome to Cryptocurrencies.ai'}
           </TypographyCustomHeading>
         </DialogTitleCustom>
         <DialogContent
@@ -458,7 +462,7 @@ class PopoupStartDataWrapper extends PureComponent<IProps> {
   }
 
   render() {
-    const { open, theme, completeOnboarding } = this.props
+    const { open, theme, creatingAdditionalAccount } = this.props
     const {
       errorDuringBrokerKeyGeneration,
       errorDuringOnboarding,
@@ -469,6 +473,7 @@ class PopoupStartDataWrapper extends PureComponent<IProps> {
         internalLoading={internalLoading}
         errorDuringBrokerKeyGeneration={errorDuringBrokerKeyGeneration}
         errorDuringOnboarding={errorDuringOnboarding}
+        creatingAdditionalAccount={creatingAdditionalAccount}
         open={open}
         theme={theme}
         handleGenerateBrokerKey={this.handleGenerateBrokerKey}
