@@ -9,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
       scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
-    height: 6px;
+    height: 3px;
   }
 
   &::-webkit-scrollbar-track {
@@ -33,6 +33,20 @@ export const GlobalStyle = createGlobalStyle`
       font-size: 8px;
     }
   }
+
+  @media only screen and (max-width: 1300px) {
+    html {
+      font-size: 7px;
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    html {
+      font-size: 6px;
+    }
+  }
+
+
   @media only screen and (min-width: 1921px) {
     html {
       font-size: 15px;

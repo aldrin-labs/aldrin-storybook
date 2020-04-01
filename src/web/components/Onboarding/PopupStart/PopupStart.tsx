@@ -399,9 +399,7 @@ class PopoupStartDataWrapper extends PureComponent<IProps> {
     errorMessage: string
   }) => {
     const { enqueueSnackbar } = this.props
-    if (status === 'OK') {
-      enqueueSnackbar(`Your account successful created`, { variant: 'success' })
-    } else {
+    if (status === 'ERR') {
       enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
   }
