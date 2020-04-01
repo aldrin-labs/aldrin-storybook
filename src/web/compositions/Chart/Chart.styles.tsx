@@ -17,7 +17,7 @@ html {
 
 @media only screen and (max-width: 1720px) {
   html {
-    font-size: 9px;
+    font-size: 9px !important;
   }
 }
 
