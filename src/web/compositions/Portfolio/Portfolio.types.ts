@@ -30,4 +30,5 @@ export interface IProps extends TooltipQueryType {
 
 export interface IState {
   isSideNavOpen: boolean
+  creatingAdditionalAccount: boolean
 }
