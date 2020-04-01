@@ -223,7 +223,7 @@ const getActiveOrderStatus = ({
   state,
   profitPercentage,
 }: IStatus): [
-  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing',
+  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
 ] => {
   if (state && state.state && state.state !== 'WaitForEntry') {
@@ -231,6 +231,10 @@ const getActiveOrderStatus = ({
 
     if (status === 'TrailingEntry') {
       return ['Trailing entry', '#29AC80']
+    }
+
+    if (status === 'Timeout') {
+      return ['Timeout', '#29AC80']
     }
 
     // if (status === 'InEntry') {
@@ -587,7 +591,9 @@ export const combineActiveTradesTable = ({
       const keyName = keys[accountId]
 
       const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' ? price : entryPrice
+        !entryDeviation && orderType === 'limit' && !entryPrice
+          ? price
+          : entryPrice
 
       const profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) *
@@ -689,7 +695,11 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            state === 'InEntry' && !!currentPrice ? (
+            state &&
+            activeOrderStatus !== 'Preparing' &&
+            state !== 'WaitForEntry' &&
+            state !== 'TrailingEntry' &&
+            !!currentPrice ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >
@@ -897,10 +907,11 @@ export const combineStrategiesHistoryTable = (
         },
       } = el
 
-      const { entryPrice, state, msg } = el.state || {
+      const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
-        state: '-',
+        state: '',
         msg: null,
+        exitPrice: 0,
       }
 
       const keyName = keys[accountId]
@@ -908,11 +919,13 @@ export const combineStrategiesHistoryTable = (
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-      const orderState = state ? state : enabled ? 'Waiting' : 'Closed'
-      const isErrorInOrder = !!msg
+      let orderState = state ? state : enabled ? 'Waiting' : 'Closed'
+      let isErrorInOrder = !!msg
 
       const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' ? price : entryPrice
+        !entryDeviation && orderType === 'limit' && !entryPrice
+          ? price
+          : entryPrice
       // ? entryPrice
       // : !!entryDeviation
       // ? activatePrice * (1 + entryDeviation / leverage / 100)
@@ -925,6 +938,24 @@ export const combineStrategiesHistoryTable = (
         amount,
         leverage,
       })
+
+      const positionWasPlaced =
+        !!state && state !== 'TrailingEntry' && state !== 'WaitForEntry'
+
+      if (isErrorInOrder && profitAmount !== 0) {
+        orderState = 'Closed'
+        isErrorInOrder = false
+      }
+
+      if (!enabled && positionWasPlaced) {
+        orderState = 'Closed'
+      }
+
+      if (profitAmount === 0 && !exitPrice && !enabled && !positionWasPlaced) {
+        orderState = 'Canceled'
+      }
+
+      if (orderState === 'End') orderState = 'Closed'
 
       return {
         id: el._id,
@@ -1037,7 +1068,13 @@ export const combineStrategiesHistoryTable = (
                 textTransform: 'none',
                 alignItems: 'center',
               }}
-              color={state ? (!isErrorInOrder ? green.new : red.new) : red.new}
+              color={
+                state
+                  ? !isErrorInOrder && orderState !== 'Canceled'
+                    ? green.new
+                    : red.new
+                  : red.new
+              }
             >
               {isErrorInOrder ? 'Error' : orderState}
               {isErrorInOrder ? (

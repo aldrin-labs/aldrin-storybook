@@ -176,7 +176,7 @@ export const strategiesHistoryColumnNames = [
     id: 'takeProfit',
   },
   { label: 'Stop', id: 'stopLoss' },
-  { label: 'profit', id: 'profit' },
+  { label: 'Pnl/Roe', id: 'profit' },
   { label: 'status', id: 'status' },
   { label: 'date', isNumber: true, id: 'date' },
 ]

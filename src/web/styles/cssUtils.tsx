@@ -11,7 +11,7 @@ export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
       scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
-    height: 6px;
+    height: 3px;
   }
 
   &::-webkit-scrollbar-track {
