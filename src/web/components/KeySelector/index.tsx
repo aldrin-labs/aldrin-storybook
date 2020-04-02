@@ -16,6 +16,7 @@ const KeySelector = ({ ...props }: IProps) => {
       onChange={(e) => handleChange(e)}
       selectStyles={selectStyles}
       isAccountSelect={isAccountSelect}
+      defaultMenuIsOpen={true}
     />
   )
 }
