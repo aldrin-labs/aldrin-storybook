@@ -166,7 +166,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
     return (
       <>
         <PortfolioContainer>
-          {hasKeysOrWallets && hasActiveKeysOrWallets && (
+          {hasKeysOrWallets && (
             <PortfolioSelector
               portfolioId={portfolioId}
               dustFilter={dustFilter}
@@ -224,12 +224,12 @@ class PortfolioComponent extends React.Component<IProps, IState> {
             />
           )}
 
-          {/* {hasKeysOrWallets && !hasActiveKeysOrWallets && (
+          {hasKeysOrWallets && !hasActiveKeysOrWallets && (
             <SelectExchangeOrWalletWindow
               theme={theme}
               toggleWallets={this.toggleWallets}
             />
-          )} */}
+          )}
 
           {hasKeysOrWallets && hasActiveKeysOrWallets && (
             <PortfolioTable
