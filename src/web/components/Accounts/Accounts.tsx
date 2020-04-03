@@ -68,6 +68,7 @@ class Accounts extends React.PureComponent<IProps> {
       isSidebar,
       baseCoin,
       isSideNavOpen,
+      addAditionalAccount,
     } = this.props
 
     const isUSDT = baseCoin === 'USDT'
@@ -250,6 +251,7 @@ class Accounts extends React.PureComponent<IProps> {
                 includeCommonBinanceKey={false}
                 numberOfKeys={keys.length}
                 baseCoin={baseCoin}
+                addAditionalAccount={addAditionalAccount}
               />
             </AddAccountButtonContainer>
           </>

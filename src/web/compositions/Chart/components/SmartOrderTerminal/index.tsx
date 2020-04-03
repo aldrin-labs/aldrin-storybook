@@ -1405,6 +1405,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                 'whenLossOn',
                                 !stopLoss.timeout.whenLossOn
                               )
+
+                              this.updateSubBlockValue(
+                                'stopLoss',
+                                'timeout',
+                                'whenLossableOn',
+                                false
+                              )
                             }}
                             style={{ padding: '0 .4rem 0 0' }}
                           />
@@ -1467,6 +1474,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                 'timeout',
                                 'whenLossableOn',
                                 !stopLoss.timeout.whenLossableOn
+                              )
+
+                              this.updateSubBlockValue(
+                                'stopLoss',
+                                'timeout',
+                                'whenLossOn',
+                                false
                               )
                             }}
                             style={{ padding: '0 .4rem 0 0' }}
@@ -1652,6 +1666,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'isSplitTargetsOn',
                         false
                       )
+
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'timeout',
+                        'isTimeoutOn',
+                        false
+                      )
                     }}
                   >
                     Trailing take a profit
@@ -1673,6 +1694,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'isTrailingOn',
                         false
                       )
+
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'timeout',
+                        'isTimeoutOn',
+                        false
+                      )
                     }}
                   >
                     Split targets
@@ -1686,6 +1714,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'timeout',
                         'isTimeoutOn',
                         !takeProfit.timeout.isTimeoutOn
+                      )
+
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'trailingTAP',
+                        'isTrailingOn',
+                        false
+                      )
+
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'splitTargets',
+                        'isSplitTargetsOn',
+                        false
                       )
                     }}
                   >
@@ -1721,7 +1763,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       />
 
                       <BlueSlider
-                        value={takeProfit.pricePercentage}
+                        value={takeProfit.pricePercentage > 100 ? 100 : takeProfit.pricePercentage}
                         sliderContainerStyles={{
                           width: '50%',
                           margin: '0 .8rem 0 .8rem',
@@ -1965,6 +2007,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                 'whenProfitOn',
                                 !takeProfit.timeout.whenProfitOn
                               )
+
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'timeout',
+                                'whenProfitableOn',
+                                false
+                              )
                             }}
                             style={{ padding: '0 .4rem 0 0' }}
                           />
@@ -2027,6 +2076,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                 'timeout',
                                 'whenProfitableOn',
                                 !takeProfit.timeout.whenProfitableOn
+                              )
+
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'timeout',
+                                'whenProfitOn',
+                                false
                               )
                             }}
                             style={{ padding: '0 .4rem 0 0' }}
