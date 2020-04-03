@@ -343,6 +343,7 @@ class PortfolioSelector extends React.Component<IProps> {
       isUSDCurrently,
       data: { myPortfolios },
       baseCoin,
+      addAditionalAccount,
     } = this.props
 
     const {
@@ -494,6 +495,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 isSideNavOpen,
                 portfolioAssetsData,
                 portfolioAssetsMap,
+                addAditionalAccount,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,

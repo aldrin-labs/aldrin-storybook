@@ -37,10 +37,10 @@ export const OnboardingPlaceholder = () => (
       <Grid container justify="space-between" wrap="nowrap">
         <Grid
           container
-          justify="center"
+          justify="flex-end"
           alignItems="center"
           direction="column"
-          style={{ padding: '4rem' }}
+          style={{ padding: '0 4rem 4rem 4rem' }}
         >
           <Grid>
             <Grid container justify="center" style={{ paddingBottom: '3rem' }}>
@@ -61,10 +61,10 @@ export const OnboardingPlaceholder = () => (
         </Grid>
         <Grid
           container
-          justify="center"
+          justify="flex-end"
           alignItems="center"
           direction="column"
-          style={{ padding: '4rem' }}
+          style={{ padding: '0 4rem 4rem 4rem' }}
         >
           <Grid container justify="center" style={{ paddingBottom: '3rem' }}>
             <SvgIcon src={rebalancePortfolio} width="80%" height="auto" />
@@ -85,10 +85,10 @@ export const OnboardingPlaceholder = () => (
         </Grid>
         <Grid
           container
-          justify="center"
+          justify="flex-end"
           alignItems="center"
           direction="column"
-          style={{ padding: '4rem' }}
+          style={{ padding: '0 4rem 4rem 4rem' }}
         >
           <Grid container justify="center" style={{ paddingBottom: '3rem' }}>
             <SvgIcon src={tradeSpotFutures} width="80%" height="auto" />
@@ -109,10 +109,10 @@ export const OnboardingPlaceholder = () => (
         </Grid>
         <Grid
           container
-          justify="center"
+          justify="flex-end"
           alignItems="center"
           direction="column"
-          style={{ padding: '4rem' }}
+          style={{ padding: '0 4rem 4rem 4rem' }}
         >
           <Grid container justify="center" style={{ paddingBottom: '3rem' }}>
             <SvgIcon src={analyzeAndGrow} width="80%" height="auto" />

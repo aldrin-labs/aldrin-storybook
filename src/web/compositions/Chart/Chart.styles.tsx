@@ -23,13 +23,13 @@ html {
 
 @media only screen and (max-width: 1400px) {
   html {
-    font-size: 8px;
+    font-size: 8px !important;
   }
 }
 
 @media only screen and (max-width: 1300px) {
   html {
-    font-size: 7px;
+    font-size: 7px !important;
   }
 }
 
@@ -53,7 +53,7 @@ html {
 
 @media only screen and (min-width: 2560px) {
   html {
-    font-size: 15px;
+    font-size: 15px !important;
   }
 }  
 `

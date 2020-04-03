@@ -20,15 +20,14 @@ interface ComponentIProps {
 
 const CoinContent = ({ data }: { data: ComponentData }) => (
   <>
-    <Grid item style={{ alignSelf: 'center' }}>
+    <Grid item style={{ display: 'flex', alignSelf: 'center' }}>
       <LazyLoad height={`1.7rem`} once>
         <SvgIcon
           style={{
             marginRight: '.5rem',
-            position: 'relative',
-            top: '0.275rem',
           }}
-          width={`1.7rem`}
+          width={`2rem`}
+          height={'2rem'}
           src={importCoinIcon(data.label)}
           onError={onErrorImportCoinUrl}
         />
@@ -40,10 +39,11 @@ const CoinContent = ({ data }: { data: ComponentData }) => (
     <Grid
       item
       style={{
-        alignSelf: 'flex-end',
+        transform: 'translateY(25%)',
+        alignSelf: 'center',
         color: '#7284A0',
-        fontSize: '1.2rem',
-        paddingLeft: '1rem',
+        fontSize: '1rem',
+        paddingLeft: '.5rem',
       }}
     >
       {data.name}

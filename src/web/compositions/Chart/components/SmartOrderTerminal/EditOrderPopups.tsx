@@ -209,6 +209,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     isSplitTargetsOn: false,
                     isTrailingOn: !prev.isTrailingOn,
                   }))
+
+                  this.setState((prev) => ({
+                    isTimeoutOn: false,
+                  }))
                 }}
               >
                 Trailing take a profit
@@ -221,6 +225,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     isSplitTargetsOn: !prev.isSplitTargetsOn,
                     isTrailingOn: false,
                   }))
+
+                  this.setState((prev) => ({
+                    isTimeoutOn: false,
+                  }))
                 }}
               >
                 Split targets
@@ -231,6 +239,11 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 onClick={() => {
                   this.setState((prev) => ({
                     isTimeoutOn: !prev.isTimeoutOn,
+                  }))
+
+                  this.setState((prev) => ({
+                    isSplitTargetsOn: false,
+                    isTrailingOn: false,
                   }))
                 }}
               >
@@ -249,7 +262,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       showErrors={
                         !this.state.isSplitTargetsOn && !this.state.isTrailingOn
                       }
-                      value={this.state.pricePercentage}
+                      value={this.state.pricePercentage > 100 ? 100 : this.state.pricePercentage}
                       isValid={this.props.validateField(
                         true,
                         this.state.pricePercentage
@@ -494,6 +507,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           this.setState((prev) => ({
                             whenProfitOn: !prev.whenProfitOn,
                           }))
+
+                          this.setState((prev) => ({
+                            whenProfitableOn: false,
+                          }))
                         }}
                         style={{ padding: '0 .4rem 0 0' }}
                       />
@@ -542,6 +559,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         onChange={() => {
                           this.setState((prev) => ({
                             whenProfitableOn: !prev.whenProfitableOn,
+                          }))
+
+                          this.setState((prev) => ({
+                            whenProfitOn: false,
                           }))
                         }}
                         style={{ padding: '0 .4rem 0 0' }}
@@ -755,6 +776,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           this.setState((prev) => ({
                             whenLossOn: !prev.whenLossOn,
                           }))
+
+                          this.setState((prev) => ({
+                            whenLossableOn: false,
+                          }))
                         }}
                         style={{ padding: '0 .4rem 0 0' }}
                       />
@@ -803,6 +828,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         onChange={() => {
                           this.setState((prev) => ({
                             whenLossableOn: !prev.whenLossableOn,
+                          }))
+
+                          this.setState((prev) => ({
+                            whenLossOn: false,
                           }))
                         }}
                         style={{ padding: '0 .4rem 0 0' }}
