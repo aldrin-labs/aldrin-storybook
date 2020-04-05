@@ -41,7 +41,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           isActive={activeDateButton === '1Day'}
           onClick={() => onDateButtonClick('1Day')}
         >
-          24h
+          today
         </TitleButton>
         <TitleButton
           size="small"

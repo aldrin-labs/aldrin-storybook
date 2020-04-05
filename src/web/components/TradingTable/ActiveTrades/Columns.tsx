@@ -239,12 +239,12 @@ export const TakeProfitColumn = ({
         </SubColumnValue>
       </div>
 
-      <div>
+      {/* <div>
         <SubColumnTitle>timeout</SubColumnTitle>
         <SubColumnValue textAlign={'right'}>
           {timeoutProfit || '-'} / {timeoutProfitable || '-'}
         </SubColumnValue>
-      </div>
+      </div> */}
     </BlockContainer>
   )
 }
@@ -317,12 +317,12 @@ export const StopLossColumn = ({
         </SubColumnValue>
       </div>
 
-      <div>
+      {/* <div>
         <SubColumnTitle>forced</SubColumnTitle>
         <SubColumnValue textAlign={'right'} color={forced ? green : red}>
           {forced ? 'on' : 'off'}
         </SubColumnValue>
-      </div>
+      </div> */}
 
       <div>
         <SubColumnTitle>order</SubColumnTitle>
@@ -332,7 +332,8 @@ export const StopLossColumn = ({
       <div>
         <SubColumnTitle>timeout</SubColumnTitle>
         <SubColumnValue textAlign={'right'}>
-          {timeoutWhenLoss || '-'} / {timeoutLoss || '-'}
+          {/* {timeoutWhenLoss || '-'} /  */}
+          {timeoutLoss || '-'}
         </SubColumnValue>
       </div>
     </BlockContainer>

@@ -296,13 +296,13 @@ export default ({
                     !takeProfit.trailingTAP.isTrailingOn && (
                       <ItemTypography>price:</ItemTypography>
                     )}
-                  <ItemTypography>timeout:</ItemTypography>
+                  {/* <ItemTypography>timeout:</ItemTypography>
                   {takeProfit.timeout.isTimeoutOn && (
                     <>
                       <ItemTypography>when profit:</ItemTypography>
                       <ItemTypography>when in profit:</ItemTypography>
                     </>
-                  )}
+                  )} */}
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
                   {!takeProfit.trailingTAP.isTrailingOn && (
@@ -370,7 +370,7 @@ export default ({
                       </ItemTypography>
                     )}
 
-                  <ItemTypography
+                  {/* <ItemTypography
                     color={getColor(takeProfit.timeout.isTimeoutOn)}
                   >
                     {getOnOffText(takeProfit.timeout.isTimeoutOn)}
@@ -389,7 +389,7 @@ export default ({
                         }`}
                       </ItemTypography>
                     </>
-                  )}
+                  )} */}
                 </Grid>
               </Grid>
             </Grid>
@@ -422,11 +422,11 @@ export default ({
                   <ItemTypography>timeout:</ItemTypography>
                   {stopLoss.timeout.isTimeoutOn && (
                     <>
-                      <ItemTypography>when loss:</ItemTypography>
+                      {/* <ItemTypography>when loss:</ItemTypography> */}
                       <ItemTypography>when in loss:</ItemTypography>{' '}
                     </>
                   )}
-                  <ItemTypography>forced stop:</ItemTypography>
+                  {/* <ItemTypography>forced stop:</ItemTypography> */}
                 </Grid>
                 <Grid style={{ paddingLeft: '5rem' }}>
                   <ItemTypography color={getColor(false)}>
@@ -439,11 +439,11 @@ export default ({
                   </ItemTypography>
                   {stopLoss.timeout.isTimeoutOn && (
                     <>
-                      <ItemTypography color="#16253D">
+                      {/* <ItemTypography color="#16253D">
                         {`${stopLoss.timeout.whenLossSec} ${
                           stopLoss.timeout.whenLossMode
                         }`}
-                      </ItemTypography>
+                      </ItemTypography> */}
                       <ItemTypography color="#16253D">
                         {`${stopLoss.timeout.whenLossableSec} ${
                           stopLoss.timeout.whenLossableMode
@@ -451,11 +451,11 @@ export default ({
                       </ItemTypography>
                     </>
                   )}
-                  <ItemTypography
+                  {/* <ItemTypography
                     color={getColor(stopLoss.forcedStop.isForcedStopOn)}
                   >
                     {getOnOffText(stopLoss.forcedStop.isForcedStopOn)}
-                  </ItemTypography>
+                  </ItemTypography> */}
                 </Grid>
               </Grid>
             </Grid>

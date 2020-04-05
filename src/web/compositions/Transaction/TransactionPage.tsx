@@ -2,7 +2,7 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { Link, withRouter } from 'react-router-dom'
 
-import { getStartDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+import { getStartDate } from '@sb/components/TradingTable/TradingTable.utils'
 import GitTransactionCalendar from '@sb/components/GitTransactionCalendar'
 
 import { Grid } from '@material-ui/core'

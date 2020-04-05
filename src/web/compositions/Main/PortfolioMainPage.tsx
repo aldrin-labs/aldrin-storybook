@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/styles'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 // import Joyride from 'react-joyride'
-import { getStartDate } from '@core/containers/TradeOrderHistory/TradeOrderHistory.utils'
+import { getStartDate } from '@sb/components/TradingTable/TradingTable.utils'
 import { graphql } from 'react-apollo'
 
 import { IProps, IState } from './PortfolioMainPage.types'
