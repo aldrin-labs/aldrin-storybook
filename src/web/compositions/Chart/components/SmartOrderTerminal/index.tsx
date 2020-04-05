@@ -1334,7 +1334,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     Timeout
                   </AdditionalSettingsButton>
 
-                  <AdditionalSettingsButton
+                  {/* <AdditionalSettingsButton
                     isActive={stopLoss.forcedStop.isForcedStopOn}
                     onClick={() =>
                       this.updateSubBlockValue(
@@ -1346,7 +1346,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                   >
                     Forced stop
-                  </AdditionalSettingsButton>
+                  </AdditionalSettingsButton> */}
                 </InputRowContainer>
 
                 <FormInputContainer title={'loss (%)'}>
@@ -1391,7 +1391,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <>
                     <TradeInputHeader title={`timeout`} needLine={true} />
                     <InputRowContainer>
-                      <SubBlocksContainer>
+                      {/* <SubBlocksContainer>
                         <InputRowContainer>
                           <TimeoutTitle> When loss</TimeoutTitle>
                         </InputRowContainer>
@@ -1459,7 +1459,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             <option>min</option>
                           </Select>
                         </InputRowContainer>
-                      </SubBlocksContainer>
+                      </SubBlocksContainer> */}
 
                       <SubBlocksContainer>
                         <InputRowContainer>
@@ -1706,7 +1706,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     Split targets
                   </AdditionalSettingsButton>
 
-                  <AdditionalSettingsButton
+                  {/* <AdditionalSettingsButton
                     isActive={takeProfit.timeout.isTimeoutOn}
                     onClick={() => {
                       this.updateSubBlockValue(
@@ -1732,7 +1732,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }}
                   >
                     Timeout
-                  </AdditionalSettingsButton>
+                  </AdditionalSettingsButton> */}
                 </InputRowContainer>
 
                 {!takeProfit.trailingTAP.isTrailingOn && (
