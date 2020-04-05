@@ -16,6 +16,19 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
+import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
+
+
+const changePairToSelected = (pair: string) => {
+  client.mutate({
+    mutation: CHANGE_CURRENCY_PAIR,
+    variables: {
+      pairInput: {
+        pair,
+      },
+    }
+  })
+}
 
 export const CloseButton = ({
   i,
@@ -363,7 +376,7 @@ export const combinePositionsTable = ({
           id: el._id,
           pair: {
             render: (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div onClick={() => changePairToSelected(symbol)} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                 {pair[0]}/{pair[1]}
               </div>
             ),
@@ -614,10 +627,11 @@ export const combineActiveTradesTable = ({
         id: `${el._id}${i}`,
         pair: {
           render: (
-            <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+            <SubColumnValue onClick={() => changePairToSelected(pair)}>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
+            cursor: 'pointer'
           },
         },
         side: {
@@ -961,10 +975,11 @@ export const combineStrategiesHistoryTable = (
         id: el._id,
         pair: {
           render: (
-            <SubColumnValue>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+            <SubColumnValue  onClick={() => changePairToSelected(pair)}>{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
+            cursor: 'pointer'
           },
           contentToSort: `${pairArr[0]}/${pairArr[1]}`,
         },
@@ -1235,7 +1250,7 @@ export const combineOpenOrdersTable = (
         id: `${orderId}${timestamp}${origQty}${el.marketId}`,
         pair: {
           render: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div onClick={() => changePairToSelected(symbol)} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
               {pair[0]}/{pair[1]}
             </div>
           ),
@@ -1436,7 +1451,7 @@ export const combineOrderHistoryTable = (
         id: `${orderId}_${timestamp}_${origQty}`,
         pair: {
           render: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div onClick={() => changePairToSelected(symbol)} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
               {pair[0]}/{pair[1]}
             </div>
           ),
@@ -1601,7 +1616,7 @@ export const combineTradeHistoryTable = (
         id: `${id}_${timestamp}_${amount}`,
         pair: {
           render: (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div onClick={() => changePairToSelected(symbol)} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
               {pair[0]}/{pair[1]}
             </div>
           ),
