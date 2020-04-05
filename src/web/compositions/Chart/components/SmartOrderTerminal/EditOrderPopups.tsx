@@ -234,7 +234,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 Split targets
               </AdditionalSettingsButton>
 
-              <AdditionalSettingsButton
+              {/* <AdditionalSettingsButton
                 isActive={this.state.isTimeoutOn}
                 onClick={() => {
                   this.setState((prev) => ({
@@ -248,7 +248,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 }}
               >
                 Timeout
-              </AdditionalSettingsButton>
+              </AdditionalSettingsButton> */}
             </InputRowContainer>
 
             {!this.state.isTrailingOn && (
@@ -717,7 +717,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                 Timeout
               </AdditionalSettingsButton>
 
-              <AdditionalSettingsButton
+              {/* <AdditionalSettingsButton
                 isActive={this.state.isForcedStopOn}
                 onClick={() =>
                   this.setState((prev) => ({
@@ -726,7 +726,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                 }
               >
                 Forced stop
-              </AdditionalSettingsButton>
+              </AdditionalSettingsButton> */}
             </InputRowContainer>
 
             <InputRowContainer>
@@ -765,7 +765,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               <>
                 <TradeInputHeader title={`timeout`} needLine={true} />
                 <InputRowContainer>
-                  <SubBlocksContainer>
+                  {/* <SubBlocksContainer>
                     <InputRowContainer>
                       <TimeoutTitle> When loss</TimeoutTitle>
                     </InputRowContainer>
@@ -816,7 +816,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         <option>min</option>
                       </Select>
                     </InputRowContainer>
-                  </SubBlocksContainer>
+                  </SubBlocksContainer> */}
 
                   <SubBlocksContainer>
                     <InputRowContainer>

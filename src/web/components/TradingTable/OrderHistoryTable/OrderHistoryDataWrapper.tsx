@@ -1,7 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
 
-import { getStartDate } from '../TradingTable.utils'
+import { getStartDate } from '@sb/components/TradingTable/TradingTable.utils'
 import { IProps, IState } from './OrderHistoryDataWrapper.types'
 import OrderHistoryTable from './OrderHistoryTable'
 
