@@ -142,21 +142,30 @@ export const getStartDate = (stringDate: string): number =>
   stringDate === '1Day'
     ? dayjs()
         .startOf('day')
-        .subtract(1, 'day')
         .valueOf()
     : stringDate === '1Week'
     ? dayjs()
         .startOf('day')
         .subtract(1, 'week')
         .valueOf()
+    : stringDate === '2Weeks'
+    ? dayjs()
+        .startOf('day')
+        .subtract(2, 'week')
+        .valueOf()
     : stringDate === '1Month'
     ? dayjs()
         .startOf('day')
         .subtract(1, 'month')
         .valueOf()
-    : dayjs()
+    : stringDate === '3Month'
+    ? dayjs()
         .startOf('day')
         .subtract(3, 'month')
+        .valueOf()
+    : dayjs()
+        .startOf('day')
+        .subtract(6, 'month')
         .valueOf()
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
