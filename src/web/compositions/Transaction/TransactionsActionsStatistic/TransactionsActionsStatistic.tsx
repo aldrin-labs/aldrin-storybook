@@ -26,7 +26,7 @@ class TransactionsActionsStatistic extends PureComponent<{
           <WeekBlock
             includeFutures={includeFutures}
             includeTrades={includeTrades}
-            title={'this week'}
+            title={'7 days'}
           />
         </Grid>
         <Grid item style={{ position: 'relative' }}>
