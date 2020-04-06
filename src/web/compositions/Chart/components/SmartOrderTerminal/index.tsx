@@ -220,7 +220,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         trailing: {
           ...prevState.entryPoint.trailing,
-          ...(result.entryPoint ? result.entryPoint.trailing : {}),
+          ...(result.entryPoint ? { ...result.entryPoint.trailing, deviationPercentage: +stripDigitPlaces(result.entryPoint.trailing.deviationPercentage / componentLeverage, 3)} : {}),
         },
       },
       takeProfit: result.takeProfit,
@@ -927,6 +927,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         padding={'0 .8rem 0 0'}
                         width={'calc(50%)'}
                         symbol={'%'}
+                        pattern={'[0-9]+.[0-9]{3}'}
+                        type={'text'}
                         value={entryPoint.trailing.deviationPercentage}
                         // showErrors={showErrors}
                         // isValid={this.validateField(
@@ -934,18 +936,19 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         //   entryPoint.trailing.deviationPercentage
                         // )}
                         onChange={(e) => {
+                          const value = e.target.value > (100 / entryPoint.order.leverage) ? stripDigitPlaces(100 / entryPoint.order.leverage, 3) : e.target.value
                           this.updateSubBlockValue(
                             'entryPoint',
                             'trailing',
                             'deviationPercentage',
-                            e.target.value
+                            value
                           )
                         }}
                       />
 
                       <BlueSlider
                         disabled={!entryPoint.trailing.isTrailingOn}
-                        value={entryPoint.trailing.deviationPercentage}
+                        value={stripDigitPlaces(entryPoint.trailing.deviationPercentage * entryPoint.order.leverage, 3)}
                         sliderContainerStyles={{
                           width: '50%',
                           margin: '0 .8rem 0 .8rem',
@@ -955,7 +958,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             'entryPoint',
                             'trailing',
                             'deviationPercentage',
-                            value
+                            stripDigitPlaces(value / entryPoint.order.leverage, 3)
                           )
                         }}
                       />
@@ -2159,6 +2162,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           </TerminalBlocksContainer>
           {editPopup === 'takeProfit' && (
             <EditTakeProfitPopup
+              openFromTerminal
               open={editPopup === 'takeProfit'}
               handleClose={() => this.setState({ editPopup: null })}
               updateState={(takeProfitProperties) =>
@@ -2177,6 +2181,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
           {editPopup === 'stopLoss' && (
             <EditStopLossPopup
+              openFromTerminal
               open={editPopup === 'stopLoss'}
               pair={pair}
               handleClose={() => this.setState({ editPopup: null })}
@@ -2194,6 +2199,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
           {editPopup === 'hedge' && (
             <EditHedgePopup
+              openFromTerminal
               open={editPopup === 'hedge'}
               pair={pair}
               transformProperties={() => {}}
@@ -2217,6 +2223,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
           {editPopup === 'entryOrder' && (
             <EditEntryOrderPopup
+              openFromTerminal
               open={editPopup === 'entryOrder'}
               pair={pair.join('_')}
               price={this.props.price}
