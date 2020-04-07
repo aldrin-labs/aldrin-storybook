@@ -9,6 +9,7 @@ import { refetchOptionsOnKeyAddFunction } from '@sb/components/AddAccountDialog/
 import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
+import { addGAEvent } from '@core/utils/ga.utils'
 import {
   TypographyCustomHeading,
   DialogWrapper,
@@ -425,6 +426,12 @@ class PopoupStartDataWrapper extends PureComponent<IProps> {
 
   handleGenerateBrokerKey = async () => {
     const { generateBrokerKeyMutation } = this.props
+
+    addGAEvent({
+      action: 'Generate new key',
+      category: 'App - Generate new key',
+      label: `generate_new_key`,
+    })
 
     try {
       const resp = await generateBrokerKeyMutation()
