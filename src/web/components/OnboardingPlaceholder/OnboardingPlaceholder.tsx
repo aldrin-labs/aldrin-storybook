@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Typography, Grid } from '@material-ui/core'
 
 import { LightGreenButton, SvgIcon } from '@sb/components'
+import { addGAEvent } from '@core/utils/ga.utils'
 
 import depositFunds from '@icons/onboarding/depositFunds.svg'
 import rebalancePortfolio from '@icons/onboarding/rebalancePortfolio.svg'
@@ -147,6 +148,14 @@ export const OnboardingPlaceholder = () => (
             borderRadius: '8px',
             fontWeight: 'bold',
             letterSpacing: '1.5px',
+          }}
+          onClick={() => {
+
+            addGAEvent({
+              action: 'Deposit button click',
+              category: 'App - Portfolio deposit now',
+              label: `portfolio_page_deposit_now_button`,
+            })
           }}
         >
           Deposit now

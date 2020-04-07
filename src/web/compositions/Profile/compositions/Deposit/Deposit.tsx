@@ -5,6 +5,7 @@ import copy from 'clipboard-copy'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
+import { addGAEvent } from '@core/utils/ga.utils'
 
 import exclamationMark from '@icons/exclamationMark.svg'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -20,10 +21,15 @@ import { IProps } from './Deposit.types'
 
 const Deposits = ({ ...props }: IProps) => {
   const { depositSettings } = props.getProfileSettingsQuery.getProfileSettings
-  const { selectedKey:tempSelectedKey = '' } = depositSettings || { selectedKey: '' }
+  const { selectedKey: tempSelectedKey = '' } = depositSettings || {
+    selectedKey: '',
+  }
   const selectedKey = tempSelectedKey || ''
   const [popupOpened, togglePopup] = useState(false)
-  const [selectedCoin, setSelectedCoin] = useState({ label: 'BTC', name: 'Bitcoin' })
+  const [selectedCoin, setSelectedCoin] = useState({
+    label: 'BTC',
+    name: 'Bitcoin',
+  })
   const [coinAddress, setCoinAddress] = useState('')
 
   const copyCoinAddress = () => {
@@ -94,7 +100,13 @@ const Deposits = ({ ...props }: IProps) => {
                 {selectedCoin.label} address
               </StyledTypography>
               <Grid style={{ height: '6rem', overflow: 'hidden' }}>
-                <InputAddress autoComplete="off" value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
+                <InputAddress
+                  autoComplete="off"
+                  value={coinAddress}
+                  selectedCoin={selectedCoin.label}
+                  setCoinAddress={setCoinAddress}
+                  selectedAccount={selectedKey}
+                />
               </Grid>
               {/* <StyledInput
                 value={coinAddress}
@@ -112,7 +124,15 @@ const Deposits = ({ ...props }: IProps) => {
                   margin={'0 2rem 0 0'}
                   height={'4rem'}
                   fontSize={'1.2rem'}
-                  onClick={() => togglePopup(true)}
+                  onClick={() => {
+                    togglePopup(true)
+
+                    addGAEvent({
+                      action: 'Show qr code',
+                      category: 'App - Show qr code',
+                      label: `deposit_show_qr_code`,
+                    })
+                  }}
                 >
                   Show qr code
                 </BtnCustom>
@@ -124,7 +144,15 @@ const Deposits = ({ ...props }: IProps) => {
                   fontWeight={'bold'}
                   fontSize={'1.2rem'}
                   height={'4rem'}
-                  onClick={copyCoinAddress}
+                  onClick={() => {
+                    copyCoinAddress()
+
+                    addGAEvent({
+                      action: 'Copy address',
+                      category: 'App - Copy address',
+                      label: `deposit_copy_address`,
+                    })
+                  }}
                 >
                   Copy address
                 </BtnCustom>
@@ -142,8 +170,8 @@ const Deposits = ({ ...props }: IProps) => {
                     Send only {selectedCoin.label} to this deposit address.
                   </Typography>
                   <Typography>
-                    Sending coin or token other than {selectedCoin.label} to this
-                    address may result in the loss of your deposit.
+                    Sending coin or token other than {selectedCoin.label} to
+                    this address may result in the loss of your deposit.
                   </Typography>
                 </Grid>
               </Grid>
@@ -151,14 +179,15 @@ const Deposits = ({ ...props }: IProps) => {
           </Grid>
         </Grid>
       </Grid>
-      <RecentHistoryTable
-        isDepositPage={true}
-        specificKey={selectedKey}
-      />
+      <RecentHistoryTable isDepositPage={true} specificKey={selectedKey} />
     </>
   )
 }
 
 export default compose(
-  queryRendererHoc({ query: getProfileSettings, name: 'getProfileSettingsQuery', fetchPolicy: 'cache-and-network' })
+  queryRendererHoc({
+    query: getProfileSettings,
+    name: 'getProfileSettingsQuery',
+    fetchPolicy: 'cache-and-network',
+  })
 )(Deposits)

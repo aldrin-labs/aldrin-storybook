@@ -34,6 +34,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 import ConfirmTermsOfUsePopup from '@sb/compositions/Login/ConfirmTermsOfUsePopup/ConfirmTermsOfUsePopup'
 
 import { isEmailValid } from '@sb/compositions/Login/Login.utils'
+import { addGAEvent } from '@core/utils/ga.utils'
 
 const SignUp = ({
   theme,
@@ -86,6 +87,16 @@ const SignUp = ({
     pass2: string
   }) => pass1 === pass2 && pass1 !== '' && pass2 !== ''
 
+  const signUpWithGoogleAndAnalytics = () => {
+    addGAEvent({
+      action: 'Sign up',
+      category: 'App - Sign up with google',
+      label: `sign_up_app`,
+    })
+
+    onSignUpWithGoogleClick()
+  }
+
   return (
     <>
       <PrivacyPolicy
@@ -98,7 +109,7 @@ const SignUp = ({
       />
       <ConfirmTermsOfUsePopup
         open={showConfirmTermsOfUse}
-        confirmHandler={onSignUpWithGoogleClick}
+        confirmHandler={signUpWithGoogleAndAnalytics}
         isAgreeWithRules={isAgreeWithRules}
         showPrivacyPolicy={showPrivacyPolicy}
         showTermsOfUse={showTermsOfUse}
@@ -112,7 +123,7 @@ const SignUp = ({
           <WithGoogleButton
             onClick={() => {
               isAgreeWithRules
-                ? onSignUpWithGoogleClick()
+                ? signUpWithGoogleAndAnalytics()
                 : toggleConfirmTermsOfUse(!showConfirmTermsOfUse)
             }}
           >
@@ -149,6 +160,13 @@ const SignUp = ({
               setEmailError(`Email is not valid`)
               return
             }
+
+            addGAEvent({
+              action: 'Sign up',
+              category: 'App - Sign up regular',
+              label: `sign_up_app`,
+            })
+
             setLoading(true)
             await onSignUpButtonClick({ email, password })
             setLoading(false)
