@@ -11,6 +11,7 @@ import {
 import { Visibility, VisibilityOff } from '@material-ui/icons/'
 import { withTheme } from '@material-ui/styles'
 
+import { addGAEvent } from '@core/utils/ga.utils'
 import { Loading } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import GoogleLogo from '@icons/googleLogo.svg'
@@ -73,7 +74,17 @@ const SignIn = ({
   return (
     <LoginContainer forWithdrawal={forWithdrawal}>
       <Grid container>
-        <WithGoogleButton onClick={() => onLoginWithGoogleClick()}>
+        <WithGoogleButton
+          onClick={() => {
+            addGAEvent({
+              action: 'Sign in',
+              category: 'App - Sign in with google',
+              label: `sign_in_with_google_app`,
+            })
+
+            onLoginWithGoogleClick()
+          }}
+        >
           <Grid container alignItems="center" justify="center" wrap="nowrap">
             <SvgIcon src={GoogleLogo} width="2rem" height="auto" />
             <WithGoogleButtonText>Log in with Google</WithGoogleButtonText>
@@ -100,6 +111,13 @@ const SignIn = ({
             setEmailError(`Email is not valid`)
             return
           }
+
+          addGAEvent({
+            action: 'Sign in',
+            category: 'App - Sign in regular',
+            label: `sign_in_app`,
+          })
+
           setLoading(true)
           await onLoginButtonClick({ username: email, password })
           setLoading(false)
