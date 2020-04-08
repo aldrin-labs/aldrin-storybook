@@ -824,7 +824,7 @@ export const combineActiveTradesTable = ({
                       marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
                     }
                     total={entryOrderPrice * amount}
-                    trailing={entryDeviation}
+                    trailing={entryDeviation ? stripDigitPlaces(entryDeviation / leverage, 3) : false}
                     activatePrice={activatePrice}
                     red={red.new}
                     green={green.new}
@@ -1159,7 +1159,7 @@ export const combineStrategiesHistoryTable = (
                       marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
                     }
                     total={entryOrderPrice * amount}
-                    trailing={entryDeviation}
+                    trailing={entryDeviation ? stripDigitPlaces(entryDeviation / leverage, 3) : false}
                     activatePrice={activatePrice}
                     red={red.new}
                     green={green.new}

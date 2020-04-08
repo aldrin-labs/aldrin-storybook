@@ -23,6 +23,7 @@ import {
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
+import { addGAEvent } from '@core/utils/ga.utils'
 
 interface IProps {
   selectedAccount: string
@@ -76,6 +77,14 @@ const TransferPopup = ({
             type: transferFromSpotToFutures ? 1 : 2,
           },
         },
+      })
+
+      addGAEvent({
+        action: 'Transfer balance',
+        category: 'App - Transfer balance',
+        label: `transfer_balance_from_${
+          transferFromSpotToFutures ? `spot` : `futures`
+        }`,
       })
 
       showFuturesTransfer(response.data.futuresTransfer)

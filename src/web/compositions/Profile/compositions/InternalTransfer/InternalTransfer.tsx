@@ -20,6 +20,7 @@ import {
   CoinOption,
   CoinSingleValue,
 } from '@sb/components/ReactSelectComponents/CoinOption'
+import { addGAEvent } from '@core/utils/ga.utils'
 
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps, ReactSelectOptionType } from './InternalTransfer.types'
@@ -91,6 +92,13 @@ const InternalTransfer = ({ ...props }: IProps) => {
     status: 'ERR' | 'OK'
     errorMessage: string
   }> => {
+
+    addGAEvent({
+      action: 'Internal transfer',
+      category: 'App - Internal transfer',
+      label: `internal_transfer_between_portfolios`,
+    })
+
     let result: {
       status: 'ERR' | 'OK'
       errorMessage: string

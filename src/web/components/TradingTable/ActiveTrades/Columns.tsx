@@ -51,7 +51,7 @@ export const EntryOrderColumn = ({
   pair: string
   side: string
   order: string
-  trailing: boolean
+  trailing: string | number
   amount: number
   activatePrice: number
   total: number
