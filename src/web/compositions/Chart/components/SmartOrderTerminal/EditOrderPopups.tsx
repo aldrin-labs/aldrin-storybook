@@ -1090,6 +1090,7 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       return {
         ...props.derivedState,
+        deviationPercentage: props.openFromTerminal ? props.derivedState.deviationPercentage : (props.derivedState.deviationPercentage / props.leverage).toFixed(3),
         initialMargin: (
           (props.derivedState.amount * props.derivedState.price) /
           props.leverage
@@ -1317,7 +1318,7 @@ export class EditEntryOrderPopup extends React.Component<
             </InputRowContainer>
 
             {isTrailingOn && (
-              <FormInputContainer title={'deviation'}>
+              <FormInputContainer title={'price deviation'}>
                 <InputRowContainer>
                   <Input
                     padding={'0 .8rem 0 0'}
@@ -1330,19 +1331,20 @@ export class EditEntryOrderPopup extends React.Component<
                       deviationPercentage
                     )}
                     onChange={(e) => {
-                      this.setState({ deviationPercentage: e.target.value })
+                      const value = e.target.value > (100 / leverage) ? stripDigitPlaces(100 / leverage, 3) : e.target.value
+                      this.setState({ deviationPercentage: value })
                     }}
                   />
 
                   <BlueSlider
                     disabled={!isTrailingOn}
-                    value={deviationPercentage}
+                    value={stripDigitPlaces(deviationPercentage * leverage, 3)}
                     sliderContainerStyles={{
                       width: '50%',
                       margin: '0 .8rem 0 .8rem',
                     }}
                     onChange={(value) => {
-                      this.setState({ deviationPercentage: value })
+                      this.setState({ deviationPercentage: stripDigitPlaces(value / leverage, 3) })
                     }}
                   />
                 </InputRowContainer>
@@ -1550,7 +1552,7 @@ export class EditEntryOrderPopup extends React.Component<
               <SendButton
                 type={'buy'}
                 onClick={() => {
-                  const transformedState = transformProperties(this.state)
+                  const transformedState = transformProperties({ ...this.state, deviationPercentage: (this.state.deviationPercentage * this.props.leverage).toFixed(3)})
                   const isValid = validate(transformedState, true)
 
                   if (isValid) {
