@@ -63,6 +63,8 @@ export const TradeInputContent = ({
   disabled = false,
   haveSelector = false,
   needTitle = false,
+  needPreSymbol = false,
+  preSymbol = '',
   title = '',
   symbol = '',
   value = '',
@@ -80,6 +82,8 @@ export const TradeInputContent = ({
   disabled?: boolean
   haveSelector?: boolean
   needTitle?: boolean
+  needPreSymbol?: boolean
+  preSymbol?: string
   title?: string
   symbol?: string
   value: string | number
@@ -99,6 +103,11 @@ export const TradeInputContent = ({
       style={{ position: 'relative' }}
     >
       {needTitle && <AbsoluteInputTitle>{title}</AbsoluteInputTitle>}
+      {needPreSymbol ? (
+        <UpdatedCoin style={{ width: 0 }} left={'2rem'}>
+          {preSymbol}
+        </UpdatedCoin>
+      ) : null}
       <TradeInput
         align={textAlign}
         type={type}
@@ -513,6 +522,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 )}
 
                 <BlueSlider
+                  showMarks
                   value={
                     isBuyType || !isSPOTMarket
                       ? values.total / (maxAmount / 100)
