@@ -6,12 +6,15 @@ const BlueSlider = ({
   max = 100,
   valueSymbol = '%',
   disabled = false,
+  showMarks = false,
   sliderContainerStyles,
   onChange,
 }: {
+  max?: number
   value: number
   valueSymbol?: string
   disabled?: boolean
+  showMarks?: boolean
   sliderContainerStyles?: CSSProperties
   onChange: (value: number) => void
 }) => {
@@ -23,13 +26,17 @@ const BlueSlider = ({
       disabled={disabled}
       value={value}
       valueSymbol={valueSymbol}
-      marks={{
-        0: {},
-        25: {},
-        50: {},
-        75: {},
-        100: {},
-      }}
+      marks={
+        showMarks
+          ? {
+              0: {},
+              25: {},
+              50: {},
+              75: {},
+              100: {},
+            }
+          : {}
+      }
       onChange={onChange}
       sliderContainerStyles={sliderContainerStyles}
       handleStyles={{
@@ -51,6 +58,9 @@ const BlueSlider = ({
       markTextSlyles={{
         color: '#7284A0;',
         fontSize: '1rem',
+      }}
+      railStyle={{
+        backgroundColor: showMarks ? '#E0E5EC' : '#ABBAD1',
       }}
     />
   )
