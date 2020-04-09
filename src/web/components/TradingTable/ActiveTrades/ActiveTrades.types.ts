@@ -3,6 +3,7 @@ import { Key } from '@core/types/ChartTypes'
 
 type SmartOrderConditions = {
   pair: string
+  side: string
   marketType: number
   leverage: number
 }

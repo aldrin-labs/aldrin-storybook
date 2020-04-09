@@ -433,6 +433,36 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     )
   }
 
+  getEntryPrice = () => {
+    const { selectedTrade } = this.state
+    const { currencyPair, marketType } = this.props
+
+    const currentPrice = (
+      this.state.prices.find(
+        (priceObj) => priceObj.pair === `${currencyPair}:${marketType}:binance`
+      ) || { price: 0 }
+    ).price
+
+    let price =
+      selectedTrade.conditions.entryOrder.orderType === 'market' &&
+      !!selectedTrade.conditions.entryOrder.activatePrice &&
+      selectedTrade.conditions.entryOrder.activatePrice !== 0
+        ? currentPrice
+        : selectedTrade.conditions.entryOrder.price
+
+    if (selectedTrade.conditions.entryOrder.activatePrice >= 0) {
+      price =
+        selectedTrade.conditions.entryOrder.side === 'buy'
+          ? price *
+            (1 + selectedTrade.conditions.entryOrder.entryDeviation / 100)
+          : price *
+            (1 - selectedTrade.conditions.entryOrder.entryDeviation / 100)
+    }
+
+    console.log('price', price)
+    return price
+  }
+
   render() {
     const {
       activeStrategiesProcessedData,
@@ -450,6 +480,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       marketType,
       allKeys,
       specificPair,
+      pricePrecision,
       quantityPrecision,
       updateEntryPointStrategyMutation,
       updateStopLossStrategyMutation,
@@ -572,6 +603,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           selectedTrade.conditions && (
             <EditTakeProfitPopup
               open={editTrade === 'takeProfit'}
+              price={this.getEntryPrice()}
+              pricePrecision={pricePrecision}
+              pair={selectedTrade.conditions.pair.split('_')}
+              side={selectedTrade.conditions.side}
+              leverage={selectedTrade.conditions.leverage}
               handleClose={() => this.setState({ editTrade: null })}
               updateState={async (takeProfitProperties) => {
                 this.setState({ editTrade: null })
@@ -626,7 +662,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         {editTrade === 'stopLoss' && selectedTrade && selectedTrade.conditions && (
           <EditStopLossPopup
             open={editTrade === 'stopLoss'}
-            pair={selectedTrade.conditions.pair}
+            price={this.getEntryPrice()}
+            pricePrecision={pricePrecision}
+            pair={selectedTrade.conditions.pair.split('_')}
+            side={selectedTrade.conditions.side}
+            leverage={selectedTrade.conditions.leverage}
             handleClose={() => this.setState({ editTrade: null })}
             updateState={async (stopLossProperties) => {
               this.setState({ editTrade: null })
