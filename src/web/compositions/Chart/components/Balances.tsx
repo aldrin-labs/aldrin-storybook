@@ -14,7 +14,10 @@ import { Key, FundsType } from '@core/types/ChartTypes'
 
 import { addMainSymbol } from '@sb/components/index'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { importCoinIcon, onErrorImportCoinUrl } from '@core/utils/MarketCapUtils'
+import {
+  importCoinIcon,
+  onErrorImportCoinUrl,
+} from '@core/utils/MarketCapUtils'
 import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
 
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
@@ -125,18 +128,13 @@ export const Balances = ({
   isFuturesWarsKey: boolean
   futuresWarsRoundBet: number
 }) => {
-  useEffect(() => {
-    const unsubscribeFunction = subscribeToMore()
-    return () => {
-      unsubscribeFunction()
-    }
-  }, [])
-
   const [loading, setLoading] = useState(false)
   const [open, togglePopup] = useState(false)
   const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
     false
   )
+
+  console.log('getFundsQuery', getFundsQuery)
 
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
@@ -148,6 +146,8 @@ export const Balances = ({
 
     return { quantity, value }
   })
+
+  console.log('funds', funds)
 
   const [
     USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
@@ -201,7 +201,11 @@ export const Balances = ({
           xs={12}
           direction="column"
           wrap={'nowrap'}
-          style={{ height: 'calc(100% - 5rem)', padding: '0 .3rem' }}
+          style={{
+            height: 'calc(100% - 5rem)',
+            padding: '0 .3rem',
+            overflow: 'scroll',
+          }}
         >
           {isSPOTMarket ? (
             <>
