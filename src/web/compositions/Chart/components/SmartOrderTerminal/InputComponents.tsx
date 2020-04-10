@@ -109,12 +109,14 @@ export const FormInputContainer = ({
   needLine = true,
   needRightValue = false,
   rightValue = '',
+  lineMargin = '0 0 0 1rem',
   onValueClick = () => {},
 }: {
   title: string
   children: ReactNode
   padding?: string
   needLine?: boolean
+  lineWidth?: string
   needRightValue?: boolean
   rightValue?: string
   onValueClick?: any
@@ -124,6 +126,7 @@ export const FormInputContainer = ({
       <TradeInputHeader
         title={title}
         needLine={needLine}
+        lineMargin={lineMargin}
         needRightValue={needRightValue}
         rightValue={rightValue}
         onValueClick={onValueClick}
