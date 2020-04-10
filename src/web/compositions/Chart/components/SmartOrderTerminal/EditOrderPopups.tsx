@@ -166,6 +166,16 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
     return null
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.price !== this.props.price) {
+      this.updateTakeProfit(
+        this.state.isTrailingOn
+          ? this.state.activatePrice
+          : this.state.pricePercentage
+      )
+    }
+  }
+
   updateTakeProfit = (percentage) => {
     const { side, price, pricePrecision, leverage } = this.props
     const takeProfitPrice =
@@ -760,6 +770,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     isForcedStopOn: false,
     forcedPercentage: 0,
     stopLossPrice: 0,
+    forcedLossPrice: 0,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -769,6 +780,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
       const percentage = props.derivedState.isTrailingOn
         ? props.derivedState.activatePrice
         : props.derivedState.pricePercentage
+
       const stopLossPrice =
         side === 'buy'
           ? stripDigitPlaces(
@@ -780,17 +792,38 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               pricePrecision
             )
 
+      const forcedLossPrice =
+        side === 'buy'
+          ? stripDigitPlaces(
+              price *
+                (1 - props.derivedState.forcedPercentage / 100 / leverage),
+              pricePrecision
+            )
+          : stripDigitPlaces(
+              price *
+                (1 + props.derivedState.forcedPercentage / 100 / leverage),
+              pricePrecision
+            )
+
       return {
         stopLossPrice,
+        forcedLossPrice,
         ...props.derivedState,
       }
     }
     return null
   }
 
-  updateStopLoss = (percentage) => {
+  componentDidUpdate(prevProps) {
+    if (prevProps.price !== this.props.price) {
+      this.updateStopLoss(this.state.pricePercentage)
+      this.updateStopLoss(this.state.forcedPercentage, 'forcedLossPrice')
+    }
+  }
+
+  updateStopLoss = (percentage, field = 'stopLossPrice') => {
     const { side, price, pricePrecision, leverage } = this.props
-    const stopLossPrice =
+    const fieldPrice =
       side === 'buy'
         ? stripDigitPlaces(
             price * (1 - percentage / 100 / leverage),
@@ -801,7 +834,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             pricePrecision
           )
 
-    this.setState({ stopLossPrice })
+    this.setState({ [field]: fieldPrice })
   }
 
   render() {
@@ -1090,17 +1123,55 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                   <FormInputContainer title={'forced stop (loss %)'}>
                     <InputRowContainer>
                       <Input
+                        padding={'0'}
+                        width={'calc(32.5%)'}
+                        textAlign={'left'}
+                        symbol={pair[1]}
+                        value={this.state.forcedLossPrice}
+                        showErrors={true}
+                        isValid={this.props.validateField(
+                          true,
+                          this.state.forcedLossPrice
+                        )}
+                        inputStyles={{
+                          paddingLeft: '1rem',
+                        }}
+                        onChange={(e) => {
+                          const percentage =
+                            side === 'buy'
+                              ? (1 - e.target.value / price) * 100 * leverage
+                              : -(1 - e.target.value / price) * 100 * leverage
+
+                          this.setState({
+                            forcedPercentage: stripDigitPlaces(
+                              percentage < 0 ? 0 : percentage,
+                              2
+                            ),
+                            forcedLossPrice: e.target.value,
+                          })
+                        }}
+                      />
+
+                      <Input
                         showErrors={true}
                         isValid={this.props.validateField(
                           this.state.isForcedStopOn,
                           this.state.forcedPercentage
                         )}
-                        padding={'0 .8rem 0 0'}
-                        width={'calc(50%)'}
+                        preSymbol={'-'}
+                        textAlign={'left'}
+                        needPreSymbol={true}
+                        inputStyles={{
+                          paddingLeft: '2rem',
+                          paddingRight: 0,
+                        }}
+                        padding={'0 .8rem 0 .8rem'}
+                        width={'calc(17.5%)'}
                         symbol={'%'}
                         value={this.state.forcedPercentage}
                         onChange={(e) => {
                           this.setState({ forcedPercentage: e.target.value })
+                          this.updateStopLoss(e.target.value, 'forcedLossPrice')
                         }}
                       />
 
@@ -1112,6 +1183,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         }}
                         onChange={(value) => {
                           this.setState({ forcedPercentage: value })
+                          this.updateStopLoss(value, 'forcedLossPrice')
                         }}
                       />
                     </InputRowContainer>

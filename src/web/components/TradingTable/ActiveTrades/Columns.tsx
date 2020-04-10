@@ -317,12 +317,12 @@ export const StopLossColumn = ({
         </SubColumnValue>
       </div>
 
-      {/* <div>
+      <div>
         <SubColumnTitle>forced</SubColumnTitle>
         <SubColumnValue textAlign={'right'} color={forced ? green : red}>
-          {forced ? 'on' : 'off'}
+          {!!forced ? `${forced}%` : 'off'}
         </SubColumnValue>
-      </div> */}
+      </div>
 
       <div>
         <SubColumnTitle>order</SubColumnTitle>

@@ -28,6 +28,7 @@ export type TakeProfitType = {
   isTakeProfitOn: boolean
   type: 'market' | 'limit'
   pricePercentage: number
+  takeProfitPrice: number
   splitTargets: {
     isSplitTargetsOn: boolean
     volumePercentage: number
@@ -56,6 +57,7 @@ export type StopLossType = {
   isStopLossOn: boolean
   type: 'market' | 'limit'
   pricePercentage: number
+  stopLossPrice: number
   timeout: {
     isTimeoutOn: boolean
     whenLossOn: boolean
@@ -68,6 +70,7 @@ export type StopLossType = {
   forcedStop: {
     isForcedStopOn: boolean
     pricePercentage: number
+    forcedStopPrice: number
   }
 }
 

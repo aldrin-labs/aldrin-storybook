@@ -157,7 +157,7 @@ export const Line = styled.div`
   content: '';
   width: 100%;
   background-color: #e0e5ec;
-  margin-left: 1rem;
+  margin: ${(props) => props.lineMargin || '0 0 0 1rem'};
   height: 1px;
 
   @media (min-width: 1921px) {
