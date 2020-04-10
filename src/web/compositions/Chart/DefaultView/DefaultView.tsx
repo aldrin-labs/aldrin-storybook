@@ -246,6 +246,7 @@ export const DefaultView = (props: any) => {
               activeExchange={activeExchange}
               pair={baseQuoteArr}
               quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
               priceFromOrderbook={priceFromOrderbook}
               marketType={marketType}
               showOrderResult={showOrderResult}
