@@ -37,6 +37,7 @@ export const TradeInputHeader = ({
   title = 'Input',
   padding = '0 0 .8rem 0',
   needLine = true,
+  lineMargin,
   needRightValue = false,
   rightValue = 'Value',
   onValueClick = () => {},
@@ -47,7 +48,7 @@ export const TradeInputHeader = ({
       padding={padding}
     >
       <SeparateInputTitle>{title}</SeparateInputTitle>
-      {needLine && <Line />}
+      {needLine && <Line lineMargin={lineMargin} />}
       {needRightValue && (
         <BlueInputTitle onClick={() => onValueClick()}>
           {rightValue}
