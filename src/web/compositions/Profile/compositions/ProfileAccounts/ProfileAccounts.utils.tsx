@@ -134,7 +134,7 @@ export const transformData = (
               }}
             >
               {String(
-                dayjs.unix(row.date / 1000).format('MMM, DD, YYYY')
+                dayjs.unix(row.date / 1000).format('MMM DD, YYYY')
               ).replace(/-/g, '.')}
             </span>
             <span style={{ color: '#ABBAD1' }}>
@@ -156,7 +156,7 @@ export const transformData = (
               }}
             >
               {String(
-                dayjs.unix(row.lastUpdate).format('MMM, DD, YYYY')
+                dayjs.unix(row.lastUpdate).format('MMM DD, YYYY')
               ).replace(/-/g, '.')}
             </span>
             <span style={{ color: '#ABBAD1' }}>
