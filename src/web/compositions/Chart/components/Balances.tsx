@@ -134,8 +134,6 @@ export const Balances = ({
     false
   )
 
-  console.log('getFundsQuery', getFundsQuery)
-
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
     const asset = getFundsQuery.getFunds.find(
@@ -146,8 +144,6 @@ export const Balances = ({
 
     return { quantity, value }
   })
-
-  console.log('funds', funds)
 
   const [
     USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
