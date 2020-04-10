@@ -39,7 +39,7 @@ const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
   return (
     <SquarePopup ref={inputRef}>
       <PopupDateContainer>
-        {dayjs(date).format('DD MMM, YYYY')}
+        {dayjs(date).format('MMM DD, YYYY')}
       </PopupDateContainer>
       <PopupInfoContainer>
         <PopupInfoBlock isFirstBlock>
