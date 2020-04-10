@@ -222,7 +222,8 @@ export const InputWrapper = styled.div`
 export const Coin = styled(TradingItemTitle)`
   position: absolute;
   top: calc(50% + 0.1rem);
-  right: ${({ right }: { right?: string }) => right || '1rem'};
+  right: ${({ right }: { right?: string; left?: string }) => right || '1rem'};
+  left: ${({ left }: { left?: string; right?: string }) => left || ''};
   transform: translateY(-50%);
   text-transform: uppercase;
   z-index: 2;

@@ -135,18 +135,51 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
     whenProfitableSec: 0,
     isTrailingOn: false,
     deviationPercentage: 0,
+    takeProfitPrice: 0,
   }
 
   static getDerivedStateFromProps(props, state) {
     // get values from state if empty
 
     if (state.type === '') {
+      const { side, price, pricePrecision, leverage } = props
+      const percentage = props.derivedState.isTrailingOn
+        ? props.derivedState.activatePrice
+        : props.derivedState.pricePercentage
+      const takeProfitPrice =
+        side === 'sell'
+          ? stripDigitPlaces(
+              price * (1 - percentage / 100 / leverage),
+              pricePrecision
+            )
+          : stripDigitPlaces(
+              price * (1 + percentage / 100 / leverage),
+              pricePrecision
+            )
+
       return {
+        takeProfitPrice,
         ...props.derivedState,
       }
     }
 
     return null
+  }
+
+  updateTakeProfit = (percentage) => {
+    const { side, price, pricePrecision, leverage } = this.props
+    const takeProfitPrice =
+      side === 'sell'
+        ? stripDigitPlaces(
+            price * (1 - percentage / 100 / leverage),
+            pricePrecision
+          )
+        : stripDigitPlaces(
+            price * (1 + percentage / 100 / leverage),
+            pricePrecision
+          )
+
+    this.setState({ takeProfitPrice })
   }
 
   render() {
@@ -156,6 +189,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       updateState,
       validate,
       transformProperties,
+      pair,
+      side,
+      price,
+      leverage,
     } = this.props
 
     return (
@@ -213,6 +250,12 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   this.setState((prev) => ({
                     isTimeoutOn: false,
                   }))
+
+                  this.updateTakeProfit(
+                    this.state.isTrailingOn
+                      ? this.state.pricePercentage
+                      : this.state.activatePrice
+                  )
                 }}
               >
                 Trailing take a profit
@@ -253,22 +296,63 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {!this.state.isTrailingOn && (
               <InputRowContainer>
-                <FormInputContainer title={'profit'}>
+                <FormInputContainer title={'stop price'}>
                   <InputRowContainer>
                     <Input
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(55%)'}
-                      symbol={'%'}
+                      textAlign={'left'}
+                      padding={'0'}
+                      width={'calc(32.5%)'}
+                      symbol={pair[1]}
+                      value={this.state.takeProfitPrice}
+                      inputStyles={{
+                        paddingRight: '0',
+                        paddingLeft: '1rem',
+                      }}
+                      showErrors={true}
+                      isValid={this.props.validateField(
+                        true,
+                        this.state.takeProfitPrice
+                      )}
+                      onChange={(e) => {
+                        const percentage =
+                          side === 'sell'
+                            ? (1 - e.target.value / price) * 100 * leverage
+                            : -(1 - e.target.value / price) * 100 * leverage
+
+                        this.setState({
+                          pricePercentage: stripDigitPlaces(
+                            percentage < 0 ? 0 : percentage,
+                            2
+                          ),
+                          takeProfitPrice: e.target.value,
+                        })
+                      }}
+                    />
+                    <Input
+                      padding={'0 .8rem 0 .8rem'}
+                      width={'calc(17.5%)'}
+                      preSymbol={'+'}
+                      textAlign={'left'}
+                      needPreSymbol={true}
+                      inputStyles={{
+                        paddingRight: '0',
+                        paddingLeft: '2rem',
+                      }}
                       showErrors={
                         !this.state.isSplitTargetsOn && !this.state.isTrailingOn
                       }
-                      value={this.state.pricePercentage > 100 ? 100 : this.state.pricePercentage}
+                      value={
+                        this.state.pricePercentage > 100
+                          ? 100
+                          : this.state.pricePercentage
+                      }
                       isValid={this.props.validateField(
                         true,
                         this.state.pricePercentage
                       )}
                       onChange={(e) => {
                         this.setState({ pricePercentage: e.target.value })
+                        this.updateTakeProfit(e.target.value)
                       }}
                     />
 
@@ -280,6 +364,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                       onChange={(value) => {
                         this.setState({ pricePercentage: value })
+                        this.updateTakeProfit(value)
                       }}
                     />
                   </InputRowContainer>
@@ -289,15 +374,48 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTrailingOn && (
               <>
-                <FormInputContainer title={`activate price (%)`}>
+                <FormInputContainer title={`activate price`}>
                   <InputRowContainer>
                     <Input
+                      textAlign={'left'}
+                      padding={'0'}
+                      width={'calc(32.5%)'}
+                      symbol={pair[1]}
+                      value={this.state.takeProfitPrice}
+                      inputStyles={{
+                        paddingRight: '0',
+                        paddingLeft: '1rem',
+                      }}
+                      onChange={(e) => {
+                        const percentage =
+                          side === 'sell'
+                            ? (1 - e.target.value / price) * 100 * leverage
+                            : -(1 - e.target.value / price) * 100 * leverage
+
+                        this.setState({
+                          activatePrice: stripDigitPlaces(
+                            percentage < 0 ? 0 : percentage,
+                            2
+                          ),
+                          takeProfitPrice: e.target.value,
+                        })
+                      }}
+                    />
+                    <Input
                       symbol={'%'}
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(50%)'}
+                      padding={'0 .8rem 0 .8rem'}
+                      width={'calc(17.5%)'}
+                      preSymbol={'+'}
+                      textAlign={'left'}
+                      needPreSymbol={true}
+                      inputStyles={{
+                        paddingRight: '0',
+                        paddingLeft: '2rem',
+                      }}
                       value={this.state.activatePrice}
                       onChange={(e) => {
                         this.setState({ activatePrice: e.target.value })
+                        this.updateTakeProfit(e.target.value)
                       }}
                     />
                     <BlueSlider
@@ -308,6 +426,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                       onChange={(value) => {
                         this.setState({ activatePrice: value })
+                        this.updateTakeProfit(value)
                       }}
                     />
                   </InputRowContainer>
@@ -640,16 +759,49 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     whenLossableSec: 0,
     isForcedStopOn: false,
     forcedPercentage: 0,
+    stopLossPrice: 0,
   }
 
   static getDerivedStateFromProps(props, state) {
     // get values from state if empty
     if (state.type === '') {
+      const { side, price, pricePrecision, leverage } = props
+      const percentage = props.derivedState.isTrailingOn
+        ? props.derivedState.activatePrice
+        : props.derivedState.pricePercentage
+      const stopLossPrice =
+        side === 'buy'
+          ? stripDigitPlaces(
+              price * (1 - percentage / 100 / leverage),
+              pricePrecision
+            )
+          : stripDigitPlaces(
+              price * (1 + percentage / 100 / leverage),
+              pricePrecision
+            )
+
       return {
+        stopLossPrice,
         ...props.derivedState,
       }
     }
     return null
+  }
+
+  updateStopLoss = (percentage) => {
+    const { side, price, pricePrecision, leverage } = this.props
+    const stopLossPrice =
+      side === 'buy'
+        ? stripDigitPlaces(
+            price * (1 - percentage / 100 / leverage),
+            pricePrecision
+          )
+        : stripDigitPlaces(
+            price * (1 + percentage / 100 / leverage),
+            pricePrecision
+          )
+
+    this.setState({ stopLossPrice })
   }
 
   render() {
@@ -659,6 +811,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
       updateState,
       transformProperties,
       validate,
+      leverage,
+      side,
+      pair,
+      price,
     } = this.props
 
     return (
@@ -730,20 +886,58 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             </InputRowContainer>
 
             <InputRowContainer>
-              <FormInputContainer title={'loss'}>
+              <FormInputContainer title={'stop price'}>
                 <InputRowContainer>
                   <Input
-                    padding={'0 .8rem 0 0'}
-                    width={'calc(50%)'}
+                    padding={'0'}
+                    width={'calc(32.5%)'}
+                    textAlign={'left'}
+                    symbol={pair[1]}
+                    value={this.state.stopLossPrice}
+                    showErrors={true}
+                    isValid={this.props.validateField(
+                      true,
+                      this.state.pricePercentage
+                    )}
+                    inputStyles={{
+                      paddingLeft: '1rem',
+                    }}
+                    onChange={(e) => {
+                      const percentage =
+                        side === 'buy'
+                          ? (1 - e.target.value / price) * 100 * leverage
+                          : -(1 - e.target.value / price) * 100 * leverage
+
+                      this.setState({
+                        pricePercentage: stripDigitPlaces(
+                          percentage < 0 ? 0 : percentage,
+                          2
+                        ),
+                        stopLossPrice: e.target.value,
+                      })
+                    }}
+                  />
+
+                  <Input
+                    padding={'0 .8rem 0 .8rem'}
+                    width={'calc(17.5%)'}
                     symbol={'%'}
+                    preSymbol={'-'}
+                    textAlign={'left'}
+                    needPreSymbol={true}
                     showErrors={true}
                     value={this.state.pricePercentage}
                     isValid={this.props.validateField(
                       true,
                       this.state.pricePercentage
                     )}
+                    inputStyles={{
+                      paddingLeft: '2rem',
+                      paddingRight: 0,
+                    }}
                     onChange={(e) => {
                       this.setState({ pricePercentage: e.target.value })
+                      this.updateStopLoss(e.target.value)
                     }}
                   />
 
@@ -755,6 +949,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                     }}
                     onChange={(value) => {
                       this.setState({ pricePercentage: value })
+                      this.updateStopLoss(value)
                     }}
                   />
                 </InputRowContainer>
@@ -819,11 +1014,11 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                   </SubBlocksContainer> */}
 
                   <SubBlocksContainer>
-                    <InputRowContainer>
+                    {/* <InputRowContainer>
                       <TimeoutTitle>When in loss</TimeoutTitle>
-                    </InputRowContainer>
+                    </InputRowContainer> */}
                     <InputRowContainer>
-                      <SCheckbox
+                      {/* <SCheckbox
                         checked={this.state.whenLossableOn}
                         onChange={() => {
                           this.setState((prev) => ({
@@ -835,9 +1030,9 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           }))
                         }}
                         style={{ padding: '0 .4rem 0 0' }}
-                      />
+                      /> */}
                       <Input
-                        width={'calc(55% - .4rem)'}
+                        width={'calc(75% - .4rem)'}
                         value={this.state.whenLossableSec}
                         showErrors={this.state.whenLossableOn}
                         isValid={this.props.validateField(
@@ -851,10 +1046,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                        disabled={!this.state.whenLossableOn}
+                        // disabled={!this.state.whenLossableOn}
                       />
                       <Select
-                        width={'calc(30% - .4rem)'}
+                        width={'calc(25% - .4rem)'}
                         value={this.state.whenLossableMode}
                         inputStyles={{
                           borderTopLeftRadius: 0,
@@ -863,11 +1058,26 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         onChange={(e) => {
                           this.setState({ whenLossableMode: e.target.value })
                         }}
-                        isDisabled={!this.state.whenLossableOn}
+                        // isDisabled={!this.state.whenLossableOn}
                       >
                         <option>sec</option>
                         <option>min</option>
                       </Select>
+                    </InputRowContainer>
+                  </SubBlocksContainer>
+                  <SubBlocksContainer>
+                    <InputRowContainer>
+                      <BlueSlider
+                        max={60}
+                        value={this.state.whenLossableSec}
+                        sliderContainerStyles={{
+                          width: '100%',
+                          margin: '0 0rem 0 0',
+                        }}
+                        onChange={(value) => {
+                          this.setState({ whenLossableSec: value })
+                        }}
+                      />
                     </InputRowContainer>
                   </SubBlocksContainer>
                 </InputRowContainer>
@@ -1090,7 +1300,11 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       return {
         ...props.derivedState,
-        deviationPercentage: props.openFromTerminal ? props.derivedState.deviationPercentage : (props.derivedState.deviationPercentage / props.leverage).toFixed(3),
+        deviationPercentage: props.openFromTerminal
+          ? props.derivedState.deviationPercentage
+          : (props.derivedState.deviationPercentage / props.leverage).toFixed(
+              3
+            ),
         initialMargin: (
           (props.derivedState.amount * props.derivedState.price) /
           props.leverage
@@ -1331,7 +1545,10 @@ export class EditEntryOrderPopup extends React.Component<
                       deviationPercentage
                     )}
                     onChange={(e) => {
-                      const value = e.target.value > (100 / leverage) ? stripDigitPlaces(100 / leverage, 3) : e.target.value
+                      const value =
+                        e.target.value > 100 / leverage
+                          ? stripDigitPlaces(100 / leverage, 3)
+                          : e.target.value
                       this.setState({ deviationPercentage: value })
                     }}
                   />
@@ -1344,7 +1561,12 @@ export class EditEntryOrderPopup extends React.Component<
                       margin: '0 .8rem 0 .8rem',
                     }}
                     onChange={(value) => {
-                      this.setState({ deviationPercentage: stripDigitPlaces(value / leverage, 3) })
+                      this.setState({
+                        deviationPercentage: stripDigitPlaces(
+                          value / leverage,
+                          3
+                        ),
+                      })
                     }}
                   />
                 </InputRowContainer>
@@ -1552,7 +1774,12 @@ export class EditEntryOrderPopup extends React.Component<
               <SendButton
                 type={'buy'}
                 onClick={() => {
-                  const transformedState = transformProperties({ ...this.state, deviationPercentage: (this.state.deviationPercentage * this.props.leverage).toFixed(3)})
+                  const transformedState = transformProperties({
+                    ...this.state,
+                    deviationPercentage: (
+                      this.state.deviationPercentage * this.props.leverage
+                    ).toFixed(3),
+                  })
                   const isValid = validate(transformedState, true)
 
                   if (isValid) {
