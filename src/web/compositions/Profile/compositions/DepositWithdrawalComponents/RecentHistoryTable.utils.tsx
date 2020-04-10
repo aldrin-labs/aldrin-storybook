@@ -60,7 +60,7 @@ export const combineRecentHistoryTable = (
           render: (
             <div>
               <span style={{ display: 'block' }}>
-                {String(dayjs(date * 1000).format('DD-MM-YYYY')).replace(/-/g, '.')}
+                {String(dayjs(date * 1000).format('MMM DD, YYYY')).replace(/-/g, '.')}
               </span>
               <span style={{ color: '#7284A0' }}>
                 {dayjs(date * 1000).format('LT')}
