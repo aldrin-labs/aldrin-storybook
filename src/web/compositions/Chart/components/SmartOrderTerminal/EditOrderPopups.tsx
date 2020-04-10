@@ -192,7 +192,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       pair,
       side,
       price,
-      takeProfitPrice,
+      leverage,
     } = this.props
 
     return (
@@ -315,7 +315,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       )}
                       onChange={(e) => {
                         const percentage =
-                          side === 'buy'
+                          side === 'sell'
                             ? (1 - e.target.value / price) * 100 * leverage
                             : -(1 - e.target.value / price) * 100 * leverage
 
@@ -352,9 +352,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       )}
                       onChange={(e) => {
                         this.setState({ pricePercentage: e.target.value })
-                        if (!this.state.isTrailingOn) {
-                          this.updateTakeProfit(e.target.value)
-                        }
+                        this.updateTakeProfit(e.target.value)
                       }}
                     />
 
@@ -366,9 +364,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                       onChange={(value) => {
                         this.setState({ pricePercentage: value })
-                        if (!this.state.isTrailingOn) {
-                          this.updateTakeProfit(value)
-                        }
+                        this.updateTakeProfit(value)
                       }}
                     />
                   </InputRowContainer>
@@ -392,7 +388,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                       onChange={(e) => {
                         const percentage =
-                          side === 'buy'
+                          side === 'sell'
                             ? (1 - e.target.value / price) * 100 * leverage
                             : -(1 - e.target.value / price) * 100 * leverage
 

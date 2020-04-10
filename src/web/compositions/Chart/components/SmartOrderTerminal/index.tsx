@@ -2006,7 +2006,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         }}
                         onChange={(e) => {
                           const percentage =
-                            entryPoint.order.side === 'buy'
+                            entryPoint.order.side === 'sell'
                               ? (1 - e.target.value / priceForCalculate) *
                                 100 *
                                 entryPoint.order.leverage
@@ -2109,7 +2109,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           }}
                           onChange={(e) => {
                             const percentage =
-                              entryPoint.order.side === 'buy'
+                              entryPoint.order.side === 'sell'
                                 ? (1 - e.target.value / priceForCalculate) *
                                   100 *
                                   entryPoint.order.leverage
