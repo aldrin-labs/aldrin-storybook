@@ -274,6 +274,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     this.updateStopLossAndTakeProfitPrices({
       price: this.props.price,
       stopLossPercentage: result.stopLoss.pricePercentage,
+      takeProfitPercentage: result.takeProfit.trailingTAP.isTrailingOn
+        ? result.takeProfit.trailingTAP.activatePrice
+        : result.takeProfit.pricePercentage,
+      deviationPercentage: result.entryPoint.trailing.deviationPercentage,
     })
   }
 
@@ -1836,10 +1840,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               )}
               <InputRowContainer
                 style={{
-                  width: 'calc(100%)',
+                  width: 'calc(100% - 2.4rem)',
                   margin: '0 auto',
-                  position: 'relative',
-                  bottom: '0',
+                  position: 'absolute',
+                  bottom: '.5rem',
                 }}
               >
                 <SendButton
