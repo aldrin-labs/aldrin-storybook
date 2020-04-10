@@ -374,7 +374,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTrailingOn && (
               <>
-                <FormInputContainer title={`activate price (%)`}>
+                <FormInputContainer title={`activate price`}>
                   <InputRowContainer>
                     <Input
                       textAlign={'left'}

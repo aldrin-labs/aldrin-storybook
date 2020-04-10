@@ -2086,7 +2086,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {takeProfit.trailingTAP.isTrailingOn && (
                   <>
-                    <FormInputContainer title={'stop price'}>
+                    <FormInputContainer title={'activation price'}>
                       <InputRowContainer>
                         <Input
                           textAlign={'left'}
