@@ -30,6 +30,13 @@ export interface IProps {
     }
   }) => Promise<void>
   selectStyles: React.CSSProperties
+  updateFavoritePairs: (variableObj: {
+    variables: {
+      input: {
+        favoritePairs: string[]
+      }
+    }
+  }) => Promise<any>
 }
 
 export interface IState {
