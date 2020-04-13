@@ -21,6 +21,7 @@ export type EntryPointType = {
   trailing: {
     isTrailingOn: boolean
     deviationPercentage: number
+    trailingDeviationPrice: number
   }
 }
 

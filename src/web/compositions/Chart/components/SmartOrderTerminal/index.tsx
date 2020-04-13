@@ -98,6 +98,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       trailing: {
         isTrailingOn: false,
         deviationPercentage: 0,
+        trailingDeviationPrice: 0,
       },
     },
     takeProfit: {
@@ -189,7 +190,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const {
       getStrategySettingsQuery,
       marketType,
-      price,
       componentLeverage,
     } = this.props
 
@@ -222,6 +222,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           leverage: componentLeverage,
         },
         trailing: {
+          trailingDeviationPrice: 0,
           ...prevState.entryPoint.trailing,
           ...(result.entryPoint
             ? {
@@ -260,7 +261,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       return
     }
 
-    const newTotal = result.entryPoint.order.amount * price
+    let price =
+      (result.entryPoint.order.type === 'market' &&
+        !result.entryPoint.trailing.isTrailingOn) ||
+      !result.entryPoint.order.price
+        ? this.props.price
+        : result.entryPoint.order.price
+
+    const newTotal = result.entryPoint.order.amount * this.props.price
     const newAmount =
       marketType === 0
         ? result.entryPoint.order.amount
@@ -283,13 +291,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
 
     this.updateStopLossAndTakeProfitPrices({
-      price: this.props.price,
+      price,
       stopLossPercentage: result.stopLoss.pricePercentage,
       forcedStopPercentage: result.stopLoss.forcedStop.pricePercentage,
       takeProfitPercentage: result.takeProfit.trailingTAP.isTrailingOn
         ? result.takeProfit.trailingTAP.activatePrice
         : result.takeProfit.pricePercentage,
-      deviationPercentage: result.entryPoint.trailing.deviationPercentage,
+      deviationPercentage:
+        result.entryPoint.trailing.deviationPercentage / componentLeverage,
+      includeDeviation: true,
     })
   }
 
@@ -532,6 +542,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     leverage,
     side,
     deviationPercentage,
+    includeDeviation = false,
   }: {
     price?: number
     stopLossPercentage?: number
@@ -540,6 +551,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     leverage?: number
     side?: string
     deviationPercentage?: number
+    includeDeviation?: boolean
   }) => {
     const { pricePrecision } = this.props
     const { entryPoint, stopLoss, takeProfit } = this.state
@@ -552,6 +564,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
+
+    console.log('price 1', price)
 
     leverage = !!leverage ? leverage : entryPoint.order.leverage
 
@@ -573,7 +587,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       ? deviationPercentage
       : entryPoint.trailing.deviationPercentage
 
-    if (entryPoint.trailing.isTrailingOn) {
+    const trailingDeviationPrice =
+      side === 'buy'
+        ? stripDigitPlaces(
+            price * (1 + deviationPercentage / 100),
+            pricePrecision
+          )
+        : stripDigitPlaces(
+            price * (1 - deviationPercentage / 100),
+            pricePrecision
+          )
+
+    if (entryPoint.trailing.isTrailingOn || includeDeviation) {
       price =
         side === 'buy'
           ? price * (1 + deviationPercentage / 100)
@@ -620,6 +645,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       'forcedStop',
       'forcedStopPrice',
       forcedStopPrice
+    )
+    this.updateSubBlockValue(
+      'entryPoint',
+      'trailing',
+      'trailingDeviationPrice',
+      trailingDeviationPrice
     )
   }
 
@@ -1096,9 +1127,46 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <FormInputContainer title={'price deviation (%)'}>
                     <InputRowContainer>
                       <Input
-                        padding={'0 .8rem 0 0'}
-                        width={'calc(50%)'}
+                        padding={'0'}
+                        width={'calc(32.5%)'}
+                        textAlign={'left'}
+                        symbol={pair[1]}
+                        value={entryPoint.trailing.trailingDeviationPrice}
+                        showErrors={showErrors}
+                        isValid={this.validateField(
+                          true,
+                          entryPoint.trailing.trailingDeviationPrice
+                        )}
+                        inputStyles={{
+                          paddingLeft: '1rem',
+                        }}
+                        onChange={(e) => {
+                          const percentage =
+                            entryPoint.order.side === 'sell'
+                              ? (1 - e.target.value / priceForCalculate) * 100
+                              : -(1 - e.target.value / priceForCalculate) * 100
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'trailing',
+                            'deviationPercentage',
+                            stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'trailing',
+                            'trailingDeviationPrice',
+                            e.target.value
+                          )
+                        }}
+                      />
+
+                      <Input
+                        padding={'0 .8rem 0 .8rem'}
+                        width={'calc(17.5%)'}
                         symbol={'%'}
+                        textAlign={'left'}
                         pattern={'[0-9]+.[0-9]{3}'}
                         type={'text'}
                         value={entryPoint.trailing.deviationPercentage}
@@ -1107,6 +1175,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         //   entryPoint.trailing.isTrailingOn,
                         //   entryPoint.trailing.deviationPercentage
                         // )}
+                        inputStyles={{
+                          paddingLeft: '2rem',
+                          paddingRight: 0,
+                        }}
                         onChange={(e) => {
                           const value =
                             e.target.value > 100 / entryPoint.order.leverage
@@ -1815,7 +1887,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               showErrors={showErrors && stopLoss.isStopLossOn}
                               isValid={this.validateField(
                                 true,
-                                stopLoss.pricePercentage
+                                stopLoss.forcedStop.forcedStopPrice
                               )}
                               inputStyles={{
                                 paddingLeft: '1rem',
@@ -1894,7 +1966,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <SubBlocksContainer>
                         <BlueSlider
                           max={60}
-                          value={stopLoss.timeout.whenLossableSec}
+                          value={
+                            stopLoss.timeout.whenLossableSec > 60
+                              ? 60
+                              : stopLoss.timeout.whenLossableSec
+                          }
                           sliderContainerStyles={{
                             width: 'calc(100% - 1.2rem)',
                             margin: '0 1.2rem 0 0rem',
@@ -2648,13 +2724,31 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               leverage={entryPoint.order.leverage}
               open={editPopup === 'takeProfit'}
               handleClose={() => this.setState({ editPopup: null })}
-              updateState={(takeProfitProperties) =>
+              updateState={(takeProfitProperties) => {
+                const price = this.getEntryPrice()
+                const percentage = takeProfitProperties.isTrailingOn
+                  ? takeProfitProperties.activatePrice
+                  : takeProfitProperties.pricePercentage
+                const takeProfitPrice =
+                  entryPoint.order.side === 'sell'
+                    ? stripDigitPlaces(
+                        price *
+                          (1 - percentage / 100 / entryPoint.order.leverage),
+                        pricePrecision
+                      )
+                    : stripDigitPlaces(
+                        price *
+                          (1 + percentage / 100 / entryPoint.order.leverage),
+                        pricePrecision
+                      )
+
                 this.setState({
-                  takeProfit: transformTakeProfitProperties(
-                    takeProfitProperties
-                  ),
+                  takeProfit: {
+                    takeProfitPrice,
+                    ...transformTakeProfitProperties(takeProfitProperties),
+                  },
                 })
-              }
+              }}
               derivedState={getTakeProfitObject(this.state.takeProfit)}
               validate={validateTakeProfit}
               transformProperties={transformTakeProfitProperties}
@@ -2672,11 +2766,60 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               leverage={entryPoint.order.leverage}
               open={editPopup === 'stopLoss'}
               handleClose={() => this.setState({ editPopup: null })}
-              updateState={(stopLossProperties) =>
+              updateState={(stopLossProperties) => {
+                const stopLossPercentage = stopLossProperties.pricePercentage
+                const forcedStopPercentage = stopLossProperties.forcedPercentage
+                const price = this.getEntryPrice()
+                const stopLossPrice =
+                  entryPoint.order.side === 'buy'
+                    ? stripDigitPlaces(
+                        price *
+                          (1 -
+                            stopLossPercentage /
+                              100 /
+                              entryPoint.order.leverage),
+                        pricePrecision
+                      )
+                    : stripDigitPlaces(
+                        price *
+                          (1 +
+                            stopLossPercentage /
+                              100 /
+                              entryPoint.order.leverage),
+                        pricePrecision
+                      )
+
+                const forcedStopPrice =
+                  entryPoint.order.side === 'buy'
+                    ? stripDigitPlaces(
+                        price *
+                          (1 -
+                            forcedStopPercentage /
+                              100 /
+                              entryPoint.order.leverage),
+                        pricePrecision
+                      )
+                    : stripDigitPlaces(
+                        price *
+                          (1 +
+                            forcedStopPercentage /
+                              100 /
+                              entryPoint.order.leverage),
+                        pricePrecision
+                      )
+
                 this.setState({
-                  stopLoss: transformStopLossProperties(stopLossProperties),
+                  stopLoss: {
+                    stopLossPrice,
+                    ...transformStopLossProperties(stopLossProperties),
+                    forcedStop: {
+                      forcedStopPrice,
+                      ...transformStopLossProperties(stopLossProperties)
+                        .forcedStop,
+                    },
+                  },
                 })
-              }
+              }}
               transformProperties={transformStopLossProperties}
               validate={validateStopLoss}
               derivedState={getStopLossObject(this.state.stopLoss)}
@@ -2712,14 +2855,33 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             <EditEntryOrderPopup
               openFromTerminal
               open={editPopup === 'entryOrder'}
-              pair={pair.join('_')}
               price={this.props.price}
+              pair={pair}
+              pricePrecision={pricePrecision}
+              side={entryPoint.order.side}
               marketType={marketType}
               leverage={entryPoint.order.leverage}
               funds={funds}
               transformProperties={transformEntryOrderProperties}
               handleClose={() => this.setState({ editPopup: null })}
-              updateState={(entryOrderProperties) =>
+              updateState={(entryOrderProperties) => {
+                const trailingDeviationPrice =
+                  entryPoint.order.side === 'buy'
+                    ? stripDigitPlaces(
+                        priceForCalculate *
+                          (1 +
+                            entryOrderProperties.trailing.deviationPercentage /
+                              100),
+                        pricePrecision
+                      )
+                    : stripDigitPlaces(
+                        priceForCalculate *
+                          (1 -
+                            entryOrderProperties.trailing.deviationPercentage /
+                              100),
+                        pricePrecision
+                      )
+
                 this.setState({
                   entryPoint: {
                     ...entryPoint,
@@ -2728,12 +2890,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       ...entryOrderProperties.order,
                     },
                     trailing: {
+                      trailingDeviationPrice,
                       ...entryPoint.trailing,
                       ...entryOrderProperties.trailing,
                     },
                   },
                 })
-              }
+              }}
               validate={validateEntryOrder}
               derivedState={getEntryOrderObject(entryPoint)}
               validateField={this.validateField}

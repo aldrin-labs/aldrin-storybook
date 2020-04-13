@@ -454,12 +454,21 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       price =
         selectedTrade.conditions.entryOrder.side === 'buy'
           ? price *
-            (1 + selectedTrade.conditions.entryOrder.entryDeviation / 100)
+            (1 +
+              selectedTrade.conditions.entryOrder.entryDeviation /
+                100 /
+                selectedTrade.conditions.leverage)
           : price *
-            (1 - selectedTrade.conditions.entryOrder.entryDeviation / 100)
+            (1 -
+              selectedTrade.conditions.entryOrder.entryDeviation /
+                100 /
+                selectedTrade.conditions.leverage)
     }
 
-    console.log('price', price)
+    if (!!selectedTrade.state.entryPrice) {
+      price = selectedTrade.state.entryPrice
+    }
+
     return price
   }
 
@@ -544,8 +553,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               }
               funds={processedFunds}
               quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
               open={editTrade === 'entryOrder'}
-              pair={selectedTrade.conditions.pair}
+              pair={selectedTrade.conditions.pair.split('_')}
+              side={selectedTrade.conditions.side}
               leverage={selectedTrade.conditions.leverage}
               marketType={selectedTrade.conditions.marketType}
               handleClose={() => this.setState({ editTrade: null })}
