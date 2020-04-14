@@ -16,7 +16,18 @@ export const selectWrapperColumnNames = [
   { label: '24H volume', id: '24hVolume' },
 ]
 
-export const getUpdatedFavoritePairsList = (clonedData: any, pair: string) => {
+export type GetSelectorSettingsType = {
+  getAccountSettings: {
+    selectorSettings: {
+      favoritePairs: string[]
+    }
+  }
+}
+
+export const getUpdatedFavoritePairsList = (
+  clonedData: GetSelectorSettingsType,
+  pair: string
+) => {
   const {
     getAccountSettings: {
       selectorSettings: { favoritePairs },
@@ -35,7 +46,7 @@ export const getUpdatedFavoritePairsList = (clonedData: any, pair: string) => {
 }
 
 export const updateFavoritePairsCache = (
-  clonedData: any,
+  clonedData: GetSelectorSettingsType,
   updatedFavoritePairsList: string[]
 ) => {
   client.writeQuery({
