@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, Typography, Button, Link, Input, Table } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { client } from '@core/graphql/apolloClient'
