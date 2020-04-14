@@ -80,7 +80,7 @@ export type Head = {
   label: string
   style?: object
   sortBy?: 'default' | (() => number)
-  isSortable: boolean
+  isSortable?: boolean
 }
 
 export type action = {
