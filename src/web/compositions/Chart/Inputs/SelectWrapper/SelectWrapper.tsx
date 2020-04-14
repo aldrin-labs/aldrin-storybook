@@ -1,5 +1,13 @@
 import React from 'react'
-import { Grid, Typography, Button, Link, Input, Table } from '@material-ui/core'
+import {
+  Grid,
+  Typography,
+  Button,
+  Link,
+  Input,
+  Table,
+  Theme,
+} from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
@@ -23,6 +31,21 @@ export type GetSelectorSettingsType = {
     }
   }
 }
+
+export type ISelectData = {
+  pair: string
+  price: number
+  price24hChange: number
+  volume24hChange: number
+}[]
+
+export type UpdateFavoritePairsMutationType = (variableObj: {
+  variables: {
+    input: {
+      favoritePairs: string[]
+    }
+  }
+}) => Promise<void>
 
 export const getUpdatedFavoritePairsList = (
   clonedData: GetSelectorSettingsType,
@@ -62,13 +85,7 @@ export const updateFavoritePairsCache = (
 }
 
 export const updateFavoritePairsHandler = async (
-  updateFavoritePairs: (variableObj: {
-    variables: {
-      input: {
-        favoritePairs: string[]
-      }
-    }
-  }) => Promise<void>,
+  updateFavoritePairs: UpdateFavoritePairsMutationType,
   pair: string
 ) => {
   const favoritePairsData = client.readQuery(getSelectorSettings)
@@ -87,22 +104,27 @@ export const updateFavoritePairsHandler = async (
   }
 }
 
-export const combineSelectWrapperData = (
-  data: {
-    pair: string
-    price: number
-    price24hChange: number
-    volume24hChange: number
-  }[],
-  favoritePairsMap: Map<string, string>,
-  updateFavoritePairs: (variableObj: {
+export const combineSelectWrapperData = ({
+  data,
+  favoritePairsMap,
+  updateFavoritePairsMutation,
+  previousData,
+  onSelectPair,
+  theme,
+}: {
+  data: ISelectData
+  favoritePairsMap: Map<string, string>
+  updateFavoritePairsMutation: (variableObj: {
     variables: {
       input: {
         favoritePairs: string[]
       }
     }
   }) => Promise<void>
-) => {
+  previousData?: ISelectData
+  onSelectPair: () => void
+  theme: Theme
+}) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -122,13 +144,15 @@ export const combineSelectWrapperData = (
 
     const isInFavoriteAlready = favoritePairsMap.has(pair)
 
+    const priceColor = !!previousData ? '' : '' 
+
     return {
       id: `${pair}`,
       favorite: {
         render: (
           <SvgIcon
             onClick={() =>
-              updateFavoritePairsHandler(updateFavoritePairs, pair)
+              updateFavoritePairsHandler(updateFavoritePairsMutation, pair)
             }
             src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
             width="1rem"
@@ -136,16 +160,101 @@ export const combineSelectWrapperData = (
           />
         ),
       },
+      pair: {
+        render: pair,
+        onClick: onSelectPair,
+      },
+      price: {
+        render: price,
+        onClick: onSelectPair,
+        style: { color: priceColor },
+      },
+      price24hChange: {
+        render: price24hChange,
+        onClick: onSelectPair,
+      },
+      volume24hChange: {
+        render: volume24hChange,
+        onClick: onSelectPair,
+      },
     }
   })
 
   return processedData
 }
 
+export interface IState {
+  processedSelectData: {
+    id: string
+    favorite: any
+    pair: any
+    price24hChange: any
+    volume24hChange: any
+  }[]
+}
+
+export interface IProps {
+  data: ISelectData
+  favoritePairsMap: Map<string, string>
+  updateFavoritePairsMutation: UpdateFavoritePairsMutationType
+  onSelectPair: () => void
+  theme: Theme
+}
+
 @withTheme()
-class SelectWrapper extends React.PureComponent {
+class SelectWrapper extends React.PureComponent<IProps, IState> {
+  state: IState = {
+    processedSelectData: [],
+  }
+
+  componentDidMount() {
+    const {
+      data,
+      favoritePairsMap,
+      updateFavoritePairsMutation,
+      onSelectPair,
+      theme,
+    } = this.props
+
+    const processedSelectData = combineSelectWrapperData({
+      data,
+      favoritePairsMap,
+      updateFavoritePairsMutation,
+      onSelectPair,
+      theme,
+    })
+
+    this.setState({
+      processedSelectData,
+    })
+  }
+
+  componentWillReceiveProps(nextProps: IProps) {
+    const {
+      data,
+      favoritePairsMap,
+      updateFavoritePairsMutation,
+      onSelectPair,
+      theme,
+    } = nextProps
+    const { data: prevPropsData } = this.props
+
+    const processedSelectData = combineSelectWrapperData({
+      data,
+      favoritePairsMap,
+      updateFavoritePairsMutation,
+      previousData: prevPropsData,
+      onSelectPair,
+      theme,
+    })
+
+    this.setState({
+      processedSelectData,
+    })
+  }
+
   render() {
-    const { selectWrapperData } = this.props
+    const { processedSelectData } = this.state
 
     return (
       <Grid>
@@ -167,7 +276,7 @@ class SelectWrapper extends React.PureComponent {
         <Grid>
           <TableWithSort
             emptyTableText={`No coins available`}
-            data={{ body: combineSelectWrapperData(selectWrapperData) }}
+            data={{ body: processedSelectData }}
             columnNames={selectWrapperColumnNames}
             withCheckboxes={false}
             style={{ borderRadius: 0, height: '100%' }}
