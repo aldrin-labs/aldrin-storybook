@@ -354,6 +354,7 @@ const renderCell = ({
         colSpan={cell.colspan}
         padding={padding}
         align={align}
+        onClick={cell.onClick}
       >
         {cell.render}
       </CustomTableCell>
