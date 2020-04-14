@@ -37,6 +37,13 @@ export interface IProps {
       }
     }
   }) => Promise<any>
+  getSelectorSettingsQuery: {
+    getAccountSettings: {
+      selectorSettings: {
+        favoritePairs: string[]
+      }
+    }
+  }
 }
 
 export interface IState {

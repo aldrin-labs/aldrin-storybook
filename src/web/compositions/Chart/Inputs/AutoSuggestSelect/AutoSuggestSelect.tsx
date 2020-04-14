@@ -7,6 +7,7 @@ import stableCoins from '@core/config/stableCoins'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
+import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 
 import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
@@ -80,7 +81,23 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         palette: { divider },
       },
       selectStyles,
+      getSelectorSettingsQuery,
     } = this.props
+
+    const {
+      getAccountSettings: {
+        selectorSettings: { favoritePairs },
+      },
+    } = getSelectorSettingsQuery
+
+    const favoritePairsMap = favoritePairs.reduce(
+      (acc: Map<string, string>, el: string) => {
+        acc.set(el, el)
+
+        return acc
+      },
+      new Map()
+    )
 
     const { getMarketsByExchange = [] } = data || { getMarketsByExchange: [] }
 
@@ -112,16 +129,22 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         label: symbol,
       }))
 
-      const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-      const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
 
-      const StableCoinsPairs = suggestions.filter(el => stableCoinsRegexp.test(el.label))
-      const BTCCoinsPairs = suggestions.filter(el => /BTC/g.test(el.label) && !stableCoinsRegexp.test(el.label))
-      const AltCoinsPairs = suggestions.filter(el => !altCoinsRegexp.test(el.label))
+    const StableCoinsPairs = suggestions.filter((el) =>
+      stableCoinsRegexp.test(el.label)
+    )
+    const BTCCoinsPairs = suggestions.filter(
+      (el) => /BTC/g.test(el.label) && !stableCoinsRegexp.test(el.label)
+    )
+    const AltCoinsPairs = suggestions.filter(
+      (el) => !altCoinsRegexp.test(el.label)
+    )
 
-      console.log('StableCoinsPairs', StableCoinsPairs)
-      console.log('BTCCoinsPairs', BTCCoinsPairs)
-      console.log('AltCoinsPairs', AltCoinsPairs)
+    console.log('StableCoinsPairs', StableCoinsPairs)
+    console.log('BTCCoinsPairs', BTCCoinsPairs)
+    console.log('AltCoinsPairs', AltCoinsPairs)
 
     return (
       <ExchangePair
@@ -160,6 +183,12 @@ export default compose(
     withTableLoader: true,
     centerAlign: false,
     placeholder: <TextInputLoader style={{ width: 100, margin: 0 }} />,
+  }),
+  queryRendererHoc({
+    query: getSelectorSettings,
+    withOutSpinner: true,
+    withTableLoader: true,
+    name: 'getSelectorSettingsQuery',
   }),
   queryRendererHoc({
     query: GET_VIEW_MODE,
