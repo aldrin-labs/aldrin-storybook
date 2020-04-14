@@ -176,6 +176,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             currencyPair,
             keys,
             quantityPrecision,
+            pricePrecision,
           } = that.props
 
           const activeStrategiesProcessedData = combineActiveTradesTable({
@@ -187,6 +188,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             prices: data.data.listenTablePrice,
             marketType,
             currencyPair,
+            pricePrecision,
             quantityPrecision,
           })
 
@@ -209,6 +211,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       specificPair,
       marketType,
       currencyPair,
+      pricePrecision,
       quantityPrecision,
     } = this.props
 
@@ -266,6 +269,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       prices: this.state.prices,
       marketType,
       currencyPair,
+      pricePrecision,
       quantityPrecision,
     })
 
@@ -316,6 +320,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       selectedKey,
       specificPair,
       allKeys,
+      pricePrecision,
       getActiveStrategiesQuery,
     } = nextProps
 
@@ -414,6 +419,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       keys,
       marketType,
       currencyPair,
+      pricePrecision,
       quantityPrecision,
     })
 

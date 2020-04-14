@@ -67,10 +67,11 @@ export const positionsColumnNames = (
   positionsRefetchInProcess
 ) => [
   { label: '#', id: 'index' },
-  { label: 'Pair', id: 'pair' },
+  { label: 'Pair/Side', id: 'pair' },
   // { label: 'Type', id: 'type' },
-  { label: 'Side', id: 'side' },
-  { label: 'Size', id: 'size' },
+  { label: 'Size', id: 'size', style: { textAlign: 'right' } },
+  { label: 'Margin', id: 'margin' },
+  // { label: 'M. Ratio', id: 'marginRation' },
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
   { label: 'Market Price', id: 'marketPrice' },

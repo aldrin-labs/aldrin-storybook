@@ -275,8 +275,8 @@ const getActiveOrderStatus = ({
 export const filterOpenOrders = ({ order, canceledOrders }) => {
   return (
     !canceledOrders.includes(order.info.orderId) &&
-    order.type &&
-    order.type !== 'market' &&
+    // sometimes we don't have order.type, also we want to filter market orders
+    (!order.type || (order.type && order.type !== 'market')) &&
     (order.status === 'open' ||
       order.status === 'placing' ||
       order.status === 'NEW' ||
@@ -388,20 +388,14 @@ export const combinePositionsTable = ({
                 onClick={() => changePairToSelected(symbol)}
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
+                  flexDirection: 'column',
                   cursor: 'pointer',
                 }}
               >
-                {pair[0]}/{pair[1]}
-              </div>
-            ),
-            contentToSort: symbol,
-            style: { opacity: needOpacity ? 0.5 : 1 },
-          },
-          // type: type,
-          side: {
-            render: (
-              <div>
+                <span>
+                  {pair[0]}/{pair[1]}
+                </span>
                 <span
                   style={{
                     display: 'block',
@@ -413,16 +407,23 @@ export const combinePositionsTable = ({
                 </span>
               </div>
             ),
-            style: {
-              color: side === 'buy long' ? green.new : red.new,
-              opacity: needOpacity ? 0.5 : 1,
-            },
+            contentToSort: symbol,
+            style: { opacity: needOpacity ? 0.5 : 1 },
           },
           size: {
             render: `${positionAmt} ${pair[0]}`,
             contentToSort: positionAmt,
-            style: { opacity: needOpacity ? 0.5 : 1 },
+            style: { opacity: needOpacity ? 0.5 : 1, textAlign: 'right' },
           },
+          margin: {
+            render: `${stripDigitPlaces(
+              (positionAmt / leverage) * entryPrice,
+              2
+            )} ${pair[1]}`,
+          },
+          // marginRation: {
+          //   render: `40%`,
+          // },
           leverage: {
             render: `X${leverage}`,
             contentToSort: leverage,
@@ -447,7 +448,7 @@ export const combinePositionsTable = ({
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
-              minWidth: '100px',
+              maxWidth: '70px',
             },
             contentToSort: marketPrice,
           },
@@ -466,18 +467,16 @@ export const combinePositionsTable = ({
                 style={{ whiteSpace: 'nowrap' }}
                 color={profitPercentage > 0 ? green.new : red.new}
               >
-                {profitPercentage && profitAmount
-                  ? `${profitAmount < 0 ? '-' : ''}${Math.abs(
-                      Number(profitAmount.toFixed(3))
-                    )} ${pair[1]} / ${
-                      profitPercentage < 0 ? '-' : ''
-                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`
-                  : '-'}
+                {`${profitAmount < 0 ? '-' : ''}${Math.abs(
+                  Number(profitAmount.toFixed(3))
+                )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
+                  Number(profitPercentage.toFixed(2))
+                )}%`}
               </SubColumnValue>
             ) : (
               `0 ${pair[1]} / 0%`
             ),
-            style: { opacity: needOpacity ? 0.5 : 1, minWidth: '150px' },
+            style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,
           },
           tooltipTitle: keyName,
@@ -494,7 +493,7 @@ export const combinePositionsTable = ({
                 />
               </div>
             ),
-            colspan: 9,
+            colspan: 10,
             style: {
               opacity: needOpacity ? 0.5 : 1,
               visibility: needOpacity ? 'hidden' : 'visible',
@@ -520,6 +519,7 @@ export const combineActiveTradesTable = ({
   prices,
   marketType,
   currencyPair,
+  pricePrecision,
   quantityPrecision,
   keys,
 }: {
@@ -530,6 +530,7 @@ export const combineActiveTradesTable = ({
   prices: { pair: string; price: number }[]
   marketType: number
   currencyPair: string
+  pricePrecision: number
   quantityPrecision: number
   keys: Key[]
 }) => {
@@ -667,7 +668,18 @@ export const combineActiveTradesTable = ({
           contentToSort: side,
         },
         entryPrice: {
-          render: entryOrderPrice ? (
+          render: entryPrice ? (
+            <SubColumnValue>
+              {entryPrice} {pairArr[1]}
+            </SubColumnValue>
+          ) : !!entryDeviation ? (
+            <SubColumnValue>
+              <div style={{ color: '#7284A0' }}>trailing</div>{' '}
+              <div>
+                <span style={{ color: '#7284A0' }}>from</span> {price}
+              </div>
+            </SubColumnValue>
+          ) : !!entryOrderPrice ? (
             <SubColumnValue>
               {entryOrderPrice} {pairArr[1]}
             </SubColumnValue>
@@ -700,13 +712,36 @@ export const combineActiveTradesTable = ({
               {trailingExit &&
               exitLevels[0] &&
               exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice}% / ${
-                    exitLevels[0].entryDeviation
-                  }%`
-                : exitLevels[0] && exitLevels[0].price
-                ? `${exitLevels[0].price}%`
-                : '-'}
+              exitLevels[0].entryDeviation ? (
+                `${exitLevels[0].activatePrice}% / ${
+                  exitLevels[0].entryDeviation
+                }%`
+              ) : exitLevels.length > 1 ? (
+                <div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span style={{ color: '#7284A0' }}>
+                          {level.amount}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span>
+                          {level.price}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                </div>
+              ) : (
+                `${exitLevels[0].price}%`
+              )}
             </SubColumnValue>
           ),
           style: {
@@ -1252,7 +1287,9 @@ export const combineOpenOrdersTable = (
 
       const needOpacity = el.marketId === '0'
       const pair = symbol.split('_')
-      const type = orderType.toLowerCase().replace(/-/g, '_')
+
+      let type = !!orderType ? orderType : 'type'
+      type = type.toLowerCase().replace(/-/g, '_')
 
       const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'

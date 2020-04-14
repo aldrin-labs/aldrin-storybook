@@ -246,6 +246,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         forcedStop: {
           forcedStopPrice: 0,
           ...result.stopLoss.forcedStop,
+          isForcedStopOn: result.stopLoss.timeout.isTimeoutOn,
         },
       },
     }))
@@ -269,12 +270,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         : result.entryPoint.order.price
 
     const newTotal = result.entryPoint.order.amount * this.props.price
-    const newAmount =
-      marketType === 0
-        ? result.entryPoint.order.amount
-        : result.entryPoint.order.amount
 
-    this.updateSubBlockValue('entryPoint', 'order', 'amount', newAmount)
+    this.updateSubBlockValue(
+      'entryPoint',
+      'order',
+      'amount',
+      result.entryPoint.order.amount
+    )
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
 
     this.updateSubBlockValue(
@@ -564,8 +566,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
-
-    console.log('price 1', price)
 
     leverage = !!leverage ? leverage : entryPoint.order.leverage
 
