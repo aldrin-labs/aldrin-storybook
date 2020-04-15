@@ -210,7 +210,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
               >
                 <SelectCoinList
                   classNamePrefix="custom-select-box"
-                  isSearchable={true}
+                  isSearchable={false}
                   components={{
                     Option: CoinOption,
                     SingleValue: CoinSingleValue,
@@ -239,13 +239,13 @@ const InternalTransfer = ({ ...props }: IProps) => {
                     textAlign: 'center',
                     background: 'white',
                     position: 'relative',
-                    overflowY: 'auto',
+                    // overflowY: 'auto',
                     boxShadow: 'none',
                     border: 'none',
                   }}
                   menuListStyles={{
                     height: '16rem',
-                    overflowY: '',
+                    // overflowY: '', 
                   }}
                   optionStyles={{
                     height: '4rem',
