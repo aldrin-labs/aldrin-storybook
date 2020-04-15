@@ -205,7 +205,7 @@ export const DefaultView = (props: any) => {
           {isDefaultTerminalViewMode && (
             <TradingTabelContainer
               item
-              xs={6}
+              xs={marketType === 0 ? 7 : 6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
@@ -222,7 +222,7 @@ export const DefaultView = (props: any) => {
               />
             </TradingTabelContainer>
           )}
-          {isDefaultTerminalViewMode && (
+          {isDefaultTerminalViewMode && marketType === 1 && (
             <BalancesContainer
               item
               xs={1}
