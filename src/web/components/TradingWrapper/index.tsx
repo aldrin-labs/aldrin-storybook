@@ -19,6 +19,7 @@ import {
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { SendButton } from '../TraidingTerminal/styles'
 
@@ -127,8 +128,7 @@ class SimpleTabs extends React.Component {
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-    console.log('maxAmount', maxAmount)
-
+    
     return (
       <Grid
         id="tradingTerminal"
@@ -404,7 +404,7 @@ class SimpleTabs extends React.Component {
                     borderBottom: '.1rem dashed #ABBAD1',
                   }}
                 >
-                  {maxAmount[0]}
+                  {stripDigitPlaces(maxAmount[0], 8)}
                 </SpotBalanceSpan>{' '}
                 <SpotBalanceSpan
                   style={{
@@ -421,7 +421,7 @@ class SimpleTabs extends React.Component {
                     borderBottom: '.1rem dashed #ABBAD1',
                   }}
                 >
-                  {maxAmount[1]}
+                  {stripDigitPlaces(maxAmount[1], 8)}
                 </SpotBalanceSpan>{' '}
                 <SpotBalanceSpan
                   style={{

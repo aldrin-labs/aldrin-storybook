@@ -562,7 +562,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               pricePrecision={pricePrecision}
               open={editTrade === 'entryOrder'}
               pair={selectedTrade.conditions.pair.split('_')}
-              side={selectedTrade.conditions.side}
+              side={selectedTrade.conditions.entryOrder.side}
               leverage={selectedTrade.conditions.leverage}
               marketType={selectedTrade.conditions.marketType}
               handleClose={() => this.setState({ editTrade: null })}
@@ -623,7 +623,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               price={this.getEntryPrice()}
               pricePrecision={pricePrecision}
               pair={selectedTrade.conditions.pair.split('_')}
-              side={selectedTrade.conditions.side}
+              side={selectedTrade.conditions.entryOrder.side}
               leverage={selectedTrade.conditions.leverage}
               handleClose={() => this.setState({ editTrade: null })}
               updateState={async (takeProfitProperties) => {
@@ -682,7 +682,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             price={this.getEntryPrice()}
             pricePrecision={pricePrecision}
             pair={selectedTrade.conditions.pair.split('_')}
-            side={selectedTrade.conditions.side}
+            side={selectedTrade.conditions.entryOrder.side}
             leverage={selectedTrade.conditions.leverage}
             handleClose={() => this.setState({ editTrade: null })}
             updateState={async (stopLossProperties) => {
