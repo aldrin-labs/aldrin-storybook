@@ -37,6 +37,7 @@ export const TradeInputHeader = ({
   title = 'Input',
   padding = '0 0 .8rem 0',
   needLine = true,
+  lineMargin,
   needRightValue = false,
   rightValue = 'Value',
   onValueClick = () => {},
@@ -47,7 +48,7 @@ export const TradeInputHeader = ({
       padding={padding}
     >
       <SeparateInputTitle>{title}</SeparateInputTitle>
-      {needLine && <Line />}
+      {needLine && <Line lineMargin={lineMargin} />}
       {needRightValue && (
         <BlueInputTitle onClick={() => onValueClick()}>
           {rightValue}
@@ -420,7 +421,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
-          <Grid item container xs={9} style={{ maxWidth: '100%' }}>
+          <Grid item container xs={8} style={{ maxWidth: '100%' }}>
             <InputRowContainer
               direction="column"
               style={{ margin: 'auto 0', width: '100%' }}
@@ -630,7 +631,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           </Grid>
 
           <Grid
-            xs={3}
+            xs={4}
             item
             container
             style={{ maxWidth: '100%', paddingBottom: '1.5rem' }}

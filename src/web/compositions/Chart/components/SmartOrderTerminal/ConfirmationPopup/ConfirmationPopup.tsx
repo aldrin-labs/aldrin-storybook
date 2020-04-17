@@ -23,7 +23,6 @@ import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { EntryPointType, StopLossType, TakeProfitType } from '../types'
 
-
 const EditButton = ({ children, ...props }) => (
   <BtnCustom
     btnWidth={'6rem'}
@@ -426,7 +425,7 @@ export default ({
                       <ItemTypography>when in loss:</ItemTypography>{' '}
                     </>
                   )}
-                  {/* <ItemTypography>forced stop:</ItemTypography> */}
+                  <ItemTypography>forced stop:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '5rem' }}>
                   <ItemTypography color={getColor(false)}>
@@ -451,11 +450,13 @@ export default ({
                       </ItemTypography>
                     </>
                   )}
-                  {/* <ItemTypography
+                  <ItemTypography
                     color={getColor(stopLoss.forcedStop.isForcedStopOn)}
                   >
-                    {getOnOffText(stopLoss.forcedStop.isForcedStopOn)}
-                  </ItemTypography> */}
+                    {`${getOnOffText(stopLoss.forcedStop.isForcedStopOn)} / ${
+                      stopLoss.forcedStop.pricePercentage
+                    }%`}
+                  </ItemTypography>
                 </Grid>
               </Grid>
             </Grid>
