@@ -2,6 +2,10 @@ import React from 'react'
 import { client } from '@core/graphql/apolloClient'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
@@ -10,14 +14,15 @@ import {
   GetSelectorSettingsType,
   ISelectData,
   UpdateFavoritePairsMutationType,
+  SelectTabType,
 } from './SelectWrapper.types'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
-  { label: 'Pair', id: 'symbol' },
-  { label: 'Last price', id: 'lastPrice' },
-  { label: '24H change', id: '24hChange' },
-  { label: '24H volume', id: '24hVolume' },
+  { label: 'Pair', id: 'symbol', isSortable: true },
+  { label: 'Last price', id: 'lastPrice', isSortable: true },
+  { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
+  { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
 
 export const getUpdatedFavoritePairsList = (
@@ -88,6 +93,9 @@ export const combineSelectWrapperData = ({
   previousData,
   onSelectPair,
   theme,
+  searchValue,
+  tab,
+  tabSpecificCoin,
 }: {
   data: ISelectData
   favoritePairsMap: Map<string, string>
@@ -101,12 +109,34 @@ export const combineSelectWrapperData = ({
   previousData?: ISelectData
   onSelectPair: ({ value }: { value: string }) => void
   theme: any
+  searchValue: string
+  tab: SelectTabType
+  tabSpecificCoin: string
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
 
-  const processedData = data.map((el) => {
+  let processedData = data
+
+  console.log('combineSelectWrapperData searchValue', searchValue)
+  if (searchValue) {
+    console.log('combineSelectWrapperData if')
+
+    processedData = processedData.filter((el) =>
+      new RegExp(`${searchValue}`, 'gi').test(el.symbol)
+    )
+
+    console.log('processedData searchValue', processedData)
+  }
+
+  if (searchValue === '' && tabSpecificCoin !== '') {
+    processedData = processedData.filter((el) =>
+      new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
+    )
+  }
+
+  const filtredData = processedData.map((el) => {
     const {
       symbol = '',
       price = 0,
@@ -123,9 +153,12 @@ export const combineSelectWrapperData = ({
 
     const priceColor = !!previousData ? '' : ''
 
+    const [base, quote] = symbol.split('_')
+
     return {
       id: `${symbol}`,
       favorite: {
+        isSortable: false,
         render: (
           <SvgIcon
             onClick={() =>
@@ -142,20 +175,33 @@ export const combineSelectWrapperData = ({
         onClick: () => onSelectPair({ value: symbol }),
       },
       price: {
-        render: price,
+        contentToSort: +price,
+        render: formatNumberToUSFormat(price),
         onClick: () => onSelectPair({ value: symbol }),
-        style: { color: priceColor },
+        color: priceColor,
       },
       price24hChange: {
-        render: price24hChange,
+        isNumber: true,
+        render: `${formatNumberToUSFormat(price24hChange)}%`,
         onClick: () => onSelectPair({ value: symbol }),
+        contentToSort: +price24hChange,
+        color:
+          +price24hChange === 0
+            ? ''
+            : +price24hChange > 0
+            ? theme.customPalette.green.main
+            : theme.customPalette.red.main,
       },
       volume24hChange: {
-        render: volume24hChange,
+        isNumber: true,
+        contentToSort: +volume24hChange,
+        render: `${formatNumberToUSFormat(
+          stripDigitPlaces(volume24hChange)
+        )} ${quote}`,
         onClick: () => onSelectPair({ value: symbol }),
       },
     }
   })
 
-  return processedData
+  return filtredData
 }

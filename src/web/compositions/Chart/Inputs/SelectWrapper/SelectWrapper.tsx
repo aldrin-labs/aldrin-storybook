@@ -2,9 +2,15 @@ import React from 'react'
 import { Grid, Input } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 
-import { TableWithSort } from '@sb/components'
+import favoriteSelected from '@icons/favoriteSelected.svg'
+import { TableWithSort, SvgIcon } from '@sb/components'
 
-import { IProps, IState } from './SelectWrapper.types'
+import {
+  IProps,
+  IState,
+  IPropsSelectPairListComponent,
+  IStateSelectPairListComponent,
+} from './SelectWrapper.types'
 
 import {
   selectWrapperColumnNames,
@@ -14,6 +20,35 @@ import {
 @withTheme()
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
+    searchValue: '',
+    tab: 'favorite',
+    tabSpecificCoin: '',
+  }
+
+  onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ searchValue: e.target.value })
+  }
+
+  render() {
+    const { searchValue, tab, tabSpecificCoin } = this.state
+
+    return (
+      <SelectPairListComponent
+        searchValue={searchValue}
+        tab={tab}
+        tabSpecificCoin={tabSpecificCoin}
+        onChangeSearch={this.onChangeSearch}
+        {...this.props}
+      />
+    )
+  }
+}
+
+class SelectPairListComponent extends React.PureComponent<
+  IPropsSelectPairListComponent,
+  IStateSelectPairListComponent
+> {
+  state: IStateSelectPairListComponent = {
     processedSelectData: [],
   }
 
@@ -24,7 +59,12 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       updateFavoritePairsMutation,
       onSelectPair,
       theme,
+      searchValue,
+      tab,
+      tabSpecificCoin,
     } = this.props
+
+    console.log('componentDidMount searchValue', searchValue)
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -32,6 +72,9 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       updateFavoritePairsMutation,
       onSelectPair,
       theme,
+      searchValue,
+      tab,
+      tabSpecificCoin,
     })
 
     this.setState({
@@ -39,15 +82,20 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     })
   }
 
-  componentWillReceiveProps(nextProps: IProps) {
+  componentWillReceiveProps(nextProps: IPropsSelectPairListComponent) {
     const {
       data,
       favoritePairsMap,
       updateFavoritePairsMutation,
       onSelectPair,
       theme,
+      searchValue,
+      tab,
+      tabSpecificCoin,
     } = nextProps
     const { data: prevPropsData } = this.props
+
+    console.log('componentWillReceiveProps searchValue', searchValue)
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -56,6 +104,9 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       previousData: prevPropsData,
       onSelectPair,
       theme,
+      searchValue,
+      tab,
+      tabSpecificCoin,
     })
 
     this.setState({
@@ -65,25 +116,70 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
   render() {
     const { processedSelectData } = this.state
+    const {
+      searchValue,
+      tab,
+      tabSpecificCoin,
+      onChangeSearch,
+      onTabChange,
+      marketType,
+      closeMenu,
+    } = this.props
 
     return (
-      <Grid style={{ position: 'absolute', zIndex: 999, background: '#fff', }}>
-        <Grid>
-          <Grid>Favorite</Grid>
-          <Grid>BTC</Grid>
-          <Grid>
-            <Grid>Alts</Grid>
-            <Grid>Select</Grid>
+      <Grid
+        style={{
+          left: 0,
+          position: 'absolute',
+          zIndex: 999,
+          background: '#fff',
+          minWidth: '35%',
+          height: '300px',
+          marginTop: '3rem',
+          borderRadius: '8px',
+          overflow: 'hidden',
+        }}
+        // onMouseLeave={closeMenu}
+      >
+        <Grid container>
+          <Grid style={{ padding: '1rem' }}>
+            <SvgIcon
+              onClick={() => onTabChange('favorite')}
+              src={favoriteSelected}
+              width="1rem"
+              height="auto"
+            />
           </Grid>
-          <Grid>
-            <Grid>Fiat</Grid>
-            <Grid>Select</Grid>
-          </Grid>
+          <Grid style={{ padding: '1rem' }}>ALL</Grid>
+          {marketType === 0 && (
+            <>
+              <Grid style={{ padding: '1rem' }}>BTC</Grid>
+              <Grid style={{ display: 'flex', padding: '1rem' }}>
+                <Grid style={{ paddingRight: '1rem' }}>Alts</Grid>
+                <Grid>Select</Grid>
+              </Grid>
+              <Grid style={{ display: 'flex', padding: '1rem' }}>
+                <Grid style={{ paddingRight: '1rem' }}>Fiat</Grid>
+                <Grid>Select</Grid>
+              </Grid>
+            </>
+          )}
         </Grid>
-        <Grid>
-          <Input />
+        <Grid container style={{ padding: '1rem 0' }}>
+          <Input
+            placeholder="Search..."
+            disableUnderline={true}
+            style={{ width: '100%', background: '#F2F4F6' }}
+            value={searchValue}
+            onChange={onChangeSearch}
+            inputProps={{
+              style: {
+                paddingLeft: '1rem',
+              },
+            }}
+          />
         </Grid>
-        <Grid>
+        <Grid style={{ overflow: 'scroll', height: '75%' }}>
           <TableWithSort
             emptyTableText={`No coins available`}
             data={{ body: processedSelectData }}
