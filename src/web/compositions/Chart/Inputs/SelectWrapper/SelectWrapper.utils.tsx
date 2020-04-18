@@ -14,7 +14,7 @@ import {
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
-  { label: 'Pair', id: 'pair' },
+  { label: 'Pair', id: 'symbol' },
   { label: 'Last price', id: 'lastPrice' },
   { label: '24H change', id: '24hChange' },
   { label: '24H volume', id: '24hVolume' },
@@ -22,7 +22,7 @@ export const selectWrapperColumnNames = [
 
 export const getUpdatedFavoritePairsList = (
   clonedData: GetSelectorSettingsType,
-  pair: string
+  symbol: string
 ) => {
   const {
     getAccountSettings: {
@@ -31,11 +31,11 @@ export const getUpdatedFavoritePairsList = (
   } = clonedData
 
   let updatedList
-  const isAlreadyInTheList = favoritePairs.find((el) => el === pair)
+  const isAlreadyInTheList = favoritePairs.find((el) => el === symbol)
   if (isAlreadyInTheList) {
-    updatedList = favoritePairs.filter((el) => el !== pair)
+    updatedList = favoritePairs.filter((el) => el !== symbol)
   } else {
-    updatedList = [...favoritePairs, pair]
+    updatedList = [...favoritePairs, symbol]
   }
 
   return updatedList
@@ -51,29 +51,33 @@ export const updateFavoritePairsCache = (
       getAccountSettings: {
         selectorSettings: {
           favoritePairs: updatedFavoritePairsList,
+          __typename: 'AccountSettingsSelectorSettings',
         },
+        __typename: 'AccountSettings',
       },
     },
   })
 }
 
 export const updateFavoritePairsHandler = async (
-  updateFavoritePairs: UpdateFavoritePairsMutationType,
-  pair: string
+  updateFavoritePairsMutation: UpdateFavoritePairsMutationType,
+  symbol: string
 ) => {
-  const favoritePairsData = client.readQuery(getSelectorSettings)
+  const favoritePairsData = client.readQuery({ query: getSelectorSettings })
   const clonedData = JSON.parse(JSON.stringify(favoritePairsData))
-
-  const updatedFavoritePairsList = getUpdatedFavoritePairsList(clonedData, pair)
+  const updatedFavoritePairsList = getUpdatedFavoritePairsList(
+    clonedData,
+    symbol
+  )
 
   updateFavoritePairsCache(clonedData, updatedFavoritePairsList)
 
   try {
-    await updateFavoritePairs({
+    await updateFavoritePairsMutation({
       variables: { input: { favoritePairs: updatedFavoritePairsList } },
     })
   } catch (e) {
-    console.log('update favorite pairs failed')
+    console.log('update favorite symbols failed')
   }
 }
 
@@ -95,7 +99,7 @@ export const combineSelectWrapperData = ({
     }
   }) => Promise<void>
   previousData?: ISelectData
-  onSelectPair: () => void
+  onSelectPair: ({ value }: { value: string }) => void
   theme: any
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -104,28 +108,28 @@ export const combineSelectWrapperData = ({
 
   const processedData = data.map((el) => {
     const {
-      pair = '',
+      symbol = '',
       price = 0,
       price24hChange = 0,
       volume24hChange = 0,
     } = el || {
-      pair: '',
+      symbol: '',
       price: 0,
       price24hChange: 0,
       volume24hChange: 0,
     }
 
-    const isInFavoriteAlready = favoritePairsMap.has(pair)
+    const isInFavoriteAlready = favoritePairsMap.has(symbol)
 
     const priceColor = !!previousData ? '' : ''
 
     return {
-      id: `${pair}`,
+      id: `${symbol}`,
       favorite: {
         render: (
           <SvgIcon
             onClick={() =>
-              updateFavoritePairsHandler(updateFavoritePairsMutation, pair)
+              updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
             }
             src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
             width="1rem"
@@ -133,22 +137,22 @@ export const combineSelectWrapperData = ({
           />
         ),
       },
-      pair: {
-        render: pair,
-        onClick: onSelectPair,
+      symbol: {
+        render: symbol,
+        onClick: () => onSelectPair({ value: symbol }),
       },
       price: {
         render: price,
-        onClick: onSelectPair,
+        onClick: () => onSelectPair({ value: symbol }),
         style: { color: priceColor },
       },
       price24hChange: {
         render: price24hChange,
-        onClick: onSelectPair,
+        onClick: () => onSelectPair({ value: symbol }),
       },
       volume24hChange: {
         render: volume24hChange,
-        onClick: onSelectPair,
+        onClick: () => onSelectPair({ value: symbol }),
       },
     }
   })

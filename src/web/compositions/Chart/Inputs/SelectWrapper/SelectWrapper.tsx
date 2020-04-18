@@ -1,26 +1,15 @@
 import React from 'react'
-import {
-  Grid,
-  Typography,
-  Button,
-  Link,
-  Input,
-  Table,
-  Theme,
-} from '@material-ui/core'
+import { Grid, Input } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 
 import { TableWithSort } from '@sb/components'
 
-import {
-  GetSelectorSettingsType,
-  ISelectData,
-  UpdateFavoritePairsMutationType,
-  IProps,
-  IState,
-} from './SelectWrapper.types'
+import { IProps, IState } from './SelectWrapper.types'
 
-import { selectWrapperColumnNames } from './SelectWrapper.utils'
+import {
+  selectWrapperColumnNames,
+  combineSelectWrapperData,
+} from './SelectWrapper.utils'
 
 @withTheme()
 class SelectWrapper extends React.PureComponent<IProps, IState> {
@@ -78,7 +67,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     const { processedSelectData } = this.state
 
     return (
-      <Grid>
+      <Grid style={{ position: 'absolute', zIndex: 999, background: '#fff', }}>
         <Grid>
           <Grid>Favorite</Grid>
           <Grid>BTC</Grid>

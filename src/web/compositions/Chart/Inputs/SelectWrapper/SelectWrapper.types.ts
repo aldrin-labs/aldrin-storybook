@@ -4,7 +4,7 @@ export interface IState {
   processedSelectData: {
     id: string
     favorite: any
-    pair: any
+    symbol: any
     price24hChange: any
     volume24hChange: any
   }[]
@@ -14,7 +14,7 @@ export interface IProps {
   data: ISelectData
   favoritePairsMap: Map<string, string>
   updateFavoritePairsMutation: UpdateFavoritePairsMutationType
-  onSelectPair: () => void
+  onSelectPair: ({ value }: { value: string }) => Promise<void>
   theme: Theme
 }
 
@@ -27,7 +27,7 @@ export type GetSelectorSettingsType = {
 }
 
 export type ISelectData = {
-  pair: string
+  symbol: string
   price: number
   price24hChange: number
   volume24hChange: number
