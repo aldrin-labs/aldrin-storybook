@@ -17,6 +17,7 @@ import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { updateFavoritePairs } from '@core/graphql/mutations/chart/updateFavoritePairs'
+import SelectWrapper from '../SelectWrapper/SelectWrapper'
 
 @withTheme()
 class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
@@ -80,8 +81,10 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       theme: {
         palette: { divider },
       },
+      theme,
       selectStyles,
       getSelectorSettingsQuery,
+      updateFavoritePairsMutation,
     } = this.props
 
     const {
@@ -147,25 +150,34 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     console.log('AltCoinsPairs', AltCoinsPairs)
 
     return (
-      <ExchangePair
-        style={{ width: '14.4rem' }}
-        border={divider}
-        selectStyles={selectStyles}
-      >
-        <SelectR
-          id={this.props.id}
-          style={{ width: '100%' }}
-          filterOption={customFilterOption}
-          placeholder="Add chart"
-          value={this.state.isClosed && value && { value, label: value }}
-          fullWidth={true}
-          options={suggestions || []}
-          onChange={this.handleChange}
-          onMenuOpen={this.onMenuOpen}
-          onMenuClose={this.onMenuClose}
-          closeMenuOnSelect={view === 'default'}
+      <>
+        <SelectWrapper
+          data={getMarketsByExchange}
+          theme={theme}
+          favoritePairsMap={favoritePairsMap}
+          updateFavoritePairsMutation={updateFavoritePairsMutation}
+          onSelectPair={this.handleChange}
         />
-      </ExchangePair>
+        <ExchangePair
+          style={{ width: '14.4rem' }}
+          border={divider}
+          selectStyles={selectStyles}
+        >
+          <SelectR
+            id={this.props.id}
+            style={{ width: '100%' }}
+            filterOption={customFilterOption}
+            placeholder="Add chart"
+            value={this.state.isClosed && value && { value, label: value }}
+            fullWidth={true}
+            options={suggestions || []}
+            onChange={this.handleChange}
+            onMenuOpen={this.onMenuOpen}
+            onMenuClose={this.onMenuClose}
+            closeMenuOnSelect={view === 'default'}
+          />
+        </ExchangePair>
+      </>
     )
   }
 }
