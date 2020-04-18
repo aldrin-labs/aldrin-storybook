@@ -177,6 +177,7 @@ export default compose(
       splitter: '_',
       exchange: props.activeExchange.symbol,
       marketType: props.marketType,
+      includeAdditionalMarketData: true,
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
