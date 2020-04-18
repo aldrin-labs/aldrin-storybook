@@ -48,4 +48,5 @@ export interface IProps {
 
 export interface IState {
   isClosed: boolean
+  isMenuOpen: boolean
 }
