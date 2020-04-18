@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
@@ -149,9 +150,7 @@ class MarketStats extends React.PureComponent<IProps> {
               <PanelCardSubValue style={{ padding: 0 }}>
                 {' '}
                 <Timer
-                  initialTime={
-                    (fundingTime - Math.floor(+new Date() / 1000)) * 1000
-                  }
+                  initialTime={+dayjs(fundingTime).add(8, 'hour') - Date.now()}
                   direction="backward"
                   startImmediately={true}
                 >
