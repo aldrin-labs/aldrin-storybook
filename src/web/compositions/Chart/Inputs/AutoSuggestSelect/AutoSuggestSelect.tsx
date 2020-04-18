@@ -23,6 +23,7 @@ import SelectWrapper from '../SelectWrapper/SelectWrapper'
 class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   state = {
     isClosed: true,
+    isMenuOpen: false,
   }
 
   onMenuOpen = () => {
@@ -31,6 +32,14 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
   onMenuClose = () => {
     this.setState({ isClosed: true })
+  }
+
+  toggleMenu = () => {
+    this.setState((prevState) => ({ isMenuOpen: !prevState.isMenuOpen }))
+  }
+
+  closeMenu = () => {
+    this.setState({ isMenuOpen: false })
   }
 
   handleChange = async ({ value }: { value: string }) => {
@@ -49,6 +58,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     if (!value) {
       return
     }
+
+    this.closeMenu()
 
     if (view === 'default') {
       await changeCurrencyPairMutation({
@@ -87,6 +98,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       updateFavoritePairsMutation,
     } = this.props
 
+    const { isClosed, isMenuOpen } = this.state
+
     const {
       getAccountSettings: {
         selectorSettings: { favoritePairs },
@@ -116,6 +129,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       )
     }
 
+    console.time('processing')
     const suggestions = getMarketsByExchange
       .map((el) => el.symbol)
       .filter(
@@ -145,36 +159,44 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       (el) => !altCoinsRegexp.test(el.label)
     )
 
+    console.timeEnd('processing')
+
     console.log('StableCoinsPairs', StableCoinsPairs)
     console.log('BTCCoinsPairs', BTCCoinsPairs)
     console.log('AltCoinsPairs', AltCoinsPairs)
 
     return (
       <>
-        <SelectWrapper
-          data={getMarketsByExchange}
-          theme={theme}
-          favoritePairsMap={favoritePairsMap}
-          updateFavoritePairsMutation={updateFavoritePairsMutation}
-          onSelectPair={this.handleChange}
-        />
+        {isMenuOpen && (
+          <SelectWrapper
+            data={getMarketsByExchange}
+            theme={theme}
+            favoritePairsMap={favoritePairsMap}
+            updateFavoritePairsMutation={updateFavoritePairsMutation}
+            onSelectPair={this.handleChange}
+            closeMenu={this.closeMenu}
+          />
+        )}
         <ExchangePair
           style={{ width: '14.4rem' }}
           border={divider}
           selectStyles={selectStyles}
+          onClick={this.toggleMenu}
+          // onMouseOver={this.toggleMenu}
         >
           <SelectR
             id={this.props.id}
             style={{ width: '100%' }}
-            filterOption={customFilterOption}
-            placeholder="Add chart"
-            value={this.state.isClosed && value && { value, label: value }}
+            // filterOption={customFilterOption}
+            // placeholder="Add chart"
+            value={isClosed && value && { value, label: value }}
             fullWidth={true}
-            options={suggestions || []}
-            onChange={this.handleChange}
-            onMenuOpen={this.onMenuOpen}
-            onMenuClose={this.onMenuClose}
-            closeMenuOnSelect={view === 'default'}
+            isDisabled={true}
+            // options={suggestions || []}
+            // onChange={this.handleChange}
+            // onMenuOpen={this.onMenuOpen}
+            // onMenuClose={this.onMenuClose}
+            // closeMenuOnSelect={view === 'default'}
           />
         </ExchangePair>
       </>
