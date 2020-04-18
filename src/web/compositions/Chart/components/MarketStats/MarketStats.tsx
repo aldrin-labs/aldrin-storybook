@@ -19,6 +19,7 @@ import {
 export interface IProps {
   theme: Theme
   symbol: string
+  marketType: number
   getMarketStatisticsByPairQuery: {
     getMarketStatisticsByPair: {
       exchange: string
@@ -48,6 +49,7 @@ class MarketStats extends React.PureComponent<IProps> {
       getFundingRateQuery,
       symbol = ' _ ',
       theme,
+      marketType,
     } = this.props
 
     const {
@@ -131,40 +133,42 @@ class MarketStats extends React.PureComponent<IProps> {
           </PanelCardValue>
         </PanelCard>
 
-        <PanelCard style={{ borderRight: '0' }}>
-          <PanelCardTitle>Funding</PanelCardTitle>
-          <span>
-            <PanelCardValue
-              color={
-                +fundingRate > 0
-                  ? theme.customPalette.green.main
-                  : theme.customPalette.red.main
-              }
-            >
-              {formatNumberToUSFormat(fundingRate)}
-            </PanelCardValue>
-            <PanelCardSubValue style={{ padding: 0 }}>
-              {' '}
-              <Timer
-                initialTime={
-                  (fundingTime - Math.floor(+new Date() / 1000)) * 1000
+        {marketType === 1 && (
+          <PanelCard style={{ borderRight: '0' }}>
+            <PanelCardTitle>Funding</PanelCardTitle>
+            <span>
+              <PanelCardValue
+                color={
+                  +fundingRate > 0
+                    ? theme.customPalette.green.main
+                    : theme.customPalette.red.main
                 }
-                direction="backward"
-                startImmediately={true}
               >
-                {() => (
-                  <React.Fragment>
-                    <Timer.Hours />
-                    {':'}
-                    <Timer.Minutes />
-                    {':'}
-                    <Timer.Seconds />
-                  </React.Fragment>
-                )}
-              </Timer>
-            </PanelCardSubValue>
-          </span>
-        </PanelCard>
+                {formatNumberToUSFormat(fundingRate)}
+              </PanelCardValue>
+              <PanelCardSubValue style={{ padding: 0 }}>
+                {' '}
+                <Timer
+                  initialTime={
+                    (fundingTime - Math.floor(+new Date() / 1000)) * 1000
+                  }
+                  direction="backward"
+                  startImmediately={true}
+                >
+                  {() => (
+                    <React.Fragment>
+                      <Timer.Hours />
+                      {':'}
+                      <Timer.Minutes />
+                      {':'}
+                      <Timer.Seconds />
+                    </React.Fragment>
+                  )}
+                </Timer>
+              </PanelCardSubValue>
+            </span>
+          </PanelCard>
+        )}
       </>
     )
   }
