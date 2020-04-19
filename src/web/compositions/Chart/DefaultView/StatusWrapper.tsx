@@ -57,17 +57,33 @@ class OrderStatusWrapper extends React.Component {
     }
   }
 
+  showChangePositionModeResult = (result) => {
+    if (result.errors) {
+      this.props.enqueueSnackbar('Something went wrong', { variant: 'error' })
+      return
+    }
+
+    if (result.status === 'OK') {
+      this.props.enqueueSnackbar('Position mode changed', {
+        variant: 'success',
+        // action: <CloseButton />,
+      })
+    } else {
+      this.props.enqueueSnackbar(result.binanceMessage, { variant: 'error' })
+    }
+  }
+
   render() {
     return (
       <DefaultView
         showOrderResult={this.showOrderResult}
         showCancelResult={this.showCancelResult}
         showFuturesTransfer={this.showFuturesTransfer}
+        showChangePositionModeResult={this.showChangePositionModeResult}
         {...this.props}
       />
     )
   }
 }
-
 
 export default withSnackbar(OrderStatusWrapper)

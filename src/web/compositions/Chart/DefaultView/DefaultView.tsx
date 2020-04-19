@@ -63,6 +63,7 @@ export const DefaultView = (props: any) => {
     showTableOnMobile,
     selectedKey,
     chartProps,
+    showChangePositionModeResult,
     changeActiveExchangeMutation,
     terminalViewMode,
     updateTerminalViewMode,
@@ -268,6 +269,7 @@ export const DefaultView = (props: any) => {
               marketType={marketType}
               showOrderResult={showOrderResult}
               showCancelResult={showCancelResult}
+              showChangePositionModeResult={showChangePositionModeResult}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
             />
