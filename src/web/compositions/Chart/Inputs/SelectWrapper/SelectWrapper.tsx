@@ -156,6 +156,8 @@ class SelectPairListComponent extends React.PureComponent<
           marginTop: '3rem',
           borderRadius: '8px',
           overflow: 'hidden',
+          border: '2px solid #E0E5EC',
+          boxShadow: '0px 8px 12px rgba(8, 22, 58, 0.3)',
         }}
         // onMouseLeave={closeMenu}
       >
