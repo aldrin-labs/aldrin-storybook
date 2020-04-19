@@ -96,6 +96,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       selectStyles,
       getSelectorSettingsQuery,
       updateFavoritePairsMutation,
+      marketType,
     } = this.props
 
     const { isClosed, isMenuOpen } = this.state
@@ -106,6 +107,43 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       },
     } = getSelectorSettingsQuery
 
+    const { getMarketsByExchange = [] } = data || { getMarketsByExchange: [] }
+
+    // const customFilterOption = (
+    //   option: { value: string; label: string },
+    //   rawInput: string
+    // ) => {
+    //   const words = rawInput.split(' ')
+    //   return words.reduce(
+    //     (acc, cur) =>
+    //       acc && option.label.toLowerCase().includes(cur.toLowerCase()),
+    //     true
+    //   )
+    // }
+
+    console.time('processing')
+    // const suggestions = getMarketsByExchange
+    //   .map((el) => el.symbol)
+    //   .filter(
+    //     (symbol: string, index, origArray) =>
+    //       origArray.indexOf(symbol) === index &&
+    //       (symbol.split('_')[0] !== 'undefined' &&
+    //         symbol.split('_')[1] !== 'undefined')
+    //   )
+    //   .sort((a, b) =>
+    //     /BTC_/.test(a) ? -1 : /BTC_/.test(b) ? 1 : /_BTC/.test(b) ? 0 : -1
+    //   )
+    //   .map((symbol: string) => ({
+    //     value: symbol,
+    //     label: symbol,
+    //   }))
+
+    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+
+    let stableCoinsPairsMap = new Map()
+    let btcCoinsPairsMap = new Map()
+    let altCoinsPairsMap = new Map()
     const favoritePairsMap = favoritePairs.reduce(
       (acc: Map<string, string>, el: string) => {
         acc.set(el, el)
@@ -115,55 +153,44 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       new Map()
     )
 
-    const { getMarketsByExchange = [] } = data || { getMarketsByExchange: [] }
+    getMarketsByExchange.forEach((el) => {
+      if (stableCoinsRegexp.test(el.symbol)) {
+        stableCoinsPairsMap.set(el.symbol, el.price)
+      }
 
-    const customFilterOption = (
-      option: { value: string; label: string },
-      rawInput: string
-    ) => {
-      const words = rawInput.split(' ')
-      return words.reduce(
-        (acc, cur) =>
-          acc && option.label.toLowerCase().includes(cur.toLowerCase()),
-        true
-      )
-    }
+      if (/BTC/g.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)) {
+        btcCoinsPairsMap.set(el.symbol, el.price)
+      }
 
-    console.time('processing')
-    const suggestions = getMarketsByExchange
-      .map((el) => el.symbol)
-      .filter(
-        (symbol: string, index, origArray) =>
-          origArray.indexOf(symbol) === index &&
-          (symbol.split('_')[0] !== 'undefined' &&
-            symbol.split('_')[1] !== 'undefined')
-      )
-      .sort((a, b) =>
-        /BTC_/.test(a) ? -1 : /BTC_/.test(b) ? 1 : /_BTC/.test(b) ? 0 : -1
-      )
-      .map((symbol: string) => ({
-        value: symbol,
-        label: symbol,
-      }))
+      if (
+        !altCoinsRegexp.test(el.symbol) &&
+        !stableCoinsRegexp.test(el.symbol)
+      ) {
+        altCoinsPairsMap.set(el.symbol, el.price)
+      }
+    })
 
-    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+    // const StableCoinsPairs = getMarketsByExchange.filter((el) =>
+    //   stableCoinsRegexp.test(el.symbol)
+    // )
+    // const BTCCoinsPairs = getMarketsByExchange.filter(
+    //   (el) => /BTC/g.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)
+    // )
+    // const AltCoinsPairs = getMarketsByExchange.filter(
+    //   (el) =>
+    //     !altCoinsRegexp.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)
+    // )
 
-    const StableCoinsPairs = suggestions.filter((el) =>
-      stableCoinsRegexp.test(el.label)
-    )
-    const BTCCoinsPairs = suggestions.filter(
-      (el) => /BTC/g.test(el.label) && !stableCoinsRegexp.test(el.label)
-    )
-    const AltCoinsPairs = suggestions.filter(
-      (el) => !altCoinsRegexp.test(el.label)
-    )
+    // const FavoritePairs = getMarketsByExchange.filter((el) =>
+    //   favoritePairsMap.has(el.symbol)
+    // )
 
     console.timeEnd('processing')
 
-    console.log('StableCoinsPairs', StableCoinsPairs)
-    console.log('BTCCoinsPairs', BTCCoinsPairs)
-    console.log('AltCoinsPairs', AltCoinsPairs)
+    // console.log('StableCoinsPairs', StableCoinsPairs)
+    // console.log('BTCCoinsPairs', BTCCoinsPairs)
+    // console.log('AltCoinsPairs', AltCoinsPairs)
+    // console.log('FavoritePairs', FavoritePairs)
 
     return (
       <>
@@ -175,6 +202,11 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             updateFavoritePairsMutation={updateFavoritePairsMutation}
             onSelectPair={this.handleChange}
             closeMenu={this.closeMenu}
+            stableCoinsPairsMap={stableCoinsPairsMap}
+            btcCoinsPairsMap={btcCoinsPairsMap}
+            altCoinsPairsMap={altCoinsPairsMap}
+            favoritePairsMap={favoritePairsMap}
+            marketType={marketType}
           />
         )}
         <ExchangePair
