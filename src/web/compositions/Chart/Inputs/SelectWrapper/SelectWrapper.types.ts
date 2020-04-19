@@ -1,6 +1,6 @@
 import { Theme } from '@material-ui/core'
 
-export type SelectTabType = 'favorite' | 'btc' | 'alts' | 'fiat'
+export type SelectTabType = 'favorite' | 'btc' | 'alts' | 'fiat' | 'all'
 
 export interface IState {
   searchValue: string

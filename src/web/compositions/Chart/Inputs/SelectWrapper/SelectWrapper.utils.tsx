@@ -88,7 +88,6 @@ export const updateFavoritePairsHandler = async (
 
 export const combineSelectWrapperData = ({
   data,
-  favoritePairsMap,
   updateFavoritePairsMutation,
   previousData,
   onSelectPair,
@@ -96,6 +95,10 @@ export const combineSelectWrapperData = ({
   searchValue,
   tab,
   tabSpecificCoin,
+  stableCoinsPairsMap,
+  btcCoinsPairsMap,
+  altCoinsPairsMap,
+  favoritePairsMap,
 }: {
   data: ISelectData
   favoritePairsMap: Map<string, string>
@@ -136,6 +139,29 @@ export const combineSelectWrapperData = ({
     )
   }
 
+  if (searchValue === '' && tab !== 'all') {
+    if (tab === 'alts') {
+      processedData = processedData.filter((el) =>
+        altCoinsPairsMap.has(el.symbol)
+      )
+    }
+    if (tab === 'btc') {
+      processedData = processedData.filter((el) =>
+        btcCoinsPairsMap.has(el.symbol)
+      )
+    }
+    if (tab === 'fiat') {
+      processedData = processedData.filter((el) =>
+        stableCoinsPairsMap.has(el.symbol)
+      )
+    }
+    if (tab === 'favorite') {
+      processedData = processedData.filter((el) =>
+        favoritePairsMap.has(el.symbol)
+      )
+    }
+  }
+
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
@@ -165,7 +191,7 @@ export const combineSelectWrapperData = ({
               updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
             }
             src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
-            width="1rem"
+            width="2rem"
             height="auto"
           />
         ),

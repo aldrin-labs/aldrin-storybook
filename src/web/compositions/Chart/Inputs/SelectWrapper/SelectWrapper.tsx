@@ -10,6 +10,7 @@ import {
   IState,
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent,
+  SelectTabType,
 } from './SelectWrapper.types'
 
 import {
@@ -21,12 +22,16 @@ import {
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
     searchValue: '',
-    tab: 'favorite',
+    tab: 'all',
     tabSpecificCoin: '',
   }
 
   onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ searchValue: e.target.value })
+  }
+
+  onTabChange = (tab: SelectTabType) => {
+    this.setState({ tab })
   }
 
   render() {
@@ -38,6 +43,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         tab={tab}
         tabSpecificCoin={tabSpecificCoin}
         onChangeSearch={this.onChangeSearch}
+        onTabChange={this.onTabChange}
         {...this.props}
       />
     )
@@ -55,26 +61,32 @@ class SelectPairListComponent extends React.PureComponent<
   componentDidMount() {
     const {
       data,
-      favoritePairsMap,
       updateFavoritePairsMutation,
       onSelectPair,
       theme,
       searchValue,
       tab,
       tabSpecificCoin,
+      stableCoinsPairsMap,
+      btcCoinsPairsMap,
+      altCoinsPairsMap,
+      favoritePairsMap,
     } = this.props
 
     console.log('componentDidMount searchValue', searchValue)
 
     const processedSelectData = combineSelectWrapperData({
       data,
-      favoritePairsMap,
       updateFavoritePairsMutation,
       onSelectPair,
       theme,
       searchValue,
       tab,
       tabSpecificCoin,
+      stableCoinsPairsMap,
+      btcCoinsPairsMap,
+      altCoinsPairsMap,
+      favoritePairsMap,
     })
 
     this.setState({
@@ -85,13 +97,16 @@ class SelectPairListComponent extends React.PureComponent<
   componentWillReceiveProps(nextProps: IPropsSelectPairListComponent) {
     const {
       data,
-      favoritePairsMap,
       updateFavoritePairsMutation,
       onSelectPair,
       theme,
       searchValue,
       tab,
       tabSpecificCoin,
+      stableCoinsPairsMap,
+      btcCoinsPairsMap,
+      altCoinsPairsMap,
+      favoritePairsMap,
     } = nextProps
     const { data: prevPropsData } = this.props
 
@@ -99,7 +114,6 @@ class SelectPairListComponent extends React.PureComponent<
 
     const processedSelectData = combineSelectWrapperData({
       data,
-      favoritePairsMap,
       updateFavoritePairsMutation,
       previousData: prevPropsData,
       onSelectPair,
@@ -107,6 +121,10 @@ class SelectPairListComponent extends React.PureComponent<
       searchValue,
       tab,
       tabSpecificCoin,
+      stableCoinsPairsMap,
+      btcCoinsPairsMap,
+      altCoinsPairsMap,
+      favoritePairsMap,
     })
 
     this.setState({
@@ -141,24 +159,66 @@ class SelectPairListComponent extends React.PureComponent<
         }}
         // onMouseLeave={closeMenu}
       >
-        <Grid container>
-          <Grid style={{ padding: '1rem' }}>
-            <SvgIcon
-              onClick={() => onTabChange('favorite')}
-              src={favoriteSelected}
-              width="1rem"
-              height="auto"
-            />
+        <Grid container style={{ padding: '0.5rem' }}>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'favorite' ? '#F2F4F6' : '',
+              cursor: 'pointer',
+            }}
+            onClick={() => onTabChange('favorite')}
+          >
+            <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
           </Grid>
-          <Grid style={{ padding: '1rem' }}>ALL</Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'all' ? '#F2F4F6' : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
+            onClick={() => onTabChange('all')}
+          >
+            ALL
+          </Grid>
           {marketType === 0 && (
             <>
-              <Grid style={{ padding: '1rem' }}>BTC</Grid>
-              <Grid style={{ display: 'flex', padding: '1rem' }}>
+              <Grid
+                style={{
+                  padding: '1rem',
+                  background: tab === 'btc' ? '#F2F4F6' : '',
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => onTabChange('btc')}
+              >
+                BTC
+              </Grid>
+              <Grid
+                style={{
+                  display: 'flex',
+                  padding: '1rem',
+                  background: tab === 'alts' ? '#F2F4F6' : '',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => onTabChange('alts')}
+              >
                 <Grid style={{ paddingRight: '1rem' }}>Alts</Grid>
                 <Grid>Select</Grid>
               </Grid>
-              <Grid style={{ display: 'flex', padding: '1rem' }}>
+              <Grid
+                style={{
+                  display: 'flex',
+                  padding: '1rem',
+                  background: tab === 'fiat' ? '#F2F4F6' : '',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => onTabChange('fiat')}
+              >
                 <Grid style={{ paddingRight: '1rem' }}>Fiat</Grid>
                 <Grid>Select</Grid>
               </Grid>
@@ -181,7 +241,8 @@ class SelectPairListComponent extends React.PureComponent<
         </Grid>
         <Grid style={{ overflow: 'scroll', height: '75%' }}>
           <TableWithSort
-            emptyTableText={`No coins available`}
+            rowWithHoverBorderRadius={false}
+            emptyTableText={`No pairs for such criteria`}
             data={{ body: processedSelectData }}
             columnNames={selectWrapperColumnNames}
             withCheckboxes={false}
