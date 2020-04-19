@@ -8,10 +8,6 @@ import MarketStats from './MarketStats/MarketStats'
 
 import {
   PanelWrapper,
-  PanelCard,
-  PanelCardTitle,
-  PanelCardValue,
-  PanelCardSubValue,
   CustomCard,
 } from '../Chart.styles'
 
