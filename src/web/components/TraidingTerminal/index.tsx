@@ -790,6 +790,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
       leverage,
+      hedgeMode
     } = props
 
     if (priceType || byType) {
@@ -831,7 +832,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                     : 'take-profit-limit',
               }
             : {}),
-          ...(priceType !== 'stop-limit' && priceType !== 'take-profit'
+          ...(priceType !== 'stop-limit' && priceType !== 'take-profit' && !hedgeMode
             ? { reduceOnly }
             : {}),
         }

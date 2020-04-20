@@ -468,6 +468,7 @@ class SimpleTabs extends React.Component {
                       byType={'buy'}
                       operationType={'buy'}
                       priceType={mode}
+                      hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}
@@ -502,6 +503,7 @@ class SimpleTabs extends React.Component {
                       byType={'sell'}
                       operationType={'sell'}
                       priceType={mode}
+                      hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}
