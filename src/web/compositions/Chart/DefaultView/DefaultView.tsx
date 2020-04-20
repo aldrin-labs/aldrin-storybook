@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Fade, Grid } from '@material-ui/core'
 
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
+import { MASTER_BUILD } from '@core/utils/config'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { SingleChart } from '@sb/components/Chart'
 
@@ -62,6 +63,7 @@ export const DefaultView = (props: any) => {
     showTableOnMobile,
     selectedKey,
     chartProps,
+    showChangePositionModeResult,
     changeActiveExchangeMutation,
     terminalViewMode,
     updateTerminalViewMode,
@@ -86,7 +88,7 @@ export const DefaultView = (props: any) => {
 
   return (
     <Container container spacing={8}>
-      <ChartGridContainer item xs={12}>
+      <ChartGridContainer MASTER_BUILD={MASTER_BUILD} item xs={12}>
         <CardsPanel
           {...{
             _id: id,
@@ -125,6 +127,7 @@ export const DefaultView = (props: any) => {
           }}
         >
           <ChartsContainer
+            MASTER_BUILD={MASTER_BUILD}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <CustomCard id="tradingViewChart">
@@ -151,10 +154,21 @@ export const DefaultView = (props: any) => {
             </CustomCard>
           </ChartsContainer>
           <TradingTerminalContainer
+            MASTER_BUILD={MASTER_BUILD}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <Grid item container style={{ height: '100%' }}>
-              <Grid item container xs={12} style={{ height: '100%' }}>
+              <Grid
+                item
+                container
+                xs={MASTER_BUILD ? 12 : 7}
+                style={{
+                  height: '100%',
+                  ...(!MASTER_BUILD
+                    ? { flexBasis: '65%', maxWidth: '65%' }
+                    : {}),
+                }}
+              >
                 <OrderbookAndDepthChart
                   {...{
                     symbol: currencyPair,
@@ -175,37 +189,41 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-              <Grid
-                item
-                xs={5}
-                style={{
-                  height: '100%',
-                  padding: '0 0 .4rem .4rem',
-                }}
-              >
-                <TradeHistory
-                  {...{
-                    symbol: currencyPair,
-                    pair: currencyPair,
-                    exchange,
-                    quote,
-                    minPriceDigits,
-                    updateTerminalPriceFromOrderbook,
-                    marketType,
-                    activeExchange,
-                    showTableOnMobile,
-                    changeTable,
-                    chartProps,
-                    sizeDigits,
+              {!MASTER_BUILD && (
+                <Grid
+                  item
+                  xs={5}
+                  style={{
+                    height: '100%',
+                    padding: '0 0 .4rem .4rem',
+                    flexBasis: '35%',
+                    maxWidth: '35%',
                   }}
-                />
-              </Grid>
+                >
+                  <TradeHistory
+                    {...{
+                      symbol: currencyPair,
+                      pair: currencyPair,
+                      exchange,
+                      quote,
+                      minPriceDigits,
+                      updateTerminalPriceFromOrderbook,
+                      marketType,
+                      activeExchange,
+                      showTableOnMobile,
+                      changeTable,
+                      chartProps,
+                      sizeDigits,
+                    }}
+                  />
+                </Grid>
+              )}
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (
             <TradingTabelContainer
               item
-              xs={6}
+              xs={marketType === 0 ? 7 : 6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
@@ -222,7 +240,7 @@ export const DefaultView = (props: any) => {
               />
             </TradingTabelContainer>
           )}
-          {isDefaultTerminalViewMode && (
+          {isDefaultTerminalViewMode && marketType === 1 && (
             <BalancesContainer
               item
               xs={1}
@@ -251,6 +269,7 @@ export const DefaultView = (props: any) => {
               marketType={marketType}
               showOrderResult={showOrderResult}
               showCancelResult={showCancelResult}
+              showChangePositionModeResult={showChangePositionModeResult}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
             />

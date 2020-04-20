@@ -319,8 +319,8 @@ export const StopLossColumn = ({
 
       <div>
         <SubColumnTitle>forced</SubColumnTitle>
-        <SubColumnValue textAlign={'right'} color={forced ? green : red}>
-          {!!forced ? `${forced}%` : 'off'}
+        <SubColumnValue textAlign={'right'} color={red}>
+          {!!forced ? `-${forced}%` : 'off'}
         </SubColumnValue>
       </div>
 

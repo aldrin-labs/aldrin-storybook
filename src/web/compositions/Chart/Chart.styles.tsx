@@ -189,13 +189,15 @@ export const WatchListContainer = styled(Card)`
   border-radius: 0px;
 `
 
-export const ChartGridContainer = styled(Grid)`
+export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
+  <Grid {...rest} />
+))`
   position: absolute;
   right: 1.4rem;
   display: flex;
   flex: auto;
   align-items: center;
-  width: 30%;
+  width: ${(props) => (props.MASTER_BUILD ? '30%' : '45%')};
   height: 4%;
 
   padding: 0 0 0 1.2rem !important;
@@ -223,12 +225,12 @@ export const TablesContainer = styled(Grid)`
 `
 
 export const TradingTerminalContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <div {...rest} />
+  ({ isDefaultTerminalViewMode, MASTER_BUILD, ...rest }) => <div {...rest} />
 )`
   position: relative;
   display: flex;
   // 60% - 3%, the half of height cards, will fix in future
-  width: 30%;
+  width: ${(props) => (props.MASTER_BUILD ? '30%' : '45%')};
   height: ${(props) =>
     props.isDefaultTerminalViewMode
       ? 'calc(59% - .8rem)'
@@ -261,12 +263,12 @@ export const TradingTerminalContainer = styled(
 `
 
 export const ChartsContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <div {...rest} />
+  ({ isDefaultTerminalViewMode, MASTER_BUILD, ...rest }) => <div {...rest} />
 )`
   position: relative;
   display: flex;
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  width: 70%;
+  width: ${(props) => (props.MASTER_BUILD ? '70%' : '55%')};
   height: ${(props) => (props.isDefaultTerminalViewMode ? '63%' : '52%')};
   justify-content: flex-end;
   flex-direction: column;

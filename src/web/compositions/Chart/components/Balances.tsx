@@ -71,9 +71,11 @@ export const BalanceFuturesContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
+  height: 33%;
   padding: 0.8rem 0;
+  border-bottom: 0.1rem solid #e0e5ec;
 
   ${({ needBorder }: { needBorder?: boolean }) =>
     needBorder &&
@@ -84,12 +86,12 @@ export const BalanceFuturesTypography = styled.span`
   font-size: 1rem;
   font-weight: bold;
   padding: 0.35rem 0;
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.1rem;
   text-transform: uppercase;
 `
 
 export const BalanceFuturesTitle = styled(BalanceFuturesTypography)`
-  color: #abbad1;
+  color: #7284a0;
 `
 
 export const BalanceFuturesValue = styled(BalanceFuturesTypography)`
@@ -97,7 +99,7 @@ export const BalanceFuturesValue = styled(BalanceFuturesTypography)`
 `
 
 export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
-  color: #7284a0;
+  color: #16253d;
 `
 
 export const Balances = ({
@@ -199,8 +201,8 @@ export const Balances = ({
           wrap={'nowrap'}
           style={{
             height: 'calc(100% - 5rem)',
-            padding: '0 .3rem',
-            overflow: 'scroll',
+            padding: '0 .8rem',
+            overflowY: 'scroll',
           }}
         >
           {isSPOTMarket ? (
@@ -265,35 +267,28 @@ export const Balances = ({
             <>
               <Grid
                 item
-                xs={8}
+                xs={9}
                 container
                 alignItems="center"
-                justify="center"
+                justify="flex-start"
                 style={{ maxWidth: '100%' }}
               >
-                <div style={{ width: '100%' }}>
+                <div style={{ height: '100%', width: '100%' }}>
                   <BalanceFuturesContainer>
-                    <BalanceFuturesTitle>Total</BalanceFuturesTitle>
+                    <BalanceFuturesTitle>Wallet balance</BalanceFuturesTitle>
                     <BalanceFuturesValue>
-                      {stripDigitPlaces(USDTFuturesFund.quantity)}{' '}
-                      <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
-                    </BalanceFuturesValue>
-                  </BalanceFuturesContainer>
-                  <BalanceFuturesContainer needBorder>
-                    <BalanceFuturesTitle>
-                      {isSPOTMarket ? `In order` : `locked`}
-                    </BalanceFuturesTitle>
-                    <BalanceFuturesValue>
-                      {stripDigitPlaces(USDTFuturesFund.locked)}{' '}
+                      <span style={{ color: '#0B1FD1' }}>
+                        {stripDigitPlaces(USDTFuturesFund.quantity)}
+                      </span>{' '}
                       <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer>
-                    <BalanceFuturesTitle>
-                      {isSPOTMarket ? `Availiable` : `free`}
-                    </BalanceFuturesTitle>
+                    <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
                     <BalanceFuturesValue>
-                      {stripDigitPlaces(USDTFuturesFund.free)}{' '}
+                      <span style={{ color: '#0B1FD1' }}>
+                        {stripDigitPlaces(USDTFuturesFund.free)}
+                      </span>{' '}
                       <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
@@ -301,12 +296,15 @@ export const Balances = ({
               </Grid>
               <Grid
                 item
-                xs={4}
+                xs={3}
                 container
                 direction="column"
                 alignItems="center"
                 justify="space-evenly"
-                style={{ maxWidth: '100%', padding: '0 1rem' }}
+                style={{
+                  maxWidth: '100%',
+                  borderTop: '.1rem solid #e0e5ec',
+                }}
               >
                 {isFuturesWarsKey && (
                   <BtnCustom
@@ -330,42 +328,51 @@ export const Balances = ({
                 )}
                 {!isFuturesWarsKey && (
                   <>
-                    <BtnCustom
-                      btnWidth="100%"
-                      height="auto"
-                      fontSize=".8rem"
-                      padding="1rem 0 .8rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={'#0B1FD1'}
-                      backgroundColor={'#fff'}
-                      hoverColor={'#fff'}
-                      hoverBackground={'#0B1FD1'}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        setTransferFromSpotToFutures(true)
-                        togglePopup(true)
+                    <BalanceFuturesTitle>transfer</BalanceFuturesTitle>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        width: '100%',
                       }}
                     >
-                      transfer in
-                    </BtnCustom>
-                    <BtnCustom
-                      btnWidth="100%"
-                      height="auto"
-                      fontSize=".8rem"
-                      padding="1rem 0 .8rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={'#0B1FD1'}
-                      backgroundColor={'#fff'}
-                      hoverColor={'#fff'}
-                      hoverBackground={'#0B1FD1'}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        setTransferFromSpotToFutures(false)
-                        togglePopup(true)
-                      }}
-                    >
-                      transfer out
-                    </BtnCustom>
+                      <BtnCustom
+                        btnWidth="45%"
+                        height="auto"
+                        fontSize=".8rem"
+                        padding=".5rem 0 .4rem 0;"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          setTransferFromSpotToFutures(true)
+                          togglePopup(true)
+                        }}
+                      >
+                        in
+                      </BtnCustom>
+                      <BtnCustom
+                        btnWidth="45%"
+                        height="auto"
+                        fontSize=".8rem"
+                        padding=".5rem 0 .4rem 0;"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          setTransferFromSpotToFutures(false)
+                          togglePopup(true)
+                        }}
+                      >
+                        out
+                      </BtnCustom>
+                    </div>
                   </>
                 )}
               </Grid>
