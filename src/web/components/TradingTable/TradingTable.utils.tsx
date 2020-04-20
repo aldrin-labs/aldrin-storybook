@@ -241,12 +241,17 @@ type IStatus = {
 }
 
 const getActiveOrderStatus = ({
+  strategy,
   state,
   profitPercentage,
 }: IStatus): [
   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
 ] => {
+  if (strategy.conditions.hedging && strategy.conditions.hedgeStrategyId === null) {
+    return ['Waiting hedge', '#29AC80']
+  }
+
   if (state && state.state && state.state !== 'WaitForEntry') {
     const { state: status } = state
 
@@ -582,6 +587,7 @@ export const combineActiveTradesTable = ({
           timeoutLoss,
           timeoutWhenLoss,
           timeoutWhenProfit,
+          hedgeLossDeviation
         } = {
           pair: '-',
           marketType: 0,
@@ -599,6 +605,7 @@ export const combineActiveTradesTable = ({
           timeoutLoss: '-',
           timeoutWhenLoss: '-',
           timeoutWhenProfit: '-',
+          hedgeLossDeviation: '-'
         },
       } = el
 
@@ -633,6 +640,7 @@ export const combineActiveTradesTable = ({
         (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
 
       const [activeOrderStatus, statusColor] = getActiveOrderStatus({
+        strategy: el,
         state: el.state,
         profitPercentage,
       })
@@ -709,7 +717,7 @@ export const combineActiveTradesTable = ({
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
-              {trailingExit &&
+              {
               exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation ? (
@@ -749,8 +757,8 @@ export const combineActiveTradesTable = ({
           },
         },
         stopLoss: {
-          render: stopLoss ? (
-            <SubColumnValue color={red.new}>{stopLoss}%</SubColumnValue>
+          render: stopLoss || hedgeLossDeviation ? (
+            <SubColumnValue color={red.new}>{stopLoss || hedgeLossDeviation}%</SubColumnValue>
           ) : (
             '-'
           ),
@@ -765,7 +773,7 @@ export const combineActiveTradesTable = ({
             activeOrderStatus !== 'Preparing' &&
             state !== 'WaitForEntry' &&
             state !== 'TrailingEntry' &&
-            !!currentPrice ? (
+            !!currentPrice && entryOrderPrice ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >

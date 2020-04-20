@@ -1375,7 +1375,7 @@ export class EditEntryOrderPopup extends React.Component<
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
-          ? this.props.price
+          ? props.price
           : price
 
       const deviationPercentage = props.openFromTerminal
@@ -1533,6 +1533,11 @@ export class EditEntryOrderPopup extends React.Component<
             changeHalf={() => {
               if (marketType === 0) {
                 const newSide = getSecondValueFromFirst(side)
+
+                if (newSide === 'sell') {
+                  return
+                }
+
                 const amountPercentage =
                   side === 'buy' || marketType === 1
                     ? total / (maxAmount / 100)
@@ -1575,7 +1580,10 @@ export class EditEntryOrderPopup extends React.Component<
             firstHalfText={'limit'}
             secondHalfText={'market'}
             buttonHeight={'2.5rem'}
-            containerStyles={{ width: '100%' }}
+            containerStyles={{
+              width: '100%',
+              paddingBottom: marketType === 1 ? '0' : '.6rem',
+            }}
             firstHalfStyleProperties={BlueSwitcherStyles}
             secondHalfStyleProperties={BlueSwitcherStyles}
             firstHalfIsActive={type === 'limit'}
@@ -1595,21 +1603,23 @@ export class EditEntryOrderPopup extends React.Component<
           />
 
           <div>
-            <InputRowContainer
-              justify="flex-start"
-              padding={'.6rem 0 1.2rem 0'}
-            >
-              <AdditionalSettingsButton
-                isActive={isTrailingOn}
-                onClick={() => {
-                  this.setState((prev) => ({
-                    isTrailingOn: !prev.isTrailingOn,
-                  }))
-                }}
+            {marketType === 1 && (
+              <InputRowContainer
+                justify="flex-start"
+                padding={'.6rem 0 1.2rem 0'}
               >
-                Trailing {side}
-              </AdditionalSettingsButton>
-            </InputRowContainer>
+                <AdditionalSettingsButton
+                  isActive={isTrailingOn}
+                  onClick={() => {
+                    this.setState((prev) => ({
+                      isTrailingOn: !prev.isTrailingOn,
+                    }))
+                  }}
+                >
+                  Trailing {side}
+                </AdditionalSettingsButton>
+              </InputRowContainer>
+            )}
 
             <InputRowContainer>
               <FormInputContainer title={'price'}>

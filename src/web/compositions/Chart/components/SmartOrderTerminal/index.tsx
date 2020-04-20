@@ -910,9 +910,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 firstHalfIsActive={entryPoint.order.side === 'buy'}
                 changeHalf={() => {
                   if (marketType === 0) {
+                    // disable sell option for spot
                     const newSide = getSecondValueFromFirst(
                       entryPoint.order.side
                     )
+
+                    if (newSide === 'sell') {
+                      return
+                    }
+
                     const amountPercentage =
                       entryPoint.order.side === 'buy' || marketType === 1
                         ? entryPoint.order.total / (maxAmount / 100)
@@ -1033,24 +1039,26 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               />
 
               <div>
-                <InputRowContainer
-                  justify="flex-start"
-                  padding={'.6rem 0 1.2rem 0'}
-                >
-                  <AdditionalSettingsButton
-                    isActive={entryPoint.trailing.isTrailingOn}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'trailing',
-                        'isTrailingOn',
-                        !entryPoint.trailing.isTrailingOn
-                      )
-                    }}
+                {marketType === 1 && (
+                  <InputRowContainer
+                    justify="flex-start"
+                    padding={'.6rem 0 1.2rem 0'}
                   >
-                    Trailing {entryPoint.order.side}
-                  </AdditionalSettingsButton>
-                  {/* <SwitcherContainer>
+                    <AdditionalSettingsButton
+                      isActive={entryPoint.trailing.isTrailingOn}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'isTrailingOn',
+                          !entryPoint.trailing.isTrailingOn
+                        )
+                      }}
+                    >
+                      Trailing {entryPoint.order.side}
+                    </AdditionalSettingsButton>
+
+                    {/* <SwitcherContainer>
                     <GreenSwitcher
                       id="isHedgeOn"
                       checked={entryPoint.order.isHedgeOn}
@@ -1065,7 +1073,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     />
                     <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
                   </SwitcherContainer> */}
-                </InputRowContainer>
+                  </InputRowContainer>
+                )}
                 <FormInputContainer
                   padding={'0 0 1.2rem 0'}
                   title={`price (${pair[1]})`}
