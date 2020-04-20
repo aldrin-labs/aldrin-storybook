@@ -1,5 +1,4 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -17,6 +16,10 @@ import {
   SCheckbox,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import { SendButton } from '../TraidingTerminal/styles'
 
 import {
@@ -32,8 +35,10 @@ import {
   SettingsLabel,
   StyledSelect,
   StyledOption,
+  SpotBalanceSpan,
   FuturesSettings,
-  SmartOrderModeButton,
+  DropdownItemsBlock,
+  TerminalModeButtonWithDropdown,
 } from './styles'
 
 import { maxLeverage } from '@sb/compositions/Chart/mocks'
@@ -112,15 +117,18 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      hedgeMode,
       leverage: startLeverage,
       priceFromOrderbook,
       quantityPrecision,
       marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
+      changePositionModeWithStatus,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
+    const maxAmount = [funds[1].quantity, funds[0].quantity]
 
     return (
       <Grid
@@ -130,29 +138,76 @@ class SimpleTabs extends React.Component {
         style={{ height: '100%', padding: '0 0 0 0' }}
       >
         <CustomCard>
-          <TerminalHeader key={'spotTerminal'}>
-            <TerminalModeButton
-              isActive={mode === 'limit'}
-              onClick={() => this.handleChangeMode('limit')}
-            >
-              Limit
-            </TerminalModeButton>
-            <TerminalModeButton
-              isActive={mode === 'market'}
-              onClick={() => this.handleChangeMode('market')}
-            >
-              Market
-            </TerminalModeButton>
-            <TerminalModeButton
-              isActive={mode === 'stop-limit'}
-              onClick={() => {
-                this.handleChangeMode('stop-limit')
-                this.setState({ orderMode: 'TIF' })
-              }}
-            >
-              Stop-Limit
-            </TerminalModeButton>
-            <TerminalModeButton
+          <TerminalHeader key={'spotTerminal'} style={{ display: 'flex' }}>
+            <div style={{ width: marketType === 0 ? '100%' : '65%' }}>
+              <TerminalModeButton
+                isActive={mode === 'limit'}
+                onClick={() => this.handleChangeMode('limit')}
+              >
+                Limit
+              </TerminalModeButton>
+              <TerminalModeButton
+                isActive={mode === 'market'}
+                onClick={() => this.handleChangeMode('market')}
+              >
+                Market
+              </TerminalModeButton>
+              <TerminalModeButtonWithDropdown
+                isActive={mode === 'stop-limit' || mode === 'take-profit'}
+              >
+                {mode === 'stop-limit'
+                  ? 'Stop-Loss'
+                  : mode === 'take-profit'
+                  ? 'Take-Profit'
+                  : 'Stop-Limit'}
+                <ExpandMoreIcon
+                  style={{
+                    position: 'relative',
+                    left: '.8rem',
+                    top: '.2rem',
+                    width: '1.2rem',
+                    height: '1.2rem',
+                    fill:
+                      mode !== 'stop-limit' && mode !== 'take-profit'
+                        ? '#7284a0'
+                        : '#fff',
+                  }}
+                />
+                <DropdownItemsBlock>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <TerminalModeButton
+                      isActive={mode === 'stop-limit'}
+                      onClick={() => {
+                        this.handleChangeMode('stop-limit')
+                        this.setState({ orderMode: 'TIF' })
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '1rem 0 1rem',
+                        border: '.1rem solid #e0e5ec',
+                      }}
+                    >
+                      Stop-Loss
+                    </TerminalModeButton>
+                    <TerminalModeButton
+                      isActive={mode === 'take-profit'}
+                      onClick={() => {
+                        this.handleChangeMode('take-profit')
+                        this.setState({ orderMode: 'TIF' })
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '1rem 0 1rem',
+                        border: '.1rem solid #e0e5ec',
+                        borderTop: 0,
+                      }}
+                    >
+                      Take-Profit
+                    </TerminalModeButton>
+                  </div>
+                </DropdownItemsBlock>
+              </TerminalModeButtonWithDropdown>
+              {/* <TerminalModeButton
               isActive={mode === 'take-profit'}
               onClick={() => {
                 this.handleChangeMode('take-profit')
@@ -160,19 +215,39 @@ class SimpleTabs extends React.Component {
               }}
             >
               Take-Profit
-            </TerminalModeButton>
-            <TerminalModeButton
-              isActive={mode === 'smart'}
-              onClick={() => {
-                this.handleChangeMode('smart')
-                updateTerminalViewMode('smartOrderMode')
-              }}
-            >
-              Smart Trade
-            </TerminalModeButton>
+            </TerminalModeButton> */}
+              <TerminalModeButton
+                style={{
+                  width: '19%',
+                  borderRight: '.1rem solid #e0e5ec',
+                }}
+                isActive={mode === 'smart'}
+                onClick={() => {
+                  this.handleChangeMode('smart')
+                  updateTerminalViewMode('smartOrderMode')
+                }}
+              >
+                Smart
+              </TerminalModeButton>
+            </div>
+            {marketType === 1 && (
+              <div style={{ width: '35%' }}>
+                <PillowButton
+                  firstHalfText={'one-way'}
+                  secondHalfText={'hedge'}
+                  activeHalf={hedgeMode ? 'second' : 'first'}
+                  buttonAdditionalStyle={{
+                    width: '50%',
+                  }}
+                  changeHalf={() => {
+                    changePositionModeWithStatus(hedgeMode ? false : true)
+                  }}
+                />
+              </div>
+            )}
           </TerminalHeader>
 
-          {!isSPOTMarket && (
+          {!isSPOTMarket ? (
             <TerminalHeader key={'futuresTerminal'} style={{ display: 'flex' }}>
               <SettingsContainer>
                 {mode === 'limit' && (
@@ -317,6 +392,49 @@ class SimpleTabs extends React.Component {
                 </LeverageLabel>
               </LeverageContainer>
             </TerminalHeader>
+          ) : (
+            <TerminalHeader style={{ display: 'flex' }}>
+              <div
+                style={{
+                  width: '50%',
+                  padding: '.5rem 0 .5rem 3rem',
+                  borderRight: '.1rem solid #e0e5ec',
+                }}
+              >
+                <SpotBalanceSpan
+                  style={{
+                    color: '#0B1FD1',
+                    borderBottom: '.1rem dashed #ABBAD1',
+                  }}
+                >
+                  {stripDigitPlaces(maxAmount[0], 8)}
+                </SpotBalanceSpan>{' '}
+                <SpotBalanceSpan
+                  style={{
+                    color: '#7284A0',
+                  }}
+                >
+                  {pair[1]}
+                </SpotBalanceSpan>
+              </div>
+              <div style={{ width: '50%', padding: '.5rem 0 .5rem 3rem' }}>
+                <SpotBalanceSpan
+                  style={{
+                    color: '#0B1FD1',
+                    borderBottom: '.1rem dashed #ABBAD1',
+                  }}
+                >
+                  {stripDigitPlaces(maxAmount[1], 8)}
+                </SpotBalanceSpan>{' '}
+                <SpotBalanceSpan
+                  style={{
+                    color: '#7284A0',
+                  }}
+                >
+                  {pair[0]}
+                </SpotBalanceSpan>
+              </div>
+            </TerminalHeader>
           )}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
@@ -350,6 +468,7 @@ class SimpleTabs extends React.Component {
                       byType={'buy'}
                       operationType={'buy'}
                       priceType={mode}
+                      hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}
@@ -384,6 +503,7 @@ class SimpleTabs extends React.Component {
                       byType={'sell'}
                       operationType={'sell'}
                       priceType={mode}
+                      hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}

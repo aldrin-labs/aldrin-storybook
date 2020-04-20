@@ -421,7 +421,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
-          <Grid item container xs={9} style={{ maxWidth: '100%' }}>
+          <Grid item container xs={8} style={{ maxWidth: '100%' }}>
             <InputRowContainer
               direction="column"
               style={{ margin: 'auto 0', width: '100%' }}
@@ -631,7 +631,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           </Grid>
 
           <Grid
-            xs={3}
+            xs={4}
             item
             container
             style={{ maxWidth: '100%', paddingBottom: '1.5rem' }}
@@ -790,6 +790,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
       leverage,
+      hedgeMode
     } = props
 
     if (priceType || byType) {
@@ -831,7 +832,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                     : 'take-profit-limit',
               }
             : {}),
-          ...(priceType !== 'stop-limit' && priceType !== 'take-profit'
+          ...(priceType !== 'stop-limit' && priceType !== 'take-profit' && !hedgeMode
             ? { reduceOnly }
             : {}),
         }

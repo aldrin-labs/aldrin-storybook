@@ -93,6 +93,7 @@ export const SellTab = styled(StyledTab)`
 `
 
 export const TerminalHeader = styled.div`
+  width: 100%;
   position: relative;
   background-color: #f2f4f6;
   border-bottom: 0.1rem solid #e0e5ec;
@@ -133,7 +134,7 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
-  width: 20%;
+  width: 27%;
   background-color: ${(props) => (props.isActive ? '#5C8CEA' : '#f2f4f6')};
   color: ${(props) => (props.isActive ? '#fff' : '#16253D')};
   border: ${(props) =>
@@ -231,4 +232,26 @@ export const SmartOrderModeButton = styled(TerminalModeButton)`
 export const FuturesSettings = styled.div`
   display: flex;
   align-items: center;
+`
+
+export const TerminalModeButtonWithDropdown = styled(TerminalModeButton)`
+  position: relative;
+  &:hover > div {
+    display: block;
+  }
+`
+
+export const DropdownItemsBlock = styled.div`
+  display: none;
+  position: absolute;
+  width: calc(100% + 0.3rem);
+  left: -0.1rem;
+  top: calc(100% + 0.1rem);
+  z-index: 10;
+`
+
+export const SpotBalanceSpan = styled.span`
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
 `

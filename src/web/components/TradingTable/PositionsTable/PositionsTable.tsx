@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { withSnackbar } from 'notistack'
 import { client } from '@core/graphql/apolloClient'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -23,6 +24,7 @@ import { getActivePositions } from '@core/graphql/queries/chart/getActivePositio
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 
+import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
@@ -47,10 +49,29 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   subscription: null | { unsubscribe: () => void } = null
 
   createOrder = async (variables) => {
-    const { createOrderMutation } = this.props
+    const { createOrderMutation, selectedKey, getKeys } = this.props
+
+    const hedgeMode = getKeys.myPortfolios[0].keys.find(
+      (key) => key.keyId === selectedKey.keyId
+    ).hedgeMode
+
+    const { reduceOnly, ...paramsForHedge } = variables.keyParams
 
     try {
-      const result = await createOrderMutation({ variables })
+      const result = await createOrderMutation({
+        variables: {
+          ...variables,
+          keyParams: {
+            ...(hedgeMode
+              ? {
+                  ...paramsForHedge,
+                  positionSide:
+                    paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
+                }
+              : variables.keyParams),
+          },
+        },
+      })
 
       if (result.errors) {
         return {
@@ -561,6 +582,11 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 
 export default compose(
   withSnackbar,
+  queryRendererHoc({
+    query: getKeysQuery,
+    name: 'getKeys',
+    fetchPolicy: 'cache-and-network',
+  }),
   graphql(updatePosition, { name: 'updatePositionMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(createOrder, { name: 'createOrderMutation' })
