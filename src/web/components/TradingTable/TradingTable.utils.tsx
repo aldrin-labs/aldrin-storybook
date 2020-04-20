@@ -609,7 +609,7 @@ export const combineActiveTradesTable = ({
         },
       } = el
 
-      const { entryPrice, state, msg } = el.state || {
+      const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
         state: '-',
         msg: null,
@@ -618,11 +618,16 @@ export const combineActiveTradesTable = ({
       const pairArr = pair.split('_')
       const needOpacity = el._id === '-1'
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-      const currentPrice = (
+      let currentPrice = (
         prices.find(
           (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
         ) || { price: 0 }
       ).price
+
+      // for waitLossHedge for example
+      if (exitPrice > 0) {
+        currentPrice = exitPrice
+      }
 
       const keyName = keys[accountId]
 
