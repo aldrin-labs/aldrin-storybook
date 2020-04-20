@@ -42,6 +42,10 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: false })
   }
 
+  openMenu = () => {
+    this.setState({ isMenuOpen: true })
+  }
+
   handleChange = async ({ value }: { value: string }) => {
     const {
       getCharts,
@@ -214,7 +218,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           border={divider}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
-          // onMouseOver={this.toggleMenu}
+          onMouseOver={this.openMenu}
         >
           <SelectR
             id={this.props.id}

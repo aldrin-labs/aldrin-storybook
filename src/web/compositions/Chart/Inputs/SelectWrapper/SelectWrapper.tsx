@@ -159,7 +159,7 @@ class SelectPairListComponent extends React.PureComponent<
           border: '2px solid #E0E5EC',
           boxShadow: '0px 8px 12px rgba(8, 22, 58, 0.3)',
         }}
-        // onMouseLeave={closeMenu}
+        onMouseLeave={closeMenu}
       >
         <Grid container style={{ padding: '0.5rem' }}>
           <Grid
@@ -209,7 +209,7 @@ class SelectPairListComponent extends React.PureComponent<
                 onClick={() => onTabChange('alts')}
               >
                 <Grid style={{ paddingRight: '1rem' }}>Alts</Grid>
-                <Grid>Select</Grid>
+                {/* <Grid>Select</Grid> */}
               </Grid>
               <Grid
                 style={{
@@ -222,7 +222,7 @@ class SelectPairListComponent extends React.PureComponent<
                 onClick={() => onTabChange('fiat')}
               >
                 <Grid style={{ paddingRight: '1rem' }}>Fiat</Grid>
-                <Grid>Select</Grid>
+                {/* <Grid>Select</Grid> */}
               </Grid>
             </>
           )}
