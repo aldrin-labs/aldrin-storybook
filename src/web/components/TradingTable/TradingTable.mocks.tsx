@@ -1,25 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TableButton } from './TradingTable.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
 import Help from '@material-ui/icons/Help'
 import Reimport from '@icons/reimport.svg'
 import { Loading } from '@sb/components/index'
+import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const arrayOfSides = ['sell', 'buy']
-
 const arrayOfOrdersType = ['market', 'limit', 'stop']
-
 const arrayOforderStatus = ['finished', 'canceled']
 
 const StatusTooltip = () => {
-  const [showTooltip, updateTooltipState] = useState(false)
-
   return (
-    <div
+    <TooltipContainer
+      translateX={'-45%'}
       style={{ display: 'flex', alignItems: 'center', padding: '.4rem' }}
-      onMouseEnter={() => updateTooltipState(true)}
-      onMouseLeave={() => updateTooltipState(false)}
     >
       status
       <Help
@@ -30,26 +26,14 @@ const StatusTooltip = () => {
           marginLeft: '.5rem',
         }}
       />
-      {showTooltip ? (
-        <div
-          style={{
-            background: 'rgba(0, 0, 0, .6)',
-            padding: '.4rem 2rem',
-            position: 'absolute',
-            top: '150%',
-            color: 'white',
-            transform: 'translateX(-45%)',
-          }}
-        >
-          <p>Preparing (while placing orders/waiting for act price)</p>
-          <p>Trailing entry (When trailing activated)</p>
-          {/* <p>Active (Instead inentry)</p> */}
-          <p>In loss (pnl less than 0)</p>
-          <p>In Profit (profit greater than 0)</p>
-          <p>Error (error has occured)</p>
-        </div>
-      ) : null}
-    </div>
+      <Tooltip style={{ fontSize: '1rem ' }}>
+        <p>Preparing (while placing orders/waiting for act price)</p>
+        <p>Trailing entry (When trailing activated)</p>
+        <p>In loss (pnl less than 0)</p>
+        <p>In Profit (profit greater than 0)</p>
+        <p>Error (error has occured)</p>
+      </Tooltip>
+    </TooltipContainer>
   )
 }
 
