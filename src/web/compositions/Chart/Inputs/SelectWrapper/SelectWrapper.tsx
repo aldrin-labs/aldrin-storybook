@@ -1,8 +1,10 @@
 import React from 'react'
-import { Grid, Input } from '@material-ui/core'
+import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
+import search from '@icons/search.svg'
+
 import { TableWithSort, SvgIcon } from '@sb/components'
 
 import {
@@ -159,7 +161,8 @@ class SelectPairListComponent extends React.PureComponent<
           border: '2px solid #E0E5EC',
           boxShadow: '0px 8px 12px rgba(8, 22, 58, 0.3)',
         }}
-        onMouseLeave={closeMenu}
+        // TODO: uncomment this line
+        // onMouseLeave={closeMenu}
       >
         <Grid container style={{ padding: '0.5rem' }}>
           <Grid
@@ -239,9 +242,23 @@ class SelectPairListComponent extends React.PureComponent<
                 paddingLeft: '1rem',
               },
             }}
+            endAdornment={
+              <InputAdornment
+                style={{
+                  width: '10%',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+                disableTypography={true}
+                position="end"
+                autoComplete="off"
+              >
+                <SvgIcon src={search} width="1.5rem" height="auto" />
+              </InputAdornment>
+            }
           />
         </Grid>
-        <Grid style={{ overflow: 'scroll', height: '75%' }}>
+        <Grid style={{ overflow: 'scroll', height: '69%' }}>
           <TableWithSort
             rowWithHoverBorderRadius={false}
             emptyTableText={`No pairs for such criteria`}
