@@ -101,7 +101,6 @@ export const combineSelectWrapperData = ({
   favoritePairsMap,
 }: {
   data: ISelectData
-  favoritePairsMap: Map<string, string>
   updateFavoritePairsMutation: (variableObj: {
     variables: {
       input: {
@@ -115,6 +114,10 @@ export const combineSelectWrapperData = ({
   searchValue: string
   tab: SelectTabType
   tabSpecificCoin: string
+  favoritePairsMap: Map<string, string>
+  stableCoinsPairsMap: Map<string, string>
+  btcCoinsPairsMap: Map<string, string>
+  altCoinsPairsMap: Map<string, string>
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
