@@ -11,9 +11,14 @@ export interface IState {
 export interface IProps {
   data: ISelectData
   favoritePairsMap: Map<string, string>
+  stableCoinsPairsMap: Map<string, string>
+  btcCoinsPairsMap: Map<string, string>
+  altCoinsPairsMap: Map<string, string>
   updateFavoritePairsMutation: UpdateFavoritePairsMutationType
   onSelectPair: ({ value }: { value: string }) => Promise<void>
   theme: Theme
+  closeMenu: () => void
+  marketType: 0 | 1
 }
 
 export interface IPropsSelectPairListComponent extends IProps {
@@ -21,6 +26,7 @@ export interface IPropsSelectPairListComponent extends IProps {
   tab: SelectTabType
   tabSpecificCoin: string
   onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onTabChange: (tab: SelectTabType) => void
 }
 
 export interface IStateSelectPairListComponent {
