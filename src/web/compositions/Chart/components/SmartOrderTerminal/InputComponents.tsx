@@ -10,6 +10,7 @@ import {
   TradeInputContent,
   TradeInputHeader,
 } from '@sb/components/TraidingTerminal/index'
+import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { BeforeCharacter, InputRowContainer } from './styles'
 
@@ -110,6 +111,9 @@ export const FormInputContainer = ({
   needRightValue = false,
   rightValue = '',
   lineMargin = '0 0 0 1rem',
+  haveTooltip = false,
+  tooltipText = '',
+  tooltipStyles = {},
   onValueClick = () => {},
 }: {
   title: string
@@ -119,18 +123,40 @@ export const FormInputContainer = ({
   lineWidth?: string
   needRightValue?: boolean
   rightValue?: string
+  haveTooltip?: boolean
+  tooltipText?: string | React.ReactChild
+  tooltipStyles?: React.CSSProperties
   onValueClick?: any
 }) => {
   return (
     <InputRowContainer padding={padding} direction="column">
+      {/* {haveTooltip ? (
+        <TooltipContainer
+          style={{ display: 'flex', width: '100%', cursor: 'pointer' }}
+        >
+          <Tooltip style={{ ...tooltipStyles }}>{tooltipText}</Tooltip> */}
       <TradeInputHeader
         title={title}
+        haveTooltip={haveTooltip}
         needLine={needLine}
         lineMargin={lineMargin}
+        tooltipText={tooltipText}
+        tooltipStyles={tooltipStyles}
         needRightValue={needRightValue}
         rightValue={rightValue}
         onValueClick={onValueClick}
       />
+      {/* </TooltipContainer>
+      ) : (
+        <TradeInputHeader
+          title={title}
+          needLine={needLine}
+          lineMargin={lineMargin}
+          needRightValue={needRightValue}
+          rightValue={rightValue}
+          onValueClick={onValueClick}
+        />
+      )} */}
       {children}
     </InputRowContainer>
   )
