@@ -208,6 +208,7 @@ export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
 
+  top: 2%;
   // height: calc(60vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   height: 100%;
   overflow: hidden;
@@ -400,6 +401,7 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
+  top: 2%;
   position: relative;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
   padding: ${({
