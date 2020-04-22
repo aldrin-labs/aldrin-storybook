@@ -251,25 +251,20 @@ export default compose(
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
-    withTableLoader: true,
-    centerAlign: false,
-    placeholder: <TextInputLoader style={{ width: 100, margin: 0 }} />,
+    withTableLoader: false,
   }),
   queryRendererHoc({
     query: getSelectorSettings,
     withOutSpinner: true,
-    withTableLoader: true,
+    withTableLoader: false,
     name: 'getSelectorSettingsQuery',
   }),
   queryRendererHoc({
     query: GET_VIEW_MODE,
-    withOutSpinner: true,
     name: 'getViewModeQuery',
   }),
   queryRendererHoc({
     query: GET_CHARTS,
-    withOutSpinner: true,
-    withTableLoader: false,
     name: 'getCharts',
   }),
   graphql(CHANGE_CURRENCY_PAIR, {

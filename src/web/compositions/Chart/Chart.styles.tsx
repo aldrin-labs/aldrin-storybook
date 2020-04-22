@@ -248,11 +248,11 @@ export const TradingTerminalContainer = styled(
   }
 
   @media screen and (max-width: 1440px) {
-    top: calc(3% + 0.8rem);
+    top: calc(4% + 0.8rem);
     height: ${(props) =>
       props.isDefaultTerminalViewMode
-        ? 'calc(60% - .8rem)'
-        : 'calc(49% - .8rem)'};
+        ? 'calc(59% - .8rem)'
+        : 'calc(48% - .8rem)'};
   }
 
   @media screen and (max-width: 1140px) {
@@ -284,11 +284,11 @@ export const ChartsContainer = styled(
     flex-wrap: nowrap;
   }
   @media screen and (max-width: 1440px) {
-    top: calc(3% + 0.8rem);
+    top: calc(4% + 0.8rem);
     height: ${(props) =>
       props.isDefaultTerminalViewMode
-        ? 'calc(60% - .8rem)'
-        : 'calc(49% - .8rem)'};
+        ? 'calc(59% - .8rem)'
+        : 'calc(48% - .8rem)'};
   }
 
   @media screen and (max-width: 1140px) {

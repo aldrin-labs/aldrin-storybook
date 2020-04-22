@@ -5,11 +5,9 @@ import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
 import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
 import MarketStats from './MarketStats/MarketStats'
+import { TooltipCustom } from '@sb/components/index'
 
-import {
-  PanelWrapper,
-  CustomCard,
-} from '../Chart.styles'
+import { PanelWrapper, CustomCard } from '../Chart.styles'
 
 const selectStyles = {
   height: '100%',
@@ -94,10 +92,16 @@ export const CardsPanel = ({
             marginRight: '1rem',
           }}
         >
-          <MarketStats
-            symbol={pair}
-            marketType={marketType}
-            exchange={activeExchange}
+          <TooltipCustom
+            title="Cryptocurrencies.ai is a Binance partner exchange"
+            enterDelay={250}
+            component={
+              <MarketStats
+                symbol={pair}
+                marketType={marketType}
+                exchange={activeExchange}
+              />
+            }
           />
         </CustomCard>
 

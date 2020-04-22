@@ -1,7 +1,12 @@
 import React from 'react'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { Column, Table } from 'react-virtualized'
+import 'react-virtualized/styles.css'
 
+import stableCoins from '@core/config/stableCoins'
+import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
 
@@ -33,9 +38,16 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
 
   onTabChange = (tab: SelectTabType) => {
-    this.setState({ tab })
+    // this.setState({ tab, tabSpecificCoin: '' })
+    this.setState((prevState) => ({
+      tab,
+      tabSpecificCoin: prevState.tab !== tab ? '' : prevState.tabSpecificCoin,
+    }))
   }
 
+  onSpecificCoinChange = ({ value }: { value: string }) => {
+    this.setState({ tabSpecificCoin: value })
+  }
   render() {
     const { searchValue, tab, tabSpecificCoin } = this.state
 
@@ -46,6 +58,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         tabSpecificCoin={tabSpecificCoin}
         onChangeSearch={this.onChangeSearch}
         onTabChange={this.onTabChange}
+        onSpecificCoinChange={this.onSpecificCoinChange}
         {...this.props}
       />
     )
@@ -144,6 +157,7 @@ class SelectPairListComponent extends React.PureComponent<
       onTabChange,
       marketType,
       closeMenu,
+      onSpecificCoinChange,
     } = this.props
 
     return (
@@ -154,7 +168,7 @@ class SelectPairListComponent extends React.PureComponent<
           zIndex: 999,
           background: '#fff',
           minWidth: '35%',
-          height: '300px',
+          height: '350px',
           marginTop: '3rem',
           borderRadius: '8px',
           overflow: 'hidden',
@@ -162,11 +176,12 @@ class SelectPairListComponent extends React.PureComponent<
           boxShadow: '0px 8px 12px rgba(8, 22, 58, 0.3)',
         }}
         // TODO: uncomment this line
-        // onMouseLeave={closeMenu}
+        onMouseLeave={closeMenu}
       >
         <Grid container style={{ padding: '0.5rem' }}>
           <Grid
             style={{
+              display: 'flex',
               padding: '1rem',
               background: tab === 'favorite' ? '#F2F4F6' : '',
               cursor: 'pointer',
@@ -182,6 +197,9 @@ class SelectPairListComponent extends React.PureComponent<
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
+              fontSize: '1.2rem',
+              color: '#7284A0',
+              fontWeight: 'bold',
             }}
             onClick={() => onTabChange('all')}
           >
@@ -196,6 +214,9 @@ class SelectPairListComponent extends React.PureComponent<
                   display: 'flex',
                   alignItems: 'center',
                   cursor: 'pointer',
+                  fontSize: '1.2rem',
+                  color: '#7284A0',
+                  fontWeight: 'bold',
                 }}
                 onClick={() => onTabChange('btc')}
               >
@@ -208,11 +229,36 @@ class SelectPairListComponent extends React.PureComponent<
                   background: tab === 'alts' ? '#F2F4F6' : '',
                   alignItems: 'center',
                   cursor: 'pointer',
+                  fontSize: '1.2rem',
+                  color: '#7284A0',
+                  fontWeight: 'bold',
                 }}
                 onClick={() => onTabChange('alts')}
               >
-                <Grid style={{ paddingRight: '1rem' }}>Alts</Grid>
-                {/* <Grid>Select</Grid> */}
+                <Grid style={{ paddingRight: '1rem' }}>ALTS</Grid>
+                <Grid style={{ width: '60px' }}>
+                  <ReactSelectComponent
+                    isSearchable={false}
+                    valueContainerStyles={{ padding: 0 }}
+                    placeholder="ALL"
+                    onChange={onSpecificCoinChange}
+                    options={[
+                      { value: 'ETH', label: 'ETH' },
+                      { value: 'TRX', label: 'TRX' },
+                      { value: 'XRP', label: 'XRP' },
+                      { label: 'ALL', value: 'ALL' },
+                    ]}
+                    value={
+                      tabSpecificCoin === ''
+                        ? { label: 'ALL', value: 'ALL' }
+                        : tabSpecificCoin === 'ALL'
+                        ? { label: 'ALL', value: 'ALL' }
+                        : !['ETH', 'TRX', 'XRP'].includes(tabSpecificCoin)
+                        ? { label: 'ALL', value: 'ALL' }
+                        : undefined
+                    }
+                  />
+                </Grid>
               </Grid>
               <Grid
                 style={{
@@ -221,11 +267,37 @@ class SelectPairListComponent extends React.PureComponent<
                   background: tab === 'fiat' ? '#F2F4F6' : '',
                   alignItems: 'center',
                   cursor: 'pointer',
+                  fontSize: '1.2rem',
+                  color: '#7284A0',
+                  fontWeight: 'bold',
                 }}
                 onClick={() => onTabChange('fiat')}
               >
-                <Grid style={{ paddingRight: '1rem' }}>Fiat</Grid>
-                {/* <Grid>Select</Grid> */}
+                <Grid style={{ paddingRight: '1rem' }}>FIAT</Grid>
+                <Grid style={{ width: '60px' }}>
+                  <ReactSelectComponent
+                    isSearchable={false}
+                    valueContainerStyles={{ padding: 0 }}
+                    placeholder="ALL"
+                    onChange={onSpecificCoinChange}
+                    options={[
+                      ...stableCoins.map((el) => ({
+                        value: el,
+                        label: el,
+                      })),
+                      { label: 'ALL', value: 'ALL' },
+                    ]}
+                    value={
+                      tabSpecificCoin === ''
+                        ? { label: 'ALL', value: 'ALL' }
+                        : tabSpecificCoin === 'ALL'
+                        ? { label: 'ALL', value: 'ALL' }
+                        : !stableCoins.includes(tabSpecificCoin)
+                        ? { label: 'ALL', value: 'ALL' }
+                        : undefined
+                    }
+                  />
+                </Grid>
               </Grid>
             </>
           )}
@@ -258,8 +330,117 @@ class SelectPairListComponent extends React.PureComponent<
             }
           />
         </Grid>
-        <Grid style={{ overflow: 'scroll', height: '69%' }}>
-          <TableWithSort
+        <Grid style={{ overflow: 'hidden', height: 'calc(69% - 2rem)' }}>
+          <AutoSizer>
+            {({ width, height }: { width: number; height: number }) => (
+              <Table
+                width={width}
+                height={height}
+                rowCount={processedSelectData.length}
+                onRowClick={({ event, index, rowData }) => {
+                  rowData.symbol.onClick()
+                }}
+                gridStyle={{
+                  outline: 'none',
+                }}
+                rowStyle={{
+                  outline: 'none',
+                  cursor: 'pointer',
+                  color: '#7284A0',
+                  borderBottom: '1px solid #E0E5EC',
+                }}
+                headerHeight={window.outerHeight / 40}
+                headerStyle={{
+                  color: '#16253D',
+                  paddingLeft: '.5rem',
+                  paddingTop: '.25rem',
+                  marginLeft: 0,
+                  marginRight: 0,
+                  letterSpacing: '.075rem',
+                  // borderBottom: '.1rem solid #e0e5ec',
+                  fontSize: '1.2rem',
+                }}
+                rowHeight={40}
+                rowGetter={({ index }) => processedSelectData[index]}
+              >
+                <Column
+                  label=""
+                  dataKey="favorite"
+                  headerStyle={{
+                    paddingLeft: 'calc(.5rem + 10px)',
+                  }}
+                  width={width / 5}
+                  cellRenderer={({ cellData }) => (
+                    <span onClick={(e) => e.stopPropagation()}>
+                      {cellData.render}
+                    </span>
+                  )}
+                />
+                <Column
+                  label={`Pair`}
+                  dataKey="symbol"
+                  headerStyle={{
+                    textAlign: 'left',
+                    paddingRight: '6px',
+                    paddingLeft: '1rem',
+                  }}
+                  width={width}
+                  style={{
+                    textAlign: 'left',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+                <Column
+                  label={`price`}
+                  dataKey="price"
+                  headerStyle={{
+                    paddingRight: 'calc(10px)',
+                    textAlign: 'left',
+                  }}
+                  width={width}
+                  style={{
+                    textAlign: 'left',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+                <Column
+                  label={`24H CHANGE`}
+                  dataKey="price24hChange"
+                  headerStyle={{
+                    paddingRight: 'calc(10px)',
+                    textAlign: 'right',
+                  }}
+                  width={width}
+                  style={{
+                    textAlign: 'right',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+                <Column
+                  label={`24H VOLUME`}
+                  dataKey="volume24hChange"
+                  headerStyle={{
+                    paddingRight: 'calc(10px)',
+                    textAlign: 'right',
+                  }}
+                  width={width}
+                  style={{
+                    textAlign: 'right',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+              </Table>
+            )}
+          </AutoSizer>
+          {/* <TableWithSort
             rowWithHoverBorderRadius={false}
             emptyTableText={`No pairs for such criteria`}
             data={{ body: processedSelectData }}
@@ -292,7 +473,24 @@ class SelectPairListComponent extends React.PureComponent<
                 boxShadow: 'none',
               },
             }}
-          />
+          /> */}
+        </Grid>
+        <Grid
+          style={{
+            display: 'flex',
+            padding: '1rem',
+            background: tab === 'fiat' ? '#F2F4F6' : '',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            cursor: 'pointer',
+            fontSize: '1.4rem',
+            color: '#7284A0',
+            // fontWeight: 'bold',
+            height: '3rem',
+          }}
+          onClick={() => onTabChange('fiat')}
+        >
+          Binance liquidity data
         </Grid>
       </Grid>
     )

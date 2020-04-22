@@ -136,7 +136,13 @@ export const combineSelectWrapperData = ({
     console.log('processedData searchValue', processedData)
   }
 
-  if (searchValue === '' && tabSpecificCoin !== '') {
+  console.log('tabSpecificCoin', tabSpecificCoin)
+
+  if (
+    searchValue === '' &&
+    (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL')
+  ) {
+    console.log('inside if')
     processedData = processedData.filter((el) =>
       new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
     )
@@ -200,34 +206,59 @@ export const combineSelectWrapperData = ({
         ),
       },
       symbol: {
-        render: symbol,
+        render: (
+          <span onClick={() => onSelectPair({ value: symbol })}>{symbol}</span>
+        ),
         onClick: () => onSelectPair({ value: symbol }),
+        contentToSort: symbol,
       },
       price: {
         contentToSort: +price,
-        render: formatNumberToUSFormat(price),
-        onClick: () => onSelectPair({ value: symbol }),
-        color: priceColor,
+        render: (
+          <span onClick={() => onSelectPair({ value: symbol })}>
+            {formatNumberToUSFormat(price)}
+          </span>
+        ),
+        // onClick: () => onSelectPair({ value: symbol }),
+        // color: priceColor,
       },
       price24hChange: {
         isNumber: true,
-        render: `${formatNumberToUSFormat(price24hChange)}%`,
-        onClick: () => onSelectPair({ value: symbol }),
+        render: (
+          <span
+            style={{
+              color:
+                +price24hChange === 0
+                  ? ''
+                  : +price24hChange > 0
+                  ? theme.customPalette.green.main
+                  : theme.customPalette.red.main,
+            }}
+            onClick={() => onSelectPair({ value: symbol })}
+          >
+            {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
+          </span>
+        ),
+        // onClick: () => onSelectPair({ value: symbol }),
         contentToSort: +price24hChange,
-        color:
-          +price24hChange === 0
-            ? ''
-            : +price24hChange > 0
-            ? theme.customPalette.green.main
-            : theme.customPalette.red.main,
+        // color:
+        //   +price24hChange === 0
+        //     ? ''
+        //     : +price24hChange > 0
+        //     ? theme.customPalette.green.main
+        //     : theme.customPalette.red.main,
       },
       volume24hChange: {
         isNumber: true,
         contentToSort: +volume24hChange,
-        render: `${formatNumberToUSFormat(
-          stripDigitPlaces(volume24hChange)
-        )} ${quote}`,
-        onClick: () => onSelectPair({ value: symbol }),
+        render: (
+          <span onClick={() => onSelectPair({ value: symbol })}>
+            {`${formatNumberToUSFormat(
+              stripDigitPlaces(volume24hChange)
+            )} ${quote}`}
+          </span>
+        ),
+        // onClick: () => onSelectPair({ value: symbol }),
       },
     }
   })

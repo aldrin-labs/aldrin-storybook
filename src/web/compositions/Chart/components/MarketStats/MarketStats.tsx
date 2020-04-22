@@ -4,11 +4,15 @@ import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
+import { TooltipCustom } from '@sb/components/index'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair'
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate'
-import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 import {
   PanelCard,
@@ -111,7 +115,9 @@ class MarketStats extends React.PureComponent<IProps> {
                   : theme.customPalette.red.main
               }
             >
-              {`${formatNumberToUSFormat(priceChangePercent)}%`}
+              {`${formatNumberToUSFormat(
+                stripDigitPlaces(+priceChangePercent)
+              )}%`}
             </PanelCardSubValue>
           </span>
         </PanelCard>
@@ -126,13 +132,19 @@ class MarketStats extends React.PureComponent<IProps> {
           <PanelCardValue>{formatNumberToUSFormat(lowPrice)}</PanelCardValue>
         </PanelCard>
 
-        <PanelCard>
-          <PanelCardTitle>24h volume</PanelCardTitle>
-          <PanelCardValue>
-            {formatNumberToUSFormat(volume)}
-            {` ${quote}`}
-          </PanelCardValue>
-        </PanelCard>
+        <TooltipCustom
+          title="Cryptocurrencies.ai is a Binance partner exchange"
+          enterDelay={250}
+          component={
+            <PanelCard>
+              <PanelCardTitle>24h volume</PanelCardTitle>
+              <PanelCardValue>
+                {formatNumberToUSFormat(volume)}
+                {` ${quote}`}
+              </PanelCardValue>
+            </PanelCard>
+          }
+        />
 
         {marketType === 1 && (
           <PanelCard style={{ borderRight: '0' }}>
