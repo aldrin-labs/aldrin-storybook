@@ -96,7 +96,7 @@ export const PanelCardTitle = styled.span`
   color: #7284a0;
 
   @media (min-width: 1400px) {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 `
 
@@ -105,6 +105,10 @@ export const PanelCardValue = styled.span`
   font-size: 0.8rem;
   color: ${(props) => props.color};
   padding: 0.1rem 1rem;
+
+  @media (min-width: 1400px) {
+    font-size: 1rem;
+  }
 `
 
 export const PanelCardSubValue = styled.span`
@@ -112,6 +116,10 @@ export const PanelCardSubValue = styled.span`
   padding-left: 0.4rem;
   font-size: 0.8rem;
   color: ${(props) => props.color};
+
+  @media (min-width: 1400px) {
+    font-size: 1rem;
+  }
 `
 
 // depth chart container
@@ -196,7 +204,7 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
     padding: 0;
   }
   @media screen and (max-width: 1440px) {
-    height: 3%;
+    height: 4%;
   }
 
   @media screen and (max-width: 1140px) {
