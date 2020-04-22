@@ -32,6 +32,7 @@ import {
 import { SendButton } from '../TraidingTerminal/styles'
 import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -40,6 +41,9 @@ export const TradeInputHeader = ({
   lineMargin,
   needRightValue = false,
   rightValue = 'Value',
+  haveTooltip = false,
+  tooltipText = '',
+  tooltipStyles = {},
   onValueClick = () => {},
 }) => {
   return (
@@ -47,7 +51,34 @@ export const TradeInputHeader = ({
       justify={needRightValue ? 'space-between' : 'flex-start'}
       padding={padding}
     >
-      <SeparateInputTitle>{title}</SeparateInputTitle>
+      {haveTooltip ? (
+        <>
+          {/* <TooltipContainer style={{ display: 'flex', cursor: 'pointer' }}> */}
+          <DarkTooltip title={tooltipText} maxWidth={'30rem'} placement="top">
+            <SeparateInputTitle
+              style={{
+                borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+              }}
+            >
+              {title}
+            </SeparateInputTitle>
+          </DarkTooltip>
+          {/* </TooltipContainer> */}
+        </>
+      ) : (
+        <SeparateInputTitle
+          style={{
+            borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+          }}
+        >
+          {title}
+        </SeparateInputTitle>
+      )}
+      {/* <SeparateInputTitle
+        style={{ borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none' }}
+      >
+        {title}
+      </SeparateInputTitle> */}
       {needLine && <Line lineMargin={lineMargin} />}
       {needRightValue && (
         <BlueInputTitle onClick={() => onValueClick()}>
@@ -65,6 +96,7 @@ export const TradeInputContent = ({
   haveSelector = false,
   needTitle = false,
   needPreSymbol = false,
+  symbolRightIndent = null,
   preSymbol = '',
   title = '',
   symbol = '',
@@ -122,7 +154,15 @@ export const TradeInputContent = ({
         haveSelector={haveSelector}
         style={{ ...inputStyles }}
       />
-      <UpdatedCoin right={symbol.length <= 2 ? '2.5rem' : '1rem'}>
+      <UpdatedCoin
+        right={
+          !!symbolRightIndent
+            ? symbolRightIndent
+            : symbol.length <= 2
+            ? '2.5rem'
+            : '1rem'
+        }
+      >
         {symbol}
       </UpdatedCoin>
     </InputRowContainer>
@@ -790,6 +830,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
       leverage,
+      hedgeMode,
     } = props
 
     if (priceType || byType) {
@@ -831,7 +872,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                     : 'take-profit-limit',
               }
             : {}),
-          ...(priceType !== 'stop-limit' && priceType !== 'take-profit'
+          ...(priceType !== 'stop-limit' &&
+          priceType !== 'take-profit' &&
+          !hedgeMode
             ? { reduceOnly }
             : {}),
         }

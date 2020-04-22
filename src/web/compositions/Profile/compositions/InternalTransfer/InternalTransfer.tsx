@@ -92,7 +92,6 @@ const InternalTransfer = ({ ...props }: IProps) => {
     status: 'ERR' | 'OK'
     errorMessage: string
   }> => {
-
     addGAEvent({
       action: 'Internal transfer',
       category: 'App - Internal transfer',
@@ -115,7 +114,10 @@ const InternalTransfer = ({ ...props }: IProps) => {
         },
       })
 
-      if (res.data.transferInternal && res.data.transferInternal.status === 'OK') {
+      if (
+        res.data.transferInternal &&
+        res.data.transferInternal.status === 'OK'
+      ) {
         result = {
           status: 'OK',
           errorMessage: '',
@@ -323,6 +325,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
               </Grid>
               <Grid style={{ height: '8.5rem', overflow: 'hidden' }}>
                 <WithdrawalLimits
+                  showFee={false}
                   amountError={amountError}
                   selectedKey={selectedKeyFrom.value}
                   selectedCoin={selectedCoin}

@@ -1,5 +1,4 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -118,17 +117,19 @@ class SimpleTabs extends React.Component {
       showOrderResult,
       cancelOrder,
       marketType,
+      hedgeMode,
       leverage: startLeverage,
       priceFromOrderbook,
       quantityPrecision,
       marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
+      changePositionModeWithStatus,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-    
+
     return (
       <Grid
         id="tradingTerminal"
@@ -234,11 +235,13 @@ class SimpleTabs extends React.Component {
                 <PillowButton
                   firstHalfText={'one-way'}
                   secondHalfText={'hedge'}
-                  activeHalf={'first'}
+                  activeHalf={hedgeMode ? 'second' : 'first'}
                   buttonAdditionalStyle={{
                     width: '50%',
                   }}
-                  changeHalf={() => {}}
+                  changeHalf={() => {
+                    changePositionModeWithStatus(hedgeMode ? false : true)
+                  }}
                 />
               </div>
             )}
@@ -465,6 +468,7 @@ class SimpleTabs extends React.Component {
                       byType={'buy'}
                       operationType={'buy'}
                       priceType={mode}
+                      hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}
@@ -499,6 +503,7 @@ class SimpleTabs extends React.Component {
                       byType={'sell'}
                       operationType={'sell'}
                       priceType={mode}
+                      hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}

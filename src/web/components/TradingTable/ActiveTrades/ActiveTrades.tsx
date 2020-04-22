@@ -298,6 +298,36 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       this.subscription && this.subscription.unsubscribe()
       this.subscribe()
     }
+
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys
+    ) {
+      const {
+        marketType,
+        selectedKey,
+        allKeys,
+        currencyPair,
+        specificPair,
+      } = this.props
+
+      this.unsubscribeFunction && this.unsubscribeFunction()
+      this.unsubscribeFunction = this.props.getActiveStrategiesQuery.subscribeToMore(
+        {
+          document: ACTIVE_STRATEGIES,
+          variables: {
+            orderHistoryInput: {
+              marketType,
+              activeExchangeKey: selectedKey.keyId,
+              allKeys,
+              ...(!specificPair ? {} : { specificPair: currencyPair }),
+            },
+          },
+          updateQuery: updateActiveStrategiesQuerryFunction,
+        }
+      )
+    }
   }
 
   componentWillUnmount = () => {

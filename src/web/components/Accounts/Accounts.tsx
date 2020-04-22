@@ -68,6 +68,7 @@ class Accounts extends React.PureComponent<IProps> {
       isSidebar,
       baseCoin,
       isSideNavOpen,
+      activeKeys,
       addAditionalAccount,
     } = this.props
 
@@ -95,7 +96,11 @@ class Accounts extends React.PureComponent<IProps> {
                 </TypographyTitle>
                 <HelpTooltip
                   title={
-                    'We cannot transfer funds from key to key or exchange to exchange. Also, the rebalance between the two exchanges is impossible due to the difference in price.'
+                    <span>
+                      'We cannot transfer funds from key to key or exchange to
+                      exchange. Also, the rebalance between the two exchanges is
+                      impossible due to the difference in price.'
+                    </span>
                   }
                   style={{
                     position: 'absolute',
@@ -208,6 +213,7 @@ class Accounts extends React.PureComponent<IProps> {
                     if (login && isRebalance) {
                       await onKeySelectOnlyOne(key._id)
                     } else if (login && !isRebalance) {
+                      if (key.selected && activeKeys.length === 1) return null
                       await onKeyToggle(key._id)
                     }
                   }}
