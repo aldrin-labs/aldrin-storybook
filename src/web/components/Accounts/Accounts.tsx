@@ -68,6 +68,7 @@ class Accounts extends React.PureComponent<IProps> {
       isSidebar,
       baseCoin,
       isSideNavOpen,
+      activeKeys,
       addAditionalAccount,
     } = this.props
 
@@ -212,6 +213,7 @@ class Accounts extends React.PureComponent<IProps> {
                     if (login && isRebalance) {
                       await onKeySelectOnlyOne(key._id)
                     } else if (login && !isRebalance) {
+                      if (key.selected && activeKeys.length === 1) return null
                       await onKeyToggle(key._id)
                     }
                   }}
