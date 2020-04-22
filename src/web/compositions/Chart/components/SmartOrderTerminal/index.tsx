@@ -1222,7 +1222,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         padding={'0 .8rem 0 .8rem'}
                         width={'calc(17.5%)'}
                         symbol={'%'}
-                        textAlign={'left'}
+                        textAlign={'right'}
                         pattern={'[0-9]+.[0-9]{3}'}
                         type={'text'}
                         value={entryPoint.trailing.deviationPercentage}
@@ -1232,9 +1232,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         //   entryPoint.trailing.deviationPercentage
                         // )}
                         inputStyles={{
-                          paddingLeft: '2rem',
-                          paddingRight: 0,
+                          paddingLeft: 0,
+                          paddingRight: '2rem',
                         }}
+                        symbolRightIndent={'1.5rem'}
                         onChange={(e) => {
                           const value =
                             e.target.value > 100 / entryPoint.order.leverage

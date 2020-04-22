@@ -32,9 +32,7 @@ import {
 import { SendButton } from '../TraidingTerminal/styles'
 import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import {
-  DarkTooltip,
-} from '@sb/components/TooltipCustom/Tooltip'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -98,6 +96,7 @@ export const TradeInputContent = ({
   haveSelector = false,
   needTitle = false,
   needPreSymbol = false,
+  symbolRightIndent = null,
   preSymbol = '',
   title = '',
   symbol = '',
@@ -155,7 +154,15 @@ export const TradeInputContent = ({
         haveSelector={haveSelector}
         style={{ ...inputStyles }}
       />
-      <UpdatedCoin right={symbol.length <= 2 ? '2.5rem' : '1rem'}>
+      <UpdatedCoin
+        right={
+          !!symbolRightIndent
+            ? symbolRightIndent
+            : symbol.length <= 2
+            ? '2.5rem'
+            : '1rem'
+        }
+      >
         {symbol}
       </UpdatedCoin>
     </InputRowContainer>
