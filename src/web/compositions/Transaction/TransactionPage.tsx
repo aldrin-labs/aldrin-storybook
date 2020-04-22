@@ -136,8 +136,12 @@ class TransactionPage extends React.PureComponent {
       concreteDaySelected: true,
       tradeOrderHistoryDate: {
         ...prevState.tradeOrderHistoryDate,
-        startDate: dayjs(value.date).startOf('day'),
-        endDate: dayjs(value.date).endOf('day'),
+        startDate: dayjs(value.date)
+          .startOf('day')
+          .valueOf(),
+        endDate: dayjs(value.date)
+          .endOf('day')
+          .valueOf(),
       },
     }))
   }
@@ -296,7 +300,7 @@ class TransactionPage extends React.PureComponent {
               <Grid container style={{ height: '100%' }}>
                 <GridTableContainer item xs={12} id="tableTransactions">
                   <TradeOrderHistory
-                    includeExchangeTransactions={false}
+                    includeExchangeTransactions={true}
                     marketType={pageType === 'SPOT' ? 0 : 1}
                     includeTrades={pageType === 'SPOT'}
                     includeFutures={pageType === 'FUTURES'}
