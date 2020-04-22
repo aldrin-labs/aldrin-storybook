@@ -50,6 +50,42 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
     this.unsubscribeFunction = subscribeToMore()
   }
 
+  componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys
+    ) {
+      const {
+        startDate,
+        endDate,
+        marketType,
+        selectedKey,
+        allKeys,
+        currencyPair,
+        specificPair,
+      } = this.props
+
+      this.unsubscribeFunction && this.unsubscribeFunction()
+      this.unsubscribeFunction = this.props.getPaginatedOrderHistoryQuery.subscribeToMore(
+        {
+          document: ORDER_HISTORY,
+          variables: {
+            orderHistoryInput: {
+              startDate: startDate.valueOf(),
+              endDate: endDate.valueOf(),
+              marketType,
+              activeExchangeKey: selectedKey.keyId,
+              allKeys,
+              ...(!specificPair ? {} : { specificPair: currencyPair }),
+            },
+          },
+          updateQuery: updatePaginatedOrderHistoryQuerryFunction,
+        }
+      )
+    }
+  }
+
   componentWillUnmount = () => {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {

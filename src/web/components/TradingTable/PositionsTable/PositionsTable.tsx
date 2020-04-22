@@ -319,6 +319,36 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     ) {
       this.props.clearCanceledOrders()
     }
+
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys
+    ) {
+      const {
+        marketType,
+        selectedKey,
+        allKeys,
+        currencyPair,
+        specificPair,
+      } = this.props
+
+      this.unsubscribeFunction && this.unsubscribeFunction()
+      this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMore(
+        {
+          document: FUTURES_POSITIONS,
+          variables: {
+            orderHistoryInput: {
+              marketType,
+              activeExchangeKey: selectedKey.keyId,
+              allKeys,
+              ...(!specificPair ? {} : { specificPair: currencyPair }),
+            },
+          },
+          updateQuery: updateActivePositionsQuerryFunction,
+        }
+      )
+    }
   }
 
   componentWillUnmount = () => {
