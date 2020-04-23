@@ -146,6 +146,7 @@ class DialogAddCoin extends React.Component {
           >
             <SelectCoinList
               //ref={(ref) => this.setState({ ref })}
+              isSearchable={false}
               key={JSON.stringify(this.state.selectedValue)}
               classNamePrefix="custom-select-box"
               controlShouldRenderValue={false}
@@ -170,13 +171,13 @@ class DialogAddCoin extends React.Component {
                 textAlign: 'center',
                 background: 'white',
                 position: 'relative',
-                overflowY: 'auto',
+                // overflowY: 'auto',
                 boxShadow: 'none',
                 border: 'none',
               }}
               menuListStyles={{
                 height: '16rem',
-                overflowY: '',
+                // overflowY: '',
               }}
               optionStyles={{
                 color: '#7284A0',

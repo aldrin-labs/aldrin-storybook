@@ -348,12 +348,13 @@ const renderCell = ({
       <CustomTableCell
         scope="row"
         variant={variant}
-        style={{ color: cell.color, ...cell.style, ...tableStyles.cell }}
+        style={{ ...cell.style, ...tableStyles.cell, color: cell.color }}
         key={id}
         rowSpan={cell.rowspan}
         colSpan={cell.colspan}
         padding={padding}
         align={align}
+        onClick={cell.onClick}
       >
         {cell.render}
       </CustomTableCell>
