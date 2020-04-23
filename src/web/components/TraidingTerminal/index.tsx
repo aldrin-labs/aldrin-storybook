@@ -106,6 +106,7 @@ export const TradeInputContent = ({
   type = 'number',
   padding = '0',
   width = '100%',
+  fontSize = '',
   textAlign = 'right',
   onChange = () => {},
   inputStyles,
@@ -125,6 +126,7 @@ export const TradeInputContent = ({
   type?: string
   padding?: string | number
   width?: string | number
+  fontSize?: string
   textAlign?: string
   onChange: any
   inputStyles?: CSSProperties
@@ -135,7 +137,13 @@ export const TradeInputContent = ({
       width={width}
       style={{ position: 'relative' }}
     >
-      {needTitle && <AbsoluteInputTitle>{title}</AbsoluteInputTitle>}
+      {needTitle && (
+        <AbsoluteInputTitle
+          style={{ ...(fontSize ? { fontSize: fontSize } : {}) }}
+        >
+          {title}
+        </AbsoluteInputTitle>
+      )}
       {needPreSymbol ? (
         <UpdatedCoin style={{ width: 0 }} left={'2rem'}>
           {preSymbol}
@@ -152,7 +160,7 @@ export const TradeInputContent = ({
         onChange={onChange}
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
-        style={{ ...inputStyles }}
+        style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
       />
       <UpdatedCoin
         right={
@@ -872,11 +880,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                     : 'take-profit-limit',
               }
             : {}),
-          ...(priceType !== 'stop-limit' &&
-          priceType !== 'take-profit' &&
-          !hedgeMode
-            ? { reduceOnly }
-            : {}),
+          ...{ reduceOnly },
         }
       )
 

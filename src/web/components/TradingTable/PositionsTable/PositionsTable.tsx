@@ -20,6 +20,9 @@ import { IProps, IState } from './PositionsTable.types'
 import { PaginationBlock } from '../TradingTablePagination'
 
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import { getFunds } from '@core/graphql/queries/chart/getFunds'
+import { modifyIsolatedMargin } from '@core/graphql/mutations/chart/modifyIsolatedMargin'
+import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
@@ -31,10 +34,13 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
+import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import { LISTEN_TERMINAL_PRICE } from '@core/graphql/subscriptions/LISTEN_TERMINAL_PRICE'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
+
+import { EditMarginPopup } from './EditMarginPopup'
 
 @withTheme()
 class PositionsTable extends React.PureComponent<IProps, IState> {
@@ -42,9 +48,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     positionsData: [],
     prices: [],
     positionsRefetchInProcess: false,
+    editMarginPosition: {},
+    editMarginPopup: false,
   }
 
   unsubscribeFunction: null | Function = null
+
+  unsubscribeFundsFunction: null | Function = null
 
   subscription: null | { unsubscribe: () => void } = null
 
@@ -104,6 +114,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     }
   }
 
+  toogleEditMarginPopup = (editMarginPosition) => {
+    this.setState((prev) => ({
+      editMarginPopup: !prev.editMarginPopup,
+      editMarginPosition,
+    }))
+  }
+
   createOrderWithStatus = async (variables: any) => {
     const {
       getActivePositionsQuery,
@@ -123,6 +140,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     const positionsData = combinePositionsTable({
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
+      toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
       prices: this.state.prices,
@@ -180,6 +198,76 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     showCancelResult(status)
   }
 
+  modifyIsolatedMargin = async ({
+    keyId,
+    positionSide,
+    symbol,
+    amount,
+    type,
+  }: {
+    keyId: string
+    positionSide: string
+    symbol: string
+    amount: number
+    type: number
+  }) => {
+    try {
+      const result = await this.props.modifyIsolatedMarginMutation({
+        variables: {
+          keyId,
+          positionSide,
+          symbol,
+          amount,
+          type,
+        },
+      })
+
+      return result
+    } catch (e) {
+      return { errors: e }
+    }
+  }
+
+  modifyIsolatedMarginWithStatus = async ({
+    keyId,
+    positionSide,
+    symbol,
+    amount,
+    type,
+  }: {
+    keyId: string
+    positionSide: string
+    symbol: string
+    amount: number
+    type: number
+  }) => {
+    const { enqueueSnackbar } = this.props
+
+    const result = await this.modifyIsolatedMargin({
+      keyId,
+      positionSide,
+      symbol,
+      amount,
+      type,
+    })
+
+    if (result.errors) {
+      enqueueSnackbar(`Something went wrong`, { variant: 'error' })
+      return
+    }
+
+    if (result.data.modifyIsolatedMargin.status === 'OK') {
+      enqueueSnackbar(`Your isolated margin successful updated`, {
+        variant: 'success',
+      })
+    } else {
+      enqueueSnackbar(
+        `Error: ${result.data.modifyIsolatedMargin.binanceMessage}`,
+        { variant: 'error' }
+      )
+    }
+  }
+
   subscribe() {
     const that = this
     const pairs = this.props.getActivePositionsQuery.getActivePositions
@@ -235,6 +323,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           const positionsData = combinePositionsTable({
             data: getActivePositionsQuery.getActivePositions,
             createOrderWithStatus: that.createOrderWithStatus,
+            toogleEditMarginPopup: that.toogleEditMarginPopup,
             theme,
             keys,
             prices: data.data.listenTablePrice,
@@ -254,6 +343,18 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       })
   }
 
+  subscribeFunds = () => {
+    const { getFundsQuery, selectedKey } = this.props
+
+    this.unsubscribeFundsFunction = getFundsQuery.subscribeToMore({
+      document: FUNDS,
+      variables: {
+        listenFundsInput: { activeExchangeKey: selectedKey.keyId },
+      },
+      updateQuery: updateFundsQuerryFunction,
+    })
+  }
+
   componentDidMount() {
     const {
       getActivePositionsQuery,
@@ -269,10 +370,12 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     } = this.props
 
     this.subscribe()
+    this.subscribeFunds()
 
     const positionsData = combinePositionsTable({
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
+      toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
       prices: this.state.prices,
@@ -320,6 +423,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       this.props.clearCanceledOrders()
     }
 
+    if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {
+      this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
+      this.subscribeFunds()
+    }
+
     if (
       prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
@@ -357,6 +465,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       this.unsubscribeFunction()
     }
 
+    this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
     this.subscription && this.subscription.unsubscribe()
   }
 
@@ -376,6 +485,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     const positionsData = combinePositionsTable({
       data: getActivePositionsQuery.getActivePositions,
       createOrderWithStatus: this.createOrderWithStatus,
+      toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
       prices: this.state.prices,
@@ -451,6 +561,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       arrayOfMarketIds,
       allKeys,
       specificPair,
+      getFundsQuery,
       showAllPositionPairs,
       showAllOpenOrderPairs,
       showAllSmartTradePairs,
@@ -466,95 +577,112 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       return null
     }
 
+    const [
+      USDTFuturesFund = { quantity: 0, value: 0 },
+    ] = getFundsQuery.getFunds
+      .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
+      .map((el) => ({ quantity: el.free, value: el.free }))
+
     return (
-      <TableWithSort
-        style={{ borderRadius: 0, height: '100%', overflowX: 'scroll' }}
-        stylesForTable={{ backgroundColor: '#fff' }}
-        defaultSort={{
-          sortColumn: 'date',
-          sortDirection: 'desc',
-        }}
-        withCheckboxes={false}
-        pagination={{
-          fakePagination: false,
-          enabled: true,
-          showPagination: false,
-          additionalBlock: (
-            <PaginationBlock
-              {...{
-                allKeys,
-                specificPair,
-                handleToggleAllKeys,
-                handleToggleSpecificPair,
-              }}
-            />
-          ),
-          paginationStyles: { width: 'calc(100% - 0.4rem)' },
-        }}
-        tableStyles={{
-          headRow: {
-            borderBottom: '1px solid #e0e5ec',
-            boxShadow: 'none',
-          },
-          heading: {
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            backgroundColor: '#fff',
-            color: '#16253D',
-            boxShadow: 'none',
-            top: '0',
-          },
-          cell: {
-            color: '#16253D',
-            fontSize: '1rem', // 1.2 if bold
-            fontWeight: 'bold',
-            letterSpacing: '1px',
-            borderBottom: '1px solid #e0e5ec',
-            boxShadow: 'none',
-            paddingTop: '.5rem',
-            paddingBottom: '.5rem',
-          },
-          tab: {
-            padding: 0,
-            boxShadow: 'none',
-          },
-          row: {
-            height: '4.5rem',
-            cursor: 'initial',
-          },
-        }}
-        emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTabs
-              {...{
-                tab,
-                marketType,
-                selectedKey,
-                currencyPair,
-                canceledOrders,
-                handleTabChange,
-                arrayOfMarketIds,
-                showAllPositionPairs,
-                showAllOpenOrderPairs,
-                showAllSmartTradePairs,
-                showPositionsFromAllAccounts,
-                showOpenOrdersFromAllAccounts,
-                showSmartTradesFromAllAccounts,
-              }}
-            />
-          </div>
-        }
-        rowsWithHover={false}
-        data={{ body: positionsData }}
-        columnNames={getTableHead(
-          tab,
-          marketType,
-          this.props.getActivePositionsQueryRefetch,
-          this.updatePositionsHandler,
-          positionsRefetchInProcess
+      <>
+        <TableWithSort
+          style={{ borderRadius: 0, height: '100%', overflowX: 'scroll' }}
+          stylesForTable={{ backgroundColor: '#fff' }}
+          defaultSort={{
+            sortColumn: 'date',
+            sortDirection: 'desc',
+          }}
+          withCheckboxes={false}
+          pagination={{
+            fakePagination: false,
+            enabled: true,
+            showPagination: false,
+            additionalBlock: (
+              <PaginationBlock
+                {...{
+                  allKeys,
+                  specificPair,
+                  handleToggleAllKeys,
+                  handleToggleSpecificPair,
+                }}
+              />
+            ),
+            paginationStyles: { width: 'calc(100% - 0.4rem)' },
+          }}
+          tableStyles={{
+            headRow: {
+              borderBottom: '1px solid #e0e5ec',
+              boxShadow: 'none',
+            },
+            heading: {
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              backgroundColor: '#fff',
+              color: '#16253D',
+              boxShadow: 'none',
+              top: '0',
+            },
+            cell: {
+              color: '#16253D',
+              fontSize: '1rem', // 1.2 if bold
+              fontWeight: 'bold',
+              letterSpacing: '1px',
+              borderBottom: '1px solid #e0e5ec',
+              boxShadow: 'none',
+              paddingTop: '.5rem',
+              paddingBottom: '.5rem',
+            },
+            tab: {
+              padding: 0,
+              boxShadow: 'none',
+            },
+            row: {
+              height: '4.5rem',
+              cursor: 'initial',
+            },
+          }}
+          emptyTableText={getEmptyTextPlaceholder(tab)}
+          title={
+            <div>
+              <TradingTabs
+                {...{
+                  tab,
+                  marketType,
+                  selectedKey,
+                  currencyPair,
+                  canceledOrders,
+                  handleTabChange,
+                  arrayOfMarketIds,
+                  showAllPositionPairs,
+                  showAllOpenOrderPairs,
+                  showAllSmartTradePairs,
+                  showPositionsFromAllAccounts,
+                  showOpenOrdersFromAllAccounts,
+                  showSmartTradesFromAllAccounts,
+                }}
+              />
+            </div>
+          }
+          rowsWithHover={false}
+          data={{ body: positionsData }}
+          columnNames={getTableHead(
+            tab,
+            marketType,
+            this.props.getActivePositionsQueryRefetch,
+            this.updatePositionsHandler,
+            positionsRefetchInProcess
+          )}
+        />
+        {this.state.editMarginPopup && (
+          <EditMarginPopup
+            open={true}
+            editMarginPosition={this.state.editMarginPosition}
+            handleClose={this.toogleEditMarginPopup}
+            modifyIsolatedMarginWithStatus={this.modifyIsolatedMarginWithStatus}
+            USDTFuturesFund={USDTFuturesFund}
+          />
         )}
-      />
+      </>
     )
   }
 }
@@ -617,7 +745,16 @@ export default compose(
     name: 'getKeys',
     fetchPolicy: 'cache-and-network',
   }),
+  queryRendererHoc({
+    query: getFunds,
+    name: 'getFundsQuery',
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      fundsInput: { activeExchangeKey: props.selectedKey.keyId },
+    }),
+  }),
   graphql(updatePosition, { name: 'updatePositionMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
-  graphql(createOrder, { name: 'createOrderMutation' })
+  graphql(createOrder, { name: 'createOrderMutation' }),
+  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' })
 )(MemoizedWrapper)
