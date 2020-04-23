@@ -13,7 +13,7 @@ const CoinRow = ({
     placeholder="coin"
     classNamePrefix="custom-select-box"
     isClearable={true}
-    isSearchable={true}
+    isSearchable={false}
     menuPortalTarget={document.body}
     menuPortalStyles={{
       zIndex: 11111,

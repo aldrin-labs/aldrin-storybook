@@ -4,15 +4,10 @@ import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
 import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
+import MarketStats from './MarketStats/MarketStats'
+import { TooltipCustom } from '@sb/components/index'
 
-import {
-  PanelWrapper,
-  PanelCard,
-  PanelCardTitle,
-  PanelCardValue,
-  PanelCardSubValue,
-  CustomCard,
-} from '../Chart.styles'
+import { PanelWrapper, CustomCard } from '../Chart.styles'
 
 const selectStyles = {
   height: '100%',
@@ -74,7 +69,7 @@ export const CardsPanel = ({
         {view === 'default' && (
           <KeySelector
             exchange={activeExchange}
-            selectStyles={{ ...selectStyles, width: '40%' }}
+            selectStyles={{ ...selectStyles, width: '20%' }}
             isAccountSelect={true}
           />
         )}
@@ -89,52 +84,29 @@ export const CardsPanel = ({
           marketType={marketType}
         />
 
-        {/* <CustomCard
-          style={{ position: 'relative', display: 'flex', width: '49.3%', marginRight: '1rem' }}
+        <CustomCard
+          style={{
+            position: 'relative',
+            display: 'flex',
+            width: '49.3%',
+            marginRight: '1rem',
+          }}
         >
-          <ComingSoon style={{ zIndex: 1 }} />
-          <PanelCard first>
-            <PanelCardTitle>Last price</PanelCardTitle>
-            <span>
-              <PanelCardValue color="#B93B2B">9,964.01</PanelCardValue>
-              <PanelCardSubValue>$9964.01</PanelCardSubValue>
-            </span>
-          </PanelCard>
-
-          <PanelCard>
-            <PanelCardTitle>24h change</PanelCardTitle>
-            <span>
-              <PanelCardValue color="#2F7619">101.12</PanelCardValue>
-              <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
-            </span>
-          </PanelCard>
-
-          <PanelCard>
-            <PanelCardTitle>24h high</PanelCardTitle>
-            <PanelCardValue>10,364.01</PanelCardValue>
-          </PanelCard>
-
-          <PanelCard>
-            <PanelCardTitle>24h low</PanelCardTitle>
-            <PanelCardValue>9,525.00</PanelCardValue>
-          </PanelCard>
-
-          <PanelCard>
-            <PanelCardTitle>24h volume</PanelCardTitle>
-            <PanelCardValue>427,793,139.70</PanelCardValue>
-          </PanelCard>
-
-          <PanelCard style={{ borderRight: '0' }}>
-            <PanelCardTitle>24h change</PanelCardTitle>
-            <span>
-              <PanelCardValue color="#2F7619">101.12</PanelCardValue>
-              <PanelCardSubValue color="#2F7619">+1.03%</PanelCardSubValue>
-            </span>
-          </PanelCard>
-        </CustomCard> */}
+          <TooltipCustom
+            title="Cryptocurrencies.ai is a Binance partner exchange"
+            enterDelay={250}
+            component={
+              <MarketStats
+                symbol={pair}
+                marketType={marketType}
+                exchange={activeExchange}
+              />
+            }
+          />
+        </CustomCard>
 
         <SmartTradeButton
-          style={{ height: '100%', width: '40%', marginRight: '.4rem' }}
+          style={{ height: '100%', width: '20%', marginRight: '.4rem' }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
           id="smartTradingButton"
           onClick={() => {

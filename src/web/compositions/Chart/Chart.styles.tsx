@@ -79,25 +79,20 @@ export const PanelCard = styled.div`
   flex-direction: column;
   justify-content: center;
   min-width: 16.6%;
-  padding: ${(props: { first?: boolean }) =>
-    props.first ? '0.7rem 1rem .7rem .7rem' : '0.7rem 1rem .7rem 1.5rem'};
-  margin: 0.6rem 0;
+  padding: 0.1rem;
+  margin: 0;
   min-height: auto;
   border-right: 0.1rem solid #e0e5ec;
   font-weight: bold;
   font-family: DM Sans;
   text-transform: uppercase;
   letter-spacing: 0.05rem;
-
-  @media (min-width: 1400px) {
-    padding-top: 0.4rem;
-  }
 `
 
 export const PanelCardTitle = styled.span`
   display: block;
-  font-size: 1rem;
-  padding: 0.1rem;
+  font-size: 0.8rem;
+  padding: 0.1rem 1rem;
   color: #7284a0;
 
   @media (min-width: 1400px) {
@@ -107,8 +102,9 @@ export const PanelCardTitle = styled.span`
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: ${(props) => props.color};
+  padding: 0.1rem 1rem;
 
   @media (min-width: 1400px) {
     font-size: 1rem;
@@ -116,9 +112,14 @@ export const PanelCardValue = styled.span`
 `
 
 export const PanelCardSubValue = styled.span`
+  padding: 0.1rem 1rem;
   padding-left: 0.4rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: ${(props) => props.color};
+
+  @media (min-width: 1400px) {
+    font-size: 1rem;
+  }
 `
 
 // depth chart container
@@ -193,17 +194,17 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   <Grid {...rest} />
 ))`
   position: absolute;
-  right: 1.4rem;
   display: flex;
   flex: auto;
   align-items: center;
-  width: ${(props) => (props.MASTER_BUILD ? '30%' : '45%')};
+  width: calc(100% - 2rem);
   height: 4%;
 
-  padding: 0 0 0 1.2rem !important;
-
+  && {
+    padding: 0;
+  }
   @media screen and (max-width: 1440px) {
-    height: 3%;
+    height: 4%;
   }
 
   @media screen and (max-width: 1140px) {
@@ -215,6 +216,7 @@ export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
 
+  top: 2%;
   // height: calc(60vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   height: 100%;
   overflow: hidden;
@@ -246,11 +248,11 @@ export const TradingTerminalContainer = styled(
   }
 
   @media screen and (max-width: 1440px) {
-    top: calc(3% + 0.8rem);
+    top: calc(4% + 0.8rem);
     height: ${(props) =>
       props.isDefaultTerminalViewMode
-        ? 'calc(60% - .8rem)'
-        : 'calc(49% - .8rem)'};
+        ? 'calc(59% - .8rem)'
+        : 'calc(48% - .8rem)'};
   }
 
   @media screen and (max-width: 1140px) {
@@ -269,13 +271,32 @@ export const ChartsContainer = styled(
   display: flex;
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   width: ${(props) => (props.MASTER_BUILD ? '70%' : '55%')};
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '63%' : '52%')};
+  height: ${(props) =>
+    props.isDefaultTerminalViewMode
+      ? 'calc(59% - .8rem)'
+      : 'calc(48% - .8rem)'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
+  top: calc(4% + 0.8rem);
 
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
+  }
+  @media screen and (max-width: 1440px) {
+    top: calc(4% + 0.8rem);
+    height: ${(props) =>
+      props.isDefaultTerminalViewMode
+        ? 'calc(59% - .8rem)'
+        : 'calc(48% - .8rem)'};
+  }
+
+  @media screen and (max-width: 1140px) {
+    top: calc(2.5% + 0.8rem);
+    height: ${(props) =>
+      props.isDefaultTerminalViewMode
+        ? 'calc(60.5% - .8rem)'
+        : 'calc(49.5% - .8rem)'};
   }
 
   padding: 0 .4rem .4rem 0;
@@ -388,6 +409,7 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
+  top: 2%;
   position: relative;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
   padding: ${({

@@ -277,7 +277,7 @@ export default class ThemeWrapper extends Component<Props> {
                 custom: '#D93B28',
               },
               green: {
-                main: '#3ED1BB',
+                main: '#29AC80',
               },
             },
             palette: {

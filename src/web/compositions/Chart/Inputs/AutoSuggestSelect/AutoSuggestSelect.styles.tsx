@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import { ChartSelectStyles } from '@sb/styles/cssUtils'
@@ -18,7 +19,9 @@ export const SelectR = styled(ReactSelectComponent)`
   }
 `
 
-export const ExchangePair = styled.div`
+export const ExchangePair = styled(({ gridBorder, paddingCell, ...props }) => (
+  <div {...props} />
+))`
   ${ChartSelectStyles}
   ${(props) => props.selectStyles}
 `
