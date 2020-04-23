@@ -257,7 +257,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     }
 
     if (result.data.modifyIsolatedMargin.status === 'OK') {
-      enqueueSnackbar(`Your isolated margin successful updated`, {
+      enqueueSnackbar(`Your isolated margin successfuly updated`, {
         variant: 'success',
       })
     } else {
@@ -541,7 +541,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     })
 
     if (status === 'OK') {
-      enqueueSnackbar(`Your positions successful updated`, {
+      enqueueSnackbar(`Your positions successfuly updated`, {
         variant: 'success',
       })
     } else {

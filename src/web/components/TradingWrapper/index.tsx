@@ -132,6 +132,16 @@ class SimpleTabs extends React.Component {
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
 
+    const lockedPositionBothAmount = funds[2].find(
+      (position) => position.positionSide === 'BOTH'
+    ).positionAmt
+    const lockedPositionShortAmount = funds[2].find(
+      (position) => position.positionSide === 'SHORT'
+    ).positionAmt
+    const lockedPositionLongAmount = funds[2].find(
+      (position) => position.positionSide === 'LONG'
+    ).positionAmt
+
     return (
       <Grid
         id="tradingTerminal"
@@ -486,7 +496,13 @@ class SimpleTabs extends React.Component {
                       }
                       pair={pair}
                       funds={funds}
-                      lockedAmount={funds[2] >= 0 ? 0 : -funds[2]}
+                      lockedAmount={
+                        hedgeMode
+                          ? -lockedPositionShortAmount
+                          : lockedPositionBothAmount >= 0
+                          ? 0
+                          : -lockedPositionBothAmount
+                      }
                       key={[pair, funds]}
                       walletValue={funds && funds[1]}
                       marketPrice={price}
@@ -521,7 +537,13 @@ class SimpleTabs extends React.Component {
                       }
                       pair={pair}
                       funds={funds}
-                      lockedAmount={funds[2] <= 0 ? 0 : funds[2]}
+                      lockedAmount={
+                        hedgeMode
+                          ? lockedPositionLongAmount
+                          : lockedPositionBothAmount <= 0
+                          ? 0
+                          : lockedPositionBothAmount
+                      }
                       key={[pair, funds]}
                       walletValue={funds && funds[1]}
                       marketPrice={price}
