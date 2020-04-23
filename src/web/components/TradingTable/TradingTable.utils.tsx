@@ -88,6 +88,7 @@ import {
 } from './ActiveTrades/Columns'
 
 import { Theme } from '@material-ui/core'
+import EditIcon from '@material-ui/icons/Edit'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -248,7 +249,10 @@ const getActiveOrderStatus = ({
   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
 ] => {
-  if (strategy.conditions.hedging && strategy.conditions.hedgeStrategyId === null) {
+  if (
+    strategy.conditions.hedging &&
+    strategy.conditions.hedgeStrategyId === null
+  ) {
     return ['Waiting hedge', '#29AC80']
   }
 
@@ -305,6 +309,7 @@ export const combinePositionsTable = ({
   priceFromOrderbook,
   pricePrecision,
   quantityPrecision,
+  toogleEditMarginPopup,
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
@@ -317,6 +322,7 @@ export const combinePositionsTable = ({
   pricePrecision: number
   quantityPrecision: number
   keys: Key[]
+  toogleEditMarginPopup: (position: Position) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -331,7 +337,15 @@ export const combinePositionsTable = ({
   const processedPositionsData = data
     .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
-      const { symbol, entryPrice, positionAmt, leverage = 1, keyId } = el
+      const {
+        symbol,
+        entryPrice,
+        positionAmt,
+        leverage = 1,
+        keyId,
+        marginType,
+        isolatedMargin,
+      } = el
       const needOpacity = el._id === '0'
 
       const marketPrice = (
@@ -421,10 +435,40 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1, textAlign: 'right' },
           },
           margin: {
-            render: `${stripDigitPlaces(
-              (positionAmt / leverage) * entryPrice,
-              2
-            )} ${pair[1]}`,
+            render: (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (marginType === 'isolated') {
+                    toogleEditMarginPopup(el)
+                  }
+                }}
+              >
+                <span>
+                  {marginType === 'isolated'
+                    ? stripDigitPlaces(isolatedMargin, 2)
+                    : stripDigitPlaces(
+                        (positionAmt / leverage) * entryPrice,
+                        2
+                      )}{' '}
+                  {pair[1]}
+                </span>
+                {marginType === 'isolated' && (
+                  <EditIcon
+                    style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      marginLeft: '.5rem',
+                      fill: '#0B1FD1',
+                    }}
+                  />
+                )}
+              </div>
+            ),
           },
           // marginRation: {
           //   render: `40%`,
@@ -587,7 +631,7 @@ export const combineActiveTradesTable = ({
           timeoutLoss,
           timeoutWhenLoss,
           timeoutWhenProfit,
-          hedgeLossDeviation
+          hedgeLossDeviation,
         } = {
           pair: '-',
           marketType: 0,
@@ -605,7 +649,7 @@ export const combineActiveTradesTable = ({
           timeoutLoss: '-',
           timeoutWhenLoss: '-',
           timeoutWhenProfit: '-',
-          hedgeLossDeviation: '-'
+          hedgeLossDeviation: '-',
         },
       } = el
 
@@ -722,8 +766,7 @@ export const combineActiveTradesTable = ({
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
-              {
-              exitLevels[0] &&
+              {exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation ? (
                 `${exitLevels[0].activatePrice}% / ${
@@ -762,11 +805,14 @@ export const combineActiveTradesTable = ({
           },
         },
         stopLoss: {
-          render: stopLoss || hedgeLossDeviation ? (
-            <SubColumnValue color={red.new}>{stopLoss || hedgeLossDeviation}%</SubColumnValue>
-          ) : (
-            '-'
-          ),
+          render:
+            stopLoss || hedgeLossDeviation ? (
+              <SubColumnValue color={red.new}>
+                {stopLoss || hedgeLossDeviation}%
+              </SubColumnValue>
+            ) : (
+              '-'
+            ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
@@ -778,7 +824,8 @@ export const combineActiveTradesTable = ({
             activeOrderStatus !== 'Preparing' &&
             state !== 'WaitForEntry' &&
             state !== 'TrailingEntry' &&
-            !!currentPrice && entryOrderPrice ? (
+            !!currentPrice &&
+            entryOrderPrice ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >
