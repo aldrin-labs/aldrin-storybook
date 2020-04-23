@@ -158,7 +158,7 @@ export const DefaultView = (props: any) => {
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <Grid item container style={{ height: '100%' }}>
-              {/* <Grid
+              <Grid
                 item
                 container
                 xs={MASTER_BUILD ? 12 : 7}
@@ -217,7 +217,7 @@ export const DefaultView = (props: any) => {
                     }}
                   />
                 </Grid>
-              )} */}
+              )}
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (
