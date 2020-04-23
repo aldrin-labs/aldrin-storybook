@@ -119,12 +119,14 @@ class SimpleTabs extends React.Component {
       marketType,
       hedgeMode,
       leverage: startLeverage,
+      componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
       marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
       changePositionModeWithStatus,
+      changeMarginTypeWithStatus,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -329,9 +331,15 @@ class SimpleTabs extends React.Component {
               </SettingsContainer>
               <LeverageContainer>
                 <LeverageTitle>
-                  <StyledSelect value="Cross" style={{ color: '#16253D' }}>
-                    <StyledOption>Cross</StyledOption>
-                    <StyledOption>Isolated</StyledOption>
+                  <StyledSelect
+                    onChange={(e) =>
+                      changeMarginTypeWithStatus(e.target.value.toLowerCase())
+                    }
+                    value={componentMarginType}
+                    style={{ color: '#16253D' }}
+                  >
+                    <StyledOption>crossed</StyledOption>
+                    <StyledOption>isolated</StyledOption>
                   </StyledSelect>
                 </LeverageTitle>
                 <SmallSlider
