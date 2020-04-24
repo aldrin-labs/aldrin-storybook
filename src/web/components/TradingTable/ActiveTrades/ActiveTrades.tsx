@@ -104,7 +104,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     strategyId: string,
     status: string
   ): Promise<
-    | { data: { changeTemplateStatus: { conditions: { templateStatus: string } } } }
+    | {
+        data: {
+          changeTemplateStatus: { conditions: { templateStatus: string } }
+        }
+      }
     | { errors: string; data: null }
   > => {
     const { changeTemplateStatusMutation } = this.props
@@ -115,7 +119,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           input: {
             keyId,
             strategyId,
-            status
+            status,
           },
         },
       })
@@ -153,7 +157,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     showCancelResult(statusResult)
   }
 
-  changeStatusWithStatus = async (strategyId: string, keyId: string, status: string) => {
+  changeStatusWithStatus = async (
+    strategyId: string,
+    keyId: string,
+    status: string
+  ) => {
     const { showCancelResult } = this.props
 
     const result = await this.onChangeStatus(keyId, strategyId, status)
@@ -207,7 +215,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           const orders = that.props.getActiveStrategiesQuery.getActiveStrategies
             .filter(
               (strategy: SmartOrder) =>
-                strategy.enabled && strategy._id !== '-1'
+                (strategy.enabled ||
+                  (strategy.conditions.isTemplate &&
+                    strategy.conditions.templateStatus !== 'disabled')) &&
+                strategy._id !== '-1'
             )
             .concat(that.state.cachedOrder)
 
