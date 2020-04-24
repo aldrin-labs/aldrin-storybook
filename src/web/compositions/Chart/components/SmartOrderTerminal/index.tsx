@@ -1347,7 +1347,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           type={'text'}
                           disabled={true}
                           textAlign={'left'}
-                          value={`${API_URL}/createSmUsingTemplate?token=${
+                          value={`https://${API_URL}/createSmUsingTemplate?token=${
                             entryPoint.TVAlert.templateToken
                           }`}
                         />
@@ -1365,7 +1365,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             copy(
-                              `${API_URL}/createSmUsingTemplate?token=${
+                              `https://${API_URL}/createSmUsingTemplate?token=${
                                 entryPoint.TVAlert.templateToken
                               }`
                             )
