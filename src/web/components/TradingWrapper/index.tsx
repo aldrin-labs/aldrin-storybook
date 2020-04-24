@@ -132,15 +132,17 @@ class SimpleTabs extends React.Component {
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
 
-    const lockedPositionBothAmount = funds[2].find(
+    const lockedPositionBothAmount = (funds[2].find(
       (position) => position.positionSide === 'BOTH'
-    ).positionAmt
-    const lockedPositionShortAmount = funds[2].find(
+    ) || { positionAmt: 0 }).positionAmt
+
+    const lockedPositionShortAmount = (funds[2].find(
       (position) => position.positionSide === 'SHORT'
-    ).positionAmt
-    const lockedPositionLongAmount = funds[2].find(
+    ) || { positionAmt: 0 }).positionAmt
+    
+    const lockedPositionLongAmount = (funds[2].find(
       (position) => position.positionSide === 'LONG'
-    ).positionAmt
+    ) || { positionAmt: 0 }).positionAmt
 
     return (
       <Grid

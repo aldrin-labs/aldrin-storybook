@@ -69,7 +69,7 @@ const TradingTabs = ({
   ).length
 
   const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(
-    (a) => a !== null && a.enabled
+    (a) => a !== null && (a.enabled || (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
 
   return (

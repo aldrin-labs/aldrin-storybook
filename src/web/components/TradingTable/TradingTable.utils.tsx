@@ -249,6 +249,15 @@ const getActiveOrderStatus = ({
   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
 ] => {
+  if (strategy.conditions.isTemplate) {
+    if (strategy.conditions.templateStatus === 'enabled') {
+      return ['Waiting alert', '#29AC80']
+    }
+    if (strategy.conditions.templateStatus === 'paused') {
+      return ['On pause', '#5C8CEA']
+    }
+  }
+
   if (
     strategy.conditions.hedging &&
     strategy.conditions.hedgeStrategyId === null
@@ -563,6 +572,7 @@ export const combinePositionsTable = ({
 export const combineActiveTradesTable = ({
   data,
   cancelOrderFunc,
+  changeStatusWithStatus,
   editTrade,
   theme,
   prices,
@@ -574,6 +584,11 @@ export const combineActiveTradesTable = ({
 }: {
   data: any[]
   cancelOrderFunc: (strategyId: string) => Promise<any>
+  changeStatusWithStatus: (
+    startegyId: string,
+    keyId: string,
+    status: string
+  ) => Promise<any>
   editTrade: (block: string, trade: any) => void
   theme: Theme
   prices: { pair: string; price: number }[]
@@ -590,7 +605,13 @@ export const combineActiveTradesTable = ({
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((a) => !!a && a.enabled)
+    .filter(
+      (a) =>
+        !!a &&
+        (a.enabled ||
+          (a.conditions.isTemplate &&
+            a.conditions.templateStatus !== 'disabled'))
+    )
     .sort((a, b) => {
       // sometimes in db we receive createdAt as timestamp
       // so using this we understand type of value that in createdAt field
@@ -632,6 +653,9 @@ export const combineActiveTradesTable = ({
           timeoutWhenLoss,
           timeoutWhenProfit,
           hedgeLossDeviation,
+          isTemplate,
+          templatePnl,
+          templateStatus,
         } = {
           pair: '-',
           marketType: 0,
@@ -650,6 +674,9 @@ export const combineActiveTradesTable = ({
           timeoutWhenLoss: '-',
           timeoutWhenProfit: '-',
           hedgeLossDeviation: '-',
+          isTemplate: false,
+          templatePnl: 0,
+          templateStatus: '-',
         },
       } = el
 
@@ -820,20 +847,24 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            state &&
-            activeOrderStatus !== 'Preparing' &&
-            state !== 'WaitForEntry' &&
-            state !== 'TrailingEntry' &&
-            !!currentPrice &&
-            entryOrderPrice ? (
+            !!templatePnl ||
+            (state &&
+              activeOrderStatus !== 'Preparing' &&
+              state !== 'WaitForEntry' &&
+              state !== 'TrailingEntry' &&
+              !!currentPrice &&
+              entryOrderPrice) ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >
-                {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-                  Number(profitAmount.toFixed(3))
-                )} ${pairArr[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
-                  Number(profitPercentage.toFixed(2))
-                )}%`}
+                {' '}
+                {templatePnl
+                  ? templatePnl
+                  : `${profitAmount < 0 ? '-' : ''}${Math.abs(
+                      Number(profitAmount.toFixed(3))
+                    )} ${pairArr[1]} / ${
+                      profitPercentage < 0 ? '-' : ''
+                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`}
               </SubColumnValue>
             ) : (
               `0 ${pairArr[1]} / 0%`
@@ -882,6 +913,53 @@ export const combineActiveTradesTable = ({
         close: {
           render: needOpacity ? (
             ' '
+          ) : isTemplate ? (
+            <div>
+              <BtnCustom
+                btnWidth="100%"
+                height="auto"
+                fontSize=".9rem"
+                padding=".2rem 0 .1rem 0"
+                margin="0 0 .4rem 0"
+                borderRadius=".8rem"
+                btnColor={'#fff'}
+                borderColor={'#5C8CEA'}
+                backgroundColor={'#5C8CEA'}
+                hoverColor={'#5C8CEA'}
+                hoverBackground={'#fff'}
+                transition={'all .4s ease-out'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  changeStatusWithStatus(
+                    el._id,
+                    el.accountId,
+                    templateStatus === 'paused' ? 'enabled' : 'paused'
+                  )
+                }}
+              >
+                {templateStatus === 'paused' ? 'continue' : 'pause'}
+              </BtnCustom>
+              <BtnCustom
+                btnWidth="100%"
+                height="auto"
+                fontSize=".9rem"
+                margin=".4rem 0 0 0"
+                padding=".2rem 0 .1rem 0"
+                borderRadius=".8rem"
+                btnColor={'#fff'}
+                borderColor={red.new}
+                backgroundColor={red.new}
+                hoverColor={red.new}
+                hoverBackground={'#fff'}
+                transition={'all .4s ease-out'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  changeStatusWithStatus(el._id, el.accountId, 'disabled')
+                }}
+              >
+                stop
+              </BtnCustom>
+            </div>
           ) : (
             <BtnCustom
               btnWidth="100%"
@@ -1015,6 +1093,9 @@ export const combineStrategiesHistoryTable = (
           timeoutWhenLoss,
           timeoutLoss,
           timeoutWhenProfit,
+          isTemplate,
+          templatePnl,
+          templateStatus,
         } = {
           pair: '-',
           marketType: 0,
@@ -1032,6 +1113,9 @@ export const combineStrategiesHistoryTable = (
           timeoutWhenLoss: '-',
           timeoutLoss: '-',
           timeoutWhenProfit: '-',
+          isTemplate: false,
+          templatePnl: 0,
+          templateStatus: '-',
         },
       } = el
 
@@ -1073,6 +1157,18 @@ export const combineStrategiesHistoryTable = (
       if (isErrorInOrder && profitAmount !== 0) {
         orderState = 'Closed'
         isErrorInOrder = false
+      }
+
+      if (isTemplate) {
+        if (templateStatus === 'enabled') {
+          orderState = 'Waiting alert'
+        }
+        if (templateStatus === 'disabled') {
+          orderState = 'Closed'
+        }
+        if (templateStatus === 'paused') {
+          orderState = 'On pause'
+        }
       }
 
       if (!enabled && positionWasPlaced) {
@@ -1181,9 +1277,11 @@ export const combineStrategiesHistoryTable = (
                   : red.new
               }
             >
-              {`${stripDigitPlaces(profitAmount, 3)} ${
-                pairArr[1]
-              } / ${stripDigitPlaces(profitPercentage, 2)}%`}
+              {!!templatePnl
+                ? templatePnl
+                : `${stripDigitPlaces(profitAmount, 3)} ${
+                    pairArr[1]
+                  } / ${stripDigitPlaces(profitPercentage, 2)}%`}
             </SubColumnValue>
           ),
           style: {
