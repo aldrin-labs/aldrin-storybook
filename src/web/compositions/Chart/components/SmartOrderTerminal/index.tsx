@@ -1,4 +1,5 @@
 import React from 'react'
+import copy from 'clipboard-copy'
 
 import { IProps, IState } from './types'
 import {
@@ -24,6 +25,8 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { maxLeverage } from '@sb/compositions/Chart/mocks'
+import { API_URL } from '@core/utils/config'
+import WebHookImg from '@sb/images/WebHookImg.png'
 
 import { CustomCard } from '../../Chart.styles'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
@@ -32,11 +35,15 @@ import {
   StyledZoomIcon,
   LeverageLabel,
   LeverageTitle,
+  SettingsLabel,
 } from '@sb/components/TradingWrapper/styles'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
 
-import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import {
+  SCheckbox,
+  SRadio,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Select } from './InputComponents'
 import {
@@ -78,6 +85,14 @@ import {
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
+const generateToken = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15)
+
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
     showConfirmationPopup: false,
@@ -101,6 +116,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         isTrailingOn: false,
         deviationPercentage: 0,
         trailingDeviationPrice: 0,
+      },
+      TVAlert: {
+        isTVAlertOn: false,
+        templateMode: 'once',
+        templateToken: generateToken(),
       },
     },
     takeProfit: {
@@ -222,6 +242,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             ? { side: result.entryPoint.order.side }
             : {}),
           leverage: componentLeverage,
+        },
+        TVAlert: {
+          isTVAlertOn: false,
+          templateMode: 'once',
+          templateToken: generateToken(),
         },
         trailing: {
           trailingDeviationPrice: 0,
@@ -1095,6 +1120,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </AdditionalSettingsButton>
                     </DarkTooltip>
 
+                    <AdditionalSettingsButton
+                      isActive={entryPoint.TVAlert.isTVAlertOn}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'TVAlert',
+                          'isTVAlertOn',
+                          !entryPoint.TVAlert.isTVAlertOn
+                        )
+                      }}
+                    >
+                      Entry by TV Alert
+                    </AdditionalSettingsButton>
+
                     {/* <SwitcherContainer>
                     <GreenSwitcher
                       id="isHedgeOn"
@@ -1172,6 +1211,172 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }}
                   />
                 </FormInputContainer>
+
+                {entryPoint.TVAlert.isTVAlertOn && (
+                  <>
+                    <InputRowContainer padding={'.8rem 0 2rem 0'}>
+                      <InputRowContainer justify="flex-start">
+                        <DarkTooltip
+                          title={
+                            'Your trade will be placed only one time when alert be reached.'
+                          }
+                          maxWidth={'30rem'}
+                        >
+                          <div>
+                            <SRadio
+                              id="once"
+                              checked={
+                                entryPoint.TVAlert.templateMode === 'once'
+                              }
+                              style={{ padding: '0 1rem' }}
+                              onChange={() => {
+                                this.updateSubBlockValue(
+                                  'entryPoint',
+                                  'TVAlert',
+                                  'templateMode',
+                                  'once'
+                                )
+                              }}
+                            />
+                            <SettingsLabel
+                              style={{
+                                color: '#16253D',
+                                textDecoration: 'underline',
+                              }}
+                              htmlFor={'once'}
+                            >
+                              run once
+                            </SettingsLabel>
+                          </div>
+                        </DarkTooltip>
+                      </InputRowContainer>
+
+                      <InputRowContainer justify={'center'}>
+                        <DarkTooltip
+                          title={
+                            'Your trade will be placed every time alert be reached but only if no active smart trades exists.'
+                          }
+                          maxWidth={'30rem'}
+                        >
+                          <div>
+                            <SRadio
+                              id="ifNoActive"
+                              checked={
+                                entryPoint.TVAlert.templateMode === 'ifNoActive'
+                              }
+                              style={{ padding: '0 1rem' }}
+                              onChange={() => {
+                                this.updateSubBlockValue(
+                                  'entryPoint',
+                                  'TVAlert',
+                                  'templateMode',
+                                  'ifNoActive'
+                                )
+                              }}
+                            />
+                            <SettingsLabel
+                              style={{
+                                color: '#16253D',
+                                textDecoration: 'underline',
+                              }}
+                              htmlFor={'ifNoActive'}
+                            >
+                              Run if no active now
+                            </SettingsLabel>
+                          </div>
+                        </DarkTooltip>
+                      </InputRowContainer>
+
+                      <InputRowContainer justify="flex-end">
+                        <DarkTooltip
+                          title={
+                            'Your trade will be placed every time alert be reached.'
+                          }
+                          maxWidth={'30rem'}
+                        >
+                          <div>
+                            <SRadio
+                              id="always"
+                              checked={
+                                entryPoint.TVAlert.templateMode === 'always'
+                              }
+                              style={{ padding: '0 1rem' }}
+                              onChange={() => {
+                                this.updateSubBlockValue(
+                                  'entryPoint',
+                                  'TVAlert',
+                                  'templateMode',
+                                  'always'
+                                )
+                              }}
+                            />
+                            <SettingsLabel
+                              style={{
+                                color: '#16253D',
+                                textDecoration: 'underline',
+                              }}
+                              htmlFor={'always'}
+                            >
+                              run anyway
+                            </SettingsLabel>
+                          </div>
+                        </DarkTooltip>
+                      </InputRowContainer>
+                    </InputRowContainer>
+
+                    <FormInputContainer
+                      padding={'0 0 1.2rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '35rem', height: '50rem' }}
+                          src={WebHookImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'85%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`${API_URL}/createSmUsingTemplate?token=${
+                            entryPoint.TVAlert.templateToken
+                          }`}
+                        />
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(
+                              `${API_URL}/createSmUsingTemplate?token=${
+                                entryPoint.TVAlert.templateToken
+                              }`
+                            )
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
+                  </>
+                )}
 
                 {entryPoint.trailing.isTrailingOn && (
                   <FormInputContainer
