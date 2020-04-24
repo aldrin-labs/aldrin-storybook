@@ -88,6 +88,7 @@ import {
 } from './ActiveTrades/Columns'
 
 import { Theme } from '@material-ui/core'
+import EditIcon from '@material-ui/icons/Edit'
 import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -248,7 +249,19 @@ const getActiveOrderStatus = ({
   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
 ] => {
-  if (strategy.conditions.hedging && strategy.conditions.hedgeStrategyId === null) {
+  if (strategy.conditions.isTemplate) {
+    if (strategy.conditions.templateStatus === 'enabled') {
+      return ['Waiting alert', '#29AC80']
+    }
+    if (strategy.conditions.templateStatus === 'paused') {
+      return ['On pause', '#5C8CEA']
+    }
+  }
+
+  if (
+    strategy.conditions.hedging &&
+    strategy.conditions.hedgeStrategyId === null
+  ) {
     return ['Waiting hedge', '#29AC80']
   }
 
@@ -305,6 +318,7 @@ export const combinePositionsTable = ({
   priceFromOrderbook,
   pricePrecision,
   quantityPrecision,
+  toogleEditMarginPopup,
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
@@ -317,6 +331,7 @@ export const combinePositionsTable = ({
   pricePrecision: number
   quantityPrecision: number
   keys: Key[]
+  toogleEditMarginPopup: (position: Position) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -331,7 +346,15 @@ export const combinePositionsTable = ({
   const processedPositionsData = data
     .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
     .map((el: OrderType, i: number) => {
-      const { symbol, entryPrice, positionAmt, leverage = 1, keyId } = el
+      const {
+        symbol,
+        entryPrice,
+        positionAmt,
+        leverage = 1,
+        keyId,
+        marginType,
+        isolatedMargin,
+      } = el
       const needOpacity = el._id === '0'
 
       const marketPrice = (
@@ -421,10 +444,40 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1, textAlign: 'right' },
           },
           margin: {
-            render: `${stripDigitPlaces(
-              (positionAmt / leverage) * entryPrice,
-              2
-            )} ${pair[1]}`,
+            render: (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (marginType === 'isolated') {
+                    toogleEditMarginPopup(el)
+                  }
+                }}
+              >
+                <span>
+                  {marginType === 'isolated'
+                    ? stripDigitPlaces(isolatedMargin, 2)
+                    : stripDigitPlaces(
+                        (positionAmt / leverage) * entryPrice,
+                        2
+                      )}{' '}
+                  {pair[1]}
+                </span>
+                {marginType === 'isolated' && (
+                  <EditIcon
+                    style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      marginLeft: '.5rem',
+                      fill: '#0B1FD1',
+                    }}
+                  />
+                )}
+              </div>
+            ),
           },
           // marginRation: {
           //   render: `40%`,
@@ -519,6 +572,7 @@ export const combinePositionsTable = ({
 export const combineActiveTradesTable = ({
   data,
   cancelOrderFunc,
+  changeStatusWithStatus,
   editTrade,
   theme,
   prices,
@@ -530,6 +584,11 @@ export const combineActiveTradesTable = ({
 }: {
   data: any[]
   cancelOrderFunc: (strategyId: string) => Promise<any>
+  changeStatusWithStatus: (
+    startegyId: string,
+    keyId: string,
+    status: string
+  ) => Promise<any>
   editTrade: (block: string, trade: any) => void
   theme: Theme
   prices: { pair: string; price: number }[]
@@ -546,7 +605,13 @@ export const combineActiveTradesTable = ({
   const { green, red, blue } = theme.palette
 
   const processedActiveTradesData = data
-    .filter((a) => !!a && a.enabled)
+    .filter(
+      (a) =>
+        !!a &&
+        (a.enabled ||
+          (a.conditions.isTemplate &&
+            a.conditions.templateStatus !== 'disabled'))
+    )
     .sort((a, b) => {
       // sometimes in db we receive createdAt as timestamp
       // so using this we understand type of value that in createdAt field
@@ -587,7 +652,10 @@ export const combineActiveTradesTable = ({
           timeoutLoss,
           timeoutWhenLoss,
           timeoutWhenProfit,
-          hedgeLossDeviation
+          hedgeLossDeviation,
+          isTemplate,
+          templatePnl,
+          templateStatus,
         } = {
           pair: '-',
           marketType: 0,
@@ -605,7 +673,10 @@ export const combineActiveTradesTable = ({
           timeoutLoss: '-',
           timeoutWhenLoss: '-',
           timeoutWhenProfit: '-',
-          hedgeLossDeviation: '-'
+          hedgeLossDeviation: '-',
+          isTemplate: false,
+          templatePnl: 0,
+          templateStatus: '-',
         },
       } = el
 
@@ -722,8 +793,7 @@ export const combineActiveTradesTable = ({
         takeProfit: {
           render: (
             <SubColumnValue color={green.new}>
-              {
-              exitLevels[0] &&
+              {exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation ? (
                 `${exitLevels[0].activatePrice}% / ${
@@ -762,11 +832,14 @@ export const combineActiveTradesTable = ({
           },
         },
         stopLoss: {
-          render: stopLoss || hedgeLossDeviation ? (
-            <SubColumnValue color={red.new}>{stopLoss || hedgeLossDeviation}%</SubColumnValue>
-          ) : (
-            '-'
-          ),
+          render:
+            stopLoss || hedgeLossDeviation ? (
+              <SubColumnValue color={red.new}>
+                {stopLoss || hedgeLossDeviation}%
+              </SubColumnValue>
+            ) : (
+              '-'
+            ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
@@ -774,19 +847,24 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            state &&
-            activeOrderStatus !== 'Preparing' &&
-            state !== 'WaitForEntry' &&
-            state !== 'TrailingEntry' &&
-            !!currentPrice && entryOrderPrice ? (
+            !!templatePnl ||
+            (state &&
+              activeOrderStatus !== 'Preparing' &&
+              state !== 'WaitForEntry' &&
+              state !== 'TrailingEntry' &&
+              !!currentPrice &&
+              entryOrderPrice) ? (
               <SubColumnValue
                 color={profitPercentage > 0 ? green.new : red.new}
               >
-                {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-                  Number(profitAmount.toFixed(3))
-                )} ${pairArr[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
-                  Number(profitPercentage.toFixed(2))
-                )}%`}
+                {' '}
+                {templatePnl
+                  ? templatePnl
+                  : `${profitAmount < 0 ? '-' : ''}${Math.abs(
+                      Number(profitAmount.toFixed(3))
+                    )} ${pairArr[1]} / ${
+                      profitPercentage < 0 ? '-' : ''
+                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`}
               </SubColumnValue>
             ) : (
               `0 ${pairArr[1]} / 0%`
@@ -835,6 +913,53 @@ export const combineActiveTradesTable = ({
         close: {
           render: needOpacity ? (
             ' '
+          ) : isTemplate ? (
+            <div>
+              <BtnCustom
+                btnWidth="100%"
+                height="auto"
+                fontSize=".9rem"
+                padding=".2rem 0 .1rem 0"
+                margin="0 0 .4rem 0"
+                borderRadius=".8rem"
+                btnColor={'#fff'}
+                borderColor={'#5C8CEA'}
+                backgroundColor={'#5C8CEA'}
+                hoverColor={'#5C8CEA'}
+                hoverBackground={'#fff'}
+                transition={'all .4s ease-out'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  changeStatusWithStatus(
+                    el._id,
+                    el.accountId,
+                    templateStatus === 'paused' ? 'enabled' : 'paused'
+                  )
+                }}
+              >
+                {templateStatus === 'paused' ? 'continue' : 'pause'}
+              </BtnCustom>
+              <BtnCustom
+                btnWidth="100%"
+                height="auto"
+                fontSize=".9rem"
+                margin=".4rem 0 0 0"
+                padding=".2rem 0 .1rem 0"
+                borderRadius=".8rem"
+                btnColor={'#fff'}
+                borderColor={red.new}
+                backgroundColor={red.new}
+                hoverColor={red.new}
+                hoverBackground={'#fff'}
+                transition={'all .4s ease-out'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  changeStatusWithStatus(el._id, el.accountId, 'disabled')
+                }}
+              >
+                stop
+              </BtnCustom>
+            </div>
           ) : (
             <BtnCustom
               btnWidth="100%"
@@ -968,6 +1093,9 @@ export const combineStrategiesHistoryTable = (
           timeoutWhenLoss,
           timeoutLoss,
           timeoutWhenProfit,
+          isTemplate,
+          templatePnl,
+          templateStatus,
         } = {
           pair: '-',
           marketType: 0,
@@ -985,6 +1113,9 @@ export const combineStrategiesHistoryTable = (
           timeoutWhenLoss: '-',
           timeoutLoss: '-',
           timeoutWhenProfit: '-',
+          isTemplate: false,
+          templatePnl: 0,
+          templateStatus: '-',
         },
       } = el
 
@@ -1026,6 +1157,18 @@ export const combineStrategiesHistoryTable = (
       if (isErrorInOrder && profitAmount !== 0) {
         orderState = 'Closed'
         isErrorInOrder = false
+      }
+
+      if (isTemplate) {
+        if (templateStatus === 'enabled') {
+          orderState = 'Waiting alert'
+        }
+        if (templateStatus === 'disabled') {
+          orderState = 'Closed'
+        }
+        if (templateStatus === 'paused') {
+          orderState = 'On pause'
+        }
       }
 
       if (!enabled && positionWasPlaced) {
@@ -1134,9 +1277,11 @@ export const combineStrategiesHistoryTable = (
                   : red.new
               }
             >
-              {`${stripDigitPlaces(profitAmount, 3)} ${
-                pairArr[1]
-              } / ${stripDigitPlaces(profitPercentage, 2)}%`}
+              {!!templatePnl
+                ? templatePnl
+                : `${stripDigitPlaces(profitAmount, 3)} ${
+                    pairArr[1]
+                  } / ${stripDigitPlaces(profitPercentage, 2)}%`}
             </SubColumnValue>
           ),
           style: {

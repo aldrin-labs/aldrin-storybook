@@ -86,7 +86,8 @@ const getKeyStatus = (status: string, valid: boolean) => {
 export const transformData = (
   data: AccountData[],
   numberOfKeys: number,
-  telegramUsernameConnected: boolean
+  telegramUsernameConnected: boolean,
+  setCreatingAdditionalAccount: () => void
 ) => {
   const transformedData = data.map((row, i) => {
     return {
@@ -265,18 +266,14 @@ export const transformData = (
     },
     autoRebalance: {
       render: (
-        <AddAccountDialog
-          includeBrokerKey={true}
-          includeCommonBinanceKey={false}
-          numberOfKeys={numberOfKeys}
-          existCustomButton={true}
-          CustomButton={({ handleClick }: { handleClick: () => void }) => (
-            <AddAccountButton onClick={handleClick}>
-              <SmallAddIcon />
-              <Typography>add new key</Typography>
-            </AddAccountButton>
-          )}
-        />
+        <AddAccountButton
+          onClick={() => {
+            setCreatingAdditionalAccount(true)
+          }}
+        >
+          <SmallAddIcon />
+          <Typography>add new key</Typography>
+        </AddAccountButton>
       ),
     },
     edit: ' ',
@@ -289,12 +286,14 @@ export const transformData = (
 
 export const putDataInTable = (
   tableData: any[],
-  telegramUsernameConnected: boolean
+  telegramUsernameConnected: boolean,
+  setCreatingAdditionalAccount: () => void
 ) => {
   const body = transformData(
     tableData,
     tableData.length,
-    telegramUsernameConnected
+    telegramUsernameConnected,
+    setCreatingAdditionalAccount
   )
 
   return {

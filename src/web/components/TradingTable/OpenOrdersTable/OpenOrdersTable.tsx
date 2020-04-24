@@ -80,6 +80,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     showCancelResult(status)
   }
 
+  refetch = async () => {
+    await this.props.getOpenOrderHistoryQueryRefetch()
+  }
+
   componentDidMount() {
     const {
       getOpenOrderHistoryQuery,
@@ -199,8 +203,34 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   componentDidUpdate(prevProps: IProps) {
-    const refetch = async () => {
-      await this.props.getOpenOrderHistoryQueryRefetch()
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys
+    ) {
+      const {
+        marketType,
+        selectedKey,
+        allKeys,
+        currencyPair,
+        specificPair,
+      } = this.props
+
+      this.unsubscribeFunction && this.unsubscribeFunction()
+      this.unsubscribeFunction = this.props.getOpenOrderHistoryQuery.subscribeToMore(
+        {
+          document: OPEN_ORDER_HISTORY,
+          variables: {
+            orderHistoryInput: {
+              marketType,
+              activeExchangeKey: selectedKey.keyId,
+              allKeys,
+              ...(!specificPair ? {} : { specificPair: currencyPair }),
+            },
+          },
+          updateQuery: updateOpenOrderHistoryQuerryFunction,
+        }
+      )
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
@@ -214,7 +244,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           },
         },
       })
-      refetch()
+      this.refetch()
     }
   }
 

@@ -261,7 +261,7 @@ const TransferPopup = ({
                   SingleValue: CoinSingleValue,
                   DropdownIndicator: undefined,
                 }}
-                isSearchable={true}
+                isSearchable={false}
                 value={selectedCoin}
                 // placeholder={selectedCoin}
                 menuPortalTarget={document.body}
@@ -287,7 +287,7 @@ const TransferPopup = ({
                   textAlign: 'center',
                   background: 'white',
                   position: 'relative',
-                  overflowY: 'auto',
+                  // overflowY: 'auto',
                   boxShadow: 'none',
                   border: 'none',
                 }}

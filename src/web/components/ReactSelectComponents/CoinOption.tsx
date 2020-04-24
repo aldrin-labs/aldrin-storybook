@@ -4,8 +4,11 @@ import LazyLoad from 'react-lazyload'
 
 import { Grid } from '@material-ui/core'
 
-import SvgIcon from '@sb/components/SvgIcon'
-import { importCoinIcon, onErrorImportCoinUrl } from '@core/utils/MarketCapUtils'
+import { SvgIcon, Loading } from '@sb/components'
+import {
+  importCoinIcon,
+  onErrorImportCoinUrl,
+} from '@core/utils/MarketCapUtils'
 
 type ComponentData = {
   label: string
@@ -21,7 +24,17 @@ interface ComponentIProps {
 const CoinContent = ({ data }: { data: ComponentData }) => (
   <>
     <Grid item style={{ display: 'flex', alignSelf: 'center' }}>
-      <LazyLoad height={`1.7rem`} once>
+      <LazyLoad
+        height={`1.7rem`}
+        once
+        overflow
+        placeholder={
+          <Loading
+            size={16}
+            style={{ height: '2rem', width: '2rem', marginRight: '.5rem' }}
+          />
+        }
+      >
         <SvgIcon
           style={{
             marginRight: '.5rem',
@@ -58,6 +71,7 @@ export const CoinOption = ({
   ...otherProps
 }: ComponentIProps) => {
   return (
+    // <LazyLoad height="1.7rem" overflow unmountIfInvisible>
     <components.Option ref={innerRef} {...otherProps} {...data}>
       <Grid
         container
@@ -67,6 +81,7 @@ export const CoinOption = ({
         <CoinContent data={data} />
       </Grid>
     </components.Option>
+    // </LazyLoad>
   )
 }
 

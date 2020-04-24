@@ -1,4 +1,5 @@
 import React from 'react'
+import copy from 'clipboard-copy'
 
 import { IProps, IState } from './types'
 import {
@@ -24,6 +25,8 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { maxLeverage } from '@sb/compositions/Chart/mocks'
+import { API_URL } from '@core/utils/config'
+import WebHookImg from '@sb/images/WebHookImg.png'
 
 import { CustomCard } from '../../Chart.styles'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
@@ -32,11 +35,15 @@ import {
   StyledZoomIcon,
   LeverageLabel,
   LeverageTitle,
+  SettingsLabel,
 } from '@sb/components/TradingWrapper/styles'
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
 
-import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import {
+  SCheckbox,
+  SRadio,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Select } from './InputComponents'
 import {
@@ -76,6 +83,16 @@ import {
   AdditionalSettingsButton,
 } from './styles'
 
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
+const generateToken = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15)
+
 export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
     showConfirmationPopup: false,
@@ -99,6 +116,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         isTrailingOn: false,
         deviationPercentage: 0,
         trailingDeviationPrice: 0,
+      },
+      TVAlert: {
+        isTVAlertOn: false,
+        templateMode: 'once',
+        templateToken: generateToken(),
       },
     },
     takeProfit: {
@@ -220,6 +242,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             ? { side: result.entryPoint.order.side }
             : {}),
           leverage: componentLeverage,
+        },
+        TVAlert: {
+          isTVAlertOn: false,
+          templateMode: 'once',
+          templateToken: generateToken(),
         },
         trailing: {
           trailingDeviationPrice: 0,
@@ -1044,18 +1071,67 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     justify="flex-start"
                     padding={'.6rem 0 1.2rem 0'}
                   >
+                    <DarkTooltip
+                      maxWidth={'40rem'}
+                      title={
+                        <>
+                          <p>
+                            The algorithm which will wait for the trend to
+                            reverse to place the order.
+                          </p>
+
+                          <p>
+                            <b>Activation price:</b> The price at which the
+                            algorithm is enabled.
+                          </p>
+
+                          <p>
+                            <b>Deviation:</b> The level of price change after
+                            the trend reversal, at which the order will be
+                            executed.
+                          </p>
+
+                          <p>
+                            <b>For example:</b> you set 7500 USDT activation
+                            price and 1% deviation to buy BTC. Trailing will
+                            start when price will be 7500 and then after
+                            activation there will be a buy when the price moves
+                            upward by 1% from its lowest point. If for instance
+                            it drops to $7,300, then the trend will reverse and
+                            start to rise, the order will be executed when the
+                            price reaches 7373, i.e. by 1% from the moment the
+                            trend reversed.
+                          </p>
+                        </>
+                      }
+                    >
+                      <AdditionalSettingsButton
+                        isActive={entryPoint.trailing.isTrailingOn}
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'trailing',
+                            'isTrailingOn',
+                            !entryPoint.trailing.isTrailingOn
+                          )
+                        }}
+                      >
+                        Trailing {entryPoint.order.side}
+                      </AdditionalSettingsButton>
+                    </DarkTooltip>
+
                     <AdditionalSettingsButton
-                      isActive={entryPoint.trailing.isTrailingOn}
+                      isActive={entryPoint.TVAlert.isTVAlertOn}
                       onClick={() => {
                         this.updateSubBlockValue(
                           'entryPoint',
-                          'trailing',
-                          'isTrailingOn',
-                          !entryPoint.trailing.isTrailingOn
+                          'TVAlert',
+                          'isTVAlertOn',
+                          !entryPoint.TVAlert.isTVAlertOn
                         )
                       }}
                     >
-                      Trailing {entryPoint.order.side}
+                      Entry by TV Alert
                     </AdditionalSettingsButton>
 
                     {/* <SwitcherContainer>
@@ -1077,6 +1153,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 )}
                 <FormInputContainer
                   padding={'0 0 1.2rem 0'}
+                  haveTooltip={entryPoint.trailing.isTrailingOn}
+                  tooltipText={
+                    'The price at which the trailing algorithm is enabled.'
+                  }
                   title={`price (${pair[1]})`}
                 >
                   <Input
@@ -1132,8 +1212,180 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   />
                 </FormInputContainer>
 
+                {entryPoint.TVAlert.isTVAlertOn && (
+                  <>
+                    <InputRowContainer padding={'.8rem 0 2rem 0'}>
+                      <InputRowContainer justify="flex-start">
+                        <DarkTooltip
+                          title={
+                            'Your trade will be placed only one time when alert be reached.'
+                          }
+                          maxWidth={'30rem'}
+                        >
+                          <div>
+                            <SRadio
+                              id="once"
+                              checked={
+                                entryPoint.TVAlert.templateMode === 'once'
+                              }
+                              style={{ padding: '0 1rem' }}
+                              onChange={() => {
+                                this.updateSubBlockValue(
+                                  'entryPoint',
+                                  'TVAlert',
+                                  'templateMode',
+                                  'once'
+                                )
+                              }}
+                            />
+                            <SettingsLabel
+                              style={{
+                                color: '#16253D',
+                                textDecoration: 'underline',
+                              }}
+                              htmlFor={'once'}
+                            >
+                              run once
+                            </SettingsLabel>
+                          </div>
+                        </DarkTooltip>
+                      </InputRowContainer>
+
+                      <InputRowContainer justify={'center'}>
+                        <DarkTooltip
+                          title={
+                            'Your trade will be placed every time alert be reached but only if no active smart trades exists.'
+                          }
+                          maxWidth={'30rem'}
+                        >
+                          <div>
+                            <SRadio
+                              id="ifNoActive"
+                              checked={
+                                entryPoint.TVAlert.templateMode === 'ifNoActive'
+                              }
+                              style={{ padding: '0 1rem' }}
+                              onChange={() => {
+                                this.updateSubBlockValue(
+                                  'entryPoint',
+                                  'TVAlert',
+                                  'templateMode',
+                                  'ifNoActive'
+                                )
+                              }}
+                            />
+                            <SettingsLabel
+                              style={{
+                                color: '#16253D',
+                                textDecoration: 'underline',
+                              }}
+                              htmlFor={'ifNoActive'}
+                            >
+                              Run if no active now
+                            </SettingsLabel>
+                          </div>
+                        </DarkTooltip>
+                      </InputRowContainer>
+
+                      <InputRowContainer justify="flex-end">
+                        <DarkTooltip
+                          title={
+                            'Your trade will be placed every time alert be reached.'
+                          }
+                          maxWidth={'30rem'}
+                        >
+                          <div>
+                            <SRadio
+                              id="always"
+                              checked={
+                                entryPoint.TVAlert.templateMode === 'always'
+                              }
+                              style={{ padding: '0 1rem' }}
+                              onChange={() => {
+                                this.updateSubBlockValue(
+                                  'entryPoint',
+                                  'TVAlert',
+                                  'templateMode',
+                                  'always'
+                                )
+                              }}
+                            />
+                            <SettingsLabel
+                              style={{
+                                color: '#16253D',
+                                textDecoration: 'underline',
+                              }}
+                              htmlFor={'always'}
+                            >
+                              run anyway
+                            </SettingsLabel>
+                          </div>
+                        </DarkTooltip>
+                      </InputRowContainer>
+                    </InputRowContainer>
+
+                    <FormInputContainer
+                      padding={'0 0 1.2rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '35rem', height: '50rem' }}
+                          src={WebHookImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'85%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`https://${API_URL}/createSmUsingTemplate?token=${
+                            entryPoint.TVAlert.templateToken
+                          }`}
+                        />
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(
+                              `https://${API_URL}/createSmUsingTemplate?token=${
+                                entryPoint.TVAlert.templateToken
+                              }`
+                            )
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
+                  </>
+                )}
+
                 {entryPoint.trailing.isTrailingOn && (
-                  <FormInputContainer title={'price deviation (%)'}>
+                  <FormInputContainer
+                    haveTooltip
+                    tooltipText={
+                      'The level of price change after the trend reversal, at which the order will be executed.'
+                    }
+                    title={'price deviation (%)'}
+                  >
                     <InputRowContainer>
                       <Input
                         padding={'0'}
@@ -1175,7 +1427,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         padding={'0 .8rem 0 .8rem'}
                         width={'calc(17.5%)'}
                         symbol={'%'}
-                        textAlign={'left'}
+                        textAlign={'right'}
                         pattern={'[0-9]+.[0-9]{3}'}
                         type={'text'}
                         value={entryPoint.trailing.deviationPercentage}
@@ -1185,9 +1437,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         //   entryPoint.trailing.deviationPercentage
                         // )}
                         inputStyles={{
-                          paddingLeft: '2rem',
-                          paddingRight: 0,
+                          paddingLeft: 0,
+                          paddingRight: '2rem',
                         }}
+                        symbolRightIndent={'1.5rem'}
                         onChange={(e) => {
                           const value =
                             e.target.value > 100 / entryPoint.order.leverage
@@ -1600,33 +1853,50 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   justify="flex-start"
                   padding={'.6rem 0 1.2rem 0'}
                 >
-                  <AdditionalSettingsButton
-                    isActive={stopLoss.timeout.isTimeoutOn}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'stopLoss',
-                        'timeout',
-                        'isTimeoutOn',
-                        !stopLoss.timeout.isTimeoutOn
-                      )
-
-                      this.updateSubBlockValue(
-                        'stopLoss',
-                        'timeout',
-                        'whenLossableOn',
-                        !stopLoss.timeout.whenLossableOn
-                      )
-
-                      this.updateSubBlockValue(
-                        'stopLoss',
-                        'forcedStop',
-                        'isForcedStopOn',
-                        !stopLoss.forcedStop.isForcedStopOn
-                      )
-                    }}
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      <>
+                        <p>
+                          Waiting after unrealized P&L will reach set target.
+                        </p>
+                        <p>
+                          <b>For example:</b> you set 10% stop loss and 1 minute
+                          timeout. When your unrealized loss is 10% timeout will
+                          give a minute for a chance to reverse trend and loss
+                          to go below 10% before stop loss order executes.
+                        </p>
+                      </>
+                    }
                   >
-                    Timeout
-                  </AdditionalSettingsButton>
+                    <AdditionalSettingsButton
+                      isActive={stopLoss.timeout.isTimeoutOn}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'stopLoss',
+                          'timeout',
+                          'isTimeoutOn',
+                          !stopLoss.timeout.isTimeoutOn
+                        )
+
+                        this.updateSubBlockValue(
+                          'stopLoss',
+                          'timeout',
+                          'whenLossableOn',
+                          !stopLoss.timeout.whenLossableOn
+                        )
+
+                        this.updateSubBlockValue(
+                          'stopLoss',
+                          'forcedStop',
+                          'isForcedStopOn',
+                          !stopLoss.forcedStop.isForcedStopOn
+                        )
+                      }}
+                    >
+                      Timeout
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
 
                   {/* <AdditionalSettingsButton
                     isActive={stopLoss.forcedStop.isForcedStopOn}
@@ -1643,7 +1913,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </AdditionalSettingsButton> */}
                 </InputRowContainer>
 
-                <FormInputContainer title={'stop price'}>
+                <FormInputContainer
+                  haveTooltip
+                  tooltipText={
+                    <>
+                      <p>The unrealized loss/ROE for closing trade.</p>
+                      <p>
+                        <b>For example:</b> you bought 1 BTC and set 10% stop
+                        loss. Your unrealized loss should be 0.1 BTC and order
+                        will be executed.
+                      </p>
+                    </>
+                  }
+                  title={'stop price'}
+                >
                   <InputRowContainer>
                     <Input
                       padding={'0'}
@@ -1813,6 +2096,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           <TimeoutTitle>When in loss</TimeoutTitle>
                         </InputRowContainer> */}
                         <FormInputContainer
+                          haveTooltip
+                          tooltipText={
+                            <>
+                              <p>
+                                Waiting after unrealized P&L will reach set
+                                target.
+                              </p>
+                              <p>
+                                <b>For example:</b> you set 10% stop loss and 1
+                                minute timeout. When your unrealized loss is 10%
+                                timeout will give a minute for a chance to
+                                reverse trend and loss to go below 10% before
+                                stop loss order executes.
+                              </p>
+                            </>
+                          }
                           title={'timeout'}
                           lineMargin={'0 1.2rem 0 1rem'}
                         >
@@ -1885,7 +2184,26 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </FormInputContainer>
                       </SubBlocksContainer>
                       <SubBlocksContainer>
-                        <FormInputContainer title={'forced stop price'}>
+                        <FormInputContainer
+                          haveTooltip
+                          tooltipText={
+                            <>
+                              <p>
+                                How much should the price change to ignore
+                                timeout.
+                              </p>
+
+                              <p>
+                                <b>For example:</b> You bought BTC and set 10%
+                                stop loss with 1 minute timeout and 15% forced
+                                stop. But the price continued to fall during the
+                                timeout. Your trade will be closed when loss
+                                will be 15% regardless of timeout.
+                              </p>
+                            </>
+                          }
+                          title={'forced stop price'}
+                        >
                           <InputRowContainer>
                             <Input
                               padding={'0'}
@@ -2089,70 +2407,118 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   justify="flex-start"
                   padding={'.6rem 0 1.2rem 0'}
                 >
-                  <AdditionalSettingsButton
-                    style={{ fontSize: '1rem' }}
-                    isActive={takeProfit.trailingTAP.isTrailingOn}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'isTrailingOn',
-                        !takeProfit.trailingTAP.isTrailingOn
-                      )
-
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'splitTargets',
-                        'isSplitTargetsOn',
-                        false
-                      )
-
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'timeout',
-                        'isTimeoutOn',
-                        false
-                      )
-
-                      this.updateStopLossAndTakeProfitPrices({
-                        takeProfitPercentage: !takeProfit.trailingTAP
-                          .isTrailingOn
-                          ? takeProfit.trailingTAP.activatePrice
-                          : takeProfit.pricePercentage,
-                      })
-                    }}
+                  <DarkTooltip
+                    maxWidth={'40rem'}
+                    title={
+                      <>
+                        <p>
+                          The algorithm which will wait for the trend to reverse
+                          to place the order.
+                        </p>
+                        <p>
+                          <b>Deviation:</b> The level of price change after the
+                          trend reversal, at which the order will be executed.
+                        </p>
+                        <p>
+                          <b>For example:</b> you bought BTC at 7500 USDT price
+                          and set 1% trailing deviation to take a profit.
+                          Trailing will start right after you buy. Then the
+                          price goes to 7700 and the trend reverses and begins
+                          to fall. The order will be executed when the price
+                          reaches 7633, i.e. by 1% from the moment the trend
+                          reversed.
+                        </p>
+                      </>
+                    }
                   >
-                    Trailing take a profit
-                  </AdditionalSettingsButton>
+                    <AdditionalSettingsButton
+                      style={{ fontSize: '1rem' }}
+                      isActive={takeProfit.trailingTAP.isTrailingOn}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'isTrailingOn',
+                          !takeProfit.trailingTAP.isTrailingOn
+                        )
 
-                  <AdditionalSettingsButton
-                    isActive={takeProfit.splitTargets.isSplitTargetsOn}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'splitTargets',
-                        'isSplitTargetsOn',
-                        !takeProfit.splitTargets.isSplitTargetsOn
-                      )
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'splitTargets',
+                          'isSplitTargetsOn',
+                          false
+                        )
 
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'isTrailingOn',
-                        false
-                      )
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'timeout',
+                          'isTimeoutOn',
+                          false
+                        )
 
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'timeout',
-                        'isTimeoutOn',
-                        false
-                      )
-                    }}
+                        this.updateStopLossAndTakeProfitPrices({
+                          takeProfitPercentage: !takeProfit.trailingTAP
+                            .isTrailingOn
+                            ? takeProfit.trailingTAP.activatePrice
+                            : takeProfit.pricePercentage,
+                        })
+                      }}
+                    >
+                      Trailing take a profit
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
+                  <DarkTooltip
+                    maxWidth={'40rem'}
+                    title={
+                      <>
+                        <p>
+                          Partial closing of a trade when a certain level of
+                          profit is reached.
+                        </p>
+
+                        <p>
+                          Set up the price and amount, then click "Add target".
+                          Distribute 100% of the total trading amount.
+                        </p>
+
+                        <p>
+                          <b>For example:</b> you bought BTC and set that at 5%
+                          profit sell 25% of your amount, at 10% profit sell 60%
+                          amount and at 15% profit sell remaining 15% amount.
+                          When the price reaches each profit level, it will
+                          place the order for specified amount.
+                        </p>
+                      </>
+                    }
                   >
-                    Split targets
-                  </AdditionalSettingsButton>
+                    <AdditionalSettingsButton
+                      isActive={takeProfit.splitTargets.isSplitTargetsOn}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'splitTargets',
+                          'isSplitTargetsOn',
+                          !takeProfit.splitTargets.isSplitTargetsOn
+                        )
 
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'isTrailingOn',
+                          false
+                        )
+
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'timeout',
+                          'isTimeoutOn',
+                          false
+                        )
+                      }}
+                    >
+                      Split targets
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
                   {/* <AdditionalSettingsButton
                     isActive={takeProfit.timeout.isTimeoutOn}
                     onClick={() => {
@@ -2183,7 +2549,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 {!takeProfit.trailingTAP.isTrailingOn && (
-                  <FormInputContainer title={'stop price'}>
+                  <FormInputContainer
+                    haveTooltip
+                    tooltipText={
+                      <>
+                        <p>The unrealized profit/ROE for closing the trade.</p>
+                        <p>
+                          <b>For example:</b>you bought 1 BTC and set 100% take
+                          a profit. Your unrealized profit should be 1 BTC and
+                          order will be executed.
+                        </p>
+                      </>
+                    }
+                    title={'stop price'}
+                  >
                     <InputRowContainer>
                       <Input
                         textAlign={'left'}
@@ -2287,7 +2666,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {takeProfit.trailingTAP.isTrailingOn && (
                   <>
-                    <FormInputContainer title={'activation price'}>
+                    <FormInputContainer
+                      haveTooltip
+                      tooltipText={
+                        'The price at which the trailing algorithm is enabled.'
+                      }
+                      title={'activation price'}
+                    >
                       <InputRowContainer>
                         <Input
                           textAlign={'left'}
@@ -2386,7 +2771,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
                       </InputRowContainer>
                     </FormInputContainer>
-                    <FormInputContainer title={'trailing deviation (%)'}>
+                    <FormInputContainer
+                      haveTooltip
+                      tooltipText={
+                        'The level of price change after the trend reversal, at which the order will be executed.'
+                      }
+                      title={'trailing deviation (%)'}
+                    >
                       <InputRowContainer>
                         <Input
                           padding={'0 .8rem 0 0'}

@@ -13,7 +13,7 @@ export const TablesBlockWrapper = styled(Grid)`
   }: {
     isDefaultTerminalViewMode: boolean
   }) => (isDefaultTerminalViewMode ? '37%' : '48%')};
-  top: 0%;
+  top: 2%;
 
   && {
     box-shadow: none !important;
