@@ -189,7 +189,7 @@ export default class Table extends Component<IProps, IState> {
                 ref={handleRef}
                 classNamePrefix="custom-select-box"
                 isClearable={true}
-                isSearchable={true}
+                isSearchable={false}
                 openMenuOnClick={false}
                 menuPortalTarget={document.body}
                 menuPortalStyles={{

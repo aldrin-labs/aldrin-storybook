@@ -33,6 +33,8 @@ const TradingTabs = ({
   arrayOfMarketIds,
   currencyPair,
   subscribeToMore,
+  showAllSmartTradePairs,
+  showSmartTradesFromAllAccounts,
   ...props
 }: IProps) => {
   let unsubscribeActiveTrades: Function | undefined
@@ -44,7 +46,11 @@ const TradingTabs = ({
     return () => {
       unsubscribeActiveTrades && unsubscribeActiveTrades()
     }
-  }, [props.selectedKey.keyId])
+  }, [
+    props.selectedKey.keyId,
+    showAllSmartTradePairs,
+    showSmartTradesFromAllAccounts,
+  ])
 
   const openOrdersLength = getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
     (order) =>
@@ -63,7 +69,7 @@ const TradingTabs = ({
   ).length
 
   const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(
-    (a) => a !== null && a.enabled
+    (a) => a !== null && (a.enabled || (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
 
   return (
@@ -139,11 +145,7 @@ const TradingTabs = ({
   )
 }
 
-const OpenOrdersWrapper = ({
-  showOpenOrdersFromAllAccounts,
-  showAllOpenOrderPairs,
-  ...props
-}: IQueryProps) => {
+const OpenOrdersWrapper = ({ ...props }: IQueryProps) => {
   return (
     <QueryRenderer
       component={PositionsWrapper}
@@ -151,8 +153,8 @@ const OpenOrdersWrapper = ({
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
-          allKeys: showOpenOrdersFromAllAccounts,
-          ...(!showAllOpenOrderPairs
+          allKeys: props.showOpenOrdersFromAllAccounts,
+          ...(!props.showAllOpenOrderPairs
             ? {}
             : { specificPair: props.currencyPair }),
         },
@@ -169,8 +171,8 @@ const OpenOrdersWrapper = ({
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
-            allKeys: showOpenOrdersFromAllAccounts,
-            ...(!showAllOpenOrderPairs
+            allKeys: props.showOpenOrdersFromAllAccounts,
+            ...(!props.showAllOpenOrderPairs
               ? {}
               : { specificPair: props.currencyPair }),
           },
@@ -185,8 +187,8 @@ const OpenOrdersWrapper = ({
 const PositionsWrapper = ({
   subscribeToMore,
   variables,
-  showAllPositionPairs,
-  showPositionsFromAllAccounts,
+  showOpenOrdersFromAllAccounts,
+  showAllOpenOrderPairs,
   ...props
 }: INextQueryProps) => {
   let unsubscribeOpenOrders: Function | undefined
@@ -198,7 +200,11 @@ const PositionsWrapper = ({
     return () => {
       unsubscribeOpenOrders && unsubscribeOpenOrders()
     }
-  }, [props.selectedKey.keyId])
+  }, [
+    props.selectedKey.keyId,
+    showOpenOrdersFromAllAccounts,
+    showAllOpenOrderPairs,
+  ])
 
   return (
     <QueryRenderer
@@ -206,8 +212,8 @@ const PositionsWrapper = ({
       variables={{
         input: {
           keyId: props.selectedKey.keyId,
-          allKeys: showPositionsFromAllAccounts,
-          ...(!showAllPositionPairs
+          allKeys: props.showPositionsFromAllAccounts,
+          ...(!props.showAllPositionPairs
             ? {}
             : { specificPair: props.currencyPair }),
         },
@@ -223,8 +229,8 @@ const PositionsWrapper = ({
         variables: {
           input: {
             keyId: props.selectedKey.keyId,
-            allKeys: showPositionsFromAllAccounts,
-            ...(!showAllPositionPairs
+            allKeys: props.showPositionsFromAllAccounts,
+            ...(!props.showAllPositionPairs
               ? {}
               : { specificPair: props.currencyPair }),
           },
@@ -239,8 +245,8 @@ const PositionsWrapper = ({
 const ActiveTradesWrapper = ({
   subscribeToMore,
   variables,
-  showAllSmartTradePairs,
-  showSmartTradesFromAllAccounts,
+  showAllPositionPairs,
+  showPositionsFromAllAccounts,
   ...props
 }: INextQueryProps) => {
   let unsubscribePositions: Function | undefined
@@ -252,7 +258,11 @@ const ActiveTradesWrapper = ({
     return () => {
       unsubscribePositions && unsubscribePositions()
     }
-  }, [props.selectedKey.keyId])
+  }, [
+    props.selectedKey.keyId,
+    showAllPositionPairs,
+    showPositionsFromAllAccounts,
+  ])
 
   return (
     <QueryRenderer
@@ -261,8 +271,8 @@ const ActiveTradesWrapper = ({
         activeStrategiesInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
-          allKeys: showSmartTradesFromAllAccounts,
-          ...(!showAllSmartTradePairs
+          allKeys: props.showSmartTradesFromAllAccounts,
+          ...(!props.showAllSmartTradePairs
             ? {}
             : { specificPair: props.currencyPair }),
         },
@@ -279,8 +289,8 @@ const ActiveTradesWrapper = ({
           activeStrategiesInput: {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
-            allKeys: showSmartTradesFromAllAccounts,
-            ...(!showAllSmartTradePairs
+            allKeys: props.showSmartTradesFromAllAccounts,
+            ...(!props.showAllSmartTradePairs
               ? {}
               : { specificPair: props.currencyPair }),
           },

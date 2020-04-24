@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons'
 
 import {
@@ -34,6 +34,7 @@ import {
 import ProfileAccountsTable from './ProfileAccountsTable'
 import { formatValue, countAllPortfoliosValue } from './ProfileAccounts.utils'
 
+import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { ComingSoonBlock } from '@sb/compositions/Profile/compositions/ProfileRouter/ProfileRouter'
@@ -45,6 +46,9 @@ const ProfileAccounts = ({
   selectPortfolioMutation,
   getTelegramUsername,
 }: IProps) => {
+  const [creatingAdditionalAccount, setCreatingAdditionalAccount] = useState(
+    false
+  )
   const currentPortfolioIndex = allPortfoliosData.findIndex(
     (portfolio: PortfolioData) => portfolio._id === currentPortfolioData._id
   )
@@ -135,6 +139,7 @@ const ProfileAccounts = ({
         {/* account table */}
         <GridBlock height={'86%'}>
           <ProfileAccountsTable
+            setCreatingAdditionalAccount={setCreatingAdditionalAccount}
             telegramUsernameConnected={telegramUsernameConnected}
             accounts={portfolioAccountsData}
           />
@@ -168,6 +173,15 @@ const ProfileAccounts = ({
           <ComingSoonBlock />
         </GridBlock> */}
       </StatisticContainer>
+      {creatingAdditionalAccount && (
+        <PopupStart
+          open={true}
+          creatingAdditionalAccount={true}
+          completeOnboarding={() => {
+            setCreatingAdditionalAccount(false)
+          }}
+        />
+      )}
     </MainContainer>
   )
 }

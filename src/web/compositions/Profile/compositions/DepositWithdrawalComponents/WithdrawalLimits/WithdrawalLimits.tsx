@@ -26,6 +26,7 @@ export interface IProps {
     }
   }
   amountError: boolean
+  showFee: boolean
 }
 
 const WithdrawalLimits = ({
@@ -33,6 +34,7 @@ const WithdrawalLimits = ({
   getAssetDetailQuery,
   coinAmount,
   amountError,
+  showFee,
 }: IProps) => {
   const { getAssetDetail } = getAssetDetailQuery
   const { minWithdrawAmount = 0, withdrawFee = 0 } = getAssetDetail || {
@@ -52,16 +54,18 @@ const WithdrawalLimits = ({
         Minimum Withdrawal: {minimalWithdrawalAmount} {selectedCoin.label}
       </StyledTypographyCaption>
       <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
-        <Grid container>
-          <StyledTypography>Transaction fee:</StyledTypography>
-          <StyledTypography style={{ color: '#16253D', marginLeft: '1rem' }}>
-            {transactionFee}{' '}{selectedCoin.label}
-          </StyledTypography>
-        </Grid>
+        {showFee && (
+          <Grid container>
+            <StyledTypography>Transaction fee:</StyledTypography>
+            <StyledTypography style={{ color: '#16253D', marginLeft: '1rem' }}>
+              {transactionFee} {selectedCoin.label}
+            </StyledTypography>
+          </Grid>
+        )}
         <Grid container>
           <StyledTypography>You will get:</StyledTypography>
           <StyledTypography style={{ color: '#16253D', marginLeft: '1rem' }}>
-            {actualAmountGet.toFixed(8)}{' '}{selectedCoin.label}
+            {actualAmountGet.toFixed(8)} {selectedCoin.label}
           </StyledTypography>
         </Grid>
       </Grid>
@@ -74,6 +78,7 @@ const WithdrawalLimitsDataWrapper = ({
   selectedCoin,
   coinAmount,
   amountError,
+  showFee,
 }: {
   selectedKey: string
   selectedCoin: {
@@ -82,6 +87,7 @@ const WithdrawalLimitsDataWrapper = ({
   }
   coinAmount: string
   amountError: boolean
+  showFee: boolean
 }) => {
   const WrappedComponent = compose(
     queryRendererHoc({
@@ -104,6 +110,7 @@ const WithdrawalLimitsDataWrapper = ({
       selectedCoin={selectedCoin}
       coinAmount={coinAmount}
       amountError={amountError}
+      showFee={showFee}
     />
   )
 }

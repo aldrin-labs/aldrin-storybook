@@ -54,6 +54,42 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     this.unsubscribeFunction = subscribeToMore()
   }
 
+  componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys
+    ) {
+      const {
+        startDate,
+        endDate,
+        marketType,
+        selectedKey,
+        allKeys,
+        currencyPair,
+        specificPair,
+      } = this.props
+
+      this.unsubscribeFunction && this.unsubscribeFunction()
+      this.unsubscribeFunction = this.props.getStrategiesHistoryQuery.subscribeToMore(
+        {
+          document: ACTIVE_STRATEGIES,
+          variables: {
+            orderHistoryInput: {
+              startDate: startDate.valueOf(),
+              endDate: endDate.valueOf(),
+              marketType,
+              activeExchangeKey: selectedKey.keyId,
+              allKeys,
+              ...(!specificPair ? {} : { specificPair: currencyPair }),
+            },
+          },
+          updateQuery: updateStrategiesHistoryQuerryFunction,
+        }
+      )
+    }
+  }
+
   componentWillUnmount = () => {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {

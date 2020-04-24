@@ -12,11 +12,17 @@ import { AccountData } from '@core/containers/Profile/ProfileAccounts/ProfileAcc
 const ProfileAccountsTable = ({
   accounts,
   telegramUsernameConnected,
+  setCreatingAdditionalAccount,
 }: {
   accounts: AccountData[]
   telegramUsernameConnected: boolean
+  setCreatingAdditionalAccount: () => void
 }) => {
-  const { body, head } = putDataInTable(accounts, telegramUsernameConnected)
+  const { body, head } = putDataInTable(
+    accounts,
+    telegramUsernameConnected,
+    setCreatingAdditionalAccount
+  )
 
   return (
     <TableWithSort

@@ -25,6 +25,7 @@ export type TObj = {
   // if you wrap you render with JSX but still want to use
   //  out-of-the-box sort put value to sort into content
   contentToSort?: string | number
+  onClick?: () => any
 }
 
 export type Cell = T | TObj
@@ -80,7 +81,7 @@ export type Head = {
   label: string
   style?: object
   sortBy?: 'default' | (() => number)
-  isSortable: boolean
+  isSortable?: boolean
 }
 
 export type action = {

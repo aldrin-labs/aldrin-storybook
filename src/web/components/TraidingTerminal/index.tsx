@@ -32,6 +32,7 @@ import {
 import { SendButton } from '../TraidingTerminal/styles'
 import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -40,6 +41,9 @@ export const TradeInputHeader = ({
   lineMargin,
   needRightValue = false,
   rightValue = 'Value',
+  haveTooltip = false,
+  tooltipText = '',
+  tooltipStyles = {},
   onValueClick = () => {},
 }) => {
   return (
@@ -47,7 +51,34 @@ export const TradeInputHeader = ({
       justify={needRightValue ? 'space-between' : 'flex-start'}
       padding={padding}
     >
-      <SeparateInputTitle>{title}</SeparateInputTitle>
+      {haveTooltip ? (
+        <>
+          {/* <TooltipContainer style={{ display: 'flex', cursor: 'pointer' }}> */}
+          <DarkTooltip title={tooltipText} maxWidth={'30rem'} placement="top">
+            <SeparateInputTitle
+              style={{
+                borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+              }}
+            >
+              {title}
+            </SeparateInputTitle>
+          </DarkTooltip>
+          {/* </TooltipContainer> */}
+        </>
+      ) : (
+        <SeparateInputTitle
+          style={{
+            borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+          }}
+        >
+          {title}
+        </SeparateInputTitle>
+      )}
+      {/* <SeparateInputTitle
+        style={{ borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none' }}
+      >
+        {title}
+      </SeparateInputTitle> */}
       {needLine && <Line lineMargin={lineMargin} />}
       {needRightValue && (
         <BlueInputTitle onClick={() => onValueClick()}>
@@ -65,6 +96,7 @@ export const TradeInputContent = ({
   haveSelector = false,
   needTitle = false,
   needPreSymbol = false,
+  symbolRightIndent = null,
   preSymbol = '',
   title = '',
   symbol = '',
@@ -74,6 +106,7 @@ export const TradeInputContent = ({
   type = 'number',
   padding = '0',
   width = '100%',
+  fontSize = '',
   textAlign = 'right',
   onChange = () => {},
   inputStyles,
@@ -93,6 +126,7 @@ export const TradeInputContent = ({
   type?: string
   padding?: string | number
   width?: string | number
+  fontSize?: string
   textAlign?: string
   onChange: any
   inputStyles?: CSSProperties
@@ -103,7 +137,13 @@ export const TradeInputContent = ({
       width={width}
       style={{ position: 'relative' }}
     >
-      {needTitle && <AbsoluteInputTitle>{title}</AbsoluteInputTitle>}
+      {needTitle && (
+        <AbsoluteInputTitle
+          style={{ ...(fontSize ? { fontSize: fontSize } : {}) }}
+        >
+          {title}
+        </AbsoluteInputTitle>
+      )}
       {needPreSymbol ? (
         <UpdatedCoin style={{ width: 0 }} left={'2rem'}>
           {preSymbol}
@@ -120,9 +160,17 @@ export const TradeInputContent = ({
         onChange={onChange}
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
-        style={{ ...inputStyles }}
+        style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
       />
-      <UpdatedCoin right={symbol.length <= 2 ? '2.5rem' : '1rem'}>
+      <UpdatedCoin
+        right={
+          !!symbolRightIndent
+            ? symbolRightIndent
+            : symbol.length <= 2
+            ? '2.5rem'
+            : '1rem'
+        }
+      >
         {symbol}
       </UpdatedCoin>
     </InputRowContainer>
@@ -790,7 +838,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
       leverage,
-      hedgeMode
+      hedgeMode,
     } = props
 
     if (priceType || byType) {
@@ -832,9 +880,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
                     : 'take-profit-limit',
               }
             : {}),
-          ...(priceType !== 'stop-limit' && priceType !== 'take-profit' && !hedgeMode
-            ? { reduceOnly }
-            : {}),
+          ...{ reduceOnly },
         }
       )
 

@@ -61,4 +61,5 @@ export interface IState {
   positionsData: any[]
   prices: { pair: string; price: number }[]
   positionsRefetchInProcess: boolean
+  editMarginPopup: boolean
 }

@@ -119,16 +119,30 @@ class SimpleTabs extends React.Component {
       marketType,
       hedgeMode,
       leverage: startLeverage,
+      componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
       marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
       changePositionModeWithStatus,
+      changeMarginTypeWithStatus,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
+
+    const lockedPositionBothAmount = (funds[2].find(
+      (position) => position.positionSide === 'BOTH'
+    ) || { positionAmt: 0 }).positionAmt
+
+    const lockedPositionShortAmount = (funds[2].find(
+      (position) => position.positionSide === 'SHORT'
+    ) || { positionAmt: 0 }).positionAmt
+    
+    const lockedPositionLongAmount = (funds[2].find(
+      (position) => position.positionSide === 'LONG'
+    ) || { positionAmt: 0 }).positionAmt
 
     return (
       <Grid
@@ -329,9 +343,15 @@ class SimpleTabs extends React.Component {
               </SettingsContainer>
               <LeverageContainer>
                 <LeverageTitle>
-                  <StyledSelect value="Cross" style={{ color: '#16253D' }}>
-                    <StyledOption>Cross</StyledOption>
-                    <StyledOption>Isolated</StyledOption>
+                  <StyledSelect
+                    onChange={(e) =>
+                      changeMarginTypeWithStatus(e.target.value.toLowerCase())
+                    }
+                    value={componentMarginType}
+                    style={{ color: '#16253D' }}
+                  >
+                    <StyledOption>crossed</StyledOption>
+                    <StyledOption>isolated</StyledOption>
                   </StyledSelect>
                 </LeverageTitle>
                 <SmallSlider
@@ -478,7 +498,13 @@ class SimpleTabs extends React.Component {
                       }
                       pair={pair}
                       funds={funds}
-                      lockedAmount={funds[2] >= 0 ? 0 : -funds[2]}
+                      lockedAmount={
+                        hedgeMode
+                          ? -lockedPositionShortAmount
+                          : lockedPositionBothAmount >= 0
+                          ? 0
+                          : -lockedPositionBothAmount
+                      }
                       key={[pair, funds]}
                       walletValue={funds && funds[1]}
                       marketPrice={price}
@@ -513,7 +539,13 @@ class SimpleTabs extends React.Component {
                       }
                       pair={pair}
                       funds={funds}
-                      lockedAmount={funds[2] <= 0 ? 0 : funds[2]}
+                      lockedAmount={
+                        hedgeMode
+                          ? lockedPositionLongAmount
+                          : lockedPositionBothAmount <= 0
+                          ? 0
+                          : lockedPositionBothAmount
+                      }
                       key={[pair, funds]}
                       walletValue={funds && funds[1]}
                       marketPrice={price}

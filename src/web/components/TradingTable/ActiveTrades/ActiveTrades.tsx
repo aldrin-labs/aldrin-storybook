@@ -47,6 +47,7 @@ import { updateStopLossStrategy } from '@core/graphql/mutations/chart/updateStop
 import { updateTakeProfitStrategy } from '@core/graphql/mutations/chart/updateTakeProfitStrategy'
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
 import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
+import { changeTemplateStatus } from '@core/graphql/mutations/chart/changeTemplateStatus'
 
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 
@@ -98,6 +99,37 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     }
   }
 
+  onChangeStatus = async (
+    keyId: string,
+    strategyId: string,
+    status: string
+  ): Promise<
+    | {
+        data: {
+          changeTemplateStatus: { conditions: { templateStatus: string } }
+        }
+      }
+    | { errors: string; data: null }
+  > => {
+    const { changeTemplateStatusMutation } = this.props
+
+    try {
+      const responseResult = await changeTemplateStatusMutation({
+        variables: {
+          input: {
+            keyId,
+            strategyId,
+            status,
+          },
+        },
+      })
+
+      return responseResult
+    } catch (err) {
+      return { errors: err, data: null }
+    }
+  }
+
   editTrade = (block: string, selectedTrade: any) => {
     this.setState({ editTrade: block, selectedTrade })
   }
@@ -120,6 +152,33 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         : {
             status: 'error',
             message: 'Smart order disabling failed',
+          }
+
+    showCancelResult(statusResult)
+  }
+
+  changeStatusWithStatus = async (
+    strategyId: string,
+    keyId: string,
+    status: string
+  ) => {
+    const { showCancelResult } = this.props
+
+    const result = await this.onChangeStatus(keyId, strategyId, status)
+
+    // TODO: move to utils
+    const statusResult =
+      result &&
+      result.data &&
+      result.data.changeTemplateStatus &&
+      result.data.changeTemplateStatus.conditions.templateStatus
+        ? {
+            status: 'success',
+            message: 'Smart order template status changed',
+          }
+        : {
+            status: 'error',
+            message: 'Smart order template status change failed',
           }
 
     showCancelResult(statusResult)
@@ -156,7 +215,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           const orders = that.props.getActiveStrategiesQuery.getActiveStrategies
             .filter(
               (strategy: SmartOrder) =>
-                strategy.enabled && strategy._id !== '-1'
+                (strategy.enabled ||
+                  (strategy.conditions.isTemplate &&
+                    strategy.conditions.templateStatus !== 'disabled')) &&
+                strategy._id !== '-1'
             )
             .concat(that.state.cachedOrder)
 
@@ -182,6 +244,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           const activeStrategiesProcessedData = combineActiveTradesTable({
             data: orders,
             cancelOrderFunc: this.cancelOrderWithStatus,
+            changeStatusWithStatus: this.changeStatusWithStatus,
             editTrade: this.editTrade,
             theme,
             keys,
@@ -263,6 +326,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     const activeStrategiesProcessedData = combineActiveTradesTable({
       data: getActiveStrategiesQuery.getActiveStrategies,
       cancelOrderFunc: this.cancelOrderWithStatus,
+      changeStatusWithStatus: this.changeStatusWithStatus,
       editTrade: this.editTrade,
       theme,
       keys,
@@ -297,6 +361,36 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     ) {
       this.subscription && this.subscription.unsubscribe()
       this.subscribe()
+    }
+
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys
+    ) {
+      const {
+        marketType,
+        selectedKey,
+        allKeys,
+        currencyPair,
+        specificPair,
+      } = this.props
+
+      this.unsubscribeFunction && this.unsubscribeFunction()
+      this.unsubscribeFunction = this.props.getActiveStrategiesQuery.subscribeToMore(
+        {
+          document: ACTIVE_STRATEGIES,
+          variables: {
+            activeStrategiesInput: {
+              marketType,
+              activeExchangeKey: selectedKey.keyId,
+              allKeys,
+              ...(!specificPair ? {} : { specificPair: currencyPair }),
+            },
+          },
+          updateQuery: updateActiveStrategiesQuerryFunction,
+        }
+      )
     }
   }
 
@@ -413,6 +507,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     const activeStrategiesProcessedData = combineActiveTradesTable({
       data: ordersToDisplay,
       cancelOrderFunc: this.cancelOrderWithStatus,
+      changeStatusWithStatus: this.changeStatusWithStatus,
       editTrade: this.editTrade,
       theme,
       prices,
@@ -907,6 +1002,7 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 
 export default compose(
   graphql(disableStrategy, { name: 'disableStrategyMutation' }),
+  graphql(changeTemplateStatus, { name: 'changeTemplateStatusMutation' }),
   graphql(updateStopLossStrategy, { name: 'updateStopLossStrategyMutation' }),
   graphql(updateEntryPointStrategy, {
     name: 'updateEntryPointStrategyMutation',

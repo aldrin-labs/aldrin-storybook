@@ -496,6 +496,7 @@ class PortfolioSelector extends React.Component<IProps> {
                 portfolioAssetsData,
                 portfolioAssetsMap,
                 addAditionalAccount,
+                activeKeys,
                 onKeyToggle: this.onKeyToggle,
                 onKeySelectOnlyOne: this.onKeySelectOnlyOne,
                 onKeysSelectAll: this.onKeysSelectAll,
