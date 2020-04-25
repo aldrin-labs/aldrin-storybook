@@ -1218,7 +1218,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer justify="flex-start">
                         <DarkTooltip
                           title={
-                            'Your trade will be placed only one time when alert be reached.'
+                            'Trade will be placed once when there is an alert.'
                           }
                           maxWidth={'30rem'}
                         >
@@ -1245,7 +1245,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               }}
                               htmlFor={'once'}
                             >
-                              run once
+                              once
                             </SettingsLabel>
                           </div>
                         </DarkTooltip>
@@ -1254,7 +1254,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer justify={'center'}>
                         <DarkTooltip
                           title={
-                            'Your trade will be placed every time alert be reached but only if no active smart trades exists.'
+                            'Trade will be placed every time when there is an alert but no open position.'
                           }
                           maxWidth={'30rem'}
                         >
@@ -1281,7 +1281,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               }}
                               htmlFor={'ifNoActive'}
                             >
-                              Run if no active now
+                              If no trade exists
                             </SettingsLabel>
                           </div>
                         </DarkTooltip>
@@ -1290,7 +1290,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer justify="flex-end">
                         <DarkTooltip
                           title={
-                            'Your trade will be placed every time alert be reached.'
+                            'Trade will be placed every time there is an alert.'
                           }
                           maxWidth={'30rem'}
                         >
@@ -1317,7 +1317,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               }}
                               htmlFor={'always'}
                             >
-                              run anyway
+                              Every time
                             </SettingsLabel>
                           </div>
                         </DarkTooltip>
