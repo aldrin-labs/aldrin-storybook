@@ -118,10 +118,13 @@ class SimpleTabs extends React.Component {
       cancelOrder,
       marketType,
       hedgeMode,
+      enqueueSnackbar,
       leverage: startLeverage,
       componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
+      minSpotNotional,
+      minFuturesStep,
       marketPriceAfterPairChange,
       updateTerminalViewMode,
       updateLeverage,
@@ -132,17 +135,29 @@ class SimpleTabs extends React.Component {
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
 
-    const lockedPositionBothAmount = isSPOTMarket ? 0 : (funds[2].find(
-      (position) => position.positionSide === 'BOTH'
-    ) || { positionAmt: 0 }).positionAmt
+    const lockedPositionBothAmount = isSPOTMarket
+      ? 0
+      : (
+          funds[2].find((position) => position.positionSide === 'BOTH') || {
+            positionAmt: 0,
+          }
+        ).positionAmt
 
-    const lockedPositionShortAmount = isSPOTMarket ? 0 : (funds[2].find(
-      (position) => position.positionSide === 'SHORT'
-    ) || { positionAmt: 0 }).positionAmt
-    
-    const lockedPositionLongAmount = isSPOTMarket ? 0 : (funds[2].find(
-      (position) => position.positionSide === 'LONG'
-    ) || { positionAmt: 0 }).positionAmt
+    const lockedPositionShortAmount = isSPOTMarket
+      ? 0
+      : (
+          funds[2].find((position) => position.positionSide === 'SHORT') || {
+            positionAmt: 0,
+          }
+        ).positionAmt
+
+    const lockedPositionLongAmount = isSPOTMarket
+      ? 0
+      : (
+          funds[2].find((position) => position.positionSide === 'LONG') || {
+            positionAmt: 0,
+          }
+        ).positionAmt
 
     return (
       <Grid
@@ -249,6 +264,9 @@ class SimpleTabs extends React.Component {
                 <PillowButton
                   firstHalfText={'one-way'}
                   secondHalfText={'hedge'}
+                  secondHalfTooltip={
+                    'You can open the long and short at the same time. Just turn on hedge mode and open opposite positions.'
+                  }
                   activeHalf={hedgeMode ? 'second' : 'first'}
                   buttonAdditionalStyle={{
                     width: '50%',
@@ -490,9 +508,12 @@ class SimpleTabs extends React.Component {
                       priceType={mode}
                       hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
+                      minSpotNotional={minSpotNotional}
+                      minFuturesStep={minFuturesStep}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}
                       isSPOTMarket={isSPOTMarket}
+                      enqueueSnackbar={enqueueSnackbar}
                       changePercentage={(value) =>
                         this.handleChangePercentage(value, 'Buy')
                       }
@@ -531,9 +552,12 @@ class SimpleTabs extends React.Component {
                       priceType={mode}
                       hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
+                      minSpotNotional={minSpotNotional}
+                      minFuturesStep={minFuturesStep}
                       priceFromOrderbook={priceFromOrderbook}
                       marketPriceAfterPairChange={marketPriceAfterPairChange}
                       isSPOTMarket={isSPOTMarket}
+                      enqueueSnackbar={enqueueSnackbar}
                       changePercentage={(value) =>
                         this.handleChangePercentage(value, 'Sell')
                       }

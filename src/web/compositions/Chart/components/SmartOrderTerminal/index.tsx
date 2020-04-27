@@ -746,6 +746,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       updateLeverage,
       quantityPrecision,
       pricePrecision,
+      enqueueSnackbar,
+      minSpotNotional,
+      minFuturesStep,
       leverage: startLeverage,
     } = this.props
 
@@ -758,6 +761,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       editPopup,
     } = this.state
 
+    const isSPOTMarket = marketType === 0
     let maxAmount = 0
     let priceForCalculate =
       entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
@@ -1066,11 +1070,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               />
 
               <div>
-                {marketType === 1 && (
-                  <InputRowContainer
-                    justify="flex-start"
-                    padding={'.6rem 0 1.2rem 0'}
-                  >
+                <InputRowContainer
+                  justify="flex-start"
+                  padding={'.6rem 0 1.2rem 0'}
+                >
+                  {marketType === 1 && (
                     <DarkTooltip
                       maxWidth={'40rem'}
                       title={
@@ -1119,7 +1123,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         Trailing {entryPoint.order.side}
                       </AdditionalSettingsButton>
                     </DarkTooltip>
-
+                  )}
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Your smart order will be placed once when there is an Trading View alert that you connected to smart order.'
+                    }
+                  >
                     <AdditionalSettingsButton
                       isActive={entryPoint.TVAlert.isTVAlertOn}
                       onClick={() => {
@@ -1133,8 +1143,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     >
                       Entry by TV Alert
                     </AdditionalSettingsButton>
-
-                    {/* <SwitcherContainer>
+                  </DarkTooltip>
+                  {/* <SwitcherContainer>
                     <GreenSwitcher
                       id="isHedgeOn"
                       checked={entryPoint.order.isHedgeOn}
@@ -1149,8 +1159,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     />
                     <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
                   </SwitcherContainer> */}
-                  </InputRowContainer>
-                )}
+                </InputRowContainer>
+
                 <FormInputContainer
                   padding={'0 0 1.2rem 0'}
                   haveTooltip={entryPoint.trailing.isTrailingOn}
@@ -2369,8 +2379,54 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {
                     const isValid = validateSmartOrders(this.state)
-
+                    console.log('go here')
                     if (isValid) {
+                      if (
+                        entryPoint.order.total < minSpotNotional &&
+                        isSPOTMarket
+                      ) {
+                        enqueueSnackbar(
+                          `Order total should be at least ${minSpotNotional} ${
+                            pair[1]
+                          }`,
+                          {
+                            variant: 'error',
+                          }
+                        )
+
+                        return
+                      }
+
+                      if (
+                        entryPoint.order.amount < minFuturesStep &&
+                        !isSPOTMarket
+                      ) {
+                        enqueueSnackbar(
+                          `Order amount should be at least ${minFuturesStep} ${
+                            pair[0]
+                          }`,
+                          {
+                            variant: 'error',
+                          }
+                        )
+
+                        return
+                      }
+
+                      if (
+                        entryPoint.order.amount % minFuturesStep !== 0 &&
+                        !isSPOTMarket
+                      ) {
+                        enqueueSnackbar(
+                          `Order amount should divided without remainder on ${minFuturesStep}`,
+                          {
+                            variant: 'error',
+                          }
+                        )
+
+                        return
+                      }
+
                       this.setState({ showConfirmationPopup: true })
                     } else {
                       this.setState({ showErrors: true })
