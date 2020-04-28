@@ -42,7 +42,11 @@ const Telegram = React.lazy(() =>
 )
 
 const InternalTransfer = React.lazy(() =>
-  import(/* webpackPrefetch: true, webpackChunkName: "telegram" */ '@sb/compositions/Profile/compositions/InternalTransfer/InternalTransfer')
+  import(/* webpackPrefetch: true, webpackChunkName: "internalTransfer" */ '@sb/compositions/Profile/compositions/InternalTransfer/InternalTransfer')
+)
+
+const Referral = React.lazy(() =>
+  import(/* webpackPrefetch: true, webpackChunkName: "referral" */ '@sb/compositions/Profile/compositions/Referral/Referral')
 )
 
 const ProfileRouter = () => {
@@ -104,6 +108,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/telegram"
             render={(...rest) => <Telegram />}
+          />
+          <Route
+            exact
+            path="/profile/referral"
+            render={(...rest) => <Referral />}
           />
         </Switch>
       </Suspense>
