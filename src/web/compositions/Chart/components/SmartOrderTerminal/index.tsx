@@ -147,6 +147,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         activatePrice: 0,
         deviationPercentage: 0,
       },
+      editByTVAlert: false,
     },
     stopLoss: {
       isStopLossOn: true,
@@ -167,6 +168,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         pricePercentage: 0,
         forcedStopPrice: 0,
       },
+      editByTVAlert: false,
     },
     temp: {
       initialMargin: 0,
@@ -266,6 +268,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       takeProfit: {
         takeProfitPrice: 0,
         ...result.takeProfit,
+        editByTVAlert: false,
       },
       stopLoss: {
         stopLossPrice: 0,
@@ -275,6 +278,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...result.stopLoss.forcedStop,
           isForcedStopOn: result.stopLoss.timeout.isTimeoutOn,
         },
+        editByTVAlert: false,
       },
     }))
 
@@ -1335,7 +1339,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </InputRowContainer>
 
                     <FormInputContainer
-                      padding={'0 0 1.2rem 0'}
+                      padding={'0 0 .8rem 0'}
                       haveTooltip={true}
                       tooltipText={
                         <img
@@ -1907,7 +1911,25 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       Timeout
                     </AdditionalSettingsButton>
                   </DarkTooltip>
-
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Your smart order will be edited once when there is an Trading View alert with new params that you connected to smart order.'
+                    }
+                  >
+                    <AdditionalSettingsButton
+                      isActive={stopLoss.editByTVAlert}
+                      onClick={() => {
+                        this.updateBlockValue(
+                          'stopLoss',
+                          'editByTVAlert',
+                          !stopLoss.editByTVAlert
+                        )
+                      }}
+                    >
+                      Edit by TV Alert
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
                   {/* <AdditionalSettingsButton
                     isActive={stopLoss.forcedStop.isForcedStopOn}
                     onClick={() =>
@@ -1922,6 +1944,60 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     Forced stop
                   </AdditionalSettingsButton> */}
                 </InputRowContainer>
+
+                {stopLoss.editByTVAlert && (
+                  <FormInputContainer
+                    padding={'0 0 .8rem 0'}
+                    haveTooltip={true}
+                    tooltipText={
+                      <img
+                        style={{ width: '35rem', height: '50rem' }}
+                        src={WebHookImg}
+                      />
+                    }
+                    title={
+                      <span>
+                        paste it into{' '}
+                        <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                        field when creating tv alert
+                      </span>
+                    }
+                  >
+                    <InputRowContainer>
+                      <Input
+                        width={'85%'}
+                        type={'text'}
+                        disabled={true}
+                        textAlign={'left'}
+                        value={`https://${API_URL}/editStopLossByAlert?token=${
+                          entryPoint.TVAlert.templateToken
+                        }`}
+                      />
+                      <BtnCustom
+                        btnWidth="calc(15% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          copy(
+                            `https://${API_URL}/editStopLossByAlert?token=${
+                              entryPoint.TVAlert.templateToken
+                            }`
+                          )
+                        }}
+                      >
+                        copy
+                      </BtnCustom>
+                    </InputRowContainer>
+                  </FormInputContainer>
+                )}
 
                 <FormInputContainer
                   haveTooltip
@@ -2575,6 +2651,25 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       Split targets
                     </AdditionalSettingsButton>
                   </DarkTooltip>
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Your smart order will be edited once when there is an Trading View alert with new params that you connected to smart order.'
+                    }
+                  >
+                    <AdditionalSettingsButton
+                      isActive={takeProfit.editByTVAlert}
+                      onClick={() => {
+                        this.updateBlockValue(
+                          'takeProfit',
+                          'editByTVAlert',
+                          !takeProfit.editByTVAlert
+                        )
+                      }}
+                    >
+                      Edit by TV Alert
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
                   {/* <AdditionalSettingsButton
                     isActive={takeProfit.timeout.isTimeoutOn}
                     onClick={() => {
@@ -2603,6 +2698,60 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     Timeout
                   </AdditionalSettingsButton> */}
                 </InputRowContainer>
+
+                {takeProfit.editByTVAlert && (
+                  <FormInputContainer
+                    padding={'0 0 .8rem 0'}
+                    haveTooltip={true}
+                    tooltipText={
+                      <img
+                        style={{ width: '35rem', height: '50rem' }}
+                        src={WebHookImg}
+                      />
+                    }
+                    title={
+                      <span>
+                        paste it into{' '}
+                        <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                        field when creating tv alert
+                      </span>
+                    }
+                  >
+                    <InputRowContainer>
+                      <Input
+                        width={'85%'}
+                        type={'text'}
+                        disabled={true}
+                        textAlign={'left'}
+                        value={`https://${API_URL}/editTakeProfitByAlert?token=${
+                          entryPoint.TVAlert.templateToken
+                        }`}
+                      />
+                      <BtnCustom
+                        btnWidth="calc(15% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          copy(
+                            `https://${API_URL}/editTakeProfitByAlert?token=${
+                              entryPoint.TVAlert.templateToken
+                            }`
+                          )
+                        }}
+                      >
+                        copy
+                      </BtnCustom>
+                    </InputRowContainer>
+                  </FormInputContainer>
+                )}
 
                 {!takeProfit.trailingTAP.isTrailingOn && (
                   <FormInputContainer
