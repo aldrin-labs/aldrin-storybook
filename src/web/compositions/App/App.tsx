@@ -30,8 +30,11 @@ import { GlobalStyle } from '@sb/styles/global.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { syncStorage } from '@storage'
+import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 
-const version = `10.5.17`
+
+const version = `10.5.18`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -42,7 +45,7 @@ const AppRaw = ({
   children,
   getViewModeQuery,
   getThemeModeQuery,
-  location: { pathname: currentPage },
+  location: { pathname: currentPage, search },
 }: any) => {
   const themeMode =
     getThemeModeQuery &&
@@ -58,6 +61,13 @@ const AppRaw = ({
   const isPNL = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
+
+  const searchParamsObject = getSearchParamsObject({ search })
+  const isRefInUrlParamExist = !!searchParamsObject['ref']
+  if (isRefInUrlParamExist) {
+    const ref = searchParamsObject['ref']
+    syncStorage.setItem('ref', ref)
+  }
 
   return (
     <ApolloPersistWrapper>
