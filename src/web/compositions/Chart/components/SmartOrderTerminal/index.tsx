@@ -146,6 +146,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         isTrailingOn: false,
         activatePrice: 0,
         deviationPercentage: 0,
+        external: false,
       },
       editByTVAlert: false,
     },
@@ -268,6 +269,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       takeProfit: {
         takeProfitPrice: 0,
         ...result.takeProfit,
+        trailingTAP: {
+          ...result.takeProfit.trailingTAP,
+          external: false,
+        },
         editByTVAlert: false,
       },
       stopLoss: {
@@ -2698,6 +2703,37 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     Timeout
                   </AdditionalSettingsButton> */}
                 </InputRowContainer>
+
+                {takeProfit.trailingTAP.isTrailingOn && (
+                  <InputRowContainer padding={'0rem 0 1.2rem 0'}>
+                    <DarkTooltip
+                      maxWidth={'30rem'}
+                      title={
+                        'We will place new trailing orders and cancel old when there is an Trading View alert'
+                      }
+                    >
+                      <AdditionalSettingsButton
+                        isActive={takeProfit.trailingTAP.external}
+                        onClick={() => {
+                          this.updateBlockValue(
+                            'takeProfit',
+                            'editByTVAlert',
+                            true
+                          )
+
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'external',
+                            !takeProfit.trailingTAP.external
+                          )
+                        }}
+                      >
+                        Trailing by TV Alert
+                      </AdditionalSettingsButton>
+                    </DarkTooltip>
+                  </InputRowContainer>
+                )}
 
                 {takeProfit.editByTVAlert && (
                   <FormInputContainer

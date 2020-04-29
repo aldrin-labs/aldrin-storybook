@@ -566,7 +566,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 selectedTrade.conditions.leverage)
     }
 
-    if (!!selectedTrade.state.entryPrice) {
+    if (selectedTrade.state && !!selectedTrade.state.entryPrice) {
       price = selectedTrade.state.entryPrice
     }
 
