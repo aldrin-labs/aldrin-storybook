@@ -5,6 +5,7 @@ import { SvgIcon } from '@sb/components'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
+  reverseFor,
 } from '@core/utils/PortfolioTableUtils'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
@@ -99,6 +100,7 @@ export const combineSelectWrapperData = ({
   btcCoinsPairsMap,
   altCoinsPairsMap,
   favoritePairsMap,
+  marketType,
 }: {
   data: ISelectData
   updateFavoritePairsMutation: (variableObj: {
@@ -118,6 +120,7 @@ export const combineSelectWrapperData = ({
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
   altCoinsPairsMap: Map<string, string>
+  marketType: number
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -125,24 +128,22 @@ export const combineSelectWrapperData = ({
 
   let processedData = data
 
-  console.log('combineSelectWrapperData searchValue', searchValue)
   if (searchValue) {
-    console.log('combineSelectWrapperData if')
+    processedData = processedData.filter((el) => {
+      const withReplacedWhitespace = searchValue.replace(/\s/g, '_')
+      const withRevertedWord = reverseFor(withReplacedWhitespace)
 
-    processedData = processedData.filter((el) =>
-      new RegExp(`${searchValue}`, 'gi').test(el.symbol)
-    )
-
-    console.log('processedData searchValue', processedData)
+      return new RegExp(
+        `${searchValue}|${withReplacedWhitespace}|${withRevertedWord}`,
+        'gi'
+      ).test(el.symbol)
+    })
   }
-
-  console.log('tabSpecificCoin', tabSpecificCoin)
 
   if (
     searchValue === '' &&
     (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL')
   ) {
-    console.log('inside if')
     processedData = processedData.filter((el) =>
       new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
     )
@@ -254,8 +255,8 @@ export const combineSelectWrapperData = ({
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>
             {`${formatNumberToUSFormat(
-              stripDigitPlaces(volume24hChange)
-            )} ${quote}`}
+              stripDigitPlaces(volume24hChange, marketType === 0 ? 2 : 3)
+            )} ${marketType === 0 ? quote : base}`}
           </span>
         ),
         // onClick: () => onSelectPair({ value: symbol }),
