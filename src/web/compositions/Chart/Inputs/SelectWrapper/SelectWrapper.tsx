@@ -330,7 +330,7 @@ class SelectPairListComponent extends React.PureComponent<
                 }}
                 onClick={() => onTabChange('fiat')}
               >
-                <Grid style={{ paddingRight: '1rem' }}>FIAT</Grid>
+                <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
                 <Grid style={{ width: '60px' }}>
                   <ReactSelectComponent
                     isSearchable={false}
