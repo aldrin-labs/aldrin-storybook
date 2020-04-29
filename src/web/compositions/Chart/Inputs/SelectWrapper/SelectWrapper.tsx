@@ -1,16 +1,23 @@
 import React from 'react'
+import { compose } from 'recompose'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
+import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
+import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import stableCoins from '@core/config/stableCoins'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
 
-import { TableWithSort, SvgIcon } from '@sb/components'
+import {
+  // TableWithSort,
+  SvgIcon,
+} from '@sb/components'
 
 import {
   IProps,
@@ -21,11 +28,10 @@ import {
 } from './SelectWrapper.types'
 
 import {
-  selectWrapperColumnNames,
+  // selectWrapperColumnNames,
   combineSelectWrapperData,
 } from './SelectWrapper.utils'
 
-@withTheme()
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
     searchValue: '',
@@ -50,9 +56,60 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
   render() {
     const { searchValue, tab, tabSpecificCoin } = this.state
+    const { marketsByExchangeQuery, getSelectorSettingsQuery } = this.props
+
+    const {
+      getAccountSettings: {
+        selectorSettings: { favoritePairs },
+      },
+    } = getSelectorSettingsQuery
+
+    const { getMarketsByExchange = [] } = marketsByExchangeQuery || {
+      getMarketsByExchange: [],
+    }
+    const filtredMarketsByExchange = getMarketsByExchange.filter(
+      (el) => +el.volume24hChange && +el.price
+    )
+
+    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+
+    let stableCoinsPairsMap = new Map()
+    let btcCoinsPairsMap = new Map()
+    let altCoinsPairsMap = new Map()
+    const favoritePairsMap = favoritePairs.reduce(
+      (acc: Map<string, string>, el: string) => {
+        acc.set(el, el)
+
+        return acc
+      },
+      new Map()
+    )
+
+    filtredMarketsByExchange.forEach((el) => {
+      if (stableCoinsRegexp.test(el.symbol)) {
+        stableCoinsPairsMap.set(el.symbol, el.price)
+      }
+
+      if (/BTC/g.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)) {
+        btcCoinsPairsMap.set(el.symbol, el.price)
+      }
+
+      if (
+        !altCoinsRegexp.test(el.symbol) &&
+        !stableCoinsRegexp.test(el.symbol)
+      ) {
+        altCoinsPairsMap.set(el.symbol, el.price)
+      }
+    })
 
     return (
       <SelectPairListComponent
+        data={filtredMarketsByExchange}
+        favoritePairsMap={favoritePairsMap}
+        stableCoinsPairsMap={stableCoinsPairsMap}
+        btcCoinsPairsMap={btcCoinsPairsMap}
+        altCoinsPairsMap={altCoinsPairsMap}
         searchValue={searchValue}
         tab={tab}
         tabSpecificCoin={tabSpecificCoin}
@@ -86,9 +143,8 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      marketType,
     } = this.props
-
-    console.log('componentDidMount searchValue', searchValue)
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -102,6 +158,7 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      marketType,
     })
 
     this.setState({
@@ -122,10 +179,9 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      marketType,
     } = nextProps
     const { data: prevPropsData } = this.props
-
-    console.log('componentWillReceiveProps searchValue', searchValue)
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -140,6 +196,7 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      marketType,
     })
 
     this.setState({
@@ -176,7 +233,7 @@ class SelectPairListComponent extends React.PureComponent<
           boxShadow: '0px 8px 12px rgba(8, 22, 58, 0.3)',
         }}
         // TODO: uncomment this line
-        onMouseLeave={closeMenu}
+        // onMouseLeave={closeMenu}
       >
         <Grid container style={{ padding: '0.5rem' }}>
           <Grid
@@ -273,7 +330,7 @@ class SelectPairListComponent extends React.PureComponent<
                 }}
                 onClick={() => onTabChange('fiat')}
               >
-                <Grid style={{ paddingRight: '1rem' }}>FIAT</Grid>
+                <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
                 <Grid style={{ width: '60px' }}>
                   <ReactSelectComponent
                     isSearchable={false}
@@ -440,40 +497,6 @@ class SelectPairListComponent extends React.PureComponent<
               </Table>
             )}
           </AutoSizer>
-          {/* <TableWithSort
-            rowWithHoverBorderRadius={false}
-            emptyTableText={`No pairs for such criteria`}
-            data={{ body: processedSelectData }}
-            columnNames={selectWrapperColumnNames}
-            withCheckboxes={false}
-            style={{ borderRadius: 0, height: '100%' }}
-            stylesForTable={{ backgroundColor: '#fff' }}
-            tableStyles={{
-              headRow: {
-                borderBottom: '1px solid #e0e5ec',
-                boxShadow: 'none',
-              },
-              heading: {
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                backgroundColor: '#fff',
-                color: '#16253D',
-                boxShadow: 'none',
-              },
-              cell: {
-                color: '#7284A0',
-                fontSize: '1rem', // 1.2 if bold
-                fontWeight: 'bold',
-                letterSpacing: '1px',
-                borderBottom: '1px solid #e0e5ec',
-                boxShadow: 'none',
-              },
-              tab: {
-                padding: 0,
-                boxShadow: 'none',
-              },
-            }}
-          /> */}
         </Grid>
         <Grid
           style={{
@@ -485,7 +508,6 @@ class SelectPairListComponent extends React.PureComponent<
             cursor: 'pointer',
             fontSize: '1.4rem',
             color: '#7284A0',
-            // fontWeight: 'bold',
             height: '3rem',
           }}
           onClick={() => onTabChange('fiat')}
@@ -497,4 +519,25 @@ class SelectPairListComponent extends React.PureComponent<
   }
 }
 
-export default SelectWrapper
+export default compose(
+  withTheme(),
+  queryRendererHoc({
+    query: MARKETS_BY_EXCHANE_QUERY,
+    name: 'marketsByExchangeQuery',
+    variables: (props) => ({
+      splitter: '_',
+      exchange: props.activeExchange.symbol,
+      marketType: props.marketType,
+      includeAdditionalMarketData: true,
+    }),
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: false,
+    withTableLoader: false,
+  }),
+  queryRendererHoc({
+    query: getSelectorSettings,
+    withOutSpinner: false,
+    withTableLoader: false,
+    name: 'getSelectorSettingsQuery',
+  })
+)(SelectWrapper)

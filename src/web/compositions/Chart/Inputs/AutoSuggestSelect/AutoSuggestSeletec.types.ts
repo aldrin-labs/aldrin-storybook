@@ -30,20 +30,13 @@ export interface IProps {
     }
   }) => Promise<void>
   selectStyles: React.CSSProperties
-  updateFavoritePairs: (variableObj: {
+  updateFavoritePairsMutation: (variableObj: {
     variables: {
       input: {
         favoritePairs: string[]
       }
     }
   }) => Promise<any>
-  getSelectorSettingsQuery: {
-    getAccountSettings: {
-      selectorSettings: {
-        favoritePairs: string[]
-      }
-    }
-  }
 }
 
 export interface IState {
