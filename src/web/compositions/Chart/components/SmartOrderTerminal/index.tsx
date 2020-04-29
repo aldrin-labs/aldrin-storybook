@@ -2924,7 +2924,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           showErrors={
                             showErrors &&
                             takeProfit.isTakeProfitOn &&
-                            !takeProfit.splitTargets.isSplitTargetsOn
+                            !takeProfit.splitTargets.isSplitTargetsOn &&
+                            !takeProfit.trailingTAP.external
                           }
                           isValid={this.validateField(
                             true,
@@ -2969,11 +2970,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           textAlign={'left'}
                           needPreSymbol={true}
                           value={takeProfit.trailingTAP.activatePrice}
-                          // showErrors={showErrors && takeProfit.isTakeProfitOn}
-                          // isValid={this.validateField(
-                          //   takeProfit.trailingTAP.isTrailingOn,
-                          //   takeProfit.trailingTAP.activatePrice
-                          // )}
+                          showErrors={showErrors && takeProfit.isTakeProfitOn && !takeProfit.trailingTAP.external}
+                          isValid={this.validateField(
+                            takeProfit.trailingTAP.isTrailingOn,
+                            takeProfit.trailingTAP.activatePrice
+                          )}
                           inputStyles={{
                             paddingRight: '0',
                             paddingLeft: '2rem',
@@ -3025,7 +3026,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           width={'calc(50%)'}
                           symbol={'%'}
                           value={takeProfit.trailingTAP.deviationPercentage}
-                          showErrors={showErrors && takeProfit.isTakeProfitOn}
+                          showErrors={showErrors && takeProfit.isTakeProfitOn && !takeProfit.trailingTAP.external}
                           isValid={this.validateField(
                             takeProfit.trailingTAP.isTrailingOn,
                             takeProfit.trailingTAP.deviationPercentage
