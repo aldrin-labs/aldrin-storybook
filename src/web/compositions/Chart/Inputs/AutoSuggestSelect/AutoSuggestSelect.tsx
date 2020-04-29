@@ -1,16 +1,16 @@
 import React from 'react'
-import { withTheme } from '@material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
-import stableCoins from '@core/config/stableCoins'
+// import stableCoins from '@core/config/stableCoins'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
-import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
-import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
+// import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
+// import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 
-import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
+// import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import { IProps, IState } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
@@ -19,7 +19,6 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { updateFavoritePairs } from '@core/graphql/mutations/chart/updateFavoritePairs'
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 
-@withTheme()
 class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   state = {
     isClosed: true,
@@ -88,129 +87,34 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
   render() {
     const {
-      getViewModeQuery: {
-        chart: { view },
-      },
+      // getViewModeQuery: {
+      //   chart: { view },
+      // },
       value,
-      data,
+      // data,
       theme: {
         palette: { divider },
       },
       theme,
       selectStyles,
-      getSelectorSettingsQuery,
+      // getSelectorSettingsQuery,
       updateFavoritePairsMutation,
       marketType,
+      activeExchange,
     } = this.props
 
     const { isClosed, isMenuOpen } = this.state
-
-    const {
-      getAccountSettings: {
-        selectorSettings: { favoritePairs },
-      },
-    } = getSelectorSettingsQuery
-
-    const { getMarketsByExchange = [] } = data || { getMarketsByExchange: [] }
-
-    // const customFilterOption = (
-    //   option: { value: string; label: string },
-    //   rawInput: string
-    // ) => {
-    //   const words = rawInput.split(' ')
-    //   return words.reduce(
-    //     (acc, cur) =>
-    //       acc && option.label.toLowerCase().includes(cur.toLowerCase()),
-    //     true
-    //   )
-    // }
-
-    console.time('processing')
-    // const suggestions = getMarketsByExchange
-    //   .map((el) => el.symbol)
-    //   .filter(
-    //     (symbol: string, index, origArray) =>
-    //       origArray.indexOf(symbol) === index &&
-    //       (symbol.split('_')[0] !== 'undefined' &&
-    //         symbol.split('_')[1] !== 'undefined')
-    //   )
-    //   .sort((a, b) =>
-    //     /BTC_/.test(a) ? -1 : /BTC_/.test(b) ? 1 : /_BTC/.test(b) ? 0 : -1
-    //   )
-    //   .map((symbol: string) => ({
-    //     value: symbol,
-    //     label: symbol,
-    //   }))
-
-    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
-
-    let stableCoinsPairsMap = new Map()
-    let btcCoinsPairsMap = new Map()
-    let altCoinsPairsMap = new Map()
-    const favoritePairsMap = favoritePairs.reduce(
-      (acc: Map<string, string>, el: string) => {
-        acc.set(el, el)
-
-        return acc
-      },
-      new Map()
-    )
-
-    getMarketsByExchange.forEach((el) => {
-      if (stableCoinsRegexp.test(el.symbol)) {
-        stableCoinsPairsMap.set(el.symbol, el.price)
-      }
-
-      if (/BTC/g.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)) {
-        btcCoinsPairsMap.set(el.symbol, el.price)
-      }
-
-      if (
-        !altCoinsRegexp.test(el.symbol) &&
-        !stableCoinsRegexp.test(el.symbol)
-      ) {
-        altCoinsPairsMap.set(el.symbol, el.price)
-      }
-    })
-
-    // const StableCoinsPairs = getMarketsByExchange.filter((el) =>
-    //   stableCoinsRegexp.test(el.symbol)
-    // )
-    // const BTCCoinsPairs = getMarketsByExchange.filter(
-    //   (el) => /BTC/g.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)
-    // )
-    // const AltCoinsPairs = getMarketsByExchange.filter(
-    //   (el) =>
-    //     !altCoinsRegexp.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)
-    // )
-
-    // const FavoritePairs = getMarketsByExchange.filter((el) =>
-    //   favoritePairsMap.has(el.symbol)
-    // )
-
-    console.timeEnd('processing')
-
-    // console.log('StableCoinsPairs', StableCoinsPairs)
-    // console.log('BTCCoinsPairs', BTCCoinsPairs)
-    // console.log('AltCoinsPairs', AltCoinsPairs)
-    // console.log('FavoritePairs', FavoritePairs)
 
     return (
       <>
         {isMenuOpen && (
           <SelectWrapper
-            data={getMarketsByExchange}
             theme={theme}
-            favoritePairsMap={favoritePairsMap}
             updateFavoritePairsMutation={updateFavoritePairsMutation}
             onSelectPair={this.handleChange}
             closeMenu={this.closeMenu}
-            stableCoinsPairsMap={stableCoinsPairsMap}
-            btcCoinsPairsMap={btcCoinsPairsMap}
-            altCoinsPairsMap={altCoinsPairsMap}
-            favoritePairsMap={favoritePairsMap}
             marketType={marketType}
+            activeExchange={activeExchange}
           />
         )}
         <ExchangePair
@@ -218,21 +122,14 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           border={divider}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
-          onMouseOver={this.openMenu}
+          // onMouseOver={this.openMenu}
         >
           <SelectR
             id={this.props.id}
             style={{ width: '100%' }}
-            // filterOption={customFilterOption}
-            // placeholder="Add chart"
             value={isClosed && value && { value, label: value }}
             fullWidth={true}
             isDisabled={true}
-            // options={suggestions || []}
-            // onChange={this.handleChange}
-            // onMenuOpen={this.onMenuOpen}
-            // onMenuClose={this.onMenuClose}
-            // closeMenuOnSelect={view === 'default'}
           />
         </ExchangePair>
       </>
@@ -241,24 +138,25 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 }
 
 export default compose(
-  queryRendererHoc({
-    query: MARKETS_BY_EXCHANE_QUERY,
-    variables: (props) => ({
-      splitter: '_',
-      exchange: props.activeExchange.symbol,
-      marketType: props.marketType,
-      includeAdditionalMarketData: true,
-    }),
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: false,
-  }),
-  queryRendererHoc({
-    query: getSelectorSettings,
-    withOutSpinner: true,
-    withTableLoader: false,
-    name: 'getSelectorSettingsQuery',
-  }),
+  withTheme(),
+  // queryRendererHoc({
+  //   query: MARKETS_BY_EXCHANE_QUERY,
+  //   variables: (props) => ({
+  //     splitter: '_',
+  //     exchange: props.activeExchange.symbol,
+  //     marketType: props.marketType,
+  //     includeAdditionalMarketData: true,
+  //   }),
+  //   fetchPolicy: 'cache-and-network',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // }),
+  // queryRendererHoc({
+  //   query: getSelectorSettings,
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  //   name: 'getSelectorSettingsQuery',
+  // }),
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',

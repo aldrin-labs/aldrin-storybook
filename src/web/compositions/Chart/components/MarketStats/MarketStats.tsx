@@ -6,12 +6,14 @@ import { Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { TooltipCustom } from '@sb/components/index'
 
+import stableCoins from '@core/config/stableCoins'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair'
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
+  stripTrailingZeros,
 } from '@core/utils/PortfolioTableUtils'
 
 import {
@@ -45,6 +47,7 @@ export interface IProps {
       fundingRate: string
     }
   }
+  getFundingRateQueryRefetch: () => void
 }
 
 class MarketStats extends React.PureComponent<IProps> {
@@ -55,6 +58,7 @@ class MarketStats extends React.PureComponent<IProps> {
       symbol = ' _ ',
       theme,
       marketType,
+      getFundingRateQueryRefetch,
     } = this.props
 
     const {
@@ -77,6 +81,10 @@ class MarketStats extends React.PureComponent<IProps> {
       },
     }
 
+    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+    const isStableCoinInPair = stableCoinsRegexp.test(symbol)
+    const roundingPrecision = isStableCoinInPair ? 2 : 8
+
     const [base, quote] = symbol.split('_')
 
     const {
@@ -86,19 +94,23 @@ class MarketStats extends React.PureComponent<IProps> {
       fundingRate: 0,
     }
 
+    const sign24hChange = +priceChangePercent > 0 ? `+` : ``
+
     return (
       <>
         <PanelCard first>
           <PanelCardTitle>Last price</PanelCardTitle>
           <span>
-            <PanelCardValue>{formatNumberToUSFormat(lastPrice)}</PanelCardValue>
+            <PanelCardValue>
+              {formatNumberToUSFormat(stripDigitPlaces(lastPrice, roundingPrecision))}
+            </PanelCardValue>
             {/* <PanelCardSubValue>$9964.01</PanelCardSubValue> */}
           </span>
         </PanelCard>
 
         <PanelCard>
           <PanelCardTitle>24h change</PanelCardTitle>
-          <span>
+          <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
               color={
                 +priceChange > 0
@@ -106,7 +118,7 @@ class MarketStats extends React.PureComponent<IProps> {
                   : theme.customPalette.red.main
               }
             >
-              {formatNumberToUSFormat(priceChange)}
+              {formatNumberToUSFormat(stripDigitPlaces(priceChange, roundingPrecision))}
             </PanelCardValue>
             <PanelCardSubValue
               color={
@@ -115,7 +127,8 @@ class MarketStats extends React.PureComponent<IProps> {
                   : theme.customPalette.red.main
               }
             >
-              {`${formatNumberToUSFormat(
+              {`${sign24hChange}
+              ${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercent)
               )}%`}
             </PanelCardSubValue>
@@ -124,12 +137,16 @@ class MarketStats extends React.PureComponent<IProps> {
 
         <PanelCard>
           <PanelCardTitle>24h high</PanelCardTitle>
-          <PanelCardValue>{formatNumberToUSFormat(highPrice)}</PanelCardValue>
+          <PanelCardValue>
+            {formatNumberToUSFormat(stripDigitPlaces(highPrice))}
+          </PanelCardValue>
         </PanelCard>
 
         <PanelCard>
           <PanelCardTitle>24h low</PanelCardTitle>
-          <PanelCardValue>{formatNumberToUSFormat(lowPrice)}</PanelCardValue>
+          <PanelCardValue>
+            {formatNumberToUSFormat(stripDigitPlaces(lowPrice))}
+          </PanelCardValue>
         </PanelCard>
 
         <TooltipCustom
@@ -139,17 +156,23 @@ class MarketStats extends React.PureComponent<IProps> {
             <PanelCard>
               <PanelCardTitle>24h volume</PanelCardTitle>
               <PanelCardValue>
-                {formatNumberToUSFormat(volume)}
-                {` ${quote}`}
+                {formatNumberToUSFormat(stripDigitPlaces(volume))}
+                {` ${marketType === 0 ? quote : base}`}
               </PanelCardValue>
             </PanelCard>
           }
         />
 
         {marketType === 1 && (
-          <PanelCard style={{ borderRight: '0' }}>
+          <PanelCard
+            style={{
+              borderRight: '0',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <PanelCardTitle>Funding</PanelCardTitle>
-            <span>
+            <span style={{ display: 'flex', justifyContent: 'space-between' }}>
               <PanelCardValue
                 color={
                   +fundingRate > 0
@@ -157,14 +180,23 @@ class MarketStats extends React.PureComponent<IProps> {
                     : theme.customPalette.red.main
                 }
               >
-                {formatNumberToUSFormat(fundingRate)}
+                {formatNumberToUSFormat(stripTrailingZeros(fundingRate))}
               </PanelCardValue>
-              <PanelCardSubValue style={{ padding: 0 }}>
+              <PanelCardSubValue style={{ padding: '0.1rem 1rem' }}>
                 {' '}
                 <Timer
                   initialTime={+dayjs(fundingTime).add(8, 'hour') - Date.now()}
                   direction="backward"
                   startImmediately={true}
+                  checkpoints={[
+                    {
+                      time: 0,
+                      callback: () => {
+                        console.log('funding rate finished')
+                        getFundingRateQueryRefetch()
+                      },
+                    },
+                  ]}
                 >
                   {() => (
                     <React.Fragment>
@@ -198,7 +230,7 @@ export default compose(
       },
     }),
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
+    pollInterval: 30000,
     withOutSpinner: true,
     withTableLoader: true,
   }),
