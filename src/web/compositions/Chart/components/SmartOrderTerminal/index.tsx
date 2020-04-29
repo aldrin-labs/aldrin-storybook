@@ -2460,7 +2460,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {
                     const isValid = validateSmartOrders(this.state)
-                    console.log('go here')
                     if (isValid) {
                       if (
                         entryPoint.order.total < minSpotNotional &&
@@ -2593,6 +2592,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           false
                         )
 
+                        if (takeProfit.trailingTAP.isTrailingOn) {                          
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'external',
+                            false
+                          )
+                        }
+
                         this.updateStopLossAndTakeProfitPrices({
                           takeProfitPercentage: !takeProfit.trailingTAP
                             .isTrailingOn
@@ -2651,6 +2659,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           'isTimeoutOn',
                           false
                         )
+
+                        this.updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'external',
+                          false
+                        )
                       }}
                     >
                       Split targets
@@ -2704,7 +2719,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </AdditionalSettingsButton> */}
                 </InputRowContainer>
 
-                {takeProfit.trailingTAP.isTrailingOn && (
+                {takeProfit.trailingTAP.isTrailingOn  && (
                   <InputRowContainer padding={'0rem 0 1.2rem 0'}>
                     <DarkTooltip
                       maxWidth={'30rem'}
@@ -2905,7 +2920,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </FormInputContainer>
                 )}
 
-                {takeProfit.trailingTAP.isTrailingOn && (
+                {takeProfit.trailingTAP.isTrailingOn && !takeProfit.trailingTAP.external && (
                   <>
                     <FormInputContainer
                       haveTooltip
