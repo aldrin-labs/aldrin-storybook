@@ -393,6 +393,10 @@ const NavBarRaw: SFC<Props> = ({
                     to: '/profile/telegram',
                   },
                   {
+                    text: 'Referral',
+                    to: '/profile/referral',
+                  },
+                  {
                     text: 'Log out',
                     to: '/login',
                     onClick: logout,
