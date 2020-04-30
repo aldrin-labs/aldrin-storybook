@@ -1136,7 +1136,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your smart order will be placed once when there is an Trading View alert that you connected to smart order.'
+                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
                     }
                   >
                     <AdditionalSettingsButton
@@ -1919,7 +1919,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your smart order will be edited once when there is an Trading View alert with new params that you connected to smart order.'
+                      'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
                     }
                   >
                     <AdditionalSettingsButton
@@ -2592,7 +2592,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           false
                         )
 
-                        if (takeProfit.trailingTAP.isTrailingOn) {                          
+                        if (takeProfit.trailingTAP.isTrailingOn) {
                           this.updateSubBlockValue(
                             'takeProfit',
                             'trailingTAP',
@@ -2674,7 +2674,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your smart order will be edited once when there is an Trading View alert with new params that you connected to smart order.'
+                      'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
                     }
                   >
                     <AdditionalSettingsButton
@@ -2719,12 +2719,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </AdditionalSettingsButton> */}
                 </InputRowContainer>
 
-                {takeProfit.trailingTAP.isTrailingOn  && (
+                {takeProfit.trailingTAP.isTrailingOn && (
                   <InputRowContainer padding={'0rem 0 1.2rem 0'}>
                     <DarkTooltip
                       maxWidth={'30rem'}
                       title={
-                        'We will place new trailing orders and cancel old when there is an Trading View alert'
+                        'We will place new trailing orders and cancel old when there is a Trading View alert'
                       }
                     >
                       <AdditionalSettingsButton
@@ -2920,161 +2920,170 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </FormInputContainer>
                 )}
 
-                {takeProfit.trailingTAP.isTrailingOn && !takeProfit.trailingTAP.external && (
-                  <>
-                    <FormInputContainer
-                      haveTooltip
-                      tooltipText={
-                        'The price at which the trailing algorithm is enabled.'
-                      }
-                      title={'activation price'}
-                    >
-                      <InputRowContainer>
-                        <Input
-                          textAlign={'left'}
-                          padding={'0'}
-                          width={'calc(32.5%)'}
-                          symbol={pair[1]}
-                          value={takeProfit.takeProfitPrice}
-                          showErrors={
-                            showErrors &&
-                            takeProfit.isTakeProfitOn &&
-                            !takeProfit.splitTargets.isSplitTargetsOn &&
-                            !takeProfit.trailingTAP.external
-                          }
-                          isValid={this.validateField(
-                            true,
-                            takeProfit.takeProfitPrice
-                          )}
-                          inputStyles={{
-                            paddingRight: '0',
-                            paddingLeft: '1rem',
-                          }}
-                          onChange={(e) => {
-                            const percentage =
-                              entryPoint.order.side === 'sell'
-                                ? (1 - e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-                                : -(1 - e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
+                {takeProfit.trailingTAP.isTrailingOn &&
+                  !takeProfit.trailingTAP.external && (
+                    <>
+                      <FormInputContainer
+                        haveTooltip
+                        tooltipText={
+                          'The price at which the trailing algorithm is enabled.'
+                        }
+                        title={'activation price'}
+                      >
+                        <InputRowContainer>
+                          <Input
+                            textAlign={'left'}
+                            padding={'0'}
+                            width={'calc(32.5%)'}
+                            symbol={pair[1]}
+                            value={takeProfit.takeProfitPrice}
+                            showErrors={
+                              showErrors &&
+                              takeProfit.isTakeProfitOn &&
+                              !takeProfit.splitTargets.isSplitTargetsOn &&
+                              !takeProfit.trailingTAP.external
+                            }
+                            isValid={this.validateField(
+                              true,
+                              takeProfit.takeProfitPrice
+                            )}
+                            inputStyles={{
+                              paddingRight: '0',
+                              paddingLeft: '1rem',
+                            }}
+                            onChange={(e) => {
+                              const percentage =
+                                entryPoint.order.side === 'sell'
+                                  ? (1 - e.target.value / priceForCalculate) *
+                                    100 *
+                                    entryPoint.order.leverage
+                                  : -(1 - e.target.value / priceForCalculate) *
+                                    100 *
+                                    entryPoint.order.leverage
 
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'activatePrice',
-                              stripDigitPlaces(
-                                percentage < 0 ? 0 : percentage,
-                                2
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'trailingTAP',
+                                'activatePrice',
+                                stripDigitPlaces(
+                                  percentage < 0 ? 0 : percentage,
+                                  2
+                                )
                               )
-                            )
 
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'takeProfitPrice',
-                              e.target.value
-                            )
-                          }}
-                        />
-                        <Input
-                          symbol={'%'}
-                          padding={'0 .8rem 0 .8rem'}
-                          width={'calc(17.5%)'}
-                          preSymbol={'+'}
-                          textAlign={'left'}
-                          needPreSymbol={true}
-                          value={takeProfit.trailingTAP.activatePrice}
-                          showErrors={showErrors && takeProfit.isTakeProfitOn && !takeProfit.trailingTAP.external}
-                          isValid={this.validateField(
-                            takeProfit.trailingTAP.isTrailingOn,
-                            takeProfit.trailingTAP.activatePrice
-                          )}
-                          inputStyles={{
-                            paddingRight: '0',
-                            paddingLeft: '2rem',
-                          }}
-                          onChange={(e) => {
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'activatePrice',
-                              e.target.value
-                            )
+                              this.updateBlockValue(
+                                'takeProfit',
+                                'takeProfitPrice',
+                                e.target.value
+                              )
+                            }}
+                          />
+                          <Input
+                            symbol={'%'}
+                            padding={'0 .8rem 0 .8rem'}
+                            width={'calc(17.5%)'}
+                            preSymbol={'+'}
+                            textAlign={'left'}
+                            needPreSymbol={true}
+                            value={takeProfit.trailingTAP.activatePrice}
+                            showErrors={
+                              showErrors &&
+                              takeProfit.isTakeProfitOn &&
+                              !takeProfit.trailingTAP.external
+                            }
+                            isValid={this.validateField(
+                              takeProfit.trailingTAP.isTrailingOn,
+                              takeProfit.trailingTAP.activatePrice
+                            )}
+                            inputStyles={{
+                              paddingRight: '0',
+                              paddingLeft: '2rem',
+                            }}
+                            onChange={(e) => {
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'trailingTAP',
+                                'activatePrice',
+                                e.target.value
+                              )
 
-                            this.updateStopLossAndTakeProfitPrices({
-                              takeProfitPercentage: e.target.value,
-                            })
-                          }}
-                        />
-                        <BlueSlider
-                          value={takeProfit.trailingTAP.activatePrice}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'activatePrice',
-                              value
-                            )
+                              this.updateStopLossAndTakeProfitPrices({
+                                takeProfitPercentage: e.target.value,
+                              })
+                            }}
+                          />
+                          <BlueSlider
+                            value={takeProfit.trailingTAP.activatePrice}
+                            sliderContainerStyles={{
+                              width: '50%',
+                              margin: '0 .8rem 0 .8rem',
+                            }}
+                            onChange={(value) => {
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'trailingTAP',
+                                'activatePrice',
+                                value
+                              )
 
-                            this.updateStopLossAndTakeProfitPrices({
-                              takeProfitPercentage: value,
-                            })
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                    <FormInputContainer
-                      haveTooltip
-                      tooltipText={
-                        'The level of price change after the trend reversal, at which the order will be executed.'
-                      }
-                      title={'trailing deviation (%)'}
-                    >
-                      <InputRowContainer>
-                        <Input
-                          padding={'0 .8rem 0 0'}
-                          width={'calc(50%)'}
-                          symbol={'%'}
-                          value={takeProfit.trailingTAP.deviationPercentage}
-                          showErrors={showErrors && takeProfit.isTakeProfitOn && !takeProfit.trailingTAP.external}
-                          isValid={this.validateField(
-                            takeProfit.trailingTAP.isTrailingOn,
-                            takeProfit.trailingTAP.deviationPercentage
-                          )}
-                          onChange={(e) => {
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'deviationPercentage',
-                              e.target.value
-                            )
-                          }}
-                        />
+                              this.updateStopLossAndTakeProfitPrices({
+                                takeProfitPercentage: value,
+                              })
+                            }}
+                          />
+                        </InputRowContainer>
+                      </FormInputContainer>
+                      <FormInputContainer
+                        haveTooltip
+                        tooltipText={
+                          'The level of price change after the trend reversal, at which the order will be executed.'
+                        }
+                        title={'trailing deviation (%)'}
+                      >
+                        <InputRowContainer>
+                          <Input
+                            padding={'0 .8rem 0 0'}
+                            width={'calc(50%)'}
+                            symbol={'%'}
+                            value={takeProfit.trailingTAP.deviationPercentage}
+                            showErrors={
+                              showErrors &&
+                              takeProfit.isTakeProfitOn &&
+                              !takeProfit.trailingTAP.external
+                            }
+                            isValid={this.validateField(
+                              takeProfit.trailingTAP.isTrailingOn,
+                              takeProfit.trailingTAP.deviationPercentage
+                            )}
+                            onChange={(e) => {
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'trailingTAP',
+                                'deviationPercentage',
+                                e.target.value
+                              )
+                            }}
+                          />
 
-                        <BlueSlider
-                          value={takeProfit.trailingTAP.deviationPercentage}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'trailingTAP',
-                              'deviationPercentage',
-                              value
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  </>
-                )}
+                          <BlueSlider
+                            value={takeProfit.trailingTAP.deviationPercentage}
+                            sliderContainerStyles={{
+                              width: '50%',
+                              margin: '0 .8rem 0 .8rem',
+                            }}
+                            onChange={(value) => {
+                              this.updateSubBlockValue(
+                                'takeProfit',
+                                'trailingTAP',
+                                'deviationPercentage',
+                                value
+                              )
+                            }}
+                          />
+                        </InputRowContainer>
+                      </FormInputContainer>
+                    </>
+                  )}
 
                 {takeProfit.splitTargets.isSplitTargetsOn && (
                   <>
