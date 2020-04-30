@@ -823,7 +823,7 @@ export const combineActiveTradesTable = ({
                   </div>
                 </div>
               ) : (
-                `${exitLevels[0].price}%`
+                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
               )}
             </SubColumnValue>
           ),
