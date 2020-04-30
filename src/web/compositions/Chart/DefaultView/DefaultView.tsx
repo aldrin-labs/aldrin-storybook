@@ -71,6 +71,8 @@ export const DefaultView = (props: any) => {
     isPairDataLoading,
     quantityPrecision,
     pricePrecision,
+    minSpotNotional,
+    minFuturesStep,
   } = props
 
   if (!currencyPair) {
@@ -265,6 +267,8 @@ export const DefaultView = (props: any) => {
               pair={baseQuoteArr}
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
+              minSpotNotional={minSpotNotional}
+              minFuturesStep={minFuturesStep}
               priceFromOrderbook={priceFromOrderbook}
               marketType={marketType}
               showOrderResult={showOrderResult}

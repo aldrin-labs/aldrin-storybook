@@ -27,6 +27,8 @@ const LINKS = [
   { path: '/profile/internal', text: 'Internal Transfer' },
   { path: '/profile/api', text: 'Api managment' },
   { path: '/profile/telegram', text: 'Telegram' },
+  { path: '/profile/referral', text: 'Referral' },
+
 ]
 
 const ProfileSidebar = ({

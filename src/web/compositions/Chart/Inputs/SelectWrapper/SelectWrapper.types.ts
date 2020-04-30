@@ -1,4 +1,5 @@
 import { Theme } from '@material-ui/core'
+import { IExchange, IGetMarketsByExchangeQuery } from '@core/types/ChartTypes'
 
 export type SelectTabType = 'favorite' | 'btc' | 'alts' | 'fiat' | 'all'
 
@@ -9,24 +10,34 @@ export interface IState {
 }
 
 export interface IProps {
+  marketsByExchangeQuery: IGetMarketsByExchangeQuery
+  getSelectorSettingsQuery: {
+    getAccountSettings: {
+      selectorSettings: {
+        favoritePairs: string[]
+      }
+    }
+  }
+  updateFavoritePairsMutation: UpdateFavoritePairsMutationType
+  onSelectPair: ({ value }: { value: string }) => Promise<void>
+  theme: Theme
+  closeMenu: () => void
+  marketType: number | 0 | 1
+  activeExchange: IExchange
+}
+
+export interface IPropsSelectPairListComponent extends IProps {
   data: ISelectData
   favoritePairsMap: Map<string, string>
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
   altCoinsPairsMap: Map<string, string>
-  updateFavoritePairsMutation: UpdateFavoritePairsMutationType
-  onSelectPair: ({ value }: { value: string }) => Promise<void>
-  theme: Theme
-  closeMenu: () => void
-  marketType: 0 | 1
-}
-
-export interface IPropsSelectPairListComponent extends IProps {
   searchValue: string
   tab: SelectTabType
   tabSpecificCoin: string
   onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void
   onTabChange: (tab: SelectTabType) => void
+  onSpecificCoinChange: ({ value }: { value: string }) => void
 }
 
 export interface IStateSelectPairListComponent {

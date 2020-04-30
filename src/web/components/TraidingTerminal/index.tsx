@@ -4,6 +4,7 @@ import Yup from 'yup'
 import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
+import { withSnackbar } from 'notistack'
 import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
 import { Grid, InputAdornment, Typography } from '@material-ui/core'
@@ -832,14 +833,50 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     const {
       byType,
       priceType,
+      pair,
       isSPOTMarket,
       reduceOnly,
       orderMode,
       TIFMode,
       trigger,
       leverage,
-      hedgeMode,
+      enqueueSnackbar,
+      minSpotNotional,
+      minFuturesStep,
     } = props
+
+    if (values.total < minSpotNotional && isSPOTMarket) {
+      enqueueSnackbar(
+        `Order total should be at least ${minSpotNotional} ${pair[1]}`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
+
+    if (values.amount < minFuturesStep && !isSPOTMarket) {
+      enqueueSnackbar(
+        `Order amount should be at least ${minFuturesStep} ${pair[0]}`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
+
+    if (values.amount % minFuturesStep !== 0 && !isSPOTMarket) {
+      enqueueSnackbar(
+        `Order amount should divided without remainder on ${minFuturesStep}`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
 
     if (priceType || byType) {
       const filtredValues =

@@ -136,47 +136,6 @@ class Chart extends React.Component<IProps, IState> {
     )
   }
 
-  renderToggler = () => {
-    // i'll delete it with updating multichart, maybe it'll help me
-    // <Toggler>
-    //   <StyledSwitch
-    //     data-e2e="switchChartPageMode"
-    //     isActive={isSingleChart}
-    //     onClick={async () => {
-    //       if (charts === []) {
-    //         await addChartMutation({
-    //           variables: {
-    //             chart: pair,
-    //           },
-    //         })
-    //       }
-    //       await changeViewModeMutation({
-    //         variables: {
-    //           view: 'default',
-    //         },
-    //       })
-    //     }}
-    //     style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-    //   >
-    //     Single Chart
-    //   </StyledSwitch>
-    //   <StyledSwitch
-    //     data-e2e="switchChartPageMode"
-    //     isActive={!isSingleChart}
-    //     onClick={async () => {
-    //       await changeViewModeMutation({
-    //         variables: {
-    //           view: 'onlyCharts',
-    //         },
-    //       })
-    //     }}
-    //     style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-    //   >
-    //     Multi Charts
-    //   </StyledSwitch>
-    // </Toggler>
-  }
-
   render() {
     const { showTableOnMobile, terminalViewMode } = this.state
 
@@ -203,6 +162,8 @@ class Chart extends React.Component<IProps, IState> {
     let minPriceDigits
     let quantityPrecision
     let pricePrecision
+    let minSpotNotional
+    let minFuturesStep
 
     const isPairDataLoading =
       !pair ||
@@ -214,6 +175,8 @@ class Chart extends React.Component<IProps, IState> {
     if (isPairDataLoading) {
       minPriceDigits = 0.00000001
       quantityPrecision = 3
+      minSpotNotional = 10
+      minFuturesStep = 0.001
     } else {
       minPriceDigits = +this.props.pairPropertiesQuery.marketByName[0]
         .properties.binance.filters[0].minPrice
@@ -223,9 +186,18 @@ class Chart extends React.Component<IProps, IState> {
 
       pricePrecision = +this.props.pairPropertiesQuery.marketByName[0]
         .properties.binance.pricePrecision
+
+      minSpotNotional =
+        +this.props.pairPropertiesQuery.marketByName[0].properties.binance
+          .filters[3].minNotional || 10
+
+      minFuturesStep =
+        +this.props.pairPropertiesQuery.marketByName[0].properties.binance
+          .filters[1].stepSize || 0.001
     }
 
     const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
+    console.log('minSpot, minFutures', minSpotNotional, minFuturesStep)
 
     return (
       <MainContainer fullscreen={view !== 'default'}>
@@ -263,6 +235,8 @@ class Chart extends React.Component<IProps, IState> {
             pricePrecision={pricePrecision}
             quantityPrecision={quantityPrecision}
             minPriceDigits={minPriceDigits}
+            minSpotNotional={minSpotNotional}
+            minFuturesStep={minFuturesStep}
             isPairDataLoading={isPairDataLoading}
             themeMode={themeMode}
             selectedKey={

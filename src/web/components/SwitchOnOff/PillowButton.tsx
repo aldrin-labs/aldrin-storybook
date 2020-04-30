@@ -1,6 +1,8 @@
 import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
+
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const Container = styled(({ containerStyle, ...rest }) => <div {...rest} />)`
   display: flex;
@@ -74,6 +76,8 @@ const PillowButton = ({
   secondHalfAdditionalStyle,
   firstHalfComponent,
   secondHalfComponent,
+  firstHalfTooltip = '',
+  secondHalfTooltip = '',
 }: {
   firstHalfText: string
   secondHalfText: string
@@ -83,31 +87,65 @@ const PillowButton = ({
   buttonAdditionalStyle?: CSSProperties
   firstHalfAdditionalStyle?: CSSProperties
   secondHalfAdditionalStyle?: CSSProperties
-  firstHalfComponent?: React.ReactElement<any> | ((props:any) => React.ReactElement<any>)
-  secondHalfComponent?: React.ReactElement<any> | ((props:any) => React.ReactElement<any>)
+  firstHalfComponent?:
+    | React.ReactElement<any>
+    | ((props: any) => React.ReactElement<any>)
+  secondHalfComponent?:
+    | React.ReactElement<any>
+    | ((props: any) => React.ReactElement<any>)
+  firstHalfTooltip?: string
+  secondHalfTooltip?: string
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
   return (
     <Container containerStyle={containerStyle}>
-      <FirstHalfButton
-        component={firstHalfComponent}
-        isDisabled={!firstHalfIsActive}
-        onClick={() => !firstHalfIsActive && changeHalf()}
-        firstHalfAdditionalStyle={firstHalfAdditionalStyle}
-        buttonAdditionalStyle={buttonAdditionalStyle}
-      >
-        {firstHalfText}
-      </FirstHalfButton>
-      <SecondHalfButton
-        component={secondHalfComponent}
-        isDisabled={firstHalfIsActive}
-        onClick={() => firstHalfIsActive && changeHalf()}
-        secondHalfAdditionalStyle={secondHalfAdditionalStyle}
-        buttonAdditionalStyle={buttonAdditionalStyle}
-      >
-        {secondHalfText}
-      </SecondHalfButton>
+      {firstHalfTooltip ? (
+        <DarkTooltip title={firstHalfTooltip}>
+          <FirstHalfButton
+            component={firstHalfComponent}
+            isDisabled={!firstHalfIsActive}
+            onClick={() => !firstHalfIsActive && changeHalf()}
+            firstHalfAdditionalStyle={firstHalfAdditionalStyle}
+            buttonAdditionalStyle={buttonAdditionalStyle}
+          >
+            {firstHalfText}
+          </FirstHalfButton>
+        </DarkTooltip>
+      ) : (
+        <FirstHalfButton
+          component={firstHalfComponent}
+          isDisabled={!firstHalfIsActive}
+          onClick={() => !firstHalfIsActive && changeHalf()}
+          firstHalfAdditionalStyle={firstHalfAdditionalStyle}
+          buttonAdditionalStyle={buttonAdditionalStyle}
+        >
+          {firstHalfText}
+        </FirstHalfButton>
+      )}
+      {secondHalfTooltip ? (
+        <DarkTooltip title={secondHalfTooltip}>
+          <SecondHalfButton
+            component={secondHalfComponent}
+            isDisabled={firstHalfIsActive}
+            onClick={() => firstHalfIsActive && changeHalf()}
+            secondHalfAdditionalStyle={secondHalfAdditionalStyle}
+            buttonAdditionalStyle={buttonAdditionalStyle}
+          >
+            {secondHalfText}
+          </SecondHalfButton>
+        </DarkTooltip>
+      ) : (
+        <SecondHalfButton
+          component={secondHalfComponent}
+          isDisabled={firstHalfIsActive}
+          onClick={() => firstHalfIsActive && changeHalf()}
+          secondHalfAdditionalStyle={secondHalfAdditionalStyle}
+          buttonAdditionalStyle={buttonAdditionalStyle}
+        >
+          {secondHalfText}
+        </SecondHalfButton>
+      )}
     </Container>
   )
 }
