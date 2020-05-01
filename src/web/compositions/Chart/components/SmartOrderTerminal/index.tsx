@@ -2577,20 +2577,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                         return
                       }
+                      
+                      this.updateSubBlockValue('entryPoint', 'order', 'amount', stripDigitPlaces(entryPoint.order.amount, quantityPrecision))
 
-                      if (
-                        entryPoint.order.amount % minFuturesStep !== 0 &&
-                        !isSPOTMarket
-                      ) {
-                        enqueueSnackbar(
-                          `Order amount should divided without remainder on ${minFuturesStep}`,
-                          {
-                            variant: 'error',
-                          }
-                        )
+                      // if (
+                      //   entryPoint.order.amount % minFuturesStep !== 0 &&
+                      //   !isSPOTMarket
+                      // ) {
+                      //   enqueueSnackbar(
+                      //     `Order amount should divided without remainder on ${minFuturesStep}`,
+                      //     {
+                      //       variant: 'error',
+                      //     }
+                      //   )
 
-                        return
-                      }
+                      //   return
+                      // }
 
                       this.setState({ showConfirmationPopup: true })
                     } else {
