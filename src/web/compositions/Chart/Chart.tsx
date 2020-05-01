@@ -142,8 +142,8 @@ class Chart extends React.Component<IProps, IState> {
     const {
       getChartDataQuery: {
         getMyProfile: { _id },
-        getTradingSettings: { selectedTradingKey } = {
-          selectedTradingKey: '',
+        getTradingSettings: { selectedTradingKey, hedgeMode } = {
+          selectedTradingKey: '', hedgeMode: false,
         },
         marketByMarketType,
         chart: {
@@ -240,7 +240,7 @@ class Chart extends React.Component<IProps, IState> {
             isPairDataLoading={isPairDataLoading}
             themeMode={themeMode}
             selectedKey={
-              selectedTradingKey ? { keyId: selectedTradingKey } : { keyId: '' }
+              selectedTradingKey ? { keyId: selectedTradingKey, hedgeMode } : { keyId: '', hedgeMode: false }
             }
             activeExchange={activeExchange}
             terminalViewMode={terminalViewMode}
