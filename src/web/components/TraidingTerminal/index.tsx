@@ -867,16 +867,16 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       return
     }
 
-    if (values.amount % minFuturesStep !== 0 && !isSPOTMarket) {
-      enqueueSnackbar(
-        `Order amount should divided without remainder on ${minFuturesStep}`,
-        {
-          variant: 'error',
-        }
-      )
+    // if (values.amount % minFuturesStep !== 0 && !isSPOTMarket) {
+    //   enqueueSnackbar(
+    //     `Order amount should divided without remainder on ${minFuturesStep}`,
+    //     {
+    //       variant: 'error',
+    //     }
+    //   )
 
-      return
-    }
+    //   return
+    // }
 
     if (priceType || byType) {
       const filtredValues =
