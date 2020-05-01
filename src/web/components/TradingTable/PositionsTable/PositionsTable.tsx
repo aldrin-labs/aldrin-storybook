@@ -59,11 +59,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   subscription: null | { unsubscribe: () => void } = null
 
   createOrder = async (variables) => {
-    const { createOrderMutation, selectedKey, getKeys } = this.props
-
-    const hedgeMode = getKeys.myPortfolios[0].keys.find(
-      (key) => key.keyId === selectedKey.keyId
-    ).hedgeMode
+    const { createOrderMutation, selectedKey } = this.props
+    const hedgeMode = selectedKey.hedgeMode
 
     const { reduceOnly, ...paramsForHedge } = variables.keyParams
 
@@ -740,11 +737,6 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 
 export default compose(
   withSnackbar,
-  queryRendererHoc({
-    query: getKeysQuery,
-    name: 'getKeys',
-    fetchPolicy: 'cache-and-network',
-  }),
   queryRendererHoc({
     query: getFunds,
     name: 'getFundsQuery',
