@@ -27,6 +27,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { API_URL } from '@core/utils/config'
 import WebHookImg from '@sb/images/WebHookImg.png'
+import MessageImg from '@sb/images/MessageImg.png'
 
 import { CustomCard } from '../../Chart.styles'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
@@ -1371,9 +1372,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           type={'text'}
                           disabled={true}
                           textAlign={'left'}
-                          value={`https://${API_URL}/createSmUsingTemplate?token=${
-                            entryPoint.TVAlert.templateToken
-                          }`}
+                          value={`https://${API_URL}/createSmUsingTemplate`}
                         />
                         <BtnCustom
                           btnWidth="calc(15% - .8rem)"
@@ -1389,9 +1388,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             copy(
-                              `https://${API_URL}/createSmUsingTemplate?token=${
-                                entryPoint.TVAlert.templateToken
-                              }`
+                              `https://${API_URL}/createSmUsingTemplate`
                             )
                           }}
                         >
@@ -1399,6 +1396,72 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </BtnCustom>
                       </InputRowContainer>
                     </FormInputContainer>
+                    <FormInputContainer
+                    padding={'0 0 .8rem 0'}
+                    haveTooltip={true}
+                    tooltipText={
+                      <img
+                        style={{ width: '30rem', height: '30rem' }}
+                        src={MessageImg}
+                      />
+                    }
+                    title={
+                      <span>
+                        paste it into{' '}
+                        <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                        field when creating tv alert
+                      </span>
+                    }
+                  >
+                    <InputRowContainer>
+                      <Input
+                        width={'65%'}
+                        type={'text'}
+                        disabled={true}
+                        textAlign={'left'}
+                        value={`{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`}
+                      />
+                      {/* entryPoint.TVAlert.templateToken */}
+                      <BtnCustom
+                        btnWidth="calc(15% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          copy(
+                            `{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`
+                          )
+                        }}
+                      >
+                        copy
+                      </BtnCustom>
+                      <BtnCustom
+                        btnWidth="calc(20% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          // redirect to full example page
+                        }}
+                      >
+                        example
+                      </BtnCustom>
+                    </InputRowContainer>
+                  </FormInputContainer>
                   </>
                 )}
 
@@ -1939,7 +2002,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your stop loss order will be edited once when there is a Trading View alert with params that you sent.'
+                      'Your stop loss order will be placed once when there is a Trading View alert with params that you sent.'
                     }
                   >
                     <AdditionalSettingsButton
@@ -2007,6 +2070,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 {stopLoss.editByTVAlert && (
+                  <>
                   <FormInputContainer
                     padding={'0 0 .8rem 0'}
                     haveTooltip={true}
@@ -2030,9 +2094,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         type={'text'}
                         disabled={true}
                         textAlign={'left'}
-                        value={`https://${API_URL}/editStopLossByAlert?token=${
-                          entryPoint.TVAlert.templateToken
-                        }`}
+                        value={`https://${API_URL}/editStopLossByAlert`}
                       />
                       <BtnCustom
                         btnWidth="calc(15% - .8rem)"
@@ -2048,9 +2110,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         transition={'all .4s ease-out'}
                         onClick={() => {
                           copy(
-                            `https://${API_URL}/editStopLossByAlert?token=${
-                              entryPoint.TVAlert.templateToken
-                            }`
+                            `https://${API_URL}/editStopLossByAlert`
                           )
                         }}
                       >
@@ -2058,6 +2118,73 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </BtnCustom>
                     </InputRowContainer>
                   </FormInputContainer>
+                  <FormInputContainer
+                    padding={'0 0 .8rem 0'}
+                    haveTooltip={true}
+                    tooltipText={
+                      <img
+                        style={{ width: '30rem', height: '30rem' }}
+                        src={MessageImg}
+                      />
+                    }
+                    title={
+                      <span>
+                        paste it into{' '}
+                        <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                        field when creating tv alert
+                      </span>
+                    }
+                  >
+                    <InputRowContainer>
+                      <Input
+                        width={'65%'}
+                        type={'text'}
+                        disabled={true}
+                        textAlign={'left'}
+                        value={`{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`}
+                      />
+                      {/* entryPoint.TVAlert.templateToken */}
+                      <BtnCustom
+                        btnWidth="calc(15% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          copy(
+                            `{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`
+                          )
+                        }}
+                      >
+                        copy
+                      </BtnCustom>
+                      <BtnCustom
+                        btnWidth="calc(20% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          // redirect to full example page
+                        }}
+                      >
+                        example
+                      </BtnCustom>
+                    </InputRowContainer>
+                  </FormInputContainer>
+                  </>
                 )}
 
                 {!stopLoss.external && (
@@ -2806,7 +2933,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'We will place new trailing orders and cancel old when there is a Trading View alert'
+                      'Your take profit order will be placed once when there is a Trading View alert with params that you sent.'
                     }
                   >
                     <AdditionalSettingsButton
@@ -2849,6 +2976,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
 
                 {takeProfit.editByTVAlert && (
+                  <>
                   <FormInputContainer
                     padding={'0 0 .8rem 0'}
                     haveTooltip={true}
@@ -2872,10 +3000,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         type={'text'}
                         disabled={true}
                         textAlign={'left'}
-                        value={`https://${API_URL}/editTakeProfitByAlert?token=${
-                          entryPoint.TVAlert.templateToken
-                        }`}
+                        value={`https://${API_URL}/editTakeProfitByAlert`}
                       />
+                      {/* entryPoint.TVAlert.templateToken */}
                       <BtnCustom
                         btnWidth="calc(15% - .8rem)"
                         height="auto"
@@ -2890,9 +3017,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         transition={'all .4s ease-out'}
                         onClick={() => {
                           copy(
-                            `https://${API_URL}/editTakeProfitByAlert?token=${
-                              entryPoint.TVAlert.templateToken
-                            }`
+                            `https://${API_URL}/editTakeProfitByAlert`
                           )
                         }}
                       >
@@ -2900,6 +3025,73 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </BtnCustom>
                     </InputRowContainer>
                   </FormInputContainer>
+                  <FormInputContainer
+                    padding={'0 0 .8rem 0'}
+                    haveTooltip={true}
+                    tooltipText={
+                      <img
+                        style={{ width: '30rem', height: '30rem' }}
+                        src={MessageImg}
+                      />
+                    }
+                    title={
+                      <span>
+                        paste it into{' '}
+                        <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                        field when creating tv alert
+                      </span>
+                    }
+                  >
+                    <InputRowContainer>
+                      <Input
+                        width={'65%'}
+                        type={'text'}
+                        disabled={true}
+                        textAlign={'left'}
+                        value={`{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`}
+                      />
+                      {/* entryPoint.TVAlert.templateToken */}
+                      <BtnCustom
+                        btnWidth="calc(15% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          copy(
+                            `{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`
+                          )
+                        }}
+                      >
+                        copy
+                      </BtnCustom>
+                      <BtnCustom
+                        btnWidth="calc(20% - .8rem)"
+                        height="auto"
+                        margin="0 0 0 .8rem"
+                        fontSize="1rem"
+                        padding=".5rem 0 .4rem 0"
+                        borderRadius=".8rem"
+                        btnColor={'#0B1FD1'}
+                        backgroundColor={'#fff'}
+                        hoverColor={'#fff'}
+                        hoverBackground={'#0B1FD1'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          // redirect to full example page
+                        }}
+                      >
+                        example
+                      </BtnCustom>
+                    </InputRowContainer>
+                  </FormInputContainer>
+                  </>
                 )}
 
                 {!takeProfit.trailingTAP.isTrailingOn && !takeProfit.external && (

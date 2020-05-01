@@ -1181,6 +1181,8 @@ export const combineStrategiesHistoryTable = (
 
       if (orderState === 'End') orderState = 'Closed'
 
+      if (isTemplate) orderState = 'Template'
+
       return {
         id: el._id,
         pair: {
@@ -1278,7 +1280,7 @@ export const combineStrategiesHistoryTable = (
               }
             >
               {!!templatePnl
-                ? templatePnl
+                ? stripDigitPlaces(templatePnl, 3)
                 : `${stripDigitPlaces(profitAmount, 3)} ${
                     pairArr[1]
                   } / ${stripDigitPlaces(profitPercentage, 2)}%`}
@@ -1298,7 +1300,7 @@ export const combineStrategiesHistoryTable = (
                 alignItems: 'center',
               }}
               color={
-                state
+                state || isTemplate
                   ? !isErrorInOrder && orderState !== 'Canceled'
                     ? green.new
                     : red.new
