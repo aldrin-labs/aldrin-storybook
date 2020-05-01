@@ -150,6 +150,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       external: false,
       editByTVAlert: false,
+      forcedStopByAlert: true,
+      plotEnabled: false,
+      plot: '',
     },
     stopLoss: {
       isStopLossOn: true,
@@ -172,6 +175,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       external: false,
       editByTVAlert: false,
+      forcedStopByAlert: true,
+      plotEnabled: false,
+      plot: '',
     },
     temp: {
       initialMargin: 0,
@@ -276,6 +282,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         editByTVAlert: false,
         external: false,
+        forcedStopByAlert: true,
+        plotEnabled: false,
+        plot: '',
       },
       stopLoss: {
         stopLossPrice: 0,
@@ -287,6 +296,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         editByTVAlert: false,
         external: false,
+        forcedStopByAlert: true,
+        plotEnabled: false,
+        plot: '',
       },
     }))
 
@@ -2034,7 +2046,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       SL by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
-                  <DarkTooltip
+                  {/* <DarkTooltip
                     maxWidth={'30rem'}
                     title={
                       'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
@@ -2055,7 +2067,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     >
                       Edit by TV Alert
                     </AdditionalSettingsButton>
-                  </DarkTooltip>
+                  </DarkTooltip> */}
                   {/* <AdditionalSettingsButton
                     isActive={stopLoss.forcedStop.isForcedStopOn}
                     onClick={() =>
@@ -2073,6 +2085,74 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {stopLoss.editByTVAlert && (
                   <>
+                    <FormInputContainer
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={''}
+                      title={'action when alert'}
+                    >
+                      <InputRowContainer>
+                        <AdditionalSettingsButton
+                          isActive={stopLoss.forcedStopByAlert}
+                          onClick={() => {
+                            this.updateBlockValue(
+                              'stopLoss',
+                              'forcedStopByAlert',
+                              true
+                            )
+                            this.updateBlockValue(
+                              'stopLoss',
+                              'plotEnabled',
+                              false
+                            )
+                          }}
+                        >
+                          Forced Stop by Alert
+                        </AdditionalSettingsButton>
+                        <AdditionalSettingsButton
+                          isActive={stopLoss.plotEnabled}
+                          onClick={() => {
+                            this.updateBlockValue(
+                              'stopLoss',
+                              'forcedStopByAlert',
+                              false
+                            )
+
+                            this.updateBlockValue(
+                              'stopLoss',
+                              'plotEnabled',
+                              true
+                            )
+                          }}
+                        >
+                          Plot
+                        </AdditionalSettingsButton>
+                      </InputRowContainer>
+                    </FormInputContainer>
+                    {stopLoss.plotEnabled && (
+                      <InputRowContainer padding={'0 0 .8rem 0'}>
+                        <Input
+                          type={'number'}
+                          needTitle
+                          title={`your plot_`}
+                          textAlign="left"
+                          inputStyles={{
+                            paddingLeft: '7rem',
+                          }}
+                          value={stopLoss.plot}
+                          showErrors={showErrors}
+                          isValid={this.validateField(true, stopLoss.plot)}
+                          onChange={(e) => {
+                            this.updateBlockValue(
+                              'stopLoss',
+                              'plot',
+                              e.target.value
+                            )
+                          }}
+                        />
+                      </InputRowContainer>
+                    )}
+
                     <FormInputContainer
                       padding={'0 0 .8rem 0'}
                       haveTooltip={true}
@@ -2143,7 +2223,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           textAlign={'left'}
                           value={`{\\"token\\": \\"${
                             entryPoint.TVAlert.templateToken
-                          }\\"}`}
+                          }\\", \\"orderType\\": ${
+                            stopLoss.forcedStopByAlert
+                              ? `\\"market\\"`
+                              : `\\"${stopLoss.type}\\"`
+                          } ${
+                            stopLoss.plotEnabled
+                              ? `, \\"stopLossPrice\\": {{ plot_${
+                                  stopLoss.plot
+                                } }}`
+                              : ''
+                          }}`}
                         />
                         {/* entryPoint.TVAlert.templateToken */}
                         <BtnCustom
@@ -2162,7 +2252,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             copy(
                               `{\\"token\\": \\"${
                                 entryPoint.TVAlert.templateToken
-                              }\\"}`
+                              }\\", \\"orderType\\": ${
+                                stopLoss.forcedStopByAlert
+                                  ? `\\"market\\"`
+                                  : `\\"${stopLoss.type}\\"`
+                              } ${
+                                stopLoss.plotEnabled
+                                  ? `, \\"stopLossPrice\\": {{ plot_${
+                                      stopLoss.plot
+                                    } }}`
+                                  : ''
+                              }}`
                             )
                           }}
                         >
@@ -2893,58 +2993,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      isActive={takeProfit.editByTVAlert}
-                      onClick={() => {
-                        if (takeProfit.external) {
-                          return
-                        }
-                        this.updateBlockValue(
-                          'takeProfit',
-                          'editByTVAlert',
-                          !takeProfit.editByTVAlert
-                        )
-                      }}
-                    >
-                      Edit by TV Alert
-                    </AdditionalSettingsButton>
-                  </DarkTooltip>
-                  {/* <AdditionalSettingsButton
-                    isActive={takeProfit.timeout.isTimeoutOn}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'timeout',
-                        'isTimeoutOn',
-                        !takeProfit.timeout.isTimeoutOn
-                      )
-
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'isTrailingOn',
-                        false
-                      )
-
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'splitTargets',
-                        'isSplitTargetsOn',
-                        false
-                      )
-                    }}
-                  >
-                    Timeout
-                  </AdditionalSettingsButton> */}
-                </InputRowContainer>
-
-                <InputRowContainer padding={'0rem 0 1.2rem 0'}>
-                  <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
                       'Your take profit order will be placed once when there is a Trading View alert with params that you sent.'
                     }
                   >
@@ -2985,10 +3033,126 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       TAP by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
+                  {/* <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
+                    }
+                  >
+                    <AdditionalSettingsButton
+                      isActive={takeProfit.editByTVAlert}
+                      onClick={() => {
+                        if (takeProfit.external) {
+                          return
+                        }
+                        this.updateBlockValue(
+                          'takeProfit',
+                          'editByTVAlert',
+                          !takeProfit.editByTVAlert
+                        )
+                      }}
+                    >
+                      Edit by TV Alert
+                    </AdditionalSettingsButton>
+                  </DarkTooltip> */}
+                  {/* <AdditionalSettingsButton
+                    isActive={takeProfit.timeout.isTimeoutOn}
+                    onClick={() => {
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'timeout',
+                        'isTimeoutOn',
+                        !takeProfit.timeout.isTimeoutOn
+                      )
+
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'trailingTAP',
+                        'isTrailingOn',
+                        false
+                      )
+
+                      this.updateSubBlockValue(
+                        'takeProfit',
+                        'splitTargets',
+                        'isSplitTargetsOn',
+                        false
+                      )
+                    }}
+                  >
+                    Timeout
+                  </AdditionalSettingsButton> */}
                 </InputRowContainer>
 
                 {takeProfit.editByTVAlert && (
                   <>
+                    <FormInputContainer
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={''}
+                      title={'action when alert'}
+                    >
+                      <InputRowContainer>
+                        <AdditionalSettingsButton
+                          isActive={takeProfit.forcedStopByAlert}
+                          onClick={() => {
+                            this.updateBlockValue(
+                              'takeProfit',
+                              'forcedStopByAlert',
+                              true
+                            )
+                            this.updateBlockValue(
+                              'takeProfit',
+                              'plotEnabled',
+                              false
+                            )
+                          }}
+                        >
+                          Forced Stop by Alert
+                        </AdditionalSettingsButton>
+                        <AdditionalSettingsButton
+                          isActive={takeProfit.plotEnabled}
+                          onClick={() => {
+                            this.updateBlockValue(
+                              'takeProfit',
+                              'forcedStopByAlert',
+                              false
+                            )
+
+                            this.updateBlockValue(
+                              'takeProfit',
+                              'plotEnabled',
+                              true
+                            )
+                          }}
+                        >
+                          Plot
+                        </AdditionalSettingsButton>
+                      </InputRowContainer>
+                    </FormInputContainer>
+                    {takeProfit.plotEnabled && (
+                      <InputRowContainer padding={'0 0 .8rem 0'}>
+                        <Input
+                          type={'number'}
+                          needTitle
+                          title={`your plot_`}
+                          textAlign="left"
+                          inputStyles={{
+                            paddingLeft: '7rem',
+                          }}
+                          value={takeProfit.plot}
+                          showErrors={showErrors}
+                          isValid={this.validateField(true, takeProfit.plot)}
+                          onChange={(e) => {
+                            this.updateBlockValue(
+                              'takeProfit',
+                              'plot',
+                              e.target.value
+                            )
+                          }}
+                        />
+                      </InputRowContainer>
+                    )}
                     <FormInputContainer
                       padding={'0 0 .8rem 0'}
                       haveTooltip={true}
@@ -3060,7 +3224,21 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           textAlign={'left'}
                           value={`{\\"token\\": \\"${
                             entryPoint.TVAlert.templateToken
-                          }\\"}`}
+                          }\\", \\"orderType\\": ${
+                            takeProfit.forcedStopByAlert
+                              ? `\\"market\\"`
+                              : `\\"${takeProfit.type}\\"`
+                          } ${
+                            takeProfit.plotEnabled
+                              ? takeProfit.trailingTAP.isTrailingOn
+                                ? `, \\"trailingExitPrice\\": {{ plot_${
+                                    takeProfit.plot
+                                  } }}`
+                                : `, \\"takeProfitPrice\\": {{ plot_${
+                                    takeProfit.plot
+                                  } }}`
+                              : ''
+                          }}`}
                         />
                         {/* entryPoint.TVAlert.templateToken */}
                         <BtnCustom
@@ -3079,7 +3257,21 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             copy(
                               `{\\"token\\": \\"${
                                 entryPoint.TVAlert.templateToken
-                              }\\"}`
+                              }\\", \\"orderType\\": ${
+                                takeProfit.forcedStopByAlert
+                                  ? `\\"market\\"`
+                                  : `\\"${takeProfit.type}\\"`
+                              } ${
+                                takeProfit.plotEnabled
+                                  ? takeProfit.trailingTAP.isTrailingOn
+                                    ? `, \\"trailingExitPrice\\": {{ plot_${
+                                        takeProfit.plot
+                                      } }}`
+                                    : `, \\"takeProfitPrice\\": {{ plot_${
+                                        takeProfit.plot
+                                      } }}`
+                                  : ''
+                              }}`
                             )
                           }}
                         >
