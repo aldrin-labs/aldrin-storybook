@@ -34,7 +34,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 
 
-const version = `10.5.18`
+const version = `10.5.19`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
