@@ -1387,9 +1387,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           hoverBackground={'#0B1FD1'}
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            copy(
-                              `https://${API_URL}/createSmUsingTemplate`
-                            )
+                            copy(`https://${API_URL}/createSmUsingTemplate`)
                           }}
                         >
                           copy
@@ -1397,71 +1395,75 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     </FormInputContainer>
                     <FormInputContainer
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={true}
-                    tooltipText={
-                      <img
-                        style={{ width: '30rem', height: '30rem' }}
-                        src={MessageImg}
-                      />
-                    }
-                    title={
-                      <span>
-                        paste it into{' '}
-                        <span style={{ color: '#5C8CEA' }}>message</span>{' '}
-                        field when creating tv alert
-                      </span>
-                    }
-                  >
-                    <InputRowContainer>
-                      <Input
-                        width={'65%'}
-                        type={'text'}
-                        disabled={true}
-                        textAlign={'left'}
-                        value={`{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`}
-                      />
-                      {/* entryPoint.TVAlert.templateToken */}
-                      <BtnCustom
-                        btnWidth="calc(15% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          copy(
-                            `{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`
-                          )
-                        }}
-                      >
-                        copy
-                      </BtnCustom>
-                      <BtnCustom
-                        btnWidth="calc(20% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          // redirect to full example page
-                        }}
-                      >
-                        example
-                      </BtnCustom>
-                    </InputRowContainer>
-                  </FormInputContainer>
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '40rem', height: '42rem' }}
+                          src={MessageImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'65%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`{\\"token\\": \\"${
+                            entryPoint.TVAlert.templateToken
+                          }\\"}`}
+                        />
+                        {/* entryPoint.TVAlert.templateToken */}
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(
+                              `{\\"token\\": \\"${
+                                entryPoint.TVAlert.templateToken
+                              }\\"}`
+                            )
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                        <BtnCustom
+                          btnWidth="calc(20% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            // redirect to full example page
+                          }}
+                        >
+                          example
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
                   </>
                 )}
 
@@ -2071,119 +2073,121 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {stopLoss.editByTVAlert && (
                   <>
-                  <FormInputContainer
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={true}
-                    tooltipText={
-                      <img
-                        style={{ width: '35rem', height: '50rem' }}
-                        src={WebHookImg}
-                      />
-                    }
-                    title={
-                      <span>
-                        paste it into{' '}
-                        <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
-                        field when creating tv alert
-                      </span>
-                    }
-                  >
-                    <InputRowContainer>
-                      <Input
-                        width={'85%'}
-                        type={'text'}
-                        disabled={true}
-                        textAlign={'left'}
-                        value={`https://${API_URL}/editStopLossByAlert`}
-                      />
-                      <BtnCustom
-                        btnWidth="calc(15% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          copy(
-                            `https://${API_URL}/editStopLossByAlert`
-                          )
-                        }}
-                      >
-                        copy
-                      </BtnCustom>
-                    </InputRowContainer>
-                  </FormInputContainer>
-                  <FormInputContainer
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={true}
-                    tooltipText={
-                      <img
-                        style={{ width: '30rem', height: '30rem' }}
-                        src={MessageImg}
-                      />
-                    }
-                    title={
-                      <span>
-                        paste it into{' '}
-                        <span style={{ color: '#5C8CEA' }}>message</span>{' '}
-                        field when creating tv alert
-                      </span>
-                    }
-                  >
-                    <InputRowContainer>
-                      <Input
-                        width={'65%'}
-                        type={'text'}
-                        disabled={true}
-                        textAlign={'left'}
-                        value={`{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`}
-                      />
-                      {/* entryPoint.TVAlert.templateToken */}
-                      <BtnCustom
-                        btnWidth="calc(15% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          copy(
-                            `{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`
-                          )
-                        }}
-                      >
-                        copy
-                      </BtnCustom>
-                      <BtnCustom
-                        btnWidth="calc(20% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          // redirect to full example page
-                        }}
-                      >
-                        example
-                      </BtnCustom>
-                    </InputRowContainer>
-                  </FormInputContainer>
+                    <FormInputContainer
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '35rem', height: '50rem' }}
+                          src={WebHookImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'85%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`https://${API_URL}/editStopLossByAlert`}
+                        />
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(`https://${API_URL}/editStopLossByAlert`)
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
+                    <FormInputContainer
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '40rem', height: '42rem' }}
+                          src={MessageImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'65%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`{\\"token\\": \\"${
+                            entryPoint.TVAlert.templateToken
+                          }\\"}`}
+                        />
+                        {/* entryPoint.TVAlert.templateToken */}
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(
+                              `{\\"token\\": \\"${
+                                entryPoint.TVAlert.templateToken
+                              }\\"}`
+                            )
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                        <BtnCustom
+                          btnWidth="calc(20% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            // redirect to full example page
+                          }}
+                        >
+                          example
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
                   </>
                 )}
 
@@ -2704,8 +2708,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                         return
                       }
-                      
-                      this.updateSubBlockValue('entryPoint', 'order', 'amount', stripDigitPlaces(entryPoint.order.amount, quantityPrecision))
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'amount',
+                        stripDigitPlaces(
+                          entryPoint.order.amount,
+                          quantityPrecision
+                        )
+                      )
 
                       // if (
                       //   entryPoint.order.amount % minFuturesStep !== 0 &&
@@ -2977,120 +2989,122 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {takeProfit.editByTVAlert && (
                   <>
-                  <FormInputContainer
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={true}
-                    tooltipText={
-                      <img
-                        style={{ width: '35rem', height: '50rem' }}
-                        src={WebHookImg}
-                      />
-                    }
-                    title={
-                      <span>
-                        paste it into{' '}
-                        <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
-                        field when creating tv alert
-                      </span>
-                    }
-                  >
-                    <InputRowContainer>
-                      <Input
-                        width={'85%'}
-                        type={'text'}
-                        disabled={true}
-                        textAlign={'left'}
-                        value={`https://${API_URL}/editTakeProfitByAlert`}
-                      />
-                      {/* entryPoint.TVAlert.templateToken */}
-                      <BtnCustom
-                        btnWidth="calc(15% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          copy(
-                            `https://${API_URL}/editTakeProfitByAlert`
-                          )
-                        }}
-                      >
-                        copy
-                      </BtnCustom>
-                    </InputRowContainer>
-                  </FormInputContainer>
-                  <FormInputContainer
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={true}
-                    tooltipText={
-                      <img
-                        style={{ width: '30rem', height: '30rem' }}
-                        src={MessageImg}
-                      />
-                    }
-                    title={
-                      <span>
-                        paste it into{' '}
-                        <span style={{ color: '#5C8CEA' }}>message</span>{' '}
-                        field when creating tv alert
-                      </span>
-                    }
-                  >
-                    <InputRowContainer>
-                      <Input
-                        width={'65%'}
-                        type={'text'}
-                        disabled={true}
-                        textAlign={'left'}
-                        value={`{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`}
-                      />
-                      {/* entryPoint.TVAlert.templateToken */}
-                      <BtnCustom
-                        btnWidth="calc(15% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          copy(
-                            `{\\"token\\": "${entryPoint.TVAlert.templateToken}"}`
-                          )
-                        }}
-                      >
-                        copy
-                      </BtnCustom>
-                      <BtnCustom
-                        btnWidth="calc(20% - .8rem)"
-                        height="auto"
-                        margin="0 0 0 .8rem"
-                        fontSize="1rem"
-                        padding=".5rem 0 .4rem 0"
-                        borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          // redirect to full example page
-                        }}
-                      >
-                        example
-                      </BtnCustom>
-                    </InputRowContainer>
-                  </FormInputContainer>
+                    <FormInputContainer
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '35rem', height: '50rem' }}
+                          src={WebHookImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'85%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`https://${API_URL}/editTakeProfitByAlert`}
+                        />
+                        {/* entryPoint.TVAlert.templateToken */}
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(`https://${API_URL}/editTakeProfitByAlert`)
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
+                    <FormInputContainer
+                      padding={'0 0 .8rem 0'}
+                      haveTooltip={true}
+                      tooltipText={
+                        <img
+                          style={{ width: '40rem', height: '42rem' }}
+                          src={MessageImg}
+                        />
+                      }
+                      title={
+                        <span>
+                          paste it into{' '}
+                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                          field when creating tv alert
+                        </span>
+                      }
+                    >
+                      <InputRowContainer>
+                        <Input
+                          width={'65%'}
+                          type={'text'}
+                          disabled={true}
+                          textAlign={'left'}
+                          value={`{\\"token\\": \\"${
+                            entryPoint.TVAlert.templateToken
+                          }\\"}`}
+                        />
+                        {/* entryPoint.TVAlert.templateToken */}
+                        <BtnCustom
+                          btnWidth="calc(15% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            copy(
+                              `{\\"token\\": \\"${
+                                entryPoint.TVAlert.templateToken
+                              }\\"}`
+                            )
+                          }}
+                        >
+                          copy
+                        </BtnCustom>
+                        <BtnCustom
+                          btnWidth="calc(20% - .8rem)"
+                          height="auto"
+                          margin="0 0 0 .8rem"
+                          fontSize="1rem"
+                          padding=".5rem 0 .4rem 0"
+                          borderRadius=".8rem"
+                          btnColor={'#0B1FD1'}
+                          backgroundColor={'#fff'}
+                          hoverColor={'#fff'}
+                          hoverBackground={'#0B1FD1'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            // redirect to full example page
+                          }}
+                        >
+                          example
+                        </BtnCustom>
+                      </InputRowContainer>
+                    </FormInputContainer>
                   </>
                 )}
 
