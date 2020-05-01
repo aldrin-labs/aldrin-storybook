@@ -265,7 +265,7 @@ class SimpleTabs extends React.Component {
                   firstHalfText={'one-way'}
                   secondHalfText={'hedge'}
                   secondHalfTooltip={
-                    'You can open the long and short at the same time. Just turn on hedge mode and open opposite positions.'
+                    'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
                   }
                   activeHalf={hedgeMode ? 'second' : 'first'}
                   buttonAdditionalStyle={{
