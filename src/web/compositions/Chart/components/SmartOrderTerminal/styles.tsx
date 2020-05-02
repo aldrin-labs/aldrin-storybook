@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { HeaderProperties, BlockProperties, InputRowProps } from './types'
+import Switch from '@material-ui/core/Switch'
 
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
@@ -172,5 +173,13 @@ export const AdditionalSettingsButton = styled(
     height: calc(2.5rem - 0.5rem);
     font-size: 1.1rem;
     padding-top: 0.2rem;
+  }
+`
+
+export const StyledSwitch = styled(Switch)`
+  height: 3rem;
+
+  & > span:first-child {
+    height: 3rem;
   }
 `
