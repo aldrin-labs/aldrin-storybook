@@ -23,6 +23,23 @@ export type EntryPointType = {
     deviationPercentage: number
     trailingDeviationPrice: number
   }
+  TVAlert: {
+    isTVAlertOn: boolean
+    templateMode: string
+    templateToken: string
+    plotEnabled: boolean
+    immediateEntry: boolean
+    sidePlotEnabled: boolean
+    sidePlot: string | number
+    typePlotEnabled: boolean
+    typePlot: string | number
+    pricePlotEnabled: boolean
+    pricePlot: string | number
+    amountPlotEnabled: boolean
+    amountPlot: string | number
+    deviationPlotEnabled: boolean
+    deviationPlot: string | number
+  }
 }
 
 export type TakeProfitType = {
