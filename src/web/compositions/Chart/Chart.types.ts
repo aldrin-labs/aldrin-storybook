@@ -34,6 +34,7 @@ export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
   }
   getTradingSettings: {
     selectedTradingKey: string | null
+    hedgeMode: boolean | null
   }
 }
 
