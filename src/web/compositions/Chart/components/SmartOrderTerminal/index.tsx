@@ -1251,7 +1251,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
 
                     if (
-                      getSecondValueFromFirst(entryPoint.order.side) === 'limit'
+                      getSecondValueFromFirst(entryPoint.order.type) === 'limit'
                     ) {
                       this.updateSubBlockValue(
                         'entryPoint',
@@ -1369,6 +1369,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             'isTrailingOn',
                             !entryPoint.trailing.isTrailingOn
                           )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'TVAlert',
+                            'immediateEntry',
+                            false
+                          )
                         }}
                       >
                         Trailing {entryPoint.order.side}
@@ -1390,6 +1397,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           'isTVAlertOn',
                           !entryPoint.TVAlert.isTVAlertOn
                         )
+
+                        if (entryPoint.TVAlert.isTVAlertOn) {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'TVAlert',
+                            'plotEnabled',
+                            false
+                          )
+                        }
                       }}
                     >
                       Entry by TV Alert
@@ -1546,6 +1562,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                             this.updateSubBlockValue(
                               'entryPoint',
+                              'trailing',
+                              'isTrailingOn',
+                              false
+                            )
+
+                            this.updateSubBlockValue(
+                              'entryPoint',
                               'TVAlert',
                               'immediateEntry',
                               !entryPoint.TVAlert.immediateEntry
@@ -1603,7 +1626,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       disabled={
                         (entryPoint.order.type === 'market' &&
                           !entryPoint.trailing.isTrailingOn) ||
-                        entryPoint.TVAlert.pricePlotEnabled
+                        (entryPoint.TVAlert.pricePlotEnabled &&
+                          entryPoint.TVAlert.plotEnabled)
                       }
                       onChange={(e) => {
                         this.updateSubBlockValue(
@@ -1708,7 +1732,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         disabled={
                           (entryPoint.order.type === 'market' &&
                             !entryPoint.trailing.isTrailingOn) ||
-                          entryPoint.TVAlert.deviationPlotEnabled
+                          (entryPoint.TVAlert.deviationPlotEnabled &&
+                            entryPoint.TVAlert.plotEnabled)
                         }
                         inputStyles={{
                           paddingLeft: '1rem',
@@ -1901,7 +1926,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         symbol={pair[0]}
                         value={entryPoint.order.amount}
                         showErrors={showErrors}
-                        disabled={entryPoint.TVAlert.amountPlotEnabled}
+                        disabled={
+                          entryPoint.TVAlert.amountPlotEnabled &&
+                          entryPoint.TVAlert.plotEnabled
+                        }
                         isValid={this.validateField(
                           true,
                           +entryPoint.order.amount
@@ -1990,7 +2018,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         disabled={
                           entryPoint.trailing.isTrailingOn ||
                           entryPoint.order.type === 'market' ||
-                          entryPoint.TVAlert.amountPlotEnabled
+                          (entryPoint.TVAlert.amountPlotEnabled &&
+                            entryPoint.TVAlert.plotEnabled)
                         }
                         onChange={(e) => {
                           this.updateSubBlockValue(
