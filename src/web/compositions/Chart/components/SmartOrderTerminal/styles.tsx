@@ -183,3 +183,75 @@ export const StyledSwitch = styled(Switch)`
     height: 3rem;
   }
 `
+
+const IOSSwitcherContainer = styled.div`
+  .el-switch {
+    display: inline-block;
+    font-size: 100%;
+    height: 1.6em;
+    position: relative;
+    .el-switch-style {
+      height: 1.6em;
+      left: 0;
+      background: #c0ccda;
+      -webkit-border-radius: 0.8em;
+      border-radius: 0.8em;
+      display: inline-block;
+      position: relative;
+      top: 0;
+      -webkit-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+      width: 3em;
+      cursor: pointer;
+      &:before {
+        display: block;
+        content: '';
+        height: 1.4em;
+        position: absolute;
+        width: 1.4em;
+        background-color: #fff;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+        left: 0.1em;
+        top: 0.1em;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+    }
+    & > input[type='checkbox'] {
+      display: none;
+      &[disabled] + .el-switch-style {
+        cursor: not-allowed;
+        background-color: #d3dce6;
+      }
+      &:checked + .el-switch-style {
+        background-color: #20a0fd;
+        &:before {
+          left: 50%;
+        }
+      }
+    }
+  }
+`
+
+export const Switcher = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean
+  onChange: () => void
+}) => {
+  return (
+    <IOSSwitcherContainer>
+      <label className="el-switch">
+        <input
+          checked={checked}
+          onChange={onChange}
+          type="checkbox"
+          name="switch"
+        />
+        <span className="el-switch-style" />
+      </label>
+    </IOSSwitcherContainer>
+  )
+}
