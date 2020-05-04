@@ -78,6 +78,8 @@ const PillowButton = ({
   secondHalfComponent,
   firstHalfTooltip = '',
   secondHalfTooltip = '',
+  firstHalfDisabled = false,
+  secondHalfDisabled = false,
 }: {
   firstHalfText: string
   secondHalfText: string
@@ -95,6 +97,8 @@ const PillowButton = ({
     | ((props: any) => React.ReactElement<any>)
   firstHalfTooltip?: string
   secondHalfTooltip?: string
+  firstHalfDisabled?: boolean
+  secondHalfDisabled?: boolean
 }) => {
   const firstHalfIsActive = activeHalf === 'first'
 
@@ -104,7 +108,7 @@ const PillowButton = ({
         <DarkTooltip title={firstHalfTooltip}>
           <FirstHalfButton
             component={firstHalfComponent}
-            isDisabled={!firstHalfIsActive}
+            isDisabled={firstHalfDisabled || !firstHalfIsActive}
             onClick={() => !firstHalfIsActive && changeHalf()}
             firstHalfAdditionalStyle={firstHalfAdditionalStyle}
             buttonAdditionalStyle={buttonAdditionalStyle}
@@ -115,7 +119,7 @@ const PillowButton = ({
       ) : (
         <FirstHalfButton
           component={firstHalfComponent}
-          isDisabled={!firstHalfIsActive}
+          isDisabled={firstHalfDisabled || !firstHalfIsActive}
           onClick={() => !firstHalfIsActive && changeHalf()}
           firstHalfAdditionalStyle={firstHalfAdditionalStyle}
           buttonAdditionalStyle={buttonAdditionalStyle}
@@ -127,7 +131,7 @@ const PillowButton = ({
         <DarkTooltip title={secondHalfTooltip}>
           <SecondHalfButton
             component={secondHalfComponent}
-            isDisabled={firstHalfIsActive}
+            isDisabled={secondHalfDisabled || firstHalfIsActive}
             onClick={() => firstHalfIsActive && changeHalf()}
             secondHalfAdditionalStyle={secondHalfAdditionalStyle}
             buttonAdditionalStyle={buttonAdditionalStyle}
@@ -138,7 +142,7 @@ const PillowButton = ({
       ) : (
         <SecondHalfButton
           component={secondHalfComponent}
-          isDisabled={firstHalfIsActive}
+          isDisabled={secondHalfDisabled || firstHalfIsActive}
           onClick={() => firstHalfIsActive && changeHalf()}
           secondHalfAdditionalStyle={secondHalfAdditionalStyle}
           buttonAdditionalStyle={buttonAdditionalStyle}
