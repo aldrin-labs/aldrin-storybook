@@ -13,6 +13,7 @@ export type EntryPointType = {
     amount: number
     total: number
     leverage: number
+    hedgeMode: boolean
     isHedgeOn: boolean
     hedgePrice: number
     hedgeIncrease: number | string
@@ -33,6 +34,8 @@ export type EntryPointType = {
     sidePlot: string | number
     typePlotEnabled: boolean
     typePlot: string | number
+    hedgeModePlotEnabled: boolean
+    hedgeModePlot: string | number
     pricePlotEnabled: boolean
     pricePlot: string | number
     amountPlotEnabled: boolean
