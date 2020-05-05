@@ -32,7 +32,7 @@ export interface IProps {
 const WithdrawalLimits = ({
   selectedCoin,
   getAssetDetailQuery,
-  coinAmount,
+  coinAmount = '0',
   amountError,
   isInternalTransfer,
 }: IProps) => {
@@ -45,7 +45,7 @@ const WithdrawalLimits = ({
   const transactionFee = withdrawFee || 0
   const amountGet = +coinAmount - transactionFee
   const actualAmountGet = +coinAmount > transactionFee ? amountGet : 0
-  const finalAmount = isInternalTransfer ? coinAmount : actualAmountGet
+  const finalAmount = isInternalTransfer ? +coinAmount : actualAmountGet
 
   return (
     <>
@@ -56,7 +56,11 @@ const WithdrawalLimits = ({
           Minimum Withdrawal: {minimalWithdrawalAmount} {selectedCoin.label}
         </StyledTypographyCaption>
       )}
-      <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
+      <Grid
+        item
+        id="fee_block"
+        style={{ padding: isInternalTransfer ? '' : '3rem 0 1rem 0' }}
+      >
         {!isInternalTransfer && (
           <Grid container>
             <StyledTypography>Transaction fee:</StyledTypography>
