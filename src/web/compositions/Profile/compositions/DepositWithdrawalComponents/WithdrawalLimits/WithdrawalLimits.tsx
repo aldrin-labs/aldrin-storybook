@@ -26,7 +26,7 @@ export interface IProps {
     }
   }
   amountError: boolean
-  showFee: boolean
+  isInternalTransfer: boolean
 }
 
 const WithdrawalLimits = ({
@@ -34,7 +34,7 @@ const WithdrawalLimits = ({
   getAssetDetailQuery,
   coinAmount,
   amountError,
-  showFee,
+  isInternalTransfer,
 }: IProps) => {
   const { getAssetDetail } = getAssetDetailQuery
   const { minWithdrawAmount = 0, withdrawFee = 0 } = getAssetDetail || {
@@ -45,16 +45,19 @@ const WithdrawalLimits = ({
   const transactionFee = withdrawFee || 0
   const amountGet = +coinAmount - transactionFee
   const actualAmountGet = +coinAmount > transactionFee ? amountGet : 0
+  const finalAmount = isInternalTransfer ? coinAmount : actualAmountGet
 
   return (
     <>
-      <StyledTypographyCaption
-        style={{ paddingTop: '0.2rem', color: amountError ? '#DD6956' : '' }}
-      >
-        Minimum Withdrawal: {minimalWithdrawalAmount} {selectedCoin.label}
-      </StyledTypographyCaption>
+      {!isInternalTransfer && (
+        <StyledTypographyCaption
+          style={{ paddingTop: '0.2rem', color: amountError ? '#DD6956' : '' }}
+        >
+          Minimum Withdrawal: {minimalWithdrawalAmount} {selectedCoin.label}
+        </StyledTypographyCaption>
+      )}
       <Grid item id="fee_block" style={{ padding: '3rem 0 1rem 0' }}>
-        {showFee && (
+        {!isInternalTransfer && (
           <Grid container>
             <StyledTypography>Transaction fee:</StyledTypography>
             <StyledTypography style={{ color: '#16253D', marginLeft: '1rem' }}>
@@ -65,7 +68,7 @@ const WithdrawalLimits = ({
         <Grid container>
           <StyledTypography>You will get:</StyledTypography>
           <StyledTypography style={{ color: '#16253D', marginLeft: '1rem' }}>
-            {actualAmountGet.toFixed(8)} {selectedCoin.label}
+            {finalAmount.toFixed(8)} {selectedCoin.label}
           </StyledTypography>
         </Grid>
       </Grid>
@@ -78,7 +81,7 @@ const WithdrawalLimitsDataWrapper = ({
   selectedCoin,
   coinAmount,
   amountError,
-  showFee,
+  isInternalTransfer,
 }: {
   selectedKey: string
   selectedCoin: {
@@ -87,7 +90,7 @@ const WithdrawalLimitsDataWrapper = ({
   }
   coinAmount: string
   amountError: boolean
-  showFee: boolean
+  isInternalTransfer: boolean
 }) => {
   const WrappedComponent = compose(
     queryRendererHoc({
@@ -110,7 +113,7 @@ const WithdrawalLimitsDataWrapper = ({
       selectedCoin={selectedCoin}
       coinAmount={coinAmount}
       amountError={amountError}
-      showFee={showFee}
+      isInternalTransfer={isInternalTransfer}
     />
   )
 }
