@@ -204,6 +204,7 @@ export default function defaultRowRenderer({
           ? 'rgba(68, 204, 255, 0.5)'
           : '',
         cursor: 'default',
+        outline: 'none',
         '&:focus': {
           outline: 'none',
         },

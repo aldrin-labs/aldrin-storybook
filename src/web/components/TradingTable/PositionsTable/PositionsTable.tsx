@@ -22,6 +22,7 @@ import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { modifyIsolatedMargin } from '@core/graphql/mutations/chart/modifyIsolatedMargin'
+import { setPositionWasClosed } from '@core/graphql/mutations/strategies/setPositionWasClosed'
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
@@ -132,6 +133,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       cancelOrder,
       marketType,
       showOrderResult,
+      setPositionWasClosedMutation
     } = this.props
 
     const positionsData = combinePositionsTable({
@@ -155,6 +157,14 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     const result = await this.createOrder(variables)
     await showOrderResult(result, cancelOrder, marketType)
+    // here we disable SM if you closed position manually 
+    setPositionWasClosedMutation({ 
+      variables: { 
+        keyId: selectedKey.keyId, 
+        pair: variables.keyParams.symbol, 
+        side: variables.keyParams.side === 'buy' ? 'sell' : 'buy' 
+      }
+    })
   }
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
@@ -748,5 +758,6 @@ export default compose(
   graphql(updatePosition, { name: 'updatePositionMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(createOrder, { name: 'createOrderMutation' }),
-  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' })
+  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' }),
+  graphql(setPositionWasClosed, { name: 'setPositionWasClosedMutation' })
 )(MemoizedWrapper)

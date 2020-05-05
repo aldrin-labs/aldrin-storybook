@@ -1175,11 +1175,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <Input
                       type={'number'}
                       needTitle
-                      title={`your plot_`}
+                      title={`plot_`}
                       textAlign="left"
                       width={'calc(20% - .8rem)'}
                       inputStyles={{
-                        paddingLeft: '7rem',
+                        paddingLeft: '4rem',
                       }}
                       disabled={!entryPoint.TVAlert.sidePlotEnabled}
                       value={entryPoint.TVAlert.sidePlot}
@@ -1309,11 +1309,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <Input
                       type={'number'}
                       needTitle
-                      title={`your plot_`}
+                      title={`plot_`}
                       textAlign="left"
                       width={'calc(20% - .8rem)'}
                       inputStyles={{
-                        paddingLeft: '7rem',
+                        paddingLeft: '4rem',
                       }}
                       disabled={!entryPoint.TVAlert.typePlotEnabled}
                       value={entryPoint.TVAlert.typePlot}
@@ -1387,11 +1387,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <Input
                       type={'number'}
                       needTitle
-                      title={`your plot_`}
+                      title={`plot_`}
                       textAlign="left"
                       width={'calc(20% - .8rem)'}
                       inputStyles={{
-                        paddingLeft: '7rem',
+                        paddingLeft: '4rem',
                       }}
                       disabled={!entryPoint.TVAlert.hedgeModePlotEnabled}
                       value={entryPoint.TVAlert.hedgeModePlot}
@@ -1774,11 +1774,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         <Input
                           type={'number'}
                           needTitle
-                          title={`your plot_`}
+                          title={`plot_`}
                           textAlign="left"
                           width={'calc(20% - .8rem)'}
                           inputStyles={{
-                            paddingLeft: '7rem',
+                            paddingLeft: '4rem',
                           }}
                           disabled={!entryPoint.TVAlert.pricePlotEnabled}
                           value={entryPoint.TVAlert.pricePlot}
@@ -1955,11 +1955,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           <Input
                             type={'number'}
                             needTitle
-                            title={`your plot_`}
+                            title={`plot_`}
                             textAlign="left"
                             width={'calc(20% - .8rem)'}
                             inputStyles={{
-                              paddingLeft: '7rem',
+                              paddingLeft: '4rem',
                             }}
                             disabled={!entryPoint.TVAlert.deviationPlotEnabled}
                             value={entryPoint.TVAlert.deviationPlot}
@@ -2167,11 +2167,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <Input
                         type={'number'}
                         needTitle
-                        title={`your plot_`}
+                        title={`plot_`}
                         textAlign="left"
                         width={'calc(20% - .8rem)'}
                         inputStyles={{
-                          paddingLeft: '7rem',
+                          paddingLeft: '4rem',
                         }}
                         disabled={!entryPoint.TVAlert.amountPlotEnabled}
                         value={entryPoint.TVAlert.amountPlot}
@@ -2829,10 +2829,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           <Input
                             type={'number'}
                             needTitle
-                            title={`your plot_`}
+                            title={`plot_`}
                             textAlign="left"
                             inputStyles={{
-                              paddingLeft: '7rem',
+                              paddingLeft: '4rem',
                             }}
                             value={stopLoss.plot}
                             showErrors={showErrors}
@@ -4053,10 +4053,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         <Input
                           type={'number'}
                           needTitle
-                          title={`your plot_`}
+                          title={`plot_`}
                           textAlign="left"
                           inputStyles={{
-                            paddingLeft: '7rem',
+                            paddingLeft: '4rem',
                           }}
                           value={takeProfit.plot}
                           showErrors={showErrors}
