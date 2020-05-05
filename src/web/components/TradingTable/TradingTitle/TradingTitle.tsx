@@ -86,8 +86,8 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           <DateRangePicker
             withPortal={true}
             isOutsideRange={(date: any) =>
-              date.isBefore(minimumDate, 'day') ||
-              date.isAfter(maximumDate, 'day')
+              date.isBefore(moment(+minimumDate), 'day') ||
+              date.isAfter(moment(+maximumDate), 'day')
             }
             startDate={moment(+startDate)} // momentPropTypes.momentObj or null,
             startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
