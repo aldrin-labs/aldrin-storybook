@@ -442,9 +442,9 @@ const InternalTransferAccountBlock = ({
         />
       </Grid>
     </Grid>
-    <Grid item id="description_block" style={{ }}>
+    {/* <Grid item id="description_block" style={{ }}>
       <Typography>This feature is allowed only for broker's accounts</Typography>
-    </Grid>
+    </Grid> */}
   </Grid>
 )
 
