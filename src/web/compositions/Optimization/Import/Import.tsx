@@ -458,8 +458,8 @@ export default class Import extends PureComponent<IProps> {
                     >
                       <DateRangePicker
                         isOutsideRange={(date: typeof dayjs) =>
-                          date.isBefore(minimumDate, 'day') ||
-                          date.isAfter(maximumDate, 'day')
+                          date.isBefore(moment(+minimumDate), 'day') ||
+                          date.isAfter(moment(+maximumDate), 'day')
                         }
                         startDate={moment(+this.state.startDate)} // momentPropTypes.momentObj or null,
                         startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,

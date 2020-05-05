@@ -48,8 +48,8 @@ class ChoosePeriod extends Component<IProps> {
           <DateRangePicker
             withPortal={true}
             isOutsideRange={(date: any) =>
-              date.isBefore(minimumDate, 'day') ||
-              date.isAfter(maximumDate, 'day')
+              date.isBefore(moment(+minimumDate), 'day') ||
+              date.isAfter(moment(+maximumDate), 'day')
             }
             showDefaultInputIcon={true}
             customArrowIcon="-"
