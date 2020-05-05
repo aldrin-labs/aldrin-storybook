@@ -212,7 +212,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
               >
                 <SelectCoinList
                   classNamePrefix="custom-select-box"
-                  isSearchable={false}
+                  isSearchable={true}
                   components={{
                     Option: CoinOption,
                     SingleValue: CoinSingleValue,
@@ -325,7 +325,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
               </Grid>
               <Grid style={{ height: '8.5rem', overflow: 'hidden' }}>
                 <WithdrawalLimits
-                  showFee={false}
+                  isInternalTransfer={true}
                   amountError={amountError}
                   selectedKey={selectedKeyFrom.value}
                   selectedCoin={selectedCoin}
