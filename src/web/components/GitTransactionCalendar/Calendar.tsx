@@ -36,6 +36,9 @@ const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
     date,
   } = squareDayInfo
 
+
+  const pnlAfterFee = (realizedPnlSum || 0).toFixed(5) - (USDTFee || 0).toFixed(5)
+
   return (
     <SquarePopup ref={inputRef}>
       <PopupDateContainer>
@@ -60,12 +63,14 @@ const SquarePopupTooltip = ({ squareDayInfo, isSPOTCurrently, inputRef }) => {
         {!isSPOTCurrently && (
           <>
             <PopupInfoBlock>
-              <PopupInfoTitle>USDT Fee</PopupInfoTitle>
-              <PopupInfoValue>{(+USDTFee).toFixed(5)}</PopupInfoValue>
+              <PopupInfoTitle>P&L after fee</PopupInfoTitle>
+              <PopupInfoValue>
+                {getFormattedProfit((+pnlAfterFee).toFixed(5))}
+              </PopupInfoValue>
             </PopupInfoBlock>
             <PopupInfoBlock>
-              <PopupInfoTitle>BNB Fee</PopupInfoTitle>
-              <PopupInfoValue>{(+BNBFee).toFixed(5)}</PopupInfoValue>
+              <PopupInfoTitle>USDT Fee</PopupInfoTitle>
+              <PopupInfoValue>{(+USDTFee).toFixed(5)}</PopupInfoValue>
             </PopupInfoBlock>
           </>
         )}
