@@ -72,6 +72,11 @@ class Block extends PureComponent<IProps> {
     const pnlColor =
       realizedPnl > 0 ? '#29AC80' : realizedPnl < 0 ? '#DD6956' : ''
     const pnlSymbol = realizedPnl > 0 ? '+' : realizedPnl < 0 ? '-' : ''
+    const pnlAfterFees = stripDigitPlaces(realizedPnl) - stripDigitPlaces(fee.usdt)
+    const pnlAfterFeesSymbol =
+      pnlAfterFees > 0 ? '+' : pnlAfterFees < 0 ? '-' : ''
+    const pnlAfterFeesColor =
+      pnlAfterFees > 0 ? '#29AC80' : pnlAfterFees < 0 ? '#DD6956' : ''
 
     return (
       <TransactionActions>
@@ -97,9 +102,18 @@ class Block extends PureComponent<IProps> {
                 </TransactionActionsSubTypography>
               </TransactionActionsAction>
               <TransactionActionsAction>
-                <TransactionActionsHeading>Fee USDT</TransactionActionsHeading>
-                <TransactionActionsSubTypography>
-                  {formatNumberToUSFormat(stripDigitPlaces(fee.usdt))}
+                <TransactionActionsHeading>
+                  P&L after fee
+                </TransactionActionsHeading>
+                <TransactionActionsSubTypography
+                  style={{
+                    color: pnlAfterFeesColor,
+                  }}
+                >
+                  {`${pnlAfterFeesSymbol} `}
+                  {formatNumberToUSFormat(
+                    stripDigitPlaces(Math.abs(pnlAfterFees))
+                  )}
                 </TransactionActionsSubTypography>
               </TransactionActionsAction>
             </TransactionsActionsActionWrapper>
@@ -114,9 +128,9 @@ class Block extends PureComponent<IProps> {
                 </TransactionActionsSubTypography>
               </TransactionActionsAction>
               <TransactionActionsAction>
-                <TransactionActionsHeading>Fee BNB</TransactionActionsHeading>
+                <TransactionActionsHeading>Fee USDT</TransactionActionsHeading>
                 <TransactionActionsSubTypography>
-                  {formatNumberToUSFormat(stripDigitPlaces(fee.bnb))}
+                  {formatNumberToUSFormat(stripDigitPlaces(fee.usdt))}
                 </TransactionActionsSubTypography>
               </TransactionActionsAction>
             </TransactionsActionsActionWrapper>
