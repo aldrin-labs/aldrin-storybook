@@ -56,7 +56,7 @@ import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
-
+import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 @withTheme()
 class ActiveTradesTable extends React.Component<IProps, IState> {
   state: IState = {
@@ -198,7 +198,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
     this.subscription = client
       .subscribe({
-        query: LISTEN_TABLE_PRICE,
+        query: this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
         variables: {
           input: {
             exchange: this.props.exchange,
@@ -210,7 +210,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       .subscribe({
         next: (data: {
           loading: boolean
-          data: { listenTablePrice: Price[] }
+          data: { listenTablePrice: Price[], listenMarkPrices: Price[] }
         }) => {
           const orders = that.props.getActiveStrategiesQuery.getActiveStrategies
             .filter(
@@ -241,6 +241,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             pricePrecision,
           } = that.props
 
+          const subscriptionPropertyKey = marketType === 1 ? `listenTablePrice` : `listenMarkPrices`
+
           const activeStrategiesProcessedData = combineActiveTradesTable({
             data: orders,
             cancelOrderFunc: this.cancelOrderWithStatus,
@@ -248,7 +250,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             editTrade: this.editTrade,
             theme,
             keys,
-            prices: data.data.listenTablePrice,
+            prices: data.data[subscriptionPropertyKey],
             marketType,
             currencyPair,
             pricePrecision,
@@ -257,7 +259,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
           that.setState({
             activeStrategiesProcessedData,
-            prices: data.data.listenTablePrice,
+            prices: data.data[subscriptionPropertyKey],
           })
         },
       })
