@@ -37,9 +37,7 @@ import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
-import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
-import { LISTEN_TERMINAL_PRICE } from '@core/graphql/subscriptions/LISTEN_TERMINAL_PRICE'
-import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
+import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 
 import { EditMarginPopup } from './EditMarginPopup'
 
@@ -291,7 +289,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     this.subscription = client
       .subscribe({
-        query: LISTEN_TABLE_PRICE,
+        query: LISTEN_MARK_PRICES,
         variables: {
           input: {
             exchange: this.props.exchange,
@@ -333,7 +331,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             toogleEditMarginPopup: that.toogleEditMarginPopup,
             theme,
             keys,
-            prices: data.data.listenTablePrice,
+            prices: data.data.listenMarkPrices,
             pair: currencyPair,
             keyId: selectedKey.keyId,
             canceledPositions: canceledOrders,
@@ -344,7 +342,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
           that.setState({
             positionsData,
-            prices: data.data.listenTablePrice,
+            prices: data.data.listenMarkPrices,
           })
         },
       })
