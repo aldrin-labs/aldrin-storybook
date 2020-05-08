@@ -278,14 +278,12 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     const pairs = this.props.getActivePositionsQuery.getActivePositions
       .map((position) => {
         if (position.positionAmt !== 0) {
-          return `${position.symbol}:${this.props.marketType}`
+          return `${position.symbol}`
         }
 
         return
       })
       .filter((a) => !!a)
-
-    console.log('pairs', pairs)
 
     this.subscription = client
       .subscribe({

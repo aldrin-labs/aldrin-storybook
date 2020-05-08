@@ -575,7 +575,7 @@ export const combineActiveTradesTable = ({
   changeStatusWithStatus,
   editTrade,
   theme,
-  prices,
+  prices = [],
   marketType,
   currencyPair,
   pricePrecision,

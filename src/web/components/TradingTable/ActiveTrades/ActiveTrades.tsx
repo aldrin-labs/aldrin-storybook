@@ -196,13 +196,24 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       })
       .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
 
+    const pairsWithoutMarketType = this.props.getActiveStrategiesQuery.getActiveStrategies
+    .map((strategy) => {
+      if (strategy.enabled) {
+        return `${strategy.conditions.pair}`
+      }
+
+      return
+    })
+    .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
+
+
     this.subscription = client
       .subscribe({
         query: this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
         variables: {
           input: {
             exchange: this.props.exchange,
-            pairs,
+            pairs: this.props.marketType === 1 ? pairsWithoutMarketType : pairs,
           },
         },
         fetchPolicy: 'cache-only',
@@ -241,8 +252,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             pricePrecision,
           } = that.props
 
-          const subscriptionPropertyKey = marketType === 1 ? `listenTablePrice` : `listenMarkPrices`
-
+          const subscriptionPropertyKey = marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
+          
           const activeStrategiesProcessedData = combineActiveTradesTable({
             data: orders,
             cancelOrderFunc: this.cancelOrderWithStatus,
