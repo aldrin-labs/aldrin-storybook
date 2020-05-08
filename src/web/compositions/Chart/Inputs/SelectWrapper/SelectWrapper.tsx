@@ -9,7 +9,7 @@ import 'react-virtualized/styles.css'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import stableCoins from '@core/config/stableCoins'
+import stableCoins, { fiatPairs, stableCoinsWithoutFiatPairs } from '@core/config/stableCoins'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
@@ -67,8 +67,11 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     const { getMarketsByExchange = [] } = marketsByExchangeQuery || {
       getMarketsByExchange: [],
     }
+
+    const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
+
     const filtredMarketsByExchange = getMarketsByExchange.filter(
-      (el) => +el.volume24hChange && +el.price
+      (el) => +el.volume24hChange && +el.price && !Array.isArray(el.symbol.match(fiatRegexp))
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
@@ -338,7 +341,7 @@ class SelectPairListComponent extends React.PureComponent<
                     placeholder="ALL"
                     onChange={onSpecificCoinChange}
                     options={[
-                      ...stableCoins.map((el) => ({
+                      ...stableCoinsWithoutFiatPairs.map((el) => ({
                         value: el,
                         label: el,
                       })),
@@ -349,7 +352,7 @@ class SelectPairListComponent extends React.PureComponent<
                         ? { label: 'ALL', value: 'ALL' }
                         : tabSpecificCoin === 'ALL'
                         ? { label: 'ALL', value: 'ALL' }
-                        : !stableCoins.includes(tabSpecificCoin)
+                        : !stableCoinsWithoutFiatPairs.includes(tabSpecificCoin)
                         ? { label: 'ALL', value: 'ALL' }
                         : undefined
                     }
