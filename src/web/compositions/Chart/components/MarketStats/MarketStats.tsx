@@ -102,7 +102,9 @@ class MarketStats extends React.PureComponent<IProps> {
           <PanelCardTitle>Last price</PanelCardTitle>
           <span>
             <PanelCardValue>
-              {formatNumberToUSFormat(stripDigitPlaces(lastPrice, roundingPrecision))}
+              {formatNumberToUSFormat(
+                stripDigitPlaces(lastPrice, roundingPrecision)
+              )}
             </PanelCardValue>
             {/* <PanelCardSubValue>$9964.01</PanelCardSubValue> */}
           </span>
@@ -118,7 +120,9 @@ class MarketStats extends React.PureComponent<IProps> {
                   : theme.customPalette.red.main
               }
             >
-              {formatNumberToUSFormat(stripDigitPlaces(priceChange, roundingPrecision))}
+              {formatNumberToUSFormat(
+                stripDigitPlaces(priceChange, roundingPrecision)
+              )}
             </PanelCardValue>
             <PanelCardSubValue
               color={
