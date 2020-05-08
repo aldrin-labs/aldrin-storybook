@@ -4,7 +4,7 @@ import { Paper, MenuItem, Button } from '@material-ui/core'
 
 export const StyledLink = styled(NavLink)`
   color: #7284a0;
-  padding: 1.5rem 0 1.5rem 15%;
+  padding: 1.5rem 0 1.5rem 10%;
   font-size: 11px;
   display: flex;
   align-items: center;

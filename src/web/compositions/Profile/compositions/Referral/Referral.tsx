@@ -9,9 +9,15 @@ import { CALLBACK_URL_FOR_AUTH0 } from '@core/utils/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getReferralCode } from '@core/graphql/queries/user/getReferralCode'
 import { getReferrals } from '@core/graphql/queries/user/getReferrals'
+import { getFeeCashbackDaysLeft } from '@core/graphql/queries/profile/getFeeCashbackDaysLeft'
 import { registerSharedReferralLink } from '@core/graphql/mutations/user/registerSharedReferralLink'
 
-import { StyledInputReferral } from './Referral.styles'
+import {
+  StyledInputReferral,
+  CircleNumber,
+  Subtitle,
+  StyledSubtitle,
+} from './Referral.styles'
 import { IProps } from './Referral.types'
 import {
   ProfileSettingsGrid,
@@ -31,6 +37,7 @@ const Referral = ({
   enqueueSnackbar,
   getReferralCodeQuery,
   getReferralsQuery,
+  getFeeCashbackDaysLeftQuery,
   registerSharedReferralLinkMutation,
 }: IProps) => {
   const {
@@ -95,10 +102,10 @@ const Referral = ({
       <Grid
         container
         justify="center"
-        alignItems="center"
+        alignItems="flex-start"
         style={{
           height: '100%',
-          padding: '5% 1%',
+          padding: '5% 1% 5% 10%',
           border: '2px solid #E0E5EC',
           boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
           borderRadius: '32px',
@@ -109,18 +116,47 @@ const Referral = ({
           container
           wrap="nowrap"
           justify="center"
-          alignItems="center"
+          alignItems="flex-start"
           direction="column"
           style={{
             height: '100%',
+            width: '60%',
           }}
         >
+          <Grid
+            container
+            justify="flex-start"
+            direction="row"
+            style={{
+              width: '100%',
+              paddingBottom: '5rem',
+            }}
+          >
+            <Grid style={{ width: '40%' }}>
+              <CircleNumber>1</CircleNumber>
+              <StyledSubtitle>Share referral link</StyledSubtitle>
+              <Subtitle>
+                Share your referral link and get 40% off your fees for an
+                additional 30 days even if no one signs-up from it.
+              </Subtitle>
+            </Grid>
+
+            <Grid style={{ width: '40%', marginLeft: '10%' }}>
+              <CircleNumber>2</CircleNumber>
+              <StyledSubtitle>Get cashback from your referrals</StyledSubtitle>
+              <Subtitle>
+                Get rewarded with up to 20% cashback of trading fees for any
+                sign-up via your referral link.
+              </Subtitle>
+            </Grid>
+          </Grid>
+
           <Grid
             container
             justify="center"
             direction="column"
             style={{
-              width: '60%',
+              width: '100%',
               paddingBottom: '2rem',
             }}
           >
@@ -156,7 +192,7 @@ const Referral = ({
             container
             justify="center"
             alignItems="center"
-            style={{ width: '60%', paddingBottom: '2rem' }}
+            style={{ width: '100%', paddingBottom: '2rem' }}
           >
             <StyledInputReferral value={refferralLink} />
             <Grid style={{ padding: '0 1rem' }}>
@@ -179,9 +215,21 @@ const Referral = ({
               </Button>
             </Grid>
           </Grid>
+        </Grid>
+        <Grid
+          container
+          wrap="nowrap"
+          justify="center"
+          alignItems="center"
+          direction="column"
+          style={{
+            height: '100%',
+            width: '40%',
+          }}
+        >
           <ProfileSettingsGrid
             title="Referrals"
-            width="60%"
+            width="80%"
             height="auto"
             style={{ overflow: 'scroll' }}
           >
@@ -212,6 +260,39 @@ const Referral = ({
               </Grid>
             </ProfileSettingsCentredBlock>
           </ProfileSettingsGrid>
+          <ProfileSettingsGrid
+            title="Fee cashback"
+            width="80%"
+            height="auto"
+            style={{ overflow: 'scroll', marginTop: '4rem' }}
+          >
+            <ProfileSettingsCentredBlock>
+              <Grid style={{ paddingTop: '2rem' }}>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '5rem',
+                    letterSpacing: '0.01em',
+                    color: '#235DCF',
+                  }}
+                >
+                  {getFeeCashbackDaysLeftQuery.getFeeCashbackDaysLeft}
+                </Typography>
+              </Grid>
+              <Grid style={{ paddingBottom: '2rem' }}>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '2.2rem',
+                    letterSpacing: '0.01em',
+                    color: '#16253D',
+                  }}
+                >
+                  Days left
+                </Typography>
+              </Grid>
+            </ProfileSettingsCentredBlock>
+          </ProfileSettingsGrid>
         </Grid>
       </Grid>
     </>
@@ -230,6 +311,13 @@ export default compose(
   queryRendererHoc({
     query: getReferralCode,
     name: 'getReferralCodeQuery',
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: false,
+    withTableLoader: false,
+  }),
+  queryRendererHoc({
+    query: getFeeCashbackDaysLeft,
+    name: 'getFeeCashbackDaysLeftQuery',
     fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
     withTableLoader: false,

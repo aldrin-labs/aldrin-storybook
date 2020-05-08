@@ -566,6 +566,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 selectedTrade.conditions.leverage)
     }
 
+    console.log('price', price)
+
     if (selectedTrade.state && !!selectedTrade.state.entryPrice) {
       price = selectedTrade.state.entryPrice
     }
@@ -642,15 +644,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           selectedTrade.conditions && (
             <EditEntryOrderPopup
               price={
-                (
-                  this.state.prices.find(
-                    (priceObj) =>
-                      priceObj.pair ===
-                      `${selectedTrade.conditions.pair}:${
-                        selectedTrade.conditions.marketType
-                      }:${this.props.exchange}`
-                  ) || { price: 0 }
-                ).price
+                this.getEntryPrice()
               }
               funds={processedFunds}
               quantityPrecision={quantityPrecision}
@@ -691,8 +685,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 const statusResult =
                   result &&
                   result.data &&
-                  result.data.updateEntryPoint &&
-                  result.data.updateEntryPoint.enabled === true
+                  result.data.updateEntryPoint 
                     ? {
                         status: 'success',
                         message: 'Smart order edit successful',
@@ -751,8 +744,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 const statusResult =
                   result &&
                   result.data &&
-                  result.data.updateTakeProfitStrategy &&
-                  result.data.updateTakeProfitStrategy.enabled === true
+                  result.data.updateTakeProfitStrategy
                     ? {
                         status: 'success',
                         message: 'Smart order edit successful',
@@ -807,8 +799,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               const statusResult =
                 result &&
                 result.data &&
-                result.data.updateStopLossStrategy &&
-                result.data.updateStopLossStrategy.enabled === true
+                result.data.updateStopLossStrategy
                   ? {
                       status: 'success',
                       message: 'Smart order edit successful',

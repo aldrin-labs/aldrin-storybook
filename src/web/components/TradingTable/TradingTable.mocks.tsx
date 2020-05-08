@@ -59,6 +59,7 @@ export const positionsColumnNames = (
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
   { label: 'Market Price', id: 'marketPrice' },
+  { label: 'Adl', id: 'adl' },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
   {
