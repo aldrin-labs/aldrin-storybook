@@ -58,7 +58,7 @@ export const positionsColumnNames = (
   // { label: 'M. Ratio', id: 'marginRation' },
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Market Price', id: 'marketPrice' },
+  { label: 'Mark Price', id: 'marketPrice' },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
   {
