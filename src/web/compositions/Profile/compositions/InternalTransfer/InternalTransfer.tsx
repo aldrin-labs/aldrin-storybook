@@ -350,19 +350,19 @@ const InternalTransfer = ({ ...props }: IProps) => {
                   onClick={async () => {
                     setLoading(true)
 
-                    const isCoinAmountIsEnoughToProcessTransaction = validateTransactionAmount(
-                      {
-                        amount: +coinAmount,
-                        transactionFee,
-                        minimalWithdrawalAmount,
-                      }
-                    )
+                    // const isCoinAmountIsEnoughToProcessTransaction = validateTransactionAmount(
+                    //   {
+                    //     amount: +coinAmount,
+                    //     transactionFee,
+                    //     minimalWithdrawalAmount,
+                    //   }
+                    // )
 
-                    if (!isCoinAmountIsEnoughToProcessTransaction) {
-                      setLoading(false)
-                      setAmountError(true)
-                      return
-                    }
+                    // if (!isCoinAmountIsEnoughToProcessTransaction) {
+                    //   setLoading(false)
+                    //   setAmountError(true)
+                    //   return
+                    // }
 
                     await processInternalTransferRequestHandler()
                     setLoading(false)
