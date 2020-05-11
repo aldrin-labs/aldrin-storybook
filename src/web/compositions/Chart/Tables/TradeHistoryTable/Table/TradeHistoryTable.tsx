@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import styled from 'styled-components'
 import { withTheme } from '@material-ui/styles'
 import { IProps, IState } from './TradeHistoryTable.types'
 
@@ -10,13 +11,20 @@ import { rowStyles } from '@core/utils/chartPageUtils'
 
 import defaultRowRenderer from '../../OrderBookTable/utils'
 
+const Wrapper = styled.div`
+  height: calc(100% - 3rem);
+  & .ReactVirtualized__Grid {
+    overflow: hidden !important;
+  }
+`
+
 @withTheme()
 class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
     const { data, updateTerminalPriceFromOrderbook } = this.props
 
     return (
-      <div style={{ height: 'calc(100% - 3rem)' }}>
+      <Wrapper>
         <AutoSizer>
           {({ width, height }: { width: number; height: number }) => (
             <Table
@@ -31,6 +39,9 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 borderBottom: '.1rem solid #e0e5ec',
                 fontSize: '1rem',
               }}
+              gridStyle={{
+                overflow: 'hidden',
+              }}
               width={width}
               height={height}
               rowCount={
@@ -38,7 +49,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                   ? +(height / 17).toFixed(0) - 1
                   : data.length
               }
-              rowHeight={17}
+              rowHeight={window.outerHeight / 60}
               rowGetter={({ index }) => data[index]}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
@@ -67,7 +78,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
             </Table>
           )}
         </AutoSizer>
-      </div>
+      </Wrapper>
     )
   }
 }

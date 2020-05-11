@@ -6,36 +6,11 @@ import Help from '@material-ui/icons/Help'
 import Reimport from '@icons/reimport.svg'
 import { Loading } from '@sb/components/index'
 import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const arrayOfSides = ['sell', 'buy']
 const arrayOfOrdersType = ['market', 'limit', 'stop']
 const arrayOforderStatus = ['finished', 'canceled']
-
-const StatusTooltip = () => {
-  return (
-    <TooltipContainer
-      translateX={'-45%'}
-      style={{ display: 'flex', alignItems: 'center', padding: '.4rem' }}
-    >
-      status
-      <Help
-        style={{
-          height: '1.5rem',
-          width: '1.5rem',
-          color: 'rgb(0, 93, 217)',
-          marginLeft: '.5rem',
-        }}
-      />
-      <Tooltip style={{ fontSize: '1rem ' }}>
-        <p>Preparing (while placing orders/waiting for act price)</p>
-        <p>Trailing entry (When trailing activated)</p>
-        <p>In loss (pnl less than 0)</p>
-        <p>In Profit (profit greater than 0)</p>
-        <p>Error (error has occured)</p>
-      </Tooltip>
-    </TooltipContainer>
-  )
-}
 
 export const tradingTableTabConfig = [
   'openOrders',
@@ -58,34 +33,32 @@ export const positionsColumnNames = (
   // { label: 'M. Ratio', id: 'marginRation' },
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Market Price', id: 'marketPrice' },
+  { label: 'Mark Price', id: 'marketPrice' },
+  { label: 'Adl', id: 'adl' },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
   {
     label: (
-      <TooltipCustom
-        title={`Update positions`}
-        component={
-          <div
-            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-          >
-            {positionsRefetchInProcess ? (
-              <Loading size={16} style={{ height: '16px' }} />
-            ) : (
-              <SvgIcon
-                alt="Update positions"
-                src={Reimport}
-                width="26px"
-                height="17px"
-                onClick={async () => {
-                  refetch()
-                  updatePositionsHandler()
-                }}
-              />
-            )}
-          </div>
-        }
-      />
+      <DarkTooltip title={`Update positions`}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+        >
+          {positionsRefetchInProcess ? (
+            <Loading size={16} style={{ height: '16px' }} />
+          ) : (
+            <SvgIcon
+              alt="Update positions"
+              src={Reimport}
+              width="26px"
+              height="17px"
+              onClick={async () => {
+                refetch()
+                updatePositionsHandler()
+              }}
+            />
+          )}
+        </div>
+      </DarkTooltip>
     ),
     id: 'refetch',
     isSortable: false,
@@ -100,29 +73,50 @@ export const activeTradesColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <TooltipCustom
-        title={`Take a profit`}
-        component={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            T-A-P
-            <Help
-              style={{
-                height: '1.5rem',
-                width: '1.5rem',
-                color: 'rgb(0, 93, 217)',
-                marginLeft: '.5rem',
-              }}
-            />
-          </div>
-        }
-      />
+      <DarkTooltip title={`Take a profit`}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          T-A-P
+          <Help
+            style={{
+              height: '1.5rem',
+              width: '1.5rem',
+              color: 'rgb(0, 93, 217)',
+              marginLeft: '.5rem',
+            }}
+          />
+        </div>
+      </DarkTooltip>
     ),
     id: 'takeProfit',
   },
   { label: 'Stop', id: 'stopLoss' },
   { label: 'Pnl/Roe', id: 'profit' },
   {
-    label: <StatusTooltip />,
+    label: (
+      <DarkTooltip
+        title={
+          <div>
+            <p>Preparing (while placing orders/waiting for act price)</p>
+            <p>Trailing entry (When trailing activated)</p>
+            <p>In loss (pnl less than 0)</p>
+            <p>In Profit (profit greater than 0)</p>
+            <p>Error (error has occured)</p>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          status
+          <Help
+            style={{
+              height: '1.5rem',
+              width: '1.5rem',
+              color: 'rgb(0, 93, 217)',
+              marginLeft: '.5rem',
+            }}
+          />
+        </div>
+      </DarkTooltip>
+    ),
     id: 'status',
   },
   { label: 'close', id: 'close', isSortable: false },
@@ -141,22 +135,19 @@ export const strategiesHistoryColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <TooltipCustom
-        title={`Take a profit`}
-        component={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            T-A-P
-            <Help
-              style={{
-                height: '1.5rem',
-                width: '1.5rem',
-                color: 'rgb(0, 93, 217)',
-                marginLeft: '.5rem',
-              }}
-            />
-          </div>
-        }
-      />
+      <DarkTooltip title={`Take a profit`}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          T-A-P
+          <Help
+            style={{
+              height: '1.5rem',
+              width: '1.5rem',
+              color: 'rgb(0, 93, 217)',
+              marginLeft: '.5rem',
+            }}
+          />
+        </div>
+      </DarkTooltip>
     ),
     id: 'takeProfit',
   },

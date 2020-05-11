@@ -62,3 +62,12 @@ export const PaginationBlock = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.1rem;
 `
+
+export const AdlIndicator = styled.div`
+  height: 2rem;
+  width: .5rem; 
+  border: .1rem solid ${props => props.color}; 
+  background: ${props => props.adl > props.i ? props.color : 'inherit'};
+  margin-right: .2rem;
+  border-radius: .1rem;
+`

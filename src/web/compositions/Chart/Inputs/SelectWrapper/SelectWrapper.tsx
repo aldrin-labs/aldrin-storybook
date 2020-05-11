@@ -9,7 +9,10 @@ import 'react-virtualized/styles.css'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import stableCoins, { fiatPairs, stableCoinsWithoutFiatPairs } from '@core/config/stableCoins'
+import stableCoins, {
+  fiatPairs,
+  stableCoinsWithoutFiatPairs,
+} from '@core/config/stableCoins'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
@@ -71,7 +74,10 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
     const filtredMarketsByExchange = getMarketsByExchange.filter(
-      (el) => +el.volume24hChange && +el.price && !Array.isArray(el.symbol.match(fiatRegexp))
+      (el) =>
+        +el.volume24hChange &&
+        +el.price &&
+        !Array.isArray(el.symbol.match(fiatRegexp))
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
@@ -534,12 +540,12 @@ export default compose(
       includeAdditionalMarketData: true,
     }),
     fetchPolicy: 'cache-and-network',
-    withOutSpinner: false,
+    withOutSpinner: true,
     withTableLoader: false,
   }),
   queryRendererHoc({
     query: getSelectorSettings,
-    withOutSpinner: false,
+    withOutSpinner: true,
     withTableLoader: false,
     name: 'getSelectorSettingsQuery',
   })

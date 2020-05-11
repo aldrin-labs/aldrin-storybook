@@ -102,6 +102,8 @@ export const DefaultView = (props: any) => {
             isDefaultTerminalViewMode,
             updateTerminalViewMode,
             marketType,
+            quantityPrecision,
+            pricePrecision,
           }}
         />
       </ChartGridContainer>
