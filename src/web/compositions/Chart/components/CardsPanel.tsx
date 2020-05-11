@@ -74,6 +74,7 @@ export const CardsPanel = ({
             display: 'flex',
             width: 'auto',
             marginRight: '1rem',
+            flexGrow: 1,
           }}
         >
           <TooltipCustom
