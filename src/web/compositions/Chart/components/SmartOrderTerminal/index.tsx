@@ -1051,6 +1051,86 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* ENTRY POINT */}
 
             <TerminalBlock width={'calc(33% + 0.5%)'}>
+            <InputRowContainer padding={'0 0 0.6rem 0'}>
+                <CustomSwitcher
+                  containerStyles={{
+                    width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
+                    margin: 0,
+                  }}
+                  buttonHeight={'2.5rem'}
+                  firstHalfStyleProperties={
+                    entryPoint.TVAlert.plotEnabled &&
+                    entryPoint.TVAlert.hedgeModePlotEnabled
+                      ? DisabledSwitcherStyles
+                      : BlueSwitcherStyles
+                  }
+                  secondHalfStyleProperties={
+                    entryPoint.TVAlert.plotEnabled &&
+                    entryPoint.TVAlert.hedgeModePlotEnabled
+                      ? DisabledSwitcherStyles
+                      : BlueSwitcherStyles
+                  }
+                  firstHalfText={'one-way'}
+                  secondHalfText={'hedge'}
+                  firstHalfIsActive={!entryPoint.order.hedgeMode}
+                  changeHalf={() => {
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'hedgeMode',
+                      !entryPoint.order.hedgeMode
+                    )
+                  }}
+                />
+                {entryPoint.TVAlert.plotEnabled && (
+                  <>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: '10%',
+                      }}
+                    >
+                      <Switcher
+                        checked={entryPoint.TVAlert.hedgeModePlotEnabled}
+                        onChange={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'TVAlert',
+                            'hedgeModePlotEnabled',
+                            !entryPoint.TVAlert.hedgeModePlotEnabled
+                          )
+                        }}
+                      />
+                    </div>
+                    <Input
+                      type={'number'}
+                      needTitle
+                      title={`plot_`}
+                      textAlign="left"
+                      width={'calc(20% - .8rem)'}
+                      inputStyles={{
+                        paddingLeft: '4rem',
+                      }}
+                      disabled={!entryPoint.TVAlert.hedgeModePlotEnabled}
+                      value={entryPoint.TVAlert.hedgeModePlot}
+                      showErrors={showErrors}
+                      isValid={this.validateField(
+                        true,
+                        entryPoint.TVAlert.hedgeModePlot
+                      )}
+                      onChange={(e) => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'TVAlert',
+                          'hedgeModePlot',
+                          e.target.value
+                        )
+                      }}
+                    />
+                  </>
+                )}
+              </InputRowContainer>
               <InputRowContainer padding={'0 0 .6rem 0'}>
                 <CustomSwitcher
                   firstHalfText={'buy'}
@@ -1334,84 +1414,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </>
                 )}
               </InputRowContainer>
-              <InputRowContainer padding={'0 0 0.6rem 0'}>
-                <PillowButton
-                  containerStyle={{
-                    width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                    margin: 0,
-                  }}
-                  firstHalfDisabled={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.hedgeModePlotEnabled
-                  }
-                  secondHalfDisabled={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.hedgeModePlotEnabled
-                  }
-                  firstHalfText={'one-way'}
-                  secondHalfText={'hedge'}
-                  activeHalf={entryPoint.order.hedgeMode ? 'second' : 'first'}
-                  buttonAdditionalStyle={{
-                    width: '50%',
-                  }}
-                  changeHalf={() => {
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'order',
-                      'hedgeMode',
-                      !entryPoint.order.hedgeMode
-                    )
-                  }}
-                />
-                {entryPoint.TVAlert.plotEnabled && (
-                  <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        width: '10%',
-                      }}
-                    >
-                      <Switcher
-                        checked={entryPoint.TVAlert.hedgeModePlotEnabled}
-                        onChange={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'hedgeModePlotEnabled',
-                            !entryPoint.TVAlert.hedgeModePlotEnabled
-                          )
-                        }}
-                      />
-                    </div>
-                    <Input
-                      type={'number'}
-                      needTitle
-                      title={`plot_`}
-                      textAlign="left"
-                      width={'calc(20% - .8rem)'}
-                      inputStyles={{
-                        paddingLeft: '4rem',
-                      }}
-                      disabled={!entryPoint.TVAlert.hedgeModePlotEnabled}
-                      value={entryPoint.TVAlert.hedgeModePlot}
-                      showErrors={showErrors}
-                      isValid={this.validateField(
-                        true,
-                        entryPoint.TVAlert.hedgeModePlot
-                      )}
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'TVAlert',
-                          'hedgeModePlot',
-                          e.target.value
-                        )
-                      }}
-                    />
-                  </>
-                )}
-              </InputRowContainer>
+              
               <div>
                 <InputRowContainer
                   justify="flex-start"
