@@ -78,7 +78,8 @@ export const PanelCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 16.6%;
+  // min-width: 16.6%;
+  flex-grow: 1;
   padding: 0.1rem;
   margin: 0;
   min-height: auto;

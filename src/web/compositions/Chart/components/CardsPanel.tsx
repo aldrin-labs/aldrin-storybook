@@ -50,6 +50,8 @@ export const CardsPanel = ({
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
   marketType,
+  quantityPrecision,
+  pricePrecision,
 }) => {
   return (
     <>
@@ -65,6 +67,30 @@ export const CardsPanel = ({
           currencyPair={pair}
           selectStyles={selectStyles}
         /> */}
+
+        <CustomCard
+          style={{
+            position: 'relative',
+            display: 'flex',
+            width: 'auto',
+            marginRight: '1rem',
+            flexGrow: 1,
+          }}
+        >
+          <TooltipCustom
+            title="Cryptocurrencies.ai is a Binance partner exchange"
+            enterDelay={250}
+            component={
+              <MarketStats
+                symbol={pair}
+                marketType={marketType}
+                exchange={activeExchange}
+                quantityPrecision={quantityPrecision}
+                pricePrecision={pricePrecision}
+              />
+            }
+          />
+        </CustomCard>
 
         {view === 'default' && (
           <KeySelector
@@ -82,28 +108,9 @@ export const CardsPanel = ({
           activeExchange={activeExchange}
           selectStyles={selectStyles}
           marketType={marketType}
+          quantityPrecision={quantityPrecision}
+          pricePrecision={pricePrecision}
         />
-
-        <CustomCard
-          style={{
-            position: 'relative',
-            display: 'flex',
-            width: '49.3%',
-            marginRight: '1rem',
-          }}
-        >
-          <TooltipCustom
-            title="Cryptocurrencies.ai is a Binance partner exchange"
-            enterDelay={250}
-            component={
-              <MarketStats
-                symbol={pair}
-                marketType={marketType}
-                exchange={activeExchange}
-              />
-            }
-          />
-        </CustomCard>
 
         <SmartTradeButton
           style={{ height: '100%', width: '20%', marginRight: '.4rem' }}

@@ -63,6 +63,8 @@ export type ISelectData = {
   price: number
   price24hChange: number
   volume24hChange: number
+  pricePrecision: number
+  quantityPrecision: number
 }[]
 
 export type UpdateFavoritePairsMutationType = (variableObj: {
