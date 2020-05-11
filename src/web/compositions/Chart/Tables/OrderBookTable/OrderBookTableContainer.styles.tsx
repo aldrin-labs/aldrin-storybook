@@ -23,7 +23,6 @@ export const BidsWrapper = styled.div`
       : 'display: none'};
 
   & .ReactVirtualized__Grid {
-    /* overflow: ${props => props.mode === 'bids' ? "hidden auto" : "hidden !important"}; */
     overflow: hidden !important;
   }
 `
@@ -38,7 +37,8 @@ export const AsksWrapper = styled.div`
       : 'display: none'};
 
   & .ReactVirtualized__Grid {
-    /* overflow: ${props => props.mode === 'asks' ? "hidden auto" : "hidden !important"}; */
+    /* overflow: ${(props) =>
+      props.mode === 'asks' ? 'hidden auto' : 'hidden !important'}; */
     overflow: hidden !important;
   }
 `
