@@ -183,6 +183,30 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   },
                   {
+                    text: 'Spot transactions',
+                    icon: <IndustryIcon fontSize="small" />,
+                    to: '/portfolio/transactions/spot',
+                    onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
+                      prefetchSpotTransactions()
+                    },
+                  },
+                  {
+                    text: 'Futures transactions',
+                    icon: <IndustryIcon fontSize="small" />,
+                    to: '/portfolio/transactions/futures',
+                    onMouseOver: () => {
+                      if (notAuthPages) {
+                        return
+                      }
+
+                      prefetchFuturesTransactions()
+                    },
+                  },
+                  {
                     text: 'Rebalance',
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
@@ -201,44 +225,21 @@ const NavBarRaw: SFC<Props> = ({
                   // },
                 ]}
               />
-              <Dropdown
+              {/* <Dropdown
                 id="transaction-menu"
                 key="transaction-menu"
                 buttonText="Transactions"
                 selectedMenu={selectedMenu}
                 selectActiveMenu={selectMenu}
                 items={[
-                  {
-                    text: 'Spot',
-                    icon: <IndustryIcon fontSize="small" />,
-                    to: '/portfolio/transactions/spot',
-                    onMouseOver: () => {
-                      if (notAuthPages) {
-                        return
-                      }
-
-                      prefetchSpotTransactions()
-                    },
-                  },
-                  {
-                    text: 'Futures',
-                    icon: <IndustryIcon fontSize="small" />,
-                    to: '/portfolio/transactions/futures',
-                    onMouseOver: () => {
-                      if (notAuthPages) {
-                        return
-                      }
-
-                      prefetchFuturesTransactions()
-                    },
-                  },
+                  
                   // !MASTER_BUILD && {
                   //   text: 'Optimizaton',
                   //   icon: <OptimizationIcon fontSize="small" />,
                   //   to: '/portfolio/optimization',
                   // },
                 ]}
-              />
+              /> */}
 
               {/* {!MASTER_BUILD && (
                 <Dropdown
