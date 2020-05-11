@@ -219,8 +219,7 @@ class Chart extends React.Component<IProps, IState> {
     }
 
     const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
-    console.log('minSpot, minFutures', minSpotNotional, minFuturesStep)
-
+    
     return (
       <MainContainer fullscreen={view !== 'default'}>
         <GlobalStyles />

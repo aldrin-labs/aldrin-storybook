@@ -17,6 +17,7 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
+import { AdlIndicator } from './TradingTable.styles'
 
 const changePairToSelected = (pair: string) => {
   client.mutate({
@@ -318,6 +319,7 @@ export const combinePositionsTable = ({
   priceFromOrderbook,
   pricePrecision,
   quantityPrecision,
+  adlData,
   toogleEditMarginPopup,
 }: {
   data: Position[]
@@ -331,6 +333,7 @@ export const combinePositionsTable = ({
   pricePrecision: number
   quantityPrecision: number
   keys: Key[]
+  adlData: { symbol: string, adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -354,6 +357,7 @@ export const combinePositionsTable = ({
         keyId,
         marginType,
         isolatedMargin,
+        liquidationPrice
       } = el
       const needOpacity = el._id === '0'
 
@@ -401,6 +405,13 @@ export const combinePositionsTable = ({
         (side === 'buy long' ? 1 : -1)
 
       const pair = symbol.split('_')
+
+      let adl = 0
+      const currentAdlData = adlData.find(adl => adl.symbol === symbol.replace('_', ''))
+
+      if (currentAdlData && currentAdlData.adlQuantile) {
+        adl = side === 'buy long' ? currentAdlData.adlQuantile.LONG || currentAdlData.adlQuantile.HEDGE || currentAdlData.adlQuantile.BOTH : currentAdlData.adlQuantile.SHORT || currentAdlData.adlQuantile.HEDGE || currentAdlData.adlQuantile.BOTH
+      }
 
       return [
         {
@@ -461,7 +472,7 @@ export const combinePositionsTable = ({
                   {marginType === 'isolated'
                     ? stripDigitPlaces(isolatedMargin, 2)
                     : stripDigitPlaces(
-                        (positionAmt / leverage) * entryPrice,
+                        (positionAmt / leverage) * entryPrice * (side === 'buy long' ? 1 : -1),
                         2
                       )}{' '}
                   {pair[1]}
@@ -510,15 +521,25 @@ export const combinePositionsTable = ({
             },
             contentToSort: marketPrice,
           },
+          adl: {
+            render: <div style={{ display: 'flex', height: '2rem' }}>
+              <AdlIndicator color={'#29AC80'} adl={adl} i={0} />
+              <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
+              <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
+              <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
+              <AdlIndicator color={'#DD6956'} adl={adl} i={4} />
+            </div>,
+          },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, pricePrecision)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liquidationPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
             },
-            contentToSort: liqPrice,
+            contentToSort: liquidationPrice,
           },
+
           profit: {
             render: marketPrice ? (
               <SubColumnValue
@@ -855,11 +876,11 @@ export const combineActiveTradesTable = ({
               !!currentPrice &&
               entryOrderPrice) ? (
               <SubColumnValue
-                color={profitPercentage > 0 ? green.new : red.new}
+                color={profitPercentage > 0 || templatePnl > 0 ? green.new : red.new}
               >
                 {' '}
-                {templatePnl
-                  ? templatePnl
+                {!!templatePnl
+                  ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
                   : `${profitAmount < 0 ? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
                     )} ${pairArr[1]} / ${
@@ -994,7 +1015,7 @@ export const combineActiveTradesTable = ({
                   <EntryOrderColumn
                     haveEdit={true}
                     editTrade={() => editTrade('entryOrder', el)}
-                    enableEdit={activeOrderStatus === 'Preparing'}
+                    enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
                     side={side}
                     price={entryOrderPrice}
@@ -1272,15 +1293,15 @@ export const combineStrategiesHistoryTable = (
           render: (
             <SubColumnValue
               color={
-                profitPercentage === 0
+                profitPercentage === 0 && !templatePnl
                   ? ''
-                  : profitPercentage > 0
+                  : profitPercentage > 0 || (!!templatePnl && templatePnl > 0)
                   ? green.new
                   : red.new
               }
             >
               {!!templatePnl
-                ? stripDigitPlaces(templatePnl, 3)
+                ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
                 : `${stripDigitPlaces(profitAmount, 3)} ${
                     pairArr[1]
                   } / ${stripDigitPlaces(profitPercentage, 2)}%`}

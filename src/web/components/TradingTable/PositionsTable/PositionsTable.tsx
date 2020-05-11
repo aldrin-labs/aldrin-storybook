@@ -25,6 +25,7 @@ import { modifyIsolatedMargin } from '@core/graphql/mutations/chart/modifyIsolat
 import { setPositionWasClosed } from '@core/graphql/mutations/strategies/setPositionWasClosed'
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
+import { getAdlQuantile} from '@core/graphql/queries/chart/getAdlQuantile'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 
@@ -140,6 +141,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
+      adlData: this.getAdlData(),
       prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
@@ -273,17 +275,36 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     }
   }
 
+  getPairsWithPositions = () => {
+    return this.props.getActivePositionsQuery.getActivePositions
+    .map((position) => {
+      if (position.positionAmt !== 0) {
+        return `${position.symbol}:${this.props.marketType}`
+      }
+
+      return
+    })
+    .filter((a) => !!a)
+  }
+
+  getAdlData = () => {
+    const pairs = this.props.getActivePositionsQuery.getActivePositions
+    .map((position) => {
+      if (position.positionAmt !== 0) {
+        return `${position.symbol.replace('_', '')}`
+      }
+
+      return
+    })
+    .filter((a) => !!a)
+
+    const adlData = this.props.getAdlQuantileQuery.getAdlQuantile.data.filter(adl => pairs.includes(adl.symbol))
+
+    return adlData
+  }
+
   subscribe() {
     const that = this
-    const pairs = this.props.getActivePositionsQuery.getActivePositions
-      .map((position) => {
-        if (position.positionAmt !== 0) {
-          return `${position.symbol}`
-        }
-
-        return
-      })
-      .filter((a) => !!a)
 
     this.subscription = client
       .subscribe({
@@ -291,7 +312,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         variables: {
           input: {
             exchange: this.props.exchange,
-            pairs,
+            pairs: this.getPairsWithPositions(),
           },
         },
         fetchPolicy: 'cache-and-network',
@@ -321,6 +342,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             quantityPrecision,
             theme,
             keys,
+            getAdlQuantileQuery
           } = that.props
 
           const positionsData = combinePositionsTable({
@@ -330,6 +352,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             theme,
             keys,
             prices: data.data.listenMarkPrices,
+            adlData: this.getAdlData(),
             pair: currencyPair,
             keyId: selectedKey.keyId,
             canceledPositions: canceledOrders,
@@ -370,6 +393,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       subscribeToMore,
       theme,
       keys,
+      getAdlQuantileQuery
     } = this.props
 
     this.subscribe()
@@ -381,6 +405,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
+      adlData: this.getAdlData(),
       prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
@@ -483,6 +508,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
+      getAdlQuantileQuery
     } = nextProps
 
     const positionsData = combinePositionsTable({
@@ -491,6 +517,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
+      adlData: this.getAdlData(),
       prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
@@ -574,6 +601,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       handleToggleAllKeys,
       handleToggleSpecificPair,
       currencyPair,
+      getAdlQuantileQuery
     } = this.props
 
     if (!show) {
@@ -749,6 +777,16 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     variables: (props) => ({
       fundsInput: { activeExchangeKey: props.selectedKey.keyId },
+    }),
+  }),
+  queryRendererHoc({
+    query: getAdlQuantile,
+    name: 'getAdlQuantileQuery',
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 1000 * 60,
+    variables: (props) => ({
+      keyId: props.selectedKey.keyId,
+      
     }),
   }),
   graphql(updatePosition, { name: 'updatePositionMutation' }),

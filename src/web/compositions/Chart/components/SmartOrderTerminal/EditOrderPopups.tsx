@@ -12,6 +12,7 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
+import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
@@ -25,6 +26,10 @@ import {
   TradeInputContent as Input,
   TradeInputHeader,
 } from '@sb/components/TraidingTerminal/index'
+
+import { LeverageLabel } from '@sb/components/TradingWrapper/styles'
+
+import { maxLeverage } from '@sb/compositions/Chart/mocks'
 
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
@@ -1365,13 +1370,14 @@ export class EditEntryOrderPopup extends React.Component<
     initialMargin: 0,
     isTrailingOn: false,
     deviationPercentage: 0,
+    leverage: 0,
     trailingDeviationPrice: 0,
   }
 
   static getDerivedStateFromProps(props, state) {
     // get values from state if empty
     if (state.side === '') {
-      const { side, price, pricePrecision } = props
+      const { side, price, pricePrecision, leverage } = props
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
@@ -1397,6 +1403,7 @@ export class EditEntryOrderPopup extends React.Component<
         ...props.derivedState,
         trailingDeviationPrice,
         deviationPercentage,
+        leverage,
         initialMargin: (
           (props.derivedState.amount * props.derivedState.price) /
           props.leverage
@@ -1513,6 +1520,61 @@ export class EditEntryOrderPopup extends React.Component<
           id="responsive-edit-entry-order-dialog-title"
         >
           <TypographyTitle>{`Edit entry point`}</TypographyTitle>
+          <div style={{ display: 'flex', alignItems: 'center', width:  '60%' }}>
+          <SmallSlider
+                  min={1}
+                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
+                  defaultValue={this.state.leverage}
+                  value={this.state.leverage}
+                  valueSymbol={'X'}
+                  marks={
+                    maxLeverage.get(`${pair[0]}_${pair[1]}`) !== 125
+                      ? {
+                          1: {},
+                          15: {},
+                          30: {},
+                          45: {},
+                          60: {},
+                          75: {},
+                        }
+                      : {
+                          1: {},
+                          25: {},
+                          50: {},
+                          75: {},
+                          100: {},
+                          125: {},
+                        }
+                  }
+                  onChange={(leverage: number) => {
+                    this.setState({ leverage })
+                  }}
+                  sliderContainerStyles={{
+                    width: '80%',
+                    margin: '0 auto',
+                  }}
+                  trackBeforeBackground={'#29AC80'}
+                  handleStyles={{
+                    width: '1.2rem',
+                    height: '1.2rem',
+                    border: 'none',
+                    backgroundColor: '#036141',
+                    marginTop: '-.28rem',
+                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
+                    transform: 'translate(-50%, -15%) !important',
+                  }}
+                  dotStyles={{
+                    border: 'none',
+                    backgroundColor: '#ABBAD1',
+                  }}
+                  activeDotStyles={{
+                    backgroundColor: '#29AC80',
+                  }}
+                />
+                <LeverageLabel style={{ fontFamily: 'DM Sans'}}>
+                  {this.state.leverage}X 
+                </LeverageLabel>
+                </div>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}

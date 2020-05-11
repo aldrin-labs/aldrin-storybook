@@ -50,6 +50,10 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
 `
 
 const TooltipStyles = createGlobalStyle`
+  .rc-tooltip {
+    z-index: 2070 !important;
+  }
+
   .rc-tooltip-inner.rc-tooltip-inner {
     background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'};
     border: .1rem solid #e0e5ec;
