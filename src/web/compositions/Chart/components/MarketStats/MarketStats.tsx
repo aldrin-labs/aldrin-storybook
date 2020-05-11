@@ -18,6 +18,7 @@ import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
+  roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
 import {
@@ -99,7 +100,8 @@ class MarketStats extends React.PureComponent<IProps> {
       this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe()
       this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction()
 
-      this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe()
+      this.getFundingRateQueryUnsubscribe &&
+        this.getFundingRateQueryUnsubscribe()
       this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
     }
   }
@@ -122,8 +124,10 @@ class MarketStats extends React.PureComponent<IProps> {
       getPriceQuery,
       getMarkPriceQuery,
       quantityPrecision,
-      pricePrecision,
+      pricePrecision: pricePrecisionRaw,
     } = this.props
+
+    const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
 
     const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
     const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
@@ -166,23 +170,23 @@ class MarketStats extends React.PureComponent<IProps> {
 
     return (
       <>
-        <PanelCard>
+        <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
           <PanelCardTitle>Last price</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue>
               {formatNumberToUSFormat(
-                stripDigitPlaces(markPrice, pricePrecision)
+                roundAndFormatNumber(markPrice, pricePrecision, false)
               )}
             </PanelCardValue>
             <PanelCardSubValue>
               {formatNumberToUSFormat(
-                stripDigitPlaces(lastMarketPrice, pricePrecision)
+                roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
               )}
             </PanelCardSubValue>
           </span>
         </PanelCard>
 
-        <PanelCard>
+        <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
           <PanelCardTitle>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
@@ -215,7 +219,7 @@ class MarketStats extends React.PureComponent<IProps> {
           <PanelCardTitle>24h high</PanelCardTitle>
           <PanelCardValue>
             {formatNumberToUSFormat(
-              stripDigitPlaces(highPrice, pricePrecision)
+              roundAndFormatNumber(highPrice, pricePrecision, false)
             )}
           </PanelCardValue>
         </PanelCard>
@@ -223,7 +227,7 @@ class MarketStats extends React.PureComponent<IProps> {
         <PanelCard>
           <PanelCardTitle>24h low</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(stripDigitPlaces(lowPrice, pricePrecision))}
+            {formatNumberToUSFormat(roundAndFormatNumber(lowPrice, pricePrecision, false))}
           </PanelCardValue>
         </PanelCard>
 
@@ -234,9 +238,7 @@ class MarketStats extends React.PureComponent<IProps> {
             <PanelCard>
               <PanelCardTitle>24h volume</PanelCardTitle>
               <PanelCardValue>
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(volume, quantityPrecision)
-                )}
+                {formatNumberToUSFormat(stripDigitPlaces(volume))}
                 {` ${marketType === 0 ? quote : base}`}
               </PanelCardValue>
             </PanelCard>
@@ -261,7 +263,7 @@ class MarketStats extends React.PureComponent<IProps> {
                 {(+fundingRate * 100).toFixed(4)}
                 {' %'}
               </PanelCardValue>
-              <PanelCardSubValue>
+              <PanelCardSubValue style={{ minWidth: '57px' }}>
                 {' '}
                 <Timer
                   initialTime={+dayjs(fundingTime) - Date.now()}
