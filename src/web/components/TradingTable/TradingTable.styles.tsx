@@ -64,8 +64,8 @@ export const PaginationBlock = styled.div`
 `
 
 export const AdlIndicator = styled.div`
-  height: 2.5rem;
-  width: .7rem; 
+  height: 2rem;
+  width: .5rem; 
   border: .1rem solid ${props => props.color}; 
   background: ${props => props.adl > props.i ? props.color : 'inherit'};
   margin-right: .2rem;

@@ -522,7 +522,7 @@ export const combinePositionsTable = ({
             contentToSort: marketPrice,
           },
           adl: {
-            render: <div style={{ display: 'flex', height: '2.5rem' }}>
+            render: <div style={{ display: 'flex', height: '2rem' }}>
               <AdlIndicator color={'#29AC80'} adl={adl} i={0} />
               <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
               <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
@@ -876,11 +876,11 @@ export const combineActiveTradesTable = ({
               !!currentPrice &&
               entryOrderPrice) ? (
               <SubColumnValue
-                color={profitPercentage > 0 ? green.new : red.new}
+                color={profitPercentage > 0 || templatePnl > 0 ? green.new : red.new}
               >
                 {' '}
-                {templatePnl
-                  ? templatePnl
+                {!!templatePnl
+                  ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
                   : `${profitAmount < 0 ? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
                     )} ${pairArr[1]} / ${
@@ -1293,15 +1293,15 @@ export const combineStrategiesHistoryTable = (
           render: (
             <SubColumnValue
               color={
-                profitPercentage === 0
+                profitPercentage === 0 && !templatePnl
                   ? ''
-                  : profitPercentage > 0
+                  : profitPercentage > 0 || (!!templatePnl && templatePnl > 0)
                   ? green.new
                   : red.new
               }
             >
               {!!templatePnl
-                ? stripDigitPlaces(templatePnl, 3)
+                ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
                 : `${stripDigitPlaces(profitAmount, 3)} ${
                     pairArr[1]
                   } / ${stripDigitPlaces(profitPercentage, 2)}%`}
