@@ -30,6 +30,11 @@ import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { MASTER_BUILD } from '@core/utils/config'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 
+import {
+  prefetchCoinSelector,
+  prefetchDifferentMarketForCoinSelector,
+} from '@core/utils/prefetching'
+
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import withAuth from '@core/hoc/withAuth'
@@ -50,6 +55,22 @@ class Chart extends React.Component<IProps, IState> {
     terminalViewMode: 'default',
     stepIndex: 0,
     key: 0,
+  }
+
+  componentDidMount() {
+    // prefetching coin selector after some time
+    const { marketType } = this.props
+    setTimeout(() => {
+      prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
+    }, 5000)
+
+    // prefetch different market for coin selector
+    setTimeout(() => {
+      prefetchDifferentMarketForCoinSelector({
+        marketType: marketType === 1 ? 0 : 1,
+        exchangeSymbol: 'binance',
+      })
+    }, 15000)
   }
 
   componentWillUnmount() {
@@ -143,7 +164,8 @@ class Chart extends React.Component<IProps, IState> {
       getChartDataQuery: {
         getMyProfile: { _id },
         getTradingSettings: { selectedTradingKey, hedgeMode } = {
-          selectedTradingKey: '', hedgeMode: false,
+          selectedTradingKey: '',
+          hedgeMode: false,
         },
         marketByMarketType,
         chart: {
@@ -239,7 +261,9 @@ class Chart extends React.Component<IProps, IState> {
             isPairDataLoading={isPairDataLoading}
             themeMode={themeMode}
             selectedKey={
-              selectedTradingKey ? { keyId: selectedTradingKey, hedgeMode } : { keyId: '', hedgeMode: false }
+              selectedTradingKey
+                ? { keyId: selectedTradingKey, hedgeMode }
+                : { keyId: '', hedgeMode: false }
             }
             activeExchange={activeExchange}
             terminalViewMode={terminalViewMode}

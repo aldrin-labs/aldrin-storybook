@@ -6,15 +6,26 @@ import { Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { TooltipCustom } from '@sb/components/index'
 
-import stableCoins from '@core/config/stableCoins'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair'
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate'
+import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice'
+import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE'
+import { LISTEN_FUNDING_RATE } from '@core/graphql/subscriptions/LISTEN_FUNDING_RATE'
+import { getPrice } from '@core/graphql/queries/chart/getPrice'
+import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
-  stripTrailingZeros,
+  roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
+
+import {
+  updateFundingRateQuerryFunction,
+  updateMarkPriceQuerryFunction,
+  updatePriceQuerryFunction,
+} from './MarketStats.utils'
 
 import {
   PanelCard,
@@ -46,11 +57,62 @@ export interface IProps {
       fundingTime: number
       fundingRate: string
     }
+    subscribeToMoreFunction: () => () => void
+  }
+  getPriceQuery: {
+    getPrice: number
+    subscribeToMoreFunction: () => () => void
   }
   getFundingRateQueryRefetch: () => void
+  getMarkPriceQuery: {
+    getMarkPrice: {
+      symbol: string
+      markPrice: number
+    }
+    subscribeToMoreFunction: () => () => void
+  }
+  quantityPrecision: number
+  pricePrecision: number
 }
 
 class MarketStats extends React.PureComponent<IProps> {
+  getMarkPriceQueryUnsubscribe: null | (() => void) = null
+  getPriceQueryUnsubscribe: null | (() => void) = null
+  getFundingRateQueryUnsubscribe: null | (() => void) = null
+
+  componentDidMount() {
+    // subscribe
+    this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction()
+    this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction()
+    this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
+  }
+
+  componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.symbol !== this.props.symbol ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      //  unsubscribe from old params
+      //  subscribe to new params and create new unsub link
+      this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe()
+      this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction()
+
+      this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe()
+      this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction()
+
+      this.getFundingRateQueryUnsubscribe &&
+        this.getFundingRateQueryUnsubscribe()
+      this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
+    }
+  }
+
+  componentWillUnmount() {
+    //  unsubscribe
+    this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe()
+    this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe()
+    this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe()
+  }
+
   render() {
     const {
       getMarketStatisticsByPairQuery,
@@ -59,11 +121,22 @@ class MarketStats extends React.PureComponent<IProps> {
       theme,
       marketType,
       getFundingRateQueryRefetch,
+      getPriceQuery,
+      getMarkPriceQuery,
+      quantityPrecision,
+      pricePrecision: pricePrecisionRaw,
     } = this.props
+
+    const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
+
+    const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
+    const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
+      getMarkPrice: { markPrice: 0 },
+    }
+    const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
     const {
       getMarketStatisticsByPair: {
-        lastPrice = 0,
         volume = 0,
         priceChange = 0,
         priceChangePercent = 0,
@@ -72,7 +145,6 @@ class MarketStats extends React.PureComponent<IProps> {
       },
     } = getMarketStatisticsByPairQuery || {
       getMarketStatisticsByPair: {
-        lastPrice: 0,
         volume: 0,
         priceChange: 0,
         priceChangePercent: 0,
@@ -81,9 +153,9 @@ class MarketStats extends React.PureComponent<IProps> {
       },
     }
 
-    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-    const isStableCoinInPair = stableCoinsRegexp.test(symbol)
-    const roundingPrecision = isStableCoinInPair ? 2 : 8
+    // const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+    // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
+    // const roundingPrecision = isStableCoinInPair ? 2 : 8
 
     const [base, quote] = symbol.split('_')
 
@@ -98,17 +170,23 @@ class MarketStats extends React.PureComponent<IProps> {
 
     return (
       <>
-        <PanelCard first>
+        <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
           <PanelCardTitle>Last price</PanelCardTitle>
-          <span>
+          <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue>
-              {formatNumberToUSFormat(stripDigitPlaces(lastPrice, roundingPrecision))}
+              {formatNumberToUSFormat(
+                roundAndFormatNumber(markPrice, pricePrecision, false)
+              )}
             </PanelCardValue>
-            {/* <PanelCardSubValue>$9964.01</PanelCardSubValue> */}
+            <PanelCardSubValue>
+              {formatNumberToUSFormat(
+                roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
+              )}
+            </PanelCardSubValue>
           </span>
         </PanelCard>
 
-        <PanelCard>
+        <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
           <PanelCardTitle>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
@@ -118,7 +196,9 @@ class MarketStats extends React.PureComponent<IProps> {
                   : theme.customPalette.red.main
               }
             >
-              {formatNumberToUSFormat(stripDigitPlaces(priceChange, roundingPrecision))}
+              {formatNumberToUSFormat(
+                stripDigitPlaces(priceChange, pricePrecision)
+              )}
             </PanelCardValue>
             <PanelCardSubValue
               color={
@@ -138,14 +218,16 @@ class MarketStats extends React.PureComponent<IProps> {
         <PanelCard>
           <PanelCardTitle>24h high</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(stripDigitPlaces(highPrice))}
+            {formatNumberToUSFormat(
+              roundAndFormatNumber(highPrice, pricePrecision, false)
+            )}
           </PanelCardValue>
         </PanelCard>
 
         <PanelCard>
           <PanelCardTitle>24h low</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(stripDigitPlaces(lowPrice))}
+            {formatNumberToUSFormat(roundAndFormatNumber(lowPrice, pricePrecision, false))}
           </PanelCardValue>
         </PanelCard>
 
@@ -167,8 +249,6 @@ class MarketStats extends React.PureComponent<IProps> {
           <PanelCard
             style={{
               borderRight: '0',
-              display: 'flex',
-              justifyContent: 'space-between',
             }}
           >
             <PanelCardTitle>Funding</PanelCardTitle>
@@ -180,12 +260,14 @@ class MarketStats extends React.PureComponent<IProps> {
                     : theme.customPalette.red.main
                 }
               >
-                {formatNumberToUSFormat(stripTrailingZeros(fundingRate))}
+                {(+fundingRate * 100).toFixed(4)}
+                {' %'}
               </PanelCardValue>
-              <PanelCardSubValue style={{ padding: '0.1rem 1rem' }}>
+              <PanelCardSubValue style={{ minWidth: '57px' }}>
                 {' '}
                 <Timer
-                  initialTime={+dayjs(fundingTime).add(8, 'hour') - Date.now()}
+                  initialTime={+dayjs(fundingTime) - Date.now()}
+                  formatValue={(value) => `${value < 10 ? `0${value}` : value}`}
                   direction="backward"
                   startImmediately={true}
                   checkpoints={[
@@ -220,6 +302,50 @@ class MarketStats extends React.PureComponent<IProps> {
 export default compose(
   withTheme(),
   queryRendererHoc({
+    query: getMarkPrice,
+    name: 'getMarkPriceQuery',
+    variables: (props) => ({
+      input: {
+        exchange: props.exchange.symbol,
+        symbol: props.symbol,
+      },
+    }),
+    subscriptionArgs: {
+      subscription: LISTEN_MARK_PRICE,
+      variables: (props: any) => ({
+        input: {
+          exchange: props.exchange.symbol,
+          symbol: props.symbol,
+        },
+      }),
+      updateQueryFunction: updateMarkPriceQuerryFunction,
+    },
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+    withTableLoader: true,
+  }),
+  queryRendererHoc({
+    query: getPrice,
+    name: 'getPriceQuery',
+    variables: (props) => ({
+      exchange: props.exchange.symbol,
+      pair: `${props.symbol}:${props.marketType}`,
+    }),
+    subscriptionArgs: {
+      subscription: LISTEN_PRICE,
+      variables: (props: any) => ({
+        input: {
+          exchange: props.exchange.symbol,
+          pair: `${props.symbol}:${props.marketType}`,
+        },
+      }),
+      updateQueryFunction: updatePriceQuerryFunction,
+    },
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+    withTableLoader: true,
+  }),
+  queryRendererHoc({
     query: getMarketStatisticsByPair,
     name: 'getMarketStatisticsByPairQuery',
     variables: (props) => ({
@@ -243,8 +369,17 @@ export default compose(
         symbol: props.symbol,
       },
     }),
+    subscriptionArgs: {
+      subscription: LISTEN_FUNDING_RATE,
+      variables: (props: any) => ({
+        input: {
+          exchange: props.exchange.symbol,
+          symbol: props.symbol,
+        },
+      }),
+      updateQueryFunction: updateFundingRateQuerryFunction,
+    },
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
     withOutSpinner: true,
     withTableLoader: true,
   })
