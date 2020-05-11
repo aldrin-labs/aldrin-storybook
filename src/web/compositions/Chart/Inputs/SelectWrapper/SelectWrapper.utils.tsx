@@ -6,6 +6,7 @@ import {
   formatNumberToUSFormat,
   stripDigitPlaces,
   reverseFor,
+  roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
@@ -178,12 +179,19 @@ export const combineSelectWrapperData = ({
       price = 0,
       price24hChange = 0,
       volume24hChange = 0,
+      pricePrecision: pricePrecisionRaw = 0,
+      quantityPrecision: quantityPrecisionRaw = 0,
     } = el || {
       symbol: '',
       price: 0,
       price24hChange: 0,
       volume24hChange: 0,
+      pricePrecision: 0,
+      quantityPrecision: 0,
     }
+
+    const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
+    const quantityPrecision = quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0 ? 8 : quantityPrecisionRaw
 
     const isInFavoriteAlready = favoritePairsMap.has(symbol)
 
@@ -217,7 +225,9 @@ export const combineSelectWrapperData = ({
         contentToSort: +price,
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>
-            {formatNumberToUSFormat(price)}
+            {formatNumberToUSFormat(
+              roundAndFormatNumber(price, pricePrecision, false)
+            )}
           </span>
         ),
         // onClick: () => onSelectPair({ value: symbol }),
@@ -255,7 +265,7 @@ export const combineSelectWrapperData = ({
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>
             {`${formatNumberToUSFormat(
-              stripDigitPlaces(volume24hChange, marketType === 0 ? 2 : 3)
+              roundAndFormatNumber(volume24hChange, quantityPrecision, false)
             )} ${marketType === 0 ? quote : base}`}
           </span>
         ),
