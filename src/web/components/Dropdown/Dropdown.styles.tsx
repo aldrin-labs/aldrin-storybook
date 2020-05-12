@@ -5,7 +5,7 @@ import { Paper, MenuItem, Button } from '@material-ui/core'
 export const StyledLink = styled(NavLink)`
   color: #7284a0;
   padding: 1.5rem 0 1.5rem 10%;
-  font-size: 11px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   transition: all 0.5s ease-in-out;
@@ -20,17 +20,17 @@ export const StyledLink = styled(NavLink)`
   }
 
   @media (max-width: 1400px) {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     /* padding: 1.4rem 2.8rem 1.4rem 0.8rem; */
   }
 
   @media (min-width: 1921px) {
-    font-size: 13px;
+    font-size: 1rem;
     /* padding: 0.9rem 2.2rem 0.9rem 0.6rem; */
   }
 
   @media only screen and (min-width: 2367px) {
-    font-size: 15px;
+    font-size: 1rem;
   }
 `
 
