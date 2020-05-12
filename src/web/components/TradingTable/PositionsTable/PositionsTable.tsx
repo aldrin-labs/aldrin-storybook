@@ -298,9 +298,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     })
     .filter((a) => !!a)
 
-    const adlData = this.props.getAdlQuantileQuery.getAdlQuantile.data.filter(adl => pairs.includes(adl.symbol))
+    if (this.props.getAdlQuantileQuery && this.props.getAdlQuantileQuery.getAdlQuantile && this.props.getAdlQuantileQuery.getAdlQuantile.data && this.props.getAdlQuantileQuery.getAdlQuantile.data.length) {
+      const adlData = this.props.getAdlQuantileQuery.getAdlQuantile.data.filter(adl => pairs.includes(adl.symbol))
 
-    return adlData
+      return adlData
+    }
+
+    return []
   }
 
   subscribe() {
