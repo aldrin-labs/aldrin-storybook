@@ -181,70 +181,73 @@ class SimpleTabs extends React.Component {
               >
                 Market
               </TerminalModeButton>
-              <TerminalModeButtonWithDropdown
-                isActive={mode === 'stop-limit' || mode === 'take-profit'}
-              >
-                {mode === 'stop-limit'
-                  ? 'Stop-Loss'
-                  : mode === 'take-profit'
-                  ? 'Take-Profit'
-                  : 'Stop-Limit'}
-                <ExpandMoreIcon
-                  style={{
-                    position: 'relative',
-                    left: '.8rem',
-                    top: '.2rem',
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    fill:
-                      mode !== 'stop-limit' && mode !== 'take-profit'
-                        ? '#7284a0'
-                        : '#fff',
+              {!isSPOTMarket ? (
+                <TerminalModeButtonWithDropdown
+                  isActive={mode === 'stop-limit' || mode === 'stop-market'}
+                >
+                  {mode === 'stop-limit'
+                    ? 'Stop-Limit'
+                    : mode === 'stop-market'
+                    ? 'Stop-Market'
+                    : 'Stop-Limit'}
+                  <ExpandMoreIcon
+                    style={{
+                      position: 'relative',
+                      left: '.8rem',
+                      top: '.2rem',
+                      width: '1.2rem',
+                      height: '1.2rem',
+                      fill:
+                        mode !== 'stop-limit' && mode !== 'stop-market'
+                          ? '#7284a0'
+                          : '#fff',
+                    }}
+                  />
+                  <DropdownItemsBlock>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <TerminalModeButton
+                        isActive={mode === 'stop-limit'}
+                        onClick={() => {
+                          this.handleChangeMode('stop-limit')
+                          this.setState({ orderMode: 'TIF' })
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '1rem 0 1rem',
+                          border: '.1rem solid #e0e5ec',
+                        }}
+                      >
+                        Stop-Limit
+                      </TerminalModeButton>
+                      <TerminalModeButton
+                        isActive={mode === 'stop-market'}
+                        onClick={() => {
+                          this.handleChangeMode('stop-market')
+                          this.setState({ orderMode: 'TIF' })
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '1rem 0 1rem',
+                          border: '.1rem solid #e0e5ec',
+                          borderTop: 0,
+                        }}
+                      >
+                        Stop-Market
+                      </TerminalModeButton>
+                    </div>
+                  </DropdownItemsBlock>
+                </TerminalModeButtonWithDropdown>
+              ) : (
+                <TerminalModeButton
+                  isActive={mode === 'stop-limit'}
+                  onClick={() => {
+                    this.handleChangeMode('stop-limit')
+                    this.setState({ orderMode: 'TIF' })
                   }}
-                />
-                <DropdownItemsBlock>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <TerminalModeButton
-                      isActive={mode === 'stop-limit'}
-                      onClick={() => {
-                        this.handleChangeMode('stop-limit')
-                        this.setState({ orderMode: 'TIF' })
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '1rem 0 1rem',
-                        border: '.1rem solid #e0e5ec',
-                      }}
-                    >
-                      Stop-Loss
-                    </TerminalModeButton>
-                    <TerminalModeButton
-                      isActive={mode === 'take-profit'}
-                      onClick={() => {
-                        this.handleChangeMode('take-profit')
-                        this.setState({ orderMode: 'TIF' })
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '1rem 0 1rem',
-                        border: '.1rem solid #e0e5ec',
-                        borderTop: 0,
-                      }}
-                    >
-                      Take-Profit
-                    </TerminalModeButton>
-                  </div>
-                </DropdownItemsBlock>
-              </TerminalModeButtonWithDropdown>
-              {/* <TerminalModeButton
-              isActive={mode === 'take-profit'}
-              onClick={() => {
-                this.handleChangeMode('take-profit')
-                this.setState({ orderMode: 'TIF' })
-              }}
-            >
-              Take-Profit
-            </TerminalModeButton> */}
+                >
+                  Stop-Limit
+                </TerminalModeButton>
+              )}
               <TerminalModeButton
                 style={{
                   width: '19%',
@@ -341,7 +344,7 @@ class SimpleTabs extends React.Component {
                   </SettingsLabel>
                 </FuturesSettings>
 
-                {(mode === 'stop-limit' || mode === 'take-profit') && (
+                {(mode === 'stop-limit' || mode === 'stop-market') && (
                   <FuturesSettings
                     key="triggerTerminalController"
                     style={{ padding: '0 1rem' }}
