@@ -287,8 +287,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       })
       .filter((a) => !!a)
 
-    console.log('pairs', pairs)
-
     this.subscription = client
       .subscribe({
         query: LISTEN_TABLE_PRICE,

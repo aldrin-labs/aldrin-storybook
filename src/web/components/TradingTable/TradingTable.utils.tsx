@@ -354,6 +354,7 @@ export const combinePositionsTable = ({
         keyId,
         marginType,
         isolatedMargin,
+        liquidationPrice
       } = el
       const needOpacity = el._id === '0'
 
@@ -383,11 +384,11 @@ export const combinePositionsTable = ({
       })
 
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
-      const liqPrice =
-        entryPrice *
-        (side === 'sell short'
-          ? 1 + 100 / leverage / 100
-          : 1 - 100 / leverage / 100)
+      // const liqPrice =
+      //   entryPrice *
+      //   (side === 'sell short'
+      //     ? 1 + 100 / leverage / 100
+      //     : 1 - 100 / leverage / 100)
 
       const profitPercentage =
         ((marketPrice / entryPrice) * 100 - 100) *
@@ -511,13 +512,13 @@ export const combinePositionsTable = ({
             contentToSort: marketPrice,
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liqPrice, pricePrecision)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liquidationPrice, pricePrecision)} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
             },
-            contentToSort: liqPrice,
+            contentToSort: liquidationPrice,
           },
           profit: {
             render: marketPrice ? (
