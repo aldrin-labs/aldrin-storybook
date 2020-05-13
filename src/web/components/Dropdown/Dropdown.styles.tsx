@@ -5,7 +5,7 @@ import { Paper, MenuItem, Button } from '@material-ui/core'
 export const StyledLink = styled(NavLink)`
   color: #7284a0;
   padding: 1.5rem 0 1.5rem 10%;
-  font-size: 1rem;
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
   transition: all 0.5s ease-in-out;
@@ -54,12 +54,12 @@ export const StyledDropdown = styled.div`
   justify-content: center;
   /* margin: 0 1rem;
   padding: 0rem 0.5rem; */
-  width: 12rem;
+  width: 14rem;
   height: 100%;
   border-left: 0.1rem solid #e0e5ec;
 
   @media only screen and (max-width: 1400px) {
-    width: 15rem;
+    width: 17rem;
   }
 
   &:hover > div {
@@ -79,7 +79,7 @@ export const StyledPaper = styled(Paper)`
     position: absolute;
     top: calc(3.8rem - 1px);
     left: calc(50% - 0.5px);
-    width: calc(100% + 2.15rem);
+    width: calc(100% + 0.15rem);
     height: auto;
     box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
     border: 1px solid #e0e5ec;
@@ -95,7 +95,7 @@ export const StyledPaper = styled(Paper)`
   @media screen and (max-width: 1400px) {
     && {
       top: calc(5rem - 1px);
-      width: calc(100% + 2.2rem);
+      width: calc(100% + 0.2rem);
     }
   }
 `
