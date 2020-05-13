@@ -129,28 +129,13 @@ export const combineSelectWrapperData = ({
 
   let processedData = data
 
-  if (searchValue) {
-    processedData = processedData.filter((el) => {
-      const withReplacedWhitespace = searchValue.replace(/\s/g, '_')
-      const withRevertedWord = reverseFor(withReplacedWhitespace)
-
-      return new RegExp(
-        `${searchValue}|${withReplacedWhitespace}|${withRevertedWord}`,
-        'gi'
-      ).test(el.symbol)
-    })
-  }
-
-  if (
-    searchValue === '' &&
-    (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL')
-  ) {
+  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL') {
     processedData = processedData.filter((el) =>
       new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
     )
   }
 
-  if (searchValue === '' && tab !== 'all') {
+  if (tab !== 'all') {
     if (tab === 'alts') {
       processedData = processedData.filter((el) =>
         altCoinsPairsMap.has(el.symbol)
@@ -173,6 +158,19 @@ export const combineSelectWrapperData = ({
     }
   }
 
+  if (searchValue) {
+    processedData = processedData.filter((el) => {
+      const underlineInSearch = searchValue.includes('_')
+      const symbolBase = el.symbol.split('_')[0]
+      const withReplacedWhitespace = searchValue.replace(/\s/g, '_')
+      const withRevertedWord = reverseFor(withReplacedWhitespace)
+
+      return new RegExp(`${searchValue}`, 'gi').test(
+        underlineInSearch ? el.symbol : symbolBase
+      )
+    })
+  }
+
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
@@ -190,8 +188,12 @@ export const combineSelectWrapperData = ({
       quantityPrecision: 0,
     }
 
-    const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
-    const quantityPrecision = quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0 ? 8 : quantityPrecisionRaw
+    const pricePrecision =
+      pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
+    const quantityPrecision =
+      quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0
+        ? 8
+        : quantityPrecisionRaw
 
     const isInFavoriteAlready = favoritePairsMap.has(symbol)
 
@@ -274,5 +276,5 @@ export const combineSelectWrapperData = ({
     }
   })
 
-  return filtredData
+  return filtredData.sort((a, b) => a.id.localeCompare(b.id))
 }

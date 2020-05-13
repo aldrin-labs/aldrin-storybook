@@ -76,6 +76,10 @@ export interface IProps {
 }
 
 class MarketStats extends React.PureComponent<IProps> {
+  state = {
+    key: 0,
+  }
+
   getMarkPriceQueryUnsubscribe: null | (() => void) = null
   getPriceQueryUnsubscribe: null | (() => void) = null
   getFundingRateQueryUnsubscribe: null | (() => void) = null
@@ -127,7 +131,8 @@ class MarketStats extends React.PureComponent<IProps> {
       pricePrecision: pricePrecisionRaw,
     } = this.props
 
-    const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
+    const pricePrecision =
+      pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
 
     const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
     const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
@@ -169,7 +174,7 @@ class MarketStats extends React.PureComponent<IProps> {
     const sign24hChange = +priceChangePercent > 0 ? `+` : ``
 
     return (
-      <>
+      <div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
         <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
           <PanelCardTitle>Last price</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -227,7 +232,9 @@ class MarketStats extends React.PureComponent<IProps> {
         <PanelCard>
           <PanelCardTitle>24h low</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(roundAndFormatNumber(lowPrice, pricePrecision, false))}
+            {formatNumberToUSFormat(
+              roundAndFormatNumber(lowPrice, pricePrecision, false)
+            )}
           </PanelCardValue>
         </PanelCard>
 
@@ -273,9 +280,10 @@ class MarketStats extends React.PureComponent<IProps> {
                   checkpoints={[
                     {
                       time: 0,
-                      callback: () => {
+                      callback: async () => {
                         console.log('funding rate finished')
-                        getFundingRateQueryRefetch()
+                        await getFundingRateQueryRefetch()
+                        await this.setState((prev) => ({ key: prev.key + 1 }))
                       },
                     },
                   ]}
@@ -294,7 +302,7 @@ class MarketStats extends React.PureComponent<IProps> {
             </span>
           </PanelCard>
         )}
-      </>
+      </div>
     )
   }
 }
