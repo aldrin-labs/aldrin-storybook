@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 
@@ -25,16 +25,47 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
+    
     if (
       !(
         newProps.data &&
         newProps.data.marketTickers &&
         newProps.data.marketTickers.length > 0 &&
-        newProps.data.marketTickers.length !== state.data
+        newProps.data.marketTickers.length !== state.data.length
       )
     ) {
       //  if data is actually not a new data
       return null
+    }
+
+    if (
+      state.data.length === 0 &&
+      newProps.data && 
+      newProps.data.marketTickers && 
+      newProps.data.marketTickers.length > 0
+    ) {
+      const updatedData = newProps.data.marketTickers
+      .map((trade, i) => ({
+        ...trade,
+        price: Number(trade.price).toFixed(
+          getNumberOfDecimalsFromNumber(
+            getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0]
+              .value
+          )
+        ),
+        time: dayjs.unix(+trade.timestamp).format('LTS'),
+        id: `${trade.price}${trade.size}${i}${trade.timestamp}`
+      }))
+      
+      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
+        updatedData,
+        'price'
+      )
+
+      return {
+        numbersAfterDecimalForPrice,
+        data: reduceArrayLength(updatedData),
+      }
     }
 
     if (
@@ -66,13 +97,8 @@ class TableContainer extends Component<IProps, IState> {
         }))
         .concat(state.data)
 
-      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
-        updatedData,
-        'price'
-      )
 
       return {
-        numbersAfterDecimalForPrice,
         data: reduceArrayLength(updatedData),
       }
     }

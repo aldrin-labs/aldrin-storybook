@@ -90,7 +90,7 @@ export const DefaultView = (props: any) => {
 
   return (
     <Container container spacing={8}>
-      <ChartGridContainer MASTER_BUILD={MASTER_BUILD} item xs={12}>
+      <ChartGridContainer item xs={12}>
         <CardsPanel
           {...{
             _id: id,
@@ -131,7 +131,6 @@ export const DefaultView = (props: any) => {
           }}
         >
           <ChartsContainer
-            MASTER_BUILD={MASTER_BUILD}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <CustomCard id="tradingViewChart">
@@ -158,19 +157,17 @@ export const DefaultView = (props: any) => {
             </CustomCard>
           </ChartsContainer>
           <TradingTerminalContainer
-            MASTER_BUILD={MASTER_BUILD}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <Grid item container style={{ height: '100%' }}>
               <Grid
                 item
                 container
-                xs={MASTER_BUILD ? 12 : 7}
+                xs={7}
                 style={{
                   height: '100%',
-                  ...(!MASTER_BUILD
-                    ? { flexBasis: '65%', maxWidth: '65%' }
-                    : {}),
+                  flexBasis: '65%', maxWidth: '65%' 
+
                 }}
               >
                 <OrderbookAndDepthChart
@@ -193,7 +190,6 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-              {!MASTER_BUILD && (
                 <Grid
                   item
                   xs={5}
@@ -213,6 +209,7 @@ export const DefaultView = (props: any) => {
                       minPriceDigits,
                       updateTerminalPriceFromOrderbook,
                       marketType,
+                      isPairDataLoading,
                       activeExchange,
                       showTableOnMobile,
                       changeTable,
@@ -221,7 +218,6 @@ export const DefaultView = (props: any) => {
                     }}
                   />
                 </Grid>
-              )}
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (
