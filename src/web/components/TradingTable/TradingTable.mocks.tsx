@@ -34,7 +34,7 @@ export const positionsColumnNames = (
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
   { label: 'Mark Price', id: 'marketPrice' },
-  { label: 'Adl', id: 'adl' },
+  { label: <DarkTooltip maxWidth={'30rem'} title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}><span>adl</span></DarkTooltip>, id: 'adl' },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
   {
