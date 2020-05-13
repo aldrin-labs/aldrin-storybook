@@ -67,6 +67,11 @@ const AppRaw = ({
     const ref = searchParamsObject['ref']
     syncStorage.setItem('ref', ref)
   }
+  const isDiscountCodeExist = !!searchParamsObject['code']
+  if (isDiscountCodeExist) {
+    const code = searchParamsObject['code']
+    syncStorage.setItem('code', code)
+  }
 
   return (
     <ApolloPersistWrapper>
