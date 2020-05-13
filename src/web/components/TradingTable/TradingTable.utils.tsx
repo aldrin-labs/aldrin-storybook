@@ -333,7 +333,7 @@ export const combinePositionsTable = ({
   pricePrecision: number
   quantityPrecision: number
   keys: Key[]
-  adlData: { symbol: string, adlQuantile: any }[]
+  adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -357,7 +357,7 @@ export const combinePositionsTable = ({
         keyId,
         marginType,
         isolatedMargin,
-        liquidationPrice
+        liquidationPrice,
       } = el
       const needOpacity = el._id === '0'
 
@@ -386,6 +386,8 @@ export const combinePositionsTable = ({
         },
       })
 
+      console.log('prices', prices)
+
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
       const liqPrice =
         entryPrice *
@@ -407,10 +409,19 @@ export const combinePositionsTable = ({
       const pair = symbol.split('_')
 
       let adl = 0
-      const currentAdlData = adlData.find(adl => adl.symbol === symbol.replace('_', ''))
+      const currentAdlData = adlData.find(
+        (adl) => adl.symbol === symbol.replace('_', '')
+      )
 
       if (currentAdlData && currentAdlData.adlQuantile) {
-        adl = side === 'buy long' ? currentAdlData.adlQuantile.LONG || currentAdlData.adlQuantile.HEDGE || currentAdlData.adlQuantile.BOTH : currentAdlData.adlQuantile.SHORT || currentAdlData.adlQuantile.HEDGE || currentAdlData.adlQuantile.BOTH
+        adl =
+          side === 'buy long'
+            ? currentAdlData.adlQuantile.LONG ||
+              currentAdlData.adlQuantile.HEDGE ||
+              currentAdlData.adlQuantile.BOTH
+            : currentAdlData.adlQuantile.SHORT ||
+              currentAdlData.adlQuantile.HEDGE ||
+              currentAdlData.adlQuantile.BOTH
       }
 
       return [
@@ -472,7 +483,9 @@ export const combinePositionsTable = ({
                   {marginType === 'isolated'
                     ? stripDigitPlaces(isolatedMargin, 2)
                     : stripDigitPlaces(
-                        (positionAmt / leverage) * entryPrice * (side === 'buy long' ? 1 : -1),
+                        (positionAmt / leverage) *
+                          entryPrice *
+                          (side === 'buy long' ? 1 : -1),
                         2
                       )}{' '}
                   {pair[1]}
@@ -522,16 +535,20 @@ export const combinePositionsTable = ({
             contentToSort: marketPrice,
           },
           adl: {
-            render: <div style={{ display: 'flex', height: '2rem' }}>
-              <AdlIndicator color={'#29AC80'} adl={adl} i={0} />
-              <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
-              <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
-              <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
-              <AdlIndicator color={'#DD6956'} adl={adl} i={4} />
-            </div>,
+            render: (
+              <div style={{ display: 'flex', height: '2rem' }}>
+                <AdlIndicator color={'#29AC80'} adl={adl} i={0} />
+                <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
+                <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
+                <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
+                <AdlIndicator color={'#DD6956'} adl={adl} i={4} />
+              </div>
+            ),
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liquidationPrice, pricePrecision)} ${pair[1]}`,
+            render: `${stripDigitPlaces(liquidationPrice, pricePrecision)} ${
+              pair[1]
+            }`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -601,6 +618,8 @@ export const combineActiveTradesTable = ({
   currencyPair,
   pricePrecision,
   quantityPrecision,
+  addOrderToCanceled,
+  canceledOrders,
   keys,
 }: {
   data: any[]
@@ -617,6 +636,8 @@ export const combineActiveTradesTable = ({
   currencyPair: string
   pricePrecision: number
   quantityPrecision: number
+  addOrderToCanceled: (id: string) => void
+  canceledOrders: string[]
   keys: Key[]
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -631,7 +652,8 @@ export const combineActiveTradesTable = ({
         !!a &&
         (a.enabled ||
           (a.conditions.isTemplate &&
-            a.conditions.templateStatus !== 'disabled'))
+            a.conditions.templateStatus !== 'disabled')) &&
+        !canceledOrders.includes(a._id)
     )
     .sort((a, b) => {
       // sometimes in db we receive createdAt as timestamp
@@ -876,7 +898,9 @@ export const combineActiveTradesTable = ({
               !!currentPrice &&
               entryOrderPrice) ? (
               <SubColumnValue
-                color={profitPercentage > 0 || templatePnl > 0 ? green.new : red.new}
+                color={
+                  profitPercentage > 0 || templatePnl > 0 ? green.new : red.new
+                }
               >
                 {' '}
                 {!!templatePnl
@@ -997,6 +1021,7 @@ export const combineActiveTradesTable = ({
               onClick={(e) => {
                 e.stopPropagation()
                 cancelOrderFunc(el._id, el.accountId)
+                addOrderToCanceled(el._id)
               }}
             >
               {activeOrderStatus === 'Preparing' ||

@@ -197,19 +197,19 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
 
     const pairsWithoutMarketType = this.props.getActiveStrategiesQuery.getActiveStrategies
-    .map((strategy) => {
-      if (strategy.enabled) {
-        return `${strategy.conditions.pair}`
-      }
+      .map((strategy) => {
+        if (strategy.enabled) {
+          return `${strategy.conditions.pair}`
+        }
 
-      return
-    })
-    .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-
+        return
+      })
+      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
 
     this.subscription = client
       .subscribe({
-        query: this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
+        query:
+          this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
         variables: {
           input: {
             exchange: this.props.exchange,
@@ -221,7 +221,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       .subscribe({
         next: (data: {
           loading: boolean
-          data: { listenTablePrice: Price[], listenMarkPrices: Price[] }
+          data: { listenTablePrice: Price[]; listenMarkPrices: Price[] }
         }) => {
           const orders = that.props.getActiveStrategiesQuery.getActiveStrategies
             .filter(
@@ -250,14 +250,19 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             keys,
             quantityPrecision,
             pricePrecision,
+            addOrderToCanceled,
+            canceledOrders,
           } = that.props
 
-          const subscriptionPropertyKey = marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
-          
+          const subscriptionPropertyKey =
+            marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
+
           const activeStrategiesProcessedData = combineActiveTradesTable({
             data: orders,
             cancelOrderFunc: this.cancelOrderWithStatus,
             changeStatusWithStatus: this.changeStatusWithStatus,
+            addOrderToCanceled,
+            canceledOrders,
             editTrade: this.editTrade,
             theme,
             keys,
@@ -289,6 +294,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       pricePrecision,
       quantityPrecision,
+      addOrderToCanceled,
+      canceledOrders,
     } = this.props
 
     client.writeQuery({
@@ -341,6 +348,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       cancelOrderFunc: this.cancelOrderWithStatus,
       changeStatusWithStatus: this.changeStatusWithStatus,
       editTrade: this.editTrade,
+      addOrderToCanceled,
+      canceledOrders,
       theme,
       keys,
       prices: this.state.prices,
@@ -429,6 +438,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       allKeys,
       pricePrecision,
       getActiveStrategiesQuery,
+      addOrderToCanceled,
+      canceledOrders,
     } = nextProps
 
     const { prices, cachedOrder } = this.state
@@ -522,6 +533,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       cancelOrderFunc: this.cancelOrderWithStatus,
       changeStatusWithStatus: this.changeStatusWithStatus,
       editTrade: this.editTrade,
+      addOrderToCanceled,
+      canceledOrders,
       theme,
       prices,
       keys,
@@ -656,9 +669,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           selectedTrade &&
           selectedTrade.conditions && (
             <EditEntryOrderPopup
-              price={
-                this.getEntryPrice()
-              }
+              price={this.getEntryPrice()}
               funds={processedFunds}
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
@@ -696,9 +707,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
                 // TODO: move to utils
                 const statusResult =
-                  result &&
-                  result.data &&
-                  result.data.updateEntryPoint 
+                  result && result.data && result.data.updateEntryPoint
                     ? {
                         status: 'success',
                         message: 'Smart order edit successful',
@@ -755,9 +764,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
                 // TODO: move to utils
                 const statusResult =
-                  result &&
-                  result.data &&
-                  result.data.updateTakeProfitStrategy
+                  result && result.data && result.data.updateTakeProfitStrategy
                     ? {
                         status: 'success',
                         message: 'Smart order edit successful',
@@ -810,9 +817,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
               // TODO: move to utils
               const statusResult =
-                result &&
-                result.data &&
-                result.data.updateStopLossStrategy
+                result && result.data && result.data.updateStopLossStrategy
                   ? {
                       status: 'success',
                       message: 'Smart order edit successful',

@@ -117,6 +117,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             show: tab === 'activeTrades',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
+            addOrderToCanceled: this.addOrderToCanceled,
           }}
         />
         <StrategiesHistoryTable
