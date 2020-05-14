@@ -52,7 +52,10 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
-import { OnboardingPlaceholder } from '@sb/components'
+import {
+  OnboardingPlaceholder,
+  OnboardingPromoPlaceholder,
+} from '@sb/components'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -581,6 +584,7 @@ const CustomTable = (props: Props) => {
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
     onboardingPlaceholder = false,
+    onboardingPromoPlaceholder = false,
   } = props
 
   if (
@@ -752,7 +756,9 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.length === 0 && onboardingPlaceholder ? (
+          {data.body.length === 0 && onboardingPromoPlaceholder ? (
+            <OnboardingPromoPlaceholder />
+          ) : data.body.length === 0 && onboardingPlaceholder ? (
             <OnboardingPlaceholder />
           ) : data.body.length === 0 && !onboardingPlaceholder ? (
             <CustomPlaceholder text={emptyTableText} />
