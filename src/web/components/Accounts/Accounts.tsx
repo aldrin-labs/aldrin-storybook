@@ -26,6 +26,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import ExchangeLogo from '@icons/ExchangeLogo.svg'
 import BrokerIconLogo from '@icons/brokerIconLogo.svg'
 import FuturesWarsIconLogo from '@icons/futuresWarsIconLogo.svg'
+import PromoKeyIconLogo from '@icons/promoKeyIconLogo.svg'
 
 import Help from '@material-ui/icons/Help'
 
@@ -166,8 +167,10 @@ class Accounts extends React.PureComponent<IProps> {
                     src={
                       key.isFuturesWars
                         ? FuturesWarsIconLogo
-                        : key.isBroker
+                        : key.isBroker && !key.isPromoKey
                         ? BrokerIconLogo
+                        : key.isPromoKey 
+                        ? PromoKeyIconLogo
                         : ExchangeLogo
                     }
                     style={{
