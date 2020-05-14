@@ -64,6 +64,7 @@ export interface IProps {
   showOpenOrdersFromAllAccounts: boolean
   showSmartTradesFromAllAccounts: boolean
 
+  addOrderToCanceled: (id: string) => void
   handleToggleAllKeys: (newValue: boolean) => void
   handleToggleSpecificPair: (newValue: boolean) => void
   showCancelResult: ({

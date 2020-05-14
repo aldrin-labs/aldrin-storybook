@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { Grid, Typography } from '@material-ui/core'
 import copy from 'clipboard-copy'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getProfileSettings } from '@core/graphql/queries/user/getProfileSettings'
+import { getActivePromo } from '@core/graphql/queries/user/getActivePromo'
+import { bonusRequest } from '@core/graphql/mutations/bonus/bonusRequest'
 import { addGAEvent } from '@core/utils/ga.utils'
 
 import exclamationMark from '@icons/exclamationMark.svg'
@@ -15,17 +18,31 @@ import AccountBlock from '@sb/compositions/Profile/compositions/DepositWithdrawa
 import RecentHistoryTable from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/RecentHistoryTable'
 import QRCodePopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/QRCodePopup'
 import InputAddress from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAddress'
+import ClaimBonusPopup from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/ClaimBonusPopup'
 
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 
 const Deposits = ({ ...props }: IProps) => {
+  const { bonusRequestMutation } = props
   const { depositSettings } = props.getProfileSettingsQuery.getProfileSettings
+  const {
+    getActivePromoQuery: { getActivePromo: { code = '' } = { code: '' } } = {
+      getActivePromo: { code: '' },
+    },
+  } = props
+  const isUserHasActivePromo = !!code
+
   const { selectedKey: tempSelectedKey = '' } = depositSettings || {
     selectedKey: '',
   }
   const selectedKey = tempSelectedKey || ''
   const [popupOpened, togglePopup] = useState(false)
+  const [claimPopupOpened, toggleClaimPopup] = useState(false)
+  const [claimRequestLoading, toggleClaimRequestLoading] = useState(false)
+  const [claimBonusId, setClaimBonusId] = useState('')
+  const [claimRequestStatus, setClaimRequestStatus] = useState('')
+  const [claimRequestErrorText, setClaimRequestErrorText] = useState('')
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'BTC',
     name: 'Bitcoin',
@@ -37,12 +54,43 @@ const Deposits = ({ ...props }: IProps) => {
   }
   const networkChange = () => {}
 
+  const handleClaimBonus = async () => {
+    toggleClaimRequestLoading(true)
+    toggleClaimPopup(true)
+    const res = await bonusRequestMutation()
+
+    const {
+      data: {
+        bonusRequest: { status, errorMessage, data },
+      },
+    } = res
+
+    toggleClaimRequestLoading(false)
+    if (status === 'OK') {
+      setClaimRequestStatus(status)
+      setClaimBonusId(data)
+    }
+
+    if (status === 'ERR') {
+      setClaimRequestStatus(status)
+      setClaimRequestErrorText(errorMessage)
+    }
+  }
+
   return (
     <>
       <QRCodePopup
         open={popupOpened}
         coinAddress={coinAddress}
         handleClose={() => togglePopup(false)}
+      />
+      <ClaimBonusPopup
+        open={claimPopupOpened}
+        claimRequestLoading={claimRequestLoading}
+        claimBonusId={claimBonusId}
+        claimRequestStatus={claimRequestStatus}
+        claimRequestErrorText={claimRequestErrorText}
+        handleClose={() => toggleClaimPopup(false)}
       />
       <Grid
         container
@@ -100,7 +148,13 @@ const Deposits = ({ ...props }: IProps) => {
                 {selectedCoin.label} address
               </StyledTypography>
               <Grid style={{ height: '7rem', overflow: 'hidden' }}>
-                <InputAddress autoComplete="off" value={coinAddress} selectedCoin={selectedCoin.label} setCoinAddress={setCoinAddress} selectedAccount={selectedKey}/>
+                <InputAddress
+                  autoComplete="off"
+                  value={coinAddress}
+                  selectedCoin={selectedCoin.label}
+                  setCoinAddress={setCoinAddress}
+                  selectedAccount={selectedKey}
+                />
               </Grid>
               {/* <StyledInput
                 value={coinAddress}
@@ -170,6 +224,32 @@ const Deposits = ({ ...props }: IProps) => {
                 </Grid>
               </Grid>
             </Grid>
+            {isUserHasActivePromo && (
+              <Grid item>
+                <Grid>
+                  <BtnCustom
+                    btnWidth={'38%'}
+                    borderRadius={'8px'}
+                    btnColor={'#165BE0'}
+                    borderWidth={'2px'}
+                    fontWeight={'bold'}
+                    fontSize={'1.2rem'}
+                    height={'4rem'}
+                    onClick={async () => {
+                      await handleClaimBonus()
+
+                      addGAEvent({
+                        action: 'Claim bonus',
+                        category: 'App - Claim bonus',
+                        label: `deposit_claim_bonus`,
+                      })
+                    }}
+                  >
+                    Claim bonus
+                  </BtnCustom>
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </Grid>
@@ -183,5 +263,11 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
-  })
+  }),
+  queryRendererHoc({
+    query: getActivePromo,
+    name: 'getActivePromoQuery',
+    fetchPolicy: 'cache-and-network',
+  }),
+  graphql(bonusRequest, { name: 'bonusRequestMutation' })
 )(Deposits)

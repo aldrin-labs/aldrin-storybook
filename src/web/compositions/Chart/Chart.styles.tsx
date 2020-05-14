@@ -56,6 +56,52 @@ html {
     font-size: 15px !important;
   }
 }  
+        
+  .virtualized-row {
+    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-size: 1.1rem;
+    line-height: 35px;
+    font-weight: bold;
+    color: #16253D;
+    padding: 0 .5rem;
+    letter-spacing: 0.075rem;
+    cursor: default;
+    outline: none;
+  }
+
+  @media (max-width: 1450px) {
+    .virtualized-row {
+          font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 1350px) {
+    .virtualized-row {
+          font-size: 0.9rem;
+    }
+  }
+
+  .amountForBackground {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    border-radius: .1rem;
+    top: 10%;
+    z-index: 1;
+  }
+
+  .needHover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 2;
+  }
+
+  .needHover:hover {
+    background-color: rgba(150, 150, 150, 0.15)
+  }
 `
 
 export const PanelWrapper = styled.div`

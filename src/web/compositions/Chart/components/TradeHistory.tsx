@@ -1,7 +1,10 @@
 import React from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
-import { MOCKED_MARKET_TICKERS, MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import {
+  MOCKED_MARKET_TICKERS,
+  MARKET_TICKERS,
+} from '@core/graphql/subscriptions/MARKET_TICKERS'
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
@@ -12,6 +15,7 @@ import { TradeHistoryWrapper } from '../Chart.styles'
 export const TradeHistory = ({
   updateTerminalPriceFromOrderbook,
   showTableOnMobile,
+  isPairDataLoading,
   activeExchange,
   minPriceDigits,
   changeTable,
@@ -35,7 +39,8 @@ export const TradeHistory = ({
         component={TradeHistoryTable}
         withOutSpinner
         query={MARKET_QUERY}
-        variables={{ symbol, exchange }}
+        variables={{ symbol, exchange, marketType }}
+        fetchPolicy={'network-only'}
         subscriptionArgs={{
           subscription: MARKET_TICKERS,
           variables: { symbol, exchange, marketType: String(marketType) },
@@ -57,6 +62,7 @@ export const TradeHistory = ({
           updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}
+        isDataLoading={isPairDataLoading}
       />
     </TradeHistoryWrapper>
   )

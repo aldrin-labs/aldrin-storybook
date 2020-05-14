@@ -6,7 +6,6 @@ import {
 } from '@core/types/PortfolioTypes'
 import { Key } from '@sb/compositions/Portfolio/Portfolio.types'
 
-
 export interface IState {
   key: number
   startDate: any
@@ -21,4 +20,11 @@ export interface IProps extends TooltipMutationType, TooltipQueryType {
   portfolioId: string
   portfolioName: string
   portfolioKeys: Key[]
+  getActivePromoQuery: {
+    getActivePromo: {
+      name: string
+      code: string
+      description: string
+    }
+  }
 }

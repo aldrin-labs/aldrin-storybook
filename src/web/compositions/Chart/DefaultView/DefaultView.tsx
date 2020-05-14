@@ -213,6 +213,7 @@ export const DefaultView = (props: any) => {
                       minPriceDigits,
                       updateTerminalPriceFromOrderbook,
                       marketType,
+                      isPairDataLoading,
                       activeExchange,
                       showTableOnMobile,
                       changeTable,

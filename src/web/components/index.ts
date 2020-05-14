@@ -51,5 +51,7 @@ export {
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
 export { SignUpButton } from './SignUpButton/SignUpButton'
 export { OnboardingPlaceholder as OnboardingPlaceholder } from './OnboardingPlaceholder/OnboardingPlaceholder'
+export { OnboardingPromoPlaceholder } from './OnboardingPromoPlaceholder/OnboardingPromoPlaceholder'
 export { LightGreenButton } from './LightGreenButton/LightGreenButton'
+export { OrangeButton } from './OrangeButton/OrangeButton'
 export { LinearProgressCustom } from './LinearProgressCustom/LinearProgressCustom'

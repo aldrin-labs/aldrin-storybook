@@ -25,7 +25,7 @@ import { modifyIsolatedMargin } from '@core/graphql/mutations/chart/modifyIsolat
 import { setPositionWasClosed } from '@core/graphql/mutations/strategies/setPositionWasClosed'
 import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
-import { getAdlQuantile} from '@core/graphql/queries/chart/getAdlQuantile'
+import { getAdlQuantile } from '@core/graphql/queries/chart/getAdlQuantile'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 
@@ -132,7 +132,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       cancelOrder,
       marketType,
       showOrderResult,
-      setPositionWasClosedMutation
+      setPositionWasClosedMutation,
     } = this.props
 
     const positionsData = combinePositionsTable({
@@ -157,13 +157,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     const result = await this.createOrder(variables)
     await showOrderResult(result, cancelOrder, marketType)
-    // here we disable SM if you closed position manually 
-    setPositionWasClosedMutation({ 
-      variables: { 
-        keyId: selectedKey.keyId, 
-        pair: variables.keyParams.symbol, 
-        side: variables.keyParams.side === 'buy' ? 'sell' : 'buy' 
-      }
+    // here we disable SM if you closed position manually
+    setPositionWasClosedMutation({
+      variables: {
+        keyId: selectedKey.keyId,
+        pair: variables.keyParams.symbol,
+        side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
+      },
     })
   }
 
@@ -277,29 +277,37 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
   getPairsWithPositions = () => {
     return this.props.getActivePositionsQuery.getActivePositions
-    .map((position) => {
-      if (position.positionAmt !== 0) {
-        return `${position.symbol}:${this.props.marketType}`
-      }
+      .map((position) => {
+        if (position.positionAmt !== 0) {
+          return `${position.symbol}`
+        }
 
-      return
-    })
-    .filter((a) => !!a)
+        return
+      })
+      .filter((a) => !!a)
+      .filter((v, i, arr) => arr.indexOf(v) === i)
   }
 
   getAdlData = () => {
     const pairs = this.props.getActivePositionsQuery.getActivePositions
-    .map((position) => {
-      if (position.positionAmt !== 0) {
-        return `${position.symbol.replace('_', '')}`
-      }
+      .map((position) => {
+        if (position.positionAmt !== 0) {
+          return `${position.symbol.replace('_', '')}`
+        }
 
-      return
-    })
-    .filter((a) => !!a)
+        return
+      })
+      .filter((a) => !!a)
 
-    if (this.props.getAdlQuantileQuery && this.props.getAdlQuantileQuery.getAdlQuantile && this.props.getAdlQuantileQuery.getAdlQuantile.data && this.props.getAdlQuantileQuery.getAdlQuantile.data.length) {
-      const adlData = this.props.getAdlQuantileQuery.getAdlQuantile.data.filter(adl => pairs.includes(adl.symbol))
+    if (
+      this.props.getAdlQuantileQuery &&
+      this.props.getAdlQuantileQuery.getAdlQuantile &&
+      this.props.getAdlQuantileQuery.getAdlQuantile.data &&
+      this.props.getAdlQuantileQuery.getAdlQuantile.data.length
+    ) {
+      const adlData = this.props.getAdlQuantileQuery.getAdlQuantile.data.filter(
+        (adl) => pairs.includes(adl.symbol)
+      )
 
       return adlData
     }
@@ -310,6 +318,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   subscribe() {
     const that = this
 
+    console.log('subscribe', this.getPairsWithPositions())
     this.subscription = client
       .subscribe({
         query: LISTEN_MARK_PRICES,
@@ -346,7 +355,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             quantityPrecision,
             theme,
             keys,
-            getAdlQuantileQuery
+            getAdlQuantileQuery,
           } = that.props
 
           const positionsData = combinePositionsTable({
@@ -397,7 +406,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       subscribeToMore,
       theme,
       keys,
-      getAdlQuantileQuery
+      getAdlQuantileQuery,
     } = this.props
 
     this.subscribe()
@@ -512,7 +521,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
-      getAdlQuantileQuery
+      getAdlQuantileQuery,
     } = nextProps
 
     const positionsData = combinePositionsTable({
@@ -605,7 +614,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       handleToggleAllKeys,
       handleToggleSpecificPair,
       currencyPair,
-      getAdlQuantileQuery
+      getAdlQuantileQuery,
     } = this.props
 
     if (!show) {
@@ -790,7 +799,6 @@ export default compose(
     pollInterval: 1000 * 60,
     variables: (props) => ({
       keyId: props.selectedKey.keyId,
-      
     }),
   }),
   graphql(updatePosition, { name: 'updatePositionMutation' }),

@@ -96,17 +96,25 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     )
 
     filtredMarketsByExchange.forEach((el) => {
-      if (stableCoinsRegexp.test(el.symbol)) {
+      if (
+        stableCoinsRegexp.test(el.symbol.split('_')[0]) ||
+        stableCoinsRegexp.test(el.symbol.split('_')[1])
+      ) {
         stableCoinsPairsMap.set(el.symbol, el.price)
       }
 
-      if (/BTC/g.test(el.symbol) && !stableCoinsRegexp.test(el.symbol)) {
+      if (
+        /BTC/g.test(el.symbol.split('_')[1]) &&
+        !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
+        !stableCoinsRegexp.test(el.symbol.split('_')[1])
+      ) {
         btcCoinsPairsMap.set(el.symbol, el.price)
       }
 
       if (
         !altCoinsRegexp.test(el.symbol) &&
-        !stableCoinsRegexp.test(el.symbol)
+        !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
+        !stableCoinsRegexp.test(el.symbol.split('_')[1])
       ) {
         altCoinsPairsMap.set(el.symbol, el.price)
       }
@@ -229,17 +237,18 @@ class SelectPairListComponent extends React.PureComponent<
     return (
       <Grid
         style={{
-          left: 0,
+          top: '2.5rem',
+          right: 0,
           position: 'absolute',
           zIndex: 999,
           background: '#fff',
           minWidth: '35%',
-          height: '350px',
+          height: '35rem',
           marginTop: '3rem',
-          borderRadius: '8px',
+          borderRadius: '.4rem',
           overflow: 'hidden',
-          border: '2px solid #E0E5EC',
-          boxShadow: '0px 8px 12px rgba(8, 22, 58, 0.3)',
+          border: '.1rem solid #E0E5EC',
+          boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
         // TODO: uncomment this line
         // onMouseLeave={closeMenu}
@@ -302,13 +311,14 @@ class SelectPairListComponent extends React.PureComponent<
                 onClick={() => onTabChange('alts')}
               >
                 <Grid style={{ paddingRight: '1rem' }}>ALTS</Grid>
-                <Grid style={{ width: '60px' }}>
+                <Grid style={{ width: '6rem' }}>
                   <ReactSelectComponent
                     isSearchable={false}
                     valueContainerStyles={{ padding: 0 }}
                     placeholder="ALL"
                     onChange={onSpecificCoinChange}
                     options={[
+                      { label: 'ALL', value: 'ALL' },
                       { value: 'ETH', label: 'ETH' },
                       { value: 'TRX', label: 'TRX' },
                       { value: 'XRP', label: 'XRP' },
@@ -340,18 +350,18 @@ class SelectPairListComponent extends React.PureComponent<
                 onClick={() => onTabChange('fiat')}
               >
                 <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
-                <Grid style={{ width: '60px' }}>
+                <Grid style={{ width: '6rem' }}>
                   <ReactSelectComponent
                     isSearchable={false}
                     valueContainerStyles={{ padding: 0 }}
                     placeholder="ALL"
                     onChange={onSpecificCoinChange}
                     options={[
+                      { label: 'ALL', value: 'ALL' },
                       ...stableCoinsWithoutFiatPairs.map((el) => ({
                         value: el,
                         label: el,
                       })),
-                      { label: 'ALL', value: 'ALL' },
                     ]}
                     value={
                       tabSpecificCoin === ''
@@ -426,7 +436,7 @@ class SelectPairListComponent extends React.PureComponent<
                   // borderBottom: '.1rem solid #e0e5ec',
                   fontSize: '1.2rem',
                 }}
-                rowHeight={40}
+                rowHeight={window.outerHeight / 30}
                 rowGetter={({ index }) => processedSelectData[index]}
               >
                 <Column
@@ -459,7 +469,7 @@ class SelectPairListComponent extends React.PureComponent<
                   cellRenderer={({ cellData }) => cellData.render}
                 />
                 <Column
-                  label={`price`}
+                  label={`mark price`}
                   dataKey="price"
                   headerStyle={{
                     paddingRight: 'calc(10px)',

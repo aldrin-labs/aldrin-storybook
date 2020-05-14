@@ -55,13 +55,13 @@ export const NavLinkButtonWrapper = styled.div`
   justify-content: center;
   padding: 0;
   height: 100%;
-  width: 12rem;
+  width: 14rem;
   color: #7284a0;
   border-left: 0.1rem solid #e0e5ec;
   /* border-right: 0.1rem solid #e0e5ec; */
 
   @media only screen and (max-width: 1400px) {
-    width: 15rem;
+    width: 17rem;
   }
 `
 
