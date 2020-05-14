@@ -25,7 +25,6 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-    
     if (
       !(
         newProps.data &&
@@ -40,23 +39,21 @@ class TableContainer extends Component<IProps, IState> {
 
     if (
       state.data.length === 0 &&
-      newProps.data && 
-      newProps.data.marketTickers && 
+      newProps.data &&
+      newProps.data.marketTickers &&
       newProps.data.marketTickers.length > 0
     ) {
-      const updatedData = newProps.data.marketTickers
-      .map((trade, i) => ({
+      const updatedData = newProps.data.marketTickers.map((trade, i) => ({
         ...trade,
         price: Number(trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
-            getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0]
-              .value
+            getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
           )
         ),
         time: dayjs.unix(+trade.timestamp).format('LTS'),
-        id: `${trade.price}${trade.size}${i}${trade.timestamp}`
+        id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
-      
+
       const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
         updatedData,
         'price'
@@ -84,18 +81,20 @@ class TableContainer extends Component<IProps, IState> {
         return null
       }
 
-      const updatedData = reduceArrayLength(tickersData
-        .map((trade) => ({
-          ...trade,
-          price: Number(trade.price).toFixed(
-            getNumberOfDecimalsFromNumber(
-              getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0]
-                .value
-            )
-          ),
-          time: new Date(trade.time).toLocaleTimeString(),
-        }))
-        .concat(state.data))
+      const updatedData = reduceArrayLength(
+        tickersData
+          .map((trade) => ({
+            ...trade,
+            price: Number(trade.price).toFixed(
+              getNumberOfDecimalsFromNumber(
+                getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0]
+                  .value
+              )
+            ),
+            time: new Date(trade.time).toLocaleTimeString(),
+          }))
+          .concat(state.data)
+      )
 
       return {
         data: updatedData,

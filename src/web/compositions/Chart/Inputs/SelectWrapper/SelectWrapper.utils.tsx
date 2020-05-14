@@ -267,8 +267,8 @@ export const combineSelectWrapperData = ({
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>
             {`${formatNumberToUSFormat(
-              roundAndFormatNumber(volume24hChange, quantityPrecision, false)
-            )} ${marketType === 0 ? quote : base}`}
+              roundAndFormatNumber(volume24hChange, 2, false)
+            )} ${quote}`}
           </span>
         ),
         // onClick: () => onSelectPair({ value: symbol }),
