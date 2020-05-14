@@ -42,8 +42,8 @@ export const OnboardingPromoPlaceholder = () => (
               textAlign: 'center',
             }}
           >
-            Deposit $1000 in any equivalent to get your 50 USDT and start your
-            smart trading.
+            Deposit $1,000 equivalent in any crypto token and get your $50 bonus
+            for trading.
           </Typography>
         </Grid>
         <Grid container justify="center" style={{ padding: '3rem' }}>
