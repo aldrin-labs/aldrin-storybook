@@ -28,7 +28,7 @@ import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { sharePortfolio } from '@core/graphql/mutations/portfolio/sharePortfolio'
 import { getPageType } from '@core/graphql/queries/portfolio/main/getPageType'
-
+import { getActivePromo } from '@core/graphql/queries/user/getActivePromo'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 import { updateTooltipMutation } from '@core/utils/TooltipUtils'
@@ -159,9 +159,13 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       getPageTypeQuery: {
         portfolio: { pageType },
       },
+      getActivePromoQuery: { getActivePromo: { code = '' } = { code: '' } } = {
+        getActivePromo: { code: '' },
+      },
       // getFuturesOverviewQuery: { getFuturesOverview },
     } = this.props
 
+    const isUserHasActivePromo = !!code
     const isSPOTCurrently = pageType === 'SPOT'
     // const { openSharePortfolioPopUp } = this.state
 
@@ -222,6 +226,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
             }
             PortfolioMainTable={
               <PortfolioMainTable
+                isUserHasActivePromo={isUserHasActivePromo}
                 data={{ myPortfolios: [{ portfolioAssets: enabledAssets }] }}
                 theme={theme}
                 dustFilter={dustFilter}
@@ -286,6 +291,10 @@ export default compose(
   queryRendererHoc({
     query: getPageType,
     name: 'getPageTypeQuery',
+  }),
+  queryRendererHoc({
+    query: getActivePromo,
+    name: 'getActivePromoQuery',
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
