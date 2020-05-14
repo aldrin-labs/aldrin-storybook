@@ -112,7 +112,9 @@ const ClaimBonusPopup = ({
                     fontWeight: 'bold',
                   }}
                 >
-                  If your request processed more than 24 hours, please contact{' '}
+                  It takes up to 24 hrs for your bonus to arrive. If it takes
+                  more than 24 hrs and you did not receive your bonus then
+                  please contact{' '}
                   <Link
                     style={{
                       color: '#165BE0',
