@@ -168,7 +168,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         deviationPercentage: 0,
       },
       external: false,
-      editByTVAlert: false,
       forcedStopByAlert: false,
       plotEnabled: false,
       plot: '',
@@ -193,7 +192,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         forcedStopPrice: 0,
       },
       external: false,
-      editByTVAlert: false,
       forcedStopByAlert: false,
       plotEnabled: false,
       plot: '',
@@ -276,7 +274,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         TVAlert: {
           isTVAlertOn: false,
           templateMode: 'once',
-          templateToken: generateToken(),
           plotEnabled: false,
           immediateEntry: false,
           sidePlotEnabled: true,
@@ -291,6 +288,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           amountPlot: '',
           deviationPlotEnabled: true,
           deviationPlot: '',
+          ...result.entryTVAlert,
+          templateToken: generateToken(),
         },
         trailing: {
           trailingDeviationPrice: 0,
@@ -313,11 +312,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         trailingTAP: {
           ...result.takeProfit.trailingTAP,
         },
-        editByTVAlert: false,
-        external: false,
-        forcedStopByAlert: false,
-        plotEnabled: false,
-        plot: '',
       },
       stopLoss: {
         stopLossPrice: 0,
@@ -327,11 +321,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...result.stopLoss.forcedStop,
           isForcedStopOn: result.stopLoss.timeout.isTimeoutOn,
         },
-        editByTVAlert: false,
-        external: false,
-        forcedStopByAlert: false,
-        plotEnabled: false,
-        plot: '',
       },
     }))
 
@@ -1051,86 +1040,88 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* ENTRY POINT */}
 
             <TerminalBlock width={'calc(33% + 0.5%)'}>
-            <InputRowContainer padding={'0 0 0.6rem 0'}>
-                <CustomSwitcher
-                  containerStyles={{
-                    width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                    margin: 0,
-                  }}
-                  buttonHeight={'2.5rem'}
-                  firstHalfStyleProperties={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.hedgeModePlotEnabled
-                      ? DisabledSwitcherStyles
-                      : BlueSwitcherStyles
-                  }
-                  secondHalfStyleProperties={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.hedgeModePlotEnabled
-                      ? DisabledSwitcherStyles
-                      : BlueSwitcherStyles
-                  }
-                  firstHalfText={'one-way'}
-                  secondHalfText={'hedge'}
-                  firstHalfIsActive={!entryPoint.order.hedgeMode}
-                  changeHalf={() => {
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'order',
-                      'hedgeMode',
-                      !entryPoint.order.hedgeMode
-                    )
-                  }}
-                />
-                {entryPoint.TVAlert.plotEnabled && (
-                  <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        width: '10%',
-                      }}
-                    >
-                      <Switcher
-                        checked={entryPoint.TVAlert.hedgeModePlotEnabled}
-                        onChange={() => {
+              {marketType === 1 && (
+                <InputRowContainer padding={'0 0 0.6rem 0'}>
+                  <CustomSwitcher
+                    containerStyles={{
+                      width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
+                      margin: 0,
+                    }}
+                    buttonHeight={'2.5rem'}
+                    firstHalfStyleProperties={
+                      entryPoint.TVAlert.plotEnabled &&
+                      entryPoint.TVAlert.hedgeModePlotEnabled
+                        ? DisabledSwitcherStyles
+                        : BlueSwitcherStyles
+                    }
+                    secondHalfStyleProperties={
+                      entryPoint.TVAlert.plotEnabled &&
+                      entryPoint.TVAlert.hedgeModePlotEnabled
+                        ? DisabledSwitcherStyles
+                        : BlueSwitcherStyles
+                    }
+                    firstHalfText={'one-way'}
+                    secondHalfText={'hedge'}
+                    firstHalfIsActive={!entryPoint.order.hedgeMode}
+                    changeHalf={() => {
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'hedgeMode',
+                        !entryPoint.order.hedgeMode
+                      )
+                    }}
+                  />
+                  {entryPoint.TVAlert.plotEnabled && (
+                    <>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          width: '10%',
+                        }}
+                      >
+                        <Switcher
+                          checked={entryPoint.TVAlert.hedgeModePlotEnabled}
+                          onChange={() => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'TVAlert',
+                              'hedgeModePlotEnabled',
+                              !entryPoint.TVAlert.hedgeModePlotEnabled
+                            )
+                          }}
+                        />
+                      </div>
+                      <Input
+                        type={'number'}
+                        needTitle
+                        title={`plot_`}
+                        textAlign="left"
+                        width={'calc(20% - .8rem)'}
+                        inputStyles={{
+                          paddingLeft: '4rem',
+                        }}
+                        disabled={!entryPoint.TVAlert.hedgeModePlotEnabled}
+                        value={entryPoint.TVAlert.hedgeModePlot}
+                        showErrors={showErrors}
+                        isValid={this.validateField(
+                          true,
+                          entryPoint.TVAlert.hedgeModePlot
+                        )}
+                        onChange={(e) => {
                           this.updateSubBlockValue(
                             'entryPoint',
                             'TVAlert',
-                            'hedgeModePlotEnabled',
-                            !entryPoint.TVAlert.hedgeModePlotEnabled
+                            'hedgeModePlot',
+                            e.target.value
                           )
                         }}
                       />
-                    </div>
-                    <Input
-                      type={'number'}
-                      needTitle
-                      title={`plot_`}
-                      textAlign="left"
-                      width={'calc(20% - .8rem)'}
-                      inputStyles={{
-                        paddingLeft: '4rem',
-                      }}
-                      disabled={!entryPoint.TVAlert.hedgeModePlotEnabled}
-                      value={entryPoint.TVAlert.hedgeModePlot}
-                      showErrors={showErrors}
-                      isValid={this.validateField(
-                        true,
-                        entryPoint.TVAlert.hedgeModePlot
-                      )}
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'TVAlert',
-                          'hedgeModePlot',
-                          e.target.value
-                        )
-                      }}
-                    />
-                  </>
-                )}
-              </InputRowContainer>
+                    </>
+                  )}
+                </InputRowContainer>
+              )}
               <InputRowContainer padding={'0 0 .6rem 0'}>
                 <CustomSwitcher
                   firstHalfText={'buy'}
@@ -1414,7 +1405,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </>
                 )}
               </InputRowContainer>
-              
+
               <div>
                 <InputRowContainer
                   justify="flex-start"
@@ -2588,12 +2579,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             !stopLoss.external
                           )
 
-                          this.updateBlockValue(
-                            'stopLoss',
-                            'editByTVAlert',
-                            !stopLoss.external
-                          )
-
                           if (
                             !stopLoss.external &&
                             entryPoint.TVAlert.templateMode === 'always'
@@ -2610,28 +2595,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         SL by TV Alert
                       </AdditionalSettingsButton>
                     </DarkTooltip>
-                    {/* <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
-                      'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      isActive={stopLoss.editByTVAlert}
-                      onClick={() => {
-                        if (stopLoss.external) {
-                          return
-                        }
-                        this.updateBlockValue(
-                          'stopLoss',
-                          'editByTVAlert',
-                          !stopLoss.editByTVAlert
-                        )
-                      }}
-                    >
-                      Edit by TV Alert
-                    </AdditionalSettingsButton>
-                  </DarkTooltip> */}
                     {/* <AdditionalSettingsButton
                     isActive={stopLoss.forcedStop.isForcedStopOn}
                     onClick={() =>
@@ -2774,7 +2737,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </FormInputContainer>
                   )}
 
-                  {stopLoss.editByTVAlert && (
+                  {stopLoss.external && (
                     <>
                       <FormInputContainer
                         padding={'0 0 .8rem 0'}
@@ -3593,11 +3556,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <AdditionalSettingsButton
                       isActive={takeProfit.external}
                       onClick={() => {
-                        this.updateBlockValue(
-                          'takeProfit',
-                          'editByTVAlert',
-                          !takeProfit.external
-                        )
                         this.updateSubBlockValue(
                           'takeProfit',
                           'splitTargets',
@@ -3627,28 +3585,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       TAP by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
-                  {/* <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
-                      'Your smart order will be edited once when there is a Trading View alert with new params that you connected to smart order.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      isActive={takeProfit.editByTVAlert}
-                      onClick={() => {
-                        if (takeProfit.external) {
-                          return
-                        }
-                        this.updateBlockValue(
-                          'takeProfit',
-                          'editByTVAlert',
-                          !takeProfit.editByTVAlert
-                        )
-                      }}
-                    >
-                      Edit by TV Alert
-                    </AdditionalSettingsButton>
-                  </DarkTooltip> */}
                   {/* <AdditionalSettingsButton
                     isActive={takeProfit.timeout.isTimeoutOn}
                     onClick={() => {
@@ -3998,7 +3934,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )}
                     </>
                   )}
-                {takeProfit.editByTVAlert && (
+                {takeProfit.external && (
                   <>
                     <FormInputContainer
                       padding={'0 0 .8rem 0'}
