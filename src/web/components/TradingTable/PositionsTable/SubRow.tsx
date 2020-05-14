@@ -5,7 +5,12 @@ import { Input } from '@sb/compositions/Chart/components/SmartOrderTerminal/Inpu
 import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/components/Balances'
 import { Loading } from '@sb/components/index'
 
-const SubRow = ({ getVariables, createOrderWithStatus, positionId, priceFromOrderbook }) => {
+const SubRow = ({
+  getVariables,
+  createOrderWithStatus,
+  positionId,
+  priceFromOrderbook,
+}) => {
   const [price, updateClosePrice] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
@@ -53,10 +58,18 @@ const SubRow = ({ getVariables, createOrderWithStatus, positionId, priceFromOrde
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled}
-          onClick={() => {
+          onClick={async () => {
             setClosingType('limit')
             closePosition(true)
-            createOrderWithStatus(getVariables('limit', +price), '_')
+            const response = await createOrderWithStatus(
+              getVariables('limit', +price),
+              '_'
+            )
+
+            if (!response) {
+              setClosingType('')
+              closePosition(false)
+            }
           }}
         >
           {closingType === 'limit' ? (
@@ -79,10 +92,18 @@ const SubRow = ({ getVariables, createOrderWithStatus, positionId, priceFromOrde
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled}
-          onClick={() => {
+          onClick={async () => {
             setClosingType('market')
             closePosition(true)
-            createOrderWithStatus(getVariables('market'), positionId)
+            const response = await createOrderWithStatus(
+              getVariables('market'),
+              positionId
+            )
+
+            if (!response) {
+              setClosingType('')
+              closePosition(false)
+            }
           }}
         >
           {closingType === 'market' ? (

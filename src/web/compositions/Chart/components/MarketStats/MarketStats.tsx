@@ -176,18 +176,26 @@ class MarketStats extends React.PureComponent<IProps> {
     return (
       <div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
         <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
-          <PanelCardTitle>Last price</PanelCardTitle>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <PanelCardTitle>Last price</PanelCardTitle>
+            {marketType === 0 ? null : (
+              <PanelCardTitle>Mark price</PanelCardTitle>
+            )}
+          </div>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue>
               {formatNumberToUSFormat(
-                roundAndFormatNumber(markPrice, pricePrecision, false)
-              )}
-            </PanelCardValue>
-            <PanelCardSubValue>
-              {formatNumberToUSFormat(
                 roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
               )}
-            </PanelCardSubValue>
+            </PanelCardValue>
+
+            {marketType === 0 ? null : (
+              <PanelCardSubValue>
+                {formatNumberToUSFormat(
+                  roundAndFormatNumber(markPrice, pricePrecision, false)
+                )}
+              </PanelCardSubValue>
+            )}
           </span>
         </PanelCard>
 

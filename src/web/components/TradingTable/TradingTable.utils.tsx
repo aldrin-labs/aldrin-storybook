@@ -386,8 +386,6 @@ export const combinePositionsTable = ({
         },
       })
 
-      console.log('prices', prices)
-
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
       const liqPrice =
         entryPrice *

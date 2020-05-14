@@ -276,5 +276,7 @@ export const combineSelectWrapperData = ({
     }
   })
 
-  return filtredData.sort((a, b) => a.id.localeCompare(b.id))
+  return filtredData.sort(
+    (a, b) => b.volume24hChange.contentToSort - a.volume24hChange.contentToSort
+  )
 }

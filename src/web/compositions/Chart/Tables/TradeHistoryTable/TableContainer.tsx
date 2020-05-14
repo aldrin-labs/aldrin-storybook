@@ -84,7 +84,7 @@ class TableContainer extends Component<IProps, IState> {
         return null
       }
 
-      const updatedData = tickersData
+      const updatedData = reduceArrayLength(tickersData
         .map((trade) => ({
           ...trade,
           price: Number(trade.price).toFixed(
@@ -95,11 +95,10 @@ class TableContainer extends Component<IProps, IState> {
           ),
           time: new Date(trade.time).toLocaleTimeString(),
         }))
-        .concat(state.data)
-
+        .concat(state.data))
 
       return {
-        data: reduceArrayLength(updatedData),
+        data: updatedData,
       }
     }
 
