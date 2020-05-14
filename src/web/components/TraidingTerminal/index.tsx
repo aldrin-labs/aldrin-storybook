@@ -475,7 +475,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               direction="column"
               style={{ margin: 'auto 0', width: '100%' }}
             >
-              {priceType !== 'market' ? (
+              {priceType !== 'market' && priceType !== 'stop-market' ? (
                 <InputRowContainer
                   key={'limit-price'}
                   padding={'.6rem 0'}
@@ -492,7 +492,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 </InputRowContainer>
               ) : null}
 
-              {priceType === 'stop-limit' || priceType === 'take-profit' ? (
+              {priceType === 'stop-limit' || priceType === 'stop-market' ? (
                 <InputRowContainer
                   key={'stop-limit'}
                   padding={'.6rem 0'}
@@ -901,20 +901,15 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         {
           leverage,
           marketType: isSPOTMarket ? 0 : 1,
-          params: { maxIfNotEnough: true },
           ...(priceType !== 'market'
-            ? orderMode === 'TIF'
+            ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
               : { postOnly: true }
             : {}),
-          ...(priceType === 'stop-limit' || priceType === 'take-profit'
+          ...(priceType === 'stop-limit' || priceType === 'stop-market'
             ? {
                 workingType:
                   trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
-                type:
-                  priceType === 'stop-limit'
-                    ? 'stop-limit'
-                    : 'take-profit-limit',
               }
             : {}),
           ...{ reduceOnly },

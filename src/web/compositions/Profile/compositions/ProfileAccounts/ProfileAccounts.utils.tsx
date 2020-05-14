@@ -110,10 +110,6 @@ export const transformData = (
           />
         ),
       },
-      exchange: {
-        render: row.exchange,
-        // isNumber: true,
-      },
       name: row.name,
       value: {
         render: row.value || '-',
@@ -303,12 +299,6 @@ export const putDataInTable = (
         label: ' ',
         style: { borderTopLeftRadius: '1.5rem' },
         isSortable: false,
-      },
-      {
-        id: 'exchange',
-        label: 'exchange',
-        // isNumber: true,
-        isSortable: true,
       },
       { id: 'name', label: 'name', isSortable: true },
       { id: 'value', label: 'value', isSortable: true },

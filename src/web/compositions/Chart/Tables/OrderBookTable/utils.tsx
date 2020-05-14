@@ -22,12 +22,7 @@ import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.ut
 //   font-size: 0.9rem;
 // }
 
-const Container = styled.div`
-  &:hover {
-    /* transition: all 0.1s ease-out; */
-    background-color: rgba(150, 150, 150, 0.15);
-  }
-`
+const Container = styled.div``
 
 /**
  * Default row renderer for Table.
@@ -92,7 +87,7 @@ type IProps = {
 const roundDown = function(num, precision) {
   num = parseFloat(num)
   if (!precision) return num
-  return (Math.floor(num / precision) * precision)
+  return Math.floor(num / precision) * precision
 }
 
 export default function defaultRowRenderer({
@@ -136,7 +131,8 @@ export default function defaultRowRenderer({
 
         return (
           +orderPrice === +rowData.price &&
-          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) || order.marketId === '0') &&
+          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
+            order.marketId === '0') &&
           !order.stopPrice
         )
       }) !== -1
@@ -147,7 +143,8 @@ export default function defaultRowRenderer({
 
         return (
           +orderStopPrice === +rowData.price &&
-          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId)  || order.marketId === '0')
+          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
+            order.marketId === '0')
         )
       }) !== -1
   }
@@ -188,64 +185,35 @@ export default function defaultRowRenderer({
   }
 
   return (
-    // <Fade timeout={1000} in={true}>
     <div
       {...a11yProps}
-      className={className}
+      className={`${className} virtualized-row`}
       key={key}
       role="row"
       style={{
         ...style,
-        ...rowStyles,
         ...colorStyles,
         backgroundColor: needHighlightPrice
           ? 'rgba(224, 229, 236, 0.5)'
           : needHighlightStopPrice
           ? 'rgba(68, 204, 255, 0.5)'
           : '',
-        cursor: 'default',
-        outline: 'none',
-        '&:focus': {
-          outline: 'none',
-        },
-        '@media (max-width: 1450px)': {
-          fontSize: '1rem',
-        },
-        '@media (max-width: 1350px)': {
-          fontSize: '0.9rem',
-        },
       }}
     >
       {columns}
       {amountForBackground && (
         <div
+          className="amountForBackground"
           style={{
-            position: 'absolute',
-            width: '100%',
-            height: '80%',
             backgroundColor:
               side === 'bids'
                 ? 'rgba(149, 220, 160, 0.31)'
                 : 'rgba(220, 157, 149, 0.31)',
-            borderRadius: '1px',
-            top: '10%',
             left: `calc(100% - ${orderPercentage}%)`,
-            zIndex: 1,
           }}
         />
       )}
-      <Container
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          // transition: 'all .1s ease-out',
-          left: `0`,
-          top: '0',
-          zIndex: 2,
-        }}
-      />
+      <div className="needHover" />
     </div>
-    // </Fade>
   )
 }
