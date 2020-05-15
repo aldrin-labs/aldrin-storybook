@@ -42,6 +42,7 @@ const ClaimBonusPopup = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            flexDirection: 'column',
             padding: '3rem',
             position: 'relative',
           }}
