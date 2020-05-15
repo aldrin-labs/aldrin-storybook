@@ -998,6 +998,7 @@ export const combineActiveTradesTable = ({
                 onClick={(e) => {
                   e.stopPropagation()
                   changeStatusWithStatus(el._id, el.accountId, 'disabled')
+                  addOrderToCanceled(el._id)
                 }}
               >
                 stop
