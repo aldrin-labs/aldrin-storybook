@@ -13,6 +13,10 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+
+import { client } from '@core/graphql/apolloClient'
+
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
@@ -23,6 +27,8 @@ class TableContainer extends Component<IProps, IState> {
     data: [],
     numbersAfterDecimalForPrice: 8,
   }
+
+  subscription: { unsubscribe: Function } | null
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     if (
@@ -37,6 +43,7 @@ class TableContainer extends Component<IProps, IState> {
       return null
     }
 
+    // query data processing
     if (
       state.data.length === 0 &&
       newProps.data &&
@@ -65,51 +72,67 @@ class TableContainer extends Component<IProps, IState> {
       }
     }
 
-    if (
-      newProps.data &&
-      newProps.data.marketTickers &&
-      newProps.data.marketTickers.length > 0
-    ) {
-      const tickersData = newProps.data.marketTickers
-
-      if (
-        !tickersData ||
-        tickersData.length === 0 ||
-        tickersData[0].pair !== newProps.currencyPair ||
-        tickersData[0].marketType != newProps.marketType
-      ) {
-        return null
-      }
-
-      const updatedData = reduceArrayLength(
-        tickersData
-          .map((trade) => ({
-            ...trade,
-            price: Number(trade.price).toFixed(
-              getNumberOfDecimalsFromNumber(
-                getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0]
-                  .value
-              )
-            ),
-            time: new Date(trade.time).toLocaleTimeString(),
-          }))
-          .concat(state.data)
-      )
-
-      return {
-        data: updatedData,
-      }
-    }
-
     return null
   }
 
+  subscribe = () => {
+    const that = this
+    this.subscription && this.subscription.unsubscribe()
+
+    this.subscription = client
+      .subscribe({
+        query: MARKET_TICKERS,
+        fetchPolicy: 'no-cache',
+        variables: {
+          marketType: String(this.props.marketType),
+          exchange: this.props.exchange,
+          symbol: this.props.symbol,
+        },
+      })
+      .subscribe({
+        next: ({ data }) => {
+          if (
+            data &&
+            data.listenMarketTickers &&
+            data.listenMarketTickers.length > 0
+          ) {
+            const tickersData = data.listenMarketTickers
+
+            if (
+              !tickersData ||
+              tickersData.length === 0 ||
+              tickersData[0].pair !== that.props.currencyPair ||
+              tickersData[0].marketType != that.props.marketType
+            ) {
+              return null
+            }
+
+            const updatedData = reduceArrayLength(
+              tickersData
+                .map((trade) => ({
+                  ...trade,
+                  price: Number(trade.price).toFixed(
+                    getNumberOfDecimalsFromNumber(
+                      getAggregationsFromMinPriceDigits(
+                        that.props.minPriceDigits
+                      )[0].value
+                    )
+                  ),
+                  time: new Date(trade.time).toLocaleTimeString(),
+                }))
+                .concat(that.state.data)
+            )
+
+            this.setState({
+              data: updatedData,
+            })
+          }
+        },
+      })
+  }
+
   componentDidMount() {
-    if (this.props.subscribeToMore) {
-      //  unsubscribe from old exchange when you first time change exchange
-      unsubscribe && unsubscribe()
-      unsubscribe = this.props.subscribeToMore()
-    }
+    this.subscribe()
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -122,10 +145,10 @@ class TableContainer extends Component<IProps, IState> {
       this.setState({ data: [] })
 
       //  unsubscribe from old exchange
-      unsubscribe && unsubscribe()
+      this.subscription && this.subscription.unsubscribe()
 
       //  subscribe to new exchange and create new unsub link
-      unsubscribe = this.props.subscribeToMore()
+      this.subscribe()
     }
   }
 

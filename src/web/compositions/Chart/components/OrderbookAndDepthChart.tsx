@@ -19,6 +19,8 @@ import {
   OrderbookGroup,
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
+import { client } from '@core/graphql/apolloClient'
+
 import {
   transformOrderbookData,
   addOrdersToOrderbook,
@@ -45,6 +47,8 @@ class OrderbookAndDepthChart extends React.Component {
       amountsMap: new SortedMap(),
     },
   }
+
+  subscription: { unsubscribe: Function } | null
 
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
@@ -79,85 +83,143 @@ class OrderbookAndDepthChart extends React.Component {
         ...updatedData,
       }
     }
+  }
 
-    if (
-      !(typeof marketOrders.asks === 'string') ||
-      !(typeof marketOrders.bids === 'string')
-    ) {
-      const ordersData = newProps.data.marketOrders
-      const orderbookData = updatedData || { asks, bids }
-
-      // check that current pair and marketType === pair in new orders
-      if (
-        (ordersData.bids.length > 0 &&
-          ordersData.bids[0].pair !==
-            `${newProps.symbol}_${newProps.marketType}`) ||
-        (ordersData.asks.length > 0 &&
-          ordersData.asks[0].pair !==
-            `${newProps.symbol}_${newProps.marketType}`)
-      )
-        return null
-
-      if (
-        String(aggregation) !==
-        String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-      ) {
-        updatedAggregatedData = addOrdersToOrderbook({
-          updatedData: updatedAggregatedData,
-          ordersData,
-          aggregation,
-          originalOrderbookTree: { asks, bids },
-          isAggregatedData: true,
-          sizeDigits,
-        })
-      }
-
-      updatedData = addOrdersToOrderbook({
-        updatedData: orderbookData,
-        ordersData,
-        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
-        originalOrderbookTree: { asks, bids },
-        isAggregatedData: false,
-        amountsMap,
-        sizeDigits,
+  subscribe = () => {
+    const that = this
+    this.subscription = client
+      .subscribe({
+        query: ORDERBOOK,
+        fetchPolicy: 'no-cache',
+        variables: {
+          marketType: this.props.marketType,
+          exchange: this.props.exchange,
+          symbol: this.props.symbol,
+        },
       })
-    }
+      .subscribe({
+        next: ({ data }) => {
+          const {
+            asks,
+            bids,
+            readyForNewOrder,
+            aggregation,
+            amountsMap,
+          } = that.state
+          const { sizeDigits, minPriceDigits } = that.props
 
-    return {
-      dataWasUpdated: true,
-      resubscribeTimer: newResubscribeTimer,
-      readyForNewOrder:
-        readyForNewOrder === undefined ? true : readyForNewOrder,
-      aggregation:
-        aggregation === undefined || aggregation === 0
-          ? String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-          : aggregation,
-      aggregatedData: updatedAggregatedData,
-      ...updatedData,
-    }
+          let updatedData = null
+          let newResubscribeTimer = null
+          let updatedAggregatedData = that.state.aggregatedData
+
+          const newOrders = data.listenOrderbook
+          // const newOrders = subscriptionData.data.listenMockedOrderbook
+
+          let ordersAsks = []
+          let ordersBids = []
+
+          if (newOrders.length > 0) {
+            newOrders.forEach((order, i) => {
+              const side = order.side.match(/ask/) ? 'asks' : 'bids'
+              if (side === 'asks') {
+                ordersAsks.push(order)
+              } else {
+                ordersBids.push(order)
+              }
+            })
+          }
+
+          const marketOrders = Object.assign(
+            {
+              asks: [],
+              bids: [],
+              __typename: 'orderbookOrder',
+            },
+            {
+              asks: ordersAsks,
+              bids: ordersBids,
+            }
+          )
+
+          if (
+            ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
+              !(typeof marketOrders.asks === 'string')) ||
+            !(typeof marketOrders.bids === 'string')
+          ) {
+            const ordersData = marketOrders
+            const orderbookData = updatedData || { asks, bids }
+
+            // check that current pair and marketType === pair in new orders
+            if (
+              (ordersData.bids.length > 0 &&
+                ordersData.bids[0].pair !==
+                  `${that.props.symbol}_${that.props.marketType}`) ||
+              (ordersData.asks.length > 0 &&
+                ordersData.asks[0].pair !==
+                  `${that.props.symbol}_${that.props.marketType}`)
+            )
+              return null
+
+            if (
+              String(aggregation) !==
+              String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+            ) {
+              updatedAggregatedData = addOrdersToOrderbook({
+                updatedData: updatedAggregatedData,
+                ordersData,
+                aggregation,
+                originalOrderbookTree: { asks, bids },
+                isAggregatedData: true,
+                sizeDigits,
+              })
+            }
+
+            updatedData = addOrdersToOrderbook({
+              updatedData: orderbookData,
+              ordersData,
+              aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
+                .value,
+              originalOrderbookTree: { asks, bids },
+              isAggregatedData: false,
+              amountsMap,
+              sizeDigits,
+            })
+          }
+
+          that.setState({
+            dataWasUpdated: true,
+            resubscribeTimer: newResubscribeTimer,
+            readyForNewOrder:
+              readyForNewOrder === undefined ? true : readyForNewOrder,
+            aggregation:
+              aggregation === undefined || aggregation === 0
+                ? String(
+                    getAggregationsFromMinPriceDigits(minPriceDigits)[0].value
+                  )
+                : aggregation,
+            aggregatedData: updatedAggregatedData,
+            ...updatedData,
+          })
+        },
+      })
   }
 
   componentDidMount() {
-    if (this.props.subscribeToMore) {
-      //  unsubscribe from old exchange when you first time change exchange
-      unsubscribe && unsubscribe()
-
-      unsubscribe = this.props.subscribeToMore()
-    }
-
     clearInterval(this.state.resubscribeTimer)
 
     const resubscribeTimer = setInterval(() => {
       if (this.state.dataWasUpdated) {
         this.setState({ dataWasUpdated: false })
       } else {
-        unsubscribe && unsubscribe()
-        unsubscribe = this.props.subscribeToMore()
+        this.subscription && this.subscription.unsubscribe()
+        this.subscribe()
       }
     }, 20000)
 
+    this.subscribe()
+
     this.setState({
-      resubscribeTimer,
+      // resubscribeTimer,
       aggregation: String(
         getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
       ),
@@ -186,10 +248,8 @@ class OrderbookAndDepthChart extends React.Component {
       })
 
       //  unsubscribe from old exchange
-      unsubscribe && unsubscribe()
-
-      //  subscribe to new exchange and create new unsub link
-      unsubscribe = this.props.subscribeToMore()
+      this.subscription && this.subscription.unsubscribe()
+      this.subscribe()
     }
 
     if (
@@ -210,7 +270,7 @@ class OrderbookAndDepthChart extends React.Component {
 
   componentWillUnmount() {
     this.setState({ readyForNewOrder: false })
-    unsubscribe && unsubscribe()
+    this.subscription && this.subscription.unsubscribe()
     clearInterval(this.state.resubscribeTimer)
   }
 
