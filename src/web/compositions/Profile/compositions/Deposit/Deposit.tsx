@@ -230,7 +230,7 @@ const Deposits = ({ ...props }: IProps) => {
                   <BtnCustom
                     btnWidth={'38%'}
                     borderRadius={'8px'}
-                    btnColor={'#165BE0'}
+                    btnColor={'#DD6956'}
                     borderWidth={'2px'}
                     fontWeight={'bold'}
                     fontSize={'1.2rem'}
