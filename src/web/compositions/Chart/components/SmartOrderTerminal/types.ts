@@ -72,7 +72,10 @@ export type TakeProfitType = {
     activatePrice: number
     deviationPercentage: number
   }
-  editByTVAlert: boolean
+  forcedStopByAlert: boolean
+  external: boolean
+  plotEnabled: boolean
+  plot: string | number
 }
 
 export type StopLossType = {
@@ -94,7 +97,10 @@ export type StopLossType = {
     pricePercentage: number
     forcedStopPrice: number
   }
-  editByTVAlert: boolean
+  forcedStopByAlert: boolean
+  external: boolean
+  plotEnabled: boolean
+  plot: string | number
 }
 
 export interface IState {
