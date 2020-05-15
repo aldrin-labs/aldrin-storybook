@@ -57,23 +57,29 @@ const Deposits = ({ ...props }: IProps) => {
   const handleClaimBonus = async () => {
     toggleClaimRequestLoading(true)
     toggleClaimPopup(true)
-    const res = await bonusRequestMutation()
 
-    const {
-      data: {
-        bonusRequest: { status, errorMessage, data },
-      },
-    } = res
+    try {
+      const res = await bonusRequestMutation()
 
-    toggleClaimRequestLoading(false)
-    if (status === 'OK') {
-      setClaimRequestStatus(status)
-      setClaimBonusId(data)
-    }
+      const {
+        data: {
+          bonusRequest: { status, errorMessage, data },
+        },
+      } = res
 
-    if (status === 'ERR') {
-      setClaimRequestStatus(status)
-      setClaimRequestErrorText(errorMessage)
+      toggleClaimRequestLoading(false)
+      if (status === 'OK') {
+        setClaimRequestStatus(status)
+        setClaimBonusId(data)
+      }
+
+      if (status === 'ERR') {
+        setClaimRequestStatus(status)
+        setClaimRequestErrorText(errorMessage)
+      }
+    } catch (e) {
+      setClaimRequestStatus('ERR')
+      setClaimRequestErrorText(e.message)
     }
   }
 
