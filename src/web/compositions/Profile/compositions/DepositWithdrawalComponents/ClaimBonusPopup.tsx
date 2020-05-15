@@ -3,6 +3,7 @@ import { Grid, Typography, Link } from '@material-ui/core'
 import { Loading } from '@sb/components/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import checkmarkGreen from '@icons/checkmarkGreen.svg'
+import crossRed from '@icons/crossRed.svg'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
@@ -48,21 +49,74 @@ const ClaimBonusPopup = ({
           }}
         >
           <Grid container justify="center" alignItems="center">
-            {claimRequestLoading ? (
+            {claimRequestLoading && (
               <Loading size={50} style={{ height: '50px' }} />
-            ) : claimRequestStatus === 'ERR' ? (
-              <Typography
+            )}
+          </Grid>
+          {claimRequestStatus === 'ERR' && !claimRequestLoading && (
+            <>
+              <Grid
+                container
+                justify="center"
+                alignItems="center"
                 style={{
-                  fontSize: '1.6rem',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase',
-                  color: '#16253D',
+                  paddingBottom: '2rem',
                 }}
               >
-                {claimRequestErrorText}
-              </Typography>
-            ) : null}
-          </Grid>
+                <SvgIcon src={crossRed} width="5rem" height="auto" />
+              </Grid>
+              <Grid
+                style={{
+                  paddingBottom: '2rem',
+                  textAlign: 'center',
+                }}
+              >
+                <Typography
+                  style={{
+                    fontSize: '1.6rem',
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase',
+                    color: '#16253D',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {claimRequestErrorText}
+                  </span>
+                </Typography>
+              </Grid>
+              <Grid
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                <Typography
+                  style={{
+                    fontSize: '1.6rem',
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase',
+                    color: '#16253D',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  If you think you received this message in error please contact{' '}
+                  <Link
+                    style={{
+                      color: '#165BE0',
+                    }}
+                    target={'_blank'}
+                    rel={'noreferrer noopener'}
+                    href="https://t.me/customer_tech_support"
+                  >
+                    our tech support
+                  </Link>
+                </Typography>
+              </Grid>
+            </>
+          )}
           {claimRequestStatus === 'OK' && !claimRequestLoading && (
             <>
               <Grid
