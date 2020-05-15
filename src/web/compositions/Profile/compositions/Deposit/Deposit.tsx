@@ -78,6 +78,7 @@ const Deposits = ({ ...props }: IProps) => {
         setClaimRequestErrorText(errorMessage)
       }
     } catch (e) {
+      toggleClaimRequestLoading(false)
       setClaimRequestStatus('ERR')
       setClaimRequestErrorText(e.message)
     }
