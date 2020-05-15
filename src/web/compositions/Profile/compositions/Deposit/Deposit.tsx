@@ -57,23 +57,30 @@ const Deposits = ({ ...props }: IProps) => {
   const handleClaimBonus = async () => {
     toggleClaimRequestLoading(true)
     toggleClaimPopup(true)
-    const res = await bonusRequestMutation()
 
-    const {
-      data: {
-        bonusRequest: { status, errorMessage, data },
-      },
-    } = res
+    try {
+      const res = await bonusRequestMutation()
 
-    toggleClaimRequestLoading(false)
-    if (status === 'OK') {
-      setClaimRequestStatus(status)
-      setClaimBonusId(data)
-    }
+      const {
+        data: {
+          bonusRequest: { status, errorMessage, data },
+        },
+      } = res
 
-    if (status === 'ERR') {
-      setClaimRequestStatus(status)
-      setClaimRequestErrorText(errorMessage)
+      toggleClaimRequestLoading(false)
+      if (status === 'OK') {
+        setClaimRequestStatus(status)
+        setClaimBonusId(data)
+      }
+
+      if (status === 'ERR') {
+        setClaimRequestStatus(status)
+        setClaimRequestErrorText(errorMessage)
+      }
+    } catch (e) {
+      toggleClaimRequestLoading(false)
+      setClaimRequestStatus('ERR')
+      setClaimRequestErrorText(e.message)
     }
   }
 
@@ -230,7 +237,7 @@ const Deposits = ({ ...props }: IProps) => {
                   <BtnCustom
                     btnWidth={'38%'}
                     borderRadius={'8px'}
-                    btnColor={'#165BE0'}
+                    btnColor={'#DD6956'}
                     borderWidth={'2px'}
                     fontWeight={'bold'}
                     fontSize={'1.2rem'}

@@ -41,13 +41,13 @@ export const TradeHistory = ({
         query={MARKET_QUERY}
         variables={{ symbol, exchange, marketType }}
         fetchPolicy={'network-only'}
-        subscriptionArgs={{
-          subscription: MARKET_TICKERS,
-          variables: { symbol, exchange, marketType: String(marketType) },
-          // subscription: MOCKED_MARKET_TICKERS,
-          // variables: { time: 10000 },
-          updateQueryFunction: updateTradeHistoryQuerryFunction,
-        }}
+        // subscriptionArgs={{
+        //   subscription: MARKET_TICKERS,
+        //   variables: { symbol, exchange, marketType: String(marketType) },
+        //   // subscription: MOCKED_MARKET_TICKERS,
+        //   // variables: { time: 10000 },
+        //   updateQueryFunction: updateTradeHistoryQuerryFunction,
+        // }}
         {...{
           quote,
           activeExchange,
@@ -59,6 +59,7 @@ export const TradeHistory = ({
           chartProps,
           marketType,
           sizeDigits,
+          symbol,
           updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}
