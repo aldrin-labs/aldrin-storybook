@@ -102,7 +102,7 @@ const ClaimBonusPopup = ({
                     fontWeight: 'bold',
                   }}
                 >
-                  If you think you received this message in error please contact{' '}
+                  If you think you received this message in error please contact our tech support via{' '}
                   <Link
                     style={{
                       color: '#165BE0',
@@ -111,7 +111,18 @@ const ClaimBonusPopup = ({
                     rel={'noreferrer noopener'}
                     href="https://t.me/customer_tech_support"
                   >
-                    our tech support
+                    telegram{' '}
+                  </Link>
+                  or{' '}
+                  <Link
+                    style={{
+                      color: '#165BE0',
+                    }}
+                    target={'_blank'}
+                    rel={'noreferrer noopener'}
+                    href="mailto:contact@cryptocurrencies.ai"
+                  >
+                    email{' '}
                   </Link>
                 </Typography>
               </Grid>
@@ -169,7 +180,7 @@ const ClaimBonusPopup = ({
                 >
                   It takes up to 24 hrs for your bonus to arrive. If it takes
                   more than 24 hrs and you did not receive your bonus then
-                  please contact{' '}
+                  please contact our tech support via{' '}
                   <Link
                     style={{
                       color: '#165BE0',
@@ -178,7 +189,18 @@ const ClaimBonusPopup = ({
                     rel={'noreferrer noopener'}
                     href="https://t.me/customer_tech_support"
                   >
-                    our tech support
+                    telegram{' '}
+                  </Link>
+                  or{' '}
+                  <Link
+                    style={{
+                      color: '#165BE0',
+                    }}
+                    target={'_blank'}
+                    rel={'noreferrer noopener'}
+                    href="mailto:contact@cryptocurrencies.ai"
+                  >
+                    email{' '}
                   </Link>
                 </Typography>
               </Grid>
