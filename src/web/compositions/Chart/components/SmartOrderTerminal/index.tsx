@@ -3536,11 +3536,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             false
                           )
 
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'external',
-                            false
-                          )
+                          this.updateBlockValue('takeProfit', 'external', false)
                         }}
                       >
                         Split targets
