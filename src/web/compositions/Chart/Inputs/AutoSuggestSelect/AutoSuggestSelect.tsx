@@ -87,17 +87,12 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
   render() {
     const {
-      // getViewModeQuery: {
-      //   chart: { view },
-      // },
       value,
-      // data,
       theme: {
         palette: { divider },
       },
       theme,
       selectStyles,
-      // getSelectorSettingsQuery,
       updateFavoritePairsMutation,
       marketType,
       activeExchange,
@@ -139,24 +134,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
 export default compose(
   withTheme(),
-  // queryRendererHoc({
-  //   query: MARKETS_BY_EXCHANE_QUERY,
-  //   variables: (props) => ({
-  //     splitter: '_',
-  //     exchange: props.activeExchange.symbol,
-  //     marketType: props.marketType,
-  //     includeAdditionalMarketData: true,
-  //   }),
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  // }),
-  // queryRendererHoc({
-  //   query: getSelectorSettings,
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  //   name: 'getSelectorSettingsQuery',
-  // }),
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
