@@ -1636,7 +1636,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={'action when alert'}
                     >
                       <InputRowContainer>
-                        <AdditionalSettingsButton
+                        {/* <AdditionalSettingsButton
                           isActive={entryPoint.TVAlert.immediateEntry}
                           onClick={() => {
                             this.updateSubBlockValue(
@@ -1662,7 +1662,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           }}
                         >
                           Immediate entry
-                        </AdditionalSettingsButton>
+                        </AdditionalSettingsButton> */}
                         <AdditionalSettingsButton
                           isActive={entryPoint.TVAlert.plotEnabled}
                           onClick={() => {

@@ -83,6 +83,8 @@ class OrderbookAndDepthChart extends React.Component {
         ...updatedData,
       }
     }
+
+    return {}
   }
 
   subscribe = () => {

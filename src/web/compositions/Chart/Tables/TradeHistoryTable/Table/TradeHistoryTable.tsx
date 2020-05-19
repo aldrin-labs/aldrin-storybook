@@ -44,11 +44,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
               }}
               width={width}
               height={height}
-              rowCount={
-                data.length > +(height / 17).toFixed(0) - 1
-                  ? +(height / 17).toFixed(0) - 1
-                  : data.length
-              }
+              rowCount={data.length}
               rowHeight={window.outerHeight / 60}
               rowGetter={({ index }) => data[index]}
               onRowClick={({ event, index, rowData }) => {

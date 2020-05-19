@@ -166,8 +166,8 @@ export const DefaultView = (props: any) => {
                 style={{
                   height: '100%',
 
-                  flexBasis: '65%', maxWidth: '65%',
-
+                  flexBasis: '65%',
+                  maxWidth: '65%',
                 }}
               >
                 <OrderbookAndDepthChart
@@ -190,35 +190,34 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-
-                <Grid
-                  item
-                  xs={5}
-                  style={{
-                    height: '100%',
-                    padding: '0 0 .4rem .4rem',
-                    flexBasis: '35%',
-                    maxWidth: '35%',
+              <Grid
+                item
+                xs={5}
+                style={{
+                  height: '100%',
+                  padding: '0 0 .4rem .4rem',
+                  flexBasis: '35%',
+                  maxWidth: '35%',
+                }}
+              >
+                <TradeHistory
+                  {...{
+                    symbol: currencyPair,
+                    pair: currencyPair,
+                    exchange,
+                    quote,
+                    minPriceDigits,
+                    updateTerminalPriceFromOrderbook,
+                    marketType,
+                    isPairDataLoading,
+                    activeExchange,
+                    showTableOnMobile,
+                    changeTable,
+                    chartProps,
+                    sizeDigits,
                   }}
-                >
-                  <TradeHistory
-                    {...{
-                      symbol: currencyPair,
-                      pair: currencyPair,
-                      exchange,
-                      quote,
-                      minPriceDigits,
-                      updateTerminalPriceFromOrderbook,
-                      marketType,
-                      isPairDataLoading,
-                      activeExchange,
-                      showTableOnMobile,
-                      changeTable,
-                      chartProps,
-                      sizeDigits,
-                    }}
-                  />
-                </Grid>
+                />
+              </Grid>
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (
