@@ -469,7 +469,7 @@ class SelectPairListComponent extends React.PureComponent<
                   cellRenderer={({ cellData }) => cellData.render}
                 />
                 <Column
-                  label={`mark price`}
+                  label={`last price`}
                   dataKey="price"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
