@@ -64,6 +64,7 @@ const BalancesWrapper = (props) => {
       withOutSpinner={true}
       withTableLoader={true}
       query={GET_DEPOSIT_ADDRESS}
+      fetchPolicy="cache-and-network"
       variables={{
         input: { keyId: props.selectedAccount, symbol: props.selectedCoin },
       }}
