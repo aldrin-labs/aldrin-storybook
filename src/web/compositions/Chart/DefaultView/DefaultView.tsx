@@ -5,7 +5,7 @@ import { Fade, Grid } from '@material-ui/core'
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { SingleChart } from '@sb/components/Chart'
-
+import { MASTER_BUILD } from '@core/utils/config'
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
@@ -89,7 +89,7 @@ export const DefaultView = (props: any) => {
 
   return (
     <Container container spacing={8}>
-      <ChartGridContainer item xs={12}>
+      <ChartGridContainer MASTER_BUILD={MASTER_BUILD} item xs={12}>
         <CardsPanel
           {...{
             _id: id,
@@ -130,6 +130,7 @@ export const DefaultView = (props: any) => {
           }}
         >
           <ChartsContainer
+            MASTER_BUILD={MASTER_BUILD}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <CustomCard id="tradingViewChart">
@@ -162,12 +163,12 @@ export const DefaultView = (props: any) => {
               <Grid
                 item
                 container
-                xs={7}
+                xs={MASTER_BUILD ? 12 : 7}
                 style={{
                   height: '100%',
-
-                  flexBasis: '65%', maxWidth: '65%',
-
+                  ...(!MASTER_BUILD
+                    ? { flexBasis: '65%', maxWidth: '65%' }
+                    : {}),
                 }}
               >
                 <OrderbookAndDepthChart
@@ -190,7 +191,7 @@ export const DefaultView = (props: any) => {
                   }}
                 />
               </Grid>
-
+              {!MASTER_BUILD && (
                 <Grid
                   item
                   xs={5}
@@ -219,6 +220,7 @@ export const DefaultView = (props: any) => {
                     }}
                   />
                 </Grid>
+              )}
             </Grid>
           </TradingTerminalContainer>
           {isDefaultTerminalViewMode && (

@@ -177,9 +177,13 @@ class MarketStats extends React.PureComponent<IProps> {
       <div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
         <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <PanelCardTitle>Last price</PanelCardTitle>
+            <PanelCardTitle style={{ whiteSpace: 'nowrap' }}>
+              Last price
+            </PanelCardTitle>
             {marketType === 0 ? null : (
-              <PanelCardTitle>Mark price</PanelCardTitle>
+              <PanelCardTitle style={{ whiteSpace: 'nowrap' }}>
+                Mark price
+              </PanelCardTitle>
             )}
           </div>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -288,10 +292,10 @@ class MarketStats extends React.PureComponent<IProps> {
                   checkpoints={[
                     {
                       time: 0,
-                      callback: async () => {
+                      callback: () => {
                         console.log('funding rate finished')
-                        await getFundingRateQueryRefetch()
-                        await this.setState((prev) => ({ key: prev.key + 1 }))
+                        getFundingRateQueryRefetch()
+                        this.setState((prev) => ({ key: prev.key + 1 }))
                       },
                     },
                   ]}

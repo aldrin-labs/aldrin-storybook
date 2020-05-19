@@ -21,6 +21,7 @@ import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { SendButton } from '../TraidingTerminal/styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import {
   TerminalContainer,
@@ -301,31 +302,55 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
 
-                {mode !== 'market' && (
-                  <FuturesSettings key="TIFTerminalController">
-                    <SRadio
-                      id="TIF"
-                      checked={orderMode === 'TIF'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: 'TIF',
-                        })
-                      }
-                    />
-                    <SettingsLabel htmlFor="TIF">TIF</SettingsLabel>
-                    <StyledSelect
-                      disabled={orderMode !== 'TIF'}
-                      value={this.state.TIFMode}
-                      onChange={(e) =>
-                        this.setState({ TIFMode: e.target.value })
-                      }
-                    >
-                      <StyledOption>GTC</StyledOption>
-                      <StyledOption>IOC</StyledOption>
-                      <StyledOption>FOK</StyledOption>
-                    </StyledSelect>
-                  </FuturesSettings>
+                {mode !== 'market' && ( //
+                  <DarkTooltip
+                    maxWidth={'35rem'}
+                    title={
+                      <>
+                        <p>
+                          <b>Time in Force</b>
+                        </p>
+                        <p>
+                          <b>- GTC (Good Till Cancel):</b> the order will
+                          continue to work until the order fills or is canceled.
+                        </p>
+                        <p>
+                          <b> - IOC (Immediate Or Cancel):</b> the order will
+                          execute all or part immediately and cancel any
+                          unfilled portion of the order.
+                        </p>
+                        <p>
+                          <b>- FOK (Fill Or Kill):</b> the order must be filled
+                          immediately in its entirety or not executed at all.
+                        </p>
+                      </>
+                    }
+                  >
+                    <FuturesSettings key="TIFTerminalController">
+                      <SRadio
+                        id="TIF"
+                        checked={orderMode === 'TIF'}
+                        style={{ padding: '0 1rem' }}
+                        onChange={() =>
+                          this.setState({
+                            orderMode: 'TIF',
+                          })
+                        }
+                      />
+                      <SettingsLabel htmlFor="TIF">TIF</SettingsLabel>
+                      <StyledSelect
+                        disabled={orderMode !== 'TIF'}
+                        value={this.state.TIFMode}
+                        onChange={(e) =>
+                          this.setState({ TIFMode: e.target.value })
+                        }
+                      >
+                        <StyledOption>GTC</StyledOption>
+                        <StyledOption>IOC</StyledOption>
+                        <StyledOption>FOK</StyledOption>
+                      </StyledSelect>
+                    </FuturesSettings>
+                  </DarkTooltip>
                 )}
 
                 <FuturesSettings key="reduceTerminalController">
