@@ -170,7 +170,9 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
       transformedAsksData: ordersData,
       transformedBidsData: spreadData,
     } = this.state
-    const { base, quote, animated, xAxisTickTotal, theme } = this.props
+
+    // https://github.com/uber/react-vis/blob/master/docs/animation.md
+    const { base, quote, animated = 'noWobble', xAxisTickTotal, theme } = this.props
 
     const { palette } = theme
     const axisStyle = {
