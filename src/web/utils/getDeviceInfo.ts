@@ -256,7 +256,7 @@ const getDeviceInfo = async ({
 }: {
   ipAddress: string
   countryCode: string
-}): DeviceType => {
+}): Promise<DeviceType> => {
   const {
     screen = '',
     browser = '',
