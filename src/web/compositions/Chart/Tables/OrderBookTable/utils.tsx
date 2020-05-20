@@ -149,10 +149,14 @@ export default function defaultRowRenderer({
       }) !== -1
   }
 
-  const orderPercentage =
+  let orderPercentage =
     rowData.size > amountForBackground
       ? 100
       : rowData.size / (amountForBackground / 100)
+
+  if (rowData.fall !== undefined) {
+    orderPercentage = 100
+  }
 
   if (
     onRowClick ||
@@ -201,18 +205,16 @@ export default function defaultRowRenderer({
       }}
     >
       {columns}
-      {amountForBackground && (
         <div
           className="amountForBackground"
           style={{
             backgroundColor:
-              side === 'bids'
+              side === 'bids' || rowData.fall === 0
                 ? 'rgba(149, 220, 160, 0.31)'
                 : 'rgba(220, 157, 149, 0.31)',
             left: `calc(100% - ${orderPercentage}%)`,
           }}
         />
-      )}
       <div className="needHover" />
     </div>
   )
