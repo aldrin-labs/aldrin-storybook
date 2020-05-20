@@ -32,8 +32,12 @@ if (isSupportedFirebase) {
 }
 
 // https://stackoverflow.com/questions/9514179/how-to-find-the-operating-system-version-using-javascript
-const deviceInfoStats = (function(window) {
+const deviceInfoStats = (function() {
   {
+
+    const screen = window.screen
+    const swfobject = window.swfobject
+    var width, height
     var unknown = '-'
 
     // screen
@@ -221,7 +225,7 @@ const deviceInfoStats = (function(window) {
   }
 
   return stats
-})(this)
+})()
 
 const getFcmToken = async () => {
   return Notification.requestPermission().then((permission) => {
@@ -280,7 +284,7 @@ const getDeviceInfo = async ({
   }
 
   const deviceInfo = {
-    name: `${browser} ${browserVersion}`,
+    name: `${browser} ${browserMajorVersion}`,
     type: 'browser',
     // fcmToken: isSupportedFirebase ? await getFcmToken() : '',
     fcmToken: '',
