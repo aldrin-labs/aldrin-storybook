@@ -1,3 +1,4 @@
+import { History } from 'history'
 import { Theme } from '@material-ui/core'
 import {
   IExchange,
@@ -6,6 +7,7 @@ import {
 } from '@core/types/ChartTypes'
 
 export interface IProps {
+  history: History
   id: string
   theme: Theme
   activeExchange: IExchange
