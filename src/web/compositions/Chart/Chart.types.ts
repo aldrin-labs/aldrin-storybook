@@ -39,6 +39,8 @@ export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
 }
 
 export interface IProps extends TooltipMutationType {
+  marketType: 0 | 1
+  selectedPair: string
   isNoCharts: boolean
   view: string
   currencyPair: string

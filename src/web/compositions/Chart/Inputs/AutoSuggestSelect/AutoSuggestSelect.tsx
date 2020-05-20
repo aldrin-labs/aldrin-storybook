@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/core/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
@@ -53,6 +54,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       },
       addChartMutation,
       changeCurrencyPairMutation,
+      history,
+      marketType,
     } = this.props
     const {
       multichart: { charts },
@@ -65,13 +68,17 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.closeMenu()
 
     if (view === 'default') {
-      await changeCurrencyPairMutation({
-        variables: {
-          pairInput: {
-            pair: value,
-          },
-        },
-      })
+      const chartPageType = marketType === 0 ? 'spot' : 'futures'
+
+      history.push(`/chart/${chartPageType}/${value}`)
+      
+      // await changeCurrencyPairMutation({
+      //   variables: {
+      //     pairInput: {
+      //       pair: value,
+      //     },
+      //   },
+      // })
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
@@ -133,6 +140,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 }
 
 export default compose(
+  withRouter,
   withTheme(),
   queryRendererHoc({
     query: GET_VIEW_MODE,
