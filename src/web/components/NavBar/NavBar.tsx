@@ -279,7 +279,7 @@ const NavBarRaw: SFC<Props> = ({
                 items={[
                   {
                     text: 'Spot market',
-                    to: '/chart/spot',
+                    to: '/chart/spot/BTC_USDT',
                     onMouseOver: () => {
                       if (notAuthPages) {
                         return
@@ -290,7 +290,7 @@ const NavBarRaw: SFC<Props> = ({
                   },
                   {
                     text: 'Futures market',
-                    to: '/chart/futures',
+                    to: '/chart/futures/BTC_USDT',
                     onClick: () => {
                       if (notAuthPages) {
                         return
