@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 // import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
@@ -9,10 +10,6 @@ import { Grid, Hidden } from '@material-ui/core'
 import { CardsPanel } from './components'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
-
-// import { singleChartSteps } from '@sb/config/joyrideSteps'
-// import TransparentExtendedFAB from '@sb/components/TransparentExtendedFAB'
-// import { SingleChart } from '@sb/components/Chart'
 
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
@@ -47,7 +44,7 @@ import {
 import { IProps, IState } from './Chart.types'
 
 @withTheme()
-class Chart extends React.Component<IProps, IState> {
+class Chart extends React.PureComponent<IProps, IState> {
   state: IState = {
     showTableOnMobile: 'ORDER',
     activeChart: 'candle',
@@ -142,13 +139,14 @@ class Chart extends React.Component<IProps, IState> {
         app: { themeMode },
       },
       theme,
+      selectedPair,
     } = this.props
 
     return (
       <OnlyCharts
         {...{
           theme: theme,
-          mainPair: pair,
+          mainPair: selectedPair,
           view: view,
           userId: _id,
           themeMode: themeMode,
@@ -179,6 +177,7 @@ class Chart extends React.Component<IProps, IState> {
       pairPropertiesQuery,
       changeActiveExchangeMutation,
       marketType,
+      selectedPair,
     } = this.props
 
     let minPriceDigits
@@ -186,6 +185,16 @@ class Chart extends React.Component<IProps, IState> {
     let pricePrecision
     let minSpotNotional
     let minFuturesStep
+
+    // hacky way to redirect to default market if user selected wrong market in url
+    if (
+      pairPropertiesQuery.loading === false &&
+      pairPropertiesQuery.marketByName.length === 0
+    ) {
+      const chartPageType = marketType === 0 ? 'spot' : 'futures'
+      const pathToRedirect = `/chart/${chartPageType}/BTC_USDT`
+      return <Redirect to={pathToRedirect} exact />
+    }
 
     const isPairDataLoading =
       !pair ||
@@ -219,7 +228,7 @@ class Chart extends React.Component<IProps, IState> {
     }
 
     const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
-    
+
     return (
       <MainContainer fullscreen={view !== 'default'}>
         <GlobalStyles />
@@ -236,7 +245,7 @@ class Chart extends React.Component<IProps, IState> {
               <CardsPanel
                 {...{
                   _id,
-                  pair,
+                  pair: selectedPair,
                   view,
                   themeMode,
                   activeExchange,
@@ -252,7 +261,7 @@ class Chart extends React.Component<IProps, IState> {
             id={_id}
             view={view}
             marketType={marketType}
-            currencyPair={pair}
+            currencyPair={selectedPair}
             pricePrecision={pricePrecision}
             quantityPrecision={quantityPrecision}
             minPriceDigits={minPriceDigits}
@@ -318,16 +327,12 @@ export default withAuth(
     graphql(updateTooltipSettings, {
       name: 'updateTooltipSettingsMutation',
     }),
-    // graphql(CHANGE_VIEW_MODE, {
-    //   name: 'changeViewModeMutation',
-    // }),
-    // graphql(ADD_CHART, { name: 'addChartMutation' }),
     graphql(pairProperties, {
       name: 'pairPropertiesQuery',
-      options: (props) => ({
+      options: (props: IProps) => ({
         fetchPolicy: 'cache-and-network',
         variables: {
-          marketName: props.getChartDataQuery.chart.currencyPair.pair,
+          marketName: props.selectedPair,
           marketType: props.marketType,
         },
       }),
