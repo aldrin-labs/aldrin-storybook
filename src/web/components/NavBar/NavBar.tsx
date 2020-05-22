@@ -399,7 +399,7 @@ const NavBarRaw: SFC<Props> = ({
                   },
                   {
                     text: 'Log out',
-                    to: '/login',
+                    to: `/login?callbackURL=${pathname}`,
                     onClick: logout,
                     style: {
                       color: '#DD6956',
