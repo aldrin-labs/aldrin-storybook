@@ -55,3 +55,5 @@ export { OnboardingPromoPlaceholder } from './OnboardingPromoPlaceholder/Onboard
 export { LightGreenButton } from './LightGreenButton/LightGreenButton'
 export { OrangeButton } from './OrangeButton/OrangeButton'
 export { LinearProgressCustom } from './LinearProgressCustom/LinearProgressCustom'
+export { SignUpLink } from './SignUpLink/SignUpLink'
+export { SignInLink } from './SignInLink/SignInLink'
