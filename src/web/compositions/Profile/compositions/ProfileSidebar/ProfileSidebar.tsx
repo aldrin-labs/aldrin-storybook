@@ -44,7 +44,7 @@ const ProfileSidebar = ({
 
   const logout = async () => {
     await handleLogout(logoutMutation, persistorInstance)
-    push('/login')
+    push(`/login?callbackURL=${pathname}`)
   }
 
   return (

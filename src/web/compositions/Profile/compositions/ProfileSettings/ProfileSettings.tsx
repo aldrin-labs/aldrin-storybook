@@ -69,7 +69,10 @@ const ProfileSettings = ({
     errorMessage: string
   }) => {
     if (status === 'OK') {
-      enqueueSnackbar(`You have successfully enable mfa. Logout to set up mfa`, { variant: 'success' })
+      enqueueSnackbar(
+        `You have successfully enable mfa. Logout to set up mfa`,
+        { variant: 'success' }
+      )
     } else {
       enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
@@ -82,7 +85,6 @@ const ProfileSettings = ({
     if (res.status === 'OK') {
       setOpenPopup(true)
     }
-
   }
 
   return (
@@ -120,15 +122,15 @@ const ProfileSettings = ({
               )}
             </MFASettingsBlock>
             {!isMfaAlreadyEnabled && (
-            <WhatIsBlock>
-              <TooltipCustom
-                title={mfaText}
-                enterDelay={250}
-                component={
-                  <WhatIsText textColor="#5C8CEA">what is it?</WhatIsText>
-                }
-              />
-            </WhatIsBlock>
+              <WhatIsBlock>
+                <TooltipCustom
+                  title={mfaText}
+                  enterDelay={250}
+                  component={
+                    <WhatIsText textColor="#5C8CEA">what is it?</WhatIsText>
+                  }
+                />
+              </WhatIsBlock>
             )}
             <ButtonContainer container alignItems="center" justify="center">
               <BtnCustom
@@ -237,9 +239,13 @@ class ProfileSettingsDataWrapper extends PureComponent<IPropsDataWrapper> {
   }
 
   logout = async () => {
-    const { logoutMutation, persistorInstance, history: { push } } = this.props
+    const {
+      logoutMutation,
+      persistorInstance,
+      history: { push },
+    } = this.props
     await handleLogout(logoutMutation, persistorInstance)
-    push('/login')
+    push(`/login?callbackURL=${pathname}`)
   }
 
   render() {
