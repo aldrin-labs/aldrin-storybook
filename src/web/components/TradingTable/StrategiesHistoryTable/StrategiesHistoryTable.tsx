@@ -303,7 +303,7 @@ const TableDataWrapper = ({ ...props }) => {
       showLoadingWhenQueryParamsChange={false}
       name={`getStrategiesHistoryQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={props.show ? 25000 : 0}
+      // pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
