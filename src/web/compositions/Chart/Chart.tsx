@@ -297,6 +297,7 @@ class Chart extends React.PureComponent<IProps, IState> {
   }
 }
 
+// TODO: combine all queries to one
 export default compose(
   withErrorFallback,
   withAuth,
