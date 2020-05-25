@@ -157,9 +157,10 @@ class Chart extends React.PureComponent<IProps, IState> {
     const {
       getChartDataQuery: {
         getMyProfile: { _id } = { _id: '' },
-        getTradingSettings: { selectedTradingKey, hedgeMode } = {
+        getTradingSettings: { selectedTradingKey, hedgeMode, isFuturesWarsKey } = {
           selectedTradingKey: '',
           hedgeMode: false,
+          isFuturesWarsKey: false,
         },
         marketByMarketType = [],
         chart: { activeExchange, currencyPair: { pair }, view } = {
@@ -267,8 +268,8 @@ class Chart extends React.PureComponent<IProps, IState> {
             themeMode={themeMode}
             selectedKey={
               selectedTradingKey
-                ? { keyId: selectedTradingKey, hedgeMode }
-                : { keyId: '', hedgeMode: false }
+                ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
+                : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
             }
             activeExchange={activeExchange}
             terminalViewMode={terminalViewMode}
