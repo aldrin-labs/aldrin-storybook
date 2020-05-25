@@ -5,9 +5,9 @@ import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
-import { Grid, Hidden } from '@material-ui/core'
+// import { Grid, Hidden } from '@material-ui/core'
 
-import { CardsPanel } from './components'
+// import { CardsPanel } from './components'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 
@@ -19,26 +19,22 @@ import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { CHANGE_ACTIVE_EXCHANGE } from '@core/graphql/mutations/chart/changeActiveExchange'
-import { CHANGE_VIEW_MODE } from '@core/graphql/mutations/chart/changeViewMode'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
-import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { MASTER_BUILD } from '@core/utils/config'
-import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 
 import {
   prefetchCoinSelector,
   prefetchDifferentMarketForCoinSelector,
 } from '@core/utils/prefetching'
 
-import { removeTypenameFromObject } from '@core/utils/apolloUtils'
+// import { removeTypenameFromObject } from '@core/utils/apolloUtils'
 
 import withAuth from '@core/hoc/withAuth'
 import {
   MainContainer,
-  TablesContainer,
-  TogglerContainer,
+  // TablesContainer,
+  // TogglerContainer,
   GlobalStyles,
 } from './Chart.styles'
 import { IProps, IState } from './Chart.types'
@@ -160,22 +156,23 @@ class Chart extends React.PureComponent<IProps, IState> {
 
     const {
       getChartDataQuery: {
-        getMyProfile: { _id },
+        getMyProfile: { _id } = { _id: '' },
         getTradingSettings: { selectedTradingKey, hedgeMode } = {
           selectedTradingKey: '',
           hedgeMode: false,
         },
-        marketByMarketType,
-        chart: {
-          activeExchange,
-          currencyPair: { pair },
-          view,
+        marketByMarketType = [],
+        chart: { activeExchange, currencyPair: { pair }, view } = {
+          currencyPair: { pair: 'BTC_USDT' },
+          activeExchange: { name: 'Binance', symbol: 'binance' },
+          view: 'default',
         },
-        app: { themeMode },
+        app: { themeMode } = { themeMode: 'light' },
       },
-      getTooltipSettingsQuery: { getTooltipSettings },
+      getTooltipSettingsQuery: { getTooltipSettings = { chartPage: false } } = {
+        getTooltipSettings: { chartPage: false },
+      },
       pairPropertiesQuery,
-      changeActiveExchangeMutation,
       marketType,
       selectedPair,
     } = this.props
@@ -232,7 +229,7 @@ class Chart extends React.PureComponent<IProps, IState> {
     return (
       <MainContainer fullscreen={view !== 'default'}>
         <GlobalStyles />
-        {view === 'onlyCharts' && (
+        {/* {view === 'onlyCharts' && (
           <TogglerContainer container>
             <Grid
               spacing={16}
@@ -249,13 +246,12 @@ class Chart extends React.PureComponent<IProps, IState> {
                   view,
                   themeMode,
                   activeExchange,
-                  changeActiveExchangeMutation,
                   marketType,
                 }}
               />
             </Grid>
           </TogglerContainer>
-        )}
+        )} */}
         {view === 'default' && (
           <DefaultView
             id={_id}
@@ -281,12 +277,11 @@ class Chart extends React.PureComponent<IProps, IState> {
             activeChart={this.state.activeChart}
             changeTable={this.changeTable}
             chartProps={this.props}
-            changeActiveExchangeMutation={changeActiveExchangeMutation}
             arrayOfMarketIds={arrayOfMarketIds}
             MASTER_BUILD={MASTER_BUILD}
           />
         )}
-        {view === 'onlyCharts' && this.renderOnlyCharts()}
+        {/* {view === 'onlyCharts' && this.renderOnlyCharts()} */}
         <JoyrideOnboarding
           continuous={true}
           stepIndex={this.state.stepIndex}
@@ -302,40 +297,36 @@ class Chart extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default withAuth(
-  compose(
-    queryRendererHoc({
-      query: getChartData,
-      name: 'getChartDataQuery',
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        marketType: 1, // hardcode here to get only futures marketIds'
-      },
+export default compose(
+  withErrorFallback,
+  withAuth,
+  queryRendererHoc({
+    // skip: true,
+    query: getChartData,
+    name: 'getChartDataQuery',
+    // fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    variables: {
+      marketType: 1, // hardcode here to get only futures marketIds'
+    },
+  }),
+  queryRendererHoc({
+    // skip: true,
+    query: GET_TOOLTIP_SETTINGS,
+    name: 'getTooltipSettingsQuery',
+    fetchPolicy: 'cache-first',
+    withOutSpinner: true,
+  }),
+  queryRendererHoc({
+    query: pairProperties,
+    name: 'pairPropertiesQuery',
+    fetchPolicy: 'cache-first',
+    variables: (props: IProps) => ({
+      marketName: props.selectedPair,
+      marketType: props.marketType,
     }),
-    graphql(CHANGE_CURRENCY_PAIR, {
-      name: 'changeCurrencyPairMutation',
-    }),
-    graphql(CHANGE_ACTIVE_EXCHANGE, {
-      name: 'changeActiveExchangeMutation',
-    }),
-    queryRendererHoc({
-      query: GET_TOOLTIP_SETTINGS,
-      name: 'getTooltipSettingsQuery',
-      fetchPolicy: 'cache-and-network',
-      withOutSpinner: true,
-    }),
-    graphql(updateTooltipSettings, {
-      name: 'updateTooltipSettingsMutation',
-    }),
-    graphql(pairProperties, {
-      name: 'pairPropertiesQuery',
-      options: (props: IProps) => ({
-        fetchPolicy: 'cache-and-network',
-        variables: {
-          marketName: props.selectedPair,
-          marketType: props.marketType,
-        },
-      }),
-    })
-  )(withErrorFallback(Chart))
-)
+  }),
+  graphql(updateTooltipSettings, {
+    name: 'updateTooltipSettingsMutation',
+  })
+)(Chart)
