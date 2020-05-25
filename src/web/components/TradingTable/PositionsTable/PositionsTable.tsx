@@ -753,7 +753,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getActivePositions}
       name={`getActivePositionsQuery`}
       fetchPolicy="cache-and-network"
-      pollInterval={props.show ? 25000 : 0}
+      // pollInterval={props.show ? 25000 : 0}
       subscriptionArgs={{
         subscription: FUTURES_POSITIONS,
         variables: {

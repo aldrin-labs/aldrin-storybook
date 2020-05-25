@@ -269,7 +269,7 @@ const TableDataWrapper = ({ ...props }) => {
       name={`getTradeHistoryQuery`}
       fetchPolicy="cache-and-network"
       showLoadingWhenQueryParamsChange={false}
-      pollInterval={props.show ? 60000 : 0}
+      // pollInterval={props.show ? 60000 : 0}
       variables={{
         tradeHistoryInput: {
           page,
