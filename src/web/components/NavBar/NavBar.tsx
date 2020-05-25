@@ -11,6 +11,7 @@ import { NavLink as Link } from 'react-router-dom'
 
 import { handleLogout } from '@core/utils/loginUtils'
 import Hidden from '@material-ui/core/Hidden'
+import { syncStorage } from '@storage'
 
 import {
   Nav,
@@ -113,6 +114,7 @@ const NavBarRaw: SFC<Props> = ({
     joyridePage = 'portfolioMain'
   }
 
+  const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
   const notAuthPages = page === 'Log in' || page === 'Sign up'
 
   return (
@@ -172,7 +174,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <MainIcon fontSize="small" />,
                     to: '/portfolio/main',
                     onMouseOver: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -187,7 +189,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/spot',
                     onMouseOver: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -199,7 +201,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <IndustryIcon fontSize="small" />,
                     to: '/portfolio/transactions/futures',
                     onMouseOver: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -211,7 +213,7 @@ const NavBarRaw: SFC<Props> = ({
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
                     onMouseOver: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -281,7 +283,7 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot market',
                     to: '/chart/spot/BTC_USDT',
                     onMouseOver: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -292,7 +294,7 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Futures market',
                     to: '/chart/futures/BTC_USDT',
                     onClick: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -317,7 +319,7 @@ const NavBarRaw: SFC<Props> = ({
                     component={Market}
                     pathname={pathname}
                     onMouseOver={() => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -338,7 +340,7 @@ const NavBarRaw: SFC<Props> = ({
                     component={Signals}
                     pathname={pathname}
                     onMouseOver={() => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
@@ -362,7 +364,7 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Accounts',
                     to: '/profile/accounts',
                     onMouseOver: () => {
-                      if (notAuthPages) {
+                      if (notAuthPages || !loginStatus) {
                         return
                       }
 
