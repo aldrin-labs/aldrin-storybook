@@ -67,7 +67,9 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
-      getAllUserKeysQuery,
+      getAllUserKeysQuery = {
+        myPortfolios: []
+      },
     } = this.props
 
     const keysObjects: Key[] = []
