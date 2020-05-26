@@ -99,7 +99,6 @@ export const DefaultView = (
             themeMode,
             activeExchange,
             selectedKey,
-            changeActiveExchangeMutation,
             showChangePositionModeResult,
             isDefaultTerminalViewMode,
             updateTerminalViewMode,
