@@ -171,6 +171,8 @@ class MarketStats extends React.PureComponent<IProps> {
       fundingRate: 0,
     }
 
+    console.log('fundingTime', fundingTime)
+
     const sign24hChange = +priceChangePercent > 0 ? `+` : ``
 
     return (

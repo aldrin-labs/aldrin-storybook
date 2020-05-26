@@ -151,7 +151,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           mode={mode}
           data={data}
           minPriceDigits={minPriceDigits}
-          // marketType={marketType}
+          marketType={marketType}
           marketOrders={marketOrders}
           aggregation={aggregation}
           symbol={currencyPair}

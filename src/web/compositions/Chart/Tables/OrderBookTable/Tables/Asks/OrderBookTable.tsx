@@ -77,7 +77,7 @@ class OrderBookTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width - width / 6}
-                style={{ color: '#DD6956' }}
+                style={{ color: '#FF3716' }}
               />
               <Column
                 label={`Size (${base})`}
