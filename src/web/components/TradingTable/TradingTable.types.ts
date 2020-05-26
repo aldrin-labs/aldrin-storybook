@@ -17,6 +17,7 @@ export interface IProps {
   }) => void
 
   getSelectedKeyQuery: { chart: { selectedKey: Key } }
+  getAllUserKeysQuery: { myPortfolios: { keys: Key[] }[] }
   selectedKey: {}
   marketType: 0 | 1
   exchange: string

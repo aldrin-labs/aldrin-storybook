@@ -5,7 +5,12 @@ import { withSnackbar } from 'notistack'
 import { orderError } from '@core/utils/errorsConfig'
 import { DefaultView } from './DefaultView'
 
-class OrderStatusWrapper extends React.Component {
+class OrderStatusWrapper extends React.PureComponent<{
+  enqueueSnackbar: (
+    message: string,
+    variant: { action?: any; variant: string }
+  ) => void
+}> {
   showOrderResult = (result, cancelOrder, marketType) => {
     if (result.status === 'success' && result.orderId && result.message) {
       this.props.enqueueSnackbar(result.message, {
@@ -58,7 +63,6 @@ class OrderStatusWrapper extends React.Component {
   }
 
   showChangePositionModeResult = (result, target = 'Position mode') => {
-    console.log('result', result)
     if (result.errors) {
       this.props.enqueueSnackbar('Something went wrong', { variant: 'error' })
       return

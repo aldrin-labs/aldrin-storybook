@@ -504,9 +504,7 @@ class SimpleTabs extends React.Component {
           )}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
-            {this.props.isFuturesWarsKeyQuery &&
-            this.props.isFuturesWarsKeyQuery.isFuturesWarsKey &&
-            false ? (
+            {this.props.isFuturesWarsKey && false ? (
               <div
                 style={{
                   display: 'flex',
@@ -626,14 +624,4 @@ class SimpleTabs extends React.Component {
 
 export default compose(
   withErrorFallback,
-  queryRendererHoc({
-    query: isFuturesWarsKey,
-    name: 'isFuturesWarsKeyQuery',
-    fetchPolicy: 'cache-and-network',
-    variables: (props) => ({
-      input: {
-        keyId: props.keyId,
-      },
-    }),
-  })
 )(SimpleTabs)
