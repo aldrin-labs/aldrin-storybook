@@ -459,6 +459,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+
+  console.log('OpenOrders TableDataWrapper render')
+
   const {
     showOpenOrdersFromAllAccounts: allKeys,
     showAllOpenOrderPairs: specificPair,
