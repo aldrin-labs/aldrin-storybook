@@ -56,6 +56,7 @@ class OrderbookAndDepthChart extends React.Component {
     const {
       data: { marketOrders },
       sizeDigits,
+      isPairDataLoading,
       minPriceDigits,
     } = newProps
 
@@ -67,10 +68,12 @@ class OrderbookAndDepthChart extends React.Component {
     if (
       asks.getLength() === 0 &&
       bids.getLength() === 0 &&
+      marketOrders &&
       marketOrders.asks &&
       marketOrders.bids &&
       testJSON(marketOrders.asks) &&
-      testJSON(marketOrders.bids)
+      testJSON(marketOrders.bids) &&
+      !isPairDataLoading
     ) {
       updatedData = transformOrderbookData({
         marketOrders,
@@ -109,6 +112,10 @@ class OrderbookAndDepthChart extends React.Component {
             amountsMap,
           } = that.state
           const { sizeDigits, minPriceDigits } = that.props
+
+          if (asks.getLength() === 0 && bids.getLength() === 0) {
+            return
+          }
 
           let updatedData = null
           let newResubscribeTimer = null
@@ -467,7 +474,7 @@ export const APIWrapper = ({
     <QueryRenderer
       component={OrderbookAndDepthChart}
       withOutSpinner
-      withTableLoader={true}
+      withTableLoader={false}
       fetchPolicy="network-only"
       query={ORDERS_MARKET_QUERY}
       variables={{ symbol: symbol, exchange, marketType }}
@@ -490,9 +497,11 @@ export const APIWrapper = ({
         onButtonClick: changeTable,
         setOrders: chartProps.setOrders,
         updateTerminalPriceFromOrderbook,
+        isPairDataLoading,
         ...chartProps,
       }}
       isDataLoading={isPairDataLoading}
+      withoutLoading={true}
     />
   )
 }

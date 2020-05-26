@@ -205,7 +205,7 @@ class MarketStats extends React.PureComponent<IProps> {
           </span>
         </PanelCard>
 
-        <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
+        <PanelCard style={{ minWidth: '15%', maxWidth: '21%' }}>
           <PanelCardTitle>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
