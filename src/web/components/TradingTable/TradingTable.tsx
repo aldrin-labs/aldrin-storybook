@@ -58,6 +58,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       showSmartTradesFromAllAccounts,
     } = this.state
 
+    console.log('TradingTable render')
+
     const {
       selectedKey,
       marketType,
@@ -68,13 +70,14 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
       getAllUserKeysQuery = {
-        myPortfolios: []
+        myPortfolios: [],
       },
     } = this.props
+    const { myPortfolios = [] } = getAllUserKeysQuery || { myPortfolios: [] }
 
     const keysObjects: Key[] = []
 
-    getAllUserKeysQuery.myPortfolios.forEach((portfolio) => {
+    myPortfolios.forEach((portfolio) => {
       keysObjects.push(...portfolio.keys)
     })
 
@@ -285,5 +288,5 @@ export default compose(
     withOutSpinner: true,
     withTableLoader: false,
     fetchPolicy: 'cache-only',
-  }),
+  })
 )(TradingTable)
