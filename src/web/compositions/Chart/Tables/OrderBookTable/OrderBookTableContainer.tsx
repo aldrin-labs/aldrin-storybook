@@ -38,13 +38,18 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   }
 
   componentDidUpdate(prevProps) {
+    const { getOpenOrderHistoryQuery, addOrderToOrderbookTree } = this.props
+    const { getOpenOrderHistoryQuery: prevOpenOrderHistoryQuery } = prevProps
+
+    const { getOpenOrderHistory = [] } = getOpenOrderHistoryQuery || {
+      getOpenOrderHistory: [],
+    }
+
     const {
-      getOpenOrderHistoryQuery: { getOpenOrderHistory },
-      addOrderToOrderbookTree,
-    } = this.props
-    const {
-      getOpenOrderHistoryQuery: { getOpenOrderHistory: prevOpenOrderHistory },
-    } = prevProps
+      getOpenOrderHistory: prevOpenOrderHistory = [],
+    } = prevOpenOrderHistoryQuery || {
+      getOpenOrderHistory: [],
+    }
 
     const isNewOrder = getOpenOrderHistory.length > prevOpenOrderHistory.length
     const newCachedOrder = getOpenOrderHistory.find(
@@ -79,10 +84,13 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       amountForBackground,
       setOrderbookAggregation,
       updateTerminalPriceFromOrderbook,
-      getOpenOrderHistoryQuery: { getOpenOrderHistory },
+      getOpenOrderHistoryQuery,
     } = this.props
 
     const { mode } = this.state
+    const { getOpenOrderHistory = [] } = getOpenOrderHistoryQuery || {
+      getOpenOrderHistory: [],
+    }
     const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
 
     return (
@@ -183,11 +191,11 @@ const APIWrapper = (props) => {
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType
+          marketType: props.marketType,
         },
       }}
       withOutSpinner={true}
-      withTableLoader={true}
+      withTableLoader={false}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
@@ -201,6 +209,7 @@ const APIWrapper = (props) => {
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
       }}
+      withoutLoading={true}
       {...props}
     />
   )

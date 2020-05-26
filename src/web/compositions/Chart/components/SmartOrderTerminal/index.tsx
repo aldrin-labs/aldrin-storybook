@@ -133,8 +133,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         sidePlot: '',
         typePlotEnabled: true,
         typePlot: '',
-        hedgeModePlotEnabled: true,
-        hedgeModePlot: '',
         pricePlotEnabled: true,
         pricePlot: '',
         amountPlotEnabled: true,
@@ -241,6 +239,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       getStrategySettingsQuery,
       marketType,
       componentLeverage,
+      hedgeMode,
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
@@ -270,6 +269,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             ? { side: result.entryPoint.order.side }
             : {}),
           leverage: componentLeverage,
+          hedgeMode: hedgeMode,
         },
         TVAlert: {
           isTVAlertOn: false,
@@ -280,8 +280,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           sidePlot: '',
           typePlotEnabled: true,
           typePlot: '',
-          hedgeModePlotEnabled: true,
-          hedgeModePlot: '',
           pricePlotEnabled: true,
           pricePlot: '',
           amountPlotEnabled: true,
@@ -455,6 +453,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       this.updateSubBlockValue('entryPoint', 'order', 'total', 0)
 
       this.updateSubBlockValue('entryPoint', 'order', 'amount', 0)
+    }
+
+    if (prevProps.hedgeMode !== this.props.hedgeMode) {
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'hedgeMode',
+        this.props.hedgeMode
+      )
     }
   }
 
@@ -795,15 +802,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           typePlot,
           pricePlotEnabled,
           pricePlot,
-          hedgeModePlotEnabled,
-          hedgeModePlot,
           amountPlotEnabled,
           amountPlot,
           deviationPlotEnabled,
           deviationPlot,
           templateToken,
         },
-        order: { type, side, amount, price, hedgeMode },
+        order: { type, side, amount, price },
         trailing: { isTrailingOn, deviationPercentage },
       },
     } = this.state
@@ -831,10 +836,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         ? `\\"amount\\": {{plot_${amountPlot}}}`
         : `\\"amount\\": ${amount}`
 
-    const hedgeModeJson =
-      hedgeModePlotEnabled && plotEnabled
-        ? `\\"hedgeMode\\": {{plot_${hedgeModePlot}}}`
-        : `\\"hedgeMode\\": ${hedgeMode}`
+    const hedgeModeJson = `\\"hedgeMode\\": ${this.props.hedgeMode}`
 
     const deviationJson = isTrailingOn
       ? deviationPlotEnabled && plotEnabled
@@ -1040,7 +1042,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* ENTRY POINT */}
 
             <TerminalBlock width={'calc(33% + 0.5%)'}>
-              {marketType === 1 && (
+              {/* {marketType === 1 && (
                 <InputRowContainer padding={'0 0 0.6rem 0'}>
                   <CustomSwitcher
                     containerStyles={{
@@ -1121,7 +1123,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </>
                   )}
                 </InputRowContainer>
-              )}
+              )} */}
               <InputRowContainer padding={'0 0 .6rem 0'}>
                 <CustomSwitcher
                   firstHalfText={'buy'}

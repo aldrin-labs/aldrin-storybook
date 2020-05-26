@@ -169,7 +169,7 @@ class SimpleTabs extends React.Component {
       >
         <CustomCard>
           <TerminalHeader key={'spotTerminal'} style={{ display: 'flex' }}>
-            <div style={{ width: marketType === 0 ? '100%' : '65%' }}>
+            <div style={{ width: '100%' }}>
               <TerminalModeButton
                 isActive={mode === 'limit'}
                 onClick={() => this.handleChangeMode('limit')}
@@ -263,7 +263,7 @@ class SimpleTabs extends React.Component {
                 Smart
               </TerminalModeButton>
             </div>
-            {marketType === 1 && (
+            {/* {marketType === 1 && (
               <div style={{ width: '35%' }}>
                 <PillowButton
                   firstHalfText={'one-way'}
@@ -280,7 +280,7 @@ class SimpleTabs extends React.Component {
                   }}
                 />
               </div>
-            )}
+            )} */}
           </TerminalHeader>
 
           {!isSPOTMarket ? (

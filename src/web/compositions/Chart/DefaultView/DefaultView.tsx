@@ -9,7 +9,8 @@ import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
-import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
+import { TradeHistory, OrderbookAndDepthChart } from '../components'
+import CardsPanel from '../components/CardsPanel'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -97,6 +98,9 @@ export const DefaultView = (
             view,
             themeMode,
             activeExchange,
+            selectedKey,
+            changeActiveExchangeMutation,
+            showChangePositionModeResult,
             isDefaultTerminalViewMode,
             updateTerminalViewMode,
             marketType,
