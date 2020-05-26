@@ -3,14 +3,14 @@ import React, { useState } from 'react'
 import { Fade, Grid } from '@material-ui/core'
 
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { SingleChart } from '@sb/components/Chart'
 
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
-import { TradeHistory, OrderbookAndDepthChart, CardsPanel } from '../components'
+import { TradeHistory, OrderbookAndDepthChart } from '../components'
+import CardsPanel from '../components/CardsPanel'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -44,7 +44,9 @@ import {
 } from '../Chart.styles'
 
 // fix props type
-export const DefaultView = (props: any) => {
+export const DefaultView = (
+  props: any
+): React.ReactComponentElement<any> | null => {
   const {
     currencyPair,
     // theme,
@@ -63,7 +65,6 @@ export const DefaultView = (props: any) => {
     selectedKey,
     chartProps,
     showChangePositionModeResult,
-    changeActiveExchangeMutation,
     terminalViewMode,
     updateTerminalViewMode,
     arrayOfMarketIds,
@@ -75,7 +76,7 @@ export const DefaultView = (props: any) => {
   } = props
 
   if (!currencyPair) {
-    return
+    return null
   }
 
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
@@ -97,7 +98,8 @@ export const DefaultView = (props: any) => {
             view,
             themeMode,
             activeExchange,
-            changeActiveExchangeMutation,
+            selectedKey,
+            showChangePositionModeResult,
             isDefaultTerminalViewMode,
             updateTerminalViewMode,
             marketType,

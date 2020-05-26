@@ -169,7 +169,7 @@ class SimpleTabs extends React.Component {
       >
         <CustomCard>
           <TerminalHeader key={'spotTerminal'} style={{ display: 'flex' }}>
-            <div style={{ width: marketType === 0 ? '100%' : '65%' }}>
+            <div style={{ width: '100%' }}>
               <TerminalModeButton
                 isActive={mode === 'limit'}
                 onClick={() => this.handleChangeMode('limit')}
@@ -263,7 +263,7 @@ class SimpleTabs extends React.Component {
                 Smart
               </TerminalModeButton>
             </div>
-            {marketType === 1 && (
+            {/* {marketType === 1 && (
               <div style={{ width: '35%' }}>
                 <PillowButton
                   firstHalfText={'one-way'}
@@ -280,7 +280,7 @@ class SimpleTabs extends React.Component {
                   }}
                 />
               </div>
-            )}
+            )} */}
           </TerminalHeader>
 
           {!isSPOTMarket ? (
@@ -504,9 +504,7 @@ class SimpleTabs extends React.Component {
           )}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
-            {this.props.isFuturesWarsKeyQuery &&
-            this.props.isFuturesWarsKeyQuery.isFuturesWarsKey &&
-            false ? (
+            {this.props.isFuturesWarsKey && false ? (
               <div
                 style={{
                   display: 'flex',
@@ -626,14 +624,4 @@ class SimpleTabs extends React.Component {
 
 export default compose(
   withErrorFallback,
-  queryRendererHoc({
-    query: isFuturesWarsKey,
-    name: 'isFuturesWarsKeyQuery',
-    fetchPolicy: 'cache-and-network',
-    variables: (props) => ({
-      input: {
-        keyId: props.keyId,
-      },
-    }),
-  })
 )(SimpleTabs)

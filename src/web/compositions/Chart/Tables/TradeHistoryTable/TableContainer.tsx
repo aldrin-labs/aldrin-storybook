@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+var SortedMap = require('collections/sorted-map')
 
 import {
   reduceArrayLength,
@@ -155,6 +156,8 @@ class TableContainer extends Component<IProps, IState> {
   render() {
     const { quote, currencyPair, updateTerminalPriceFromOrderbook } = this.props
     const { data, numbersAfterDecimalForPrice } = this.state
+    const amountForBackground = data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
+
     return (
       <>
         <ChartCardHeader>Trade history</ChartCardHeader>
@@ -163,6 +166,7 @@ class TableContainer extends Component<IProps, IState> {
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
+          amountForBackground={amountForBackground}
           currencyPair={currencyPair}
         />
       </>
