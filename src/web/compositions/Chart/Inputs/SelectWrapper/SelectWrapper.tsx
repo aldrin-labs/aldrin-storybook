@@ -238,7 +238,7 @@ class SelectPairListComponent extends React.PureComponent<
       <Grid
         style={{
           top: '2.5rem',
-          right: 0,
+          right: 'calc(32% + 2rem)',
           position: 'absolute',
           zIndex: 999,
           background: '#fff',

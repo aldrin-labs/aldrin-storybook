@@ -1,4 +1,6 @@
 import React from 'react'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
@@ -6,7 +8,9 @@ import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
 import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
-
+import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
+import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 
 const selectStyles = {
@@ -52,7 +56,45 @@ export const CardsPanel = ({
   marketType,
   quantityPrecision,
   pricePrecision,
+  changePositionModeMutation,
+  selectedKey,
+  showChangePositionModeResult,
 }) => {
+  const hedgeMode = selectedKey.hedgeMode
+
+  const changePositionMode = async (hedgeMode: boolean) => {
+    try {
+      const result = await changePositionModeMutation({
+        variables: {
+          keyId: selectedKey.keyId,
+          hedgeMode,
+        },
+      })
+
+      return result.data.changePositionMode
+    } catch (err) {
+      return { errors: err }
+    }
+  }
+
+  const changePositionModeWithStatus = async (hedgeMode: boolean) => {
+    changeHedgeModeInCache({ selectedTradingKey: selectedKey.keyId, hedgeMode })
+
+    const result = await changePositionMode(hedgeMode)
+
+    if (
+      (result.status === 'ERR' || result.errors) &&
+      result.binanceMessage !== 'No need to change position side.'
+    ) {
+      changeHedgeModeInCache({
+        selectedTradingKey: selectedKey.keyId,
+        hedgeMode: !hedgeMode,
+      })
+    }
+
+    showChangePositionModeResult(result, 'Position mode')
+  }
+
   return (
     <>
       <PanelWrapper>
@@ -73,7 +115,7 @@ export const CardsPanel = ({
             position: 'relative',
             display: 'flex',
             width: 'auto',
-            marginRight: '1rem',
+            marginRight: '.4rem',
             flexGrow: 1,
           }}
         >
@@ -95,13 +137,13 @@ export const CardsPanel = ({
         {view === 'default' && (
           <KeySelector
             exchange={activeExchange}
-            selectStyles={{ ...selectStyles, width: '20%' }}
+            selectStyles={{ ...selectStyles, width: '15%' }}
             isAccountSelect={true}
           />
         )}
 
         <AutoSuggestSelect
-          style={{ width: '20%', minWidth: '0' }}
+          style={{ width: '15%', minWidth: '0' }}
           value={view === 'default' && pair}
           id={'pairSelector'}
           view={view}
@@ -113,7 +155,7 @@ export const CardsPanel = ({
         />
 
         <SmartTradeButton
-          style={{ height: '100%', width: '20%', marginRight: '.4rem' }}
+          style={{ height: '100%', width: '16.5%' }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
           id="smartTradingButton"
           onClick={() => {
@@ -134,20 +176,30 @@ export const CardsPanel = ({
         >
           {isDefaultTerminalViewMode ? 'go to smart trading' : 'back'}
         </SmartTradeButton>
-
-        {/* {view === 'default' && (
-        <TransparentExtendedFAB
-          onClick={() => {
-            this.setState((prevState) => ({
-              activeChart:
-                prevState.activeChart === 'candle' ? 'depth' : 'candle',
-            }))
-          }}
-        >
-          {activeChart === 'candle' ? 'orderbook' : 'chart'}
-        </TransparentExtendedFAB>
-      )} */}
+        {marketType === 1 && (
+          <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
+            <PillowButton
+              firstHalfText={'one-way'}
+              secondHalfText={'hedge'}
+              secondHalfTooltip={
+                'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
+              }
+              activeHalf={hedgeMode ? 'second' : 'first'}
+              buttonAdditionalStyle={{
+                width: '50%',
+              }}
+              containerStyle={{ height: '100%', margin: 0 }}
+              changeHalf={() => {
+                changePositionModeWithStatus(hedgeMode ? false : true)
+              }}
+            />
+          </div>
+        )}
       </PanelWrapper>
     </>
   )
 }
+
+export default compose(
+  graphql(changePositionMode, { name: 'changePositionModeMutation' })
+)(CardsPanel)
