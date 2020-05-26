@@ -2,6 +2,7 @@ import React from 'react'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
+import { Key } from '@core/types/ChartTypes'
 import { IProps, IState } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 
@@ -13,7 +14,7 @@ import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryDataWrapper'
 import Funds from './FundsTable/FundsTable'
 
-import { getKeysNames } from '@core/graphql/queries/user/getKeysNames'
+import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
@@ -66,12 +67,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
-      getKeysNamesQuery,
+      getAllUserKeysQuery,
     } = this.props
 
-    const keysObjects = []
+    const keysObjects: Key[] = []
 
-    getKeysNamesQuery.myPortfolios.forEach((portfolio) => {
+    getAllUserKeysQuery.myPortfolios.forEach((portfolio) => {
       keysObjects.push(...portfolio.keys)
     })
 
@@ -277,8 +278,10 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 export default compose(
   withErrorFallback,
   queryRendererHoc({
-    query: getKeysNames,
-    name: 'getKeysNamesQuery',
-    fetchPolicy: 'cache-and-network',
-  })
+    query: getAllUserKeys,
+    name: 'getAllUserKeysQuery',
+    withOutSpinner: true,
+    withTableLoader: false,
+    fetchPolicy: 'cache-only',
+  }),
 )(TradingTable)
