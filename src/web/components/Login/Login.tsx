@@ -2,25 +2,21 @@ import * as React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { Link, withRouter } from 'react-router-dom'
-
 import { Grow, Slide, Button } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import * as CLIENT_API_MUTATIONS from '@core/graphql/mutations/login'
 import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
-
 import { handleLogout } from '@core/utils/loginUtils'
 
-import { SignUpButton } from '@sb/components'
+import { SignUpButton, SignInLink, SignUpLink } from '@sb/components'
 import { LoginMenu } from '@sb/components/LoginMenu'
+
 import { Props } from './Login.types'
 import { SWrapper } from './Login.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { syncStorage } from '@storage'
-
-const SignInLink = (props: any) => <Link to="/login" {...props} />
-const SignUpLink = (props: any) => <Link to="/signup" {...props} />
 
 @withTheme()
 @withRouter
@@ -29,10 +25,10 @@ class LoginClassComponent extends React.Component<Props> {
     const {
       logoutMutation,
       history: { push },
+      location: { pathname },
     } = this.props
-    console.log('props', props)
     await handleLogout(logoutMutation, this.props.persistorInstance)
-    push('/login')
+    push(`/login?callbackURL=${pathname}`)
   }
 
   render() {
@@ -51,6 +47,7 @@ class LoginClassComponent extends React.Component<Props> {
           <>
             <Button
               component={SignInLink}
+              pathname={pathname}
               color="secondary"
               variant="contained"
               // onClick={this.hangleGoToSiginPage}
@@ -65,6 +62,7 @@ class LoginClassComponent extends React.Component<Props> {
             </Button>
             <SignUpButton
               component={SignUpLink}
+              pathname={pathname}
               color="secondary"
               variant="contained"
               // onClick={this.hangleGoToSignupPage}

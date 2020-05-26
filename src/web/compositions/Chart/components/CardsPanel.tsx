@@ -46,7 +46,6 @@ export const CardsPanel = ({
   view,
   themeMode,
   activeExchange,
-  changeActiveExchangeMutation,
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
   marketType,
@@ -56,9 +55,9 @@ export const CardsPanel = ({
   return (
     <>
       <PanelWrapper>
-        {view === 'onlyCharts' && (
+        {/* {view === 'onlyCharts' && (
           <LayoutSelector userId={_id} themeMode={themeMode} />
-        )}
+        )} */}
 
         {/* <SelectExchange
           style={{ height: '100%', width: '20%' }}
