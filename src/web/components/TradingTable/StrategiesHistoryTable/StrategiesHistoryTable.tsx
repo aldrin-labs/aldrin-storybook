@@ -75,9 +75,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         {
           document: ACTIVE_STRATEGIES,
           variables: {
-            orderHistoryInput: {
-              startDate: startDate.valueOf(),
-              endDate: endDate.valueOf(),
+            activeStrategiesInput: {
               marketType,
               activeExchangeKey: selectedKey.keyId,
               allKeys,
