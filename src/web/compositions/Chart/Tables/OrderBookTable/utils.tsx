@@ -8,6 +8,8 @@ import {
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
+import RedArrow from '@icons/redArrow.png'
+import GreenArrow from '@icons/greenArrow.png'
 import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
 
 // ${rowStyles}
@@ -112,7 +114,8 @@ export default function defaultRowRenderer({
   const a11yProps = { 'aria-rowindex': index + 1 }
   const colorStyles =
     rowData.fall !== undefined
-      ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
+      ? // ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
+        { color: rowData.fall ? '#FF3716' : '#13901F' }
       : {}
   let needHighlightPrice = false
   let needHighlightStopPrice = false
@@ -153,10 +156,6 @@ export default function defaultRowRenderer({
     rowData.size > amountForBackground
       ? 100
       : rowData.size / (amountForBackground / 100)
-
-  if (rowData.fall !== undefined) {
-    orderPercentage = 100
-  }
 
   if (
     onRowClick ||
@@ -204,17 +203,44 @@ export default function defaultRowRenderer({
           : '',
       }}
     >
+      <img
+        style={{
+          width: '1rem',
+          position: 'absolute',
+          left: 0,
+          transform: 'translateX(25%)',
+          ...(rowData.fall === undefined || rowData.fall === 0
+            ? { display: 'none' }
+            : { display: 'block' }),
+        }}
+        src={RedArrow}
+      />
+      <img
+        style={{
+          width: '1rem',
+          position: 'absolute',
+          left: 0,
+          transform: 'translateX(25%)',
+          ...(rowData.fall === undefined || rowData.fall === 1
+            ? { display: 'none' }
+            : { display: 'block' }),
+        }}
+        src={GreenArrow}
+      />
       {columns}
-        <div
-          className="amountForBackground"
-          style={{
-            backgroundColor:
-              side === 'bids' || rowData.fall === 0
-                ? 'rgba(149, 220, 160, 0.31)'
-                : 'rgba(220, 157, 149, 0.31)',
-            left: `calc(100% - ${orderPercentage}%)`,
-          }}
-        />
+      <div
+        className="amountForBackground"
+        style={{
+          backgroundColor:
+            side === 'bids' || rowData.fall === 0
+              ? // ? 'rgba(149, 220, 160, 0.31)'
+                // : 'rgba(220, 157, 149, 0.31)',
+                '#AAF2C9'
+              : '#FFD1D1',
+          left: `calc(100% - ${orderPercentage}%)`,
+          ...(rowData.fall === undefined ? {} : { transition: 'none' }),
+        }}
+      />
       <div className="needHover" />
     </div>
   )

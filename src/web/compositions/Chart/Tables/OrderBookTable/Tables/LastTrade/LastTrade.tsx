@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { client } from '@core/graphql/apolloClient'
+import React from 'react'
+import { compose } from 'recompose'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import {
   LastTradeContainer,
@@ -10,176 +12,128 @@ import {
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'
 
+import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice'
+import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE'
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
-import QueryRenderer from '@core/components/QueryRenderer'
-import {
-  MARKET_TICKERS,
-  MOCKED_MARKET_TICKERS,
-} from '@core/graphql/subscriptions/MARKET_TICKERS'
-import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
 import {
-  updateTradeHistoryQuerryFunction,
   getAggregationsFromMinPriceDigits,
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
+
+import {
+  updateMarkPriceQuerryFunction,
+  updatePriceQuerryFunction,
+} from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils'
 
 interface IProps {
   data: { marketTickers: [string] }
   group: number
   mode: OrderbookMode
+  marketType: 0 | 1
+  minPriceDigits: number
+  getPriceQuery: {
+    getPrice: number
+    subscribeToMoreFunction: () => () => void
+  }
+  getFundingRateQueryRefetch: () => void
+  getMarkPriceQuery: {
+    getMarkPrice: {
+      symbol: string
+      markPrice: number
+    }
+    subscribeToMoreFunction: () => () => void
+  }
+  updateTerminalPriceFromOrderbook: (price: number | string) => void
 }
 
 const LastTrade = (props: IProps) => {
-  const { updateTerminalPriceFromOrderbook } = props
+  const { updateTerminalPriceFromOrderbook, getPriceQuery, getMarkPriceQuery, marketType } = props
 
-  const [marketPrice, updateMarketPrice] = useState(0)
-  let unsubscribeSpot: Function
-  let unsubscribeFutures: Function
+  const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
+    const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
+      getMarkPrice: { markPrice: 0 },
+    }
+    const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
-  // useEffect(() => {
-  //   unsubscribeSpot && unsubscribeSpot()
-  //   unsubscribeSpot = props.subscribeToMore()
 
-  //   return () => {
-  //     unsubscribeSpot && unsubscribeSpot()
-  //   }
-  // }, [props.marketType, props.exchange, props.symbol])
-
-  // useEffect(() => {
-  //   if (props.marketType === 1) {
-  //     unsubscribeFutures && unsubscribeFutures.unsubscribe()
-
-  //     unsubscribeFutures = client
-  //       .subscribe({
-  //         query: MARKET_TICKERS,
-  //         variables: {
-  //           symbol: props.symbol,
-  //           exchange: props.exchange,
-  //           marketType: String(0),
-  //         },
-  //       })
-  //       .subscribe({
-  //         next: (data) => {
-  //           if (data && data.data && data.data.listenMarketTickers) {
-  //             const marketPrice = data.data.listenMarketTickers[data.data.listenMarketTickers.length - 1].price
-
-  //             updateMarketPrice(marketPrice)
-  //           }
-  //         },
-  //       })
-  //   }
-
-  //   return () => {
-  //     unsubscribeFutures && unsubscribeFutures.unsubscribe()
-  //   }
-  // }, [props.marketType, props.exchange, props.symbol])
-
-  let price = 0
-  let fall = false
-  let subscription
   const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
     .value
-
-  const spread = props.data.asks.getMinKey() - props.data.bids.getMaxKey()
-  // const asksUpdated = typeof props.marketOrders.asks === 'string' ? 0 : props.marketOrders.asks.length
-  // const bidsUpdated = typeof props.marketOrders.bids === 'string' ? 0 : props.marketOrders.bids.length
-
-  useEffect(() => {
-    subscription && subscription.unsubscribe()
-
-    subscription = client
-      .subscribe({
-        query: LISTEN_PRICE,
-        variables: {
-          input: {
-            exchange: 'binance',
-            pair: props.symbol,
-          }
-        },
-        // fetchPolicy: 'cache-and-network',
-        // pollInterval: 15000,
-      })
-      .subscribe({
-        next: (data) => {
-          if (data.loading || data.data.listenPrice === marketPrice) return
-          updateMarketPrice(data.data.listenPrice)
-        },
-      })
-
-    return () => {
-      subscription && subscription.unsubscribe()
-    }
-  }, [props.symbol])
-
-  // try {
-  //   const data = props.data.marketTickers[props.data.marketTickers.length - 1]
-  //   if (data.pair === props.symbol || Number(data.marketType) === Number(props.marketType)) {
-  //     price = data.price
-  //     fall = !!(+data.fall)
-  //   }
-  // } catch (e) {}
 
   return (
     <LastTradeContainer
       onClick={() =>
         updateTerminalPriceFromOrderbook(
-          Number(marketPrice).toFixed(
+          Number(markPrice).toFixed(
             getNumberOfDecimalsFromNumber(aggregation)
           )
         )
       }
     >
-      {/* <div style={{ width: '50%', display: 'flex', justifyContent: 'space-around' }}> */}
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-end' }}>
       {/* <LastTradePrice>
         spread
       </LastTradePrice> */}
-      <LastTradePrice fall={fall}>
-        {/* <ArrowIcon fall={fall} /> */}
-        Spread:{' '}
-        {Number(spread).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
-      </LastTradePrice>
-      {/* {props.marketType === 1 && (
-        <LastTradePrice>{Number(marketPrice).toFixed(2)}</LastTradePrice>
-      )} */}
-      {/* </div> */}
-
-      {/* <div style={{ width: '50%', display: 'flex' }}>
       <LastTradePrice>
-        updates per/sec
+        {/* <ArrowIcon fall={fall} /> */}
+        {Number(lastMarketPrice).toFixed(
+            getNumberOfDecimalsFromNumber(aggregation)
+          )}
       </LastTradePrice>
-      <LastTradePrice fall={fall}>
-        {/* <ArrowIcon fall={fall} /> 
-        {asksUpdated + bidsUpdated}
-      </LastTradePrice>
-    </div> */}
+      {marketType === 1 && (
+        <LastTradePrice style={{ fontSize: '1.2rem'}}>{Number(markPrice).toFixed(
+          getNumberOfDecimalsFromNumber(aggregation)
+        )}</LastTradePrice>
+      )}
+      </div>
     </LastTradeContainer>
   )
 }
 
-const APIWrapper = (props) => {
-  return (
-    <QueryRenderer
-      component={LastTrade}
-      withOutSpinner
-      query={MARKET_QUERY}
-      fetchPolicy="cache-only"
-      variables={{ symbol: props.symbol, exchange: props.exchange }}
-      // subscriptionArgs={{
-      // subscription: MARKET_TICKERS,
-      // variables: {
-      //   symbol: props.symbol,
-      //   exchange: props.exchange,
-      //   marketType: String(props.marketType),
-      // },
-      // subscription: MOCKED_MARKET_TICKERS,
-      // variables: { time: 10000 },
-      //   updateQueryFunction: updateTradeHistoryQuerryFunction,
-      // }}
-      {...props}
-    />
-  )
-}
-
-export default APIWrapper
+export default compose(
+  queryRendererHoc({
+    query: getMarkPrice,
+    name: 'getMarkPriceQuery',
+    variables: (props) => ({
+      input: {
+        exchange: props.exchange,
+        symbol: props.symbol,
+      },
+    }),
+    subscriptionArgs: {
+      subscription: LISTEN_MARK_PRICE,
+      variables: (props: any) => ({
+        input: {
+          exchange: props.exchange,
+          symbol: props.symbol,
+        },
+      }),
+      updateQueryFunction: updateMarkPriceQuerryFunction,
+    },
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+    withTableLoader: false,
+  }),
+  queryRendererHoc({
+    query: getPrice,
+    name: 'getPriceQuery',
+    variables: (props) => ({
+      exchange: props.exchange,
+      pair: `${props.symbol}:${props.marketType}`,
+    }),
+    subscriptionArgs: {
+      subscription: LISTEN_PRICE,
+      variables: (props: any) => ({
+        input: {
+          exchange: props.exchange,
+          pair: `${props.symbol}:${props.marketType}`,
+        },
+      }),
+      updateQueryFunction: updatePriceQuerryFunction,
+    },
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+    withTableLoader: false,
+  }),
+)(LastTrade)

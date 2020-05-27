@@ -191,13 +191,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       openOrdersProcessedData,
     })
 
-    this.interval = setInterval(() => {
-      if (!this.props.show || this.checkForCachedOrder()) {
-        return
-      }
+    // this.interval = setInterval(() => {
+    //   if (!this.props.show || this.checkForCachedOrder()) {
+    //     return
+    //   }
 
-      that.props.getOpenOrderHistoryQueryRefetch()
-    }, 60000)
+    //   // that.props.getOpenOrderHistoryQueryRefetch()
+    // }, 60000)
 
     this.unsubscribeFunction = subscribeToMore()
   }
@@ -215,6 +215,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         currencyPair,
         specificPair,
       } = this.props
+
+      console.log('OpenOrdersTable unsubscribe')
 
       this.unsubscribeFunction && this.unsubscribeFunction()
       this.unsubscribeFunction = this.props.getOpenOrderHistoryQuery.subscribeToMore(
@@ -459,6 +461,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
+
+  console.log('OpenOrders TableDataWrapper render')
+
   const {
     showOpenOrdersFromAllAccounts: allKeys,
     showAllOpenOrderPairs: specificPair,
