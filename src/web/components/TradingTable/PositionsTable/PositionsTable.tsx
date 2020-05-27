@@ -487,9 +487,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         {
           document: FUTURES_POSITIONS,
           variables: {
-            orderHistoryInput: {
-              marketType,
-              activeExchangeKey: selectedKey.keyId,
+            input: {
+              keyId: selectedKey.keyId,
               allKeys,
               ...(!specificPair ? {} : { specificPair: currencyPair }),
             },
