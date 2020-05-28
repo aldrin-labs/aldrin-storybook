@@ -70,6 +70,14 @@ class SimpleTabs extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.state.mode !== 'market' && this.props.price !== nextProps.price) {
+      return false
+    }
+
+    return true
+  }
+
   componentDidMount() {
     this.setState({
       leverage: this.props.componentLeverage,
@@ -622,6 +630,4 @@ class SimpleTabs extends React.Component {
   }
 }
 
-export default compose(
-  withErrorFallback,
-)(SimpleTabs)
+export default compose(withErrorFallback)(SimpleTabs)
