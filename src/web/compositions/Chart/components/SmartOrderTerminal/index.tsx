@@ -1633,7 +1633,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                     <FormInputContainer
                       padding={'0 0 .8rem 0'}
-                      haveTooltip={true}
+                      haveTooltip={false}
                       tooltipText={''}
                       title={'action when alert'}
                     >
@@ -2743,7 +2743,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <>
                       <FormInputContainer
                         padding={'0 0 .8rem 0'}
-                        haveTooltip={true}
+                        haveTooltip={false}
                         tooltipText={''}
                         title={'action when alert'}
                       >
@@ -3936,7 +3936,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <>
                     <FormInputContainer
                       padding={'0 0 .8rem 0'}
-                      haveTooltip={true}
+                      haveTooltip={false}
                       tooltipText={''}
                       title={'action when alert'}
                     >
