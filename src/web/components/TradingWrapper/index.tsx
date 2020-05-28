@@ -177,19 +177,43 @@ class SimpleTabs extends React.Component {
       >
         <CustomCard>
           <TerminalHeader key={'spotTerminal'} style={{ display: 'flex' }}>
-            <div style={{ width: '100%' }}>
+            <div
+              style={{
+                width: '50%',
+                borderRight: '.1rem solid #e0e5ec',
+                padding: '0 1rem',
+              }}
+            >
               <TerminalModeButton
-                isActive={mode === 'limit'}
-                onClick={() => this.handleChangeMode('limit')}
+                style={{
+                  width: '100%',
+                  border: '.1rem solid #0B1FD1',
+                  color: '#0B1FD1',
+                  borderRadius: '.4rem',
+                }}
+                isActive={mode === 'smart'}
+                onClick={() => {
+                  this.handleChangeMode('smart')
+                  updateTerminalViewMode('smartOrderMode')
+                }}
               >
-                Limit
+                Go to Smart trading
               </TerminalModeButton>
+            </div>
+            <div style={{ width: '50%' }}>
               <TerminalModeButton
                 isActive={mode === 'market'}
                 onClick={() => this.handleChangeMode('market')}
               >
                 Market
               </TerminalModeButton>
+              <TerminalModeButton
+                isActive={mode === 'limit'}
+                onClick={() => this.handleChangeMode('limit')}
+              >
+                Limit
+              </TerminalModeButton>
+
               {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown
                   isActive={mode === 'stop-limit' || mode === 'stop-market'}
@@ -257,19 +281,6 @@ class SimpleTabs extends React.Component {
                   Stop-Limit
                 </TerminalModeButton>
               )}
-              <TerminalModeButton
-                style={{
-                  width: '19%',
-                  borderRight: '.1rem solid #e0e5ec',
-                }}
-                isActive={mode === 'smart'}
-                onClick={() => {
-                  this.handleChangeMode('smart')
-                  updateTerminalViewMode('smartOrderMode')
-                }}
-              >
-                Smart
-              </TerminalModeButton>
             </div>
             {/* {marketType === 1 && (
               <div style={{ width: '35%' }}>
