@@ -26,9 +26,15 @@ const TradingTabs = ({
   tab,
   handleTabChange,
   marketType,
-  getOpenOrderHistoryQuery,
-  getActivePositionsQuery,
-  getActiveStrategiesQuery,
+  getOpenOrderHistoryQuery: { getOpenOrderHistory = [] } = {
+    getOpenOrderHistory: [],
+  },
+  getActivePositionsQuery: { getActivePositions = [] } = {
+    getActivePositions: [],
+  },
+  getActiveStrategiesQuery: { getActiveStrategies = [] } = {
+    getActiveStrategies: [],
+  },
   canceledOrders,
   arrayOfMarketIds,
   currencyPair,
@@ -52,7 +58,7 @@ const TradingTabs = ({
     showSmartTradesFromAllAccounts,
   ])
 
-  const openOrdersLength = getOpenOrderHistoryQuery.getOpenOrderHistory.filter(
+  const openOrdersLength = getOpenOrderHistory.filter(
     (order) =>
       filterOpenOrders({
         order,
@@ -60,7 +66,7 @@ const TradingTabs = ({
       })
   ).length
 
-  const positionsLength = getActivePositionsQuery.getActivePositions.filter(
+  const positionsLength = getActivePositions.filter(
     (position) =>
       filterPositions({
         position,
@@ -68,8 +74,11 @@ const TradingTabs = ({
       })
   ).length
 
-  const activeTradesLength = getActiveStrategiesQuery.getActiveStrategies.filter(
-    (a) => a !== null && (a.enabled || (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
+  const activeTradesLength = getActiveStrategies.filter(
+    (a) =>
+      a !== null &&
+      (a.enabled ||
+        (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
 
   return (
@@ -160,11 +169,12 @@ const OpenOrdersWrapper = ({ ...props }: IQueryProps) => {
         },
       }}
       withOutSpinner={true}
-      withTableLoader={true}
+      withTableLoader={false}
+      withoutLoading={true}
       showLoadingWhenQueryParamsChange={false}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="cache"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {
@@ -219,11 +229,12 @@ const PositionsWrapper = ({
         },
       }}
       withOutSpinner={true}
-      withTableLoader={true}
+      withTableLoader={false}
+      withoutLoading={true}
       showLoadingWhenQueryParamsChange={false}
       query={getActivePositions}
       name={`getActivePositionsQuery`}
-      fetchPolicy="cache"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: FUTURES_POSITIONS,
         variables: {
@@ -278,11 +289,12 @@ const ActiveTradesWrapper = ({
         },
       }}
       withOutSpinner={true}
-      withTableLoader={true}
+      withTableLoader={false}
+      withoutLoading={true}
       showLoadingWhenQueryParamsChange={false}
       query={getActiveStrategies}
       name={`getActiveStrategiesQuery`}
-      fetchPolicy="cache"
+      fetchPolicy="cache-and-network"
       subscriptionArgs={{
         subscription: ACTIVE_STRATEGIES,
         variables: {
