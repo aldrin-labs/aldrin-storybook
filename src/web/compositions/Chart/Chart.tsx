@@ -264,11 +264,13 @@ export default compose(
     name: 'getTooltipSettingsQuery',
     fetchPolicy: 'cache-first',
     withOutSpinner: true,
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: pairProperties,
     name: 'pairPropertiesQuery',
     fetchPolicy: 'cache-first',
+    withoutLoading: true,
     variables: (props: IProps) => ({
       marketName: props.selectedPair,
       marketType: props.marketType,
