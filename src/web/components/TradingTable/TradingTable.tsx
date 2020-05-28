@@ -287,6 +287,7 @@ export default compose(
     name: 'getAllUserKeysQuery',
     withOutSpinner: true,
     withTableLoader: false,
+    withoutLoading: true,
     fetchPolicy: 'cache-only',
   })
 )(TradingTable)
