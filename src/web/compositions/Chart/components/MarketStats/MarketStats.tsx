@@ -108,6 +108,30 @@ class MarketStats extends React.PureComponent<IProps> {
         this.getFundingRateQueryUnsubscribe()
       this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
     }
+
+
+    // for funding ime 
+    const {
+      getFundingRate: { fundingTime: prevFundingTime = 0 } = {
+        fundingTime: 0,
+      },
+    } = prevProps.getFundingRateQuery || {
+      fundingTime: 0,
+    }
+
+    const {
+      getFundingRate: { fundingTime: newFundingTime = 0 } = {
+        fundingTime: 0,
+      },
+    } = this.props.getFundingRateQuery || {
+      fundingTime: 0,
+    }
+
+    if (prevFundingTime === 0 && newFundingTime !== 0) {
+      this.setState((prevState) => ({ key: prevState.key + 1 }))
+    }
+
+
   }
 
   componentWillUnmount() {
@@ -147,6 +171,12 @@ class MarketStats extends React.PureComponent<IProps> {
         priceChangePercent = 0,
         highPrice = 0,
         lowPrice = 0,
+      } = {
+        volume: 0,
+        priceChange: 0,
+        priceChangePercent: 0,
+        highPrice: 0,
+        lowPrice: 0,
       },
     } = getMarketStatisticsByPairQuery || {
       getMarketStatisticsByPair: {
@@ -165,7 +195,10 @@ class MarketStats extends React.PureComponent<IProps> {
     const [base, quote] = symbol.split('_')
 
     const {
-      getFundingRate: { fundingTime = 0, fundingRate = 0 },
+      getFundingRate: { fundingTime = 0, fundingRate = 0 } = {
+        fundingTime: 0,
+        fundingRate: 0,
+      },
     } = getFundingRateQuery || {
       fundingTime: 0,
       fundingRate: 0,
@@ -345,6 +378,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: true,
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: getPrice,
@@ -366,6 +400,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: true,
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: getMarketStatisticsByPair,
@@ -381,6 +416,7 @@ export default compose(
     pollInterval: 30000,
     withOutSpinner: true,
     withTableLoader: true,
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: getFundingRate,
@@ -404,5 +440,6 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: true,
+    withoutLoading: true,
   })
 )(MarketStats)
