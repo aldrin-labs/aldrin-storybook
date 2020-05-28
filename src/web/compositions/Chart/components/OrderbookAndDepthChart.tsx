@@ -28,6 +28,7 @@ import {
   getAggregatedData,
   testJSON,
   getAggregationsFromMinPriceDigits,
+  getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
 let unsubscribe = Function
@@ -159,15 +160,15 @@ class OrderbookAndDepthChart extends React.Component {
             const orderbookData = updatedData || { asks, bids }
 
             // check that current pair and marketType === pair in new orders
-            if (
-              (ordersData.bids.length > 0 &&
-                ordersData.bids[0].pair !==
-                  `${that.props.symbol}_${that.props.marketType}`) ||
-              (ordersData.asks.length > 0 &&
-                ordersData.asks[0].pair !==
-                  `${that.props.symbol}_${that.props.marketType}`)
-            )
-              return null
+            // if (
+            //   (ordersData.bids.length > 0 &&
+            //     ordersData.bids[0].pair !==
+            //       `${that.props.symbol}_${that.props.marketType}`) ||
+            //   (ordersData.asks.length > 0 &&
+            //     ordersData.asks[0].pair !==
+            //       `${that.props.symbol}_${that.props.marketType}`)
+            // )
+            //   return null
 
             if (
               String(aggregation) !==
@@ -341,6 +342,10 @@ class OrderbookAndDepthChart extends React.Component {
           [side]: [{ ...data, side }],
           [side === 'asks' ? 'bids' : 'asks']: [],
         }
+        const digitsByGroup =
+          aggregation >= 1
+            ? aggregation
+            : getNumberOfDecimalsFromNumber(aggregation)
 
         if (
           String(aggregation) !==
@@ -353,6 +358,8 @@ class OrderbookAndDepthChart extends React.Component {
             originalOrderbookTree: { asks, bids },
             isAggregatedData: true,
             sizeDigits,
+            side,
+            digitsByGroup,
           })
         }
 
@@ -365,6 +372,8 @@ class OrderbookAndDepthChart extends React.Component {
           isAggregatedData: false,
           amountsMap,
           sizeDigits,
+          side,
+          digitsByGroup,
         })
 
         this.setState({
@@ -502,6 +511,7 @@ export const APIWrapper = ({
       }}
       isDataLoading={isPairDataLoading}
       withoutLoading={true}
+      key={`${symbol}${marketType}`}
     />
   )
 }

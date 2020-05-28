@@ -6,6 +6,8 @@ export const LastTradeContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  top: 0.2rem;
 
   width: calc(100% - 1.6rem);
   height: 3rem;

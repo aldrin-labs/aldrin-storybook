@@ -237,7 +237,7 @@ export default function defaultRowRenderer({
                 // : 'rgba(220, 157, 149, 0.31)',
                 '#AAF2C9'
               : '#FFD1D1',
-          left: `calc(100% - ${orderPercentage}%)`,
+          transform: `translateX(calc(100% - ${orderPercentage}%))`,
           ...(rowData.fall === undefined ? {} : { transition: 'none' }),
         }}
       />
