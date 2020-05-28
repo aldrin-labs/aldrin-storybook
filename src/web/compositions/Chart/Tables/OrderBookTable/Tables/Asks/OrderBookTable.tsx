@@ -23,11 +23,13 @@ class OrderBookTable extends Component<IProps> {
       openOrderHistory,
       marketType,
       arrayOfMarketIds,
-      amountForBackground,
+      //amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
     const tableData = getDataFromTree(data.asks, 'asks').reverse()
+    const amountForBackground =
+      tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
     const [base, quote] = currencyPair.split('_')
 
@@ -55,9 +57,10 @@ class OrderBookTable extends Component<IProps> {
               }}
               gridStyle={{
                 // overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
               rowHeight={window.outerHeight / 60}
+              overscanRowCount={0}
               scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>

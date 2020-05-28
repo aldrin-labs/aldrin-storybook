@@ -39,13 +39,11 @@ class OrderbookAndDepthChart extends React.Component {
     aggregation: 0,
     resubscribeTimer: null,
     dataWasUpdated: true,
-    amountsMap: new SortedMap(),
     asks: new TreeMap(),
     bids: new TreeMap(),
     aggregatedData: {
       asks: new TreeMap(),
       bids: new TreeMap(),
-      amountsMap: new SortedMap(),
     },
   }
 
@@ -53,7 +51,7 @@ class OrderbookAndDepthChart extends React.Component {
 
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
-    const { asks, bids, readyForNewOrder, aggregation, amountsMap } = state
+    const { asks, bids } = state
     const {
       data: { marketOrders },
       sizeDigits,
@@ -62,8 +60,6 @@ class OrderbookAndDepthChart extends React.Component {
     } = newProps
 
     let updatedData = null
-    let newResubscribeTimer = null
-    let updatedAggregatedData = state.aggregatedData
 
     // first get data from query
     if (
@@ -78,7 +74,6 @@ class OrderbookAndDepthChart extends React.Component {
     ) {
       updatedData = transformOrderbookData({
         marketOrders,
-        amountsMap,
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         sizeDigits,
       })
@@ -105,13 +100,8 @@ class OrderbookAndDepthChart extends React.Component {
       })
       .subscribe({
         next: ({ data }) => {
-          const {
-            asks,
-            bids,
-            readyForNewOrder,
-            aggregation,
-            amountsMap,
-          } = that.state
+          const { asks, bids, readyForNewOrder, aggregation } = that.state
+
           const { sizeDigits, minPriceDigits } = that.props
 
           if (asks.getLength() === 0 && bids.getLength() === 0) {
@@ -191,7 +181,6 @@ class OrderbookAndDepthChart extends React.Component {
                 .value,
               originalOrderbookTree: { asks, bids },
               isAggregatedData: false,
-              amountsMap,
               sizeDigits,
             })
           }
@@ -246,14 +235,12 @@ class OrderbookAndDepthChart extends React.Component {
       this.setState({
         asks: new TreeMap(),
         bids: new TreeMap(),
-        amountsMap: new SortedMap(),
         aggregation: String(
           getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
         ),
         aggregatedData: {
           asks: new TreeMap(),
           bids: new TreeMap(),
-          amountsMap: new SortedMap(),
         },
       })
 
@@ -287,19 +274,17 @@ class OrderbookAndDepthChart extends React.Component {
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
     const { sizeDigits } = this.props
 
-    const [asks, amountsMapAsks] = getAggregatedData({
+    const [asks] = getAggregatedData({
       orderbookData: this.state.asks,
       aggregation,
       side: 'asks',
-      amountsMap: new SortedMap(),
       sizeDigits,
     })
 
-    const [bids, amountsMapBids] = getAggregatedData({
+    const [bids] = getAggregatedData({
       orderbookData: this.state.bids,
       aggregation,
       side: 'bids',
-      amountsMap: amountsMapAsks,
       sizeDigits,
     })
 
@@ -308,13 +293,12 @@ class OrderbookAndDepthChart extends React.Component {
       aggregatedData: {
         bids,
         asks,
-        amountsMap: amountsMapBids,
       },
     })
   }
 
   addOrderToOrderbookTree = async (data) => {
-    const { asks, bids, aggregation, amountsMap, aggregatedData } = this.state
+    const { asks, bids, aggregation, aggregatedData } = this.state
 
     const { sizeDigits, minPriceDigits, symbol, marketType } = this.props
 
@@ -370,7 +354,6 @@ class OrderbookAndDepthChart extends React.Component {
             .value,
           originalOrderbookTree: { asks, bids },
           isAggregatedData: false,
-          amountsMap,
           sizeDigits,
           side,
           digitsByGroup,
@@ -400,15 +383,13 @@ class OrderbookAndDepthChart extends React.Component {
       updateTerminalPriceFromOrderbook,
     } = this.props
 
-    const { asks, bids, aggregation, aggregatedData, amountsMap } = this.state
+    const { asks, bids, aggregation, aggregatedData } = this.state
 
     const dataToSend =
       String(aggregation) ===
       String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
         ? { asks, bids }
         : aggregatedData
-
-    const amountForBackground = amountsMap.average()
 
     return (
       <div
@@ -451,7 +432,7 @@ class OrderbookAndDepthChart extends React.Component {
             minPriceDigits={minPriceDigits}
             selectedKey={selectedKey}
             marketType={marketType}
-            amountForBackground={amountForBackground}
+            // amountForBackground={amountForBackground}
             arrayOfMarketIds={arrayOfMarketIds}
             updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
             setOrderbookAggregation={this.setOrderbookAggregation}

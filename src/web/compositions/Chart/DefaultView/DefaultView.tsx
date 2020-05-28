@@ -187,7 +187,7 @@ export const DefaultViewComponent = (
                   maxWidth: '35%',
                 }}
               >
-                {/* <TradeHistory
+                <TradeHistory
                   {...{
                     symbol: currencyPair,
                     pair: currencyPair,
@@ -203,7 +203,7 @@ export const DefaultViewComponent = (
                     chartProps,
                     sizeDigits,
                   }}
-                /> */}
+                />
               </Grid>
             </Grid>
           </TradingTerminalContainer>

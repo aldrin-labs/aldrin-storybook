@@ -238,7 +238,7 @@ export default function defaultRowRenderer({
                 '#AAF2C9'
               : '#FFD1D1',
           transform: `translateX(calc(100% - ${orderPercentage}%))`,
-          ...(rowData.fall === undefined ? {} : { transition: 'none' }),
+          ...(rowData.fall === undefined ? {} : { transition: 'none', willChange: 'background-color' }),
         }}
       />
       <div className="needHover" />
