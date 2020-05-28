@@ -145,7 +145,9 @@ function ChartPageComponent(props: any) {
     props.loading ||
     !pairPropertiesQuery.marketByName ||
     !pairPropertiesQuery.marketByName[0] ||
-    pairPropertiesQuery.networkStatus === 2
+    pairPropertiesQuery.networkStatus === 2 ||
+    pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
+      selectedPair.replace('_', '')
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
@@ -215,13 +217,30 @@ function ChartPageComponent(props: any) {
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
+  const prevIsPairDataLoading =
+    prev.loading ||
+    !prev.pairPropertiesQuery.marketByName ||
+    !prev.pairPropertiesQuery.marketByName[0] ||
+    prev.pairPropertiesQuery.networkStatus === 2 ||
+    prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
+      prev.selectedPair.replace('_', '')
+
+  const nextIsPairDataLoading =
+    next.loading ||
+    !next.pairPropertiesQuery.marketByName ||
+    !next.pairPropertiesQuery.marketByName[0] ||
+    next.pairPropertiesQuery.networkStatus === 2 ||
+    next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
+      next.selectedPair.replace('_', '')
+
   return (
     prev.marketType === next.marketType &&
     prev.selectedPair === next.selectedPair &&
     prev.getChartDataQuery.getTradingSettings.selectedTradingKey ===
       next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
     prev.getChartDataQuery.getTradingSettings.hedgeMode ===
-      next.getChartDataQuery.getTradingSettings.hedgeMode
+      next.getChartDataQuery.getTradingSettings.hedgeMode &&
+    prevIsPairDataLoading === nextIsPairDataLoading
   )
 })
 

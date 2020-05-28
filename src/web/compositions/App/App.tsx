@@ -33,7 +33,7 @@ import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 
-const version = `10.5.23`
+const version = `10.5.24`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()

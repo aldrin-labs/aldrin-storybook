@@ -102,9 +102,12 @@ class OrderbookAndDepthChart extends React.Component {
         next: ({ data }) => {
           const { asks, bids, readyForNewOrder, aggregation } = that.state
 
-          const { sizeDigits, minPriceDigits } = that.props
+          const { sizeDigits, minPriceDigits, isPairDataLoading } = that.props
 
-          if (asks.getLength() === 0 && bids.getLength() === 0) {
+          if (
+            (asks.getLength() === 0 && bids.getLength() === 0) ||
+            isPairDataLoading
+          ) {
             return
           }
 

@@ -275,6 +275,7 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.selectedKey.keyId === next.selectedKey.keyId &&
     prev.currencyPair === next.currencyPair &&
     prev.terminalViewMode === next.terminalViewMode &&
-    prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode
+    prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
+    prev.isPairDataLoading === next.isPairDataLoading
   )
 })
