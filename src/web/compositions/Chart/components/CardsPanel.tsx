@@ -77,7 +77,11 @@ export const CardsPanel = ({
   }
 
   const changePositionModeWithStatus = async (hedgeMode: boolean) => {
-    changeHedgeModeInCache({ selectedTradingKey: selectedKey.keyId, hedgeMode })
+    changeHedgeModeInCache({
+      selectedTradingKey: selectedKey.keyId,
+      hedgeMode,
+      isFuturesWarsKey: selectedKey.isFuturesWarsKey,
+    })
 
     const result = await changePositionMode(hedgeMode)
 
@@ -88,6 +92,7 @@ export const CardsPanel = ({
       changeHedgeModeInCache({
         selectedTradingKey: selectedKey.keyId,
         hedgeMode: !hedgeMode,
+        isFuturesWarsKey: selectedKey.isFuturesWarsKey,
       })
     }
 

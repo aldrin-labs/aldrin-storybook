@@ -298,6 +298,7 @@ export const SeparateInputTitle = styled.span`
   text-transform: uppercase;
   letter-spacing: 0.1rem;
   white-space: nowrap;
+  cursor: ${(props) => (props.haveTooltip ? 'pointer' : 'normal')};
 `
 
 export const BlueInputTitle = styled(SeparateInputTitle)`
