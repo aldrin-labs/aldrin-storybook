@@ -78,6 +78,7 @@ class OrderStatusWrapper extends React.PureComponent<{
   }
 
   render() {
+    console.log('status wrapper rerender')
     return (
       <DefaultView
         showOrderResult={this.showOrderResult}
