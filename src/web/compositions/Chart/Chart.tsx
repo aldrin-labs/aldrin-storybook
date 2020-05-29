@@ -240,7 +240,9 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
       next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
     prev.getChartDataQuery.getTradingSettings.hedgeMode ===
       next.getChartDataQuery.getTradingSettings.hedgeMode &&
-    prevIsPairDataLoading === nextIsPairDataLoading
+    prevIsPairDataLoading === nextIsPairDataLoading &&
+    prev.getTooltipSettingsQuery.getTooltipSettings.chartPage ===
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPage
   )
 })
 
