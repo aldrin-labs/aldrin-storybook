@@ -233,6 +233,12 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
       next.selectedPair.replace('_', '')
 
+  const tooltipQueryChanged =
+    (prev.getTooltipSettingsQuery.getTooltipSettings &&
+      prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPage)
+
   return (
     prev.marketType === next.marketType &&
     prev.selectedPair === next.selectedPair &&
@@ -241,8 +247,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     prev.getChartDataQuery.getTradingSettings.hedgeMode ===
       next.getChartDataQuery.getTradingSettings.hedgeMode &&
     prevIsPairDataLoading === nextIsPairDataLoading &&
-    prev.getTooltipSettingsQuery.getTooltipSettings.chartPage ===
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPage
+    tooltipQueryChanged
   )
 })
 
