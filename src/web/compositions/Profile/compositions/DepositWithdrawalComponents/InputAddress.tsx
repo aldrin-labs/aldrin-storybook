@@ -63,6 +63,7 @@ const BalancesWrapper = (props) => {
       component={Balances}
       withOutSpinner={true}
       withTableLoader={true}
+      withoutLoading={true}
       query={GET_DEPOSIT_ADDRESS}
       fetchPolicy="cache-and-network"
       variables={{

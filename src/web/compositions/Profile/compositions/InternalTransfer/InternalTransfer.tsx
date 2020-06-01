@@ -247,7 +247,7 @@ const InternalTransfer = ({ ...props }: IProps) => {
                   }}
                   menuListStyles={{
                     height: '16rem',
-                    // overflowY: '', 
+                    // overflowY: '',
                   }}
                   optionStyles={{
                     height: '4rem',
@@ -422,6 +422,7 @@ const InternalTransferDataWrapper = ({ ...props }) => {
         },
       },
       fetchPolicy: 'cache-only',
+      withoutLoading: true,
     })
   )(InternalTransfer)
 
@@ -449,5 +450,6 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   })
 )(InternalTransferDataWrapper)

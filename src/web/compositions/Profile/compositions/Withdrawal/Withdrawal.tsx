@@ -424,8 +424,13 @@ const WithdrawalDataWrapper = ({ ...props }) => {
   })
 
   const {
-    withdrawalSettings,
-  } = props.getProfileSettingsQuery.getProfileSettings
+    getProfileSettings: { withdrawalSettings } = {
+      withdrawalSettings: { selectedKey: '' },
+    },
+  } = props.getProfileSettingsQuery || {
+    getProfileSettings: { withdrawalSettings: { selectedKey: '' } },
+  }
+
   const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || {
     selectedKey: '',
   }
@@ -442,6 +447,7 @@ const WithdrawalDataWrapper = ({ ...props }) => {
         },
       },
       fetchPolicy: 'cache-only',
+      withoutLoading: true,
     })
   )(Withdrawal)
 
@@ -464,10 +470,12 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: getAccountSettings,
     name: 'getAccountSettingsQuery',
     fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   })
 )(WithdrawalDataWrapper)

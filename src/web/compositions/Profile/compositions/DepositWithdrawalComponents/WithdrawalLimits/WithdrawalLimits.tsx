@@ -36,7 +36,9 @@ const WithdrawalLimits = ({
   amountError,
   isInternalTransfer,
 }: IProps) => {
-  const { getAssetDetail } = getAssetDetailQuery
+  const { getAssetDetail } = getAssetDetailQuery || {
+    getAssetDetail: null,
+  }
   const { minWithdrawAmount = 0, withdrawFee = 0 } = getAssetDetail || {
     minWithdrawAmount: 0,
     withdrawFee: 0,
@@ -109,6 +111,7 @@ const WithdrawalLimitsDataWrapper = ({
       },
       withOutSpinner: true,
       withTableLoader: true,
+      withoutLoading: true,
     })
   )(WithdrawalLimits)
 

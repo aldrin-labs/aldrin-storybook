@@ -202,7 +202,7 @@ class MarketStats extends React.PureComponent<IProps> {
     }
 
     if (fundingTime == 0) {
-      console.log('fundingTime', fundingTime)
+      setTimeout(() => getFundingRateQueryRefetch(), 1000)
     }
 
     const sign24hChange = +priceChangePercent > 0 ? `+` : ``

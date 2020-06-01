@@ -282,7 +282,6 @@ export default compose(
       marketName: props.selectedPair,
       marketType: props.marketType,
     }),
-    withoutLoading: true,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
