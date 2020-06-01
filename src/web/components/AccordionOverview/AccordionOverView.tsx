@@ -61,9 +61,13 @@ const getRealizedTotal = (getFuturesOverview: any) => {
 }
 
 const getFuturesAccountName = (getFuturesOverviewRow: any, keyId: string) => {
-  return getFuturesOverviewRow.portfolioInfo[0].keys.find(
+  const keyObject = getFuturesOverviewRow.portfolioInfo[0].keys.find(
     (key) => key.keyId === keyId
-  ).name
+  )
+
+  const { name = 'Account' } = keyObject || { name: 'Account' }
+
+  return name
 }
 
 const getFuturesAccountRealized = (getFuturesOverviewRow: any) => {
