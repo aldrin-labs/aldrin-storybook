@@ -76,7 +76,7 @@ export interface IProps {
 }
 
 class MarketStats extends React.PureComponent<IProps> {
-  state = {
+  state: { key: number } = {
     key: 0,
   }
 
@@ -109,8 +109,7 @@ class MarketStats extends React.PureComponent<IProps> {
       this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
     }
 
-
-    // for funding ime 
+    // for funding ime
     const {
       getFundingRate: { fundingTime: prevFundingTime = 0 } = {
         fundingTime: 0,
@@ -130,8 +129,6 @@ class MarketStats extends React.PureComponent<IProps> {
     if (prevFundingTime === 0 && newFundingTime !== 0) {
       this.setState((prevState) => ({ key: prevState.key + 1 }))
     }
-
-
   }
 
   componentWillUnmount() {
@@ -204,7 +201,7 @@ class MarketStats extends React.PureComponent<IProps> {
       fundingRate: 0,
     }
 
-    if (fundingTime == 0 ) {
+    if (fundingTime == 0) {
       console.log('fundingTime', fundingTime)
     }
 
