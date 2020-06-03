@@ -218,7 +218,7 @@ function ChartPageComponent(props: any) {
           }}
           chartProps={props}
           arrayOfMarketIds={arrayOfMarketIds}
-          chartPagePopup={getTooltipSettings.chartPagePopup}
+          chartPagePopup={(getTooltipSettings.chartPagePopup === null || getTooltipSettings.chartPagePopup) && !getTooltipSettings.chartPage}
           closeChartPagePopup={closeChartPagePopup}
         />
       )}
