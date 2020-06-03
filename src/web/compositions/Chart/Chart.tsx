@@ -96,6 +96,14 @@ function ChartPageComponent(props: any) {
     }
   }
 
+  const closeChartPagePopup = () => {
+    finishJoyride({
+        updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+        getTooltipSettings,
+        name: 'chartPagePopup',
+    })
+  }
+
   const {
     getChartDataQuery: {
       getMyProfile: { _id } = { _id: '' },
@@ -116,8 +124,8 @@ function ChartPageComponent(props: any) {
       },
       app: { themeMode } = { themeMode: 'light' },
     },
-    getTooltipSettingsQuery: { getTooltipSettings = { chartPage: false } } = {
-      getTooltipSettings: { chartPage: false },
+    getTooltipSettingsQuery: { getTooltipSettings = { chartPage: false, chartPagePopup: false } } = {
+      getTooltipSettings: { chartPage: false, chartPagePopup: false },
     },
     pairPropertiesQuery,
     marketType,
@@ -197,9 +205,21 @@ function ChartPageComponent(props: any) {
           selectedKey={selectedKey}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
-          updateTerminalViewMode={updateTerminalViewMode}
+          updateTerminalViewMode={(mode) => { 
+            if (mode === 'smartOrderMode') {
+              finishJoyride({
+                updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+                getTooltipSettings,
+                name: 'chartPagePopup',
+            })
+            }
+            
+            updateTerminalViewMode(mode); 
+          }}
           chartProps={props}
           arrayOfMarketIds={arrayOfMarketIds}
+          chartPagePopup={getTooltipSettings.chartPagePopup}
+          closeChartPagePopup={closeChartPagePopup}
         />
       )}
       <JoyrideOnboarding
@@ -237,7 +257,11 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
     (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPage)
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) && 
+      (prev.getTooltipSettingsQuery.getTooltipSettings &&
+        prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
 
   return (
     prev.marketType === next.marketType &&

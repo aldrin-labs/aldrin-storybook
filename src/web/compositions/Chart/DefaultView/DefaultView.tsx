@@ -71,6 +71,8 @@ export const DefaultViewComponent = (
     pricePrecision,
     minSpotNotional,
     minFuturesStep,
+    chartPagePopup,
+    closeChartPagePopup
   } = props
 
   if (!currencyPair) {
@@ -250,6 +252,8 @@ export const DefaultViewComponent = (
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
+              chartPagePopup={chartPagePopup}
+              closeChartPagePopup={closeChartPagePopup}
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
               minSpotNotional={minSpotNotional}

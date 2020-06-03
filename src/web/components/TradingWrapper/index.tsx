@@ -45,6 +45,8 @@ import {
 import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
+
 class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
@@ -128,6 +130,8 @@ class SimpleTabs extends React.Component {
       marketType,
       hedgeMode,
       enqueueSnackbar,
+      chartPagePopup,
+      closeChartPagePopup,
       leverage: startLeverage,
       componentMarginType,
       priceFromOrderbook,
@@ -636,6 +640,7 @@ class SimpleTabs extends React.Component {
             )}
           </TerminalMainGrid>
         </CustomCard>
+        {chartPagePopup === true || chartPagePopup === null && <FirstVisitPopup closeChartPagePopup={closeChartPagePopup} />}
       </Grid>
     )
   }
