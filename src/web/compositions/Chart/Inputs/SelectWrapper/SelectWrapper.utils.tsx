@@ -9,6 +9,7 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
+
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
@@ -228,7 +229,7 @@ export const combineSelectWrapperData = ({
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>
             {formatNumberToUSFormat(
-              roundAndFormatNumber(price, pricePrecision, false)
+              stripDigitPlaces(price, pricePrecision)
             )}
           </span>
         ),

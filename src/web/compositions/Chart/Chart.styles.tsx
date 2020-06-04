@@ -87,9 +87,10 @@ html {
     height: 80%;
     border-radius: .1rem;
     top: 10%;
+    left: 0;
     z-index: -1;
-    will-change: left;
-    transition: left .5s ease-out;
+    will-change: transform;
+    transition: transform .5s ease-out;
   }
 
   .needHover {

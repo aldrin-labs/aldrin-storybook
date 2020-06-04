@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import { ApolloError } from 'apollo-client';
+import React, { useEffect } from 'react'
+import styled from 'styled-components'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import { ApolloError } from 'apollo-client'
 import { MASTER_BUILD } from '@core/utils/config'
 
 const Error = styled(Paper)`
@@ -55,11 +55,23 @@ const ErrorWithoutMessage = () => (
 export const ErrorFallback = (props: {
   error?: ApolloError
   refetch?: Function
-}) => (
-  <Error style={{ margin: 'auto' }} elevation={10}>
-    {MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
-  </Error>
-)
+}) => {
+
+  useEffect(() => {
+
+    try {
+      props.refetch && props.refetch()
+    } catch(e) {
+      console.log('refetch error', e)
+    }
+  })
+
+  return (
+    <Error style={{ margin: 'auto' }} elevation={10}>
+      {MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
+    </Error>
+  )
+}
 
 export default class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null }

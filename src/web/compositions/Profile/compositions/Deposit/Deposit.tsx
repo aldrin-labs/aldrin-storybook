@@ -25,7 +25,13 @@ import { IProps } from './Deposit.types'
 
 const Deposits = ({ ...props }: IProps) => {
   const { bonusRequestMutation } = props
-  const { depositSettings } = props.getProfileSettingsQuery.getProfileSettings
+  const {
+    getProfileSettings: { depositSettings } = {
+      depositSettings: { selectedKey: '' },
+    },
+  } = props.getProfileSettingsQuery || {
+    getProfileSettings: { depositSettings: { selectedKey: '' } },
+  }
   const {
     getActivePromoQuery: { getActivePromo: { code = '' } = { code: '' } } = {
       getActivePromo: { code: '' },
@@ -270,11 +276,13 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: getActivePromo,
     name: 'getActivePromoQuery',
     fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   }),
   graphql(bonusRequest, { name: 'bonusRequestMutation' })
 )(Deposits)

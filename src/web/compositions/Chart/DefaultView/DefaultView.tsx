@@ -44,18 +44,16 @@ import {
 } from '../Chart.styles'
 
 // fix props type
-export const DefaultView = (
+export const DefaultViewComponent = (
   props: any
 ): React.ReactComponentElement<any> | null => {
   const {
     currencyPair,
-    // theme,
     id,
     view,
     marketType,
     themeMode,
     activeExchange,
-    activeChart,
     changeTable,
     minPriceDigits,
     showOrderResult,
@@ -73,6 +71,8 @@ export const DefaultView = (
     pricePrecision,
     minSpotNotional,
     minFuturesStep,
+    chartPagePopup,
+    closeChartPagePopup
   } = props
 
   if (!currencyPair) {
@@ -87,6 +87,7 @@ export const DefaultView = (
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
   const sizeDigits = marketType === 0 ? 8 : 3
+  console.log('default view rerender', props)
 
   return (
     <Container container spacing={8}>
@@ -135,26 +136,12 @@ export const DefaultView = (
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <CustomCard id="tradingViewChart">
-              {activeChart === 'candle' ? (
-                <SingleChart
-                  name=""
-                  additionalUrl={`/?symbol=${base}/${quote}_${String(
-                    marketType
-                  )}&user_id=${id}&theme=${themeMode}`}
-                />
-              ) : (
-                <Fade timeout={1000} in={activeChart === 'depth'}>
-                  <DepthChartContainer data-e2e="mainDepthChart">
-                    <MainDepthChart
-                      {...{
-                        base,
-                        quote,
-                        animated: false,
-                      }}
-                    />
-                  </DepthChartContainer>
-                </Fade>
-              )}
+              <SingleChart
+                name=""
+                additionalUrl={`/?symbol=${base}/${quote}_${String(
+                  marketType
+                )}&user_id=${id}&theme=${themeMode}`}
+              />
             </CustomCard>
           </ChartsContainer>
           <TradingTerminalContainer
@@ -265,6 +252,8 @@ export const DefaultView = (
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
+              chartPagePopup={chartPagePopup}
+              closeChartPagePopup={closeChartPagePopup}
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
               minSpotNotional={minSpotNotional}
@@ -283,3 +272,15 @@ export const DefaultView = (
     </Container>
   )
 }
+
+export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
+  return (
+    prev.marketType === next.marketType &&
+    prev.selectedKey.keyId === next.selectedKey.keyId &&
+    prev.currencyPair === next.currencyPair &&
+    prev.terminalViewMode === next.terminalViewMode &&
+    prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
+    prev.isPairDataLoading === next.isPairDataLoading && 
+    prev.chartPagePopup === next.chartPagePopup
+  )
+})

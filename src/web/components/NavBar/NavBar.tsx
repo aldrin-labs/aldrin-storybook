@@ -209,7 +209,22 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   },
                   {
-                    text: 'Rebalance',
+                    text: (
+                      <span>
+                        Rebalance{' '}
+                        <span
+                          style={{
+                            fontSize: '.9rem',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            letterSpacing: '.05rem',
+                            color: 'rgb(11, 31, 209)',
+                          }}
+                        >
+                          beta
+                        </span>
+                      </span>
+                    ),
                     icon: <RebalanceIcon fontSize="small" />,
                     to: '/portfolio/rebalance',
                     onMouseOver: () => {
