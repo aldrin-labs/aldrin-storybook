@@ -21,29 +21,31 @@ export const OrderBook = ({
   minPriceDigits,
   arrayOfMarketIds,
   marketOrders,
-}) => (
-  <OrderbookContainer key={`orderbook_table`}>
-    <OrderBookTable
-      {...{
-        quote,
-        currencyPair: symbol,
-        exchange,
-        aggregation,
-        marketType,
-        marketOrders,
-        setOrderbookAggregation,
-        onButtonClick: changeTable,
-        amountForBackground,
-        addOrderToOrderbookTree,
-        updateTerminalPriceFromOrderbook,
-        sizeDigits,
-        minPriceDigits,
-        selectedKey,
-        arrayOfMarketIds,
-        ...chartProps,
-        data,
-        key: 'orderbook_table_query_render',
-      }}
-    />
-  </OrderbookContainer>
-)
+}) => {
+  return (
+    <OrderbookContainer key={`orderbook_table`}>
+      <OrderBookTable
+        {...{
+          quote,
+          currencyPair: symbol,
+          exchange,
+          aggregation,
+          marketType,
+          marketOrders,
+          setOrderbookAggregation,
+          onButtonClick: changeTable,
+          amountForBackground,
+          addOrderToOrderbookTree,
+          updateTerminalPriceFromOrderbook,
+          sizeDigits,
+          minPriceDigits,
+          selectedKey,
+          arrayOfMarketIds,
+          ...chartProps,
+          data,
+          key: 'orderbook_table_query_render',
+        }}
+      />
+    </OrderbookContainer>
+  )
+}

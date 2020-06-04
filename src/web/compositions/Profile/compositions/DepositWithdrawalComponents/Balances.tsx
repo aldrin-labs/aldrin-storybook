@@ -18,7 +18,9 @@ interface IProps {
 }
 
 const Balances = ({ selectedCoin, getFundsQuery }: IProps) => {
-  const { getFunds } = getFundsQuery
+  const { getFunds = [] } = getFundsQuery || {
+    getFunds: [],
+  }
   const [currentElement] = getFunds.filter(
     (el: FundsType) => el.asset.symbol === selectedCoin
   )
@@ -59,6 +61,7 @@ const BalancesWrapper = ({ ...props }) => {
       component={Balances}
       withOutSpinner={true}
       withTableLoader={true}
+      withoutLoading={true}
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: props.selectedAccount } }}
       name={`getFundsQuery`}

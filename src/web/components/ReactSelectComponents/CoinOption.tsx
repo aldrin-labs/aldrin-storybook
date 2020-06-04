@@ -24,7 +24,7 @@ interface ComponentIProps {
 const CoinContent = ({ data }: { data: ComponentData }) => (
   <>
     <Grid item style={{ display: 'flex', alignSelf: 'center' }}>
-      <LazyLoad
+      {/* <LazyLoad
         height={`1.7rem`}
         once
         overflow
@@ -34,7 +34,7 @@ const CoinContent = ({ data }: { data: ComponentData }) => (
             style={{ height: '2rem', width: '2rem', marginRight: '.5rem' }}
           />
         }
-      >
+      > */}
         <SvgIcon
           style={{
             marginRight: '.5rem',
@@ -44,7 +44,7 @@ const CoinContent = ({ data }: { data: ComponentData }) => (
           src={importCoinIcon(data.label)}
           onError={onErrorImportCoinUrl}
         />
-      </LazyLoad>
+      {/* </LazyLoad> */}
     </Grid>
     <Grid item style={{ alignSelf: 'center' }}>
       {data.label}

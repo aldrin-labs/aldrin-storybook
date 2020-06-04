@@ -1,8 +1,6 @@
 import React, { Component, ChangeEvent } from 'react'
-import { graphql } from 'react-apollo'
-import { compose } from 'recompose'
 
-import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
+import QueryRenderer from '@core/components/QueryRenderer'
 
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
@@ -25,9 +23,6 @@ import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
-
-import { GET_ORDERS } from '@core/graphql/queries/chart/getOrders'
-import { SET_ORDERS } from '@core/graphql/mutations/chart/setOrders'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -215,12 +210,4 @@ const APIWrapper = (props) => {
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    query: GET_ORDERS,
-    name: 'getOrders',
-  }),
-  graphql(SET_ORDERS, {
-    name: 'setOrdersMutation',
-  })
-)(APIWrapper)
+export default APIWrapper

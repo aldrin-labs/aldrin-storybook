@@ -49,14 +49,18 @@ interface IProps {
 }
 
 const LastTrade = (props: IProps) => {
-  const { updateTerminalPriceFromOrderbook, getPriceQuery, getMarkPriceQuery, marketType } = props
+  const {
+    updateTerminalPriceFromOrderbook,
+    getPriceQuery,
+    getMarkPriceQuery,
+    marketType,
+  } = props
 
   const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
-    const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-      getMarkPrice: { markPrice: 0 },
-    }
-    const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
-
+  const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
+    getMarkPrice: { markPrice: 0 },
+  }
+  const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
   const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
     .value
@@ -65,27 +69,34 @@ const LastTrade = (props: IProps) => {
     <LastTradeContainer
       onClick={() =>
         updateTerminalPriceFromOrderbook(
-          Number(markPrice).toFixed(
-            getNumberOfDecimalsFromNumber(aggregation)
-          )
+          Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))
         )
       }
     >
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-end' }}>
-      {/* <LastTradePrice>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-end',
+        }}
+      >
+        {/* <LastTradePrice>
         spread
       </LastTradePrice> */}
-      <LastTradePrice>
-        {/* <ArrowIcon fall={fall} /> */}
-        {Number(lastMarketPrice).toFixed(
+        <LastTradePrice>
+          {/* <ArrowIcon fall={fall} /> */}
+          {Number(lastMarketPrice).toFixed(
             getNumberOfDecimalsFromNumber(aggregation)
           )}
-      </LastTradePrice>
-      {marketType === 1 && (
-        <LastTradePrice style={{ fontSize: '1.2rem'}}>{Number(markPrice).toFixed(
-          getNumberOfDecimalsFromNumber(aggregation)
-        )}</LastTradePrice>
-      )}
+        </LastTradePrice>
+        {marketType === 1 && (
+          <LastTradePrice style={{ fontSize: '1.2rem' }}>
+            {Number(markPrice).toFixed(
+              getNumberOfDecimalsFromNumber(aggregation)
+            )}
+          </LastTradePrice>
+        )}
       </div>
     </LastTradeContainer>
   )
@@ -135,5 +146,5 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
-  }),
+  })
 )(LastTrade)

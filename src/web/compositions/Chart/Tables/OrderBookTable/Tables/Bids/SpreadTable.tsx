@@ -27,12 +27,14 @@ class SpreadTable extends Component<IProps> {
       mode,
       marketType,
       arrayOfMarketIds,
-      amountForBackground,
+      // amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
 
     const tableData = getDataFromTree(data.bids, 'bids').reverse()
+    const amountForBackground =
+      tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
     const [base, quote] = currencyPair.split('_')
 
@@ -60,10 +62,11 @@ class SpreadTable extends Component<IProps> {
               }}
               gridStyle={{
                 // overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
               rowCount={tableData.length}
               rowHeight={window.outerHeight / 60}
+              overscanRowCount={0}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
                 defaultRowRenderer({

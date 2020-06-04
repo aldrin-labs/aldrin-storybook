@@ -223,7 +223,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         {
           document: OPEN_ORDER_HISTORY,
           variables: {
-            orderHistoryInput: {
+            openOrderInput: {
               marketType,
               activeExchangeKey: selectedKey.keyId,
               allKeys,

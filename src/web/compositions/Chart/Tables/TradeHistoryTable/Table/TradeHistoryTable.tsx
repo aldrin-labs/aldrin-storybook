@@ -21,7 +21,11 @@ const Wrapper = styled.div`
 @withTheme()
 class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
-    const { data, updateTerminalPriceFromOrderbook, amountForBackground } = this.props
+    const {
+      data,
+      updateTerminalPriceFromOrderbook,
+      amountForBackground,
+    } = this.props
 
     return (
       <Wrapper>
@@ -45,12 +49,15 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
               width={width}
               height={height}
               rowCount={data.length}
+              overscanRowCount={0}
               rowHeight={window.outerHeight / 60}
               rowGetter={({ index }) => data[index]}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              rowRenderer={(...rest) => defaultRowRenderer({ ...rest[0], amountForBackground })}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({ ...rest[0], amountForBackground })
+              }
             >
               <Column
                 label="Price"

@@ -71,7 +71,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         {
           document: TRADE_HISTORY,
           variables: {
-            orderHistoryInput: {
+            tradeHistoryInput: {
               startDate: startDate.valueOf(),
               endDate: endDate.valueOf(),
               marketType,

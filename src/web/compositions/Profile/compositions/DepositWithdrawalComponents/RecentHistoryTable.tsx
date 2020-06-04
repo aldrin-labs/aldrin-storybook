@@ -20,8 +20,14 @@ const RecentHistoryTable = ({
   }
   isDepositPage: true
 }) => {
+  const { 
+    myPortfolios: [{ portfolioActions = { trades: [], tradesCount: 0 }}]
+   } =  !!getTransactionsInfo.myPortfolios ? getTransactionsInfo : {
+    myPortfolios: [{ portfolioActions: { trades: [], tradesCount: 0 }}]
+  }
+
   const body = combineRecentHistoryTable(
-    getTransactionsInfo.myPortfolios[0].portfolioActions,
+    portfolioActions,
     isDepositPage
   )
 
@@ -88,6 +94,7 @@ const TableDataWrapper = ({ ...props }) => {
       component={RecentHistoryTable}
       withOutSpinner={true}
       withTableLoader={true}
+      withoutLoading={true}
       query={getTransactionsInfo}
       fetchPolicy={`cache-and-network`}
       name={`getTransactionsInfo`}
