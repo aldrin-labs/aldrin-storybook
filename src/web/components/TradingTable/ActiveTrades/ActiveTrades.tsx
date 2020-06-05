@@ -457,9 +457,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         query: getActiveStrategies,
         variables: {
           activeStrategiesInput: {
-            activeExchangeKey: selectedKey.keyId,
             marketType,
+            activeExchangeKey: selectedKey.keyId,
             allKeys: true,
+            page: 0,
+            perPage: 30,
           },
         },
       })
@@ -528,15 +530,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       console.log('clear cached order')
       this.setState({ cachedOrder: null })
     }
-
-    // const newData = client.readQuery({
-    //   query: getActiveStrategies,
-    //   variables: {
-    //     activeStrategiesInput: {
-    //       activeExchangeKey: selectedKey.keyId,
-    //     },
-    //   },
-    // })
 
     console.log('cachedOrder', cachedOrder)
 
@@ -634,6 +627,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       handleTabChange,
       show,
+      page,
+      perPage,
       marketType,
       allKeys,
       specificPair,
@@ -655,6 +650,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       showPositionsFromAllAccounts,
       showOpenOrdersFromAllAccounts,
       showSmartTradesFromAllAccounts,
+      getActiveStrategiesQuery,
+      handleChangePage,
+      handleChangeRowsPerPage,
     } = this.props
 
     if (!show) {
@@ -870,7 +868,12 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           pagination={{
             fakePagination: false,
             enabled: true,
-            showPagination: false,
+            totalCount: getActiveStrategiesQuery.getActiveStrategies.count,
+            page: page,
+            rowsPerPage: perPage,
+            rowsPerPageOptions: [10, 20, 30, 50, 100],
+            handleChangePage,
+            handleChangeRowsPerPage,
             additionalBlock: (
               <PaginationBlock
                 {...{
@@ -947,6 +950,15 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 const LastTradeWrapper = ({ ...props }) => {
   let unsubscribe: undefined | Function = undefined
 
+  const [page, handleChangePage] = useState(0)
+  const [perPage, handleChangeRowsPerPageFunc] = useState(30)
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    handleChangeRowsPerPageFunc(+event.target.value)
+  }
+
   useEffect(() => {
     unsubscribe && unsubscribe()
     unsubscribe = props.subscribeToMore()
@@ -959,13 +971,17 @@ const LastTradeWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       {...props}
+      page={page}
+      perPage={perPage}
+      handleChangePage={handleChangePage}
+      handleChangeRowsPerPage={handleChangeRowsPerPage}
       component={ActiveTradesTable}
       variables={{
         activeStrategiesInput: {
           marketType: props.marketType,
           activeExchangeKey: props.selectedKey.keyId,
-          // page: 0,
-          // perPage: 100,
+          page,
+          perPage,
           allKeys: props.allKeys,
           ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },

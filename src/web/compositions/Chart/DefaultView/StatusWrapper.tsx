@@ -1,14 +1,16 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
-import { withSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack'
 
 import { orderError } from '@core/utils/errorsConfig'
 import { DefaultView } from './DefaultView'
 
 const OrderStatusWrapper = (props) => {
+  const { enqueueSnackbar } = useSnackbar()
+
   const showOrderResult = (result, cancelOrder, marketType) => {
     if (result.status === 'success' && result.orderId && result.message) {
-      props.enqueueSnackbar(result.message, {
+      enqueueSnackbar(result.message, {
         variant: 'success',
         action: (
           <>
@@ -24,20 +26,20 @@ const OrderStatusWrapper = (props) => {
         ),
       })
     } else if (result.status === 'success' || !result.message) {
-      props.enqueueSnackbar(orderError, { variant: 'error' })
+      enqueueSnackbar(orderError, { variant: 'error' })
     } else {
-      props.enqueueSnackbar(result.message, { variant: 'error' })
+      enqueueSnackbar(result.message, { variant: 'error' })
     }
   }
 
   const showFuturesTransfer = (result) => {
     if (result.status === 'OK' && result.data && result.data.tranId) {
-      props.enqueueSnackbar('Funds transfered!', {
+      enqueueSnackbar('Funds transfered!', {
         variant: 'success',
         // action: <CloseButton />,
       })
     } else {
-      props.enqueueSnackbar('Something went wrong during transfering funds', {
+      enqueueSnackbar('Something went wrong during transfering funds', {
         variant: 'error',
       })
     }
@@ -45,29 +47,29 @@ const OrderStatusWrapper = (props) => {
 
   const showCancelResult = (result) => {
     if (result.status === 'success' && result.message) {
-      props.enqueueSnackbar(result.message, {
+      enqueueSnackbar(result.message, {
         variant: 'success',
         // action: <CloseButton />,
       })
     } else if (result.status === 'success' || !result.message) {
-      props.enqueueSnackbar(orderError, { variant: 'error' })
+      enqueueSnackbar(orderError, { variant: 'error' })
     } else {
-      props.enqueueSnackbar(result.message, { variant: 'error' })
+      enqueueSnackbar(result.message, { variant: 'error' })
     }
   }
 
   const showChangePositionModeResult = (result, target = 'Position mode') => {
     if (result.errors) {
-      props.enqueueSnackbar('Something went wrong', { variant: 'error' })
+      enqueueSnackbar('Something went wrong', { variant: 'error' })
       return
     }
 
     if (result.status === 'OK') {
-      props.enqueueSnackbar(`${target} changed successfully`, {
+      enqueueSnackbar(`${target} changed successfully`, {
         variant: 'success',
       })
     } else {
-      props.enqueueSnackbar(result.binanceMessage, { variant: 'error' })
+      enqueueSnackbar(result.binanceMessage, { variant: 'error' })
     }
   }
 
@@ -83,4 +85,24 @@ const OrderStatusWrapper = (props) => {
   )
 }
 
-export default withSnackbar(OrderStatusWrapper)
+export default React.memo(OrderStatusWrapper, (prev, next) => {
+  console.log(
+    'st conditioon',
+    prev.marketType === next.marketType &&
+      prev.selectedKey.keyId === next.selectedKey.keyId &&
+      prev.currencyPair === next.currencyPair &&
+      prev.terminalViewMode === next.terminalViewMode &&
+      prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
+      prev.isPairDataLoading === next.isPairDataLoading &&
+      prev.chartPagePopup === next.chartPagePopup
+  )
+  return (
+    prev.marketType === next.marketType &&
+    prev.selectedKey.keyId === next.selectedKey.keyId &&
+    prev.currencyPair === next.currencyPair &&
+    prev.terminalViewMode === next.terminalViewMode &&
+    prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
+    prev.isPairDataLoading === next.isPairDataLoading &&
+    prev.chartPagePopup === next.chartPagePopup
+  )
+})
