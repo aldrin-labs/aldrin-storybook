@@ -97,7 +97,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const that = this
 
     const openOrdersProcessedData = combineOpenOrdersTable(
-      getOpenOrderHistoryQuery.getOpenOrderHistory,
+      getOpenOrderHistoryQuery.getOpenOrderHistory.orders,
       this.cancelOrderWithStatus,
       theme,
       arrayOfMarketIds,
@@ -136,20 +136,20 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       .subscribe({
         next: ({ data }) => {
           // console.log('data', data)
-          const cachedOrder = data.getOpenOrderHistory.find(
+          const cachedOrder = data.getOpenOrderHistory.orders.find(
             (order: OrderType) =>
               order.marketId === '0' && order.status === 'placing'
           )
 
-          const errorReturned = data.getOpenOrderHistory.find(
+          const errorReturned = data.getOpenOrderHistory.orders.find(
             (order: OrderType) =>
               order.marketId === '0' && order.status === 'error'
           )
 
           if ((cachedOrder && !that.state.cachedOrder) || !!errorReturned) {
             const ordersToDisplay = errorReturned
-              ? that.props.getOpenOrderHistoryQuery.getOpenOrderHistory
-              : that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.concat(
+              ? that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
+              : that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.concat(
                   cachedOrder
                 )
 
@@ -172,6 +172,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           if (errorReturned) {
             filterCacheData({
               name: 'getOpenOrderHistory',
+              subName: 'orders',
               query: getOpenOrderHistory,
               variables: {
                 openOrderInput: {
@@ -270,10 +271,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           openOrderInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
             marketType: this.props.marketType,
-            allKeys: this.props.allKeys,
-            ...(!this.props.specificPair
-              ? {}
-              : { specificPair: this.props.currencyPair }),
+            // allKeys: this.props.allKeys,
+            // ...(!this.props.specificPair
+            //   ? {}
+            //   : { specificPair: this.props.currencyPair }),
           },
         },
       })
@@ -282,18 +283,16 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       data = nextProps.getOpenOrderHistoryQuery
     }
 
-    // console.log('data.getOpenOrderHistory', data.getOpenOrderHistory)
-
     const newOrderFromSubscription =
       cachedOrder !== null
-        ? data.getOpenOrderHistory.find((order: OrderType) => {
+        ? data.getOpenOrderHistory.orders.find((order: OrderType) => {
             const orderDate = isNaN(dayjs(+order.timestamp).unix())
               ? order.timestamp
               : +order.timestamp
 
             const cachedOrderDate = Math.floor(+cachedOrder.timestamp / 1000)
 
-            return dayjs(orderDate).valueOf() > cachedOrderDate
+            return order.price == cachedOrder.price
           })
         : null
 
@@ -310,10 +309,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
-        ? nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.concat(
+        ? nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.concat(
             cachedOrder
           )
-        : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory
+        : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       ordersToDisplay,
@@ -343,7 +342,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       },
     })
 
-    const cachedOrder = data.getOpenOrderHistory.find(
+    const cachedOrder = data.getOpenOrderHistory.orders.find(
       (order: OrderType) => order.marketId === '0'
     )
 
@@ -461,7 +460,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-
   console.log('OpenOrders TableDataWrapper render')
 
   const {

@@ -296,8 +296,7 @@ export const filterOpenOrders = ({ order, canceledOrders }) => {
     !canceledOrders.includes(order.info.orderId) &&
     // sometimes we don't have order.type, also we want to filter market orders
     (!order.type || (order.type && order.type !== 'market')) &&
-    (order.status === 'open' ||
-      order.status === 'placing')
+    (order.status === 'open' || order.status === 'placing')
   )
 }
 
@@ -1646,6 +1645,7 @@ export const combineOpenOrdersTable = (
                 cancelOrderFunc(keyId, orderId, symbol)
                 filterCacheData({
                   name: 'getOpenOrderHistory',
+                  subName: 'orders',
                   query: getOpenOrderHistory,
                   variables: {
                     openOrderInput: {
@@ -2097,7 +2097,10 @@ export const updateActiveStrategiesQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log('updateActiveStrategiesQuerryFunction subscriptionData', subscriptionData)
+  console.log(
+    'updateActiveStrategiesQuerryFunction subscriptionData',
+    subscriptionData
+  )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
@@ -2108,7 +2111,7 @@ export const updateActiveStrategiesQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = prev.getActiveStrategies.findIndex(
+  const strategyHasTheSameIndex = prev.getActiveStrategies.strategies.findIndex(
     (el: TradeType) =>
       el._id === subscriptionData.data.listenActiveStrategies._id
   )
@@ -2117,19 +2120,33 @@ export const updateActiveStrategiesQuerryFunction = (
   let result
 
   if (tradeAlreadyExists) {
-    prev.getActiveStrategies[strategyHasTheSameIndex] = {
-      ...prev.getActiveStrategies[strategyHasTheSameIndex],
+    prev.getActiveStrategies.strategies[strategyHasTheSameIndex] = {
+      ...prev.getActiveStrategies.strategies[strategyHasTheSameIndex],
       ...subscriptionData.data.listenActiveStrategies,
     }
 
-    result = { ...prev }
+    if (subscriptionData.data.listenActiveStrategies.enabled) {
+      result = { ...prev }
+    } else {
+      result = {
+        getActiveStrategies: {
+          ...prev.getActiveStrategies,
+          count: prev.getActiveStrategies.count - 1,
+        },
+      }
+    }
   } else {
-    prev.getActiveStrategies = [
+    prev.getActiveStrategies.strategies = [
       { ...subscriptionData.data.listenActiveStrategies },
-      ...prev.getActiveStrategies,
+      ...prev.getActiveStrategies.strategies,
     ]
 
-    result = { ...prev }
+    result = {
+      getActiveStrategies: {
+        ...prev.getActiveStrategies,
+        count: prev.getActiveStrategies.count + 1,
+      },
+    }
   }
 
   return result
@@ -2179,7 +2196,10 @@ export const updateActivePositionsQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log('updateActivePositionsQuerryFunction subscriptionData', subscriptionData)
+  console.log(
+    'updateActivePositionsQuerryFunction subscriptionData',
+    subscriptionData
+  )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
 
@@ -2221,7 +2241,10 @@ export const updateOpenOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log('updateOpenOrderHistoryQuerryFunction subscriptionData', subscriptionData)
+  console.log(
+    'updateOpenOrderHistoryQuerryFunction subscriptionData',
+    subscriptionData
+  )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
@@ -2232,7 +2255,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.findIndex(
+  const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.orders.findIndex(
     (el: OrderType) =>
       el.info &&
       String(el.info.orderId) ===
@@ -2244,17 +2267,30 @@ export const updateOpenOrderHistoryQuerryFunction = (
   let result
 
   if (openOrderAlreadyExists) {
-    prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex] = {
-      ...prev.getOpenOrderHistory[openOrderHasTheSameOrderIndex],
+    prev.getOpenOrderHistory.orders[openOrderHasTheSameOrderIndex] = {
+      ...prev.getOpenOrderHistory.orders[openOrderHasTheSameOrderIndex],
       ...subscriptionData.data.listenOpenOrders,
     }
 
-    result = { ...prev }
+    if (subscriptionData.data.listenOpenOrders.status === 'open') {
+      result = { ...prev }
+    } else {
+      result = {
+        getOpenOrderHistory: {
+          ...prev.getOpenOrderHistory,
+          count: prev.getOpenOrderHistory - 1,
+        },
+      }
+    }
   } else {
-    prev.getOpenOrderHistory = [
-      { ...subscriptionData.data.listenOpenOrders },
-      ...prev.getOpenOrderHistory,
-    ]
+    prev.getOpenOrderHistory = {
+      orders: [
+        { ...subscriptionData.data.listenOpenOrders },
+        ...prev.getOpenOrderHistory.orders,
+      ],
+      count: prev.getOpenOrderHistory.count + 1,
+      __typename: 'getOpenOrderHistory',
+    }
 
     result = { ...prev }
   }
@@ -2275,7 +2311,7 @@ export const updateOrderHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const openOrderHasTheSameOrderIndex = prev.getOrderHistory.findIndex(
+  const openOrderHasTheSameOrderIndex = prev.getOrderHistory.orders.findIndex(
     (el: OrderType) =>
       el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
   )
@@ -2371,7 +2407,10 @@ export const updateTradeHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log('updateTradeHistoryQuerryFunction subscriptionData', subscriptionData)
+  console.log(
+    'updateTradeHistoryQuerryFunction subscriptionData',
+    subscriptionData
+  )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenTradeHistory

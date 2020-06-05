@@ -46,7 +46,10 @@ export interface IProps {
   pricePrecision: number
   theme: Theme
   getActiveStrategiesQuery: {
-    getActiveStrategies: SmartOrder[]
+    getActiveStrategies: {
+      strategies: SmartOrder[],
+      count: number
+    }
   }
   getFundsQuery: {
     getFunds: Fund[]

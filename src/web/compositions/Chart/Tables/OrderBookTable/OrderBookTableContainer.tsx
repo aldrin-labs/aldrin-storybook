@@ -46,8 +46,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       getOpenOrderHistory: [],
     }
 
-    const isNewOrder = getOpenOrderHistory.length > prevOpenOrderHistory.length
-    const newCachedOrder = getOpenOrderHistory.find(
+    const isNewOrder = getOpenOrderHistory.orders.length > prevOpenOrderHistory.orders.length
+    const newCachedOrder = getOpenOrderHistory.orders.find(
       (order) => order.marketId === '0'
     )
 

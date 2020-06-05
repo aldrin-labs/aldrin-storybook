@@ -32,7 +32,9 @@ const TradingTabs = ({
   getActivePositionsQuery: { getActivePositions = [] } = {
     getActivePositions: [],
   },
-  getActiveStrategiesQuery: { getActiveStrategies = [] } = {
+  getActiveStrategiesQuery: {
+    getActiveStrategies = { strategies: [], count: 0 },
+  } = {
     getActiveStrategies: [],
   },
   canceledOrders,
@@ -58,23 +60,21 @@ const TradingTabs = ({
     showSmartTradesFromAllAccounts,
   ])
 
-  const openOrdersLength = getOpenOrderHistory.filter(
-    (order) =>
-      filterOpenOrders({
-        order,
-        canceledOrders,
-      })
+  const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
+    filterOpenOrders({
+      order,
+      canceledOrders,
+    })
   ).length
 
-  const positionsLength = getActivePositions.filter(
-    (position) =>
-      filterPositions({
-        position,
-        canceledPositions: canceledOrders,
-      })
+  const positionsLength = getActivePositions.filter((position) =>
+    filterPositions({
+      position,
+      canceledPositions: canceledOrders,
+    })
   ).length
 
-  const activeTradesLength = getActiveStrategies.filter(
+  const activeTradesLength = getActiveStrategies.strategies.filter(
     (a) =>
       a !== null &&
       (a.enabled ||
@@ -163,6 +163,8 @@ const OpenOrdersWrapper = ({ ...props }: IQueryProps) => {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
           allKeys: props.showOpenOrdersFromAllAccounts,
+          // page: 0,
+          //   perPage: 100,
           ...(!props.showAllOpenOrderPairs
             ? {}
             : { specificPair: props.currencyPair }),
