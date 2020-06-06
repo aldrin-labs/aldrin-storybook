@@ -26,8 +26,10 @@ const TradingTabs = ({
   tab,
   handleTabChange,
   marketType,
-  getOpenOrderHistoryQuery: { getOpenOrderHistory = [] } = {
-    getOpenOrderHistory: [],
+  getOpenOrderHistoryQuery: {
+    getOpenOrderHistory = { orders: [], count: 0 },
+  } = {
+    getOpenOrderHistory: { orders: [], count: 0 },
   },
   getActivePositionsQuery: { getActivePositions = [] } = {
     getActivePositions: [],
@@ -35,7 +37,7 @@ const TradingTabs = ({
   getActiveStrategiesQuery: {
     getActiveStrategies = { strategies: [], count: 0 },
   } = {
-    getActiveStrategies: [],
+    getActiveStrategies: { strategies: [], count: 0 },
   },
   canceledOrders,
   arrayOfMarketIds,

@@ -112,10 +112,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         openOrderInput: {
           activeExchangeKey: this.props.selectedKey.keyId,
           marketType: this.props.marketType,
-          allKeys: this.props.allKeys,
-          ...(!this.props.specificPair
-            ? {}
-            : { specificPair: this.props.currencyPair }),
+          allKeys: true,
+          page: 0,
+          perPage: 30,
+          // ...(!this.props.specificPair
+          //   ? {}
+          //   : { specificPair: this.props.currencyPair }),
         },
       },
       data: {
@@ -130,6 +132,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           openOrderInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
             marketType: this.props.marketType,
+            allKeys: true,
+            page: 0,
+            perPage: 30,
           },
         },
       })
@@ -146,12 +151,16 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
               order.marketId === '0' && order.status === 'error'
           )
 
+          const filteredOrders = that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
+            (order) => order.status !== 'error' && order.status !== 'placing'
+          )
+
           if ((cachedOrder && !that.state.cachedOrder) || !!errorReturned) {
             const ordersToDisplay = errorReturned
-              ? that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
-              : that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.concat(
-                  cachedOrder
-                )
+              ? filteredOrders
+              : filteredOrders.concat(cachedOrder)
+
+            console.log('ordersToDisplay in cache catch func', ordersToDisplay)
 
             const openOrdersProcessedData = combineOpenOrdersTable(
               ordersToDisplay,
@@ -178,6 +187,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
                 openOrderInput: {
                   activeExchangeKey: this.props.selectedKey.keyId,
                   marketType: this.props.marketType,
+                  allKeys: true,
+                  page: 0,
+                  perPage: 30,
                 },
               },
               data,
@@ -271,10 +283,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           openOrderInput: {
             activeExchangeKey: this.props.selectedKey.keyId,
             marketType: this.props.marketType,
-            // allKeys: this.props.allKeys,
-            // ...(!this.props.specificPair
-            //   ? {}
-            //   : { specificPair: this.props.currencyPair }),
+            page: this.props.page,
+            perPage: this.props.perPage,
+            allKeys: this.props.allKeys,
+            ...(!this.props.specificPair
+              ? {}
+              : { specificPair: this.props.currencyPair }),
           },
         },
       })
@@ -283,18 +297,19 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       data = nextProps.getOpenOrderHistoryQuery
     }
 
+    console.log('data in receive props', data)
+
     const newOrderFromSubscription =
       cachedOrder !== null
         ? data.getOpenOrderHistory.orders.find((order: OrderType) => {
-            const orderDate = isNaN(dayjs(+order.timestamp).unix())
-              ? order.timestamp
-              : +order.timestamp
-
-            const cachedOrderDate = Math.floor(+cachedOrder.timestamp / 1000)
-
             return order.price == cachedOrder.price
           })
         : null
+
+    console.log(
+      'newOrderFromSubscription in receive props',
+      newOrderFromSubscription
+    )
 
     if (newOrderFromSubscription) {
       this.setState({
@@ -314,8 +329,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           )
         : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
 
+    console.log('ordersToDisplay in receive props', ordersToDisplay)
+
     const openOrdersProcessedData = combineOpenOrdersTable(
       ordersToDisplay,
+      // nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders,
       this.cancelOrderWithStatus,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
@@ -336,7 +354,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         openOrderInput: {
           activeExchangeKey: this.props.selectedKey.keyId,
           marketType: this.props.marketType,
-          // allKeys: this.props.allKeys,
+          allKeys: true,
+          page: 0,
+          perPage: 30,
           // ...(!this.props.specificPair ? {} : { specificPair: this.props.currencyPair }),
         },
       },
@@ -359,6 +379,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       tab,
       handleTabChange,
       show,
+      page,
+      perPage,
       marketType,
       selectedKey,
       canceledOrders,
@@ -366,6 +388,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       allKeys,
       specificPair,
+      handleChangePage,
+      handleChangeRowsPerPage,
+      getOpenOrderHistoryQuery,
       handleToggleAllKeys,
       handleToggleSpecificPair,
       showAllPositionPairs,
@@ -380,6 +405,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       return null
     }
 
+    console.log(
+      'getOpenOrderHistoryQuery.getOpenOrderHistory.count',
+      getOpenOrderHistoryQuery.getOpenOrderHistory.count
+    )
+
     return (
       <TableWithSort
         style={{ borderRadius: 0, height: '100%', overflowX: 'hidden' }}
@@ -392,7 +422,12 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         pagination={{
           fakePagination: false,
           enabled: true,
-          showPagination: false,
+          totalCount: getOpenOrderHistoryQuery.getOpenOrderHistory.count,
+          page: page,
+          rowsPerPage: perPage,
+          rowsPerPageOptions: [10, 20, 30, 50, 100],
+          handleChangePage: handleChangePage,
+          handleChangeRowsPerPage: handleChangeRowsPerPage,
           additionalBlock: (
             <PaginationBlock
               {...{
@@ -462,18 +497,34 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 const TableDataWrapper = ({ ...props }) => {
   console.log('OpenOrders TableDataWrapper render')
 
+  const [page, handleChangePage] = useState(0)
+  const [perPage, handleChangeRowsPerPageFunc] = useState(30)
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    handleChangeRowsPerPageFunc(+event.target.value)
+  }
+
   const {
     showOpenOrdersFromAllAccounts: allKeys,
     showAllOpenOrderPairs: specificPair,
   } = props
+
   return (
     <QueryRenderer
+      page={page}
+      perPage={perPage}
+      handleChangePage={handleChangePage}
+      handleChangeRowsPerPage={handleChangeRowsPerPage}
       component={OpenOrdersTable}
       variables={{
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
           allKeys: allKeys,
+          page,
+          perPage,
           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}

@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
 
@@ -7,6 +8,10 @@ export interface IProps extends WithTheme<Theme> {
   tab: string
   tabIndex: number
   show: boolean
+  page: number
+  perPage: number
+  handleChangePage: (page: number) => void
+  handleChangeRowsPerPage: (e: ChangeEvent) => void
   handleTabChange: (tab: string | any) => void
   getOpenOrderHistoryQueryRefetch: () => void
   cancelOrderMutation: CancelOrderMutationType

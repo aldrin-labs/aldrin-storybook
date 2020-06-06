@@ -531,8 +531,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       this.setState({ cachedOrder: null })
     }
 
-    console.log('cachedOrder', cachedOrder)
-
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
         ? getActiveStrategiesQuery.getActiveStrategies.strategies

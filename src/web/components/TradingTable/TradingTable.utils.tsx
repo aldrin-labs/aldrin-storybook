@@ -1487,7 +1487,7 @@ export const combineOpenOrdersTable = (
 
       const keyName = keys ? keys[keyId] : ''
 
-      const needOpacity = el.marketId === '0'
+      const needOpacity = el.marketId === '0' && el.status === 'placing'
       const pair = symbol.split('_')
 
       let type = !!orderType ? orderType : 'type'
@@ -2278,7 +2278,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
       result = {
         getOpenOrderHistory: {
           ...prev.getOpenOrderHistory,
-          count: prev.getOpenOrderHistory - 1,
+          count: prev.getOpenOrderHistory.count - 1,
         },
       }
     }
