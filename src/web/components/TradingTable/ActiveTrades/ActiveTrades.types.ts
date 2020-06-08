@@ -88,6 +88,7 @@ export interface IProps {
     marketType: number
   ) => void
   handleTabChange: (tab: string) => void
+  handlePairChange: (pair: string) => void
   enqueueSnackbar: (message: string, variant: { variant: string }) => void
   getActiveStrategiesQueryRefetch: () => void
   disableStrategyMutation: (

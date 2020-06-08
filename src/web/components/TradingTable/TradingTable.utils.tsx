@@ -20,6 +20,7 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { AdlIndicator } from './TradingTable.styles'
 
 const changePairToSelected = (pair: string) => {
+  console.log('client mutate', client)
   client.mutate({
     mutation: CHANGE_CURRENCY_PAIR,
     variables: {
@@ -318,6 +319,7 @@ export const combinePositionsTable = ({
   quantityPrecision,
   adlData,
   toogleEditMarginPopup,
+  handlePairChange,
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
@@ -332,6 +334,7 @@ export const combinePositionsTable = ({
   keys: Key[]
   adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
+  handlePairChange: (pair: string) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -430,7 +433,9 @@ export const combinePositionsTable = ({
           pair: {
             render: (
               <div
-                onClick={() => changePairToSelected(symbol)}
+                onClick={(e) => {
+                  handlePairChange(symbol)
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -616,6 +621,7 @@ export const combineActiveTradesTable = ({
   addOrderToCanceled,
   canceledOrders,
   keys,
+  handlePairChange,
 }: {
   data: any[]
   cancelOrderFunc: (strategyId: string) => Promise<any>
@@ -634,6 +640,7 @@ export const combineActiveTradesTable = ({
   addOrderToCanceled: (id: string) => void
   canceledOrders: string[]
   keys: Key[]
+  handlePairChange: (pair: string) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -765,9 +772,11 @@ export const combineActiveTradesTable = ({
         id: `${el._id}${i}`,
         pair: {
           render: (
-            <SubColumnValue onClick={() => changePairToSelected(pair)}>{`${
-              pairArr[0]
-            }/${pairArr[1]}`}</SubColumnValue>
+            <SubColumnValue
+              onClick={(e) => {
+                handlePairChange(pair)
+              }}
+            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
@@ -1099,7 +1108,8 @@ export const combineStrategiesHistoryTable = (
   data: OrderType[],
   theme: Theme,
   marketType: number,
-  keys: Key[]
+  keys: Key[],
+  handlePairChange
 ) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -1229,7 +1239,7 @@ export const combineStrategiesHistoryTable = (
         id: el._id,
         pair: {
           render: (
-            <SubColumnValue onClick={() => changePairToSelected(pair)}>{`${
+            <SubColumnValue onClick={() => handlePairChange(pair)}>{`${
               pairArr[0]
             }/${pairArr[1]}`}</SubColumnValue>
           ),
@@ -1464,7 +1474,8 @@ export const combineOpenOrdersTable = (
   arrayOfMarketIds: string[],
   marketType: number,
   canceledOrders: string[],
-  keys: Key[]
+  keys: Key[],
+  handlePairChange: (pair: string) => void
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -1515,7 +1526,7 @@ export const combineOpenOrdersTable = (
         pair: {
           render: (
             <div
-              onClick={() => changePairToSelected(symbol)}
+              onClick={() => handlePairChange(symbol)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1673,7 +1684,8 @@ export const combineOrderHistoryTable = (
   theme: Theme,
   arrayOfMarketIds: string[],
   marketType: number,
-  keys
+  keys,
+  handlePairChange: (pair: string) => void
 ) => {
   if (!orderData || !orderData) {
     return []
@@ -1724,7 +1736,7 @@ export const combineOrderHistoryTable = (
         pair: {
           render: (
             <div
-              onClick={() => changePairToSelected(symbol)}
+              onClick={() => handlePairChange(symbol)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1862,7 +1874,8 @@ export const combineTradeHistoryTable = (
   theme: Theme,
   arrayOfMarketIds: string[],
   marketType: number,
-  keys
+  keys,
+  handlePairChange: (pair: string) => void
 ) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
@@ -1896,7 +1909,9 @@ export const combineTradeHistoryTable = (
         pair: {
           render: (
             <div
-              onClick={() => changePairToSelected(symbol)}
+              onClick={(e) => {
+                handlePairChange(symbol)
+              }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -2131,7 +2146,7 @@ export const updateActiveStrategiesQuerryFunction = (
       result = {
         getActiveStrategies: {
           ...prev.getActiveStrategies,
-          count: prev.getActiveStrategies.count - 1,
+          // count: prev.getActiveStrategies.count - 1,
         },
       }
     }
@@ -2144,7 +2159,7 @@ export const updateActiveStrategiesQuerryFunction = (
     result = {
       getActiveStrategies: {
         ...prev.getActiveStrategies,
-        count: prev.getActiveStrategies.count + 1,
+        // count: prev.getActiveStrategies.count + 1,
       },
     }
   }

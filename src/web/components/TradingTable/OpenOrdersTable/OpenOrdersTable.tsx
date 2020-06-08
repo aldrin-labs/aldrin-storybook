@@ -92,6 +92,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType,
       keys,
+      handlePairChange,
     } = this.props
 
     const that = this
@@ -103,7 +104,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType,
       this.props.canceledOrders,
-      keys
+      keys,
+      handlePairChange
     )
 
     client.writeQuery({
@@ -169,7 +171,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
               that.props.arrayOfMarketIds,
               that.props.marketType,
               that.props.canceledOrders,
-              that.props.keys
+              that.props.keys,
+              that.props.handlePairChange
             )
 
             that.setState({
@@ -339,7 +342,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       nextProps.arrayOfMarketIds,
       nextProps.marketType,
       nextProps.canceledOrders,
-      nextProps.keys
+      nextProps.keys,
+      nextProps.handlePairChange
     )
 
     this.setState({

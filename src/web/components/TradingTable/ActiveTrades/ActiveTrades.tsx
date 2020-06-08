@@ -252,6 +252,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             pricePrecision,
             addOrderToCanceled,
             canceledOrders,
+            handlePairChange,
           } = that.props
 
           const subscriptionPropertyKey =
@@ -271,6 +272,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             currencyPair,
             pricePrecision,
             quantityPrecision,
+            handlePairChange,
           })
 
           that.setState({
@@ -296,6 +298,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       quantityPrecision,
       addOrderToCanceled,
       canceledOrders,
+      handlePairChange,
     } = this.props
 
     const filteredStrategies = getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
@@ -363,6 +366,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       pricePrecision,
       quantityPrecision,
+      handlePairChange,
     })
 
     this.setState({
@@ -446,6 +450,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       getActiveStrategiesQuery,
       addOrderToCanceled,
       canceledOrders,
+      handlePairChange,
     } = nextProps
 
     const { prices, cachedOrder } = this.state
@@ -552,6 +557,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       currencyPair,
       pricePrecision,
       quantityPrecision,
+      handlePairChange,
     })
 
     this.setState({
