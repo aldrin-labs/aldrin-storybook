@@ -2293,7 +2293,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
       result = {
         getOpenOrderHistory: {
           ...prev.getOpenOrderHistory,
-          count: prev.getOpenOrderHistory.count - 1,
+          // count: prev.getOpenOrderHistory.count - 1,
         },
       }
     }
@@ -2303,7 +2303,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
         { ...subscriptionData.data.listenOpenOrders },
         ...prev.getOpenOrderHistory.orders,
       ],
-      count: prev.getOpenOrderHistory.count + 1,
+      // count: prev.getOpenOrderHistory.count + 1,
       __typename: 'getOpenOrderHistory',
     }
 
