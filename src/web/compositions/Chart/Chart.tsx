@@ -98,9 +98,9 @@ function ChartPageComponent(props: any) {
 
   const closeChartPagePopup = () => {
     finishJoyride({
-        updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
-        getTooltipSettings,
-        name: 'chartPagePopup',
+      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+      getTooltipSettings,
+      name: 'chartPagePopup',
     })
   }
 
@@ -124,7 +124,9 @@ function ChartPageComponent(props: any) {
       },
       app: { themeMode } = { themeMode: 'light' },
     },
-    getTooltipSettingsQuery: { getTooltipSettings = { chartPage: false, chartPagePopup: false } } = {
+    getTooltipSettingsQuery: {
+      getTooltipSettings = { chartPage: false, chartPagePopup: false },
+    } = {
       getTooltipSettings: { chartPage: false, chartPagePopup: false },
     },
     pairPropertiesQuery,
@@ -186,6 +188,8 @@ function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
+  console.log('chart page rerender')
+
   return (
     <MainContainer fullscreen={view !== 'default'}>
       <GlobalStyles />
@@ -205,20 +209,25 @@ function ChartPageComponent(props: any) {
           selectedKey={selectedKey}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
-          updateTerminalViewMode={(mode) => { 
+          updateTerminalViewMode={(mode) => {
             if (mode === 'smartOrderMode') {
               finishJoyride({
-                updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+                updateTooltipSettingsMutation:
+                  props.updateTooltipSettingsMutation,
                 getTooltipSettings,
                 name: 'chartPagePopup',
-            })
+              })
             }
-            
-            updateTerminalViewMode(mode); 
+
+            updateTerminalViewMode(mode)
           }}
           chartProps={props}
           arrayOfMarketIds={arrayOfMarketIds}
-          chartPagePopup={(getTooltipSettings.chartPagePopup === null || getTooltipSettings.chartPagePopup) && !getTooltipSettings.chartPage}
+          chartPagePopup={
+            (getTooltipSettings.chartPagePopup === null ||
+              getTooltipSettings.chartPagePopup) &&
+            !getTooltipSettings.chartPage
+          }
           closeChartPagePopup={closeChartPagePopup}
         />
       )}
@@ -237,6 +246,7 @@ function ChartPageComponent(props: any) {
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
+  console.log('memo func chart page')
   const prevIsPairDataLoading =
     prev.loading ||
     !prev.pairPropertiesQuery.marketByName ||
@@ -256,10 +266,10 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
   const tooltipQueryChanged =
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-    (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) && 
-      (prev.getTooltipSettingsQuery.getTooltipSettings &&
-        prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
+    (prev.getTooltipSettingsQuery.getTooltipSettings &&
+      prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
       (next.getTooltipSettingsQuery.getTooltipSettings &&
         next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
 

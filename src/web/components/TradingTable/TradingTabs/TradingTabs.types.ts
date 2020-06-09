@@ -33,6 +33,9 @@ export interface IProps extends INextQueryProps {
     getOpenOrderHistory: OrderType[]
   }
   getActiveStrategiesQuery: {
-    getActiveStrategies: SmartOrder[]
+    getActiveStrategies: {
+      strategies: SmartOrder[]
+      count: number
+    }
   }
 }

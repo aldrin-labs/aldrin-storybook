@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { Key } from '@core/types/ChartTypes'
 
@@ -39,6 +40,10 @@ export interface IProps {
   marketType: 0 | 1
   keys: Key[]
   exchange: string
+  page: number
+  perPage: number
+  handleChangePage: (page: number) => void
+  handleChangeRowsPerPage: (e: ChangeEvent) => void
   currencyPair: string
   arrayOfMarketIds: string[]
   priceFromOrderbook: number
@@ -46,7 +51,10 @@ export interface IProps {
   pricePrecision: number
   theme: Theme
   getActiveStrategiesQuery: {
-    getActiveStrategies: SmartOrder[]
+    getActiveStrategies: {
+      strategies: SmartOrder[]
+      count: number
+    }
   }
   getFundsQuery: {
     getFunds: Fund[]
@@ -80,6 +88,7 @@ export interface IProps {
     marketType: number
   ) => void
   handleTabChange: (tab: string) => void
+  handlePairChange: (pair: string) => void
   enqueueSnackbar: (message: string, variant: { variant: string }) => void
   getActiveStrategiesQueryRefetch: () => void
   disableStrategyMutation: (
