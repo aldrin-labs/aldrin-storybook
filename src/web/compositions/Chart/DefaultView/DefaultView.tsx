@@ -72,7 +72,7 @@ export const DefaultViewComponent = (
     minSpotNotional,
     minFuturesStep,
     chartPagePopup,
-    closeChartPagePopup
+    closeChartPagePopup,
   } = props
 
   if (!currencyPair) {
@@ -280,7 +280,7 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.currencyPair === next.currencyPair &&
     prev.terminalViewMode === next.terminalViewMode &&
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
-    prev.isPairDataLoading === next.isPairDataLoading && 
+    prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup
   )
 })

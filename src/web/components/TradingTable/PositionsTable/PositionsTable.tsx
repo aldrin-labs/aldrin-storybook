@@ -133,6 +133,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       marketType,
       showOrderResult,
       setPositionWasClosedMutation,
+      handlePairChange,
     } = this.props
 
     const positionsData = combinePositionsTable({
@@ -149,6 +150,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
+      handlePairChange,
     })
 
     this.setState({
@@ -356,6 +358,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             theme,
             keys,
             getAdlQuantileQuery,
+            handlePairChange,
           } = that.props
 
           const positionsData = combinePositionsTable({
@@ -372,6 +375,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             priceFromOrderbook,
             pricePrecision,
             quantityPrecision,
+            handlePairChange,
           })
 
           that.setState({
@@ -407,6 +411,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       theme,
       keys,
       getAdlQuantileQuery,
+      handlePairChange,
     } = this.props
 
     this.subscribe()
@@ -426,6 +431,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
+      handlePairChange,
     })
 
     this.setState({
@@ -521,6 +527,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
       getAdlQuantileQuery,
+      handlePairChange,
     } = nextProps
 
     const positionsData = combinePositionsTable({
@@ -537,6 +544,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
+      handlePairChange,
     })
 
     this.setState({
