@@ -120,6 +120,9 @@ export const InputContainerCss = css`
   ${LoginTextContainerCss}
   width: 100%;
 `
+export const ConfirmEmailContainerCss = css`
+  padding: 3rem 0;
+`
 
 export const SubmitButtonContainerCss = css`
   position: absolute;
@@ -384,4 +387,10 @@ export const DialogTitleText = styled(({ bold, ...props }) => (
   <Typography {...props} />
 ))`
   ${DialogTitleTextCss}
+`
+
+export const ConfirmEmailContainer = styled(({ bold, ...props }) => (
+  <Typography {...props} />
+))`
+  ${ConfirmEmailContainerCss}
 `

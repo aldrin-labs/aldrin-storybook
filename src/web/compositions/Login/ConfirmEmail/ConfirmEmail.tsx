@@ -1,6 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { Theme } from '@material-ui/core'
+import { Theme, Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
 import CubeLogo from '@icons/auth0Logo.png'
@@ -14,6 +14,7 @@ import {
   LoginTextContainer,
   SubmitButtonContainer,
   SubmitLoginLink,
+  ConfirmEmailContainer,
 } from '@sb/compositions/Login/Login.styles'
 
 const ConfirmEmail = ({
@@ -25,17 +26,17 @@ const ConfirmEmail = ({
 }) => {
   return (
     <LoginContainer>
-      <LoginTextContainer container justify="center" alignItems="center">
+      <Grid container justify="center" alignItems="center">
         <Logo src={CubeLogo} />
-      </LoginTextContainer>
+      </Grid>
       <LoginHeadingBox>
         <LoginHeadingText>Confirm your e-mail</LoginHeadingText>
       </LoginHeadingBox>
-      <LoginTextContainer>
+      <ConfirmEmailContainer>
         <LoginText>Thank you for joining cryptocurrencies.ai</LoginText>
-      </LoginTextContainer>
+      </ConfirmEmailContainer>
       <LoginTextContainer>
-        <LoginText>
+        <LoginText align="center">
           We have sent a confirmation email to the address indicated during your
           registration.
         </LoginText>
