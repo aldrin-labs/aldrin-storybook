@@ -41,7 +41,7 @@ import { transformData } from '@core/utils/SocialUtils'
 
 import TransactionPage from '@sb/compositions/Transaction/TransactionPage'
 
-import PortfolioMainAllocation from '@core/containers/PortfolioMainAllocation'
+import PortfolioMainAllocation from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation'
 import SocialPortfolioChart from '@sb/components/SocialPortfolioChart'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -525,7 +525,7 @@ class SocialPage extends React.Component {
                       />
                     </TableContainer>
                     <Grid item style={{ paddingTop: '15px' }}>
-                      <SocialPortfolioChart/>
+                      <SocialPortfolioChart />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -570,13 +570,19 @@ class SocialPage extends React.Component {
               </Grid>
             )}
           </Grid>
-          <Grid item xs={12} style={{
-            marginTop: '1.5rem',
-            paddingTop: '1.5rem',
-            borderTop: '1px solid #E0E5EC'
-          }}>
-            <TypographyHeader color={'#7284A0'} margin={'0 0 1.25rem 0'}>Transactions</TypographyHeader>
-            <TransactionPage hideSelector={true}/>
+          <Grid
+            item
+            xs={12}
+            style={{
+              marginTop: '1.5rem',
+              paddingTop: '1.5rem',
+              borderTop: '1px solid #E0E5EC',
+            }}
+          >
+            <TypographyHeader color={'#7284A0'} margin={'0 0 1.25rem 0'}>
+              Transactions
+            </TypographyHeader>
+            <TransactionPage hideSelector={true} />
           </Grid>
         </GridTableContainer>
       </GridPageContainer>
