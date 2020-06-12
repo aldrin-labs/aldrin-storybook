@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { compose } from 'recompose'
 import { Theme, Grid } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
@@ -20,10 +20,18 @@ import {
 const ConfirmEmail = ({
   theme,
   userEmailHosting,
+  onLogout = async () => {},
 }: {
   theme: Theme
   userEmailHosting: string
+  onLogout: () => Promise<void>
 }) => {
+  useEffect(() => {
+    return () => {
+      onLogout()
+    }
+  }, [])
+
   return (
     <LoginContainer>
       <Grid container justify="center" alignItems="center">
