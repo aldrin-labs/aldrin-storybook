@@ -527,7 +527,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
   }
 
   render() {
-    const { forWithdrawal } = this.props
+    const { forWithdrawal, userEmailHosting = '', onLogout } = this.props
     const {
       currentStep,
       signIn,
@@ -598,6 +598,12 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
             onSignUpWithGoogleClick={this.auth.googleSingup}
             status={signUp.status}
             errorMessage={signUp.errorMessage}
+          />
+        )}
+        {currentStep === 'confirmEmail' && (
+          <ConfirmEmail
+            onLogout={onLogout}
+            userEmailHosting={userEmailHosting}
           />
         )}
       </>
