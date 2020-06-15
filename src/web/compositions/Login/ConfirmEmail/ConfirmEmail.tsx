@@ -42,8 +42,12 @@ const ConfirmEmail = ({
   accessToken: string
 }) => {
   useEffect(() => {
-    return () => {
-      onLogout()
+    onbeforeunload = async () => {
+      await onLogout()
+    }
+    return async () => {
+      onbeforeunload = null
+      await onLogout()
     }
   }, [])
 
