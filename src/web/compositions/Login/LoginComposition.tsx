@@ -7,6 +7,7 @@ import { ILoginStep, IProps, IState } from './LoginComposition.types'
 
 import Auth from '@sb/compositions/Onboarding/Auth'
 import { getAuthCallback } from '@core/utils/config'
+import { randomInteger, sleep } from '@core/utils/helpers'
 
 import {
   SetUpMfa,
@@ -526,8 +527,81 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     }
   }
 
+  sendConfirmEmailAgaingHandler = async ({
+    userId,
+    accessToken,
+  }: {
+    userId: string
+    accessToken: string
+  }) => {
+    const resultOfSendConfirmEmail = await this.auth.sendVerificationEmail({
+      userId,
+      accessToken,
+    })
+
+    const checkThatErrorDuringConfirmEmailSending =
+      resultOfSendConfirmEmail.error && resultOfSendConfirmEmail.message
+
+    if (checkThatErrorDuringConfirmEmailSending) {
+      this.setState((prevState) => ({
+        ...prevState,
+        confirmEmailSend: {
+          status: resultOfSendConfirmEmail.error,
+          errorMessage: resultOfSendConfirmEmail.message,
+        },
+      }))
+      // Add notistack here
+      this.showLoginStatus({
+        status: resultOfSendConfirmEmail.error,
+        errorMessage: resultOfSendConfirmEmail.message,
+      })
+
+      return
+    }
+
+    this.setState({
+      confirmEmailSend: {
+        status: 'success',
+        errorMessage: '',
+      },
+    })
+    // Add notistack here
+    this.showLoginStatus({
+      status: 'success',
+      errorMessage: '',
+    })
+  }
+
+  sendConfirmEmailAgaingFakeHandler = async ({
+    userId,
+    accessToken,
+  }: {
+    userId: string
+    accessToken: string
+  }) => {
+    await sleep(randomInteger(300, 1400))
+
+    this.setState({
+      confirmEmailSend: {
+        status: 'success',
+        errorMessage: '',
+      },
+    })
+    // Add notistack here
+    this.showLoginStatus({
+      status: 'success',
+      errorMessage: '',
+    })
+  }
+
   render() {
-    const { forWithdrawal, userEmailHosting = '', onLogout } = this.props
+    const {
+      forWithdrawal,
+      userEmailHosting = '',
+      onLogout,
+      userId = '',
+      accessToken = '',
+    } = this.props
     const {
       currentStep,
       signIn,
@@ -603,7 +677,12 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         {currentStep === 'confirmEmail' && (
           <ConfirmEmail
             onLogout={onLogout}
+            sendConfirmEmailAgaingHandler={
+              this.sendConfirmEmailAgaingFakeHandler
+            }
             userEmailHosting={userEmailHosting}
+            userId={userId}
+            accessToken={accessToken}
           />
         )}
       </>
