@@ -129,6 +129,11 @@ export const SubmitButtonContainerCss = css`
   bottom: -2.5rem;
 `
 
+export const SendVerificationEmailTextContainerCss = css`
+  position: absolute;
+  bottom: -6.5rem;
+`
+
 export const LoginLinkCss = css`
   display: block;
   background: #165be0;
@@ -262,6 +267,12 @@ export const SubmitButtonContainer = styled(({ ...props }) => (
   <Grid {...props} />
 ))`
   ${SubmitButtonContainerCss}
+`
+
+export const SendVerificationEmailTextContainer = styled(({ ...props }) => (
+  <Grid {...props} />
+))`
+  ${SendVerificationEmailTextContainerCss}
 `
 
 export const LoginHeadingBox = styled(({ ...props }) => <Grid {...props} />)`
