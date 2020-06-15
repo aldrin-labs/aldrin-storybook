@@ -58,12 +58,27 @@ export type AssociateMfaErrorType = {
 }
 
 export type ChangePasswordSuccessReponseType = {
-  status: 'success'
+  status: 'success' | string
 }
 
 export type ChangePasswordErrorResponseType = {
+  status: 'error' | string
   error: 'network_error' | string
   error_description: string
+}
+
+export type SendVerificationEmailErrorResonseType = {
+  statusCode?: number | 503
+  errorCode?: string | 'insufficient_scope'
+  error: 'Forbidden' | string
+  message: 'Insufficient scope, expected any of: update:users' | string
+}
+
+export type SendVerificationEmailSuccessResonseType = {
+  status: 'completed' | string
+  type: 'verification_email' | string
+  created_at: '' | string
+  id: 'job_0000000000000001' | string
 }
 
 export default class Auth {
@@ -95,7 +110,7 @@ export default class Auth {
         },
         async (err: Auth0Error | null, result) => {
           if (err) {
-            console.log('err register', err);
+            console.log('err register', err)
 
             resolve({
               status: 'error',
@@ -339,9 +354,12 @@ export default class Auth {
 
       result = {
         status: 'success',
+        error: '',
+        error_description: '',
       }
     } catch (e) {
       result = {
+        status: 'error',
         error: 'network_error',
         error_description: e.message,
       }
@@ -354,8 +372,8 @@ export default class Auth {
     userId,
     accessToken,
   }: {
-    userId: string,
-    accessToken: string,
+    userId: string
+    accessToken: string
   }): Promise<EnableMfaSuccessType & EnableMfaErrorType> => {
     let result
 
@@ -364,8 +382,8 @@ export default class Auth {
         method: 'PATCH', // it's important to have uppercase here
         body: JSON.stringify({
           user_metadata: {
-            mfaEnabled: true
-          }
+            mfaEnabled: true,
+          },
         }),
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
@@ -383,9 +401,45 @@ export default class Auth {
 
     return result
   }
+
+  sendVerificationEmail = async ({
+    userId,
+    accessToken,
+  }: {
+    userId: string
+    accessToken: string
+  }): Promise<
+    SendVerificationEmailSuccessResonseType &
+      SendVerificationEmailErrorResonseType
+  > => {
+    let result
+    try {
+      result = await fetch(
+        `https://ccai.auth0.com/api/v2/jobs/verification-email`,
+        {
+          method: 'post',
+          body: JSON.stringify({
+            userId,
+          }),
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+
+      result = await result.json()
+    } catch (e) {
+      result = {
+        error: 'network_error',
+        message: e.message,
+      }
+    }
+
+    return result
+  }
 }
 
 if (!MASTER_BUILD) {
   window.AuthClass = Auth
 }
-
