@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
@@ -28,6 +29,13 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     showPositionsFromAllAccounts: true,
     showOpenOrdersFromAllAccounts: true,
     showSmartTradesFromAllAccounts: true,
+  }
+
+  handlePairChange = (value) => {
+    const { history, marketType } = this.props
+
+    const chartPageType = marketType === 0 ? 'spot' : 'futures'
+    history.push(`/chart/${chartPageType}/${value}`)
   }
 
   handleTabChange = (tab: string | any) => {
@@ -130,6 +138,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
             addOrderToCanceled: this.addOrderToCanceled,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <StrategiesHistoryTable
@@ -151,6 +160,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             show: tab === 'strategiesHistory',
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <PositionsTable
@@ -186,6 +196,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showCancelResult: this.props.showCancelResult,
             clearCanceledOrders: this.clearCanceledOrders,
             addOrderToCanceled: this.addOrderToCanceled,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <OpenOrdersTable
@@ -216,6 +227,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showCancelResult: this.props.showCancelResult,
             clearCanceledOrders: this.clearCanceledOrders,
             addOrderToCanceled: this.addOrderToCanceled,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <OrderHistoryTable
@@ -235,6 +247,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             show: tab === 'orderHistory',
             handleTabChange: this.handleTabChange,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <TradeHistoryTable
@@ -254,6 +267,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <Funds
@@ -281,6 +295,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 }
 
 export default compose(
+  withRouter,
   withErrorFallback,
   queryRendererHoc({
     query: getAllUserKeys,

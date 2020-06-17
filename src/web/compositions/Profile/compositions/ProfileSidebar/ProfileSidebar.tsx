@@ -1,9 +1,8 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 
 import { IProps } from '@core/containers/Profile/ProfileSidebar/ProfileSidebar.types'
-
 import { handleLogout } from '@core/utils/loginUtils'
-
 import { SidebarContainer } from '@sb/compositions/Profile/Profile.styles'
 
 import {
@@ -28,7 +27,6 @@ const LINKS = [
   { path: '/profile/api', text: 'Api managment' },
   { path: '/profile/telegram', text: 'Telegram' },
   { path: '/profile/referral', text: 'Referral' },
-
 ]
 
 const ProfileSidebar = ({
@@ -72,4 +70,4 @@ const ProfileSidebar = ({
   )
 }
 
-export default ProfileSidebar
+export default withRouter(ProfileSidebar)

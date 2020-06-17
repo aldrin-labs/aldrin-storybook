@@ -34,6 +34,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType,
       keys,
+      handlePairChange,
     } = this.props
 
     const tradeHistoryProcessedData = combineTradeHistoryTable(
@@ -41,7 +42,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       theme,
       arrayOfMarketIds,
       marketType,
-      keys
+      keys,
+      handlePairChange
     )
     this.setState({
       tradeHistoryProcessedData,
@@ -99,7 +101,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType,
-      nextProps.keys
+      nextProps.keys,
+      nextProps.handlePairChange
     )
     this.setState({
       tradeHistoryProcessedData,

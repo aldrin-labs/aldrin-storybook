@@ -36,18 +36,21 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const { getOpenOrderHistoryQuery, addOrderToOrderbookTree } = this.props
     const { getOpenOrderHistoryQuery: prevOpenOrderHistoryQuery } = prevProps
 
-    const { getOpenOrderHistory = [] } = getOpenOrderHistoryQuery || {
-      getOpenOrderHistory: [],
+    const {
+      getOpenOrderHistory = { orders: [], count: 0 },
+    } = getOpenOrderHistoryQuery || {
+      getOpenOrderHistory: { orders: [], count: 0 },
     }
 
     const {
-      getOpenOrderHistory: prevOpenOrderHistory = [],
+      getOpenOrderHistory: prevOpenOrderHistory = { orders: [], count: 0 },
     } = prevOpenOrderHistoryQuery || {
-      getOpenOrderHistory: [],
+      getOpenOrderHistory: { orders: [], count: 0 },
     }
 
-    const isNewOrder = getOpenOrderHistory.length > prevOpenOrderHistory.length
-    const newCachedOrder = getOpenOrderHistory.find(
+    const isNewOrder =
+      getOpenOrderHistory.orders.length > prevOpenOrderHistory.orders.length
+    const newCachedOrder = getOpenOrderHistory.orders.find(
       (order) => order.marketId === '0'
     )
 
@@ -83,8 +86,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     } = this.props
 
     const { mode } = this.state
-    const { getOpenOrderHistory = [] } = getOpenOrderHistoryQuery || {
-      getOpenOrderHistory: [],
+    const {
+      getOpenOrderHistory = { orders: [], count: 0 },
+    } = getOpenOrderHistoryQuery || {
+      getOpenOrderHistory: { orders: [], count: 0 },
     }
     const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
 

@@ -120,10 +120,18 @@ export const InputContainerCss = css`
   ${LoginTextContainerCss}
   width: 100%;
 `
+export const ConfirmEmailContainerCss = css`
+  padding: 3rem 0;
+`
 
 export const SubmitButtonContainerCss = css`
   position: absolute;
   bottom: -2.5rem;
+`
+
+export const SendVerificationEmailTextContainerCss = css`
+  position: absolute;
+  bottom: -6.5rem;
 `
 
 export const LoginLinkCss = css`
@@ -261,6 +269,12 @@ export const SubmitButtonContainer = styled(({ ...props }) => (
   ${SubmitButtonContainerCss}
 `
 
+export const SendVerificationEmailTextContainer = styled(({ ...props }) => (
+  <Grid {...props} />
+))`
+  ${SendVerificationEmailTextContainerCss}
+`
+
 export const LoginHeadingBox = styled(({ ...props }) => <Grid {...props} />)`
   ${LoginHeadingBoxCss}
 `
@@ -384,4 +398,10 @@ export const DialogTitleText = styled(({ bold, ...props }) => (
   <Typography {...props} />
 ))`
   ${DialogTitleTextCss}
+`
+
+export const ConfirmEmailContainer = styled(({ bold, ...props }) => (
+  <Typography {...props} />
+))`
+  ${ConfirmEmailContainerCss}
 `

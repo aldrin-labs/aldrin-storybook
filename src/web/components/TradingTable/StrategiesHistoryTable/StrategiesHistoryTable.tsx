@@ -38,13 +38,15 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       theme,
       marketType,
       keys,
+      handlePairChange,
     } = this.props
 
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
       getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       theme,
       marketType,
-      keys
+      keys,
+      handlePairChange
     )
 
     this.setState({
@@ -100,7 +102,8 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       nextProps.getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       nextProps.theme,
       nextProps.marketType,
-      nextProps.keys
+      nextProps.keys,
+      nextProps.handlePairChange
     )
 
     this.setState({

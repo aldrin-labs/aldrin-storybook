@@ -1,19 +1,16 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
-import { withSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack'
 
 import { orderError } from '@core/utils/errorsConfig'
 import { DefaultView } from './DefaultView'
 
-class OrderStatusWrapper extends React.PureComponent<{
-  enqueueSnackbar: (
-    message: string,
-    variant: { action?: any; variant: string }
-  ) => void
-}> {
-  showOrderResult = (result, cancelOrder, marketType) => {
+const OrderStatusWrapper = (props) => {
+  const { enqueueSnackbar } = useSnackbar()
+
+  const showOrderResult = (result, cancelOrder, marketType) => {
     if (result.status === 'success' && result.orderId && result.message) {
-      this.props.enqueueSnackbar(result.message, {
+      enqueueSnackbar(result.message, {
         variant: 'success',
         action: (
           <>
@@ -29,66 +26,83 @@ class OrderStatusWrapper extends React.PureComponent<{
         ),
       })
     } else if (result.status === 'success' || !result.message) {
-      this.props.enqueueSnackbar(orderError, { variant: 'error' })
+      enqueueSnackbar(orderError, { variant: 'error' })
     } else {
-      this.props.enqueueSnackbar(result.message, { variant: 'error' })
+      enqueueSnackbar(result.message, { variant: 'error' })
     }
   }
 
-  showFuturesTransfer = (result) => {
+  const showFuturesTransfer = (result) => {
     if (result.status === 'OK' && result.data && result.data.tranId) {
-      this.props.enqueueSnackbar('Funds transfered!', {
+      enqueueSnackbar('Funds transfered!', {
         variant: 'success',
         // action: <CloseButton />,
       })
     } else {
-      this.props.enqueueSnackbar(
-        'Something went wrong during transfering funds',
-        { variant: 'error' }
-      )
+      enqueueSnackbar('Something went wrong during transfering funds', {
+        variant: 'error',
+      })
     }
   }
 
-  showCancelResult = (result) => {
+  const showCancelResult = (result) => {
     if (result.status === 'success' && result.message) {
-      this.props.enqueueSnackbar(result.message, {
+      enqueueSnackbar(result.message, {
         variant: 'success',
         // action: <CloseButton />,
       })
     } else if (result.status === 'success' || !result.message) {
-      this.props.enqueueSnackbar(orderError, { variant: 'error' })
+      enqueueSnackbar(orderError, { variant: 'error' })
     } else {
-      this.props.enqueueSnackbar(result.message, { variant: 'error' })
+      enqueueSnackbar(result.message, { variant: 'error' })
     }
   }
 
-  showChangePositionModeResult = (result, target = 'Position mode') => {
+  const showChangePositionModeResult = (result, target = 'Position mode') => {
     if (result.errors) {
-      this.props.enqueueSnackbar('Something went wrong', { variant: 'error' })
+      enqueueSnackbar('Something went wrong', { variant: 'error' })
       return
     }
 
     if (result.status === 'OK') {
-      this.props.enqueueSnackbar(`${target} changed successfully`, {
+      enqueueSnackbar(`${target} changed successfully`, {
         variant: 'success',
       })
     } else {
-      this.props.enqueueSnackbar(result.binanceMessage, { variant: 'error' })
+      enqueueSnackbar(result.binanceMessage, { variant: 'error' })
     }
   }
 
-  render() {
-    console.log('status wrapper rerender')
-    return (
-      <DefaultView
-        showOrderResult={this.showOrderResult}
-        showCancelResult={this.showCancelResult}
-        showFuturesTransfer={this.showFuturesTransfer}
-        showChangePositionModeResult={this.showChangePositionModeResult}
-        {...this.props}
-      />
-    )
-  }
+  console.log('status wrapper rerender')
+  return (
+    <DefaultView
+      showOrderResult={showOrderResult}
+      showCancelResult={showCancelResult}
+      showFuturesTransfer={showFuturesTransfer}
+      showChangePositionModeResult={showChangePositionModeResult}
+      {...props}
+    />
+  )
 }
 
-export default withSnackbar(OrderStatusWrapper)
+export default React.memo(OrderStatusWrapper, (prev, next) => {
+  console.log(
+    'st conditioon',
+    prev.marketType === next.marketType &&
+      prev.selectedKey.keyId === next.selectedKey.keyId &&
+      prev.currencyPair === next.currencyPair &&
+      prev.terminalViewMode === next.terminalViewMode &&
+      prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
+      prev.isPairDataLoading === next.isPairDataLoading &&
+      prev.chartPagePopup === next.chartPagePopup
+  )
+  return (
+    prev.marketType === next.marketType &&
+    prev.selectedKey.keyId === next.selectedKey.keyId &&
+    prev.currencyPair === next.currencyPair &&
+    prev.terminalViewMode === next.terminalViewMode &&
+    prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
+    prev.isPairDataLoading === next.isPairDataLoading &&
+    prev.chartPagePopup === next.chartPagePopup
+  )
+})
