@@ -200,7 +200,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               enter: 0,
               exit: 3500,
             }}
-            in={isOnboardingEnabled}
+            in={isOnboardingEnabled && !data.error}
             mountOnEnter={true}
             unmountOnExit={true}
           >
