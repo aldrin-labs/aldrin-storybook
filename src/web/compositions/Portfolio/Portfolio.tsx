@@ -59,16 +59,19 @@ export const getOnboardingStatus = ({
   keys,
   myPortfolios,
   onboarding,
+  errorsArray = [],
 }: {
   keys: Key[]
   myPortfolios: any[]
   onboarding: {
     instructions: boolean
   } | null
+  errorsArray: any[]
 }) => {
   const { instructions } = onboarding || { instructions: false }
+  const isErrorsInQueryResponseExists = !!errorsArray.length
 
-  if (keys.length > 0 || myPortfolios.length > 1) {
+  if (keys.length > 0 || myPortfolios.length > 1 || isErrorsInQueryResponseExists) {
     return false
   }
 
@@ -161,6 +164,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       keys,
       myPortfolios: data.myPortfolios,
       onboarding,
+      errorsArray: data.errors,
     })
 
     return (
