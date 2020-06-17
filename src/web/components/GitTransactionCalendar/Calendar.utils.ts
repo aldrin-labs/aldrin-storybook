@@ -5,7 +5,6 @@ import dayOfYear from 'dayjs/plugin/dayOfYear'
 dayjs.extend(isLeapYear)
 dayjs.extend(dayOfYear)
 
-
 const getSquareClassName = (
   count: number,
   maxTransactionsCount: number,
@@ -42,8 +41,10 @@ export const getCalendarData = (
   let actions
 
   if (
-    (isSPOTCurrently && !portfolioActionsByDay) ||
-    (!isSPOTCurrently && !futuresActionsByDay)
+    (isSPOTCurrently &&
+      (!portfolioActionsByDay || !portfolioActionsByDay.actionsByDay)) ||
+    (!isSPOTCurrently &&
+      (!futuresActionsByDay || !futuresActionsByDay.actionsByDay))
   ) {
     actions = []
   } else {
@@ -108,8 +109,10 @@ export const getMaxTransactions = (portfolio, isSPOTCurrently = true) => {
   const { portfolioActionsByDay, futuresActionsByDay } = portfolio
 
   if (
-    (isSPOTCurrently && !portfolioActionsByDay) ||
-    (!isSPOTCurrently && !futuresActionsByDay)
+    (isSPOTCurrently &&
+      (!portfolioActionsByDay || !portfolioActionsByDay.actionsByDay)) ||
+    (!isSPOTCurrently &&
+      (!futuresActionsByDay || !futuresActionsByDay.actionsByDay))
   )
     return 0
 
