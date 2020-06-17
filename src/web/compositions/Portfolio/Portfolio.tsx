@@ -123,6 +123,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       getTooltipSettingsQuery,
     } = this.props
 
+    console.log('data', data)
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
 
