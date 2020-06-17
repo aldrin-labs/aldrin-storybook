@@ -28,6 +28,7 @@ const Onboarding = ({
 }: IProps) => {
   const [currentStep, setCurrentStep] = useState<ICurrentStep>('start')
 
+  console.log('Onboarding')
   const completeOnboarding = async () => {
     await updateTooltipSettings({
       variables: {
@@ -49,7 +50,7 @@ const Onboarding = ({
 
   return (
     <>
-    {/* This is very important <div> below, even it doesn't look like that, do not erase it because it's create magic for us */}
+      {/* This is very important <div> below, even it doesn't look like that, do not erase it because it's create magic for us */}
       <div> </div>
       <PopupStart
         open={currentStep === 'start'}
