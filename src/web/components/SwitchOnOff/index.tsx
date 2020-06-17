@@ -1,8 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Mutation } from 'react-apollo'
-import { updateSignal } from '@core/graphql/mutations/signals/updateSignal'
-import { graphql } from 'react-apollo'
 
 const SwitchWrapper = styled.div`
   position: relative;

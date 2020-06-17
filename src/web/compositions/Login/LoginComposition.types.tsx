@@ -8,11 +8,16 @@ export type ILoginStep =
   | 'setupMfa'
   | 'forgotPassword'
   | 'signUp'
+  | 'confirmEmail'
 
 export interface IProps extends withSnackbarProps {
   onLogin: (profile: any, idToken: any, accessToken: string) => Promise<void>
+  onLogout?: () => Promise<void>
   initialStep: 'signIn' | 'signUp'
-  forWithdrawal?: boolean 
+  forWithdrawal?: boolean
+  userEmailHosting?: string
+  userId?: string
+  accessToken?: string
 }
 
 export interface IState {
@@ -50,6 +55,10 @@ export interface IState {
     errorMessage: string
   }
   signUp: {
+    status: 'error' | 'success' | string
+    errorMessage: string
+  }
+  confirmEmailSend: {
     status: 'error' | 'success' | string
     errorMessage: string
   }

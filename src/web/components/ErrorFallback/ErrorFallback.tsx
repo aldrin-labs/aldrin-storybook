@@ -57,14 +57,14 @@ export const ErrorFallback = (props: {
   refetch?: Function
 }) => {
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    try {
-      props.refetch && props.refetch()
-    } catch(e) {
-      console.log('refetch error', e)
-    }
-  })
+  //   try {
+  //     props.refetch && props.refetch()
+  //   } catch(e) {
+  //     console.log('refetch error', e)
+  //   }
+  // })
 
   return (
     <Error style={{ margin: 'auto' }} elevation={10}>
