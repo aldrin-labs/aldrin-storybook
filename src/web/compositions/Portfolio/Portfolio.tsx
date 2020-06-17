@@ -71,7 +71,11 @@ export const getOnboardingStatus = ({
   const { instructions } = onboarding || { instructions: false }
   const isErrorsInQueryResponseExists = !!errorsArray.length
 
-  if (keys.length > 0 || myPortfolios.length > 1 || isErrorsInQueryResponseExists) {
+  if (
+    keys.length > 0 ||
+    myPortfolios.length > 1 ||
+    isErrorsInQueryResponseExists
+  ) {
     return false
   }
 
@@ -167,6 +171,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       onboarding,
       errorsArray: data.errors,
     })
+
+    console.log('isOnboardingEnabled', isOnboardingEnabled)
 
     return (
       <>
