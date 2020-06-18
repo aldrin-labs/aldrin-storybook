@@ -807,7 +807,7 @@ export const combineActiveTradesTable = ({
             <SubColumnValue>
               <div style={{ color: '#7284A0' }}>trailing</div>{' '}
               <div>
-                <span style={{ color: '#7284A0' }}>from</span> {price}
+                <span style={{ color: '#7284A0' }}>from</span> {activatePrice}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
