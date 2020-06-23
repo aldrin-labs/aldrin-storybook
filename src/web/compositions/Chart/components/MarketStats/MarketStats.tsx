@@ -201,8 +201,9 @@ class MarketStats extends React.PureComponent<IProps> {
       fundingRate: 0,
     }
 
-    if (fundingTime == 0) {
+    if (fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) {
       setTimeout(() => getFundingRateQueryRefetch(), 1000)
+      setTimeout(() => this.setState((prev) => ({ key: prev.key + 1 })), 2000)
     }
 
     const sign24hChange = +priceChangePercent > 0 ? `+` : ``
