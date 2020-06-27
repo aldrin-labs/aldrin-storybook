@@ -49,6 +49,11 @@ const Referral = React.lazy(() =>
   import(/* webpackPrefetch: true, webpackChunkName: "referral" */ '@sb/compositions/Profile/compositions/Referral/Referral')
 )
 
+const DisableAccount = React.lazy(() =>
+  import(/* webpackPrefetch: true, webpackChunkName: "disableAccount" */ '@sb/compositions/Profile/compositions/DisableAccount/DisableAccount')
+)
+
+
 const ProfileRouter = () => {
   return (
     <MainContainer>
@@ -113,6 +118,11 @@ const ProfileRouter = () => {
             exact
             path="/profile/referral"
             render={(...rest) => <Referral />}
+          />
+          <Route
+            exact
+            path="/profile/disableaccount"
+            render={(...rest) => <DisableAccount />}
           />
         </Switch>
       </Suspense>
