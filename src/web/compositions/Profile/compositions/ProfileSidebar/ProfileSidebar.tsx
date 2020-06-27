@@ -20,6 +20,7 @@ const LINKS = [
   { path: '/profile/accounts', text: 'Accounts' },
   { path: '/profile/settings', text: 'Settings' },
   // { path: '/profile/billing', text: 'Billing' },
+  { path: '/profile/disableaccount', text: 'Disable Account' },
   // { path: '/profile/notifications', text: 'Notifications' },
   { path: '/profile/deposit', text: 'Deposit' },
   { path: '/profile/withdrawal', text: 'Withdrawal' },
