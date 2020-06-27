@@ -134,7 +134,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       showOrderResult,
       setPositionWasClosedMutation,
       handlePairChange,
+      addOrderToCanceled
     } = this.props
+
+    console.log('variables.keyParams.type', variables.keyParams.type)
+    if (variables.keyParams.type === 'market') {
+      addOrderToCanceled(getActivePositionsQuery.getActivePositions.filter(position => position.symbol === variables.keyParams.symbol)._id)
+    }
 
     const positionsData = combinePositionsTable({
       data: getActivePositionsQuery.getActivePositions,

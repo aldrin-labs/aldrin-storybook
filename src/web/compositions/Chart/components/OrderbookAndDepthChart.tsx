@@ -171,6 +171,7 @@ class OrderbookAndDepthChart extends React.Component {
                 updatedData: updatedAggregatedData,
                 ordersData,
                 aggregation,
+                defaultAggregation: getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value,
                 originalOrderbookTree: { asks, bids },
                 isAggregatedData: true,
                 sizeDigits,
@@ -182,6 +183,7 @@ class OrderbookAndDepthChart extends React.Component {
               ordersData,
               aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
                 .value,
+                defaultAggregation: getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value,
               originalOrderbookTree: { asks, bids },
               isAggregatedData: false,
               sizeDigits,

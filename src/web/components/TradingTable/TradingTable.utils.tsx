@@ -732,7 +732,7 @@ export const combineActiveTradesTable = ({
       }
 
       const pairArr = pair.split('_')
-      const needOpacity = el._id === '-1'
+      const needOpacity = false
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
       let currentPrice = (
         prices.find(
@@ -2270,6 +2270,13 @@ export const updateOpenOrderHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
+    const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
+    (el: OrderType) =>
+      el.info &&
+      String(el.info.orderId) ===
+        String(subscriptionData.data.listenOpenOrders.info.orderId)
+  )
+
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.orders.findIndex(
     (el: OrderType) =>
       el.info &&
@@ -2293,7 +2300,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
       result = {
         getOpenOrderHistory: {
           ...prev.getOpenOrderHistory,
-          // count: prev.getOpenOrderHistory.count - 1,
+          count: openOrderHasTheSameOrder.status === 'open' ? prev.getOpenOrderHistory.count - 1 : prev.getOpenOrderHistory.count,
         },
       }
     }
@@ -2303,7 +2310,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
         { ...subscriptionData.data.listenOpenOrders },
         ...prev.getOpenOrderHistory.orders,
       ],
-      // count: prev.getOpenOrderHistory.count + 1,
+      count: prev.getOpenOrderHistory.count + 1,
       __typename: 'getOpenOrderHistory',
     }
 
