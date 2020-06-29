@@ -2,6 +2,7 @@ import React, { Component, ChangeEvent } from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 
+import { getLoginStatus } from '@core/utils/auth.utils'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
@@ -185,6 +186,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 }
 
 const APIWrapper = (props) => {
+  const authenticated = getLoginStatus()
+
   return (
     <QueryRenderer
       component={OrderBookTableContainer}
@@ -196,6 +199,7 @@ const APIWrapper = (props) => {
       }}
       withOutSpinner={true}
       withTableLoader={false}
+      skip={!authenticated}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
