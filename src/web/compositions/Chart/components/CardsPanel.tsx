@@ -1,6 +1,7 @@
 import React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
@@ -11,6 +12,7 @@ import { TooltipCustom } from '@sb/components/index'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
+import { getLoginStatus } from '@core/utils/auth.utils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 
 const selectStyles = {
@@ -99,6 +101,12 @@ export const CardsPanel = ({
     showChangePositionModeResult(result, 'Position mode')
   }
 
+  const history = useHistory()
+  const location = useLocation()
+  const { pathname } = location
+
+  const authenticated = getLoginStatus()
+
   return (
     <>
       <PanelWrapper>
@@ -141,7 +149,10 @@ export const CardsPanel = ({
         {view === 'default' && (
           <KeySelector
             exchange={activeExchange}
-            selectStyles={{ ...selectStyles, width: '15%' }}
+            selectStyles={{
+              ...selectStyles,
+              width: marketType === 1 ? '11%' : '15%',
+            }}
             isAccountSelect={true}
           />
         )}
@@ -163,6 +174,12 @@ export const CardsPanel = ({
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
           id="smartTradingButton"
           onClick={() => {
+            // for guest mode
+            if (!authenticated) {
+              history.push(`/login?callbackURL=${pathname}`)
+              return
+            }
+
             updateTerminalViewMode(
               isDefaultTerminalViewMode ? 'smartOrderMode' : 'default'
             )
@@ -194,6 +211,11 @@ export const CardsPanel = ({
               }}
               containerStyle={{ height: '100%', margin: 0 }}
               changeHalf={() => {
+                // for guest mode
+                if (!authenticated) {
+                  return
+                }
+
                 changePositionModeWithStatus(hedgeMode ? false : true)
               }}
             />
