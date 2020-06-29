@@ -640,7 +640,9 @@ class SimpleTabs extends React.Component {
             )}
           </TerminalMainGrid>
         </CustomCard>
-        {chartPagePopup && <FirstVisitPopup closeChartPagePopup={closeChartPagePopup} />}
+        {chartPagePopup && (
+          <FirstVisitPopup closeChartPagePopup={closeChartPagePopup} />
+        )}
       </Grid>
     )
   }
