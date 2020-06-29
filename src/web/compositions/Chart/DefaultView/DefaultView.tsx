@@ -11,6 +11,7 @@ import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
 import CardsPanel from '../components/CardsPanel'
+import { GuestMode } from '../components/GuestMode/GuestMode'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -73,6 +74,7 @@ export const DefaultViewComponent = (
     minFuturesStep,
     chartPagePopup,
     closeChartPagePopup,
+    authenticated,
   } = props
 
   if (!currencyPair) {
@@ -209,7 +211,9 @@ export const DefaultViewComponent = (
               </Grid>
             </Grid>
           </TradingTerminalContainer>
-          {isDefaultTerminalViewMode && (
+          {!authenticated && <GuestMode />}
+
+          {authenticated && isDefaultTerminalViewMode && (
             <TradingTabelContainer
               item
               xs={marketType === 0 ? 7 : 6}
@@ -229,7 +233,7 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {isDefaultTerminalViewMode && marketType === 1 && (
+          {authenticated && isDefaultTerminalViewMode && marketType === 1 && (
             <BalancesContainer
               item
               xs={1}
@@ -245,28 +249,30 @@ export const DefaultViewComponent = (
             </BalancesContainer>
           )}
 
-          <TerminalContainer
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-          >
-            <TradingComponent
-              selectedKey={selectedKey}
-              activeExchange={activeExchange}
-              pair={baseQuoteArr}
-              chartPagePopup={chartPagePopup}
-              closeChartPagePopup={closeChartPagePopup}
-              quantityPrecision={quantityPrecision}
-              pricePrecision={pricePrecision}
-              minSpotNotional={minSpotNotional}
-              minFuturesStep={minFuturesStep}
-              priceFromOrderbook={priceFromOrderbook}
-              marketType={marketType}
-              showOrderResult={showOrderResult}
-              showCancelResult={showCancelResult}
-              showChangePositionModeResult={showChangePositionModeResult}
+          {authenticated && (
+            <TerminalContainer
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-              updateTerminalViewMode={updateTerminalViewMode}
-            />
-          </TerminalContainer>
+            >
+              <TradingComponent
+                selectedKey={selectedKey}
+                activeExchange={activeExchange}
+                pair={baseQuoteArr}
+                chartPagePopup={chartPagePopup}
+                closeChartPagePopup={closeChartPagePopup}
+                quantityPrecision={quantityPrecision}
+                pricePrecision={pricePrecision}
+                minSpotNotional={minSpotNotional}
+                minFuturesStep={minFuturesStep}
+                priceFromOrderbook={priceFromOrderbook}
+                marketType={marketType}
+                showOrderResult={showOrderResult}
+                showCancelResult={showCancelResult}
+                showChangePositionModeResult={showChangePositionModeResult}
+                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+                updateTerminalViewMode={updateTerminalViewMode}
+              />
+            </TerminalContainer>
+          )}
         </Grid>
       </Grid>
     </Container>

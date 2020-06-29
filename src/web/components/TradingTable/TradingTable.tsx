@@ -2,6 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import withAuth from '@core/hoc/withAuth'
 
 import { Key } from '@core/types/ChartTypes'
 import { IProps, IState } from './TradingTable.types'
@@ -295,6 +296,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 }
 
 export default compose(
+  withAuth,
   withRouter,
   withErrorFallback,
   queryRendererHoc({
