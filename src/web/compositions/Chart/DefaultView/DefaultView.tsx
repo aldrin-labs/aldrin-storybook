@@ -43,6 +43,7 @@ import {
   ChartGridContainer,
   CustomCard,
   BalancesContainer,
+  TopChartsContainer,
 } from '../Chart.styles'
 
 // fix props type
@@ -188,122 +189,126 @@ export const DefaultViewComponent = (
             padding: '.4rem .4rem 0 0',
           }}
         >
-          <ChartsContainer
+          <TopChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            hideDepthChart={hideDepthChart}
-            hideOrderbook={hideOrderbook}
-            hideTradeHistory={hideTradeHistory}
           >
-            <CustomCard id="tradingViewChart">
-              <SingleChart
-                name=""
-                additionalUrl={`/?symbol=${base}/${quote}_${String(
-                  marketType
-                )}&user_id=${id}&theme=${themeMode}`}
-              />
-            </CustomCard>
+            <ChartsContainer
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              hideDepthChart={hideDepthChart}
+              hideOrderbook={hideOrderbook}
+              hideTradeHistory={hideTradeHistory}
+            >
+              <CustomCard id="tradingViewChart">
+                <SingleChart
+                  name=""
+                  additionalUrl={`/?symbol=${base}/${quote}_${String(
+                    marketType
+                  )}&user_id=${id}&theme=${themeMode}`}
+                />
+              </CustomCard>
 
-            {!hideTradeHistory && (
-              <HideArrow key="hide" onClick={hideLayoutHandler} />
-            )}
-            {(hideDepthChart || hideTradeHistory || hideOrderbook) && (
-              <HideArrow
-                key="show"
-                revertArrow={true}
-                onClick={showLayoutHandler}
-                right="-11px"
-              />
-            )}
-          </ChartsContainer>
-          <TradingTerminalContainer
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            hideDepthChart={hideDepthChart}
-            hideOrderbook={hideOrderbook}
-            hideTradeHistory={hideTradeHistory}
-          >
-            <Grid item container style={{ height: '100%' }}>
-              <Grid
-                item
-                container
-                xs={7}
-                style={{
-                  height: '100%',
-                  flexBasis: hideOrderbook
-                    ? '0%'
-                    : hideDepthChart
-                    ? '50%'
-                    : '65%',
-                  maxWidth: hideOrderbook
-                    ? '0%'
-                    : hideDepthChart
-                    ? '50%'
-                    : '65%',
-                }}
-              >
-                {!hideOrderbook && (
-                  <OrderbookAndDepthChart
-                    {...{
-                      symbol: currencyPair,
-                      pair: currencyPair,
-                      exchange,
-                      quote,
-                      isPairDataLoading,
-                      minPriceDigits,
-                      arrayOfMarketIds,
-                      updateTerminalPriceFromOrderbook,
-                      activeExchange,
-                      selectedKey,
-                      showTableOnMobile,
-                      changeTable,
-                      chartProps,
-                      marketType,
-                      sizeDigits,
-                      hideDepthChart,
-                      hideOrderbook,
-                    }}
-                  />
-                )}
+              {!hideTradeHistory && (
+                <HideArrow key="hide" onClick={hideLayoutHandler} />
+              )}
+              {(hideDepthChart || hideTradeHistory || hideOrderbook) && (
+                <HideArrow
+                  key="show"
+                  revertArrow={true}
+                  onClick={showLayoutHandler}
+                  right="-11px"
+                />
+              )}
+            </ChartsContainer>
+            <TradingTerminalContainer
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              hideDepthChart={hideDepthChart}
+              hideOrderbook={hideOrderbook}
+              hideTradeHistory={hideTradeHistory}
+            >
+              <Grid item container style={{ height: '100%' }}>
+                <Grid
+                  item
+                  container
+                  xs={7}
+                  style={{
+                    height: '100%',
+                    flexBasis: hideOrderbook
+                      ? '0%'
+                      : hideDepthChart
+                      ? '50%'
+                      : '65%',
+                    maxWidth: hideOrderbook
+                      ? '0%'
+                      : hideDepthChart
+                      ? '50%'
+                      : '65%',
+                  }}
+                >
+                  {!hideOrderbook && (
+                    <OrderbookAndDepthChart
+                      {...{
+                        symbol: currencyPair,
+                        pair: currencyPair,
+                        exchange,
+                        quote,
+                        isPairDataLoading,
+                        minPriceDigits,
+                        arrayOfMarketIds,
+                        updateTerminalPriceFromOrderbook,
+                        activeExchange,
+                        selectedKey,
+                        showTableOnMobile,
+                        changeTable,
+                        chartProps,
+                        marketType,
+                        sizeDigits,
+                        hideDepthChart,
+                        hideOrderbook,
+                      }}
+                    />
+                  )}
+                </Grid>
+                <Grid
+                  item
+                  xs={5}
+                  style={{
+                    height: '100%',
+                    padding: '0 0 .4rem .4rem',
+                    flexBasis: hideOrderbook
+                      ? '100%'
+                      : hideDepthChart
+                      ? '50%'
+                      : '35%',
+                    maxWidth: hideOrderbook
+                      ? '100%'
+                      : hideDepthChart
+                      ? '50%'
+                      : '35%',
+                  }}
+                >
+                  {!hideTradeHistory && (
+                    <TradeHistory
+                      {...{
+                        symbol: currencyPair,
+                        pair: currencyPair,
+                        exchange,
+                        quote,
+                        minPriceDigits,
+                        updateTerminalPriceFromOrderbook,
+                        marketType,
+                        isPairDataLoading,
+                        activeExchange,
+                        showTableOnMobile,
+                        changeTable,
+                        chartProps,
+                        sizeDigits,
+                      }}
+                    />
+                  )}
+                </Grid>
               </Grid>
-              <Grid
-                item
-                xs={5}
-                style={{
-                  height: '100%',
-                  padding: '0 0 .4rem .4rem',
-                  flexBasis: hideOrderbook
-                    ? '100%'
-                    : hideDepthChart
-                    ? '50%'
-                    : '35%',
-                  maxWidth: hideOrderbook
-                    ? '100%'
-                    : hideDepthChart
-                    ? '50%'
-                    : '35%',
-                }}
-              >
-                {!hideTradeHistory && (
-                  <TradeHistory
-                    {...{
-                      symbol: currencyPair,
-                      pair: currencyPair,
-                      exchange,
-                      quote,
-                      minPriceDigits,
-                      updateTerminalPriceFromOrderbook,
-                      marketType,
-                      isPairDataLoading,
-                      activeExchange,
-                      showTableOnMobile,
-                      changeTable,
-                      chartProps,
-                      sizeDigits,
-                    }}
-                  />
-                )}
-              </Grid>
-            </Grid>
-          </TradingTerminalContainer>
+            </TradingTerminalContainer>
+          </TopChartsContainer>
           {!authenticated && <GuestMode />}
 
           {authenticated && isDefaultTerminalViewMode && (
