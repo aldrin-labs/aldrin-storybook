@@ -347,7 +347,7 @@ export const combinePositionsTable = ({
   let positions: any = []
 
   const processedPositionsData = data
-    .filter((el) => filterPositions({ position: el, pair, canceledPositions }))
+    .filter((el) => filterPositions({ position: el, canceledPositions }))
     .map((el: OrderType, i: number) => {
       const {
         symbol,
@@ -2270,7 +2270,7 @@ export const updateOpenOrderHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-    const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
+  const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
     (el: OrderType) =>
       el.info &&
       String(el.info.orderId) ===
@@ -2300,7 +2300,10 @@ export const updateOpenOrderHistoryQuerryFunction = (
       result = {
         getOpenOrderHistory: {
           ...prev.getOpenOrderHistory,
-          count: openOrderHasTheSameOrder.status === 'open' ? prev.getOpenOrderHistory.count - 1 : prev.getOpenOrderHistory.count,
+          count:
+            openOrderHasTheSameOrder.status === 'open'
+              ? prev.getOpenOrderHistory.count - 1
+              : prev.getOpenOrderHistory.count,
         },
       }
     }

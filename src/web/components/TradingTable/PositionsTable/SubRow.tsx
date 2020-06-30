@@ -63,7 +63,7 @@ const SubRow = ({
             closePosition(true)
             const response = await createOrderWithStatus(
               getVariables('limit', +price),
-              '_'
+              positionId
             )
 
             if (!response) {

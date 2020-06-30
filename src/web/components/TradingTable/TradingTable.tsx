@@ -46,7 +46,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 
   addOrderToCanceled = (orderId: string) => {
     this.setState((prev) => {
-      return { canceledOrders: [...prev.canceledOrders].concat(orderId) }
+      return { canceledOrders: [...prev.canceledOrders].concat([orderId]) }
     })
   }
 
