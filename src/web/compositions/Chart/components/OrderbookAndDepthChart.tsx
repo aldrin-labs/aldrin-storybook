@@ -384,6 +384,7 @@ class OrderbookAndDepthChart extends React.Component {
       minPriceDigits,
       arrayOfMarketIds,
       updateTerminalPriceFromOrderbook,
+      hideDepthChart,
     } = this.props
 
     const { asks, bids, aggregation, aggregatedData } = this.state
@@ -399,29 +400,31 @@ class OrderbookAndDepthChart extends React.Component {
         id="depthChartAndOB"
         style={{ display: 'flex', width: '100%', height: '100%' }}
       >
-        <Grid
-          item
-          xs={5}
-          style={{
-            height: '100%',
-            padding: '0 .4rem .4rem 0',
-          }}
-        >
-          <DepthChart
-            chartProps={chartProps}
-            changeTable={changeTable}
-            exchange={exchange}
-            symbol={symbol}
-            data={{
-              asks,
-              bids,
+        {!hideDepthChart && (
+          <Grid
+            item
+            xs={5}
+            style={{
+              height: '100%',
+              padding: '0 .4rem .4rem 0',
             }}
-          />
-        </Grid>
+          >
+            <DepthChart
+              chartProps={chartProps}
+              changeTable={changeTable}
+              exchange={exchange}
+              symbol={symbol}
+              data={{
+                asks,
+                bids,
+              }}
+            />
+          </Grid>
+        )}
 
         <Grid
           item
-          xs={7}
+          xs={hideDepthChart ? 12 : 7}
           id="orderbook"
           style={{ height: '100%', padding: '0 .4rem .4rem .4rem' }}
         >
@@ -462,6 +465,7 @@ export const APIWrapper = ({
   symbol,
   sizeDigits,
   quote,
+  hideDepthChart,
 }) => {
   return (
     <QueryRenderer
@@ -492,6 +496,7 @@ export const APIWrapper = ({
         updateTerminalPriceFromOrderbook,
         isPairDataLoading,
         ...chartProps,
+        hideDepthChart,
       }}
       isDataLoading={isPairDataLoading}
       withoutLoading={true}
