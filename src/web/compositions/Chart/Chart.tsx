@@ -18,6 +18,7 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
@@ -27,6 +28,7 @@ import {
 } from '@core/utils/prefetching'
 
 import withAuth from '@core/hoc/withAuth'
+import { getLoginStatus } from '@core/utils/auth.utils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
@@ -132,6 +134,7 @@ function ChartPageComponent(props: any) {
     pairPropertiesQuery,
     marketType,
     selectedPair,
+    authenticated,
   } = props
 
   let minPriceDigits
@@ -197,6 +200,7 @@ function ChartPageComponent(props: any) {
         <DefaultView
           id={_id}
           view={view}
+          authenticated={authenticated}
           marketType={marketType}
           currencyPair={selectedPair}
           pricePrecision={pricePrecision}
@@ -247,6 +251,13 @@ function ChartPageComponent(props: any) {
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
   console.log('memo func chart page')
+
+  const isAuthenticatedUser = getLoginStatus()
+
+  if (!isAuthenticatedUser) {
+    return false
+  }
+
   const prevIsPairDataLoading =
     prev.loading ||
     !prev.pairPropertiesQuery.marketByName ||
@@ -288,9 +299,10 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 // TODO: combine all queries to one
 export default compose(
   withErrorFallback,
-  withAuth,
+  withAuthStatus,
+  // withAuth,
   queryRendererHoc({
-    // skip: true,
+    skip: (props: any) => !props.authenticated,
     query: getChartData,
     name: 'getChartDataQuery',
     // fetchPolicy: 'cache-and-network',
@@ -300,7 +312,7 @@ export default compose(
     },
   }),
   queryRendererHoc({
-    // skip: true,
+    skip: (props: any) => !props.authenticated,
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
     fetchPolicy: 'cache-first',

@@ -96,6 +96,10 @@ const NavBarRaw: SFC<Props> = ({
     page = 'Sign up'
   }
 
+  if (/disableaccount/.test(pathname)) {
+    page = 'Disable Account'
+  }
+
   if (/transactions\/spot/.test(pathname)) {
     page = 'Transactions Spot'
     joyridePage = 'transactionPage'
@@ -389,6 +393,10 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Settings',
                     to: '/profile/settings',
+                  },
+                  {
+                    text: 'Disable Account',
+                    to: '/profile/disableaccount',
                   },
                   {
                     text: 'Deposit',
