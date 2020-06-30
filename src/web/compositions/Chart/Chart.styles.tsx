@@ -277,12 +277,29 @@ export const TablesContainer = styled(Grid)`
 `
 
 export const TradingTerminalContainer = styled(
-  ({ isDefaultTerminalViewMode, MASTER_BUILD, ...rest }) => <div {...rest} />
+  ({
+    isDefaultTerminalViewMode,
+    MASTER_BUILD,
+    hideDepthChart,
+    hideOrderbook,
+    hideTradeHistory,
+    ...rest
+  }) => <div {...rest} />
 )`
+  transition: all 0.5s ease;
   position: relative;
-  display: flex;
+  display: ${(props) => (props.hideTradeHistory ? 'none' : 'flex')};
   // 60% - 3%, the half of height cards, will fix in future
-  width: ${(props) => (props.MASTER_BUILD ? '30%' : '45%')};
+  width: ${(props) =>
+    props.MASTER_BUILD
+      ? '30%'
+      : props.hideTradeHistory
+      ? '0%'
+      : props.hideOrderbook
+      ? '17%'
+      : props.hideDepthChart
+      ? '35%'
+      : '45%'};
   height: ${(props) =>
     props.isDefaultTerminalViewMode
       ? 'calc(59% - .8rem)'
@@ -315,12 +332,29 @@ export const TradingTerminalContainer = styled(
 `
 
 export const ChartsContainer = styled(
-  ({ isDefaultTerminalViewMode, MASTER_BUILD, ...rest }) => <div {...rest} />
+  ({
+    isDefaultTerminalViewMode,
+    MASTER_BUILD,
+    hideDepthChart,
+    hideOrderbook,
+    hideTradeHistory,
+    ...rest
+  }) => <div {...rest} />
 )`
+  transition: all 0.5s ease;
   position: relative;
   display: flex;
   // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  width: ${(props) => (props.MASTER_BUILD ? '70%' : '55%')};
+  width: ${(props) =>
+    props.MASTER_BUILD
+      ? '70%'
+      : props.hideTradeHistory
+      ? '100%'
+      : props.hideOrderbook
+      ? '83%'
+      : props.hideDepthChart
+      ? '65%'
+      : '55%'};
   height: ${(props) =>
     props.isDefaultTerminalViewMode
       ? 'calc(59% - .8rem)'
