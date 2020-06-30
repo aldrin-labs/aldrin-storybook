@@ -12,6 +12,7 @@ import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
 import CardsPanel from '../components/CardsPanel'
 import { GuestMode } from '../components/GuestMode/GuestMode'
+import { HideArrow } from '../components/HideArrow/HideArrow'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -75,10 +76,63 @@ export const DefaultViewComponent = (
     chartPagePopup,
     closeChartPagePopup,
     authenticated,
+    layout,
+    changeChartLayoutMutation,
   } = props
 
   if (!currencyPair) {
     return null
+  }
+
+  const { hideDepthChart, hideOrderbook, hideTradeHistory } = layout
+
+  const hideLayoutHandler = async () => {
+    const argObject =
+      hideDepthChart && !hideOrderbook
+        ? {
+            hideDepthChart,
+            hideOrderbook: true,
+            hideTradeHistory,
+          }
+        : hideOrderbook && !hideTradeHistory
+        ? {
+            hideDepthChart,
+            hideOrderbook,
+            hideTradeHistory: true,
+          }
+        : {
+            hideDepthChart: true,
+            hideOrderbook,
+            hideTradeHistory,
+          }
+
+    await changeChartLayoutMutation({
+      variables: { input: { layout: argObject } },
+    })
+  }
+
+  const showLayoutHandler = async () => {
+    const argObject =
+      hideDepthChart && !hideOrderbook && !hideTradeHistory
+        ? {
+            hideDepthChart: false,
+            hideOrderbook,
+            hideTradeHistory,
+          }
+        : hideOrderbook && !hideTradeHistory
+        ? {
+            hideDepthChart,
+            hideOrderbook: false,
+            hideTradeHistory,
+          }
+        : {
+            hideDepthChart,
+            hideOrderbook,
+            hideTradeHistory: false,
+          }
+    await changeChartLayoutMutation({
+      variables: { input: { layout: argObject } },
+    })
   }
 
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
@@ -136,6 +190,9 @@ export const DefaultViewComponent = (
         >
           <ChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            hideDepthChart={hideDepthChart}
+            hideOrderbook={hideOrderbook}
+            hideTradeHistory={hideTradeHistory}
           >
             <CustomCard id="tradingViewChart">
               <SingleChart
@@ -145,9 +202,24 @@ export const DefaultViewComponent = (
                 )}&user_id=${id}&theme=${themeMode}`}
               />
             </CustomCard>
+
+            {!hideTradeHistory && (
+              <HideArrow key="hide" onClick={hideLayoutHandler} />
+            )}
+            {(hideDepthChart || hideTradeHistory || hideOrderbook) && (
+              <HideArrow
+                key="show"
+                revertArrow={true}
+                onClick={showLayoutHandler}
+                right="-11px"
+              />
+            )}
           </ChartsContainer>
           <TradingTerminalContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            hideDepthChart={hideDepthChart}
+            hideOrderbook={hideOrderbook}
+            hideTradeHistory={hideTradeHistory}
           >
             <Grid item container style={{ height: '100%' }}>
               <Grid
@@ -156,30 +228,41 @@ export const DefaultViewComponent = (
                 xs={7}
                 style={{
                   height: '100%',
-
-                  flexBasis: '65%',
-                  maxWidth: '65%',
+                  flexBasis: hideOrderbook
+                    ? '0%'
+                    : hideDepthChart
+                    ? '50%'
+                    : '65%',
+                  maxWidth: hideOrderbook
+                    ? '0%'
+                    : hideDepthChart
+                    ? '50%'
+                    : '65%',
                 }}
               >
-                <OrderbookAndDepthChart
-                  {...{
-                    symbol: currencyPair,
-                    pair: currencyPair,
-                    exchange,
-                    quote,
-                    isPairDataLoading,
-                    minPriceDigits,
-                    arrayOfMarketIds,
-                    updateTerminalPriceFromOrderbook,
-                    activeExchange,
-                    selectedKey,
-                    showTableOnMobile,
-                    changeTable,
-                    chartProps,
-                    marketType,
-                    sizeDigits,
-                  }}
-                />
+                {!hideOrderbook && (
+                  <OrderbookAndDepthChart
+                    {...{
+                      symbol: currencyPair,
+                      pair: currencyPair,
+                      exchange,
+                      quote,
+                      isPairDataLoading,
+                      minPriceDigits,
+                      arrayOfMarketIds,
+                      updateTerminalPriceFromOrderbook,
+                      activeExchange,
+                      selectedKey,
+                      showTableOnMobile,
+                      changeTable,
+                      chartProps,
+                      marketType,
+                      sizeDigits,
+                      hideDepthChart,
+                      hideOrderbook,
+                    }}
+                  />
+                )}
               </Grid>
               <Grid
                 item
@@ -187,27 +270,37 @@ export const DefaultViewComponent = (
                 style={{
                   height: '100%',
                   padding: '0 0 .4rem .4rem',
-                  flexBasis: '35%',
-                  maxWidth: '35%',
+                  flexBasis: hideOrderbook
+                    ? '100%'
+                    : hideDepthChart
+                    ? '50%'
+                    : '35%',
+                  maxWidth: hideOrderbook
+                    ? '100%'
+                    : hideDepthChart
+                    ? '50%'
+                    : '35%',
                 }}
               >
-                <TradeHistory
-                  {...{
-                    symbol: currencyPair,
-                    pair: currencyPair,
-                    exchange,
-                    quote,
-                    minPriceDigits,
-                    updateTerminalPriceFromOrderbook,
-                    marketType,
-                    isPairDataLoading,
-                    activeExchange,
-                    showTableOnMobile,
-                    changeTable,
-                    chartProps,
-                    sizeDigits,
-                  }}
-                />
+                {!hideTradeHistory && (
+                  <TradeHistory
+                    {...{
+                      symbol: currencyPair,
+                      pair: currencyPair,
+                      exchange,
+                      quote,
+                      minPriceDigits,
+                      updateTerminalPriceFromOrderbook,
+                      marketType,
+                      isPairDataLoading,
+                      activeExchange,
+                      showTableOnMobile,
+                      changeTable,
+                      chartProps,
+                      sizeDigits,
+                    }}
+                  />
+                )}
               </Grid>
             </Grid>
           </TradingTerminalContainer>
@@ -287,6 +380,9 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.terminalViewMode === next.terminalViewMode &&
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
     prev.isPairDataLoading === next.isPairDataLoading &&
-    prev.chartPagePopup === next.chartPagePopup
+    prev.chartPagePopup === next.chartPagePopup &&
+    prev.layout.hideDepthChart === next.layout.hideDepthChart &&
+    prev.layout.hideOrderbook === next.layout.hideOrderbook &&
+    prev.layout.hideTradeHistory === next.layout.hideTradeHistory
   )
 })
