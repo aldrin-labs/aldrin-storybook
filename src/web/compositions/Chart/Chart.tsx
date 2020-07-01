@@ -12,7 +12,9 @@ import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { getChartSteps } from '@sb/config/joyrideSteps'
@@ -131,10 +133,28 @@ function ChartPageComponent(props: any) {
     } = {
       getTooltipSettings: { chartPage: false, chartPagePopup: false },
     },
+    getChartLayoutQuery: {
+      chart: { layout } = {
+        layout: {
+          hideDepthChart: false,
+          hideOrderbook: false,
+          hideTradeHistory: false,
+        },
+      },
+    } = {
+      chart: {
+        layout: {
+          hideDepthChart: false,
+          hideOrderbook: false,
+          hideTradeHistory: false,
+        },
+      },
+    },
     pairPropertiesQuery,
     marketType,
     selectedPair,
     authenticated,
+    changeChartLayoutMutation,
   } = props
 
   let minPriceDigits
@@ -200,6 +220,7 @@ function ChartPageComponent(props: any) {
         <DefaultView
           id={_id}
           view={view}
+          layout={layout}
           authenticated={authenticated}
           marketType={marketType}
           currencyPair={selectedPair}
@@ -233,6 +254,7 @@ function ChartPageComponent(props: any) {
             !getTooltipSettings.chartPage
           }
           closeChartPagePopup={closeChartPagePopup}
+          changeChartLayoutMutation={changeChartLayoutMutation}
         />
       )}
       <JoyrideOnboarding
@@ -292,7 +314,13 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     prev.getChartDataQuery.getTradingSettings.hedgeMode ===
       next.getChartDataQuery.getTradingSettings.hedgeMode &&
     prevIsPairDataLoading === nextIsPairDataLoading &&
-    tooltipQueryChanged
+    tooltipQueryChanged &&
+    prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
+      next.getChartLayoutQuery.chart.layout.hideDepthChart &&
+    prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
+      next.getChartLayoutQuery.chart.layout.hideOrderbook &&
+    prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
+      next.getChartLayoutQuery.chart.layout.hideTradeHistory
   )
 })
 
@@ -329,7 +357,16 @@ export default compose(
       marketType: props.marketType,
     }),
   }),
+  queryRendererHoc({
+    query: getChartLayout,
+    name: 'getChartLayoutQuery',
+    fetchPolicy: 'cache-first',
+    withoutLoading: true,
+  }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
+  }),
+  graphql(changeChartLayout, {
+    name: 'changeChartLayoutMutation',
   })
 )(ChartPage)
