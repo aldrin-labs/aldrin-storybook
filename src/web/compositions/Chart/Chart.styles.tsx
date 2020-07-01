@@ -321,6 +321,7 @@ export const TopChartsContainer = styled(
     ...rest
   }) => <div {...rest} />
 )`
+  transition: all 0.5s ease;
   position: relative;
   width: 100%;
   display: flex;
