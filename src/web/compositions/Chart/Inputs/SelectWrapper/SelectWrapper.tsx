@@ -82,6 +82,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const filtredMarketsByExchange = getMarketsByExchange.filter(
       (el) =>
+        el.symbol &&
         +el.volume24hChange &&
         +el.price &&
         !Array.isArray(el.symbol.match(fiatRegexp))
