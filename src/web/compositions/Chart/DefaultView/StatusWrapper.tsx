@@ -103,6 +103,9 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.terminalViewMode === next.terminalViewMode &&
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
     prev.isPairDataLoading === next.isPairDataLoading &&
-    prev.chartPagePopup === next.chartPagePopup
+    prev.chartPagePopup === next.chartPagePopup &&
+    prev.layout.hideDepthChart === next.layout.hideDepthChart &&
+    prev.layout.hideOrderbook === next.layout.hideOrderbook &&
+    prev.layout.hideTradeHistory === next.layout.hideTradeHistory
   )
 })
