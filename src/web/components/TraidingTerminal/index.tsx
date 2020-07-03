@@ -230,6 +230,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       const { priceFromOrderbook } = this.props
 
       this.setFormatted('price', priceFromOrderbook, 1)
+      this.setFormatted('stop', priceFromOrderbook, 1)
       this.setFormatted('total', amount * priceFromOrderbook, 1)
       this.setState({ priceFromOrderbook })
     }

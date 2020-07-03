@@ -149,7 +149,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           onButtonClick={onButtonClick}
-          openOrderHistory={getOpenOrderHistory}
+          openOrderHistory={getOpenOrderHistory.orders}
           currencyPair={currencyPair}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
@@ -174,7 +174,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
-          openOrderHistory={getOpenOrderHistory}
+          openOrderHistory={getOpenOrderHistory.orders}
           currencyPair={currencyPair}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
@@ -195,6 +195,9 @@ const APIWrapper = (props) => {
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
+          allKeys: true,
+          page: 0,
+          perPage: 30,
         },
       }}
       withOutSpinner={true}
@@ -209,6 +212,7 @@ const APIWrapper = (props) => {
           openOrderInput: {
             marketType: props.marketType,
             activeExchangeKey: props.selectedKey.keyId,
+            allKeys: true,
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
