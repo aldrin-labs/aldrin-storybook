@@ -35,7 +35,7 @@ import {
 import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
-import { getLoginStatus } from '@core/utils/auth.utils'
+import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
@@ -295,7 +295,7 @@ function ChartPageComponent(props: any) {
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
   console.log('memo func chart page')
 
-  const isAuthenticatedUser = getLoginStatus()
+  const isAuthenticatedUser = checkLoginStatus()
 
   if (!isAuthenticatedUser) {
     return false
