@@ -12,7 +12,7 @@ import { TooltipCustom } from '@sb/components/index'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
-import { getLoginStatus } from '@core/utils/auth.utils'
+import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 
 const selectStyles = {
@@ -105,7 +105,7 @@ export const CardsPanel = ({
   const location = useLocation()
   const { pathname } = location
 
-  const authenticated = getLoginStatus()
+  const authenticated = checkLoginStatus()
 
   return (
     <>
