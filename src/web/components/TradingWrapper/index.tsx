@@ -246,7 +246,12 @@ class SimpleTabs extends React.Component {
                         isActive={mode === 'stop-limit'}
                         onClick={() => {
                           this.handleChangeMode('stop-limit')
-                          this.setState({ orderMode: 'TIF' })
+                          this.setState({
+                            orderMode: 'TIF',
+                            ...(orderMode === 'postOnly'
+                              ? { TIFMode: 'GTC' }
+                              : {}),
+                          })
                         }}
                         style={{
                           width: '100%',
@@ -260,7 +265,12 @@ class SimpleTabs extends React.Component {
                         isActive={mode === 'stop-market'}
                         onClick={() => {
                           this.handleChangeMode('stop-market')
-                          this.setState({ orderMode: 'TIF' })
+                          this.setState({
+                            orderMode: 'TIF',
+                            ...(orderMode === 'postOnly'
+                              ? { TIFMode: 'GTC' }
+                              : {}),
+                          })
                         }}
                         style={{
                           width: '100%',
@@ -318,6 +328,7 @@ class SimpleTabs extends React.Component {
                       onChange={() =>
                         this.setState({
                           orderMode: 'postOnly',
+                          TIFMode: 'GTX',
                         })
                       }
                     />
@@ -346,6 +357,11 @@ class SimpleTabs extends React.Component {
                           <b>- FOK (Fill Or Kill):</b> the order must be filled
                           immediately in its entirety or not executed at all.
                         </p>
+                        <p>
+                          <b>- GTX Good Till Crossing (Post Only):</b> the order
+                          would immediately match and trade, and not be a pure
+                          maker order. Available only in post-only mode.
+                        </p>
                       </>
                     }
                   >
@@ -357,6 +373,9 @@ class SimpleTabs extends React.Component {
                         onChange={() =>
                           this.setState({
                             orderMode: 'TIF',
+                            ...(orderMode === 'postOnly'
+                              ? { TIFMode: 'GTC' }
+                              : {}),
                           })
                         }
                       />
@@ -371,6 +390,9 @@ class SimpleTabs extends React.Component {
                         <StyledOption>GTC</StyledOption>
                         <StyledOption>IOC</StyledOption>
                         <StyledOption>FOK</StyledOption>
+                        {orderMode === 'postOnly' && (
+                          <StyledOption>GTX</StyledOption>
+                        )}
                       </StyledSelect>
                     </FuturesSettings>
                   </DarkTooltip>
