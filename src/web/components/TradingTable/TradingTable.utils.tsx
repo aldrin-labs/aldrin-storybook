@@ -292,12 +292,26 @@ const getActiveOrderStatus = ({
   }
 }
 
-export const filterOpenOrders = ({ order, canceledOrders }) => {
+export const filterOpenOrders = ({
+  order,
+  canceledOrders,
+}: {
+  order: OrderType
+  canceledOrders: string[]
+}) => {
+  const { type = '', status = '', info = { orderId: '' } } = order || {
+    type: '',
+    status: '',
+    info: { orderId: '' },
+  }
+
+  const { orderId = '' } = info || { orderId: '' }
+
   return (
-    !canceledOrders.includes(order.info.orderId) &&
+    !canceledOrders.includes(orderId) &&
     // sometimes we don't have order.type, also we want to filter market orders
-    (!order.type || (order.type && order.type !== 'market')) &&
-    (order.status === 'open' || order.status === 'placing')
+    (!type || (type && type !== 'market')) &&
+    (status === 'open' || status === 'placing')
   )
 }
 
@@ -1489,44 +1503,73 @@ export const combineOpenOrdersTable = (
       })
     )
     .map((el: OrderType, i: number) => {
-      const { keyId, symbol, type: orderType, side, price, reduceOnly } = el
+      const {
+        keyId = '',
+        symbol = '',
+        type: orderType = '',
+        side = '',
+        price = 0,
+        reduceOnly = false,
+        timestamp: orderTimestamp = 0,
+        updateTime = 0,
+        marketId = '',
+        status = '',
+        info = { orderId: '', origQty: '', stopPrice: '' },
+      } = el || {
+        keyId: '',
+        symbol: '',
+        type: '',
+        side: '',
+        price: 0,
+        reduceOnly: false,
+        timestamp: 0,
+        updateTime: 0,
+        marketId: '',
+        status: '',
+        info: { orderId: '', origQty: '', stopPrice: '' },
+      }
+      const orderSymbol = symbol || ''
+      const orderSide = side || ''
+      const { orderId = '', origQty = '', stopPrice = '' } = info || {
+        orderId: '',
+        origQty: '',
+        stopPrice: '',
+      }
 
-      // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
-      const orderId = (el.info && el.info.orderId) || el.orderId
-      const origQty = (el.info && el.info.origQty) || el.origQty
-      const timestamp = el.timestamp || el.updateTime
-
+      const timestamp = orderTimestamp || updateTime
       const keyName = keys ? keys[keyId] : ''
 
-      const needOpacity = el.marketId === '0' && el.status === 'placing'
-      const pair = symbol.split('_')
+      const needOpacity = marketId === '0' && status === 'placing'
+      const pair = orderSymbol.split('_')
 
       let type = !!orderType ? orderType : 'type'
+      const isMakerOnlyOrder = type === 'maker-only'
+
       type = type.toLowerCase().replace(/-/g, '_')
 
-      const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
+      const rawStopPrice = +stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
       const triggerConditionsFormatted =
         triggerConditions === '-'
           ? '-'
-          : (!isBuyTypeOrder(side) && type === 'limit') ||
-            (isBuyTypeOrder(side) && type === 'stop_market') ||
-            (isBuyTypeOrder(side) && type === 'stop_limit') ||
-            (isBuyTypeOrder(side) && type === 'stop_loss_limit') ||
-            (isBuyTypeOrder(side) && type === 'stop') ||
-            (isBuyTypeOrder(side) && type === 'stop_loss_market') ||
-            (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
-            (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
-            (!isBuyTypeOrder(side) && type === 'take_profit')
+          : (!isBuyTypeOrder(orderSide) && type === 'limit') ||
+            (isBuyTypeOrder(orderSide) && type === 'stop_market') ||
+            (isBuyTypeOrder(orderSide) && type === 'stop_limit') ||
+            (isBuyTypeOrder(orderSide) && type === 'stop_loss_limit') ||
+            (isBuyTypeOrder(orderSide) && type === 'stop') ||
+            (isBuyTypeOrder(orderSide) && type === 'stop_loss_market') ||
+            (!isBuyTypeOrder(orderSide) && type === 'take_profit_market') ||
+            (!isBuyTypeOrder(orderSide) && type === 'take_profit_limit') ||
+            (!isBuyTypeOrder(orderSide) && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
       return {
-        id: `${orderId}${timestamp}${origQty}${el.marketId}`,
+        id: `${orderId}${timestamp}${origQty}${marketId}`,
         pair: {
           render: (
             <div
-              onClick={() => handlePairChange(symbol)}
+              onClick={() => handlePairChange(orderSymbol)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1536,7 +1579,7 @@ export const combineOpenOrdersTable = (
               {pair[0]}/{pair[1]}
             </div>
           ),
-          contentToSort: symbol,
+          contentToSort: orderSymbol,
         },
         // type: type,
         side: {
@@ -1546,10 +1589,10 @@ export const combineOpenOrdersTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: isBuyTypeOrder(side) ? '#29AC80' : '#DD6956',
+                  color: isBuyTypeOrder(orderSide) ? '#29AC80' : '#DD6956',
                 }}
               >
-                {side}
+                {orderSide}
               </span>
               <span
                 style={{
@@ -1563,7 +1606,7 @@ export const combineOpenOrdersTable = (
             </div>
           ),
           style: {
-            color: isBuyTypeOrder(side)
+            color: isBuyTypeOrder(orderSide)
               ? theme.customPalette.green.main
               : theme.customPalette.red.main,
             opacity: needOpacity ? 0.75 : 1,
@@ -1596,8 +1639,8 @@ export const combineOpenOrdersTable = (
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
                 render: !+price
                   ? '-'
-                  : `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
-                contentToSort: origQty * price,
+                  : `${stripDigitPlaces(+origQty * price, 8)} ${pair[1]}`,
+                contentToSort: +origQty * price,
                 style: { opacity: needOpacity ? 0.75 : 1 },
               },
             }
@@ -1647,30 +1690,31 @@ export const combineOpenOrdersTable = (
           contentToSort: timestamp,
         },
         cancel: {
-          render: needOpacity ? (
-            '-'
-          ) : (
-            <CloseButton
-              i={i}
-              onClick={() => {
-                cancelOrderFunc(keyId, orderId, symbol)
-                filterCacheData({
-                  name: 'getOpenOrderHistory',
-                  subName: 'orders',
-                  query: getOpenOrderHistory,
-                  variables: {
-                    openOrderInput: {
-                      activeExchangeKey: keyId,
-                      marketType,
+          render:
+            needOpacity || isMakerOnlyOrder ? (
+              '-'
+            ) : (
+              <CloseButton
+                i={i}
+                onClick={() => {
+                  cancelOrderFunc(keyId, orderId, orderSymbol)
+                  filterCacheData({
+                    name: 'getOpenOrderHistory',
+                    subName: 'orders',
+                    query: getOpenOrderHistory,
+                    variables: {
+                      openOrderInput: {
+                        activeExchangeKey: keyId,
+                        marketType,
+                      },
                     },
-                  },
-                  filterData: (order) => order.info.orderId != orderId,
-                })
-              }}
-            >
-              Cancel
-            </CloseButton>
-          ),
+                    filterData: (order) => order.info.orderId != orderId,
+                  })
+                }}
+              >
+                Cancel
+              </CloseButton>
+            ),
         },
         tooltipTitle: keyName,
       }
