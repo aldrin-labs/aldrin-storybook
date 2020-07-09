@@ -906,6 +906,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           ...(priceType !== 'market'
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
+              : orderMode === 'postOnly'
+              ? { timeInForce: TIFMode, postOnly: true }
               : { postOnly: true }
             : {}),
           ...(priceType === 'stop-limit' || priceType === 'stop-market'
