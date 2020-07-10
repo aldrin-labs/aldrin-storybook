@@ -19,7 +19,7 @@ const HideArrowStyledBlock = styled(({ right, ...props }) => (
   color: #165be0;
   font-weight: bold;
   border: 1px solid #e0e5ec;
-  z-index: 10;
+  z-index: 9;
 `
 
 export const HideArrow = ({
