@@ -7,8 +7,7 @@ export const updatePriceQuerryFunction = (previous, { subscriptionData }) => {
   }
 
   const isPrevPriceEqualWithNewPrice =
-    +previous.getPrice ===
-    +subscriptionData.data.listenPrice
+    +previous.getPrice === +subscriptionData.data.listenPrice
 
   if (isPrevPriceEqualWithNewPrice) {
     return previous
@@ -53,7 +52,6 @@ export const updateFundingRateQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFundingRate
 

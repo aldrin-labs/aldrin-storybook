@@ -352,19 +352,28 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   }
 
   checkForCachedOrder = () => {
-    const data = client.readQuery({
-      query: getOpenOrderHistory,
-      variables: {
-        openOrderInput: {
-          activeExchangeKey: this.props.selectedKey.keyId,
-          marketType: this.props.marketType,
-          allKeys: true,
-          page: 0,
-          perPage: 30,
-          // ...(!this.props.specificPair ? {} : { specificPair: this.props.currencyPair }),
+    let data
+    try {
+      data = client.readQuery({
+        query: getOpenOrderHistory,
+        variables: {
+          openOrderInput: {
+            activeExchangeKey: this.props.selectedKey.keyId,
+            marketType: this.props.marketType,
+            allKeys: true,
+            page: 0,
+            perPage: 30,
+            // ...(!this.props.specificPair ? {} : { specificPair: this.props.currencyPair }),
+          },
         },
-      },
-    })
+      })
+    } catch (e) {
+      data = {
+        getOpenOrderHistory: {
+          orders: [],
+        },
+      }
+    }
 
     const cachedOrder = data.getOpenOrderHistory.orders.find(
       (order: OrderType) => order.marketId === '0'

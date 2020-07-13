@@ -1401,6 +1401,7 @@ export class EditEntryOrderPopup extends React.Component<
 
       return {
         ...props.derivedState,
+        price: props.derivedState.isTrailingOn ? props.derivedState.activatePrice : props.derivedState.price,
         trailingDeviationPrice,
         deviationPercentage,
         leverage,

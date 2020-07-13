@@ -9,7 +9,7 @@ import { withTheme } from '@material-ui/styles'
 import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 
-import { handleLogout } from '@core/utils/loginUtils'
+import { handleLogout, checkLoginStatus } from '@core/utils/loginUtils'
 import Hidden from '@material-ui/core/Hidden'
 import { syncStorage } from '@storage'
 
@@ -96,6 +96,10 @@ const NavBarRaw: SFC<Props> = ({
     page = 'Sign up'
   }
 
+  if (/disableaccount/.test(pathname)) {
+    page = 'Disable Account'
+  }
+
   if (/transactions\/spot/.test(pathname)) {
     page = 'Transactions Spot'
     joyridePage = 'transactionPage'
@@ -114,7 +118,7 @@ const NavBarRaw: SFC<Props> = ({
     joyridePage = 'portfolioMain'
   }
 
-  const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
+  const loginStatus = checkLoginStatus()
   const notAuthPages = page === 'Log in' || page === 'Sign up'
 
   return (
@@ -389,6 +393,10 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Settings',
                     to: '/profile/settings',
+                  },
+                  {
+                    text: 'Disable Account',
+                    to: '/profile/disableaccount',
                   },
                   {
                     text: 'Deposit',

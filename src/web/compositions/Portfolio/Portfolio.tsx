@@ -59,16 +59,23 @@ export const getOnboardingStatus = ({
   keys,
   myPortfolios,
   onboarding,
+  errorsArray = [],
 }: {
   keys: Key[]
   myPortfolios: any[]
   onboarding: {
     instructions: boolean
   } | null
+  errorsArray: any[]
 }) => {
   const { instructions } = onboarding || { instructions: false }
+  const isErrorsInQueryResponseExists = !!errorsArray.length
 
-  if (keys.length > 0 || myPortfolios.length > 1) {
+  if (
+    keys.length > 0 ||
+    myPortfolios.length > 1 ||
+    isErrorsInQueryResponseExists
+  ) {
     return false
   }
 
@@ -120,6 +127,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       getTooltipSettingsQuery,
     } = this.props
 
+    console.log('data', data)
     const baseCoin = baseData.portfolio.baseCoin
     const isUSDCurrently = baseCoin === 'USDT'
 
@@ -161,7 +169,10 @@ class PortfolioComponent extends React.Component<IProps, IState> {
       keys,
       myPortfolios: data.myPortfolios,
       onboarding,
+      errorsArray: data.errors,
     })
+
+    console.log('isOnboardingEnabled', isOnboardingEnabled)
 
     return (
       <>
@@ -200,7 +211,7 @@ class PortfolioComponent extends React.Component<IProps, IState> {
               enter: 0,
               exit: 3500,
             }}
-            in={isOnboardingEnabled}
+            in={isOnboardingEnabled && !data.error}
             mountOnEnter={true}
             unmountOnExit={true}
           >
