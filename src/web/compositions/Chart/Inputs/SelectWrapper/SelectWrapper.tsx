@@ -6,6 +6,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -63,9 +64,15 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const {
       getAccountSettings: {
-        selectorSettings: { favoritePairs },
+        selectorSettings: { favoritePairs } = { favoritePairs: [] },
+      } = {
+        selectorSettings: { favoritePairs: [] },
       },
-    } = getSelectorSettingsQuery
+    } = getSelectorSettingsQuery || {
+      getAccountSettings: {
+        selectorSettings: { favoritePairs: [] },
+      },
+    }
 
     const { getMarketsByExchange = [] } = marketsByExchangeQuery || {
       getMarketsByExchange: [],
@@ -75,6 +82,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const filtredMarketsByExchange = getMarketsByExchange.filter(
       (el) =>
+        el.symbol &&
         +el.volume24hChange &&
         +el.price &&
         !Array.isArray(el.symbol.match(fiatRegexp))
@@ -539,6 +547,7 @@ class SelectPairListComponent extends React.PureComponent<
 }
 
 export default compose(
+  withAuthStatus,
   withTheme(),
   queryRendererHoc({
     query: MARKETS_BY_EXCHANE_QUERY,
@@ -555,6 +564,7 @@ export default compose(
   }),
   queryRendererHoc({
     query: getSelectorSettings,
+    skip: (props: any) => !props.authenticated,
     withOutSpinner: true,
     withTableLoader: false,
     name: 'getSelectorSettingsQuery',

@@ -12,21 +12,30 @@ import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import {
   prefetchCoinSelector,
   prefetchDifferentMarketForCoinSelector,
+  prefetchPortfolio,
+  prefetchPortfolioMainSpot,
+  prefetchPortfolioMainFutures,
+  prefetchDeposit,
 } from '@core/utils/prefetching'
+import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
+import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
@@ -48,6 +57,22 @@ function ChartPageComponent(props: any) {
         exchangeSymbol: 'binance',
       })
     }, 15000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchPortfolio)
+    }, 30000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchPortfolioMainSpot)
+    }, 45000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchPortfolioMainFutures)
+    }, 55000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchDeposit)
+    }, 75000)
 
     return () => {
       document.title = 'Cryptocurrencies AI'
@@ -129,9 +154,28 @@ function ChartPageComponent(props: any) {
     } = {
       getTooltipSettings: { chartPage: false, chartPagePopup: false },
     },
+    getChartLayoutQuery: {
+      chart: { layout } = {
+        layout: {
+          hideDepthChart: false,
+          hideOrderbook: false,
+          hideTradeHistory: false,
+        },
+      },
+    } = {
+      chart: {
+        layout: {
+          hideDepthChart: false,
+          hideOrderbook: false,
+          hideTradeHistory: false,
+        },
+      },
+    },
     pairPropertiesQuery,
     marketType,
     selectedPair,
+    authenticated,
+    changeChartLayoutMutation,
   } = props
 
   let minPriceDigits
@@ -197,6 +241,8 @@ function ChartPageComponent(props: any) {
         <DefaultView
           id={_id}
           view={view}
+          layout={layout}
+          authenticated={authenticated}
           marketType={marketType}
           currencyPair={selectedPair}
           pricePrecision={pricePrecision}
@@ -229,6 +275,7 @@ function ChartPageComponent(props: any) {
             !getTooltipSettings.chartPage
           }
           closeChartPagePopup={closeChartPagePopup}
+          changeChartLayoutMutation={changeChartLayoutMutation}
         />
       )}
       <JoyrideOnboarding
@@ -247,6 +294,13 @@ function ChartPageComponent(props: any) {
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
   console.log('memo func chart page')
+
+  const isAuthenticatedUser = checkLoginStatus()
+
+  if (!isAuthenticatedUser) {
+    return false
+  }
+
   const prevIsPairDataLoading =
     prev.loading ||
     !prev.pairPropertiesQuery.marketByName ||
@@ -281,16 +335,23 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     prev.getChartDataQuery.getTradingSettings.hedgeMode ===
       next.getChartDataQuery.getTradingSettings.hedgeMode &&
     prevIsPairDataLoading === nextIsPairDataLoading &&
-    tooltipQueryChanged
+    tooltipQueryChanged &&
+    prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
+      next.getChartLayoutQuery.chart.layout.hideDepthChart &&
+    prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
+      next.getChartLayoutQuery.chart.layout.hideOrderbook &&
+    prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
+      next.getChartLayoutQuery.chart.layout.hideTradeHistory
   )
 })
 
 // TODO: combine all queries to one
 export default compose(
   withErrorFallback,
-  withAuth,
+  withAuthStatus,
+  // withAuth,
   queryRendererHoc({
-    // skip: true,
+    skip: (props: any) => !props.authenticated,
     query: getChartData,
     name: 'getChartDataQuery',
     // fetchPolicy: 'cache-and-network',
@@ -300,7 +361,7 @@ export default compose(
     },
   }),
   queryRendererHoc({
-    // skip: true,
+    skip: (props: any) => !props.authenticated,
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
     fetchPolicy: 'cache-first',
@@ -317,7 +378,16 @@ export default compose(
       marketType: props.marketType,
     }),
   }),
+  queryRendererHoc({
+    query: getChartLayout,
+    name: 'getChartLayoutQuery',
+    fetchPolicy: 'cache-first',
+    withoutLoading: true,
+  }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
+  }),
+  graphql(changeChartLayout, {
+    name: 'changeChartLayoutMutation',
   })
 )(ChartPage)

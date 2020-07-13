@@ -2,6 +2,7 @@ import React, { Component, ChangeEvent } from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 
+import { checkLoginStatus } from '@core/utils/loginUtils'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
@@ -148,7 +149,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           onButtonClick={onButtonClick}
-          openOrderHistory={getOpenOrderHistory}
+          openOrderHistory={getOpenOrderHistory.orders}
           currencyPair={currencyPair}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
@@ -173,7 +174,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
-          openOrderHistory={getOpenOrderHistory}
+          openOrderHistory={getOpenOrderHistory.orders}
           currencyPair={currencyPair}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
@@ -185,6 +186,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 }
 
 const APIWrapper = (props) => {
+  const authenticated = checkLoginStatus()
+
   return (
     <QueryRenderer
       component={OrderBookTableContainer}
@@ -192,10 +195,14 @@ const APIWrapper = (props) => {
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
+          allKeys: true,
+          page: 0,
+          perPage: 30,
         },
       }}
       withOutSpinner={true}
       withTableLoader={false}
+      skip={!authenticated}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
       fetchPolicy="cache-and-network"
@@ -205,6 +212,7 @@ const APIWrapper = (props) => {
           openOrderInput: {
             marketType: props.marketType,
             activeExchangeKey: props.selectedKey.keyId,
+            allKeys: true,
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,

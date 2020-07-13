@@ -277,17 +277,30 @@ export const TablesContainer = styled(Grid)`
 `
 
 export const TradingTerminalContainer = styled(
-  ({ isDefaultTerminalViewMode, MASTER_BUILD, ...rest }) => <div {...rest} />
+  ({
+    isDefaultTerminalViewMode,
+    MASTER_BUILD,
+    hideDepthChart,
+    hideOrderbook,
+    hideTradeHistory,
+    ...rest
+  }) => <div {...rest} />
 )`
+  height: 100%;
+  transition: all 0.5s ease;
   position: relative;
-  display: flex;
+  display: ${(props) => (props.hideTradeHistory ? 'none' : 'flex')};
   // 60% - 3%, the half of height cards, will fix in future
-  width: ${(props) => (props.MASTER_BUILD ? '30%' : '45%')};
-  height: ${(props) =>
-    props.isDefaultTerminalViewMode
-      ? 'calc(59% - .8rem)'
-      : 'calc(48% - .8rem)'};
-  top: calc(4% + 0.8rem);
+  width: ${(props) =>
+    props.MASTER_BUILD
+      ? '30%'
+      : props.hideTradeHistory
+      ? '0%'
+      : props.hideOrderbook
+      ? '17%'
+      : props.hideDepthChart
+      ? '35%'
+      : '45%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -296,7 +309,31 @@ export const TradingTerminalContainer = styled(
   @media (max-width: 1080px) {
     flex-wrap: wrap;
   }
+`
 
+export const TopChartsContainer = styled(
+  ({
+    isDefaultTerminalViewMode,
+    MASTER_BUILD,
+    hideDepthChart,
+    hideOrderbook,
+    hideTradeHistory,
+    ...rest
+  }) => <div {...rest} />
+)`
+  transition: all 0.5s ease;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 0;
+  max-width: 100%;
+  flex-basis: 100%;
+  top: calc(4% + 0.8rem);
+  height: ${(props) =>
+    props.isDefaultTerminalViewMode
+      ? 'calc(59% - .8rem)'
+      : 'calc(48% - .8rem)'};
   @media screen and (max-width: 1440px) {
     top: calc(4% + 0.8rem);
     height: ${(props) =>
@@ -315,41 +352,37 @@ export const TradingTerminalContainer = styled(
 `
 
 export const ChartsContainer = styled(
-  ({ isDefaultTerminalViewMode, MASTER_BUILD, ...rest }) => <div {...rest} />
+  ({
+    isDefaultTerminalViewMode,
+    MASTER_BUILD,
+    hideDepthChart,
+    hideOrderbook,
+    hideTradeHistory,
+    ...rest
+  }) => <div {...rest} />
 )`
+  height: 100%;
+  transition: all 0.5s ease;
   position: relative;
   display: flex;
-  // height: calc(68vh - 59px - ${CSS_CONFIG.navBarHeight}px);
-  width: ${(props) => (props.MASTER_BUILD ? '70%' : '55%')};
-  height: ${(props) =>
-    props.isDefaultTerminalViewMode
-      ? 'calc(59% - .8rem)'
-      : 'calc(48% - .8rem)'};
+  width: ${(props) =>
+    props.MASTER_BUILD
+      ? '70%'
+      : props.hideTradeHistory
+      ? '100%'
+      : props.hideOrderbook
+      ? '83%'
+      : props.hideDepthChart
+      ? '65%'
+      : '55%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
-  top: calc(4% + 0.8rem);
-
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
-  @media screen and (max-width: 1440px) {
-    top: calc(4% + 0.8rem);
-    height: ${(props) =>
-      props.isDefaultTerminalViewMode
-        ? 'calc(59% - .8rem)'
-        : 'calc(48% - .8rem)'};
-  }
 
-  @media screen and (max-width: 1140px) {
-    top: calc(2.5% + 0.8rem);
-    height: ${(props) =>
-      props.isDefaultTerminalViewMode
-        ? 'calc(60.5% - .8rem)'
-        : 'calc(49.5% - .8rem)'};
-  }
-
-  padding: 0 .4rem .4rem 0;
+  padding: 0 0.4rem 0.4rem 0;
   background-color: #f9fbfd;
 `
 

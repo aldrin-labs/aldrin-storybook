@@ -118,7 +118,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     }))
   }
 
-  createOrderWithStatus = async (variables: any) => {
+  createOrderWithStatus = async (variables: any, positionId) => {
     const {
       getActivePositionsQuery,
       currencyPair,
@@ -134,10 +134,24 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       showOrderResult,
       setPositionWasClosedMutation,
       handlePairChange,
+      addOrderToCanceled,
     } = this.props
 
+    let data = getActivePositionsQuery.getActivePositions
+
+    if (variables.keyParams.type === 'market') {
+      const position = getActivePositionsQuery.getActivePositions.find(
+        (p) => p._id === positionId
+      )
+
+      addOrderToCanceled(positionId)
+      data = getActivePositionsQuery.getActivePositions.filter(
+        (p) => p._id !== positionId
+      )
+    }
+
     const positionsData = combinePositionsTable({
-      data: getActivePositionsQuery.getActivePositions,
+      data,
       createOrderWithStatus: this.createOrderWithStatus,
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
@@ -159,6 +173,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     const result = await this.createOrder(variables)
     await showOrderResult(result, cancelOrder, marketType)
+    if (result.status === 'error') {
+      await this.props.clearCanceledOrders()
+    }
     // here we disable SM if you closed position manually
     setPositionWasClosedMutation({
       variables: {
@@ -458,16 +475,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     ) {
       this.subscription && this.subscription.unsubscribe()
       this.subscribe()
-    }
-
-    if (
-      this.props.getActivePositionsQuery.getActivePositions.some(
-        (position) =>
-          this.props.canceledOrders.includes(position._id) &&
-          +position.positionAmt === 0
-      )
-    ) {
-      this.props.clearCanceledOrders()
     }
 
     if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {

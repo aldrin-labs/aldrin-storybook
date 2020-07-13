@@ -230,6 +230,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       const { priceFromOrderbook } = this.props
 
       this.setFormatted('price', priceFromOrderbook, 1)
+      this.setFormatted('stop', priceFromOrderbook, 1)
       this.setFormatted('total', amount * priceFromOrderbook, 1)
       this.setState({ priceFromOrderbook })
     }
@@ -713,9 +714,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     `sell ${pair[0]}`
                   )
                 ) : operationType === 'buy' ? (
-                  'buy/long'
+                  'long'
                 ) : (
-                  'sell/short'
+                  'short'
                 )}
               </SendButton>
             </Grid>
@@ -905,6 +906,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           ...(priceType !== 'market'
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
+              : orderMode === 'postOnly'
+              ? { timeInForce: TIFMode, postOnly: true }
               : { postOnly: true }
             : {}),
           ...(priceType === 'stop-limit' || priceType === 'stop-market'

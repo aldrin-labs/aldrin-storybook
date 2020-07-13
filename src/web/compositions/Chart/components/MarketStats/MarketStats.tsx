@@ -76,8 +76,9 @@ export interface IProps {
 }
 
 class MarketStats extends React.PureComponent<IProps> {
-  state: { key: number } = {
+  state: { key: number; refetching: boolean } = {
     key: 0,
+    refetching: false,
   }
 
   getMarkPriceQueryUnsubscribe: null | (() => void) = null
@@ -197,12 +198,21 @@ class MarketStats extends React.PureComponent<IProps> {
         fundingRate: 0,
       },
     } = getFundingRateQuery || {
-      fundingTime: 0,
-      fundingRate: 0,
+      getFundingRate: {
+        fundingTime: 0,
+        fundingRate: 0,
+      },
     }
 
-    if (fundingTime == 0) {
-      setTimeout(() => getFundingRateQueryRefetch(), 1000)
+    if (
+      (fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) &&
+      !this.state.refetching
+    ) {
+      this.setState({ refetching: true })
+      setTimeout(() => {
+        getFundingRateQueryRefetch()
+        this.setState((prev) => ({ key: prev.key + 1, refetching: false }))
+      }, 3000)
     }
 
     const sign24hChange = +priceChangePercent > 0 ? `+` : ``

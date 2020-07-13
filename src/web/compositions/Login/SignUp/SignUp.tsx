@@ -33,7 +33,7 @@ import {
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
 import ConfirmTermsOfUsePopup from '@sb/compositions/Login/ConfirmTermsOfUsePopup/ConfirmTermsOfUsePopup'
 
-import { isEmailValid } from '@sb/compositions/Login/Login.utils'
+import { isEmailValid, scorePassword } from '@sb/compositions/Login/Login.utils'
 import { addGAEvent } from '@core/utils/ga.utils'
 
 const SignUp = ({
@@ -86,6 +86,28 @@ const SignUp = ({
     pass1: string
     pass2: string
   }) => pass1 === pass2 && pass1 !== '' && pass2 !== ''
+
+  const [passwordScore, variations] = scorePassword(password)
+  const passwordLevel =
+    passwordScore < 40 ||
+    !(
+      variations.digits &&
+      variations.lower &&
+      variations.upper &&
+      password.length >= 8
+    )
+      ? 'Low'
+      : passwordScore > 70
+      ? 'High'
+      : 'Medium'
+  const isPassworkQuality = () => {
+    return (
+      variations.digits &&
+      variations.lower &&
+      variations.upper &&
+      password.length >= 8
+    )
+  }
 
   const signUpWithGoogleAndAnalytics = () => {
     addGAEvent({
@@ -152,6 +174,10 @@ const SignUp = ({
             })
             const validEmail = isEmailValid({ email })
 
+            if (!isPassworkQuality()) {
+              setPasswordError(`Create better password for your safety`)
+              return
+            }
             if (!validPasswords) {
               setPasswordError(`Passwords doesn't match`)
               return
@@ -187,29 +213,67 @@ const SignUp = ({
               }}
             />
           </InputContainer>
-          <InputContainer>
-            <StyledInputLogin
-              required
-              error={!!passwordError}
-              type={showPassword ? 'text' : 'password'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    tabIndex={-1}
-                    aria-label="Toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              placeholder={`Password`}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                setPassword(e.target.value)
-                setPasswordError('')
-              }}
-            />
+          <InputContainer style={{ paddingBottom: '2rem' }}>
+            <div style={{ position: 'relative', marginBottom: '2rem' }}>
+              <StyledInputLogin
+                required
+                error={!!passwordError}
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      tabIndex={-1}
+                      aria-label="Toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                placeholder={`Password`}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.target.value)
+                  setPasswordError('')
+                }}
+              />
+              {password !== '' && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    height: '.5rem',
+                    borderRadius: '.2rem',
+                    width:
+                      passwordLevel === 'Low'
+                        ? '30%'
+                        : passwordLevel === 'Medium'
+                        ? '60%'
+                        : '100%',
+                    backgroundColor:
+                      passwordLevel === 'Low'
+                        ? '#E9422E'
+                        : passwordLevel === 'Medium'
+                        ? '#DCDE67'
+                        : '#24A17A',
+                  }}
+                />
+              )}
+            </div>
+            {password !== '' && (
+              <span
+                style={{
+                  fontFamily: 'DM Sans',
+                  fontSize: '2rem',
+                  color: '#5E6B83',
+                }}
+              >
+                {passwordLevel}. Use at least 8 characters, a mix of letters,
+                numbers and symbols. <b>It's for your own safety.</b>
+              </span>
+            )}
           </InputContainer>
+
           <InputContainer>
             <StyledInputLogin
               required
@@ -247,7 +311,7 @@ const SignUp = ({
               <TypographyWithCustomColor
                 textColor={theme.customPalette.red.main}
               >
-                Passwords doesn't match
+                {passwordError}
               </TypographyWithCustomColor>
             </Grid>
           )}
