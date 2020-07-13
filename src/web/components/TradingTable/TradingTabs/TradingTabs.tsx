@@ -49,18 +49,18 @@ const TradingTabs = ({
 }: IProps) => {
   let unsubscribeActiveTrades: Function | undefined
 
-  useEffect(() => {
-    unsubscribeActiveTrades && unsubscribeActiveTrades()
-    unsubscribeActiveTrades = subscribeToMore()
+  // useEffect(() => {
+  //   unsubscribeActiveTrades && unsubscribeActiveTrades()
+  //   unsubscribeActiveTrades = subscribeToMore()
 
-    return () => {
-      unsubscribeActiveTrades && unsubscribeActiveTrades()
-    }
-  }, [
-    props.selectedKey.keyId,
-    showAllSmartTradePairs,
-    showSmartTradesFromAllAccounts,
-  ])
+  //   return () => {
+  //     unsubscribeActiveTrades && unsubscribeActiveTrades()
+  //   }
+  // }, [
+  //   props.selectedKey.keyId,
+  //   showAllSmartTradePairs,
+  //   showSmartTradesFromAllAccounts,
+  // ])
 
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
     filterOpenOrders({
@@ -156,166 +156,166 @@ const TradingTabs = ({
   )
 }
 
-const OpenOrdersWrapper = ({ ...props }: IQueryProps) => {
-  return (
-    <QueryRenderer
-      component={PositionsWrapper}
-      variables={{
-        openOrderInput: {
-          activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType,
-          allKeys: props.showOpenOrdersFromAllAccounts,
-          // page: 0,
-          //   perPage: 100,
-          ...(!props.showAllOpenOrderPairs
-            ? {}
-            : { specificPair: props.currencyPair }),
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={false}
-      withoutLoading={true}
-      showLoadingWhenQueryParamsChange={false}
-      query={getOpenOrderHistory}
-      name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="cache-and-network"
-      subscriptionArgs={{
-        subscription: OPEN_ORDER_HISTORY,
-        variables: {
-          openOrderInput: {
-            activeExchangeKey: props.selectedKey.keyId,
-            marketType: props.marketType,
-            allKeys: props.showOpenOrdersFromAllAccounts,
-            ...(!props.showAllOpenOrderPairs
-              ? {}
-              : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
-      }}
-      {...props}
-    />
-  )
-}
+// const OpenOrdersWrapper = ({ ...props }: IQueryProps) => {
+//   return (
+//     <QueryRenderer
+//       component={PositionsWrapper}
+//       variables={{
+//         openOrderInput: {
+//           activeExchangeKey: props.selectedKey.keyId,
+//           marketType: props.marketType,
+//           allKeys: props.showOpenOrdersFromAllAccounts,
+//           // page: 0,
+//           //   perPage: 100,
+//           ...(!props.showAllOpenOrderPairs
+//             ? {}
+//             : { specificPair: props.currencyPair }),
+//         },
+//       }}
+//       withOutSpinner={true}
+//       withTableLoader={false}
+//       withoutLoading={true}
+//       showLoadingWhenQueryParamsChange={false}
+//       query={getOpenOrderHistory}
+//       name={`getOpenOrderHistoryQuery`}
+//       fetchPolicy="cache-and-network"
+//       subscriptionArgs={{
+//         subscription: OPEN_ORDER_HISTORY,
+//         variables: {
+//           openOrderInput: {
+//             activeExchangeKey: props.selectedKey.keyId,
+//             marketType: props.marketType,
+//             allKeys: props.showOpenOrdersFromAllAccounts,
+//             ...(!props.showAllOpenOrderPairs
+//               ? {}
+//               : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+//       }}
+//       {...props}
+//     />
+//   )
+// }
 
-const PositionsWrapper = ({
-  subscribeToMore,
-  variables,
-  showOpenOrdersFromAllAccounts,
-  showAllOpenOrderPairs,
-  ...props
-}: INextQueryProps) => {
-  let unsubscribeOpenOrders: Function | undefined
+// const PositionsWrapper = ({
+//   subscribeToMore,
+//   variables,
+//   showOpenOrdersFromAllAccounts,
+//   showAllOpenOrderPairs,
+//   ...props
+// }: INextQueryProps) => {
+//   let unsubscribeOpenOrders: Function | undefined
 
-  useEffect(() => {
-    unsubscribeOpenOrders && unsubscribeOpenOrders()
-    unsubscribeOpenOrders = subscribeToMore()
+//   useEffect(() => {
+//     unsubscribeOpenOrders && unsubscribeOpenOrders()
+//     unsubscribeOpenOrders = subscribeToMore()
 
-    return () => {
-      unsubscribeOpenOrders && unsubscribeOpenOrders()
-    }
-  }, [
-    props.selectedKey.keyId,
-    showOpenOrdersFromAllAccounts,
-    showAllOpenOrderPairs,
-  ])
+//     return () => {
+//       unsubscribeOpenOrders && unsubscribeOpenOrders()
+//     }
+//   }, [
+//     props.selectedKey.keyId,
+//     showOpenOrdersFromAllAccounts,
+//     showAllOpenOrderPairs,
+//   ])
 
-  return (
-    <QueryRenderer
-      component={ActiveTradesWrapper}
-      variables={{
-        input: {
-          keyId: props.selectedKey.keyId,
-          allKeys: props.showPositionsFromAllAccounts,
-          ...(!props.showAllPositionPairs
-            ? {}
-            : { specificPair: props.currencyPair }),
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={false}
-      withoutLoading={true}
-      showLoadingWhenQueryParamsChange={false}
-      query={getActivePositions}
-      name={`getActivePositionsQuery`}
-      fetchPolicy="cache-and-network"
-      subscriptionArgs={{
-        subscription: FUTURES_POSITIONS,
-        variables: {
-          input: {
-            keyId: props.selectedKey.keyId,
-            allKeys: props.showPositionsFromAllAccounts,
-            ...(!props.showAllPositionPairs
-              ? {}
-              : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: updateActivePositionsQuerryFunction,
-      }}
-      {...props}
-    />
-  )
-}
+//   return (
+//     <QueryRenderer
+//       component={ActiveTradesWrapper}
+//       variables={{
+//         input: {
+//           keyId: props.selectedKey.keyId,
+//           allKeys: props.showPositionsFromAllAccounts,
+//           ...(!props.showAllPositionPairs
+//             ? {}
+//             : { specificPair: props.currencyPair }),
+//         },
+//       }}
+//       withOutSpinner={true}
+//       withTableLoader={false}
+//       withoutLoading={true}
+//       showLoadingWhenQueryParamsChange={false}
+//       query={getActivePositions}
+//       name={`getActivePositionsQuery`}
+//       fetchPolicy="cache-and-network"
+//       subscriptionArgs={{
+//         subscription: FUTURES_POSITIONS,
+//         variables: {
+//           input: {
+//             keyId: props.selectedKey.keyId,
+//             allKeys: props.showPositionsFromAllAccounts,
+//             ...(!props.showAllPositionPairs
+//               ? {}
+//               : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: updateActivePositionsQuerryFunction,
+//       }}
+//       {...props}
+//     />
+//   )
+// }
 
-const ActiveTradesWrapper = ({
-  subscribeToMore,
-  variables,
-  showAllPositionPairs,
-  showPositionsFromAllAccounts,
-  ...props
-}: INextQueryProps) => {
-  let unsubscribePositions: Function | undefined
+// const ActiveTradesWrapper = ({
+//   subscribeToMore,
+//   variables,
+//   showAllPositionPairs,
+//   showPositionsFromAllAccounts,
+//   ...props
+// }: INextQueryProps) => {
+//   let unsubscribePositions: Function | undefined
 
-  useEffect(() => {
-    unsubscribePositions && unsubscribePositions()
-    unsubscribePositions = subscribeToMore()
+//   useEffect(() => {
+//     unsubscribePositions && unsubscribePositions()
+//     unsubscribePositions = subscribeToMore()
 
-    return () => {
-      unsubscribePositions && unsubscribePositions()
-    }
-  }, [
-    props.selectedKey.keyId,
-    showAllPositionPairs,
-    showPositionsFromAllAccounts,
-  ])
+//     return () => {
+//       unsubscribePositions && unsubscribePositions()
+//     }
+//   }, [
+//     props.selectedKey.keyId,
+//     showAllPositionPairs,
+//     showPositionsFromAllAccounts,
+//   ])
 
-  return (
-    <QueryRenderer
-      component={TradingTabs}
-      variables={{
-        activeStrategiesInput: {
-          activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType,
-          allKeys: props.showSmartTradesFromAllAccounts,
-          ...(!props.showAllSmartTradePairs
-            ? {}
-            : { specificPair: props.currencyPair }),
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={false}
-      withoutLoading={true}
-      showLoadingWhenQueryParamsChange={false}
-      query={getActiveStrategies}
-      name={`getActiveStrategiesQuery`}
-      fetchPolicy="cache-and-network"
-      subscriptionArgs={{
-        subscription: ACTIVE_STRATEGIES,
-        variables: {
-          activeStrategiesInput: {
-            activeExchangeKey: props.selectedKey.keyId,
-            marketType: props.marketType,
-            allKeys: props.showSmartTradesFromAllAccounts,
-            ...(!props.showAllSmartTradePairs
-              ? {}
-              : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: updateActiveStrategiesQuerryFunction,
-      }}
-      {...props}
-    />
-  )
-}
+//   return (
+//     <QueryRenderer
+//       component={TradingTabs}
+//       variables={{
+//         activeStrategiesInput: {
+//           activeExchangeKey: props.selectedKey.keyId,
+//           marketType: props.marketType,
+//           allKeys: props.showSmartTradesFromAllAccounts,
+//           ...(!props.showAllSmartTradePairs
+//             ? {}
+//             : { specificPair: props.currencyPair }),
+//         },
+//       }}
+//       withOutSpinner={true}
+//       withTableLoader={false}
+//       withoutLoading={true}
+//       showLoadingWhenQueryParamsChange={false}
+//       query={getActiveStrategies}
+//       name={`getActiveStrategiesQuery`}
+//       fetchPolicy="cache-and-network"
+//       subscriptionArgs={{
+//         subscription: ACTIVE_STRATEGIES,
+//         variables: {
+//           activeStrategiesInput: {
+//             activeExchangeKey: props.selectedKey.keyId,
+//             marketType: props.marketType,
+//             allKeys: props.showSmartTradesFromAllAccounts,
+//             ...(!props.showAllSmartTradePairs
+//               ? {}
+//               : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: updateActiveStrategiesQuerryFunction,
+//       }}
+//       {...props}
+//     />
+//   )
+// }
 
-export default OpenOrdersWrapper
+export default TradingTabs
