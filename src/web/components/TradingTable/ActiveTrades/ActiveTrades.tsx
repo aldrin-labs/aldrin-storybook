@@ -923,27 +923,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             },
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
-          title={
-            <div>
-              <TradingTabs
-                {...{
-                  tab,
-                  marketType,
-                  selectedKey,
-                  currencyPair,
-                  canceledOrders,
-                  handleTabChange,
-                  arrayOfMarketIds,
-                  showAllPositionPairs,
-                  showAllOpenOrderPairs,
-                  showAllSmartTradePairs,
-                  showPositionsFromAllAccounts,
-                  showOpenOrdersFromAllAccounts,
-                  showSmartTradesFromAllAccounts,
-                }}
-              />
-            </div>
-          }
           data={{ body: activeStrategiesProcessedData }}
           columnNames={getTableHead(tab, marketType)}
         />
@@ -955,14 +934,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 const LastTradeWrapper = ({ ...props }) => {
   let unsubscribe: undefined | Function = undefined
 
-  const [page, handleChangePage] = useState(0)
-  const [perPage, handleChangeRowsPerPageFunc] = useState(30)
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    handleChangeRowsPerPageFunc(+event.target.value)
-  }
+  const { page, handleChangePage, perPage, handleChangeRowsPerPage } = props
 
   useEffect(() => {
     unsubscribe && unsubscribe()

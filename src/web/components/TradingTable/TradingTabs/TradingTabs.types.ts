@@ -19,6 +19,12 @@ export interface IQueryProps {
   showPositionsFromAllAccounts?: boolean
   showOpenOrdersFromAllAccounts?: boolean
   showSmartTradesFromAllAccounts?: boolean
+  pageOpenOrders: number
+  perPageOpenOrders: number
+  pagePositions: number
+  perPagePositions: number
+  pageSmartTrades: number
+  perPageSmartTrades: number
 }
 
 export interface INextQueryProps extends IQueryProps {

@@ -480,27 +480,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTabs
-              {...{
-                tab,
-                marketType,
-                selectedKey,
-                currencyPair,
-                canceledOrders,
-                handleTabChange,
-                arrayOfMarketIds,
-                showAllPositionPairs,
-                showAllOpenOrderPairs,
-                showAllSmartTradePairs,
-                showPositionsFromAllAccounts,
-                showOpenOrdersFromAllAccounts,
-                showSmartTradesFromAllAccounts,
-              }}
-            />
-          </div>
-        }
         data={{ body: openOrdersProcessedData }}
         columnNames={getTableHead(tab, marketType)}
       />
@@ -509,16 +488,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 }
 
 const TableDataWrapper = ({ ...props }) => {
-  console.log('OpenOrders TableDataWrapper render')
-
-  const [page, handleChangePage] = useState(0)
-  const [perPage, handleChangeRowsPerPageFunc] = useState(30)
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    handleChangeRowsPerPageFunc(+event.target.value)
-  }
+  const { page, handleChangePage, perPage, handleChangeRowsPerPage } = props
 
   const {
     showOpenOrdersFromAllAccounts: allKeys,
