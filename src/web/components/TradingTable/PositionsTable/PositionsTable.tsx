@@ -700,27 +700,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             },
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
-          title={
-            <div>
-              <TradingTabs
-                {...{
-                  tab,
-                  marketType,
-                  selectedKey,
-                  currencyPair,
-                  canceledOrders,
-                  handleTabChange,
-                  arrayOfMarketIds,
-                  showAllPositionPairs,
-                  showAllOpenOrderPairs,
-                  showAllSmartTradePairs,
-                  showPositionsFromAllAccounts,
-                  showOpenOrdersFromAllAccounts,
-                  showSmartTradesFromAllAccounts,
-                }}
-              />
-            </div>
-          }
           rowsWithHover={false}
           data={{ body: positionsData }}
           columnNames={getTableHead(
@@ -789,7 +768,32 @@ const TableDataWrapper = ({ ...props }) => {
 }
 
 const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
-  if (!nextProps.show && !prevProps.show) {
+  // TODO: Refactor isShowEqual --- not so clean
+  const isShowEqual = !nextProps.show && !prevProps.show
+  const showAllAccountsEqual =
+    prevProps.showOpenOrdersFromAllAccounts ===
+    nextProps.showOpenOrdersFromAllAccounts
+  const showAllPairsEqual =
+    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+  // TODO: here must be smart condition if specificPair is not changed
+  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
+  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
+  const selectedKeyIsEqual =
+    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
+  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
+  const pageIsEqual = prevProps.page === nextProps.page
+  const perPageIsEqual = prevProps.perPage === nextProps.perPage
+
+  if (
+    isShowEqual &&
+    showAllAccountsEqual &&
+    showAllPairsEqual &&
+    pairIsEqual &&
+    selectedKeyIsEqual &&
+    // isMarketIsEqual &&
+    pageIsEqual &&
+    perPageIsEqual
+  ) {
     return true
   }
 
