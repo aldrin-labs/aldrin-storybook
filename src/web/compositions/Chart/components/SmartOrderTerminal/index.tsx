@@ -583,8 +583,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.handleCloseConfirmationPopup()
 
+    // ux-improvement to see popup before result from the backend received
+    const successResult = {
+      status: 'success',
+      message: 'Smart order placed',
+      orderId: '0',
+    }
+    showOrderResult(
+      successResult,
+      cancelOrder,
+    )
+
     updateTerminalViewMode('default')
 
+    
     const result = await placeOrder(
       entryPoint.order.side,
       entryPoint.order.type,
@@ -593,7 +605,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       this.state
     )
 
-    await showOrderResult(result, cancelOrder)
+    if (result.status === 'error' || !result.orderId) {
+
+      await showOrderResult(result, cancelOrder)
+    }
 
     // if (result.status === 'success' && result.orderId)
     //   updateTerminalViewMode('default')

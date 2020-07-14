@@ -326,6 +326,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     //   nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory
     // )
 
+    console.log('cachedOrder', cachedOrder)
+
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
         ? nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.concat(
