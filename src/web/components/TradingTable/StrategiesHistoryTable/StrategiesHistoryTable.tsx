@@ -232,23 +232,6 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs
-              {...{
-                tab,
-                marketType,
-                selectedKey,
-                currencyPair,
-                canceledOrders,
-                handleTabChange,
-                arrayOfMarketIds,
-                showAllPositionPairs,
-                showAllOpenOrderPairs,
-                showAllSmartTradePairs,
-                showPositionsFromAllAccounts,
-                showOpenOrdersFromAllAccounts,
-                showSmartTradesFromAllAccounts,
-              }}
-            />
             <TradingTitle
               {...{
                 page,
