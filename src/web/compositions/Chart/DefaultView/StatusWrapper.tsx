@@ -12,18 +12,18 @@ const OrderStatusWrapper = (props) => {
     if (result.status === 'success' && result.orderId && result.message) {
       enqueueSnackbar(result.message, {
         variant: 'success',
-        action: (
-          <>
-            <Button
-              size="small"
-              color="inherit"
-              onClick={() => cancelOrder(result.orderId, marketType)}
-            >
-              {'Cancel'}
-            </Button>
-            {/* <CloseButton /> */}
-          </>
-        ),
+        // action: (
+        //   <>
+        //     <Button
+        //       size="small"
+        //       color="inherit"
+        //       onClick={() => cancelOrder(result.orderId, marketType)}
+        //     >
+        //       {'Cancel'}
+        //     </Button>
+        //     {/* <CloseButton /> */}
+        //   </>
+        // ),
       })
     } else if (result.status === 'success' || !result.message) {
       enqueueSnackbar(orderError, { variant: 'error' })
