@@ -127,31 +127,6 @@ class FundsTable extends React.PureComponent<IProps> {
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTabs
-              // hideSmallAssets={hideSmallAssets}
-              // handleSmallAssetsCheckboxChange={
-              //   this.handleSmallAssetsCheckboxChange
-              // }
-              {...{
-                tab,
-                marketType,
-                selectedKey,
-                currencyPair,
-                canceledOrders,
-                handleTabChange,
-                arrayOfMarketIds,
-                showAllPositionPairs,
-                showAllOpenOrderPairs,
-                showAllSmartTradePairs,
-                showPositionsFromAllAccounts,
-                showOpenOrdersFromAllAccounts,
-                showSmartTradesFromAllAccounts,
-              }}
-            />
-          </div>
-        }
         actionsColSpan={2}
         actions={[
           {
