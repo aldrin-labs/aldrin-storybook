@@ -1757,7 +1757,7 @@ export const combineOrderHistoryTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
-      const isMakerOnlyOrder = type === 'maker-only'
+      const isMakerOnlyOrder = orderType === 'maker-only'
       const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
