@@ -1564,6 +1564,9 @@ export const combineOpenOrdersTable = (
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
+
+      const isMarketOrMakerOrder = price === 0 && (/market/.test(type) || isMakerOnlyOrder)
+
       return {
         id: `${orderId}${timestamp}${origQty}${marketId}`,
         pair: {
@@ -1613,7 +1616,7 @@ export const combineOpenOrdersTable = (
           },
         },
         price: {
-          render: !+price ? price : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: !+price ? price : isMarketOrMakerOrder ? 'market' : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1754,6 +1757,7 @@ export const combineOrderHistoryTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
+      const isMakerOnlyOrder = type === 'maker-only'
       const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
@@ -1774,6 +1778,8 @@ export const combineOrderHistoryTable = (
             (!isBuyTypeOrder(side) && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
+
+      const isMarketOrMakerOrder = price === 0 && (/market/.test(type) || isMakerOnlyOrder)
 
       return {
         id: `${orderId}_${timestamp}_${origQty}`,
@@ -1829,7 +1835,7 @@ export const combineOrderHistoryTable = (
         //   contentToSort: +average,
         // },
         price: {
-          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: isMarketOrMakerOrder ? 'market' : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
