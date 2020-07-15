@@ -1547,7 +1547,7 @@ export const combineOpenOrdersTable = (
 
       type = type.toLowerCase().replace(/-/g, '_')
 
-      const rawStopPrice = +stopPrice
+      const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
       const triggerConditionsFormatted =
         triggerConditions === '-'
