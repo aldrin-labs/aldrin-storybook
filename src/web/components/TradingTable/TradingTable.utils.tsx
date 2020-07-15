@@ -1565,7 +1565,7 @@ export const combineOpenOrdersTable = (
           : `<= ${triggerConditions}`
 
 
-      const isMarketOrMakerOrder = price === 0 && (/market/.test(type) || isMakerOnlyOrder)
+      const isMarketOrMakerOrder = price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
       return {
         id: `${orderId}${timestamp}${origQty}${marketId}`,
@@ -1616,7 +1616,7 @@ export const combineOpenOrdersTable = (
           },
         },
         price: {
-          render: !+price ? price : isMarketOrMakerOrder ? 'market' : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: isMarketOrMakerOrder ? 'market' : !+price ? price : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1779,7 +1779,7 @@ export const combineOrderHistoryTable = (
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
 
-      const isMarketOrMakerOrder = price === 0 && (/market/.test(type) || isMakerOnlyOrder)
+      const isMarketOrMakerOrder = price === 0 && (!!type.match(/market/)|| isMakerOnlyOrder)
 
       return {
         id: `${orderId}_${timestamp}_${origQty}`,
