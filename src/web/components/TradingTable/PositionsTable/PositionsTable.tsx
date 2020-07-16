@@ -37,7 +37,6 @@ import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 
 import { EditMarginPopup } from './EditMarginPopup'
@@ -150,6 +149,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       )
     }
 
+    // ux improve to show result before
+    showOrderResult(
+      { status: 'success', message: 'Order placed', orderId: '0' },
+      cancelOrder,
+      marketType
+    )
+
     const positionsData = combinePositionsTable({
       data,
       createOrderWithStatus: this.createOrderWithStatus,
@@ -172,8 +178,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     })
 
     const result = await this.createOrder(variables)
-    await showOrderResult(result, cancelOrder, marketType)
     if (result.status === 'error') {
+      showOrderResult(result, cancelOrder, marketType)
       await this.props.clearCanceledOrders()
     }
     // here we disable SM if you closed position manually
@@ -205,23 +211,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     } catch (err) {
       return { errors: err }
     }
-  }
-
-  cancelOrderWithStatus = async (
-    keyId: string,
-    orderId: string,
-    pair: string
-  ) => {
-    const { showCancelResult } = this.props
-
-    const result = await this.onCancelOrder(keyId, orderId, pair)
-    const status = await cancelOrderStatus(result)
-
-    if (status.result === 'error') {
-      await this.props.clearCanceledOrders()
-    }
-
-    showCancelResult(status)
   }
 
   modifyIsolatedMargin = async ({
