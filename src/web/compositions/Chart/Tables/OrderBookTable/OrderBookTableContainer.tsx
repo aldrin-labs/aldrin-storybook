@@ -5,7 +5,10 @@ import QueryRenderer from '@core/components/QueryRenderer'
 import { getLoginStatus } from '@core/utils/auth.utils'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
-import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
+import {
+  filterOpenOrders,
+  updateOpenOrderHistoryQuerryFunction,
+} from '@sb/components/TradingTable/TradingTable.utils'
 
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
@@ -92,6 +95,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     } = getOpenOrderHistoryQuery || {
       getOpenOrderHistory: { orders: [], count: 0 },
     }
+
+    const openOrders = getOpenOrderHistory.orders.filter((order) =>
+      filterOpenOrders({ order, canceledOrders: [] })
+    )
     const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
 
     return (
@@ -149,7 +156,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           onButtonClick={onButtonClick}
-          openOrderHistory={getOpenOrderHistory.orders}
+          openOrderHistory={openOrders}
           currencyPair={currencyPair}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
@@ -174,7 +181,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
-          openOrderHistory={getOpenOrderHistory.orders}
+          openOrderHistory={openOrders}
           currencyPair={currencyPair}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}

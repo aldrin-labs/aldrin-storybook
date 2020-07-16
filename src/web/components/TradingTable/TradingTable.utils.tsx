@@ -294,10 +294,11 @@ const getActiveOrderStatus = ({
 
 export const filterOpenOrders = ({ order, canceledOrders }) => {
   return (
-    !canceledOrders.includes(order.info.orderId) &&
+    !canceledOrders.includes(order.id) &&
     // sometimes we don't have order.type, also we want to filter market orders
     (!order.type || (order.type && order.type !== 'market')) &&
-    (order.status === 'open' || order.status === 'placing')
+    (order.status === 'open' || order.status === 'placing') &&
+    order.symbol
   )
 }
 

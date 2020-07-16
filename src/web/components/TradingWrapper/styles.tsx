@@ -132,8 +132,8 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
 ))`
   height: auto;
   font-size: 1.3rem;
-  font-weight: bold;
-  letter-spacing: 0.1rem;
+  font-weight: normal;
+  letter-spacing: 0.05rem;
   width: 33.3%;
   background-color: ${(props) => (props.isActive ? '#5C8CEA' : '#f2f4f6')};
   color: ${(props) => (props.isActive ? '#fff' : '#16253D')};
@@ -144,10 +144,7 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   padding: 0.7rem 0 0.5rem 0;
 
   &:hover {
-    // background-color: #5c8cea;
     cursor: pointer;
-    // color: #fff;
-    // border: 0.1rem solid #5c8cea;
   }
 
   &:focus {
