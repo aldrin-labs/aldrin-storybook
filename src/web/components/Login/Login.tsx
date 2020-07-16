@@ -8,7 +8,7 @@ import { withTheme } from '@material-ui/styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import * as CLIENT_API_MUTATIONS from '@core/graphql/mutations/login'
 import { GET_LOGIN_DATA } from '@core/graphql/queries/login/GET_LOGIN_DATA'
-import { handleLogout } from '@core/utils/loginUtils'
+import { handleLogout, checkLoginStatus } from '@core/utils/loginUtils'
 
 import { SignUpButton, SignInLink, SignUpLink } from '@sb/components'
 import { LoginMenu } from '@sb/components/LoginMenu'
@@ -39,7 +39,7 @@ class LoginClassComponent extends React.Component<Props> {
       location: { pathname },
       joyridePage,
     } = this.props
-    const loginStatus = Boolean(syncStorage.getItem('loginStatus'))
+    const loginStatus = checkLoginStatus()
 
     return (
       <SWrapper className="LoginButton">

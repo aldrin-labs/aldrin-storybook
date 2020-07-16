@@ -689,7 +689,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           >
             <Grid xs={12} item container alignItems="center">
               <SendButton
-                disabled={orderIsCreating === operationType}
+                // disabled={orderIsCreating === operationType}
                 type={operationType}
                 onClick={async () => {
                   const result = await validateForm()
@@ -699,25 +699,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   }
                 }}
               >
-                {orderIsCreating === operationType ? (
-                  <div>
-                    <Loading
-                      color={'#fff'}
-                      size={24}
-                      style={{ height: '24px' }}
-                    />
-                  </div>
-                ) : isSPOTMarket ? (
-                  operationType === 'buy' ? (
-                    `buy ${pair[0]}`
-                  ) : (
-                    `sell ${pair[0]}`
-                  )
-                ) : operationType === 'buy' ? (
-                  'long'
-                ) : (
-                  'short'
-                )}
+                {isSPOTMarket
+                  ? operationType === 'buy'
+                    ? `buy ${pair[0]}`
+                    : `sell ${pair[0]}`
+                  : operationType === 'buy'
+                  ? 'long'
+                  : 'short'}
               </SendButton>
             </Grid>
           </Grid>
@@ -892,7 +880,19 @@ const formikEnhancer = withFormik<IProps, FormValues>({
               amount: values.amount,
             }
 
-      await props.addLoaderToButton(byType)
+      const successResult = {
+        status: 'success',
+        message: 'Order placed',
+        orderId: '0',
+      }
+
+      props.showOrderResult(
+        successResult,
+        props.cancelOrder,
+        isSPOTMarket ? 0 : 1
+      )
+
+      // await props.addLoaderToButton(byType)
 
       const result = await props.confirmOperation(
         byType,
@@ -906,6 +906,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           ...(priceType !== 'market'
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
+              : orderMode === 'postOnly'
+              ? { timeInForce: TIFMode, postOnly: true }
               : { postOnly: true }
             : {}),
           ...(priceType === 'stop-limit' || priceType === 'stop-market'
@@ -918,12 +920,14 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         }
       )
 
-      await props.showOrderResult(
-        result,
-        props.cancelOrder,
-        isSPOTMarket ? 0 : 1
-      )
-      await await props.addLoaderToButton(false)
+      if (result.status === 'error' || !result.orderId) {
+        await props.showOrderResult(
+          result,
+          props.cancelOrder,
+          isSPOTMarket ? 0 : 1
+        )
+      }
+      // await await props.addLoaderToButton(false)
       setSubmitting(false)
     }
   },

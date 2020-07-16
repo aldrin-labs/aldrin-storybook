@@ -2,7 +2,7 @@ import React, { Component, ChangeEvent } from 'react'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 
-import { getLoginStatus } from '@core/utils/auth.utils'
+import { checkLoginStatus } from '@core/utils/loginUtils'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import {
@@ -193,7 +193,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 }
 
 const APIWrapper = (props) => {
-  const authenticated = getLoginStatus()
+  const authenticated = checkLoginStatus()
 
   return (
     <QueryRenderer

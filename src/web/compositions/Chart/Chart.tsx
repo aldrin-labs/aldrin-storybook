@@ -27,10 +27,15 @@ import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import {
   prefetchCoinSelector,
   prefetchDifferentMarketForCoinSelector,
+  prefetchPortfolio,
+  prefetchPortfolioMainSpot,
+  prefetchPortfolioMainFutures,
+  prefetchDeposit,
 } from '@core/utils/prefetching'
+import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
-import { getLoginStatus } from '@core/utils/auth.utils'
+import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
@@ -52,6 +57,22 @@ function ChartPageComponent(props: any) {
         exchangeSymbol: 'binance',
       })
     }, 15000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchPortfolio)
+    }, 30000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchPortfolioMainSpot)
+    }, 45000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchPortfolioMainFutures)
+    }, 55000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchDeposit)
+    }, 75000)
 
     return () => {
       document.title = 'Cryptocurrencies AI'
@@ -274,7 +295,7 @@ function ChartPageComponent(props: any) {
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
   console.log('memo func chart page')
 
-  const isAuthenticatedUser = getLoginStatus()
+  const isAuthenticatedUser = checkLoginStatus()
 
   if (!isAuthenticatedUser) {
     return false

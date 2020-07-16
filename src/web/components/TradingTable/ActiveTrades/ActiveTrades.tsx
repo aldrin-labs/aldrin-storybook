@@ -398,7 +398,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     if (
       prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
-      prevProps.allKeys !== this.props.allKeys
+      prevProps.allKeys !== this.props.allKeys ||
+      prevProps.marketType !== this.props.marketType
     ) {
       const {
         marketType,
@@ -922,27 +923,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             },
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
-          title={
-            <div>
-              <TradingTabs
-                {...{
-                  tab,
-                  marketType,
-                  selectedKey,
-                  currencyPair,
-                  canceledOrders,
-                  handleTabChange,
-                  arrayOfMarketIds,
-                  showAllPositionPairs,
-                  showAllOpenOrderPairs,
-                  showAllSmartTradePairs,
-                  showPositionsFromAllAccounts,
-                  showOpenOrdersFromAllAccounts,
-                  showSmartTradesFromAllAccounts,
-                }}
-              />
-            </div>
-          }
           data={{ body: activeStrategiesProcessedData }}
           columnNames={getTableHead(tab, marketType)}
         />
@@ -954,14 +934,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 const LastTradeWrapper = ({ ...props }) => {
   let unsubscribe: undefined | Function = undefined
 
-  const [page, handleChangePage] = useState(0)
-  const [perPage, handleChangeRowsPerPageFunc] = useState(30)
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    handleChangeRowsPerPageFunc(+event.target.value)
-  }
+  const { page, handleChangePage, perPage, handleChangeRowsPerPage } = props
 
   useEffect(() => {
     unsubscribe && unsubscribe()
@@ -1043,7 +1016,32 @@ const TableDataWrapper = ({ ...props }) => {
 }
 
 const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
-  if (!nextProps.show && !prevProps.show) {
+  // TODO: Refactor isShowEqual --- not so clean
+  const isShowEqual = !nextProps.show && !prevProps.show
+  const showAllAccountsEqual =
+    prevProps.showOpenOrdersFromAllAccounts ===
+    nextProps.showOpenOrdersFromAllAccounts
+  const showAllPairsEqual =
+    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+  // TODO: here must be smart condition if specificPair is not changed
+  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
+  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
+  const selectedKeyIsEqual =
+    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
+  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
+  const pageIsEqual = prevProps.page === nextProps.page
+  const perPageIsEqual = prevProps.perPage === nextProps.perPage
+
+  if (
+    isShowEqual &&
+    showAllAccountsEqual &&
+    showAllPairsEqual &&
+    pairIsEqual &&
+    selectedKeyIsEqual &&
+    isMarketIsEqual &&
+    pageIsEqual &&
+    perPageIsEqual
+  ) {
     return true
   }
 
