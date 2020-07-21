@@ -560,7 +560,7 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liquidationPrice, pricePrecision)} ${
+            render: `${liquidationPrice} ${
               pair[1]
             }`,
             style: {

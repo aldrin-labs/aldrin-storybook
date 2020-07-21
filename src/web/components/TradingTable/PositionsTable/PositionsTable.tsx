@@ -135,6 +135,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       setPositionWasClosedMutation,
       handlePairChange,
       addOrderToCanceled,
+      clearCanceledOrders
     } = this.props
 
     let data = getActivePositionsQuery.getActivePositions
@@ -148,6 +149,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       data = getActivePositionsQuery.getActivePositions.filter(
         (p) => p._id !== positionId
       )
+      setTimeout(() => clearCanceledOrders(), 5000)
     }
 
     const positionsData = combinePositionsTable({
