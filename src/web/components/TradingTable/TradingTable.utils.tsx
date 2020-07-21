@@ -526,7 +526,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${
+            render: `${entryPrice} ${
               pair[1]
             }`,
             style: {
@@ -821,12 +821,12 @@ export const combineActiveTradesTable = ({
             <SubColumnValue>
               <div style={{ color: '#7284A0' }}>trailing</div>{' '}
               <div>
-                <span style={{ color: '#7284A0' }}>from</span> {activatePrice}
+                <span style={{ color: '#7284A0' }}>from</span> {stripDigitPlaces(activatePrice, 8)}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
             <SubColumnValue>
-              {entryOrderPrice} {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, 8)} {pairArr[1]}
             </SubColumnValue>
           ) : (
             '-'
