@@ -531,7 +531,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       })
     }
 
-    const newOrderFromSubscriptionDerived = getActiveStrategiesQuery.getActiveStrategies.strategies.find(s => s._id === newOrderFromSubscription._id)
+    const newOrderFromSubscriptionDerived = getActiveStrategiesQuery.getActiveStrategies.strategies.find(s => newOrderFromSubscription && s._id === newOrderFromSubscription._id)
 
     // no need to cached order coz of real
     if (newOrderFromSubscription && newOrderFromSubscriptionDerived) {
