@@ -1,6 +1,7 @@
 import { Key } from '@core/types/ChartTypes'
 
 export interface IProps {
+  history: History
   showCancelResult: ({
     status,
     message,
@@ -38,4 +39,12 @@ export interface IState {
   showPositionsFromAllAccounts: boolean
   showOpenOrdersFromAllAccounts: boolean
   showSmartTradesFromAllAccounts: boolean
+  pageOpenOrders: number
+  perPageOpenOrders: number
+  pagePositions: number
+  perPagePositions: number
+  pageSmartTrades: number
+  perPageSmartTrades: number
 }
+
+export type IStateKeys = keyof IState;

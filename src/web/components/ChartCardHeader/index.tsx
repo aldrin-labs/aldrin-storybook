@@ -7,11 +7,11 @@ import { Title } from '@sb/components/OldTable/Table'
 export const CardTitle = styled(TypographyFullWidth)`
   font-family: DM Sans;
   font-style: normal;
-  font-weight: bold;
+  font-weight: normal;
   line-height: 1rem;
-  text-transform: uppercase;
-  letter-spacing: auto;
-  font-size: 1rem;
+  text-transform: capitalize;
+  letter-spacing: 0.01rem;
+  font-size: 1.3rem;
   text-align: center;
   color: #16253d;
 `
