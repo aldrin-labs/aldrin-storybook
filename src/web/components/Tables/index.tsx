@@ -647,7 +647,7 @@ const CustomTable = (props: Props) => {
         borderRadius: 'inherit',
         overflow: 'hidden scroll',
         ...style,
-        ...(enabledPagination ? { height: 'calc(100% - 3rem)' } : {}),
+        ...(enabledPagination ? { height: 'calc(100% - 6rem)' } : {}),
       }}
     >
       <StyledTable

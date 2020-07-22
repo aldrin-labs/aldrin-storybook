@@ -56,7 +56,8 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     if (
       prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
-      prevProps.allKeys !== this.props.allKeys
+      prevProps.allKeys !== this.props.allKeys ||
+      prevProps.marketType !== this.props.marketType
     ) {
       const {
         startDate,
@@ -211,23 +212,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={
           <div>
-            <TradingTabs
-              {...{
-                tab,
-                marketType,
-                selectedKey,
-                currencyPair,
-                canceledOrders,
-                handleTabChange,
-                arrayOfMarketIds,
-                showAllPositionPairs,
-                showAllOpenOrderPairs,
-                showAllSmartTradePairs,
-                showPositionsFromAllAccounts,
-                showOpenOrdersFromAllAccounts,
-                showSmartTradesFromAllAccounts,
-              }}
-            />
             <TradingTitle
               {...{
                 page,
@@ -305,7 +289,36 @@ const TableDataWrapper = ({ ...props }) => {
 }
 
 export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
-  if (!nextProps.show && !prevProps.show) {
+  // TODO: Refactor isShowEqual --- not so clean
+  const isShowEqual = !nextProps.show && !prevProps.show
+  const showAllAccountsEqual =
+    prevProps.showOpenOrdersFromAllAccounts ===
+    nextProps.showOpenOrdersFromAllAccounts
+  const showAllPairsEqual =
+    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+  // TODO: here must be smart condition if specificPair is not changed
+  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
+  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
+  const selectedKeyIsEqual =
+    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
+  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
+  const startDateIsEqual = +prevProps.startDate === +nextProps.startDate
+  const endDateIsEqual = +prevProps.endDate === +nextProps.endDate
+  const pageIsEqual = prevProps.page === nextProps.page
+  const perPageIsEqual = prevProps.perPage === nextProps.perPage
+
+  if (
+    isShowEqual &&
+    showAllAccountsEqual &&
+    showAllPairsEqual &&
+    pairIsEqual &&
+    selectedKeyIsEqual &&
+    isMarketIsEqual &&
+    startDateIsEqual &&
+    endDateIsEqual &&
+    pageIsEqual &&
+    perPageIsEqual
+  ) {
     return true
   }
 

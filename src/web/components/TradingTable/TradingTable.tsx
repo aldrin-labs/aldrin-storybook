@@ -5,8 +5,9 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import withAuth from '@core/hoc/withAuth'
 
 import { Key } from '@core/types/ChartTypes'
-import { IProps, IState } from './TradingTable.types'
+import { IProps, IState, IStateKeys } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
+import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
 import ActiveTrades from './ActiveTrades/ActiveTrades'
 import PositionsTable from './PositionsTable/PositionsTable'
@@ -30,9 +31,29 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     showPositionsFromAllAccounts: true,
     showOpenOrdersFromAllAccounts: true,
     showSmartTradesFromAllAccounts: true,
+    pageOpenOrders: 0,
+    perPageOpenOrders: 30,
+    pagePositions: 0,
+    perPagePositions: 30,
+    pageSmartTrades: 0,
+    perPageSmartTrades: 30,
   }
 
-  handlePairChange = (value) => {
+  handleChangePage = (tab: IStateKeys, value: number) => {
+    this.setState(({ [tab]: value } as unknown) as Pick<IState, keyof IState>)
+  }
+
+  handleChangeRowsPerPage = (
+    tab: IStateKeys,
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    this.setState(({ [tab]: +event.target.value } as unknown) as Pick<
+      IState,
+      keyof IState
+    >)
+  }
+
+  handlePairChange = (value: string) => {
     const { history, marketType } = this.props
 
     const chartPageType = marketType === 0 ? 'spot' : 'futures'
@@ -65,6 +86,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       showPositionsFromAllAccounts,
       showOpenOrdersFromAllAccounts,
       showSmartTradesFromAllAccounts,
+      pageOpenOrders,
+      perPageOpenOrders,
+      pagePositions,
+      perPagePositions,
+      pageSmartTrades,
+      perPageSmartTrades,
     } = this.state
 
     console.log('TradingTable render')
@@ -109,6 +136,29 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
         }}
       >
+        <TradingTabs
+          {...{
+            tab,
+            marketType,
+            selectedKey,
+            currencyPair,
+            canceledOrders,
+            handleTabChange: this.handleTabChange,
+            arrayOfMarketIds,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            pageOpenOrders,
+            perPageOpenOrders,
+            pagePositions,
+            perPagePositions,
+            pageSmartTrades,
+            perPageSmartTrades,
+          }}
+        />
         <ActiveTrades
           {...{
             tab,
@@ -127,6 +177,9 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showPositionsFromAllAccounts,
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
+            show: tab === 'activeTrades',
+            page: pageSmartTrades,
+            perPage: perPageSmartTrades,
             handleToggleAllKeys: () =>
               this.setState((prev) => ({
                 showSmartTradesFromAllAccounts: !prev.showSmartTradesFromAllAccounts,
@@ -135,7 +188,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
               this.setState((prev) => ({
                 showAllSmartTradePairs: !prev.showAllSmartTradePairs,
               })),
-            show: tab === 'activeTrades',
+            handleChangePage: (value: number) =>
+              this.handleChangePage('pageSmartTrades', value),
+            handleChangeRowsPerPage: (
+              event: React.ChangeEvent<HTMLSelectElement>
+            ) => this.handleChangeRowsPerPage('perPageSmartTrades', event),
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
             addOrderToCanceled: this.addOrderToCanceled,
@@ -183,6 +240,9 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showPositionsFromAllAccounts,
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
+            page: pagePositions,
+            perPage: perPagePositions,
+            show: tab === 'positions',
             handleToggleAllKeys: () =>
               this.setState((prev) => ({
                 showPositionsFromAllAccounts: !prev.showPositionsFromAllAccounts,
@@ -191,7 +251,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
               this.setState((prev) => ({
                 showAllPositionPairs: !prev.showAllPositionPairs,
               })),
-            show: tab === 'positions',
+            handleChangePage: (value: number) =>
+              this.handleChangePage('pagePositions', value),
+            handleChangeRowsPerPage: (
+              event: React.ChangeEvent<HTMLSelectElement>
+            ) => this.handleChangeRowsPerPage('perPagePositions', event),
             handleTabChange: this.handleTabChange,
             showOrderResult: this.props.showOrderResult,
             showCancelResult: this.props.showCancelResult,
@@ -215,6 +279,9 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showPositionsFromAllAccounts,
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
+            page: pageOpenOrders,
+            perPage: perPageOpenOrders,
+            show: tab === 'openOrders',
             handleToggleAllKeys: () =>
               this.setState((prev) => ({
                 showOpenOrdersFromAllAccounts: !prev.showOpenOrdersFromAllAccounts,
@@ -223,7 +290,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
               this.setState((prev) => ({
                 showAllOpenOrderPairs: !prev.showAllOpenOrderPairs,
               })),
-            show: tab === 'openOrders',
+            handleChangePage: (value: number) =>
+              this.handleChangePage('pageOpenOrders', value),
+            handleChangeRowsPerPage: (
+              event: React.ChangeEvent<HTMLSelectElement>
+            ) => this.handleChangeRowsPerPage('perPageOpenOrders', event),
             handleTabChange: this.handleTabChange,
             showCancelResult: this.props.showCancelResult,
             clearCanceledOrders: this.clearCanceledOrders,

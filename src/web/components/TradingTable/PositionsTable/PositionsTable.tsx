@@ -37,7 +37,6 @@ import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 
 import { EditMarginPopup } from './EditMarginPopup'
@@ -135,6 +134,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       setPositionWasClosedMutation,
       handlePairChange,
       addOrderToCanceled,
+      clearCanceledOrders
     } = this.props
 
     let data = getActivePositionsQuery.getActivePositions
@@ -148,7 +148,15 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       data = getActivePositionsQuery.getActivePositions.filter(
         (p) => p._id !== positionId
       )
+      setTimeout(() => clearCanceledOrders(), 5000)
     }
+
+    // ux improve to show result before
+    showOrderResult(
+      { status: 'success', message: 'Order placed', orderId: '0' },
+      cancelOrder,
+      marketType
+    )
 
     const positionsData = combinePositionsTable({
       data,
@@ -172,8 +180,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     })
 
     const result = await this.createOrder(variables)
-    await showOrderResult(result, cancelOrder, marketType)
     if (result.status === 'error') {
+      showOrderResult(result, cancelOrder, marketType)
       await this.props.clearCanceledOrders()
     }
     // here we disable SM if you closed position manually
@@ -205,23 +213,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     } catch (err) {
       return { errors: err }
     }
-  }
-
-  cancelOrderWithStatus = async (
-    keyId: string,
-    orderId: string,
-    pair: string
-  ) => {
-    const { showCancelResult } = this.props
-
-    const result = await this.onCancelOrder(keyId, orderId, pair)
-    const status = await cancelOrderStatus(result)
-
-    if (status.result === 'error') {
-      await this.props.clearCanceledOrders()
-    }
-
-    showCancelResult(status)
   }
 
   modifyIsolatedMargin = async ({
@@ -700,27 +691,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             },
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
-          title={
-            <div>
-              <TradingTabs
-                {...{
-                  tab,
-                  marketType,
-                  selectedKey,
-                  currencyPair,
-                  canceledOrders,
-                  handleTabChange,
-                  arrayOfMarketIds,
-                  showAllPositionPairs,
-                  showAllOpenOrderPairs,
-                  showAllSmartTradePairs,
-                  showPositionsFromAllAccounts,
-                  showOpenOrdersFromAllAccounts,
-                  showSmartTradesFromAllAccounts,
-                }}
-              />
-            </div>
-          }
           rowsWithHover={false}
           data={{ body: positionsData }}
           columnNames={getTableHead(
@@ -789,7 +759,32 @@ const TableDataWrapper = ({ ...props }) => {
 }
 
 const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
-  if (!nextProps.show && !prevProps.show) {
+  // TODO: Refactor isShowEqual --- not so clean
+  const isShowEqual = !nextProps.show && !prevProps.show
+  const showAllAccountsEqual =
+    prevProps.showOpenOrdersFromAllAccounts ===
+    nextProps.showOpenOrdersFromAllAccounts
+  const showAllPairsEqual =
+    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+  // TODO: here must be smart condition if specificPair is not changed
+  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
+  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
+  const selectedKeyIsEqual =
+    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
+  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
+  const pageIsEqual = prevProps.page === nextProps.page
+  const perPageIsEqual = prevProps.perPage === nextProps.perPage
+
+  if (
+    isShowEqual &&
+    showAllAccountsEqual &&
+    showAllPairsEqual &&
+    pairIsEqual &&
+    selectedKeyIsEqual &&
+    // isMarketIsEqual &&
+    pageIsEqual &&
+    perPageIsEqual
+  ) {
     return true
   }
 

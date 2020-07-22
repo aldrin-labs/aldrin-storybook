@@ -188,7 +188,7 @@ export const Balances = ({
           }}
         >
           <>
-            Balances{' '}
+            Balance{' '}
             {!isSPOTMarket && (
               <UpdateFuturesBalances keyId={selectedKey.keyId} />
             )}

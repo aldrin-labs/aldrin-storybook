@@ -526,7 +526,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${stripDigitPlaces(entryPrice, pricePrecision)} ${
+            render: `${entryPrice} ${
               pair[1]
             }`,
             style: {
@@ -560,7 +560,7 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${stripDigitPlaces(liquidationPrice, pricePrecision)} ${
+            render: `${liquidationPrice} ${
               pair[1]
             }`,
             style: {
@@ -821,12 +821,12 @@ export const combineActiveTradesTable = ({
             <SubColumnValue>
               <div style={{ color: '#7284A0' }}>trailing</div>{' '}
               <div>
-                <span style={{ color: '#7284A0' }}>from</span> {activatePrice}
+                <span style={{ color: '#7284A0' }}>from</span> {stripDigitPlaces(activatePrice, 8)}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
             <SubColumnValue>
-              {entryOrderPrice} {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, 8)} {pairArr[1]}
             </SubColumnValue>
           ) : (
             '-'
@@ -1547,7 +1547,7 @@ export const combineOpenOrdersTable = (
 
       type = type.toLowerCase().replace(/-/g, '_')
 
-      const rawStopPrice = +stopPrice
+      const rawStopPrice = (el.info && +el.info.stopPrice) || +el.stopPrice
       const triggerConditions = +rawStopPrice ? rawStopPrice : '-'
       const triggerConditionsFormatted =
         triggerConditions === '-'
@@ -1563,6 +1563,9 @@ export const combineOpenOrdersTable = (
             (!isBuyTypeOrder(orderSide) && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
+
+      const isMarketOrMakerOrder =
+        price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
       return {
         id: `${orderId}${timestamp}${origQty}${marketId}`,
@@ -1613,7 +1616,11 @@ export const combineOpenOrdersTable = (
           },
         },
         price: {
-          render: !+price ? price : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: isMarketOrMakerOrder
+            ? 'market'
+            : !+price
+            ? price
+            : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1754,6 +1761,7 @@ export const combineOrderHistoryTable = (
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
+      const isMakerOnlyOrder = orderType === 'maker-only'
       const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
       const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
@@ -1774,6 +1782,9 @@ export const combineOrderHistoryTable = (
             (!isBuyTypeOrder(side) && type === 'take_profit')
           ? `>= ${triggerConditions}`
           : `<= ${triggerConditions}`
+
+      const isMarketOrMakerOrder =
+        price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
       return {
         id: `${orderId}_${timestamp}_${origQty}`,
@@ -1829,7 +1840,9 @@ export const combineOrderHistoryTable = (
         //   contentToSort: +average,
         // },
         price: {
-          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: isMarketOrMakerOrder
+            ? 'market'
+            : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
@@ -2215,6 +2228,11 @@ export const updateStrategiesHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
+  console.log(
+    'updateStrategiesHistoryQuerryFunction subscriptionData',
+    subscriptionData
+  )
+
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
 
@@ -2371,6 +2389,11 @@ export const updateOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
+  console.log(
+    'updateOrderHistoryQuerryFunction subscriptionData',
+    subscriptionData
+  )
+
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
@@ -2423,6 +2446,10 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
+  console.log(
+    'updatePaginatedOrderHistoryQuerryFunction subscriptionData',
+    subscriptionData
+  )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
