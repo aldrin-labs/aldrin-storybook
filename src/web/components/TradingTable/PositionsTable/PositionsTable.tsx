@@ -330,7 +330,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   subscribe() {
     const that = this
 
-    console.log('subscribe', this.getPairsWithPositions())
+    // console.log('subscribe', this.getPairsWithPositions())
     this.subscription = client
       .subscribe({
         query: LISTEN_MARK_PRICES,
@@ -596,7 +596,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   }
 
   updatePositionsHandler = (silent: boolean = false) => {
-    console.log(`this.updatePositionsHandler fired`)
+    // console.log(`this.updatePositionsHandler fired`)
     const { updatePositionMutation, selectedKey } = this.props
 
     if (!silent) {

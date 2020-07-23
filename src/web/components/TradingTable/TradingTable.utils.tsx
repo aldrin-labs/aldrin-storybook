@@ -2169,10 +2169,10 @@ export const updateActiveStrategiesQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateActiveStrategiesQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateActiveStrategiesQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
@@ -2228,10 +2228,10 @@ export const updateStrategiesHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateStrategiesHistoryQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateStrategiesHistoryQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
@@ -2273,10 +2273,10 @@ export const updateActivePositionsQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateActivePositionsQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateActivePositionsQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
 
@@ -2318,10 +2318,10 @@ export const updateOpenOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateOpenOrderHistoryQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateOpenOrderHistoryQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
@@ -2389,10 +2389,10 @@ export const updateOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateOrderHistoryQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateOrderHistoryQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
@@ -2446,10 +2446,10 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updatePaginatedOrderHistoryQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updatePaginatedOrderHistoryQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
@@ -2503,10 +2503,10 @@ export const updateTradeHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateTradeHistoryQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateTradeHistoryQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenTradeHistory
