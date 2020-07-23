@@ -501,7 +501,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       if (crossPositionsNew.length >= 2 || crossPositionsPrev.length >= 2) {
         if (!this.refetchPositionsIntervalId) {
           this.refetchPositionsIntervalId = setInterval(() => {
-            this.updatePositionsHandler()
+            this.updatePositionsHandler(true)
           }, 30000)
         }
       }
