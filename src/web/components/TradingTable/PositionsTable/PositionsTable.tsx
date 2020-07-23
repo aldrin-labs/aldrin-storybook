@@ -57,6 +57,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
   subscription: null | { unsubscribe: () => void } = null
 
+  refetchPositionsIntervalId: null | Timeout = null
+
   createOrder = async (variables) => {
     const { createOrderMutation, selectedKey } = this.props
     const hedgeMode = selectedKey.hedgeMode
@@ -445,6 +447,19 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     })
 
     this.unsubscribeFunction = subscribeToMore()
+
+    const crossPositionsNew = this.props.getActivePositionsQuery.getActivePositions.filter(
+      (position) =>
+        position.positionAmt !== 0 && position.marginType === 'cross'
+    )
+    // if positions more than 2 they may affect each other bcz of shared balance between them
+    if (crossPositionsNew.length >= 2) {
+      if (!this.refetchPositionsIntervalId) {
+        this.refetchPositionsIntervalId = setInterval(() => {
+          this.updatePositionsHandler()
+        }, 30000)
+      }
+    }
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -469,6 +484,31 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {
       this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
       this.subscribeFunds()
+    }
+
+    if (prevPositions.length !== newPositions.length) {
+      const crossPositionsNew = newPositions.filter(
+        (position) => position.marginType === 'cross'
+      )
+      const crossPositionsPrev = prevPositions.filter(
+        (position) => position.marginType === 'cross'
+      )
+
+      // if positions more than 2 they may affect each other bcz of shared balance between them
+      if (crossPositionsNew.length >= 2 || crossPositionsPrev.length >= 2) {
+        if (!this.refetchPositionsIntervalId) {
+          this.refetchPositionsIntervalId = setInterval(() => {
+            this.updatePositionsHandler()
+          }, 30000)
+        }
+      }
+
+      // if no positions currently
+      if (crossPositionsNew.length === 0) {
+        if (this.refetchPositionsIntervalId) {
+          clearInterval(this.refetchPositionsIntervalId)
+        }
+      }
     }
 
     if (
@@ -505,6 +545,10 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     // unsubscribe subscription
     if (this.unsubscribeFunction !== null) {
       this.unsubscribeFunction()
+    }
+
+    if (this.refetchPositionsIntervalId) {
+      clearInterval(this.refetchPositionsIntervalId)
     }
 
     this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
@@ -548,12 +592,15 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     })
   }
 
-  updatePositionsHandler = () => {
+  updatePositionsHandler = (silent: boolean = false) => {
+    console.log(`this.updatePositionsHandler fired`)
     const { updatePositionMutation, selectedKey } = this.props
 
-    this.setState({
-      positionsRefetchInProcess: true,
-    })
+    if (!silent) {
+      this.setState({
+        positionsRefetchInProcess: true,
+      })
+    }
 
     updatePositionMutation({
       variables: {
@@ -563,12 +610,19 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       },
     })
       .then((res) => {
+        if (silent) {
+          return
+        }
+
         this.showPositionsStatus({
           status: res.data.updatePosition.status,
           errorMessage: res.data.updatePosition.errorMessage,
         })
       })
       .catch((e) => {
+        if (silent) {
+          return
+        }
         this.showPositionsStatus({ status: 'ERR', errorMessage: e.message })
       })
   }
