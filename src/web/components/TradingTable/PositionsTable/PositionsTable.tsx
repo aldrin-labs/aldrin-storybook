@@ -457,8 +457,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     // if positions more than 2 they may affect each other bcz of shared balance between them
     if (crossPositionsNew.length >= 2) {
       if (!this.refetchPositionsIntervalId) {
+        this.updatePositionsHandler(true)
         this.refetchPositionsIntervalId = setInterval(() => {
-          this.updatePositionsHandler()
+          this.updatePositionsHandler(true)
         }, 30000)
       }
     }
