@@ -6,6 +6,7 @@ export type Position = {
   positionAmt: number
   symbol: string
   leverage: number
+  marginType: 'isolated' | 'cross'
 }
 
 export interface IProps {
