@@ -487,7 +487,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             const cachedOrderDate = cachedOrder.createdAt
 
             // TODO: Maybe I'm wrong with replacing it here with dayjs
-            return dayjs(orderDate).valueOf() > cachedOrderDate && order._id !== -1
+            return (
+              dayjs(orderDate).valueOf() > cachedOrderDate && order._id !== -1
+            )
           })
         : null
 
@@ -531,7 +533,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       })
     }
 
-    const newOrderFromSubscriptionDerived = getActiveStrategiesQuery.getActiveStrategies.strategies.find(s => newOrderFromSubscription && s._id === newOrderFromSubscription._id)
+    const newOrderFromSubscriptionDerived = getActiveStrategiesQuery.getActiveStrategies.strategies.find(
+      (s) => newOrderFromSubscription && s._id === newOrderFromSubscription._id
+    )
 
     // no need to cached order coz of real
     if (newOrderFromSubscription && newOrderFromSubscriptionDerived) {
@@ -540,10 +544,15 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     }
 
     const ordersToDisplay =
-      !(newOrderFromSubscription && newOrderFromSubscriptionDerived) && !!cachedOrder
+      !(newOrderFromSubscription && newOrderFromSubscriptionDerived) &&
+      !!cachedOrder
         ? getActiveStrategiesQuery.getActiveStrategies.strategies
             .filter((order: SmartOrder) => order._id !== '-1')
             .concat(cachedOrder)
+        : newOrderFromSubscriptionDerived
+        ? getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
+            (order: SmartOrder) => order._id !== '-1'
+          )
         : getActiveStrategiesQuery.getActiveStrategies.strategies
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
