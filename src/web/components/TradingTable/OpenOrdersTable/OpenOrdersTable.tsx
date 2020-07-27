@@ -95,7 +95,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       handlePairChange,
     } = this.props
 
-    const that = this
+    // const that = this
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       getOpenOrderHistoryQuery.getOpenOrderHistory.orders,
@@ -108,100 +108,100 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       handlePairChange
     )
 
-    client.writeQuery({
-      query: getOpenOrderHistory,
-      variables: {
-        openOrderInput: {
-          activeExchangeKey: this.props.selectedKey.keyId,
-          marketType: this.props.marketType,
-          allKeys: true,
-          page: 0,
-          perPage: 30,
-          // ...(!this.props.specificPair
-          //   ? {}
-          //   : { specificPair: this.props.currencyPair }),
-        },
-      },
-      data: {
-        getOpenOrderHistory: getOpenOrderHistoryQuery.getOpenOrderHistory,
-      },
-    })
+    // client.writeQuery({
+    //   query: getOpenOrderHistory,
+    //   variables: {
+    //     openOrderInput: {
+    //       activeExchangeKey: this.props.selectedKey.keyId,
+    //       marketType: this.props.marketType,
+    //       allKeys: true,
+    //       page: 0,
+    //       perPage: 30,
+    //       // ...(!this.props.specificPair
+    //       //   ? {}
+    //       //   : { specificPair: this.props.currencyPair }),
+    //     },
+    //   },
+    //   data: {
+    //     getOpenOrderHistory: getOpenOrderHistoryQuery.getOpenOrderHistory,
+    //   },
+    // })
 
-    client
-      .watchQuery({
-        query: getOpenOrderHistory,
-        variables: {
-          openOrderInput: {
-            activeExchangeKey: this.props.selectedKey.keyId,
-            marketType: this.props.marketType,
-            allKeys: true,
-            page: 0,
-            perPage: 30,
-          },
-        },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          // console.log('data', data)
-          const cachedOrder = data.getOpenOrderHistory.orders.find(
-            (order: OrderType) =>
-              order.marketId === '0' && order.status === 'placing'
-          )
+    // client
+    //   .watchQuery({
+    //     query: getOpenOrderHistory,
+    //     variables: {
+    //       openOrderInput: {
+    //         activeExchangeKey: this.props.selectedKey.keyId,
+    //         marketType: this.props.marketType,
+    //         allKeys: true,
+    //         page: 0,
+    //         perPage: 30,
+    //       },
+    //     },
+    //   })
+    //   .subscribe({
+    //     next: ({ data }) => {
+    //       // console.log('data', data)
+    //       const cachedOrder = data.getOpenOrderHistory.orders.find(
+    //         (order: OrderType) =>
+    //           order.marketId === '0' && order.status === 'placing'
+    //       )
 
-          const errorReturned = data.getOpenOrderHistory.orders.find(
-            (order: OrderType) =>
-              order.marketId === '0' && order.status === 'error'
-          )
+    //       const errorReturned = data.getOpenOrderHistory.orders.find(
+    //         (order: OrderType) =>
+    //           order.marketId === '0' && order.status === 'error'
+    //       )
 
-          const filteredOrders = that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
-            (order) => order.status !== 'error' && order.status !== 'placing'
-          )
+    //       const filteredOrders = that.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
+    //         (order) => order.status !== 'error' && order.status !== 'placing'
+    //       )
 
-          if ((cachedOrder && !that.state.cachedOrder) || !!errorReturned) {
-            const ordersToDisplay = errorReturned
-              ? filteredOrders
-              : filteredOrders.concat(cachedOrder)
+    //       if ((cachedOrder && !that.state.cachedOrder) || !!errorReturned) {
+    //         const ordersToDisplay = errorReturned
+    //           ? filteredOrders
+    //           : filteredOrders.concat(cachedOrder)
 
-            console.log('ordersToDisplay in cache catch func', ordersToDisplay)
+    //         console.log('ordersToDisplay in cache catch func', ordersToDisplay)
 
-            const openOrdersProcessedData = combineOpenOrdersTable(
-              ordersToDisplay,
-              that.cancelOrderWithStatus,
-              that.props.theme,
-              that.props.arrayOfMarketIds,
-              that.props.marketType,
-              that.props.canceledOrders,
-              that.props.keys,
-              that.props.handlePairChange
-            )
+    //         const openOrdersProcessedData = combineOpenOrdersTable(
+    //           ordersToDisplay,
+    //           that.cancelOrderWithStatus,
+    //           that.props.theme,
+    //           that.props.arrayOfMarketIds,
+    //           that.props.marketType,
+    //           that.props.canceledOrders,
+    //           that.props.keys,
+    //           that.props.handlePairChange
+    //         )
 
-            that.setState({
-              cachedOrder: errorReturned ? null : cachedOrder,
-              openOrdersProcessedData,
-            })
-          }
+    //         that.setState({
+    //           cachedOrder: errorReturned ? null : cachedOrder,
+    //           openOrdersProcessedData,
+    //         })
+    //       }
 
-          if (errorReturned) {
-            filterCacheData({
-              name: 'getOpenOrderHistory',
-              subName: 'orders',
-              query: getOpenOrderHistory,
-              variables: {
-                openOrderInput: {
-                  activeExchangeKey: this.props.selectedKey.keyId,
-                  marketType: this.props.marketType,
-                  allKeys: true,
-                  page: 0,
-                  perPage: 30,
-                },
-              },
-              data,
-              filterData: (order: OrderType) =>
-                order.status !== 'error' && order.status !== 'placing',
-            })
-          }
-        },
-      })
+    //       if (errorReturned) {
+    //         filterCacheData({
+    //           name: 'getOpenOrderHistory',
+    //           subName: 'orders',
+    //           query: getOpenOrderHistory,
+    //           variables: {
+    //             openOrderInput: {
+    //               activeExchangeKey: this.props.selectedKey.keyId,
+    //               marketType: this.props.marketType,
+    //               allKeys: true,
+    //               page: 0,
+    //               perPage: 30,
+    //             },
+    //           },
+    //           data,
+    //           filterData: (order: OrderType) =>
+    //             order.status !== 'error' && order.status !== 'placing',
+    //         })
+    //       }
+    //     },
+    //   })
 
     this.setState({
       openOrdersProcessedData,
