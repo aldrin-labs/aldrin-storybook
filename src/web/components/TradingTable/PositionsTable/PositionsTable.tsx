@@ -136,7 +136,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       setPositionWasClosedMutation,
       handlePairChange,
       addOrderToCanceled,
-      clearCanceledOrders
+      clearCanceledOrders,
+      updatePositionMutation
     } = this.props
 
     let data = getActivePositionsQuery.getActivePositions
@@ -183,8 +184,23 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     const result = await this.createOrder(variables)
     if (result.status === 'error') {
+      const isReduceOrderIsRejected = /-2022/.test(result.message)
+      if (isReduceOrderIsRejected) {
+
+        updatePositionMutation({
+          variables: {
+            input: {
+              keyId: selectedKey.keyId,
+            },
+          },
+        })
+
+      }
+
       showOrderResult(result, cancelOrder, marketType)
       await this.props.clearCanceledOrders()
+
+
     }
     // here we disable SM if you closed position manually
     setPositionWasClosedMutation({
