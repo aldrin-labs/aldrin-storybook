@@ -24,6 +24,7 @@ import {
   getDefaultStateFromStrategySettings,
 } from '@core/utils/chartPageUtils'
 
+import { MASTER_BUILD } from '@core/utils/config'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { API_URL } from '@core/utils/config'
@@ -589,14 +590,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       message: 'Smart order placed',
       orderId: '0',
     }
-    showOrderResult(
-      successResult,
-      cancelOrder,
-    )
+    showOrderResult(successResult, cancelOrder)
 
     updateTerminalViewMode('default')
 
-    
     const result = await placeOrder(
       entryPoint.order.side,
       entryPoint.order.type,
@@ -606,7 +603,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
 
     if (result.status === 'error' || !result.orderId) {
-
       await showOrderResult(result, cancelOrder)
     }
 
@@ -1432,35 +1428,39 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <DarkTooltip
                       maxWidth={'40rem'}
                       title={
-                        <>
-                          <p>
-                            The algorithm which will wait for the trend to
-                            reverse to place the order.
-                          </p>
+                        !MASTER_BUILD ? (
+                          <>
+                            <p>
+                              The algorithm which will wait for the trend to
+                              reverse to place the order.
+                            </p>
 
-                          <p>
-                            <b>Activation price:</b> The price at which the
-                            algorithm is enabled.
-                          </p>
+                            <p>
+                              <b>Activation price:</b> The price at which the
+                              algorithm is enabled.
+                            </p>
 
-                          <p>
-                            <b>Deviation:</b> The level of price change after
-                            the trend reversal, at which the order will be
-                            executed.
-                          </p>
+                            <p>
+                              <b>Deviation:</b> The level of price change after
+                              the trend reversal, at which the order will be
+                              executed.
+                            </p>
 
-                          <p>
-                            <b>For example:</b> you set 7500 USDT activation
-                            price and 1% deviation to buy BTC. Trailing will
-                            start when price will be 7500 and then after
-                            activation there will be a buy when the price moves
-                            upward by 1% from its lowest point. If for instance
-                            it drops to $7,300, then the trend will reverse and
-                            start to rise, the order will be executed when the
-                            price reaches 7373, i.e. by 1% from the moment the
-                            trend reversed.
-                          </p>
-                        </>
+                            <p>
+                              <b>For example:</b> you set 7500 USDT activation
+                              price and 1% deviation to buy BTC. Trailing will
+                              start when price will be 7500 and then after
+                              activation there will be a buy when the price
+                              moves upward by 1% from its lowest point. If for
+                              instance it drops to $7,300, then the trend will
+                              reverse and start to rise, the order will be
+                              executed when the price reaches 7373, i.e. by 1%
+                              from the moment the trend reversed.
+                            </p>
+                          </>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <AdditionalSettingsButton
@@ -1488,7 +1488,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                      !MASTER_BUILD
+                        ? 'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                        : ''
                     }
                   >
                     <AdditionalSettingsButton
@@ -1537,7 +1539,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer justify="flex-start">
                         <DarkTooltip
                           title={
-                            'Trade will be placed once when there is an alert.'
+                            !MASTER_BUILD
+                              ? 'Trade will be placed once when there is an alert.'
+                              : ''
                           }
                           maxWidth={'30rem'}
                         >
@@ -1573,7 +1577,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer justify={'center'}>
                         <DarkTooltip
                           title={
-                            'Trade will be placed every time when there is an alert but no open position.'
+                            !MASTER_BUILD
+                              ? 'Trade will be placed every time when there is an alert but no open position.'
+                              : ''
                           }
                           maxWidth={'30rem'}
                         >
@@ -1609,7 +1615,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer justify="flex-end">
                         <DarkTooltip
                           title={
-                            'Trade will be placed every time there is an alert.'
+                            !MASTER_BUILD
+                              ? 'Trade will be placed every time there is an alert.'
+                              : ''
                           }
                           maxWidth={'30rem'}
                         >
@@ -1702,7 +1710,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   padding={'0 0 1.2rem 0'}
                   haveTooltip={entryPoint.trailing.isTrailingOn}
                   tooltipText={
-                    'The price at which the trailing algorithm is enabled.'
+                    !MASTER_BUILD
+                      ? 'The price at which the trailing algorithm is enabled.'
+                      : ''
                   }
                   title={`price (${pair[1]})`}
                 >
@@ -1816,7 +1826,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <FormInputContainer
                     haveTooltip
                     tooltipText={
-                      'The level of price change after the trend reversal, at which the order will be executed.'
+                      !MASTER_BUILD
+                        ? 'The level of price change after the trend reversal, at which the order will be executed.'
+                        : ''
                     }
                     title={'price deviation (%)'}
                   >
@@ -2397,11 +2409,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
                       }
                       title={
-                        <span>
-                          paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
-                          field when creating tv alert
-                        </span>
+                        !MASTER_BUILD ? (
+                          <span>
+                            paste it into{' '}
+                            <span style={{ color: '#5C8CEA' }}>
+                              web-hook url
+                            </span>{' '}
+                            field when creating tv alert
+                          </span>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <InputRowContainer>
@@ -2442,11 +2460,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
                       }
                       title={
-                        <span>
-                          paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
-                          field when creating tv alert
-                        </span>
+                        !MASTER_BUILD ? (
+                          <span>
+                            paste it into{' '}
+                            <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                            field when creating tv alert
+                          </span>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <InputRowContainer>
@@ -2539,18 +2561,23 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <DarkTooltip
                       maxWidth={'30rem'}
                       title={
-                        <>
-                          <p>
-                            Waiting after unrealized P&L will reach set target.
-                          </p>
-                          <p>
-                            <b>For example:</b> you set 10% stop loss and 1
-                            minute timeout. When your unrealized loss is 10%
-                            timeout will give a minute for a chance to reverse
-                            trend and loss to go below 10% before stop loss
-                            order executes.
-                          </p>
-                        </>
+                        !MASTER_BUILD ? (
+                          <>
+                            <p>
+                              Waiting after unrealized P&L will reach set
+                              target.
+                            </p>
+                            <p>
+                              <b>For example:</b> you set 10% stop loss and 1
+                              minute timeout. When your unrealized loss is 10%
+                              timeout will give a minute for a chance to reverse
+                              trend and loss to go below 10% before stop loss
+                              order executes.
+                            </p>
+                          </>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <AdditionalSettingsButton
@@ -2584,7 +2611,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <DarkTooltip
                       maxWidth={'30rem'}
                       title={
-                        'Your stop loss order will be placed once when there is a Trading View alert with params that you sent.'
+                        !MASTER_BUILD
+                          ? 'Your stop loss order will be placed once when there is a Trading View alert with params that you sent.'
+                          : ''
                       }
                     >
                       <AdditionalSettingsButton
@@ -2634,14 +2663,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <FormInputContainer
                       haveTooltip
                       tooltipText={
-                        <>
-                          <p>The unrealized loss/ROE for closing trade.</p>
-                          <p>
-                            <b>For example:</b> you bought 1 BTC and set 10%
-                            stop loss. Your unrealized loss should be 0.1 BTC
-                            and order will be executed.
-                          </p>
-                        </>
+                        !MASTER_BUILD ? (
+                          <>
+                            <p>The unrealized loss/ROE for closing trade.</p>
+                            <p>
+                              <b>For example:</b> you bought 1 BTC and set 10%
+                              stop loss. Your unrealized loss should be 0.1 BTC
+                              and order will be executed.
+                            </p>
+                          </>
+                        ) : (
+                          ''
+                        )
                       }
                       title={'stop price'}
                     >
@@ -2841,13 +2874,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           />
                         }
                         title={
-                          <span>
-                            paste it into{' '}
-                            <span style={{ color: '#5C8CEA' }}>
-                              web-hook url
-                            </span>{' '}
-                            field when creating tv alert
-                          </span>
+                          !MASTER_BUILD ? (
+                            <span>
+                              paste it into{' '}
+                              <span style={{ color: '#5C8CEA' }}>
+                                web-hook url
+                              </span>{' '}
+                              field when creating tv alert
+                            </span>
+                          ) : (
+                            ''
+                          )
                         }
                       >
                         <InputRowContainer>
@@ -2888,11 +2925,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           />
                         }
                         title={
-                          <span>
-                            paste it into{' '}
-                            <span style={{ color: '#5C8CEA' }}>message</span>{' '}
-                            field when creating tv alert
-                          </span>
+                          !MASTER_BUILD ? (
+                            <span>
+                              paste it into{' '}
+                              <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                              field when creating tv alert
+                            </span>
+                          ) : (
+                            ''
+                          )
                         }
                       >
                         <InputRowContainer>
@@ -3060,19 +3101,23 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           <FormInputContainer
                             haveTooltip
                             tooltipText={
-                              <>
-                                <p>
-                                  Waiting after unrealized P&L will reach set
-                                  target.
-                                </p>
-                                <p>
-                                  <b>For example:</b> you set 10% stop loss and
-                                  1 minute timeout. When your unrealized loss is
-                                  10% timeout will give a minute for a chance to
-                                  reverse trend and loss to go below 10% before
-                                  stop loss order executes.
-                                </p>
-                              </>
+                              !MASTER_BUILD ? (
+                                <>
+                                  <p>
+                                    Waiting after unrealized P&L will reach set
+                                    target.
+                                  </p>
+                                  <p>
+                                    <b>For example:</b> you set 10% stop loss
+                                    and 1 minute timeout. When your unrealized
+                                    loss is 10% timeout will give a minute for a
+                                    chance to reverse trend and loss to go below
+                                    10% before stop loss order executes.
+                                  </p>
+                                </>
+                              ) : (
+                                ''
+                              )
                             }
                             title={'timeout'}
                             lineMargin={'0 1.2rem 0 1rem'}
@@ -3149,20 +3194,25 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           <FormInputContainer
                             haveTooltip
                             tooltipText={
-                              <>
-                                <p>
-                                  How much should the price change to ignore
-                                  timeout.
-                                </p>
+                              !MASTER_BUILD ? (
+                                <>
+                                  <p>
+                                    How much should the price change to ignore
+                                    timeout.
+                                  </p>
 
-                                <p>
-                                  <b>For example:</b> You bought BTC and set 10%
-                                  stop loss with 1 minute timeout and 15% forced
-                                  stop. But the price continued to fall during
-                                  the timeout. Your trade will be closed when
-                                  loss will be 15% regardless of timeout.
-                                </p>
-                              </>
+                                  <p>
+                                    <b>For example:</b> You bought BTC and set
+                                    10% stop loss with 1 minute timeout and 15%
+                                    forced stop. But the price continued to fall
+                                    during the timeout. Your trade will be
+                                    closed when loss will be 15% regardless of
+                                    timeout.
+                                  </p>
+                                </>
+                              ) : (
+                                ''
+                              )
                             }
                             title={'forced stop price'}
                           >
@@ -3446,25 +3496,30 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'40rem'}
                     title={
-                      <>
-                        <p>
-                          The algorithm which will wait for the trend to reverse
-                          to place the order.
-                        </p>
-                        <p>
-                          <b>Deviation:</b> The level of price change after the
-                          trend reversal, at which the order will be executed.
-                        </p>
-                        <p>
-                          <b>For example:</b> you bought BTC at 7500 USDT price
-                          and set 1% trailing deviation to take a profit.
-                          Trailing will start right after you buy. Then the
-                          price goes to 7700 and the trend reverses and begins
-                          to fall. The order will be executed when the price
-                          reaches 7633, i.e. by 1% from the moment the trend
-                          reversed.
-                        </p>
-                      </>
+                      !MASTER_BUILD ? (
+                        <>
+                          <p>
+                            The algorithm which will wait for the trend to
+                            reverse to place the order.
+                          </p>
+                          <p>
+                            <b>Deviation:</b> The level of price change after
+                            the trend reversal, at which the order will be
+                            executed.
+                          </p>
+                          <p>
+                            <b>For example:</b> you bought BTC at 7500 USDT
+                            price and set 1% trailing deviation to take a
+                            profit. Trailing will start right after you buy.
+                            Then the price goes to 7700 and the trend reverses
+                            and begins to fall. The order will be executed when
+                            the price reaches 7633, i.e. by 1% from the moment
+                            the trend reversed.
+                          </p>
+                        </>
+                      ) : (
+                        ''
+                      )
                     }
                   >
                     <AdditionalSettingsButton
@@ -3507,26 +3562,31 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <DarkTooltip
                       maxWidth={'40rem'}
                       title={
-                        <>
-                          <p>
-                            Partial closing of a trade when a certain level of
-                            profit is reached.
-                          </p>
+                        !MASTER_BUILD ? (
+                          <>
+                            <p>
+                              Partial closing of a trade when a certain level of
+                              profit is reached.
+                            </p>
 
-                          <p>
-                            Set up the price and amount, then click "Add
-                            target". Distribute 100% of the total trading
-                            amount.
-                          </p>
+                            <p>
+                              Set up the price and amount, then click "Add
+                              target". Distribute 100% of the total trading
+                              amount.
+                            </p>
 
-                          <p>
-                            <b>For example:</b> you bought BTC and set that at
-                            5% profit sell 25% of your amount, at 10% profit
-                            sell 60% amount and at 15% profit sell remaining 15%
-                            amount. When the price reaches each profit level, it
-                            will place the order for specified amount.
-                          </p>
-                        </>
+                            <p>
+                              <b>For example:</b> you bought BTC and set that at
+                              5% profit sell 25% of your amount, at 10% profit
+                              sell 60% amount and at 15% profit sell remaining
+                              15% amount. When the price reaches each profit
+                              level, it will place the order for specified
+                              amount.
+                            </p>
+                          </>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <AdditionalSettingsButton
@@ -3563,7 +3623,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your take profit order will be placed once when there is a Trading View alert with params that you sent.'
+                      !MASTER_BUILD
+                        ? 'Your take profit order will be placed once when there is a Trading View alert with params that you sent.'
+                        : ''
                     }
                   >
                     <AdditionalSettingsButton
@@ -3634,16 +3696,20 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <FormInputContainer
                       haveTooltip
                       tooltipText={
-                        <>
-                          <p>
-                            The unrealized profit/ROE for closing the trade.
-                          </p>
-                          <p>
-                            <b>For example:</b>you bought 1 BTC and set 100%
-                            take a profit. Your unrealized profit should be 1
-                            BTC and order will be executed.
-                          </p>
-                        </>
+                        !MASTER_BUILD ? (
+                          <>
+                            <p>
+                              The unrealized profit/ROE for closing the trade.
+                            </p>
+                            <p>
+                              <b>For example:</b>you bought 1 BTC and set 100%
+                              take a profit. Your unrealized profit should be 1
+                              BTC and order will be executed.
+                            </p>
+                          </>
+                        ) : (
+                          ''
+                        )
                       }
                       title={'stop price'}
                     >
@@ -3772,7 +3838,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <FormInputContainer
                         haveTooltip
                         tooltipText={
-                          'The price at which the trailing algorithm is enabled.'
+                          !MASTER_BUILD
+                            ? 'The price at which the trailing algorithm is enabled.'
+                            : ''
                         }
                         title={
                           !takeProfit.external
@@ -3898,7 +3966,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         <FormInputContainer
                           haveTooltip
                           tooltipText={
-                            'The level of price change after the trend reversal, at which the order will be executed.'
+                            !MASTER_BUILD
+                              ? 'The level of price change after the trend reversal, at which the order will be executed.'
+                              : ''
                           }
                           title={'trailing deviation (%)'}
                         >
@@ -4033,11 +4103,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
                       }
                       title={
-                        <span>
-                          paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
-                          field when creating tv alert
-                        </span>
+                        !MASTER_BUILD ? (
+                          <span>
+                            paste it into{' '}
+                            <span style={{ color: '#5C8CEA' }}>
+                              web-hook url
+                            </span>{' '}
+                            field when creating tv alert
+                          </span>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <InputRowContainer>
@@ -4079,11 +4155,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
                       }
                       title={
-                        <span>
-                          paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
-                          field when creating tv alert
-                        </span>
+                        !MASTER_BUILD ? (
+                          <span>
+                            paste it into{' '}
+                            <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                            field when creating tv alert
+                          </span>
+                        ) : (
+                          ''
+                        )
                       }
                     >
                       <InputRowContainer>

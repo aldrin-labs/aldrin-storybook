@@ -4,9 +4,13 @@ import styled from 'styled-components'
 import {
   rowStyles,
   roundUp,
+  roundDown,
+  roundDownSmall,
   roundUpSmall,
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
+
+import { filterOpenOrders } from '@sb/components/TradingTable/TradingTable.utils'
 
 import RedArrow from '@icons/redArrow.png'
 import GreenArrow from '@icons/greenArrow.png'
@@ -86,12 +90,6 @@ type IProps = {
   }) => void
 }
 
-const roundDown = function(num, precision) {
-  num = parseFloat(num)
-  if (!precision) return num
-  return Math.floor(num / precision) * precision
-}
-
 export default function defaultRowRenderer({
   className,
   columns,
@@ -108,7 +106,7 @@ export default function defaultRowRenderer({
   arrayOfMarketIds = [],
   marketType,
   aggregation = 0.00000001,
-  openOrderHistory,
+  openOrderHistory = [],
   amountForBackground,
 }: IProps) {
   const a11yProps = { 'aria-rowindex': index + 1 }
@@ -120,8 +118,22 @@ export default function defaultRowRenderer({
   let needHighlightPrice = false
   let needHighlightStopPrice = false
 
-  if (openOrderHistory && openOrderHistory.length > 0) {
-    const functionToRound = aggregation >= 1 ? roundDown : roundUpSmall
+  const openOrders =
+    (openOrderHistory &&
+      openOrderHistory.filter((order) =>
+        filterOpenOrders({ order, canceledOrders: [] })
+      )) ||
+    []
+
+  if (openOrders && openOrders.length > 0) {
+    const functionToRound =
+      aggregation >= 1
+        ? side === 'bids'
+          ? roundDown
+          : roundUp
+        : side === 'bids'
+        ? roundDownSmall
+        : roundUpSmall
 
     const digitsByGroup =
       aggregation >= 1
@@ -129,7 +141,7 @@ export default function defaultRowRenderer({
         : getNumberOfDecimalsFromNumber(aggregation)
 
     needHighlightPrice =
-      openOrderHistory.findIndex((order) => {
+      openOrders.findIndex((order) => {
         const orderPrice = functionToRound(order.price, digitsByGroup)
 
         return (
@@ -141,7 +153,7 @@ export default function defaultRowRenderer({
       }) !== -1
 
     needHighlightStopPrice =
-      openOrderHistory.findIndex((order) => {
+      openOrders.findIndex((order) => {
         const orderStopPrice = functionToRound(order.stopPrice, digitsByGroup)
 
         return (
@@ -238,7 +250,9 @@ export default function defaultRowRenderer({
                 '#AAF2C9'
               : '#FFD1D1',
           transform: `translateX(calc(100% - ${orderPercentage}%))`,
-          ...(rowData.fall === undefined ? {} : { transition: 'none', willChange: 'background-color' }),
+          ...(rowData.fall === undefined
+            ? {}
+            : { transition: 'none', willChange: 'background-color' }),
         }}
       />
       <div className="needHover" />
