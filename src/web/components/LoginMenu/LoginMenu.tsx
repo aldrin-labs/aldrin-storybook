@@ -107,7 +107,7 @@ class LoginMenuComponent extends React.Component {
     return (
       <>
         <div style={{ display: 'flex', height: '100%' }}>
-          <TooltipCustom
+          {/* <TooltipCustom
             title={'Tooltips'}
             enterDelay={250}
             component={
@@ -125,7 +125,7 @@ class LoginMenuComponent extends React.Component {
                 <HelpIcon style={{ fontSize: '2.75rem', fill: '#7284A0' }} />
               </IconButton>
             }
-          />
+          /> */}
 
           <TooltipCustom
             title={'Telegram chat'}

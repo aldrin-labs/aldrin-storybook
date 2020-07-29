@@ -38,6 +38,7 @@ export const DarkTooltip = styled((props) => (
   <MUTooltip
     classes={{ popper: props.className, tooltip: 'tooltip' }}
     {...props}
+    enterDelay={1000}
   />
 ))`
   & .tooltip {
