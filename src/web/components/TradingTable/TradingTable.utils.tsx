@@ -618,7 +618,6 @@ export const combinePositionsTable = ({
   return positions
 }
 
-// TODO: fix types
 export const combineActiveTradesTable = ({
   data,
   cancelOrderFunc,
