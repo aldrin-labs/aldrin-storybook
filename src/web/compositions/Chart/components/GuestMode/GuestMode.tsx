@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, Button } from '@material-ui/core'
 import { useLocation } from 'react-router-dom'
 
-import { SignInLink } from '@sb/components'
+import { SignInLink, SignUpLink } from '@sb/components'
 import {
   GuestModeHeading,
   GuestModeSubHeading,
@@ -42,7 +42,7 @@ export const GuestMode = () => {
           <Button
             variant="contained"
             color="secondary"
-            component={SignInLink}
+            component={SignUpLink}
             pathname={pathname}
             style={{
               backgroundColor: 'transparent',
