@@ -174,7 +174,7 @@ const NavBarRaw: SFC<Props> = ({
                 selectActiveMenu={selectMenu}
                 items={[
                   {
-                    text: 'P&L',
+                    text: 'Wallet',
                     icon: <MainIcon fontSize="small" />,
                     to: '/portfolio/main',
                     onMouseOver: () => {
@@ -375,28 +375,24 @@ const NavBarRaw: SFC<Props> = ({
               <Dropdown
                 id="profile-page"
                 key="profile-page"
-                buttonText="Profile"
+                buttonText="Settings"
                 selectedMenu={selectedMenu}
                 selectActiveMenu={selectMenu}
                 items={[
-                  {
-                    text: 'Accounts',
-                    to: '/profile/accounts',
-                    onMouseOver: () => {
-                      if (notAuthPages || !loginStatus) {
-                        return
-                      }
+                  // {
+                  //   text: 'Accounts',
+                  //   to: '/profile/accounts',
+                  //   onMouseOver: () => {
+                  //     if (notAuthPages || !loginStatus) {
+                  //       return
+                  //     }
 
-                      prefetchProfileAccounts()
-                    },
-                  },
+                  //     prefetchProfileAccounts()
+                  //   },
+                  // },
                   {
                     text: 'Settings',
                     to: '/profile/settings',
-                  },
-                  {
-                    text: 'Disable Account',
-                    to: '/profile/disableaccount',
                   },
                   {
                     text: 'Deposit',
@@ -421,6 +417,10 @@ const NavBarRaw: SFC<Props> = ({
                   {
                     text: 'Referral',
                     to: '/profile/referral',
+                  },
+                  {
+                    text: 'Disable Account',
+                    to: '/profile/disableaccount',
                   },
                   {
                     text: 'Log out',
