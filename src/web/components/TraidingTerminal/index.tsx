@@ -55,7 +55,12 @@ export const TradeInputHeader = ({
       {haveTooltip ? (
         <>
           {/* <TooltipContainer style={{ display: 'flex', cursor: 'pointer' }}> */}
-          <DarkTooltip title={tooltipText} maxWidth={'30rem'} placement="top">
+          <DarkTooltip
+            title={tooltipText}
+            maxWidth={'30rem'}
+            placement="top"
+            enterDelay={10000}
+          >
             <SeparateInputTitle
               haveTooltip={haveTooltip}
               style={{

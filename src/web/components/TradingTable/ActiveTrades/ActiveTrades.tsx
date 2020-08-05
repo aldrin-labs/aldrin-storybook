@@ -472,7 +472,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         },
       })
     } catch (e) {
-      // console.log(e)
+      console.log(e)
       data = getActiveStrategiesQuery
     }
 
@@ -517,10 +517,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         query: getActiveStrategies,
         variables: {
           activeStrategiesInput: {
-            activeExchangeKey: selectedKey.keyId,
             marketType,
-            allKeys,
-            ...(!specificPair ? {} : { specificPair: currencyPair }),
+            activeExchangeKey: selectedKey.keyId,
+            allKeys: true,
+            page: 0,
+            perPage: 30,
           },
         },
         data: {
@@ -541,6 +542,30 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     if (newOrderFromSubscription && newOrderFromSubscriptionDerived) {
       console.log('clear cached order')
       this.setState({ cachedOrder: null })
+
+      const filteredStrategies = data.getActiveStrategies.strategies.filter(
+        (a: SmartOrder) => a._id !== '-1'
+      )
+
+      client.writeQuery({
+        query: getActiveStrategies,
+        variables: {
+          activeStrategiesInput: {
+            marketType,
+            activeExchangeKey: selectedKey.keyId,
+            allKeys: true,
+            page: 0,
+            perPage: 30,
+          },
+        },
+        data: {
+          getActiveStrategies: {
+            strategies: filteredStrategies,
+            count: filteredStrategies.length,
+            __typename: 'getActiveStrategies',
+          },
+        },
+      })
     }
 
     const ordersToDisplay =

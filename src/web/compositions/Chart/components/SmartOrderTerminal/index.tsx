@@ -589,14 +589,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       message: 'Smart order placed',
       orderId: '0',
     }
-    showOrderResult(
-      successResult,
-      cancelOrder,
-    )
+    showOrderResult(successResult, cancelOrder)
 
     updateTerminalViewMode('default')
 
-    
     const result = await placeOrder(
       entryPoint.order.side,
       entryPoint.order.type,
@@ -606,7 +602,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
 
     if (result.status === 'error' || !result.orderId) {
-
       await showOrderResult(result, cancelOrder)
     }
 

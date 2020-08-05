@@ -526,9 +526,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1 },
           },
           entryPrice: {
-            render: `${entryPrice} ${
-              pair[1]
-            }`,
+            render: `${entryPrice} ${pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -560,8 +558,8 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${liquidationPrice} ${
-              pair[1]
+            render: `${liquidationPrice == 0 ? '-' : liquidationPrice} ${
+              liquidationPrice == 0 ? '' : pair[1]
             }`,
             style: {
               textAlign: 'left',
@@ -620,7 +618,6 @@ export const combinePositionsTable = ({
   return positions
 }
 
-// TODO: fix types
 export const combineActiveTradesTable = ({
   data,
   cancelOrderFunc,
@@ -821,7 +818,8 @@ export const combineActiveTradesTable = ({
             <SubColumnValue>
               <div style={{ color: '#7284A0' }}>trailing</div>{' '}
               <div>
-                <span style={{ color: '#7284A0' }}>from</span> {stripDigitPlaces(activatePrice, 8)}
+                <span style={{ color: '#7284A0' }}>from</span>{' '}
+                {stripDigitPlaces(activatePrice, 8)}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
