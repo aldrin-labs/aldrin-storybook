@@ -6,6 +6,7 @@ import { BalanceFuturesSymbol as Typography } from '@sb/compositions/Chart/compo
 import { Loading } from '@sb/components/index'
 
 const SubRow = ({
+  theme,
   getVariables,
   createOrderWithStatus,
   positionId,
@@ -34,7 +35,7 @@ const SubRow = ({
           justifyContent: 'flex-end',
         }}
       >
-        <Typography>close:</Typography>
+        <Typography theme={theme}>close:</Typography>
         <Input
           width={'30%'}
           padding={'0 .5rem 0 1rem'}

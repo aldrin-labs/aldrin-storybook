@@ -11,6 +11,7 @@ import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
+import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
 import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
@@ -50,6 +51,7 @@ export const CardsPanel = ({
   _id,
   pair,
   view,
+  theme,
   themeMode,
   activeExchange,
   isDefaultTerminalViewMode,
@@ -60,6 +62,7 @@ export const CardsPanel = ({
   changePositionModeMutation,
   selectedKey,
   showChangePositionModeResult,
+  toggleThemeMode,
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -123,12 +126,14 @@ export const CardsPanel = ({
         /> */}
 
         <CustomCard
+          theme={theme}
           style={{
             position: 'relative',
             display: 'flex',
             width: 'auto',
             marginRight: '.4rem',
             flexGrow: 1,
+            border: '0',
           }}
         >
           <TooltipCustom
@@ -195,8 +200,32 @@ export const CardsPanel = ({
             }
           }}
         >
-          {isDefaultTerminalViewMode ? 'go to smart trading' : 'back'}
+          {isDefaultTerminalViewMode
+            ? 'go to smart terminal'
+            : 'back to basic terminal'}
         </SmartTradeButton>
+        {/* <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
+          <PillowButton
+            firstHalfText={'light'}
+            secondHalfText={'dark'}
+            secondHalfTooltip={
+              'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
+            }
+            activeHalf={hedgeMode ? 'second' : 'first'}
+            buttonAdditionalStyle={{
+              width: '50%',
+            }}
+            containerStyle={{ height: '100%', margin: 0 }}
+            changeHalf={() => {
+              // for guest mode
+              if (!authenticated) {
+                return
+              }
+
+              toggleThemeMode()
+            }}
+          />
+        </div> */}
         {marketType === 1 && (
           <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
             <PillowButton
@@ -227,5 +256,6 @@ export const CardsPanel = ({
 }
 
 export default compose(
+  graphql(TOGGLE_THEME_MODE, { name: 'toggleThemeMode' }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' })
 )(CardsPanel)

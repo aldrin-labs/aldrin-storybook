@@ -3,7 +3,12 @@ import styled from 'styled-components'
 import Checkbox from '@material-ui/core/Checkbox'
 
 const StyledLabel = styled.label`
-  color: #7284a0;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.light) ||
+    '#7284A0'};
   font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;
@@ -18,6 +23,7 @@ const StyledCheckox = styled(Checkbox)`
 `
 
 export const PaginationBlock = ({
+  theme,
   allKeys,
   specificPair,
   handleToggleAllKeys,
@@ -32,7 +38,9 @@ export const PaginationBlock = ({
           onChange={handleToggleSpecificPair}
           style={{ padding: '0  .4rem 0 1.2rem' }}
         />
-        <StyledLabel htmlFor="specPair">all pairs</StyledLabel>
+        <StyledLabel theme={theme} htmlFor="specPair">
+          all pairs
+        </StyledLabel>
       </div>
       <div>
         <StyledCheckox
@@ -41,7 +49,9 @@ export const PaginationBlock = ({
           onChange={handleToggleAllKeys}
           style={{ padding: '0 1.2rem' }}
         />
-        <StyledLabel htmlFor="allKeys">all accounts</StyledLabel>
+        <StyledLabel theme={theme} htmlFor="allKeys">
+          all accounts
+        </StyledLabel>
       </div>
     </div>
   )

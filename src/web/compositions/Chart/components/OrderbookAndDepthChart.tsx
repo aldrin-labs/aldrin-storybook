@@ -171,7 +171,9 @@ class OrderbookAndDepthChart extends React.Component {
                 updatedData: updatedAggregatedData,
                 ordersData,
                 aggregation,
-                defaultAggregation: getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value,
+                defaultAggregation: getAggregationsFromMinPriceDigits(
+                  this.props.minPriceDigits
+                )[0].value,
                 originalOrderbookTree: { asks, bids },
                 isAggregatedData: true,
                 sizeDigits,
@@ -183,7 +185,9 @@ class OrderbookAndDepthChart extends React.Component {
               ordersData,
               aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
                 .value,
-                defaultAggregation: getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value,
+              defaultAggregation: getAggregationsFromMinPriceDigits(
+                this.props.minPriceDigits
+              )[0].value,
               originalOrderbookTree: { asks, bids },
               isAggregatedData: false,
               sizeDigits,
@@ -375,6 +379,7 @@ class OrderbookAndDepthChart extends React.Component {
 
   render() {
     const {
+      theme,
       chartProps,
       changeTable,
       symbol,
@@ -408,10 +413,10 @@ class OrderbookAndDepthChart extends React.Component {
             xs={5}
             style={{
               height: '100%',
-              padding: '0 .4rem .4rem 0',
             }}
           >
             <DepthChart
+              theme={theme}
               chartProps={chartProps}
               changeTable={changeTable}
               exchange={exchange}
@@ -428,9 +433,10 @@ class OrderbookAndDepthChart extends React.Component {
           item
           xs={hideDepthChart ? 12 : 7}
           id="orderbook"
-          style={{ height: '100%', padding: '0 .4rem .4rem .4rem' }}
+          style={{ height: '100%' }}
         >
           <OrderBook
+            theme={theme}
             exchange={exchange}
             aggregation={aggregation}
             chartProps={chartProps}

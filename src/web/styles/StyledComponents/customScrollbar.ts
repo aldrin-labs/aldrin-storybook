@@ -5,9 +5,9 @@ export const customAquaScrollBar = `
   } 
 
   &::-webkit-scrollbar-track {
-    background: rgba(45, 49, 54, 0.1);
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
     background: #4ed8da;
-  }`;
+  }`

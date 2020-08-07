@@ -1,13 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from '@material-ui/core'
+import { Button, Theme } from '@material-ui/core'
 
-export const TitleTab = styled(({ active, ...rest }) => <button {...rest} />)`
+export const TitleTab = styled(({ active, theme, ...rest }) => {
+  return <button {...rest} />
+})`
   &&& {
-    color: ${(props: { active: boolean }) =>
-      props.active ? '#fff' : '#16253D;'};
-    background-color: ${(props: { active: boolean }) =>
-      props.active ? '#5C8CEA' : '#f2f4f6'};
+    color: ${(props: { active: boolean; theme: Theme }) =>
+      props.active
+        ? props.theme.palette.button.color
+        : props.theme.palette.dark.main};
+    background-color: ${(props: { active: boolean; theme: Theme }) =>
+      props.active
+        ? props.theme.palette.grey.border
+        : props.theme.palette.grey.main};
     font-size: 1.3rem;
     font-weight: normal;
     width: 20%;
@@ -15,11 +21,12 @@ export const TitleTab = styled(({ active, ...rest }) => <button {...rest} />)`
     border-radius: 0;
     letter-spacing: 0.01rem;
     border: none;
-    border-right: 0.1rem solid #e0e5ec;
+    border-right: ${(props) => props.theme.palette.border.main};
     height: auto;
     text-transform: capitalize;
     white-space: nowrap;
-    padding: 0.7rem 0 0.7rem 0;
+    line-height: 1rem;
+    padding: 1rem 0;
 
     &:hover {
       cursor: pointer;
@@ -27,6 +34,10 @@ export const TitleTab = styled(({ active, ...rest }) => <button {...rest} />)`
 
     &:focus {
       outline: none;
+    }
+
+    &:last-child {
+      border-right: 0;
     }
   }
 
@@ -40,7 +51,7 @@ export const TitleTab = styled(({ active, ...rest }) => <button {...rest} />)`
 export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
   &&& {
     display: flex;
-    background-color: #f2f4f6;
-    border-bottom: 1px solid #e0e5ec;
+    background-color: ${(props) => props.theme.palette.grey.main};
+    border-bottom: ${(props) => props.theme.palette.border.main};
   }
 `

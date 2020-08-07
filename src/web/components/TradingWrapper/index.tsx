@@ -42,7 +42,6 @@ import {
   TerminalModeButtonWithDropdown,
 } from './styles'
 
-import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
@@ -123,6 +122,7 @@ class SimpleTabs extends React.Component {
       pair,
       funds,
       price,
+      theme,
       placeOrder,
       decimals,
       showOrderResult,
@@ -143,6 +143,7 @@ class SimpleTabs extends React.Component {
       updateLeverage,
       changePositionModeWithStatus,
       changeMarginTypeWithStatus,
+      maxLeverage,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -179,40 +180,51 @@ class SimpleTabs extends React.Component {
         xs={12}
         style={{ height: '100%', padding: '0 0 0 0' }}
       >
-        <CustomCard>
-          <TerminalHeader key={'spotTerminal'} style={{ display: 'flex' }}>
+        <CustomCard
+          theme={theme}
+          style={{ borderLeft: theme.palette.border.main }}
+        >
+          <TerminalHeader
+            key={'spotTerminal'}
+            style={{ display: 'flex' }}
+            theme={theme}
+          >
             <div
               style={{
                 width: '50%',
-                borderRight: '.1rem solid #e0e5ec',
+                borderRight: theme.palette.border.main,
                 padding: '0 1rem',
               }}
             >
               <TerminalModeButton
+                theme={theme}
                 style={{
                   width: '100%',
-                  border: '.1rem solid #0B1FD1',
-                  color: '#0B1FD1',
+                  border: `.1rem solid ${theme.palette.blue.main}`,
+                  color: theme.palette.blue.main,
                   borderRadius: '.4rem',
+                  lineHeight: 'calc(.8rem)',
                 }}
-                isActive={mode === 'smart'}
+                active={mode === 'smart'}
                 onClick={() => {
                   this.handleChangeMode('smart')
                   updateTerminalViewMode('smartOrderMode')
                 }}
               >
-                Go to Smart trading
+                Go to Smart terminal
               </TerminalModeButton>
             </div>
             <div style={{ width: '50%' }}>
               <TerminalModeButton
-                isActive={mode === 'market'}
+                theme={theme}
+                active={mode === 'market'}
                 onClick={() => this.handleChangeMode('market')}
               >
                 Market
               </TerminalModeButton>
               <TerminalModeButton
-                isActive={mode === 'limit'}
+                theme={theme}
+                active={mode === 'limit'}
                 onClick={() => this.handleChangeMode('limit')}
               >
                 Limit
@@ -220,7 +232,8 @@ class SimpleTabs extends React.Component {
 
               {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown
-                  isActive={mode === 'stop-limit' || mode === 'stop-market'}
+                  theme={theme}
+                  active={mode === 'stop-limit' || mode === 'stop-market'}
                 >
                   {mode === 'stop-limit'
                     ? 'Stop-Limit'
@@ -232,8 +245,8 @@ class SimpleTabs extends React.Component {
                       position: 'relative',
                       left: '.8rem',
                       top: '.2rem',
-                      width: '1.2rem',
-                      height: '1.2rem',
+                      width: '1rem',
+                      height: '.9rem',
                       fill:
                         mode !== 'stop-limit' && mode !== 'stop-market'
                           ? '#7284a0'
@@ -243,7 +256,8 @@ class SimpleTabs extends React.Component {
                   <DropdownItemsBlock>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <TerminalModeButton
-                        isActive={mode === 'stop-limit'}
+                        theme={theme}
+                        active={mode === 'stop-limit'}
                         onClick={() => {
                           this.handleChangeMode('stop-limit')
                           this.setState({
@@ -256,13 +270,14 @@ class SimpleTabs extends React.Component {
                         style={{
                           width: '100%',
                           padding: '1rem 0 1rem',
-                          border: '.1rem solid #e0e5ec',
+                          border: theme.palette.border.main,
                         }}
                       >
                         Stop-Limit
                       </TerminalModeButton>
                       <TerminalModeButton
-                        isActive={mode === 'stop-market'}
+                        theme={theme}
+                        active={mode === 'stop-market'}
                         onClick={() => {
                           this.handleChangeMode('stop-market')
                           this.setState({
@@ -275,7 +290,7 @@ class SimpleTabs extends React.Component {
                         style={{
                           width: '100%',
                           padding: '1rem 0 1rem',
-                          border: '.1rem solid #e0e5ec',
+                          border: theme.palette.border.main,
                           borderTop: 0,
                         }}
                       >
@@ -286,7 +301,8 @@ class SimpleTabs extends React.Component {
                 </TerminalModeButtonWithDropdown>
               ) : (
                 <TerminalModeButton
-                  isActive={mode === 'stop-limit'}
+                  theme={theme}
+                  active={mode === 'stop-limit'}
                   onClick={() => {
                     this.handleChangeMode('stop-limit')
                     this.setState({ orderMode: 'TIF' })
@@ -317,7 +333,11 @@ class SimpleTabs extends React.Component {
           </TerminalHeader>
 
           {!isSPOTMarket ? (
-            <TerminalHeader key={'futuresTerminal'} style={{ display: 'flex' }}>
+            <TerminalHeader
+              key={'futuresTerminal'}
+              style={{ display: 'flex' }}
+              theme={theme}
+            >
               <SettingsContainer>
                 {mode === 'limit' && (
                   <FuturesSettings key="postOnlyTerminalController">
@@ -332,7 +352,9 @@ class SimpleTabs extends React.Component {
                         })
                       }
                     />
-                    <SettingsLabel htmlFor="postOnly">post only</SettingsLabel>
+                    <SettingsLabel theme={theme} htmlFor="postOnly">
+                      post only
+                    </SettingsLabel>
                   </FuturesSettings>
                 )}
 
@@ -379,8 +401,11 @@ class SimpleTabs extends React.Component {
                           })
                         }
                       />
-                      <SettingsLabel htmlFor="TIF">TIF</SettingsLabel>
+                      <SettingsLabel theme={theme} htmlFor="TIF">
+                        TIF
+                      </SettingsLabel>
                       <StyledSelect
+                        theme={theme}
                         disabled={orderMode !== 'TIF'}
                         value={this.state.TIFMode}
                         onChange={(e) =>
@@ -409,7 +434,7 @@ class SimpleTabs extends React.Component {
                       }))
                     }
                   />
-                  <SettingsLabel htmlFor="reduceOnly">
+                  <SettingsLabel theme={theme} htmlFor="reduceOnly">
                     reduce only
                   </SettingsLabel>
                 </FuturesSettings>
@@ -421,6 +446,7 @@ class SimpleTabs extends React.Component {
                   >
                     {/* <SettingsLabel htmlFor="trigger">trigger</SettingsLabel> */}
                     <StyledSelect
+                      theme={theme}
                       id="trigger"
                       onChange={(e) =>
                         this.setState({ trigger: e.target.value })
@@ -432,14 +458,15 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
               </SettingsContainer>
-              <LeverageContainer>
+              <LeverageContainer theme={theme}>
                 <LeverageTitle>
                   <StyledSelect
+                    theme={theme}
                     onChange={(e) =>
                       changeMarginTypeWithStatus(e.target.value.toLowerCase())
                     }
                     value={componentMarginType}
-                    style={{ color: '#16253D' }}
+                    style={{ color: theme.palette.dark.main }}
                   >
                     <StyledOption>crossed</StyledOption>
                     <StyledOption>isolated</StyledOption>
@@ -447,12 +474,21 @@ class SimpleTabs extends React.Component {
                 </LeverageTitle>
                 <SmallSlider
                   min={1}
-                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
+                  max={maxLeverage}
                   defaultValue={startLeverage}
                   value={leverage}
                   valueSymbol={'X'}
                   marks={
-                    maxLeverage.get(`${pair[0]}_${pair[1]}`) !== 125
+                    maxLeverage === 125
+                      ? {
+                          1: {},
+                          25: {},
+                          50: {},
+                          75: {},
+                          100: {},
+                          125: {},
+                        }
+                      : maxLeverage === 75
                       ? {
                           1: {},
                           15: {},
@@ -463,11 +499,11 @@ class SimpleTabs extends React.Component {
                         }
                       : {
                           1: {},
-                          25: {},
+                          10: {},
+                          20: {},
+                          30: {},
+                          40: {},
                           50: {},
-                          75: {},
-                          100: {},
-                          125: {},
                         }
                   }
                   onChange={(leverage: number) => {
@@ -480,7 +516,7 @@ class SimpleTabs extends React.Component {
                     width: '65%',
                     margin: '0 auto',
                   }}
-                  trackBeforeBackground={'#29AC80'}
+                  trackBeforeBackground={theme.palette.green.main}
                   handleStyles={{
                     width: '1.2rem',
                     height: '1.2rem',
@@ -492,37 +528,44 @@ class SimpleTabs extends React.Component {
                   }}
                   dotStyles={{
                     border: 'none',
-                    backgroundColor: '#ABBAD1',
+                    backgroundColor: theme.palette.slider.dots,
                   }}
                   activeDotStyles={{
-                    backgroundColor: '#29AC80',
+                    backgroundColor: theme.palette.green.main,
+                  }}
+                  markTextSlyles={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1rem',
+                  }}
+                  railStyle={{
+                    backgroundColor: theme.palette.slider.rail,
                   }}
                 />
-                <LeverageLabel style={{ width: '12.5%' }}>
+                <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
                   {leverage}x
                 </LeverageLabel>
               </LeverageContainer>
             </TerminalHeader>
           ) : (
-            <TerminalHeader style={{ display: 'flex' }}>
+            <TerminalHeader style={{ display: 'flex' }} theme={theme}>
               <div
                 style={{
                   width: '50%',
                   padding: '.5rem 0 .5rem 3rem',
-                  borderRight: '.1rem solid #e0e5ec',
+                  borderRight: theme.palette.border.main,
                 }}
               >
                 <SpotBalanceSpan
                   style={{
-                    color: '#0B1FD1',
-                    borderBottom: '.1rem dashed #ABBAD1',
+                    color: theme.palette.blue.main,
+                    borderBottom: `.1rem dashed ${theme.palette.grey.border}`,
                   }}
                 >
                   {stripDigitPlaces(maxAmount[0], 8)}
                 </SpotBalanceSpan>{' '}
                 <SpotBalanceSpan
                   style={{
-                    color: '#7284A0',
+                    color: theme.palette.grey.light,
                   }}
                 >
                   {pair[1]}
@@ -531,15 +574,15 @@ class SimpleTabs extends React.Component {
               <div style={{ width: '50%', padding: '.5rem 0 .5rem 3rem' }}>
                 <SpotBalanceSpan
                   style={{
-                    color: '#0B1FD1',
-                    borderBottom: '.1rem dashed #ABBAD1',
+                    color: theme.palette.blue.main,
+                    borderBottom: `.1rem dashed ${theme.palette.grey.border}`,
                   }}
                 >
                   {stripDigitPlaces(maxAmount[1], 8)}
                 </SpotBalanceSpan>{' '}
                 <SpotBalanceSpan
                   style={{
-                    color: '#7284A0',
+                    color: theme.palette.grey.light,
                   }}
                 >
                   {pair[0]}
@@ -559,6 +602,7 @@ class SimpleTabs extends React.Component {
                 }}
               >
                 <SendButton
+                  theme={theme}
                   style={{ width: '30%' }}
                   type={'buy'}
                   onClick={() => {
@@ -571,10 +615,11 @@ class SimpleTabs extends React.Component {
               </div>
             ) : (
               <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-                <FullHeightGrid xs={6} item needBorderRight>
+                <FullHeightGrid theme={theme} xs={6} item needBorderRight>
                   <TerminalContainer>
                     <TraidingTerminal
                       byType={'buy'}
+                      theme={theme}
                       operationType={'buy'}
                       priceType={mode}
                       hedgeMode={hedgeMode}
@@ -615,12 +660,13 @@ class SimpleTabs extends React.Component {
                   </TerminalContainer>
                 </FullHeightGrid>
 
-                <FullHeightGrid xs={6} item>
+                <FullHeightGrid theme={theme} xs={6} item>
                   <TerminalContainer>
                     <TraidingTerminal
                       byType={'sell'}
                       operationType={'sell'}
                       priceType={mode}
+                      theme={theme}
                       hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
                       minSpotNotional={minSpotNotional}

@@ -154,13 +154,19 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   render() {
-    const { quote, currencyPair, updateTerminalPriceFromOrderbook } = this.props
+    const {
+      quote,
+      currencyPair,
+      updateTerminalPriceFromOrderbook,
+      theme,
+    } = this.props
     const { data, numbersAfterDecimalForPrice } = this.state
-    const amountForBackground = data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
+    const amountForBackground =
+      data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
 
     return (
       <>
-        <ChartCardHeader>Trade history</ChartCardHeader>
+        <ChartCardHeader theme={theme}>Trade history</ChartCardHeader>
         <TradeHistoryTable
           data={data}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}

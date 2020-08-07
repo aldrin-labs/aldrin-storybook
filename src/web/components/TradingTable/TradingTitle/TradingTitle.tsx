@@ -25,6 +25,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
       onDateButtonClick,
       onDatesChange,
       onFocusChange,
+      theme,
       theme: {
         palette: {
           text: { primary },
@@ -34,8 +35,9 @@ export default class TradingTitle extends React.PureComponent<IProps> {
     } = this.props
 
     return (
-      <TitleSecondRowContainer>
+      <TitleSecondRowContainer theme={theme}>
         <TitleButton
+          theme={theme}
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '1Day'}
@@ -44,6 +46,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           today
         </TitleButton>
         <TitleButton
+          theme={theme}
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '1Week'}
@@ -52,6 +55,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           week
         </TitleButton>
         <TitleButton
+          theme={theme}
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '1Month'}
@@ -60,6 +64,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
           month
         </TitleButton>
         <TitleButton
+          theme={theme}
           size="small"
           variant={`outlined`}
           isActive={activeDateButton === '3Month'}
@@ -70,13 +75,14 @@ export default class TradingTitle extends React.PureComponent<IProps> {
         </TitleButton>
         <StyledWrapperForDateRangePicker
           color={primary}
+          theme={theme}
           fontFamily={fontFamily}
           fontSize={CSS_CONFIG.chart.content.fontSize}
           style={{
             paddingLeft: '2rem',
-            borderLeft: '1px solid #e0e5ec',
+            borderLeft: theme.palette.border.main,
             paddingRight: '2rem',
-            borderRight: '1px solid #e0e5ec',
+            borderRight: theme.palette.border.main,
           }}
           zIndexPicker={200}
           dateInputHeight={`2.4rem`}
@@ -85,6 +91,7 @@ export default class TradingTitle extends React.PureComponent<IProps> {
         >
           <DateRangePicker
             withPortal={true}
+            theme={theme}
             isOutsideRange={(date: any) =>
               date.isBefore(moment(+minimumDate), 'day') ||
               date.isAfter(moment(+maximumDate), 'day')

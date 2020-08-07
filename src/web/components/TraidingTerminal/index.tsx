@@ -7,7 +7,7 @@ import { withTheme } from '@material-ui/styles'
 import { withSnackbar } from 'notistack'
 import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
-import { Grid, InputAdornment, Typography } from '@material-ui/core'
+import { Grid, InputAdornment, Typography, Theme } from '@material-ui/core'
 import { Loading } from '@sb/components/index'
 
 import { toNumber, toPairs } from 'lodash-es'
@@ -55,7 +55,12 @@ export const TradeInputHeader = ({
       {haveTooltip ? (
         <>
           {/* <TooltipContainer style={{ display: 'flex', cursor: 'pointer' }}> */}
-          <DarkTooltip title={tooltipText} maxWidth={'30rem'} placement="top">
+          <DarkTooltip
+            title={tooltipText}
+            maxWidth={'30rem'}
+            placement="top"
+            enterDelay={10000}
+          >
             <SeparateInputTitle
               haveTooltip={haveTooltip}
               style={{
@@ -112,6 +117,7 @@ export const TradeInputContent = ({
   textAlign = 'right',
   onChange = () => {},
   inputStyles,
+  theme,
 }: {
   isValid?: boolean
   showErrors?: boolean
@@ -132,6 +138,7 @@ export const TradeInputContent = ({
   textAlign?: string
   onChange: any
   inputStyles?: CSSProperties
+  theme?: Theme
 }) => {
   return (
     <InputRowContainer
@@ -152,6 +159,7 @@ export const TradeInputContent = ({
         </UpdatedCoin>
       ) : null}
       <TradeInput
+        theme={theme}
         align={textAlign}
         type={type}
         pattern={pattern}
@@ -165,6 +173,7 @@ export const TradeInputContent = ({
         style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
       />
       <UpdatedCoin
+        theme={theme}
         right={
           !!symbolRightIndent
             ? symbolRightIndent
@@ -435,6 +444,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   render() {
     const {
       pair,
+      theme,
       marketPrice,
       funds,
       leverage,
@@ -484,6 +494,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   direction={'column'}
                 >
                   <TradeInputContent
+                    theme={theme}
                     needTitle
                     type={'text'}
                     title={`price (${pair[1]})`}
@@ -501,6 +512,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   direction={'column'}
                 >
                   <TradeInputContent
+                    theme={theme}
                     needTitle
                     type={'text'}
                     title={`trigger price (${pair[1]})`}
@@ -533,6 +545,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
                 {isSPOTMarket ? (
                   <TradeInputContent
+                    theme={theme}
                     needTitle
                     title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${
                       pair[0]
@@ -549,6 +562,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   <InputRowContainer direction="row" padding={'0'}>
                     <div style={{ width: '50%', paddingRight: '1%' }}>
                       <TradeInputContent
+                        theme={theme}
                         needTitle
                         title={`size`}
                         value={values.amount || ''}
@@ -562,6 +576,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     </div>
                     <div style={{ width: '50%', paddingLeft: '1%' }}>
                       <TradeInputContent
+                        theme={theme}
                         disabled={true}
                         needTitle
                         title={`total`}
@@ -574,6 +589,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 )}
 
                 <BlueSlider
+                  theme={theme}
                   showMarks
                   value={
                     isBuyType || !isSPOTMarket
@@ -626,6 +642,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   direction={'column'}
                 >
                   <TradeInputContent
+                    theme={theme}
                     needTitle
                     title={`total (${pair[1]})`}
                     value={values.total || ''}
@@ -651,6 +668,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         {pair[1]}
                       </InputTitle> */}
                   <TradeInputContent
+                    theme={theme}
                     needTitle
                     disabled={priceType === 'market'}
                     title={`margin (${pair[1]})`}
@@ -689,6 +707,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           >
             <Grid xs={12} item container alignItems="center">
               <SendButton
+                theme={theme}
                 // disabled={orderIsCreating === operationType}
                 type={operationType}
                 onClick={async () => {

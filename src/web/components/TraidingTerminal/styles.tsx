@@ -118,7 +118,7 @@ export const BalanceItem = styled(BalanceGrid)`
 
 export const TradingItemTitle = styled.span`
   display: block;
-  color: #7284a0;
+  color: inherit;
   font-size: 0.9rem;
   letter-spacing: 0.05rem;
 
@@ -170,13 +170,35 @@ export const TradeInput = styled.input`
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
-    props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
+    props.isValid
+      ? (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.border &&
+          props.theme.palette.border.main) ||
+        '.1rem solid #e0e5ec'
+      : '.1rem solid #DD6956'};
   border-radius: 4px;
   border-top-right-radius: ${(props) => props.haveSelector && '0'};
   border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  color: #16253d;
-  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253D'};
+  background-color: ${(props) =>
+    props.disabled
+      ? (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.grey &&
+          props.theme.palette.grey.background) ||
+        '#f2f4f6'
+      : (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.white &&
+          props.theme.palette.white.inputBackground) ||
+        '#fff'};
   font-size: 1.3rem;
 
   font-weight: bold;
@@ -229,7 +251,14 @@ export const Coin = styled(TradingItemTitle)`
   z-index: 2;
 `
 
-export const UpdatedCoin = styled(Coin)``
+export const UpdatedCoin = styled(Coin)`
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.text) ||
+    '#7284a0'};
+`
 // percentages
 
 export const PercentageGrid = styled(Grid)`
@@ -250,36 +279,79 @@ export const SendButton = styled(StyledTab)`
   width: 100%;
   color: #fff;
   background-color: ${(props) =>
-    props.type === 'buy' ? '#29AC80' : '#DD6956'};
-  box-shadow: 0px .7rem 1rem rgba(8, 22, 58, 0.3);
-  border-radius: .75rem;
+    props.type === 'buy'
+      ? (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.green &&
+          props.theme.palette.green.main) ||
+        '#29AC80'
+      : (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.red &&
+          props.theme.palette.red.main) ||
+        '#DD6956'};
+  box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
+  border-radius: 0;
   border: none;
-
-
-  // border: 1px solid ${(props) =>
-    props.type === 'buy' ? '#2F7619' : '#b93b2b'};
 
   &:hover {
     color: #fff;
     background-color: ${(props) =>
-      props.type === 'buy' ? '#29AC80' : '#DD6956'};
+      props.type === 'buy'
+        ? (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.green &&
+            props.theme.palette.green.main) ||
+          '#29AC80'
+        : (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.red &&
+            props.theme.palette.red.main) ||
+          '#DD6956'};
   }
 `
 
 export const SmartTradeButton = styled(SendButton)`
   line-height: 150%;
-  font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.3rem')};
+  font-size: 1rem;
+  background-color: ${(props) =>
+    props.type === 'buy'
+      ? (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.blue &&
+          props.theme.palette.blue.main) ||
+        '#165BE0'
+      : (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.red &&
+          props.theme.palette.red.main) ||
+        '#DD6956'};
+
+  &:hover {
+    background-color: ${(props) =>
+      props.type === 'buy'
+        ? (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.blue &&
+            props.theme.palette.blue.main) ||
+          '#165BE0'
+        : (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.red &&
+            props.theme.palette.red.main) ||
+          '#DD6956'};
+  }
 
   @media (max-width: 1600px) {
-    font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.1rem')};
+    font-size: 1rem;
   }
 
   @media screen and (max-width: 1440px) {
-    font-size: ${(props) => (props.type === 'buy' ? '.9rem' : '1rem')};
+    font-size: 0.9rem;
   }
 
   @media (min-width: 1921px) {
-    font-size: ${(props) => (props.type === 'buy' ? '1rem' : '1.1rem')};
+    font-size: 1rem;
   }
 `
 
@@ -308,7 +380,12 @@ export const BlueInputTitle = styled(SeparateInputTitle)`
 
 export const AbsoluteInputTitle = styled(Coin)`
   left: 1rem;
-  color: #abbad1;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.custom) ||
+    '#ABBAD1'};
   font-size: 0.9rem;
   width: 0;
   white-space: nowrap;

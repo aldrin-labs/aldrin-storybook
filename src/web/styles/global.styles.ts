@@ -13,7 +13,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(45, 49, 54, 0.1);
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {

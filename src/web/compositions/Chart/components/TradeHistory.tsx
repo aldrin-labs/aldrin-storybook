@@ -23,12 +23,14 @@ export const TradeHistory = ({
   sizeDigits,
   marketType,
   exchange,
+  theme,
   symbol,
   quote,
   pair,
 }) => {
   return (
     <TradeHistoryWrapper
+      theme={theme}
       key={`tradehistory_table`}
       className="ExchangesTable"
       variant={{
@@ -60,6 +62,7 @@ export const TradeHistory = ({
           marketType,
           sizeDigits,
           symbol,
+          theme,
           updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}

@@ -97,6 +97,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     console.log('TradingTable render')
 
     const {
+      theme,
       selectedKey,
       marketType,
       exchange,
@@ -125,20 +126,22 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       {}
     )
 
+    console.log('theme', theme)
+
     return (
       <div
         id="tables"
         style={{
           height: '100%',
-          backgroundColor: '#fff',
-          border: '0.1rem solid #e0e5ec',
-          borderRadius: '0.75rem',
-          boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
+          backgroundColor: theme.palette.white.background,
+          border: theme.palette.border.main,
+          borderRight: '0',
         }}
       >
         <TradingTabs
           {...{
             tab,
+            theme,
             marketType,
             selectedKey,
             currencyPair,
@@ -163,6 +166,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            theme,
             selectedKey,
             marketType,
             exchange,
@@ -203,6 +207,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            theme,
             selectedKey,
             marketType,
             exchange,
@@ -225,6 +230,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            theme,
             selectedKey,
             marketType,
             exchange,
@@ -268,6 +274,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            theme,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -306,6 +313,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            theme,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -326,6 +334,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            theme,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -345,6 +354,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <Funds
           {...{
             tab,
+            theme,
             selectedKey,
             marketType,
             canceledOrders,

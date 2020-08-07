@@ -139,9 +139,10 @@ export default class ThemeWrapper extends Component<Props> {
               },
               black: {
                 custom: '#16253D',
+                registration: '#000000',
               },
               red: {
-                main: '#FE425A',
+                main: '#DD6956',
                 custom: '#D93B28',
                 bright: '#ED6337',
                 new: '#DD6956',
@@ -151,18 +152,24 @@ export default class ThemeWrapper extends Component<Props> {
                 light: '#165BE0',
                 first: '#0B1FD1',
                 second: '#5C8CEA',
+                background: '#5C8CEA',
+                main: '#165BE0',
               },
               green: {
                 dark: '#377E21',
                 light: '#E7ECF3',
                 custom: '#97C15C',
-                main: '#48DCC6',
+                main: '#39A74C',
                 new: '#29AC80',
               },
               grey: {
                 custom: '#ABBAD1',
                 dark: '#2c2c34', //'#1F1F24',
-                main: '#F2F4F6',
+                light: '#D1DDEF',
+                main: '#0B0B0E',
+                background: '#2E2E2E',
+                text: '#7284A0',
+                border: '#2E2E2E',
               },
               primary: {
                 main: '#303037',
@@ -179,8 +186,14 @@ export default class ThemeWrapper extends Component<Props> {
                 dark: '#383a3d',
                 light: '#E0E5EC',
               },
+              button: {
+                color: '#D1DDEF',
+              },
               btnChartBorderNotActive: {
                 main: '#E0E5EC',
+              },
+              border: {
+                main: '.1rem solid #2e2e2e',
               },
               price: {
                 increase: '#2F7619',
@@ -192,9 +205,24 @@ export default class ThemeWrapper extends Component<Props> {
                 paper: themeMode === 'light' ? '#fff' : '#16161D',
                 table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
-              // boxShadow: {
-              //   main: '0px 0px 15px 0px rgba(30, 30, 30, 0.2)'
-              // }
+              white: {
+                main: '#fff',
+                background: '#0B0B0E',
+                inputBackground: '#14161B',
+              },
+              dark: {
+                main: '#D1DDEF',
+              },
+              depthChart: {
+                redStroke: '#E55764',
+                greenStroke: '#39A74C',
+                greenBackground: 'rgba(57, 167, 76, 0.35)',
+                redBackground: 'rgba(255, 30, 62, 0.35)',
+              },
+              slider: {
+                dots: '#2F3949',
+                rail: '#2E2E2E',
+              },
             },
           }
         : // light theme
@@ -294,7 +322,7 @@ export default class ThemeWrapper extends Component<Props> {
                 registration: '#000000',
               },
               red: {
-                main: '#FE425A',
+                main: '#DD6956',
                 custom: '#D93B28',
                 bright: '#ED6337',
                 new: '#DD6956',
@@ -304,18 +332,23 @@ export default class ThemeWrapper extends Component<Props> {
                 light: '#165BE0',
                 first: '#0B1FD1',
                 second: '#5C8CEA',
+                background: '#5C8CEA',
+                main: '#165BE0',
               },
               green: {
                 dark: '#377E21',
                 custom: '#97C15C',
-                main: '#48DCC6',
+                main: '#39A74C',
                 new: '#29AC80',
               },
               grey: {
                 custom: '#ABBAD1',
                 dark: '#8f9092', //'#7284A0',
-                light: '#E7ECF3',
+                light: '#7284A0',
                 main: '#F2F4F6',
+                backround: '#f2f4f6',
+                text: '#7284A0',
+                border: '#E0E5EC',
               },
               primary: {
                 main: '#FEFEFE',
@@ -328,9 +361,15 @@ export default class ThemeWrapper extends Component<Props> {
               action: {
                 selected: 'rgba(255, 255, 255, 0.05)',
               },
+              border: {
+                main: '.1rem solid #e0e5ec',
+              },
               hover: {
                 dark: '#383a3d',
                 light: '#E0E5EC',
+              },
+              button: {
+                color: '#165BE0',
               },
               btnChartBorderNotActive: {
                 main: '#E0E5EC',
@@ -346,15 +385,31 @@ export default class ThemeWrapper extends Component<Props> {
                 smoke: '#E0E5EC',
                 table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
               },
+              white: {
+                main: '#fff',
+                background: '#fff',
+                inputBackground: '#fff',
+              },
+              dark: {
+                main: '#16253D',
+              },
+              depthChart: {
+                redStroke: '#DD6956',
+                greenStroke: '#29AC80',
+                greenBackground: 'rgba(47, 118, 25, 0.5)',
+                redBackground: 'rgba(185, 59, 43, 0.5)',
+              },
+              slider: {
+                dots: '#ABBAD1',
+                rail: '#e0e5ec',
+              },
             },
           }
     )
     if (window) window.theme = theme
 
     return (
-      <MuiThemeProvider theme={theme}>
-        {this.props.children}
-      </MuiThemeProvider>
+      <MuiThemeProvider theme={theme}>{this.props.children}</MuiThemeProvider>
     )
   }
 }

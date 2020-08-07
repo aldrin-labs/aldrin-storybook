@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Grid } from '@material-ui/core'
+import { Grid, Theme } from '@material-ui/core'
 
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -75,7 +75,7 @@ export const BalanceFuturesContainer = styled.div`
   width: 100%;
   height: 33%;
   padding: 0.8rem 0;
-  border-bottom: 0.1rem solid #e0e5ec;
+  border-bottom: ${(props) => props.theme.palette.border.main};
 
   ${({ needBorder }: { needBorder?: boolean }) =>
     needBorder &&
@@ -91,20 +91,21 @@ export const BalanceFuturesTypography = styled.span`
 `
 
 export const BalanceFuturesTitle = styled(BalanceFuturesTypography)`
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.text};
 `
 
 export const BalanceFuturesValue = styled(BalanceFuturesTypography)`
-  color: #16253d;
+  color: ${(props) => props.theme.palette.dark.main};
 `
 
 export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
-  color: #16253d;
+  color: ${(props) => props.theme.palette.dark.main};
 `
 
 export const Balances = ({
   getFundsQuery,
   pair,
+  theme,
   marketType,
   selectedKey,
   subscribeToMore,
@@ -117,6 +118,7 @@ export const Balances = ({
   getFundsQuery: {
     getFunds: FundsType[]
   }
+  theme: Theme
   pair: string[]
   marketType: 0 | 1
   selectedKey: Key
@@ -179,16 +181,18 @@ export const Balances = ({
         loading={loading}
         setLoading={setLoading}
       />
-      <CustomCard>
+      <CustomCard theme={theme} style={{ borderRight: 'none' }}>
         <ChartCardHeader
+          theme={theme}
           style={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             alignItems: 'center',
+            paddingLeft: '2rem',
           }}
         >
           <>
-            Balance{' '}
+            Balances{' '}
             {!isSPOTMarket && (
               <UpdateFuturesBalances keyId={selectedKey.keyId} />
             )}
@@ -214,7 +218,7 @@ export const Balances = ({
                 justify="center"
                 xs={6}
                 style={{
-                  borderBottom: '.1rem solid #e0e5ec',
+                  borderBottom: theme.palette.border.main,
                   maxWidth: '100%',
                 }}
               >
@@ -274,22 +278,30 @@ export const Balances = ({
                 style={{ maxWidth: '100%' }}
               >
                 <div style={{ height: '100%', width: '100%' }}>
-                  <BalanceFuturesContainer>
-                    <BalanceFuturesTitle>Wallet balance</BalanceFuturesTitle>
-                    <BalanceFuturesValue>
-                      <span style={{ color: '#0B1FD1' }}>
+                  <BalanceFuturesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      Wallet balance
+                    </BalanceFuturesTitle>
+                    <BalanceFuturesValue theme={theme}>
+                      <span style={{ color: theme.palette.blue.main }}>
                         {stripDigitPlaces(USDTFuturesFund.quantity)}
                       </span>{' '}
-                      <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                      <BalanceFuturesSymbol theme={theme}>
+                        USDT
+                      </BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
-                  <BalanceFuturesContainer>
-                    <BalanceFuturesTitle>Availiable</BalanceFuturesTitle>
-                    <BalanceFuturesValue>
-                      <span style={{ color: '#0B1FD1' }}>
+                  <BalanceFuturesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      Availiable
+                    </BalanceFuturesTitle>
+                    <BalanceFuturesValue theme={theme}>
+                      <span style={{ color: theme.palette.blue.main }}>
                         {stripDigitPlaces(USDTFuturesFund.free)}
                       </span>{' '}
-                      <BalanceFuturesSymbol>USDT</BalanceFuturesSymbol>
+                      <BalanceFuturesSymbol theme={theme}>
+                        USDT
+                      </BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                 </div>
@@ -303,7 +315,7 @@ export const Balances = ({
                 justify="space-evenly"
                 style={{
                   maxWidth: '100%',
-                  borderTop: '.1rem solid #e0e5ec',
+                  borderTop: theme.palette.border.main,
                 }}
               >
                 {isFuturesWarsKey && (
@@ -314,10 +326,10 @@ export const Balances = ({
                     fontSize=".8rem"
                     padding="1rem 0 .8rem 0;"
                     borderRadius=".8rem"
-                    btnColor={'#0B1FD1'}
-                    backgroundColor={'#fff'}
-                    hoverColor={'#fff'}
-                    hoverBackground={'#0B1FD1'}
+                    btnColor={theme.palette.blue.main}
+                    backgroundColor={theme.palette.white.background}
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground={theme.palette.blue.main}
                     transition={'all .4s ease-out'}
                     onClick={() => {
                       togglePopup(true)
@@ -328,7 +340,9 @@ export const Balances = ({
                 )}
                 {!isFuturesWarsKey && (
                   <>
-                    <BalanceFuturesTitle>transfer</BalanceFuturesTitle>
+                    <BalanceFuturesTitle theme={theme}>
+                      transfer
+                    </BalanceFuturesTitle>
                     <div
                       style={{
                         display: 'flex',
@@ -342,10 +356,10 @@ export const Balances = ({
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
+                        btnColor={theme.palette.blue.main}
+                        backgroundColor={theme.palette.white.background}
+                        hoverColor={theme.palette.white.background}
+                        hoverBackground={theme.palette.blue.main}
                         transition={'all .4s ease-out'}
                         onClick={() => {
                           setTransferFromSpotToFutures(true)
@@ -360,10 +374,10 @@ export const Balances = ({
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
-                        btnColor={'#0B1FD1'}
-                        backgroundColor={'#fff'}
-                        hoverColor={'#fff'}
-                        hoverBackground={'#0B1FD1'}
+                        btnColor={theme.palette.blue.main}
+                        backgroundColor={theme.palette.white.background}
+                        hoverColor={theme.palette.white.background}
+                        hoverBackground={theme.palette.blue.main}
                         transition={'all .4s ease-out'}
                         onClick={() => {
                           setTransferFromSpotToFutures(false)
