@@ -75,6 +75,7 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
   render() {
     const {
       tab,
+      theme,
       tabIndex,
       show,
       keys,
@@ -114,6 +115,7 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
           tabIndex,
           page,
           keys,
+          theme,
           perPage,
           selectedKey,
           show,

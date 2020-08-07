@@ -11,6 +11,7 @@ import DepthChartComponent from '../DepthChart/DepthChart'
 import { DepthChartContainer } from '../Chart.styles'
 
 export const DepthChart = ({
+  theme,
   chartProps,
   changeTable,
   exchange,
@@ -18,8 +19,8 @@ export const DepthChart = ({
   data,
 }) => {
   return (
-    <DepthChartContainer>
-      <ChartCardHeader>Depth chart</ChartCardHeader>
+    <DepthChartContainer theme={theme}>
+      <ChartCardHeader theme={theme}>Depth chart</ChartCardHeader>
       <DepthChartComponent
         {...{
           onButtonClick: changeTable,

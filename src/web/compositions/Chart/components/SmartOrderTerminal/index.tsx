@@ -25,7 +25,6 @@ import {
 } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { maxLeverage } from '@sb/compositions/Chart/mocks'
 import { API_URL } from '@core/utils/config'
 import WebHookImg from '@sb/images/WebHookImg.png'
 import MessageImg from '@sb/images/MessageImg.png'
@@ -863,6 +862,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const {
       pair,
       funds,
+      theme,
       marketType,
       updateLeverage,
       quantityPrecision,
@@ -870,6 +870,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       enqueueSnackbar,
       minSpotNotional,
       minFuturesStep,
+      maxLeverage,
       leverage: startLeverage,
     } = this.props
 
@@ -910,7 +911,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             pair={pair}
           />
         )}
-        <CustomCard>
+        <CustomCard theme={theme}>
           <TerminalHeaders>
             <TerminalHeader
               key={'entryPoint'}
@@ -929,7 +930,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <LeverageTitle>leverage:</LeverageTitle>
                   <SmallSlider
                     min={1}
-                    max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
+                    max={maxLeverage}
                     defaultValue={startLeverage}
                     value={
                       !entryPoint.order.leverage
@@ -938,7 +939,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                     valueSymbol={'X'}
                     marks={
-                      maxLeverage.get(`${pair[0]}_${pair[1]}`) === 125
+                      maxLeverage === 125
                         ? {
                             1: {},
                             25: {},
@@ -947,13 +948,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             100: {},
                             125: {},
                           }
-                        : {
+                        : maxLeverage === 75
+                        ? {
                             1: {},
                             15: {},
                             30: {},
                             45: {},
                             60: {},
                             75: {},
+                          }
+                        : {
+                            1: {},
+                            10: {},
+                            20: {},
+                            30: {},
+                            40: {},
+                            50: {},
                           }
                     }
                     onChange={(leverage) => {
@@ -1807,7 +1817,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </InputRowContainer>
                 </FormInputContainer>
 
-                {entryPoint.trailing.isTrailingOn && (
+                {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
                   <FormInputContainer
                     haveTooltip
                     tooltipText={

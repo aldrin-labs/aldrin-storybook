@@ -76,6 +76,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const {
       data,
       quote,
+      theme,
       marketType,
       marketOrders,
       aggregation,
@@ -104,6 +105,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     return (
       <>
         <ChartCardHeader
+          theme={theme}
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -133,6 +135,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             />
             <div style={{ width: '60%', padding: '0 1rem' }}>
               <StyledSelect
+                theme={theme}
                 onChange={(e: ChangeEvent) => {
                   setOrderbookAggregation(
                     aggregationModes.find(

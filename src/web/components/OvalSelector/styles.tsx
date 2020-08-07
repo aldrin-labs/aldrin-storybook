@@ -21,6 +21,8 @@ export const SelectR = styled(ReactSelectComponent)`
 export const SelectContainer = styled.div`
   ${ChartSelectStyles}
   ${(props) => props.selectStyles}
+  border-radius: 0;
+  box-shadow: none;
   /* min-width: ${(props) =>
     props.isAccountSelect ? '22.8rem' : '14.4rem'}; */
 

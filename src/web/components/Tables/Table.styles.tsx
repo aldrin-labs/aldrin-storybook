@@ -20,6 +20,7 @@ export const StyledTableSortLabel = withStyles({
   root: {
     position: 'relative',
     color: 'inherit !important',
+    fontSize: 'inherit',
   },
   icon: {
     display: 'none',

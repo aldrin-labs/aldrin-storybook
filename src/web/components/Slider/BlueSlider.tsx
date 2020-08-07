@@ -1,7 +1,9 @@
 import React, { CSSProperties } from 'react'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
+import { Theme } from '@material-ui/core'
 
 const BlueSlider = ({
+  theme,
   value = 0,
   max = 100,
   valueSymbol = '%',
@@ -10,6 +12,7 @@ const BlueSlider = ({
   sliderContainerStyles,
   onChange,
 }: {
+  theme: Theme
   max?: number
   value: number
   valueSymbol?: string
@@ -43,25 +46,28 @@ const BlueSlider = ({
         width: '1.2rem',
         height: '1.2rem',
         border: 'none',
-        backgroundColor: '#0B1FD1',
+        backgroundColor: theme.palette.blue.main,
         marginTop: '-.28rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         transform: 'translate(-50%, -15%) !important',
       }}
       dotStyles={{
         border: 'none',
-        backgroundColor: '#ABBAD1',
+        backgroundColor: theme.palette.slider.dots,
       }}
       activeDotStyles={{
-        backgroundColor: '#5C8CEA',
+        backgroundColor: theme.palette.blue.main,
       }}
       markTextSlyles={{
-        color: '#7284A0;',
+        color: theme.palette.grey.light,
         fontSize: '1rem',
       }}
       railStyle={{
-        backgroundColor: showMarks ? '#E0E5EC' : '#ABBAD1',
+        backgroundColor: showMarks
+          ? theme.palette.slider.rail
+          : theme.palette.slider.dots,
       }}
+      trackBeforeBackground={theme.palette.blue.main}
     />
   )
 }

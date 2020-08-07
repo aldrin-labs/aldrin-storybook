@@ -130,6 +130,7 @@ function ChartPageComponent(props: any) {
   }
 
   const {
+    theme,
     getChartDataQuery: {
       getMyProfile: { _id } = { _id: '' },
       getTradingSettings: {
@@ -183,6 +184,7 @@ function ChartPageComponent(props: any) {
   let pricePrecision
   let minSpotNotional
   let minFuturesStep
+  let initialLeverage
 
   // hacky way to redirect to default market if user selected wrong market in url
   if (
@@ -208,6 +210,7 @@ function ChartPageComponent(props: any) {
     quantityPrecision = 3
     minSpotNotional = 10
     minFuturesStep = 0.001
+    initialLeverage = 125
   } else {
     minPriceDigits = +props.pairPropertiesQuery.marketByName[0].properties
       .binance.filters[0].minPrice
@@ -225,6 +228,12 @@ function ChartPageComponent(props: any) {
     minFuturesStep =
       +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[1]
         .stepSize || 0.001
+
+    initialLeverage =
+      (+props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
+        +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
+          .initialLeverage) ||
+      125
   }
 
   const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
@@ -242,9 +251,11 @@ function ChartPageComponent(props: any) {
           id={_id}
           view={view}
           layout={layout}
+          theme={theme}
           authenticated={authenticated}
           marketType={marketType}
           currencyPair={selectedPair}
+          maxLeverage={initialLeverage}
           pricePrecision={pricePrecision}
           quantityPrecision={quantityPrecision}
           minPriceDigits={minPriceDigits}
@@ -301,6 +312,10 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     return false
   }
 
+  const themeChanged =
+    prev.getChartDataQuery.app.themeMode ===
+    next.getChartDataQuery.app.themeMode
+
   const prevIsPairDataLoading =
     prev.loading ||
     !prev.pairPropertiesQuery.marketByName ||
@@ -341,7 +356,9 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
       next.getChartLayoutQuery.chart.layout.hideOrderbook &&
     prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
-      next.getChartLayoutQuery.chart.layout.hideTradeHistory
+      next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
+    themeChanged &&
+    prev.theme.palette.type === next.theme.palette.type
   )
 })
 
@@ -349,6 +366,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 export default compose(
   withErrorFallback,
   withAuthStatus,
+  withTheme(),
   // withAuth,
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,

@@ -2,10 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Fade } from '@material-ui/core'
 
-export default ({ show = true, text, containerHeight = '' }) => (
+export default ({ show = true, text, containerHeight = '', theme }) => (
   <Container containerHeight={containerHeight}>
     <Fade timeout={1000} in={show}>
-      <Typography>{text}</Typography>
+      <Typography theme={theme}>{text}</Typography>
     </Fade>
   </Container>
 )
@@ -27,6 +27,11 @@ const Container = styled.tr`
 `
 
 const Typography = styled.td`
-  color: rgba(65, 73, 94, 0.69);
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.light) ||
+    '#7284A0'};
   font-size: 3rem;
 `

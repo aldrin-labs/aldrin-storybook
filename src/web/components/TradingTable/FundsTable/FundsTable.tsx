@@ -77,6 +77,7 @@ class FundsTable extends React.PureComponent<IProps> {
     const { fundsProcessedData, hideSmallAssets } = this.state
     const {
       tab,
+      theme,
       handleTabChange,
       show,
       marketType,
@@ -98,27 +99,32 @@ class FundsTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
-        style={{ borderRadius: 0, height: '100%' }}
-        stylesForTable={{ backgroundColor: '#fff' }}
+        style={{
+          borderRadius: 0,
+          height: '100%',
+          backgroundColor: theme.palette.white.background,
+        }}
+        stylesForTable={{ backgroundColor: theme.palette.white.background }}
         withCheckboxes={false}
         tableStyles={{
           headRow: {
-            borderBottom: '1px solid #e0e5ec',
+            borderBottom: theme.palette.border.main,
             boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
-            backgroundColor: '#fff',
-            color: '#16253D',
+            backroundColor: theme.palette.white.background,
+            color: theme.palette.dark.main,
             boxShadow: 'none',
           },
           cell: {
-            color: '#7284A0',
+            color: theme.palette.dark.main,
             fontSize: '1rem', // 1.2 if bold
             fontWeight: 'bold',
-            letterSpacing: '1px',
-            borderBottom: '1px solid #e0e5ec',
+            letterSpacing: '.1rem',
+            borderBottom: theme.palette.border.main,
+            backgroundColor: theme.palette.white.background,
             boxShadow: 'none',
           },
           tab: {

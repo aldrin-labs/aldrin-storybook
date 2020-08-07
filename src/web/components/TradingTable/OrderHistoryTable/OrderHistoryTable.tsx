@@ -158,8 +158,12 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
     return (
       <TableWithSort
-        style={{ borderRadius: 0, height: '100%' }}
-        stylesForTable={{ backgroundColor: '#fff' }}
+        style={{
+          borderRadius: 0,
+          height: '100%',
+          backgroundColor: theme.palette.white.background,
+        }}
+        stylesForTable={{ backgroundColor: theme.palette.white.background }}
         defaultSort={{
           sortColumn: 'date',
           sortDirection: 'desc',
@@ -170,22 +174,23 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         withCheckboxes={false}
         tableStyles={{
           headRow: {
-            borderBottom: '1px solid #e0e5ec',
+            borderBottom: theme.palette.border.main,
             boxShadow: 'none',
           },
           heading: {
             fontSize: '1rem',
             fontWeight: 'bold',
-            backgroundColor: '#fff',
-            color: '#16253D',
+            backgroundColor: theme.palette.white.background,
+            color: theme.palette.dark.main,
             boxShadow: 'none',
           },
           cell: {
-            color: '#7284A0',
+            color: theme.palette.dark.main,
             fontSize: '1rem', // 1.2 if bold
             fontWeight: 'bold',
-            letterSpacing: '1px',
-            borderBottom: '1px solid #e0e5ec',
+            letterSpacing: '.1rem',
+            borderBottom: theme.palette.border.main,
+            backgroundColor: theme.palette.white.background,
             boxShadow: 'none',
           },
           tab: {
@@ -205,6 +210,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           additionalBlock: (
             <PaginationBlock
               {...{
+                theme,
                 allKeys,
                 specificPair,
                 handleToggleAllKeys,
@@ -212,7 +218,11 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
               }}
             />
           ),
-          paginationStyles: { width: 'calc(100% - 0.4rem)' },
+          paginationStyles: {
+            width: 'calc(100%)',
+            backgroundColor: theme.palette.white.background,
+            border: theme.palette.border.main,
+          },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         title={

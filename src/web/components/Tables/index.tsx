@@ -62,7 +62,7 @@ const CustomTableCell = withStyles((theme) => ({
     position: 'sticky',
     top: '3rem',
     backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.text.primary,
+    color: theme.palette.dark.main,
     textTransform: 'uppercase',
     fontSize: 14,
     fontWeight: 'bold',
@@ -73,7 +73,7 @@ const CustomTableCell = withStyles((theme) => ({
     boxShadow: 'none',
   },
   body: {
-    color: theme.palette.text.primary,
+    color: theme.palette.dark.main,
     borderBottom: 'none',
     fontSize: 14,
     padding: '0.2rem 1.6rem 0.2rem 0.6rem',
@@ -158,7 +158,7 @@ const styles = (theme: Theme) =>
       },
 
       '&::-webkit-scrollbar-track': {
-        background: theme.palette.background.paper,
+        background: 'transparent',
       },
       '&::-webkit-scrollbar-thumb': {
         background:
@@ -236,10 +236,10 @@ const styles = (theme: Theme) =>
     },
     rowWithHoverBorderRadius: {
       '& td:first-child': {
-        borderRadius: '12px 0 0 12px',
+        borderRadius: '0',
       },
       '& td:last-child': {
-        borderRadius: '0 12px 12px 0',
+        borderRadius: '0',
       },
     },
     actionButton: {
@@ -382,6 +382,7 @@ const renderCell = ({
     <CustomTableCell
       padding={padding}
       scope="row"
+      style={{ ...tableStyles.cell }}
       variant={variant}
       align={align}
       key={id}
@@ -405,6 +406,7 @@ const renderHeadCell = ({
       active={sort!.sortColumn === cell.id}
       direction={sort!.sortDirection}
       onClick={() => sort!.sortHandler(cell.id)}
+      style={{ fontSize: 'inherit' }}
     >
       {cell.label}
     </StyledTableSortLabel>
@@ -761,7 +763,7 @@ const CustomTable = (props: Props) => {
           ) : data.body.length === 0 && onboardingPlaceholder ? (
             <OnboardingPlaceholder />
           ) : data.body.length === 0 && !onboardingPlaceholder ? (
-            <CustomPlaceholder text={emptyTableText} />
+            <CustomPlaceholder theme={theme} text={emptyTableText} />
           ) : (
             paginationFunc(
               data.body.filter(Boolean).map((row) => {
@@ -1003,10 +1005,12 @@ const CustomTable = (props: Props) => {
               {showPagination !== false ? (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <PaginationBlock
+                    theme={theme}
                     style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
                   >
                     Rows per page:{' '}
                     <StyledSelect
+                      theme={theme}
                       value={rowsPerPage}
                       onChange={handleChangeRowsPerPage}
                     >
@@ -1015,14 +1019,14 @@ const CustomTable = (props: Props) => {
                       })}
                     </StyledSelect>
                   </PaginationBlock>
-                  <PaginationBlock>
+                  <PaginationBlock theme={theme}>
                     {page * rowsPerPage} -{' '}
                     {page * rowsPerPage + rowsPerPage > totalCount
                       ? totalCount
                       : page * rowsPerPage + rowsPerPage}{' '}
                     of {totalCount}
                   </PaginationBlock>
-                  <PaginationBlock>
+                  <PaginationBlock theme={theme}>
                     <ArrowBackIosIcon
                       onClick={() =>
                         handleChangePage(page === 0 ? 0 : page - 1)
