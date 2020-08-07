@@ -1908,6 +1908,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       />
 
                       <BlueSlider
+                        theme={theme}
                         disabled={!entryPoint.trailing.isTrailingOn}
                         value={stripDigitPlaces(
                           entryPoint.trailing.deviationPercentage *
@@ -2211,6 +2212,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 <InputRowContainer>
                   <BlueSlider
+                    theme={theme}
                     showMarks
                     value={
                       entryPoint.order.side === 'buy' || marketType === 1
@@ -2731,6 +2733,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
 
                         <BlueSlider
+                          theme={theme}
                           value={stopLoss.pricePercentage}
                           sliderContainerStyles={{
                             width: '50%',
@@ -3268,6 +3271,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer>
                         <SubBlocksContainer>
                           <BlueSlider
+                            theme={theme}
                             max={60}
                             value={
                               stopLoss.timeout.whenLossableSec > 60
@@ -3291,6 +3295,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                         <SubBlocksContainer>
                           <BlueSlider
+                            theme={theme}
                             value={stopLoss.forcedStop.pricePercentage}
                             sliderContainerStyles={{
                               width: 'calc(100%)',
@@ -3736,6 +3741,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
 
                         <BlueSlider
+                          theme={theme}
                           value={
                             takeProfit.pricePercentage > 100
                               ? 100
@@ -3872,6 +3878,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             }}
                           />
                           <BlueSlider
+                            theme={theme}
                             value={takeProfit.trailingTAP.activatePrice}
                             sliderContainerStyles={{
                               width: '50%',
@@ -3933,6 +3940,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             />
 
                             <BlueSlider
+                              theme={theme}
                               value={takeProfit.trailingTAP.deviationPercentage}
                               sliderContainerStyles={{
                                 width: '50%',
@@ -4218,6 +4226,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
 
                         <BlueSlider
+                          theme={theme}
                           value={takeProfit.splitTargets.volumePercentage}
                           sliderContainerStyles={{
                             width: '50%',
